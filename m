@@ -2,67 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05EE645541
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 09:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3E66455D6
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 09:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbiLGINB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 03:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        id S229456AbiLGI5N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 03:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiLGIM7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 03:12:59 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953A4318
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 00:12:58 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id x6so20000246lji.10
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Dec 2022 00:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m+kjYDptxUK/6lTIYvf1c81EedOZ9qW05fricFulF/s=;
-        b=E+Idr6D8UHCLzDMlof82wLQ953lks4pkn/ITiOLjg5EZ5GexMPBGhRyhZ47WjQBA5x
-         ZtTgp/uA7mD1SKC0qk623g9FPnNWypXTviAAbU5l3pEfxPmDG/1VYSTTOhtIg/6jfajW
-         zrVRznyX8RLlWHPs8g8ldRGAAsbVi1RUEVxMSVWVVvl21z91bamPXZ1j1An/HTzDCVnN
-         5Z01lDM1eiwfrSeydBjDoS9F3SM2YHUEc+91G6J9klWpmZPwxEx8ZuwA3Tb/VopOvPEM
-         +BO74orO6Y27+gPuYCLB+/l1gtqg3ofRuBZy9k2qh2yT+hHXig4/E0XyBdRmJbSVIWni
-         SP1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m+kjYDptxUK/6lTIYvf1c81EedOZ9qW05fricFulF/s=;
-        b=FH5aNqeitv3ccfOwnApdSd0CtSICNYsXI5n7/AeBdu1y89GAUMBug2IBfNPibD1WXF
-         kWBJ9EQRYK+cP6Wn2OGr1+IOhKRhVbFQYympg0fhcbgdB1VWpbRSbH0VFfIDDlWrs7vM
-         EEz5FReXEZxKQQmWUUfd8VDQOTInexEtT8g6n7sy/1puParHdimntCPfyWaO/gr/rahi
-         VEGATw3xbO5n/p/sXK5Ix6f3N4D+Bnaq3zd/iyEdAxZmpuLjvDYDW5qoIaKLSbhgfzyH
-         0Ab3K1NdSExdyI68+SaZEnxaddHZkzJ6cLxCifRvma9e+csC/bigb45VGb9v3RabJAtV
-         Pktg==
-X-Gm-Message-State: ANoB5pkjUJuN+6PzQT+2m336GV26NHajdUUcdPDcEMildC9QiaZ6J6m0
-        5sdz8aWHrHVNx+yAZy9dZsS/1W3cOlK7q5GWnM0GfA==
-X-Google-Smtp-Source: AA0mqf5iOn+a4tqY2SYsU+Hmzcta+/lPEAREqnH/tSE6nHz37FLIaYyTLATUxyA+pzwqdKe5qV58PXUueOsqZhvjKiY=
-X-Received: by 2002:a2e:b0ef:0:b0:279:be29:cb69 with SMTP id
- h15-20020a2eb0ef000000b00279be29cb69mr11441271ljl.482.1670400776921; Wed, 07
- Dec 2022 00:12:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20221206144134.1919987-1-yebin@huaweicloud.com>
- <CABymUCN-WC5aCpVestRFpXVgZobxs48crUDX2419yvXxLgyjRQ@mail.gmail.com> <63904686.3010903@huawei.com>
-In-Reply-To: <63904686.3010903@huawei.com>
-From:   Jun Nie <jun.nie@linaro.org>
-Date:   Wed, 7 Dec 2022 16:11:01 +0800
-Message-ID: <CABymUCMC=8PwrqetiOBVK98iwKrycAf_eYZdfqVOPya6jZTPvQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
-To:     "yebin (H)" <yebin10@huawei.com>
-Cc:     Ye Bin <yebin@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jack@suse.cz,
-        syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
+        with ESMTP id S229627AbiLGI4v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 03:56:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA883B1
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 00:56:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CCB1EB815D2
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 08:56:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7BB8FC433B5
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 08:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670403408;
+        bh=53gVEC2Lc2SRHuKLLmtOeD8k6FSxeK/QFQWc6joiDRA=;
+        h=From:To:Subject:Date:From;
+        b=HXCh+dFuBs3EGOcp3HGTEzCmYDGjhvX0D4IFNUH2aDQyEtwTlHgBZUbP3hbaEi506
+         RFW/QYBO8QMPI0nVcWYC/Bf3dNj/MsjAJFAZhcpsTY7GdB7Bn1+Bb5khgPPyQXZ5ED
+         MACKpx4PUWxMbaPLicpp0Ev3iIb7HgYBe/sQS9rUeDLmDIO7Sq2s45WR9pEsZwC99E
+         IW4foczvhBs5NJ47soQTo+Y7r5RqjYdpVeT1xLEz3ftot24ioUzWXmmYCP9YOOXjeD
+         Ug6m1i8pdCmSoYquk8bMRuH8Ah/gLhgh7fbz1Gwxi3eIlwCKdCkGUhtZqsMjeyfrcn
+         cBSFC4CA6rwfQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 618F9C433E7; Wed,  7 Dec 2022 08:56:48 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216783] New: There is "ext4_xattr_block_set" WARNING in
+ v6.1-rc8 guest kernel
+Date:   Wed, 07 Dec 2022 08:56:48 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: pengfei.xu@intel.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-216783-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,30 +70,27 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-yebin (H) <yebin10@huawei.com> =E4=BA=8E2022=E5=B9=B412=E6=9C=887=E6=97=A5=
-=E5=91=A8=E4=B8=89 15:54=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> On 2022/12/7 14:44, Jun Nie wrote:
-> > Hi Bin,
-> >
-> > Thanks for the patch! The bug is reproduced with this patch. I can
-> > help trigger another
-> > test when you have new patch.
-> > https://syzkaller.appspot.com/text?tag=3DCrashLog&x=3D16760797880000
->
-> The cause of this issue is different from that of the previous issue.
-> I analyze that the issue
-> "https://syzkaller.appspot.com/text?tag=3DCrashLog&x=3D16760797880000 "
-> is caused by the concurrency of  inline data conversion and buffer
-> write. To be honest, I haven't
-> thought of any good solution.
->
-Thanks for explanation. So the patch to fix the previous bug is still
-in upstream plan, right?
-> >
-> > Regards,
-> > Jun
-> > .
->
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216783
+
+            Bug ID: 216783
+           Summary: There is "ext4_xattr_block_set" WARNING in v6.1-rc8
+                    guest kernel
+           Product: File System
+           Version: 2.5
+    Kernel Version: v6.1-rc8
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: pengfei.xu@intel.com
+        Regression: No
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
