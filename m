@@ -2,136 +2,235 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037576458F4
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DFE6458F2
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Dec 2022 12:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbiLGL13 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 06:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S229899AbiLGL10 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 06:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiLGL10 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:27:26 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54D95FB5
+        with ESMTP id S229709AbiLGL1Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 06:27:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACA6228
         for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 03:27:24 -0800 (PST)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6F42D21CA0;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 57DCA21C95;
         Wed,  7 Dec 2022 11:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1670412443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yWUivoPF8rh6YNbRp12PTNmtUBRknCK4IxKDth2V10Y=;
-        b=INzuJx4U8D9UwfCJgc2ZyNLIQC76vZJM0rrVXcnDGqO1EteBLIeViv8wr7PNo+QScSNA5T
-        Mpl8L3bpdsJRP1DwAbQFu66hp/jlSsOgBkcGcdSmQnC4DdWNN/V0LwbEPUDnizTKSBfor4
-        ZWk6m3XqdayfBRV4Mf01CRBcSDln6qE=
+        bh=77G42jyCLCxqHXtKUfKLyfMpUWH1ePC4gHzKYHeOcPM=;
+        b=yZkIB1lBc7dEfc+a+AxbYfVfWkv4KM+M3sS4HhYXSl414Wbv+j5zXyGjvIPgdKMVV2Hfnu
+        nnyiiSr1fVArVe+8gz9S4g916ItUjGtD72Bjp9lDV4mc97813mUs4yNPF/cLd4lUp9spr+
+        O5XyotmndpIooT3jAumWyRo7G7MsVrY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1670412443;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yWUivoPF8rh6YNbRp12PTNmtUBRknCK4IxKDth2V10Y=;
-        b=E++csJXEkPuJSry89R2di/i+Y90N8BD/FUN/n+2MTgN8O92e5sctEWwQhnTctHYeg/Ngk4
-        9u63R5zEpM/3XqCQ==
+        bh=77G42jyCLCxqHXtKUfKLyfMpUWH1ePC4gHzKYHeOcPM=;
+        b=GWTMQVLGtEiDbzpFhVi9ACr5gmTuWdshqNK9Ikas26VUwq/mRYYzFkKrezbR4DVBRZG/Cc
+        Cr1RmasrVXPm/cBg==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 61AA01379D;
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4682D136B4;
         Wed,  7 Dec 2022 11:27:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id 9GvRF5t4kGM1LAAAGKfGzw
+        id nTkuEZt4kGMsLAAAGKfGzw
         (envelope-from <jack@suse.cz>); Wed, 07 Dec 2022 11:27:23 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id CC801A0723; Wed,  7 Dec 2022 12:27:22 +0100 (CET)
+        id D3152A0728; Wed,  7 Dec 2022 12:27:22 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
         Jan Kara <jack@suse.cz>
-Subject: [PATCH v4 01/13] ext4: Handle redirtying in ext4_bio_write_page()
-Date:   Wed,  7 Dec 2022 12:27:04 +0100
-Message-Id: <20221207112722.22220-1-jack@suse.cz>
+Subject: [PATCH v4 02/13] ext4: Move keep_towrite handling to ext4_bio_write_page()
+Date:   Wed,  7 Dec 2022 12:27:05 +0100
+Message-Id: <20221207112722.22220-2-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20221207112259.8143-1-jack@suse.cz>
 References: <20221207112259.8143-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2039; i=jack@suse.cz; h=from:subject; bh=vdozeUvfNYyCeixKiAugGlYRgdNUDNkZOW42CdQ7y9I=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBjkHiJB+fHKP4nh1IIQZOIeG+ejYx8dHkOZhCuAUNp am41wMCJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCY5B4iQAKCRCcnaoHP2RA2Y+jB/ 9WU4vo9mcc4kaMKrrSKuW492GkCnfK5wpVwRVBp6phCXYgGg1ZfpFn+AdXCf6Jbcu1rypmGl5HXphj 0lD4PBKy7xX5cFqlhqHwcvsLrV+TP3HEkS/JIX/2uaeEylM2WFl7Yg5VlYAN1sBxpGqg9IF25p44jH fgezmr8B/S44+cxD9ARi0bGu6/TUwVqJHSvQDhGhnPRjq5wY/tTWkw9Dby5xt6iKSsp+dZLSd4bfAk 7uHjTslDfo2Wr6u9UkZv9bRcTvMZZsz29Ye4bX1tTBksDGTRI/MCuhWbixUZU+3n6TiuBf8y+NYTiw JNV2L0kpl3AeQCrPHxHrRhCGRJwkSV
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5311; i=jack@suse.cz; h=from:subject; bh=4BEBMuubTi6wzu1p0dUteVLsznv1GLCDItrtKTNYI5E=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBjkHiKkEjDDlFxxdvGxblAV29RSyx82jUQUUJxApPT AwBuFt6JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCY5B4igAKCRCcnaoHP2RA2WmDB/ wLYCsTrpXx55IK6zhY2EEYFVtTz/pDA5XcuCyjkf/ajfQQ2m5aRSijjCgiPf6Bvy1DnYDlSOqKk/BD cS0OVoBXMTGIcbdgjWGJq6bxRmaSs3uHPcQAtXdTp5oDXTYQAxBeE+ddlwVLDYDnwO0e+DS2y2JpYN fW6KSj3C7tkQmnDlOXoIzGBvWllIEtxxaYjz7aj0X2ssdj85O2xOm0a6Sibd8F2CiOLVJliXCW/b3y FBMOeNDlPdl8xE72g6Mofukyvy1nmlDkxn+tStP0vNsHUB3XG9PLWlWd3fC1iyRJJZH2X1QWOg0PLq tqZsOreXFXi/3UExsfglwgQFAmKkC6
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Since we want to transition transaction commits to use ext4_writepages()
-for writing back ordered, add handling of page redirtying into
-ext4_bio_write_page(). Also move buffer dirty bit clearing into the same
-place other buffer state handling.
+When we are writing back page but we cannot for some reason write all
+its buffers (e.g. because we cannot allocate blocks in current context) we
+have to keep TOWRITE tag set in the mapping as otherwise racing
+WB_SYNC_ALL writeback that could write these buffers can skip the page
+and result in data loss. We will need this logic for writeback during
+transaction commit so move the logic from ext4_writepage() to
+ext4_bio_write_page().
 
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/page-io.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ fs/ext4/ext4.h    |  3 +--
+ fs/ext4/inode.c   |  6 ++----
+ fs/ext4/page-io.c | 36 +++++++++++++++++++++---------------
+ 3 files changed, 24 insertions(+), 21 deletions(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 8d5453852f98..1b3bffc04fd0 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3756,8 +3756,7 @@ extern void ext4_end_io_rsv_work(struct work_struct *work);
+ extern void ext4_io_submit(struct ext4_io_submit *io);
+ extern int ext4_bio_write_page(struct ext4_io_submit *io,
+ 			       struct page *page,
+-			       int len,
+-			       bool keep_towrite);
++			       int len);
+ extern struct ext4_io_end_vec *ext4_alloc_io_end_vec(ext4_io_end_t *io_end);
+ extern struct ext4_io_end_vec *ext4_last_io_end_vec(ext4_io_end_t *io_end);
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 2b5ef1b64249..43eb175d0c1c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2009,7 +2009,6 @@ static int ext4_writepage(struct page *page,
+ 	struct buffer_head *page_bufs = NULL;
+ 	struct inode *inode = page->mapping->host;
+ 	struct ext4_io_submit io_submit;
+-	bool keep_towrite = false;
+ 
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb)))) {
+ 		folio_invalidate(folio, 0, folio_size(folio));
+@@ -2067,7 +2066,6 @@ static int ext4_writepage(struct page *page,
+ 			unlock_page(page);
+ 			return 0;
+ 		}
+-		keep_towrite = true;
+ 	}
+ 
+ 	if (PageChecked(page) && ext4_should_journal_data(inode))
+@@ -2084,7 +2082,7 @@ static int ext4_writepage(struct page *page,
+ 		unlock_page(page);
+ 		return -ENOMEM;
+ 	}
+-	ret = ext4_bio_write_page(&io_submit, page, len, keep_towrite);
++	ret = ext4_bio_write_page(&io_submit, page, len);
+ 	ext4_io_submit(&io_submit);
+ 	/* Drop io_end reference we got from init */
+ 	ext4_put_io_end_defer(io_submit.io_end);
+@@ -2118,7 +2116,7 @@ static int mpage_submit_page(struct mpage_da_data *mpd, struct page *page)
+ 		len = size & ~PAGE_MASK;
+ 	else
+ 		len = PAGE_SIZE;
+-	err = ext4_bio_write_page(&mpd->io_submit, page, len, false);
++	err = ext4_bio_write_page(&mpd->io_submit, page, len);
+ 	if (!err)
+ 		mpd->wbc->nr_to_write--;
+ 	mpd->first_page++;
 diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 97fa7b4c645f..4e68ace86f11 100644
+index 4e68ace86f11..4f9ecacd10aa 100644
 --- a/fs/ext4/page-io.c
 +++ b/fs/ext4/page-io.c
-@@ -482,6 +482,13 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 			/* A hole? We can safely clear the dirty bit */
+@@ -430,8 +430,7 @@ static void io_submit_add_bh(struct ext4_io_submit *io,
+ 
+ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 			struct page *page,
+-			int len,
+-			bool keep_towrite)
++			int len)
+ {
+ 	struct page *bounce_page = NULL;
+ 	struct inode *inode = page->mapping->host;
+@@ -441,14 +440,11 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 	int nr_submitted = 0;
+ 	int nr_to_submit = 0;
+ 	struct writeback_control *wbc = io->io_wbc;
++	bool keep_towrite = false;
+ 
+ 	BUG_ON(!PageLocked(page));
+ 	BUG_ON(PageWriteback(page));
+ 
+-	if (keep_towrite)
+-		set_page_writeback_keepwrite(page);
+-	else
+-		set_page_writeback(page);
+ 	ClearPageError(page);
+ 
+ 	/*
+@@ -483,12 +479,17 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
  			if (!buffer_mapped(bh))
  				clear_buffer_dirty(bh);
-+			/*
-+			 * Keeping dirty some buffer we cannot write? Make
-+			 * sure to redirty the page. This happens e.g. when
-+			 * doing writeout for transaction commit.
-+			 */
-+			if (buffer_dirty(bh) && !PageDirty(page))
-+				redirty_page_for_writepage(wbc, page);
+ 			/*
+-			 * Keeping dirty some buffer we cannot write? Make
+-			 * sure to redirty the page. This happens e.g. when
+-			 * doing writeout for transaction commit.
++			 * Keeping dirty some buffer we cannot write? Make sure
++			 * to redirty the page and keep TOWRITE tag so that
++			 * racing WB_SYNC_ALL writeback does not skip the page.
++			 * This happens e.g. when doing writeout for
++			 * transaction commit.
+ 			 */
+-			if (buffer_dirty(bh) && !PageDirty(page))
+-				redirty_page_for_writepage(wbc, page);
++			if (buffer_dirty(bh)) {
++				if (!PageDirty(page))
++					redirty_page_for_writepage(wbc, page);
++				keep_towrite = true;
++			}
  			if (io->io_bio)
  				ext4_io_submit(io);
  			continue;
-@@ -489,6 +496,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 		if (buffer_new(bh))
- 			clear_buffer_new(bh);
- 		set_buffer_async_write(bh);
-+		clear_buffer_dirty(bh);
+@@ -500,6 +501,10 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
  		nr_to_submit++;
  	} while ((bh = bh->b_this_page) != head);
  
-@@ -532,7 +540,10 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 			printk_ratelimited(KERN_ERR "%s: ret = %d\n", __func__, ret);
- 			redirty_page_for_writepage(wbc, page);
- 			do {
--				clear_buffer_async_write(bh);
-+				if (buffer_async_write(bh)) {
-+					clear_buffer_async_write(bh);
-+					set_buffer_dirty(bh);
-+				}
- 				bh = bh->b_this_page;
- 			} while (bh != head);
- 			goto unlock;
-@@ -546,7 +557,6 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 		io_submit_add_bh(io, inode,
++	/* Nothing to submit? Just unlock the page... */
++	if (!nr_to_submit)
++		goto unlock;
++
+ 	bh = head = page_buffers(page);
+ 
+ 	/*
+@@ -550,6 +555,11 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 		}
+ 	}
+ 
++	if (keep_towrite)
++		set_page_writeback_keepwrite(page);
++	else
++		set_page_writeback(page);
++
+ 	/* Now submit buffers to write */
+ 	do {
+ 		if (!buffer_async_write(bh))
+@@ -558,11 +568,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
  				 bounce_page ? bounce_page : page, bh);
  		nr_submitted++;
--		clear_buffer_dirty(bh);
  	} while ((bh = bh->b_this_page) != head);
- 
+-
  unlock:
+ 	unlock_page(page);
+-	/* Nothing submitted - we have to end page writeback */
+-	if (!nr_submitted)
+-		end_page_writeback(page);
+ 	return ret;
+ }
 -- 
 2.35.3
 
