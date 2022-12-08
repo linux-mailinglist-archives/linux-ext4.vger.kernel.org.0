@@ -2,68 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D58864796C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 00:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A3A64797B
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 00:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbiLHXBW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Dec 2022 18:01:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S229844AbiLHXIe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Dec 2022 18:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbiLHXBV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 18:01:21 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A397DA68;
-        Thu,  8 Dec 2022 15:01:20 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id d13so2005322qvj.8;
-        Thu, 08 Dec 2022 15:01:20 -0800 (PST)
+        with ESMTP id S229462AbiLHXId (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 18:08:33 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268492FBEB;
+        Thu,  8 Dec 2022 15:08:32 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id fu10so2411145qtb.0;
+        Thu, 08 Dec 2022 15:08:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z0yPQ9yeuVpzjbeyRnkuKRSNvZzvcY5CJBpJ2qX+fow=;
-        b=M4v85Ad5iBYQnrZrTRG+3ShH5sT4XQgWhFFm87rbvMM1gUzDiAkNXUXVt3Hg2Zl7N1
-         uW9JJrWGHCQEvPCT2MJv7fagKsQgbRb8giXXT7JlBIxbBPqWpKK4DNzkLs0mb8OwLElr
-         MkzomRChb+jkMmJV7AG/GAKw2gTcMyy9LCp5OcuMV6o3Ct35sss1egPujPWjzEfv5Yxq
-         sgI8x75o5M2n5NZ/TWii+sniGoh31unzujvZ9jCMHpAEnyIjNsLR35tE1iY6ploe9e1r
-         I6uQKRG0dYPL8xDZgzQu623I+y7ggiZUi0NhRGJG5jw3ufFiv17avUGlRclyqwdqSI3l
-         DqRw==
+        bh=jHOWRvXkj3EmGikKamhDv4mSDpov288UVpJ5NdoF1Yg=;
+        b=eJl2ZoV4Yk9mU8KJYr/tRoSTp/nTw20zC9XOIlq36xmn0NAqu7gynnm+Jhyzt4j+Iz
+         9qUpezXHl6WbX5XHAlOM78cfhpUOvFIm96coBKb7LioYWbPf3iHWiv9fGyz8afDjci59
+         Z37ro286sSs8CrO1YIQm7e2dWdVhnpvRZWG3X+rUH0VWKxnBqRcyiNoEQmAmurlCC2IG
+         HTAjczGJNfU4eVWqWI2IKFw51ePyEemnMsHEKNME+2mHamup/W94zjHO80pla6bGkCM4
+         gC9fd/wQP+zWo8Vtb/yj5n4Hj42p1UfoXKEeGgF/2gs9kR8I2xI3XW0FRbvGeHLyirzj
+         L6Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z0yPQ9yeuVpzjbeyRnkuKRSNvZzvcY5CJBpJ2qX+fow=;
-        b=qb/xDbz6E4jzPNhdvr5InRuUqMltXcXiOG028SIxsoqgIBpFM1mvtWdpR9Q3XDNFIs
-         bW0ci2TLPD/GTyU9w4lP4r9sRXYL7Cvw7pn9njs03KXIr+vsU5uOAtHA/L1VUvKkAYv1
-         jBKsGXqYbJPRpHPUIFllkiuqpQRc/D885tps11rika1BnWutPJakDe8H/v64kKkBwrB2
-         44hF9KX0gRfDS1XIN55hFJPyqZJ/kk3jJ231T6daIolC7TjwHeT3cmGx/Ig/t26aOhmM
-         SyJCQ5PEujPsR6FI6nZM5kjT2KrgdaXEx4g9t2smLieXh/61l0Ao8PHyZiGmBUPtJQ3I
-         Dmyw==
-X-Gm-Message-State: ANoB5plqNdunqz8Btd7LL64HOgpQj8fFDWbN/fC0qDf1ySM2yfbLI8hq
-        NmfNR6s1g0dATFzpLN0MXBM=
-X-Google-Smtp-Source: AA0mqf6dWOBiTurqmRPES+C7f+OHp/Px6rIMRVSMaH+faYCh/lE7uxOIfyW8QC2px6Ld0f1zq12IIQ==
-X-Received: by 2002:a0c:e9c6:0:b0:4c7:6938:4514 with SMTP id q6-20020a0ce9c6000000b004c769384514mr5602899qvo.0.1670540479415;
-        Thu, 08 Dec 2022 15:01:19 -0800 (PST)
+        bh=jHOWRvXkj3EmGikKamhDv4mSDpov288UVpJ5NdoF1Yg=;
+        b=SG8r9kpaiJddqzQ7dXs35OVaKsxbD+v5L7a0llMm340jVj1NPATC6i4lSTRZAs/zIT
+         AKzu1kfolSCx0UzUY+EXyd7uTTtqEutTgVIN36DQYhRo+QmhcOrlQIVWsNTtJzYjMdag
+         pu1JQ2Y9c1vIptc50Lp1v56cCU2jk+2/Oc78ZL7/CQcg1ljDyhoPEYakMsU2ReE7KFbE
+         P2ogQnktSoXg/l4GIvAyI7UX1j8ArTleRiPEAN28hvhVZYFMNPVozQIoUujgtH8ubucj
+         DnqRF6BFt6gbjuSje3hXHI6RQARFAzX/ybbn2NHWtD6WR2mgibVrJhKj89YExkkVCQve
+         Xb8A==
+X-Gm-Message-State: ANoB5pmuYGhFsUPMW5PamTqrfsg8IafjzzJ+o1MNPpPF46JMBjXFB8SU
+        Yu7jHJtbaCNxmYPVi22JaPE=
+X-Google-Smtp-Source: AA0mqf44cGKJuPI9V6XJ3SAzqO5jAyE0CqIhRu8cRP72pFzT6LyGMuGXrQWcyMBQSu7aziu3rLlz/w==
+X-Received: by 2002:ac8:5508:0:b0:39c:da20:688 with SMTP id j8-20020ac85508000000b0039cda200688mr5953388qtq.43.1670540911311;
+        Thu, 08 Dec 2022 15:08:31 -0800 (PST)
 Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
-        by smtp.gmail.com with ESMTPSA id t3-20020a05620a450300b006eea4b5abcesm21238254qkp.89.2022.12.08.15.01.18
+        by smtp.gmail.com with ESMTPSA id f40-20020a05622a1a2800b003a7f4c69334sm3245716qtb.24.2022.12.08.15.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 15:01:18 -0800 (PST)
-Date:   Thu, 8 Dec 2022 18:01:16 -0500
+        Thu, 08 Dec 2022 15:08:30 -0800 (PST)
+Date:   Thu, 8 Dec 2022 18:08:29 -0500
 From:   Eric Whitney <enwlinux@gmail.com>
 To:     Ye Bin <yebin@huaweicloud.com>
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         jack@suse.cz, Ye Bin <yebin10@huawei.com>,
         syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Subject: Re: [PATCH v4 1/3] ext4: fix incorrect calculate 'reserved' in
- '__es_remove_extent' when enable bigalloc feature
-Message-ID: <Y5JsvMzx04EcVMHC@debian-BULLSEYE-live-builder-AMD64>
+Subject: Re: [PATCH v4 3/3] ext4: add check pending tree when evict inode
+Message-ID: <Y5JubamuduQ8oUex@debian-BULLSEYE-live-builder-AMD64>
 References: <20221208033426.1832460-1-yebin@huaweicloud.com>
- <20221208033426.1832460-2-yebin@huaweicloud.com>
+ <20221208033426.1832460-4-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221208033426.1832460-2-yebin@huaweicloud.com>
+In-Reply-To: <20221208033426.1832460-4-yebin@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,86 +76,64 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 * Ye Bin <yebin@huaweicloud.com>:
 > From: Ye Bin <yebin10@huawei.com>
 > 
-> Syzbot report issue as follows:
-> EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep:
-> 	bg 0: block 5: invalid block bitmap
-> EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical
-> 	offset 0 with max blocks 32 with error 28
-> EXT4-fs (loop0): This should not happen!! Data will be lost
+> Syzbot found the following issue:
+> BUG: memory leak
+> unreferenced object 0xffff8881bde17420 (size 32):
+>   comm "rep", pid 2327, jiffies 4295381963 (age 32.265s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000ac6d38f8>] __insert_pending+0x13c/0x2d0
+>     [<00000000d717de3b>] ext4_es_insert_delayed_block+0x399/0x4e0
+>     [<000000004be03913>] ext4_da_map_blocks.constprop.0+0x739/0xfa0
+>     [<00000000885a832a>] ext4_da_get_block_prep+0x10c/0x440
+>     [<0000000029b7f8ef>] __block_write_begin_int+0x28d/0x860
+>     [<00000000e182ebc3>] ext4_da_write_inline_data_begin+0x2d1/0xf30
+>     [<00000000ced0c8a2>] ext4_da_write_begin+0x612/0x860
+>     [<000000008d5f27fa>] generic_perform_write+0x215/0x4d0
+>     [<00000000552c1cde>] ext4_buffered_write_iter+0x101/0x3b0
+>     [<0000000052177ae8>] do_iter_readv_writev+0x19f/0x340
+>     [<000000004b9de834>] do_iter_write+0x13b/0x650
+>     [<00000000e2401b9b>] iter_file_splice_write+0x5a5/0xab0
+>     [<0000000023aa5d90>] direct_splice_actor+0x103/0x1e0
+>     [<0000000089e00fc1>] splice_direct_to_actor+0x2c9/0x7b0
+>     [<000000004386851e>] do_splice_direct+0x159/0x280
+>     [<00000000b567e609>] do_sendfile+0x932/0x1200
 > 
-> EXT4-fs (loop0): Total free blocks count 0
-> EXT4-fs (loop0): Free/Dirty block details
-> EXT4-fs (loop0): free_blocks=0
-> EXT4-fs (loop0): dirty_blocks=32
-> EXT4-fs (loop0): Block reservation details
-> EXT4-fs (loop0): i_reserved_data_blocks=2
-> EXT4-fs (loop0): Inode 18 (00000000845cd634):
-> 	i_reserved_data_blocks (1) not cleared!
-> 
-> Above issue happens as follows:
-> Assume:
-> sbi->s_cluster_ratio = 16
-> Step1:
-> Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
-> Step2:
-> ext4_writepages
->   mpage_map_and_submit_extent -> return failed
->   mpage_release_unused_pages -> to release [0, 30]
->     ext4_es_remove_extent -> remove lblk=0 end=30
->       __es_remove_extent -> len1=0 len2=31-30=1
->  __es_remove_extent:
->  ...
->  if (len2 > 0) {
->   ...
-> 	  if (len1 > 0) {
-> 		  ...
-> 	  } else {
-> 		es->es_lblk = end + 1;
-> 		es->es_len = len2;
-> 		...
-> 	  }
->   	if (count_reserved)
-> 		count_rsvd(inode, lblk, ...);
-> 	goto out; -> will return but didn't calculate 'reserved'
->  ...
-> Step3:
-> ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
-> 
-> To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
+> Above issue fixed by
+> commit 1b8f787ef547 ("ext4: fix warning in 'ext4_da_release_space'")
+> in this scene. To make things better add check pending tree when evict
+> inode.
+> According to Eric Whitney's suggestion, bigalloc + inline is still in
+> development so we just add test for this situation, there isn't need to
+> add code to free pending tree entry.
 > 
 > Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-> Fixes: 8fcc3a580651 ("ext4: rework reserved cluster accounting when invalidating pages")
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  fs/ext4/extents_status.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  fs/ext4/super.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index cd0a861853e3..7ada374ff27d 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->  		if (count_reserved)
->  			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
->  				   &orig_es, &rc);
-> -		goto out;
-> +		goto out_get_reserved;
->  	}
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 4b2d257d3845..15b6634975e7 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1391,6 +1391,11 @@ static void ext4_destroy_inode(struct inode *inode)
+>  			   "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+>  			   inode->i_ino, EXT4_I(inode),
+>  			   EXT4_I(inode)->i_reserved_data_blocks);
+> +
+> +	if (!RB_EMPTY_ROOT(&EXT4_I(inode)->i_pending_tree.root))
+> +		ext4_error(inode->i_sb,
+> +			   "Inode %lu (%p): i_pending_tree not empty!",
+> +			   inode->i_ino, EXT4_I(inode));
+>  }
 >  
->  	if (len1 > 0) {
-> @@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->  		}
->  	}
->  
-> +out_get_reserved:
->  	if (count_reserved)
->  		*reserved = get_rsvd(inode, end, es, &rc);
->  out:
+>  static void init_once(void *foo)
 > -- 
 
-OK, this looks good.
-
-As before, feel free to add:
+Looks good.  Feel free to add:
 
 Reviewed-by: Eric Whitney <enwlinux@gmail.com>
 
