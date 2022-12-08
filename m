@@ -2,101 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B1F6471EE
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 15:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29B26472BF
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 16:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiLHOjW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Dec 2022 09:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        id S230352AbiLHPVN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Dec 2022 10:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbiLHOi7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 09:38:59 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6199F18
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 06:38:54 -0800 (PST)
-Received: from [192.168.10.9] (unknown [39.45.130.220])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C0AAC6600358;
-        Thu,  8 Dec 2022 14:38:50 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1670510332;
-        bh=fVIPKPFDngLOHac5pI91xJzjXDvZH+tRu3bzX92i4Wg=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=RbyVPBipXibYq+GTsHGkpBb/xCG0ZMDylqr7AKlYYICOZwrakPvQHk6mWUaF/PCTT
-         CXaEtbqB1ewYOkcoGeJJHX+v5FW/QoqmeArPu7Rhi7/atSjtTi+vhSzNxq6gEWpX48
-         UR/jTk2c4FYcVjjsWqiqXtdxGhkI4Kj0CUvbaiOBVFRw0O1A1qhTUGoqzl9Y/gaITk
-         ORTOT7tfbMDmDsR18XWA7w4/5Oj9hU2c2ygq5NBjfrW+YNGU1tsIwXvO0bo3JgOodG
-         U8DP/ceYeWgInDRg62lA7jECD5g741ZtOtD6SFsJBcawe0bnTLWYIbIvU/UA7a1fUz
-         b8Ze56T1pSDig==
-Message-ID: <2859a108-3189-6407-2d11-6b9f0948f718@collabora.com>
-Date:   Thu, 8 Dec 2022 19:38:46 +0500
+        with ESMTP id S230223AbiLHPUy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 10:20:54 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF74671243;
+        Thu,  8 Dec 2022 07:20:11 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1112)
+        id 7657B20B6C40; Thu,  8 Dec 2022 07:20:11 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7657B20B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1670512811;
+        bh=Q/kTXQ0Cy2jF/9ctAGUSG3KpRvJg6WX6zQtjcqoVlt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CjGkKGTcFFRj7T6RLwa3KZ6PyeqdS+urbWoxIk+/4ZPnj1//qiRG+Z6yVEJSsxH8v
+         PaWUn28Fv4rqqIyAQvkuzNXyoa0hZkTsDpmWJyykC4Dkp+yH7Y5CIA7+ulMCLrJdUn
+         y3YHn8w0BD/Dz6hfq4yIRMprk1SV05OtwFWTXKjM=
+Date:   Thu, 8 Dec 2022 07:20:11 -0800
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        Thilo Fromm <t-lo@linux.microsoft.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
+Message-ID: <20221208152011.GA12315@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20221123193950.16758-1-jack@suse.cz>
+ <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
+ <Y5F8ayz4gEtKn0LF@mit.edu>
+ <20221208091523.t6ka6tqtclcxnsrp@quack3>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        kernel@collabora.com
-Subject: Re: [PATCH v9 0/8] Clean up the case-insensitive lookup path
-To:     Gabriel Krisman Bertazi <gabriel@krisman.be>, tytso@mit.edu,
-        Eric Biggers <ebiggers@kernel.org>
-References: <20220913234150.513075-1-krisman@collabora.com>
- <Yy0t8WYhM+Dv3gX1@sol.localdomain> <87fsgi2lax.fsf@collabora.com>
- <87tu47thie.fsf@suse.de>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <87tu47thie.fsf@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221208091523.t6ka6tqtclcxnsrp@quack3>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/14/22 4:45 AM, Gabriel Krisman Bertazi wrote:
-> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+On Thu, Dec 08, 2022 at 10:15:23AM +0100, Jan Kara wrote:
+> Hi Ted!
 > 
->> Eric Biggers <ebiggers@kernel.org> writes:
->>
->>> On Tue, Sep 13, 2022 at 07:41:42PM -0400, Gabriel Krisman Bertazi wrote:
->>>> Hi,
->>>>
->>>> I'm resubmitting this as v9 since I think it has fallen through the
->>>> cracks :).  It is a collection of trivial fixes for casefold support on
->>>> ext4/f2fs. More details below.
->>>>
->>>> It has been sitting on the list for a while and most of it is r-b
->>>> already. I'm keeping the tags for this submission, since there is no
->>>> modifications from previous submissions, apart from a minor conflict
->>>> resolution when merging to linus/master.
->>>
->>> Who are you expecting to apply this?
->>
->> Hi Eric,
->>
->> There are three groups of changes here: libfs, ext4 and f2fs.  Since the
->> changes in libfs are self-contained and only affect these two
->> filesystems, I think it should be fine for them to go through a fs tree.
->>
->> The bulk of changes are ext4, and Ted mentioned on an earlier version
->> that he could pick the first patches of this series, so I'm thinking it
->> should all go through the ext4 tree.  If Jaegeuk acks, the f2fs changes
->> are safe to go with the rest, or I can send them afterwards as a
->> separate series once the libfs code is merged.
+> On Thu 08-12-22 00:55:55, Theodore Ts'o wrote:
+> > One thing which is completely unclear to me is how this relates to the
+> > claimed regression.  I understand that Jeremi and Thilo have asserted
+> > that the hang goes away if a backport commit 51ae846cff5 ("ext4: fix
+> > warning in ext4_iomap_begin as race between bmap and write") is not in
+> > their 5.15 product tree.
 > 
-> Ted,
+> IMHO the bisection was flawed and somehow the test of a revert (which guys
+> claimed to have done) must have been lucky and didn't trip the race. This
+> is not that hard to imagine because firstly, the commit 51ae846cff5 got
+> included in the same stable kernel release as ext4 xattr changes
+> (65f8b80053 ("ext4: fix race when reusing xattr blocks") and related
+> mbcache changes) which likely made the race more likely. Secondly, the
+> mbcache state corruption is not that easy to hit because you need an
+> interaction of slab reclaim on mbcache entry with ext4 xattr code adding
+> reference to xattr block and just hitting the reference limit.
 > 
-> Does the above plan work for you? Do you intend to pick this up for the
-> next merge window?
-It seems like this series hasn't been picked up. Any ideas on what can be done?
 
--- 
-BR,
-Muhammad Usama Anjum
+Yeah, sorry about that, there was never a bisect that led to 51ae846cff5, it
+was just a guess and at that point we were unable to reproduce it ourselves so
+we just had information from a user stating that when they revert that commit
+in their own test build the issue doesn't occur.
+
+Once we were able to personally reproduce the actual bisect led to 65f8b80053,
+which as Honza stated made sure that the corruption/inconsistency leads to a
+busy loop which is harder to miss.
+
+> > However, the stack traces point to a problem in the extended attribute
+> > code, which has nothing to do with ext4_bmap(), and commit 51ae846cff5
+> > only changes the ext4's bmap function --- which these days gets used
+> > for the FIBMAP ioctl and very little else.
+> > 
+> > Furthermore, the fix which Jan provided, and which apparently fixes
+> > the user's problem, (a) doesn't touch the ext4_bmap function, and (b)
+> > has a fixes tag for the patch:
+> > 
+> >     Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
+> > 
+> > ... which is a commit which dates back to 2016, and the v4.6 kernel.  ?!?
+> 
+> Yes. AFAICT the bitfield race in mbcache was introduced in this commit but
+> somehow ext4 was using mbcache in a way that wasn't tripping the race.
+> After 65f8b80053 ("ext4: fix race when reusing xattr blocks"), the race
+> became much more likely and users started to notice...
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
