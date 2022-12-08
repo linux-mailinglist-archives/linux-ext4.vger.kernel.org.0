@@ -2,98 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A716474E8
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 18:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAE364750D
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 18:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbiLHRQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Dec 2022 12:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S229712AbiLHRlx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Dec 2022 12:41:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiLHRQG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 12:16:06 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06547DA7C;
-        Thu,  8 Dec 2022 09:16:04 -0800 (PST)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1p3KV8-0003yK-TT; Thu, 08 Dec 2022 18:16:02 +0100
-Message-ID: <e2a77778-7a2b-2811-95ff-be67a44afceb@leemhuis.info>
-Date:   Thu, 8 Dec 2022 18:16:02 +0100
+        with ESMTP id S229745AbiLHRlw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Dec 2022 12:41:52 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0577E80F
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 09:41:49 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id k88-20020a17090a4ce100b00219d0b857bcso2297226pjh.1
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Dec 2022 09:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Epi0wvoArwdi93QgOlOJRom7wYA62WnSexI8WZ5n4Kc=;
+        b=N+6Aj206qvb7iNXVdFQBPg6dnnVNI4o7tNTkSe6INV7p1MkBDypskH6ph7HPR2qqjY
+         KCQ6bPOZjbY0MTDlYnXLXzABESm0l2DHnVDDYQQMJeKl0zRPAsQBwj6KR1VRaOI1O5gf
+         4Vi3JvR+pav++uv81Rq2FxKSxA2RLAoLZgyjxSk7CphL0/sX0B4pveNMGid5X1ml5gWU
+         Dam3H+j4msCo8w7a88s1CSEY83uKMIj3TtSZSbVpcw59ErrVsAAxYcTimgn1e8Y9CI0R
+         rM34D9Y2fHYVEuSJ07l2l/3pknRxqPqVwafNeiKJ2scypppjp58BNAxuUzPvn14xjGMF
+         6T2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Epi0wvoArwdi93QgOlOJRom7wYA62WnSexI8WZ5n4Kc=;
+        b=4MYVvqx3jopH7oGmlddw9tWDzF7toqYFCG+kc0ZSzHkBxa5cKzAde9zFDSkqjdCqrh
+         8FeBIv+OQ9R1at8TZKrj/pOQB9q+hmeBME9GD++tcwQfhuvjIOEKOjnawnt4MgIuXNYo
+         9LMJ87WM0xqnsoBO4HTdj6HE44D0PtijYTpAQ/joWDfaWReDh7IQx4GspqThbck12Sf4
+         zSbigz9sswSR9NvbW85c0d3BBwAv9ahl4BTK6kOL7/AErWm6cmJoxKK403WFeEj9WipL
+         EaWKLI52QUbRxLPP3khjuTyva2jtONpTIKUsvw2karl6JnipHlXoyMMuwaPu8sgU5ixe
+         cj6A==
+X-Gm-Message-State: ANoB5pmWMrVJUnYO9b/6VQ9uueMFl2bPcA0IknwNoDt4YbFJwY3RUaIW
+        G4IbaS3D65dPiac9iqV2fiT2/IwuvnHasFDd4W59
+X-Google-Smtp-Source: AA0mqf77gpQVrYnOfWw3zdor+Q9b7Q2VDfHXiSgWE1uUCovE3iY2apN7bXxoa9t+H9Tct88fbwCVN8p9mCZ+UQGODpA=
+X-Received: by 2002:a17:902:9892:b0:186:c3b2:56d1 with SMTP id
+ s18-20020a170902989200b00186c3b256d1mr79125339plp.15.1670521309385; Thu, 08
+ Dec 2022 09:41:49 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
-Content-Language: en-US, de-DE
-To:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
-        Thilo Fromm <t-lo@linux.microsoft.com>,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-References: <20221123193950.16758-1-jack@suse.cz>
- <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
- <Y5F8ayz4gEtKn0LF@mit.edu> <20221208091523.t6ka6tqtclcxnsrp@quack3>
- <Y5IFR4K9hO8ax1Y0@mit.edu>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <Y5IFR4K9hO8ax1Y0@mit.edu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1670519765;a7663b8f;
-X-HE-SMSGID: 1p3KV8-0003yK-TT
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 8 Dec 2022 12:41:38 -0500
+Message-ID: <CAHC9VhTtdYsX5+j-j7sis_dzCOTtrv_=EvU35KRBg+x0gA5p+A@mail.gmail.com>
+Subject: Re: [PATCH] fsverity: mark builtin signatures as deprecated
+To:     bluca@debian.org
+Cc:     ebiggers@kernel.org, jsorensen@meta.com,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, linux-integrity@vger.kernel.org,
+        victorhsieh@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 08.12.22 16:39, Theodore Ts'o wrote:
-> On Thu, Dec 08, 2022 at 10:15:23AM +0100, Jan Kara wrote:
->>> Furthermore, the fix which Jan provided, and which apparently fixes
->>> the user's problem, (a) doesn't touch the ext4_bmap function, and (b)
->>> has a fixes tag for the patch:
->>>
->>>     Fixes: 6048c64b2609 ("mbcache: add reusable flag to cache entries")
->>>
->>> ... which is a commit which dates back to 2016, and the v4.6 kernel.  ?!?
->>
->> Yes. AFAICT the bitfield race in mbcache was introduced in this commit but
->> somehow ext4 was using mbcache in a way that wasn't tripping the race.
->> After 65f8b80053 ("ext4: fix race when reusing xattr blocks"), the race
->> became much more likely and users started to notice...
-> 
-> Ah, OK.  And 65f8b80053 landed in 6.0, so while the bug may have been
-> around for much longer, this change made it much more likely that
-> folks would notice.  That's the missing piece and why Microsoft
-> started noticing this in their "Flatcar" container kernel.
+On Thu, 08 Dec 2022 10:43:01 +0000, Luca Boccassi wrote:
+> On Wed, 2022-12-07 at 19:35 -0800, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> >
+> > fsverity builtin signatures, at least as currently implemented, are a
+> > mistake and should not be used.  They mix the authentication policy
+> > between the kernel and userspace, which is not a clean design and causes
+> > confusion.  For builtin signatures to actually provide any security
+> > benefit, userspace still has to enforce that specific files have
+> > fsverity enabled.  Since userspace needs to do this, a better design is
+> > to have that same userspace code do the signature check too.
+> >
+> > That allows better signature formats and algorithms to be used, avoiding
+> > in-kernel parsing of the notoriously bad PKCS#7 format.  It is also
+> > needed anyway when different keys need to be trusted for different
+> > files, or when it's desired to use fsverity for integrity-only or
+> > auditing on some files and for authenticity on other files.  Basically,
+> > the builtin signatures don't work for any nontrivial use case.
+> >
+> > (IMA appraisal is another alternative.  It goes in the opposite
+> > direction -- the full policy is moved into the kernel.)
+> >
+> > For these reasons, the master branch of AOSP no longer uses builtin
+> > signatures.  It still uses fsverity for some files, but signatures are
+> > verified in userspace when needed.
+> >
+> > None of the public uses of builtin signatures outside Android seem to
+> > have gotten going, either.  Support for builtin signatures was added to
+> > RPM.  However, https://fedoraproject.org/wiki/Changes/FsVerityRPM was
+> > subsequently rejected from Fedora and seems to have been abandoned.
+> > There is also https://github.com/ostreedev/ostree/pull/2269, which was
+> > never merged.  Neither proposal mentioned a plan to set
+> > fs.verity.require_signatures=1 and enforce that files have fs-verity
+> > enabled -- so, they would have had no security benefit on their own.
+> >
+> > I'd be glad to hear about any other users of builtin signatures that may
+> > exist, and help with the details of what should be used instead.
+> >
+> > Anyway, the feature can't simply be removed, due to the need to maintain
+> > backwards compatibility.  But let's at least make it clear that it's
+> > deprecated.  Update the documentation accordingly, and rename the
+> > kconfig option to CONFIG_FS_VERITY_DEPRECATED_BUILTINSIG.  Also remove
+> > the kconfig option from the s390 defconfigs, as it's unneeded there.
+>
+> Hi,
+>
+> Thanks for starting this discussion, it's an interesting topic.
+>
+> At MSFT we use fsverity in production, with signatures enforced by the
+> kernel (and policy enforced by the IPE LSM). It's just too easy to fool
+> userspace with well-timed swaps and who knows what else. This is not
+> any different from dm-verity from our POV, it complements it. I very
+> much want the kernel to be in charge of verification and validation, at
+> the time of use.
+>
+> In essence, I very strongly object to marking this as deprecated. It is
+> entirely ok if at Google you want to move everything out of the kernel,
+> you know your use case best so if that works better for you that's
+> absolutely fine (and thus your other patch looks good to me), but I
+> don't think it should be deprecated for everybody else too.
 
-Yeah, likely when 65f8b80053 was backported to 5.15.y in 1be97463696c
+To add some more background on the IPE LSM, it has gone through
+several rounds of review on the LSM list and the developers working on
+it are in the process of readying it for the next review cycle.
 
-> So I'll update the commit description so that this is more clear,
-
-Thx for taking care of this, I'm glad this is on track now.
-
-Maybe I should talk to Greg again to revert backported changes like
-1be97463696c until fixes for them are ready.
-
-> and
-> then I can figure out how to tell the regression-bot that the
-> regression should be tracked using commit 65f8b80053 instead of
-> 51ae846cff5 ("ext4: fix warning in ext4_iomap_begin as race between
-> bmap and write").
-
-FWIW, there is no strong need to, nobody looks at those details once the
-regression is fixed. But yeah, that might change over time, so let me
-take care of that:
-
-#regzbot introduced: 65f8b80053
-
-[normally things like that have to be done as a direct or indirect reply
-to the report, but regzbot knows (famos last words...) how to associate
-this command with the report, as the patch that started this thread
-linked to the report using a Link: tag].
-
-Ciao, Thorsten
+-- 
+paul-moore.com
