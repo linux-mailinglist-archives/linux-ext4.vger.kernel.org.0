@@ -2,162 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B3F6464AA
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 00:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 616CD64668D
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 02:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbiLGXBp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 18:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
+        id S229554AbiLHBhQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 20:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbiLGXBo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 18:01:44 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F1F31F84;
-        Wed,  7 Dec 2022 15:01:42 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c15so17408943qtw.8;
-        Wed, 07 Dec 2022 15:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tx6tzhbjO7Gy0+60bbcG9zq6h9cRYxpfj4U6TpS6Q34=;
-        b=hM8FP0xxvaDElIP3ZMGmp5fNzTs7FYZrTDw9+NL51rBi7ogkkH/hMjhlXtsEg/6oWs
-         QXBekjWyW7dxIOGZ6gHlrjoM1iBM8E4SmQLbMR4fIo/eezRy7mJ6oZnF9rlJQnFYY93f
-         ZU49xUQ759Bvrzn3i71zaSzVCuaTh3YJDim7MLSitIJkGBBUCR3GYNtB1p5+e5IT8kBT
-         menKuAW1EfHpzDKWKoek3IEA877CfVtSxh9mcVC0J3bj9xABme9hU3a0Mih2c3WYDTui
-         RbjnmdBgdM9pdKBcUjrjy6kHJSN1wFNTt+3KvGA02ahHw240oTjuRLwOq+FQPoQoXFSM
-         FdOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tx6tzhbjO7Gy0+60bbcG9zq6h9cRYxpfj4U6TpS6Q34=;
-        b=Qz9cpaqH7nVnwVc3pDWmrutIJsTuk89Q9MXYwUjKHlKHrn36N+Eejgvb8WPPFsd6oT
-         mVuXwxscajubGtToJUIGsZGrxb/F9WKIO2zGGPr/FHUN4CrBNl4866iUw33RgwOqXC+U
-         SIV4pjgGe1zmX8UxJtSsjKP9SYlkAWaljIQxs0sHuU3RjPEuqTbZrFm0768aHUjqa15C
-         m7zVoqx11Ru8BW2d0k5gq3B/IxPB9EMYc06ai6AGzVesnPrsc8vusJ3ofX2porasSxRf
-         G56tDkNqsGRbGod6EeABLK0sb+SR8Tus5uP7QJEfDj68dTABryouCPX1rPzHZv8sViGT
-         1fwg==
-X-Gm-Message-State: ANoB5pmm3hXw9FcSQsUfZTOzODloTbHbWVmnh8rJ3/0zS6KGCbklQDTk
-        0PugZ9F9YSRxMOHVXm+V9pI=
-X-Google-Smtp-Source: AA0mqf6JidltZI5bgKOSh7kpbYko5pNniYwCovqICIAOmFNXPJZ/PEs1x3xANfCTw/m2pJ1NSTkPUw==
-X-Received: by 2002:ac8:4555:0:b0:3a5:60db:4d45 with SMTP id z21-20020ac84555000000b003a560db4d45mr1630567qtn.44.1670454101404;
-        Wed, 07 Dec 2022 15:01:41 -0800 (PST)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h96-61-90-13.cntcnh.broadband.dynamic.tds.net. [96.61.90.13])
-        by smtp.gmail.com with ESMTPSA id a23-20020ac81097000000b003a5430ee366sm14013473qtj.60.2022.12.07.15.01.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 15:01:40 -0800 (PST)
-Date:   Wed, 7 Dec 2022 18:01:38 -0500
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>,
-        syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Subject: Re: [PATCH v3 1/3] ext4: fix incorrect calculate 'reserved' in
- '__es_remove_extent' when enable bigalloc feature
-Message-ID: <Y5EbUpyHTg3q3kNO@debian-BULLSEYE-live-builder-AMD64>
-References: <20221203025941.2661302-1-yebin@huaweicloud.com>
- <20221203025941.2661302-2-yebin@huaweicloud.com>
+        with ESMTP id S229544AbiLHBhP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 20:37:15 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014FB900DE
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Dec 2022 17:37:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9F59DB821A5
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 01:37:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 306B7C433D6
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 01:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670463431;
+        bh=nFDiteMICbZtbizBzUkdHP0ocrGg0lx4uX06vyDmZA0=;
+        h=Date:From:To:Subject:From;
+        b=g9m8RStATSYZHhvcK4umH4X6BiXetPWgz3LtbuHv3/S7oDNsuPAams5aHFPxfZmqS
+         iLuHHB5VYPpxjDT+oMdKpo9UNz2MfU++/SmaoZXqpyY8nx2IHDslR939WsaXu8FJYQ
+         W6f30RMBQ1LwR8mH3YQPKTC60gzU831Cxklfqp4LlJB8Z7qULCQXsRWG0uxyHzdpff
+         RCo/i89Dk6aQeu5ZAg5/iDlKUQG2DNnqgN27Wv8BbBA9fRbr0HbejfJzDrC2YbPLpL
+         k97WtGXZCN021jYo0oN22salafTEjY3yqes4+KOGOWW29vGjx5NG0/x3yUJ7jb3ndE
+         IvMwBJkiZDtcA==
+Date:   Wed, 7 Dec 2022 17:37:10 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: uninit variable warnings on gcc 11.3?
+Message-ID: <Y5E/xhJyFIXN31oZ@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221203025941.2661302-2-yebin@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Ye Bin <yebin@huaweicloud.com>:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> Syzbot report issue as follows:
-> EXT4-fs error (device loop0): ext4_validate_block_bitmap:398: comm rep: bg 0: block 5: invalid block bitmap
-> EXT4-fs (loop0): Delayed block allocation failed for inode 18 at logical offset 0 with max blocks 32 with error 28
-> EXT4-fs (loop0): This should not happen!! Data will be lost
-> 
-> EXT4-fs (loop0): Total free blocks count 0
-> EXT4-fs (loop0): Free/Dirty block details
-> EXT4-fs (loop0): free_blocks=0
-> EXT4-fs (loop0): dirty_blocks=32
-> EXT4-fs (loop0): Block reservation details
-> EXT4-fs (loop0): i_reserved_data_blocks=2
-> EXT4-fs (loop0): Inode 18 (00000000845cd634): i_reserved_data_blocks (1) not cleared!
-> 
-> Above issue happens as follows:
-> Assume:
-> sbi->s_cluster_ratio = 16
-> Step1: Insert delay block [0, 31] -> ei->i_reserved_data_blocks=2
-> Step2:
-> ext4_writepages
->   mpage_map_and_submit_extent -> return failed
->   mpage_release_unused_pages -> to release [0, 30]
->     ext4_es_remove_extent -> remove lblk=0 end=30
->       __es_remove_extent -> len1=0 len2=31-30=1
->  __es_remove_extent:
->  ...
->  if (len2 > 0) {
->   ...
-> 	  if (len1 > 0) {
-> 		  ...
-> 	  } else {
-> 		es->es_lblk = end + 1;
-> 		es->es_len = len2;
-> 		...
-> 	  }
->   	if (count_reserved)
-> 		count_rsvd(inode, lblk, orig_es.es_len - len1 - len2, &orig_es, &rc);
-> 	goto out; -> will return but didn't calculate 'reserved'
->  ...
-> Step3: ext4_destroy_inode -> trigger "i_reserved_data_blocks (1) not cleared!"
-> 
-> To solve above issue if 'len2>0' call 'get_rsvd()' before goto out.
-> 
-> Reported-by: syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-> Fixes: 8fcc3a580651 ("ext4: rework reserved cluster accounting when invalidating pages")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  fs/ext4/extents_status.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index cd0a861853e3..7ada374ff27d 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -1371,7 +1371,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->  		if (count_reserved)
->  			count_rsvd(inode, lblk, orig_es.es_len - len1 - len2,
->  				   &orig_es, &rc);
-> -		goto out;
-> +		goto out_get_reserved;
->  	}
->  
->  	if (len1 > 0) {
-> @@ -1413,6 +1413,7 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->  		}
->  	}
->  
-> +out_get_reserved:
->  	if (count_reserved)
->  		*reserved = get_rsvd(inode, end, es, &rc);
->  out:
+Hi everyone,
 
-The length of some lines in the commit description - probably those which are
-log output - is resulting in a checkpatch warning.  It generally prefers lines
-to be a maximum of 75 characters (and Ted usually likes them limited to 72
-characters.  See my comment to patch #3. I'm not sure what Ted would want here,
-though I'd probably break them at 72 characters or less.
+I went on a spree of trying to build things with W=12e this afternoon,
+and I noticed that gcc spat out the following warnings.  I can't tell if
+these warnings are bogus noise or if they actually could cause problems,
+particularly in the extent status tree bits.  That said, IIRC there's
+been some mention of weirdness wrt that part of ext4, so I thought I
+should mention this in case it's significant to anyone.
 
-Otherwise, the patch looks good.  Feel free to add:
+--D
 
-Reviewed-by: Eric Whitney <enwlinux@gmail.com>
-
-> -- 
-> 2.31.1
-> 
+In file included from /storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:33:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c: In function ‘ext4_ext_map_blocks’:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/ext4_extents.h:230:15: warning: ‘zero_ex2.ee_start_lo’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  230 |         block = le32_to_cpu(ex->ee_start_lo);
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:38: note: ‘zero_ex2.ee_start_lo’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                                      ^~~~~~~~
+In file included from /storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:33:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/ext4_extents.h:231:19: warning: ‘zero_ex2.ee_start_hi’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  231 |         block |= ((ext4_fsblk_t) le16_to_cpu(ex->ee_start_hi) << 31) << 1;
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:38: note: ‘zero_ex2.ee_start_hi’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                                      ^~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3140:16: warning: ‘zero_ex2.ee_block’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3140 |         return ext4_es_insert_extent(inode, ee_block, ee_len, ee_pblock,
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 3141 |                                      EXTENT_STATUS_WRITTEN);
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:38: note: ‘zero_ex2.ee_block’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                                      ^~~~~~~~
+In file included from /storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:33:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/ext4_extents.h:230:15: warning: ‘zero_ex1.ee_start_lo’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  230 |         block = le32_to_cpu(ex->ee_start_lo);
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:28: note: ‘zero_ex1.ee_start_lo’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                            ^~~~~~~~
+In file included from /storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:33:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/ext4_extents.h:231:19: warning: ‘zero_ex1.ee_start_hi’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  231 |         block |= ((ext4_fsblk_t) le16_to_cpu(ex->ee_start_hi) << 31) << 1;
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:28: note: ‘zero_ex1.ee_start_hi’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                            ^~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3140:16: warning: ‘zero_ex1.ee_block’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3140 |         return ext4_es_insert_extent(inode, ee_block, ee_len, ee_pblock,
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 3141 |                                      EXTENT_STATUS_WRITTEN);
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/extents.c:3426:28: note: ‘zero_ex1.ee_block’ was declared here
+ 3426 |         struct ext4_extent zero_ex1, zero_ex2;
+      |                            ^~~~~~~~
+  CC [M]  fs/ext4/inode.o
+  CC [M]  fs/ext4/ioctl.o
+  CC [M]  fs/ext4/mballoc.o
+  CC [M]  fs/ext4/migrate.o
+  CC [M]  fs/ext4/mmp.o
+  CC [M]  fs/ext4/move_extent.o
+  CC [M]  fs/ext4/namei.o
+  CC [M]  fs/ext4/readpage.o
+  CC [M]  fs/ext4/page-io.o
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/inode.c: In function ‘ext4_page_mkwrite’:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/inode.c:6205:23: warning: ‘get_block’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 6205 |                 err = block_page_mkwrite(vma, vmf, get_block);
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  CC [M]  fs/ext4/resize.o
+  CC [M]  fs/ext4/super.o
+  CC [M]  fs/ext4/symlink.o
+  CC [M]  fs/ext4/sysfs.o
+  CC [M]  fs/ext4/xattr.o
+  CC [M]  fs/ext4/xattr_hurd.o
+  CC [M]  fs/ext4/xattr_trusted.o
+  CC [M]  fs/ext4/xattr_user.o
+  CC [M]  fs/ext4/fast_commit.o
+  CC [M]  fs/ext4/orphan.o
+  CC [M]  fs/ext4/acl.o
+  CC [M]  fs/ext4/xattr_security.o
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/super.c: In function ‘ext4_fill_super’:
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/super.c:5486:15: warning: ‘first_not_zeroed’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 5486 |         err = ext4_register_li_request(sb, first_not_zeroed);
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/super.c:5042:22: note: ‘first_not_zeroed’ was declared here
+ 5042 |         ext4_group_t first_not_zeroed;
+      |                      ^~~~~~~~~~~~~~~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/super.c:3253:46: warning: ‘logical_sb_block’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3253 |                 if (block_bitmap >= sb_block + 1 &&
+      |                                     ~~~~~~~~~^~~
+/storage/home/djwong/cdev/work/linux-xfs/fs/ext4/super.c:5036:22: note: ‘logical_sb_block’ was declared here
+ 5036 |         ext4_fsblk_t logical_sb_block;
+      |                      ^~~~~~~~~~~~~~~~
