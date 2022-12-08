@@ -2,50 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B44A6466C5
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 03:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B847A6466C2
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 03:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbiLHCLr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 21:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
+        id S229714AbiLHCLq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 21:11:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiLHCLp (ORCPT
+        with ESMTP id S229689AbiLHCLp (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 21:11:45 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B27792A2C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABD792A3F;
         Wed,  7 Dec 2022 18:11:43 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSHhT5lBXz4f3jYv;
-        Thu,  8 Dec 2022 10:11:37 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSHhV0pM2z4f3m6k;
+        Thu,  8 Dec 2022 10:11:38 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9jbR5Fjj5BiBw--.22193S4;
-        Thu, 08 Dec 2022 10:11:40 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgB3m9jbR5Fjj5BiBw--.22193S5;
+        Thu, 08 Dec 2022 10:11:41 +0800 (CST)
 From:   Ye Bin <yebin@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v3 0/4] Fix two issue about ext4 extended attribute
-Date:   Thu,  8 Dec 2022 10:32:29 +0800
-Message-Id: <20221208023233.1231330-1-yebin@huaweicloud.com>
+        Ye Bin <yebin10@huawei.com>,
+        syzbot+4d99a966fd74bdeeec36@syzkaller.appspotmail.com
+Subject: [PATCH v3 1/4] ext4: fix WARNING in ext4_expand_extra_isize_ea
+Date:   Thu,  8 Dec 2022 10:32:30 +0800
+Message-Id: <20221208023233.1231330-2-yebin@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20221208023233.1231330-1-yebin@huaweicloud.com>
+References: <20221208023233.1231330-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9jbR5Fjj5BiBw--.22193S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFy3ZFy7XFWkAF4fGw4UArb_yoWfuwc_GF
-        y8ta95Jr4jqa48Wa9FyF10yFyrKF48Gr1rZF1kCFsrZry7ZFWDZFWkJrWxur1UuF4jy3Z8
-        ZF17trWfAF92gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbokYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
-        0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
-        vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-TRANSID: gCh0CgB3m9jbR5Fjj5BiBw--.22193S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrW3JFy5KrWkJr4rZr4kXrb_yoWrtFW5pw
+        43A347Cr48XF9rCF4xAr1jqw1DWwn3CF4UAryxWrn7ZFy3Xw1xKa95Kr4SqFyxtrW8Jry2
+        qFn8J34rKw15GaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+        A2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUzl1vUUUUU
 X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -58,30 +62,94 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ye Bin <yebin10@huawei.com>
 
-Diff v3 vs v2:
-1. Remove patch [2-3].
-2. Modify change log according to Bagas Sanjaya's suggestions.
+Syzbot found the following issue:
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 3631 at mm/page_alloc.c:5534 __alloc_pages+0x30a/0x560 mm/page_alloc.c:5534
+Modules linked in:
+CPU: 1 PID: 3631 Comm: syz-executor261 Not tainted 6.1.0-rc6-syzkaller-00308-g644e9524388a #0
+Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:__alloc_pages+0x30a/0x560 mm/page_alloc.c:5534
+RSP: 0018:ffffc90003ccf080 EFLAGS: 00010246
+RAX: ffffc90003ccf0e0 RBX: 000000000000000c RCX: 0000000000000000
+RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90003ccf108
+RBP: ffffc90003ccf198 R08: dffffc0000000000 R09: ffffc90003ccf0e0
+R10: fffff52000799e21 R11: 1ffff92000799e1c R12: 0000000000040c40
+R13: 1ffff92000799e18 R14: dffffc0000000000 R15: 1ffff92000799e14
+FS:  0000555555c10300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc36f70000 CR3: 00000000744ad000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __alloc_pages_node include/linux/gfp.h:223 [inline]
+ alloc_pages_node include/linux/gfp.h:246 [inline]
+ __kmalloc_large_node+0x8a/0x1a0 mm/slab_common.c:1096
+ __do_kmalloc_node mm/slab_common.c:943 [inline]
+ __kmalloc+0xfe/0x1a0 mm/slab_common.c:968
+ kmalloc include/linux/slab.h:558 [inline]
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2558 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2673 [inline]
+ ext4_expand_extra_isize_ea+0xe3f/0x1cd0 fs/ext4/xattr.c:2765
+ __ext4_expand_extra_isize+0x2b8/0x3f0 fs/ext4/inode.c:5857
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5900 [inline]
+ __ext4_mark_inode_dirty+0x51a/0x670 fs/ext4/inode.c:5978
+ ext4_inline_data_truncate+0x548/0xd00 fs/ext4/inline.c:2021
+ ext4_truncate+0x341/0xeb0 fs/ext4/inode.c:4221
+ ext4_process_orphan+0x1aa/0x2d0 fs/ext4/orphan.c:339
+ ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5515 [inline]
+ ext4_fill_super+0x80ed/0x8610 fs/ext4/super.c:5643
+ get_tree_bdev+0x400/0x620 fs/super.c:1324
+ vfs_get_tree+0x88/0x270 fs/super.c:1531
+ do_new_mount+0x289/0xad0 fs/namespace.c:3040
+ do_mount fs/namespace.c:3383 [inline]
+ __do_sys_mount fs/namespace.c:3591 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3568
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ </TASK>
 
-Diff v2 vs v1:
-1.Modify commit message about "ext4: fix WARNING in ext4_expand_extra_isize_ea"
-2.Modify the indentation of arguments about "ext4: rename xattr_find_entry()
-and __xattr_check_inode()"
+Reason is allocate 16M memory by kmalloc, but MAX_ORDER is 11, kmalloc
+can allocate maximum size memory is 4M.
+XATTR_SIZE_MAX is currently 64K, but EXT4_XATTR_SIZE_MAX is 16M, so
+'ext4_xattr_check_entries()' regards this length as legal. Then trigger
+warning in 'ext4_xattr_move_to_block()'.
+To solve above issue, change EXT4_XATTR_SIZE_MAX from 16M to 64K.
+As VFS limit extended attribute maximum size to 64K. So we can assume
+that there will be no extended attribute with a length greater than 64K.
 
-This patchset fix two issues:
-1. Patch [1]-[4] fix WARNING in ext4_expand_extra_isize_ea.
-2. Patch [6] fix inode leak in 'ext4_xattr_inode_create()'.
-3. Patch [5] is cleanup.
-
-Ye Bin (4):
-  ext4: fix WARNING in ext4_expand_extra_isize_ea
-  ext4: allocate extended attribute value in vmalloc area
-  ext4: rename xattr_find_entry() and __xattr_check_inode()
-  ext4: fix inode leak in 'ext4_xattr_inode_create()'
-
- fs/ext4/xattr.c | 42 +++++++++++++++++++++++-------------------
+Reported-by: syzbot+4d99a966fd74bdeeec36@syzkaller.appspotmail.com
+Fixes: 54dd0e0a1b25 ("ext4: add extra checks to ext4_xattr_block_get()")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
  fs/ext4/xattr.h | 11 +++--------
- 2 files changed, 26 insertions(+), 27 deletions(-)
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
+diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
+index 824faf0b15a8..c71e582b1007 100644
+--- a/fs/ext4/xattr.h
++++ b/fs/ext4/xattr.h
+@@ -71,15 +71,10 @@ struct ext4_xattr_entry {
+ #define IFIRST(hdr) ((struct ext4_xattr_entry *)((hdr)+1))
+ 
+ /*
+- * XATTR_SIZE_MAX is currently 64k, but for the purposes of checking
+- * for file system consistency errors, we use a somewhat bigger value.
+- * This allows XATTR_SIZE_MAX to grow in the future, but by using this
+- * instead of INT_MAX for certain consistency checks, we don't need to
+- * worry about arithmetic overflows.  (Actually XATTR_SIZE_MAX is
+- * defined in include/uapi/linux/limits.h, so changing it is going
+- * not going to be trivial....)
++ * Use XATTR_SIZE_MAX to checking for file system consistency errors. Extended
++ * attribute length exceed XATTR_SIZE_MAX is illegal.
+  */
+-#define EXT4_XATTR_SIZE_MAX (1 << 24)
++#define EXT4_XATTR_SIZE_MAX XATTR_SIZE_MAX
+ 
+ /*
+  * The minimum size of EA value when you start storing it in an external inode
 -- 
 2.31.1
 
