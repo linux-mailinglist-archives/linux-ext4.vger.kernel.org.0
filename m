@@ -2,53 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9AC6466C4
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 03:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF8464678F
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Dec 2022 04:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiLHCLq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Dec 2022 21:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
+        id S229575AbiLHDNj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Dec 2022 22:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbiLHCLp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 21:11:45 -0500
+        with ESMTP id S229501AbiLHDNi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Dec 2022 22:13:38 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9391B92FD2;
-        Wed,  7 Dec 2022 18:11:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6436F0D2;
+        Wed,  7 Dec 2022 19:13:36 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSHhW02ykz4f3jLG;
-        Thu,  8 Dec 2022 10:11:39 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSK3t6SLqz4f3pFZ;
+        Thu,  8 Dec 2022 11:13:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9jbR5Fjj5BiBw--.22193S8;
-        Thu, 08 Dec 2022 10:11:42 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgAn0a9cVpFjvYz4Bg--.16330S4;
+        Thu, 08 Dec 2022 11:13:33 +0800 (CST)
 From:   Ye Bin <yebin@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
         Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v3 4/4] ext4: fix inode leak in 'ext4_xattr_inode_create()'
-Date:   Thu,  8 Dec 2022 10:32:33 +0800
-Message-Id: <20221208023233.1231330-5-yebin@huaweicloud.com>
+Subject: [PATCH v4 0/3] Fix two issues about bigalloc feature
+Date:   Thu,  8 Dec 2022 11:34:23 +0800
+Message-Id: <20221208033426.1832460-1-yebin@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221208023233.1231330-1-yebin@huaweicloud.com>
-References: <20221208023233.1231330-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9jbR5Fjj5BiBw--.22193S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4ftr4kJr4DAF13XFWkZwb_yoW8GFy8pw
-        43Jw18tr48uFyvk39YkFs7Z347KasrGr4UXFyjkw1rZF98Xa4Sqa45KF4rAF1UJr4ktw1Y
-        qF45CrWrZF15AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjxUFgAwUUUUU
+X-CM-TRANSID: cCh0CgAn0a9cVpFjvYz4Bg--.16330S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy7tr47KrWDCw1xGrW7Jwb_yoW3WwcEvr
+        18A348Xr97W3yI9anxKr4kAFyYkw4kur13uws2vFn8ZryjvrW8JwsFyryfZrZ8WFW0ya4F
+        yr1DJrZakwsF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUboxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267
+        AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
+        ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
+        AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
+        WIevJa73UjIFyTuYvjxUrR6zUUUUU
 X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -61,47 +58,28 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ye Bin <yebin10@huawei.com>
 
-There is issue as follows when do setxattr with inject fault:
-[localhost]#fsck.ext4  -fn  /dev/sda
-e2fsck 1.46.6-rc1 (12-Sep-2022)
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Unattached zero-length inode 15.  Clear? no
+Diff v4 Vs v3:
+1. Fix checkpatch warning.
+2. Fix alignment issues about patch [2-3]
 
-Unattached inode 15
-Connect to /lost+found? no
+Diff v3 Vs v2:
+1. Add fixes tag and rename label 'out' for first patch.
+2. Do not split string across lines for second patch.
+3. Just check pending tree if empty, drop clear code for third patch.
 
-Pass 5: Checking group summary information
+Diff V2 vs V1:
+Use ext4_error() when detect 'i_reserved_data_blocks' and pending tree abnormal.
 
-/dev/sda: ********** WARNING: Filesystem still has errors **********
+Ye Bin (3):
+  ext4: fix incorrect calculate 'reserved' in '__es_remove_extent' when
+    enable bigalloc feature
+  ext4: record error when detect abnormal 'i_reserved_data_blocks'
+  ext4: add check pending tree when evict inode
 
-/dev/sda: 15/655360 files (0.0% non-contiguous), 66755/2621440 blocks
+ fs/ext4/extents_status.c |  3 ++-
+ fs/ext4/super.c          | 13 +++++++++----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-This occurs in 'ext4_xattr_inode_create()'. If 'ext4_mark_inode_dirty()'
-fails, dropping i_nlink of the inode is needed. Or will lead to inode leak.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/xattr.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 99dacb0393fa..aad7de2e366a 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1442,6 +1442,9 @@ static struct inode *ext4_xattr_inode_create(handle_t *handle,
- 		if (!err)
- 			err = ext4_inode_attach_jinode(ea_inode);
- 		if (err) {
-+			if (ext4_xattr_inode_dec_ref(handle, ea_inode))
-+				ext4_warning_inode(ea_inode,
-+					"cleanup dec ref error %d", err);
- 			iput(ea_inode);
- 			return ERR_PTR(err);
- 		}
 -- 
 2.31.1
 
