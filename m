@@ -2,99 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDE864865B
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 17:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530FE648867
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 19:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbiLIQNU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Dec 2022 11:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        id S229517AbiLISZV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Dec 2022 13:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiLIQNK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 11:13:10 -0500
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5C926A90;
-        Fri,  9 Dec 2022 08:13:09 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-12c8312131fso291643fac.4;
-        Fri, 09 Dec 2022 08:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gFY1W9e4ekbWqyIP76hyzmpwflzYOcseT2pOw5ioGts=;
-        b=ppQOsQzB5cHrYFUOIA9zkwszmGsUXghe3JUBfS9o3Z8lXxcHje88+B2H+PdvOonbiC
-         Z5EYWl07d3SHjlmrhObxY/FcxrS9CGfPWqUV3xJj64DQjxtHWl+twTzJCg9ieePTwZkX
-         aP66yK9Wk553rK6ZK4b25hivQD8YD4rISIQfEY8YiPDFDPKGb0hjfpGb/lYj7lFeyKFP
-         lpJQu2D/sfzeIlRizL30EhF0T3HUw9p7xVFowdet1NQfzs63qrMOS3pPV5sIDFO/iBPv
-         N5fISjYxHftJA4J2QPfcZENiEKXm8CUGqjw3nXwIKwddC4aUZ3O1U4LuZ1ijwtbYps5x
-         JO0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gFY1W9e4ekbWqyIP76hyzmpwflzYOcseT2pOw5ioGts=;
-        b=m+9jWAdetpVWn5Oq3FMk+oqhgxVgWdN43lJs9fFEg1/wleVzpuqmo243jql8E1ELfM
-         Gj3n+6ModCzfwgOECsTqFy86lb0MbFNBhqP4+46KQLo946dkHpVPV4SgwgG2fR+Cc3tT
-         FlXDQAuGzYSF1t+zZ2QvfPBsOJitNacfUZDAfkG0fWZ4y/O2NZS3STJ942OdElKCwJrb
-         VLFVKWSLEIO6ineIZj9F6WUQb5aL7O7PJJm0Bnnpi3XQsiJWIJlfL0GncU5PaOO8MRg/
-         WdkJXGrixfwewdA2XCE7g1q91JKc8XflgiFNZjT96CurHojuo0ek/zNFqnNIb/i8jRKu
-         7cFQ==
-X-Gm-Message-State: ANoB5pkWomU1FNfciS8GHRADO7ZiglQlruYJgWUfJVNP/c939xZEJTjh
-        lt+yySSpzDOGJvguv4COxEgNxn/zxJLhSPj+HEM=
-X-Google-Smtp-Source: AA0mqf7md76CbIvE5CZgYvyN3yFG9ko30sLUCK0WzA39CGIVtpzpvd6YDHB0wQW8HAr0zJs6dNXtbyjQmM368nF8CUQ=
-X-Received: by 2002:a05:6870:6689:b0:144:dffd:8302 with SMTP id
- ge9-20020a056870668900b00144dffd8302mr3757743oab.146.1670602388565; Fri, 09
- Dec 2022 08:13:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20221106224841.279231-1-ebiggers@kernel.org> <Y4+ua2XftbAYd8xq@mit.edu>
-In-Reply-To: <Y4+ua2XftbAYd8xq@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Fri, 9 Dec 2022 08:12:56 -0800
-Message-ID: <CAD+ocbznGVej2myzU+3edpw0a_EXcVRjLAU=KS1ymXxbaEaz=Q@mail.gmail.com>
-Subject: Re: [PATCH 0/7] ext4 fast-commit fixes
+        with ESMTP id S229482AbiLISZV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 13:25:21 -0500
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903FB379E9
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Dec 2022 10:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670610320; x=1702146320;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r9bQfHi0rKvUslfQpzQaShiDKVd7W3VsxX5OyCeE9o0=;
+  b=Ci+IBzgNkl39ncghztA0txiNqYewKQJy4oBuWJLVW9sjkNbsWPunDJQH
+   38y5Dcu0w9eLa25XKY//heEc94DP4D+it0tlbLv5AnCHIquA0IueIxHrf
+   SK6SAq2iY3HpDrLdmp7de/z/30gT72qP9uikr4YtjCFjrZFGAkuGhZeB3
+   1doIyKbV+icy20u6nMJDE2JGKOShCTfYbKsp3EFRskIVQlYTlrycGF+hh
+   KgvDMArx8bW99ZMN1aWu+Kan583muxLzcb8vh0m40nSoI8U6xykmY/n4y
+   inqBaZXRcBTviu4z8pSQcJ4YbtzR5/HZBkxBKSrLupVAtu1fmrah/n5gX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="403775501"
+X-IronPort-AV: E=Sophos;i="5.96,232,1665471600"; 
+   d="scan'208";a="403775501"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2022 10:25:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="647483385"
+X-IronPort-AV: E=Sophos;i="5.96,232,1665471600"; 
+   d="scan'208";a="647483385"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 09 Dec 2022 10:25:18 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p3i3i-00020f-08;
+        Fri, 09 Dec 2022 18:25:18 +0000
+Date:   Sat, 10 Dec 2022 02:25:02 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 1da18e38cb97e9521e93d63034521a9649524f64
+Message-ID: <63937d7e.LEtIS+piSVvPxpzV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 6 Dec 2022 at 13:04, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Sun, Nov 06, 2022 at 02:48:34PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@kernel.org
-> >
-> > This series fixes several bugs in the fast-commit feature.
-> >
-> > Patch 6 may be the most controversial patch of this series, since it
-> > would make old kernels unable to replay fast-commit journals created by
-> > new kernels.  I'd appreciate any thoughts on whether that's okay.  I can
-> > drop that patch if needed.
->
-> Mumble.  Normally, it's something we would avoid, since there aren't
-> that many users using fast commit, since it's not enabled by default.
-> And given that the off-by-one errors are bugs, an it's a question of
-> old kernels requiring a pretty buggy layout, the question is whether
-> it's worth it to do an explicit version / feature flag and support
-> both for some period of time.
->
-> I'm inclined to say no, and just let things slide, and instead make
-> sure that e2fsck can handle both the old and the new format, and let
-> that handle the fast commit replay if necessary.
->
-> Harshad, what do you think?
-I agree. Making kernel replay backward compatible would complicate the
-replay code without adding that much value (since there aren't that
-many users and fast commit isn't enabled by default). So, having the
-ability in e2fsck to do replays should suffice in this case.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 1da18e38cb97e9521e93d63034521a9649524f64  ext4: fix reserved cluster accounting in __es_remove_extent()
 
-- Harshad
->
->                                                 - Ted
+elapsed time: 726m
+
+configs tested: 66
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+alpha                             allnoconfig
+i386                              allnoconfig
+arm                               allnoconfig
+arc                               allnoconfig
+x86_64                          rhel-8.3-rust
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+arc                                 defconfig
+s390                             allmodconfig
+alpha                               defconfig
+arc                  randconfig-r043-20221207
+s390                                defconfig
+i386                                defconfig
+i386                          randconfig-a001
+x86_64                        randconfig-a013
+riscv                randconfig-r042-20221207
+arm                                 defconfig
+ia64                             allmodconfig
+i386                          randconfig-a003
+powerpc                           allnoconfig
+m68k                             allyesconfig
+x86_64                        randconfig-a002
+m68k                             allmodconfig
+x86_64                        randconfig-a011
+s390                 randconfig-r044-20221207
+s390                             allyesconfig
+x86_64                               rhel-8.3
+x86_64                              defconfig
+arc                              allyesconfig
+i386                          randconfig-a005
+x86_64                        randconfig-a015
+x86_64                        randconfig-a006
+alpha                            allyesconfig
+x86_64                        randconfig-a004
+x86_64                           allyesconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a014
+x86_64                         rhel-8.3-kunit
+sh                               allmodconfig
+i386                          randconfig-a012
+i386                          randconfig-a016
+mips                             allyesconfig
+arm64                            allyesconfig
+powerpc                          allmodconfig
+i386                             allyesconfig
+arm                              allyesconfig
+x86_64                            allnoconfig
+riscv                             allnoconfig
+
+clang tested configs:
+arm                  randconfig-r046-20221207
+hexagon              randconfig-r041-20221207
+hexagon              randconfig-r045-20221207
+i386                          randconfig-a002
+x86_64                        randconfig-a005
+x86_64                        randconfig-a016
+i386                          randconfig-a006
+x86_64                        randconfig-a001
+x86_64                        randconfig-a012
+i386                          randconfig-a004
+x86_64                        randconfig-a014
+x86_64                        randconfig-a003
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                          randconfig-a011
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
