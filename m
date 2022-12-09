@@ -2,94 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3964A647E03
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 07:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2280A6482E6
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 14:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbiLIGxR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Dec 2022 01:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        id S229591AbiLINrw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Dec 2022 08:47:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbiLIGxP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 01:53:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BCF21802;
-        Thu,  8 Dec 2022 22:53:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7B6DFB827BB;
-        Fri,  9 Dec 2022 06:53:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C29C433EF;
-        Fri,  9 Dec 2022 06:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670568785;
-        bh=XNFEy3iO8bhcXdgTiK3BJXgGhDVDovoZXiBXRmu+VzY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m3m4s1oOZo6hN4APtw1sUf0Mz5CVtt8tZ/e95ewXQvjp6uyEZAL4/MkLbUYHBKhCS
-         g/qOWb8EILjrOwstDkpThqNCoq0hR+dz+9SFiz6VwfeEOLlybeC3l2j8WhPupqjCwg
-         +5uoQaXp8EaFp8MFMEgyflHJWwBNMav9TvcpAsevQQo/NqSmjVeyjonjjPyq40ASTO
-         S3iKofOzZhjbYMIWY6iLsrRorDInVdGzuaclIR7BuskZ67gSugthXQcrJlvTnzqQwU
-         5SvHzecyKkvR00hhGrcL/tpFwhmffzgkFbBVdlFstjZJ1VCOTtTVDbpe0KLyNEx6n0
-         fr3rC4M2dc1Vg==
-Date:   Fri, 9 Dec 2022 01:53:02 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
-        Thilo Fromm <t-lo@linux.microsoft.com>,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
-Message-ID: <Y5LbTkjORxVhgpKy@sashalap>
-References: <20221123193950.16758-1-jack@suse.cz>
- <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
- <Y5F8ayz4gEtKn0LF@mit.edu>
- <20221208091523.t6ka6tqtclcxnsrp@quack3>
- <Y5IFR4K9hO8ax1Y0@mit.edu>
- <e2a77778-7a2b-2811-95ff-be67a44afceb@leemhuis.info>
- <Y5LR2ffwz39donWu@mit.edu>
- <cf8401c8-d9cb-c0be-890b-6aa14d06c1d2@leemhuis.info>
+        with ESMTP id S229488AbiLINrv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 08:47:51 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F80396C4
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Dec 2022 05:47:48 -0800 (PST)
+Received: (Authenticated sender: gabriel@krisman.be)
+        by mail.gandi.net (Postfix) with ESMTPSA id 31DD51BF207;
+        Fri,  9 Dec 2022 13:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
+        t=1670593666;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+rKQmaQriEX7XnldoSzk56zNLF0zT0xTnNbdoxc3XiY=;
+        b=RJRe/h7nXSXyFpHYeA8YZHnwGpXNox2c5FCAHXaTVd4aqjHXtPC/z9GRr5Pl85xBnBTbyX
+        3JtJEZsNbZvS1EuyfWeFdOxGtTQPiQuGxMdr133LGLFhn/R0eOkQ7QSAzJ8fRsaBla/XBz
+        S1ue/jg4rGVTUjG+5EPveIVFqzJts3HwCZmt8Bj1u+V+0BXhKHqDGq74bAvvG4Wi0iBsmh
+        oYsg2Szvvu5uf3CqBp0jgMpKz8DrgBTCQ5uTPihqCXA+8ogbzL87BOdVBAQh2/bJJSVCOb
+        Mxillg4jZWxw/JKCqk2qadCUG2OK+uIA677sHIq9Z4IuR420jjLT4zySnVrwfw==
+From:   Gabriel Krisman Bertazi <gabriel@krisman.be>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     tytso@mit.edu, Eric Biggers <ebiggers@kernel.org>,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        kernel@collabora.com
+Subject: Re: [PATCH v9 0/8] Clean up the case-insensitive lookup path
+References: <20220913234150.513075-1-krisman@collabora.com>
+        <Yy0t8WYhM+Dv3gX1@sol.localdomain> <87fsgi2lax.fsf@collabora.com>
+        <87tu47thie.fsf@suse.de>
+        <2859a108-3189-6407-2d11-6b9f0948f718@collabora.com>
+Date:   Fri, 09 Dec 2022 10:47:37 -0300
+In-Reply-To: <2859a108-3189-6407-2d11-6b9f0948f718@collabora.com> (Muhammad
+        Usama Anjum's message of "Thu, 8 Dec 2022 19:38:46 +0500")
+Message-ID: <871qp8n0xy.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <cf8401c8-d9cb-c0be-890b-6aa14d06c1d2@leemhuis.info>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 07:31:03AM +0100, Thorsten Leemhuis wrote:
->On 09.12.22 07:12, Theodore Ts'o wrote:
->> On Thu, Dec 08, 2022 at 06:16:02PM +0100, Thorsten Leemhuis wrote:
->>>
->>> Maybe I should talk to Greg again to revert backported changes like
->>> 1be97463696c until fixes for them are ready.
->>
->> The fix is in the ext4 git tree, and it's ready to be pushed to Linus
->> when the merge window opens --- presumably, on Sunday.
->
->Thx!
->
->> So it's probably not worth it to revert the backported change, only to
->> reapply immediately afterwards.
->
->Definitely agreed, I was more taking in the general sense (sorry, should
->have been clearer), as it's not the first time some backport exposes
->existing problems that take a while to get analyzed and fixed in
->mainline. Which is just how it is sometimes, hence a revert and a
->reapply of that backport (once the fix is available) in stable/longterm
->sounds appropriate to me to prevent users from running into known problems.
+Muhammad Usama Anjum <usama.anjum@collabora.com> writes:
 
-It's a balancing act: reverting a fix would mean that we reintroduce an
-issue that was previously fixed back to users. It's not always the right
-thing to do, and sometimes we won't.
+> On 10/14/22 4:45 AM, Gabriel Krisman Bertazi wrote:
+>> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+>> 
+>>> Eric Biggers <ebiggers@kernel.org> writes:
+>>>
+>>>> On Tue, Sep 13, 2022 at 07:41:42PM -0400, Gabriel Krisman Bertazi wrote:
+>>>>> Hi,
+>>>>>
+>>>>> I'm resubmitting this as v9 since I think it has fallen through the
+>>>>> cracks :).  It is a collection of trivial fixes for casefold support on
+>>>>> ext4/f2fs. More details below.
+>>>>>
+>>>>> It has been sitting on the list for a while and most of it is r-b
+>>>>> already. I'm keeping the tags for this submission, since there is no
+>>>>> modifications from previous submissions, apart from a minor conflict
+>>>>> resolution when merging to linus/master.
+>>>>
+>>>> Who are you expecting to apply this?
+>>>
+>>> Hi Eric,
+>>>
+>>> There are three groups of changes here: libfs, ext4 and f2fs.  Since the
+>>> changes in libfs are self-contained and only affect these two
+>>> filesystems, I think it should be fine for them to go through a fs tree.
+>>>
+>>> The bulk of changes are ext4, and Ted mentioned on an earlier version
+>>> that he could pick the first patches of this series, so I'm thinking it
+>>> should all go through the ext4 tree.  If Jaegeuk acks, the f2fs changes
+>>> are safe to go with the rest, or I can send them afterwards as a
+>>> separate series once the libfs code is merged.
+>> 
+>> Ted,
+>> 
+>> Does the above plan work for you? Do you intend to pick this up for the
+>> next merge window?
+> It seems like this series hasn't been picked up. Any ideas on what can
+> be done?
+
+I got tired of the radio silence and gave up on it.  If there is interest,
+feel free to respin it once more.
 
 -- 
-Thanks,
-Sasha
+Gabriel Krisman Bertazi
