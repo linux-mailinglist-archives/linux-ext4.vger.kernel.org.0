@@ -2,50 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA6B647D8C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 07:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2339647D93
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Dec 2022 07:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbiLIGFY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Dec 2022 01:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S229732AbiLIGM7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Dec 2022 01:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiLIGFX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 01:05:23 -0500
+        with ESMTP id S229478AbiLIGM6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Dec 2022 01:12:58 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6591D4C251
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 22:05:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7550A31348
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Dec 2022 22:12:57 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2B964uKq001168
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2B96CfdR004641
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Dec 2022 01:04:57 -0500
+        Fri, 9 Dec 2022 01:12:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1670565898; bh=eB3l1ZPS+3z8Gov8819OEgKyJzNPoD2Z+tSNfsm5SEA=;
+        t=1670566364; bh=T59azuiB5UNmS9YVB/fHdvT3f2atOSWgkSqOH73lu4c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=WazQQWWuAwZXsPrJBbhxRuabsvOTxvfTPzzCsp5BWLyumSnMKMQkpMRgAA8CLFrHB
-         MwJiArrx49RCnwh0dk+qR7Bc8FAr3SKL4ceVGGSB1diGV2n2F2nwvl3c0J5acRlb3B
-         T4Xw9GCpgIfUONS6Ca9hs7334R4VxKF4WYE27ZcYOngvZpIJhrXvGhVFyMBprkegr9
-         sJlXHf1tZkJE4gbMsoM0OxEr65bDxljCxIQ23yTkiNVQtooC2tDFrsjiMgrUyMvfwd
-         XAexs/Mr8y7UO5U4/RLDVPPic7a9q7OqbBYVC7TcS18Vwu15WsFJ0+kTQRMB6TNDwG
-         /+563E+yqO98Q==
+        b=AFIwcjw5JA/yOawcoK3DOork1FR2TgzJwtPFuwY8Ew7UpxcUyZR8koeRoJsRs2pQG
+         9X9pAs4IiE0pOjpGrSsQOSGpKnbHug1BzafZ/gFG0Bom2uBDsYijdIykwz2eYeZdVy
+         cxy8Tm8W13NTAyzK/oKXf+xOzH8qCCS+MMT1TvKSlMjRn4Dag3EvojzIYZvpsG+YQR
+         YpAAAKqt9kwNduX+8eajwFLs2vJWKsZbdr0XYI6687yh9AQEobzFm4AWQ7/W4R+CBQ
+         JpbKZr9da5IxbA+T7pKY3VcD/PKjIVIImBbus8NLhKZKA/y8zPIjNO5W0YpoKuDG8P
+         xkKqJdlE+ctqg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 63F8E15C3AE9; Fri,  9 Dec 2022 01:04:56 -0500 (EST)
-Date:   Fri, 9 Dec 2022 01:04:56 -0500
+        id 271D515C3AE9; Fri,  9 Dec 2022 01:12:41 -0500 (EST)
+Date:   Fri, 9 Dec 2022 01:12:41 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>,
-        syzbot+05a0f0ccab4a25626e38@syzkaller.appspotmail.com
-Subject: Re: [PATCH v4 3/3] ext4: add check pending tree when evict inode
-Message-ID: <Y5LQCPyJyg/pY2PJ@mit.edu>
-References: <20221208033426.1832460-1-yebin@huaweicloud.com>
- <20221208033426.1832460-4-yebin@huaweicloud.com>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Jan Kara <jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        Thilo Fromm <t-lo@linux.microsoft.com>,
+        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH] ext4: Fix deadlock due to mbcache entry corruption
+Message-ID: <Y5LR2ffwz39donWu@mit.edu>
+References: <20221123193950.16758-1-jack@suse.cz>
+ <20221201151021.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <9c414060-989d-55bb-9a7b-0f33bf103c4f@leemhuis.info>
+ <Y5F8ayz4gEtKn0LF@mit.edu>
+ <20221208091523.t6ka6tqtclcxnsrp@quack3>
+ <Y5IFR4K9hO8ax1Y0@mit.edu>
+ <e2a77778-7a2b-2811-95ff-be67a44afceb@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221208033426.1832460-4-yebin@huaweicloud.com>
+In-Reply-To: <e2a77778-7a2b-2811-95ff-be67a44afceb@leemhuis.info>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -55,23 +61,16 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 08, 2022 at 11:34:26AM +0800, Ye Bin wrote:
+On Thu, Dec 08, 2022 at 06:16:02PM +0100, Thorsten Leemhuis wrote:
 > 
-> Above issue fixed by
-> commit 1b8f787ef547 ("ext4: fix warning in 'ext4_da_release_space'")
-> in this scene. To make things better add check pending tree when evict
-> inode.
-> According to Eric Whitney's suggestion, bigalloc + inline is still in
-> development so we just add test for this situation, there isn't need to
-> add code to free pending tree entry.
+> Maybe I should talk to Greg again to revert backported changes like
+> 1be97463696c until fixes for them are ready.
 
-The i_pending_tree is an in-memory data structure, and so it's not
-appropriate to call ext4_error(), because there will be nothing for
-fsck to fix.
+The fix is in the ext4 git tree, and it's ready to be pushed to Linus
+when the merge window opens --- presumably, on Sunday.
 
-If you really want to a bug to be noticed, you could use a ext4_msg
-plus a WARN_ON(); but an ext4_error() is really not appropriate.
+So it's probably not worth it to revert the backported change, only to
+reapply immediately afterwards.
 
-Cheers,
-
-					- Ted
+						- Ted
+						
