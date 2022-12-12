@@ -2,87 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3067649877
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Dec 2022 05:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F227D64A574
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Dec 2022 18:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbiLLEsv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Dec 2022 23:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
+        id S232868AbiLLREb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Dec 2022 12:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbiLLEsl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Dec 2022 23:48:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4742663D9;
-        Sun, 11 Dec 2022 20:48:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232814AbiLLREK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Dec 2022 12:04:10 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306B81056C;
+        Mon, 12 Dec 2022 09:04:04 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D3A79B80B72;
-        Mon, 12 Dec 2022 04:48:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56B1BC433D2;
-        Mon, 12 Dec 2022 04:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670820517;
-        bh=P8vfT0mshHozuGK5w2ZRZj2IsGSxzeJ1hYUPDymSUpA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oRfLPsbhhzn6jLWFdlSW5/taJKYumF3eyRG6EcL4YW6sqOLFj4LLaHj6VXSSK40pr
-         Hv/+9C6Os/u8mW4Ko5Rx8JyzQBryXRoTVcGRN1TyF68EbgPW2fE6j4NG9PfMLQs6Ce
-         Fa2RwGYuDTemB8vFMLZdS4aYYJPJKlbvPQaJEOJc/MJvHvlQ0ewBVY5XQg6+7qe9Qr
-         39D8WQ2euxHusx0zuZJE52IRL6NtNBwZPc9aQiC2Jb0AeLMaz9KQCvZdrswp07u3ez
-         J+jKuIuPrkG8E4cf8B1YiU2uSQP8a23eQ4W2ELRPkHSt8Whx7ilNFj96Ji/7n4kaFF
-         UbIBpi6gYmeIA==
-Date:   Sun, 11 Dec 2022 20:48:35 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C35B41FE2B;
+        Mon, 12 Dec 2022 17:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1670864642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=PbexLX/SJWGWEaHMvMhd2z7nCseXDShLAsC7Ku5L2ag=;
+        b=zng91BHEFl8BjH0bHbXDmDNMtz31OQJ051dnzZ9gIbqSJA578YWqfzhUIW2ZaDFL68foU2
+        3xsNWYu8Anmo5by52Xoh4fdxnO58a23PpBm8GsOIlrvoTBArUEwikSoGQdY9fpUeh3t+YV
+        hf+6NCWz+UXTBfsUJRA+IBWowkpHwq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1670864642;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=PbexLX/SJWGWEaHMvMhd2z7nCseXDShLAsC7Ku5L2ag=;
+        b=gj0phcg33sAwv0AihoRlz1ZRujeSTuKZmgXjgOh8inURCmpBRG1tUT0b7d2w8gx8p32wrf
+        IuC68vsRAoy1KMCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B5C0E13456;
+        Mon, 12 Dec 2022 17:04:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AVdZLAJfl2OvGAAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 12 Dec 2022 17:04:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 3D308A0727; Mon, 12 Dec 2022 18:04:02 +0100 (CET)
+Date:   Mon, 12 Dec 2022 18:04:02 +0100
+From:   Jan Kara <jack@suse.cz>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] fsverity updates for 6.2
-Message-ID: <Y5ayo48TtNrPgU9D@sol.localdomain>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] udf and ext2 fixes for 6.2-rc1
+Message-ID: <20221212170402.w4mqtu4a65kphtju@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit f0c4d9fc9cc9462659728d168387191387e903cc:
+  Hello Linus,
 
-  Linux 6.1-rc4 (2022-11-06 15:07:11 -0800)
+  could you please pull from
 
-are available in the Git repository at:
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fixes_for_v6.2-rc1
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+to get:
+ * couple of smaller cleanups and fixes for ext2
+ * fixes of a data corruption issues in udf when handling holes and
+   preallocation extents
+ * fixes and cleanups of several smaller issues in udf
+ * add maintainer entry for isofs
 
-for you to fetch changes up to a4bbf53d88c728da9ff6c316b1e4ded63a8f3940:
+Top of the tree is 1f3868f06855. The full shortlog is:
 
-  fsverity: simplify fsverity_get_digest() (2022-11-29 21:07:41 -0800)
+Al Viro (1):
+      ext2: unbugger ext2_empty_dir()
 
-----------------------------------------------------------------
+Bartosz Taudul (1):
+      udf: Increase UDF_MAX_READ_VERSION to 0x0260
 
-The main change this cycle is to stop using the PG_error flag to track
-verity failures, and instead just track failures at the bio level.  This
-follows a similar fscrypt change that went into 6.1, and it is a step
-towards freeing up PG_error for other uses.
+Bo Liu (1):
+      ext2: Fix some kernel-doc warnings
 
-There's also one other small cleanup.
+Christoph Hellwig (2):
+      ext2: remove ->writepage
+      udf: remove ->writepage
 
-----------------------------------------------------------------
-Eric Biggers (2):
-      fsverity: stop using PG_error to track error status
-      fsverity: simplify fsverity_get_digest()
+Jan Kara (6):
+      maintainers: Add ISOFS entry
+      ext2: Don't flush page immediately for DIRSYNC directories
+      udf: Fix preallocation discarding at indirect extent boundary
+      udf: Do not bother looking for prealloc extents if i_lenExtents matches i_size
+      udf: Discard preallocation before extending file with a hole
+      udf: Fix extending file within last block
 
- fs/ext4/readpage.c           |  8 ++----
- fs/f2fs/compress.c           | 64 +++++++++++++++++++++-----------------------
- fs/f2fs/data.c               | 53 ++++++++++++++++++++++--------------
- fs/verity/fsverity_private.h |  5 ++++
- fs/verity/hash_algs.c        |  6 +++++
- fs/verity/measure.c          | 19 ++-----------
- fs/verity/verify.c           | 12 ++++-----
- 7 files changed, 85 insertions(+), 82 deletions(-)
+Li zeming (1):
+      fs: udf: Optimize udf_free_in_core_inode and udf_find_fileset function
+
+Rong Tao (1):
+      fs/ext2: Fix code indentation
+
+Shigeru Yoshida (1):
+      udf: Avoid double brelse() in udf_rename()
+
+The diffstat is
+
+ MAINTAINERS       |  7 +++++
+ fs/ext2/balloc.c  | 12 ++++----
+ fs/ext2/dir.c     | 41 +++++++++++++++------------
+ fs/ext2/inode.c   |  6 ----
+ fs/ext2/super.c   |  2 +-
+ fs/udf/inode.c    | 83 +++++++++++++++++++++++--------------------------------
+ fs/udf/namei.c    |  8 +++---
+ fs/udf/super.c    |  4 +--
+ fs/udf/truncate.c | 48 ++++++++++----------------------
+ fs/udf/udf_sb.h   |  6 +++-
+ 10 files changed, 98 insertions(+), 119 deletions(-)
+
+							Thanks
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
