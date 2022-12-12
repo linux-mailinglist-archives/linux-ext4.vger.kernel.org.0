@@ -2,124 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A30649538
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Dec 2022 18:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BE5649867
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Dec 2022 05:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiLKRRN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Dec 2022 12:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        id S231218AbiLLEiX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Dec 2022 23:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbiLKRRM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Dec 2022 12:17:12 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1E7E0C4
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Dec 2022 09:17:10 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id y16so9777185wrm.2
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Dec 2022 09:17:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=25obtB31DDlgLRXlLw15qHeqkAUXlEcFvDhBX+iWq9A=;
-        b=bUDUSB5wUoV2dFpy9KiRRKokkq2yJk2aJvYPoiMGSGge+qi4f2NMDPDTTFaMmRIzAq
-         VAxjfIFI6S2TV7UEZbPtzZFt027JqZkwynQRx9RHWEYHo/ejplJFTqp98OBkhRc3pyXu
-         uQIfGyZw11i76XJfyUXxtef/Y5LBiBxI/XAc81YtBjWphnV9w5RpHOxbgCQABsZoJQih
-         O/w949UMVwQAV5bdAqJYuGV3VTZFJQic6Qo6HgVD4gCYHgqNHIuri4TI9C6edLZbKb4C
-         OpdN54vLLoeTUvY8phACXgACOwbd2pk3PiK9BvD9ZmNCjrdhCpsB1E6Px+MIPN5e4mjS
-         6AHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=25obtB31DDlgLRXlLw15qHeqkAUXlEcFvDhBX+iWq9A=;
-        b=R3oEKn9Vm5w7O+RX5O6fo7VmOjZhT6lH5ozFXi5ZaHRtymtcuTPxdg0BB+u7IVLLDr
-         qZ/pTc0qn2cibpJl4qIQCrOS/WRkA1M2BBamnD8d8ZhNlfUrDpNG6Hc9QpYMiMyijT4F
-         +Qj8fKLMly/lk3FT43Mh7/w8Pzn9rGBJUD0xibZfIplyd/v32C0IVxk7lLYBulH0izKn
-         Mv852jwtCAufPe3gD/OrzB6pg/ubHp3PnVEPD1Hjy9Ao/henMW/3+OJ5Ydq7KfTXnh+C
-         k0qJsVQ5GXwfj/8rebMTTS1TJGFnNcsU6k117IOBXy5KVECqvRNbCNdh6Q0AL/TQfcY7
-         SMpw==
-X-Gm-Message-State: ANoB5plvj7PZo3W8HnePnlETEnf6bcr7sGMLjfx9UCUqctPtiPY99HAY
-        LGBbchCMwssSCXSYiKBDMOzJjP6edtjKa4FTqGw=
-X-Google-Smtp-Source: AA0mqf7XEtWgrGuuHxu9pbCGz/rwhjJocgJpm28JalIGing9H5aWE7aCJffPecJndQhq17NleTTj5tEOLbUYRJ/fmzo=
-X-Received: by 2002:a05:6000:705:b0:248:443:2e99 with SMTP id
- bs5-20020a056000070500b0024804432e99mr456084wrb.52.1670779029191; Sun, 11 Dec
- 2022 09:17:09 -0800 (PST)
+        with ESMTP id S230493AbiLLEiV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Dec 2022 23:38:21 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F0464E9
+        for <linux-ext4@vger.kernel.org>; Sun, 11 Dec 2022 20:38:19 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BC4cEff002849
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 11 Dec 2022 23:38:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1670819896; bh=hFdsa1c0zkKYKDCJyLmX99CDkvD/uKnoiK+f21lfZCY=;
+        h=Date:From:To:Cc:Subject;
+        b=DuoToHFqimY+pacZvjAwYSRGPLPEuHP2cCcLFQVbsrSgQaNf7KE864sA9wTUPPhyG
+         6Kt7GfLo+KXLNqbDrln2dY5+lJraro0d7wSKadbiwZCx3qzKrrRwTgOj/MrpXnj4Jx
+         ssBvEXVxw5suHSiHF8SNK+ijTO8gVPTUZSI7l0xSq1iF/S7Qk8cPbKDyP4bLwAnsFd
+         8i3WqqqVq9rdPHc2A7m18K6l5CYrD06RYazxhqskRyX0R0JW9LizzfIbVqQyPMqH0i
+         UoJiwbRDMv2o92Ys5fOPr9wHMBjOU1QyASiCcdiWWzqOfqbKEFmcRJZL4RjzMiOFBH
+         ctzPeDO9O7iIQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 423E215C34C5; Sun, 11 Dec 2022 23:38:14 -0500 (EST)
+Date:   Sun, 11 Dec 2022 23:38:14 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 6.2
+Message-ID: <Y5awNvCXRRyck6LT@mit.edu>
 MIME-Version: 1.0
-Sender: customagenttony@gmail.com
-Received: by 2002:a5d:5984:0:0:0:0:0 with HTTP; Sun, 11 Dec 2022 09:17:08
- -0800 (PST)
-From:   Mrs Aisha Gaddafi <aishagaddafiaisha20@gmail.com>
-Date:   Sun, 11 Dec 2022 09:17:08 -0800
-X-Google-Sender-Auth: Fkl9BcCdvil9CjWnKbuyYi2r26g
-Message-ID: <CAAV183S77Qp-1qOrg=vaxS7PAWeP80tVAiSG3YejQoMFJyrR3A@mail.gmail.com>
-Subject: Greetings from Aisha Gaddafi,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORM_FRAUD_5,
-        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,
-        MONEY_FORM_SHORT,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY,
-        URG_BIZ autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:42f listed in]
-        [list.dnswl.org]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aishagaddafiaisha20[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.6 MILLION_USD BODY: Talks about millions of dollars
-        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.6 URG_BIZ Contains urgent matter
-        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
-        *      information
-        *  0.0 MONEY_FORM_SHORT Lots of money if you fill out a short form
-        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: *******
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I want to use this access to open a mutual communication with you
-seeking your acceptance towards investing in your country under your
-management as my partner, My name is Aisha  Gaddafi and presently
-living in Oman, i am a Widow and single Mother with three Children,
-the only biological Daughter of late Libyan President (Late Colonel
-Muammar Gaddafi) and presently i am under political asylum protection
-by the Omani Government.
+The following changes since commit 4e3c51f4e805291b057d12f5dda5aeb50a538dc4:
 
-I have funds worth " Seven Million Five Hundred Thousand United State
-Dollars" $7.500.000.00 US Dollars which I want to entrust to you for
-investment projects in your country. If you are willing to handle this
-project on my behalf, kindly reply urgent to enable me provide you
-more details to start the transfer process, I shall appreciate your
-urgent response through my private email address below:
+  fs: do not update freeing inode i_io_list (2022-11-22 17:00:00 -0500)
 
-aishagaddafiaisha20@gmail.com
+are available in the Git repository at:
 
-You can know more through the BBC news links below:
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-http://www.bbc.com/news/world-africa-19966059
+for you to fetch changes up to 1da18e38cb97e9521e93d63034521a9649524f64:
 
+  ext4: fix reserved cluster accounting in __es_remove_extent() (2022-12-09 00:58:04 -0500)
 
-Thanks
-Yours Truly Aisha
+----------------------------------------------------------------
+A large number of cleanups and bug fixes, with many of the bug fixes
+found by Syzbot and fuzzing.  (Many of the bug fixes involve less-used
+ext4 features such as fast_commit, inline_data and bigalloc.)
+
+In addition, remove the writepage function for ext4, since the
+medium-term plan is to remove ->writepage() entirely.  (The VM doesn't
+need or want writepage() for writeback, since it is fine with
+->writepages() so long as ->migrate_folio() is implemented.)
+
+----------------------------------------------------------------
+Alexander Potapenko (1):
+      fs: ext4: initialize fsdata in pagecache_write()
+
+Baokun Li (10):
+      ext4: add inode table check in __ext4_get_inode_loc to aovid possible infinite loop
+      ext4: fix bug_on in __es_tree_search caused by bad quota inode
+      ext4: add helper to check quota inums
+      ext4: add EXT4_IGET_BAD flag to prevent unexpected bad inode
+      ext4: fix bug_on in __es_tree_search caused by bad boot loader inode
+      ext4: fix use-after-free in ext4_orphan_cleanup
+      ext4: correct inconsistent error msg in nojournal mode
+      ext4: fix bad checksum after online resize
+      ext4: fix corrupt backup group descriptors after online resize
+      ext4: fix corruption when online resizing a 1K bigalloc fs
+
+Bixuan Cui (1):
+      jbd2: use the correct print format
+
+Darrick J. Wong (2):
+      ext4: dont return EINVAL from GETFSUUID when reporting UUID length
+      ext4: don't fail GETFSUUID when the caller provides a long buffer
+
+Eric Biggers (8):
+      ext4: don't allow journal inode to have encrypt flag
+      ext4: disable fast-commit of encrypted dir operations
+      ext4: don't set up encryption key during jbd2 transaction
+      ext4: fix leaking uninitialized memory in fast-commit journal
+      ext4: add missing validation of fast-commit record lengths
+      ext4: fix unaligned memory access in ext4_fc_reserve_space()
+      ext4: fix off-by-one errors in fast-commit block filling
+      ext4: simplify fast-commit CRC calculation
+
+Eric Whitney (1):
+      ext4: fix delayed allocation bug in ext4_clu_mapped for bigalloc + inline
+
+Gaosheng Cui (1):
+      ext4: fix undefined behavior in bit shift for ext4_check_flag_values
+
+Guoqing Jiang (1):
+      ext4: make ext4_mb_initialize_context return void
+
+Jan Kara (16):
+      ext4: avoid BUG_ON when creating xattrs
+      ext4: fix deadlock due to mbcache entry corruption
+      ext4: handle redirtying in ext4_bio_write_page()
+      ext4: move keep_towrite handling to ext4_bio_write_page()
+      ext4: remove nr_submitted from ext4_bio_write_page()
+      ext4: drop pointless IO submission from ext4_bio_write_page()
+      ext4: add support for writepages calls that cannot map blocks
+      ext4: provide ext4_do_writepages()
+      ext4: move percpu_rwsem protection into ext4_writepages()
+      ext4: switch to using ext4_do_writepages() for ordered data writeout
+      jbd2: switch jbd2_submit_inode_data() to use fs-provided hook for data writeout
+      ext4: switch to using write_cache_pages() for data=journal writeout
+      mm: export buffer_migrate_folio_norefs()
+      ext4: stop providing .writepage hook
+      ext4: initialize quota before expanding inode in setproject ioctl
+      ext4: avoid unaccounted block allocation when expanding inode
+
+Jiangshan Yi (1):
+      fs/ext4: replace ternary operator with min()/max() and min_t()
+
+Jinpeng Cui (1):
+      ext4: remove redundant variable err
+
+JunChao Sun (1):
+      ext4: replace kmem_cache_create with KMEM_CACHE
+
+Li Zhong (1):
+      ext4: check the return value of ext4_xattr_inode_dec_ref()
+
+Lukas Czerner (2):
+      ext4: journal_path mount options should follow links
+      ext4: print file system UUID on mount, remount and unmount
+
+Luís Henriques (2):
+      ext4: remove trailing newline from ext4_msg() message
+      ext4: fix error code return to user-space in ext4_get_branch()
+
+Ye Bin (6):
+      ext4: init quota for 'old.inode' in 'ext4_rename'
+      ext4: fix uninititialized value in 'ext4_evict_inode'
+      ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+      ext4: allocate extended attribute value in vmalloc area
+      ext4: fix inode leak in ext4_xattr_inode_create() on an error path
+      ext4: fix reserved cluster accounting in __es_remove_extent()
+
+Zhang Yi (2):
+      ext4: silence the warning when evicting inode with dioread_nolock
+      ext4: check and assert if marking an no_delete evicting inode dirty
+
+changfengnan (1):
+      ext4: split ext4_journal_start trace for debug
+
+ Documentation/filesystems/mount_api.rst |   1 +
+ fs/ext4/ext4.h                          |  13 +-
+ fs/ext4/ext4_jbd2.c                     |  14 ++-
+ fs/ext4/ext4_jbd2.h                     |  10 +-
+ fs/ext4/extents.c                       |  16 ++-
+ fs/ext4/extents_status.c                |  11 +-
+ fs/ext4/fast_commit.c                   | 205 ++++++++++++++++---------------
+ fs/ext4/fast_commit.h                   |   3 +-
+ fs/ext4/ialloc.c                        |   4 +-
+ fs/ext4/indirect.c                      |   9 +-
+ fs/ext4/inline.c                        |   3 +-
+ fs/ext4/inode.c                         | 252 +++++++++++++++++++++++++++------------
+ fs/ext4/ioctl.c                         |  24 ++--
+ fs/ext4/mballoc.c                       |  10 +-
+ fs/ext4/namei.c                         |  47 ++++----
+ fs/ext4/orphan.c                        |   2 +-
+ fs/ext4/page-io.c                       |  44 ++++---
+ fs/ext4/readpage.c                      |   5 +-
+ fs/ext4/resize.c                        |  36 +++---
+ fs/ext4/super.c                         |  60 +++++++---
+ fs/ext4/verity.c                        |   2 +-
+ fs/ext4/xattr.c                         |  22 ++--
+ fs/fs_parser.c                          |   3 +-
+ fs/jbd2/commit.c                        |   5 +-
+ fs/mbcache.c                            |  14 ++-
+ fs/quota/dquot.c                        |   2 +
+ include/linux/fs_parser.h               |   1 +
+ include/linux/jbd2.h                    |   2 +-
+ include/linux/mbcache.h                 |   9 +-
+ include/trace/events/ext4.h             |  64 ++++++++--
+ include/trace/events/jbd2.h             |  44 +++----
+ mm/migrate.c                            |   1 +
+ 32 files changed, 571 insertions(+), 367 deletions(-)
