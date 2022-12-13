@@ -2,75 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C2E64BAF7
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Dec 2022 18:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1455F64BD35
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Dec 2022 20:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236017AbiLMR2w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Dec 2022 12:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S236470AbiLMTYg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Dec 2022 14:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbiLMR2u (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Dec 2022 12:28:50 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6D51F2C8
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Dec 2022 09:28:50 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id z26so6058602lfu.8
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Dec 2022 09:28:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mwuIivs2bXND3SDhAV+zSYDmApbibgZQPxXCRZ6VkeU=;
-        b=DzMldxNR8LNNVMx7vuJnOcLw6NLucC7yEgDxlRn6PKyaO4h/jzW7TZzJYxz3D7DW17
-         FT6AkRuDEerBkse+LCZOqO7XVWjasYCMnl39pI4H3N+1/v+r/rD3ggJ8XgtQCwPi6YRP
-         KOZUKNVnSEN1FicY/aK40Y2RXNiWJ1tYbH8htcAQKlzZzWfKUtUc69w22ChFxcbCWlyZ
-         SQIq4WuTVvmcrmsKcoXh79PfeZ9aMBoi3C2skrHpQi+VsaSZGj7QDE6aHCjtoQ1vOkQ+
-         xKYAPO9Bg/n05axPgADGdUM8aa49oaHW/FmeuG7/Bybx3xv19wkIysIG2ccRI8QmC3k1
-         HZoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mwuIivs2bXND3SDhAV+zSYDmApbibgZQPxXCRZ6VkeU=;
-        b=wOQwUV1OTdm8rXcXH3hd5vz3q5VPm4CSiBNP9xg+bxuQTiImE435cpHnfsUcLXnbDO
-         vT7jT8f5BbKd1XmLxEZJQuQy8tmYrEq3ixsJ68Al90mIkeQBlElw29U3w0cw0Bz8cdAX
-         dcJqGubBDx65K6dw6aD1bPKt7CFND4RuY6cZSOx4bFcnvDyWMShYScBMSnBgX3jy30vO
-         wBvxBTbF2K407kbSU8ssE2v0EFFJx2yI93Q550hZZLbZfnJnoFDyl5eZRPHRFpjf4v2x
-         aRJ26TlYRqsMCfJQMyAvQS36qrhgDyKx5gF1GyDIsAJI9hGa8OY1KdMRLwkGbu5IkCyo
-         2EHg==
-X-Gm-Message-State: ANoB5pkss1rDHYVM8NJK4LF6SJHYdKQjNvdFaXF7eM3Isj2NzO8cUvS7
-        zQi0oaXeaCuRsV1+DZoSuZk+ASyScOVIKHV9cOc=
-X-Google-Smtp-Source: AA0mqf48OcNfA1X0GHSPVFo9jKgJtFpw06nUWDzsaxPQqQMHhEitJ778Ezo5umfq7LbLF4bHDQSlg3UObqeEGI9bP9Y=
-X-Received: by 2002:ac2:5e69:0:b0:4b5:8298:5861 with SMTP id
- a9-20020ac25e69000000b004b582985861mr4527074lfr.252.1670952528559; Tue, 13
- Dec 2022 09:28:48 -0800 (PST)
+        with ESMTP id S235717AbiLMTYf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Dec 2022 14:24:35 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A278D8A;
+        Tue, 13 Dec 2022 11:24:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 899B5CE1409;
+        Tue, 13 Dec 2022 19:24:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93B92C433EF;
+        Tue, 13 Dec 2022 19:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670959470;
+        bh=JoyGbc+CLt4wv3FeRw2pIl17kK3ZvDF0ImnJxpQ5c/Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BNjAa4sn7uBdZzM2UUtrfuKyvZ2TkkcjQx+mps27l+EIBJRt/A+XXPDL6U2fWkHeQ
+         ehwrbL2J5i9mH2N/Q0K9k8HJ3iKhCow1syUMQqidpUw70i4P22F+Xe9pqI6H6rTzSH
+         sVGoZ2IAjmAOFBJdlO3uvhITk21DnSyFXRxQTQ+xDpn2K3Lo6Fm8fLOtBlrj3TfQn7
+         Z7vb8hFzixNi89ghpVTypl/OBNZ3O3q/KElOb2cmkJgOl0JEN351XZzM8WpbGlAQrz
+         ADNVwXg6qJc4NFfHh5F9zpuMRCJui49m56yS2ynnKaEM9OQ5Dckho9+HyEiRhSLCM0
+         OX5eYOYsCD/Ag==
+Date:   Tue, 13 Dec 2022 11:24:28 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Separate mailing list (and git and patchwork) for fsverity?
+Message-ID: <Y5jRbLEJh3S46Jer@sol.localdomain>
 MIME-Version: 1.0
-Received: by 2002:a05:6500:a83:b0:179:db22:d024 with HTTP; Tue, 13 Dec 2022
- 09:28:47 -0800 (PST)
-Reply-To: canyeu298@gmail.com
-From:   Can yeu <gaspercarter98@gmail.com>
-Date:   Tue, 13 Dec 2022 18:28:47 +0100
-Message-ID: <CAPOjZJBxEwy4tTUPxfRakGJHBD-dio931=YGWZUhLrTeCxOEqw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
-Dear Friend,
+Currently, fsverity development is reusing the same mailing list, git repo
+(though a different branch), and patchwork project as fscrypt --- mainly just
+because I was a little lazy and didn't bother to ask for new ones:
 
-I have an important message which i want to discuss with you.
+FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+[...]
+L:      linux-fscrypt@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fscrypt/list/
+T:      git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+[...]
 
-Your Faithfully
+FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+[...]
+L:      linux-fscrypt@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fscrypt/list/
+T:      git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git fsverity
+[...]
 
-Mrs Can Yeu
+I think this is causing some confusion.  It also makes it so that people can't
+subscribe to the list for just one or the other.
+
+What would people say about having a separate mailing list, git repo, and
+patchwork project for fsverity?  So the fsverity entry would look like:
+
+FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+[...]
+L:      linux-fsverity@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fsverity/list/
+T:      git git://git.kernel.org/pub/scm/fs/fsverity/fsverity.git
+[...]
+
+For the branches in the git repo, I'm thinking of using 'for-next' and
+'for-current'.  (I'd also update the fscrypt ones to match; currently they are
+'master' and 'for-stable'.)
+
+If people are okay with these changes, I'll send off the needed requests to
+helpdesk and linux-next to make these changes, and send Linus a pull request to
+update MAINTAINERS.  (And update fsverity-utils to point to the new list.)
+
+- Eric
