@@ -2,66 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDCE64D1B6
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 22:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48E664D1D3
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 22:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbiLNVZK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Dec 2022 16:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S229822AbiLNVcV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Dec 2022 16:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbiLNVYz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 16:24:55 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737D836D5E
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:24:53 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id fy4so8391340pjb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:24:53 -0800 (PST)
+        with ESMTP id S229572AbiLNVcU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 16:32:20 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFD2396F2
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:32:18 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id n65-20020a17090a2cc700b0021bc5ef7a14so658723pjd.0
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:32:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20210112.gappssmtp.com; s=20210112;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=38MlAxyPONVuvbS3bF0WGgUXHpVNxeLmf/dWtxiNfTw=;
-        b=wzTLzg9pqIgKsi7S0q73XKuHFznAHX9nZHEINWgBIDCUc3N+GGnmbzkJ2bR2QNYElk
-         FlujEA50TAqLsBzAqhISQ1gyoWb0ZvLWgjiCN2/2Ys1YyKhD1YP7LSv69eJCklhHEWpE
-         yhp9tKK6ZNsuO7wJt93uCoAVqXPbzE2uX+9jwo3Pw82jmJqBKCqtoQbrXdgITIbKxxN2
-         QPLpJdW1EL90oopAv4n832b6xsHeqi/ln25qirk9P7rW/FLKUWnzpq66eJLQjLTljDaT
-         POLbCXed9tZWG7HNVh9frenD1dT5maXUP054IR7XU0GFwN9DGgAc4FF65xoBNmukFdJv
-         zCYA==
+        bh=TUYtmNoLdStfOMqqva02bajbc6pz/bojyYRr2IhzhAY=;
+        b=lJcukMKnp7am4vqCQohHxmpQwJG7r8/GTRsygFr/VUjMymttiAdb7fvUW9mm6UKOXs
+         NgpFDylQjPinkzvatXEjGFg7zWAZfgkuxlePBarWV1mXzkR+82JP7FmG14FZXPjo24r5
+         mw1p/mfTPtO44lfc8EuFDtDnp0kdO/jwQgtqymTwhFjHLQTjY7JcW0lI+2z/UZwnYadY
+         AF09uS91E89BCIDZ/enTMp8vH9+G5hkgORjuqv/gxB8C1k0mLknhweLsqQfSY92dWEHU
+         adVuYs/PI3l+W+/OeaO5tnmx51tKMN5X68/0yy3JvT5KUW4TLXIUdxJVFFA+vjqpqfIh
+         TFEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=38MlAxyPONVuvbS3bF0WGgUXHpVNxeLmf/dWtxiNfTw=;
-        b=73qKRPU0GaEEnDgXIxjSLHOJaIalWHgdr/LgdmkNjdoqb3+zHEz3wIHeJVcNyZcOE8
-         qBAPXU0LU7W7DxPzKxTsxJeOq/zmd0rrw1qVDU55znDTWZcrgcunD/9yqQPziho25t0x
-         d6smwmr7g2t8nM4xjuBG1ivkiwLVk/zT9b8WSNaZ51DgKEyQ2qSHCm7halJ6If7gj51i
-         s78CkPxjk/qVJ+HfQNdIIUQO3hjlNS073cnnZgkRY7rEGWbF+5NtHckVQqPP1SiOovsr
-         UWg/QTc1F0B4hxCxNMBmn6y2bW7rK9KyDIESor3bk9YXskDlk2wYSMKeGNFBSDhjj9UM
-         t0yg==
-X-Gm-Message-State: ANoB5pnTSHEXSBjMqhzSYV5an7RTD7D08fUKHWqyo3XxMlMfUWkssP7w
-        UytvlI5yei7aVjQx2gmJiWE85Q==
-X-Google-Smtp-Source: AA0mqf7maufn0R88+Zbmd9cEhor9PYbyN/GvF9HynuHw4shr+kz+iDQfxGTYJocZrEBQS9tW406dSg==
-X-Received: by 2002:a17:902:e851:b0:189:a6b4:91ed with SMTP id t17-20020a170902e85100b00189a6b491edmr35942867plg.17.1671053092976;
-        Wed, 14 Dec 2022 13:24:52 -0800 (PST)
+        bh=TUYtmNoLdStfOMqqva02bajbc6pz/bojyYRr2IhzhAY=;
+        b=jkdHhzAUSyOx0NeIs2z6B0mdslcG6CxFa9BZcWvADJfV0UHfYRlbx2Rm7+A/oiMI61
+         NAFVnsH+dzujyGqEP5WYr56AnKuzSCU8v2X9i6eTgND7DRg4vbNs5lW6UJBEbmd2TP3J
+         h7UTfI4iVSTHTYlEmBLMOS0ZyEkEfvNq5rAuvOIk18gXPQYTqk5xGemmxEGL0Xpg4Skk
+         BcRfoo5coNoCX8EKTLD1B3uCCyiwJtxWhVYg3ZlTCW9P4VXMcSkY9/AkUenJU3xu4Tl2
+         V2uU/GH3MkyWEDk3X3tKLGbEM+BN5FIe4lW6vKhrfAZ59mq99yetO+s0mYLZx/iRJpON
+         /kKg==
+X-Gm-Message-State: ANoB5pkRZs0tzxYhasONONmlXZCyunRGh2QMjRjD9gxJm2ey/T1oKWcH
+        EXq4eRfAY1VxfUbp4xuOp6Y4lA==
+X-Google-Smtp-Source: AA0mqf4bBxeiHzd1bFXyeHJNyHQtzHka6Glb+MvRVk9yQCFumDBx7nCwdUottP6MvBCV2MvCf4gExQ==
+X-Received: by 2002:a17:90a:4a97:b0:213:d3e4:67b3 with SMTP id f23-20020a17090a4a9700b00213d3e467b3mr25963607pjh.21.1671053537853;
+        Wed, 14 Dec 2022 13:32:17 -0800 (PST)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id c8-20020a170903234800b00186748fe6ccsm2294064plh.214.2022.12.14.13.24.51
+        by smtp.gmail.com with ESMTPSA id nn11-20020a17090b38cb00b00212cf2fe8c3sm4585434pjb.1.2022.12.14.13.32.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Dec 2022 13:24:52 -0800 (PST)
+        Wed, 14 Dec 2022 13:32:17 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <83D3872A-E269-477D-8D2E-CA2AF80D658A@dilger.ca>
+Message-Id: <DEE6E02A-8AEC-400F-814B-7D7A6173BFFE@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_353F2A8B-789B-4AAB-95B5-AA663F50BB99";
+ boundary="Apple-Mail=_3E79795F-7D55-4288-BA90-7176671DD6BF";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFCv1 18/72] libext2fs: Add support to get average group count
-Date:   Wed, 14 Dec 2022 14:24:50 -0700
-In-Reply-To: <7e4f563719aee1970dd1058ca45b0609ae4c7c5f.1667822611.git.ritesh.list@gmail.com>
+Subject: Re: [RFCv1 21/72] e2fsck: add -m option for multithread
+Date:   Wed, 14 Dec 2022 14:32:14 -0700
+In-Reply-To: <935d3652155338e793325acd5f8b900728a56bd9.1667822611.git.ritesh.list@gmail.com>
 Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Wang Shilong <wangshilong1991@gmail.com>, Li Xi <lixi@ddn.com>
 To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 References: <cover.1667822611.git.ritesh.list@gmail.com>
- <7e4f563719aee1970dd1058ca45b0609ae4c7c5f.1667822611.git.ritesh.list@gmail.com>
+ <935d3652155338e793325acd5f8b900728a56bd9.1667822611.git.ritesh.list@gmail.com>
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,7 +73,7 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_353F2A8B-789B-4AAB-95B5-AA663F50BB99
+--Apple-Mail=_3E79795F-7D55-4288-BA90-7176671DD6BF
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
@@ -81,92 +81,47 @@ Content-Type: text/plain;
 On Nov 7, 2022, at 5:21 AM, Ritesh Harjani (IBM) <ritesh.list@gmail.com> =
 wrote:
 >=20
-> From: Wang Shilong <wshilong@ddn.com>
+> From: Li Xi <lixi@ddn.com>
 >=20
-> number of threads in pfsck should not exceed flex bg numbers.
-> This patch adds the support in libext2fs to calculate
-> ext2fs_get_avg_group() which returns an average group
-> count which each thread has to scan.
+> -m option is added but no actual functionality is added. This
+> patch only adds the logic that when -m is specified, one of
+> -p/-y/-n options should be specified. And when -m is specified,
+> -C shouldn't be specified and the completion progress report won't
+> be triggered by sending SIGUSR1/SIGUSR2 signals. This simplifies
+> the implementation of multi-thread fsck in the future.
 >=20
-> fs->fs_num_threads will be set by the client, in this case e2fsck.
-> No. of threads will be passed along with -m option while running =
-e2fsck.
-> That will also set fs->fs_num_threads, which will help in controlling
-> the amount of memory consumed to maintain in memory data structures =
-(per
-> thread) in case of multiple parallel threads (pfsck) to avoid oom.
+> Completion progress support with multi-thread fsck will be added
+> back after multi-thread fsck implementation is finished. Right
+> now, disable it to simplify the implementation of multi-thread fsck.
 >=20
+> Signed-off-by: Li Xi <lixi@ddn.com>
 > Signed-off-by: Wang Shilong <wshilong@ddn.com>
 > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> ---
-> lib/ext2fs/ext2fs.h | 32 +++++++++++++++++++++++++++++++-
-> 1 file changed, 31 insertions(+), 1 deletion(-)
->=20
-> diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-> index b1505f95..6b4926ce 100644
-> --- a/lib/ext2fs/ext2fs.h
-> +++ b/lib/ext2fs/ext2fs.h
-> @@ -279,10 +279,11 @@ struct struct_ext2_filsys {
-> 	int				cluster_ratio_bits;
-> 	__u16				default_bitmap_type;
-> 	__u16				pad;
-> +	__u32				fs_num_threads;
 
-=46rom later cleanup patch, fs_num_threads should just use "__u16 pad" =
-field.
+Minor nit below, but looks OK otherwise:
 
-Otherwise, looks OK.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
+> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+> index e5b672a2..1ee27f6a 100644
+> --- a/e2fsck/unix.c
+> +++ b/e2fsck/unix.c
+> @@ -854,7 +855,8 @@ static errcode_t PRS(int argc, char *argv[], =
+e2fsck_t *ret_ctx)
+>=20
+> 	phys_mem_kb =3D get_memory_size() / 1024;
+> 	ctx->readahead_kb =3D ~0ULL;
+> -	while ((c =3D getopt(argc, argv, =
+"panyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) !=3D EOF)
+> +
+> +	while ((c =3D getopt(argc, argv, =
+"pamnyrcC:B:dE:fvtFVM:b:I:j:P:l:L:N:SsDkz:")) !=3D EOF)
 
-> 	/*
-> 	 * Reserved for future expansion
-> 	 */
-> -	__u32				reserved[5];
-> +	__u32				reserved[4];
->=20
-> 	/*
-> 	 * Reserved for the use of the calling application.
-> @@ -2231,6 +2232,35 @@ ext2fs_orphan_block_tail(ext2_filsys fs, char =
-*buf)
-> 		sizeof(struct ext4_orphan_block_tail));
-> }
->=20
-> +static dgrp_t ext2fs_get_avg_group(ext2_filsys fs)
-> +{
-> +#ifdef HAVE_PTHREAD
-> +	dgrp_t average_group;
-> +	unsigned flexbg_size;
-> +
-> +	if (fs->fs_num_threads <=3D 1)
-> +		return fs->group_desc_count;
-> +
-> +	average_group =3D fs->group_desc_count / fs->fs_num_threads;
-> +	if (average_group <=3D 1)
-> +		return 1;
-> +
-> +	if (ext2fs_has_feature_flex_bg(fs->super)) {
-> +		int times =3D 1;
-> +
-> +		flexbg_size =3D 1 << fs->super->s_log_groups_per_flex;
-> +		if (average_group % flexbg_size) {
-> +			times =3D average_group / flexbg_size;
-> +			average_group =3D times * flexbg_size;
-> +		}
-> +	}
-> +
-> +	return average_group;
-> +#else
-> +	return fs->group_desc_count;
-> +#endif
-> +}
-> +
-> #undef _INLINE_
-> #endif
->=20
-> --
-> 2.37.3
->=20
-
+I find it easier to find/add options when these are sorted in =
+alphabetical order, but
+that is not solely the fault of this patch.  At least 'm' is added in =
+order relative
+to most other lower-case options.
 
 Cheers, Andreas
 
@@ -175,7 +130,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_353F2A8B-789B-4AAB-95B5-AA663F50BB99
+--Apple-Mail=_3E79795F-7D55-4288-BA90-7176671DD6BF
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -186,19 +141,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmOaPyIACgkQcqXauRfM
-H+BXnQ//d3kV9OyLF1tT9Mxbzv0Cwo/RJ6tu+trpQESCqi6LouRr2taGuv1hkTX7
-y741tq0kITV6SLlQw411VV0/Gpz3kvGF7MXWb4UE11DAtVEeErGvKUn2v1WhbM2r
-yGYQ//PeblWoBbMFDoSzgOWUyeQXy6ZimZak8XjEh/a4Yr/zFPmeb6ei1dAbe0xG
-KPrkqxASQy6RW2wMxjabkPhcV6ntaSdJpYjdZzFKBC3UaiDz9IIYimrjf2QT/CND
-BxcwcGTAVEX4WlrsONY/pfEqMYsWMcJ8tsOz2TyqVdWmFH4aXHK7lO+JJFJhayC+
-L6+jiKySLaZFZwZw9DNvJ4PqGTrV2XThbCul9AsolUKIkqcQr2577ccud6qM3tF0
-WZ6TZe/w6Im5d6poehpCP8O8gJ+2d9+xYcvH7y5ZSUFeSaY43cf8+34uB+h50wRU
-BD51ZIAh88KAoi1eBe+r46PtmR8OeJRvjEQRo30OW5M4hAbIcpCAu2ugUo4fK/mH
-0t50WfCuctM4Rj/jQjD2tFhrSgvY+qBiLseAGFGLR7NrZK+nIAZe8nyq1NBwdGMm
-1RGgUEHMqGDLsTOM++0uhBfmoCQfv3JxwTdyRtC7vZ1ZDyDurXGw0EwhiWR/Guzj
-VHN4LbF9pKEK8SKrrvWZk2pb1ONGg4che1ypL6n7fNYAQ4ATNj8=
-=xxnC
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmOaQN8ACgkQcqXauRfM
+H+Cs0hAAgDAX3PI8QjwxZSXiAAyXMcHpLyH6QdajKzm7N0Z+Sd5ST3uM2P8wfNpH
+8MKRNvMaV+/G11yPYgqHjOwdZMTGtMH/JLmgNx2YUO9I6FYLNi2m1W8imWyCch1E
+/WC3W+7dgYzGM5g9pZ5qUzwDh/zgEYyptK+gD2fBsgjThomS3F7XSvjje32ABo7A
+/t1H/j2Cg/tPn0wqXNyd6q4uWsVid9cZxip7IGZAUXf1+tEIgbuNK45Mk4FoyZBW
+mlpFGySIJ10ZDoH5uhm/fubDGybcFFjapwGqhsgql/WhuYJMIWYlt6qp33fxfgDp
+rnlZXYKEmwCYXUf3vRDgdFQ4HI1CC/79U5eaF6S6WKlbYTcgIF2AnAzcBed/+JoU
+xtMDDPUr67i+3Ncuq0ze7TXwPibM3jUkBswxeIlPCBfL6TDjEOQ+VM9i863UOnGN
+W7oqsAkh0mPV3GFWPzEfaVnMJNRTPPVeL4z8/BmIM55O7l7gss3WCCTSRSXO2bo2
+ADrbb+Sy7AqC6SDBJcLWcZtKOYNCj0bQxV0uFWKDVPQi9UaI+8F/9pRGHJaJEGev
+RnbOBn4pI0TA1wb/cSK2bHhJrVtTMmasYfMxkZEC8k/gU4v8IRmwpPPxZhBfp9fN
+u5CgTZCeOw7FGLBv07b3/KVy71v6dnmgzwX8iZkbEBHpfIb9uIw=
+=a9MC
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_353F2A8B-789B-4AAB-95B5-AA663F50BB99--
+--Apple-Mail=_3E79795F-7D55-4288-BA90-7176671DD6BF--
