@@ -2,57 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E844364CB81
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 14:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9313C64CB86
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 14:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbiLNNov (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Dec 2022 08:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
+        id S238368AbiLNNqV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Dec 2022 08:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237486AbiLNNos (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 08:44:48 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3467226AB2
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 05:44:46 -0800 (PST)
+        with ESMTP id S237942AbiLNNqV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 08:46:21 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EE113F32
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 05:46:19 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NXGnM3wYgz4f3jYq
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 21:44:39 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NXGq90YBVz4f3mSF
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 21:46:13 +0800 (CST)
 Received: from [10.174.178.134] (unknown [10.174.178.134])
-        by APP4 (Coremail) with SMTP id gCh0CgD3Z9VI05ljQDHjCA--.16226S3;
-        Wed, 14 Dec 2022 21:44:42 +0800 (CST)
-Subject: Re: [RFC PATCH] ext4: dio take shared inode lock when overwriting
- preallocated blocks
+        by APP4 (Coremail) with SMTP id gCh0CgDH69in05ljwUHjCA--.42616S3;
+        Wed, 14 Dec 2022 21:46:16 +0800 (CST)
+Subject: Re: [PATCH v2 00/12] ext4: enhance simulate fail facility
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huaweicloud.com, yukuai3@huawei.com
-References: <20221203103956.3691847-1-yi.zhang@huawei.com>
+        yukuai3@huawei.com
+References: <20221110022558.7844-1-yi.zhang@huawei.com>
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <8b2cfde4-dc36-ec03-bdb1-8eb90c051862@huaweicloud.com>
-Date:   Wed, 14 Dec 2022 21:44:40 +0800
+Message-ID: <56ab56ef-ea4b-e0fd-8990-5affe9d745d0@huaweicloud.com>
+Date:   Wed, 14 Dec 2022 21:46:15 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20221203103956.3691847-1-yi.zhang@huawei.com>
+In-Reply-To: <20221110022558.7844-1-yi.zhang@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgD3Z9VI05ljQDHjCA--.16226S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFy3uFy5tr48Ar1xXr4ktFb_yoW7Gr15pF
-        y3tF13Gr42gryxWFZ7t3WIvr1Ygws5ArWxAry3Gw15ZryUuryxtFyUXFyaya4UJ397Aw42
-        qFs0k34DWF1UtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
-        UU=
+X-CM-TRANSID: gCh0CgDH69in05ljwUHjCA--.42616S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxuw15Jr4kAF1DWr4xtryfXrb_yoW7uF17pF
+        y3AryfWr98X34fZrs3Ka12ka4rWa1kGr47XF9xKr18u3yxZrn3tFWktry8ZFyj9rWUA347
+        X3W2y3WDW3Z5CFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+        k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUUU
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -68,133 +66,145 @@ Hello, is anybody have advice?
 Thanks,
 Yi.
 
-On 2022/12/3 18:39, Zhang Yi wrote:
-> In the dio write path, we only take shared inode lock for the case of
-> aligned overwriting initialized blocks inside EOF. But for overwriting
-> preallocated blocks, it may only need to split unwritten extents, this
-> procedure has been protected under i_data_sem lock, it's safe to
-> release the exclusive inode lock and take shared inode lock.
+On 2022/11/10 10:25, Zhang Yi wrote:
+> Changes since v1:
+>  - Fix format error in ext4_fault_ops_write().
 > 
-> This could give a significant speed up for multi-threaded writes. Test
-> on Intel Xeon Gold 6140 and nvme SSD with below fio parameters.
+> Now we can test ext4's reliability by simulating fail facility introduced
+> in commit 46f870d690fe ("ext4: simulate various I/O and checksum errors
+> when reading metadata"), it can simulate checksum error or I/O error
+> when reading metadata from disk. But it is functional limited, it cannot
+> set failure times, probability, filters, etc. Fortunately, we already
+> have common fault-injection frame in Linux, so above limitation could be
+> easily supplied by using it in ext4. This patch set add ext4
+> fault-injection facility to replace the old frame, supply some kinds of
+> checksum error and I/O error, and also add group, inode, physical
+> block and inode logical block filters. After this patch set, we could
+> inject failure more precisly. The facility could be used to do fuzz
+> stress test include random errors, and it also could be used to
+> reprodece issues more conveniently.
 > 
->  direct=1
->  ioengine=libaio
->  iodepth=10
->  numjobs=10
->  runtime=60
->  rw=randwrite
->  size=100G
+> Patch 1: add debugfs for preparing.
+> Patch 2: introduce the fault-injection frame for ext4.
+> Patch 3-11: add various kinds of faults and also do some cleanup.
+> Patch 12: remove the old simulating facility.
 > 
-> And the test result are:
-> Before:
->  bs=4k       IOPS=11.1k, BW=43.2MiB/s
->  bs=16k      IOPS=11.1k, BW=173MiB/s
->  bs=64k      IOPS=11.2k, BW=697MiB/s
+> It provides a debugfs interface in ext4/<disk>/fault_inject, besides the
+> common config interfaces, we give 6 more.
+>  - available_faults: present available faults we can inject.
+>  - inject_faults: set faults, can set multiple at a time.
+>  - inject_inode: set the inode filter, matches all inodes if not set.
+>  - inject_group: set the block group filter, similar to inject_inode.
+>  - inject_logical_block: set the logical block filter for one inode.
+>  - inject_physical_block: set the physical block filter.
 > 
-> After:
->  bs=4k       IOPS=41.4k, BW=162MiB/s
->  bs=16k      IOPS=41.3k, BW=646MiB/s
->  bs=64k      IOPS=13.5k, BW=843MiB/s
+> Current we add 20 available faults list below, include 8 kinds of
+> metadata checksum error, 7 metadata I/O error and 5 journal error.
+> After we have this facility, more other faults could be added easily
+> in the future.
+>  - group_desc_checksum
+>  - inode_bitmap_checksum
+>  - block_bitmap_checksum
+>  - inode_checksum
+>  - extent_block_checksum
+>  - dir_block_checksum
+>  - dir_index_block_checksum
+>  - xattr_block_checksum
+>  - inode_bitmap_eio
+>  - block_bitmap_eio
+>  - inode_eio
+>  - extent_block_eio
+>  - dir_block_eio
+>  - xattr_block_eio
+>  - symlink_block_eio
+>  - journal_start
+>  - journal_start_sb
+>  - journal_get_create_access
+>  - journal_get_write_access
+>  - journal_dirty_metadata
 > 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  It passed xfstests auto mode with 1k and 4k blocksize.
+> For example: inject inode metadata checksum error on file 'foo'.
 > 
->  fs/ext4/file.c | 34 ++++++++++++++++++++++------------
->  1 file changed, 22 insertions(+), 12 deletions(-)
+> $ mkfs.ext4 -F /dev/pmem0
+> $ mount /dev/pmem0 /mnt
+> $ mkdir /mnt/dir
+> $ touch /mnt/dir/foo
+> $ ls -i /mnt/dir/foo
+>   262146 /mnt/foo
 > 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index a7a597c727e6..7edac94025ac 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -202,8 +202,9 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
->  	return false;
->  }
->  
-> -/* Is IO overwriting allocated and initialized blocks? */
-> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
-> +/* Is IO overwriting allocated or initialized blocks? */
-> +static bool ext4_overwrite_io(struct inode *inode,
-> +			      loff_t pos, loff_t len, bool *inited)
->  {
->  	struct ext4_map_blocks map;
->  	unsigned int blkbits = inode->i_blkbits;
-> @@ -217,12 +218,15 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
->  	blklen = map.m_len;
->  
->  	err = ext4_map_blocks(NULL, inode, &map, 0);
-> +	if (err != blklen)
-> +		return false;
->  	/*
->  	 * 'err==len' means that all of the blocks have been preallocated,
-> -	 * regardless of whether they have been initialized or not. To exclude
-> -	 * unwritten extents, we need to check m_flags.
-> +	 * regardless of whether they have been initialized or not. We need to
-> +	 * check m_flags to distinguish the unwritten extents.
->  	 */
-> -	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
-> +	*inited = !!(map.m_flags & EXT4_MAP_MAPPED);
-> +	return true;
->  }
->  
->  static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
-> @@ -431,11 +435,16 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
->   * - For extending writes case we don't take the shared lock, since it requires
->   *   updating inode i_disksize and/or orphan handling with exclusive lock.
->   *
-> - * - shared locking will only be true mostly with overwrites. Otherwise we will
-> - *   switch to exclusive i_rwsem lock.
-> + * - shared locking will only be true mostly with overwrites, include
-> + *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
-> + *   we protects splitting extents by i_data_sem in ext4_inode_info, so we can
-> + *   also release exclusive i_rwsem lock.
-> + *
-> + * - Otherwise we will switch to exclusive i_rwsem lock.
->   */
->  static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
-> -				     bool *ilock_shared, bool *extend)
-> +				     bool *ilock_shared, bool *extend,
-> +				     bool *overwrite)
->  {
->  	struct file *file = iocb->ki_filp;
->  	struct inode *inode = file_inode(file);
-> @@ -459,7 +468,7 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
->  	 * in file_modified().
->  	 */
->  	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
-> -	     !ext4_overwrite_io(inode, offset, count))) {
-> +	     !ext4_overwrite_io(inode, offset, count, overwrite))) {
->  		if (iocb->ki_flags & IOCB_NOWAIT) {
->  			ret = -EAGAIN;
->  			goto out;
-> @@ -491,7 +500,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  	loff_t offset = iocb->ki_pos;
->  	size_t count = iov_iter_count(from);
->  	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
-> -	bool extend = false, unaligned_io = false;
-> +	bool extend = false, unaligned_io = false, overwrite = false;
->  	bool ilock_shared = true;
->  
->  	/*
-> @@ -534,7 +543,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		return ext4_buffered_write_iter(iocb, from);
->  	}
->  
-> -	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
-> +	ret = ext4_dio_write_checks(iocb, from,
-> +				    &ilock_shared, &extend, &overwrite);
->  	if (ret <= 0)
->  		return ret;
->  
-> @@ -582,7 +592,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		ext4_journal_stop(handle);
->  	}
->  
-> -	if (ilock_shared)
-> +	if (overwrite)
->  		iomap_ops = &ext4_iomap_overwrite_ops;
->  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->  			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
+> $ echo 100 > /sys/kernel/debug/ext4/pmem0/fault_inject/probability
+> $ echo 1 > /sys/kernel/debug/ext4/pmem0/fault_inject/times
+> $ echo 262146 > /sys/kernel/debug/ext4/pmem0/fault_inject/inject_inode
+> $ echo inode_checksum > /sys/kernel/debug/ext4/pmem0/fault_inject/inject_faults
+> $ echo 1 > /sys/kernel/debug/ext4/pmem0/fault_inject/enable
+> $ echo 3 > /proc/sys/vm/drop_caches ##drop cache
+> $ stat /mnt/dir/foo
+>   stat: cannot statx '/mnt/dir/foo': Bad message
+> 
+> The kmesg print the injection location.
+> 
+> [  461.433817] FAULT_INJECTION: forcing a failure.
+> [  461.433817] name fault_inject, interval 1, probability 100, space 0, times 1
+> ...
+> [  461.438609] Call Trace:
+> [  461.438875]  <TASK>
+> [  461.439116]  ? dump_stack_lvl+0x73/0xa3
+> [  461.439534]  ? dump_stack+0x13/0x1f
+> [  461.439909]  ? should_fail.cold+0x4a/0x57
+> [  461.440346]  ? ext4_should_fail.cold+0x11f/0x135
+> [  461.440833]  ? __ext4_iget+0x407/0x1410
+> [  461.441245]  ? ext4_lookup+0x1be/0x350
+> [  461.441650]  ? __lookup_slow+0xb9/0x1f0
+> [  461.442070]  ? lookup_slow+0x46/0x70
+> [  461.442463]  ? walk_component+0x13e/0x230
+> [  461.442890]  ? path_lookupat.isra.0+0x8f/0x200
+> [  461.443369]  ? filename_lookup+0xd6/0x240
+> [  461.443798]  ? vfs_statx+0xa6/0x200
+> [  461.444186]  ? do_statx+0x48/0xc0
+> [  461.444546]  ? __might_sleep+0x56/0xc0
+> [  461.444950]  ? should_fail_usercopy+0x19/0x30
+> [  461.445424]  ? strncpy_from_user+0x33/0x2a0
+> [  461.445870]  ? getname_flags+0x95/0x330
+> [  461.446288]  ? switch_fpu_return+0x27/0x1e0
+> [  461.446736]  ? __x64_sys_statx+0x90/0xd0
+> [  461.447160]  ? do_syscall_64+0x3b/0x90
+> [  461.447563]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [  461.448122]  </TASK>
+> [  461.448395] EXT4-fs error (device pmem0): ext4_lookup:1840: inode #262146: comm stat: iget: checksum invalid
+> 
+> Thanks,
+> Yi.
+> 
+> 
+> Zhang Yi (12):
+>   ext4: add debugfs interface
+>   ext4: introduce fault injection facility
+>   ext4: add several checksum fault injection
+>   ext4: add bitmaps I/O fault injection
+>   ext4: add inode I/O fault injection
+>   ext4: add extent block I/O fault injection
+>   ext4: add dirblock I/O fault injection
+>   ext4: call ext4_xattr_get_block() when getting xattr block
+>   ext4: add xattr block I/O fault injection
+>   ext4: add symlink block I/O fault injection
+>   ext4: add journal related fault injection
+>   ext4: remove simulate fail facility
+> 
+>  fs/ext4/Kconfig     |   9 ++
+>  fs/ext4/balloc.c    |  14 ++-
+>  fs/ext4/bitmap.c    |   4 +
+>  fs/ext4/dir.c       |   3 +
+>  fs/ext4/ext4.h      | 181 +++++++++++++++++++++++++++++--------
+>  fs/ext4/ext4_jbd2.c |  22 +++--
+>  fs/ext4/ext4_jbd2.h |   5 +
+>  fs/ext4/extents.c   |   7 ++
+>  fs/ext4/ialloc.c    |  24 +++--
+>  fs/ext4/inode.c     |  26 ++++--
+>  fs/ext4/namei.c     |  14 ++-
+>  fs/ext4/super.c     |   7 +-
+>  fs/ext4/symlink.c   |   4 +
+>  fs/ext4/sysfs.c     | 183 +++++++++++++++++++++++++++++++++++--
+>  fs/ext4/xattr.c     | 216 +++++++++++++++++++-------------------------
+>  15 files changed, 515 insertions(+), 204 deletions(-)
 > 
 
