@@ -2,46 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1483264D105
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 21:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91564D1A5
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Dec 2022 22:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbiLNUUo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Dec 2022 15:20:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S229636AbiLNVPl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Dec 2022 16:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbiLNUUG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 15:20:06 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2474013DDD
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 12:08:30 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BEK8MIJ011925
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 15:08:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1671048503; bh=XAbUvKJFKr2cIVu8GmeMPEKwXRkezsxq3RJBoWK4yYk=;
-        h=From:To:Cc:Subject:Date;
-        b=OE4kIFnLjcHFGA+Vlehi7U5wzf1S6LuUxlCOkSpSwNrhBFPPYEMop9/4yIp6sUOS1
-         keBGtPUdl+LoiaPvysrjrrhQsw7aYxP4nXbrqUxC7kpJJaZ4h0ZXOz/TdDX/qln9u1
-         ZTSsGe/0sCjAqImlR14Xyb4VVouoMrR8Qwu6FdYV9iaAgUaoR6JTSZXi1eADg3jxrY
-         DfYgb82U0KEXxZCPHf8i7jFnl+92LrJPgCz265bbeTGUhNYDZOkjTpIuOMc2N3pQE9
-         88wd3zN6Gf4D1TBsG/gWppnosEn1YYp4HWU8ROVk7pTZhouduG6gHCcnWmGVyrDPPV
-         HLVhlmmkjnzRA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 001F515C40A2; Wed, 14 Dec 2022 15:08:21 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     yebin@huaweicloud.com, "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: improve xattr consistency checking and error reporting
-Date:   Wed, 14 Dec 2022 15:08:18 -0500
-Message-Id: <20221214200818.870087-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.31.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S229713AbiLNVPk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Dec 2022 16:15:40 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AAD2678
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:15:38 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id w26so5366728pfj.6
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Dec 2022 13:15:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wq/OXWhveT600Zka3PCUJcilEAuPz6WcTRNKviwQwxY=;
+        b=xg4XLa/kcKmhkZehr5A4FHa6odgnm0O+apWXQpg997lmyBPUPo1dHZCMtO92gP97y3
+         8RDuw+2hF++yGFGaoJi6QOdHL1GWPgNRxGwkTWYCx2yXrXe6wyYuebzapJg7OFx7U8AJ
+         ZeM/ESVU58+ZDALlLJ5r/mb1EWhL8oZjmypGEJRFwrv+iIIYnnnNrM+AdXeh5sMzAgsa
+         1BvWxmGijFk7OWf9Uab57c98PjoC7ObtWKAYvIVBAwh6MxK91FRQ7Psk8XBszh8xHGIx
+         MADaX1EB/SA8OphWnV9WpKhjTPIpV6MrjVZjdp1gXj3mjCOcYBXNb50w1qSwxelZ1bWb
+         0opg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wq/OXWhveT600Zka3PCUJcilEAuPz6WcTRNKviwQwxY=;
+        b=tw/eTyhXXA2STdAg9JMMwhTXx/wYzGIz1Xal5IYiQRgC0tvyI59bp0lVSGDt2WbQF1
+         2WGbetwXpwjJ8i4YUx5dI7hgebSY6KHWIcXMzu+UuLGX1fKNNSB2FO5e34rh/VAwCauU
+         XMfdgcN/ZESSB4AEDJhrhNgNwWOTSfc2njnsk8uAeKsLLKlYbgTlfENc+UCwIYarHiCk
+         Y269apQZnjYJiGLwTpXWhmdxT3RdKANqM8Qn0FpgNm4EJQzlP11ARITiidN2Mlf/5Uw1
+         YhLs4vEEDoW/oTtnDzqMC709I4fANTekF0rGU4KFwVWd5IMFA7byDkftVwWQrWJjYoG/
+         8JWA==
+X-Gm-Message-State: ANoB5plQ9/4sy1VBLWVf18gG+8jwgXlEfRgANDlbjtodPpnzwZtwdXNw
+        OGKr75ThuPN+avoTB5b2L32EZg==
+X-Google-Smtp-Source: AA0mqf6NFpoErvFtdsfr4MxkkeMTLWOqBuCZdGT65kMz9OzlzogWgYk5NWViks307A7Q04RXqetWLQ==
+X-Received: by 2002:a62:6495:0:b0:56e:d365:f96d with SMTP id y143-20020a626495000000b0056ed365f96dmr23681719pfb.5.1671052537636;
+        Wed, 14 Dec 2022 13:15:37 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id i31-20020a63221f000000b004792ff8ab61sm258041pgi.80.2022.12.14.13.15.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Dec 2022 13:15:36 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <AFE1174E-74AD-4EA3-ADFC-E7512BEC60AE@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_1B60113F-EF13-4D54-9208-04934C2C0691";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [RFCv1 15/72] tst_bitmaps_pthread: Add merge bitmaps test using
+ pthreads
+Date:   Wed, 14 Dec 2022 14:15:30 -0700
+In-Reply-To: <c66b3b734a5a98297728786df5fca21a234d5872.1667822611.git.ritesh.list@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wangshilong1991@gmail.com>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+References: <cover.1667822611.git.ritesh.list@gmail.com>
+ <c66b3b734a5a98297728786df5fca21a234d5872.1667822611.git.ritesh.list@gmail.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,194 +73,74 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Refactor the in-inode and xattr block consistency checking, and report
-more fine-grained reports of the consistency problems.  Also add more
-consistency checks for ea_inode number.
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/xattr.c | 126 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 80 insertions(+), 46 deletions(-)
+--Apple-Mail=_1B60113F-EF13-4D54-9208-04934C2C0691
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 7decaaf27e82..247560cb8016 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -182,27 +182,73 @@ ext4_xattr_handler(int name_index)
- }
- 
- static int
--ext4_xattr_check_entries(struct ext4_xattr_entry *entry, void *end,
--			 void *value_start)
-+check_xattrs(struct inode *inode, struct buffer_head *bh,
-+	     struct ext4_xattr_entry *entry, void *end, void *value_start,
-+	     const char *function, unsigned int line)
- {
- 	struct ext4_xattr_entry *e = entry;
-+	int err = -EFSCORRUPTED;
-+	char *err_str;
-+
-+	if (bh) {
-+		if (BHDR(bh)->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
-+		    BHDR(bh)->h_blocks != cpu_to_le32(1)) {
-+			err_str = "invalid header";
-+			goto errout;
-+		}
-+		if (buffer_verified(bh))
-+			return 0;
-+		if (!ext4_xattr_block_csum_verify(inode, bh)) {
-+			err = -EFSBADCRC;
-+			err_str = "invalid checksum";
-+			goto errout;
-+		}
-+	} else {
-+		struct ext4_xattr_ibody_header *header = value_start;
-+
-+		header -= 1;
-+		if (end - (void *)header < sizeof(*header) + sizeof(u32)) {
-+			err_str = "in-inode xattr block too small";
-+			goto errout;
-+		}
-+		if (header->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC)) {
-+			err_str = "bad magic number in in-inode xattr";
-+			goto errout;
-+		}
-+	}
- 
- 	/* Find the end of the names list */
- 	while (!IS_LAST_ENTRY(e)) {
- 		struct ext4_xattr_entry *next = EXT4_XATTR_NEXT(e);
--		if ((void *)next >= end)
--			return -EFSCORRUPTED;
--		if (strnlen(e->e_name, e->e_name_len) != e->e_name_len)
--			return -EFSCORRUPTED;
-+		if ((void *)next >= end) {
-+			err_str = "e_name out of bounds";
-+			goto errout;
-+		}
-+		if (strnlen(e->e_name, e->e_name_len) != e->e_name_len) {
-+			err_str = "bad e_name length";
-+			goto errout;
-+		}
- 		e = next;
- 	}
- 
- 	/* Check the values */
- 	while (!IS_LAST_ENTRY(entry)) {
- 		u32 size = le32_to_cpu(entry->e_value_size);
-+		unsigned long ea_ino = le32_to_cpu(entry->e_value_inum);
- 
--		if (size > EXT4_XATTR_SIZE_MAX)
--			return -EFSCORRUPTED;
-+		if (!ext4_has_feature_ea_inode(inode->i_sb) && ea_ino) {
-+			err_str = "ea_inode specified without ea_inode feature enabled";
-+			goto errout;
-+		}
-+		if (ea_ino && ((ea_ino == EXT4_ROOT_INO) ||
-+			       !ext4_valid_inum(inode->i_sb, ea_ino))) {
-+			err_str = "invalid ea_ino";
-+			goto errout;
-+		}
-+		if (size > EXT4_XATTR_SIZE_MAX) {
-+			err_str = "e_value size too large";
-+			goto errout;
-+		}
- 
- 		if (size != 0 && entry->e_value_inum == 0) {
- 			u16 offs = le16_to_cpu(entry->e_value_offs);
-@@ -214,66 +260,54 @@ ext4_xattr_check_entries(struct ext4_xattr_entry *entry, void *end,
- 			 * the padded and unpadded sizes, since the size may
- 			 * overflow to 0 when adding padding.
- 			 */
--			if (offs > end - value_start)
--				return -EFSCORRUPTED;
-+			if (offs > end - value_start) {
-+				err_str = "e_value out of bounds";
-+				goto errout;
-+			}
- 			value = value_start + offs;
- 			if (value < (void *)e + sizeof(u32) ||
- 			    size > end - value ||
--			    EXT4_XATTR_SIZE(size) > end - value)
--				return -EFSCORRUPTED;
-+			    EXT4_XATTR_SIZE(size) > end - value) {
-+				err_str = "overlapping e_value ";
-+				goto errout;
-+			}
- 		}
- 		entry = EXT4_XATTR_NEXT(entry);
- 	}
--
-+	if (bh)
-+		set_buffer_verified(bh);
- 	return 0;
-+
-+errout:
-+	if (bh)
-+		__ext4_error_inode(inode, function, line, 0, -err,
-+				   "corrupted xattr block %llu: %s",
-+				   (unsigned long long) bh->b_blocknr,
-+				   err_str);
-+	else
-+		__ext4_error_inode(inode, function, line, 0, -err,
-+				   "corrupted in-inode xattr: %s", err_str);
-+	return err;
- }
- 
- static inline int
- __ext4_xattr_check_block(struct inode *inode, struct buffer_head *bh,
- 			 const char *function, unsigned int line)
- {
--	int error = -EFSCORRUPTED;
--
--	if (BHDR(bh)->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
--	    BHDR(bh)->h_blocks != cpu_to_le32(1))
--		goto errout;
--	if (buffer_verified(bh))
--		return 0;
--
--	error = -EFSBADCRC;
--	if (!ext4_xattr_block_csum_verify(inode, bh))
--		goto errout;
--	error = ext4_xattr_check_entries(BFIRST(bh), bh->b_data + bh->b_size,
--					 bh->b_data);
--errout:
--	if (error)
--		__ext4_error_inode(inode, function, line, 0, -error,
--				   "corrupted xattr block %llu",
--				   (unsigned long long) bh->b_blocknr);
--	else
--		set_buffer_verified(bh);
--	return error;
-+	return check_xattrs(inode, bh, BFIRST(bh), bh->b_data + bh->b_size,
-+			    bh->b_data, function, line);
- }
- 
- #define ext4_xattr_check_block(inode, bh) \
- 	__ext4_xattr_check_block((inode), (bh),  __func__, __LINE__)
- 
- 
--static int
-+static inline int
- __xattr_check_inode(struct inode *inode, struct ext4_xattr_ibody_header *header,
- 			 void *end, const char *function, unsigned int line)
- {
--	int error = -EFSCORRUPTED;
--
--	if (end - (void *)header < sizeof(*header) + sizeof(u32) ||
--	    (header->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC)))
--		goto errout;
--	error = ext4_xattr_check_entries(IFIRST(header), end, IFIRST(header));
--errout:
--	if (error)
--		__ext4_error_inode(inode, function, line, 0, -error,
--				   "corrupted in-inode xattr");
--	return error;
-+	return check_xattrs(inode, NULL, IFIRST(header), end, IFIRST(header),
-+			    function, line);
- }
- 
- #define xattr_check_inode(inode, header, end) \
--- 
-2.31.0
+On Nov 7, 2022, at 5:21 AM, Ritesh Harjani (IBM) <ritesh.list@gmail.com> =
+wrote:
+>=20
+> This patch adds a test to verify the core bitmaps merge APIs
+> for rbtree bitmap type.
+>=20
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> +/*
+> + * Note we use EXT2FS_BMAP64_BITARRAY always for used_bitmap, this is =
+because
+> + * EXT2FS_BMAP64_RBTREE does not support parallel scan due to rcursor
+> + * optimization.
+> + */
+
+Is this going to be a problem in the future?  I think for pass1/pass5 =
+there
+are no rbtree bitmaps that are *source* bitmaps for multi-threaded =
+operation,
+but I suspect that once we try to parallelize pass2 this could break.
+
+Is there any check in the code that prevents multi-thread access to an =
+rbtree
+bitmap?  Making a copy for each thread, or ideally copying the rcursor =
+for
+each thread, to allow at least multi-threaded reads.  I don't think =
+there is
+a high need for multi-threaded write
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_1B60113F-EF13-4D54-9208-04934C2C0691
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmOaPPIACgkQcqXauRfM
+H+Bizg/+IDtVNo6CpS4FM6uXdtGOsGF46b1I9SQXRZbKCkjo6lKClYFIQwX0rHtO
+DbmrtZpTfqns6+kOIC8vGpKUQYfSzsPjtXF2lHEB+4mcazSQI9cBQwRz5BQWNYf/
+FiHUyEwXLUG1j/B0R2RebauGDnqG10Jx7I7ewh82Bw2HGnW77SZiMwsNpBN8e7Tg
+MeUjfGHQ/wBTqriuEP3edDRK4Rk4U3G0mijYui7mvlnRXer7XWaPjgzLwZ3PEBQk
+6uwNwWYaJwoZW14EJa4mNNPnmrOPZF5zfQmtX8cf633njMd/COaCRUBrfDFGsYqN
+4ynmdY8HPTav9c+0CWmm9VqG5iS3o4iJO9vYh2oaTeoDrsCeAZsxCCqEW4RjPynf
+zKK6UqsK4fO6PqZiiafX499zA1M+EfauSPGMLzEsXdAhU7OKBNZEePSkD4VdgLym
+JghnaQCBquDnQuNOPnmJfzDWsrk5E7OfF4hL/9K2SzADzSl+UBsxm2XwRxoBg83+
+o4P5enOEOb8Dwl907QMsfxF31IvYLGPF9hqaEYuMp6jXNYy+uunWdUnSknXwPQjA
+2kNfRGBKVdTd3qA8wRggAeczi3SjOAFKoLGHCGq+19IY/MKcL/b1eR66rE9z4K43
+iiVzhXg4dik00AlBg1vq82wcG5HD7Wort+sTNx8z+1EX/Lidb78=
+=Mmza
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_1B60113F-EF13-4D54-9208-04934C2C0691--
