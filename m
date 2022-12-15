@@ -2,302 +2,244 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EEA64D655
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Dec 2022 07:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2441564D7B9
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Dec 2022 09:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbiLOGGZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Dec 2022 01:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S229611AbiLOIZj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Dec 2022 03:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiLOGGY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Dec 2022 01:06:24 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468443F04A;
-        Wed, 14 Dec 2022 22:06:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7A9F61CF8;
-        Thu, 15 Dec 2022 06:06:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174D3C433EF;
-        Thu, 15 Dec 2022 06:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671084382;
-        bh=oUUTcNGCxne4bIvsKsWaj+oTN6NR5UQmZDveEZOr+7k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QgYs6oa4cNZXmrblrSnFAei9T8fknp9gyrSrfDWrAv16WQQcAWeQFdCyQue8LEf37
-         WbDOYX/ftTQw8DIl+QHAn82hAE1gKkKj3sI9Sw5Zn9bSRMLeHHx5qph8ZD7TWmZ8ZA
-         1rSC5LnAUz+YLN0jNJTqKtl25UemjMlZ0dcVAtRliQ0STjEarwoET6uOzuMF/jdZNQ
-         Kq1OSRRCeE3N3umSPoZmuBx9L4NYFfn9aj4bFAq/S+g+lMblOqmrlsixAIcAV7mNB9
-         X8mH7m7BZm0PPuaws4939kx6KQadRASKqIASnTYwNuYpi/zkIF+/kcRWOe3CMXr9UA
-         tx6cFNHxaPZLA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: [PATCH] fsverity: remove debug messages and CONFIG_FS_VERITY_DEBUG
-Date:   Wed, 14 Dec 2022 22:04:20 -0800
-Message-Id: <20221215060420.60692-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229786AbiLOIZT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Dec 2022 03:25:19 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF29442F7
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Dec 2022 00:24:54 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NXldr1kM1z4f3mVW
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Dec 2022 16:24:48 +0800 (CST)
+Received: from [10.174.178.134] (unknown [10.174.178.134])
+        by APP4 (Coremail) with SMTP id gCh0CgDXSNbR2ZpjjX8RCQ--.20329S3;
+        Thu, 15 Dec 2022 16:24:51 +0800 (CST)
+Subject: Re: [RFC PATCH] ext4: dio take shared inode lock when overwriting
+ preallocated blocks
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, yi.zhang@huaweicloud.com,
+        yukuai3@huawei.com
+References: <20221203103956.3691847-1-yi.zhang@huawei.com>
+ <20221214170125.bixz46ybm76rtbzf@quack3>
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <1df360ba-35f4-18e1-5544-acb18a680a90@huaweicloud.com>
+Date:   Thu, 15 Dec 2022 16:24:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221214170125.bixz46ybm76rtbzf@quack3>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgDXSNbR2ZpjjX8RCQ--.20329S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFyxGr4fGrWfZw1UXFyrZwb_yoWxKw1kpF
+        y3tF43ArZFgry7uFyxta1IqFyS9ws5trWxAry3W3W5AryDuryftFy0qFyYya48XrZ7Gw42
+        qFs0y34Duas0yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
+        UU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 2022/12/15 1:01, Jan Kara wrote:
+> On Sat 03-12-22 18:39:56, Zhang Yi wrote:
+>> In the dio write path, we only take shared inode lock for the case of
+>> aligned overwriting initialized blocks inside EOF. But for overwriting
+>> preallocated blocks, it may only need to split unwritten extents, this
+>> procedure has been protected under i_data_sem lock, it's safe to
+>> release the exclusive inode lock and take shared inode lock.
+>>
+>> This could give a significant speed up for multi-threaded writes. Test
+>> on Intel Xeon Gold 6140 and nvme SSD with below fio parameters.
+>>
+>>  direct=1
+>>  ioengine=libaio
+>>  iodepth=10
+>>  numjobs=10
+>>  runtime=60
+>>  rw=randwrite
+>>  size=100G
+>>
+>> And the test result are:
+>> Before:
+>>  bs=4k       IOPS=11.1k, BW=43.2MiB/s
+>>  bs=16k      IOPS=11.1k, BW=173MiB/s
+>>  bs=64k      IOPS=11.2k, BW=697MiB/s
+>>
+>> After:
+>>  bs=4k       IOPS=41.4k, BW=162MiB/s
+>>  bs=16k      IOPS=41.3k, BW=646MiB/s
+>>  bs=64k      IOPS=13.5k, BW=843MiB/s
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  It passed xfstests auto mode with 1k and 4k blocksize.
+> 
+> Besides some naming nits (see below) I think this should work. But I have
+> to say I'm a bit uneasy about this because we will now be changing block
+> mapping from unwritten to written only with shared i_rwsem. OTOH that
+> happens during writeback as well so we should be fine and the gain is very
+> nice.
+> 
+Thanks for advice, I will change the argument name to make it more reasonable.
 
-I've gotten very little use out of these debug messages, and I'm not
-aware of anyone else having used them.
+> Out of curiosity do you have a real usecase for this?
 
-Indeed, sprinkling pr_debug around is not really a best practice these
-days, especially for filesystem code.  Tracepoints are used instead.
+No, I was just analyse the performance gap in our benchmark tests, and have
+some question and idea while reading the code. Maybe it could speed up the
+first time write in some database. :)
 
-Let's just remove these and start from a clean slate.
+Besides, I want to discuss it a bit more. I originally changed this code to
+switch to take the shared inode and also use ext4_iomap_overwrite_ops for
+the overwriting preallocated blocks case. It will postpone the splitting extent
+procedure to endio and could give a much more gain than this patch (+~27%).
 
-This change does not affect info, warning, and error messages.
+This patch:
+  bs=4k       IOPS=41.4k, BW=162MiB/s
+Postpone split:
+  bs=4k       IOPS=52.9k, BW=207MiB/s
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/verity/Kconfig            |  8 --------
- fs/verity/enable.c           | 11 -----------
- fs/verity/fsverity_private.h |  4 ----
- fs/verity/init.c             |  1 -
- fs/verity/open.c             | 21 ++-------------------
- fs/verity/signature.c        |  2 --
- fs/verity/verify.c           | 13 -------------
- 7 files changed, 2 insertions(+), 58 deletions(-)
+But I think it's maybe too radical. I looked at the history and notice in commit
+0031462b5b39 ("ext4: Split uninitialized extents for direct I/O"), it introduce
+the flag EXT4_GET_BLOCKS_DIO(now it had been renamed to EXT4_GET_BLOCKS_PRE_IO)
+to make sure that the preallocated unwritten extent have been splitted before
+submitting the I/O, which is used to prevent the ENOSPC problem if the filesystem
+run out-of-space in the endio procedure. And 4 years later, commit 27dd43854227
+("ext4: introduce reserved space") reserve some blocks for metedata allocation.
+It looks like this commit could also slove the ENOSPC problem for most cases if
+we postpone extent splitting into the endio procedure. I don't find other side
+effect, so I think it may also fine if we do that. Do you have some advice or
+am I missing something?
 
-diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
-index aad1f1d998b9..a7ffd718f171 100644
---- a/fs/verity/Kconfig
-+++ b/fs/verity/Kconfig
-@@ -34,14 +34,6 @@ config FS_VERITY
- 
- 	  If unsure, say N.
- 
--config FS_VERITY_DEBUG
--	bool "FS Verity debugging"
--	depends on FS_VERITY
--	help
--	  Enable debugging messages related to fs-verity by default.
--
--	  Say N unless you are an fs-verity developer.
--
- config FS_VERITY_BUILTIN_SIGNATURES
- 	bool "FS Verity builtin signature support"
- 	depends on FS_VERITY
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index df6b499bf6a1..ef4df451fce7 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -70,10 +70,6 @@ static int build_merkle_tree_level(struct file *filp, unsigned int level,
- 	for (i = 0; i < num_blocks_to_hash; i++) {
- 		struct page *src_page;
- 
--		if ((pgoff_t)i % 10000 == 0 || i + 1 == num_blocks_to_hash)
--			pr_debug("Hashing block %llu of %llu for level %u\n",
--				 i + 1, num_blocks_to_hash, level);
--
- 		if (level == 0) {
- 			/* Leaf: hashing a data block */
- 			src_page = read_file_data_page(filp, i, &ra,
-@@ -263,15 +259,12 @@ static int enable_verity(struct file *filp,
- 	 * ->begin_enable_verity() and ->end_enable_verity() using the inode
- 	 * lock and only allow one process to be here at a time on a given file.
- 	 */
--	pr_debug("Building Merkle tree...\n");
- 	BUILD_BUG_ON(sizeof(desc->root_hash) < FS_VERITY_MAX_DIGEST_SIZE);
- 	err = build_merkle_tree(filp, &params, desc->root_hash);
- 	if (err) {
- 		fsverity_err(inode, "Error %d building Merkle tree", err);
- 		goto rollback;
- 	}
--	pr_debug("Done building Merkle tree.  Root hash is %s:%*phN\n",
--		 params.hash_alg->name, params.digest_size, desc->root_hash);
- 
- 	/*
- 	 * Create the fsverity_info.  Don't bother trying to save work by
-@@ -286,10 +279,6 @@ static int enable_verity(struct file *filp,
- 		goto rollback;
- 	}
- 
--	if (arg->sig_size)
--		pr_debug("Storing a %u-byte PKCS#7 signature alongside the file\n",
--			 arg->sig_size);
--
- 	/*
- 	 * Tell the filesystem to finish enabling verity on the file.
- 	 * Serialized with ->begin_enable_verity() by the inode lock.
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index c7fcb855e068..a16038a0ee67 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -8,10 +8,6 @@
- #ifndef _FSVERITY_PRIVATE_H
- #define _FSVERITY_PRIVATE_H
- 
--#ifdef CONFIG_FS_VERITY_DEBUG
--#define DEBUG
--#endif
--
- #define pr_fmt(fmt) "fs-verity: " fmt
- 
- #include <linux/fsverity.h>
-diff --git a/fs/verity/init.c b/fs/verity/init.c
-index c98b7016f446..023905151035 100644
---- a/fs/verity/init.c
-+++ b/fs/verity/init.c
-@@ -49,7 +49,6 @@ static int __init fsverity_init(void)
- 	if (err)
- 		goto err_exit_workqueue;
- 
--	pr_debug("Initialized fs-verity\n");
- 	return 0;
- 
- err_exit_workqueue:
-diff --git a/fs/verity/open.c b/fs/verity/open.c
-index 81ff94442f7b..12bf2596b173 100644
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -77,10 +77,6 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 	params->log_arity = params->log_blocksize - ilog2(params->digest_size);
- 	params->hashes_per_block = 1 << params->log_arity;
- 
--	pr_debug("Merkle tree uses %s with %u-byte blocks (%u hashes/block), salt=%*phN\n",
--		 hash_alg->name, params->block_size, params->hashes_per_block,
--		 (int)salt_size, salt);
--
- 	/*
- 	 * Compute the number of levels in the Merkle tree and create a map from
- 	 * level to the starting block of that level.  Level 'num_levels - 1' is
-@@ -90,7 +86,6 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 
- 	/* Compute number of levels and the number of blocks in each level */
- 	blocks = ((u64)inode->i_size + params->block_size - 1) >> log_blocksize;
--	pr_debug("Data is %lld bytes (%llu blocks)\n", inode->i_size, blocks);
- 	while (blocks > 1) {
- 		if (params->num_levels >= FS_VERITY_MAX_LEVELS) {
- 			fsverity_err(inode, "Too many levels in Merkle tree");
-@@ -109,8 +104,6 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 	for (level = (int)params->num_levels - 1; level >= 0; level--) {
- 		blocks = params->level_start[level];
- 		params->level_start[level] = offset;
--		pr_debug("Level %d is %llu blocks starting at index %llu\n",
--			 level, blocks, offset);
- 		offset += blocks;
- 	}
- 
-@@ -176,9 +169,6 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
- 		fsverity_err(inode, "Error %d computing file digest", err);
- 		goto out;
- 	}
--	pr_debug("Computed file digest: %s:%*phN\n",
--		 vi->tree_params.hash_alg->name,
--		 vi->tree_params.digest_size, vi->file_digest);
- 
- 	err = fsverity_verify_signature(vi, desc->signature,
- 					le32_to_cpu(desc->sig_size));
-@@ -343,12 +333,8 @@ int fsverity_file_open(struct inode *inode, struct file *filp)
- 	if (!IS_VERITY(inode))
- 		return 0;
- 
--	if (filp->f_mode & FMODE_WRITE) {
--		pr_debug("Denying opening verity file (ino %lu) for write\n",
--			 inode->i_ino);
-+	if (filp->f_mode & FMODE_WRITE)
- 		return -EPERM;
--	}
--
- 	return ensure_verity_info(inode);
- }
- EXPORT_SYMBOL_GPL(fsverity_file_open);
-@@ -365,11 +351,8 @@ EXPORT_SYMBOL_GPL(fsverity_file_open);
-  */
- int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
- {
--	if (IS_VERITY(d_inode(dentry)) && (attr->ia_valid & ATTR_SIZE)) {
--		pr_debug("Denying truncate of verity file (ino %lu)\n",
--			 d_inode(dentry)->i_ino);
-+	if (IS_VERITY(d_inode(dentry)) && (attr->ia_valid & ATTR_SIZE))
- 		return -EPERM;
--	}
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(fsverity_prepare_setattr);
-diff --git a/fs/verity/signature.c b/fs/verity/signature.c
-index 143a530a8008..e7d3ca919a1e 100644
---- a/fs/verity/signature.c
-+++ b/fs/verity/signature.c
-@@ -82,8 +82,6 @@ int fsverity_verify_signature(const struct fsverity_info *vi,
- 		return err;
- 	}
- 
--	pr_debug("Valid signature for file digest %s:%*phN\n",
--		 hash_alg->name, hash_alg->digest_size, vi->file_digest);
- 	return 0;
- }
- 
-diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-index 961ba248021f..92f36b5522fa 100644
---- a/fs/verity/verify.c
-+++ b/fs/verity/verify.c
-@@ -91,8 +91,6 @@ static bool verify_page(struct inode *inode, const struct fsverity_info *vi,
- 	if (WARN_ON_ONCE(!PageLocked(data_page) || PageUptodate(data_page)))
- 		return false;
- 
--	pr_debug_ratelimited("Verifying data page %lu...\n", index);
--
- 	/*
- 	 * Starting at the leaf level, ascend the tree saving hash pages along
- 	 * the way until we find a verified hash page, indicated by PageChecked;
-@@ -105,9 +103,6 @@ static bool verify_page(struct inode *inode, const struct fsverity_info *vi,
- 
- 		hash_at_level(params, index, level, &hindex, &hoffset);
- 
--		pr_debug_ratelimited("Level %d: hindex=%lu, hoffset=%u\n",
--				     level, hindex, hoffset);
--
- 		hpage = inode->i_sb->s_vop->read_merkle_tree_page(inode, hindex,
- 				level == 0 ? level0_ra_pages : 0);
- 		if (IS_ERR(hpage)) {
-@@ -122,19 +117,13 @@ static bool verify_page(struct inode *inode, const struct fsverity_info *vi,
- 			memcpy_from_page(_want_hash, hpage, hoffset, hsize);
- 			want_hash = _want_hash;
- 			put_page(hpage);
--			pr_debug_ratelimited("Hash page already checked, want %s:%*phN\n",
--					     params->hash_alg->name,
--					     hsize, want_hash);
- 			goto descend;
- 		}
--		pr_debug_ratelimited("Hash page not yet checked\n");
- 		hpages[level] = hpage;
- 		hoffsets[level] = hoffset;
- 	}
- 
- 	want_hash = vi->root_hash;
--	pr_debug("Want root hash: %s:%*phN\n",
--		 params->hash_alg->name, hsize, want_hash);
- descend:
- 	/* Descend the tree verifying hash pages */
- 	for (; level > 0; level--) {
-@@ -151,8 +140,6 @@ static bool verify_page(struct inode *inode, const struct fsverity_info *vi,
- 		memcpy_from_page(_want_hash, hpage, hoffset, hsize);
- 		want_hash = _want_hash;
- 		put_page(hpage);
--		pr_debug("Verified hash page at level %d, now want %s:%*phN\n",
--			 level - 1, params->hash_alg->name, hsize, want_hash);
- 	}
- 
- 	/* Finally, verify the data page */
+Thanks,
+Yi.
 
-base-commit: 041fae9c105ae342a4245cf1e0dc56a23fbb9d3c
--- 
-2.38.1
+> 
+>>  fs/ext4/file.c | 34 ++++++++++++++++++++++------------
+>>  1 file changed, 22 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index a7a597c727e6..7edac94025ac 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -202,8 +202,9 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
+>>  	return false;
+>>  }
+>>  
+>> -/* Is IO overwriting allocated and initialized blocks? */
+>> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+>> +/* Is IO overwriting allocated or initialized blocks? */
+>> +static bool ext4_overwrite_io(struct inode *inode,
+>> +			      loff_t pos, loff_t len, bool *inited)
+> 
+> 'inited' just sounds weird. Correct is 'initialized' which is a bit long.
+> Maybe just negate the meaning and call this 'unwritten'?
+> 
+>>  {
+>>  	struct ext4_map_blocks map;
+>>  	unsigned int blkbits = inode->i_blkbits;
+>> @@ -217,12 +218,15 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+>>  	blklen = map.m_len;
+>>  
+>>  	err = ext4_map_blocks(NULL, inode, &map, 0);
+>> +	if (err != blklen)
+>> +		return false;
+>>  	/*
+>>  	 * 'err==len' means that all of the blocks have been preallocated,
+>> -	 * regardless of whether they have been initialized or not. To exclude
+>> -	 * unwritten extents, we need to check m_flags.
+>> +	 * regardless of whether they have been initialized or not. We need to
+>> +	 * check m_flags to distinguish the unwritten extents.
+>>  	 */
+>> -	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
+>> +	*inited = !!(map.m_flags & EXT4_MAP_MAPPED);
+>> +	return true;
+>>  }
+>>  
+>>  static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
+>> @@ -431,11 +435,16 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
+>>   * - For extending writes case we don't take the shared lock, since it requires
+>>   *   updating inode i_disksize and/or orphan handling with exclusive lock.
+>>   *
+>> - * - shared locking will only be true mostly with overwrites. Otherwise we will
+>> - *   switch to exclusive i_rwsem lock.
+>> + * - shared locking will only be true mostly with overwrites, include
+>> + *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
+>> + *   we protects splitting extents by i_data_sem in ext4_inode_info, so we can
+>> + *   also release exclusive i_rwsem lock.
+>> + *
+>> + * - Otherwise we will switch to exclusive i_rwsem lock.
+>>   */
+>>  static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>> -				     bool *ilock_shared, bool *extend)
+>> +				     bool *ilock_shared, bool *extend,
+>> +				     bool *overwrite)
+> 
+> And it would be good to preserve the argument name in other functions as
+> well - i.e., keep using 'unwritten' here as well.
+> 
+>>  {
+>>  	struct file *file = iocb->ki_filp;
+>>  	struct inode *inode = file_inode(file);
+>> @@ -459,7 +468,7 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>>  	 * in file_modified().
+>>  	 */
+>>  	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
+>> -	     !ext4_overwrite_io(inode, offset, count))) {
+>> +	     !ext4_overwrite_io(inode, offset, count, overwrite))) {
+>>  		if (iocb->ki_flags & IOCB_NOWAIT) {
+>>  			ret = -EAGAIN;
+>>  			goto out;
+>> @@ -491,7 +500,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  	loff_t offset = iocb->ki_pos;
+>>  	size_t count = iov_iter_count(from);
+>>  	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+>> -	bool extend = false, unaligned_io = false;
+>> +	bool extend = false, unaligned_io = false, overwrite = false;
+>>  	bool ilock_shared = true;
+>>  
+>>  	/*
+>> @@ -534,7 +543,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  		return ext4_buffered_write_iter(iocb, from);
+>>  	}
+>>  
+>> -	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
+>> +	ret = ext4_dio_write_checks(iocb, from,
+>> +				    &ilock_shared, &extend, &overwrite);
+>>  	if (ret <= 0)
+>>  		return ret;
+>>  
+>> @@ -582,7 +592,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  		ext4_journal_stop(handle);
+>>  	}
+>>  
+>> -	if (ilock_shared)
+>> +	if (overwrite)
+>>  		iomap_ops = &ext4_iomap_overwrite_ops;
+>>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+>>  			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
 
