@@ -2,64 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51F164D7E6
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Dec 2022 09:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C764D7FE
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Dec 2022 09:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbiLOIlX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Dec 2022 03:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        id S229558AbiLOIs7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Dec 2022 03:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiLOIlW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Dec 2022 03:41:22 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644351A222
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Dec 2022 00:41:20 -0800 (PST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NXlzk1JzqzmWds;
-        Thu, 15 Dec 2022 16:40:18 +0800 (CST)
-Received: from [10.174.178.134] (10.174.178.134) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 15 Dec 2022 16:41:17 +0800
+        with ESMTP id S229575AbiLOIs6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Dec 2022 03:48:58 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F192E9EC
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Dec 2022 00:48:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 925AD21CCB;
+        Thu, 15 Dec 2022 08:48:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1671094131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GeHVNRVUttxiBhGaKWVGgVZJX6tVvKm4lg1mMARqyNU=;
+        b=ngslp9CEXS5qcfKGzjHxiOjAr5vChjsLFNYQ9Tfbtw9nnU+SJD9bL5ZgTBx7U0VLgo8bsS
+        EhpbpsFlgGEyXTjCyZQR3aHF9wnXytiTjektD06/Splo7Mv0q74FzWcZyM5Di7l6WeLKTo
+        KoDOIHJ5a6/YRFQX5z8Af0tCQXv++is=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1671094131;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GeHVNRVUttxiBhGaKWVGgVZJX6tVvKm4lg1mMARqyNU=;
+        b=jc+i3J27q7TL8po0mMgV2BeTVXz+EFV2IDlijmS+krSrBDnKsb2Wozq4hDcfeMjIo8SDkb
+        voucaFy8tYd/nvCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8175613434;
+        Thu, 15 Dec 2022 08:48:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rHmOH3PfmmMAGgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 15 Dec 2022 08:48:51 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A1897A0727; Thu, 15 Dec 2022 09:48:50 +0100 (CET)
+Date:   Thu, 15 Dec 2022 09:48:50 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huawei.com>,
+        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        yi.zhang@huaweicloud.com, yukuai3@huawei.com
 Subject: Re: [RFC PATCH] ext4: dio take shared inode lock when overwriting
  preallocated blocks
-To:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <yi.zhang@huaweicloud.com>, <yukuai3@huawei.com>,
-        <ritesh.list@gmail.com>
+Message-ID: <20221215084850.abze2sz2imwcoma5@quack3>
 References: <20221203103956.3691847-1-yi.zhang@huawei.com>
- <20221214170125.bixz46ybm76rtbzf@quack3> <Y5obcGLDZuw/NWOh@mit.edu>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <442e060a-de74-1e54-4fa3-5e4d35597dbe@huawei.com>
-Date:   Thu, 15 Dec 2022 16:41:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ <20221214170125.bixz46ybm76rtbzf@quack3>
+ <Y5obcGLDZuw/NWOh@mit.edu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <Y5obcGLDZuw/NWOh@mit.edu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.134]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2022/12/15 2:52, Theodore Ts'o wrote:
+On Wed 14-12-22 13:52:32, Theodore Ts'o wrote:
 > On Wed, Dec 14, 2022 at 06:01:25PM +0100, Jan Kara wrote:
->>
->> Besides some naming nits (see below) I think this should work. But I have
->> to say I'm a bit uneasy about this because we will now be changing block
->> mapping from unwritten to written only with shared i_rwsem. OTOH that
->> happens during writeback as well so we should be fine and the gain is very
->> nice.
+> > 
+> > Besides some naming nits (see below) I think this should work. But I have
+> > to say I'm a bit uneasy about this because we will now be changing block
+> > mapping from unwritten to written only with shared i_rwsem. OTOH that
+> > happens during writeback as well so we should be fine and the gain is very
+> > nice.
 > 
 > Hmm.... when I was looking potential impacts of the change what
 > ext4_overwrite_io() would do, I looked at the current user of that
@@ -96,23 +117,16 @@ On 2022/12/15 2:52, Theodore Ts'o wrote:
 > locked r/w.  I realize that this patch doesn't change this
 > inconsistency, but it appears either the comment is wrong, or the code
 > is wrong.
-> 
-> What am I missing?
-> 
 
-IIUC, both of the comment and the code are correct, the __file_remove_privs()
-in file_modified() should execute under exclusive lock, and we have already
-check the IS_NOSEC(inode) and could make sure taking exclusive lock before we
-remove privs. If we take share lock, __file_remove_privs() will return directly
-because below check. So it's find now, but it looks that call file_update_time()
-is enough for the shared lock case.
+Maybe the comment needs rephrasing but it seems correct. file_modified()
+does multiple things. It updates timestamps - these are fine with shared
+i_rwsem - and is calls into __file_remove_privs() to remove SUID bits etc.
+Now if __file_remove_privs() is going to modify the inode, we need i_rwsem
+exclusively. And we determine whether __file_remove_privs() will do
+anything by checking !IS_NOSEC(inode) in the condition above. So the
+sentence you're confused about speaks about this part of the condition.
 
-int file_update_time(struct file *file)
-{
-	if (IS_NOSEC(inode) || !S_ISREG(inode->i_mode))
-		return 0;
-...
-}
-
-Thanks,
-Yi.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
