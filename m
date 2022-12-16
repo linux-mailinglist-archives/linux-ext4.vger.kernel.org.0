@@ -2,73 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC0D64F032
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Dec 2022 18:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438B564F134
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Dec 2022 19:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbiLPRQt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Dec 2022 12:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S231233AbiLPSqQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Dec 2022 13:46:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbiLPRQq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Dec 2022 12:16:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BFD6DCEB
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Dec 2022 09:15:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671210957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FMxxbypNViBdI4yIgrSC4IXd1P5dO6tqxf8uJ4BBzw8=;
-        b=hvZALtjRA6pYnbDarAOcKYmL3WB9TX/xmoRa4VKPjH5HxwUbpqCsV8sIO4C2sdLT+quRho
-        Z5H2gdlvCJz8h0L0pzQUIxV9dHAaQpMotjj2piooyCf8dbtSaBuFl19htS4JCnhHNzDyuv
-        RWRS2I5SusBMXLj43CJm3Inx0b6Hl+E=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-116-ozUgOBMgPFCyP_SshR4q9g-1; Fri, 16 Dec 2022 12:15:56 -0500
-X-MC-Unique: ozUgOBMgPFCyP_SshR4q9g-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-352e29ff8c2so35950597b3.21
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Dec 2022 09:15:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FMxxbypNViBdI4yIgrSC4IXd1P5dO6tqxf8uJ4BBzw8=;
-        b=arFgxiVUKCQUn8vfpV/52bDZR4aU0MY6xQEEUrUMwWY+HHWJNV8E4y7a6UOlyFaE+5
-         zO/1LMmT9JIAuTpGkM26zBrHStMX6zU0Jsq1YYZeo9hWlH2ySNq6vRM77d0Y6fs8IwVu
-         kz+13f1YW2k2vtM0uuPSX1LH6AXfKW00zRek6k/g2D7P7p/WCP+jcS8DKmzKYfNlaeBV
-         APOe4XP4WqWc1auiSA9ShjC+jkw1UkogwXcNf8Nf1aoAtW51UjeP8+Dl2D0uPqUqthIo
-         eF0hEjVik+fykKAMKBwlVm5HK/czkG/z4HqZw7sSIcvfCspL/RWNwAiEjSVdHm7nvO34
-         0nTQ==
-X-Gm-Message-State: ANoB5plSjaRO3bF4Nx75XQjKfzH7WGZFMWpyGDWbEseg29MuNGctJaBb
-        g53sn2NqlHzFWWGAyekA5n77vndSDUgFoeSW71NOL0gsK83M1iGn7PXnbEVvf+vmXnuKqIypoj/
-        o5+H5IytEu5ZGGNYyJRJysOk3dMujKiZrDomV0A==
-X-Received: by 2002:a81:8407:0:b0:3e2:c77b:2563 with SMTP id u7-20020a818407000000b003e2c77b2563mr27749509ywf.54.1671210955578;
-        Fri, 16 Dec 2022 09:15:55 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5sSx3su6laK9Kl+Wo+aUvlhEYchIP7sOq3J3e9vBxi/aJmFLAxjsr1EmGJ4JGxvgXw8z2oIHThFHswEOSM94k=
-X-Received: by 2002:a81:8407:0:b0:3e2:c77b:2563 with SMTP id
- u7-20020a818407000000b003e2c77b2563mr27749506ywf.54.1671210955331; Fri, 16
- Dec 2022 09:15:55 -0800 (PST)
+        with ESMTP id S231777AbiLPSqL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Dec 2022 13:46:11 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA0F28E3E
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Dec 2022 10:46:05 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BGIjlov020254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Dec 2022 13:45:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1671216350; bh=0ide3HOJSrViN20xczF1Lt88DnIce25P4e17wke2XSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=L67a+VJrOjI8MJDnUZ3P412ybi+mdUtqNGzdz0Q19atGUsE2Tmbbq02ThviVCatDr
+         3ACLUMbdaRTnpfiR/OnnkxFaGrJfXLq/Mqp3giSScJdxbpK1XN38euO7xISS1iCpS7
+         436DWZodGTKz8tYWjACJXT40UhiTZqSX7xklVcZx4c/R79ZXms52bu60uztS9leDCx
+         4CMLRGAvflf4t4BQZgnRNRGjIP6HiBLYvymJ4DcMFf0fbkLsZQ6QcyDV2Y39UX6utv
+         rKrwOYd/n03Pw3tv9EYdKAvsDVeWy9fTH+x7jRSdsUhcu4nQus0GGWgS3am9fy0YE2
+         fefjmXxO44sHA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CD0DD15C40A2; Fri, 16 Dec 2022 13:45:47 -0500 (EST)
+Date:   Fri, 16 Dec 2022 13:45:47 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     Lee Jones <lee@kernel.org>,
+        syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
+        lczerner@redhat.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sashal@kernel.org,
+        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
+        tadeusz.struk@linaro.org
+Subject: Re: kernel BUG in ext4_free_blocks (2)
+Message-ID: <Y5y824gPqZo+vcxb@mit.edu>
+References: <0000000000006c411605e2f127e5@google.com>
+ <000000000000b60c1105efe06dea@google.com>
+ <Y5vTyjRX6ZgIYxgj@mit.edu>
+ <Y5xsIkpIznpObOJL@google.com>
+ <CANp29Y6KHBE-fpfJCXeN5Ju_qSOfUYAp2n+cNrGj25QtU0X=sA@mail.gmail.com>
+ <Y5ylNxoN2p7dmcRD@mit.edu>
+ <CANp29Y4QVp1G83pSqpxeETbw_+kQQ5CZUz+Vgi767WxE8AuhHQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20221216150626.670312-1-agruenba@redhat.com> <20221216150626.670312-6-agruenba@redhat.com>
- <Y5ydHlw4orl/gP3a@casper.infradead.org>
-In-Reply-To: <Y5ydHlw4orl/gP3a@casper.infradead.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Fri, 16 Dec 2022 18:15:44 +0100
-Message-ID: <CAHc6FU7Svp7XG8T5X4kak8Gz2kB2_OK1b5xbtn6uKrEnb6=3TQ@mail.gmail.com>
-Subject: Re: [RFC v3 5/7] iomap: Get page in page_prepare handler
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANp29Y4QVp1G83pSqpxeETbw_+kQQ5CZUz+Vgi767WxE8AuhHQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,21 +63,59 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 5:30 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Fri, Dec 16, 2022 at 04:06:24PM +0100, Andreas Gruenbacher wrote:
-> > +     if (page_ops && page_ops->page_prepare)
-> > +             folio = page_ops->page_prepare(iter, pos, len);
-> > +     else
-> > +             folio = iomap_folio_prepare(iter, pos);
-> > +     if (IS_ERR_OR_NULL(folio)) {
-> > +             if (!folio)
-> > +                     return (iter->flags & IOMAP_NOWAIT) ? -EAGAIN : -ENOMEM;
-> > +             return PTR_ERR(folio);
->
-> Wouldn't it be cleaner if iomap_folio_prepare() always
-> returned an ERR_PTR on failure?
+On Fri, Dec 16, 2022 at 06:14:50PM +0100, Aleksandr Nogikh wrote:
+> > Thanks for the clarification; stupid question, though -- I see
+> > "upstream" is listed on the dashboard link above.  Assuming that
+> > "usptream" is "Linus's tree", why was it still saying, "I can't find
+> > this patch in any of my trees"?  What about the upstream tree?
+> 
+> Bugs from different namespaces are treated independently, so in this
+> particular case syzbot was expecting the fixing commit to reach the
+> Android trees that it fuzzes.
 
-Yes indeed, thanks.
+Is there a way someone can look at the dashboard link to determine
+which (a) what namespace a particular syzkaller report is in, and (b)
+what trees are included in a particular namespace?
 
-Andreas
+Adding a link to the e-mail to the dashboard page may not help if it's
+not obvious why the dashboard mentions "upstream" and yet it's not in
+"any of the trees".  Maybe the e-mail should explicitly list the trees
+that syzkaller will be searching?
+
+And it would seem that it would be a *feature* if looking at a syzbot
+dashboard from Android namespace could expose the fact that particular
+patch is in any of the LTS trees or Linus's upstream tree, no?
+
+Also, what is the reason for Android for being in a separate
+namespace?  Is it running on a separate syzbot VM?  I can understand
+why from a feature perspective, that Fuschia and OpenBSD should be in
+separate namespaces; but what are the reasons that there are separate
+namespaces for Android versus the upstream kernel?  Especially since
+the Android dashboard is apparently referencing the upstream kernel?
+What's up with that?
+
+Put another way, while I think it's super useful to have a link to
+Syzbot dashboard page, in the e-mail, I'm not sure it's going to be a
+complete solution to the confusion that was inspired by this case.
+
+That being said, in general I think a link to the Dashboard is useful;
+in fact, it might be nice if we could encourage upstream developers
+put in the commit trailer:
+
+Link: https://syzkaller.appspot.com/bug?id=5266d464285a03cee9dbfda7d2452a72c3c2ae7c
+
+in addition to, or better yet, instead of:
+
+Reported-by: syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com
+
+... and have Syzbot be able to translate from the Link: tag as being
+equivalent to the Reported-by: link.  That's becase the Link is going
+to be much more useful to humans than the Reported-by --- we've had a
+number of cases where as part of the patch review, we really wanted to
+get back to the Dashboard page, and it's not easy to get to the
+Dashboard from the Reported-by tag.
+
+Thanks,
+
+						- Ted
 
