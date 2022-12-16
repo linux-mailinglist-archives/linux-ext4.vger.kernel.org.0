@@ -2,115 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A3964ECB7
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Dec 2022 15:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCAE64ED77
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Dec 2022 16:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbiLPOND (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Dec 2022 09:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
+        id S230020AbiLPPHY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Dec 2022 10:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbiLPOM5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Dec 2022 09:12:57 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BAA11441;
-        Fri, 16 Dec 2022 06:12:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231279AbiLPPHR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Dec 2022 10:07:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1817CEA7
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Dec 2022 07:06:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1671203193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+u0GILR+K9NlvYK7wKkYXg0kWtYj9HkTrgQnClsscW4=;
+        b=f/p9KJBclcmdUvu+l3Xx+lE3EqW//npgfk9vK8MdMhhX58DLUPE1qb4FZ+9BJL+Ddbef+j
+        3gM0hXGDRBj9EJOvREfEiK5fvZ9AzAAVGmNe7Qs+XoW8/SgrBraX6W0wiS6YlDz+PFkmbA
+        Sm/aJlAqQbVL+FY3Yb5LraNj2qbTDXU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-59-vjJE4hp5Pemote4bu_3TBQ-1; Fri, 16 Dec 2022 10:06:30 -0500
+X-MC-Unique: vjJE4hp5Pemote4bu_3TBQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FB5E6212A;
-        Fri, 16 Dec 2022 14:12:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D55F3C433EF;
-        Fri, 16 Dec 2022 14:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671199975;
-        bh=26Mosu5Cz2UgSpReY99um0xG14PZU5nCcjyyW+3e/+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pBeXgzD69ynXqAnQcwRVH03m6ilshVHImvxwy1hVGGmGVcmm5HFxswB2u+OcQkebe
-         4mtDusbv5FElPGUJN9VEdqhGdXqqwchF1NO6rPe3dARiRlKielSmB3oFkJAu9rfBhs
-         tY5oB87UzO1gm8IpbokJXghg1Om1NaWAV9bKmRy59+wXfxpPKto2wkMJc6UUndQ9Uy
-         NgoU8/OMEL6krpUoIKnZ2c3t5tFz03UDSJnfOxSVSl0lrhqSoMghiSe22zt3+fO6vg
-         nrmQgfxRFoLcAmT5XgjS8WDkwZga+LMXEfbmmnXtVUPQY5RFkhuBuGRAiK2QDvATJk
-         GU8qlzzt0PdjQ==
-Date:   Fri, 16 Dec 2022 14:12:49 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org,
-        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
-        tadeusz.struk@linaro.org
-Subject: Re: kernel BUG in ext4_free_blocks (2)
-Message-ID: <Y5x84fb+YegSendN@google.com>
-References: <0000000000006c411605e2f127e5@google.com>
- <000000000000b60c1105efe06dea@google.com>
- <Y5vTyjRX6ZgIYxgj@mit.edu>
- <Y5xsIkpIznpObOJL@google.com>
- <CANp29Y6KHBE-fpfJCXeN5Ju_qSOfUYAp2n+cNrGj25QtU0X=sA@mail.gmail.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7301C101A521;
+        Fri, 16 Dec 2022 15:06:29 +0000 (UTC)
+Received: from pasta.redhat.com (ovpn-192-182.brq.redhat.com [10.40.192.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 31F5414171C0;
+        Fri, 16 Dec 2022 15:06:26 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
+Subject: [RFC v3 0/7] Turn iomap_page_ops into iomap_folio_ops
+Date:   Fri, 16 Dec 2022 16:06:19 +0100
+Message-Id: <20221216150626.670312-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y6KHBE-fpfJCXeN5Ju_qSOfUYAp2n+cNrGj25QtU0X=sA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 16 Dec 2022, Aleksandr Nogikh wrote:
+This is an updated proposal for changing the iomap page_ops operations
+to make them more flexible so that they better suite the filesystem
+needs.  It closes a race on gfs2 and cleans up the recent iomap changes
+merged in the following upstream commit:
 
-> On Fri, Dec 16, 2022 at 2:01 PM Lee Jones <lee@kernel.org> wrote:
-> >
-> > On Thu, 15 Dec 2022, Theodore Ts'o wrote:
-> >
-> > > On Thu, Dec 15, 2022 at 08:34:35AM -0800, syzbot wrote:
-> > > > This bug is marked as fixed by commit:
-> > > > ext4: block range must be validated before use in ext4_mb_clear_bb()
-> > > > But I can't find it in any tested tree for more than 90 days.
-> > > > Is it a correct commit? Please update it by replying:
-> > > > #syz fix: exact-commit-title
-> > > > Until then the bug is still considered open and
-> > > > new crashes with the same signature are ignored.
-> > >
-> > > I don't know what is going on with syzkaller's commit detection, but
-> > > commit 1e1c2b86ef86 ("ext4: block range must be validated before use
-> > > in ext4_mb_clear_bb()") is an exact match for the commit title, and
-> > > it's been in the upstream kernel since v6.0.
-> > >
-> > > How do we make syzkaller accept this?  I'll try this again, but I
-> > > don't hold out much hope.
-> >
-> > I don't see the original bug report (was it posted to a lore
-> > associated list?), so there is no way to tell what branch syzbot was
-> > fuzzing at the time.  My assumption is that it was !Mainline.
-> 
-> Syzbot is actually reacting here to this bug from the Android namespace:
-> 
-> https://syzkaller.appspot.com/bug?id=5266d464285a03cee9dbfda7d2452a72c3c2ae7c
-> 
-> > Although this does appear to be a Stable candidate, I do not see it
-> > in any of the Stable branches yet.  So I suspect the answer here is to
-> > wait for the fix to filter down.
-> >
-> > In the mean time, I guess we should discuss whether syzbot should
-> > really be posting scans of downstream trees to upstream lists.
-> 
-> In this particular case, syzbot has captured all the recipients from
-> the patch email [1], because that email Cc'd
-> syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com. To syzbot, all
-> these people were involved in the original bug discussion, and so it
-> notified them about the problem.
-> 
-> FWIW I've sent a PR[2] to make the "I can't find it in any tested
-> tree" message include the link to the syzkaller dashboard. Hopefully
-> it will help resolve such confusions faster.
+87be949912ee ("Merge tag 'xfs-6.2-merge-8' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux")
 
-That's helpful, thank you.
+The first patch introduces a folio_may_straddle_isize() helper as a
+replacement for pagecache_isize_extended() when we have a locked folio.
+This still needs independent verification, but it looks like a
+worthwhile improvement to me.  I've left it in this patch queue for now,
+but I can moved out of the way if prefered.
+
+Any thoughts?
+
+Thanks,
+Andreas
+
+Andreas Gruenbacher (7):
+  fs: Add folio_may_straddle_isize helper
+  iomap: Add iomap_folio_done helper
+  iomap/gfs2: Unlock and put folio in page_done handler
+  iomap: Add iomap_folio_prepare helper
+  iomap: Get page in page_prepare handler
+  iomap/xfs: Eliminate the iomap_valid handler
+  iomap: Rename page_ops to folio_ops
+
+ fs/buffer.c            |  5 +--
+ fs/ext4/inode.c        | 13 +++---
+ fs/gfs2/bmap.c         | 43 +++++++++++++------
+ fs/iomap/buffered-io.c | 95 +++++++++++++++++++++---------------------
+ fs/xfs/xfs_iomap.c     | 42 +++++++++++++------
+ include/linux/iomap.h  | 46 +++++++-------------
+ include/linux/mm.h     |  2 +
+ mm/truncate.c          | 35 ++++++++++++++++
+ 8 files changed, 169 insertions(+), 112 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
+2.38.1
+
