@@ -2,184 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF3164F7B0
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Dec 2022 06:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAFC64F8BB
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Dec 2022 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbiLQFCy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 17 Dec 2022 00:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S229658AbiLQKoY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Dec 2022 05:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbiLQFCv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Dec 2022 00:02:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080B3680B8
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Dec 2022 21:02:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84EC760B3B
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Dec 2022 05:02:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD4E6C433EF;
-        Sat, 17 Dec 2022 05:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671253368;
-        bh=lB6AkVTxKbROoUe9AQN+P5dlgWuSDBeXmlid3V8mXps=;
-        h=From:To:Cc:Subject:Date:From;
-        b=p9/qB5K77QPWGaYX5UMnReY7u4KQYH2w87IVUGhlIkmQWG3k8lAWh+kvnQrCXKcFC
-         QNNEXnOOzDbkkmL/YVCE7e8/5wGDkRYNh5oPQV3W0LTn2Z880yrb1fAV50zk+EnnHA
-         cqgPNooc3EbNwJQZwebu8Ben8krg7KgwJSNC5XWCSyKhhV7Srt/rfvD2ghLDT7ITyI
-         qcSZjkqplwbUs/ZeHPgPXkoh2JUcgxZDWmfaPUcmH2GjIOUtoDwOoyvbC4GlSXtS41
-         AhvYKY7ftWcrrayPFgQOrWUEIGUfKAOgxNEmJ5//d3mv/cv/Zobce13HtHA74xaBj8
-         O87HmO1N5cYRw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] ext4: use ext4_fc_tl_mem in fast-commit replay path
-Date:   Fri, 16 Dec 2022 21:02:12 -0800
-Message-Id: <20221217050212.150665-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229650AbiLQKoV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Dec 2022 05:44:21 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3895101DC
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Dec 2022 02:44:19 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id cf42so7188812lfb.1
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Dec 2022 02:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iAVMql90nO7ZkFcVgMNu6fVpAbtsWgSiB+5IHPtWWmc=;
+        b=Coinlc8Gx9sElaqeejBlx239SWzWBt2L0JyObo+oj8zD8XGXHezMkHnqfv2zn2KBWb
+         3Bg4/Cpjs51qZYeqqSwGQ0XWqvQpXCM83CC8cpidqeo1TCg557gemSthz9ABlUf8HDFf
+         elCfCZZsmlO2VPg9b6pqA2c/D4GfEa46743Kz1MWPOxZ26jc2ttkoaDPzu9Vrj/tnMQh
+         LXkHucQPuWbq9xEsNocW//oB/gmJSdZnY070f5022jxUzez0GT6UMRtia/Nj8EjRWOWj
+         /73lPajKP2LKOEY7IWh/Dz4OzetCpki4Kc34ry8R/I51hdbw02P+8m9cl02kzTzLUG1P
+         Ij2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iAVMql90nO7ZkFcVgMNu6fVpAbtsWgSiB+5IHPtWWmc=;
+        b=BUC/YfxCZqCk3mn1xILGyt0JtU2YH9JEHeClbS1tAPeVx0WJT9fMRh/nsXXSEPl/rX
+         09xCco3LWFZ4Cz3zpK8qlgETHDpoFyoFgStJ420BcSGPfwKK6+Br/VQo2i4dXpqQqNUS
+         wMlm7BdXXZAN+5ZhNF5WqicDs1DpTxOxCbvunaKvltmSOFw6VaqOtC6eG77MKxeJj8S0
+         z+LPVIbCJ18Ud3SyG4q3YTBWG7QeLmDVSxaUM6VYZ17tElrQQ/Cp5YxhBZMSWIci/2Nk
+         DRqjB7qF7on7nIp30EspM80bB3JEaaXDkKG6MN+nsBl86kcr+Ucy23IPg4PEPZ+SjrOS
+         zoOA==
+X-Gm-Message-State: ANoB5pky2lxLdkvDHTGSCB4/z4a7bd2XF9MBSxazh9PpftuwQm/RKv+a
+        5yMr3W1NjMRu5YsOGDpNe+Bne5Hl4Z8OgSSNvug=
+X-Google-Smtp-Source: AA0mqf4F4oDhNdQ7jw5xPO68GnI6zSEc7HjVN3xrqhOhXQ2SS20RYg2GMblDqDyCwd29jLgBkptSq43WpQgHtqY91zU=
+X-Received: by 2002:a05:6512:1093:b0:4b5:5a59:2036 with SMTP id
+ j19-20020a056512109300b004b55a592036mr11616744lfg.235.1671273857682; Sat, 17
+ Dec 2022 02:44:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: mrsohallatif20@gmail.com
+Received: by 2002:a2e:b614:0:0:0:0:0 with HTTP; Sat, 17 Dec 2022 02:44:17
+ -0800 (PST)
+From:   H mimi m <mimih6474@gmail.com>
+Date:   Sat, 17 Dec 2022 10:44:17 +0000
+X-Google-Sender-Auth: XFR_pRD4wtkvp7Orcv6Ch2hPeDc
+Message-ID: <CAP+WkJZWg_KB6gJqFznsMPvTu5x3--yiLFmjumnESzwMiw5NoQ@mail.gmail.com>
+Subject: REPLY ME
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
-
-To avoid 'sparse' warnings about missing endianness conversions, don't
-store native endianness values into struct ext4_fc_tl.  Instead, use a
-separate struct type, ext4_fc_tl_mem.
-
-Fixes: dcc5827484d6 ("ext4: factor out ext4_fc_get_tl()")
-Cc: Ye Bin <yebin10@huawei.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ext4/fast_commit.c | 44 +++++++++++++++++++++++++------------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
-
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 4594b62f147b..b06de728b3b6 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1332,8 +1332,14 @@ struct dentry_info_args {
- 	char *dname;
- };
- 
-+/* Same as struct ext4_fc_tl, but uses native endianness fields */
-+struct ext4_fc_tl_mem {
-+	u16 fc_tag;
-+	u16 fc_len;
-+};
-+
- static inline void tl_to_darg(struct dentry_info_args *darg,
--			      struct ext4_fc_tl *tl, u8 *val)
-+			      struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct ext4_fc_dentry_info fcd;
- 
-@@ -1345,16 +1351,18 @@ static inline void tl_to_darg(struct dentry_info_args *darg,
- 	darg->dname_len = tl->fc_len - sizeof(struct ext4_fc_dentry_info);
- }
- 
--static inline void ext4_fc_get_tl(struct ext4_fc_tl *tl, u8 *val)
-+static inline void ext4_fc_get_tl(struct ext4_fc_tl_mem *tl, u8 *val)
- {
--	memcpy(tl, val, EXT4_FC_TAG_BASE_LEN);
--	tl->fc_len = le16_to_cpu(tl->fc_len);
--	tl->fc_tag = le16_to_cpu(tl->fc_tag);
-+	struct ext4_fc_tl tl_disk;
-+
-+	memcpy(&tl_disk, val, EXT4_FC_TAG_BASE_LEN);
-+	tl->fc_len = le16_to_cpu(tl_disk.fc_len);
-+	tl->fc_tag = le16_to_cpu(tl_disk.fc_tag);
- }
- 
- /* Unlink replay function */
--static int ext4_fc_replay_unlink(struct super_block *sb, struct ext4_fc_tl *tl,
--				 u8 *val)
-+static int ext4_fc_replay_unlink(struct super_block *sb,
-+				 struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct inode *inode, *old_parent;
- 	struct qstr entry;
-@@ -1451,8 +1459,8 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
- }
- 
- /* Link replay function */
--static int ext4_fc_replay_link(struct super_block *sb, struct ext4_fc_tl *tl,
--			       u8 *val)
-+static int ext4_fc_replay_link(struct super_block *sb,
-+			       struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct inode *inode;
- 	struct dentry_info_args darg;
-@@ -1506,8 +1514,8 @@ static int ext4_fc_record_modified_inode(struct super_block *sb, int ino)
- /*
-  * Inode replay function
-  */
--static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl,
--				u8 *val)
-+static int ext4_fc_replay_inode(struct super_block *sb,
-+				struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct ext4_fc_inode fc_inode;
- 	struct ext4_inode *raw_inode;
-@@ -1609,8 +1617,8 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl,
-  * inode for which we are trying to create a dentry here, should already have
-  * been replayed before we start here.
-  */
--static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl,
--				 u8 *val)
-+static int ext4_fc_replay_create(struct super_block *sb,
-+				 struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	int ret = 0;
- 	struct inode *inode = NULL;
-@@ -1708,7 +1716,7 @@ int ext4_fc_record_regions(struct super_block *sb, int ino,
- 
- /* Replay add range tag */
- static int ext4_fc_replay_add_range(struct super_block *sb,
--				    struct ext4_fc_tl *tl, u8 *val)
-+				    struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct ext4_fc_add_range fc_add_ex;
- 	struct ext4_extent newex, *ex;
-@@ -1828,8 +1836,8 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 
- /* Replay DEL_RANGE tag */
- static int
--ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl,
--			 u8 *val)
-+ext4_fc_replay_del_range(struct super_block *sb,
-+			 struct ext4_fc_tl_mem *tl, u8 *val)
- {
- 	struct inode *inode;
- 	struct ext4_fc_del_range lrange;
-@@ -2025,7 +2033,7 @@ static int ext4_fc_replay_scan(journal_t *journal,
- 	struct ext4_fc_replay_state *state;
- 	int ret = JBD2_FC_REPLAY_CONTINUE;
- 	struct ext4_fc_add_range ext;
--	struct ext4_fc_tl tl;
-+	struct ext4_fc_tl_mem tl;
- 	struct ext4_fc_tail tail;
- 	__u8 *start, *end, *cur, *val;
- 	struct ext4_fc_head head;
-@@ -2144,7 +2152,7 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
- {
- 	struct super_block *sb = journal->j_private;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
--	struct ext4_fc_tl tl;
-+	struct ext4_fc_tl_mem tl;
- 	__u8 *start, *end, *cur, *val;
- 	int ret = JBD2_FC_REPLAY_CONTINUE;
- 	struct ext4_fc_replay_state *state = &sbi->s_fc_replay_state;
-
-base-commit: 77856d911a8c8724ee8e2b09d55979fc1de8f1c0
--- 
-2.38.1
-
+i am Mrs Mimi Hassan Abdul Mohammad and i was diagnosed with cancer
+about 2 years
+ago,before i go for a surgery  i  have to do this,so  If you are
+interested to use the sum of US17.3Million)to help Poor,
+Less-privileged and  ORPHANAGES and invest  in your country, get back
+to me for more information on how you can  contact the COMPANY in
+Ouagadougou Burkina Faso). for where the fund is
+Warm Regards,
+Mrs Mimi Hassan Abdul Mohammad
