@@ -2,225 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA28D64FF37
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Dec 2022 16:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8476650457
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Dec 2022 19:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbiLRPDi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 18 Dec 2022 10:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
+        id S230484AbiLRSay (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 18 Dec 2022 13:30:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbiLRPDh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Dec 2022 10:03:37 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FE4A1A7
-        for <linux-ext4@vger.kernel.org>; Sun, 18 Dec 2022 07:03:35 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id e15-20020a056602158f00b006e01d8fa493so2952361iow.3
-        for <linux-ext4@vger.kernel.org>; Sun, 18 Dec 2022 07:03:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V47kUFLXZGRSrLJliB6a7PDn5ugOYrfchGLPI8vBz6o=;
-        b=NFp7dug4k1skXeiWFZOYq7r4XblXN2fLc7d20wpD+o8uboxYcqsfUKBy70MchfAlvi
-         DU/2shdi/gxXjXk/uPAowHdElcHyA/HoeDWmSq8Yty7gEiaG0e9S6gnBKipSK9NX7Lxy
-         1lIi9rYsONWFFeTAHIjlAwBiaHy0WoVbDvrMt+OKJYjNTLo1xPyK1HVfl7kE2rMVo/QV
-         Pa0GbpIa9QQNzi0UYXcvHigAAbuIK3XKyxp5Xf0tZOZKXhUxvXTm/ZWopi86W4usTZF+
-         MkWhsTLGqUwuLOXkkiByV7NkeZh0J6rfnO0W1PdQN99ypboIUi1FSGp6NRKfUkACwtb4
-         nTBw==
-X-Gm-Message-State: AFqh2koThw/B7ZQZEPVQyhiQz96uTgPCEx3VeHrQkalJEx4ISuwaIw6m
-        Ha8v7GBe3X1R5vVp4B/8+jrMeyhBbVJ2qzS5+5iSuEJhKmif
-X-Google-Smtp-Source: AMrXdXu9Fv5lgIWd2eswnv4opuPQxF2Nr1Eo6IH2tw7tet4nJaNi4JtOKz8Ik9fwOCzznoRKkx2NFlHOeewPTSixG030hCb+ZjLR
+        with ESMTP id S230173AbiLRSaG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Dec 2022 13:30:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D152CBE00;
+        Sun, 18 Dec 2022 10:14:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 549EE60DCF;
+        Sun, 18 Dec 2022 18:14:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D55C433D2;
+        Sun, 18 Dec 2022 18:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671387280;
+        bh=h+5T1W0dbq0VrSbd0eXpFWwkbNKlv3NdepKrKO5N/X0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dDZAnqBL5dRU+C4AocCXG0LJs6s88+o21A2CzVvHw+R8n7Fmpt6ZGmdstE1vmQw9P
+         8U3dPmsC71VtH7QUIiUXr9Nb0svpp5Uk1vmBbKG32Svd6gd0oT6NihbWJox8n9aAVS
+         eRhJVXaFjr1iLMtV7+e0vp/g5pwOoWcJ+5DIeD89vr2JDgiPCG7tvSAyAO7aMdSYgC
+         HQdSYvM5iRudseuUhGYp2y7mwCpEkEOBMpH64zXu/GNxtXYd/U7dPnl2tiPyUConzn
+         CMLAr+PZNkPRb6D8wfkRg+kD4991YFMRfNTRiLXm7BBd3fYsIasuE9lyplsA0zdk6P
+         pYTb7xXp+zU0g==
+Date:   Sun, 18 Dec 2022 10:14:40 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Zorro Lang <zlang@redhat.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+        fstests@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: Why fstests g/673 and g/683~687 suddently fail (on xfs, ext4...)
+ on latest linux v6.1+ ?
+Message-ID: <Y59YkDch8b6v/KfD@magnolia>
+References: <20221218103850.cbqdq3bmw7zl7iad@zlang-mailbox>
+ <CAOQ4uxhmCgyorYVtD6=n=khqwUc=MPbZs+y=sqt09XbGoNm_tA@mail.gmail.com>
+ <20221218130432.fgitgsn522shmpwi@zlang-mailbox>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1048:b0:305:dff0:8851 with SMTP id
- p8-20020a056e02104800b00305dff08851mr946038ilj.159.1671375814242; Sun, 18 Dec
- 2022 07:03:34 -0800 (PST)
-Date:   Sun, 18 Dec 2022 07:03:34 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1b8bf05f01b81d7@google.com>
-Subject: [syzbot] possible deadlock in ext4_ind_migrate
-From:   syzbot <syzbot+a84e36883956fb0221b4@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221218130432.fgitgsn522shmpwi@zlang-mailbox>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sun, Dec 18, 2022 at 09:04:32PM +0800, Zorro Lang wrote:
+> On Sun, Dec 18, 2022 at 02:11:01PM +0200, Amir Goldstein wrote:
+> > On Sun, Dec 18, 2022 at 1:06 PM Zorro Lang <zlang@redhat.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > fstests generic/673 and generic/683~687 are a series of test cases to
+> > > verify suid and sgid bits are dropped properly. xfs-list writes these
+> > > cases to verify xfs behavior follows vfs, e.g. [1]. And these cases
+> > > test passed on xfs and ext4 for long time. Even on my last regression
+> > > test on linux v6.1-rc8+, they were passed too.
+> > >
+> > > But now the default behavior looks like be changed again, xfs and ext4
+> > > start to fail [2] on latest linux v6.1+ (HEAD [0]), So there must be
+> > > changed. I'd like to make sure what's changed, and if it's expected?
+> > 
+> > I think that is expected and I assume Christian was planning to fix the tests.
+> > 
+> > See Christian's pull request:
+> > https://lore.kernel.org/linux-fsdevel/20221212112053.99208-1-brauner@kernel.org/
+> > 
+> > "Note, that some xfstests will now fail as these patches will cause the setgid
+> > bit to be lost in certain conditions for unprivileged users modifying a setgid
+> > file when they would've been kept otherwise. I think this risk is worth taking
+> > and I explained and mentioned this multiple times on the list:
+> > https://lore.kernel.org/linux-fsdevel/20221122142010.zchf2jz2oymx55qi@wittgenstein"
+> 
+> Hi Amir,
+> 
+> Thanks for your reply. Yes, these test cases were failed on overlayfs, passed on
+> xfs, ext4 and btrfs. Now it's reversed, overlayfs passed on this test, xfs and
+> ext4 failed.
 
-syzbot found the following issue on:
+Odd, I'll have to look into why things work here ... maybe it's the
+selinux contexts?
 
-HEAD commit:    a5541c0811a0 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=12802800480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cbd4e584773e9397
-dashboard link: https://syzkaller.appspot.com/bug?extid=a84e36883956fb0221b4
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
+> Anyway, if this's an expected behavior change, and it's reviewed and accepted by
+> linux upstream, I don't have objection. Just to make sure if there's a regression.
+> Feel free to send patch to fstests@ to update the expected results, and show
+> details about why change them again :)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Somewhat unrelated, but are you going to merge
+https://lore.kernel.org/fstests/20220816121551.88407-1-glass@fydeos.io/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4b7702208fb9/disk-a5541c08.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9ec0153ec051/vmlinux-a5541c08.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6f8725ad290a/Image-a5541c08.gz.xz
+?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a84e36883956fb0221b4@syzkaller.appspotmail.com
+--D
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-rc8-syzkaller-33330-ga5541c0811a0 #0 Not tainted
-------------------------------------------------------
-syz-executor.3/8019 is trying to acquire lock:
-ffff000118015b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_ind_migrate+0xc8/0x318 fs/ext4/migrate.c:624
-
-but task is already holding lock:
-ffff000113706d30 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
-ffff000113706d30 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_fileattr_set+0x78/0x458 fs/ioctl.c:681
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (&sb->s_type->i_mutex_key#8){++++}-{3:3}:
-       down_read+0x5c/0x78 kernel/locking/rwsem.c:1509
-       inode_lock_shared include/linux/fs.h:766 [inline]
-       ext4_bmap+0x34/0x1c8 fs/ext4/inode.c:3164
-       bmap+0x40/0x6c fs/inode.c:1798
-       jbd2_journal_bmap fs/jbd2/journal.c:977 [inline]
-       __jbd2_journal_erase fs/jbd2/journal.c:1789 [inline]
-       jbd2_journal_flush+0x2a8/0x55c fs/jbd2/journal.c:2492
-       ext4_ioctl_checkpoint fs/ext4/ioctl.c:1081 [inline]
-       __ext4_ioctl fs/ext4/ioctl.c:1586 [inline]
-       ext4_ioctl+0x1cb8/0x2378 fs/ext4/ioctl.c:1606
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-
--> #1 (&journal->j_checkpoint_mutex){+.+.}-{3:3}:
-       __mutex_lock_common+0xd4/0xca8 kernel/locking/mutex.c:603
-       mutex_lock_io_nested+0x6c/0x88 kernel/locking/mutex.c:833
-       __jbd2_log_wait_for_space+0xc0/0x330 fs/jbd2/checkpoint.c:110
-       add_transaction_credits+0x4b4/0x604 fs/jbd2/transaction.c:298
-       start_this_handle+0x2a0/0x7fc fs/jbd2/transaction.c:422
-       jbd2__journal_start+0x148/0x1f0 fs/jbd2/transaction.c:520
-       __ext4_journal_start_sb+0x124/0x1dc fs/ext4/ext4_jbd2.c:105
-       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
-       ext4_ind_migrate+0xec/0x318 fs/ext4/migrate.c:626
-       ext4_ioctl_setflags+0x5c0/0x5f0 fs/ext4/ioctl.c:695
-       ext4_fileattr_set+0x174/0x528 fs/ext4/ioctl.c:1003
-       vfs_fileattr_set+0x400/0x458 fs/ioctl.c:696
-       do_vfs_ioctl+0x1374/0x16a4
-       __do_sys_ioctl fs/ioctl.c:868 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __arm64_sys_ioctl+0x98/0x140 fs/ioctl.c:856
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-
--> #0 (&sbi->s_writepages_rwsem){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3097 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-       validate_chain kernel/locking/lockdep.c:3831 [inline]
-       __lock_acquire+0x1530/0x3084 kernel/locking/lockdep.c:5055
-       lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
-       percpu_down_write+0x6c/0x188 kernel/locking/percpu-rwsem.c:227
-       ext4_ind_migrate+0xc8/0x318 fs/ext4/migrate.c:624
-       ext4_ioctl_setflags+0x5c0/0x5f0 fs/ext4/ioctl.c:695
-       ext4_fileattr_set+0x174/0x528 fs/ext4/ioctl.c:1003
-       vfs_fileattr_set+0x400/0x458 fs/ioctl.c:696
-       do_vfs_ioctl+0x1374/0x16a4
-       __do_sys_ioctl fs/ioctl.c:868 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __arm64_sys_ioctl+0x98/0x140 fs/ioctl.c:856
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-
-other info that might help us debug this:
-
-Chain exists of:
-  &sbi->s_writepages_rwsem --> &journal->j_checkpoint_mutex --> &sb->s_type->i_mutex_key#8
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sb->s_type->i_mutex_key#8);
-                               lock(&journal->j_checkpoint_mutex);
-                               lock(&sb->s_type->i_mutex_key#8);
-  lock(&sbi->s_writepages_rwsem);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.3/8019:
- #0: ffff000118016460 (sb_writers#3){.+.+}-{0:0}, at: mnt_want_write_file+0x28/0xd8 fs/namespace.c:437
- #1: ffff000113706d30 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
- #1: ffff000113706d30 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_fileattr_set+0x78/0x458 fs/ioctl.c:681
-
-stack backtrace:
-CPU: 1 PID: 8019 Comm: syz-executor.3 Not tainted 6.1.0-rc8-syzkaller-33330-ga5541c0811a0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Call trace:
- dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:163
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
- dump_stack+0x1c/0x58 lib/dump_stack.c:113
- print_circular_bug+0x2c4/0x2c8 kernel/locking/lockdep.c:2055
- check_noncircular+0x14c/0x154 kernel/locking/lockdep.c:2177
- check_prev_add kernel/locking/lockdep.c:3097 [inline]
- check_prevs_add kernel/locking/lockdep.c:3216 [inline]
- validate_chain kernel/locking/lockdep.c:3831 [inline]
- __lock_acquire+0x1530/0x3084 kernel/locking/lockdep.c:5055
- lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
- percpu_down_write+0x6c/0x188 kernel/locking/percpu-rwsem.c:227
- ext4_ind_migrate+0xc8/0x318 fs/ext4/migrate.c:624
- ext4_ioctl_setflags+0x5c0/0x5f0 fs/ext4/ioctl.c:695
- ext4_fileattr_set+0x174/0x528 fs/ext4/ioctl.c:1003
- vfs_fileattr_set+0x400/0x458 fs/ioctl.c:696
- do_vfs_ioctl+0x1374/0x16a4
- __do_sys_ioctl fs/ioctl.c:868 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __arm64_sys_ioctl+0x98/0x140 fs/ioctl.c:856
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
- el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
- el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Thanks,
+> Zorro
+> 
+> > 
+> > Thanks,
+> > Amir.
+> > 
+> > >
+> > > Thanks,
+> > > Zorro
+> > >
+> > > [0]
+> > > commit f9ff5644bcc04221bae56f922122f2b7f5d24d62
+> > > Author: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Date:   Sat Dec 17 08:55:19 2022 -0600
+> > >
+> > >     Merge tag 'hsi-for-6.2' of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-h
+> > >
+> > > [1]
+> > > commit e014f37db1a2d109afa750042ac4d69cf3e3d88e
+> > > Author: Darrick J. Wong <djwong@kernel.org>
+> > > Date:   Tue Mar 8 10:51:16 2022 -0800
+> > >
+> > >     xfs: use setattr_copy to set vfs inode attributes
+> > >
+> > > [2]
+> > > FSTYP         -- xfs (debug)
+> > > PLATFORM      -- Linux/s390x ibm-z-510 6.1.0+ #1 SMP Sat Dec 17 13:23:59 EST 2022
+> > > MKFS_OPTIONS  -- -f -m crc=1,finobt=1,reflink=1,rmapbt=0,bigtime=1,inobtcount=1 -b size=1024 /dev/loop1
+> > > MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/loop1 /mnt/fstests/SCRATCH_DIR
+> > >
+> > > generic/673       - output mismatch (see /var/lib/xfstests/results//generic/673.out.bad)
+> > >     --- tests/generic/673.out   2022-12-17 13:57:40.336589178 -0500
+> > >     +++ /var/lib/xfstests/results//generic/673.out.bad  2022-12-18 00:00:53.627210256 -0500
+> > >     @@ -51,7 +51,7 @@
+> > >      310f146ce52077fcd3308dcbe7632bb2  SCRATCH_MNT/a
+> > >      2666 -rw-rwSrw- SCRATCH_MNT/a
+> > >      3784de23efab7a2074c9ec66901e39e5  SCRATCH_MNT/a
+> > >     -2666 -rw-rwSrw- SCRATCH_MNT/a
+> > >     +666 -rw-rw-rw- SCRATCH_MNT/a
+> > >
+> > >      Test 10 - qa_user, group-exec file, only sgid
+> > >     ...
+> > >     (Run 'diff -u /var/lib/xfstests/tests/generic/673.out /var/lib/xfstests/results//generic/673.out.bad'  to see the entire diff)
+> > > Ran: generic/673
+> > > Failures: generic/673
+> > > Failed 1 of 1 tests
+> > >
+> > > FSTYP         -- xfs (debug)
+> > > PLATFORM      -- Linux/s390x ibm-z-510 6.1.0+ #1 SMP Sat Dec 17 13:23:59 EST 2022
+> > > MKFS_OPTIONS  -- -f -m crc=1,finobt=1,reflink=1,rmapbt=0,bigtime=1,inobtcount=1 -b size=1024 /dev/loop1
+> > > MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/loop1 /mnt/fstests/SCRATCH_DIR
+> > >
+> > > generic/683       - output mismatch (see /var/lib/xfstests/results//generic/683.out.bad)
+> > >     --- tests/generic/683.out   2022-12-17 13:57:40.696589178 -0500
+> > >     +++ /var/lib/xfstests/results//generic/683.out.bad  2022-12-18 00:04:55.297220255 -0500
+> > >     @@ -33,7 +33,7 @@
+> > >
+> > >      Test 9 - qa_user, non-exec file falloc, only sgid
+> > >      2666 -rw-rwSrw- TEST_DIR/683/a
+> > >     -2666 -rw-rwSrw- TEST_DIR/683/a
+> > >     +666 -rw-rw-rw- TEST_DIR/683/a
+> > >
+> > >      Test 10 - qa_user, group-exec file falloc, only sgid
+> > >     ...
+> > >     (Run 'diff -u /var/lib/xfstests/tests/generic/683.out /var/lib/xfstests/results//generic/683.out.bad'  to see the entire diff)
+> > > Ran: generic/683
+> > > Failures: generic/683
+> > > Failed 1 of 1 tests
+> > >
+> > > FSTYP         -- xfs (debug)
+> > > PLATFORM      -- Linux/s390x ibm-z-510 6.1.0+ #1 SMP Sat Dec 17 13:23:59 EST 2022
+> > > MKFS_OPTIONS  -- -f -m crc=1,finobt=1,reflink=1,rmapbt=0,bigtime=1,inobtcount=1 -b size=1024 /dev/loop1
+> > > MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/loop1 /mnt/fstests/SCRATCH_DIR
+> > >
+> > > generic/684       - output mismatch (see /var/lib/xfstests/results//generic/684.out.bad)
+> > >     --- tests/generic/684.out   2022-12-17 13:57:40.766589178 -0500
+> > >     +++ /var/lib/xfstests/results//generic/684.out.bad  2022-12-18 00:05:27.597220255 -0500
+> > >     @@ -33,7 +33,7 @@
+> > >
+> > >      Test 9 - qa_user, non-exec file fpunch, only sgid
+> > >      2666 -rw-rwSrw- TEST_DIR/684/a
+> > >     -2666 -rw-rwSrw- TEST_DIR/684/a
+> > >     +666 -rw-rw-rw- TEST_DIR/684/a
+> > >
+> > >      Test 10 - qa_user, group-exec file fpunch, only sgid
+> > >     ...
+> > >     (Run 'diff -u /var/lib/xfstests/tests/generic/684.out /var/lib/xfstests/results//generic/684.out.bad'  to see the entire diff)
+> > > Ran: generic/684
+> > > Failures: generic/684
+> > > Failed 1 of 1 tests
+> > > ....
+> > > ....
+> > >
+> > >
+> > > Thanks,
+> > > Zorro
+> > >
+> > 
+> 
