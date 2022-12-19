@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A6E650624
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Dec 2022 02:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F238650625
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Dec 2022 02:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbiLSBvd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 18 Dec 2022 20:51:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        id S230346AbiLSBvp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 18 Dec 2022 20:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiLSBvc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Dec 2022 20:51:32 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3B05F82
-        for <linux-ext4@vger.kernel.org>; Sun, 18 Dec 2022 17:51:31 -0800 (PST)
+        with ESMTP id S229507AbiLSBvo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Dec 2022 20:51:44 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F71C635C
+        for <linux-ext4@vger.kernel.org>; Sun, 18 Dec 2022 17:51:43 -0800 (PST)
 Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Nb2hw6Tmpz16LfS
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Dec 2022 09:50:24 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Nb2jH28m0zJqbb
+        for <linux-ext4@vger.kernel.org>; Mon, 19 Dec 2022 09:50:43 +0800 (CST)
 Received: from huawei.com (10.113.189.238) by canpemm500009.china.huawei.com
  (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 19 Dec
- 2022 09:51:28 +0800
+ 2022 09:51:41 +0800
 From:   Wang Jianjian <wangjianjian3@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <zhangzhikang1@huawei.com>, <wangqiang62@huawei.com>,
         <zhengbowen7@huawei.com>
 Subject: [PATCH 1/1] ext4: Don't show commit interval if it is zero
-Date:   Mon, 19 Dec 2022 09:51:28 +0800
-Message-ID: <20221219015128.876717-1-wangjianjian3@huawei.com>
+Date:   Mon, 19 Dec 2022 09:51:40 +0800
+Message-ID: <20221219015140.877136-1-wangjianjian3@huawei.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.113.189.238]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  canpemm500009.china.huawei.com (7.192.105.203)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
