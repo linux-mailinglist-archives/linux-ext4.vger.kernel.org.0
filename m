@@ -2,115 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8AA65304E
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Dec 2022 12:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7431653683
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Dec 2022 19:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbiLULei (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Dec 2022 06:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S234880AbiLUSsD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Dec 2022 13:48:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbiLULeh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Dec 2022 06:34:37 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A9FF0
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Dec 2022 03:34:35 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id m2so14426935vsv.9
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Dec 2022 03:34:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kqp5h2G0o1D47DEepedTLD764sowPrFDF+33IDQEmnI=;
-        b=I9qyMFSju8mqnAnv5jRtM119ICRMxcmggG4XNqO/FT6Nzz/iFzzgibduR8DDTNbheN
-         Mqg6ooA0ZBaQOgRuuF0DzR1vJ94K+q9bvUnYiVvN8QfjNPfNitJBM3v5ZHQTmpxvIz7R
-         hTi0k93A3rbs6B/vPvdHP9YccDtX5jI8BUD9gsBUvOzaQFN2l2yvhE2+7H2opVpzV6aR
-         C4Telqqt3/sQttb4pL99RSC1cl/oCcUUnEqRBQwbKoWbIRk4d/tEl7ifZgFYdb8HmtTd
-         /RfxPey6MBuQ+laGkscbaSbqiZahSF2N0eReK1sPukK0Bb/4kfUVnYoOzQZBKx+quRFg
-         PcQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kqp5h2G0o1D47DEepedTLD764sowPrFDF+33IDQEmnI=;
-        b=mOnRAPZTgQ3J8w5JuwhTU3nkdAqeGFGAmQN73JD5IRh3lPj5DX0Let/N2vmCb7DWH+
-         2WymN2GUG0JQr/YAR3CmLdgynVrkyVGIRclXlnlm/pmNpI1gQKLm1TdMj97tmCamvn0l
-         WB6zJ8oQTRInfKot5nYQ1EtRmEvaroiNhxam4bkpQTQ9k5xK5CdmztlDnEqiZ8B+TUpr
-         /nMMKlKQq7E01+sX32mJ5zxNjdVH216j96sVBJ9oqnrnMaPwgHa2fVeKEmAT+tDAe3Jj
-         CaD2d0804JDVbb77czT4BzthpAWkvoeK+ChRiA2g6dZXI3fNNRLQRkoBr+v7/x/2i5B8
-         A+Yg==
-X-Gm-Message-State: AFqh2koRBOyz6IYEhyPkSH60V8ih8Tnl/nl7mkhroa4U9VrsOSenQNjO
-        Hjhj812sGIJlXeGvJr/3a4qij716X/O6omBXrMD9Yg==
-X-Google-Smtp-Source: AMrXdXtp0v/R72NOTcUNN1rnRCk2XUHl09Jbcq47OJpk3jODl7hk8leumWQWjVG9FfNpnXRSK1dHn0/szrfn/Qa2EFY=
-X-Received: by 2002:a67:d018:0:b0:3b3:560:f2ad with SMTP id
- r24-20020a67d018000000b003b30560f2admr215871vsi.17.1671622474909; Wed, 21 Dec
- 2022 03:34:34 -0800 (PST)
+        with ESMTP id S234296AbiLUSsC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Dec 2022 13:48:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2E01E70C;
+        Wed, 21 Dec 2022 10:48:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8D247B81BA6;
+        Wed, 21 Dec 2022 18:48:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6C4C433EF;
+        Wed, 21 Dec 2022 18:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671648479;
+        bh=hTuIjHBHd+Tec1DAOqqIPFW5jFXlpQ7ZWnftXs2hg6Q=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=XiS53svtnGlZKUpJLWpjIb00pvlTavkGyE/yhXeS7hKFYS8V/5Xav/+mlpRGezW6h
+         BljUFnHKQWw/igsJKn42+z68Zwy3Z5sPZrjhFME/Kwqkbwjx7njFSsJY/zjJWCYIs2
+         hg7VB/Upxxl01DViL7TGCOLjNQW9ZDg1YFt1aai4iFOc2yVu8ujua8wy7VEyZXvui4
+         /1bJ/zTi5VZkqa0c9me5b9nyIRR+8AGM7a6aXGScjL7jgysNOOGh6mrX4vs3UGAGXF
+         1s0aX5L7Ze9A8zWY2oezGwBJF7QaIiwiLIJLyqjhe4qpPeepExO7oc4XqzOCONcDBc
+         /pYLvZHxEpyuQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>, linux-sh@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bluetooth@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-scsi@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-ext4@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        lvs-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] treewide: Convert del_timer*() to timer_shutdown*()
+References: <20221220134519.3dd1318b@gandalf.local.home>
+Date:   Wed, 21 Dec 2022 20:47:50 +0200
+In-Reply-To: <20221220134519.3dd1318b@gandalf.local.home> (Steven Rostedt's
+        message of "Tue, 20 Dec 2022 13:45:19 -0500")
+Message-ID: <87mt7gk2zt.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <0000000000006c411605e2f127e5@google.com> <000000000000b60c1105efe06dea@google.com>
- <Y5vTyjRX6ZgIYxgj@mit.edu> <Y5xsIkpIznpObOJL@google.com> <CANp29Y6KHBE-fpfJCXeN5Ju_qSOfUYAp2n+cNrGj25QtU0X=sA@mail.gmail.com>
- <Y5ylNxoN2p7dmcRD@mit.edu> <CANp29Y4QVp1G83pSqpxeETbw_+kQQ5CZUz+Vgi767WxE8AuhHQ@mail.gmail.com>
- <Y5y824gPqZo+vcxb@mit.edu> <CANp29Y4S0TTVjonA9ADpBKviNHR+n3nYi2hy2hcee-4ArD5t4Q@mail.gmail.com>
- <Y6CqJ8fgQQW8AhT6@mit.edu>
-In-Reply-To: <Y6CqJ8fgQQW8AhT6@mit.edu>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 21 Dec 2022 12:34:23 +0100
-Message-ID: <CANp29Y7T+sG4JYkZttpyBkz54SUwOz=BhJED+QmKOGp2CgceiA@mail.gmail.com>
-Subject: Re: kernel BUG in ext4_free_blocks (2)
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Lee Jones <lee@kernel.org>,
-        syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org,
-        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
-        tadeusz.struk@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 7:15 PM Theodore Ts'o <tytso@mit.edu> wrote:
+Steven Rostedt <rostedt@goodmis.org> writes:
+
+> [
+>   Linus,
 >
-< ... >
-> It's not obvious what you mean by the "main page" of the namespace.
-> I'm guessing, but from the bug report page, there is a horizontal set
-> of icons, "Open", "Fixed", "Invalid" .... (which all have the same
-> icons), that the "Open" icon is the one that gets to the main page?
-
-Yes.
-
+>     I ran the script against your latest master branch:
+>     commit b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
 >
-> Assuming that this[1] is what was meant by "main page" (which is also
-> implied by the URL, but it's otherwise **really** not obvious), where
-> is the list of tested trees?
+>     As the timer_shutdown*() code is now in your tree, I figured
+>     we can start doing the conversions. At least add the trivial ones
+>     now as Thomas suggested that this gets applied at the end of the
+>     merge window, to avoid conflicts with linux-next during the
+>     development cycle. I can wait to Friday to run it again, and
+>     resubmit.
 >
-> [1] https://syzkaller.appspot.com/android-5-10
+>     What is the best way to handle this?
+> ]
+>
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> Due to several bugs caused by timers being re-armed after they are
+> shutdown and just before they are freed, a new state of timers was added
+> called "shutdown". After a timer is set to this state, then it can no
+> longer be re-armed.
+>
+> The following script was run to find all the trivial locations where
+> del_timer() or del_timer_sync() is called in the same function that the
+> object holding the timer is freed. It also ignores any locations where the
+> timer->function is modified between the del_timer*() and the free(), as
+> that is not considered a "trivial" case.
+>
+> This was created by using a coccinelle script and the following commands:
+>
+>  $ cat timer.cocci
+> @@
+> expression ptr, slab;
+> identifier timer, rfield;
+> @@
+> (
+> -       del_timer(&ptr->timer);
+> +       timer_shutdown(&ptr->timer);
+> |
+> -       del_timer_sync(&ptr->timer);
+> +       timer_shutdown_sync(&ptr->timer);
+> )
+>   ... when strict
+>       when != ptr->timer
+> (
+>         kfree_rcu(ptr, rfield);
+> |
+>         kmem_cache_free(slab, ptr);
+> |
+>         kfree(ptr);
+> )
+>
+>  $ spatch timer.cocci . > /tmp/t.patch
+>  $ patch -p1 < /tmp/t.patch
+>
+> Link: https://lore.kernel.org/lkml/20221123201306.823305113@linutronix.de/
+>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-I've just deployed the changes that add the page with the list of the
-tested repositories as well as a link to it from the "main page" (look
-above the table with instances). For Android, we indeed don't test
-many trees:
+For wireless:
 
-https://syzkaller.appspot.com/android-5-10/repos
+>  .../broadcom/brcm80211/brcmfmac/btcoex.c         |  2 +-
+>  drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c |  2 +-
+>  drivers/net/wireless/intel/iwlwifi/mvm/sta.c     |  2 +-
+>  drivers/net/wireless/intersil/hostap/hostap_ap.c |  2 +-
+>  drivers/net/wireless/marvell/mwifiex/main.c      |  2 +-
+>  drivers/net/wireless/microchip/wilc1000/hif.c    |  6 +++---
 
-For Linux upstream, there are more trees:
+Acked-by: Kalle Valo <kvalo@kernel.org>
 
-https://syzkaller.appspot.com/upstream/repos
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> At least for the android-5-10 namespace, why not just
-> say, "I don't see that commit on the git branch <explicit git repo and
-> branch name>"?
-
-Now such email messages will include the kernel name and some of the
-tested repositories (with the link to the full list page). E.g.
-https://github.com/google/syzkaller/blob/4067838e6b16173af08e062ce434ecfc46d45bda/dashboard/app/notifications_test.go#L106
-
---
-Aleksandr
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
