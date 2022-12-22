@@ -2,98 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 764DC653A71
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Dec 2022 03:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D078653DD9
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Dec 2022 11:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbiLVCCk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Dec 2022 21:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S235235AbiLVKDD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Dec 2022 05:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiLVCCj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Dec 2022 21:02:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCD720F64
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Dec 2022 18:02:38 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id o8-20020a17090a9f8800b00223de0364beso4267929pjp.4
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Dec 2022 18:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vSB+l3+h0STRS9DPPu2XELvIiGiSoWBn/FlK1C83SA=;
-        b=ou9acgIDlwQ3xDhECuqvM25H6FtaND3bPaqdjPAqWdAhqo7Y83YVVOiGn0oWKpRBS4
-         vdgdqILkVAYHVfYdf3pof6pdXyJCljnEs1wptCI9ej7Cr5ZAZl7t3PNkhtzsg1W3bURS
-         2HV6er5F+bAYJRN1hxlb+2zSVOYMkz7cfO219sfs7x/Gq2WOpVPAOuneveYdLQEqPNo2
-         /u7t31kWI4LUDAVT50QZFdyQZlAbgClBC1npmARQJs8QRnxoa/Y+JaRC1ofFSMs1nIk8
-         eSyFzxaLsJjIdkigx9S0+zBa5ISSuOse5qFZ5m7kcu4uxDC5ykAF2+Vzkbq69ZX0hlll
-         tKow==
+        with ESMTP id S235172AbiLVKDB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Dec 2022 05:03:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2616422BD8
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Dec 2022 02:02:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1671703333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o6jO/LCV2IF2UxvEuH5GPFWr6SJ3JZsJjPnFQmLY128=;
+        b=GttMmIVM5bszutsP7AJGxWp3/ihsZgu7NkRdTAZiuCOhuCp2+TPNhO9iDk9fae46ikQ8+c
+        NIRyzfUKo0bAUZIWGfoZoHfWnoaQV/uvQ5fCbRSRa2tcuVOOKPBLjD2WF8xOLDNgn0Rl3z
+        t8kWM28UYIDNOkiPyiNrM/5rHiz8WWA=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-671-qgiEw2cBMVCcwkfgxFU1cw-1; Thu, 22 Dec 2022 05:02:11 -0500
+X-MC-Unique: qgiEw2cBMVCcwkfgxFU1cw-1
+Received: by mail-qk1-f199.google.com with SMTP id m3-20020a05620a24c300b006fee2294e97so904054qkn.11
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Dec 2022 02:02:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vSB+l3+h0STRS9DPPu2XELvIiGiSoWBn/FlK1C83SA=;
-        b=Y8RJu7Vi2u6ti3Ypa/rq7CWySAt+1N90DElSAfpde/9Xtss7Pwl73+Sl7mRkHly6wl
-         0QqhBzk8EkMQWI4Zj1QPrvDgBVXdvmxJg4espLVZTz9QXbOB+NmYR3SXvyoEK/BQJT8a
-         FWHzR1qXGdun/2qGlAc7vIQdTGI1t+prtr3VSYf81S9oxoP2oGGRmLYAqlc2/nVfkS3O
-         zf82DXXG4thjKHYIQ6k/B9hig9NPDPGfD80jTjfbQD8dTE/87XM6pE5fqgr8DOBcaoHG
-         B/BmGyGstsyooMeJphNh4gBIV/FXJdsxGgKrKRjBOLBylKD0/c/liQNQ9+r+KR9Wl6Mm
-         Ywew==
-X-Gm-Message-State: AFqh2ko3lYGtN7J8tkhzenVL6Ys1qLg5t9SYXnuBiVHN9vJSH+cec0lJ
-        Tbj2bhc9WGAgG6QfY28aPGloDCAdZuhUP9bT
-X-Google-Smtp-Source: AMrXdXvj/o3WHvnJUk8+g2IpdvN05DyQP5K+Yj2TLou5ynvcpC3HezzZFC19XqQqVNUb6wvxw/khvQ==
-X-Received: by 2002:a17:902:82c8:b0:191:4389:f8fb with SMTP id u8-20020a17090282c800b001914389f8fbmr3938992plz.65.1671674558276;
-        Wed, 21 Dec 2022 18:02:38 -0800 (PST)
-Received: from niej-dt-7B47.. (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id k15-20020a170902c40f00b001869b988d93sm12154909plk.187.2022.12.21.18.02.34
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o6jO/LCV2IF2UxvEuH5GPFWr6SJ3JZsJjPnFQmLY128=;
+        b=voT9fWSuF2bRlY9XQkBXBbFNmmMw9TynFlkIJPW70NAx07a3xQ1S4lg2xrVdJWFEO0
+         O6QJ1fpB6n85TEzsj4Pip/APpCYx/hCJoG5m+oXJbkyH/3/QvcOhyzaWmegLNZ/8rcie
+         mhUSx97zn1lxhyI1G6uKZqjheZv/NH9m7xQi9JXYQqUWGN97S48cBOuc4MTWSMSlRAYZ
+         ZdulbJ4GwQoxheWfDS50JGuEJNaGol66nSVy7tHmz6qI8fmiPVL63Dmgy7Q4oHSveted
+         EVKGHJL1m9c5PSTPkzRAxyU/Fxu/0ItMjYvihtN01TnWTcDwF5mXW3i4ok6k6W3gfNUp
+         uceA==
+X-Gm-Message-State: AFqh2kqsNeR8mxEoVdZPruajvZG7osSW4DuKg70pe8qPU9pbU8t0iqWp
+        W9iFSmcKN6zGUsC0xdTonqbaMpkhw1v3juBi2dQEkwWQTLHfFTiS1W52F7kEAEY3Ky8QHEJxIs0
+        mD/mH56ybfkfF48Ilujp9BA==
+X-Received: by 2002:a0c:c508:0:b0:4e5:a127:382f with SMTP id x8-20020a0cc508000000b004e5a127382fmr6466230qvi.48.1671703331053;
+        Thu, 22 Dec 2022 02:02:11 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtZnBvcAi4VqZ0nAfseRa5ZZncJObkgh59kN1yODkWBS5WICo+kLsdO+KK5pqcbrrZqdW1DHQ==
+X-Received: by 2002:a0c:c508:0:b0:4e5:a127:382f with SMTP id x8-20020a0cc508000000b004e5a127382fmr6466171qvi.48.1671703330733;
+        Thu, 22 Dec 2022 02:02:10 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-101-173.dyn.eolo.it. [146.241.101.173])
+        by smtp.gmail.com with ESMTPSA id f1-20020a05620a408100b006cfc9846594sm4269qko.93.2022.12.22.02.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 18:02:37 -0800 (PST)
-From:   Jun Nie <jun.nie@linaro.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix underflow in group bitmap calculation
-Date:   Thu, 22 Dec 2022 10:02:44 +0800
-Message-Id: <20221222020244.1821308-1-jun.nie@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 22 Dec 2022 02:02:10 -0800 (PST)
+Message-ID: <8d91ab13f56e88af0f6133130808f9623b3adb2e.camel@redhat.com>
+Subject: Re: [PATCH] treewide: Convert del_timer*() to timer_shutdown*()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>, linux-sh@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bluetooth@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-scsi@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-ext4@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        lvs-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Date:   Thu, 22 Dec 2022 11:02:01 +0100
+In-Reply-To: <20221220134519.3dd1318b@gandalf.local.home>
+References: <20221220134519.3dd1318b@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There is case that s_first_data_block is not 0 and block nr is smaller than
-s_first_data_block when calculating group bitmap during allocation. This
-underflow make index exceed es->s_groups_count in ext4_get_group_info()
-and trigger the BUG_ON.
+On Tue, 2022-12-20 at 13:45 -0500, Steven Rostedt wrote:
+> [
+>   Linus,
+> 
+>     I ran the script against your latest master branch:
+>     commit b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
+> 
+>     As the timer_shutdown*() code is now in your tree, I figured
+>     we can start doing the conversions. At least add the trivial ones
+>     now as Thomas suggested that this gets applied at the end of the
+>     merge window, to avoid conflicts with linux-next during the
+>     development cycle. I can wait to Friday to run it again, and
+>     resubmit.
+> 
+>     What is the best way to handle this?
+> ]
+> 
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Due to several bugs caused by timers being re-armed after they are
+> shutdown and just before they are freed, a new state of timers was added
+> called "shutdown". After a timer is set to this state, then it can no
+> longer be re-armed.
+> 
+> The following script was run to find all the trivial locations where
+> del_timer() or del_timer_sync() is called in the same function that the
+> object holding the timer is freed. It also ignores any locations where the
+> timer->function is modified between the del_timer*() and the free(), as
+> that is not considered a "trivial" case.
+> 
+> This was created by using a coccinelle script and the following commands:
+> 
+>  $ cat timer.cocci
+> @@
+> expression ptr, slab;
+> identifier timer, rfield;
+> @@
+> (
+> -       del_timer(&ptr->timer);
+> +       timer_shutdown(&ptr->timer);
+> > 
+> -       del_timer_sync(&ptr->timer);
+> +       timer_shutdown_sync(&ptr->timer);
+> )
+>   ... when strict
+>       when != ptr->timer
+> (
+>         kfree_rcu(ptr, rfield);
+> > 
+>         kmem_cache_free(slab, ptr);
+> > 
+>         kfree(ptr);
+> )
+> 
+>  $ spatch timer.cocci . > /tmp/t.patch
+>  $ patch -p1 < /tmp/t.patch
+> 
+> Link: https://lore.kernel.org/lkml/20221123201306.823305113@linutronix.de/
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Fix it with protection of underflow.
+For the networking bits:
 
-Fixes: 72b64b594081ef ("ext4 uninline ext4_get_group_no_and_offset()")
-Link: https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
-Reported-by: syzbot+6be2b977c89f79b6b153@syzkaller.appspotmail.com
-Signed-off-by: Jun Nie <jun.nie@linaro.org>
----
- fs/ext4/balloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/net/ethernet/intel/i40e/i40e_main.c      |  6 +++---
+>  drivers/net/ethernet/marvell/sky2.c              |  2 +-
+>  drivers/net/ethernet/sun/sunvnet.c               |  2 +-
+>  drivers/net/usb/sierra_net.c                     |  2 +-
+>  net/802/garp.c                                   |  2 +-
+>  net/802/mrp.c                                    |  4 ++--
+>  net/bridge/br_multicast.c                        |  8 ++++----
+>  net/bridge/br_multicast_eht.c                    |  4 ++--
+>  net/core/gen_estimator.c                         |  2 +-
+>  net/ipv4/ipmr.c                                  |  2 +-
+>  net/ipv6/ip6mr.c                                 |  2 +-
+>  net/mac80211/mesh_pathtbl.c                      |  2 +-
+>  net/netfilter/ipset/ip_set_list_set.c            |  2 +-
+>  net/netfilter/ipvs/ip_vs_lblc.c                  |  2 +-
+>  net/netfilter/ipvs/ip_vs_lblcr.c                 |  2 +-
+>  net/netfilter/xt_IDLETIMER.c                     |  4 ++--
+>  net/netfilter/xt_LED.c                           |  2 +-
+>  net/sched/cls_flow.c                             |  2 +-
+>  net/sunrpc/svc.c                                 |  2 +-
+>  net/tipc/discover.c                              |  2 +-
+>  net/tipc/monitor.c                               |  2 +-
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 8ff4b9192a9f..177ef6bd635a 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -56,7 +56,8 @@ void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
- 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 	ext4_grpblk_t offset;
- 
--	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
-+	blocknr = blocknr > le32_to_cpu(es->s_first_data_block) ?
-+		blocknr - le32_to_cpu(es->s_first_data_block) : 0;
- 	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
- 		EXT4_SB(sb)->s_cluster_bits;
- 	if (offsetp)
--- 
-2.34.1
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
