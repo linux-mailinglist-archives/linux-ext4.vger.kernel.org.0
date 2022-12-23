@@ -2,138 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28F46551ED
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 16:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D33B655256
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 16:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbiLWPKk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Dec 2022 10:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S236421AbiLWPlc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Dec 2022 10:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbiLWPKj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 10:10:39 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3478826ADF;
-        Fri, 23 Dec 2022 07:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2bi42ObmzJhIVRGH9DaM47E730Lbb8ApGNNgjPXCVUQ=; b=brAgZQKgy5qoSpkVGCvPi67iOZ
-        UCsPe+FtDBr/XQU2ezYTH683mETwF8yEEGux2C8f1jTbdW9JLvIfTe8QdXcvyiaL7aQd4Z7ImtZVX
-        G4m4iPP3bCAlUVW1XhIy8Wq1s6eKdLiOBB/oXOHYE648aPig1BkqJKxEtpG4gZz1G18bRZ+Q39B/x
-        7wze59tMR/upOtUZjGLkIEri4YdbcDe4TEzRIwy4CeMmyW2XT2CvTEaSgxEpv3YedkQWPeMFiBzxA
-        PAwfaeeM11Vq00a3r/PBz9rTZEWxraVnxb/Duhy6dacos5vN3z6q1lA8ZhBlGkl3xCQxpB3/OD6ka
-        Ythqya2g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p8jgw-009FFs-Ll; Fri, 23 Dec 2022 15:10:34 +0000
-Date:   Fri, 23 Dec 2022 07:10:34 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Subject: Re: [RFC v3 6/7] iomap/xfs: Eliminate the iomap_valid handler
-Message-ID: <Y6XE6jLIax/+xcjF@infradead.org>
-References: <20221216150626.670312-1-agruenba@redhat.com>
- <20221216150626.670312-7-agruenba@redhat.com>
+        with ESMTP id S236522AbiLWPlV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 10:41:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3314A1148;
+        Fri, 23 Dec 2022 07:41:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9E326158B;
+        Fri, 23 Dec 2022 15:41:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F15C433D2;
+        Fri, 23 Dec 2022 15:41:15 +0000 (UTC)
+Date:   Fri, 23 Dec 2022 10:41:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>, linux-sh@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bluetooth@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-scsi@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-ext4@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        lvs-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] treewide: Convert del_timer*() to timer_shutdown*()
+Message-ID: <20221223104113.0bc8d37f@gandalf.local.home>
+In-Reply-To: <20221220134519.3dd1318b@gandalf.local.home>
+References: <20221220134519.3dd1318b@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221216150626.670312-7-agruenba@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 04:06:25PM +0100, Andreas Gruenbacher wrote:
-> Eliminate the ->iomap_valid() handler by switching to a ->page_prepare()
-> handler and validating the mapping there.
+On Tue, 20 Dec 2022 13:45:19 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> [
+>   Linus,
 > 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> ---
->  fs/iomap/buffered-io.c | 24 ++++--------------------
->  fs/xfs/xfs_iomap.c     | 38 +++++++++++++++++++++++++++-----------
->  include/linux/iomap.h  | 17 -----------------
->  3 files changed, 31 insertions(+), 48 deletions(-)
+>     I ran the script against your latest master branch:
+>     commit b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 6b7c1a10b8ec..b73ff317da21 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -623,7 +623,7 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
->  	const struct iomap_page_ops *page_ops = iter->iomap.page_ops;
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
->  	struct folio *folio;
-> -	int status = 0;
-> +	int status;
->  
->  	BUG_ON(pos + len > iter->iomap.offset + iter->iomap.length);
->  	if (srcmap != &iter->iomap)
-> @@ -642,27 +642,11 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
->  	if (IS_ERR_OR_NULL(folio)) {
->  		if (!folio)
->  			return (iter->flags & IOMAP_NOWAIT) ? -EAGAIN : -ENOMEM;
-> +		if (folio == ERR_PTR(-ESTALE)) {
->  			iter->iomap.flags |= IOMAP_F_STALE;
-> +			return 0;
->  		}
-> +		return PTR_ERR(folio);
->  	}
->  
->  	if (pos + len > folio_pos(folio) + folio_size(folio))
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 669c1bc5c3a7..2248ce7be2e3 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -62,29 +62,45 @@ xfs_iomap_inode_sequence(
->  	return cookie | READ_ONCE(ip->i_df.if_seq);
->  }
->  
-> -/*
-> - * Check that the iomap passed to us is still valid for the given offset and
-> - * length.
-> - */
-> -static bool
-> -xfs_iomap_valid(
-> -	struct inode		*inode,
-> -	const struct iomap	*iomap)
-> +static struct folio *
-> +xfs_page_prepare(
-> +	struct iomap_iter	*iter,
-> +	loff_t			pos,
-> +	unsigned		len)
->  {
-> +	struct inode		*inode = iter->inode;
-> +	struct iomap		*iomap = &iter->iomap;
->  	struct xfs_inode	*ip = XFS_I(inode);
-> +	struct folio *folio;
+>     As the timer_shutdown*() code is now in your tree, I figured
+>     we can start doing the conversions. At least add the trivial ones
+>     now as Thomas suggested that this gets applied at the end of the
+>     merge window, to avoid conflicts with linux-next during the
+>     development cycle. I can wait to Friday to run it again, and
+>     resubmit.
+> 
+>     What is the best way to handle this?
+> ]
 
-Please tab align this like the other variable declarations above.
+Note, I just did a git remote update, checked out the latest, re-ran the
+script, and this patch hasn't changed.
 
-> -	/*
-> -	 * Check that the cached iomap still maps correctly to the filesystem's
-> -	 * internal extent map. FS internal extent maps can change while iomap
-> -	 * is iterating a cached iomap, so this hook allows iomap to detect that
-> -	 * the iomap needs to be refreshed during a long running write
-> -	 * operation.
-> -	 *
-> -	 * The filesystem can store internal state (e.g. a sequence number) in
-> -	 * iomap->validity_cookie when the iomap is first mapped to be able to
-> -	 * detect changes between mapping time and whenever .iomap_valid() is
-> -	 * called.
-> -	 *
-> -	 * This is called with the folio over the specified file position held
-> -	 * locked by the iomap code.
-> -	 */
-
-We'll still need to capture this information somewhere.  I'd suggest
-to move it to the prepare/get method and reword it so that this is
-mentioned as an additional use case / requirement.
+-- Steve
