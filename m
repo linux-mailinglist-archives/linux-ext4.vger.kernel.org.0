@@ -2,110 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA9F654C27
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 06:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421E16551B2
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 15:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbiLWFIj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Dec 2022 00:08:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
+        id S230469AbiLWO4U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Dec 2022 09:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbiLWFIi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 00:08:38 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5737812AF2
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Dec 2022 21:08:37 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BN58Nt5028962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Dec 2022 00:08:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1671772109; bh=Hxq17Aov0v/KEYVnWVgtHO8L2e6gITsXnqdXSO6e9Jk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=AIZ/pxKeWK7zNWoPx661pcQl/feqj9NaMwe4olcs6TRUTkfTCtaEGNTPEgHY3ACft
-         XHoSq85MAtEvHThQjXqKLvZE0yO2j4mUre1EHBxZajTidCDepZdaXx7Gfego2hMQKu
-         J+ib/Igmd956kAD9AGoWLkpappJRKim5NcKK/n6jOROl1QvC9syCiZRu67osICsZUZ
-         djYcMIcfb+ijnRGN7YEXfj+h+glvvlJO25NI5CfCDqkRuZRBrosPSr+OMpQ12PEXU6
-         0/4u1jLXliMChxKvqgYWk/P3cXe67cB8uzmQ0RLFXkmAzKE2uywIYFkVBM5xFpDvz9
-         YX8EeAiJ/MByA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BD14F15C39F2; Fri, 23 Dec 2022 00:08:23 -0500 (EST)
-Date:   Fri, 23 Dec 2022 00:08:23 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jun Nie <jun.nie@linaro.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix underflow in group bitmap calculation
-Message-ID: <Y6U3x3Cs8Mzaakkx@mit.edu>
-References: <20221222020244.1821308-1-jun.nie@linaro.org>
- <Y6SW5s/jFY1oWFe2@mit.edu>
- <Y6SdOzSr5CW5nQl/@magnolia>
+        with ESMTP id S229658AbiLWO4U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 09:56:20 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467FA1A047;
+        Fri, 23 Dec 2022 06:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T0IzOuznf6jL2kGG15kuuaoVimSHPTfo71bEOOPjJZA=; b=YrW2NgDwKTrbrWOGs0aUyCmthg
+        dnuyDQ5co4JncqoOjZq6C/PqP2cYfpc0fk/o38kq68yanbk+vSUrGn4t4JFmcWses3SMl3mgpVJlX
+        g9N2WhR/neB3l0EN+WMaUg75aeODf6+6qtz9tNJPhR97MKY8esuoIBtqI9gsBaPyM24rydkv/Wm8b
+        i9WR3hcB1wCHxhRpTqsjese7K49E+sIzwRDqi1iXgqQ5awmoKgXlOUN125D+wGkPnhRhxVlD/p8en
+        UQNKFAqaJXKxFxyM1KohD3Tjb0GA3qVDkDB7u1qk9POnBcC5n/VLgUw+P4khYydw/uSmk0XDR4BM7
+        8IS2WJhA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p8jT1-0096pR-35; Fri, 23 Dec 2022 14:56:11 +0000
+Date:   Fri, 23 Dec 2022 06:56:11 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
+Subject: Re: [RFC v3 1/7] fs: Add folio_may_straddle_isize helper
+Message-ID: <Y6XBi/YJ4QV3NK5q@infradead.org>
+References: <20221216150626.670312-1-agruenba@redhat.com>
+ <20221216150626.670312-2-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y6SdOzSr5CW5nQl/@magnolia>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221216150626.670312-2-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 10:08:59AM -0800, Darrick J. Wong wrote:
-> 
-> Question -- on a 1k-block filesystem, are the first 1024 bytes of the
-> device *reserved* by ext4 for whatever bootloader crud goes in there?
-> Or is that space undefined in the filesystem specification?
-> 
-> I never did figure that out when I was writing the ondisk specification
-> that's in the kernel, but maybe you remember?
+On Fri, Dec 16, 2022 at 04:06:20PM +0100, Andreas Gruenbacher wrote:
+> Add a folio_may_straddle_isize() helper as a replacement for
+> pagecache_isize_extended() when we have a locked folio.
 
-That's an interesting (and philosophical) question.  The ext2 file
-system never had a formal specification, and this part of the file
-system format was devised by Remy Card before I had gotten involved
-with ext2.  (I first got started writing e2fsprogs; which replaced the
-previous file system utilities, which were forked from minix's tools,
-and which were quite inefficient.)
+I find the naming very confusing.  Any good reason to not follow
+the naming of pagecache_isize_extended an call it
+folio_isize_extended?
 
-In favor of it being undefined, the first 1024 bytes are not part of
-any block group in an ext2 file system with a 1k block size.  (The
-first block group is composed of physical blocks 1 through 8192
-inclusive when the block size is 1k.  Whereas if the blocksize is 4k,
-the first block group is composed of physical blocks 0 through 32767.)
-In addition, the status of the first 1024 bytes is not controlled by
-an ext2 block allocation bitmap.
+> Use the new helper in generic_write_end(), iomap_write_end(),
+> ext4_write_end(), and ext4_journalled_write_end().
 
-One could also argue that to the extent that ext2 was derived the ext
-file system, which in turn was derived from Minix --- and Minix File
-System (which does have a specification, explicitly states that "block
-0" is reserved for the Bootloader, with "Block 1" being the location
-of the superblock.  But Minix only supports a 1k blocksize, and
-doesn't have the concept of FFS-style block (cylinder) groups.
+Please split this into a patch per caller in addition to the one
+adding the helper, and write commit logs explaining the rationale
+for the helper.  The obious ones I'm trying to guess are that
+the new helper avoid a page cache radix tree lookup and a lock
+page/folio cycle, but I'd rather hear that from the horses mouth
+in the commit log.
 
-So I'd come down on the side which states that the first 1024 bytes
-are "undefined" on a 1k block file system.
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2164,16 +2164,15 @@ int generic_write_end(struct file *file, struct address_space *mapping,
+>  	 * But it's important to update i_size while still holding page lock:
+>  	 * page writeout could otherwise come in and zero beyond i_size.
+>  	 */
+> -	if (pos + copied > inode->i_size) {
+> +	if (pos + copied > old_size) {
 
-(One could also aruge that they are "undefined" on a 2k and 4k block
-file system, but the first 1024 bytes are part of "block 0", and on 2k
-and 4k block file systems, "block 0" is part of a block group.)
+This is and unrelated and undocument (but useful) change.  Please split
+it out as well.
 
-> If those first 1024 bytes are defined to be reserved in the ondisk
-> format, then you could return a mapping for those bytes with the owner
-> code set to EXT4_FMR_OWN_UNKNOWN.
-> 
-> If, however, the space is undefined, then going off this statement in
-> the manpage:
-> 
-> "For example, if the low key (fsmap_head.fmh_keys[0]) is set to (8:0,
-> 36864, 0, 0, 0), the filesystem  will  only  return  records for extents
-> starting at or above 36 KiB on disk."
-> 
-> I think the 'at or above' clause means that ext4 should not pass back
-> any mapping for the byte range 0-1023 on a 1k-block filesystem.
+> + * This function must be called while we still hold i_rwsem - this not only
+> + * makes sure i_size is stable but also that userspace cannot observe the new
+> + * i_size value before we are prepared to handle mmap writes there.
 
-Sure, sounds good to me.
+Please add a lockdep_assert_held_write to enforce that.
 
-						- Ted
+> +void folio_may_straddle_isize(struct inode *inode, struct folio *folio,
+> +			      loff_t old_size, loff_t start)
+> +{
+> +	unsigned int blocksize = i_blocksize(inode);
+> +
+> +	if (round_up(old_size, blocksize) >= round_down(start, blocksize))
+> +		return;
+> +
+> +	/*
+> +	 * See clear_page_dirty_for_io() for details why folio_set_dirty()
+> +	 * is needed.
+> +	 */
+> +	if (folio_mkclean(folio))
+> +		folio_set_dirty(folio);
+
+Should pagecache_isize_extended be rewritten to use this helper,
+i.e. turn this into a factoring out of a helper?
+
+> +EXPORT_SYMBOL(folio_may_straddle_isize);
+
+Please make this an EXPORT_SYMBOL_GPL just like folio_mkclean.
