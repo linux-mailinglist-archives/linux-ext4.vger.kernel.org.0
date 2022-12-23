@@ -2,139 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EB26545D1
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Dec 2022 19:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA9F654C27
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 06:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiLVSJG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Dec 2022 13:09:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
+        id S230158AbiLWFIj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Dec 2022 00:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiLVSJE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Dec 2022 13:09:04 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6656817E2A;
-        Thu, 22 Dec 2022 10:09:03 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 7DF73CE1BBF;
-        Thu, 22 Dec 2022 18:09:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 888A8C433EF;
-        Thu, 22 Dec 2022 18:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671732539;
-        bh=NRWCSSJiKT9ebsO+yFv6XlrvJQ8lw4SJc9ho5RGZ8kQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O+/8KgAVud6rfrWzxP+YdfiPHcK/C2uyvMeKfRTVp5GXnfxlTSw2YhTIZ1suPtB+g
-         qa1Vzj6th9MaT9J68NdAap/uY2YFhNb9CDl8F+pbqazkGKHMAvfEN9QGorEiWYuoYo
-         kZ9KpbK36As7+rEwBKrmzRQCVBbcStXbYsyvXzGD3V6P5Ko5M6V5MMlDH/io2lavKm
-         661bNCMaBttnvQON6e1pMcKeusaf8/flZELGwfrMk/AmoRnUmtRvl7jbqa34tbYgUN
-         ACHf1U0EU019/dPcX+GligpopT/J76AsClKBhd0wc+vLwlyA7Kue72tCQdaVxE+pQ+
-         BJsffRUwMiLGA==
-Date:   Thu, 22 Dec 2022 10:08:59 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
+        with ESMTP id S230060AbiLWFIi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 00:08:38 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5737812AF2
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Dec 2022 21:08:37 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BN58Nt5028962
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Dec 2022 00:08:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1671772109; bh=Hxq17Aov0v/KEYVnWVgtHO8L2e6gITsXnqdXSO6e9Jk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=AIZ/pxKeWK7zNWoPx661pcQl/feqj9NaMwe4olcs6TRUTkfTCtaEGNTPEgHY3ACft
+         XHoSq85MAtEvHThQjXqKLvZE0yO2j4mUre1EHBxZajTidCDepZdaXx7Gfego2hMQKu
+         J+ib/Igmd956kAD9AGoWLkpappJRKim5NcKK/n6jOROl1QvC9syCiZRu67osICsZUZ
+         djYcMIcfb+ijnRGN7YEXfj+h+glvvlJO25NI5CfCDqkRuZRBrosPSr+OMpQ12PEXU6
+         0/4u1jLXliMChxKvqgYWk/P3cXe67cB8uzmQ0RLFXkmAzKE2uywIYFkVBM5xFpDvz9
+         YX8EeAiJ/MByA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id BD14F15C39F2; Fri, 23 Dec 2022 00:08:23 -0500 (EST)
+Date:   Fri, 23 Dec 2022 00:08:23 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Jun Nie <jun.nie@linaro.org>, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] ext4: fix underflow in group bitmap calculation
-Message-ID: <Y6SdOzSr5CW5nQl/@magnolia>
+Message-ID: <Y6U3x3Cs8Mzaakkx@mit.edu>
 References: <20221222020244.1821308-1-jun.nie@linaro.org>
  <Y6SW5s/jFY1oWFe2@mit.edu>
+ <Y6SdOzSr5CW5nQl/@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y6SW5s/jFY1oWFe2@mit.edu>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y6SdOzSr5CW5nQl/@magnolia>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 12:41:58PM -0500, Theodore Ts'o wrote:
-> On Thu, Dec 22, 2022 at 10:02:44AM +0800, Jun Nie wrote:
-> > There is case that s_first_data_block is not 0 and block nr is smaller than
-> > s_first_data_block when calculating group bitmap during allocation. This
-> > underflow make index exceed es->s_groups_count in ext4_get_group_info()
-> > and trigger the BUG_ON.
-> > 
-> > Fix it with protection of underflow.
+On Thu, Dec 22, 2022 at 10:08:59AM -0800, Darrick J. Wong wrote:
 > 
-> When was this happening, and why?  If blocknr is less than
-> s_first_data_block, this is either a insufficient input validation,
-> insufficient validation to detection file system corruption. or some
-> other kernel bug.
+> Question -- on a 1k-block filesystem, are the first 1024 bytes of the
+> device *reserved* by ext4 for whatever bootloader crud goes in there?
+> Or is that space undefined in the filesystem specification?
 > 
-> Looking quickly at the code and the repro, it appears that issue is
-> that FS_IOC_GETFSMAP is getting passed a stating physical block of 0
-> in fmh_keys[0] when on a file system with a blocksize of 1k (in which
-> case s_first_data_block is 1).  It's unclear to me what
+> I never did figure that out when I was writing the ondisk specification
+> that's in the kernel, but maybe you remember?
 
-Question -- on a 1k-block filesystem, are the first 1024 bytes of the
-device *reserved* by ext4 for whatever bootloader crud goes in there?
-Or is that space undefined in the filesystem specification?
+That's an interesting (and philosophical) question.  The ext2 file
+system never had a formal specification, and this part of the file
+system format was devised by Remy Card before I had gotten involved
+with ext2.  (I first got started writing e2fsprogs; which replaced the
+previous file system utilities, which were forked from minix's tools,
+and which were quite inefficient.)
 
-I never did figure that out when I was writing the ondisk specification
-that's in the kernel, but maybe you remember?
+In favor of it being undefined, the first 1024 bytes are not part of
+any block group in an ext2 file system with a 1k block size.  (The
+first block group is composed of physical blocks 1 through 8192
+inclusive when the block size is 1k.  Whereas if the blocksize is 4k,
+the first block group is composed of physical blocks 0 through 32767.)
+In addition, the status of the first 1024 bytes is not controlled by
+an ext2 block allocation bitmap.
 
-> FS_IOC_GETFSMAP should *do* when passed a value which requests that it
-> provide a mapping for a block which is out of bounds (either too big,
-> or too small)?.  Should it return an error?  Should it simply not
-> return a mapping?  The map page for ioctl_getfsmap() doesn't shed any
-> light on this question.
+One could also argue that to the extent that ext2 was derived the ext
+file system, which in turn was derived from Minix --- and Minix File
+System (which does have a specification, explicitly states that "block
+0" is reserved for the Bootloader, with "Block 1" being the location
+of the superblock.  But Minix only supports a 1k blocksize, and
+doesn't have the concept of FFS-style block (cylinder) groups.
+
+So I'd come down on the side which states that the first 1024 bytes
+are "undefined" on a 1k block file system.
+
+(One could also aruge that they are "undefined" on a 2k and 4k block
+file system, but the first 1024 bytes are part of "block 0", and on 2k
+and 4k block file systems, "block 0" is part of a block group.)
+
+> If those first 1024 bytes are defined to be reserved in the ondisk
+> format, then you could return a mapping for those bytes with the owner
+> code set to EXT4_FMR_OWN_UNKNOWN.
 > 
-> Darrick, you designed the interface and wrote most of fs/ext4/fsmap.c.
-> Can you let us know what is supposed to happen in this case?  Many
-> thanks!!
-
-If those first 1024 bytes are defined to be reserved in the ondisk
-format, then you could return a mapping for those bytes with the owner
-code set to EXT4_FMR_OWN_UNKNOWN.
-
-If, however, the space is undefined, then going off this statement in
-the manpage:
-
-"For example, if the low key (fsmap_head.fmh_keys[0]) is set to (8:0,
-36864, 0, 0, 0), the filesystem  will  only  return  records for extents
-starting at or above 36 KiB on disk."
-
-I think the 'at or above' clause means that ext4 should not pass back
-any mapping for the byte range 0-1023 on a 1k-block filesystem.
-
-If the low key is set to (8:0, 0, 0, 0, 0) and high key is set to (8:0,
-1023, 0, 0, 0) then ext4 shouldn't return any mapping at all, because
-there's no space usage defined for that region of the disk.
-
-If the low key is set to (8:0, 0, 0, 0, 0) and high key is set to all
-ones, then ext4 can return mappings for the primary superblock at offset
-1024.
-
---D
-
+> If, however, the space is undefined, then going off this statement in
+> the manpage:
 > 
-> > Fixes: 72b64b594081ef ("ext4 uninline ext4_get_group_no_and_offset()")
+> "For example, if the low key (fsmap_head.fmh_keys[0]) is set to (8:0,
+> 36864, 0, 0, 0), the filesystem  will  only  return  records for extents
+> starting at or above 36 KiB on disk."
 > 
-> This makes ***no*** sense; the commit in question is from 2006, which
-> means that in some jourisdictions it's old enough to drive a car.  :-)
-> Futhermore, all it does is move the function from an inline function
-> to a C file (in this case, balloc.c).  It also long predates
-> introduction of FS_IOC_GETFSMAP support, which was in 2017.  
-> 
-> I'm guessing you just did a "git blame" and blindly assumed that
-> whatever commit last touched the C code in question was what
-> introduced the problem?
-> 
-> Anyway, please try to understand what is going on instead of doing the
-> moral equivalent of taking a sledgehammer to the code until the
-> reproducer stops triggering a BUG.  It's not enough to shut up the
-> reproducer; you should understand what is happening, and why, and then
-> strive to find the best fix to the problem.  Papering over problems in
-> the end will result in more fragile code, and the goal of syzkaller is
-> to improve kernel quality.  But syzkaller is just a tool and used
-> wrongly, it can have the opposite effect.
-> 
-> Regards,
-> 
-> 					- Ted
+> I think the 'at or above' clause means that ext4 should not pass back
+> any mapping for the byte range 0-1023 on a 1k-block filesystem.
+
+Sure, sounds good to me.
+
+						- Ted
