@@ -2,148 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AA86554DB
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Dec 2022 23:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F18B6558E3
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Dec 2022 08:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbiLWWFH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Dec 2022 17:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        id S230175AbiLXHVf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 24 Dec 2022 02:21:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbiLWWFF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Dec 2022 17:05:05 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBCE1C435;
-        Fri, 23 Dec 2022 14:05:04 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id bp44so2057258qtb.0;
-        Fri, 23 Dec 2022 14:05:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XOJ5z7kFjWc68B5B6Sh1NWt9teGCI8E34Z2/SZr41S8=;
-        b=CaDLvp1QLFx2Hzqz3sPsHWemPlSRGIVm6N0Ga8quwoX390HaGi6C/ooR/jUv1tMncn
-         EAHfSzlVh7lg8HE7dlsOVfNt1aRvMKnylga/ihg1jTkePYaOSPOk26xGxzFUN1n+kULd
-         31rZLbaBrNcWdfmGI9utk6Jt6MRev80E/G15Yzt63eA9U2dWEwNtaqsWq/B3UuPMhjDw
-         QNmanZbagRuK/IDoRljUMi2u8Gml6zKNvOK9DkEgqLmRIEHvHZIvj0vApRbArdAb0OtN
-         kL85EmMcMOM1LTnJBA0ann4v1DzewhMieom0TfuLVs0sXLxUqRVZt8otJPdK943rUnIk
-         SvdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XOJ5z7kFjWc68B5B6Sh1NWt9teGCI8E34Z2/SZr41S8=;
-        b=cgaCEcMrxFaiixLKBOCFSj2dwJ8zhZ3YwQXabk1VvRkjf2o6HjmOxjTXtaWtVFy418
-         ekTGsVrSgI4Ec1QhLDyWsQAdM/VV0PeFkR4YU4Wh7DmO24IwcoaziRmRtBZO5TEK+fXv
-         /vRTY7YKJ0uTW/DOQcaYbXrh80B9qNfwWQa1ee/K5zCftEJ2m3ruCQZzLe5faQTtlR87
-         OprOx2iZ1C8vavRTZn5uFrOtZMdEW+sjMT2i8myq4y+eqAL93md3mM21mh/N3dCLWFMD
-         iXUrZLxGCiAkD6lw/PRtAIPt8fLziLKMetJWechI3Tt7+mm1UFYEVZSWzf3lj3qxf8wQ
-         3agw==
-X-Gm-Message-State: AFqh2kripjgXQ8S791MlpdKvKPJ3usHDz2S/oZu0B8m731M1r8b0l4RI
-        I6iUqousRflBgqRfuQpXllaQRDU+j7R+Bsl6TCwfPKn7orCDYg==
-X-Google-Smtp-Source: AMrXdXuipY+SQ8jSfCWfT/V64MUdmK6UvoWduFpm5A8Hx7l02aMdqZw2KCqhbqXafoBpp8zEGiBHF8fUV8HiMG2klj4=
-X-Received: by 2002:a05:622a:244c:b0:3a8:12f6:69ff with SMTP id
- bl12-20020a05622a244c00b003a812f669ffmr451928qtb.567.1671833103695; Fri, 23
- Dec 2022 14:05:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20221216150626.670312-1-agruenba@redhat.com> <20221216150626.670312-2-agruenba@redhat.com>
- <Y6XBi/YJ4QV3NK5q@infradead.org>
-In-Reply-To: <Y6XBi/YJ4QV3NK5q@infradead.org>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Fri, 23 Dec 2022 23:04:51 +0100
-Message-ID: <CAHpGcMKJO7HhgyU5NKX3h6vVeNAGp-8xFrOf+nSTEWHC-PekzA@mail.gmail.com>
-Subject: Re: [RFC v3 1/7] fs: Add folio_may_straddle_isize helper
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        with ESMTP id S230167AbiLXHVe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Dec 2022 02:21:34 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F6712ACF;
+        Fri, 23 Dec 2022 23:21:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=YgyS9Hi5REvv1K/NGxcEShlxYPQgP5TjuKggBBZ0AXE=; b=EFJCqV3y2QPxOmS8ITM38KaR2P
+        uR3WTFMx5W2pVWreyJapHzU5dZPfMwzpB1pjkr59JlE16ozG4ptqVBBynVROPEAGRwGN5EbD2Xkt+
+        W00//KiOW2jIe6wM18pQ7qLUcfcYnxg7v+oelGjbAbNk9JrX9N4+HYvFbTtJX18FTVj8gnX4f1/yI
+        pdcm40a7+lXBMzvU6SOT0vs33CtsqSUyP2rQGplxXbe9F8cGY78XHwyNYS48cS4b50SFEZTw4hOLq
+        tT2rgF3AV1n+0TloFi11auxeXqR9/3mVtQtQS0AUvENgAIgzFFalQ5CIhOIIVC8cLXHOZleL381sL
+        PdhYtQ1Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p8yqS-00FvQQ-7V; Sat, 24 Dec 2022 07:21:24 +0000
+Date:   Fri, 23 Dec 2022 23:21:24 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         "Darrick J . Wong" <djwong@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Matthew Wilcox <willy@infradead.org>,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [RFC v3 1/7] fs: Add folio_may_straddle_isize helper
+Message-ID: <Y6aodOf7Q016xSay@infradead.org>
+References: <20221216150626.670312-1-agruenba@redhat.com>
+ <20221216150626.670312-2-agruenba@redhat.com>
+ <Y6XBi/YJ4QV3NK5q@infradead.org>
+ <CAHpGcMKJO7HhgyU5NKX3h6vVeNAGp-8xFrOf+nSTEWHC-PekzA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMKJO7HhgyU5NKX3h6vVeNAGp-8xFrOf+nSTEWHC-PekzA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Fr., 23. Dez. 2022 um 16:06 Uhr schrieb Christoph Hellwig
-<hch@infradead.org>:
-> On Fri, Dec 16, 2022 at 04:06:20PM +0100, Andreas Gruenbacher wrote:
-> > Add a folio_may_straddle_isize() helper as a replacement for
-> > pagecache_isize_extended() when we have a locked folio.
->
-> I find the naming very confusing.  Any good reason to not follow
-> the naming of pagecache_isize_extended an call it
-> folio_isize_extended?
+On Fri, Dec 23, 2022 at 11:04:51PM +0100, Andreas Grünbacher wrote:
+> > I find the naming very confusing.  Any good reason to not follow
+> > the naming of pagecache_isize_extended an call it
+> > folio_isize_extended?
+> 
+> A good reason for a different name is because
+> folio_may_straddle_isize() requires a locked folio, while
+> pagecache_isize_extended() will fail if the folio is still locked. So
+> this doesn't follow the usual "replace 'page' with 'folio'" pattern.
 
-A good reason for a different name is because
-folio_may_straddle_isize() requires a locked folio, while
-pagecache_isize_extended() will fail if the folio is still locked. So
-this doesn't follow the usual "replace 'page' with 'folio'" pattern.
+pagecache also doesn't say page, it says pagecache.  I'd still prepfer
+to keep the postfix the same.  And I think the fact that it needs
+a locked folio should also have an assert, which both documents this
+and catches errors.  I think that's much better than an arbitrarily
+different name.
 
-> > Use the new helper in generic_write_end(), iomap_write_end(),
-> > ext4_write_end(), and ext4_journalled_write_end().
->
-> Please split this into a patch per caller in addition to the one
-> adding the helper, and write commit logs explaining the rationale
-> for the helper.  The obious ones I'm trying to guess are that
-> the new helper avoid a page cache radix tree lookup and a lock
-> page/folio cycle, but I'd rather hear that from the horses mouth
-> in the commit log.
+> > Should pagecache_isize_extended be rewritten to use this helper,
+> > i.e. turn this into a factoring out of a helper?
+> 
+> I'm not really sure about that. The boundary conditions in the two
+> functions are not identical. I think the logic in
+> folio_may_straddle_isize() is sufficient for the
+> extending-write-under-folio-lock case, but I'd still need confirmation
+> for that. If the same logic would also be enough in
+> pagecache_isize_extended() is more unclear to me.
 
-Yes, that's what the horse says.
-
-> > --- a/fs/buffer.c
-> > +++ b/fs/buffer.c
-> > @@ -2164,16 +2164,15 @@ int generic_write_end(struct file *file, struct address_space *mapping,
-> >        * But it's important to update i_size while still holding page lock:
-> >        * page writeout could otherwise come in and zero beyond i_size.
-> >        */
-> > -     if (pos + copied > inode->i_size) {
-> > +     if (pos + copied > old_size) {
->
-> This is and unrelated and undocument (but useful) change.  Please split
-> it out as well.
->
-> > + * This function must be called while we still hold i_rwsem - this not only
-> > + * makes sure i_size is stable but also that userspace cannot observe the new
-> > + * i_size value before we are prepared to handle mmap writes there.
->
-> Please add a lockdep_assert_held_write to enforce that.
->
-> > +void folio_may_straddle_isize(struct inode *inode, struct folio *folio,
-> > +                           loff_t old_size, loff_t start)
-> > +{
-> > +     unsigned int blocksize = i_blocksize(inode);
-> > +
-> > +     if (round_up(old_size, blocksize) >= round_down(start, blocksize))
-> > +             return;
-> > +
-> > +     /*
-> > +      * See clear_page_dirty_for_io() for details why folio_set_dirty()
-> > +      * is needed.
-> > +      */
-> > +     if (folio_mkclean(folio))
-> > +             folio_set_dirty(folio);
->
-> Should pagecache_isize_extended be rewritten to use this helper,
-> i.e. turn this into a factoring out of a helper?
-
-I'm not really sure about that. The boundary conditions in the two
-functions are not identical. I think the logic in
-folio_may_straddle_isize() is sufficient for the
-extending-write-under-folio-lock case, but I'd still need confirmation
-for that. If the same logic would also be enough in
-pagecache_isize_extended() is more unclear to me.
-
-> > +EXPORT_SYMBOL(folio_may_straddle_isize);
->
-> Please make this an EXPORT_SYMBOL_GPL just like folio_mkclean.
-
-Thanks,
-Andreas
+That's another thing that really needs to into the commit log,
+why is the condition different and pagecache_isize_extended can't
+just be extended for it (if it really can't).
