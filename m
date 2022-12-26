@@ -2,53 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6BF656054
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Dec 2022 07:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A4C65637A
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Dec 2022 15:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbiLZGVJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Dec 2022 01:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S229597AbiLZOix (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Dec 2022 09:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbiLZGVE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Dec 2022 01:21:04 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8D33A5
-        for <linux-ext4@vger.kernel.org>; Sun, 25 Dec 2022 22:21:01 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NgSMr0NF0z4f3kpM
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Dec 2022 14:20:56 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLA0PaljSrgmAg--.47792S4;
-        Mon, 26 Dec 2022 14:20:58 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
-Subject: [RFC PATCH v2] ext4: dio take shared inode lock when overwriting preallocated blocks
-Date:   Mon, 26 Dec 2022 14:20:15 +0800
-Message-Id: <20221226062015.3479416-1-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229623AbiLZOiq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Dec 2022 09:38:46 -0500
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF7026C8;
+        Mon, 26 Dec 2022 06:38:45 -0800 (PST)
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BQEU0nO028865;
+        Mon, 26 Dec 2022 06:31:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PPS06212021;
+ bh=IshxhtlSnyCL5O8xZwcyOXGGGBA63RqRdErQaGSn5a4=;
+ b=acvZznAkym3+fX7zskzF6uAXS08r9ootJry0bIMmoVRjDpJRowRs+FKzjM9NB+pwzGjt
+ LK7jmt0MvfoyWwqOowoZZMQF1Hx62lMZMU7B9anc8Oxqg4VMcgVKaSk10pxV8xQyfswj
+ +ozyWnoZVEJxydSvDUxiZaigAA3wppSjVwsS56FNq7Ccli/UZVVgW/yma9QbKKYSZCwl
+ cXUA7gWlC63H/LiWS5C9iMKPzBt3jHhKzrxEW9Cos2+P7UX/E76OLMhfP0CAZ+05EPd4
+ B54Jd3FSHN507ZBA1gOHxrkP0kUvzz2/XcUU9zetWrKMqRGaJCD55m+EkYEjgHk9PKlG zQ== 
+Received: from ala-exchng02.corp.ad.wrs.com (unknown-82-254.windriver.com [147.11.82.254])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3mnwk8941v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Dec 2022 06:31:22 -0800
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Mon, 26 Dec 2022 06:31:24 -0800
+Received: from pek-lpd-ccm4.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.16 via Frontend Transport; Mon, 26 Dec 2022 06:31:21 -0800
+From:   Lizhi Xu <lizhi.xu@windriver.com>
+To:     <mail@anirudhrb.com>
+CC:     <adilger.kernel@dilger.ca>, <akpm@osdl.org>, <alex@clusterfs.com>,
+        <gregkh@linuxfoundation.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <shaggy@austin.ibm.com>,
+        <syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com>,
+        <tytso@mit.edu>
+Subject: How can this fix prevent information from leaking to user space and prevent the kernel from crashing?
+Date:   Mon, 26 Dec 2022 22:31:19 +0800
+Message-ID: <20221226143119.3719096-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20210506185655.7118-1-mail@anirudhrb.com>
+References: <20210506185655.7118-1-mail@anirudhrb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLA0PaljSrgmAg--.47792S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUZry5tw15ZF1kKr1fXrb_yoWrKw1Upa
-        43KF13XrZ2g34xWrZ3ta4xuw1Yg3Z5JrWxArW3Gw1Yv34UWryxtFyUXFyYya4rJ3yxG3W2
-        qFZ0k34DW3WDtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Type: text/plain
+X-Proofpoint-GUID: SPQ9vl3mT4fnrN82mEfX-A8yj0IzfWGe
+X-Proofpoint-ORIG-GUID: SPQ9vl3mT4fnrN82mEfX-A8yj0IzfWGe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-26_11,2022-12-23_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2212070000 definitions=main-2212260126
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,136 +73,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Hi, Anirudh Rayabharam
 
-In the dio write path, we only take shared inode lock for the case of
-aligned overwriting initialized blocks inside EOF. But for overwriting
-preallocated blocks, it may only need to split unwritten extents, this
-procedure has been protected under i_data_sem lock, it's safe to
-release the exclusive inode lock and take shared inode lock.
+I verify this patch in the following environment, using reproducer: https://syzkaller.appspot.com/x/repro.c?x=122870ff800000
 
-This could give a significant speed up for multi-threaded writes. Test
-on Intel Xeon Gold 6140 and nvme SSD with below fio parameters.
+1. kernel version:  kernel version 5.15.72 
+2. gcc 11.3
+3. libc 2.35
 
- direct=1
- ioengine=libaio
- iodepth=10
- numjobs=10
- runtime=60
- rw=randwrite
- size=100G
+Because the kernel version 5.15.72 already contains this patch ce3aba43599f0b50adbebff133df8d08a3d5fffe, 
+So I deleted this patch to make a kernel image to reproduce the problem,
+On the other hand, I reserve this patch to verify that the problem has been fixed,
+The result of the experiment is that no matter whether this patch is applied or not, 
+this problem cannot be reproduced in kernel version 5.15.72.
 
-And the test result are:
-Before:
- bs=4k       IOPS=11.1k, BW=43.2MiB/s
- bs=16k      IOPS=11.1k, BW=173MiB/s
- bs=64k      IOPS=11.2k, BW=697MiB/s
+In addition, I am also very confused. There are three places to initialize "eh_generation". 
+There is no other reference to the parameter "eh_generation" in all the source code of the kernel,
+At the same time, there is no indirect operation on the parameter "eh_generation" in reproducer,
+How can this fix prevent information from leaking to user space and prevent the kernel from crashing?
 
-After:
- bs=4k       IOPS=41.4k, BW=162MiB/s
- bs=16k      IOPS=41.3k, BW=646MiB/s
- bs=64k      IOPS=13.5k, BW=843MiB/s
-
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
-v2->v1:
- - Negate the 'inited' related arguments to 'unwritten'.
-
- fs/ext4/file.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index a7a597c727e6..21abe95a0ee7 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -202,8 +202,9 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
- 	return false;
- }
- 
--/* Is IO overwriting allocated and initialized blocks? */
--static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
-+/* Is IO overwriting allocated or initialized blocks? */
-+static bool ext4_overwrite_io(struct inode *inode,
-+			      loff_t pos, loff_t len, bool *unwritten)
- {
- 	struct ext4_map_blocks map;
- 	unsigned int blkbits = inode->i_blkbits;
-@@ -217,12 +218,15 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
- 	blklen = map.m_len;
- 
- 	err = ext4_map_blocks(NULL, inode, &map, 0);
-+	if (err != blklen)
-+		return false;
- 	/*
- 	 * 'err==len' means that all of the blocks have been preallocated,
--	 * regardless of whether they have been initialized or not. To exclude
--	 * unwritten extents, we need to check m_flags.
-+	 * regardless of whether they have been initialized or not. We need to
-+	 * check m_flags to distinguish the unwritten extents.
- 	 */
--	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
-+	*unwritten = !(map.m_flags & EXT4_MAP_MAPPED);
-+	return true;
- }
- 
- static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
-@@ -431,11 +435,16 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
-  * - For extending writes case we don't take the shared lock, since it requires
-  *   updating inode i_disksize and/or orphan handling with exclusive lock.
-  *
-- * - shared locking will only be true mostly with overwrites. Otherwise we will
-- *   switch to exclusive i_rwsem lock.
-+ * - shared locking will only be true mostly with overwrites, including
-+ *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
-+ *   we protect splitting extents by i_data_sem in ext4_inode_info, so we can
-+ *   also release exclusive i_rwsem lock.
-+ *
-+ * - Otherwise we will switch to exclusive i_rwsem lock.
-  */
- static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
--				     bool *ilock_shared, bool *extend)
-+				     bool *ilock_shared, bool *extend,
-+				     bool *unwritten)
- {
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
-@@ -459,7 +468,7 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 	 * in file_modified().
- 	 */
- 	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
--	     !ext4_overwrite_io(inode, offset, count))) {
-+	     !ext4_overwrite_io(inode, offset, count, unwritten))) {
- 		if (iocb->ki_flags & IOCB_NOWAIT) {
- 			ret = -EAGAIN;
- 			goto out;
-@@ -491,7 +500,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	loff_t offset = iocb->ki_pos;
- 	size_t count = iov_iter_count(from);
- 	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
--	bool extend = false, unaligned_io = false;
-+	bool extend = false, unaligned_io = false, unwritten = false;
- 	bool ilock_shared = true;
- 
- 	/*
-@@ -534,7 +543,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		return ext4_buffered_write_iter(iocb, from);
- 	}
- 
--	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
-+	ret = ext4_dio_write_checks(iocb, from,
-+				    &ilock_shared, &extend, &unwritten);
- 	if (ret <= 0)
- 		return ret;
- 
-@@ -582,7 +592,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		ext4_journal_stop(handle);
- 	}
- 
--	if (ilock_shared)
-+	if (ilock_shared && !unwritten)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
--- 
-2.31.1
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 77c84d6f1af6..677d4821bcc1 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -825,6 +825,7 @@ void ext4_ext_tree_init(handle_t *handle, struct inode *inode)
+>  	eh->eh_entries = 0;
+>  	eh->eh_magic = EXT4_EXT_MAGIC;
+>  	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
+> +	eh->eh_generation = 0;
+>  	ext4_mark_inode_dirty(handle, inode);
+>  }
+>  
+> @@ -1090,6 +1091,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+>  	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
+>  	neh->eh_magic = EXT4_EXT_MAGIC;
+>  	neh->eh_depth = 0;
+> +	neh->eh_generation = 0;
+>  
+>  	/* move remainder of path[depth] to the new leaf */
+>  	if (unlikely(path[depth].p_hdr->eh_entries !=
+> @@ -1167,6 +1169,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+>  		neh->eh_magic = EXT4_EXT_MAGIC;
+>  		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
+>  		neh->eh_depth = cpu_to_le16(depth - i);
+> +		neh->eh_generation = 0;
+>  		fidx = EXT_FIRST_INDEX(neh);
+>  		fidx->ei_block = border;
+>  		ext4_idx_store_pblock(fidx, oldblock);
+> -- 
+> 2.26.2
 
