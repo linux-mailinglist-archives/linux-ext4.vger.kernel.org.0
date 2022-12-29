@@ -2,50 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D45658A4E
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 09:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE79D658A54
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 09:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbiL2IOF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Dec 2022 03:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
+        id S233023AbiL2IO2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Dec 2022 03:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbiL2INU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 03:13:20 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826CC11C3A
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:13:11 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id 20so4853218plo.3
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:13:11 -0800 (PST)
+        with ESMTP id S233090AbiL2INa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 03:13:30 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED4813D41
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:13:13 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id s7so18289024plk.5
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:13:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tknTAYGKiWbOelfCTGAIM4O7q8g3LJuucBsJtaWsm7Y=;
-        b=od6vH7qllnsXef6M4SnGIOrNBwpv4p//RiTi9UhMGK3lxP1a2K3Nm1uXz7ssRR+Smi
-         wUthhRevFt0NOvSr6D9fSLI7kuMeJffcI62x3q63JgaiPRtoRmo7cT9cQcEV1/CPgE3M
-         gaDQE3uH/ZWruLOhIAciPanxs5Ham7RNijdIg=
+        bh=Vv5x1KdmMeVtIhlp3zKOKF7sZVF7KRZLRJQbPD3QKT4=;
+        b=T05xc0ET+ovYWIL5pcnCM2gTG/W0v/0OqHvEwFkZjoBf10OqF0ArlagciQllVNzMtn
+         GIrm+w7+DEYMtu0OMfltv5BLAP1xPtYnbtZ4WfOOVblA64a9OsheTZbsH52zOo8QN0Sp
+         hWwPftBw+HDztRSuSQCbaldwNxaNhj1AdbITs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tknTAYGKiWbOelfCTGAIM4O7q8g3LJuucBsJtaWsm7Y=;
-        b=CaxbmR83/w1FXaT01qUDeee9JsiBoQurUPJP9YCnsqhWZrEQJM1Ns7FcD/HD93a8pV
-         5kcfy6sE0NQOJk8arhScoxs9jiuIMc0SqTg4i95RnUYgocdF7LRRxD7LT/XZ/VZXY4vO
-         3z3bQM4cQmI28o15yAWqq6JlN/bWuXNj1zxsgx4/cmZTKsH+L4Z2LqkruCc+rqJufRYk
-         wL4J6d9Gi83KIXcIcjBgwLp6jk51+dP98MW3xdkjnN2lXpFxUnuUkPeKI209D+zlgZPW
-         jmErP8FEYm0nRa0DO/1jOpKM3AuLULUE4jPm66a5SjZuVMqck9z1XiwCjN3NzKbbsaJg
-         jdbg==
-X-Gm-Message-State: AFqh2kqkQHaxfWC3GA9QDcsZnUu2d7xZIO7F2KgC4rWyPAtBQZkxl1/B
-        1/nDojZxXhFrIGuUhyfIK2I+Ct+AGx+I8xHy
-X-Google-Smtp-Source: AMrXdXtym0rxjHIaY1zQhiKiElSe51N0oXHJB0JFxm27wv3KTRxbF3edYhG2fNv1/xvRbhTy3gkDbA==
-X-Received: by 2002:a17:902:c94f:b0:189:9e91:762e with SMTP id i15-20020a170902c94f00b001899e91762emr45014676pla.57.1672301590739;
-        Thu, 29 Dec 2022 00:13:10 -0800 (PST)
+        bh=Vv5x1KdmMeVtIhlp3zKOKF7sZVF7KRZLRJQbPD3QKT4=;
+        b=YDvuZC1EuV1b0Rm8c8BFWimBEoNpWrUHdj4BhoVpGNYsblJXkqmY0wzOcR7+tb+xsI
+         eU0iZDCLRP9vPwSp5qLzNFgdR/+DCcy3Mk2Iw3B6NGdxHKbW2XeOGXeQ+co7VtlcUKZe
+         faOwd/v4Tz2rqjJrB1GfqzlAt2Uawhsz8Nq/vpqNKL8SUNfasiOYThYBymPXOor9LVCu
+         74rEtRyu1VmtZmkXjuHVq36e3cOvBgdQiYgUukpBAbByc/RcpECd77QO7LbAucUuQquL
+         ZxQLnW92e98AlWYou9qbTCYgZZG1OVBLQCfPWTvOURFuCx7PPebKQHXAxs/4HL/oZ+gJ
+         XHjA==
+X-Gm-Message-State: AFqh2kqDW503oFlNsqsyP5c8+lbHhODSqCyLwybBV3sDt5FYutf++N46
+        tuhU4fN1bJk/Mz6Xppz/ceJ27w==
+X-Google-Smtp-Source: AMrXdXvrTl4SO8Hr42En8z77cNqZKNC6eJ1qGCmNwbui5VQ51uN9dxzll3B3KUp7znSacUHIozLKhA==
+X-Received: by 2002:a17:902:a70c:b0:189:dcc3:e4a1 with SMTP id w12-20020a170902a70c00b00189dcc3e4a1mr28589601plq.9.1672301592863;
+        Thu, 29 Dec 2022 00:13:12 -0800 (PST)
 Received: from sarthakkukreti-glaptop.hsd1.ca.comcast.net ([2601:647:4200:b5b0:75ff:1277:3d7b:d67a])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902e9cc00b00192820d00d0sm6496325plk.120.2022.12.29.00.13.08
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902e9cc00b00192820d00d0sm6496325plk.120.2022.12.29.00.13.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Dec 2022 00:13:10 -0800 (PST)
+        Thu, 29 Dec 2022 00:13:12 -0800 (PST)
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
 To:     sarthakkukreti@google.com, dm-devel@redhat.com,
         linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         Bart Van Assche <bvanassche@google.com>,
         Daniil Lunev <dlunev@google.com>,
         "Darrick J. Wong" <djwong@kernel.org>
-Subject: [PATCH v2 5/7] ext4: Add support for FALLOC_FL_PROVISION
-Date:   Thu, 29 Dec 2022 00:12:50 -0800
-Message-Id: <20221229081252.452240-6-sarthakkukreti@chromium.org>
+Subject: [PATCH v2 6/7] ext4: Add mount option for provisioning blocks during allocations
+Date:   Thu, 29 Dec 2022 00:12:51 -0800
+Message-Id: <20221229081252.452240-7-sarthakkukreti@chromium.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 In-Reply-To: <20221229081252.452240-1-sarthakkukreti@chromium.org>
 References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
@@ -81,118 +81,85 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Once ext4 is done mapping blocks for an fallocate() request, send
-out an FALLOC_FL_PROVISION request to the underlying layer to
-ensure that the space is provisioned for the newly allocated extent
-or indirect blocks.
-
-There is an expected performance degradation with fallocate() calls made
-with this flag due to the extra REQ_OP_PROVISIONs sent to the underlying
-storage.
+Add a mount option that sets the default provisioning mode for
+all files within the filesystem.
 
 Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 ---
- fs/ext4/ext4.h         |  2 ++
- fs/ext4/extents.c      | 15 ++++++++++++++-
- fs/ext4/indirect.c     |  9 +++++++++
- include/linux/blkdev.h | 11 +++++++++++
- 4 files changed, 36 insertions(+), 1 deletion(-)
+ fs/ext4/ext4.h    | 1 +
+ fs/ext4/extents.c | 7 +++++++
+ fs/ext4/super.c   | 7 +++++++
+ 3 files changed, 15 insertions(+)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 140e1eb300d1..49832e90b62f 100644
+index 49832e90b62f..29cab2e2ea20 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -673,6 +673,8 @@ enum {
- #define EXT4_GET_BLOCKS_IO_SUBMIT		0x0400
- 	/* Caller is in the atomic contex, find extent if it has been cached */
- #define EXT4_GET_BLOCKS_CACHED_NOWAIT		0x0800
-+	/* Provision blocks on underlying storage */
-+#define EXT4_GET_BLOCKS_PROVISION		0x1000
+@@ -1269,6 +1269,7 @@ struct ext4_inode_info {
+ #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
+ 						    * scanning in mballoc
+ 						    */
++#define EXT4_MOUNT2_PROVISION		0x00000100 /* Provision while allocating file blocks */
  
- /*
-  * The bit position of these flags must not overlap with any of the
+ #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+ 						~EXT4_MOUNT_##opt
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 9de1c9d1a13d..2e64a9211792 100644
+index 2e64a9211792..a73f44264fe2 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -4361,6 +4361,13 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 		}
- 	}
+@@ -4441,6 +4441,13 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 	unsigned int credits;
+ 	loff_t epos;
  
-+	/* Attempt to provision blocks on underlying storage */
-+	if (flags & EXT4_GET_BLOCKS_PROVISION) {
-+		err = sb_issue_provision(inode->i_sb, pblk, ar.len, GFP_NOFS);
-+		if (err)
-+			goto out;
-+	}
-+
- 	/*
- 	 * Cache the extent and update transaction to commit on fdatasync only
- 	 * when it is _not_ an unwritten extent.
-@@ -4694,7 +4701,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	/* Return error if mode is not supported */
- 	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
- 		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
--		     FALLOC_FL_INSERT_RANGE))
-+		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_PROVISION))
- 		return -EOPNOTSUPP;
- 
- 	inode_lock(inode);
-@@ -4754,6 +4761,12 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	if (ret)
- 		goto out;
- 
-+	/* Ensure that preallocation provisions the blocks on the underlying
-+	 * storage device.
++	/*
++	 * Attempt to provision file blocks if the mount is mounted with
++	 * provision.
 +	 */
-+	if (mode & FALLOC_FL_PROVISION)
++	if (test_opt2(inode->i_sb, PROVISION))
 +		flags |= EXT4_GET_BLOCKS_PROVISION;
 +
- 	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size, flags);
- 	if (ret)
- 		goto out;
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index c68bebe7ff4b..a8065aae7563 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -647,6 +647,15 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
- 	if (err)
- 		goto cleanup;
+ 	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
+ 	map.m_lblk = offset;
+ 	map.m_len = len;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 260c1b3e3ef2..5bc376f6a6f0 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1591,6 +1591,7 @@ enum {
+ 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
+ 	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
+ 	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
++	Opt_provision, Opt_noprovision,
+ #ifdef CONFIG_EXT4_DEBUG
+ 	Opt_fc_debug_max_replay, Opt_fc_debug_force
+ #endif
+@@ -1737,6 +1738,8 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+ 	fsparam_flag	("reservation",		Opt_removed),	/* mount option from ext2/3 */
+ 	fsparam_flag	("noreservation",	Opt_removed),	/* mount option from ext2/3 */
+ 	fsparam_u32	("journal",		Opt_removed),	/* mount option from ext2/3 */
++	fsparam_flag	("provision",		Opt_provision),
++	fsparam_flag	("noprovision",		Opt_noprovision),
+ 	{}
+ };
  
-+	/* Attempt to provision blocks on underlying storage */
-+	if (flags & EXT4_GET_BLOCKS_PROVISION) {
-+		err = sb_issue_provision(inode->i_sb,
-+					 le32_to_cpu(chain[depth-1].key),
-+					 ar.len, GFP_NOFS);
-+		if (err)
-+			goto out;
-+	}
-+
- 	map->m_flags |= EXT4_MAP_NEW;
+@@ -1826,6 +1829,8 @@ static const struct mount_opts {
+ 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
+ 	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
+ 	 MOPT_SET},
++	{Opt_provision, EXT4_MOUNT2_PROVISION, MOPT_SET | MOPT_2},
++	{Opt_noprovision, EXT4_MOUNT2_PROVISION, MOPT_CLEAR | MOPT_2},
+ #ifdef CONFIG_EXT4_DEBUG
+ 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
+ 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
+@@ -2977,6 +2982,8 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+ 		SEQ_OPTS_PUTS("dax=never");
+ 	} else if (test_opt2(sb, DAX_INODE)) {
+ 		SEQ_OPTS_PUTS("dax=inode");
++	} else if (test_opt2(sb, PROVISION)) {
++		SEQ_OPTS_PUTS("provision");
+ 	}
  
- 	ext4_update_inode_fsync_trans(handle, inode, 1);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index f1abc7b43e25..b2e3244e9f3d 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1093,6 +1093,17 @@ static inline int sb_issue_zeroout(struct super_block *sb, sector_t block,
- 				    gfp_mask, 0);
- }
- 
-+static inline int sb_issue_provision(struct super_block *sb, sector_t block,
-+		sector_t nr_blocks, gfp_t gfp_mask)
-+{
-+	return blkdev_issue_provision(sb->s_bdev,
-+				      block << (sb->s_blocksize_bits -
-+					      SECTOR_SHIFT),
-+				      nr_blocks << (sb->s_blocksize_bits -
-+						    SECTOR_SHIFT),
-+				      gfp_mask);
-+}
-+
- static inline bool bdev_is_partition(struct block_device *bdev)
- {
- 	return bdev->bd_partno;
+ 	if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD &&
 -- 
 2.37.3
 
