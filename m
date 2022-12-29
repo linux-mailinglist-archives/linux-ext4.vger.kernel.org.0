@@ -2,72 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D369658A5F
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 09:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B068C658A63
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 09:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbiL2IQb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Dec 2022 03:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
+        id S229919AbiL2ISo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Dec 2022 03:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbiL2IPw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 03:15:52 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9674913DCF
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:14:37 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id x22so43400148ejs.11
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:14:37 -0800 (PST)
+        with ESMTP id S233233AbiL2ISC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 03:18:02 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A67B13F7B
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:17:13 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id c17so25738897edj.13
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 00:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wf4Oclx/s2DatfZfaRbzTJQI1IZBAeRXW5JK4LTSla4=;
-        b=NU2n1cZSHmMnwavRmjaGTIOlZm9KKoVlTctPjkyNTmZUljpRpEn9h6P8v4Hs9lilpI
-         mkCIQ2k2l/xfRvQXQ69rAtGkTcoyANDRbInSespNg/TQMBEiJJphNIESLhmtweJP/7+h
-         Wp7m19/xGESByGcjrF6tidvzavgdhhzaF0/Yw=
+        bh=w0NMCIz7aH+VtGKA1bV7VY9PC5bA85xBilVtidrBy8A=;
+        b=Dv54hQGxUOdBIlokyeIJGJM6C9dSb3WVRynrmpQdXN4zRwmNZbdD6fSlv8r6gBwxHw
+         c59E7zQLobJEgVpznEZ+LJjUufBU4Gm7pmBUoRzl6FXxrUcIIRktCKOSpDR7Si+60hLO
+         hbdIMmrf6vVI4hz95givK9GKzPnRV3GQ4ca5o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Wf4Oclx/s2DatfZfaRbzTJQI1IZBAeRXW5JK4LTSla4=;
-        b=u1PIm49MenL8X97mAVWNyDyedU2GY/xejiypU+y0lRulFNWTXO0hW62AhB/mxxtIT1
-         ZpD2XUR+9FFGJk5PVg1eGZuuhEDV+JJWGA74h4OxFJLBQvTNMAUk+KmC1nQtl44110L2
-         RaXeiqOhbXFNGPu5lINE/eJhS6nuvsedUDBzdC21yDFdwidwJLQ6BfMd4fDRwhiefgeM
-         /v/cpe4t6a9gTAeNklORZyhKSYxiPGfKF1EOEV1WDupOfV+WOkJk4EEXoCjv+1IcqIaf
-         7JW4BmdUzA9OmsLvth9aX2nUbtrOnEIn0xg12N0m5RMppdaHiALIIg8Ve6resSnYZ9Xz
-         Y5Hg==
-X-Gm-Message-State: AFqh2kqiux6jRzT9qXHD6F5VgtM5LSNaOV9I/hf8EkrzhayWYPxJDkg7
-        u5EMtKbndN2QFSZdp8JPNvRlnN3ozk6X1DtYl5lBOA==
-X-Google-Smtp-Source: AMrXdXs300Z+BXOJPxEJlPkjyVUzSJVOjoySN3yowIHivu+kDMNajS+vq938RArP6B2ta87auqxQOwl3KblSmt1bED8=
-X-Received: by 2002:a17:907:c013:b0:7c0:eb3c:1037 with SMTP id
- ss19-20020a170907c01300b007c0eb3c1037mr2068068ejc.663.1672301676050; Thu, 29
- Dec 2022 00:14:36 -0800 (PST)
+        bh=w0NMCIz7aH+VtGKA1bV7VY9PC5bA85xBilVtidrBy8A=;
+        b=cAjcV3hWsZAp54ftyCneMZXParH2rLffP0+aimXHUvdFYo86nenYtQAq52alV4fw+D
+         VpjQt54bSLpFYUC64+TJjvtAsQV2xLPTdQA8gmzpENF08HF4frM9jEDlc4/yNCG6xMkM
+         RCwTHHGoiNadsT9i3kTqkjkW06X/EKb+IiikkJUpq1fRV+P0IC9aMjw4QBstmQk10N/c
+         j++0zGBtxt0uWOmrW8juVd97a8NA3pBjujUEJ1rB5S2hZaknQdUMpLXM1w8AYdIMM0Ff
+         gvVVtZXCb6tiADKPZ7issWNW8Ygi71Tlpy6+JE8CVYXODuFFVoP0m0ihNw+BvfILlWd1
+         yVKQ==
+X-Gm-Message-State: AFqh2kpfpXocAk6CFA12fwm3CGIMM6mw9CPRTWxAaYblOHSynMsjCg0G
+        Mka2N8ln9jt72fE91vdscJMAJ6YHAGzl4IN6cAxnzg==
+X-Google-Smtp-Source: AMrXdXu3EKpSmLPFvCpiaXPU3Qs1Jd81kJn1isDVUcu3PP3d3QTMj7mvfgCejXWSIQqTSxpfbstvHC/uh543CNwAPrU=
+X-Received: by 2002:a05:6402:f27:b0:485:8114:9779 with SMTP id
+ i39-20020a0564020f2700b0048581149779mr1316677eda.41.1672301831977; Thu, 29
+ Dec 2022 00:17:11 -0800 (PST)
 MIME-Version: 1.0
 References: <20220915164826.1396245-1-sarthakkukreti@google.com>
- <20220915164826.1396245-5-sarthakkukreti@google.com> <YylweQAZkIdb5ixo@infradead.org>
- <CAG9=OMNoG01UUStNs_Zhsv6mXZw0M0q2v54ZriJvHZ4aspvjEQ@mail.gmail.com> <Yy1yOGy7yF4AShDB@infradead.org>
-In-Reply-To: <Yy1yOGy7yF4AShDB@infradead.org>
+ <YyQTM5PRT2o/GDwy@fedora> <CAG9=OMPHZqdDhX=M+ovdg5fa3x4-Q_1r5SWPa8pMTQw0mr5fPg@mail.gmail.com>
+ <Yylvvm3zVgqpqDrm@infradead.org> <CAAKderPF5Z5QLxyEb80Y+90+eR0sfRmL-WfgXLp=eL=HxWSZ9g@mail.gmail.com>
+ <YymkSDsFVVg1nbDP@infradead.org> <CAAKderNcHpbBqWqqd5-WuKLRCQQUt7a_4D4ti4gy15+fKGK0vQ@mail.gmail.com>
+ <Yy1zkMH0f9ski4Sg@infradead.org> <Yy29y/jUvWM6GRZ5@redhat.com>
+In-Reply-To: <Yy29y/jUvWM6GRZ5@redhat.com>
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Thu, 29 Dec 2022 00:14:25 -0800
-Message-ID: <CAG9=OMOLLjVJHTPmDSPM3t+Ko90CcN5C01UhEadZReECUE5umw@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/8] fs: Introduce FALLOC_FL_PROVISION
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>,
+Date:   Thu, 29 Dec 2022 00:17:00 -0800
+Message-ID: <CAG9=OMPQEoMVpXD8PeHwkymwk-zfB3mSvDO_W6h0S3Zom62JBQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/8] Introduce provisioning primitives for thinly
+ provisioned storage
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Daniil Lunev <dlunev@google.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
         "Michael S . Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
         Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        Evan Green <evgreen@google.com>,
-        Gwendal Grignou <gwendal@google.com>
+        Mike Snitzer <snitzer@kernel.org>,
+        linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@google.com>,
+        virtualization@lists.linux-foundation.org, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-ext4@vger.kernel.org, Evan Green <evgreen@google.com>,
+        Alasdair Kergon <agk@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -79,37 +80,88 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 1:45 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Fri, Sep 23, 2022 at 7:08 AM Mike Snitzer <snitzer@redhat.com> wrote:
 >
-> On Tue, Sep 20, 2022 at 10:54:32PM -0700, Sarthak Kukreti wrote:
-> > [ mmc0blkp1 | ext4(1) | sparse file | loop | dm-thinp | dm-thin | ext4(2) ]
+> On Fri, Sep 23 2022 at  4:51P -0400,
+> Christoph Hellwig <hch@infradead.org> wrote:
+>
+> > On Wed, Sep 21, 2022 at 07:48:50AM +1000, Daniil Lunev wrote:
+> > > > There is no such thing as WRITE UNAVAILABLE in NVMe.
+> > > Apologize, that is WRITE UNCORRECTABLE. Chapter 3.2.7 of
+> > > NVM Express NVM Command Set Specification 1.0b
 > >
-> > would be predicated on the guarantees of fallocate() per allocation
-> > layer; if ext4(1) was replaced by a filesystem that did not support
-> > fallocate(), then there would be no guarantee that a write to a file
-> > on ext4(2) succeeds.
+> > Write uncorrectable is a very different thing, and the equivalent of the
+> > horribly misnamed SCSI WRITE LONG COMMAND.  It injects an unrecoverable
+> > error, and does not provision anything.
+> >
+> > > * Each application is potentially allowed to consume the entirety
+> > >   of the disk space - there is no strict size limit for application
+> > > * Applications need to pre-allocate space sometime, for which
+> > >   they use fallocate. Once the operation succeeded, the application
+> > >   assumed the space is guaranteed to be there for it.
+> > > * Since filesystems on the volumes are independent, filesystem
+> > >   level enforcement of size constraints is impossible and the only
+> > >   common level is the thin pool, thus, each fallocate has to find its
+> > >   representation in thin pool one way or another - otherwise you
+> > >   may end up in the situation, where FS thinks it has allocated space
+> > >   but when it tries to actually write it, the thin pool is already
+> > >   exhausted.
+> > > * Hole-Punching fallocate will not reach the thin pool, so the only
+> > >   solution presently is zero-writing pre-allocate.
+> >
+> > To me it sounds like you want a non-thin pool in dm-thin and/or
+> > guaranted space reservations for it.
 >
-> a write or any unlimited number of writes?
-
-(Apologies for the super late reply!) In this case, even a write won't
-be guaranteed if we run out of space on the lower filesystem. Looking
-at the fallocate() man page, I think the key part lies in the
-following phrase (emphasis mine):
-
-```
-After a successful call, subsequent writes into the range
-specified by offset and len are guaranteed not to fail _because of
-lack of disk space_
-```
-
-So, it's not a blanket guarantee that all writes will always succeed,
-but that any writes into that range will not fail due to lack of disk
-space. As you mentioned, writes may happen out-of-place in one or more
-layer. But the fallocate(FALLOC_FL_PROVISION) ensures that each layer
-will preserve space for writes into that range to not fail with ENOSPC
-(so eg. ext4 and dm-thinp will set aside enough extents to fulfil that
-promise later on for all writes).
+> What is implemented in this patchset: enablement for dm-thinp to
+> actually provide guarantees which fallocate requires.
+>
+> Seems you're getting hung up on the finishing details in HW (details
+> which are _not_ the point of this patchset).
+>
+> The proposed changes are in service to _Linux_ code. The patchset
+> implements the primitive from top (ext4) to bottom (dm-thinp, loop).
+> It stops short of implementing handling everywhere that'd need it
+> (e.g. in XFS, etc). But those changes can come as follow-on work once
+> the primitive is established top to bottom.
+>
+> But you know all this ;)
+>
+> > > * Thus, a provisioning block operation allows an interface specific
+> > >   operation that guarantees the presence of the block in the
+> > >   mapped space. LVM Thin-pool itself is the primary target for our
+> > >   use case but the argument is that this operation maps well to
+> > >   other interfaces which allow thinly provisioned units.
+> >
+> > I think where you are trying to go here is badly mistaken.  With flash
+> > (or hard drive SMR) there is no such thing as provisioning LBAs.  Every
+> > write is out of place, and a one time space allocation does not help
+> > you at all.  So fundamentally what you try to here just goes against
+> > the actual physics of modern storage media.  While there are some
+> > layers that keep up a pretence, trying to that an an exposed API
+> > level is a really bad idea.
+>
+> This doesn't need to be so feudal.  Reserving an LBA in physical HW
+> really isn't the point.
+>
+> Fact remains: an operation that ensures space is actually reserved via
+> fallocate is long overdue (just because an FS did its job doesn't mean
+> underlying layers reflect that). And certainly useful, even if "only"
+> benefiting dm-thinp and the loop driver. Like other block primitives,
+> REQ_OP_PROVISION is filtered out by block core if the device doesn't
+> support it.
+>
+> That said, I agree with Brian Foster that we need really solid
+> documentation and justification for why fallocate mode=0 cannot be
+> used (but the case has been made in this thread).
+>
+> Also, I do see an issue with the implementation (relative to stacked
+> devices): dm_table_supports_provision() is too myopic about DM. It
+> needs to go a step further and verify that some layer in the stack
+> actually services REQ_OP_PROVISION. Will respond to DM patch too.
+>
+Thanks all for the suggestions and feedback! I just posted v2 (more
+than a bit belatedly) on the various mailing lists with the relevant
+fixes, documentation and some benchmarks on performance.
 
 Best
-
 Sarthak
