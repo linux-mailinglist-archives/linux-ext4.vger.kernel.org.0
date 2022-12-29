@@ -2,161 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C995D658EC9
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 17:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB90659186
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Dec 2022 21:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbiL2QLL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Dec 2022 11:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        id S229650AbiL2Ua5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Dec 2022 15:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbiL2QLA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 11:11:00 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2CB1111;
-        Thu, 29 Dec 2022 08:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=x4y/4KuqfNuPAflIAi82X++2iXzPIgIv4Sol4IXfpIE=; b=hCkiJn6NwipyF95xZ/GfQjLDmb
-        Si4sdlVrqYhOzIyOHDvE4X1IaWOLKGwwB/WyfjcmVjqFBn391Tx3NsE4ImwHez5KUQC/YOtFnd3mB
-        r0I/7KTgno8i5rUd8vWxs5M/4cUs5R7OBibrzqx9/lV/aVXxlt4uKk9q1q5ScZ1TEx6FqrKHPk9Ow
-        3MypnruGXVZJgQEhTyB8WJmJjakTwGYd+3QT1gdqttF5scQ2eSbdXz50yJDorlrrXTwZmCZInLwjR
-        YllxS++9Um0yVvQk5aqOUb7TRQl9yf2UWXnv73HmIV5RLJGI6TFAVilzX/ndLItpgvO2wMHJZDKsO
-        xGCE/zIA==;
-Received: from rrcs-67-53-201-206.west.biz.rr.com ([67.53.201.206] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pAvUQ-00HKPY-BW; Thu, 29 Dec 2022 16:10:42 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com,
-        linux-mm@kvack.org
-Subject: [PATCH 6/6] mm: remove generic_writepages
-Date:   Thu, 29 Dec 2022 06:10:31 -1000
-Message-Id: <20221229161031.391878-7-hch@lst.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221229161031.391878-1-hch@lst.de>
-References: <20221229161031.391878-1-hch@lst.de>
+        with ESMTP id S229598AbiL2Uao (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Dec 2022 15:30:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADA214096;
+        Thu, 29 Dec 2022 12:30:40 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1CDD5B81915;
+        Thu, 29 Dec 2022 20:30:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7502CC433EF;
+        Thu, 29 Dec 2022 20:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672345837;
+        bh=0XooJ9mP9l4J/Pq38WJ2Fm3KDYSSG/D++B3s60OVmcs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FqKTBZPVOV8UWlTk9+gSb7VxZIa9+2CnWxn0kauBH6+Q/AqaPoTocgFGzoAIX+cE0
+         S3jWIAE4yg9z6RYCiKzT2ESGWmGthYRNOrZMTXSyiT2nSwtA4e6bq+fMDvmMuadvGw
+         ewrnKIRUbtgSSs6lE0H1+6PcO2oHQZLz6KYA9rIquUEW7uZFEFBsyIHsDYjOnHUt/A
+         OZbD0otttU1EYogIk27WWczmq+ynIWDbPBTTwDerbwqYop8JvLCDeCTv2xIP7dAnw9
+         bV6ciTVTnDm6GjzSqI5ExvrzoNLDUPV3JqQLG1pWtjvo3Jsf6XCjvrBDCELjx4H1V9
+         iil1tj388JOlQ==
+Date:   Thu, 29 Dec 2022 12:30:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lizhi Xu <lizhi.xu@windriver.com>
+Cc:     mail@anirudhrb.com, adilger.kernel@dilger.ca, akpm@osdl.org,
+        alex@clusterfs.com, gregkh@linuxfoundation.org,
+        linux-ext4@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, shaggy@austin.ibm.com,
+        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
+        tytso@mit.edu
+Subject: Re: How can this fix prevent information from leaking to user space
+ and prevent the kernel from crashing?
+Message-ID: <Y63464YEo30Ga/US@sol.localdomain>
+References: <20210506185655.7118-1-mail@anirudhrb.com>
+ <20221226143119.3719096-1-lizhi.xu@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221226143119.3719096-1-lizhi.xu@windriver.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that all external callers are gone, just fold it into do_writepages.
+On Mon, Dec 26, 2022 at 10:31:19PM +0800, Lizhi Xu wrote:
+> Hi, Anirudh Rayabharam
+> 
+> I verify this patch in the following environment, using reproducer: https://syzkaller.appspot.com/x/repro.c?x=122870ff800000
+> 
+> 1. kernel version:  kernel version 5.15.72 
+> 2. gcc 11.3
+> 3. libc 2.35
+> 
+> Because the kernel version 5.15.72 already contains this patch ce3aba43599f0b50adbebff133df8d08a3d5fffe, 
+> So I deleted this patch to make a kernel image to reproduce the problem,
+> On the other hand, I reserve this patch to verify that the problem has been fixed,
+> The result of the experiment is that no matter whether this patch is applied or not, 
+> this problem cannot be reproduced in kernel version 5.15.72.
+> 
+> In addition, I am also very confused. There are three places to initialize "eh_generation". 
+> There is no other reference to the parameter "eh_generation" in all the source code of the kernel,
+> At the same time, there is no indirect operation on the parameter "eh_generation" in reproducer,
+> How can this fix prevent information from leaking to user space and prevent the kernel from crashing?
+> 
+> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> > index 77c84d6f1af6..677d4821bcc1 100644
+> > --- a/fs/ext4/extents.c
+> > +++ b/fs/ext4/extents.c
+> > @@ -825,6 +825,7 @@ void ext4_ext_tree_init(handle_t *handle, struct inode *inode)
+> >  	eh->eh_entries = 0;
+> >  	eh->eh_magic = EXT4_EXT_MAGIC;
+> >  	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
+> > +	eh->eh_generation = 0;
+> >  	ext4_mark_inode_dirty(handle, inode);
+> >  }
+> >  
+> > @@ -1090,6 +1091,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+> >  	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
+> >  	neh->eh_magic = EXT4_EXT_MAGIC;
+> >  	neh->eh_depth = 0;
+> > +	neh->eh_generation = 0;
+> >  
+> >  	/* move remainder of path[depth] to the new leaf */
+> >  	if (unlikely(path[depth].p_hdr->eh_entries !=
+> > @@ -1167,6 +1169,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+> >  		neh->eh_magic = EXT4_EXT_MAGIC;
+> >  		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
+> >  		neh->eh_depth = cpu_to_le16(depth - i);
+> > +		neh->eh_generation = 0;
+> >  		fidx = EXT_FIRST_INDEX(neh);
+> >  		fidx->ei_block = border;
+> >  		ext4_idx_store_pblock(fidx, oldblock);
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/writeback.h |  2 --
- mm/page-writeback.c       | 53 +++++++++++----------------------------
- 2 files changed, 15 insertions(+), 40 deletions(-)
+The information leak was that uninitialized memory was being written to disk.
 
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 06f9291b6fd512..2554b71765e9d0 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -369,8 +369,6 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb);
- typedef int (*writepage_t)(struct page *page, struct writeback_control *wbc,
- 				void *data);
- 
--int generic_writepages(struct address_space *mapping,
--		       struct writeback_control *wbc);
- void tag_pages_for_writeback(struct address_space *mapping,
- 			     pgoff_t start, pgoff_t end);
- int write_cache_pages(struct address_space *mapping,
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index ad608ef2a24365..dfeeceebba0ae0 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2526,12 +2526,8 @@ int write_cache_pages(struct address_space *mapping,
- }
- EXPORT_SYMBOL(write_cache_pages);
- 
--/*
-- * Function used by generic_writepages to call the real writepage
-- * function and set the mapping flags on error
-- */
--static int __writepage(struct page *page, struct writeback_control *wbc,
--		       void *data)
-+static int writepage_cb(struct page *page, struct writeback_control *wbc,
-+		void *data)
- {
- 	struct address_space *mapping = data;
- 	int ret = mapping->a_ops->writepage(page, wbc);
-@@ -2539,34 +2535,6 @@ static int __writepage(struct page *page, struct writeback_control *wbc,
- 	return ret;
- }
- 
--/**
-- * generic_writepages - walk the list of dirty pages of the given address space and writepage() all of them.
-- * @mapping: address space structure to write
-- * @wbc: subtract the number of written pages from *@wbc->nr_to_write
-- *
-- * This is a library function, which implements the writepages()
-- * address_space_operation.
-- *
-- * Return: %0 on success, negative error code otherwise
-- */
--int generic_writepages(struct address_space *mapping,
--		       struct writeback_control *wbc)
--{
--	struct blk_plug plug;
--	int ret;
--
--	/* deal with chardevs and other special file */
--	if (!mapping->a_ops->writepage)
--		return 0;
--
--	blk_start_plug(&plug);
--	ret = write_cache_pages(mapping, wbc, __writepage, mapping);
--	blk_finish_plug(&plug);
--	return ret;
--}
--
--EXPORT_SYMBOL(generic_writepages);
--
- int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- {
- 	int ret;
-@@ -2577,11 +2545,20 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- 	wb = inode_to_wb_wbc(mapping->host, wbc);
- 	wb_bandwidth_estimate_start(wb);
- 	while (1) {
--		if (mapping->a_ops->writepages)
-+		if (mapping->a_ops->writepages) {
- 			ret = mapping->a_ops->writepages(mapping, wbc);
--		else
--			ret = generic_writepages(mapping, wbc);
--		if ((ret != -ENOMEM) || (wbc->sync_mode != WB_SYNC_ALL))
-+		} else if (mapping->a_ops->writepage) {
-+			struct blk_plug plug;
-+
-+			blk_start_plug(&plug);
-+			ret = write_cache_pages(mapping, wbc, writepage_cb,
-+						mapping);
-+			blk_finish_plug(&plug);
-+		} else {
-+			/* deal with chardevs and other special files */
-+			ret = 0;
-+		}
-+		if (ret != -ENOMEM || wbc->sync_mode != WB_SYNC_ALL)
- 			break;
- 
- 		/*
--- 
-2.35.1
+The way this bug was detected is with KMSAN.  If your kernel does not have KMSAN
+enabled, the reproducer will not appear to do anything.  Note that KMSAN
+requires Linux v6.1 or later and clang v14.0.6 or later.
 
+- Eric
