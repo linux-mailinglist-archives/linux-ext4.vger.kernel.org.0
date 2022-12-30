@@ -2,152 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC704659601
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Dec 2022 08:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E035659776
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Dec 2022 12:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbiL3H6h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Dec 2022 02:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S234016AbiL3K77 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Dec 2022 05:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbiL3H6g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Dec 2022 02:58:36 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D3BEB
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 23:58:35 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id z8-20020a056e02088800b0030c247efc7dso3127580ils.15
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 23:58:35 -0800 (PST)
+        with ESMTP id S230056AbiL3K77 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Dec 2022 05:59:59 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29DC1A390
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Dec 2022 02:59:57 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id ge16so18272139pjb.5
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Dec 2022 02:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lxndJAPqkkg+7Ix0bR4//3QWQHh62xysWAMqysIRogg=;
+        b=r4S60t+e7LHJD84L4tGRkRjswj8B2srCvk7wIaOyMdPLpuAdJNk8govJKTrz9UGKWY
+         6KrXE+RfpY0E6kdX3zBmuzZ5azWaJgfoPXkJKWigg4TFrHazZY3XhpcpOWQYnZI+LV0a
+         YQ8OvN1X8JqLkpQe91eTg+5oppyBOZC9FAj8/py/ZIhF1hlqun4ml3iAXZxH3XbY8Db2
+         7QKJjfXwYujAw9z6rq7fkPIkIvj2jnaXcs6o9B8nefySlMDw+8CdmX16/cIdQ4tNgIul
+         0vyfbrd8dqA/JlOP+Jla3JjoKvIbOzaCsChJHAvz/WE3fW/EsMnhx2eyOh+B84Xx6XeH
+         34bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uimzBc7Na7MrmXstHYGwNZkwPVzMTt9V7F5FAmAQDYw=;
-        b=ye0ESlWHPCS3NLiYaE4F3DGJxLDYlqVC3iFSTnErVupO5gLX1LuAEYgyqA9avkCCmO
-         n6manap9qpSpTMILw1oy4aD8HusFQKFRj4wMfvFU9e4Khd8KIMPczBwv9bWqdJixKN0s
-         lhL1zHZpAwYSwAuud9+64YAX9/XTjPcoyurZtzmNfOwmpTbEyJp/xsuXQwqS97bV54xh
-         W/tip55aORvT0GjR6XaXM7oJPpOEe1r4q3+laifJ8qZz+JE9kobOG9ZOuDpd/BGnCs3F
-         3Cn8ge3BUOCmnhJtRFzam9lv4mDO0u3/0axWjZuyCwy+DpTe/2XT9z7dGeMH2dwimdR4
-         Fsrw==
-X-Gm-Message-State: AFqh2krW6+NjGFwr7sKS8T6BJ20LruKkqVAzzKxAUnvubCMbJDtqugNZ
-        OQLwyyr1071vNc7cgVhNSQIsh7jg9FUfMjEwcasDx9zE3sRz
-X-Google-Smtp-Source: AMrXdXv5hbq7qlP9ofsg2sdYEgzb+YhHgDmzb2NsPGRV0QYTjSTgUWajNGGwkpAJWwJgw6wJFl8TxGK5FSjr/WaEizEGBF2fnsls
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lxndJAPqkkg+7Ix0bR4//3QWQHh62xysWAMqysIRogg=;
+        b=WtVwQRLg4NPUw/bWxS+vlEb5dU/qfxQP4PKp88K4OOL21nz9DcoANCtqzv5Lb/mBaL
+         8UT6Px4Sv9MNwfCahRigEWiSxwSi80opLrYIzakmrEJ51OwWtoalegi9E+zIJD0Zmeex
+         /p7ZT/WMCeBFvAD7QiSQ72OQMReJlIKDAs6P/V2AfD7p4s0M7aqs36jj/Qk9MbtoDlcd
+         85lrKoy2fn6nWukQm/q+YQIAX1PnoUVnjJBPC78S+vtDFt2ndsszO3Dquoa1hA6ukeDR
+         lhJottkVLjtK/ja7hVpjZOtdhXCHDhVTZ0Tc8DlZKhtG8envVhEFBuvp1JRulACHKuDH
+         Ug4A==
+X-Gm-Message-State: AFqh2koBPUoyuhLHUj9b2NEUsSPT4vobjKfTMCym6WVOybE7w/y00JtC
+        shpMQeaZe3jNQuTJWJIrXpZxFA==
+X-Google-Smtp-Source: AMrXdXtbsjbDOe4a+dSKeMV3//SGrYFNIXwKXcSRIhyUZDUFh/NuC4tBsnNsoI7Vyrjx33cp0GCkfg==
+X-Received: by 2002:a17:902:cec2:b0:185:441e:6ef3 with SMTP id d2-20020a170902cec200b00185441e6ef3mr54743349plg.61.1672397997228;
+        Fri, 30 Dec 2022 02:59:57 -0800 (PST)
+Received: from niej-dt-7B47.. (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b00186a437f4d7sm14662525plh.147.2022.12.30.02.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Dec 2022 02:59:56 -0800 (PST)
+From:   Jun Nie <jun.nie@linaro.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     tudor.ambarus@linaro.org
+Subject: [PATCH 1/2] ext4: optimize ea_inode block expansion
+Date:   Fri, 30 Dec 2022 19:00:15 +0800
+Message-Id: <20221230110016.476621-1-jun.nie@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:d1c4:0:b0:30c:2649:4e9a with SMTP id
- u4-20020a92d1c4000000b0030c26494e9amr482288ilg.198.1672387114923; Thu, 29 Dec
- 2022 23:58:34 -0800 (PST)
-Date:   Thu, 29 Dec 2022 23:58:34 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e981e105f106f7b5@google.com>
-Subject: [syzbot] [ext4?] WARNING in mb_find_extent
-From:   syzbot <syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Copy ea data from inode entry when expanding ea block if possible.
+Then remove the ea entry if expansion success. Thus memcpy to a
+temporary buffer may be avoided.
 
-syzbot found the following issue on:
+If the expansion fails, we do not need to recovery the removed ea
+entry neither in this way.
 
-HEAD commit:    1b929c02afd3 Linux 6.2-rc1
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10e2d1ff880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=68223fe9f6c95ad43bed
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144dc560480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149409ff880000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2d8c5072480f/disk-1b929c02.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/46687f1395db/vmlinux-1b929c02.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/26f1afa5ec00/bzImage-1b929c02.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d3fc2e524cb8/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
-
-EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
-EXT4-fs (loop0): orphan cleanup on readonly fs
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
-Modules linked in:
-CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
-Code: 3c 30 00 74 08 48 89 ef e8 3c 2c a1 ff 48 8b 6d 00 48 89 ef 48 89 de e8 8d 86 4b ff 48 39 dd 0f 83 2e 01 00 00 e8 3f 84 4b ff <0f> 0b 48 8b 44 24 70 42 80 3c 30 00 74 08 4c 89 ef e8 09 2c a1 ff
-RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
-RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
-RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
-RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
-R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
-R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
-FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
- ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
- ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
- ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
- ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
- ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
- ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
- ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
- write_blk fs/quota/quota_tree.c:64 [inline]
- get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
- do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
- do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
- do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
- do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
- dq_insert_tree fs/quota/quota_tree.c:401 [inline]
- qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
- v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
- dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
- ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
- dqget+0x999/0xdc0 fs/quota/dquot.c:914
- __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
- ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
- ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
- __ext4_fill_super fs/ext4/super.c:5516 [inline]
- ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
- get_tree_bdev+0x400/0x620 fs/super.c:1282
- vfs_get_tree+0x88/0x270 fs/super.c:1489
- do_new_mount+0x289/0xad0 fs/namespace.c:3145
- do_mount fs/namespace.c:3488 [inline]
- __do_sys_mount fs/namespace.c:3697 [inline]
- __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f019e01bc1a
-Code: 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdd7fabed8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f019e01bc1a
-RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007ffdd7fabee0
-RBP: 00007ffdd7fabee0 R08: 00007ffdd7fabf20 R09: 0000000000002dd1
-R10: 0000000000000047 R11: 0000000000000206 R12: 0000000000000004
-R13: 00005555566652c0 R14: 00007ffdd7fabf20 R15: 0000000000000000
- </TASK>
-
-
+Signed-off-by: Jun Nie <jun.nie@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ext4/xattr.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 7decaaf27e82..235a517d9c17 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -2551,9 +2551,8 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
+ 
+ 	is = kzalloc(sizeof(struct ext4_xattr_ibody_find), GFP_NOFS);
+ 	bs = kzalloc(sizeof(struct ext4_xattr_block_find), GFP_NOFS);
+-	buffer = kvmalloc(value_size, GFP_NOFS);
+ 	b_entry_name = kmalloc(entry->e_name_len + 1, GFP_NOFS);
+-	if (!is || !bs || !buffer || !b_entry_name) {
++	if (!is || !bs || !b_entry_name) {
+ 		error = -ENOMEM;
+ 		goto out;
+ 	}
+@@ -2565,12 +2564,18 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
+ 
+ 	/* Save the entry name and the entry value */
+ 	if (entry->e_value_inum) {
++		buffer = kvmalloc(value_size, GFP_NOFS);
++		if (!buffer) {
++			error = -ENOMEM;
++			goto out;
++		}
++
+ 		error = ext4_xattr_inode_get(inode, entry, buffer, value_size);
+ 		if (error)
+ 			goto out;
+ 	} else {
+ 		size_t value_offs = le16_to_cpu(entry->e_value_offs);
+-		memcpy(buffer, (void *)IFIRST(header) + value_offs, value_size);
++		buffer = (void *)IFIRST(header) + value_offs;
+ 	}
+ 
+ 	memcpy(b_entry_name, entry->e_name, entry->e_name_len);
+@@ -2585,25 +2590,26 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
+ 	if (error)
+ 		goto out;
+ 
+-	/* Remove the chosen entry from the inode */
+-	error = ext4_xattr_ibody_set(handle, inode, &i, is);
+-	if (error)
+-		goto out;
+-
+ 	i.value = buffer;
+ 	i.value_len = value_size;
+ 	error = ext4_xattr_block_find(inode, &i, bs);
+ 	if (error)
+ 		goto out;
+ 
+-	/* Add entry which was removed from the inode into the block */
++	/* Move ea entry from the inode into the block */
+ 	error = ext4_xattr_block_set(handle, inode, &i, bs);
+ 	if (error)
+ 		goto out;
+-	error = 0;
++
++	/* Remove the chosen entry from the inode */
++	i.value = NULL;
++	i.value_len = 0;
++	error = ext4_xattr_ibody_set(handle, inode, &i, is);
++
+ out:
+ 	kfree(b_entry_name);
+-	kvfree(buffer);
++	if (entry->e_value_inum && buffer)
++		kvfree(buffer);
+ 	if (is)
+ 		brelse(is->iloc.bh);
+ 	if (bs)
+-- 
+2.34.1
+
