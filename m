@@ -2,100 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0362465958A
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Dec 2022 07:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC704659601
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Dec 2022 08:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbiL3G42 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Dec 2022 01:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
+        id S230405AbiL3H6h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Dec 2022 02:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbiL3G4W (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Dec 2022 01:56:22 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403066310;
-        Thu, 29 Dec 2022 22:56:21 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F1324B81ACE;
-        Fri, 30 Dec 2022 06:56:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77237C433D2;
-        Fri, 30 Dec 2022 06:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672383378;
-        bh=lTgCtlaw09AQc1EJvxU8dITv7f+/uj/inzYuWCO74g0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F7jrj9+paUtR35nrXp7Zx4Xq+jreoEUQsjZirdbV9CXWvxux1LqYvv+T4Dtn1XwKS
-         HwEHKH6QdyaXmBsYsWxSOJWC6mJUCLBUj/eoZuPbjZsHlRsCwKEcgtIMZECXYQqp2+
-         tBNlP1uO+J4EIIZMJ7lKeSMojmam2HhzMfs8AVdu5ruT+NwdmjdJL6Rvq4K9K/tOKx
-         dnIzxP7vaXzBNfBtSA6/M9JeutEtUdLD6xVKiqizJcoFYrzQSD5qXKb3HkD4Ys/pNm
-         TQPPx3xnpeG+SP4ka6QbK6IitBZdNar0c8F6sdTFdVYbluuSny6uzRDjtC4joOUzWl
-         QEathYWQNDqNw==
-Date:   Thu, 29 Dec 2022 22:56:16 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joneslee@google.com,
-        syzbot+0827b4b52b5ebf65f219@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: Fix possible use-after-free in ext4_find_extent
-Message-ID: <Y66LkPumQjHC2U7d@sol.localdomain>
-References: <20221230062931.2344157-1-tudor.ambarus@linaro.org>
+        with ESMTP id S230249AbiL3H6g (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Dec 2022 02:58:36 -0500
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D3BEB
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 23:58:35 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id z8-20020a056e02088800b0030c247efc7dso3127580ils.15
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Dec 2022 23:58:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uimzBc7Na7MrmXstHYGwNZkwPVzMTt9V7F5FAmAQDYw=;
+        b=ye0ESlWHPCS3NLiYaE4F3DGJxLDYlqVC3iFSTnErVupO5gLX1LuAEYgyqA9avkCCmO
+         n6manap9qpSpTMILw1oy4aD8HusFQKFRj4wMfvFU9e4Khd8KIMPczBwv9bWqdJixKN0s
+         lhL1zHZpAwYSwAuud9+64YAX9/XTjPcoyurZtzmNfOwmpTbEyJp/xsuXQwqS97bV54xh
+         W/tip55aORvT0GjR6XaXM7oJPpOEe1r4q3+laifJ8qZz+JE9kobOG9ZOuDpd/BGnCs3F
+         3Cn8ge3BUOCmnhJtRFzam9lv4mDO0u3/0axWjZuyCwy+DpTe/2XT9z7dGeMH2dwimdR4
+         Fsrw==
+X-Gm-Message-State: AFqh2krW6+NjGFwr7sKS8T6BJ20LruKkqVAzzKxAUnvubCMbJDtqugNZ
+        OQLwyyr1071vNc7cgVhNSQIsh7jg9FUfMjEwcasDx9zE3sRz
+X-Google-Smtp-Source: AMrXdXv5hbq7qlP9ofsg2sdYEgzb+YhHgDmzb2NsPGRV0QYTjSTgUWajNGGwkpAJWwJgw6wJFl8TxGK5FSjr/WaEizEGBF2fnsls
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221230062931.2344157-1-tudor.ambarus@linaro.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:d1c4:0:b0:30c:2649:4e9a with SMTP id
+ u4-20020a92d1c4000000b0030c26494e9amr482288ilg.198.1672387114923; Thu, 29 Dec
+ 2022 23:58:34 -0800 (PST)
+Date:   Thu, 29 Dec 2022 23:58:34 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e981e105f106f7b5@google.com>
+Subject: [syzbot] [ext4?] WARNING in mb_find_extent
+From:   syzbot <syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 30, 2022 at 08:29:31AM +0200, Tudor Ambarus wrote:
-> syzbot reported a use-after-free Read in ext4_find_extent that is hit when
-> using a corrupted file system. The bug was reported on Android 5.15, but
-> using the same reproducer triggers the bug on v6.2-rc1 as well.
-> 
-> Fix the use-after-free by checking the extent header magic. An alternative
-> would be to check the values of EXT4_{FIRST,LAST}_{EXTENT,INDEX} used in
-> ext4_ext_binsearch() and ext4_ext_binsearch_idx(), so that we make sure
-> that pointers returned by EXT4_{FIRST,LAST}_{EXTENT,INDEX} don't exceed the
-> bounds of the extent tree node. But this alternative will not squash
-> the bug for the cases where eh->eh_entries fit into eh->eh_max. We could
-> also try to check the sanity of the path, but costs more than checking just
-> the header magic, so stick to the header magic sanity check.
-> 
-> Link: https://syzkaller.appspot.com/bug?id=be6e90ce70987950e6deb3bac8418344ca8b96cd
-> Reported-by: syzbot+0827b4b52b5ebf65f219@syzkaller.appspotmail.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
-> v2: drop wrong/uneeded le16_to_cpu() conversion for eh->eh_magic
-> 
->  fs/ext4/extents.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 9de1c9d1a13d..bedc8c098449 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -894,6 +894,12 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
->  		gfp_flags |= __GFP_NOFAIL;
->  
->  	eh = ext_inode_hdr(inode);
-> +	if (eh->eh_magic != EXT4_EXT_MAGIC) {
-> +		EXT4_ERROR_INODE(inode, "Extent header has invalid magic.");
-> +		ret = -EFSCORRUPTED;
-> +		goto err;
-> +	}
-> +
+Hello,
 
-This is (incompletely) validating the extent header in the inode.  Isn't that
-supposed to happen when the inode is loaded?  See how __ext4_iget() calls
-ext4_ext_check_inode().  Why isn't that working here?
+syzbot found the following issue on:
 
-- Eric
+HEAD commit:    1b929c02afd3 Linux 6.2-rc1
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10e2d1ff880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=68223fe9f6c95ad43bed
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144dc560480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149409ff880000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2d8c5072480f/disk-1b929c02.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/46687f1395db/vmlinux-1b929c02.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/26f1afa5ec00/bzImage-1b929c02.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d3fc2e524cb8/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
+
+EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
+EXT4-fs (loop0): orphan cleanup on readonly fs
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
+Modules linked in:
+CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
+Code: 3c 30 00 74 08 48 89 ef e8 3c 2c a1 ff 48 8b 6d 00 48 89 ef 48 89 de e8 8d 86 4b ff 48 39 dd 0f 83 2e 01 00 00 e8 3f 84 4b ff <0f> 0b 48 8b 44 24 70 42 80 3c 30 00 74 08 4c 89 ef e8 09 2c a1 ff
+RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
+RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
+RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
+RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
+R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
+R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
+FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
+ ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
+ ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
+ ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
+ ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
+ ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
+ ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
+ ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
+ write_blk fs/quota/quota_tree.c:64 [inline]
+ get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
+ do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+ qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
+ v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
+ dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
+ ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
+ dqget+0x999/0xdc0 fs/quota/dquot.c:914
+ __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
+ ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
+ ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5516 [inline]
+ ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
+ get_tree_bdev+0x400/0x620 fs/super.c:1282
+ vfs_get_tree+0x88/0x270 fs/super.c:1489
+ do_new_mount+0x289/0xad0 fs/namespace.c:3145
+ do_mount fs/namespace.c:3488 [inline]
+ __do_sys_mount fs/namespace.c:3697 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f019e01bc1a
+Code: 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdd7fabed8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f019e01bc1a
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007ffdd7fabee0
+RBP: 00007ffdd7fabee0 R08: 00007ffdd7fabf20 R09: 0000000000002dd1
+R10: 0000000000000047 R11: 0000000000000206 R12: 0000000000000004
+R13: 00005555566652c0 R14: 00007ffdd7fabf20 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
