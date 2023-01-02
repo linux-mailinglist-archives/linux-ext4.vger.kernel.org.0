@@ -2,115 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A49D65AD41
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jan 2023 06:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCD765AF24
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jan 2023 11:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbjABFl0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Jan 2023 00:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S232483AbjABKA7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Jan 2023 05:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjABFlY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 00:41:24 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F0925CF
-        for <linux-ext4@vger.kernel.org>; Sun,  1 Jan 2023 21:41:22 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id w1so13338266wrt.8
-        for <linux-ext4@vger.kernel.org>; Sun, 01 Jan 2023 21:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jvJuMP+L/v0VaSUSwJcVqo54T4tBiI2lngCqwC2iFRY=;
-        b=jdE+clNc/4TDQB8whIIyEl2ZSBNq5czPHTE9de0nJW2ABylXLDESIP47gOK+ETeBfV
-         yPv9YmhZfMp4/MO/t/Pd9AQwbdpkYiy0yZQaHx9AyWss5NyTwJwp0l00YR6RZCdXyqXD
-         7SaBlPu7Ct7rtHLV/zsIPdbZ6xmYILCwB+BJEhh+4Z2LHT9aerKZsfXbyxImb4HdF2Cr
-         nmNSBvEcfroDdKaWzt1qBqoHyk5fNsHXLQjxl7Trd4q+b7ga53d21CxebVeiGubzl5vF
-         WDG3+6HoQ9TniYJqiNx994VeG57FVOK+kcayF90vvY5Lpd/DHiv/9xeCzQy0hQVdpSAc
-         7nCQ==
+        with ESMTP id S232397AbjABKA4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 05:00:56 -0500
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666B710C4
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Jan 2023 02:00:54 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id n15-20020a056e021baf00b0030387c2e1d3so17537430ili.5
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Jan 2023 02:00:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jvJuMP+L/v0VaSUSwJcVqo54T4tBiI2lngCqwC2iFRY=;
-        b=pje3Y63I1YuXx+9vnKYZghJKUL6gQAguLy+MESESVPaNQ6ZOfXxOyxejIocbsQ0BEH
-         k0O+urBelorB+pZH+zXXEulLTYKHHAAbc2sF20fvzrJPYL4LsDaGEtxMjXll/AshGMAN
-         xmPDNMZDrxVpAXt1J6Vi+PbVa5Kix/6zbTgA/3W8UhlQnvkwpJyNomzNlO5krJgmmbLx
-         fwkwlDlp6Rv6576pRQqA5m1xgZUGWZ/JCJazef1EKQkUynSMzWwJDBBvm61lsRW63cbm
-         hmnyXwxArXFHuMk0T4qilYPDL3xFvHAb2iKWnVFchUHLJD9rqzcVyEkR8oyUND/7vn/S
-         MgNw==
-X-Gm-Message-State: AFqh2kr/JohKpBswuJUNfjOSRAoZJL5NkU1HGQPgjBuXyJWhx/70av8W
-        02ekhWwafsXBTP8D+k9K2m2sEg==
-X-Google-Smtp-Source: AMrXdXs5EtV/UCpCmjN/PveRZ2nIvMPUeyMOlaloRrFdNtQBaE+E7PWBC6E4sF4JfGAlP/qwF7FfhA==
-X-Received: by 2002:a5d:5908:0:b0:279:4938:eb98 with SMTP id v8-20020a5d5908000000b002794938eb98mr18309009wrd.11.1672638080618;
-        Sun, 01 Jan 2023 21:41:20 -0800 (PST)
-Received: from [192.168.0.104] ([82.77.81.242])
-        by smtp.gmail.com with ESMTPSA id l17-20020adfe9d1000000b0024165454262sm27106850wrn.11.2023.01.01.21.41.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Jan 2023 21:41:20 -0800 (PST)
-Message-ID: <f66ff338-f3ec-e7a3-5698-250b97511982@linaro.org>
-Date:   Mon, 2 Jan 2023 07:41:18 +0200
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/3sYdIIqXD3TNWdMD/Ryy2duPEvlDt8azEXzUT/oyMk=;
+        b=4oSDub0OZTciDf8MlXc2s/xvIleiF0KWCdgqAme+e+J3C/z9QZ9v1NmlHshfRcKRPG
+         WIEsFXiDQnd3Hpjp9ef9qSez22G5Ts5/O0p1hK5joDGN4aHwcYtsEIWqNHMnzvu25rgJ
+         MzOssoJoNot4UZeROhWszKnhcXCxuUDC0WsELPRR8SrcHR2JwXm+gi8yUnsFO6pU//G6
+         XOFZDCQSNOcZEZgqhO7yvSu6VjB7geutj95GTDEoUvDhwG6E62xkNGXrNrOENZRu/tSj
+         z/HJYLNIujEui2JX07cNhOI6Lr9xeWDxTm26Rln2GjOAtov8VBpnMVshxgzwf2JwIWk0
+         X56A==
+X-Gm-Message-State: AFqh2kpW1D6fIYdaH9jgQ9ZBM+VbbPWbMRI+gBKpRxPo1iD98hH1+Ra9
+        FVafgDYbndar9WFvTqoHmHu2YY1VmcrJAPG+VPzW0dP4+12E
+X-Google-Smtp-Source: AMrXdXu+yh5pZeU5FV7IvdSJz14ARd4GtQsutWkjOmz43/Jv1IYHN0nYCNupIZdzpnLq2ZNwhkUZyZuokjpX5mWDE0GT+97XpLm8
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2] ext4: Fix possible use-after-free in ext4_find_extent
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joneslee@google.com,
-        syzbot+0827b4b52b5ebf65f219@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-References: <20221230062931.2344157-1-tudor.ambarus@linaro.org>
- <Y66LkPumQjHC2U7d@sol.localdomain>
- <cf1be149-392d-afa0-092a-c3426868f852@linaro.org>
- <Y69E9DMEk+yEFDNQ@sol.localdomain>
-Content-Language: en-US
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <Y69E9DMEk+yEFDNQ@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:1303:b0:30c:1694:dc05 with SMTP id
+ g3-20020a056e02130300b0030c1694dc05mr1816538ilr.236.1672653653763; Mon, 02
+ Jan 2023 02:00:53 -0800 (PST)
+Date:   Mon, 02 Jan 2023 02:00:53 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dd6d6705f14506dd@google.com>
+Subject: [syzbot] [ext4?] BUG: unable to handle kernel paging request in ext4_htree_store_dirent
+From:   syzbot <syzbot+e95995159a736f0cd3f0@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a5541c0811a0 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b03958480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cbd4e584773e9397
+dashboard link: https://syzkaller.appspot.com/bug?extid=e95995159a736f0cd3f0
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4b7702208fb9/disk-a5541c08.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9ec0153ec051/vmlinux-a5541c08.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6f8725ad290a/Image-a5541c08.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e95995159a736f0cd3f0@syzkaller.appspotmail.com
+
+Unable to handle kernel paging request at virtual address 0030303030303070
+Mem abort info:
+  ESR = 0x0000000096000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000004
+  CM = 0, WnR = 0
+[0030303030303070] address between user and kernel address ranges
+Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 3118 Comm: syz-executor.1 Not tainted 6.1.0-rc8-syzkaller-33330-ga5541c0811a0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __kmem_cache_alloc_node+0x17c/0x350 mm/slub.c:3437
+lr : slab_pre_alloc_hook mm/slab.h:712 [inline]
+lr : slab_alloc_node mm/slub.c:3318 [inline]
+lr : __kmem_cache_alloc_node+0x80/0x350 mm/slub.c:3437
+sp : ffff800010ff38e0
+x29: ffff800010ff38f0 x28: ffff0000cb14cec0 x27: ffff00010a33200c
+x26: 0000000000000001 x25: 00000000ffffffff x24: ffff8000087a7010
+x23: 0000000000000033 x22: 3030303030303030 x21: 0000000000000000
+x20: 0000000000000dc0 x19: ffff0000c0001200 x18: 0000000067c04b24
+x17: 00000000f35b7102 x16: ffff80000dbe6158 x15: ffff0000cb14cec0
+x14: 0000000000000010 x13: 0000000000000000 x12: ffff0000cb14cec0
+x11: 0000000000000001 x10: 0000000000000000 x9 : 0000000000000040
+x8 : 00000000008c2d71 x7 : ffff8000084c07a4 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : 00000000008c2d79
+x2 : 0000000000000000 x1 : 0000000000000080 x0 : fffffc00045fa0c0
+Call trace:
+ next_tid mm/slub.c:2349 [inline]
+ slab_alloc_node mm/slub.c:3382 [inline]
+ __kmem_cache_alloc_node+0x17c/0x350 mm/slub.c:3437
+ __do_kmalloc_node mm/slab_common.c:954 [inline]
+ __kmalloc+0xb4/0x140 mm/slab_common.c:968
+ kmalloc include/linux/slab.h:558 [inline]
+ kzalloc include/linux/slab.h:689 [inline]
+ ext4_htree_store_dirent+0x4c/0x1a8 fs/ext4/dir.c:474
+ htree_dirblock_to_tree+0x374/0x510 fs/ext4/namei.c:1125
+ ext4_htree_fill_tree+0x2a0/0x698 fs/ext4/namei.c:1204
+ ext4_dx_readdir+0x58c/0x8c0 fs/ext4/dir.c:597
+ ext4_readdir+0x17c/0xba4 fs/ext4/dir.c:142
+ iterate_dir+0x114/0x28c
+ __do_sys_getdents64 fs/readdir.c:369 [inline]
+ __se_sys_getdents64 fs/readdir.c:354 [inline]
+ __arm64_sys_getdents64+0x80/0x204 fs/readdir.c:354
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+ el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
+Code: 54000ee1 34000eeb b9402a69 91002103 (f8696ada) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	54000ee1 	b.ne	0x1dc  // b.any
+   4:	34000eeb 	cbz	w11, 0x1e0
+   8:	b9402a69 	ldr	w9, [x19, #40]
+   c:	91002103 	add	x3, x8, #0x8
+* 10:	f8696ada 	ldr	x26, [x22, x9] <-- trapping instruction
 
 
-On 30.12.2022 22:07, Eric Biggers wrote:
-> On Fri, Dec 30, 2022 at 01:42:45PM +0200, Tudor Ambarus wrote:
->>
->> Seems that __ext4_iget() is not called on writes.
-> 
-> It is called when the inode is first accessed.  Usually that's when the file is
-> opened.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Okay, thanks.
-
-> 
-> So the question is why didn't it validate the inode's extent header, or
-> alternatively how did the inode's extent header get corrupted afterwards.
-> 
->> You can find below the sequence of calls that leads to the bug.
-> 
-> A stack trace is not a reproducer.  Things must have happened before that point.
-> 
-
-I will try to dig more to understand what's happening. If you like to
-take a look into the reproducer, here it is:
-https://syzkaller.appspot.com/text?tag=ReproC&x=17beb560480000
-
-The reproducer was used for Android 5.15 and the bug is reported at [1],
-but as I mentioned earlier, using the same reproducer and config I hit
-the bug on v6.2-rc1 as well.
-
-Thanks for the help.
-ta
-
-[1] 
-https://syzkaller.appspot.com/bug?id=be6e90ce70987950e6deb3bac8418344ca8b96cd
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
