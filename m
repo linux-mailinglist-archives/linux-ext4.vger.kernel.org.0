@@ -2,154 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D92765A5FA
-	for <lists+linux-ext4@lfdr.de>; Sat, 31 Dec 2022 18:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A49D65AD41
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jan 2023 06:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbiLaRot (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 31 Dec 2022 12:44:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        id S230475AbjABFl0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Jan 2023 00:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiLaRor (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 31 Dec 2022 12:44:47 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ADD644A;
-        Sat, 31 Dec 2022 09:44:45 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id fm16-20020a05600c0c1000b003d96fb976efso15691624wmb.3;
-        Sat, 31 Dec 2022 09:44:45 -0800 (PST)
+        with ESMTP id S230246AbjABFlY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 00:41:24 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F0925CF
+        for <linux-ext4@vger.kernel.org>; Sun,  1 Jan 2023 21:41:22 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id w1so13338266wrt.8
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Jan 2023 21:41:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vKGVwmg5J1Ql+fiJXPb+1gyrIp6pIUsxPUQhpeTa7cE=;
-        b=kVcjcnjVuAmiqvP8lYg9PmM0y1+l+1Uyott5Q46/0z+HvG+a+/ZbMLczaNiOfWRafr
-         U3ClLxdkF1sn468QqPW33lhOcize+mIP0EBhRJJITsiv8M591bqe4n+myFSlFnhZHESA
-         3XPgZio1FVG+seF0x49fzeIKSDQHl76+ZIPZtYkbb4fn1f4gIsZnfuc6s8tTww/FdjHP
-         WJyRA+KKdqoDNBUWp6HWIrcphEe8cBAA+ALUdNqYK+Cz7Ch43N5fHX/Z1Qn3BhnnNIFL
-         QdWszvr3DtkPYvr2J70t/rapTdrnq54Yz5FU/XNVBIQVL+QWgg9hHMgN/y1Lu8UBnYC6
-         0RDg==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jvJuMP+L/v0VaSUSwJcVqo54T4tBiI2lngCqwC2iFRY=;
+        b=jdE+clNc/4TDQB8whIIyEl2ZSBNq5czPHTE9de0nJW2ABylXLDESIP47gOK+ETeBfV
+         yPv9YmhZfMp4/MO/t/Pd9AQwbdpkYiy0yZQaHx9AyWss5NyTwJwp0l00YR6RZCdXyqXD
+         7SaBlPu7Ct7rtHLV/zsIPdbZ6xmYILCwB+BJEhh+4Z2LHT9aerKZsfXbyxImb4HdF2Cr
+         nmNSBvEcfroDdKaWzt1qBqoHyk5fNsHXLQjxl7Trd4q+b7ga53d21CxebVeiGubzl5vF
+         WDG3+6HoQ9TniYJqiNx994VeG57FVOK+kcayF90vvY5Lpd/DHiv/9xeCzQy0hQVdpSAc
+         7nCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vKGVwmg5J1Ql+fiJXPb+1gyrIp6pIUsxPUQhpeTa7cE=;
-        b=Kvu9c8BtrBrKSW7G0PDpUQLwyYGsJHurBkNfXNbrkNl+HQx3dRuftAxPgx5YrYeVsY
-         CH8lqwKQawNh+PzhlEM4bIkF/wKrjTH0DNiEbpzpOGs6Dfaia0y8GdsWtQU9ASVgNh36
-         tV+ikOoabiWFA9lWTr1em132Tp2bSPvjX4QQ2HHgiIxbwjiR1yhMIFBnugtvydbH5fGC
-         iM1GEPbbWnL/4ect7mpr0RQzkFrwEtrPyZBacwFruJdi6q7HrnGXt83lqIPGaIvqv/UO
-         FXrmO/uxFhlRgeR+U/9dPsOwfPCGaTqMX/V2H/o8GPgCpQ58qhZKz1BHzewx98tIl0Eo
-         R9MQ==
-X-Gm-Message-State: AFqh2krX4bbZdIm6v4DH0kmiMilt+zYdoxrtd+8A1gtXjcLuqNf5tN/S
-        8OtCOA2/wTftFP15mf9iTeTPOnxlkAc=
-X-Google-Smtp-Source: AMrXdXtOafM5UGHzLjN1Yn1s92x0yr1m0tQKluSwnvIJXRy3QMgYLJu9vPM4iCuysf6kS5kZjL2J+w==
-X-Received: by 2002:a7b:c414:0:b0:3d6:ecc4:6279 with SMTP id k20-20020a7bc414000000b003d6ecc46279mr25627186wmi.27.1672508683777;
-        Sat, 31 Dec 2022 09:44:43 -0800 (PST)
-Received: from localhost.localdomain (host-79-56-217-20.retail.telecomitalia.it. [79.56.217.20])
-        by smtp.gmail.com with ESMTPSA id d22-20020a1c7316000000b003d9862ec435sm19206066wmb.20.2022.12.31.09.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Dec 2022 09:44:43 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [PATCH] fs/ext4: Replace kmap_atomic() with kmap_local_page()
-Date:   Sat, 31 Dec 2022 18:44:39 +0100
-Message-Id: <20221231174439.8557-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.39.0
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jvJuMP+L/v0VaSUSwJcVqo54T4tBiI2lngCqwC2iFRY=;
+        b=pje3Y63I1YuXx+9vnKYZghJKUL6gQAguLy+MESESVPaNQ6ZOfXxOyxejIocbsQ0BEH
+         k0O+urBelorB+pZH+zXXEulLTYKHHAAbc2sF20fvzrJPYL4LsDaGEtxMjXll/AshGMAN
+         xmPDNMZDrxVpAXt1J6Vi+PbVa5Kix/6zbTgA/3W8UhlQnvkwpJyNomzNlO5krJgmmbLx
+         fwkwlDlp6Rv6576pRQqA5m1xgZUGWZ/JCJazef1EKQkUynSMzWwJDBBvm61lsRW63cbm
+         hmnyXwxArXFHuMk0T4qilYPDL3xFvHAb2iKWnVFchUHLJD9rqzcVyEkR8oyUND/7vn/S
+         MgNw==
+X-Gm-Message-State: AFqh2kr/JohKpBswuJUNfjOSRAoZJL5NkU1HGQPgjBuXyJWhx/70av8W
+        02ekhWwafsXBTP8D+k9K2m2sEg==
+X-Google-Smtp-Source: AMrXdXs5EtV/UCpCmjN/PveRZ2nIvMPUeyMOlaloRrFdNtQBaE+E7PWBC6E4sF4JfGAlP/qwF7FfhA==
+X-Received: by 2002:a5d:5908:0:b0:279:4938:eb98 with SMTP id v8-20020a5d5908000000b002794938eb98mr18309009wrd.11.1672638080618;
+        Sun, 01 Jan 2023 21:41:20 -0800 (PST)
+Received: from [192.168.0.104] ([82.77.81.242])
+        by smtp.gmail.com with ESMTPSA id l17-20020adfe9d1000000b0024165454262sm27106850wrn.11.2023.01.01.21.41.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Jan 2023 21:41:20 -0800 (PST)
+Message-ID: <f66ff338-f3ec-e7a3-5698-250b97511982@linaro.org>
+Date:   Mon, 2 Jan 2023 07:41:18 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v2] ext4: Fix possible use-after-free in ext4_find_extent
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com,
+        syzbot+0827b4b52b5ebf65f219@syzkaller.appspotmail.com,
+        stable@vger.kernel.org
+References: <20221230062931.2344157-1-tudor.ambarus@linaro.org>
+ <Y66LkPumQjHC2U7d@sol.localdomain>
+ <cf1be149-392d-afa0-092a-c3426868f852@linaro.org>
+ <Y69E9DMEk+yEFDNQ@sol.localdomain>
+Content-Language: en-US
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <Y69E9DMEk+yEFDNQ@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-kmap_atomic() is deprecated in favor of kmap_local_page(). Therefore,
-replace kmap_atomic() with kmap_local_page().
 
-kmap_atomic() is implemented like a kmap_local_page() which also disables
-page-faults and preemption (the latter only for !PREEMPT_RT kernels).
 
-However, the code within the mappings and un-mappings in ext4/inline.c
-does not depend on the above-mentioned side effects.
+On 30.12.2022 22:07, Eric Biggers wrote:
+> On Fri, Dec 30, 2022 at 01:42:45PM +0200, Tudor Ambarus wrote:
+>>
+>> Seems that __ext4_iget() is not called on writes.
+> 
+> It is called when the inode is first accessed.  Usually that's when the file is
+> opened.
 
-Therefore, a mere replacement of the old API with the new one is all it
-is required (i.e., there is no need to explicitly add any calls to
-pagefault_disable() and/or preempt_disable()).
+Okay, thanks.
 
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+> 
+> So the question is why didn't it validate the inode's extent header, or
+> alternatively how did the inode's extent header get corrupted afterwards.
+> 
+>> You can find below the sequence of calls that leads to the bug.
+> 
+> A stack trace is not a reproducer.  Things must have happened before that point.
+> 
 
-I tried my best to understand the code within mapping and un-mapping.
-However, I'm not an expert. Therefore, although I'm pretty confident, I
-cannot be 100% sure that the code between the mapping and the un-mapping
-does not depend on pagefault_disable() and/or preempt_disable().
+I will try to dig more to understand what's happening. If you like to
+take a look into the reproducer, here it is:
+https://syzkaller.appspot.com/text?tag=ReproC&x=17beb560480000
 
-Unfortunately, I cannot currently test this changes to check the
-above-mentioned assumptions. However, if I'm required to do the tests
-with (x)fstests, I have no problems with doing them in the next days.
+The reproducer was used for Android 5.15 and the bug is reported at [1],
+but as I mentioned earlier, using the same reproducer and config I hit
+the bug on v6.2-rc1 as well.
 
-If so, I'll test in a QEMU/KVM x86_32 VM, 6GB RAM, booting a kernel with
-HIGHMEM64GB enabled.
+Thanks for the help.
+ta
 
-I'd like to hear whether or not the maintainers require these tests
-and/or other tests.
-
- fs/ext4/inline.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 2b42ececa46d..bfb044425d8a 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -490,10 +490,10 @@ static int ext4_read_inline_page(struct inode *inode, struct page *page)
- 		goto out;
- 
- 	len = min_t(size_t, ext4_get_inline_size(inode), i_size_read(inode));
--	kaddr = kmap_atomic(page);
-+	kaddr = kmap_local_page(page);
- 	ret = ext4_read_inline_data(inode, kaddr, len, &iloc);
- 	flush_dcache_page(page);
--	kunmap_atomic(kaddr);
-+	kunmap_local(kaddr);
- 	zero_user_segment(page, len, PAGE_SIZE);
- 	SetPageUptodate(page);
- 	brelse(iloc.bh);
-@@ -763,9 +763,9 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
- 		 */
- 		(void) ext4_find_inline_data_nolock(inode);
- 
--		kaddr = kmap_atomic(page);
-+		kaddr = kmap_local_page(page);
- 		ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
--		kunmap_atomic(kaddr);
-+		kunmap_local(kaddr);
- 		SetPageUptodate(page);
- 		/* clear page dirty so that writepages wouldn't work for us. */
- 		ClearPageDirty(page);
-@@ -831,9 +831,9 @@ ext4_journalled_write_inline_data(struct inode *inode,
- 	}
- 
- 	ext4_write_lock_xattr(inode, &no_expand);
--	kaddr = kmap_atomic(page);
-+	kaddr = kmap_local_page(page);
- 	ext4_write_inline_data(inode, &iloc, kaddr, 0, len);
--	kunmap_atomic(kaddr);
-+	kunmap_local(kaddr);
- 	ext4_write_unlock_xattr(inode, &no_expand);
- 
- 	return iloc.bh;
--- 
-2.39.0
-
+[1] 
+https://syzkaller.appspot.com/bug?id=be6e90ce70987950e6deb3bac8418344ca8b96cd
