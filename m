@@ -2,105 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FDD65B3A4
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jan 2023 15:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EE265B52A
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jan 2023 17:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbjABO7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Jan 2023 09:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        id S232107AbjABQjO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Jan 2023 11:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236027AbjABO7n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 09:59:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC5A63F9
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Jan 2023 06:58:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672671538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=FH/Lp9MlKLCKaZbT73kzq05x4X87GgNm5ap75FWZ5H4=;
-        b=FVpgLhlSJkKdJ1Gvo4o2uj33PiBkFDYYxJx1F4xXM7IRAoQACJbkwDhNft7OI/4HBlZLH0
-        9mqw0GxhHeqqSKvMMVnPdbJFfJUmV249DADFI29Uf1rfEW21La6n177E5IyFVIRZIwRWNG
-        w0+UCB6ZLXHtvOHTaCPqTTyyCNNb5o4=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-304-Ff5MF5j2PnmoEnO-GsC9Bw-1; Mon, 02 Jan 2023 09:58:57 -0500
-X-MC-Unique: Ff5MF5j2PnmoEnO-GsC9Bw-1
-Received: by mail-pj1-f69.google.com with SMTP id om10-20020a17090b3a8a00b002265d44b776so2584047pjb.1
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Jan 2023 06:58:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FH/Lp9MlKLCKaZbT73kzq05x4X87GgNm5ap75FWZ5H4=;
-        b=P2cdw6+FCh3swIktJtDVGCjwMq4TEVFaUtzshJbTVUS/7q7XHBSlzXTGCuhjT55fMJ
-         UQSj4QsJi+qT06imDEh2e3R/BpAmqseomsCFWICPGST+Ry7HBOKuZyRhkBZgLnjZzJ4u
-         qsZ/IKg18695u9q8mtmJXasDJcG5fp53X6Ymz1hdvzK/Lkp+L8dQUd0QrRdSs2EGDSz5
-         6Sa0ICYJ6Ijt26vH9ilrVWrzAHAuAV+8Es5643Ke/eb35niBmHn8BB6AS5hrLnHjwsXT
-         DSD7MgmcgtdGLTraGywviJqzsLko+qk+3SDDU5iVos+i475E9E7rFiPK22vv+y/3s9J6
-         KhXA==
-X-Gm-Message-State: AFqh2krvBICwDiAZ9e6fxGi/x8kGTUjkuBaysFXH4JZJl/TE/Wj04b4c
-        1JEjBZ8p0br3kSFgpglcVmmQaTIY+HfMR2Hx6gWnu0hLlY3YNFqd27Wl6YCjSZw+tftNP8r2RtW
-        R8aJPYxxcB4F0kOy2LDz4ow==
-X-Received: by 2002:aa7:90d9:0:b0:580:df2d:47c4 with SMTP id k25-20020aa790d9000000b00580df2d47c4mr32414668pfk.19.1672671536545;
-        Mon, 02 Jan 2023 06:58:56 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXu/jU0eyfX/7zCrMxSUEB4WmKwgUUKrVBc8mnkQozOF8ZixobVxmpjajys62AXlefjhUtgIVA==
-X-Received: by 2002:aa7:90d9:0:b0:580:df2d:47c4 with SMTP id k25-20020aa790d9000000b00580df2d47c4mr32414652pfk.19.1672671536244;
-        Mon, 02 Jan 2023 06:58:56 -0800 (PST)
-Received: from localhost.localdomain ([240d:1a:c0d:9f00:ca6:1aff:fead:cef4])
-        by smtp.gmail.com with ESMTPSA id w18-20020aa79a12000000b00581816425f3sm10503683pfj.112.2023.01.02.06.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Jan 2023 06:58:55 -0800 (PST)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shigeru Yoshida <syoshida@redhat.com>,
-        syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: Verify extent header in ext4_find_extent()
-Date:   Mon,  2 Jan 2023 14:58:33 +0000
-Message-Id: <20230102145833.2758-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.39.0
+        with ESMTP id S229447AbjABQjN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 11:39:13 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532F11D4;
+        Mon,  2 Jan 2023 08:39:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D54E5C64C;
+        Mon,  2 Jan 2023 16:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1672677549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=blL9CkQczhX/shYpuKJ5vpzvxPNVo08LCejCIx/lGTw=;
+        b=sQ32aBfSpXU1RqGPwxJ0+JKuLhdnwPuWXgtZ9CjueXgVwwNJyPnc93Uubdqb1c4rW6l2qr
+        wW0kBt+Z3/3ekG4TPs04iPTdy91AcxkU5PcYSLvBDnaTXSCu3OEtKbjMtHwresB/Tuwkm7
+        GIxCdzIuePk8YoN3uRtaJvBcBdubQVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1672677549;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=blL9CkQczhX/shYpuKJ5vpzvxPNVo08LCejCIx/lGTw=;
+        b=D1PmfiOfLluBB2j8rVVuJG9zj+EWVAdEWK7OELTNoc8w5ZjLjjAVQCP6NLMVnP/MEO7JW4
+        B3LxITtA4xiuVpBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7EDCF139C8;
+        Mon,  2 Jan 2023 16:39:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kIPxHq0Is2N3CwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 02 Jan 2023 16:39:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D7947A0742; Mon,  2 Jan 2023 17:39:08 +0100 (CET)
+Date:   Mon, 2 Jan 2023 17:39:08 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH] fs/ext4: Replace kmap_atomic() with kmap_local_page()
+Message-ID: <20230102163908.gxe3afwgbfejbq4m@quack3>
+References: <20221231174439.8557-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221231174439.8557-1-fmdefrancesco@gmail.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot reported use-after-free in ext4_find_extent() [1].  If there is
-a corrupted file system, this can cause invalid memory access.
+On Sat 31-12-22 18:44:39, Fabio M. De Francesco wrote:
+> kmap_atomic() is deprecated in favor of kmap_local_page(). Therefore,
+> replace kmap_atomic() with kmap_local_page().
+> 
+> kmap_atomic() is implemented like a kmap_local_page() which also disables
+> page-faults and preemption (the latter only for !PREEMPT_RT kernels).
+> 
+> However, the code within the mappings and un-mappings in ext4/inline.c
+> does not depend on the above-mentioned side effects.
+> 
+> Therefore, a mere replacement of the old API with the new one is all it
+> is required (i.e., there is no need to explicitly add any calls to
+> pagefault_disable() and/or preempt_disable()).
+> 
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
-This patch fixes the issue by verifying extent header.
+The patch looks good to me. Feel free to add:
 
-Reported-by: syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=cd95cb722bfa1234ac4c78345c8953ee2e7170d0 [1]
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- fs/ext4/extents.c | 3 +++
- 1 file changed, 3 insertions(+)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 9de1c9d1a13d..79bfa583ab1d 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -901,6 +901,9 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
- 		ret = -EFSCORRUPTED;
- 		goto err;
- 	}
-+	ret = ext4_ext_check(inode, eh, depth, 0);
-+	if (ret)
-+		goto err;
- 
- 	if (path) {
- 		ext4_ext_drop_refs(path);
+								Honza
+
+> ---
+> 
+> I tried my best to understand the code within mapping and un-mapping.
+> However, I'm not an expert. Therefore, although I'm pretty confident, I
+> cannot be 100% sure that the code between the mapping and the un-mapping
+> does not depend on pagefault_disable() and/or preempt_disable().
+> 
+> Unfortunately, I cannot currently test this changes to check the
+> above-mentioned assumptions. However, if I'm required to do the tests
+> with (x)fstests, I have no problems with doing them in the next days.
+> 
+> If so, I'll test in a QEMU/KVM x86_32 VM, 6GB RAM, booting a kernel with
+> HIGHMEM64GB enabled.
+> 
+> I'd like to hear whether or not the maintainers require these tests
+> and/or other tests.
+> 
+>  fs/ext4/inline.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 2b42ececa46d..bfb044425d8a 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -490,10 +490,10 @@ static int ext4_read_inline_page(struct inode *inode, struct page *page)
+>  		goto out;
+>  
+>  	len = min_t(size_t, ext4_get_inline_size(inode), i_size_read(inode));
+> -	kaddr = kmap_atomic(page);
+> +	kaddr = kmap_local_page(page);
+>  	ret = ext4_read_inline_data(inode, kaddr, len, &iloc);
+>  	flush_dcache_page(page);
+> -	kunmap_atomic(kaddr);
+> +	kunmap_local(kaddr);
+>  	zero_user_segment(page, len, PAGE_SIZE);
+>  	SetPageUptodate(page);
+>  	brelse(iloc.bh);
+> @@ -763,9 +763,9 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+>  		 */
+>  		(void) ext4_find_inline_data_nolock(inode);
+>  
+> -		kaddr = kmap_atomic(page);
+> +		kaddr = kmap_local_page(page);
+>  		ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+> -		kunmap_atomic(kaddr);
+> +		kunmap_local(kaddr);
+>  		SetPageUptodate(page);
+>  		/* clear page dirty so that writepages wouldn't work for us. */
+>  		ClearPageDirty(page);
+> @@ -831,9 +831,9 @@ ext4_journalled_write_inline_data(struct inode *inode,
+>  	}
+>  
+>  	ext4_write_lock_xattr(inode, &no_expand);
+> -	kaddr = kmap_atomic(page);
+> +	kaddr = kmap_local_page(page);
+>  	ext4_write_inline_data(inode, &iloc, kaddr, 0, len);
+> -	kunmap_atomic(kaddr);
+> +	kunmap_local(kaddr);
+>  	ext4_write_unlock_xattr(inode, &no_expand);
+>  
+>  	return iloc.bh;
+> -- 
+> 2.39.0
+> 
 -- 
-2.38.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
