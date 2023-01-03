@@ -2,68 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210BA65BED9
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jan 2023 12:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF3865C524
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jan 2023 18:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236976AbjACLXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Jan 2023 06:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S233952AbjACRem (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Jan 2023 12:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233043AbjACLXG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 06:23:06 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B57FFFF
-        for <linux-ext4@vger.kernel.org>; Tue,  3 Jan 2023 03:23:05 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id l184so2739799vsc.0
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Jan 2023 03:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qymjN3ujIci8QkJahnuWyEwypRWjm8vIMiyD3hCE2XE=;
-        b=pCkQOR73NHA5kMDVdKeBPobVfVBQu0yDy9iSHpK0fEZ8eLqg3chkvWhYRneaHGmTYf
-         0CdNeRQEp6yUg992g6SPR1oEh9VGflRKlEncZu6JuN7dkzJ16ppVxaOwRGp5r5g8wA7C
-         +FSYHFgqzHO0LYtWR+vxPoYRgVfFf8hnv0rROQqqg3KPMdjyKqZx5rq1UUcLsAlDRavB
-         GO8/SYJa641nS4nM8cDlFmWl+tUY7JIhLaauvt3oCm1700B9qzocHeLReCcw+hGIMDNQ
-         DYkMt8Lf6HHMkFtpd13o5MZKFIC3tjIFZZe6k3Y6cLhv4nZcEcEndufA/evxk97IFayp
-         LNYQ==
+        with ESMTP id S233816AbjACRel (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 12:34:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7301310FFF
+        for <linux-ext4@vger.kernel.org>; Tue,  3 Jan 2023 09:33:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1672767235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UXDgMAks1AazXUGyay5LaZWRCzaIyOQrM1gFj8TREZA=;
+        b=ZUw5AUgg72419UyUNuvawPJnMZTPJbQLe4Dkh8ZL/K9Ouzi13KR5OVcBGcKdKq05AZWu2Z
+        2zB01tmaK067U7TKmhE6s3/24HUA6mcWRjkm7ffUBSgaK8ipGzE5JVmy7Lwh3urXvKuZrB
+        sPJRvBf0MUACXLjDQhUxMpr3s2y6doM=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-258-zPTPOqcINnCmL0KnlspE8Q-1; Tue, 03 Jan 2023 12:33:54 -0500
+X-MC-Unique: zPTPOqcINnCmL0KnlspE8Q-1
+Received: by mail-pf1-f200.google.com with SMTP id n22-20020a62e516000000b005817b3a197aso7982077pff.14
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Jan 2023 09:33:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qymjN3ujIci8QkJahnuWyEwypRWjm8vIMiyD3hCE2XE=;
-        b=s2Cu/U1U6Vk8SjeOF3f5ORkiMB0gTvPntltGN5ruWmoqOdrOzqxEY43394K8LzDSYW
-         +xRYubJddLuG7w/Pz8wv377XCl2RzWNr3VwuoRJpsK663P+LrBVTS9iDD5K4AfT4zbUp
-         ACa46XySYIFN+x1ebTgkcO4PuflIj3QzVrhWqDvlY+5sx6jMS0HEaspKl1DDXAjfNVTw
-         P+cNG8MQmY0oQ6W/gtBh7Igl7C0nkiy+CokEwC4fgTjm00aDH6QWVe9ciPoEV1/18Hat
-         jCcufSYK5ld1dm8v8C5EwC0wW81GtNaRRq1sqsyTq6k7k3G36cJVscaHTyNbmwlgn8lr
-         SGBg==
-X-Gm-Message-State: AFqh2kr+lz3iZkJRgJT393KSFRjopW08IK3RUTQQNkbCY2lkXpBBHpMJ
-        MeVRo9l9NKN+q9ucAc5C08lp/topwBzpG839693zBw==
-X-Google-Smtp-Source: AMrXdXsTmHtB0EK6xoRW7OhHg11NHnMNoEKbDRPiJpULGh0kuIcHf3NOlZjTvLpP7nB99SHwnJDvQDhanyajiENlXMo=
-X-Received: by 2002:a67:f642:0:b0:3c4:ec4b:b943 with SMTP id
- u2-20020a67f642000000b003c4ec4bb943mr4847879vso.17.1672744984229; Tue, 03 Jan
- 2023 03:23:04 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UXDgMAks1AazXUGyay5LaZWRCzaIyOQrM1gFj8TREZA=;
+        b=0yTkfn9p2jSacoFJtl4q9/KBKBoi7JDvOFZ/O7a0UuDg3Mso3zOEaIG9j+rAQLze30
+         HUE2C4BBCvMRvccmwA9YqNbuxPDImTPfwNJlRvV5+iFKbNuSlnaQDBowganZNCGZGQ1h
+         HIU1tZzv73v4awmKr1ns41U2P7p9gmU+cZTaiLMqbJAdNt7D6zhogNrSeTTGw+wfTJRu
+         +0Za6ZyIFTna6z6K95F1TrKRQUulodABYAqWn9dmMnEyuY0xxlFY7EHJ7V6b0EKqKEnk
+         /urZJ4Wip+2cxhtMTpWaDPBSooSaeIh7vRYfo4NlGUtx/PJy11g7BCC0F0yCrk9xMbk2
+         aJJw==
+X-Gm-Message-State: AFqh2kpjZKc+qZosyGb9ISntTNRv6qq6l5fyD2FAY+f5ibP+V0E5ubf2
+        T4ybccKO+ptJoSGJWfJP3WVhNkeC3vh0865BIfLsYw036Hg2wJdyS5JbwbrPXixLKIhwsARbjlI
+        y/DOkkLGG1yjivCu0cwoQjA==
+X-Received: by 2002:a62:506:0:b0:56c:7216:fbc6 with SMTP id 6-20020a620506000000b0056c7216fbc6mr45392818pff.30.1672767233039;
+        Tue, 03 Jan 2023 09:33:53 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvgHh1xR0yEYEOLNIiw2a9F0DnNeFqj2kH9NAQba47uamtEX+WHHc7rIQEwtK/YqVreiCWpbA==
+X-Received: by 2002:a62:506:0:b0:56c:7216:fbc6 with SMTP id 6-20020a620506000000b0056c7216fbc6mr45392803pff.30.1672767232672;
+        Tue, 03 Jan 2023 09:33:52 -0800 (PST)
+Received: from kernel-devel ([240d:1a:c0d:9f00:ca6:1aff:fead:cef4])
+        by smtp.gmail.com with ESMTPSA id x21-20020aa79575000000b005812e832087sm15452620pfq.29.2023.01.03.09.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Jan 2023 09:33:52 -0800 (PST)
+Date:   Tue, 3 Jan 2023 17:33:48 +0000
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: Verify extent header in ext4_find_extent()
+Message-ID: <Y7Rm/AOlmaGp0JaL@kernel-devel>
+References: <20230102145833.2758-1-syoshida@redhat.com>
+ <Y7NkW86aVcksg3i9@sol.localdomain>
 MIME-Version: 1.0
-References: <000000000000e6c7b005f0e90bf1@google.com> <Y6zN/Q3glUcbty+c@mit.edu>
-In-Reply-To: <Y6zN/Q3glUcbty+c@mit.edu>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 3 Jan 2023 12:22:53 +0100
-Message-ID: <CANp29Y7yH6LeeHMX-joXgr7duZzs2p3j08qZzS6WGwBJDDq+PA@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
- forced after error (2)
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     syzbot <syzbot+3c45794f522ad93b0eb6@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y7NkW86aVcksg3i9@sol.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,38 +78,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+On Mon, Jan 02, 2023 at 03:10:19PM -0800, Eric Biggers wrote:
+> On Mon, Jan 02, 2023 at 02:58:33PM +0000, Shigeru Yoshida wrote:
+> > syzbot reported use-after-free in ext4_find_extent() [1].  If there is
+> > a corrupted file system, this can cause invalid memory access.
+> > 
+> > This patch fixes the issue by verifying extent header.
+> > 
+> > Reported-by: syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?id=cd95cb722bfa1234ac4c78345c8953ee2e7170d0 [1]
+> > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> > ---
+> >  fs/ext4/extents.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> > index 9de1c9d1a13d..79bfa583ab1d 100644
+> > --- a/fs/ext4/extents.c
+> > +++ b/fs/ext4/extents.c
+> > @@ -901,6 +901,9 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+> >  		ret = -EFSCORRUPTED;
+> >  		goto err;
+> >  	}
+> > +	ret = ext4_ext_check(inode, eh, depth, 0);
+> > +	if (ret)
+> > +		goto err;
+> 
+> This patch probably does not address the root cause of the problem.  Please see
+> the discussion on the very similar patch
+> https://lore.kernel.org/linux-ext4/20221230062931.2344157-1-tudor.ambarus@linaro.org/T/#u
 
-Syzkaller already tries to avoid such situations, but in this
-particular case, it has corrupted the mount options[1] and did not
-recognize the problem. Though, as I understand, this string was
-nevertheless valid to the kernel. Otherwise it would have aborted the
-mount early (?).
+Thank you so much for your comment!!  I missed the discussion you
+mentioned.  I'll check that.
 
-I've sent a PR that should make the syzkaller logic more robust to
-such broken options strings:
-https://github.com/google/syzkaller/pull/3604
+Regards,
+Shigeru
 
-[1] grpjquota=Jnoinit_itable(errors=remount-ro,minixdf,jqfmt=vfsv0,usrjquota=."
+> 
+> - Eric
+> 
 
---
-Aleksandr
-
-On Thu, Dec 29, 2022 at 12:14 AM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> So this is a totally bogus Syzbot report.  If you use the mount option
-> "errors=panic", and you feed ext4 a corrupted file system, then it
-> *will* issue an "Ext4-fs error" message, and if you tell it to panic,
-> it will panic.
->
-> So *please* let's not have some crazy Red Hat principal engineer try
-> to file this as a high severity CVE....
->
-> This is Working As Intended.  And it is Not A Bug.
->
->                                         - Ted
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/Y6zN/Q3glUcbty%2Bc%40mit.edu.
