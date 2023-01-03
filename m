@@ -2,60 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C2765B8FD
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jan 2023 02:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F1C65B8FF
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jan 2023 02:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236446AbjACBpI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Jan 2023 20:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        id S232525AbjACBpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Jan 2023 20:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236460AbjACBpC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 20:45:02 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A4DA45D
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Jan 2023 17:45:01 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id o2so25940790pjh.4
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Jan 2023 17:45:01 -0800 (PST)
+        with ESMTP id S236368AbjACBpH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Jan 2023 20:45:07 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CE862C4
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Jan 2023 17:45:07 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id y19so12059845plb.2
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Jan 2023 17:45:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lxndJAPqkkg+7Ix0bR4//3QWQHh62xysWAMqysIRogg=;
-        b=OA9Ef4d7WAhxk3cq8MrSUCkpcHlzZH+HT+d01d/QTtdnSonZ77AoCruMSuanMHugrn
-         jl58RqjaIt0JWQTOB4sKnOn7DJLfWU5rPX6UHsz63hrE5SseDFK+oNb0mR/v4kgVVYTM
-         quJA+9nHYuVz4qNR7p5zQl3wENJWYe+mgyoZsbJP9YQ1SXQ+JaUd7UpmQExG4o7bsiCg
-         +F5vpkzxahtdpc5rPPMiWriCxPqfQ4T9cRQ47j9WNlGnjk+dxn5+BH8ug6db8DsGbW3H
-         nHPKCqO5VkHLEKkFgxlzjL8DT8CqyQvgCvdQ/EtJEEa1kO+nh591uZ7L7CnhA1XQW84s
-         I+ng==
+        bh=pHFNPClZL6YqqHgH05AOCgftoZUseEmSrgezOmi2yxk=;
+        b=O8xlIsglgdhduJo7+bHnIGvWYXQKrSsJOgHp4hqykudZgbPYD6sxab2YtDecPhe5ZZ
+         z71fr2qP20MdKzggYU1OjqwHfnIJvKMDEH5uSYiZj3H9xMni/yxQhq2wDNwNsuTMdTni
+         yrFzz7N0iLXSRnRlOiNqjrPASvWyEp9DnJ7DjLi+h4OR0sca6ACpauSN884KUHrSJOC2
+         Q2TnCuYgoO2EZLnd60QVwr+GyfVJJUTNA8SlA/6+ysEFV4IQpqOeeKlx67MZrTstBpzL
+         qr+djEBY08eU1tO0guKoya9+UA6d+xuTqABpBZ5Kkk95ZS5ZaX9erG8Fcr77jTEZckmN
+         GRpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lxndJAPqkkg+7Ix0bR4//3QWQHh62xysWAMqysIRogg=;
-        b=UyDfXy54MABbx01lMXaeNsIomv1PH9OsoasJG9hCbyz0j79NvI9uyP+XW1/9Z24OSw
-         HVziwDUT/wuRFP1ji6ZiH4BjeWhk7oCOcv9bio4j4T2bVoKF6NWU6X4baBf/8H6effmY
-         9llDmBIEzRS/sbUPJol8zEzFEC13Ldw9dA4wIVW1oy/EFKyMEhUlKCncsgCbVwV7hd4B
-         0obFhsvlwGjHQUO0touHpwzoNYds3JzoMTrvUzvSDwaRIOloHpegAsG/zsxToWsDwN8w
-         rKBava3xjx8qCIYhdknuXxeHtqWOwd9pRU6/VQCNWAtLmzEzOWXaRxt05lU3bwq3o8ts
-         hzcA==
-X-Gm-Message-State: AFqh2ko1YPEsBwLR05rUQ2naMXavjKrjpM5FNINcaBgCGeZVVD8+dPZJ
-        Dm4vFahkMj1tDHud0h4ZOsrTpkv/pRCLSjHz
-X-Google-Smtp-Source: AMrXdXu6ms8jwa7l3akSlsQVzB56U6hlL47LPcdCgIQm0acDZRRCDScYKInsFoEtDPDalygWO6EJ2A==
-X-Received: by 2002:a17:902:c948:b0:188:a6ea:279f with SMTP id i8-20020a170902c94800b00188a6ea279fmr60269041pla.12.1672710301260;
-        Mon, 02 Jan 2023 17:45:01 -0800 (PST)
+        bh=pHFNPClZL6YqqHgH05AOCgftoZUseEmSrgezOmi2yxk=;
+        b=lF5ACt2sFXP5BxiDkSSZhZjzHbNK7wRNVniRyMbfrk+xx5dRil+Z7dZ2pmQhjBjLGY
+         QGZSwWN00YliuG5YmV3PzipUbkvZ5LnHNy3S8DeXbg1W+diCQNgVrQPINUdskg9liUqA
+         pY9nVKQmtQLfbri6T9pulHj/i2fqV8nwtrxFqnf1uff5ai4PnSWXQHuypomaYyDS26Tf
+         V7I85MwmKqrm7Ebg1030MfMmm7u2nzJDMtcUm27EdG9aY9sZ1I+fjYr9AHjmE3PG9VtR
+         Xh4gFdw9lv12no2pqW/R9uVC6jIKpsmAOn3uU07GUZM3/uaZ6uOfoMrxTbdq0Ny2i+dT
+         YUIg==
+X-Gm-Message-State: AFqh2kp5DAnHWlDzSQv6GKLLgshyrUmmnr4cG0Nvrhmr4wcPk73LXNKX
+        R0YN40Xbo1pAgtufzhPvfHWuiQ==
+X-Google-Smtp-Source: AMrXdXuCB+HjiuEKN3LL/KtS1LyAdfDKnaHcNh0fjGf9u6qf+6of2IgCpsKc3N7jkuSwHU4etbw15g==
+X-Received: by 2002:a17:902:cf41:b0:192:82d4:f9b2 with SMTP id e1-20020a170902cf4100b0019282d4f9b2mr28859244plg.7.1672710306715;
+        Mon, 02 Jan 2023 17:45:06 -0800 (PST)
 Received: from niej-dt-7B47.. (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id f15-20020a170902ab8f00b001769206a766sm20588895plr.307.2023.01.02.17.44.56
+        by smtp.gmail.com with ESMTPSA id f15-20020a170902ab8f00b001769206a766sm20588895plr.307.2023.01.02.17.45.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Jan 2023 17:45:00 -0800 (PST)
+        Mon, 02 Jan 2023 17:45:06 -0800 (PST)
 From:   Jun Nie <jun.nie@linaro.org>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     tudor.ambarus@linaro.org
-Subject: [PATCH v2 1/2] ext4: optimize ea_inode block expansion
-Date:   Tue,  3 Jan 2023 09:45:16 +0800
-Message-Id: <20230103014517.495275-2-jun.nie@linaro.org>
+Subject: [PATCH v2 2/2] ext4: refuse to create ea block when umounted
+Date:   Tue,  3 Jan 2023 09:45:17 +0800
+Message-Id: <20230103014517.495275-3-jun.nie@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230103014517.495275-1-jun.nie@linaro.org>
 References: <20230103014517.495275-1-jun.nie@linaro.org>
@@ -70,88 +70,35 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Copy ea data from inode entry when expanding ea block if possible.
-Then remove the ea entry if expansion success. Thus memcpy to a
-temporary buffer may be avoided.
+The ea block expansion need to access s_root while it is
+already set as NULL when umount is triggered. Refuse this
+request to avoid panic.
 
-If the expansion fails, we do not need to recovery the removed ea
-entry neither in this way.
-
+Reported-by: syzbot+2dacb8f015bf1420155f@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=3613786cb88c93aa1c6a279b1df6a7b201347d08
 Signed-off-by: Jun Nie <jun.nie@linaro.org>
 ---
- fs/ext4/xattr.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/ext4/xattr.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 7decaaf27e82..235a517d9c17 100644
+index 235a517d9c17..b350510b798c 100644
 --- a/fs/ext4/xattr.c
 +++ b/fs/ext4/xattr.c
-@@ -2551,9 +2551,8 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
+@@ -1422,6 +1422,13 @@ static struct inode *ext4_xattr_inode_create(handle_t *handle,
+ 	uid_t owner[2] = { i_uid_read(inode), i_gid_read(inode) };
+ 	int err;
  
- 	is = kzalloc(sizeof(struct ext4_xattr_ibody_find), GFP_NOFS);
- 	bs = kzalloc(sizeof(struct ext4_xattr_block_find), GFP_NOFS);
--	buffer = kvmalloc(value_size, GFP_NOFS);
- 	b_entry_name = kmalloc(entry->e_name_len + 1, GFP_NOFS);
--	if (!is || !bs || !buffer || !b_entry_name) {
-+	if (!is || !bs || !b_entry_name) {
- 		error = -ENOMEM;
- 		goto out;
- 	}
-@@ -2565,12 +2564,18 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 
- 	/* Save the entry name and the entry value */
- 	if (entry->e_value_inum) {
-+		buffer = kvmalloc(value_size, GFP_NOFS);
-+		if (!buffer) {
-+			error = -ENOMEM;
-+			goto out;
-+		}
++	if (inode->i_sb->s_root == NULL) {
++		ext4_warning(inode->i_sb,
++			     "refuse to create EA inode when umounting");
++		WARN_ON(1);
++		return ERR_PTR(-EINVAL);
++	}
 +
- 		error = ext4_xattr_inode_get(inode, entry, buffer, value_size);
- 		if (error)
- 			goto out;
- 	} else {
- 		size_t value_offs = le16_to_cpu(entry->e_value_offs);
--		memcpy(buffer, (void *)IFIRST(header) + value_offs, value_size);
-+		buffer = (void *)IFIRST(header) + value_offs;
- 	}
- 
- 	memcpy(b_entry_name, entry->e_name, entry->e_name_len);
-@@ -2585,25 +2590,26 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 	if (error)
- 		goto out;
- 
--	/* Remove the chosen entry from the inode */
--	error = ext4_xattr_ibody_set(handle, inode, &i, is);
--	if (error)
--		goto out;
--
- 	i.value = buffer;
- 	i.value_len = value_size;
- 	error = ext4_xattr_block_find(inode, &i, bs);
- 	if (error)
- 		goto out;
- 
--	/* Add entry which was removed from the inode into the block */
-+	/* Move ea entry from the inode into the block */
- 	error = ext4_xattr_block_set(handle, inode, &i, bs);
- 	if (error)
- 		goto out;
--	error = 0;
-+
-+	/* Remove the chosen entry from the inode */
-+	i.value = NULL;
-+	i.value_len = 0;
-+	error = ext4_xattr_ibody_set(handle, inode, &i, is);
-+
- out:
- 	kfree(b_entry_name);
--	kvfree(buffer);
-+	if (entry->e_value_inum && buffer)
-+		kvfree(buffer);
- 	if (is)
- 		brelse(is->iloc.bh);
- 	if (bs)
+ 	/*
+ 	 * Let the next inode be the goal, so we try and allocate the EA inode
+ 	 * in the same group, or nearby one.
 -- 
 2.34.1
 
