@@ -2,118 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0591365CB20
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 01:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0CF65CBB3
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 02:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjADAzC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Jan 2023 19:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S233893AbjADB5o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Jan 2023 20:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjADAzB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 19:55:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114817070;
-        Tue,  3 Jan 2023 16:54:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A2345B81151;
-        Wed,  4 Jan 2023 00:54:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2880FC433EF;
-        Wed,  4 Jan 2023 00:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672793697;
-        bh=D6kfiVE9mOojgtBjsTsllPEN/tZ8Ks/6aaCN32Ve4Fs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kCCVcy5Fg8yE5P4F1SSVrZau28sxHVJfMQmJm5uNuMn/euAdc62ttf8L99nhGl3Hr
-         iYfz3N/vZW+pLgKR2GEt+em3gmFkUTDCtFCAcgeo0iH5ZLYVF3OW1pbxUg75MuI1uS
-         PrZkTO6NXSz94VPxNC3E7Jc0rGW4MRPb4E6d4H5ReZrW+sGjZ3MwwbVLZDAFWSl7az
-         ux9pKObnTpv5WmqH/qNVHjm+nQ0QLPU58CQ1UoME7IIDSTKZlTvj5soX7TSuqUmZZK
-         yqtkR/Q+VXo0kwutDlKWcKn7qboODjjJWSmifteSat3rxTFdyKwosfOP3APthscdqS
-         wMtIttSbc2kvA==
-Date:   Tue, 3 Jan 2023 18:55:01 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix function prototype mismatch for ext4_feat_ktype
-Message-ID: <Y7TOZRnz9sH6C2ey@work>
-References: <20230103234616.never.915-kees@kernel.org>
+        with ESMTP id S229534AbjADB5n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 20:57:43 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978851740C
+        for <linux-ext4@vger.kernel.org>; Tue,  3 Jan 2023 17:57:42 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id p2so18487551ljn.7
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Jan 2023 17:57:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TLKBUphXfs/UWZdenQBIRYJf0m4RI75UDSLQL1B/F20=;
+        b=KTelfnNN/7MymnnCGQBQslfVwxbDJd4c80V4g70R0Px9RHiEZnKnMlGopzmHb/sHkD
+         7qOFXZwsVZ2unvCGIGSwxXbcgTFaFm59MaHjMYVuo3YrgjIKmU0ezIhQwoBpGBr25yW6
+         /pbMHzg7Ic+WOGK+R0q1ePBsSwbVKsiGce2iQNcKbd8PMMBMNPGpQRN7PIoUzaaB7ccj
+         OWh/LTsiw/6vO+HRLH39dAQh/sZQHq2DEwFoG7zHR1vE+b8fUP89xZKQvyQZ1mGciMXJ
+         eEahFtDJVCRsgmQaPWgQ4HVzjf9t6zW75QKrz0/8MigMknrKJakTub06FBCfVo1r33HY
+         M8ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TLKBUphXfs/UWZdenQBIRYJf0m4RI75UDSLQL1B/F20=;
+        b=HTuS49eB3AXoAI22oigLo66x3+8PGZWudSSBp7saTIEPaviYpTz/xIrujttPnW15Q/
+         ZArpCaQZ1avB08z7e0SUScdrmQEOKZYFwYRGhVgfco6fbaa4Xpu4WQcHUFPFWigGFpLr
+         VoW86fqCDAyyMSIe8MrmeOLMhYfn6SpC8fTuPuPtPYXQsWpIR0g776SR6Cs0JBXeDD0r
+         8NVx0tcepRs6jvgiBSSKkKS+vC4/pJ3lnS1bcagjSdSDCwHTL0Hb5ZdGuYiYxF6a3i48
+         T6TUsBbgfntt8DG/FgsI2xRUhttfFFhFisYzFbRRUjuLM0ULXn3ZQXs6kZQzV220DsIp
+         mjJg==
+X-Gm-Message-State: AFqh2kqG4hoW/RGbXllo3Ug2NE853TSjHKDXcLR3q4c/ZhOsG0C37RAT
+        dw1qk674ISS/T1KLdpGuQOGUyGR3OlBCErtq/GZH5g==
+X-Google-Smtp-Source: AMrXdXtOV1gbwyd4IezCo8uK3Ns0+zwKr+ZVt4Q8/AS6jf5i7PWXBlod+9hH0r3BrhnLx8mBTr/BN0NR0lSB6ueGhiA=
+X-Received: by 2002:a2e:a593:0:b0:280:54b:9254 with SMTP id
+ m19-20020a2ea593000000b00280054b9254mr74610ljp.165.1672797460849; Tue, 03 Jan
+ 2023 17:57:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230103234616.never.915-kees@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221229014502.2322727-1-jun.nie@linaro.org> <Y7R/QKIbYQ2TCP+W@magnolia>
+In-Reply-To: <Y7R/QKIbYQ2TCP+W@magnolia>
+From:   Jun Nie <jun.nie@linaro.org>
+Date:   Wed, 4 Jan 2023 09:58:03 +0800
+Message-ID: <CABymUCPCT9KbMQDUTxwf6A+Cg9fWJNkefbMHD7SZD3Fc7FMFHg@mail.gmail.com>
+Subject: Re: [PATCH] ext4: reject 1k block fs on the first block of disk
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tudor.ambarus@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 03, 2023 at 03:46:20PM -0800, Kees Cook wrote:
-> With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-> indirect call targets are validated against the expected function
-> pointer prototype to make sure the call target is valid to help mitigate
-> ROP attacks. If they are not identical, there is a failure at run time,
-> which manifests as either a kernel panic or thread getting killed.
-> 
-> ext4_feat_ktype was setting the "release" handler to "kfree", which
-> doesn't have a matching function prototype. Add a simple wrapper
-> with the correct prototype.
-> 
-> This was found as a result of Clang's new -Wcast-function-type-strict
-> flag, which is more sensitive than the simpler -Wcast-function-type,
-> which only checks for type width mismatches.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Darrick J. Wong <djwong@kernel.org> =E4=BA=8E2023=E5=B9=B41=E6=9C=884=E6=97=
+=A5=E5=91=A8=E4=B8=89 03:17=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Dec 29, 2022 at 09:45:02AM +0800, Jun Nie wrote:
+> > For 1k-block filesystems, the filesystem starts at block 1, not block 0=
+.
+> > If start_fsb is 0, it will be bump up to s_first_data_block. Then
+> > ext4_get_group_no_and_offset don't know what to do and return garbage
+> > results (blockgroup 2^32-1). The underflow make index
+> > exceed es->s_groups_count in ext4_get_group_info() and trigger the BUG_=
+ON.
+> >
+> > Fixes: 4a4956249dac0 ("ext4: fix off-by-one fsmap error on 1k block fil=
+esystems")
+> > Link: https://syzkaller.appspot.com/bug?id=3D79d5768e9bfe362911ac1a5057=
+a36fc6b5c30002
+> > Reported-by: syzbot+6be2b977c89f79b6b153@syzkaller.appspotmail.com
+> > Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> > ---
+> >  fs/ext4/fsmap.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+> > index 4493ef0c715e..1aef127b0634 100644
+> > --- a/fs/ext4/fsmap.c
+> > +++ b/fs/ext4/fsmap.c
+> > @@ -702,6 +702,12 @@ int ext4_getfsmap(struct super_block *sb, struct e=
+xt4_fsmap_head *head,
+> >               if (handlers[i].gfd_dev > head->fmh_keys[0].fmr_device)
+> >                       memset(&dkeys[0], 0, sizeof(struct ext4_fsmap));
+> >
+> > +             /*
+> > +              * Re-check the range after above limit operation and rej=
+ect
+> > +              * 1K fs on block 0 as fs should start block 1. */
+> > +             if (dkeys[0].fmr_physical =3D=3D0 && dkeys[1].fmr_physica=
+l =3D=3D 0)
+> > +                     continue;
+>
+> ...and if this filesystem has 4k blocks, and therefore *does* define a
+> block 0?
 
-Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Yes, this is a real corner case test :-)
 
-Just for the record, this is the warning Clang reports without this
-patch:
-
-fs/ext4/sysfs.c:508:13: warning: cast from 'void (*)(const void *)' to 'void (*)(struct kobject *)' converts to incompatible function type [-Wcast-function-type-strict]
-
-Thanks
---
-Gustavo
-
-> ---
->  fs/ext4/sysfs.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index d233c24ea342..83cf8b5afb54 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -491,6 +491,11 @@ static void ext4_sb_release(struct kobject *kobj)
->  	complete(&sbi->s_kobj_unregister);
->  }
->  
-> +static void ext4_kobject_release(struct kobject *kobj)
-> +{
-> +	kfree(kobj);
-> +}
-> +
->  static const struct sysfs_ops ext4_attr_ops = {
->  	.show	= ext4_attr_show,
->  	.store	= ext4_attr_store,
-> @@ -505,7 +510,7 @@ static struct kobj_type ext4_sb_ktype = {
->  static struct kobj_type ext4_feat_ktype = {
->  	.default_groups = ext4_feat_groups,
->  	.sysfs_ops	= &ext4_attr_ops,
-> -	.release	= (void (*)(struct kobject *))kfree,
-> +	.release	= ext4_kobject_release,
->  };
->  
->  void ext4_notify_error_sysfs(struct ext4_sb_info *sbi)
-> -- 
-> 2.34.1
-> 
+>
+> --D
+>
+> > +
+> >               info.gfi_dev =3D handlers[i].gfd_dev;
+> >               info.gfi_last =3D false;
+> >               info.gfi_agno =3D -1;
+> > --
+> > 2.34.1
+> >
