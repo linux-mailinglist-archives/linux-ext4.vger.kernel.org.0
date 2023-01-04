@@ -2,146 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F36465DE18
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 22:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF51165DE22
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 22:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235421AbjADVJX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Jan 2023 16:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        id S240238AbjADVO6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Jan 2023 16:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240314AbjADVJR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 16:09:17 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6A1D0E6
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 13:09:15 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id p24so14676807plw.11
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Jan 2023 13:09:15 -0800 (PST)
+        with ESMTP id S235287AbjADVO5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 16:14:57 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689731B9DA;
+        Wed,  4 Jan 2023 13:14:56 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cp9-20020a17090afb8900b00226a934e0e5so1873607pjb.1;
+        Wed, 04 Jan 2023 13:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N7e2wI5rOH0TCS8vVnB78L3eDotCSnHcKsvZPx9y4wU=;
-        b=C40Gz9QcfmKE0+Yw+ZeeTtIoek8V2TWOtdR4AwnrKaklJs1/LZvWLUeB1itG4Ck7np
-         NvAjiGYGr+Bgcu814J00sXqoYVsSICOnjmrhBRtx07jFQtcJ7pQUAVzh3jVRGTt0V192
-         8p0dpcIHT8EpUHXJWkMhixUl1sAJWNWU12Q4M=
+        bh=XF0rWcwOaeOy9W3XDndGOlTI6VOcqMAlw6Z0kSP+ZIE=;
+        b=mwUaRHyXO3QpRK5P0JqCEjtDjkmGl7YgUMaT1I2YjsKhseOwqNkNS33mOlEf/eRTXu
+         Dx4cepCH0DpI7UZias9hAXzrqhmP9FqJPQ5SpCcrNsEip5tDid5QCJ8rq3xSJ7zfXgzS
+         VkkY41Iwf5a5gzpho+eHq9V7JD1kKJVPOfzCuRJq6ljFPE+NlmpfzNYoSMe4wocuCgzf
+         S6i7hTWrnSsU5BeCV3tLAdKHoc+E6ZXdQXMGE1pFenz1nLeHJTOMKZAollRFOqAqS7OZ
+         auFae1eJ8Ii2yGyYjhvy6b6WvXd1YJI0BgZbYV7R5btP09Ol+PqZuvdKcR/Dbg+8nqw5
+         sxBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N7e2wI5rOH0TCS8vVnB78L3eDotCSnHcKsvZPx9y4wU=;
-        b=18Bq03UPTYDekKGh0YCSHuGu9b11eHqOmyQ1lOYLz+Xw4v/30O4Iyj8BD2qvh9PeoB
-         i2Ae5QDxj4SKakU7195DS1tuoioF/Ar+EYIj5v+LRANsPZ6ERwbWQ1JCsKHQ61eEOuMG
-         kblG8fpB8QnmpSLFgJ62sN8OfcwYAAFJw1xw/7UQi5H8jr4rt3UzYWeePMUTyqvJ20xA
-         Q+W4filjgKqsztWd3xuTd43S5JoaYDD3YLn63bwMWrS9BcTJmY74wKvCffXYz+0TKkw0
-         xRf3yg22JuBPni+d7CGnP4Aj9CPeS7gjPH25dB8GkyHIWtGppOjKMSwHuu7hZDa48ln0
-         /+cg==
-X-Gm-Message-State: AFqh2kqqZy86NWGqefJL8uaUn5pyaamFrVqSl5S7tO4UdfYqjIdQZYsa
-        SIJacbnHLIddEqeUekEbFvg9qg==
-X-Google-Smtp-Source: AMrXdXsS+rbrcdC8oxPFmFfnIHZhQwxagm363BI8RJ3ymU5GkpRbqX0sIx+1yKRH2LDDjk/ySqK3IQ==
-X-Received: by 2002:a17:903:2682:b0:192:f12a:42de with SMTP id jf2-20020a170903268200b00192f12a42demr2516867plb.42.1672866554980;
-        Wed, 04 Jan 2023 13:09:14 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d19-20020a656b93000000b00476dc914262sm20817436pgw.1.2023.01.04.13.09.14
+        bh=XF0rWcwOaeOy9W3XDndGOlTI6VOcqMAlw6Z0kSP+ZIE=;
+        b=VXUdT2qJNV2+51ymPdStnnbXkLEO+YYaaZqRzKkqvwyTrB8ZiM5kvLPWDZuyIkp40t
+         KwuvYPgYLdFs/AUWR1oj/IwdEjYnv62J6K63fw4Nbou1Kn2jEe2nc+rE1fyYps2SiMUC
+         fp6hb2ErAaJvfFtth+DS50MmNNkmUzIiOzsGMPQqtFI/SSMdMyAe43GLUzqGHTILSa51
+         tOnjlpsIH3s3BHucazaHZuRefdP1Ck0jooQbGJrg93ia6AE0opLYo1RLoXeIXAPXz8iU
+         lRRg350TTraGEnL8udJCWl0NpSfUElVywgRHTY3nPau69R8Js2uGBvSw8TSVckoJAFvB
+         X3dA==
+X-Gm-Message-State: AFqh2kpDWAd7wjlled99pb0sBQSDjMptgWcma3nf84rFxSYBdwaC6ju8
+        TTv6m3s2goEH2Fqi5mlXfd6hHv/26T0=
+X-Google-Smtp-Source: AMrXdXuHWcLr2ISD1AWLN6noveXBmNIMzDKhC6iHCDPkCElkMLkDu5P/j13SKsDU15gZnXatqrr41A==
+X-Received: by 2002:a17:90a:cc0b:b0:219:5955:7570 with SMTP id b11-20020a17090acc0b00b0021959557570mr23943541pju.46.1672866895416;
+        Wed, 04 Jan 2023 13:14:55 -0800 (PST)
+Received: from fedora.hsd1.ca.comcast.net ([2601:644:8002:1c20::a55d])
+        by smtp.googlemail.com with ESMTPSA id i8-20020a17090a138800b00226369149cesm6408pja.21.2023.01.04.13.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 13:09:14 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Eric Biggers <ebiggers@kernel.org>, stable@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Riccardo Schirone <sirmy15@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] ext4: Fix function prototype mismatch for ext4_feat_ktype
-Date:   Wed,  4 Jan 2023 13:09:12 -0800
-Message-Id: <20230104210908.gonna.388-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 04 Jan 2023 13:14:54 -0800 (PST)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v5 00/23] Convert to filemap_get_folios_tag()
+Date:   Wed,  4 Jan 2023 13:14:25 -0800
+Message-Id: <20230104211448.4804-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2508; h=from:subject:message-id; bh=rWss1AWpfgN5m5MJ3ZzB8riftLh8uHlWslxcv4hTtPQ=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjter33m3BUzBmkepopp8BSQH8S0ACYSatzHFDr43m Af3b0nKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY7Xq9wAKCRCJcvTf3G3AJlFJD/ 4lw5d6tzW8szirp5AWtqCSAk2F8btgMJ0kn+otr52eFrv50d4FyF2DrGCrjKHW6TrCV5R1IbGuxzyC cNxeDeUXZ08+2+Z5coqXuQVIKi2ccgbzJXkcpJyBqidP6Q5EE/9jPxv1isYpI8Wx6pUqvFb3JC3JNU TxeGXpu1Etl3gs6tj+WVwfVrf3waEGXNvG7oVLMSK9SY2GMqJdQvBE2m8It9yxubznQVH4FcdUZkge WZiHcQxMTjJJvExrAJQMPCOZTGydwKp4sFIEfuBik8owEqDw+rp0pLWFDykwlB2gQ43H31hlfp5qvD ja0NSNl9ClP3XMtlAddoBVD83OAz5WM5QLRmjfkQZcLpeV4OoEhoLFkkPTOmhrtgYD4QR+oboFL5VJ bR+fyrp9wFy7sabuSYn7UD2SLENbyhyRQJ1Wq+KvK/POkLsr2q2OEyiFD5QxFhuJcQxqQjSu+dusLQ eQAXZxZNr2EY+gc/MsVQo82SCi1QUaYrz9iMWQBmPeUDvdzzPNg9HzV//sljmjTyt/lUfh+txYyN+D kqSNKiD/EKX27Rb/N8+6MRVLavRsCvZInKdmiJRsZ4m9Ht4fJQkF7+V+d+YDJkJHTdvyr2LdZK3GuT iZ9bjmYHTDnQQL+Ry+OxvAHK3To6Qg+N+G8ZLl8PsGiWtfPDv+XCmw+7WWmw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-indirect call targets are validated against the expected function
-pointer prototype to make sure the call target is valid to help mitigate
-ROP attacks. If they are not identical, there is a failure at run time,
-which manifests as either a kernel panic or thread getting killed.
+This patch series replaces find_get_pages_range_tag() with
+filemap_get_folios_tag(). This also allows the removal of multiple
+calls to compound_head() throughout.
+It also makes a good chunk of the straightforward conversions to folios,
+and takes the opportunity to introduce a function that grabs a folio
+from the pagecache.
 
-ext4_feat_ktype was setting the "release" handler to "kfree", which
-doesn't have a matching function prototype. Add a simple wrapper
-with the correct prototype.
+I've run xfstests on xfs, btrfs, ext4, f2fs, and nilfs2, but more testing may
+be beneficial. The page-writeback and filemap changes implicitly work. Still
+looking for review of cifs, gfs2, and ext4.
 
-This was found as a result of Clang's new -Wcast-function-type-strict
-flag, which is more sensitive than the simpler -Wcast-function-type,
-which only checks for type width mismatches.
-
-Note that this code is only reached when ext4 is a loadable module and
-it is being unloaded:
-
- CFI failure at kobject_put+0xbb/0x1b0 (target: kfree+0x0/0x180; expected type: 0x7c4aa698)
- ...
- RIP: 0010:kobject_put+0xbb/0x1b0
- ...
- Call Trace:
-  <TASK>
-  ext4_exit_sysfs+0x14/0x60 [ext4]
-  cleanup_module+0x67/0xedb [ext4]
-
-Fixes: b99fee58a20a ("ext4: create ext4_feat kobject dynamically")
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: stable@vger.kernel.org
-Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/r/20230103234616.never.915-kees@kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-v2: rename callback, improve commit log (ebiggers)
-v1: https://lore.kernel.org/lkml/20230103234616.never.915-kees@kernel.org
----
- fs/ext4/sysfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+v5:
+  Rebased onto upstream 6.2-rc2
+  Filesystems modified to use folio_get() instead of folio_ref_inc()
+  F2fs modified to maintain use of F2FS_ONSTACK_PAGES
 
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index d233c24ea342..e2b8b3437c58 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -491,6 +491,11 @@ static void ext4_sb_release(struct kobject *kobj)
- 	complete(&sbi->s_kobj_unregister);
- }
- 
-+static void ext4_feat_release(struct kobject *kobj)
-+{
-+	kfree(kobj);
-+}
-+
- static const struct sysfs_ops ext4_attr_ops = {
- 	.show	= ext4_attr_show,
- 	.store	= ext4_attr_store,
-@@ -505,7 +510,7 @@ static struct kobj_type ext4_sb_ktype = {
- static struct kobj_type ext4_feat_ktype = {
- 	.default_groups = ext4_feat_groups,
- 	.sysfs_ops	= &ext4_attr_ops,
--	.release	= (void (*)(struct kobject *))kfree,
-+	.release	= ext4_feat_release,
- };
- 
- void ext4_notify_error_sysfs(struct ext4_sb_info *sbi)
+v4:
+  Fixed a bug with reference counting in cifs changes
+  - Reported-by: kernel test robot <oliver.sang@intel.com> 
+  Improved commit messages to be more meaningful
+  Got some Acked-bys and Reviewed-bys
+
+v3:
+  Rebased onto upstream 6.1
+  Simplified the ceph patch to only necessary changes
+  Changed commit messages throughout to be clearer
+  Got an Acked-by for another nilfs patch
+  Got Tested-by for afs
+
+v2:
+  Got Acked-By tags for nilfs and btrfs changes
+  Fixed an error arising in f2fs
+  - Reported-by: kernel test robot <lkp@intel.com>
+
+Vishal Moola (Oracle) (23):
+  pagemap: Add filemap_grab_folio()
+  filemap: Added filemap_get_folios_tag()
+  filemap: Convert __filemap_fdatawait_range() to use
+    filemap_get_folios_tag()
+  page-writeback: Convert write_cache_pages() to use
+    filemap_get_folios_tag()
+  afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
+  btrfs: Convert btree_write_cache_pages() to use
+    filemap_get_folio_tag()
+  btrfs: Convert extent_write_cache_pages() to use
+    filemap_get_folios_tag()
+  ceph: Convert ceph_writepages_start() to use filemap_get_folios_tag()
+  cifs: Convert wdata_alloc_and_fillpages() to use
+    filemap_get_folios_tag()
+  ext4: Convert mpage_prepare_extent_to_map() to use
+    filemap_get_folios_tag()
+  f2fs: Convert f2fs_fsync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_flush_inline_data() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_write_cache_pages() to use filemap_get_folios_tag()
+  f2fs: Convert last_fsync_dnode() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_meta_pages() to use filemap_get_folios_tag()
+  gfs2: Convert gfs2_write_cache_jdata() to use filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_data_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_node_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_btree_lookup_dirty_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_copy_dirty_pages() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_clear_dirty_pages() to use
+    filemap_get_folios_tag()
+  filemap: Remove find_get_pages_range_tag()
+
+ fs/afs/write.c          | 116 ++++++++++++++++++++--------------------
+ fs/btrfs/extent_io.c    |  57 ++++++++++----------
+ fs/ceph/addr.c          |  58 ++++++++++----------
+ fs/cifs/file.c          |  32 +++++++++--
+ fs/ext4/inode.c         |  65 +++++++++++-----------
+ fs/f2fs/checkpoint.c    |  49 +++++++++--------
+ fs/f2fs/data.c          |  84 ++++++++++++++++++++---------
+ fs/f2fs/node.c          |  72 +++++++++++++------------
+ fs/gfs2/aops.c          |  64 ++++++++++++----------
+ fs/nilfs2/btree.c       |  14 ++---
+ fs/nilfs2/page.c        |  59 ++++++++++----------
+ fs/nilfs2/segment.c     |  44 +++++++--------
+ include/linux/pagemap.h |  32 +++++++----
+ include/linux/pagevec.h |   8 ---
+ mm/filemap.c            |  84 ++++++++++++++---------------
+ mm/page-writeback.c     |  44 +++++++--------
+ mm/swap.c               |  10 ----
+ 17 files changed, 481 insertions(+), 411 deletions(-)
+
 -- 
-2.34.1
+2.38.1
 
