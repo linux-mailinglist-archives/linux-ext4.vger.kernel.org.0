@@ -2,121 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 970D765D0D7
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 11:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4F765D181
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 12:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbjADKoc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Jan 2023 05:44:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
+        id S233283AbjADLek (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Jan 2023 06:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbjADKoa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 05:44:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0694C1EC4C
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 02:43:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672829029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OuIRNY881fV0hFAFw21ErBybqGHIKJk812m+N/4OfLE=;
-        b=bxIa7P2F464y0otkkhunpu3T8vZ0yD2wi7aJEsKKE5McFgedILoABEzZJ+p5jnpLjWcVrS
-        a0ZHXdNNgXATY3fGYn7VLu7aNRI+ggKExTHV4+8szjjHmP2fgYAK7Wm/zBuBSUf0pZYHfM
-        BaCxzeTOgRQu9PTPVnNucvsfST21rUo=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-574-WqjxwdlxN4aGsbQFyAQNOw-1; Wed, 04 Jan 2023 05:43:47 -0500
-X-MC-Unique: WqjxwdlxN4aGsbQFyAQNOw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E35133813F2C;
-        Wed,  4 Jan 2023 10:43:46 +0000 (UTC)
-Received: from fedora (ovpn-192-227.brq.redhat.com [10.40.192.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 65B801121314;
-        Wed,  4 Jan 2023 10:43:46 +0000 (UTC)
-Date:   Wed, 4 Jan 2023 11:43:44 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [e2fsprogs PATCH] libext2fs: consistently use #ifdefs in
- ext2fs_print_bmap_statistics()
-Message-ID: <20230104104344.4r4huq7qt63o5e7a@fedora>
-References: <20230104090116.275764-1-ebiggers@kernel.org>
+        with ESMTP id S233825AbjADLej (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 06:34:39 -0500
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C601B1B9C0
+        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 03:34:38 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id g1-20020a92cda1000000b0030c45d93884so6021090ild.16
+        for <linux-ext4@vger.kernel.org>; Wed, 04 Jan 2023 03:34:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V5gRBWvCrC4ivORDLYanYAKruxMNDrxF3nhXlCgZ6d4=;
+        b=F4paLlhYOFNDmvYWPV+vpvgEv3hxK+lS/3bLn5qm8JDxScgpAHhVBS/sDV/7W/pPc4
+         jrkl/Ja9CVHmiutGm8CE3AYfCiqY5ufWt/oTxA+BAx4z+3Xzb5rjOjS/w1JHtLWQNs5s
+         4vE3GXRdYwvYG/Ma/1leMWXQKTiDM0ykxZrjsFBDEP3rNih3qGVXV5afORMxXa/MpwAN
+         qbhDLBVipD/cFKwWxqfgT5+NIb4gDs6KAttJFSgM5WNU7mbzoKhZfxSqeElZn3hNBdXL
+         lrpsjhaPrRTcRCZqzoPvsNzPoY4o5iqMlGaeS6CBFBJIBcjM6Uk21dIsYuRzZLRj13QS
+         HjwQ==
+X-Gm-Message-State: AFqh2krg690nSsz6ARvLZ4wR3ZR+lPso96KLBJtG2YZ9htTQfpqZaPV9
+        UKXNzft+dFdWPUfVYLJdMi6M0Gx4pkIyKodJSQdVVhArH8PF
+X-Google-Smtp-Source: AMrXdXtYnU0n+7Mz66+jF3YyEbOSXpsWchRQh4OWWMAkTgA+jN6H8D5b4L843NTdw6V/0AriGfmSejO1PiEbK7VCcfnaujakKtak
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230104090116.275764-1-ebiggers@kernel.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:c728:0:b0:399:6200:63dc with SMTP id
+ h8-20020a02c728000000b00399620063dcmr4409365jao.194.1672832078148; Wed, 04
+ Jan 2023 03:34:38 -0800 (PST)
+Date:   Wed, 04 Jan 2023 03:34:38 -0800
+In-Reply-To: <0000000000006c411605e2f127e5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c97b2a05f16e91c5@google.com>
+Subject: Re: kernel BUG in ext4_free_blocks (2)
+From:   syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
+        lczerner@redhat.com, lee@kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nogikh@google.com, sashal@kernel.org,
+        stable@vger.kernel.org, syzkaller-android-bugs@googlegroups.com,
+        tadeusz.struk@linaro.org, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 01:01:16AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Since the 'now' variable is only used to calculate 'inuse', and 'inuse'
-> is only used when defined(ENABLE_BMAP_STATS_OPS), it makes sense to
-> guard the declaration and initialization of 'now' and 'inuse' by the
-> same condition, just like the '*_perc' variables in the same function.
-> 
-> This addresses the following compiler warning with clang -Wall:
-> 
-> gen_bitmap64.c:187:9: warning: variable 'inuse' set but not used [-Wunused-but-set-variable]
->         double inuse;
->                ^
+This bug is marked as fixed by commit:
+ext4: block range must be validated before use in ext4_mb_clear_bb()
 
-Looks good, thanks!
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+#syz fix: exact-commit-title
 
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  lib/ext2fs/gen_bitmap64.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
-> index c860c10e..1a1eeefe 100644
-> --- a/lib/ext2fs/gen_bitmap64.c
-> +++ b/lib/ext2fs/gen_bitmap64.c
-> @@ -183,11 +183,9 @@ static void ext2fs_print_bmap_statistics(ext2fs_generic_bitmap_64 bitmap)
->  #ifdef ENABLE_BMAP_STATS_OPS
->  	float mark_seq_perc = 0.0, test_seq_perc = 0.0;
->  	float mark_back_perc = 0.0, test_back_perc = 0.0;
-> -#endif
-> -	double inuse;
->  	struct timeval now;
-> +	double inuse;
->  
-> -#ifdef ENABLE_BMAP_STATS_OPS
->  	if (stats->test_count) {
->  		test_seq_perc = ((float)stats->test_seq /
->  				 stats->test_count) * 100;
-> @@ -201,7 +199,6 @@ static void ext2fs_print_bmap_statistics(ext2fs_generic_bitmap_64 bitmap)
->  		mark_back_perc = ((float)stats->mark_back /
->  				  stats->mark_count) * 100;
->  	}
-> -#endif
->  
->  	if (gettimeofday(&now, (struct timezone *) NULL) == -1) {
->  		perror("gettimeofday");
-> @@ -212,6 +209,7 @@ static void ext2fs_print_bmap_statistics(ext2fs_generic_bitmap_64 bitmap)
->  		(((double) now.tv_usec) * 0.000001);
->  	inuse -= (double) stats->created.tv_sec + \
->  		(((double) stats->created.tv_usec) * 0.000001);
-> +#endif /* ENABLE_BMAP_STATS_OPS */
->  
->  	fprintf(stderr, "\n[+] %s bitmap (type %d)\n", bitmap->description,
->  		stats->type);
-> -- 
-> 2.39.0
-> 
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
+Kernel: Android 5.10
+Dashboard link: https://syzkaller.appspot.com/bug?extid=15cd994e273307bf5cfa
+
+---
+[1] I expect the commit to be present in:
+
+1. android12-5.10-lts branch of
+https://android.googlesource.com/kernel/common
