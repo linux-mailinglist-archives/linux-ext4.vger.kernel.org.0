@@ -2,92 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6233965DD5C
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 21:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D4E65DDC8
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 21:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjADUFP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Jan 2023 15:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        id S239812AbjADUm3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Jan 2023 15:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjADUFO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 15:05:14 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8356D1C433
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 12:05:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 37CA4B81896
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 20:05:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE418C433D2;
-        Wed,  4 Jan 2023 20:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672862710;
-        bh=ShcRG/NKnRtOXQu7Z1e/rZYXT+ybwKYzPUKZmw8uSkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kfbK8mGjxdo9MHNoMFCIZAvwWCY+B4C2geOI+trdrYidmJ3uQuJk0YxJoh/aIjnbf
-         5iKw6hxB79UipP4Rk/hNZhNpTTcd28tAzSRfiW0UfvJC/GepD1PHX5ZOPu0MG3EIuM
-         d/7ODqwMZA3A7wbH6UhgMbruFuTu9CTRpY6WvUvVt6DvAJs1TwhgUV5SvahEU0OGXd
-         pEoszR8MTI0v43M3GSANy0Hkhh67hAui5BwaEQVeBbIIHnnyrjlDpWFbn7ChMY/UFU
-         K/xQ1HzJvyzHDGf5k5GkFd/EvzSNYlqn1jEoB9hP4saaRxhyhw4hxN0Ck35HCCvTG5
-         svN+srOrK3itA==
-Date:   Wed, 4 Jan 2023 20:05:09 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-ext4@vger.kernel.org,
-        Paulo Antonio Alvarez <pauloaalvarez@gmail.com>
-Subject: Re: [e2fsprogs PATCH] libext2fs: fix 32-bit Windows build
-Message-ID: <Y7Xb9cYkymilfKLd@gmail.com>
-References: <20230104090301.275976-1-ebiggers@kernel.org>
- <Y7WvQ9cqOZuF0YJR@magnolia>
+        with ESMTP id S239897AbjADUm2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 15:42:28 -0500
+Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com [192.185.144.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AE71CFC1
+        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 12:42:26 -0800 (PST)
+Received: from atl1wswcm03.websitewelcome.com (unknown [50.6.129.164])
+        by atl3wswob02.websitewelcome.com (Postfix) with ESMTP id 3045EEEA7
+        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 20:42:26 +0000 (UTC)
+Received: from rs019.webhostbox.net ([162.241.123.62])
+        by cmsmtp with ESMTP
+        id DAafps9qxHV9cDAafpC8Hi; Wed, 04 Jan 2023 20:42:26 +0000
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mandals.net
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:Subject:To:From:
+        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GW+8UEuWok8vSf1E5+PZGT+Rjubkd7X1jyvMT9mi8IE=; b=wUzv7PARH3pS7DhkGMyhUMpgIA
+        Ok2Xacrb0Zfjpk84q/FMKnYKcJLrIaTqY7Sn0IP3ul/A6EYmfKpz/VPqSGUHXZJj+p6Vd7AeVVmx9
+        znKiEMjvroMUSQ7TmoWV5bCJm/M23tQzYD6/dhbEe4mftKKkaIK3nd6IT1/YLBWL4BvGpz8DmAXr+
+        k3X5si2kaL6ksj7WkXfo/8CJzAPIdzXyJ8xTGHO/vaRJ6NtG7t17F2sqpP4daWl/Apgv7sE8rPniN
+        Y/9n7FkoZN2S71AJ04rxP6l3NDic8WWar6HKm4yVEEUfAV01PcpY8xhX9PXi2bbnVvpLIVVkusXCf
+        M5ySHYVw==;
+Received: from [103.211.13.83] (port=51354 helo=[192.168.1.105])
+        by rs019.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <atanu@mandals.net>)
+        id 1pDAaf-001gab-2V
+        for linux-ext4@vger.kernel.org;
+        Wed, 04 Jan 2023 20:42:25 +0000
+Message-ID: <69d38609-9e48-cd84-8b70-cc895e2551d3@mandals.net>
+Date:   Thu, 5 Jan 2023 02:12:22 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y7WvQ9cqOZuF0YJR@magnolia>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Content-Language: en-US
+From:   Atanu M <atanu@mandals.net>
+To:     linux-ext4@vger.kernel.org
+Subject: Pls. keep noacl & nouser_xattr
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - rs019.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mandals.net
+X-BWhitelist: no
+X-Source-IP: 103.211.13.83
+X-Source-L: No
+X-Exim-ID: 1pDAaf-001gab-2V
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.105]) [103.211.13.83]:51354
+X-Source-Auth: atanu@mandals.net
+X-Email-Count: 1
+X-Source-Cap: bWFuZGFsczthY2xhYm5odTtyczAxOS53ZWJob3N0Ym94Lm5ldA==
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIEh5PTINnmvmm3NgBU+7eB2sWN4aEM+fghrleSQFOuycoY4VVjZRyC3QEGVU8jOH9lxG+it0M07iRHgb3EIaNT/QlGJJP+pmeqsjom6/HTTRngCHr6i
+ GgS85cdygKljK3XrLxu/sdirzJWl7LmO3FTeTLFtsZQzD/gWQkt9zEacJBPI6v5rC8qjlBfWunlsg1VfqyB+jkXjJOLm99q/Ll4=
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_SOFTFAIL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 08:54:27AM -0800, Darrick J. Wong wrote:
-> On Wed, Jan 04, 2023 at 01:03:01AM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > _WIN32 is the standard macro to detect Windows, regardless of 32-bit or
-> > 64-bit.  _WIN64 is for 64-bit Windows only.  Use _WIN32 where _WIN64 was
-> > incorrectly being used.
-> > 
-> > This fixes several 32-bit Windows build errors, for example this one:
-> 
-> Color me impressed, I would have applied to deprecate Windows support
-> entirely, particularly given the existence of WSL.
+Dear friends,
 
-Yes, now that everyone has migrated to GNU Hurd, which is fully supported by
-e2fsprogs, there's no need for Windows which no one uses anymore :-)
+Pls. keep noacl  & nouser_xattr  mount options
 
-The reason I have to care about e2fsprogs support for Windows is because the
-Windows build of the Android SDK Platform tools includes a Windows binary of
-mke2fs, so that it can be used by 'fastboot format'.
+rgds
 
-I am sure that Ted would be very unhappy if Android had to bring back
-'make_ext4fs' due to e2fsprogs removing Windows support...
+Atanu
 
-(One way out of this for Android would be to remove fastboot's support for
-formatting filesystems, and just have it support wiping them.  The actual
-formatting would then always happen on the Android device itself, using the
-Linux build of e2fsprogs.  I'm not sure why that can't be done; however, I do
-know that it's been brought up many times before and still hasn't happened...)
-
-Of course, a second problem that I ran into after I sent this patch without
-properly testing it, is that misc/mke2fs.c is hard-coding unix_io_manager.  So
-an additional fix would be needed to make it use windows_io_manager on Windows,
-now that Windows has its own windows_io_manager instead of unix_io_manager.
-
-Paulo, just to double check: was your intent when adding the windows_io_manager
-that it *always* replace unix_io_manager on Windows?
-
-- Eric
