@@ -2,84 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A8965CF05
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 10:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE9B65D08E
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 11:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbjADJEQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Jan 2023 04:04:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        id S231128AbjADKYR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Jan 2023 05:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbjADJEK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 04:04:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80306370
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 01:04:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S230376AbjADKYQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 05:24:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C012D193FB
+        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 02:23:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1672827812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ObnUHKxvEczvfH3lRNZHwf5XmrUPu47QR7kYMSwnUnk=;
+        b=MqE1SrKI2DgyST9pcwGN2GSmai7tBl5/JsbqSnMKn5jnZh2RY/NzFMZ/rLeYu1iCzMEcUQ
+        09W74ZWWEZAbvBB7V1UYIPm1/uo+SmVoP/Gs4trqaR7TlI+3s+Q2SiH1rQjCpjIW9ZMWrO
+        JrliZu4Yir/ZCq7YDdO6CkkAM+NFy9w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-507-H4DRYmPIPwaURSUz6OYCmg-1; Wed, 04 Jan 2023 05:23:29 -0500
+X-MC-Unique: H4DRYmPIPwaURSUz6OYCmg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7DAABB815C3
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 09:04:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201C0C433EF;
-        Wed,  4 Jan 2023 09:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672823046;
-        bh=oMufIILpRMVDNGSU9axbqVZYgF+/ryDm3eUQGwt2Pio=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lv2gk11DuK2UxsjWN0MxIc5RFOb35iI3zE2LAZziWD6cWJcjG2crxFQyylQ2DP0wI
-         XyGytwhJcdr+vMQKLMRs6rVEa8rQvVJgMYkrBcLF1YEjatJXZ2TyQtFUoSFZtHf6mG
-         /ljMM5hf7G3Ys0kYPtFoVHEpO5Q1HDuVb1U8pKEi79vOnrArmSiu1nR4YtFXObdo4l
-         U1fC2I0xOVowrVDODrk6Uix4jLAI51tipkb6mzRAZ7QTipovMgebG7WT/Avs9ybP31
-         niDUphox1dwXe2hnUNQj8uvtP7Ya8Wy/VMZZE+lhM3DATvWyz/GNe4vilqqWD3FtAU
-         9Eu4/AlzmBQfw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     Jeremy Bongio <bongiojp@gmail.com>
-Subject: [e2fsprogs PATCH] tune2fs: fix setting fsuuid::fsu_len
-Date:   Wed,  4 Jan 2023 01:04:01 -0800
-Message-Id: <20230104090401.276188-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.39.0
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 17C5585C069;
+        Wed,  4 Jan 2023 10:23:29 +0000 (UTC)
+Received: from fedora (ovpn-192-227.brq.redhat.com [10.40.192.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 55A1B140EBF5;
+        Wed,  4 Jan 2023 10:23:28 +0000 (UTC)
+Date:   Wed, 4 Jan 2023 11:23:26 +0100
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Subject: Re: [e2fsprogs PATCH] libext2fs: remove unused variable in
+ ext2fs_xattrs_read_inode()
+Message-ID: <20230104102326.eoitvoj3bbcp6oqd@fedora>
+References: <20230104090314.276028-1-ebiggers@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230104090314.276028-1-ebiggers@kernel.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Jan 04, 2023 at 01:03:14AM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Address the following compiler warning with gcc -Wall:
+> 
+> ext_attr.c: In function ‘ext2fs_xattrs_read_inode’:
+> ext_attr.c:1000:16: warning: unused variable ‘i’ [-Wunused-variable]
+>  1000 |         size_t i;
+>       |                ^
 
-Minus does not mean equals.
+You might as well remove the unnecessary newline at the top of the
+function.
 
-Besides fixing an obvious bug, this avoids the following compiler
-warning with clang -Wall:
+But regardless, you can add.
 
-tune2fs.c:3625:20: warning: expression result unused [-Wunused-value]
-                        fsuuid->fsu_len - UUID_SIZE;
-                        ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 
-Fixes: a83e199da0ca ("tune2fs: Add support for get/set UUID ioctls.")
-Cc: Jeremy Bongio <bongiojp@gmail.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- misc/tune2fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
+-Lukas
 
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 088f87e5..7937b8b5 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -3622,7 +3622,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 		ret = -1;
- #ifdef __linux__
- 		if (fsuuid) {
--			fsuuid->fsu_len - UUID_SIZE;
-+			fsuuid->fsu_len = UUID_SIZE;
- 			fsuuid->fsu_flags = 0;
- 			memcpy(&fsuuid->fsu_uuid, new_uuid, UUID_SIZE);
- 			ret = ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid);
--- 
-2.39.0
+> 
+> Cc: Andreas Dilger <adilger@dilger.ca>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  lib/ext2fs/ext_attr.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/lib/ext2fs/ext_attr.c b/lib/ext2fs/ext_attr.c
+> index d36fe68d..6fc4214c 100644
+> --- a/lib/ext2fs/ext_attr.c
+> +++ b/lib/ext2fs/ext_attr.c
+> @@ -997,7 +997,6 @@ errcode_t ext2fs_xattrs_read_inode(struct ext2_xattr_handle *handle,
+>  	unsigned int storage_size;
+>  	char *start, *block_buf = NULL;
+>  	blk64_t blk;
+> -	size_t i;
+>  	errcode_t err = 0;
+>  
+>  	EXT2_CHECK_MAGIC(handle, EXT2_ET_MAGIC_EA_HANDLE);
+> -- 
+> 2.39.0
+> 
 
