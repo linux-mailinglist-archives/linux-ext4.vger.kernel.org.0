@@ -2,37 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA41F65CAB5
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 01:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0591365CB20
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 01:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjADAXs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Jan 2023 19:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S231261AbjADAzC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Jan 2023 19:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjADAXr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 19:23:47 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630F7164B8;
-        Tue,  3 Jan 2023 16:23:47 -0800 (PST)
+        with ESMTP id S229685AbjADAzB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Jan 2023 19:55:01 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114817070;
+        Tue,  3 Jan 2023 16:54:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF72961560;
-        Wed,  4 Jan 2023 00:23:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 310C8C433D2;
-        Wed,  4 Jan 2023 00:23:46 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A2345B81151;
+        Wed,  4 Jan 2023 00:54:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2880FC433EF;
+        Wed,  4 Jan 2023 00:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672791826;
-        bh=Ub1O4ARA4Fg1QerVBHMPex3kBs1tuOPd9OUWy+AyaE8=;
+        s=k20201202; t=1672793697;
+        bh=D6kfiVE9mOojgtBjsTsllPEN/tZ8Ks/6aaCN32Ve4Fs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OZwcaB7pDsRLazyUJiUCwgCbXeXHfPdPlBxzS9RGiCSHj9KgfXl7IbIbWALJzQfsQ
-         XacyMUuuQrCcLhrYdplLErkyezbqno6aB4dGt9WzbC/zMfQbEjIH/jEhx0wCYhILHw
-         842OZZRWeHYTnWl5/K7R7xf56w9baqfnSzZQsAQwcdfvoJ0i9b6lO7ET0WCYayim8f
-         EWbh/u1kI/ghzkRHK+x970ganXbmY08478lfgqX5/6OZpuVLzqvGOdrXpsGoktvjN5
-         yg0qacQjxBYYYzgnG4OXJ1qwQHYLHvlhB3osx9zyRGNN+JoawlYRvzHHIQHTH5MQnE
-         ySiN15/1QoAoQ==
-Date:   Wed, 4 Jan 2023 00:23:44 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
+        b=kCCVcy5Fg8yE5P4F1SSVrZau28sxHVJfMQmJm5uNuMn/euAdc62ttf8L99nhGl3Hr
+         iYfz3N/vZW+pLgKR2GEt+em3gmFkUTDCtFCAcgeo0iH5ZLYVF3OW1pbxUg75MuI1uS
+         PrZkTO6NXSz94VPxNC3E7Jc0rGW4MRPb4E6d4H5ReZrW+sGjZ3MwwbVLZDAFWSl7az
+         ux9pKObnTpv5WmqH/qNVHjm+nQ0QLPU58CQ1UoME7IIDSTKZlTvj5soX7TSuqUmZZK
+         yqtkR/Q+VXo0kwutDlKWcKn7qboODjjJWSmifteSat3rxTFdyKwosfOP3APthscdqS
+         wMtIttSbc2kvA==
+Date:   Tue, 3 Jan 2023 18:55:01 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
         Nathan Chancellor <nathan@kernel.org>,
@@ -41,7 +41,7 @@ Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
 Subject: Re: [PATCH] ext4: Fix function prototype mismatch for ext4_feat_ktype
-Message-ID: <Y7THENi5v2+fgUAc@gmail.com>
+Message-ID: <Y7TOZRnz9sH6C2ey@work>
 References: <20230103234616.never.915-kees@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,6 +72,19 @@ On Tue, Jan 03, 2023 at 03:46:20PM -0800, Kees Cook wrote:
 > which only checks for type width mismatches.
 > 
 > Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Just for the record, this is the warning Clang reports without this
+patch:
+
+fs/ext4/sysfs.c:508:13: warning: cast from 'void (*)(const void *)' to 'void (*)(struct kobject *)' converts to incompatible function type [-Wcast-function-type-strict]
+
+Thanks
+--
+Gustavo
+
 > ---
 >  fs/ext4/sysfs.c | 7 ++++++-
 >  1 file changed, 6 insertions(+), 1 deletion(-)
@@ -98,11 +111,9 @@ On Tue, Jan 03, 2023 at 03:46:20PM -0800, Kees Cook wrote:
 >  	.sysfs_ops	= &ext4_attr_ops,
 > -	.release	= (void (*)(struct kobject *))kfree,
 > +	.release	= ext4_kobject_release,
-
-For consistency, maybe call this ext4_feat_release?  So ext4_sb_ktype would have
-ext4_sb_release, and ext4_feat_ktype would have ext4_feat_release.
-
-I'm also surprised that this wasn't found earlier.  Is it possible that CFI does
-not actually distinguish between the two function prototypes here?
-
-- Eric
+>  };
+>  
+>  void ext4_notify_error_sysfs(struct ext4_sb_info *sbi)
+> -- 
+> 2.34.1
+> 
