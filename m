@@ -2,134 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7842565F083
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jan 2023 16:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D1565F240
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jan 2023 18:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbjAEPvL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Jan 2023 10:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S235321AbjAERJF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Jan 2023 12:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbjAEPuY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Jan 2023 10:50:24 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302375E08C
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Jan 2023 07:50:21 -0800 (PST)
-Received: from letrec.thunk.org (host-67-21-23-146.mtnsat.com [67.21.23.146] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 305FnZPB011422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Jan 2023 10:49:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1672933788; bh=SwRwXE7W0BAf789h44Lpm0WiZ8Jk4yCRVsQWnf58tQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=TWjo6ehQJMOdGDOS3GyzzMTHfBLKSbdtpKKlth14VGSLkrbqBtSQ2kroPogEvf4OX
-         lzrX97+nCQ51R0BJvoeTTIuhvLi60KUruuT8esOIiVi3Fvem7+pYZZDULwFcu03ZIl
-         h/C+KC8+HtlMhFZWqB77VShWfrvLnC5qa77df6rr1LtZvd1o+7y39ywk+S4FEk+nA3
-         F39uFVUQchu/C8AUqdg8wlrjQIqYYZbdu70FwNwia7Sh+4K7APP6cPeUUgrzy/lu/r
-         Jk9FEZn1y5U15N1HLLWLjtQ+fyh4GY29zG9tNgffaajL9CAJ5PdGy66Y+pZDtYIx4G
-         EkUGvnba+IlTg==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 02E768C0850; Thu,  5 Jan 2023 10:49:32 -0500 (EST)
-Date:   Thu, 5 Jan 2023 10:49:32 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, sarthakkukreti@google.com,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>
-Subject: Re: [PATCH v2 3/7] fs: Introduce FALLOC_FL_PROVISION
-Message-ID: <Y7bxjKusa2L/TNRE@mit.edu>
-References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
- <20221229081252.452240-4-sarthakkukreti@chromium.org>
- <Y7Wr2uadI+82BB6a@magnolia>
- <CAG9=OMNbeU=Xg5bWvHUSfzRf8vsk6csvcw5BGZeMD5Lo7dfKFQ@mail.gmail.com>
+        with ESMTP id S235478AbjAERHs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Jan 2023 12:07:48 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2186671B4
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Jan 2023 09:04:04 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id jo4so91514340ejb.7
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Jan 2023 09:04:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MR9jrp9JJ/kpbjOGjenIAr4/a8H49suMxzU51oVWeFg=;
+        b=xJ1896NWCjScp1fCklVJ7wFOSURl3g6rfJqbLfGNSHxm3/ADdlvVL8TDMuA6cQQOlP
+         LmMgBdSXMcwGapGPJByz+/toJ7TaIU6r7JANgi8M9xUX60PRsBWegoDkssjAcEAd7X36
+         1Uo8d2kJ6s+4iULgQDrQ82oBWbPtctErv67YusC7lraJloUAgb1tS6BlXaBtz15YpK+z
+         nMC3MGpCfBxd/YdERf6bFyXMXUUDtZQyJDo+P5hcUQ+P2d18G/bmdqWzFbjY4wN6NGxR
+         mbDo7yKmrI/oKVBjxFuNjwQPPDApWNaeX3ZAU7vYetLjDEsBOKO98KtzA5/Tb8SHL5i3
+         EGsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MR9jrp9JJ/kpbjOGjenIAr4/a8H49suMxzU51oVWeFg=;
+        b=1djTFLU6Y3GLiEv3s6/pL+P42GIHc5lsUBDYQcSui0KCd/btKLre/Htyu5hJwOo6zU
+         mTMkKh/54v+biFyWXEqnvqW65KpRtCXkGVWDtwN9aYrcjpmJHzxvUDSlpicCNMGKPzFp
+         DxsErLKagGoygBFDlRCoPuIbd3uqPtvOgG2/PlKG8Ms4tBLVSbgSriAj2YSgvV5zCdWe
+         plJbrZs6SqV/n2wgDSj85Z5k/K5YmLfwjno5xPvnVt53rylLwCh0PBKAuiS5V9/Gshah
+         FFdVWz0nVphv+KgUxcj1oNtJIgS/2eJ3C04G9/sc/vvnaAQ0nM03AcmRu3COWSUyslOI
+         m6aA==
+X-Gm-Message-State: AFqh2krLoRqFM0b3/A0MskTckonwurneMmIYPw3nOVdUERq8K37LxYpz
+        UK1VFa9iPefL1La0Q/xOPbPIew==
+X-Google-Smtp-Source: AMrXdXtnYXt0GrEq6oLrhDkj82ytyFqpzwGU7RMy6M6L+uY3iZ9U1QwsZ9ZPmTMwv5abulfqB8msJA==
+X-Received: by 2002:a17:906:4349:b0:7ba:5085:869 with SMTP id z9-20020a170906434900b007ba50850869mr39630004ejm.9.1672938235518;
+        Thu, 05 Jan 2023 09:03:55 -0800 (PST)
+Received: from [192.168.0.104] ([82.77.81.242])
+        by smtp.gmail.com with ESMTPSA id l22-20020a1709065a9600b00780982d77d1sm16641092ejq.154.2023.01.05.09.03.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jan 2023 09:03:55 -0800 (PST)
+Message-ID: <d438b004-82ed-be25-2afb-0993537587e5@linaro.org>
+Date:   Thu, 5 Jan 2023 19:03:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG9=OMNbeU=Xg5bWvHUSfzRf8vsk6csvcw5BGZeMD5Lo7dfKFQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,MAY_BE_FORGED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: FAILED: patch "[PATCH] ext4: fix kernel BUG in
+ 'ext4_write_inline_data_end()'" failed to apply to 5.10-stable tree
+Content-Language: en-US
+To:     gregkh@linuxfoundation.org, yebin10@huawei.com, jun.nie@linaro.org,
+        tytso@mit.edu
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org,
+        joneslee@google.com
+References: <16728448721370@kroah.com>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <16728448721370@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 01:22:06PM -0800, Sarthak Kukreti wrote:
-> > How expensive is this expected to be?  Is this why you wanted a separate
-> > mode flag?
->
-> Yes, the exact latency will depend on the stacked block devices and
-> the fragmentation at the allocation layers.
+Hi,
+
+On 04.01.2023 17:07, gregkh@linuxfoundation.org wrote:
 > 
-> I did a quick test for benchmarking fallocate() with an:
-> A) ext4 filesystem mounted with 'noprovision'
-> B) ext4 filesystem mounted with 'provision' on a dm-thin device.
-> C) ext4 filesystem mounted with 'provision' on a loop device with a
-> sparse backing file on the filesystem in (B).
+> The patch below does not apply to the 5.10-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
 > 
-> I tested file sizes from 512M to 8G, time taken for fallocate() in (A)
-> remains expectedly flat at ~0.01-0.02s, but for (B), it scales from
-> 0.03-0.4s and for (C) it scales from 0.04s-0.52s (I captured the exact
-> time distribution in the cover letter
-> https://marc.info/?l=linux-ext4&m=167230113520636&w=2)
+> Possible dependencies:
 > 
-> +0.5s for a 8G fallocate doesn't sound a lot but I think fragmentation
-> and how the block device is layered can make this worse...
+> 5c099c4fdc43 ("ext4: fix kernel BUG in 'ext4_write_inline_data_end()'")
+> 6984aef59814 ("ext4: factor out write end code of inline file")
+> 55ce2f649b9e ("ext4: correct the error path of ext4_write_inline_data_end()")
+> 4df031ff5876 ("ext4: check and update i_disksize properly")
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> ------------------ original commit in Linus's tree ------------------
+> 
+>>From 5c099c4fdc438014d5893629e70a8ba934433ee8 Mon Sep 17 00:00:00 2001
+> From: Ye Bin <yebin10@huawei.com>
+> Date: Tue, 6 Dec 2022 22:41:34 +0800
+> Subject: [PATCH] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+> 
+> Syzbot report follow issue:
+> ------------[ cut here ]------------
+> kernel BUG at fs/ext4/inline.c:227!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 3629 Comm: syz-executor212 Not tainted 6.1.0-rc5-syzkaller-00018-g59d0d52c30d4 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:227
+> RSP: 0018:ffffc90003b3f368 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffff8880704e16c0 RCX: 0000000000000000
+> RDX: ffff888021763a80 RSI: ffffffff821e31a4 RDI: 0000000000000006
+> RBP: 000000000006818e R08: 0000000000000006 R09: 0000000000068199
+> R10: 0000000000000079 R11: 0000000000000000 R12: 000000000000000b
+> R13: 0000000000068199 R14: ffffc90003b3f408 R15: ffff8880704e1c82
+> FS:  000055555723e3c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fffe8ac9080 CR3: 0000000079f81000 CR4: 0000000000350ee0
+> Call Trace:
+>   <TASK>
+>   ext4_write_inline_data_end+0x2a3/0x12f0 fs/ext4/inline.c:768
+>   ext4_write_end+0x242/0xdd0 fs/ext4/inode.c:1313
+>   ext4_da_write_end+0x3ed/0xa30 fs/ext4/inode.c:3063
+>   generic_perform_write+0x316/0x570 mm/filemap.c:3764
+>   ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:285
+>   ext4_file_write_iter+0x8bc/0x16e0 fs/ext4/file.c:700
+>   call_write_iter include/linux/fs.h:2191 [inline]
+>   do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+>   do_iter_write+0x182/0x700 fs/read_write.c:861
+>   vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+>   iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+>   do_splice_from fs/splice.c:764 [inline]
+>   direct_splice_actor+0x114/0x180 fs/splice.c:931
+>   splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+>   do_splice_direct+0x1ab/0x280 fs/splice.c:974
+>   do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+>   __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+>   __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+>   __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1309
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> ---[ end trace 0000000000000000 ]---
+> 
+> Above issue may happens as follows:
+> ext4_da_write_begin
+>    ext4_da_write_inline_data_begin
+>      ext4_da_convert_inline_data_to_extent
+>        ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+> ext4_da_write_end
+> 
+> ext4_run_li_request
+>    ext4_mb_prefetch
+>      ext4_read_block_bitmap_nowait
+>        ext4_validate_block_bitmap
+>          ext4_mark_group_bitmap_corrupted(sb, block_group, EXT4_GROUP_INFO_BBITMAP_CORRUPT)
+> 	 percpu_counter_sub(&sbi->s_freeclusters_counter,grp->bb_free);
+> 	  -> sbi->s_freeclusters_counter become zero
+> ext4_da_write_begin
+>    if (ext4_nonda_switch(inode->i_sb)) -> As freeclusters_counter is zero will return true
+>      *fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
+>      ext4_write_begin
+> ext4_da_write_end
+>    if (write_mode == FALL_BACK_TO_NONDELALLOC)
+>      ext4_write_end
+>        if (inline_data)
+>          ext4_write_inline_data_end
+> 	  ext4_write_inline_data
+> 	    BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
+>             -> As inode is already convert to extent, so 'pos + len' > inline_size
+> 	   -> then trigger BUG.
+> 
+> To solve this issue, instead of checking ext4_has_inline_data() which
+> is only cleared after data has been written back, check the
+> EXT4_STATE_MAY_INLINE_DATA flag in ext4_write_end().
+> 
+> Fixes: f19d5870cbf7 ("ext4: add normal write support for inline data")
+> Reported-by: syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
+> Reported-by: Jun Nie <jun.nie@linaro.org>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Link: https://lore.kernel.org/r/20221206144134.1919987-1-yebin@huaweicloud.com
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Cc: stable@kernel.org
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 181bc161b1ac..a0f4d4197a0b 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1315,7 +1315,8 @@ static int ext4_write_end(struct file *file,
+>   
+>   	trace_ext4_write_end(inode, pos, len, copied);
+>   
+> -	if (ext4_has_inline_data(inode))
+> +	if (ext4_has_inline_data(inode) &&
+> +	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+>   		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+>   
+>   	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
+> 
+> 
 
-If userspace uses fallocate(2) there are generally two reasons.
-Either they **really** don't want to get the NOSPC, in which case
-noprovision will not give them what they want unless we modify their
-source code to add this new FALLOC_FL_PROVISION flag --- which may not
-be possible if it is provided in a binary-only format (for example,
-proprietary databases shipped by companies beginning with the letters
-'I' or 'O').
+For linux-5.10.y we may do the following:
 
-Or, they really care about avoiding fragmentation by giving a hint to
-the file system that layout is important, and so **please** allocate
-the space right away so that it is more likely that the space will be
-laid out in a contiguous fashion.  Of course, the moment you use
-thin-provisioning this goes out the window, since even if the space is
-contiguous on the dm-thin layer, on the underlying storage layer it is
-likely that things will be fragmented to a fare-thee-well, and either
-(a) you have a vast amount of flash to try to mitigate the performance
-hit of using thin-provisioning (example, hardware thin-provisioning
-such as EMC storage arrays), or (b) you really don't care about
-performance since space savings is what you're going for.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 192952f14a6e..d45230f6d942 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1300,7 +1300,8 @@ static int ext4_write_end(struct file *file,
 
-So.... because of the issue of changing the semantics of what
-fallocate(2) will guarantee, unless programs are forced to change
-their code to use this new FALLOC flag, I really am not very fond of
-it.
+         trace_android_fs_datawrite_end(inode, pos, len);
+         trace_ext4_write_end(inode, pos, len, copied);
+-       if (inline_data) {
++       if (inline_data &&
++           ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
+                 ret = ext4_write_inline_data_end(inode, pos, len,
+                                                  copied, page);
+                 if (ret < 0) {
 
-I suspect that using a mount option (which should default to
-"provision"; if you want to break user API expectations, it should
-require a mount option for the system administrator to explicitly OK
-such a change), is OK.
+But I'll need a confirmation from Ye or Ted, as I'm not familiar with
+ext4 for now. You'll notice that this change will fork from what's
+currently available in mainline. If we want the same look and feel as in
+mainline we should at least backport the following commit:
+6984aef59814 ("ext4: factor out write end code of inline file")
+But this one conflicts with:
+a54c4613dac1 ext4: fix race writing to an inline_data file while its 
+xattrs are changing
+which seems it  was solved by Ted in a merge:
+*   11ef08c9eb52 Merge branch 'delalloc-buffer-write' into dev
+|\
+| * cc883236b792 ext4: drop unnecessary journal handle in delalloc write
+| * 6984aef59814 ext4: factor out write end code of inline file
+| * 55ce2f649b9e ext4: correct the error path of 
+ext4_write_inline_data_end()
+| * 4df031ff5876 ext4: check and update i_disksize properly
+* | 1fd95c05d8f7 ext4: add error checking to ext4_ext_replay_set_iblocks()
+* | baaae979b112 ext4: make the updating inode data procedure atomic
+* | 8e33fadf945a ext4: remove an unnecessary if statement in 
+__ext4_get_inode_loc()
+* | 0904c9ae3465 ext4: move inode eio simulation behind io completeion
+* | 4a79a98c7b19 ext4: Improve scalability of ext4 orphan file handling
+* | 3a6541e97c03 ext4: Orphan file documentation
+* | 02f310fcf47f ext4: Speedup ext4 orphan inode handling
+* | 25c6d98fc4c2 ext4: Move orphan inode handling into a separate file
+* | 188c299e2a26 ext4: Support for checksumming from journal triggers
+* | a54c4613dac1 ext4: fix race writing to an inline_data file while its 
+xattrs are changing
+|/
+* b33d9f5909c8 jbd2: add sparse annotations for add_transaction_credits()
+* a5fda1133818 ext4: fix sparse warnings
 
-As far as the per-file mode --- I'm not convinced it's really
-necessary.  In general if you are using thin-provisioning file systems
-tend to be used explicitly for one purpose, so adding the complexity
-of doing it on a per-file basis is probably not really needed.  That
-being said, your existing prototype requires searching for the
-extended attribute on every single file allocation, which is not a
-great idea.  On a system with SELinux enabled, every file will have an
-xattr block, and requiring that it be searched on every file
-allocation would be unfortunate.  It would be better to check for the
-xattr when the file is opened, and then setting a flag in the struct
-file.  However, it might be better to see if it there is a real demand
-for such a feature before adding it.
+So I would choose the fork if we want the fix in, but let's see what you
+guys think.
 
-						- Ted
+Thanks!
+ta
