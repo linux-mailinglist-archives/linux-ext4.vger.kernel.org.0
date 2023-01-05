@@ -2,106 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D23265F413
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jan 2023 20:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3549565F484
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jan 2023 20:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbjAETEQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Jan 2023 14:04:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
+        id S235407AbjAETcg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Jan 2023 14:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235303AbjAETEL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Jan 2023 14:04:11 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0D55F4A4
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Jan 2023 11:04:10 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id tz12so92210942ejc.9
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Jan 2023 11:04:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kDfzt8q4vMIPvH3hYtPbFGyOhTFs8fKmSul5DvtT0oY=;
-        b=nnHCFC66h8enslZuyamV6H6V/N04fqP8nNG4fuvd0b/DmvY0k1no0IJyq9agykK78u
-         /+1hq8Ieohc5J7o4oPzDLogJv2oreMTj3j4YTcgj/pIZEjeX7FGTM9VY98TTmD65TZi/
-         XM91KS7jBkwVI3T8AThwJUTwaj4J4jYELsiCuZTtLRwPW0+DV8EBTrvuC8rny2Nu2DDt
-         ns5PxeBCkepMXbk8OG6kjYCNbjg/jAbNS4gUKT9OAbacuJNh3mGIR9WgQaP5F1imKnhU
-         X2eNzKDFwlLWWJvp5L9SIR+7686Q/Lco6Ok9Z3ncF5BEiE6ThAOyLRbQKXvMaRWnEs2u
-         9BDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kDfzt8q4vMIPvH3hYtPbFGyOhTFs8fKmSul5DvtT0oY=;
-        b=LNidKHdZYYv0HJZN5nY04m9+XrH+Ytf6BQr0y7nbTdtCTCZ9SIhtxNDjZAhdMtBN8a
-         f0HKVJrDOuwu8RNgY0N3br2MAfkHExmvI51ipq6/yo+0hWaygQ94YQXhymnm34hyNzD1
-         ACcJCXf6t8yhSMUi3ZGV3AAlNQX+eug9rnba0w8QPttqrfjmX6jm5ncj+1pGNV5vuP+x
-         z+n/2oBi+iSBAjWtKKGbUDn3SbCMwkUS27P3CIu9P/BnVB3xC196svq7yM5D+XRNph7h
-         EKp4rTb5sIKsSrRuY/VVixD5K1bVvpFh1+lTyW46G+UmsMORPvsZKja4TeH2qKFWRmEa
-         JTXA==
-X-Gm-Message-State: AFqh2koPyGwmgwODIIH7KAo0JRjbey6soZFhaUmshAzTx9mDYO+nc8id
-        wNgagmDwbUAX7H2wF071xy2DToBXoprygx89+lqZy8Fi2aE=
-X-Google-Smtp-Source: AMrXdXuMmBeG+izqzY9Y09KXeOeo0oCczMqSz0o02/MKWXGbe48vDrCeHY5LCDMRB6/KCsNMBlFuUVJyYJUN7Dzfujc=
-X-Received: by 2002:a17:906:b084:b0:7c1:98e:b910 with SMTP id
- x4-20020a170906b08400b007c1098eb910mr3941883ejy.81.1672945449078; Thu, 05 Jan
- 2023 11:04:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20230104090401.276188-1-ebiggers@kernel.org>
-In-Reply-To: <20230104090401.276188-1-ebiggers@kernel.org>
-From:   Jeremy Bongio <bongiojp@gmail.com>
-Date:   Thu, 5 Jan 2023 11:03:57 -0800
-Message-ID: <CANfQU3x3yB7OYPerwun3VTz89QJaFobdudj_8vCpwfNjjSRicQ@mail.gmail.com>
+        with ESMTP id S235819AbjAETcM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Jan 2023 14:32:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA47313D49
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Jan 2023 11:28:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5E4E9B81B41
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Jan 2023 19:28:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 070B2C433EF;
+        Thu,  5 Jan 2023 19:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672946893;
+        bh=wMKR4fbpOktA0sMY6En+Q/0bYctv8yQ4Lz++GdmfYsE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VwcSMcBvpw5utw62bxuapC5MwilH9Ml5lrbl0GeeC9bcbdfqXDq04JEMEdUpb4nLq
+         lgT9R4ehyF67R0mIRHXC7ZYWdYu6NZpQz9SbUXmpOOBVqgS/tsdLtHNf1ag+Axvcmu
+         KsXKQKYDx/RzWWuFq4QVhH4NuNEa+nIvWCkOuOW6AtDeamniIuPn773ZHhLB+I2zBc
+         MkeNK/iZXtKoS7v81nqRqtiBKEAisLqE3l+/UAcHmZcnEUIRwpZNfJgYmRS9sMHV8F
+         iiHdiGwWQBEFq2UwHAXTMZHUKB4erQbbDw4uHIaWTeA1CJawCmtDY+ea8u2COK0L5H
+         LDq9WYusnD2hg==
+Date:   Thu, 5 Jan 2023 19:28:11 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org,
+        Jeremy Bongio <bongiojp@gmail.com>,
+        Jeremy Bongio <jbongio@google.com>
 Subject: Re: [e2fsprogs PATCH] tune2fs: fix setting fsuuid::fsu_len
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <Y7cky6nQUda8S9Dx@gmail.com>
+References: <20230104090401.276188-1-ebiggers@kernel.org>
+ <20230104103651.eaxele7amb5t7tpu@fedora>
+ <CAOvQCn6r83snFOsX78F3BSV9GaNJ-mWPUgQmdrQ0_nA+nvHWVQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOvQCn6r83snFOsX78F3BSV9GaNJ-mWPUgQmdrQ0_nA+nvHWVQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for catching that!
+On Thu, Jan 05, 2023 at 10:53:07AM -0800, Jeremy Bongio wrote:
+> Thanks for catching that!
+> 
+> Reviewed-by: Jeremy Bongio <bongiojp@gmail.com>
+> 
+> On Wed, Jan 4, 2023 at 2:39 AM Lukas Czerner <lczerner@redhat.com> wrote:
+> 
+> > On Wed, Jan 04, 2023 at 01:04:01AM -0800, Eric Biggers wrote:
+> > > From: Eric Biggers <ebiggers@google.com>
+> > >
+> > > Minus does not mean equals.
+> > >
+> > > Besides fixing an obvious bug, this avoids the following compiler
+> > > warning with clang -Wall:
+> > >
+> > > tune2fs.c:3625:20: warning: expression result unused [-Wunused-value]
+> > >                         fsuuid->fsu_len - UUID_SIZE;
+> > >                         ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
 
-Reviewed-by: Jeremy Bongio <bongiojp@gmail.com>
+The real thanks goes to the compiler for warning about this.
 
-On Wed, Jan 4, 2023 at 1:04 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> From: Eric Biggers <ebiggers@google.com>
->
-> Minus does not mean equals.
->
-> Besides fixing an obvious bug, this avoids the following compiler
-> warning with clang -Wall:
->
-> tune2fs.c:3625:20: warning: expression result unused [-Wunused-value]
->                         fsuuid->fsu_len - UUID_SIZE;
->                         ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
->
-> Fixes: a83e199da0ca ("tune2fs: Add support for get/set UUID ioctls.")
-> Cc: Jeremy Bongio <bongiojp@gmail.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  misc/tune2fs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 088f87e5..7937b8b5 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -3622,7 +3622,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->                 ret = -1;
->  #ifdef __linux__
->                 if (fsuuid) {
-> -                       fsuuid->fsu_len - UUID_SIZE;
-> +                       fsuuid->fsu_len = UUID_SIZE;
->                         fsuuid->fsu_flags = 0;
->                         memcpy(&fsuuid->fsu_uuid, new_uuid, UUID_SIZE);
->                         ret = ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid);
-> --
-> 2.39.0
->
+Ted, considering the build warnings (some of which are caused by actual bugs)
+and build errors that regularly show up in new e2fsprogs releases, have you
+considered adding some sort of CI to upstream e2fsprogs?
+
+These days, a very common practice for projects on GitHub is to have a ci.yml
+file in .github/workflows/ci.yml that enables testing with GitHub Actions, and
+require that it passes before accepting pull requests.  That can include
+enforcing a clean build with -Wall -Werror with both gcc and clang; building for
+Linux, macOS, and Windows; build and testing on non-x86 architectures; enforcing
+that the tests pass with sanitization options like ASAN and UBSAN enabled, etc.
+Here's the one I use for fscryptctl which is pretty basic but shows a few things:
+https://github.com/google/fscryptctl/blob/master/.github/workflows/ci.yml
+
+Now, presumably e2fsprogs development isn't about to move to GitHub.  However,
+it's still possible to just push to a fork of the repo on GitHub after applying
+patches, and get all the results from GitHub Actions.
+
+And it looks like e2fsprogs is already being mirrored at
+https://github.com/tytso/e2fsprogs.
+
+Ted, would you be interested in a .github/workflows/ci.yml file for e2fsprogs so
+that CI results will be available at https://github.com/tytso/e2fsprogs/actions?
+
+- Eric
