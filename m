@@ -2,237 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA4365DF09
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jan 2023 22:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510D865E5DB
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jan 2023 08:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240441AbjADV2j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Jan 2023 16:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        id S229519AbjAEHRL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Jan 2023 02:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240451AbjADV2Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Jan 2023 16:28:16 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D753FA17
-        for <linux-ext4@vger.kernel.org>; Wed,  4 Jan 2023 13:22:18 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id m21so50319891edc.3
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Jan 2023 13:22:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5r/V3HPXwjpuD7IphcjrrB8OiZUQp0rchrkxxQGzaWI=;
-        b=KEIC0i6TYit5Z0cdFjku8f3xpdIif4U2Ymvz3XlFlq2j6BxcLI8+aRhr5ueD/4NPZt
-         5J/8Tmn+RoO27XqmSSN+2MvKrF23PsPGVyxQsTSipAdevtpNTCAHHgE1Q/dRVQTvoBqO
-         4T5iaYELTABGEiuIT0Ntyw6CUkWJlk7WiKrlY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5r/V3HPXwjpuD7IphcjrrB8OiZUQp0rchrkxxQGzaWI=;
-        b=xJDQqabxJVGOX3Ts+HuMGKuVJjZ4+IqBIPEE3IEuVBCdI4U9Fn2inHq0O4k+I+wrxK
-         JDuVlBd9Z26mRTQRp/dzLzX8SF6EaTfWcIuzM15nSWC1sYHi2pdBq9BTTDL21imCanxx
-         +R/L74LJS1RPEIXxNm50H9zO0KJnIGF5tsVRxtLlkJ1lR9C1hGxvJowZhnoC8oairUvG
-         QqzvK8NUgmB+DtCAHqqNPsrsr6treKbSRATJ7DDKQ/roX9cyJaAQw7ESk4QQH5HX+Y2z
-         gHyTURxnOcHoPDLKMwFLp0h79mpv9OR/avdxqeUwiCikqfVQyV9dJT/Y2/lQ3e3MBlLZ
-         NonQ==
-X-Gm-Message-State: AFqh2kqSwOLGfeO42cWUb2OeDMrIAUjZ+snslD095VG/YhC8/UroLKET
-        9dMnMhXl3Ggi7HrhUcp+uyoapSBA6CfDlZO+lnvQ0A==
-X-Google-Smtp-Source: AMrXdXvyL02g5V8vC60eMixSySeuV+cmNwoRkD+KYiZL+r9p1DmuiHRjgR21Y+li8eMYghzwdId8ULZTKPgGOnDzC2M=
-X-Received: by 2002:a05:6402:f27:b0:485:8114:9779 with SMTP id
- i39-20020a0564020f2700b0048581149779mr3674496eda.41.1672867336970; Wed, 04
- Jan 2023 13:22:16 -0800 (PST)
+        with ESMTP id S229530AbjAEHRJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Jan 2023 02:17:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19842003;
+        Wed,  4 Jan 2023 23:17:08 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 211D86187F;
+        Thu,  5 Jan 2023 07:17:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D9FDC433EF;
+        Thu,  5 Jan 2023 07:17:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672903027;
+        bh=uqC5T7gHkPgSmHQyWRnqVzA6IK7878G62q9D9DJhf3w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ssUm73cgM5aNNNtvl8PRoWpnw0yHHMTSNNNES+iSR9MwWXCwfaVL/GywPtvPV51Fh
+         F7gCjBSV7Q3qCDXJu9wFSZdKdecGTf4iJHRfd/13RcIsIg40h+PiVsWA/EuxUdMtZW
+         7/wwQR4CwFOg1k9AeFeGo29MwOuVq+RBsUawIDNEnuRQkK8OfUDznbuR51Kf7xfliq
+         DNE3/c019FOGC85HSFUEAdnWOCiMRUMvbDtTpWBhdlVEuwMXL1GY/85rj12fh5Ojrz
+         W4+Nrsx/aEqM0CvAE8KfGnR9iT8BOTh1/S0rNf6yF91fimCeMXHn9Pa82//RBfWbb9
+         Q2bdqDfVYq7Rw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org
+Subject: [PATCH 5.15 00/10] ext4 fast-commit fixes for 5.15-stable
+Date:   Wed,  4 Jan 2023 23:13:49 -0800
+Message-Id: <20230105071359.257952-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
- <20221229081252.452240-4-sarthakkukreti@chromium.org> <Y7Wr2uadI+82BB6a@magnolia>
-In-Reply-To: <Y7Wr2uadI+82BB6a@magnolia>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Wed, 4 Jan 2023 13:22:06 -0800
-Message-ID: <CAG9=OMNbeU=Xg5bWvHUSfzRf8vsk6csvcw5BGZeMD5Lo7dfKFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] fs: Introduce FALLOC_FL_PROVISION
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-(Resend; the text flow made the last reply unreadable)
+This series backports 6 commits with 'Cc stable' that had failed to be
+applied, and 4 related commits that made the backports much easier.
+Please apply this series to 5.15-stable.
 
-On Wed, Jan 4, 2023 at 8:39 AM Darrick J. Wong <djwong@kernel.org> wrote:
->
-> On Thu, Dec 29, 2022 at 12:12:48AM -0800, Sarthak Kukreti wrote:
-> > FALLOC_FL_PROVISION is a new fallocate() allocation mode that
-> > sends a hint to (supported) thinly provisioned block devices to
-> > allocate space for the given range of sectors via REQ_OP_PROVISION.
-> >
-> > The man pages for both fallocate(2) and posix_fallocate(3) describe
-> > the default allocation mode as:
-> >
-> > ```
-> > The default operation (i.e., mode is zero) of fallocate()
-> > allocates the disk space within the range specified by offset and len.
-> > ...
-> > subsequent writes to bytes in the specified range are guaranteed
-> > not to fail because of lack of disk space.
-> > ```
-> >
-> > For thinly provisioned storage constructs (dm-thin, filesystems on sparse
-> > files), the term 'disk space' is overloaded and can either mean the apparent
-> > disk space in the filesystem/thin logical volume or the true disk
-> > space that will be utilized on the underlying non-sparse allocation layer.
-> >
-> > The use of a separate mode allows us to cleanly disambiguate whether fallocate()
-> > causes allocation only at the current layer (default mode) or whether it propagates
-> > allocations to underlying layers (provision mode)
->
-> Why is it important to make this distinction?  The outcome of fallocate
-> is supposed to be that subsequent writes do not fail with ENOSPC.  In my
-> (fs developer) mind, REQ_OP_PROVISION simply an extra step to be taken
-> after allocating file blocks.
->
-Some use cases still benefit from keeping the default mode - eg.
-virtual machines running on massive storage pools that don't expect to
-hit the storage limit anytime soon (like most cloud storage
-providers). Essentially, if the 'no ENOSPC' guarantee is maintained
-via other means, then REQ_OP_PROVISION adds latency that isn't needed
-(and cloud storage providers don't need to set aside that extra space
-that may or may not be used).
+I verified that this series does not cause any regressions with
+'gce-xfstests -c ext4/fast_commit -g auto'.  There is one test failure
+both before and after (ext4/050).
 
-> If you *don't* add this API flag and simply bake the REQ_OP_PROVISION
-> call into mode 0 fallocate, then the new functionality can be added (or
-> even backported) to existing kernels and customers can use it
-> immediately.  If you *do*, then you get to wait a few years for
-> developers to add it to their codebases only after enough enterprise
-> distros pick up a new kernel to make it worth their while.
->
-> > for thinly provisioned filesystems/
-> > block devices. For devices that do not support REQ_OP_PROVISION, both these
-> > allocation modes will be equivalent. Given the performance cost of sending provision
-> > requests to the underlying layers, keeping the default mode as-is allows users to
-> > preserve existing behavior.
->
-> How expensive is this expected to be?  Is this why you wanted a separate
-> mode flag?
->
-Yes, the exact latency will depend on the stacked block devices and
-the fragmentation at the allocation layers.
+Eric Biggers (5):
+  ext4: disable fast-commit of encrypted dir operations
+  ext4: don't set up encryption key during jbd2 transaction
+  ext4: add missing validation of fast-commit record lengths
+  ext4: fix unaligned memory access in ext4_fc_reserve_space()
+  ext4: fix off-by-one errors in fast-commit block filling
 
-I did a quick test for benchmarking fallocate() with an:
-A) ext4 filesystem mounted with 'noprovision'
-B) ext4 filesystem mounted with 'provision' on a dm-thin device.
-C) ext4 filesystem mounted with 'provision' on a loop device with a
-sparse backing file on the filesystem in (B).
+Jan Kara (1):
+  ext4: use ext4_debug() instead of jbd_debug()
 
-I tested file sizes from 512M to 8G, time taken for fallocate() in (A)
-remains expectedly flat at ~0.01-0.02s, but for (B), it scales from
-0.03-0.4s and for (C) it scales from 0.04s-0.52s (I captured the exact
-time distribution in the cover letter
-https://marc.info/?l=linux-ext4&m=167230113520636&w=2)
+Ritesh Harjani (1):
+  ext4: remove unused enum EXT4_FC_COMMIT_FAILED
 
-+0.5s for a 8G fallocate doesn't sound a lot but I think fragmentation
-and how the block device is layered can make this worse...
+Ye Bin (3):
+  ext4: introduce EXT4_FC_TAG_BASE_LEN helper
+  ext4: factor out ext4_fc_get_tl()
+  ext4: fix potential out of bound read in ext4_fc_replay_scan()
 
-> --D
->
-> > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > ---
-> >  block/fops.c                | 15 +++++++++++----
-> >  include/linux/falloc.h      |  3 ++-
-> >  include/uapi/linux/falloc.h |  8 ++++++++
-> >  3 files changed, 21 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 50d245e8c913..01bde561e1e2 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -598,7 +598,8 @@ static ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >
-> >  #define      BLKDEV_FALLOC_FL_SUPPORTED                                      \
-> >               (FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |           \
-> > -              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE)
-> > +              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE |       \
-> > +              FALLOC_FL_PROVISION)
-> >
-> >  static long blkdev_fallocate(struct file *file, int mode, loff_t start,
-> >                            loff_t len)
-> > @@ -634,9 +635,11 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
-> >       filemap_invalidate_lock(inode->i_mapping);
-> >
-> >       /* Invalidate the page cache, including dirty pages. */
-> > -     error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> > -     if (error)
-> > -             goto fail;
-> > +     if (mode != FALLOC_FL_PROVISION) {
-> > +             error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> > +             if (error)
-> > +                     goto fail;
-> > +     }
-> >
-> >       switch (mode) {
-> >       case FALLOC_FL_ZERO_RANGE:
-> > @@ -654,6 +657,10 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
-> >               error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
-> >                                            len >> SECTOR_SHIFT, GFP_KERNEL);
-> >               break;
-> > +     case FALLOC_FL_PROVISION:
-> > +             error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
-> > +                                            len >> SECTOR_SHIFT, GFP_KERNEL);
-> > +             break;
-> >       default:
-> >               error = -EOPNOTSUPP;
-> >       }
-> > diff --git a/include/linux/falloc.h b/include/linux/falloc.h
-> > index f3f0b97b1675..b9a40a61a59b 100644
-> > --- a/include/linux/falloc.h
-> > +++ b/include/linux/falloc.h
-> > @@ -30,7 +30,8 @@ struct space_resv {
-> >                                        FALLOC_FL_COLLAPSE_RANGE |     \
-> >                                        FALLOC_FL_ZERO_RANGE |         \
-> >                                        FALLOC_FL_INSERT_RANGE |       \
-> > -                                      FALLOC_FL_UNSHARE_RANGE)
-> > +                                      FALLOC_FL_UNSHARE_RANGE |      \
-> > +                                      FALLOC_FL_PROVISION)
-> >
-> >  /* on ia32 l_start is on a 32-bit boundary */
-> >  #if defined(CONFIG_X86_64)
-> > diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
-> > index 51398fa57f6c..2d323d113eed 100644
-> > --- a/include/uapi/linux/falloc.h
-> > +++ b/include/uapi/linux/falloc.h
-> > @@ -77,4 +77,12 @@
-> >   */
-> >  #define FALLOC_FL_UNSHARE_RANGE              0x40
-> >
-> > +/*
-> > + * FALLOC_FL_PROVISION acts as a hint for thinly provisioned devices to allocate
-> > + * blocks for the range/EOF.
-> > + *
-> > + * FALLOC_FL_PROVISION can only be used with allocate-mode fallocate.
-> > + */
-> > +#define FALLOC_FL_PROVISION          0x80
-> > +
-> >  #endif /* _UAPI_FALLOC_H_ */
-> > --
-> > 2.37.3
-> >
+ fs/ext4/balloc.c            |   2 +-
+ fs/ext4/ext4.h              |   4 +-
+ fs/ext4/ext4_jbd2.c         |   3 +-
+ fs/ext4/fast_commit.c       | 284 +++++++++++++++++++++---------------
+ fs/ext4/fast_commit.h       |   7 +-
+ fs/ext4/indirect.c          |   4 +-
+ fs/ext4/inode.c             |   2 +-
+ fs/ext4/namei.c             |  44 +++---
+ fs/ext4/orphan.c            |  24 +--
+ fs/ext4/super.c             |   2 +-
+ include/trace/events/ext4.h |   7 +-
+ 11 files changed, 222 insertions(+), 161 deletions(-)
+
+-- 
+2.39.0
+
