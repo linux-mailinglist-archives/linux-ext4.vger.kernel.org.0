@@ -2,45 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A835866119A
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Jan 2023 21:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7647E6611A2
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Jan 2023 21:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjAGUa5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Jan 2023 15:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
+        id S232909AbjAGUhw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Jan 2023 15:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbjAGUa4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Jan 2023 15:30:56 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D2534D77;
-        Sat,  7 Jan 2023 12:30:54 -0800 (PST)
+        with ESMTP id S229785AbjAGUhs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Jan 2023 15:37:48 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DE93AB3D;
+        Sat,  7 Jan 2023 12:37:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6261F60B8C;
-        Sat,  7 Jan 2023 20:30:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A18CDC433D2;
-        Sat,  7 Jan 2023 20:30:53 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 21BA1CE0A12;
+        Sat,  7 Jan 2023 20:37:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 162C9C433EF;
+        Sat,  7 Jan 2023 20:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673123453;
-        bh=+TMstKL07xUTqVoajbbWQM6ZllvJrtB36POH82uCwM8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZMpu0EjUyIunqxcZlJXQcS2tFD80bxcL7mMagAxdfVNlbTV6gk5OAlBujpAYgb1Bj
-         S2Qn7lZTEpLXSa+pHb33Glh9Jn5aJeehip9HILwLFgwIUQeJwJ+qUrzZJkxuPUZeIl
-         yFMENo7LPrbcVNmb/Vby+lm1kDpQ61mukYFIccedcnkgL/mnt6GKwg9bLS5+0A/H2N
-         hdw92bKG26QbSGOnZb0Dlr2dpgD/2W+esP/NdTEJGxgDeeSVDfWWYuzRa2Jr9ZobuO
-         UM524fmJzaAhTZwuH2U8kGSaxTDleaGWrWke6tkVo4HsmqIQAVPmq7dQyBE8jq3sYZ
-         WT0TuWSidzlDQ==
-Date:   Sat, 7 Jan 2023 12:30:51 -0800
+        s=k20201202; t=1673123864;
+        bh=j8csDSVPiYuai7u+E3eO0R50pKJ4QjoOPV8qZR6iJ34=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XdI9SgD+CRRNU53ZpA6b1VijpSjGaKr2LqqJvxVnvpDFzVwzLhJePMI66GDt9as/6
+         C3qCydfj6vYTJp3oJ3Raumwl/JV6bPecZ+BPb0pkBlOUMMpsRe4XU2uMvG8DU7Xxf4
+         N1I4zeB/LPNuKMRP7FA6grC1EL4KHO38EZ/uDVDxpTRt6AtiOq1iD/ftFOumKa3CEd
+         vdg2CB+571/cuP9zBV8YWoX+94SCz1DG6362fLuwyc/CBZ2KVsXP+3QKBQhhqsCrHV
+         LkcPuPy9yszPatgHnsVj/R04w+gfjJfupYSGwzU/8iRGMh7872TPgo9n2w5VRwZskg
+         gZIyImjFVVdZA==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     stable@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org
-Subject: Please apply "ext4: don't allow journal inode to have encrypt flag"
- to 5.15 and earlier
-Message-ID: <Y7nWexWBpMWKwdeB@sol.localdomain>
+Subject: [PATCH 5.10 0/2] Selected ext4 fast-commit fixes for 5.10-stable
+Date:   Sat,  7 Jan 2023 12:37:11 -0800
+Message-Id: <20230107203713.158042-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,13 +49,22 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Please apply commit 105c78e12468 ("ext4: don't allow journal inode to have
-encrypt flag") to the 5.15, 5.10, 5.4, and 4.19 LTS kernels, where it applies
-cleanly.
+The recent ext4 fast-commit fixes with 'Cc stable' didn't apply to 5.10
+due to conflicts.  Since the fast-commit support in 5.10 is rudimentary
+and hard to backport fixes too, this series backports the two most
+important fixes only.  Please apply to 5.10-stable.
 
-It didn't get applied automatically because for the Fixes tag, I used a commit
-in 5.18.  However, that was the commit that exposed the problem, not the root
-cause.  IMO it makes sense to apply this to earlier kernels too, especially
-because some people have backported the 5.18 commit.
+Eric Biggers (2):
+  ext4: disable fast-commit of encrypted dir operations
+  ext4: don't set up encryption key during jbd2 transaction
 
-- Eric
+ fs/ext4/ext4.h              |  4 ++--
+ fs/ext4/fast_commit.c       | 42 +++++++++++++++++++++--------------
+ fs/ext4/fast_commit.h       |  1 +
+ fs/ext4/namei.c             | 44 ++++++++++++++++++++-----------------
+ include/trace/events/ext4.h |  7 ++++--
+ 5 files changed, 57 insertions(+), 41 deletions(-)
+
+-- 
+2.39.0
+
