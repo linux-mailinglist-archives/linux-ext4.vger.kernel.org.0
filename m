@@ -2,107 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB506614BA
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Jan 2023 12:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DF366175A
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Jan 2023 18:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbjAHL3n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Jan 2023 06:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        id S234916AbjAHR0A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Jan 2023 12:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbjAHL3l (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Jan 2023 06:29:41 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A2D2C5
-        for <linux-ext4@vger.kernel.org>; Sun,  8 Jan 2023 03:29:40 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id cf18so7190818ejb.5
-        for <linux-ext4@vger.kernel.org>; Sun, 08 Jan 2023 03:29:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HcpM41K3Tg/Gq2Sy2fOw39ukTQf5X/VzmfsS+yU67xU=;
-        b=qKooUu0cR0Q6Kb35Lml+i1nctcRKDXBFIEuTWecR2oAg5gpt8iWCWrVTzR/d0ltIz+
-         N3v4mI+Id5n22IQcOsRNrs3LfLqdT/HvxkxuThnBBMHey7FRBoM71zAIiDMTHnSgpN5Z
-         x3kiNifkBHa67aksnuVhN0ViIH4omkoEA1V/MRsaIxBjjHuMlU8Etutr9d/g3k0VBqS+
-         Gvcs1w6Oyb+6hjEoSfAoX0iu6yv8bOv93HJHe2b0EXqway2L9PMP8z4v5codhy5CVb8Z
-         gUWDwMgHqJCe7GMUzyDwpcS2znrsiSd/kh+kobYvXrnptX2TmVNEgI44vAZpnc1lh6J9
-         XwZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HcpM41K3Tg/Gq2Sy2fOw39ukTQf5X/VzmfsS+yU67xU=;
-        b=fXPX1dBC7d8dxTvMw2ZM3cZ/qstq+IZSX2zp1ooJkf6TguGSp9Fok4oZdpHDVdIb8X
-         fT2Sq2QZjK5ChAs8liZq8xY/21hS++imsAARbnqe4AycZGhUjtaxFXUc8r5dbHNAiOQH
-         yHsahIKn0eqWZwtAcJdfDGIjn6aBV2hZ4eKk3sKxp9GFWSKXEamKbyH0wBJWn7NS8bmR
-         kJ7X1Ew3bthheBT9DMTedcsRXP69lVWQQGnkd5Div0bmfoINlZhExtv+lp4riT5HhtQh
-         t+xHFZhdqIPOb944edxzIaCbfREpgJpw5HSCjrAom4wvqPhN+El1Rp7wKdlCJ/7YCD+v
-         bYjg==
-X-Gm-Message-State: AFqh2krkcHADqnKiQMolnPE1vtVcOVjr0w52F/LXT5e46N3J76e3vNNQ
-        TjO6xQ+xq82lebEdhrG7WrczQnrFXDCDErVkepo=
-X-Google-Smtp-Source: AMrXdXv8qNP079N8Ljgdg1YxgYDV453aDSNxK9LIR74YsJCiaWn938eOuW+3voCWEBes5so6o/csZ9cDSEO/Bl+oL2k=
-X-Received: by 2002:a17:906:8381:b0:7c1:57e7:e45a with SMTP id
- p1-20020a170906838100b007c157e7e45amr3219427ejx.548.1673177379128; Sun, 08
- Jan 2023 03:29:39 -0800 (PST)
+        with ESMTP id S233253AbjAHRZs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Jan 2023 12:25:48 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB98BC16;
+        Sun,  8 Jan 2023 09:25:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=mkDNHJiRfNy3PVr/hhCSD5C+So
+        WZSq1N4NqLxxQxsazelPWIf+4cQdjs6qQ8BFQ3xFP8T3tn/ORPCSJtE6tlfrzQD8m6YkvsJ1+Jcd6
+        h5Qz2dDyQBplMwTeZgTYmdy4JSUF9t2QKACe2U+1txnrO6YoRL+tw3spUW2PTICA/5+UsH8ukOirp
+        Yw46fNM+jE+eDZAgxS7bkxDDm+SRkK7YLDTYEI7iyUspO5Jd9mtsLReLAeCLhDzfhv8N6c8POSLtj
+        f9oBoH+J3eqju0Hs7uq63A2TSikDXqnQCDVuFSWBSYBdcS1iflNGbl54lQ5n/Wq9yPV3yRdzZEFnp
+        jMv7Q7pQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pEZQS-00EZUC-9I; Sun, 08 Jan 2023 17:25:40 +0000
+Date:   Sun, 8 Jan 2023 09:25:40 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
+Subject: Re: [PATCH v5 1/9] iomap: Add iomap_put_folio helper
+Message-ID: <Y7r8lEl3bS/D89X/@infradead.org>
+References: <20221231150919.659533-1-agruenba@redhat.com>
+ <20221231150919.659533-2-agruenba@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:eca7:b0:7c0:dfb2:c37b with HTTP; Sun, 8 Jan 2023
- 03:29:38 -0800 (PST)
-Reply-To: muhammadabdulrahma999@gmail.com
-From:   muhammad <nnannacollins2019@gmail.com>
-Date:   Sun, 8 Jan 2023 03:29:38 -0800
-Message-ID: <CAPQqOC03wuphQb6NMCpfv7tZrur=MdFAiO_zctdzRwH0PfHa1Q@mail.gmail.com>
-Subject: Re:Re:Inquiry about your products.!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.8 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:641 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5175]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [nnannacollins2019[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [nnannacollins2019[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [muhammadabdulrahma999[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  2.0 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221231150919.659533-2-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Sir/Madam,
+Looks good:
 
-An open Tender for the supply of your company products to (Doha,
-Qatar). Urgently furnish us in full details about the standard of your
-product. We will appreciate it more if you give us with Details:
-Specification and Catalogs or Price list via Email.To avoid making a
-wrong choice of products before placing an order for it.
-
-Terms of payment:An upfront payment of 80% (T/T) will be made to your
-account for production,While 20% will be paid before shipment.
-
-Thanks and Regards
+Reviewed-by: Christoph Hellwig <hch@lst.de>
