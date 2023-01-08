@@ -2,70 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4057C6618B1
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Jan 2023 20:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592876618D2
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Jan 2023 20:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjAHTmU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Jan 2023 14:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        id S229996AbjAHTu1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Jan 2023 14:50:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233618AbjAHTmS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Jan 2023 14:42:18 -0500
+        with ESMTP id S233968AbjAHTnF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Jan 2023 14:43:05 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52476DF10
-        for <linux-ext4@vger.kernel.org>; Sun,  8 Jan 2023 11:40:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B72B876
+        for <linux-ext4@vger.kernel.org>; Sun,  8 Jan 2023 11:40:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673206844;
+        s=mimecast20190719; t=1673206857;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=33qTT0r6wAZ1WTwwlWCp7SkxG6n6RS0yiwUpFiSj+fQ=;
-        b=B3vDuFqzYFB518eYF3YTNmkgBdBUc5A5wg0WMtaQ7c3zqkHLRCjfCx4C538P5NgGXVvI+v
-        lCNgHWbY4f178R+5/4N2dbFr6JKvpvVIWI5aYJNHjCkSovCY7asMdXxI1ZhrMc/ugnl9di
-        t8VK8hLOl+7pUD62Wwx/yblY3PX3L2s=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-86-RWauYJqCMD2D0F6QAlnwRg-1; Sun, 08 Jan 2023 14:40:43 -0500
-X-MC-Unique: RWauYJqCMD2D0F6QAlnwRg-1
-Received: by mail-pl1-f200.google.com with SMTP id a12-20020a170902eccc00b001927f1d6316so5072409plh.10
-        for <linux-ext4@vger.kernel.org>; Sun, 08 Jan 2023 11:40:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=33qTT0r6wAZ1WTwwlWCp7SkxG6n6RS0yiwUpFiSj+fQ=;
-        b=17bnlUFrZk+iRkU4EtArEotjAfn7T8uWJ9ER2wfuoLgBKZewTATFcfhCWozounU3ab
-         AH9dalzsVTexgyVqWxUm0kyQ1RHesvqZ1h8JPL/yu/Nd7tUMa4FIv8QBJU6TJmo5IcSk
-         1ol3raDZRdMAxz9UNupP0yQ3hVwsSyASYOZOUF3iOlK4YBn+HDQTvwg0nqJ4YjIFTo4c
-         7geQUjMnmZC/tMX8bgAVJhCrN6heq1qtI+v4wN8TLI3vVG6VTQTRc5rcVneqcGfUFxfd
-         ITmzPExioG/WBf5TEJBxt41Nnzm0qizXa+ymuk/EToIFGLrA/0EXX6uxD/H0vphErO5W
-         VGlw==
-X-Gm-Message-State: AFqh2kqv+6i1XwqRQFaP8WjsTYhNu8n5aaFx8+k50NyBeN1Jw5QEOvWJ
-        EHySdd3vOyXPOJb2FQeF2v7dw8ii/yUMsHTa3L4/lctrEiA6lPDhVFPqkrjEacbA/BTKaU4A31W
-        2Q47tprJs0ErRv6JGYkd7b86cgked1U0o5ZENSw==
-X-Received: by 2002:a63:5d1b:0:b0:495:fb5f:439d with SMTP id r27-20020a635d1b000000b00495fb5f439dmr3366897pgb.68.1673206841643;
-        Sun, 08 Jan 2023 11:40:41 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXu1lJQZfWW6xV/PSksmTNaQzyZoMTAsvtqnDEI+7F2q3BfsEW4wdkPdTNM+CpyXNcR3EqzkjBqi270j/f370sU=
-X-Received: by 2002:a63:5d1b:0:b0:495:fb5f:439d with SMTP id
- r27-20020a635d1b000000b00495fb5f439dmr3366894pgb.68.1673206841425; Sun, 08
- Jan 2023 11:40:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20221231150919.659533-1-agruenba@redhat.com> <20221231150919.659533-6-agruenba@redhat.com>
- <Y7r9gnn2q3PnQ030@infradead.org>
-In-Reply-To: <Y7r9gnn2q3PnQ030@infradead.org>
+        bh=BqMvh0Gi+M6F9VlbFl9SjHjThwMLqrjKqYzFu/lMZTs=;
+        b=LpIrBhtXXJ5DREOJIT7tUx/rlJ6OPfR0q3NUenPKtQYE8GH/bvYrCeZ2pa6+B1yewGGlnJ
+        Rv0yrkYkOac4x65i4Y4uEciVLpX9htFOLNb/N+w1vNMzopk4LjCk8Q8+4x41jq3zrKitai
+        iIM5cP5qPsSUTCVUafzV1lNJCgLiePI=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-416-AskoVgNoO-2c9H5KtYN6bQ-1; Sun, 08 Jan 2023 14:40:53 -0500
+X-MC-Unique: AskoVgNoO-2c9H5KtYN6bQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B82B729AB434;
+        Sun,  8 Jan 2023 19:40:52 +0000 (UTC)
+Received: from pasta.redhat.com (ovpn-192-3.brq.redhat.com [10.40.192.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4372A492B06;
+        Sun,  8 Jan 2023 19:40:50 +0000 (UTC)
 From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Sun, 8 Jan 2023 20:40:29 +0100
-Message-ID: <CAHc6FU6UF3CZWqdDoDieFgKZk6_PiJfmBi5jWFTRoNgk9D8-5Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] iomap/gfs2: Get page in page_prepare handler
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: [RFC v6 05/10] iomap/gfs2: Get page in page_prepare handler
+Date:   Sun,  8 Jan 2023 20:40:29 +0100
+Message-Id: <20230108194034.1444764-6-agruenba@redhat.com>
+In-Reply-To: <20230108194034.1444764-1-agruenba@redhat.com>
+References: <20230108194034.1444764-1-agruenba@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -76,24 +64,135 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jan 8, 2023 at 6:29 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > +     if (page_ops && page_ops->page_prepare)
-> > +             folio = page_ops->page_prepare(iter, pos, len);
-> > +     else
-> > +             folio = iomap_get_folio(iter, pos);
-> > +     if (IS_ERR(folio))
-> >               return PTR_ERR(folio);
->
-> I'd love to have a iomap_get_folio helper for this sequence so that
-> we match iomap_put_folio.  That would require renaming the current
-> iomap_get_folio to __iomap_get_folio.
+Change the iomap ->page_prepare() handler to get and return a locked
+folio instead of doing that in iomap_write_begin().  This allows to
+recover from out-of-memory situations in ->page_prepare(), which
+eliminates the corresponding error handling code in iomap_write_begin().
+The ->put_folio() handler now also isn't called with NULL as the folio
+value anymore.
 
-That's the wrong way around though. iomap_get_folio() is exported to
-filesystems, so if at all, we should rename iomap_put_folio() which is
-a static function only used in the iomap code.
+Filesystems are expected to use the iomap_get_folio() helper for getting
+locked folios in their ->page_prepare() handlers.
 
-I'll post an update.
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/gfs2/bmap.c         | 21 +++++++++++++--------
+ fs/iomap/buffered-io.c | 17 ++++++-----------
+ include/linux/iomap.h  |  9 +++++----
+ 3 files changed, 24 insertions(+), 23 deletions(-)
 
-Thanks,
-Andreas
+diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
+index 0c041459677b..41349e09558b 100644
+--- a/fs/gfs2/bmap.c
++++ b/fs/gfs2/bmap.c
+@@ -956,15 +956,25 @@ static int __gfs2_iomap_get(struct inode *inode, loff_t pos, loff_t length,
+ 	goto out;
+ }
+ 
+-static int gfs2_iomap_page_prepare(struct inode *inode, loff_t pos,
+-				   unsigned len)
++static struct folio *
++gfs2_iomap_page_prepare(struct iomap_iter *iter, loff_t pos, unsigned len)
+ {
++	struct inode *inode = iter->inode;
+ 	unsigned int blockmask = i_blocksize(inode) - 1;
+ 	struct gfs2_sbd *sdp = GFS2_SB(inode);
+ 	unsigned int blocks;
++	struct folio *folio;
++	int status;
+ 
+ 	blocks = ((pos & blockmask) + len + blockmask) >> inode->i_blkbits;
+-	return gfs2_trans_begin(sdp, RES_DINODE + blocks, 0);
++	status = gfs2_trans_begin(sdp, RES_DINODE + blocks, 0);
++	if (status)
++		return ERR_PTR(status);
++
++	folio = iomap_get_folio(iter, pos);
++	if (IS_ERR(folio))
++		gfs2_trans_end(sdp);
++	return folio;
+ }
+ 
+ static void gfs2_iomap_put_folio(struct inode *inode, loff_t pos,
+@@ -974,11 +984,6 @@ static void gfs2_iomap_put_folio(struct inode *inode, loff_t pos,
+ 	struct gfs2_inode *ip = GFS2_I(inode);
+ 	struct gfs2_sbd *sdp = GFS2_SB(inode);
+ 
+-	if (!folio) {
+-		gfs2_trans_end(sdp);
+-		return;
+-	}
+-
+ 	if (!gfs2_is_stuffed(ip))
+ 		gfs2_page_add_databufs(ip, &folio->page, offset_in_page(pos),
+ 				       copied);
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index de4a8e5f721a..418519dea2ce 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -609,7 +609,7 @@ static void __iomap_put_folio(struct iomap_iter *iter, loff_t pos, size_t ret,
+ 
+ 	if (page_ops && page_ops->put_folio) {
+ 		page_ops->put_folio(iter->inode, pos, ret, folio);
+-	} else if (folio) {
++	} else {
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 	}
+@@ -642,17 +642,12 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
+ 	if (!mapping_large_folio_support(iter->inode->i_mapping))
+ 		len = min_t(size_t, len, PAGE_SIZE - offset_in_page(pos));
+ 
+-	if (page_ops && page_ops->page_prepare) {
+-		status = page_ops->page_prepare(iter->inode, pos, len);
+-		if (status)
+-			return status;
+-	}
+-
+-	folio = iomap_get_folio(iter, pos);
+-	if (IS_ERR(folio)) {
+-		__iomap_put_folio(iter, pos, 0, NULL);
++	if (page_ops && page_ops->page_prepare)
++		folio = page_ops->page_prepare(iter, pos, len);
++	else
++		folio = iomap_get_folio(iter, pos);
++	if (IS_ERR(folio))
+ 		return PTR_ERR(folio);
+-	}
+ 
+ 	/*
+ 	 * Now we have a locked folio, before we do anything with it we need to
+diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+index 188d14e786a4..d50501781856 100644
+--- a/include/linux/iomap.h
++++ b/include/linux/iomap.h
+@@ -13,6 +13,7 @@
+ struct address_space;
+ struct fiemap_extent_info;
+ struct inode;
++struct iomap_iter;
+ struct iomap_dio;
+ struct iomap_writepage_ctx;
+ struct iov_iter;
+@@ -131,12 +132,12 @@ static inline bool iomap_inline_data_valid(const struct iomap *iomap)
+  * associated with them.
+  *
+  * When page_prepare succeeds, put_folio will always be called to do any
+- * cleanup work necessary.  In that put_folio call, @folio will be NULL if the
+- * associated folio could not be obtained.  When folio is not NULL, put_folio
+- * is responsible for unlocking and putting the folio.
++ * cleanup work necessary.  put_folio is responsible for unlocking and putting
++ * @folio.
+  */
+ struct iomap_page_ops {
+-	int (*page_prepare)(struct inode *inode, loff_t pos, unsigned len);
++	struct folio *(*page_prepare)(struct iomap_iter *iter, loff_t pos,
++			unsigned len);
+ 	void (*put_folio)(struct inode *inode, loff_t pos, unsigned copied,
+ 			struct folio *folio);
+ 
+-- 
+2.38.1
 
