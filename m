@@ -2,112 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE0D661D9E
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 05:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9FF66212C
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 10:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbjAIEGi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Jan 2023 23:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S236980AbjAIJOl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Jan 2023 04:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236460AbjAIEEb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Jan 2023 23:04:31 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2375311C38
-        for <linux-ext4@vger.kernel.org>; Sun,  8 Jan 2023 20:03:55 -0800 (PST)
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.51 with ESMTP; 9 Jan 2023 12:33:54 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.121 with ESMTP; 9 Jan 2023 12:33:54 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com
-Subject: [PATCH RFC v7 23/23] dept: Record the latest one out of consecutive waits of the same class
-Date:   Mon,  9 Jan 2023 12:33:51 +0900
-Message-Id: <1673235231-30302-24-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1673235231-30302-1-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S237124AbjAIJN2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 04:13:28 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE0313FB9;
+        Mon,  9 Jan 2023 01:10:25 -0800 (PST)
+Received: from [192.168.1.103] (31.173.86.218) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Mon, 9 Jan 2023
+ 12:10:15 +0300
+Subject: Re: [PATCH RFC v7 08/23] dept: Apply sdt_might_sleep_strong() to
+ PG_{locked,writeback} wait
+To:     Byungchul Park <byungchul.park@lge.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>,
+        <damien.lemoal@opensource.wdc.com>, <linux-ide@vger.kernel.org>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <mingo@redhat.com>, <peterz@infradead.org>, <will@kernel.org>,
+        <tglx@linutronix.de>, <rostedt@goodmis.org>,
+        <joel@joelfernandes.org>, <sashal@kernel.org>,
+        <daniel.vetter@ffwll.ch>, <duyuyang@gmail.com>,
+        <johannes.berg@intel.com>, <tj@kernel.org>, <tytso@mit.edu>,
+        <willy@infradead.org>, <david@fromorbit.com>, <amir73il@gmail.com>,
+        <gregkh@linuxfoundation.org>, <kernel-team@lge.com>,
+        <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <mhocko@kernel.org>, <minchan@kernel.org>, <hannes@cmpxchg.org>,
+        <vdavydov.dev@gmail.com>, <sj@kernel.org>, <jglisse@redhat.com>,
+        <dennis@kernel.org>, <cl@linux.com>, <penberg@kernel.org>,
+        <rientjes@google.com>, <vbabka@suse.cz>, <ngupta@vflare.org>,
+        <linux-block@vger.kernel.org>, <paolo.valente@linaro.org>,
+        <josef@toxicpanda.com>, <linux-fsdevel@vger.kernel.org>,
+        <viro@zeniv.linux.org.uk>, <jack@suse.cz>, <jlayton@kernel.org>,
+        <dan.j.williams@intel.com>, <hch@infradead.org>,
+        <djwong@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <rodrigosiqueiramelo@gmail.com>, <melissa.srw@gmail.com>,
+        <hamohammed.sa@gmail.com>, <42.hyeyoo@gmail.com>,
+        <chris.p.wilson@intel.com>, <gwan-gyeong.mun@intel.com>
 References: <1673235231-30302-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+ <1673235231-30302-9-git-send-email-byungchul.park@lge.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <e8b24129-536c-a367-1436-fe0e054259cf@omp.ru>
+Date:   Mon, 9 Jan 2023 12:10:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <1673235231-30302-9-git-send-email-byungchul.park@lge.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [31.173.86.218]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 01/09/2023 08:47:21
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 19
+X-KSE-AntiSpam-Info: Lua profiles 174559 [Jan 09 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 502 502 69dee8ef46717dd3cb3eeb129cb7cc8dab9e30f6
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.218 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.218
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 19
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/09/2023 08:50:00
+X-KSE-AttachmentFiltering-Interceptor-Info: protection disabled
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/9/2023 6:18:00 AM
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The current code records all the waits for later use to track relation
-between waits and events in each context. However, since the same class
-is handled the same way, it'd be okay to record only one on behalf of
-the others if they all have the same class.
+On 1/9/23 6:33 AM, Byungchul Park wrote:
 
-Even though it's the ideal to search the whole history buffer for that,
-since it'd cost too high, alternatively, let's keep the latest one at
-least when the same class'ed waits consecutively appear.
+> Makes Dept able to track dependencies by PG_{locked,writeback} waits.
+> 
+> Signed-off-by: Byungchul Park <byungchul.park@lge.com>
+> ---
+>  mm/filemap.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index c4d4ace..b013a5b 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+[...]
+> @@ -1226,6 +1230,11 @@ static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+>  	unsigned long pflags;
+>  	bool in_thrashing;
+>  
+> +	if (bit_nr == PG_locked)
+> +		sdt_might_sleep_strong(&PG_locked_map);
+> +	else if (bit_nr == PG_writeback)
+> +		sdt_might_sleep_strong(&PG_writeback_map);
 
-Signed-off-by: Byungchul Park <byungchul.park@lge.com>
----
- kernel/dependency/dept.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+   Hm, this is asking to be a *switch* statement instead...
 
-diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
-index cd25995..9cd37b4 100644
---- a/kernel/dependency/dept.c
-+++ b/kernel/dependency/dept.c
-@@ -1521,9 +1521,28 @@ static inline struct dept_wait_hist *new_hist(void)
- 	return wh;
- }
- 
-+static inline struct dept_wait_hist *last_hist(void)
-+{
-+	int pos_n = hist_pos_next();
-+	struct dept_wait_hist *wh_n = hist(pos_n);
-+
-+	/*
-+	 * This is the first try.
-+	 */
-+	if (!pos_n && !wh_n->wait)
-+		return NULL;
-+
-+	return hist(pos_n + DEPT_MAX_WAIT_HIST - 1);
-+}
-+
- static void add_hist(struct dept_wait *w, unsigned int wg, unsigned int ctxt_id)
- {
--	struct dept_wait_hist *wh = new_hist();
-+	struct dept_wait_hist *wh;
-+
-+	wh = last_hist();
-+
-+	if (!wh || wh->wait->class != w->class || wh->ctxt_id != ctxt_id)
-+		wh = new_hist();
- 
- 	if (likely(wh->wait))
- 		put_wait(wh->wait);
--- 
-1.9.1
+[...]
 
+MBR, Sergey
