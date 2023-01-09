@@ -2,154 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993CC6629E5
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 16:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD36662B56
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 17:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbjAIP32 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Jan 2023 10:29:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S233343AbjAIQfr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Jan 2023 11:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbjAIP30 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 10:29:26 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405082A9;
-        Mon,  9 Jan 2023 07:29:25 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S233499AbjAIQfq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 11:35:46 -0500
+X-Greylist: delayed 714 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Jan 2023 08:35:44 PST
+Received: from mx02.fc.ul.pt (mx02.fc.ul.pt [IPv6:2001:690:21c0:f602::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33569B8
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Jan 2023 08:35:43 -0800 (PST)
+Received: from FC-MBX12.fc.ul.pt (FC-MBX12.fc.ul.pt [10.121.30.27])
+        by mx02.fc.ul.pt (8.14.4/8.14.4) with ESMTP id 309GNEm8048294
+        for <linux-ext4@vger.kernel.org>; Mon, 9 Jan 2023 16:23:14 GMT
+Received: from FC-MBX13.fc.ul.pt (10.121.30.28) by FC-MBX12.fc.ul.pt
+ (10.121.30.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.7; Mon, 9 Jan 2023
+ 16:23:01 +0000
+Received: from FC-MBX12.fc.ul.pt (10.121.30.27) by FC-MBX13.fc.ul.pt
+ (10.121.30.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.7; Mon, 9 Jan 2023
+ 16:23:01 +0000
+Received: from smtp.ciencias.ulisboa.pt (194.117.42.59) by FC-MBX12.fc.ul.pt
+ (10.121.30.27) with Microsoft SMTP Server id 15.2.1118.7 via Frontend
+ Transport; Mon, 9 Jan 2023 16:23:01 +0000
+Received: from [IPV6:2001:8a0:6cc5:7e01:9a40:bbff:fe12:c8fd] (unknown [IPv6:2001:8a0:6cc5:7e01:9a40:bbff:fe12:c8fd])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CE7F2473A;
-        Mon,  9 Jan 2023 15:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673278163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJYHHfpKQfZuhLtjjw+kUkQXCPxXzCZB8sqhX5HJNgo=;
-        b=x9pQuwXJ31ktFed7cyEQ12sm9EAV/j86D6Ujx0xF3xC+Y8ns4fo31HzV7LAXAHx3i5i1EP
-        2dRH3dUnOUb3vrOIZaaJpsCgzquh1D+KL6gsODN2a8aZH8AOTDroE+sZeO3gRnrVTFsjuU
-        oa1x0oFlUSsDvpkLpTlAuSrXltxW7WM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673278163;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJYHHfpKQfZuhLtjjw+kUkQXCPxXzCZB8sqhX5HJNgo=;
-        b=y/4a8+JRD2hBzINbYxlPFsJm045dGsAdcJMrmBgaPIs34D1EzQaSc1ooYXUk2znk9pBw90
-        UfOCN9HbXulg35CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB97A134AD;
-        Mon,  9 Jan 2023 15:29:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id p3DFLdMyvGNbUQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 09 Jan 2023 15:29:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 33035A0749; Mon,  9 Jan 2023 16:29:23 +0100 (CET)
-Date:   Mon, 9 Jan 2023 16:29:23 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        libaokun1@huawei.com, zhanchengbin1@huawei.com
-Subject: Re: [PATCH -next v3] jbd2: Fix data missing when reusing bh which is
- ready to be checkpointed
-Message-ID: <20230109152923.fvx57xucg2vggzp6@quack3>
-References: <20230109134545.2234414-1-chengzhihao1@huawei.com>
+        (Authenticated sender: fc26887)
+        by smtp.ciencias.ulisboa.pt (Postfix) with ESMTPSA id B6F8C40A096A
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Jan 2023 16:23:01 +0000 (WET)
+Message-ID: <60d76756-772a-2ff5-3484-15db894c27d1@alunos.fc.ul.pt>
+Date:   Mon, 9 Jan 2023 16:23:00 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230109134545.2234414-1-chengzhihao1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+From:   Andre Coelho <fc26887@alunos.fc.ul.pt>
+Subject: some ideas
+To:     <linux-ext4@vger.kernel.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-FCUL-MailScanner-Information: Please contact the ISP for more information
+X-FCUL-MailScanner-ID: 309GNEm8048294
+X-FCUL-MailScanner: Found to be clean
+X-FCUL-MailScanner-From: fc26887@alunos.fc.ul.pt
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_50,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 09-01-23 21:45:45, Zhihao Cheng wrote:
-> Following process will make data lost and could lead to a filesystem
-> corrupted problem:
-> 
-> 1. jh(bh) is inserted into T1->t_checkpoint_list, bh is dirty, and
->    jh->b_transaction = NULL
-> 2. T1 is added into journal->j_checkpoint_transactions.
-> 3. Get bh prepare to write while doing checkpoing:
->            PA				    PB
->    do_get_write_access             jbd2_log_do_checkpoint
->     spin_lock(&jh->b_state_lock)
->      if (buffer_dirty(bh))
->       clear_buffer_dirty(bh)   // clear buffer dirty
->        set_buffer_jbddirty(bh)
-> 				    transaction =
-> 				    journal->j_checkpoint_transactions
-> 				    jh = transaction->t_checkpoint_list
-> 				    if (!buffer_dirty(bh))
-> 		                      __jbd2_journal_remove_checkpoint(jh)
-> 				      // bh won't be flushed
-> 		                    jbd2_cleanup_journal_tail
->     __jbd2_journal_file_buffer(jh, transaction, BJ_Reserved)
-> 4. Aborting journal/Power-cut before writing latest bh on journal area.
-> 
-> In this way we get a corrupted filesystem with bh's data lost.
-> 
-> Fix it by moving the clearing of buffer_dirty bit just before the call
-> to __jbd2_journal_file_buffer(), both bit clearing and jh->b_transaction
-> assignment are under journal->j_list_lock locked, so that
-> jbd2_log_do_checkpoint() will wait until jh's new transaction fininshed
-> even bh is currently not dirty. And journal_shrink_one_cp_list() won't
-> remove jh from checkpoint list if the buffer head is reused in
-> do_get_write_access().
-> 
-> Fetch a reproducer in [Link].
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216898
-> Cc: <stable@kernel.org>
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
+Hey.
 
-Great, the patch looks good. Feel free to add:
+What about a direct write (like a pointer to HD area... *hd = Stuff ), 
+in ext3 ? If it is because of buffering (and that means its buffering 
+because of a HD)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+what about usb and tape drives ? Also since each HD is different, how do 
+you know how many bytes a buffer must have...where is best to write on 
+track....if there is a crash, what happened to the buffer?
 
-Just a suggestion for rephrasing of the comment below
 
-> -		/*
-> -		 * In any case we need to clean the dirty flag and we must
-> -		 * do it under the buffer lock to be sure we don't race
-> -		 * with running write-out.
-> +		 * We need to clean the dirty flag and we must do it under the
-> +		 * buffer lock to be sure we don't race with running write-out.
->  		 */
->  		JBUFFER_TRACE(jh, "Journalling dirty buffer");
->  		clear_buffer_dirty(bh);
-> +		/*
-> +		 * Setting jbddirty after clearing buffer dirty is necessary.
-> +		 * Function jbd2_journal_restart() could keep buffer on
-> +		 * BJ_Reserved list until the transaction committing, then the
-> +		 * buffer won't be dirtied by jbd2_journal_refile_buffer()
-> +		 * after committing, the buffer couldn't fall on disk even
-> +		 * last checkpoint finished, which may corrupt filesystem.
-> +		 */
+i guess this analogy is correct
 
-As far as I understand you want to say:
-		/*
-		 * The buffer is going to be added to BJ_Reserved list now
-		 * and nothing guarantees jbd2_journal_dirty_metadata()
-		 * will be ever called for it. So we need to set jbddirty
-		 * bit here to make sure the buffer is dirtied and written
-		 * out when the journaling machinery is done with it.
-		 */
 
->  		set_buffer_jbddirty(bh);
->  	}
+A man is sitting on a room, in a chair, writing a piece of 
+paper....normally the writing is sequentally...why does he needs to hold 
+the writing ...and then write what it thoughts ?? why not just keep 
+writing?! What if he does hold the writing, will he remember what he 
+thought? Where has he ended last time?! (and again , if its not a HD, 
+but another device?!)
 
-								Honza
+
+Sorry for the lame comparision, but its a free world :)
+
+
+best regards
+
+andre
+
+
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+André Albergaria Coelho
+fc26887@alunos.fc.ul.pt
+
