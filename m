@@ -2,189 +2,208 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B956626D4
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 14:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94F662938
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Jan 2023 16:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbjAINVe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Jan 2023 08:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        id S231418AbjAIPCv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Jan 2023 10:02:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237223AbjAINVZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 08:21:25 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CE2203F;
-        Mon,  9 Jan 2023 05:21:22 -0800 (PST)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NrDxk3ZPmzJq8k;
-        Mon,  9 Jan 2023 21:17:14 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 9 Jan
- 2023 21:21:19 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
-        <libaokun1@huawei.com>, <zhanchengbin1@huawei.com>
-Subject: [PATCH -next v3] jbd2: Fix data missing when reusing bh which is ready to be checkpointed
-Date:   Mon, 9 Jan 2023 21:45:45 +0800
-Message-ID: <20230109134545.2234414-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231130AbjAIPCh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 10:02:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFCC1C937
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Jan 2023 07:01:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673276508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5BnqkcP/B7SGlD7ivTZ2uRzTlawgLKPgKJY+C2gEHLI=;
+        b=CqJBcKMyt9OifljU/s+bd92+WgKHcGH5vn31p7JOTRGnBltT0ArRodpmtLWprkFx/7bpNR
+        Llm2MOMmbTTJyebHNjUw5ofDhOolPolV3XJHk7ZdTWE+bciaOBo6iMx6EzK0+1CV9/XYa9
+        zfJGGxjfXgvVWvXAcZmEzKSn3wi8Et8=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-606-E-CIsS_mO6mqohQPfFzQvQ-1; Mon, 09 Jan 2023 10:01:47 -0500
+X-MC-Unique: E-CIsS_mO6mqohQPfFzQvQ-1
+Received: by mail-qt1-f197.google.com with SMTP id cm18-20020a05622a251200b003ad06656adaso1159501qtb.22
+        for <linux-ext4@vger.kernel.org>; Mon, 09 Jan 2023 07:01:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5BnqkcP/B7SGlD7ivTZ2uRzTlawgLKPgKJY+C2gEHLI=;
+        b=GfnTPOtLyE4YE9GV0700WbRTgF0soysqxePfDtrekrLjrNrAmTYPVXisH2HI1uZTsI
+         MUbt/HgwpO969hKTJfuw3VULWGY+tL6Im60P5cuvGEdmkFt5MtWttKAqXQLb0qcM8HII
+         OR7GYiWsxah7wlN0cNNSLP4kfr/cLLO8cym3F1fflfFLMwEwdFI4NuH+/kHvim8CyhQb
+         tmrz+ZcXMid6/EbFn9jWShjO1VGa42W1tzAsw1w9/EgEkzHrBHKvPWcLh9UgqoLy9dPN
+         SA1MFDeWkyNkiVAJ5eWJ6o7yE9Jhg0n5ucwQdNtsijf9noVfnZlWB9T8GMtAn9qVJZJx
+         XzKg==
+X-Gm-Message-State: AFqh2kqU18zncpGziTAVHbAglQxaXSxTfqAeXhEUsulozqv/VuiUP7bi
+        qfZJCm59PYjyRU9hX4YXiauDFv6UNLCHLeSdAAs4V9pZh6oUVybpe3Xxd2JEuMQvX4JOHHR+1PK
+        pqOuewHAoU3vXT9zJQChWLQ==
+X-Received: by 2002:ac8:6b4c:0:b0:39c:da20:d47c with SMTP id x12-20020ac86b4c000000b0039cda20d47cmr84648935qts.17.1673276506395;
+        Mon, 09 Jan 2023 07:01:46 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvzZP+QWbMTML85dKaCimKI1eGsnIuLcS2Bp/8ib3jUiLno1dRkiK90vxVouiizF3DOW2wqRA==
+X-Received: by 2002:ac8:6b4c:0:b0:39c:da20:d47c with SMTP id x12-20020ac86b4c000000b0039cda20d47cmr84648900qts.17.1673276506083;
+        Mon, 09 Jan 2023 07:01:46 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id bi1-20020a05620a318100b006fb0e638f12sm5457812qkb.4.2023.01.09.07.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 07:01:45 -0800 (PST)
+Date:   Mon, 9 Jan 2023 10:02:46 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v2 6/7] ext4: Add mount option for provisioning blocks
+ during allocations
+Message-ID: <Y7wsluqX+eFqV1XB@bfoster>
+References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
+ <20221229081252.452240-7-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221229081252.452240-7-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Following process will make data lost and could lead to a filesystem
-corrupted problem:
+On Thu, Dec 29, 2022 at 12:12:51AM -0800, Sarthak Kukreti wrote:
+> Add a mount option that sets the default provisioning mode for
+> all files within the filesystem.
+> 
 
-1. jh(bh) is inserted into T1->t_checkpoint_list, bh is dirty, and
-   jh->b_transaction = NULL
-2. T1 is added into journal->j_checkpoint_transactions.
-3. Get bh prepare to write while doing checkpoing:
-           PA				    PB
-   do_get_write_access             jbd2_log_do_checkpoint
-    spin_lock(&jh->b_state_lock)
-     if (buffer_dirty(bh))
-      clear_buffer_dirty(bh)   // clear buffer dirty
-       set_buffer_jbddirty(bh)
-				    transaction =
-				    journal->j_checkpoint_transactions
-				    jh = transaction->t_checkpoint_list
-				    if (!buffer_dirty(bh))
-		                      __jbd2_journal_remove_checkpoint(jh)
-				      // bh won't be flushed
-		                    jbd2_cleanup_journal_tail
-    __jbd2_journal_file_buffer(jh, transaction, BJ_Reserved)
-4. Aborting journal/Power-cut before writing latest bh on journal area.
+There's not much description here to explain what a user should expect
+from this mode. Should the user expect -ENOSPC from the lower layers
+once out of space? What about files that are provisioned by the fs and
+then freed? Should the user/admin know to run fstrim or also enable an
+online discard mechanism to ensure freed filesystem blocks are returned
+to the free pool in the block/dm layer in order to avoid premature fs
+-ENOSPC conditions?
 
-In this way we get a corrupted filesystem with bh's data lost.
+Also, what about dealing with block level snapshots? There is some
+discussion on previous patches wrt to expectations on how provision
+might handle unsharing of cow'd blocks. If the fs only provisions on
+initial allocation, then a subsequent snapshot means we run into the
+same sort of ENOSPC problem on overwrites of already allocated blocks.
+That also doesn't consider things like an internal log, which may have
+been physically allocated (provisioned?) at mkfs time and yet is subject
+to the same general problem.
 
-Fix it by moving the clearing of buffer_dirty bit just before the call
-to __jbd2_journal_file_buffer(), both bit clearing and jh->b_transaction
-assignment are under journal->j_list_lock locked, so that
-jbd2_log_do_checkpoint() will wait until jh's new transaction fininshed
-even bh is currently not dirty. And journal_shrink_one_cp_list() won't
-remove jh from checkpoint list if the buffer head is reused in
-do_get_write_access().
+So what is the higher level goal with this sort of mode? Is
+provision-on-alloc sufficient to provide a practical benefit to users,
+or should this perhaps consider other scenarios where a provision might
+be warranted before submitting writes to a thinly provisioned device?
 
-Fetch a reproducer in [Link].
+FWIW, it seems reasonable to me to introduce this without snapshot
+support and work toward it later, but it should be made clear what is
+being advertised in the meantime. Unless there's some nice way to
+explicitly limit the scope of use, such as preventing snapshots or
+something, the fs might want to consider this sort of feature
+experimental until it is more fully functional.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216898
-Cc: <stable@kernel.org>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-Suggested-by: Jan Kara <jack@suse.cz>
----
- v1->v2: Adopt Jan's suggestion, move the clearing of buffer_dirty bit
-	 and __jbd2_journal_file_buffer() inside journal->j_list_lock
-	 locking area.
- v2->v3: Remove redundant assertions in in branch 'if (jh->b_transaction)'
-         Add reproducer link in commit message.
- fs/jbd2/transaction.c | 51 +++++++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+Brian
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 6a404ac1c178..2fbe0f201b29 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1010,36 +1010,29 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 	 * ie. locked but not dirty) or tune2fs (which may actually have
- 	 * the buffer dirtied, ugh.)  */
- 
--	if (buffer_dirty(bh)) {
-+	if (buffer_dirty(bh) && jh->b_transaction) {
-+		warn_dirty_buffer(bh);
- 		/*
--		 * First question: is this buffer already part of the current
--		 * transaction or the existing committing transaction?
--		 */
--		if (jh->b_transaction) {
--			J_ASSERT_JH(jh,
--				jh->b_transaction == transaction ||
--				jh->b_transaction ==
--					journal->j_committing_transaction);
--			if (jh->b_next_transaction)
--				J_ASSERT_JH(jh, jh->b_next_transaction ==
--							transaction);
--			warn_dirty_buffer(bh);
--		}
--		/*
--		 * In any case we need to clean the dirty flag and we must
--		 * do it under the buffer lock to be sure we don't race
--		 * with running write-out.
-+		 * We need to clean the dirty flag and we must do it under the
-+		 * buffer lock to be sure we don't race with running write-out.
- 		 */
- 		JBUFFER_TRACE(jh, "Journalling dirty buffer");
- 		clear_buffer_dirty(bh);
-+		/*
-+		 * Setting jbddirty after clearing buffer dirty is necessary.
-+		 * Function jbd2_journal_restart() could keep buffer on
-+		 * BJ_Reserved list until the transaction committing, then the
-+		 * buffer won't be dirtied by jbd2_journal_refile_buffer()
-+		 * after committing, the buffer couldn't fall on disk even
-+		 * last checkpoint finished, which may corrupt filesystem.
-+		 */
- 		set_buffer_jbddirty(bh);
- 	}
- 
--	unlock_buffer(bh);
--
- 	error = -EROFS;
- 	if (is_handle_aborted(handle)) {
- 		spin_unlock(&jh->b_state_lock);
-+		unlock_buffer(bh);
- 		goto out;
- 	}
- 	error = 0;
-@@ -1049,8 +1042,10 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 	 * b_next_transaction points to it
- 	 */
- 	if (jh->b_transaction == transaction ||
--	    jh->b_next_transaction == transaction)
-+	    jh->b_next_transaction == transaction) {
-+		unlock_buffer(bh);
- 		goto done;
-+	}
- 
- 	/*
- 	 * this is the first time this transaction is touching this buffer,
-@@ -1074,10 +1069,24 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 		 */
- 		smp_wmb();
- 		spin_lock(&journal->j_list_lock);
-+		if (test_clear_buffer_dirty(bh)) {
-+			/*
-+			 * Execute buffer dirty clearing and jh->b_transaction
-+			 * assignment under journal->j_list_lock locked to
-+			 * prevent bh being removed from checkpoint list if
-+			 * the buffer is in an intermediate state (not dirty
-+			 * and jh->b_transaction is NULL).
-+			 */
-+			JBUFFER_TRACE(jh, "Journalling dirty buffer");
-+			set_buffer_jbddirty(bh);
-+		}
- 		__jbd2_journal_file_buffer(jh, transaction, BJ_Reserved);
- 		spin_unlock(&journal->j_list_lock);
-+		unlock_buffer(bh);
- 		goto done;
- 	}
-+	unlock_buffer(bh);
-+
- 	/*
- 	 * If there is already a copy-out version of this buffer, then we don't
- 	 * need to make another one
--- 
-2.31.1
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  fs/ext4/ext4.h    | 1 +
+>  fs/ext4/extents.c | 7 +++++++
+>  fs/ext4/super.c   | 7 +++++++
+>  3 files changed, 15 insertions(+)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 49832e90b62f..29cab2e2ea20 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1269,6 +1269,7 @@ struct ext4_inode_info {
+>  #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
+>  						    * scanning in mballoc
+>  						    */
+> +#define EXT4_MOUNT2_PROVISION		0x00000100 /* Provision while allocating file blocks */
+>  
+>  #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+>  						~EXT4_MOUNT_##opt
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 2e64a9211792..a73f44264fe2 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4441,6 +4441,13 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+>  	unsigned int credits;
+>  	loff_t epos;
+>  
+> +	/*
+> +	 * Attempt to provision file blocks if the mount is mounted with
+> +	 * provision.
+> +	 */
+> +	if (test_opt2(inode->i_sb, PROVISION))
+> +		flags |= EXT4_GET_BLOCKS_PROVISION;
+> +
+>  	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
+>  	map.m_lblk = offset;
+>  	map.m_len = len;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 260c1b3e3ef2..5bc376f6a6f0 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1591,6 +1591,7 @@ enum {
+>  	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
+>  	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
+>  	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
+> +	Opt_provision, Opt_noprovision,
+>  #ifdef CONFIG_EXT4_DEBUG
+>  	Opt_fc_debug_max_replay, Opt_fc_debug_force
+>  #endif
+> @@ -1737,6 +1738,8 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+>  	fsparam_flag	("reservation",		Opt_removed),	/* mount option from ext2/3 */
+>  	fsparam_flag	("noreservation",	Opt_removed),	/* mount option from ext2/3 */
+>  	fsparam_u32	("journal",		Opt_removed),	/* mount option from ext2/3 */
+> +	fsparam_flag	("provision",		Opt_provision),
+> +	fsparam_flag	("noprovision",		Opt_noprovision),
+>  	{}
+>  };
+>  
+> @@ -1826,6 +1829,8 @@ static const struct mount_opts {
+>  	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
+>  	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
+>  	 MOPT_SET},
+> +	{Opt_provision, EXT4_MOUNT2_PROVISION, MOPT_SET | MOPT_2},
+> +	{Opt_noprovision, EXT4_MOUNT2_PROVISION, MOPT_CLEAR | MOPT_2},
+>  #ifdef CONFIG_EXT4_DEBUG
+>  	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
+>  	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
+> @@ -2977,6 +2982,8 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+>  		SEQ_OPTS_PUTS("dax=never");
+>  	} else if (test_opt2(sb, DAX_INODE)) {
+>  		SEQ_OPTS_PUTS("dax=inode");
+> +	} else if (test_opt2(sb, PROVISION)) {
+> +		SEQ_OPTS_PUTS("provision");
+>  	}
+>  
+>  	if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD &&
+> -- 
+> 2.37.3
+> 
 
