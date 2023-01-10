@@ -2,81 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035DB66449A
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 16:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B39664542
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 16:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238218AbjAJPZT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Jan 2023 10:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S232176AbjAJPsp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Jan 2023 10:48:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238977AbjAJPYi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Jan 2023 10:24:38 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281918D5C4;
-        Tue, 10 Jan 2023 07:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oNTdMR+VSzbfWekKWcdjtSu/K0LW9KTEw3USctOnxiU=; b=zDpFs6D6/Tjb+OJyb9xHVqz5ls
-        pFBMbIHtHrX5PunG/rgPabqbdWsIp1KBDrf94nAwIf9VYD6FmA/1emyHb1r0sQyyYkWM/4hPMTuYH
-        CjuTU2l4k73L7IxJXvEelJio32ymOa/d75HhexdbaH1Pm73qL+xhGiJHI9FGLfxoavkIFYh0jEdtH
-        zdctHIHRZL2kUGScC6WtgGn7TciKAR23dSJH5DDLnVpfqgaSthQAGfeSBcaaTPNgZDREUasnqBkig
-        kdHpEzl5txPM+j1xgPLyjr9/q0Y7/aL0jYStyfxdcapJzOIxqTOST0W0pqT6rhKzv6TlZxEw/VKXv
-        9aVLJvpQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pFGUF-007Yt2-4o; Tue, 10 Jan 2023 15:24:27 +0000
-Date:   Tue, 10 Jan 2023 07:24:27 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC v6 04/10] iomap: Add iomap_get_folio helper
-Message-ID: <Y72DK9XuaJfN+ecj@infradead.org>
-References: <20230108213305.GO1971568@dread.disaster.area>
- <20230108194034.1444764-1-agruenba@redhat.com>
- <20230108194034.1444764-5-agruenba@redhat.com>
- <20230109124642.1663842-1-agruenba@redhat.com>
- <Y70l9ZZXpERjPqFT@infradead.org>
- <Y71pWJ0JHwGrJ/iv@casper.infradead.org>
+        with ESMTP id S234331AbjAJPsn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Jan 2023 10:48:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E1B44C51;
+        Tue, 10 Jan 2023 07:48:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FFD96179A;
+        Tue, 10 Jan 2023 15:48:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A0C433D2;
+        Tue, 10 Jan 2023 15:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1673365721;
+        bh=SzybKE2ZlLj8N7A2p4KL6+AnhlUYuvQ+HeRllUMW3JQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WlTSXLYf6qCVE2hsVw7zPfW8JjJyhblhwnrkE4XFcPlSw4wfmCqXi4Wwm2dg9I5Ya
+         fNY94Nthouy9DLT3VQmIdePxpbZcB2dyw/GbRAcuBQJZPIDD3yohBbDMYwmcX0tCIp
+         PBnRdR2Guq15moUM+TMBoVU3/klhTnAKnjHsSVjQ=
+Date:   Tue, 10 Jan 2023 16:48:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: Please apply "ext4: don't allow journal inode to have encrypt
+ flag" to 5.15 and earlier
+Message-ID: <Y72I0/KixO+WoKsc@kroah.com>
+References: <Y7nWexWBpMWKwdeB@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y71pWJ0JHwGrJ/iv@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y7nWexWBpMWKwdeB@sol.localdomain>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 10, 2023 at 01:34:16PM +0000, Matthew Wilcox wrote:
-> > Exactly.  And as I already pointed out in reply to Dave's original
-> > patch what we really should be doing is returning an ERR_PTR from
-> > __filemap_get_folio instead of reverse-engineering the expected
-> > error code.
+On Sat, Jan 07, 2023 at 12:30:51PM -0800, Eric Biggers wrote:
+> Please apply commit 105c78e12468 ("ext4: don't allow journal inode to have
+> encrypt flag") to the 5.15, 5.10, 5.4, and 4.19 LTS kernels, where it applies
+> cleanly.
 > 
-> Ouch, we have a nasty problem.
-> 
-> If somebody passes FGP_ENTRY, we can return a shadow entry.  And the
-> encodings for shadow entries overlap with the encodings for ERR_PTR,
-> meaning that some shadow entries will look like errors.  The way I
-> solved this in the XArray code is by shifting the error values by
-> two bits and encoding errors as XA_ERROR(-ENOMEM) (for example).
-> 
-> I don't _object_ to introducing XA_ERROR() / xa_err() into the VFS,
-> but so far we haven't, and I'd like to make that decision intentionally.
+> It didn't get applied automatically because for the Fixes tag, I used a commit
+> in 5.18.  However, that was the commit that exposed the problem, not the root
+> cause.  IMO it makes sense to apply this to earlier kernels too, especially
+> because some people have backported the 5.18 commit.
 
-So what would be an alternative way to tell the callers why no folio
-was found instead of trying to reverse engineer that?  Return an errno
-and the folio by reference?  The would work, but the calling conventions
-would be awful.
+All now queued up, thanks.
+
+greg k-h
