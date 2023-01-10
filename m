@@ -2,37 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C256F663802
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 05:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EE2663804
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 05:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjAJEGD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Jan 2023 23:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        id S229605AbjAJEKu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Jan 2023 23:10:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbjAJEFu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 23:05:50 -0500
+        with ESMTP id S229457AbjAJEKr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Jan 2023 23:10:47 -0500
 Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A44321B2
-        for <linux-ext4@vger.kernel.org>; Mon,  9 Jan 2023 20:05:48 -0800 (PST)
-Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFD535929
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Jan 2023 20:10:45 -0800 (PST)
+Received: from shw-obgw-4004a.ext.cloudfilter.net ([10.228.9.227])
         by cmsmtp with ESMTP
-        id F1OEpw0HBl2xSF5tTpzuCk; Tue, 10 Jan 2023 04:05:47 +0000
+        id ExqppvWCAl2xSF5yHpzumM; Tue, 10 Jan 2023 04:10:45 +0000
 Received: from centos7.dilger.int ([70.77.221.9])
         by cmsmtp with ESMTP
-        id F5tTpTtgQHFsOF5tTp3sNA; Tue, 10 Jan 2023 04:05:47 +0000
-X-Authority-Analysis: v=2.4 cv=XZqaca15 c=1 sm=1 tr=0 ts=63bce41b
+        id F5yGpZ10Z3fOSF5yGpExhL; Tue, 10 Jan 2023 04:10:45 +0000
+X-Authority-Analysis: v=2.4 cv=J8G5USrS c=1 sm=1 tr=0 ts=63bce545
  a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=RPJ6JBhKAAAA:8
- a=USMdwZXE_HJfLks3l7QA:9 a=fa_un-3J20JGBB2Tu-mn:22
+ a=HIemJr-ISWl06myyT58A:9 a=fa_un-3J20JGBB2Tu-mn:22
 From:   Andreas Dilger <adilger@dilger.ca>
 To:     tytso@mit.edu
 Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH] tests: fix u_direct_io to work with older losetup
-Date:   Mon,  9 Jan 2023 21:05:35 -0700
-Message-Id: <1673323535-14317-1-git-send-email-adilger@dilger.ca>
+Subject: [PATCH] build: split version and release in configure
+Date:   Mon,  9 Jan 2023 21:10:39 -0700
+Message-Id: <1673323839-14670-1-git-send-email-adilger@dilger.ca>
 X-Mailer: git-send-email 1.8.3.1
-X-CMAE-Envelope: MS4xfJQoH7odYORrg1V94Hdf/FUcPelDCeOUo6q4X8X4gDVroaqFAezadGtgNaXNKFbKFoZdiih6rAIu40S2yoIs8eLvq5uVqkL4FdIHSBc6ZPAnWdL0a9Oy
- A1s2sP2dOUDLoCNqP253rf76gW8b76wr2GX/LuDngJKGv+z/D9jOj7OqCur70iwPO/D6FQYqjEP1yttPJl9Efj2ztETTLrTvbVDjRsb9EOR3Uu47gyKOHSRA
- u3ZTd8yZ/OO0EFNJ66bQkA==
+X-CMAE-Envelope: MS4xfNOsYC2LJNah9IqvewjlxrRXKW2b+GMPpH/5XsUlAV1N6tNGLfxLG7g7rXxNVc0Y7RZ3Z/11j7esGgNbF9427DEs0sSkbCoHiXFVUtNd2ByPZ2ilIkZm
+ j7Zj47fk6BfjQ7VVi7HsiQf1JsijFGijnxZR+kz9EldCuewvpJv1uEkf0y4vrUEkxl0ih9XlGyeY/spjLikgNuQN7wP5o2vtvKn8ljVwTYLhWVtwQKVbePYj
+ /H2+P3dwuzK+IMa4MeJX7Q==
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -41,50 +41,152 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Older losetup does not have --sector-size, but this isn't really
-needed for the test to work.  Instead specify the filesystem block
-size directly to mke2fs, so that it works on all distros instead
-of being skipped.
+Update configure.ac to separate Version from Release if there is
+a '-' in version.h::E2FSPROGS_VERSION (e.g. "1.46.6-rc1").
 
-Change-Id: I5a0c82a9efdefd1b48f4d4288998c7725c9ae71e
+Simplify the generation of E2FSPROGS_VERESION, E2FSPROGS_DATE and
+E2FSPROGS_DAY to avoid multiple grep/awk/sed/tr stages.
+
 Signed-off-by: Andreas Dilger <adilger@dilger.ca>
 ---
- tests/u_direct_io/expect | 2 +-
- tests/u_direct_io/script | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ configure           | 17 +++++++++--------
+ configure.ac        | 18 ++++++++++--------
+ util/gen-tarball.in |  7 ++++---
+ 3 files changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/tests/u_direct_io/expect b/tests/u_direct_io/expect
-index 830cbd752652..b1511ef10aa9 100644
---- a/tests/u_direct_io/expect
-+++ b/tests/u_direct_io/expect
-@@ -1,4 +1,4 @@
--mke2fs -F -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D $LOOP
-+mke2fs -F -b 4096 -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D $LOOP
- Creating filesystem with 32768 4k blocks and 32768 inodes
+diff --git a/configure b/configure
+index caf6661df318..ea364e551eca 100755
+--- a/configure
++++ b/configure
+@@ -824,6 +824,7 @@ build_cpu
+ build
+ E2FSPROGS_DATE
+ E2FSPROGS_PKGVER
++E2FSPROGS_PKGREL
+ E2FSPROGS_VERSION
+ E2FSPROGS_DAY
+ E2FSPROGS_MONTH
+@@ -4581,11 +4582,9 @@ fi
+ MCONFIG=./MCONFIG
  
- Allocating group tables:    done                            
-diff --git a/tests/u_direct_io/script b/tests/u_direct_io/script
-index b4f07752c89f..2f80e640293f 100644
---- a/tests/u_direct_io/script
-+++ b/tests/u_direct_io/script
-@@ -8,14 +8,14 @@ elif test ! -x $DEBUGFS_EXE; then
-     echo "$test_name: $DESCRIPTION: skipped (no debugfs)"
- else
-     dd if=/dev/zero of=$TMPFILE bs=1M count=128 > /dev/null 2>&1
--    LOOP=$(losetup --show --sector-size 4096 -f $TMPFILE)
-+    LOOP=$(losetup --show -f $TMPFILE 2>&1)
-     if [ ! -b "$LOOP" ]; then
-         echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
-         rm -f $TMPFILE
-         exit 0
-     fi
--    echo mke2fs -F -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D \$LOOP > $OUT
--    $MKE2FS -F -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D $LOOP 2>&1 | \
-+    echo mke2fs -F -b 4096 -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D \$LOOP > $OUT
-+    $MKE2FS -F -b 4096 -o Linux -t ext4 -O ^metadata_csum,^uninit_bg -D $LOOP 2>&1 | \
- 	sed -f $cmd_dir/filter.sed >> $OUT
+ BINARY_TYPE=bin
+-E2FSPROGS_VERSION=`grep E2FSPROGS_VERSION ${srcdir}/version.h  \
+-	| awk '{print $3}' | tr \" " " | awk '{print $1}'`
+-E2FSPROGS_DATE=`grep E2FSPROGS_DATE ${srcdir}/version.h | awk '{print $3}' \
+-	| tr \" " " | awk '{print $1}'`
+-E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{print $1}' | sed -e '/^[1-9]$/s/^/0/')
++E2FSPROGS_VERSION=`awk -F\" '/E2FSPROGS_VERS/ { print $2 }' ${srcdir}/version.h`
++E2FSPROGS_DATE=`awk -F\" '/E2FSPROGS_DATE/ { print $2 }' ${srcdir}/version.h`
++E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{ printf "%02d", $1 }')
+ MONTH=`echo $E2FSPROGS_DATE | awk -F- '{print $2}'`
+ YEAR=`echo $E2FSPROGS_DATE | awk -F- '{print $3}'`
  
-     echo debugfs -D -R stats \$LOOP >> $OUT
+@@ -4614,17 +4613,19 @@ Dec)	MONTH_NUM=12; E2FSPROGS_MONTH="December" ;;
+ printf "%s\n" "$as_me: WARNING: Unknown month $MONTH??" >&2;} ;;
+ esac
+ 
+-base_ver=`echo $E2FSPROGS_VERSION | \
+-	       sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
++base_ver=`echo $E2FSPROGS_VERSION | sed -e 's/pre-//' -e 's/-.*//'`
++base_rel=`echo $E2FSPROGS_VERSION | awk -F- '{ print $2 }'`
+ 
+ date_spec=${E2FSPROGS_YEAR}.${MONTH_NUM}.${E2FSPROGS_DAY}
+ 
+ case $E2FSPROGS_VERSION in
+ *-WIP|pre-*)
+-	E2FSPROGS_PKGVER="$base_ver~WIP.$date_spec"
++	E2FSPROGS_PKGVER="$base_ver"
++	E2FSPROGS_PKGREL="WIP.$date_spec"
+ 	;;
+ *)
+ 	E2FSPROGS_PKGVER="$base_ver"
++	E2FSPROGS_PKGREL="$base_rel"
+ 	;;
+ esac
+ 
+diff --git a/configure.ac b/configure.ac
+index 4ece83e9ba22..0dc28d2316cc 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -11,11 +11,9 @@ BINARY_TYPE=bin
+ dnl
+ dnl This is to figure out the version number and the date....
+ dnl
+-E2FSPROGS_VERSION=`grep E2FSPROGS_VERSION ${srcdir}/version.h  \
+-	| awk '{print $3}' | tr \" " " | awk '{print $1}'`
+-E2FSPROGS_DATE=`grep E2FSPROGS_DATE ${srcdir}/version.h | awk '{print $3}' \
+-	| tr \" " " | awk '{print $1}'`
+-E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{print $1}' | sed -e '/^[[1-9]]$/s/^/0/')
++E2FSPROGS_VERSION=`awk -F\" '/E2FSPROGS_VERS/ { print $2 }' ${srcdir}/version.h`
++E2FSPROGS_DATE=`awk -F\" '/E2FSPROGS_DATE/ { print $2 }' ${srcdir}/version.h`
++E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{ printf "%02d", $1 }')
+ MONTH=`echo $E2FSPROGS_DATE | awk -F- '{print $2}'`
+ YEAR=`echo $E2FSPROGS_DATE | awk -F- '{print $3}'`
+ 
+@@ -43,27 +41,31 @@ Dec)	MONTH_NUM=12; E2FSPROGS_MONTH="December" ;;
+ *)	AC_MSG_WARN([Unknown month $MONTH??]) ;;
+ esac
+ 
+-base_ver=`echo $E2FSPROGS_VERSION | \
+-	       sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
++base_ver=`echo $E2FSPROGS_VERSION | sed -e 's/pre-//' -e 's/-.*//'`
++base_rel=`echo $E2FSPROGS_VERSION | awk -F- '{ print $2 }'`
+ 
+ date_spec=${E2FSPROGS_YEAR}.${MONTH_NUM}.${E2FSPROGS_DAY}
+ 
+ case $E2FSPROGS_VERSION in
+ *-WIP|pre-*)
+-	E2FSPROGS_PKGVER="$base_ver~WIP.$date_spec"
++	E2FSPROGS_PKGVER="$base_ver"
++	E2FSPROGS_PKGREL="WIP.$date_spec"
+ 	;;
+ *)
+ 	E2FSPROGS_PKGVER="$base_ver"
++	E2FSPROGS_PKGREL="$base_rel"
+ 	;;
+ esac
+ 
+ unset DATE MONTH YEAR base_ver pre_vers date_spec
+ AC_MSG_RESULT([Generating configuration file for e2fsprogs version $E2FSPROGS_VERSION])
++AC_MSG_RESULT([Package version ${E2FSPROGS_PKGVER} release ${E2FSPROGS_PKGREL}])
+ AC_MSG_RESULT([Release date is ${E2FSPROGS_MONTH}, ${E2FSPROGS_YEAR}])
+ AC_SUBST(E2FSPROGS_YEAR)
+ AC_SUBST(E2FSPROGS_MONTH)
+ AC_SUBST(E2FSPROGS_DAY)
+ AC_SUBST(E2FSPROGS_VERSION)
++AC_SUBST(E2FSPROGS_PKGREL)
+ AC_SUBST(E2FSPROGS_PKGVER)
+ AC_SUBST(E2FSPROGS_DATE)
+ dnl
+diff --git a/util/gen-tarball.in b/util/gen-tarball.in
+index 997bd935f730..650d3b5930ae 100644
+--- a/util/gen-tarball.in
++++ b/util/gen-tarball.in
+@@ -5,7 +5,8 @@
+ srcdir=@srcdir@
+ top_srcdir=@top_srcdir@
+ top_dir=`cd $top_srcdir; pwd`
+-base_ver=`echo @E2FSPROGS_VERSION@ | sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
++base_ver=`echo @E2FSPROGS_PKGVER@`
++base_rel=`echo @E2FSPROGS_PKGREL@`
+ base_e2fsprogs=`basename $top_dir`
+ exclude=/tmp/exclude$$
+ GZIP=gzip
+@@ -16,12 +17,12 @@ GZIP=gzip
+ # using a non-standard directory name for WIP releases.  dpkg-source
+ # complains, but life goes on.
+ #
+-deb_pkgver=`echo @E2FSPROGS_PKGVER@ | sed -e 's/~/-/g'`
++deb_pkgver="$base_ver${base_rel:+-$base_rel}"
+     
+ case $1 in
+     debian|ubuntu)
+ 	SRCROOT="e2fsprogs-$deb_pkgver"
+-	tarout="e2fsprogs_@E2FSPROGS_PKGVER@.orig.tar.gz"
++	tarout="e2fsprogs_$deb_pkgver.orig.tar.gz"
+ 	;;
+    all|*)
+ 	SRCROOT="e2fsprogs-$base_ver"
 -- 
 1.8.3.1
 
