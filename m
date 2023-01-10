@@ -2,87 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A540866414A
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 14:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39576641FD
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jan 2023 14:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbjAJNJy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Jan 2023 08:09:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S232546AbjAJNfK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Jan 2023 08:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238624AbjAJNJs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Jan 2023 08:09:48 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B561339
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Jan 2023 05:09:46 -0800 (PST)
-Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Nrrdr4MXRzJq9y;
-        Tue, 10 Jan 2023 21:05:36 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500016.china.huawei.com
- (7.185.36.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 10 Jan
- 2023 21:09:42 +0800
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>,
-        zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH 2/2] ext4: call ext4_handle_error when read extent failed in ext4_ext_insert_extent
-Date:   Tue, 10 Jan 2023 21:34:07 +0800
-Message-ID: <20230110133407.994711-3-zhanchengbin1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230110133407.994711-1-zhanchengbin1@huawei.com>
-References: <20230110133407.994711-1-zhanchengbin1@huawei.com>
+        with ESMTP id S238613AbjAJNes (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Jan 2023 08:34:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EE95792F;
+        Tue, 10 Jan 2023 05:34:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iaT9LQ1txjWmxV1XSqA3EJtlgw8CwLxTrjASqWSS7ew=; b=epUV45aphPRps7u7Vq4Cq2vV62
+        Mit3JVAAMWsoPGuvfc8UjBmHKZ1ppZrvqfZXJCvAPnuHAvP1Qrb4ehCWA7e+vCzpqZHMlWb9Hws8S
+        A1f1dD49dUdh4aj0DW0R0Sfq69V/J5AzIofvjxjVU6NiOw6dKaZZUKctwR/ldOlGgUHa0l9O2da/T
+        HdoM0Tgph2sBGPLtuwn+1HpFzLxbHFFj9xmtEFmxVNPeqvnWbZWGF8OJaITltqqa9KhZz2SpcaNCt
+        Fp+x9zPIQx3XMNyPCjf2vKIkWdQPiKs619GLOCwidJ1JWPy1QJ3tJS9y0MJZDjixqlQeV3r5jy0VP
+        SXHPpeUw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pFElc-003FE0-AE; Tue, 10 Jan 2023 13:34:16 +0000
+Date:   Tue, 10 Jan 2023 13:34:16 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC v6 04/10] iomap: Add iomap_get_folio helper
+Message-ID: <Y71pWJ0JHwGrJ/iv@casper.infradead.org>
+References: <20230108213305.GO1971568@dread.disaster.area>
+ <20230108194034.1444764-1-agruenba@redhat.com>
+ <20230108194034.1444764-5-agruenba@redhat.com>
+ <20230109124642.1663842-1-agruenba@redhat.com>
+ <Y70l9ZZXpERjPqFT@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y70l9ZZXpERjPqFT@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In addition to ext4_find_extent reading extent block return
--EIO, ext4_handle_error will be called when there is a problem that
-may cause file system inconsistency in the ext4_ext_insert_extent
-function.
-So call the ext4_handle_error function when the ext4_find_extent
-read fails，and make the filesystem read-only when mount for
-`errors=remount-ro`, and Check whether the journal is aborted in
-the ext4_split_extent_at function.
+On Tue, Jan 10, 2023 at 12:46:45AM -0800, Christoph Hellwig wrote:
+> On Mon, Jan 09, 2023 at 01:46:42PM +0100, Andreas Gruenbacher wrote:
+> > We can handle that by adding a new IOMAP_NOCREATE iterator flag and
+> > checking for that in iomap_get_folio().  Your patch then turns into
+> > the below.
+> 
+> Exactly.  And as I already pointed out in reply to Dave's original
+> patch what we really should be doing is returning an ERR_PTR from
+> __filemap_get_folio instead of reverse-engineering the expected
+> error code.
 
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/extents.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Ouch, we have a nasty problem.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 3559ea6b0781..3798b2a8e550 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -935,6 +935,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
- 
- 		bh = read_extent_tree_block(inode, path[ppos].p_idx, --i, flags);
- 		if (IS_ERR(bh)) {
-+			EXT4_ERROR_INODE(inode, "IO error reading extent block");
- 			ret = PTR_ERR(bh);
- 			goto err;
- 		}
-@@ -3251,7 +3252,7 @@ static int ext4_split_extent_at(handle_t *handle,
- 		ext4_ext_mark_unwritten(ex2);
- 
- 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
-+	if (err && is_handle_aborted(handle))
- 		goto out;
- 
- 	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
--- 
-2.31.1
+If somebody passes FGP_ENTRY, we can return a shadow entry.  And the
+encodings for shadow entries overlap with the encodings for ERR_PTR,
+meaning that some shadow entries will look like errors.  The way I
+solved this in the XArray code is by shifting the error values by
+two bits and encoding errors as XA_ERROR(-ENOMEM) (for example).
 
+I don't _object_ to introducing XA_ERROR() / xa_err() into the VFS,
+but so far we haven't, and I'd like to make that decision intentionally.
