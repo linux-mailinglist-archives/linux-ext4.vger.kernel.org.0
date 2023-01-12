@@ -2,239 +2,231 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4024B6678DE
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jan 2023 16:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9411E667D1A
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jan 2023 18:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjALPQ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Jan 2023 10:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
+        id S239077AbjALR5D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Jan 2023 12:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240345AbjALPPx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Jan 2023 10:15:53 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3103C3B0
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Jan 2023 07:07:12 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8AA7C5BDEB;
-        Thu, 12 Jan 2023 15:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673536030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDIhu2UFwggw6sF5PHJ6YDLluzfTvRiWRT64c684BLA=;
-        b=dZGPdIycJry6lLSbcTrjv2D8DVqDG10tM4m1y2x8bwyhOfeo1iA5i7ncrdYh3Yf7XpIfv3
-        xAxr2T3dcXqZfH/ZxBeg4W2OztLpYaJX596kgnuJQp6kbIyMRHziGqInrLG4JuNlQQBbTV
-        u8lOmbNgsb6Fv2nISUJhlLJdxuFTMZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673536030;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDIhu2UFwggw6sF5PHJ6YDLluzfTvRiWRT64c684BLA=;
-        b=PkGEiLGQqHQl0FaHtyR9u2UlsBeHg/ftfTy5WoegTB0Ze2pOkB8XQS8c2c9NyaM+dSdspZ
-        nfDcEN8XUfMZfKAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DB3E13776;
-        Thu, 12 Jan 2023 15:07:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id P465Gh4iwGOLGwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 12 Jan 2023 15:07:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EFCECA0744; Thu, 12 Jan 2023 16:07:08 +0100 (CET)
-Date:   Thu, 12 Jan 2023 16:07:08 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ivan Zahariev <famzah@icdsoft.com>, linux-ext4@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: kernel BUG at fs/ext4/inode.c:1914 - page_buffers()
-Message-ID: <20230112150708.y2ws5q3wu2xxow3p@quack3>
-References: <c9e47bc3-3c5f-09ae-9dcc-eb5957d78b1b@icdsoft.com>
- <Y45eV/nA2tj8C94W@mit.edu>
+        with ESMTP id S238233AbjALR4U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Jan 2023 12:56:20 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3220259334;
+        Thu, 12 Jan 2023 09:16:13 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id t15so19496646ybq.4;
+        Thu, 12 Jan 2023 09:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ueu49HbYyw3uKaxLdkdNJFDLhnVwdUbocDy8yp3uK6U=;
+        b=NC4oLmKyiU3uGHOrCu0neAT7WGQm+evGATS22zDmNdb+/2NhuIG0f1cXd+Oo71x2x/
+         d9fjT4jYSUOUBJWL+/XfoQRQcJircib0hCIQNig7qcjc8w6s9NDKCE8BxNIxJ/QIPawr
+         cGDcDEgYwNMISqTlSdoe2gi9E7vXeiwnnDNv9jj5eXpGknHXsQrJmwtldQVLWCvhl3ZG
+         lIyceotTUmoEX6Dvf7U4pSHAwxk6VUESS1YrPAshFBx/sv/5P+3kMTg7lyJXQYkVLv/j
+         nhYbgnk5O/zNb7Ew31BfnKA81FkIZ4oEZPonWMG3EVzYgOtn38OFepH0Ci/+hw4YNxsB
+         DwLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ueu49HbYyw3uKaxLdkdNJFDLhnVwdUbocDy8yp3uK6U=;
+        b=g2I9aUEIrBrUc3z2BzZDtmh6uy7nLPCOudd/f8+E6Q6wCsUvPi8VwR2w7TyR6Gkr2y
+         qRYZ1+wXXyE4NQWz4bRDjJiGPv5S4nqCTSKqgQnT7bmx7Bw7adep11UHcr7kYiRv7vme
+         IbA4Pr/ueHqSC48LBHNPvW9I6matmoEKcPoJUYFOVYzs8ri0J//FrnO//cPz4t5AFKcy
+         QW1R4bYiRYqy5ENFpWbi775+he+8IzYrRyjnNwLCuoBxPZCPLWFazy2H7f+gGfoIjscU
+         J0WSS5pwOw6Obgt4rxQqBQOIIoFeT8xFUX3pCCNWdbwc6IdRetglaSiF16wvOb0jlgth
+         3hBQ==
+X-Gm-Message-State: AFqh2kqZwgwV119Jfc+5GJVr8K5qc7j2orMzr+Nu4I0PnidJaYGRhZJX
+        XXq84hiFcyHpvUIfojJBcGZL4t+0VdQv3fzg0+Fwux0J
+X-Google-Smtp-Source: AMrXdXt4S29867pWpNEcWUZVtr/uqb3UM4fpVgRhzCkqlx5R6lghcyEfD/1N+9wnCtzwrdSh12ePIMINBFYAmF+ldAs=
+X-Received: by 2002:a25:abea:0:b0:762:b86:e82e with SMTP id
+ v97-20020a25abea000000b007620b86e82emr8539372ybi.407.1673543771906; Thu, 12
+ Jan 2023 09:16:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="bpzfpcwgeemreocg"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y45eV/nA2tj8C94W@mit.edu>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230104211448.4804-1-vishal.moola@gmail.com> <20230104211448.4804-11-vishal.moola@gmail.com>
+In-Reply-To: <20230104211448.4804-11-vishal.moola@gmail.com>
+From:   Vishal Moola <vishal.moola@gmail.com>
+Date:   Thu, 12 Jan 2023 09:16:00 -0800
+Message-ID: <CAOzc2pwoY74wdgCn2b=u391BNDmzOQ32e7yDt-ULwoNkhZ_4ig@mail.gmail.com>
+Subject: Re: [PATCH v5 10/23] ext4: Convert mpage_prepare_extent_to_map() to
+ use filemap_get_folios_tag()
+To:     linux-fsdevel@vger.kernel.org, tytso@mit.edu
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Jan 4, 2023 at 1:15 PM Vishal Moola (Oracle)
+<vishal.moola@gmail.com> wrote:
+>
+> Converted the function to use folios throughout. This is in preparation
+> for the removal of find_get_pages_range_tag(). Now supports large
+> folios. This change removes 11 calls to compound_head().
+>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> ---
+>  fs/ext4/inode.c | 65 ++++++++++++++++++++++++-------------------------
+>  1 file changed, 32 insertions(+), 33 deletions(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 9d9f414f99fe..fb6cd994e59a 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -2595,8 +2595,8 @@ static bool ext4_page_nomap_can_writeout(struct page *page)
+>  static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+>  {
+>         struct address_space *mapping = mpd->inode->i_mapping;
+> -       struct pagevec pvec;
+> -       unsigned int nr_pages;
+> +       struct folio_batch fbatch;
+> +       unsigned int nr_folios;
+>         long left = mpd->wbc->nr_to_write;
+>         pgoff_t index = mpd->first_page;
+>         pgoff_t end = mpd->last_page;
+> @@ -2610,18 +2610,17 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+>                 tag = PAGECACHE_TAG_TOWRITE;
+>         else
+>                 tag = PAGECACHE_TAG_DIRTY;
+> -
+> -       pagevec_init(&pvec);
+> +       folio_batch_init(&fbatch);
+>         mpd->map.m_len = 0;
+>         mpd->next_page = index;
+>         while (index <= end) {
+> -               nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
+> -                               tag);
+> -               if (nr_pages == 0)
+> +               nr_folios = filemap_get_folios_tag(mapping, &index, end,
+> +                               tag, &fbatch);
+> +               if (nr_folios == 0)
+>                         break;
+>
+> -               for (i = 0; i < nr_pages; i++) {
+> -                       struct page *page = pvec.pages[i];
+> +               for (i = 0; i < nr_folios; i++) {
+> +                       struct folio *folio = fbatch.folios[i];
+>
+>                         /*
+>                          * Accumulated enough dirty pages? This doesn't apply
+> @@ -2635,10 +2634,10 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+>                                 goto out;
+>
+>                         /* If we can't merge this page, we are done. */
+> -                       if (mpd->map.m_len > 0 && mpd->next_page != page->index)
+> +                       if (mpd->map.m_len > 0 && mpd->next_page != folio->index)
+>                                 goto out;
+>
+> -                       lock_page(page);
+> +                       folio_lock(folio);
+>                         /*
+>                          * If the page is no longer dirty, or its mapping no
+>                          * longer corresponds to inode we are writing (which
+> @@ -2646,16 +2645,16 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+>                          * page is already under writeback and we are not doing
+>                          * a data integrity writeback, skip the page
+>                          */
+> -                       if (!PageDirty(page) ||
+> -                           (PageWriteback(page) &&
+> +                       if (!folio_test_dirty(folio) ||
+> +                           (folio_test_writeback(folio) &&
+>                              (mpd->wbc->sync_mode == WB_SYNC_NONE)) ||
+> -                           unlikely(page->mapping != mapping)) {
+> -                               unlock_page(page);
+> +                           unlikely(folio->mapping != mapping)) {
+> +                               folio_unlock(folio);
+>                                 continue;
+>                         }
+>
+> -                       wait_on_page_writeback(page);
+> -                       BUG_ON(PageWriteback(page));
+> +                       folio_wait_writeback(folio);
+> +                       BUG_ON(folio_test_writeback(folio));
+>
+>                         /*
+>                          * Should never happen but for buggy code in
+> @@ -2666,49 +2665,49 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+>                          *
+>                          * [1] https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz
+>                          */
+> -                       if (!page_has_buffers(page)) {
+> -                               ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", page->index);
+> -                               ClearPageDirty(page);
+> -                               unlock_page(page);
+> +                       if (!folio_buffers(folio)) {
+> +                               ext4_warning_inode(mpd->inode, "page %lu does not have buffers attached", folio->index);
+> +                               folio_clear_dirty(folio);
+> +                               folio_unlock(folio);
+>                                 continue;
+>                         }
+>
+>                         if (mpd->map.m_len == 0)
+> -                               mpd->first_page = page->index;
+> -                       mpd->next_page = page->index + 1;
+> +                               mpd->first_page = folio->index;
+> +                       mpd->next_page = folio->index + folio_nr_pages(folio);
+>                         /*
+>                          * Writeout for transaction commit where we cannot
+>                          * modify metadata is simple. Just submit the page.
+>                          */
+>                         if (!mpd->can_map) {
+> -                               if (ext4_page_nomap_can_writeout(page)) {
+> -                                       err = mpage_submit_page(mpd, page);
+> +                               if (ext4_page_nomap_can_writeout(&folio->page)) {
+> +                                       err = mpage_submit_page(mpd, &folio->page);
+>                                         if (err < 0)
+>                                                 goto out;
+>                                 } else {
+> -                                       unlock_page(page);
+> -                                       mpd->first_page++;
+> +                                       folio_unlock(folio);
+> +                                       mpd->first_page += folio_nr_pages(folio);
+>                                 }
+>                         } else {
+>                                 /* Add all dirty buffers to mpd */
+> -                               lblk = ((ext4_lblk_t)page->index) <<
+> +                               lblk = ((ext4_lblk_t)folio->index) <<
+>                                         (PAGE_SHIFT - blkbits);
+> -                               head = page_buffers(page);
+> +                               head = folio_buffers(folio);
+>                                 err = mpage_process_page_bufs(mpd, head, head,
+> -                                                             lblk);
+> +                                               lblk);
+>                                 if (err <= 0)
+>                                         goto out;
+>                                 err = 0;
+>                         }
+> -                       left--;
+> +                       left -= folio_nr_pages(folio);
+>                 }
+> -               pagevec_release(&pvec);
+> +               folio_batch_release(&fbatch);
+>                 cond_resched();
+>         }
+>         mpd->scanned_until_end = 1;
+>         return 0;
+>  out:
+> -       pagevec_release(&pvec);
+> +       folio_batch_release(&fbatch);
+>         return err;
+>  }
+>
+> --
+> 2.38.1
+>
 
---bpzfpcwgeemreocg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Mon 05-12-22 16:10:47, Theodore Ts'o wrote:
-> On Wed, Nov 23, 2022 at 04:48:01PM +0200, Ivan Zahariev wrote:
-> > Hello,
-> > 
-> > Starting with kernel 5.15 for the past eight months we have a total of 12
-> > kernel panics at a fleet of 1000 KVM/Qemu machines which look the following
-> > way:
-> > 
-> >     kernel BUG at fs/ext4/inode.c:1914
-> > 
-> > Switching from kernel 4.14 to 5.15 almost immediately triggered the problem.
-> > Therefore we are very confident that userland activity is more or less the
-> > same and is not the root cause. The kernel function which triggers the BUG
-> > is __ext4_journalled_writepage(). In 5.15 the code for
-> > __ext4_journalled_writepage() in "fs/ext4/inode.c" is the same as the
-> > current kernel "master". The line where the BUG is triggered is:
-> > 
-> >     struct buffer_head *page_bufs = page_buffers(page)
-> 	...
-> > 
-> > Back to the problem! 99% of the difference between 4.14 and the latest
-> > kernel for __ext4_journalled_writepage() in "fs/ext4/inode.c" comes from the
-> > following commit: https://github.com/torvalds/linux/commit/5c48a7df91499e371ef725895b2e2d21a126e227
-> > 
-> > Is it safe that we revert this patch on the latest 5.15 kernel, so that we
-> > can confirm if this resolves the issue for us?
-> 
-> No, it's not safe to revert this patch; this fixes a potential
-> use-after-free bug identified by Syzkaller (and use-after-frees can
-> sometimes be leveraged into security volunerabilities.
-> 
-> I have not tested this change yet, but looking at the code and the
-> change made in patch yet, this *might* be a possible fix:
-> 
-> 	size = i_size_read(inode);
-> -	if (page->mapping != mapping || page_offset(page) > size) {
-> +	if (page->mapping != mapping || page_offset(page) >= size) {
-> 		/* The page got truncated from under us */
-> 		ext4_journal_stop(handle);
-> 		ret = 0;
-> 		goto out;
-> 	}
-> 
-> Is it fair to say that your workload is using data=journaled and is
-> frequently truncating that might have been recently modified (hence
-> triggering the race between truncate and journalled writepages)?
-> 
-> I wonder if you could come up with a more reliable reproducer so we
-> can test a particular patch.
-
-So after a bit of thought I agree that the commit 5c48a7df91499 ("ext4: fix
-an use-after-free issue about data=journal writeback mode") is broken. The
-problem is when we unlock the page in __ext4_journalled_writepage() anybody
-else can come, writeout the page, and reclaim page buffers (due to memory
-pressure). Previously, bh references were preventing the buffer reclaim to
-happen but now there's nothing to prevent it.
-
-My rewrite of data=journal writeback path fixes this problem as a
-side-effect but perhaps we need a quickfix for stable kernels? Something
-like attached patch?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---bpzfpcwgeemreocg
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-ext4-Fix-crash-in-__ext4_journalled_writepage.patch"
-
-From 17ec3d08a7878625c08ab37c45a8dc3c619db7fb Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Thu, 12 Jan 2023 14:46:12 +0100
-Subject: [PATCH] ext4: Fix crash in __ext4_journalled_writepage()
-
-When __ext4_journalled_writepage() unlocks the page, there's nothing
-that prevents another process from finding the page and reclaiming
-buffers from it (because we have cleaned the page dirty bit and buffers
-needn't have the dirty bit set). When that happens we crash in
-__ext4_journalled_writepage() when trying to get the page buffers. Fix
-the problem by redirtying the page before unlocking it (so that reclaim
-and other users know the page isn't written yet) and by checking the
-page is still dirty after reacquiring the page lock. This should also
-make sure the page still has buffers.
-
-Fixes: 5c48a7df9149 ("ext4: fix an use-after-free issue about data=journal writeback mode")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 9d9f414f99fe..9c8866777430 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -136,7 +136,6 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
- 						   new_size);
- }
- 
--static int __ext4_journalled_writepage(struct page *page, unsigned int len);
- static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
- 				  int pextents);
- 
-@@ -1887,8 +1886,8 @@ int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 	return 0;
- }
- 
--static int __ext4_journalled_writepage(struct page *page,
--				       unsigned int len)
-+static int __ext4_journalled_writepage(struct writeback_control *wbc,
-+				       struct page *page, unsigned int len)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct inode *inode = mapping->host;
-@@ -1898,8 +1897,6 @@ static int __ext4_journalled_writepage(struct page *page,
- 	struct buffer_head *inode_bh = NULL;
- 	loff_t size;
- 
--	ClearPageChecked(page);
--
- 	if (inline_data) {
- 		BUG_ON(page->index != 0);
- 		BUG_ON(len > ext4_get_max_inline_size(inode));
-@@ -1913,6 +1910,7 @@ static int __ext4_journalled_writepage(struct page *page,
- 	 * out from under us.
- 	 */
- 	get_page(page);
-+	redirty_page_for_writepage(wbc, page);
- 	unlock_page(page);
- 
- 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
-@@ -1926,8 +1924,10 @@ static int __ext4_journalled_writepage(struct page *page,
- 
- 	lock_page(page);
- 	put_page(page);
-+	ClearPageChecked(page);
- 	size = i_size_read(inode);
--	if (page->mapping != mapping || page_offset(page) > size) {
-+	if (page->mapping != mapping || page_offset(page) >= size ||
-+	    !clear_page_dirty_for_io(page)) {
- 		/* The page got truncated from under us */
- 		ext4_journal_stop(handle);
- 		ret = 0;
-@@ -2083,7 +2083,7 @@ static int ext4_writepage(struct page *page,
- 		 * It's mmapped pagecache.  Add buffers and journal it.  There
- 		 * doesn't seem much point in redirtying the page here.
- 		 */
--		return __ext4_journalled_writepage(page, len);
-+		return __ext4_journalled_writepage(wbc, page, len);
- 
- 	ext4_io_submit_init(&io_submit, wbc);
- 	io_submit.io_end = ext4_init_io_end(inode, GFP_NOFS);
--- 
-2.35.3
-
-
---bpzfpcwgeemreocg--
+Could someone review this ext4 patch, please? This is one of the
+2 remaining patches that need to be looked at in the series.
