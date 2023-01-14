@@ -2,324 +2,268 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A10366A5C0
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jan 2023 23:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0118766A9FD
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Jan 2023 08:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjAMWN6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Jan 2023 17:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
+        id S229520AbjANHvk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Jan 2023 02:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjAMWN6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Jan 2023 17:13:58 -0500
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA37745BC;
-        Fri, 13 Jan 2023 14:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1673648037; x=1705184037;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=OR6PiXFMA4Ki35FbaksgseRaCAtNl485SZNZ3jl2tHo=;
-  b=LR28LUFAbmPSyJzJjk0vdLG7iSvs1YleMelNdKivufFaMOxsqzqBCjr/
-   3LdEOHwDTcrD9Fll54uIPgaPL6yS23VIRt7WqtJ8JLP4Fdyoz+C5NjD3Z
-   4mLjxdl4XhxbaVCbVut20KQvtoFGQBlxSbooV0Hy0argt0Qs9nxnJOnRf
-   4=;
-X-IronPort-AV: E=Sophos;i="5.97,215,1669075200"; 
-   d="scan'208";a="282696856"
-Subject: Re: EXT4 IOPS degradation in 5.10 compared to 5.4
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2023 22:13:55 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id 94CBA40D47;
-        Fri, 13 Jan 2023 22:13:54 +0000 (UTC)
-Received: from EX19D002UWC004.ant.amazon.com (10.13.138.186) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Fri, 13 Jan 2023 22:13:54 +0000
-Received: from [192.168.8.189] (10.43.160.120) by
- EX19D002UWC004.ant.amazon.com (10.13.138.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.7;
- Fri, 13 Jan 2023 22:13:53 +0000
-Message-ID: <1cfef086-b3c1-6607-9328-b1bf70896ce4@amazon.com>
-Date:   Fri, 13 Jan 2023 14:13:51 -0800
+        with ESMTP id S229498AbjANHvj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Jan 2023 02:51:39 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3BD213B
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Jan 2023 23:51:38 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id k5-20020a6bf705000000b0070483a64c60so3758571iog.18
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Jan 2023 23:51:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BJ2/GdpNqFVa8WL2BF1b4vAT5O7O2lmUCTX6JevYCDA=;
+        b=B9HebuS8CqZ6gtTNDvGeQRb2Rdn7ndrGrLEISxECCexvUj7mi/gRCkSnubHY6T9tmD
+         HbWPGsQ/Efn53sUtfodPRRSpxQhQUNd2lK3EpvKrgwq246HTaVs/A/rcbnLaqLLauhMj
+         i71GjzkEKhwjzO4WDzMDD/PUaFJJPpcoyJ56iYymoVX8cFR/6qmqQiIu+qHawFNvFHcZ
+         TefzsQXcmN/CYsCAD9pgew9lem1ISBs5+2ft2pFUPlWUQEqUCn61XYjTvLVhmDsj9tNp
+         e1qHY/8ptrXLtof7AaQAon2Z0sJtUKOWShs6VqodWeA8MvBTtrc44/qv3MmMeEoIP3C0
+         afHg==
+X-Gm-Message-State: AFqh2krvW6uxxl/HIOfOriZL0eu5WYcw46cru1I696PqFkfOxDkSO0bb
+        dVRJiUiZuMkHj41RzK7jfgB5rBg40hdpjzLn5tnVWWnYSJdN
+X-Google-Smtp-Source: AMrXdXvXT75BpBuD6eHw8gg/07yf8v/CN3X+ME1/yWOn/hujMnGrNnTnVKB7+GUUX2D+/8Yf1MSjxOJE3NDQDwtuN/tVJVrNEl5c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.1
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <abuehaze@amazon.com>
-References: <03d52010-06a8-9bff-0565-b698b48850a9@amazon.com>
- <20230112113820.hjwvieq3ucbwreql@quack3>
-From:   "Bhatnagar, Rishabh" <risbhat@amazon.com>
-In-Reply-To: <20230112113820.hjwvieq3ucbwreql@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.120]
-X-ClientProxiedBy: EX13D32UWB004.ant.amazon.com (10.43.161.36) To
- EX19D002UWC004.ant.amazon.com (10.13.138.186)
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a5d:8d07:0:b0:704:a441:de49 with SMTP id
+ p7-20020a5d8d07000000b00704a441de49mr46675ioj.186.1673682697536; Fri, 13 Jan
+ 2023 23:51:37 -0800 (PST)
+Date:   Fri, 13 Jan 2023 23:51:37 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a74de505f2349eb1@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_setattr
+From:   syzbot <syzbot+cbb68193bdb95af4340a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
-On 1/12/23 3:38 AM, Jan Kara wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> Hi!
->
-> On Wed 11-01-23 18:06:39, Bhatnagar, Rishabh wrote:
->> We have been seeing a consistent 3% degradation in IOPS score between 5.4
->> and 5.10 stable kernels while running fio tests.
->>
->> I'm running test case on m6g.8xlarge AWS instances using arm64. The test
->> involves:
->>
->> 1. Creating 100GB volume with IO1 500 iops. Attaching it to the instance.
->>
->> 2. Setup and mount fs:
->>
->> mke2fs -m 1 -t ext4 -b 4096 -L /mnt /dev/nvme1n1
->> mount -t ext4 -o noatime,nodiratime,data=ordered /dev/nvme1n1 /mnt
->>
->> 3. Install fio package and run following test:
->> (running 16 threads doing random buffered 16kb writes on a file.
->> ioengine=psync, runtime=60secs)
->>
->> jobs=16
->> blocksize="16k"
->> filesize=1000000
->>
->> if [[ -n $1 ]]; then jobs=$1; fi
->> if [[ -n $2 ]]; then blocksize=$2; fi
->>
->> /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
->> --ioengine=psync --buffered=1 --bs=${blocksize} \
->>          --max-jobs=${jobs} --numjobs=${jobs} --runtime=30 --thread \
->>          --filename=file0 --filesize=${filesize} \
->>          --fsync=1 --group_reporting --create_only=1 > /dev/null
->>
->> sudo echo 1 > /proc/sys/vm/drop_caches
->>
->> set -x
->> echo "Running with jobs=${jobs} filesize=${filesize} blocksize=${blocksize}"
->> /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
->> --ioengine=psync --buffered=1 --bs=${blocksize} \
->>          --max-jobs=${jobs} --numjobs=${jobs} --runtime=60 --thread \
->>          --filename=file0 --filesize=${filesize} \
->>          --fsync=1 --group_reporting --time_based
->>
->> After doing some kernel bisecting between we were able to pinpoint this
->> commit that drops the iops score by 10~15 points (~3%).
->> ext4: avoid unnecessary transaction starts during writeback
->> (6b8ed62008a49751fc71fefd2a4f89202a7c2d4d)
->>
->> We see higher iops/bw/total io after reverting the commit compared to base
->> 5.10 kernel.
->> Although the average clat is higher after reverting the commit the higher bw
->> drives the iops score higher as seen in below fio output.
-> I expect the difference is somewhere in waiting for the journal. Can you
-> just check whether there's a difference if you use --fdatasync=1 instead of
-> --fsync=1? With this workload that should avoid waiting for the journal
-> because the only metadata updates are mtime timestamps in the inode.
-There is a difference of 5% with and with the commit if i change this to 
-fdatasync=1.
->> Fio output (5.10.162):
->> write: io=431280KB, bw=7186.3KB/s, iops=449, runt= 60015msec
->> clat (usec): min=6, max=25942, avg=267.76,stdev=1604.25
->> lat (usec): min=6, max=25943, avg=267.93,stdev=1604.25
->> clat percentiles (usec):
->> | 1.00th=[ 9], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24]
->> | 30.00th=[ 34], 40.00th=[ 45], 50.00th=[ 58], 60.00th=[ 70],
->> | 70.00th=[ 81], 80.00th=[ 94], 90.00th=[ 107], 95.00th=[ 114],
->> | 99.00th=[10048], 99.50th=[14016], 99.90th=[20096], 99.95th=[21888],
->> | 99.99th=[24448]
->> lat (usec) : 10=3.46%, 20=12.54%, 50=26.66%, 100=41.16%, 250=13.64%
->> lat (usec) : 500=0.02%, 750=0.03%, 1000=0.01%
->> lat (msec) : 2=0.23%, 4=0.50%, 10=0.73%, 20=0.91%, 50=0.12%
->> cpu : usr=0.02%, sys=0.42%, ctx=299540, majf=0, minf=0
->> IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
->> submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
->> complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
->> issued : total=r=0/w=26955/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
->> latency : target=0, window=0, percentile=100.00%, depth=1
->> Run status group 0 (all jobs):
->> WRITE: io=431280KB, aggrb=7186KB/s, minb=7186KB/s, maxb=7186KB/s,
->> mint=60015msec, maxt=60015msec
->> Disk stats (read/write):
->> nvme1n1: ios=0/30627, merge=0/2125, ticks=0/410990, in_queue=410990,
->> util=99.94%
->>
->> Fio output (5.10.162 with revert):
->> write: io=441920KB, bw=7363.7KB/s, iops=460, runt= 60014msec
->> clat (usec): min=6, max=35768, avg=289.09, stdev=1736.62
->> lat (usec): min=6, max=35768, avg=289.28,stdev=1736.62
->> clat percentiles (usec):
->> | 1.00th=[ 8], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24],
->> | 30.00th=[ 36], 40.00th=[ 46], 50.00th=[ 59], 60.00th=[ 71],
->> | 70.00th=[ 83], 80.00th=[ 97], 90.00th=[ 110], 95.00th=[ 117],
->> | 99.00th=[10048], 99.50th=[14144], 99.90th=[21632], 99.95th=[25984],
->> | 99.99th=[28288]
->> lat (usec) : 10=4.13%, 20=11.67%, 50=26.59%, 100=39.57%, 250=15.28%
->> lat (usec) : 500=0.03%, 750=0.03%, 1000=0.03%
->> lat (msec) : 2=0.20%, 4=0.64%, 10=0.80%, 20=0.86%, 50=0.18%
->> cpu : usr=0.01%, sys=0.43%, ctx=313909, majf=0, minf=0
->> IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
->> submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
->> complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
->> issued : total=r=0/w=27620/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
->> latency : target=0, window=0, percentile=100.00%, depth=1
->> Run status group 0 (all jobs):
->> WRITE: io=441920KB, aggrb=7363KB/s, minb=7363KB/s, maxb=7363KB/s,
->> mint=60014msec, maxt=60014msec
->> Disk stats (read/write):
->> nvme1n1: ios=0/31549, merge=0/2348, ticks=0/409221, in_queue=409221,
->> util=99.88%
->>
->>
->> Also i looked ext4_writepages latency which increases when the commit is
->> reverted. (This makes sense since the commit avoids unnecessary
->> transactions).
->>
->> ./funclatency ext4_writepages -->(5.10.162)
->> avg = 7734912 nsecs, total: 134131121171 nsecs, count: 17341
->>
->> ./funclatency ext4_writepages -->(5.10.162 with revert)
->> avg = 9036068 nsecs, total: 168956404886 nsecs, count: 18698
->>
->>
->> Looking at the journal transaction data I can see that the average
->> transaction commit time decreases after reverting the commit.
->> This probably helps in the IOPS score.
-> So what the workload is doing is:
-> write()
->    inode lock
->    dirty 16k of page cache
->    dirty inode i_mtime
->    inode unlock
-> fsync()
->    walk all inode pages, write dirty ones
->    wait for all pages under writeback in the inode to complete IO
->    force transaction commit and wait for it
->
-> Now this has the best throughput (and the worst latency) if all 16
-> processes work in lockstep - i.e., like:
->
->    task1         task2           task3 ...
->    write()
->                  write()
->                                  write()
->    fsync()
->                  fsync()
->                                  fsync()
->
-> because in that case we writeout all dirty pages from 16 processes in one
-> sweep together and also we accumulate 16 mtime updates in single
-> transaction commit.
->
-> Now I suspect the commit you've identified leads to less synchronization
-> between the processes and thus in less batching happening. In particular
-> before the commit we've called mpage_prepare_extent_to_map() twice and the
-> second invocation starts at where the first invocation saw last dirty page.
-> So it potentially additionally writes newly dirtied pages beyond that place
-> and that effectively synchronizes processes more.
->
-> To confirm the theory, it might be interesting to gather a histogram of a
-> number of pages written back by ext4_writepages() call with / without the
-> commit.
->
->                                                                  Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+syzbot found the following issue on:
 
-Hi Jan
+HEAD commit:    358a161a6a9e Merge branch 'for-next/fixes' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=166001ba480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2573056c6a11f00d
+dashboard link: https://syzkaller.appspot.com/bug?extid=cbb68193bdb95af4340a
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1287585a480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167d644a480000
 
-I collected some data w.r.t to number of pages being written by ext4_writepages. What you pointed out seems to be correct.
-Without the commit I see more batching (more writeback count from 4-20 pages)happening compared to with the commit.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/99d14e0f4c19/disk-358a161a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/23275b612976/vmlinux-358a161a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ed79195fac61/Image-358a161a.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6e1f0d31d9b5/mount_0.gz
 
-Without the commit (reverted):
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cbb68193bdb95af4340a@syzkaller.appspotmail.com
 
-[0-1]   —>  4246
-[2-3]   —>  312
-[4-5]   —>  20836
-[6-7]   —>  205
-[8-9]   —>  895
-[10-11] —>  56
-[12-13] —>  422
-[14-15] —>  62
-[16-17] —>  234
-[18-19] —>  66
-[20-21] —>  77
-[22-23] —>  9
-[24-25] —>  26
-[26-27] —>  1
-[28-29] —>  13
+EXT4-fs error (device loop0): ext4_mb_mark_diskspace_used:3789: comm syz-executor184: Allocating blocks 44-48 which overlap fs metadata
+EXT4-fs error (device loop0): ext4_xattr_block_set:2175: inode #12: comm syz-executor184: bad block 0
+======================================================
+WARNING: possible circular locking dependency detected
+6.2.0-rc3-syzkaller-16369-g358a161a6a9e #0 Not tainted
+------------------------------------------------------
+syz-executor184/4449 is trying to acquire lock:
+ffff0000cb1ae540 (mapping.invalidate_lock){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:801 [inline]
+ffff0000cb1ae540 (mapping.invalidate_lock){++++}-{3:3}, at: ext4_setattr+0x804/0xb38 fs/ext4/inode.c:5545
 
-Average page count : 3.9194
+but task is already holding lock:
+ffff0000cb1ae3a0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
+ffff0000cb1ae3a0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: do_truncate+0xf8/0x154 fs/open.c:63
+
+which lock already depends on the new lock.
 
 
-With the commit:
+the existing dependency chain (in reverse order) is:
 
-[0-1]   —> 1635
-[2-3]   —> 123
-[4-5]   —> 24302
-[6-7]   —> 38
-[8-9]   —> 604
-[10-11] —> 19
-[12-13] —> 123
-[14-15] —> 12
-[16-17] —> 24
-[18-19] —> 3
-[20-21] —> 8
-[22-23] —> 1
-[24-25] —> 3
-[26-27] —> 0
-[28-29] —> 1
+-> #3 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}:
+       down_write+0x5c/0x88 kernel/locking/rwsem.c:1562
+       inode_lock include/linux/fs.h:756 [inline]
+       ext4_xattr_inode_create fs/ext4/xattr.c:1457 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1540 [inline]
+       ext4_xattr_set_entry+0xdf4/0xe40 fs/ext4/xattr.c:1669
+       ext4_xattr_block_set+0x3d0/0x1404 fs/ext4/xattr.c:1975
+       ext4_xattr_set_handle+0x724/0x9a0 fs/ext4/xattr.c:2390
+       ext4_xattr_set+0x104/0x1d4 fs/ext4/xattr.c:2492
+       ext4_xattr_trusted_set+0x4c/0x64 fs/ext4/xattr_trusted.c:38
+       __vfs_setxattr+0x290/0x29c fs/xattr.c:202
+       __vfs_setxattr_noperm+0xcc/0x320 fs/xattr.c:236
+       __vfs_setxattr_locked+0x16c/0x194 fs/xattr.c:297
+       vfs_setxattr+0xf4/0x1f4 fs/xattr.c:323
+       do_setxattr fs/xattr.c:608 [inline]
+       setxattr fs/xattr.c:631 [inline]
+       path_setxattr+0x32c/0x424 fs/xattr.c:650
+       __do_sys_setxattr fs/xattr.c:666 [inline]
+       __se_sys_setxattr fs/xattr.c:662 [inline]
+       __arm64_sys_setxattr+0x2c/0x40 fs/xattr.c:662
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
 
-Average page count : 3.9184
+-> #2 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x5c/0x88 kernel/locking/rwsem.c:1562
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_xattr_set_handle+0xd0/0x9a0 fs/ext4/xattr.c:2305
+       ext4_initxattrs+0x50/0xac fs/ext4/xattr_security.c:44
+       security_inode_init_security+0x208/0x278 security/security.c:1147
+       ext4_init_security+0x44/0x58 fs/ext4/xattr_security.c:58
+       __ext4_new_inode+0x1a88/0x1c78 fs/ext4/ialloc.c:1324
+       ext4_create+0x124/0x26c fs/ext4/namei.c:2809
+       lookup_open fs/namei.c:3413 [inline]
+       open_last_lookups fs/namei.c:3481 [inline]
+       path_openat+0x804/0x11f0 fs/namei.c:3711
+       do_filp_open+0xdc/0x1b8 fs/namei.c:3741
+       do_sys_openat2+0xb8/0x22c fs/open.c:1310
+       do_sys_open fs/open.c:1326 [inline]
+       __do_sys_openat fs/open.c:1342 [inline]
+       __se_sys_openat fs/open.c:1337 [inline]
+       __arm64_sys_openat+0xb0/0xe0 fs/open.c:1337
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
 
-Also looking at journal data I see that without the commit we have more handles per journal transaction:
+-> #1 (jbd2_handle){.+.+}-{0:0}:
+       start_this_handle+0x6e0/0x7fc fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x148/0x1f0 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x158/0x210 fs/ext4/ext4_jbd2.c:111
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_truncate+0x3b4/0x72c fs/ext4/inode.c:4315
+       ext4_setattr+0x900/0xb38 fs/ext4/inode.c:5622
+       notify_change+0x738/0x7d0 fs/attr.c:482
+       do_truncate+0x10c/0x154 fs/open.c:65
+       do_sys_ftruncate+0x1b4/0x1c4 fs/open.c:193
+       __do_sys_ftruncate fs/open.c:204 [inline]
+       __se_sys_ftruncate fs/open.c:202 [inline]
+       __arm64_sys_ftruncate+0x28/0x38 fs/open.c:202
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
 
-Without the commit:
-cat /proc/fs/jbd2/nvme1n1-8/info
-2092 transactions (2091 requested), each up to 8192 blocks
-average:
-0ms waiting for transaction
-0ms request delay
-20ms running transaction
-0ms transaction was being locked
-0ms flushing data (in ordered mode)
-20ms logging transaction
-15981us average transaction commit time
-67 handles per transaction
-1 blocks per transaction
-2 logged blocks per transaction
+-> #0 (mapping.invalidate_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3097 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+       validate_chain kernel/locking/lockdep.c:3831 [inline]
+       __lock_acquire+0x1530/0x3084 kernel/locking/lockdep.c:5055
+       lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
+       down_write+0x5c/0x88 kernel/locking/rwsem.c:1562
+       filemap_invalidate_lock include/linux/fs.h:801 [inline]
+       ext4_setattr+0x804/0xb38 fs/ext4/inode.c:5545
+       notify_change+0x738/0x7d0 fs/attr.c:482
+       do_truncate+0x10c/0x154 fs/open.c:65
+       handle_truncate+0xf4/0x154 fs/namei.c:3216
+       do_open fs/namei.c:3561 [inline]
+       path_openat+0xee0/0x11f0 fs/namei.c:3714
+       do_filp_open+0xdc/0x1b8 fs/namei.c:3741
+       do_sys_openat2+0xb8/0x22c fs/open.c:1310
+       do_sys_open fs/open.c:1326 [inline]
+       __do_sys_openat fs/open.c:1342 [inline]
+       __se_sys_openat fs/open.c:1337 [inline]
+       __arm64_sys_openat+0xb0/0xe0 fs/open.c:1337
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
 
-With the commit:
-cat /proc/fs/jbd2/nvme1n1-8/info
-2143 transactions (2143 requested), each up to 8192 blocks
-average:
-0ms waiting for transaction
-0ms request delay
-0ms running transaction
-0ms transaction was being locked
-0ms flushing data (in ordered mode)
-20ms logging transaction
-20731us average transaction commit time
-51 handles per transaction
-1 blocks per transaction
-3 logged blocks per transaction
+other info that might help us debug this:
 
-Thanks
-Rishabh
+Chain exists of:
+  mapping.invalidate_lock --> &ei->xattr_sem --> &ea_inode->i_rwsem#8/1
 
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ea_inode->i_rwsem#8/1);
+                               lock(&ei->xattr_sem);
+                               lock(&ea_inode->i_rwsem#8/1);
+  lock(mapping.invalidate_lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor184/4449:
+ #0: ffff0000c6723460 (sb_writers#3){.+.+}-{0:0}, at: mnt_want_write+0x20/0x64 fs/namespace.c:508
+ #1: ffff0000cb1ae3a0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
+ #1: ffff0000cb1ae3a0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: do_truncate+0xf8/0x154 fs/open.c:63
+
+stack backtrace:
+CPU: 1 PID: 4449 Comm: syz-executor184 Not tainted 6.2.0-rc3-syzkaller-16369-g358a161a6a9e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Call trace:
+ dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:163
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
+ dump_stack+0x1c/0x58 lib/dump_stack.c:113
+ print_circular_bug+0x2c4/0x2c8 kernel/locking/lockdep.c:2055
+ check_noncircular+0x14c/0x154 kernel/locking/lockdep.c:2177
+ check_prev_add kernel/locking/lockdep.c:3097 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+ validate_chain kernel/locking/lockdep.c:3831 [inline]
+ __lock_acquire+0x1530/0x3084 kernel/locking/lockdep.c:5055
+ lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
+ down_write+0x5c/0x88 kernel/locking/rwsem.c:1562
+ filemap_invalidate_lock include/linux/fs.h:801 [inline]
+ ext4_setattr+0x804/0xb38 fs/ext4/inode.c:5545
+ notify_change+0x738/0x7d0 fs/attr.c:482
+ do_truncate+0x10c/0x154 fs/open.c:65
+ handle_truncate+0xf4/0x154 fs/namei.c:3216
+ do_open fs/namei.c:3561 [inline]
+ path_openat+0xee0/0x11f0 fs/namei.c:3714
+ do_filp_open+0xdc/0x1b8 fs/namei.c:3741
+ do_sys_openat2+0xb8/0x22c fs/open.c:1310
+ do_sys_open fs/open.c:1326 [inline]
+ __do_sys_openat fs/open.c:1342 [inline]
+ __se_sys_openat fs/open.c:1337 [inline]
+ __arm64_sys_openat+0xb0/0xe0 fs/open.c:1337
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x140 arch/arm64/kernel/syscall.c:197
+ el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
