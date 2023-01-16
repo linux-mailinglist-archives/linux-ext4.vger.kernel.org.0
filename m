@@ -2,247 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E4F66B332
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Jan 2023 18:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCE666B546
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jan 2023 02:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjAORaB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Jan 2023 12:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
+        id S231669AbjAPBgF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Jan 2023 20:36:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbjAORaA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Jan 2023 12:30:00 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940E2CC21;
-        Sun, 15 Jan 2023 09:29:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E1A860C74;
-        Sun, 15 Jan 2023 17:29:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8661BC433EF;
-        Sun, 15 Jan 2023 17:29:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673803798;
-        bh=VdHKHTesHkOR+VQA+tB7F98WHozlRtUirmeZHuGzLV4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uli9DJ/Q5Q1yoH8SGZpUMaQ46hx1s/dFJsF8mgwZLbabn6WXEIac0BG+iIeyvMJXI
-         0gcnfrr88YjF+NvS+wyDDjVSCYHmxtJ5m3ayGVpbPESdOr+1bVM1DIqVHofYS2b1sM
-         Ec+zqX8SGyDFjX/FTjc+67FCg/mPu2ZB3Sm4zE8Fze4HtXQb3GulIEH7NR6Q3/l79H
-         84yZQhvEqsPt60hhlUiiHiJ+eUyJudaDMNo7GZO1UF/5vOMW/jeyrkszf+QJDodQnO
-         gij8FI1pc1UIHnooNcN/cqEKB2loXUPvhIp125n7LOfVz9WLc320U4GuM05euZ4NIN
-         R6DrDSFLmBtrg==
-Date:   Sun, 15 Jan 2023 09:29:58 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Subject: Re: [RFC v6 08/10] iomap/xfs: Eliminate the iomap_valid handler
-Message-ID: <Y8Q4FmhYehpQPZ3Z@magnolia>
-References: <20230108194034.1444764-1-agruenba@redhat.com>
- <20230108194034.1444764-9-agruenba@redhat.com>
- <20230108215911.GP1971568@dread.disaster.area>
- <CAHc6FU4z1nC8zdM8NvUyMqU29_J7_oNu1pvBHuOvR+M6gq7F0Q@mail.gmail.com>
- <20230109225453.GQ1971568@dread.disaster.area>
- <CAHpGcM+urV5LYpTZQWTRoK6VWaLx0sxk3mDe_kd3VznMY9woVw@mail.gmail.com>
+        with ESMTP id S231672AbjAPBgE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Jan 2023 20:36:04 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812E435A2;
+        Sun, 15 Jan 2023 17:36:02 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NwF3J3p0mz4f3nq9;
+        Mon, 16 Jan 2023 09:35:56 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP3 (Coremail) with SMTP id _Ch0CgBH9CH9qcRjJsKTBg--.6034S4;
+        Mon, 16 Jan 2023 09:35:59 +0800 (CST)
+From:   Ye Bin <yebin@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
+        Ye Bin <yebin10@huawei.com>,
+        syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
+Subject: [PATCH v2] ext4: fix WARNING in mb_find_extent
+Date:   Mon, 16 Jan 2023 10:00:15 +0800
+Message-Id: <20230116020015.1506120-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcM+urV5LYpTZQWTRoK6VWaLx0sxk3mDe_kd3VznMY9woVw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: _Ch0CgBH9CH9qcRjJsKTBg--.6034S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3GFW8Wr17Xry8WF4xZFyrWFg_yoW7Cw1rp3
+        W3Ar1UGr4rWr1UuF4fJr1FvF1rGw1xu3W8JrWfur1UXFy7Jw17GFyvyFy8XayqqFWUArnx
+        XFn8Gw4xKr15WaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+        c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+        CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+        Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+        daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 10, 2023 at 02:09:07AM +0100, Andreas Grünbacher wrote:
-> Am Mo., 9. Jan. 2023 um 23:58 Uhr schrieb Dave Chinner <david@fromorbit.com>:
-> > On Mon, Jan 09, 2023 at 07:45:27PM +0100, Andreas Gruenbacher wrote:
-> > > On Sun, Jan 8, 2023 at 10:59 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > On Sun, Jan 08, 2023 at 08:40:32PM +0100, Andreas Gruenbacher wrote:
-> > > > > Eliminate the ->iomap_valid() handler by switching to a ->get_folio()
-> > > > > handler and validating the mapping there.
-> > > > >
-> > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > >
-> > > > I think this is wrong.
-> > > >
-> > > > The ->iomap_valid() function handles a fundamental architectural
-> > > > issue with cached iomaps: the iomap can become stale at any time
-> > > > whilst it is in use by the iomap core code.
-> > > >
-> > > > The current problem it solves in the iomap_write_begin() path has to
-> > > > do with writeback and memory reclaim races over unwritten extents,
-> > > > but the general case is that we must be able to check the iomap
-> > > > at any point in time to assess it's validity.
-> > > >
-> > > > Indeed, we also have this same "iomap valid check" functionality in the
-> > > > writeback code as cached iomaps can become stale due to racing
-> > > > writeback, truncated, etc. But you wouldn't know it by looking at the iomap
-> > > > writeback code - this is currently hidden by XFS by embedding
-> > > > the checks into the iomap writeback ->map_blocks function.
-> > > >
-> > > > That is, the first thing that xfs_map_blocks() does is check if the
-> > > > cached iomap is valid, and if it is valid it returns immediately and
-> > > > the iomap writeback code uses it without question.
-> > > >
-> > > > The reason that this is embedded like this is that the iomap did not
-> > > > have a validity cookie field in it, and so the validity information
-> > > > was wrapped around the outside of the iomap_writepage_ctx and the
-> > > > filesystem has to decode it from that private wrapping structure.
-> > > >
-> > > > However, the validity information iin the structure wrapper is
-> > > > indentical to the iomap validity cookie,
-> > >
-> > > Then could that part of the xfs code be converted to use
-> > > iomap->validity_cookie so that struct iomap_writepage_ctx can be
-> > > eliminated?
-> >
-> > Yes, that is the plan.
-> >
-> > >
-> > > > and so the direction I've
-> > > > been working towards is to replace this implicit, hidden cached
-> > > > iomap validity check with an explicit ->iomap_valid call and then
-> > > > only call ->map_blocks if the validity check fails (or is not
-> > > > implemented).
-> > > >
-> > > > I want to use the same code for all the iomap validity checks in all
-> > > > the iomap core code - this is an iomap issue, the conditions where
-> > > > we need to check for iomap validity are different for depending on
-> > > > the iomap context being run, and the checks are not necessarily
-> > > > dependent on first having locked a folio.
-> > > >
-> > > > Yes, the validity cookie needs to be decoded by the filesystem, but
-> > > > that does not dictate where the validity checking needs to be done
-> > > > by the iomap core.
-> > > >
-> > > > Hence I think removing ->iomap_valid is a big step backwards for the
-> > > > iomap core code - the iomap core needs to be able to formally verify
-> > > > the iomap is valid at any point in time, not just at the point in
-> > > > time a folio in the page cache has been locked...
-> > >
-> > > We don't need to validate an iomap "at any time". It's two specific
-> > > places in the code in which we need to check, and we're not going to
-> > > end up with ten more such places tomorrow.
-> >
-> > Not immediately, but that doesn't change the fact this is not a
-> > filesystem specific issue - it's an inherent characteristic of
-> > cached iomaps and unsynchronised extent state changes that occur
-> > outside exclusive inode->i_rwsem IO context (e.g. in writeback and
-> > IO completion contexts).
-> >
-> > Racing mmap + buffered writes can expose these state changes as the
-> > iomap bufferred write IO path is not serialised against the iomap
-> > mmap IO path except via folio locks. Hence a mmap page fault can
-> > invalidate a cached buffered write iomap by causing a hole ->
-> > unwritten, hole -> delalloc or hole -> written conversion in the
-> > middle of the buffered write range. The buffered write still has a
-> > hole mapping cached for that entire range, and it is now incorrect.
-> >
-> > If the mmap write happens to change extent state at the trailing
-> > edge of a partial buffered write, data corruption will occur if we
-> > race just right with writeback and memory reclaim. I'm pretty sure
-> > that this corruption can be reporduced on gfs2 if we try hard enough
-> > - generic/346 triggers the mmap/write race condition, all that is
-> > needed from that point is for writeback and reclaiming pages at
-> > exactly the right time...
-> >
-> > > I'd prefer to keep those
-> > > filesystem internals in the filesystem specific code instead of
-> > > exposing them to the iomap layer. But that's just me ...
-> >
-> > My point is that there is nothing XFS specific about these stale
-> > cached iomap race conditions, nor is it specifically related to
-> > folio locking. The folio locking inversions w.r.t. iomap caching and
-> > the interactions with writeback and reclaim are simply the
-> > manifestation that brought the issue to our attention.
-> >
-> > This is why I think hiding iomap validation filesystem specific page
-> > cache allocation/lookup functions is entirely the wrong layer to be
-> > doing iomap validity checks. Especially as it prevents us from
-> > adding more validity checks in the core infrastructure when we need
-> > them in future.
-> >
-> > AFAIC, an iomap must carry with it a method for checking
-> > that it is still valid. We need it in the write path, we need it in
-> > the writeback path. If we want to relax the restrictions on clone
-> > operations (e.g. shared locking on the source file), we'll need to
-> > be able to detect stale cached iomaps in those paths, too. And I
-> > haven't really thought through all the implications of shared
-> > locking on buffered writes yet, but that may well require more
-> > checks in other places as well.
-> >
-> > > If we ignore this particular commit for now, do you have any
-> > > objections to the patches in this series? If not, it would be great if
-> > > we could add the other patches to iomap-for-next.
-> >
-> > I still don't like moving page cache operations into individual
-> > filesystems, but for the moment I can live with the IOMAP_NOCREATE
-> > hack to drill iomap state through the filesystem without the
-> > filesystem being aware of it.
-> 
-> Alright, works for me. Darrick?
+From: Ye Bin <yebin10@huawei.com>
 
-Works for me too.
+Syzbot found the following issue:
 
-I've wondered if IOMAP_NOCREATE could be useful for more things (e.g.
-determining if part of a file has been cached) though I've not thought
-of a good usecase for that.  Maybe something along the lines of a
-"userspace wants us to redirty this critical file after fsync returned
-EIO" type thing?
+EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
+EXT4-fs (loop0): orphan cleanup on readonly fs
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
+Modules linked in:
+CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
+RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
+RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
+RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
+RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
+R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
+R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
+FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
+ ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
+ ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
+ ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
+ ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
+ ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
+ ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
+ ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
+ write_blk fs/quota/quota_tree.c:64 [inline]
+ get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
+ do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+ dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+ qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
+ v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
+ dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
+ ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
+ dqget+0x999/0xdc0 fs/quota/dquot.c:914
+ __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
+ ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
+ ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5516 [inline]
+ ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
+ get_tree_bdev+0x400/0x620 fs/super.c:1282
+ vfs_get_tree+0x88/0x270 fs/super.c:1489
+ do_new_mount+0x289/0xad0 fs/namespace.c:3145
+ do_mount fs/namespace.c:3488 [inline]
+ __do_sys_mount fs/namespace.c:3697 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-> > > By the way, I'm still not sure if gfs2 is affected by this whole iomap
-> > > validation drama given that it neither implements unwritten extents
-> > > nor delayed allocation. This is a mess.
-> >
-> > See above - I'm pretty sure it will be, but it may be very difficult
-> > to expose. After all, it's taken several years before anyone noticed
-> > this issue with XFS, even though we were aware of the issue of stale
-> > cached iomaps causing data corruption in the writeback path....
-> 
-> Okay, that's all pretty ugly. Thanks a lot for the detailed explanation.
+Add some debug information:
+mb_find_extent: mb_find_extent block=41, order=0 needed=64 next=0 ex=0/41/1@3735929054 64 64 7
+block_bitmap: ff 3f 0c 00 fc 01 00 00 d2 3d 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 
-I don't have any objections to pulling everything except patches 8 and
-10 for testing this week.  I find myself more in agreement with
-Christoph and Andreas that whoever gets the folio is also responsible
-for knowing if revalidating the mapping is necessary and then doing it.
-However, I still have enough questions about the mapping revalidation to
-make that a separate discussion.
+Acctually, blocks per group is 64, but block bitmap indicate at least has
+128 blocks. Now, ext4_validate_block_bitmap() didn't check invalid block's
+bitmap if set.
+To resolve above issue, add check like fsck "Padding at end of block bitmap is
+not set".
 
-Questions, namely:
+Reported-by: syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/balloc.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-1. Does zonefs need to revalidate mappings?  The mappings are 1:1 so I
-don't think it does, but OTOH zone pointer management might complicate
-that.
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 8ff4b9192a9f..f2c415f31b75 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -303,6 +303,22 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
+ 	return desc;
+ }
+ 
++static ext4_fsblk_t ext4_valid_block_bitmap_padding(struct super_block *sb,
++						    ext4_group_t block_group,
++						    struct buffer_head *bh)
++{
++	ext4_grpblk_t next_zero_bit;
++	unsigned long bitmap_size = sb->s_blocksize * 8;
++	unsigned int offset = num_clusters_in_group(sb, block_group);
++
++	if (bitmap_size <= offset)
++		return 0;
++
++	next_zero_bit = ext4_find_next_zero_bit(bh->b_data, bitmap_size, offset);
++
++	return (next_zero_bit < bitmap_size ? next_zero_bit : 0);
++}
++
+ /*
+  * Return the block number which was discovered to be invalid, or 0 if
+  * the block bitmap is valid.
+@@ -401,6 +417,15 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
+ 					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+ 		return -EFSCORRUPTED;
+ 	}
++	blk = ext4_valid_block_bitmap_padding(sb, block_group, bh);
++	if (unlikely(blk != 0)) {
++		ext4_unlock_group(sb, block_group);
++		ext4_error(sb, "bg %u: block %llu: padding at end of block bitmap is not set",
++			   block_group, blk);
++		ext4_mark_group_bitmap_corrupted(sb, block_group,
++						 EXT4_GROUP_INFO_BBITMAP_CORRUPT);
++		return -EFSCORRUPTED;
++	}
+ 	set_buffer_verified(bh);
+ verified:
+ 	ext4_unlock_group(sb, block_group);
+-- 
+2.31.1
 
-2. How about porting the writeback iomap validation to use this
-mechanism?  (I suspect Dave might already be working on this...)
-
-2. Do we need to revalidate mappings for directio writes?  I think the
-answer is no (for xfs) because the ->iomap_begin call will allocate
-whatever blocks are needed and truncate/punch/reflink block on the
-iolock while the directio writes are pending, so you'll never end up
-with a stale mapping.  But I don't know if that statement applies
-generally...
-
---D
-
-> Cheers,
-> Andreas
-> 
-> > Cheers,
-> >
-> > Dave.
-> > --
-> > Dave Chinner
-> > david@fromorbit.com
