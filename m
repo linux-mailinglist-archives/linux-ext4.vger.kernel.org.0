@@ -2,247 +2,253 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AD766BE21
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jan 2023 13:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3477566BF94
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jan 2023 14:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbjAPMtd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Jan 2023 07:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        id S231146AbjAPNTV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Jan 2023 08:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjAPMtc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Jan 2023 07:49:32 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1314EA3;
-        Mon, 16 Jan 2023 04:49:31 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d3so30215720plr.10;
-        Mon, 16 Jan 2023 04:49:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=44zs51iYjVjPaEr7KjXam/bis8RNnVGo7ZyjmlmrgOM=;
-        b=p6JdB7W3FdUHN55Tn9TUB4CGmWgFziCdM5qEuTZatL1nkyrhaiDUvvW5UHaBmq4Rh4
-         64mFbaTsi75AOumTcVU/SG5X2l8KsYJKPOd9Xq7ryZekGA6AerqHigjvL95N9k7bItw5
-         3SoJqs5QThl8T0DL6T3MulphXmMTvv1eFwmHgznJjIlAIRdB6WNmHOmNUS/KwnKGPDTy
-         6IM5X4rUk1rkq8lfSm5FVtHx55Up2IugQLaxeiuyDyN2taabV4S+gSlMX2R8RpQVxF0Y
-         G5P/Z0Ej92jGG1oja6eMxaV7o+pAtp7uUkEwxSBAIYZCJu2vXNbzr0coXH0pQkLXKP0I
-         eDVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=44zs51iYjVjPaEr7KjXam/bis8RNnVGo7ZyjmlmrgOM=;
-        b=oP9Hz+aL6Nuzi4MFFG6F+OeW5IqATAUgFtycjQ77zHHJ9O4vVud49sQtGbbsk2Gvi7
-         Wr2dHpec6HhiXQjOGhxTgSizun9McSKEdFINYEhNZsKIQ/7Om6zyzXNo2rGQHoeG9m2+
-         76ckav5dsW++5HZ13xwH9hRXBqRHl9KSwd4GVjkARfjWC2K1Vm32cFtvPPvmoekUk0+E
-         I3+gKw8vX2vhbM3KXD86tIUsvxUS7CXBfY0SZxlaaS7wjjUgSYedtGO4TqaCftSRF+fd
-         wqzfT0z7VnKWslAGnAAGAOcBfjvG6PSDA1SMQ35YJQH1n8BermkBptl5TBOE0d+5m7DG
-         oZPA==
-X-Gm-Message-State: AFqh2kpWLP0U+q2PAKA8KdTURKgIKeaZvb2m9bzQDNle8BDhUzx2bWd8
-        xeY8DVjBgmlm90jkkyGevUw=
-X-Google-Smtp-Source: AMrXdXvQx3vpFKnQF9XPgmoFE5QQUGDoVlw6oov/aXy1uJQciRKkjbBZq6EeXvTaLTALl/jP0RiahA==
-X-Received: by 2002:a17:903:240b:b0:192:991f:d8e8 with SMTP id e11-20020a170903240b00b00192991fd8e8mr73835795plo.53.1673873370744;
-        Mon, 16 Jan 2023 04:49:30 -0800 (PST)
-Received: from localhost ([129.41.58.21])
-        by smtp.gmail.com with ESMTPSA id jd9-20020a170903260900b00186727e5f5csm19242387plb.248.2023.01.16.04.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jan 2023 04:49:29 -0800 (PST)
-Date:   Mon, 16 Jan 2023 18:19:20 +0530
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>,
-        syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix WARNING in mb_find_extent
-Message-ID: <20230116124920.ljzoax6ao6hxposw@rh-tp>
-References: <20230113100205.2987532-1-yebin@huaweicloud.com>
+        with ESMTP id S231663AbjAPNSj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Jan 2023 08:18:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E475249;
+        Mon, 16 Jan 2023 05:18:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=omN11K0GI/xhx3NUwdC4C9fLf+3VpRmOQ0DYrSkQAI8=; b=b3cUub8BzpeSKs65+jE7bP9acg
+        X9wv+OJT9mphIB0pbumFvGRvN7B4sryhv07C8XjHqoFGU/HbJp4xWtNxWe7I6CYDx8vu3Ma8Advdf
+        umhAFCq7+w8TlGjO3Xd9zqgKEtcG8M9ukYZaeuGtt1FneWTQnvEQijaBAODQiD/LSCSNOhON2WD0V
+        Hu11mAApRKqpA3DeM4TJYkZZz94qDHxyx12B56CA42TtXPifErJvfA9bdgOE7t/EKowABnAwNMnMg
+        qTpEEjI1FxLozF1Ayx4ll1iPLz7rpBo2/sWYs7+PJFo8qEOudirIlWsXdlZYeMWummt23HdhcNATl
+        6rxgszPw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pHPNH-008lPF-Hk; Mon, 16 Jan 2023 13:18:07 +0000
+Date:   Mon, 16 Jan 2023 13:18:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC v6 04/10] iomap: Add iomap_get_folio helper
+Message-ID: <Y8VOjyLW1Q4lbQvS@casper.infradead.org>
+References: <20230108213305.GO1971568@dread.disaster.area>
+ <20230108194034.1444764-1-agruenba@redhat.com>
+ <20230108194034.1444764-5-agruenba@redhat.com>
+ <20230109124642.1663842-1-agruenba@redhat.com>
+ <Y70l9ZZXpERjPqFT@infradead.org>
+ <Y71pWJ0JHwGrJ/iv@casper.infradead.org>
+ <Y8QxYjy+4Kjg05rB@magnolia>
+ <Y8QyqlAkLyysv8Qd@magnolia>
+ <Y8TkmbZfe3L/Yeky@casper.infradead.org>
+ <Y8T+Al0aqRcXWzwt@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230113100205.2987532-1-yebin@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y8T+Al0aqRcXWzwt@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 23/01/13 06:02PM, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
->
-> Syzbot found the following issue:
->
-> EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
-> EXT4-fs (loop0): orphan cleanup on readonly fs
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
-> Modules linked in:
-> CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
-> RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
-> RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
-> RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
-> RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
-> R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
-> R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
-> FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
->  ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
->  ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
->  ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
->  ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
->  ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
->  ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
->  ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
->  write_blk fs/quota/quota_tree.c:64 [inline]
->  get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
->  do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
->  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
->  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
->  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
->  dq_insert_tree fs/quota/quota_tree.c:401 [inline]
->  qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
->  v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
->  dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
->  ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
->  dqget+0x999/0xdc0 fs/quota/dquot.c:914
->  __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
->  ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
->  ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
->  __ext4_fill_super fs/ext4/super.c:5516 [inline]
->  ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
->  get_tree_bdev+0x400/0x620 fs/super.c:1282
->  vfs_get_tree+0x88/0x270 fs/super.c:1489
->  do_new_mount+0x289/0xad0 fs/namespace.c:3145
->  do_mount fs/namespace.c:3488 [inline]
->  __do_sys_mount fs/namespace.c:3697 [inline]
->  __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
+On Sun, Jan 15, 2023 at 11:34:26PM -0800, Christoph Hellwig wrote:
+> We could do that.  But while reading what Darrick wrote I came up with
+> another idea I quite like.  Just split the FGP_ENTRY handling into
+> a separate helper.  The logic and use cases are quite different from
+> the normal page cache lookup, and the returning of the xarray entry
+> is exactly the kind of layering violation that Dave is complaining
+> about.  So what about just splitting that use case into a separate
+> self contained helper?
 
-So, IIUC from your logs what seems to be happening is,
-We have s_blocks_per_group = 64 and s_clusters_per_group = 64.
-That means (s_cluster_ratio = 1).
-But e4b->bd_blkbits is 12. Since blocksize is 4k.
-This makes the number of blocks available in a blockgroup as 32768.
+Essentially reverting 44835d20b2a0.  Although we retain the merging of
+the lock & get functions via the use of FGP flags.  Let me think about
+it for a day.
 
-This is causing a problem in below loop, because when you reach
-64th block, it's bitmap is not set and it's order is 0 so you end up
-adding that into the ex->fe_len. This is happening since we have
-64th block bit as not set in e4b->bd_bitmap.
-
-mb_find_extent() {
-<...>
-	while (needed > ex->fe_len &&
-	       mb_find_buddy(e4b, order, &max)) {
-
-		if (block + 1 >= max)
-			break;
-
-		next = (block + 1) * (1 << order);
-		if (mb_test_bit(next, e4b->bd_bitmap))
-			break;
-
-		order = mb_find_order_for_block(e4b, next);
-
-		block = next >> order;
-		ex->fe_len += 1 << order;
-	}
-<...>
-
-Later when the loop exits and compared ex->fe_start + ex->fe_len against
-EXT4_CLUSTERS_PER_GROUP, it fails and causes the warning.
-
-
-So I think the idea behind -g blocks_per_group in mkfs.ext4 option also is that
-it will set the remaining blocks in the blockgroup bits to 1 as padded bits?
-Is this understanding correct?
-
-Based on that what you are trying to do here is, you are validating whether
-the block bitmap has all the padded bits set or not. If not then let's mark this
-block group as corrupted so that no allocation happens from here to avoid such
-warning. This was exactly what was hitting in this case due to
-ext4_quota_write() in the mount path. right?
-
--ritesh
-
-
-> Add some debug information:
-> mb_find_extent: mb_find_extent block=41, order=0 needed=64 next=0 ex=0/41/1@3735929054 64 64 7
-> block_bitmap: ff 3f 0c 00 fc 01 00 00 d2 3d 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->
-> Acctually, blocks per group is 64, but block bitmap indicate at least has
-> 128 blocks. Now, ext4_validate_block_bitmap() didn't check invalid block's
-> bitmap if set.
-
-
-> To resolve above issue, add check like fsck "Padding at end of block bitmap is
-> not set".
->
-> Reported-by: syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  fs/ext4/balloc.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-> index 8ff4b9192a9f..8c9d3bc712c8 100644
-> --- a/fs/ext4/balloc.c
-> +++ b/fs/ext4/balloc.c
-> @@ -303,6 +303,23 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
->  	return desc;
+> >From b4d10f98ea57f8480c03c0b00abad6f2b7186f56 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Mon, 16 Jan 2023 08:26:57 +0100
+> Subject: mm: replace FGP_ENTRY with a new __filemap_get_folio_entry helper
+> 
+> Split the xarray entry returning logic into a separate helper.  This will
+> allow returning ERR_PTRs from __filemap_get_folio, and also isolates the
+> logic that needs to known about xarray internals into a separate
+> function.  This causes some code duplication, but as most flags to
+> __filemap_get_folio are not applicable for the users that care about an
+> entry that amount is very limited.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/pagemap.h |  6 +++--
+>  mm/filemap.c            | 50 ++++++++++++++++++++++++++++++++++++-----
+>  mm/huge_memory.c        |  4 ++--
+>  mm/shmem.c              |  5 ++---
+>  mm/swap_state.c         |  2 +-
+>  5 files changed, 53 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 4b3a7124c76712..e06c14b610caf2 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -504,8 +504,7 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
+>  #define FGP_NOFS		0x00000010
+>  #define FGP_NOWAIT		0x00000020
+>  #define FGP_FOR_MMAP		0x00000040
+> -#define FGP_ENTRY		0x00000080
+> -#define FGP_STABLE		0x00000100
+> +#define FGP_STABLE		0x00000080
+>  
+>  struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  		int fgp_flags, gfp_t gfp);
+> @@ -546,6 +545,9 @@ static inline struct folio *filemap_lock_folio(struct address_space *mapping,
+>  	return __filemap_get_folio(mapping, index, FGP_LOCK, 0);
 >  }
->
-> +static ext4_fsblk_t ext4_valid_block_bitmap_padding(struct super_block *sb,
-> +						    ext4_group_t block_group,
-> +						    struct buffer_head *bh)
+>  
+> +struct folio *__filemap_get_folio_entry(struct address_space *mapping,
+> +		pgoff_t index, int fgp_flags);
+> +
+>  /**
+>   * find_get_page - find and get a page reference
+>   * @mapping: the address_space to search
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index c4d4ace9cc7003..d04613347b3e71 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1887,8 +1887,6 @@ static void *mapping_get_entry(struct address_space *mapping, pgoff_t index)
+>   *
+>   * * %FGP_ACCESSED - The folio will be marked accessed.
+>   * * %FGP_LOCK - The folio is returned locked.
+> - * * %FGP_ENTRY - If there is a shadow / swap / DAX entry, return it
+> - *   instead of allocating a new folio to replace it.
+>   * * %FGP_CREAT - If no page is present then a new page is allocated using
+>   *   @gfp and added to the page cache and the VM's LRU list.
+>   *   The page is returned locked and with an increased refcount.
+> @@ -1914,11 +1912,8 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  
+>  repeat:
+>  	folio = mapping_get_entry(mapping, index);
+> -	if (xa_is_value(folio)) {
+> -		if (fgp_flags & FGP_ENTRY)
+> -			return folio;
+> +	if (xa_is_value(folio))
+>  		folio = NULL;
+> -	}
+>  	if (!folio)
+>  		goto no_page;
+>  
+> @@ -1994,6 +1989,49 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  }
+>  EXPORT_SYMBOL(__filemap_get_folio);
+>  
+> +
+> +/**
+> + * __filemap_get_folio_entry - Find and get a reference to a folio.
+> + * @mapping: The address_space to search.
+> + * @index: The page index.
+> + * @fgp_flags: %FGP flags modify how the folio is returned.
+> + *
+> + * Looks up the page cache entry at @mapping & @index.  If there is a shadow /
+> + * swap / DAX entry, return it instead of allocating a new folio to replace it.
+> + *
+> + * @fgp_flags can be zero or more of these flags:
+> + *
+> + * * %FGP_LOCK - The folio is returned locked.
+> + *
+> + * If there is a page cache page, it is returned with an increased refcount.
+> + *
+> + * Return: The found folio or %NULL otherwise.
+> + */
+> +struct folio *__filemap_get_folio_entry(struct address_space *mapping,
+> +		pgoff_t index, int fgp_flags)
 > +{
-> +	ext4_grpblk_t next_zero_bit;
-> +	unsigned long blocksize = EXT4_NUM_B2C(EXT4_SB(sb),
-> +					       (sb->s_blocksize * 8));
-> +	unsigned int offset = num_clusters_in_group(sb, block_group);
+> +	struct folio *folio;
 > +
-> +	if (blocksize <= offset)
-> +		return 0;
+> +	if (WARN_ON_ONCE(fgp_flags & ~FGP_LOCK))
+> +		return NULL;
 > +
-> +	next_zero_bit = ext4_find_next_zero_bit(bh->b_data, blocksize, offset);
+> +repeat:
+> +	folio = mapping_get_entry(mapping, index);
+> +	if (folio && !xa_is_value(folio) && (fgp_flags & FGP_LOCK)) {
+> +		folio_lock(folio);
 > +
-> +	return (next_zero_bit < blocksize ? next_zero_bit : 0);
+> +		/* Has the page been truncated? */
+> +		if (unlikely(folio->mapping != mapping)) {
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+> +			goto repeat;
+> +		}
+> +		VM_BUG_ON_FOLIO(!folio_contains(folio, index), folio);
+> +	}
+> +
+> +	return folio;
 > +}
 > +
->  /*
->   * Return the block number which was discovered to be invalid, or 0 if
->   * the block bitmap is valid.
-> @@ -401,6 +418,15 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
->  					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->  		return -EFSCORRUPTED;
->  	}
-> +	blk = ext4_valid_block_bitmap_padding(sb, block_group, bh);
-> +	if (unlikely(blk != 0)) {
-> +		ext4_unlock_group(sb, block_group);
-> +		ext4_error(sb, "bg %u: block %llu: padding at end of block bitmap is not set",
-> +			   block_group, blk);
-> +		ext4_mark_group_bitmap_corrupted(sb, block_group,
-> +						 EXT4_GROUP_INFO_BBITMAP_CORRUPT);
-> +		return -EFSCORRUPTED;
-> +	}
->  	set_buffer_verified(bh);
->  verified:
->  	ext4_unlock_group(sb, block_group);
-> --
-> 2.31.1
->
+>  static inline struct folio *find_get_entry(struct xa_state *xas, pgoff_t max,
+>  		xa_mark_t mark)
+>  {
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index abe6cfd92ffa0e..88b517c338a6db 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -3088,10 +3088,10 @@ static int split_huge_pages_in_file(const char *file_path, pgoff_t off_start,
+>  	mapping = candidate->f_mapping;
+>  
+>  	for (index = off_start; index < off_end; index += nr_pages) {
+> -		struct folio *folio = __filemap_get_folio(mapping, index,
+> -						FGP_ENTRY, 0);
+> +		struct folio *folio;
+>  
+>  		nr_pages = 1;
+> +		folio = __filemap_get_folio_entry(mapping, index, 0);
+>  		if (xa_is_value(folio) || !folio)
+>  			continue;
+>  
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index c301487be5fb40..0a36563ef7a0c1 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -888,8 +888,7 @@ static struct folio *shmem_get_partial_folio(struct inode *inode, pgoff_t index)
+>  	 * At first avoid shmem_get_folio(,,,SGP_READ): that fails
+>  	 * beyond i_size, and reports fallocated pages as holes.
+>  	 */
+> -	folio = __filemap_get_folio(inode->i_mapping, index,
+> -					FGP_ENTRY | FGP_LOCK, 0);
+> +	folio = __filemap_get_folio_entry(inode->i_mapping, index, FGP_LOCK);
+>  	if (!xa_is_value(folio))
+>  		return folio;
+>  	/*
+> @@ -1860,7 +1859,7 @@ static int shmem_get_folio_gfp(struct inode *inode, pgoff_t index,
+>  	sbinfo = SHMEM_SB(inode->i_sb);
+>  	charge_mm = vma ? vma->vm_mm : NULL;
+>  
+> -	folio = __filemap_get_folio(mapping, index, FGP_ENTRY | FGP_LOCK, 0);
+> +	folio = __filemap_get_folio_entry(mapping, index, FGP_LOCK);
+>  	if (folio && vma && userfaultfd_minor(vma)) {
+>  		if (!xa_is_value(folio)) {
+>  			folio_unlock(folio);
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 2927507b43d819..1f45241987aea2 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -384,7 +384,7 @@ struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>  {
+>  	swp_entry_t swp;
+>  	struct swap_info_struct *si;
+> -	struct folio *folio = __filemap_get_folio(mapping, index, FGP_ENTRY, 0);
+> +	struct folio *folio = __filemap_get_folio_entry(mapping, index, 0);
+>  
+>  	if (!xa_is_value(folio))
+>  		goto out;
+> -- 
+> 2.39.0
+> 
