@@ -2,86 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B391C66DB9B
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jan 2023 11:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F08966DBBB
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jan 2023 12:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbjAQKza (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Jan 2023 05:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54084 "EHLO
+        id S236428AbjAQLDv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Jan 2023 06:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236456AbjAQKz0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 05:55:26 -0500
-Received: from leela.pocnet.net (leela.pocnet.net [87.193.61.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D252305C2
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 02:55:23 -0800 (PST)
-Received: from smtpclient.apple (imini.pocnet.net [192.168.59.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S236578AbjAQLDi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 06:03:38 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA732CFE0;
+        Tue, 17 Jan 2023 03:03:36 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: poc)
-        by leela.pocnet.net (Postfix) with ESMTPSA id 8DE73280B37;
-        Tue, 17 Jan 2023 11:55:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pocnet.net; s=m201510;
-        t=1673952920; bh=iF141JWrr4U+rfEE2GVfVeUG4QLtNWzPpEQug+xl9bs=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-        b=My8RGc2Yc+pkaLT52O+idHEXgmeODOKMEaseE5ep6Lq9zfzNxqinZUQyBChSVN34C
-         PciZlfX3oCzyE9WY190g9Z6hm2GDn3w6aP2G8iKusfZvkDIIvw1iuaF3J48pXpPfCH
-         qUmNXl9S0MHQyrgmTAklohLJQnCS6eTWmKMuQ7wA=
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: ext4: Remove deprecated noacl/nouser_xattr options
-From:   Patrik Schindler <poc@pocnet.net>
-In-Reply-To: <20230117104525.kmbypv4vca6lbd5a@quack3>
-Date:   Tue, 17 Jan 2023 11:55:18 +0100
-Cc:     linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <06B5ADDC-D887-4C63-80BE-20950B7AAB75@pocnet.net>
-References: <A5F622F8-99CF-4C7D-8811-7D82DB1C8846@pocnet.net>
- <20230116104254.xpphncpzu3zf53va@quack3>
- <3C7004E8-E732-40C1-B0DD-2A2290E43AC5@pocnet.net>
- <20230117104525.kmbypv4vca6lbd5a@quack3>
-To:     Jan Kara <jack@suse.cz>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9226F68532;
+        Tue, 17 Jan 2023 11:03:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1673953415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yM3o6KrDzy3CUB2wOjjiKrt7RPQ6X4k5rLiKiQpyu3U=;
+        b=XhKYi0zY0UB1U2ncTOlegAXCinDng7M4A6EXyUdBCU5XW1TBjGVFKl2eCZle4P48TFowSh
+        Nflap+aM6BwnGgRSz4jL0Reh/wEgUmqCZ3tgRdJYKLE6IpX93IWlPjMXtWs8syY0iyNiUJ
+        fMyr1Yj1iJNsNkLH7OdDdj0Bz95ktMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1673953415;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yM3o6KrDzy3CUB2wOjjiKrt7RPQ6X4k5rLiKiQpyu3U=;
+        b=f3lXwvzuS7GBitbpHTVaYC7Oeqp7346EqDXG8dg3bQbX9pHfBchHLmQzWdnckThHCQK/0l
+        6KVZSpJLlEv36jDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8530E1390C;
+        Tue, 17 Jan 2023 11:03:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Ai57IIeAxmPwLwAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 17 Jan 2023 11:03:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 15D5BA06B2; Tue, 17 Jan 2023 12:03:35 +0100 (CET)
+Date:   Tue, 17 Jan 2023 12:03:35 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rookxu <brookxu.cn@gmail.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
+ i_prealloc_list
+Message-ID: <20230117110335.7dtlq4catefgjrm3@quack3>
+References: <20230116080216.249195-1-ojaswin@linux.ibm.com>
+ <20230116080216.249195-8-ojaswin@linux.ibm.com>
+ <20230116122334.k2hlom22o2hlek3m@quack3>
+ <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Jan,
+On Tue 17-01-23 16:00:47, Ojaswin Mujoo wrote:
+> On Mon, Jan 16, 2023 at 01:23:34PM +0100, Jan Kara wrote:
+> > > Since this covers the special case we discussed above, we will always
+> > > un-delete the PA when we encounter the special case and we can then
+> > > adjust for overlap and traverse the PA rbtree without any issues.
+> > > 
+> > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > > Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> 
+> Hi Jan,
+> Thanks for the review, sharing some of my thoughts below.
+> 
+> > 
+> > So I find this putting back of already deleted inode PA very fragile. For
+> > example in current code I suspect you've missed a case in ext4_mb_put_pa()
+> > which can mark inode PA (so it can then be spotted by
+> > ext4_mb_pa_adjust_overlap() and marked as in use again) but
+> > ext4_mb_put_pa() still goes on and destroys the PA.
+> 
+> The 2 code paths that clash here are:
+> 
+> ext4_mb_new_blocks() -> ext4_mb_release_context() -> ext4_mb_put_pa()
+> ext4_mb_new_blocks() -> ext4_mb_normalize_request() -> ext4_mb_pa_adjust_overlap()
+> 
+> Since these are the only code paths from which these 2 functions are
+> called, for a given inode, access will always be serialized by the upper
+> level ei->i_data_sem, which is always taken when writing data blocks
+> using ext4_mb_new_block(). 
 
-Am 17.01.2023 um 11:45 schrieb Jan Kara <jack@suse.cz>:
+Indeed, inode->i_data_sem prevents the race I was afraid of.
+ 
+> From my understanding of the code, I feel only
+> ext4_mb_discard_group_preallocations() can race against other functions
+> that are modifying the PA rbtree since it does not take any inode locks.
+> 
+> That being said, I do understand your concerns regarding the solution,
+> however I'm willing to work with the community to ensure our
+> implementation of this undelete feature is as robust as possible. Along
+> with fixing the bug reported here [1], I believe that it is also a good
+> optimization to have especially when the disk is near full and we are
+> seeing a lot of group discards going on. 
+> 
+> Also, in case the deleted PA completely lies inside our new range, it is
+> much better to just undelete and use it rather than deleting the
+> existing PA and reallocating the range again. I think the advantage
+> would be even bigger in ext4_mb_use_preallocated() function where we can
+> just undelete and use the PA and skip the entire allocation, incase original
+> range lies in a deleted PA.
 
-> I understand the wish for more overview over file permissions but this =
-seems like a bit awkward way to reach it?
+Thanks for explantion. However I think you're optimizing the wrong thing.
+We are running out of space (to run ext4_mb_discard_group_preallocations()
+at all) and we allocate from an area covered by PA that we've just decided
+to discard - if anything relies on performance of the filesystem in ENOSPC
+conditions it has serious problems no matter what. Sure, we should deliver
+the result (either ENOSPC or some block allocation) in a reasonable time
+but the performance does not really matter much because all the scanning
+and flushing is going to slow down everything a lot anyway. One additional
+scan of the rbtree is really negligible in this case. So what we should
+rather optimize for in this case is the code simplicity and maintainability
+of this rare corner-case that will also likely get only a small amount of
+testing. And in terms of code simplicity the delete & restart solution
+seems to be much better (at least as far as I'm imagining it - maybe the
+code will prove me wrong ;)).
 
-This might be a matter of taste.
-
-> It rather seems like a lack of control in the smbget(1) tool (or =
-whatever you are using for the copying)?
-
-Im using my Mac with macOS. I mount a samba share and use the Finder to =
-copy files by drag & drop.
-
-> Adding an option there to not copy permissions from the server would =
-look like a very logical thing to do (similarly as cp(1) has these =
-options)...  Would that work?
-
-In this case: No, wouldn't work.
-
-But your response made me wade through smb.conf(5) again, specifically =
-searching for "acl" and found:
-
-nt acl support =3D no
-
-to be the adequate solution after trying. With that, copying files =
-doesn't add ACLs anymore.
-
-Sorry for bugging you and all the list members. Thank you for helping me =
-think. :-)
-
-:wq! PoC
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
