@@ -2,164 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CA666E723
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jan 2023 20:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A703670C30
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jan 2023 23:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbjAQTiZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Jan 2023 14:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        id S230049AbjAQWyE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Jan 2023 17:54:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbjAQTf5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 14:35:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE8DC645
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 10:41:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673980860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iFiAegt8WNgL5MZXxVPS9mQqy9Ss59WQtK/8IB6U8eA=;
-        b=PhEA8i2XWpVfAY17MnnwMgrZfqjGG+tMWzjMtRljREezy6gwy7p96vrsML79mo7qJhKaEm
-        ky1EAVfIom9Qmjwrz+SDqqiyx2fgtR406zcgpCq7cspASSCCTjogdk+lltnZsp1sMA++y4
-        ZxWzW9j6rKMRLphlBIiTGGN6gt5sF/M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-260-lxBEaWcGM4C8NbHUfeyPBA-1; Tue, 17 Jan 2023 13:40:57 -0500
-X-MC-Unique: lxBEaWcGM4C8NbHUfeyPBA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B21F2811E6E;
-        Tue, 17 Jan 2023 18:40:54 +0000 (UTC)
-Received: from [10.18.17.153] (dhcp-17-153.bos.redhat.com [10.18.17.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA68B2166B29;
-        Tue, 17 Jan 2023 18:40:51 +0000 (UTC)
-Message-ID: <0110b1d1-17c4-49a3-64c0-ad7d7b8cbd29@redhat.com>
-Date:   Tue, 17 Jan 2023 13:40:51 -0500
+        with ESMTP id S230038AbjAQWxj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 17:53:39 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCC7A7335
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 13:45:01 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id z4-20020a17090a170400b00226d331390cso215169pjd.5
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 13:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=USmZ3gy1BtrvJEjQBDI3lCph9qcXhvk22Q1eYhBS7oY=;
+        b=RzlLBPcasIN4kEzbfwMjk5cRM6RzwFCQycQzVF/x4CvKYodGJqRrS9P5q74WNvc6Im
+         sDWvEIyNad70vlaiE6T40dRq5QUvZXsqoq0NXlZB7cmswZRDhil02hlp0EswfhbYDaUk
+         pd/nv9SJeu522LsTq6VLRAhoTLIvaozFDG5jLwWqU3xOBIqEgBYVlWWKsrSzSeARYQR4
+         y78EEbm0a5Q6LDKTJy99roURs/IxG5iRb0G4vxXbkZX8afv5Jnrinw0ihUUqjURO6eUv
+         FubRf20KyCuUdR73WoBP8CQ1GMNILJs936p5zQJtUZNrm02T05XIEZDWRpoeFnX0UPQ0
+         wPAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=USmZ3gy1BtrvJEjQBDI3lCph9qcXhvk22Q1eYhBS7oY=;
+        b=yy9doKCmBD+3ERaxLRkBQwsdjJ9u6nei+QGxJs7VxF0q94hyQNSmAgZabnX7vMKg8U
+         DGdRbaVJMJqIjKbM3uT1WBuzXxg6wfYKtqRHIz/K+Ke88ok/YQk8eVSqNrX+trcql67i
+         ydKmeOdUa+gxif3JlUEMvkb2mIqD0kjlyYkb9ScvYtTigS8SYFi1miqmrdg4wkiRkKp5
+         tuPFgvJV+EEA8yPbTS0yx+B+Yhq3G3tlYS80/pKWr/eKetisvbcptEuSIv/KRsiI2TB6
+         MeaOpqLMbGbdeazXs+aNiI5NKl4jX6smeorhAVc/GpRL5jKiGIRXkTcp3aAF3UnT3Oc3
+         E5yw==
+X-Gm-Message-State: AFqh2kogml8LQjXgWFjp7yO6dex6TxHH0Cxi9B/znVOE7/cRrfK45Lr5
+        fySOt2cSfqogz9hTD1xc2N+naA==
+X-Google-Smtp-Source: AMrXdXsjLWlijwip6i3qxiUNT6rq/EuKFl3lJ7Oc5PLOZ9TkVQf8fY86eptlCDPi8YvH3xl+tGL+uQ==
+X-Received: by 2002:a17:903:1ce:b0:193:29db:e0b7 with SMTP id e14-20020a17090301ce00b0019329dbe0b7mr6977692plh.54.1673991900952;
+        Tue, 17 Jan 2023 13:45:00 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-146-207.pa.vic.optusnet.com.au. [49.186.146.207])
+        by smtp.gmail.com with ESMTPSA id x15-20020a170902ec8f00b00189fd83eb95sm21754927plg.69.2023.01.17.13.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jan 2023 13:45:00 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pHtlJ-004Ivt-MX; Wed, 18 Jan 2023 08:44:57 +1100
+Date:   Wed, 18 Jan 2023 08:44:57 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        linux-xfs@vger.kernel.org
+Subject: Re: Locking issue with directory renames
+Message-ID: <20230117214457.GG360264@dread.disaster.area>
+References: <20230117123735.un7wbamlbdihninm@quack3>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH RFC v7 00/23] DEPT(Dependency Tracker)
-Content-Language: en-US
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        linux-kernel@vger.kernel.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, gregkh@linuxfoundation.org,
-        kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com,
-        dennis@kernel.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
-        linux-block@vger.kernel.org, paolo.valente@linaro.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com
-References: <1673235231-30302-1-git-send-email-byungchul.park@lge.com>
- <CAHk-=whpkWbdeZE1zask8YPzVYevJU2xOXqOposBujxZsa2-tQ@mail.gmail.com>
- <Y8bmeffIQ3iXU3Ux@boqun-archlinux>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Y8bmeffIQ3iXU3Ux@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230117123735.un7wbamlbdihninm@quack3>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 1/17/23 13:18, Boqun Feng wrote:
-> [Cc Waiman]
->
-> On Mon, Jan 16, 2023 at 10:00:52AM -0800, Linus Torvalds wrote:
->> [ Back from travel, so trying to make sense of this series.. ]
->>
->> On Sun, Jan 8, 2023 at 7:33 PM Byungchul Park <byungchul.park@lge.com> wrote:
->>> I've been developing a tool for detecting deadlock possibilities by
->>> tracking wait/event rather than lock(?) acquisition order to try to
->>> cover all synchonization machanisms. It's done on v6.2-rc2.
->> Ugh. I hate how this adds random patterns like
->>
->>          if (timeout == MAX_SCHEDULE_TIMEOUT)
->>                  sdt_might_sleep_strong(NULL);
->>          else
->>                  sdt_might_sleep_strong_timeout(NULL);
->>     ...
->>          sdt_might_sleep_finish();
->>
->> to various places, it seems so very odd and unmaintainable.
->>
->> I also recall this giving a fair amount of false positives, are they all fixed?
->>
->  From the following part in the cover letter, I guess the answer is no?
->
-> 	...
->          6. Multiple reports are allowed.
->          7. Deduplication control on multiple reports.
->          8. Withstand false positives thanks to 6.
-> 	...
->
-> seems to me that the logic is since DEPT allows multiple reports so that
-> false positives are fitlerable by users?
->
->> Anyway, I'd really like the lockdep people to comment and be involved.
-> I never get Cced, so I'm unware of this for a long time...
->
-> A few comments after a quick look:
->
-> *	Looks like the DEPT dependency graph doesn't handle the
-> 	fair/unfair readers as lockdep current does. Which bring the
-> 	next question.
->
-> *	Can DEPT pass all the selftests of lockdep in
-> 	lib/locking-selftests.c?
->
-> *	Instead of introducing a brand new detector/dependency tracker,
-> 	could we first improve the lockdep's dependency tracker? I think
-> 	Byungchul also agrees that DEPT and lockdep should share the
-> 	same dependency tracker and the benefit of improving the
-> 	existing one is that we can always use the self test to catch
-> 	any regression. Thoughts?
->
-> Actually the above sugguest is just to revert revert cross-release
-> without exposing any annotation, which I think is more practical to
-> review and test.
->
-> I'd sugguest we 1) first improve the lockdep dependency tracker with
-> wait/event in mind and then 2) introduce wait related annotation so that
-> users can use, and then 3) look for practical ways to resolve false
-> positives/multi reports with the help of users, if all goes well,
-> 4) make it all operation annotated.
+On Tue, Jan 17, 2023 at 01:37:35PM +0100, Jan Kara wrote:
+> Hello!
+> 
+> I've some across an interesting issue that was spotted by syzbot [1]. The
+> report is against UDF but AFAICS the problem exists for ext4 as well and
+> possibly other filesystems. The problem is the following: When we are
+> renaming directory 'dir' say rename("foo/dir", "bar/") we lock 'foo' and
+> 'bar' but 'dir' is unlocked because the locking done by vfs_rename() is
+> 
+>         if (!is_dir || (flags & RENAME_EXCHANGE))
+>                 lock_two_nondirectories(source, target);
+>         else if (target)
+>                 inode_lock(target);
+> 
+> However some filesystems (e.g. UDF but ext4 as well, I suspect XFS may be
+> hurt by this as well because it converts among multiple dir formats) need
+> to update parent pointer in 'dir' and nothing protects this update against
+> a race with someone else modifying 'dir'. Now this is mostly harmless
+> because the parent pointer (".." directory entry) is at the beginning of
+> the directory and stable however if for example the directory is converted
+> from packed "in-inode" format to "expanded" format as a result of
+> concurrent operation on 'dir', the filesystem gets corrupted (or crashes as
+> in case of UDF).
 
-I agree with your suggestions. In fact, the lockdep code itself is one 
-of major overheads when running a debug kernel. If we have another set 
-of parallel dependency tracker, we may slow down a debug kernel even 
-more. So I would rather prefer improving the existing lockdep code 
-instead creating a completely new one.
+No, xfs_rename() does not have this problem - we pass four inodes to
+the function - the source directory, source inode, destination
+directory and destination inode.
 
-I do agree that the lockdep code itself is now rather complex. A 
-separate dependency tracker, however, may undergo similar transformation 
-over time to become more and more complex due to the needs to meet 
-different requirement and constraints.
+In the above case, "dir/" is passed to XFs as the source inode - the
+src_dir is "foo/", the target dir is "bar/" and the target inode is
+null. src_dir != target_dir, so we set the "new_parent" flag. the
+srouce inode is a directory, so we set the src_is_directory flag,
+too.
+
+We lock all three inodes that are passed. We do various things, then
+run:
+
+        if (new_parent && src_is_directory) {
+                /*
+                 * Rewrite the ".." entry to point to the new
+                 * directory.
+                 */
+                error = xfs_dir_replace(tp, src_ip, &xfs_name_dotdot,
+                                        target_dp->i_ino, spaceres);
+                ASSERT(error != -EEXIST);
+                if (error)
+                        goto out_trans_cancel;
+        }
+
+which replaces the ".." entry in source inode atomically whilst it
+is locked.  Any directory format changes that occur during the
+rename are done while the ILOCK is held, so they appear atomic to
+outside observers that are trying to parse the directory structure
+(e.g. readdir).
+
+> So we'd need to lock 'source' if it is a directory.
+
+Yup, and XFS goes further by always locking the source inode in a
+rename, even if it is not a directory. This ensures the inode being
+moved cannot have it's metadata otherwise modified whilst the rename
+is in progress, even if that modification would have no impact on
+the rename. It's a pretty strict interpretation of "rename is an
+atomic operation", but it avoids accidentally missing nasty corner
+cases like the one described above...
+
+> Ideally this would
+> happen in VFS as otherwise I bet a lot of filesystems will get this wrong
+> so could vfs_rename() lock 'source' if it is a dir as well? Essentially
+> this would amount to calling lock_two_nondirectories(source, target)
+> unconditionally but that would become a serious misnomer ;). Al, any
+> thought?
+
+XFS just has a function that allows for an arbitrary number of
+inodes to be locked in the given order: xfs_lock_inodes(). For
+rename, the lock order is determined by xfs_sort_for_rename().
 
 Cheers,
-Longman
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
