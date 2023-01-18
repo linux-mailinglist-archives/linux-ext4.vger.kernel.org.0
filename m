@@ -2,149 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091D867292B
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 21:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865B0672AC0
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 22:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjARUSh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 15:18:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S231329AbjARVnm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 16:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjARUSh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 15:18:37 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8064FC25
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 12:18:35 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 30IKIGIg017108
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Jan 2023 15:18:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1674073099; bh=hT6v01Kvyl5VaP/e4rVb/Bu3j5RLVQoL8QDHJhGvKj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=QuKz6hfY/jPof/jhjLYffNl5wzZwSLSbEWgMkg8xuorOCCTXbRPClIlJK5gqrSq4q
-         BLNQpjAjakze3TY/x9go3oh/MYVZ9/+TR0QwaVqNUsS9bwaIVcy7eDfAP3WULY6y0s
-         ccxdO0eCFXDD28HrFoRDWYxQGOk26NVRJq1EY4vo74MZNdd2NKq64Ue1pi1X9NRadn
-         zpr2rZ0Urp+CkChfQRS+TVWhcYqzZDyAojj/7yBpIf2WjsWFkkItV8rMnOE9T6dJTV
-         aOCMTuqzcl0ZUkRer1oQcDRjYfLY1HiyZHfGet5YwmAUjxo/8bfT/ZbrVhJG8C4bR8
-         2fPpk0FGQ8S8A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C6E1A15C469B; Wed, 18 Jan 2023 15:18:16 -0500 (EST)
-Date:   Wed, 18 Jan 2023 15:18:16 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Eric Whitney <enwlinux@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: Detecting default signedness of char in ext4 (despite
- -funsigned-char)
-Message-ID: <Y8hUCIVImjqCmEWv@mit.edu>
-References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
- <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
- <Y8dtze3ZLGaUi8pi@sol.localdomain>
- <CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com>
- <Y8eAJIKikCTJrlcr@sol.localdomain>
+        with ESMTP id S231248AbjARVn0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 16:43:26 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8CF66EDD
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 13:42:27 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id i1so12647pfk.3
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 13:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=25/ogZ1IY1yCzD+p9FJLZ5EqJq4IvrsYWI+uktJqoc8=;
+        b=b6n2HzUq915R4Q52gekT31VCYQfhro59qvgUT/934MH4Ph5mOu/m74OMQPxPnVS/Jj
+         udr4O/ozJG9Wr9xUuH2pWLtCd0DTUDFDxmD74lfUUGrbGuRaGcSnGoh0rNX1AC2NFXV6
+         qMCOhTTi27jvwOqSTZhFFRHiEyeZfv1Z7SJm/zUnPYhEZFr3pUaYsE1UE9b+AyxmBdYe
+         7NiRz5Hqjq2balCLmD9DyIqwhWgbKeB2es8kJ68QDAwvLHxSwwYUN+FimGMTNMO7OYv4
+         LSx+3Sfiw6/J+ifh5//FHTHi/49BsvmL+hcFXy0sAcr90oEDNxS5oG5e41N6r7Nqtgwz
+         BdIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=25/ogZ1IY1yCzD+p9FJLZ5EqJq4IvrsYWI+uktJqoc8=;
+        b=STd+V+2hfMCdr8kgZkR+OI4Vn2IuPX3FUiK2sutOb1qIPMnSAXJHkO7DjvdK4UppRe
+         JYXxNpRCaPa+/TMsfPb9+FJtwMjAWeNR/THp7rKXKTs0bdipl9kYAzrS9HzIY6G9m/+A
+         iRQZrTCcdmYZhSRZDtzAavXl0Wc9gnaS1LYhYCt0Ax9+62bn0PQLG7grwn97znsib8LV
+         /ckss0HcaqoK7peqZlnDwC1H9371DGgrW+0IVq3xykogTAzXrDITkT1e2sag+gfFt9lH
+         uspMwqBpHGcFQi3oGpd/mH53AEEAgVTIM9DclGsQtg3zozmVCK3qQ02t8B/UTACiawNY
+         +e+A==
+X-Gm-Message-State: AFqh2kooX6ZaTgHgui8LYrV1zJx5Au0wnF2jq19RkRoet/A/8T7ORGma
+        r0eiUQ5gwjiI+v/fpOI6RacA1w==
+X-Google-Smtp-Source: AMrXdXuUhT365uogRqJeciSgZ6jusXovRP6UIOCn0m3CnHYkFzQba4SbhSlaI19LX086ihdE2UUqBA==
+X-Received: by 2002:a05:6a00:4088:b0:58d:aadf:5e62 with SMTP id bw8-20020a056a00408800b0058daadf5e62mr9302248pfb.18.1674078147224;
+        Wed, 18 Jan 2023 13:42:27 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-146-207.pa.vic.optusnet.com.au. [49.186.146.207])
+        by smtp.gmail.com with ESMTPSA id m2-20020a62a202000000b005869a33dd3bsm20734472pff.164.2023.01.18.13.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jan 2023 13:42:26 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pIGCN-004hTW-Hg; Thu, 19 Jan 2023 08:42:23 +1100
+Date:   Thu, 19 Jan 2023 08:42:23 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
+Subject: Re: [RFC v6 08/10] iomap/xfs: Eliminate the iomap_valid handler
+Message-ID: <20230118214223.GH360264@dread.disaster.area>
+References: <20230108194034.1444764-1-agruenba@redhat.com>
+ <20230108194034.1444764-9-agruenba@redhat.com>
+ <20230108215911.GP1971568@dread.disaster.area>
+ <CAHc6FU4z1nC8zdM8NvUyMqU29_J7_oNu1pvBHuOvR+M6gq7F0Q@mail.gmail.com>
+ <20230109225453.GQ1971568@dread.disaster.area>
+ <CAHpGcM+urV5LYpTZQWTRoK6VWaLx0sxk3mDe_kd3VznMY9woVw@mail.gmail.com>
+ <Y8Q4FmhYehpQPZ3Z@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y8eAJIKikCTJrlcr@sol.localdomain>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y8Q4FmhYehpQPZ3Z@magnolia>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 09:14:12PM -0800, Eric Biggers wrote:
-> 
-> Well, reading the code more carefully, the on-disk ext4 superblock can contain
-> EXT2_FLAGS_SIGNED_HASH, EXT2_FLAGS_UNSIGNED_HASH, or neither.  "Neither" is the
-> legacy case.  The above existing code in ext4 is handling the "neither" case by
-> setting the flag corresponding to the default signedness of char.  So yes, that
-> migration code was always broken if you moved the disk from a platform with
-> signed char (e.g. x86) to a platform with unsigned char (e.g. arm).  But,
-> -funsigned-char breaks it whenever the disk stays on a platform with signed
-> char.  That seems much worse.  Though, it's also a migration for legacy
-> filesystems, so maybe that code isn't needed often anymore anyway...
+On Sun, Jan 15, 2023 at 09:29:58AM -0800, Darrick J. Wong wrote:
+> 2. Do we need to revalidate mappings for directio writes?  I think the
+> answer is no (for xfs) because the ->iomap_begin call will allocate
+> whatever blocks are needed and truncate/punch/reflink block on the
+> iolock while the directio writes are pending, so you'll never end up
+> with a stale mapping.  But I don't know if that statement applies
+> generally...
 
-The migration code will detect what the current signedness of char,
-and then *set* the SIGNED/UNSIGNED flag.  Once we've set the flag,
-we'll continue to use it, and modern versions of e2fsprogs will set
-the SIGNED/UNSIGNED flag again using the default signedness of char.
-Once the signed/unsigned flag is set, then we can freely move the file
-system between architectures and it's not a problem.  So if you have a
-file system that was created before 2007 (e2fsprogs v1.40), the first
-time you mount that file system on a kernel or run e2fsck on a scheme
-that understands the new SIGNED/UNSIGNED scheme, then we use whatever
-hash variant that had been used on the pre-2007 kernel/e2fsprogs
-forever.
+The issue is not truncate/punch/reflink for either DIO or buffered
+IO - the issue that leads to stale iomaps is async extent state.
+i.e. IO completion doing unwritten extent conversion.
 
-commit f77704e416fca7dbe4cc91abba674d2ae3c14f6f
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Sat Nov 11 22:32:35 2006 -0500
+For DIO, AIO doesn't hold the IOLOCK at all when completion is run
+(like buffered writeback), but non-AIO DIO writes hold the IOLOCK
+shared while waiting for completion. This means that we can have DIO
+submission and completion still running concurrently, and so stale
+iomaps are a definite possibility.
 
-    Add directory hashed signed/unsigned hint to superblock
-    
-    The e2fsprogs and kernel implementation of directory hash tree has a
-    bug which causes the implementation to be dependent on whether
-    characters are signed or unsigned.  Platforms such as the PowerPC,
-    Arm, and S/390 have signed characters by default, which means that
-    hash directories on those systems are incompatible with hash
-    directories on other systems, such as the x86.
-    
-    To fix this we add a new flags field to the superblock, and define two
-    new bits in that field to indicate whether or not the directory should
-    be signed or unsigned.  If the bits are not set, e2fsck and fixed
-    kernels will set them to the signed/unsigned value of the currently
-    running platform, and then respect those bits when calculating the
-    directory hash.  This allows compatibility with current filesystems,
-    as well as allowing cross-architectural compatibility.
-    
-    Addresses Debian Bug: #389772
-    
-    Signed-off-by: "Theodore Ts'o" <tytso@mit.edu>
+From my notes when I looked at this:
 
-So techncially speaking the migration code is probably not needed any
-more, but it's not a lot of code (just a few lines of code to set the
-flags if neither flag is set), and it's always possible that that you
-might try to mount a pre-2006 file system on a 2022 system, so we
-might as well keep it.
+1. the race condition for a DIO write mapping go stale is an
+overlapping DIO completion and converting the block from unwritten
+to written, and then the dio write incorrectly issuing sub-block
+zeroing because the mapping is now stale.
 
-> Anyway, as I found out after my initial reply, and which you noticed too, the
-> thing that actually caused the breakage here is the xattr hash.  The xattr hash
-> isn't related to the logic in __ext4_fill_super(), or to EXT2_FLAGS_SIGNED_HASH
-> and EXT2_FLAGS_UNSIGNED_HASH.  Those are only for the dirhash.  Unfortunately,
-> ext4's xattr hash didn't get fixed years ago when the dirhash did.  The xattr
-> hash still just always uses 'char'.
+2. DIO read into a hole or unwritten extent zeroes the entire range
+in the user buffer in one operation. If this is a large range, this
+could race with small DIO writes within that range that have
+completed
 
-I *think* we're OK, because we only use XOR (^) on the char in the
-xattr entry hash:
+3. There is a window between dio write completion doing unwritten
+extent conversion (by ->end_io) and the page cache being
+invalidated, providing a window where buffered read maps can be
+stale and incorrect read behaviour exposed to userpace before
+the page cache is invalidated.
 
-static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
-				    size_t value_count)
-{
-	__u32 hash = 0;
+These all stem from IO having overlapping ranges, which is largely
+unsupported but can't be entirely prevented (e.g. backup
+applications running in the background). Largely the problems are
+confined to sub-block IOs. i.e.  when sub-block DIO writes to the
+same block are being performed, we have the possiblity that one
+write completes whilst the other is deciding what to zero, unaware
+that the range is now MAPPED rather than UNWRITTEN.
 
-	while (name_len--) {
-		hash = (hash << NAME_HASH_SHIFT) ^
-		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
-		       *name++;
-	}
-	while (value_count--) {
-		hash = (hash << VALUE_HASH_SHIFT) ^
-		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
-		       le32_to_cpu(*value++);
-	}
-	return cpu_to_le32(hash);
-}
+We currently avoid issues with sub-block dio writes by using
+IOMAP_DIO_OVERWRITE_ONLY with shared locking. This ensures that the
+unaligned IO fits entirely within a MAPPED extent so no sub-block
+zeroing is required. If allocation or sub-block zeroing is required,
+then we force the filesystem to fall back to exclusive IO locking
+and wait for all concurrent DIO in flight to complete so that it
+can't race with any other DIO write that might cause the map to
+become stale while we are doing the zeroing.
 
-And XOR shouldn't matter whether *name is signed or unsigned.  Am I
-missing something?
+This does not avoid potential issues with DIO write vs buffered
+read, nor DIO write vs mmap IO. It's not totally clear to me
+whether we need ->iomap_valid checks in the buffered read paths
+to avoid the completion races with DIO writes, but there are windows
+there where cached iomaps could be considered stale....
 
-						- Ted
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
