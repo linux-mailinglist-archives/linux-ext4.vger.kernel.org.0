@@ -2,72 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3A16728D1
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 20:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091D867292B
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 21:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbjART5i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 14:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
+        id S229831AbjARUSh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 15:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjART5h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 14:57:37 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C40853E7B;
-        Wed, 18 Jan 2023 11:57:36 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id p96so12425554qvp.13;
-        Wed, 18 Jan 2023 11:57:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jE7UUdy8PLtXYkvU/lzVvfasVo94/Kknt5WCrMd4jf8=;
-        b=VcasuukNdtEloIk0KqvSta3EYTM8ZwqsTHtT/bj3ut3YYOeIS/OpCCwYsncX9MgQRw
-         QWEoc9qVZ/F1XkKxrm0SezpXexHkMc2IoDHgj92Ev1dgX/+qT8dUCDddKGE3/h3H5PaG
-         /dX/RwGKN0ssytQHtibN5gCczlEAFvoMYwmHJOqPvhB8Thwnd49IasG9B6MiWiYHTkjO
-         E47xpO/Rg1kdUQ3y4gHWLCdjC/BUwgQfQpzbXhSUl1R2fScq70HsoJL64sgpxVBMurGC
-         vUTlgCtmcTRnCy8d+lhL3ei1HpMNpreExkujXFgWArIfQ3+tzbwH9lsOVRX3jBA324Bj
-         lVPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jE7UUdy8PLtXYkvU/lzVvfasVo94/Kknt5WCrMd4jf8=;
-        b=D83IBz0bwpDMCxSy3os6l2GZPH7bVib+14kZ/mUQKdlc4fCe070PuCgQmStoJcmM/I
-         HOx+XxmVmdAOoznnKRfQ58cfoBaSaMeXoUelesMLgjkqHsj6s0q/ngjZYW4sA0iXmfHw
-         L45Do2IQib7kxq1agY04kGl0Hf0e5Bbt0Ew0Jj5QGMR4asJ8qN/pDVIxm5N/vt8vFBY+
-         SboUAcTvqO0qwoaQjum03RWWO5QirC+gTRw6IcQH1G1vso7WzgQzF13DfqxpCxT2imBJ
-         XRnVRMndLb09sY+Otsrbj6ThM0jqff2BhVWLHm3g1xfAAMhEXx6o/l7FX5ffC7WgRZCb
-         KHcA==
-X-Gm-Message-State: AFqh2ko3yo+3mOjowHHuyHcU8wKkDgx3mzoe+eZ0ixop0pMfkR7pX7wL
-        DQcTwe1ZRlpFNCwK1F5nwh2sMuaaP5OHz11gYXU=
-X-Google-Smtp-Source: AMrXdXve2EgHGv+2cv1pHkrPy3geUJuLfVqUa2trthVWJaRmjDPV20b7EKg3SSIV8PR21z7dow6K6rvn9Y0mMDKfOqc=
-X-Received: by 2002:a05:6214:5e05:b0:534:b3ca:8638 with SMTP id
- li5-20020a0562145e0500b00534b3ca8638mr437696qvb.19.1674071855381; Wed, 18 Jan
- 2023 11:57:35 -0800 (PST)
+        with ESMTP id S229459AbjARUSh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 15:18:37 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8064FC25
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 12:18:35 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 30IKIGIg017108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Jan 2023 15:18:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1674073099; bh=hT6v01Kvyl5VaP/e4rVb/Bu3j5RLVQoL8QDHJhGvKj0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=QuKz6hfY/jPof/jhjLYffNl5wzZwSLSbEWgMkg8xuorOCCTXbRPClIlJK5gqrSq4q
+         BLNQpjAjakze3TY/x9go3oh/MYVZ9/+TR0QwaVqNUsS9bwaIVcy7eDfAP3WULY6y0s
+         ccxdO0eCFXDD28HrFoRDWYxQGOk26NVRJq1EY4vo74MZNdd2NKq64Ue1pi1X9NRadn
+         zpr2rZ0Urp+CkChfQRS+TVWhcYqzZDyAojj/7yBpIf2WjsWFkkItV8rMnOE9T6dJTV
+         aOCMTuqzcl0ZUkRer1oQcDRjYfLY1HiyZHfGet5YwmAUjxo/8bfT/ZbrVhJG8C4bR8
+         2fPpk0FGQ8S8A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C6E1A15C469B; Wed, 18 Jan 2023 15:18:16 -0500 (EST)
+Date:   Wed, 18 Jan 2023 15:18:16 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Eric Whitney <enwlinux@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: Detecting default signedness of char in ext4 (despite
+ -funsigned-char)
+Message-ID: <Y8hUCIVImjqCmEWv@mit.edu>
+References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
+ <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
+ <Y8dtze3ZLGaUi8pi@sol.localdomain>
+ <CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com>
+ <Y8eAJIKikCTJrlcr@sol.localdomain>
 MIME-Version: 1.0
-References: <20230108194034.1444764-1-agruenba@redhat.com> <20230108194034.1444764-9-agruenba@redhat.com>
- <20230108215911.GP1971568@dread.disaster.area> <CAHc6FU4z1nC8zdM8NvUyMqU29_J7_oNu1pvBHuOvR+M6gq7F0Q@mail.gmail.com>
- <20230109225453.GQ1971568@dread.disaster.area> <CAHpGcM+urV5LYpTZQWTRoK6VWaLx0sxk3mDe_kd3VznMY9woVw@mail.gmail.com>
- <Y8Q4FmhYehpQPZ3Z@magnolia> <Y8eeAmm1Vutq3Fc9@infradead.org> <Y8hCq+fIWgHfUufe@magnolia>
-In-Reply-To: <Y8hCq+fIWgHfUufe@magnolia>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Wed, 18 Jan 2023 20:57:24 +0100
-Message-ID: <CAHpGcMJmi6gncj=a0NZrbm11AJoN5u0-F7GUnwFZRVbCL=Dpqw@mail.gmail.com>
-Subject: Re: [RFC v6 08/10] iomap/xfs: Eliminate the iomap_valid handler
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y8eAJIKikCTJrlcr@sol.localdomain>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,53 +61,90 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Mi., 18. Jan. 2023 um 20:04 Uhr schrieb Darrick J. Wong <djwong@kernel.org>:
->
-> On Tue, Jan 17, 2023 at 11:21:38PM -0800, Christoph Hellwig wrote:
-> > On Sun, Jan 15, 2023 at 09:29:58AM -0800, Darrick J. Wong wrote:
-> > > I don't have any objections to pulling everything except patches 8 and
-> > > 10 for testing this week.
-> >
-> > That would be great.  I now have a series to return the ERR_PTR
-> > from __filemap_get_folio which will cause a minor conflict, but
-> > I think that's easy enough for Linux to handle.
->
-> Ok, done.
->
-> > >
-> > > 1. Does zonefs need to revalidate mappings?  The mappings are 1:1 so I
-> > > don't think it does, but OTOH zone pointer management might complicate
-> > > that.
-> >
-> > Adding Damien.
-> >
-> > > 2. How about porting the writeback iomap validation to use this
-> > > mechanism?  (I suspect Dave might already be working on this...)
-> >
-> > What is "this mechanism"?  Do you mean the here removed ->iomap_valid
-> > ?   writeback calls into ->map_blocks for every block while under the
-> > folio lock, so the validation can (and for XFS currently is) done
-> > in that.  Moving it out into a separate method with extra indirect
-> > functiona call overhead and interactions between the methods seems
-> > like a retrograde step to me.
->
-> Sorry, I should've been more specific -- can xfs writeback use the
-> validity cookie in struct iomap and thereby get rid of struct
-> xfs_writepage_ctx entirely?
+On Tue, Jan 17, 2023 at 09:14:12PM -0800, Eric Biggers wrote:
+> 
+> Well, reading the code more carefully, the on-disk ext4 superblock can contain
+> EXT2_FLAGS_SIGNED_HASH, EXT2_FLAGS_UNSIGNED_HASH, or neither.  "Neither" is the
+> legacy case.  The above existing code in ext4 is handling the "neither" case by
+> setting the flag corresponding to the default signedness of char.  So yes, that
+> migration code was always broken if you moved the disk from a platform with
+> signed char (e.g. x86) to a platform with unsigned char (e.g. arm).  But,
+> -funsigned-char breaks it whenever the disk stays on a platform with signed
+> char.  That seems much worse.  Though, it's also a migration for legacy
+> filesystems, so maybe that code isn't needed often anymore anyway...
 
-Already asked and answered in the same thread:
+The migration code will detect what the current signedness of char,
+and then *set* the SIGNED/UNSIGNED flag.  Once we've set the flag,
+we'll continue to use it, and modern versions of e2fsprogs will set
+the SIGNED/UNSIGNED flag again using the default signedness of char.
+Once the signed/unsigned flag is set, then we can freely move the file
+system between architectures and it's not a problem.  So if you have a
+file system that was created before 2007 (e2fsprogs v1.40), the first
+time you mount that file system on a kernel or run e2fsck on a scheme
+that understands the new SIGNED/UNSIGNED scheme, then we use whatever
+hash variant that had been used on the pre-2007 kernel/e2fsprogs
+forever.
 
-https://lore.kernel.org/linux-fsdevel/20230109225453.GQ1971568@dread.disaster.area/
+commit f77704e416fca7dbe4cc91abba674d2ae3c14f6f
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Sat Nov 11 22:32:35 2006 -0500
 
-> > > 2. Do we need to revalidate mappings for directio writes?  I think the
-> > > answer is no (for xfs) because the ->iomap_begin call will allocate
-> > > whatever blocks are needed and truncate/punch/reflink block on the
-> > > iolock while the directio writes are pending, so you'll never end up
-> > > with a stale mapping.
-> >
-> > Yes.
->
-> Er... yes as in "Yes, we *do* need to revalidate directio writes", or
-> "Yes, your reasoning is correct"?
->
-> --D
+    Add directory hashed signed/unsigned hint to superblock
+    
+    The e2fsprogs and kernel implementation of directory hash tree has a
+    bug which causes the implementation to be dependent on whether
+    characters are signed or unsigned.  Platforms such as the PowerPC,
+    Arm, and S/390 have signed characters by default, which means that
+    hash directories on those systems are incompatible with hash
+    directories on other systems, such as the x86.
+    
+    To fix this we add a new flags field to the superblock, and define two
+    new bits in that field to indicate whether or not the directory should
+    be signed or unsigned.  If the bits are not set, e2fsck and fixed
+    kernels will set them to the signed/unsigned value of the currently
+    running platform, and then respect those bits when calculating the
+    directory hash.  This allows compatibility with current filesystems,
+    as well as allowing cross-architectural compatibility.
+    
+    Addresses Debian Bug: #389772
+    
+    Signed-off-by: "Theodore Ts'o" <tytso@mit.edu>
+
+So techncially speaking the migration code is probably not needed any
+more, but it's not a lot of code (just a few lines of code to set the
+flags if neither flag is set), and it's always possible that that you
+might try to mount a pre-2006 file system on a 2022 system, so we
+might as well keep it.
+
+> Anyway, as I found out after my initial reply, and which you noticed too, the
+> thing that actually caused the breakage here is the xattr hash.  The xattr hash
+> isn't related to the logic in __ext4_fill_super(), or to EXT2_FLAGS_SIGNED_HASH
+> and EXT2_FLAGS_UNSIGNED_HASH.  Those are only for the dirhash.  Unfortunately,
+> ext4's xattr hash didn't get fixed years ago when the dirhash did.  The xattr
+> hash still just always uses 'char'.
+
+I *think* we're OK, because we only use XOR (^) on the char in the
+xattr entry hash:
+
+static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
+				    size_t value_count)
+{
+	__u32 hash = 0;
+
+	while (name_len--) {
+		hash = (hash << NAME_HASH_SHIFT) ^
+		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
+		       *name++;
+	}
+	while (value_count--) {
+		hash = (hash << VALUE_HASH_SHIFT) ^
+		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
+		       le32_to_cpu(*value++);
+	}
+	return cpu_to_le32(hash);
+}
+
+And XOR shouldn't matter whether *name is signed or unsigned.  Am I
+missing something?
+
+						- Ted
