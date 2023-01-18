@@ -2,75 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D223672B34
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 23:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CBF672B53
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 23:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbjARWUK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 17:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
+        id S230010AbjARWbE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 17:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjARWUJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 17:20:09 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCEF654C3
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 14:20:08 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id gz9-20020a17090b0ec900b002290bda1b07so2700436pjb.1
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 14:20:08 -0800 (PST)
+        with ESMTP id S229892AbjARWak (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 17:30:40 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B0F47EFC
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 14:30:38 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id gz9-20020a17090b0ec900b002290bda1b07so2716388pjb.1
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 14:30:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20210112.gappssmtp.com; s=20210112;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7G30v68Uf5xDJTsJP0hcUPxdEe8oGckFSCqLxtrsTE=;
-        b=NHDcXA/8MheT7gQM61ipMapl33nTARVyAdgQa94K+Z7Q8J0JclkL6T04Fufy60wZ7w
-         7X0wYA6h56uWBSzjwzLFU2niqJe3eKI4dGynD06B7m/rLWTz7GIRx1r5R+XPF4b/ioU7
-         Xubb2HpdAPWpxjFem5UpST/Y0/0nW+SPp+pU88V+exCLPKiIgtTZJupuUMRZramkAUdW
-         x3ZQjY4xu9Nv1O/Uv3ti8j6sdm8WLxtNvhBvnORHh7+0dOzSqiTNRo9NyDrR1bzlV/q8
-         kaMPJU4O6aTg+DERlGHZDKKTbfLW2f0kPwNRo0FD5Vqu3vHojw0nN4tKCN07+uOSwNvt
-         A68Q==
+        bh=7OY4SVyDHbPXPmELzxGWZvLWHcBKrssPf/Mtp+I4izc=;
+        b=6TLQCxQL6I/G77EHa4/Odz0PEQvq/bL5gLmZmYqyyMOxgGUDwuKGE7cyUEpDhr/siB
+         Wc7jTtAw/VTSP73Q52D/umduuOAVWY/SCUxNSf2CHZ3GtU68Eq70LIxk8gyvEar74/9o
+         y8QgVk4p5s2yghS125BbbSWvyY70Z9sZa/P18J5AnUKeGG7IDo13d1zh31niZCbPL338
+         UkhNPe4eqSgg2QJZtMrz8Pi6r4CK9UqLmNB6wDImWq7xoZjj+Dxt8PH0vI5xr+sJ7wn1
+         wHTu1WPjcpvs4HEOaB4a+rkIoM+9I1mfNLTdibsWmxJmkCn2flWtEkz4hokBr0Qj9C4H
+         ZwoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7G30v68Uf5xDJTsJP0hcUPxdEe8oGckFSCqLxtrsTE=;
-        b=0pSC/RJmaAi9fCQAbngIx8mrmEgk4B7bFHymYf+y0EOty31PsynDElxTuSAYjOJySg
-         bdN+mHXPAdlxueAfbCclT6Q3cqQpg3ICTe/z4eL4Xu24PpldNfLW2lHw6eHSNcqHro5C
-         T+iOO4w3k8CBbhTYy36YPqnGjUdxoB8yx9VxG0PncBSB5pCVv60Q3R4L0krZkE0xYWBO
-         0K0g27oDAZkv/mbiaPpbZ1h05CqKhYYMrHGQ+wBzMJFP+DIz6/UZaJvcyyffKxWPVgbF
-         Nj5O+XKmcUulmXyB1cZka4SaPkqKWXsFQepxK2HlzzRvaJHDBlfJTeh1GKihg9VVowiS
-         ndCw==
-X-Gm-Message-State: AFqh2kryO6oTl2SkyK5EdGcv4Hs5NNS7DgRkcRkCOIldKVhdMmxNZp0K
-        6Pr3aw0XRYabGo6YKm3MPl+3oQ==
-X-Google-Smtp-Source: AMrXdXv3/QnL7B+9wz5CwdebuWGk42FcwV28qO3kyeYg0A84PxuFeduZkV/Mnogj/y7/W8/bPg5ZYA==
-X-Received: by 2002:a17:903:26c9:b0:194:9b68:aba4 with SMTP id jg9-20020a17090326c900b001949b68aba4mr8339690plb.69.1674080407451;
-        Wed, 18 Jan 2023 14:20:07 -0800 (PST)
+        bh=7OY4SVyDHbPXPmELzxGWZvLWHcBKrssPf/Mtp+I4izc=;
+        b=5QLtLIfPWt6+lJ5rGRPvuFnmMuCYJ/wyFISN8rA+xw0qnlwUoJAV/GbUjsYji/l0/g
+         baooWWlZpwUmveXHcd/mwdVVwy3rlq/YgnBQ/Ch7WyxQcVjllKylNjAsF7ij0Ni2INhL
+         I52yM7/P8fnFo9WU+OcUUKMT4LM1ZNhSgvUHcPuCwgk7+5iBH9SH81X+JEc6OZJXb/no
+         ih49AUXpjcJ6YCKaFRh22NvICDpaHoq0o1G8pMnxkhPwDZt1WmeTulFmZXSlEB5iYcIn
+         ov9c12ySyldbFy9TOjpY/6nDApXU7aOETJvWYUCGChZ+kk4ZzUfzYepYGVZMAe8oCaC5
+         crFg==
+X-Gm-Message-State: AFqh2krLzcu7N64yHLfsis5RtaxC1zMsXdfWqnfXzl6HyKWMqJyRLPHK
+        Sy9KE4b6lJU0wygn9WkRzFq9PA==
+X-Google-Smtp-Source: AMrXdXvCsQCFN2iRIdni450XmoRojnm7DiO6pBWBDqyypQ0q7Ry5jZswSVJhLEUtimeq+OlH8MT17Q==
+X-Received: by 2002:a17:90b:1048:b0:226:cefc:2709 with SMTP id gq8-20020a17090b104800b00226cefc2709mr9240518pjb.9.1674081038074;
+        Wed, 18 Jan 2023 14:30:38 -0800 (PST)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id ij23-20020a170902ab5700b001948ae7501asm7396851plb.298.2023.01.18.14.20.06
+        by smtp.gmail.com with ESMTPSA id x9-20020a17090a294900b00225bc0e5f19sm1860243pjf.1.2023.01.18.14.30.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Jan 2023 14:20:06 -0800 (PST)
+        Wed, 18 Jan 2023 14:30:37 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <3A9E6D2E-F98F-461C-834D-D4E269CC737F@dilger.ca>
+Message-Id: <BCB61FA2-9D1E-4E2D-8515-78AB6105785D@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_F5CEB163-EA7D-4B9A-ABEA-18C72CE99631";
+ boundary="Apple-Mail=_5EF56060-5C97-454D-A573-026513A705FF";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Detecting default signedness of char in ext4 (despite
- -funsigned-char)
-Date:   Wed, 18 Jan 2023 15:20:03 -0700
-In-Reply-To: <Y8hpZRmHJwdutRr2@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Eric Whitney <enwlinux@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2] resize2fs: resize2fs disk hardlinks will be error
+Date:   Wed, 18 Jan 2023 15:30:34 -0700
+In-Reply-To: <Y8d+B4RHTkqYpG4g@mit.edu>
+Cc:     zhanchengbin <zhanchengbin1@huawei.com>,
+        linux-ext4@vger.kernel.org, liuzhiqiang26@huawei.com
 To:     Theodore Ts'o <tytso@mit.edu>
-References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
- <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
- <Y8dtze3ZLGaUi8pi@sol.localdomain>
- <CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com>
- <Y8eAJIKikCTJrlcr@sol.localdomain> <Y8hUCIVImjqCmEWv@mit.edu>
- <CAHk-=wiGdxWtHRZftcqyPf8WbenyjniesKyZ=o73UyxfK9BL-A@mail.gmail.com>
- <Y8hpZRmHJwdutRr2@mit.edu>
+References: <9dcadf7a-b12a-c977-2de2-222e20f0cebe@huawei.com>
+ <Y8d+B4RHTkqYpG4g@mit.edu>
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -82,78 +72,117 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_F5CEB163-EA7D-4B9A-ABEA-18C72CE99631
+--Apple-Mail=_5EF56060-5C97-454D-A573-026513A705FF
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-
-> On Jan 18, 2023, at 12:39 PM, Linus Torvalds =
-<torvalds@linux-foundation.org> wrote:
->> Note that the reason I'm so laissez-faire about it is that "broken
->> test case" is something very different from "actually broken user
->> space".
->>=20
->> I haven't actually seen anybody _report_ this as a problem, I've only
->> seen the generic/454 xfstest failures.
-
-That is likely because the number of 6.2+ kernel users who are using
-Unicode xattr names is small, but they would likely come out of the
-woodwork once Ubuntu/RHEL start using those kernels, and by then it
-would be too late to fix this in a compatible manner.
-
-> On Wed, Jan 18, 2023 at 03:14:04PM -0600, Linus Torvalds wrote:
->> You're missing the fact that 'char' gets expanded to 'int', and in =
-the
->> process but #7 gets copied to bits 8-31 if it is signed.
->>=20
->> Then the xor and the later shifting will move those bits around..
+On Jan 17, 2023, at 10:05 PM, Theodore Ts'o <tytso@mit.edu> wrote:
 >=20
-> I agree with your analysis that in actual practice, almost no one
-> actually uses non-ASCII characters for xattr names.  (Filenames, yes,
-> but in general xattr names are set by programs, not by users.)  So
-> besides xfstests generic/454, how likely is it that people would be
-> using things like Octopus emoji's or Unicode characters such as <GREEK
-> UPSILON WITH ACUTE AND HOOK SYMBOL>?  Very unlikely, I'd argue.  I
-> might be a bit more worried about userspace applications written for,
-> say, Red Flag Linux in China using chinese characters in xattrs, but
-> I'd argue even there it's much more likely that this would be in the
-> xattr values as opposed to the name.
->=20
-> In terms of what should we do for next steps, if we only pick signed,
-> then it's possible if there are some edge case users who actually did
-> use non-ASCII characters in the xattr name on PowerPC, ARM, or S/390,
-> they would be broken.  That's simpler, and if we think there are
-> darned few of them, I guess we could do that.
->=20
-> That being said, it's not that much more work to use a flag in the
-> superblock to indicate whether or not we should be explicitly casting
-> *name to either a signed or unsigned char, and then setting that flag
-> automagically to avoid problems on people who started the file system
-> on say, x86 before the signed to unsigned char transition, and who
-> started natively on a PowerPC, ARM, or S/390.
->=20
-> The one bit which makes this a bit more complex is either way, we need
-> to change both the kernel and e2fsprogs, which is why if we do the
-> signed/unsigned xattr hash flag, it's important to set the flag value
-> to be whatever the "default" signeded would be on that architecture
-> pre 6.2-rc1.
+> On Tue, Jan 04, 2022 at 10:23:52PM +0800, zhanchengbin wrote:
+>> Resize2fs disk hardlinks which mounting after the same name as tmpfs
+>>  filesystem it will be error. The items in /proc/mounts are =
+traversed,
+>> when you get to tmpfs,file!=3Dmnt->mnt_fsname, therefore, the
+>> stat(mnt->mnt_fsname, &st_buf) branch is used, however, the values of
+>>  file_rdev and st_buf.st_rdev are the same. As a result, the system
+>> mistakenly considers that disk is mounted to /root/tmp. As a result
+>> , resize2fs fails.
 
-It makes sense to use the existing UNSIGNED/SIGNED flag in the =
-superblock
-for the dir hash also for the xattr hash.  That would give the =
-historical
-value for the xattr hashes prior to the 6.2 unsigned char change, and is
-correct for all filesystems and xattrs *except* non-ASCII xattr names
-created on 6.2+ kernels (which should indeed be relatively few cases).
+Rather than doing ever more complex processing of /proc/mounts, it
+would make more sense to have resize2fs take the *mountpoint* of
+the filesystem to be resized, and then run the ioctl directly on
+the given path.  That avoids the need to process /proc/mounts at
+all, and unambiguously specifies which filesystem should be resized.
 
-e2fsck could do the same, and would again be correct for all xattrs =
-names
-except those created with kernel 6.2+.  It could check both the signed
-and unsigned forms and correct those few that are reversed compared to
-the superblock flag, which should be rare, but isn't much work and =
-avoids
-incorrectly clearing the "corrupted" xattrs.
+For compatibility, resize2fs would need to accept either the device
+or mountpoint (really any directory in the filesystem would work),
+and it could check either the mnt_fsname or mnt_dir matches.
+
+Cheers, Andreas
+
+> Apologies for the delay in getting to this patch.  The original
+> patch[1] was corrupted (looks like you used Mozilla Thunderbird as
+> your Mail User Agent, which line-wrapped the patch and thus confused
+> patchwork[2] as well making it impossible for b4 and git am to handle
+> the patch).
+>=20
+> [1] =
+https://lore.kernel.org/all/9dcadf7a-b12a-c977-2de2-222e20f0cebe@huawei.co=
+m/
+> [2] =
+http://patchwork.ozlabs.org/project/linux-ext4/patch/9dcadf7a-b12a-c977-2d=
+e2-222e20f0cebe@huawei.com/
+>=20
+> I also rewrite the commit description to make it more clear:
+>=20
+>    libext2fs: add extra checks to ext2fs_check_mount_point()
+>=20
+>    A pseudo-filesystem, such as tmpfs, can have anything at all in its
+>    mnt_fsname entry.  Normally, it is just "tmpfs", like this:
+>=20
+>    tmpfs /tmp tmpfs rw,relatime,inode64 0 0
+>    ^^^^^
+>=20
+>    but in a pathological or malicious case, a system administrator can
+>    specify a block device as its mnt_fsname which is the same as some
+>    other block device.  For example:
+>=20
+>    /dev/loop0 /tmp/test-tmpfs tmpfs rw,relatime,inode64 0 0
+>    ^^^^^^^^^^
+>    /dev/loop0 /tmp/test-mnt ext4 rw,relatime 0 0
+>=20
+>    In this case, ext2fs_check_mount_point() may erroneously return
+>    that the mountpoint for the file system on /dev/loop0 is mounted on
+>    /tmp/test-tmpfs, instead of the correct /tmp/test-mnt.  This causes
+>    problems for resize2fs, since in order to do an online resize, it
+>    needs to open the directory where the file system is mounted, and
+>    trigger the online resize ioctl.  If it opens the incorrect =
+directory,
+>    then resize2fs will fail.
+>=20
+>    So we need to add some additional checking to make sure that
+>    directory's st_dev matches the block device's st_rdev field.
+>=20
+>    An example shell script which reproduces the problem fixed by this
+>    commit is as follows:
+>=20
+>       loop_file=3D/tmp/foo.img
+>       tmpfs_dir=3D/tmp/test-tmpfs
+>       mnt_dir=3D/tmp/test-mnt
+>=20
+>       mkdir -p $tmpfs_dir $mnt_dir
+>       dd if=3D/dev/zero of=3D$loop_file bs=3D1k count=3D65536
+>       test_dev=3D$(losetup --show -f $loop_file)
+>       mke2fs -t ext4 -F -b 1024 $test_dev 32768
+>       mount -t tmpfs $test_dev $tmpfs_dir  # create the evil =
+/proc/mounts entry
+>       mount -t ext4 $test_dev $mnt_dir
+>       ln -f ${test_dev} ${test_dev}-ln
+>       resize2fs ${test_dev}-ln
+>=20
+>    [ Fixed up the corrupted patch and rewrote the commit description =
+to
+>      be more clear -- tytso ]
+>=20
+>    Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+>    Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+>=20
+> As you can see, the best commit description describes *why* a
+> particular change is needed, and gives the background so the reader
+> can understand what problem is being fixed.  The one-line change makes
+> it clear that the change is to libext2fs's ismounted.c, and *not* to
+> resize2fs, although you were making this bug to fix resize2fs after a
+> system administrator did something non-standard and/or malicious.
+>=20
+> Also note how I rewrote the reproducer to be simpler and more
+> portable.
+>=20
+> Cheers,
+>=20
+> 						- Ted
+
 
 Cheers, Andreas
 
@@ -162,7 +191,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_F5CEB163-EA7D-4B9A-ABEA-18C72CE99631
+--Apple-Mail=_5EF56060-5C97-454D-A573-026513A705FF
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -173,19 +202,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPIcJQACgkQcqXauRfM
-H+DgYBAAioolu1HjArjRqCPToB/HV1wErzLCZXbd0rGyA99KJABUXqxOv9UXJ6L6
-BgoPb2xFM4OE+8Z5gMMD644AKL0WS2Wl67v/OKsS71f0dZ5v6F51ywEQVafx4GaC
-LBodsJsyb+6aTPFUK8v6EMh/3fM7Com5sPJge10Wdy8+k8y58cE8QWUD2/NgOdyw
-8GA2n2UYKpcRGYAoaJbhn8QVe1aUXVHJ3xHkja3IPdBENokUAmaaK1+uSfZxj5FR
-OQpW03mjdVbzAqssZjcRHFBcbvRwdq0WP+WEjieY84Q0pcOrWMio4UIzd4JAmUT5
-A1q9730Epc0noWrxjs7kvOweDw3MzDWuUiSHbvnmq91RK1ruA0OMrLqlSJIv3807
-zHvb2gmD+IOmXCIIGTPYS/XLIMnFh/eNGHzhwC37DdIA7nXFUt2BAUTYJC/8sw/w
-2aOgt7DTcUpMiGJBayh0WAsZv/TMDB/Tqy53I3GtingF50HXmvrRZFiq6lJgqIzx
-txaXMiDvwQL/JL+MD/dtKTVryN43WeLpboTIH2Xsz2LJ9azXUKDuel1ptFU6vPLP
-UZ5iemJrKzOF4RJd9tGYR2MFocmho08a8R3/USMdSnYVKuDkQ7RpMuOjGYiKoPxH
-i5lOAwb3sORs8CwFnWEQmsZdPvKSk40DcpskX1dEgYsVAVjqlss=
-=uEc0
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPIcwoACgkQcqXauRfM
+H+Asdw//RbPYH6QIs14OTsLpZ/g+rxfdG/KZ9mve31Rw4iMDoKm3N6vVsW7c/kYN
+0ICD1QVPo7jyvurJKszXcCGGNzIq3RjQSrGRCCZGvmdfoU7nsJPHFWfsbjs+duaQ
+ojHRVhsvSx7avwdZrMGo/IEAD3xkJbXke0Vf8gU4m4X7q5ieFF7xlWvR6ebslMXS
+leBavFXCjyOT4+LV81cctzTguSNpgn8miLgPQhND8z/awdPo4SNa61ivtp6pmOxf
+z/RY+kkbVLxHNjcepjvamHTuXBgWXxoj0ae6reaH2KpyK9tDXSEYUM1igX22lDtM
+c/q2tRdifE2V5h8LT175U4bJVAV80uZTMODRwYVA2tJtcTL0uw0fyHnzpfp2yDp4
+SSSuKHZAGrR0ffKBQDL3CJwgQlg38MkRjUaL3FqDkQH+JfPmfFbuLO0a/opwgGUm
+21MtoV2PZEUHIhVXDceBJCbkCYiX++U3uZFMzHjy6xCLGOrheyXt2L2haq1OZCr+
+IC5slxpgy/GAwXzcoXU8xdRR/5JDBxR5vXWXgxOaTN2K+WWvad8NjplA+Be4x3vz
+DIaxaQIguCed3TyYiq+OafA801dJ6ISHSWx06Ldky6EWKma6/nne6isqKjSKdOJt
+kNP+jiHW5XEJ+sGFVcVazNiXcKwkrrmWpi58HMFv77kQC/sTeNE=
+=gN2w
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_F5CEB163-EA7D-4B9A-ABEA-18C72CE99631--
+--Apple-Mail=_5EF56060-5C97-454D-A573-026513A705FF--
