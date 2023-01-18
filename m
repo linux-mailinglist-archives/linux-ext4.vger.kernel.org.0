@@ -2,84 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE605672287
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 17:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28B86722BB
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 17:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbjARQIN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 11:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
+        id S230097AbjARQNu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 11:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjARQHs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 11:07:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF4454124
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 08:03:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674057818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6IqmmpZ9I4Vl93/dhw5LrxVGVOKyZqjXYxYco0sdHY=;
-        b=c3QQ3gMtrp6mWhWZ5ppNZLy1YNUuUC/ETn/6RHKMLu8dtHT5botz91hbsLjMG6pqnlsV0o
-        BjImmnUpRDkdOqFTPj8uHdXFAjvcocWXvISEyZpjZFfFr4BKBVmW5L3pvJt1ho82ml4VMf
-        02q35mTQfv0YgEHOfWuETxcWHazSgAc=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-626-lpUOXgtGMmSfP1Ol9axIAg-1; Wed, 18 Jan 2023 11:03:35 -0500
-X-MC-Unique: lpUOXgtGMmSfP1Ol9axIAg-1
-Received: by mail-pf1-f199.google.com with SMTP id cw8-20020a056a00450800b0058a3508303eso12212449pfb.13
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 08:03:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k6IqmmpZ9I4Vl93/dhw5LrxVGVOKyZqjXYxYco0sdHY=;
-        b=POZICwiobgoVBjxEBntqvKFjAt2RrWVFuu+IcRwKyyJ5Ur/qJWdoU8NFSaU5tlEPa0
-         g44tN8JV6GEklIu+gxau1vWiLtTPpWqp8W+x1d8HLgQ+ZnAMvOvICeSjoZTaacXiAxEI
-         25FUVvCbHMg0jKQ77F5S7y1CI2MiPWjylhKl68FfJhBLNB4DHP4h45XUWFR8smAXj3SN
-         dQj6fZ2xrXNkLYfNh+0qabLNZ4YdSvcJ8r0ADAComGbNFT4L3VXSZL6wzeFw/GVugjz9
-         IrQKvL4KYeKisBU9CzOtXC3lSa42K4NgChr/RCfcLZvBrFodYg96sIDjVIgOJ4zseWQU
-         wvWg==
-X-Gm-Message-State: AFqh2kpaM7qmetrjFG+IfKQGH5fInP5y+JZHEVOSdY5oJFXtosATbdS7
-        nEWYCtdzX1hcxP3cCBd09u+3vLAjs2XZ+4v6JtceJkjK1uUJxZeDT3x8DsTNu81bGdYdXkSfwnW
-        n6VysSyxLyOm6THBPtNVWug==
-X-Received: by 2002:a05:6a00:4c85:b0:58d:dfb1:8023 with SMTP id eb5-20020a056a004c8500b0058ddfb18023mr5001063pfb.15.1674057813891;
-        Wed, 18 Jan 2023 08:03:33 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXs471cXGsAqsTBhZmYbNrPuvtIJQ9qUHn3BExn6sNE+TJfwyf6NmyB9vzFYeYsjUo7hyWa/bQ==
-X-Received: by 2002:a05:6a00:4c85:b0:58d:dfb1:8023 with SMTP id eb5-20020a056a004c8500b0058ddfb18023mr5001043pfb.15.1674057813641;
-        Wed, 18 Jan 2023 08:03:33 -0800 (PST)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w4-20020aa79544000000b0058db5d4b391sm5307916pfq.19.2023.01.18.08.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jan 2023 08:03:33 -0800 (PST)
-Date:   Thu, 19 Jan 2023 00:03:28 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     "wangjianjian (C)" <wangjianjian3@huawei.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Add default commit interval test
-Message-ID: <20230118160328.qusc5f7h6iwy6tbj@zlang-mailbox>
-References: <20230118052515.3966391-1-wangjianjian3@huawei.com>
- <f6b28fd3-1f36-2bb0-aadd-d08b81a64835@huawei.com>
+        with ESMTP id S229716AbjARQNY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 11:13:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EF0577D3;
+        Wed, 18 Jan 2023 08:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JEUOAZ78kJr603e3fslTqPJIm0KVjgSmMPI95SNsLdQ=; b=jk2OX/GHKt+KDBvU+2AWIJn5ry
+        QSvBl+h/HCaJiHuccrL+v6bRIufcwCTd0eMLPw1XCRpUNlJt2/bfbsfInmdxoeLrYYKHi7OGjLgOO
+        wuAzMNrhOaicl2w+hFj8r+3l6ge4M+Y7Tf9d/yyASO6QxFfm7hHBD4IMTbGeulZC5l3g/Vb+9it3D
+        94gz2e1P9UT/wh+6QM64zP7CvRhYB7E/w6Ny0qhYYjx+6RUCXFzz5UR2L+8sEsUYqeHN6WfD88L64
+        9qubXFGDeITGtJyWPF50S62gtex3EBM7lI7TX9PRim5NbcZlyBfkHtyPAoWpa/UQ6WykrPInUoJ3z
+        QYRfXUVg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pIAzh-0007zm-8H; Wed, 18 Jan 2023 16:08:57 +0000
+Date:   Wed, 18 Jan 2023 16:08:57 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 8/9] btrfs: handle a NULL folio in
+ extent_range_redirty_for_io
+Message-ID: <Y8gZmTFB6vCivxsY@casper.infradead.org>
+References: <20230118094329.9553-1-hch@lst.de>
+ <20230118094329.9553-9-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6b28fd3-1f36-2bb0-aadd-d08b81a64835@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230118094329.9553-9-hch@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 01:27:05PM +0800, wangjianjian (C) wrote:
-> Ignore, sorry for the traffic...
+On Wed, Jan 18, 2023 at 10:43:28AM +0100, Christoph Hellwig wrote:
+> filemap_get_folio can return NULL, skip those cases.
 
-Do you mean ignore those redundant patches, or ignore this change itself?
+Hmm, I'm not sure that's true.  We have one place that calls
+extent_range_redirty_for_io(), and it previously calls
+extent_range_clear_dirty_for_io() which has an explicit
 
+                BUG_ON(!page); /* Pages should be in the extent_io_tree */
+
+so I'm going to say this one can't happen either.  I haven't delved far
+enough into btrfs to figure out why it can't happen.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/btrfs/extent_io.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index d55e4531ffd212..a54d2cf74ba020 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -230,6 +230,8 @@ void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end)
+>  
+>  	while (index <= end_index) {
+>  		folio = filemap_get_folio(mapping, index);
+> +		if (!folio)
+> +			continue;
+>  		filemap_dirty_folio(mapping, folio);
+>  		folio_account_redirty(folio);
+>  		index += folio_nr_pages(folio);
+> -- 
+> 2.39.0
+> 
