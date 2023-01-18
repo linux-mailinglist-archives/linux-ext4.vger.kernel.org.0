@@ -2,106 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD343672410
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 17:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4325672742
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 19:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjARQuQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 11:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
+        id S229479AbjARSlo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 13:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjARQuP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 11:50:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6CE38015
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 08:49:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674060567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229476AbjARSlo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 13:41:44 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4842C10F0;
+        Wed, 18 Jan 2023 10:41:43 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E665A3F194;
+        Wed, 18 Jan 2023 18:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1674067301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lgwAP3iZLubX4jJpj4ZhHlVnjkE2V1abu7VwSCjHn5c=;
-        b=FpPtyau+an4M+Xmird4Xa55nXKWQRW/HNcmcQSdNAXfbf6uBNlSZv3LT2A3ZKvHicboUzb
-        5ELS9ts1FsvaSwHadjEFvZqjjYegwwWO8LSgtzewRICSYz2nb+oU85GmlxeCh6ixDlgHGz
-        THvX5plULwo/UDZKgbfGkNtQcVQ4LXM=
-Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
- [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-101-OoIO0oIeNdG4tu0_7wWiqg-1; Wed, 18 Jan 2023 11:49:25 -0500
-X-MC-Unique: OoIO0oIeNdG4tu0_7wWiqg-1
-Received: by mail-ua1-f72.google.com with SMTP id o43-20020ab0596e000000b0038421e4c7deso13974861uad.19
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 08:49:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lgwAP3iZLubX4jJpj4ZhHlVnjkE2V1abu7VwSCjHn5c=;
-        b=hjUz0NNTU6E6LrdaqkXgghCXXByVlPimTRD25sxNP9IshFwD4Na1oY4v7rveRsO+zJ
-         XeSWjgguwmNG4rKN4QcLh9RHpEGwiYy4Sp4qSv7ehrZPXnp9K1YtC/aS+T1ZhZp8a74/
-         B/WY1tqsf0R6IMrcc1Qyce2Rnjt1s/wyqTvNdQ/2/eOocD37AeyAbxD9L4zPRROZ9qhv
-         Fnc/0Cw5ds6So0ubb0blnCFZx3hS0gRKA2r2Q4/wgEte4KGjF3ZTqBhR2IUcqT8aG58+
-         ptOqxLWrAmViw5AR4Eitt7RINWJA/6Nx2Dd27bXUB2676H4pfvuWeEIKhuMKo1CVQtuh
-         +ePQ==
-X-Gm-Message-State: AFqh2krC50o5fuXtKzS2wJU9f87CFvIxTYiYs87/WuisETijGgbnfo75
-        VmbIPG8IODVseLZP7rHcwimQdUw0wihN+Vs7k6fL7s/GAn/d77sooVfcKfeBOF0dK86+KQGg75E
-        +xi+un2U6YglY5EBwHS5/FA==
-X-Received: by 2002:a05:6122:c54:b0:3d5:5366:dc6c with SMTP id i20-20020a0561220c5400b003d55366dc6cmr4414363vkr.4.1674060565083;
-        Wed, 18 Jan 2023 08:49:25 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvRoSYdOHAFhWX6SkAWaiD3PJ9bgCoG4JU7ThLaby5WFm6CrHkvSID8k/76bqXjrAWdFrKBiQ==
-X-Received: by 2002:a05:6122:c54:b0:3d5:5366:dc6c with SMTP id i20-20020a0561220c5400b003d55366dc6cmr4414340vkr.4.1674060564852;
-        Wed, 18 Jan 2023 08:49:24 -0800 (PST)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id dt26-20020a05620a479a00b00705c8cce5dcsm11812650qkb.111.2023.01.18.08.49.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jan 2023 08:49:24 -0800 (PST)
-Date:   Wed, 18 Jan 2023 11:50:26 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 4/9] shmem: remove shmem_get_partial_folio
-Message-ID: <Y8gjUhcRYkRuxLDq@bfoster>
-References: <20230118094329.9553-1-hch@lst.de>
- <20230118094329.9553-5-hch@lst.de>
- <Y8f6sShghKuFim5E@bfoster>
- <20230118164358.GD7584@lst.de>
+        bh=TPccA2uuS0AFrMoJ1hmVgCf/qhWS0ww6ghIk/2y8wLY=;
+        b=b/pkxr7DosgKELvvNrVDH0z2KcxsZSjlKVMYlx3CQsQzmNO65aEnMSCaCGXZYLAuufi/oY
+        kXdz5mFM7rFz5DtsNjUEncMrqMiUAZL3Cnvb1q95udiVdULoelZWmoMN3cb5WNAPwNwVLV
+        CKNN1gnxH2y9xNihyDYEID/QuWdPsoI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1674067301;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TPccA2uuS0AFrMoJ1hmVgCf/qhWS0ww6ghIk/2y8wLY=;
+        b=SzeoPBoe8vwR4dd+NU0w5W/ZPuVM/8pUjYK4lgM5isVBad6ThwD7KYYLaXyQVBA0hFTgUc
+        gowffcp8nqQ1h4AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D00BE138FE;
+        Wed, 18 Jan 2023 18:41:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tv/AMmU9yGP3bAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 18 Jan 2023 18:41:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 34CDFA06B2; Wed, 18 Jan 2023 19:41:41 +0100 (CET)
+Date:   Wed, 18 Jan 2023 19:41:41 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        linux-xfs@vger.kernel.org
+Subject: Re: Locking issue with directory renames
+Message-ID: <20230118184141.pppaeg7wcj3ierae@quack3>
+References: <20230117123735.un7wbamlbdihninm@quack3>
+ <Y8bTk1CsH9AaAnLt@ZenIV>
+ <20230118091036.qqscls22q6htxscf@quack3>
+ <Y8gejpDqxV6Uo/xY@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230118164358.GD7584@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y8gejpDqxV6Uo/xY@ZenIV>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 05:43:58PM +0100, Christoph Hellwig wrote:
-> On Wed, Jan 18, 2023 at 08:57:05AM -0500, Brian Foster wrote:
-> > This all seems reasonable to me at a glance, FWIW, but I am a little
-> > curious why this wouldn't split up into two changes. I.e., switch this
-> > over to filemap_get_entry() to minimally remove the FGP_ENTRY dependency
-> > without a behavior change, then (perhaps after the next patch) introduce
-> > SGP_FIND in a separate patch. That makes it easier to review and
-> > potentially undo if it happens to pose a problem in the future. Hm?
+On Wed 18-01-23 16:30:06, Al Viro wrote:
+> On Wed, Jan 18, 2023 at 10:10:36AM +0100, Jan Kara wrote:
 > 
-> The minimal change to filemap_get_entry would require to add the
-> lock, check mapping and retry loop and thus add a fair amount of
-> code.  So I looked for ways to avoid that and came up with this
-> version.  But if there is a strong preference to first open code
-> the logic and then later consolidate it I could do that.
+> > 
+> > Yes, we can lock the source inode in ->rename() if we need it. The snag is
+> > that if 'target' exists, it is already locked so when locking 'source' we
+> > are possibly not following the VFS lock ordering of i_rwsem by inode
+> > address (I don't think it can cause any real dealock but still it looks
+> > suspicious). Also we'll have to lock with I_MUTEX_NONDIR2 lockdep class to
+> > make lockdep happy but that's just a minor annoyance. Finally, we'll have
+> > to check for RENAME_EXCHANGE because in that case, both source and target
+> > will be already locked. Thus if we do the additional locking in the
+> > filesystem, we will leak quite some details about rename locking into the
+> > filesystem which seems undesirable to me.
 > 
+> Rules for inode locks are simple:
+> 	* directories before non-directories
+> 	* ancestors before descendents
+> 	* for non-directories the ordering is by in-core inode address
+> 
+> So the instances that need that extra lock would do that when source is
+> a directory and non RENAME_EXCHANGE is given.  Having the target already
+> locked is irrelevant - if it exists, it's already checked to be a directory
+> as well, and had it been a descendent of source, we would have already
+> found that and failed with -ELOOP.
+> 
+> If A and B are both directories, there's no ordering between them unless
+> one is an ancestor of another - such can be locked in any order.
+> However, one of the following must be true:
+> 	* C is locked and both A and B had been observed to be children of C
+> after the lock on C had been acquired, or
+> 	* ->s_vfs_rename_mutex is held for the filesystem containing both
+> A and B.
+> 
+> Note that ->s_vfs_rename_mutex is there to stabilize the tree topology and
+> make "is A an ancestor of B?" possible to check for more than "A is locked,
+> B is a child of A, so A will remain its ancestor until unlocked"...
 
-Ok. Not a strong preference from me. I don't think it's worth
-complicating that much just to split up.
+OK, fair enough. I'll fix things inside UDF and ext4.
 
-Brian
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
