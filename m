@@ -2,77 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF889672897
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 20:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3A16728D1
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 20:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjARTkB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 14:40:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S229654AbjART5i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 14:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjARTj7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 14:39:59 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4265421D
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 11:39:57 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id fd15so20757069qtb.9
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 11:39:57 -0800 (PST)
+        with ESMTP id S229512AbjART5h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 14:57:37 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C40853E7B;
+        Wed, 18 Jan 2023 11:57:36 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id p96so12425554qvp.13;
+        Wed, 18 Jan 2023 11:57:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=50IK4LVqoMmk7C/WdII2GzqA3m6oWHMIg74I9XrTXo0=;
-        b=ScMxZ5jY0w04cygb16m/i2sdw9vtNE0BuTsMtZwFqhZOw/s1htXS2WLJio0GqPAK7a
-         /ojrZG6eKl2Q0/OzyUo5CCnwJw7/hxsj235TUn2zPR0RAjmx2ibOP8fYlPHLAaFKKqU6
-         CuM0ebzKEgqvDaJtOYshLWe0v9kve9UxaYWnc=
+        bh=jE7UUdy8PLtXYkvU/lzVvfasVo94/Kknt5WCrMd4jf8=;
+        b=VcasuukNdtEloIk0KqvSta3EYTM8ZwqsTHtT/bj3ut3YYOeIS/OpCCwYsncX9MgQRw
+         QWEoc9qVZ/F1XkKxrm0SezpXexHkMc2IoDHgj92Ev1dgX/+qT8dUCDddKGE3/h3H5PaG
+         /dX/RwGKN0ssytQHtibN5gCczlEAFvoMYwmHJOqPvhB8Thwnd49IasG9B6MiWiYHTkjO
+         E47xpO/Rg1kdUQ3y4gHWLCdjC/BUwgQfQpzbXhSUl1R2fScq70HsoJL64sgpxVBMurGC
+         vUTlgCtmcTRnCy8d+lhL3ei1HpMNpreExkujXFgWArIfQ3+tzbwH9lsOVRX3jBA324Bj
+         lVPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=50IK4LVqoMmk7C/WdII2GzqA3m6oWHMIg74I9XrTXo0=;
-        b=rGcMmqzgAKcmOpb8ctkxaiMc2KNlADAAfcbogh7aw00rQ0w+D3yGS6unImMJS9GZud
-         KgwbuA191WpdAVsjzkOOkpOxMPV0qx02koeCniStzdFR5M8GvKwTMZ4JUkR8pUfSPghX
-         haJEzt9AhgiWGBreeClpRPTYh9wb8h8wz74yiG4Sj/m2Y1ALDBaP+RoSnM1GtfU1bXZl
-         kBn4hDfkeAXjAMW3nSswBYtwvSB1pN/pQAzEYykiny9C6DA77CgZutYXs0ZSuX81cD+C
-         qqgcVzaH1AdnlI1f+dPlat7Tldt8E5dUoZ1hr5uPod/t1saaER6pb7ixUT372c6ZHoY0
-         qLKw==
-X-Gm-Message-State: AFqh2kpPtItHlipCSEvqDPvGIafSlSTX9EQJLaDqX4gL6hPvf3bESdv6
-        0ADzPumpnO7DDyMAipg7nWcfO/fxteucOG94
-X-Google-Smtp-Source: AMrXdXvVg+YxLO2csspuzmUZU6KaaDXXVed6JS21WVi+JAudJisqdXmHKAJtpuiZW8d/eBiJIT6rHg==
-X-Received: by 2002:ac8:72ce:0:b0:3a5:ff6e:d43e with SMTP id o14-20020ac872ce000000b003a5ff6ed43emr10566786qtp.2.1674070796551;
-        Wed, 18 Jan 2023 11:39:56 -0800 (PST)
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com. [209.85.219.45])
-        by smtp.gmail.com with ESMTPSA id b24-20020ac86798000000b0039cc944ebdasm17869424qtp.54.2023.01.18.11.39.55
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 11:39:56 -0800 (PST)
-Received: by mail-qv1-f45.google.com with SMTP id y8so24460999qvn.11
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 11:39:55 -0800 (PST)
-X-Received: by 2002:a05:6214:5504:b0:535:2538:c972 with SMTP id
- mb4-20020a056214550400b005352538c972mr436923qvb.43.1674070795614; Wed, 18 Jan
- 2023 11:39:55 -0800 (PST)
+        bh=jE7UUdy8PLtXYkvU/lzVvfasVo94/Kknt5WCrMd4jf8=;
+        b=D83IBz0bwpDMCxSy3os6l2GZPH7bVib+14kZ/mUQKdlc4fCe070PuCgQmStoJcmM/I
+         HOx+XxmVmdAOoznnKRfQ58cfoBaSaMeXoUelesMLgjkqHsj6s0q/ngjZYW4sA0iXmfHw
+         L45Do2IQib7kxq1agY04kGl0Hf0e5Bbt0Ew0Jj5QGMR4asJ8qN/pDVIxm5N/vt8vFBY+
+         SboUAcTvqO0qwoaQjum03RWWO5QirC+gTRw6IcQH1G1vso7WzgQzF13DfqxpCxT2imBJ
+         XRnVRMndLb09sY+Otsrbj6ThM0jqff2BhVWLHm3g1xfAAMhEXx6o/l7FX5ffC7WgRZCb
+         KHcA==
+X-Gm-Message-State: AFqh2ko3yo+3mOjowHHuyHcU8wKkDgx3mzoe+eZ0ixop0pMfkR7pX7wL
+        DQcTwe1ZRlpFNCwK1F5nwh2sMuaaP5OHz11gYXU=
+X-Google-Smtp-Source: AMrXdXve2EgHGv+2cv1pHkrPy3geUJuLfVqUa2trthVWJaRmjDPV20b7EKg3SSIV8PR21z7dow6K6rvn9Y0mMDKfOqc=
+X-Received: by 2002:a05:6214:5e05:b0:534:b3ca:8638 with SMTP id
+ li5-20020a0562145e0500b00534b3ca8638mr437696qvb.19.1674071855381; Wed, 18 Jan
+ 2023 11:57:35 -0800 (PST)
 MIME-Version: 1.0
-References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
- <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca> <Y8dtze3ZLGaUi8pi@sol.localdomain>
- <CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com>
- <Y8eAJIKikCTJrlcr@sol.localdomain> <CAHk-=wg7SkJZeAJ-KMKxsA7m9cs7MJoSDpu0aYKVm=bAwhcqjA@mail.gmail.com>
- <Y8hE+uwHkilxThDT@sol.localdomain>
-In-Reply-To: <Y8hE+uwHkilxThDT@sol.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 18 Jan 2023 11:39:39 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgxcupvBROWUsrsyTKTWr8L93T+1xJaRvG6cOfREjpXMw@mail.gmail.com>
-Message-ID: <CAHk-=wgxcupvBROWUsrsyTKTWr8L93T+1xJaRvG6cOfREjpXMw@mail.gmail.com>
-Subject: Re: Detecting default signedness of char in ext4 (despite -funsigned-char)
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Eric Whitney <enwlinux@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
+References: <20230108194034.1444764-1-agruenba@redhat.com> <20230108194034.1444764-9-agruenba@redhat.com>
+ <20230108215911.GP1971568@dread.disaster.area> <CAHc6FU4z1nC8zdM8NvUyMqU29_J7_oNu1pvBHuOvR+M6gq7F0Q@mail.gmail.com>
+ <20230109225453.GQ1971568@dread.disaster.area> <CAHpGcM+urV5LYpTZQWTRoK6VWaLx0sxk3mDe_kd3VznMY9woVw@mail.gmail.com>
+ <Y8Q4FmhYehpQPZ3Z@magnolia> <Y8eeAmm1Vutq3Fc9@infradead.org> <Y8hCq+fIWgHfUufe@magnolia>
+In-Reply-To: <Y8hCq+fIWgHfUufe@magnolia>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Wed, 18 Jan 2023 20:57:24 +0100
+Message-ID: <CAHpGcMJmi6gncj=a0NZrbm11AJoN5u0-F7GUnwFZRVbCL=Dpqw@mail.gmail.com>
+Subject: Re: [RFC v6 08/10] iomap/xfs: Eliminate the iomap_valid handler
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,44 +75,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 11:14 AM Eric Biggers <ebiggers@kernel.org> wrote:
+Am Mi., 18. Jan. 2023 um 20:04 Uhr schrieb Darrick J. Wong <djwong@kernel.org>:
 >
-> Now, we seem to have gotten the "let's break userspace, lol" version of Linus
-> today, not the "SHUT THE FUCK UP, WE DO NOT BREAK USERSPACE" version of Linus
+> On Tue, Jan 17, 2023 at 11:21:38PM -0800, Christoph Hellwig wrote:
+> > On Sun, Jan 15, 2023 at 09:29:58AM -0800, Darrick J. Wong wrote:
+> > > I don't have any objections to pulling everything except patches 8 and
+> > > 10 for testing this week.
+> >
+> > That would be great.  I now have a series to return the ERR_PTR
+> > from __filemap_get_folio which will cause a minor conflict, but
+> > I think that's easy enough for Linux to handle.
+>
+> Ok, done.
+>
+> > >
+> > > 1. Does zonefs need to revalidate mappings?  The mappings are 1:1 so I
+> > > don't think it does, but OTOH zone pointer management might complicate
+> > > that.
+> >
+> > Adding Damien.
+> >
+> > > 2. How about porting the writeback iomap validation to use this
+> > > mechanism?  (I suspect Dave might already be working on this...)
+> >
+> > What is "this mechanism"?  Do you mean the here removed ->iomap_valid
+> > ?   writeback calls into ->map_blocks for every block while under the
+> > folio lock, so the validation can (and for XFS currently is) done
+> > in that.  Moving it out into a separate method with extra indirect
+> > functiona call overhead and interactions between the methods seems
+> > like a retrograde step to me.
+>
+> Sorry, I should've been more specific -- can xfs writeback use the
+> validity cookie in struct iomap and thereby get rid of struct
+> xfs_writepage_ctx entirely?
 
-Heh.
+Already asked and answered in the same thread:
 
-Note that the reason I'm so laissez-faire about it is that "broken
-test case" is something very different from "actually broken user
-space".
+https://lore.kernel.org/linux-fsdevel/20230109225453.GQ1971568@dread.disaster.area/
 
-I haven't actually seen anybody _report_ this as a problem, I've only
-seen the generic/454 xfstest failures.
-
-And "test failure" is simply not the same thing as "user failure".
-
-Test failures are interesting in that they can most definitely
-pinpoint the source of _potential_ user failures, but sometimes they
-are just esoteric corner cases that don't happen in reality.
-
-So the fact that we have had this bug since forever makes me suspect
-absolutely nobody cares in real life. Yes, what's new is that it
-happens on the same machine, but people have definitely moved ext4 USB
-sticks around etc. I've most definitely done that myself, and it's not
-been just between x86 machines.
-
-Of course, it may also be that the filesystem patterns when you move a
-USB stick around is very different from, say, the root filesystem
-where you _don't_ necessarily tend to do it. So maybe the lack of
-reports over the decades is not because people don't use xattrs with
-the high bit set in the xattr names, but because it only happens in
-situations that don't have that filesystem movement.
-
-I dunno. On my system, at least, there is absolutely no sign of any
-odd xattr names, according to something disgusting like
-
-   find / -xdev -type f -print0 | xargs -0 getfattr
-
-but who knows.
-
-              Linus
+> > > 2. Do we need to revalidate mappings for directio writes?  I think the
+> > > answer is no (for xfs) because the ->iomap_begin call will allocate
+> > > whatever blocks are needed and truncate/punch/reflink block on the
+> > > iolock while the directio writes are pending, so you'll never end up
+> > > with a stale mapping.
+> >
+> > Yes.
+>
+> Er... yes as in "Yes, we *do* need to revalidate directio writes", or
+> "Yes, your reasoning is correct"?
+>
+> --D
