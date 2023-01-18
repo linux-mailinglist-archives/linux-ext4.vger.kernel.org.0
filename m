@@ -2,205 +2,269 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543B4670ED1
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 01:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC80671241
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 04:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjARAjn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Jan 2023 19:39:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S229775AbjARD4V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Jan 2023 22:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjARAjC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 19:39:02 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF8558289
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 16:11:00 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso641621pjt.0
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 16:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzEdmN39Unq8aY/sGjFArgb3bCi8SP9Ib6NE2vIEiyI=;
-        b=wXnzlkDCWr5+eyW1tQuaZhE+erFaeCBZyHwy+IOFdnpfJkrySosYe3OCoRrcuUEa38
-         OQzA+SREBOrMEWvyEc1VDVI5v7M/MKGnsuGggiAuriZgzpPLnA4QkqQyBlYxiS0c28TR
-         cJyFHnKavKKqndGBkiiXKD/gbw0vWGZq1X4qrC0gapU6ak6p7HQEWRSpo7luiO85vAwU
-         NFJi6Niemhh+wPAE3WOSV0AtkihPGF/o+J28DZk6oJTDlwqFWvcjFfM5/vw3VdZmyyH1
-         DLR18vKQd+Estm8pRJPbN4cyFQeE4ppAy4VRI/TRrC9Qi2Q1JiMtqfnmC303qoXuD3xS
-         0HMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzEdmN39Unq8aY/sGjFArgb3bCi8SP9Ib6NE2vIEiyI=;
-        b=nvCj7KDXLcHs6I7QFFh2wey6beLzYeiv61ohhxExkdr5uzSymaPP2cIKPWd5aKiE7H
-         2M4xH/8vF+FnCAh7zGjuYySmHqJqDv0osOHufzCmeI1+EjhaJjC5kH4BffHILKObrGVb
-         f/y8gigCJjDRyAjfyzVUnxcTbu+tD70Uo3f39RlZghdrvDAMTV6fHwrnXqBl4Ywo5ixj
-         kgrnRymJ0BmHN7TpeZF99s/Vcu/4L3336MsKCCCc7J/ZJ9P6Ot5SEDluszWG2/06060D
-         hB8w/TkUhWMv0s76LD2el8ggWcqgm4KBSJ824+UiOBd+JoeHB0LCQeoAi2IGN+4POs4u
-         XiAg==
-X-Gm-Message-State: AFqh2kq0ZDdH5K6Av53lxHkH5SU8M5SUIGwlw6a+pKY4+rWeUM5yymgN
-        qzt2gJDAgypFNG9AQsI1SUInwDC7DQEr9PQ9eRE=
-X-Google-Smtp-Source: AMrXdXu4zz9OEdBwQxeeyHLknKFFk9HuQejLpxumR6ZOx6uxJGfcSi22Hqb+c9uo2eR+Vk2DPtRSog==
-X-Received: by 2002:a17:902:848d:b0:192:fe4b:da3a with SMTP id c13-20020a170902848d00b00192fe4bda3amr5156149plo.10.1674000660271;
-        Tue, 17 Jan 2023 16:11:00 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id k11-20020a63f00b000000b0047685ed724dsm18056048pgh.40.2023.01.17.16.10.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Jan 2023 16:10:59 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_E6AB58D9-A35D-4999-8357-C3D05FF9EC98";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: generic/454 regression in 6.2-rc1
-Date:   Tue, 17 Jan 2023 17:10:55 -0700
-In-Reply-To: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Eric Whitney <enwlinux@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
+        with ESMTP id S229770AbjARD4H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Jan 2023 22:56:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8561153F8E
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 19:56:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2DF30B81B0A
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 03:56:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E8E5C433EF;
+        Wed, 18 Jan 2023 03:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674014159;
+        bh=vYxUizMb9H1F7Me16ZK87gOXwW9rAMjRLXTEupMCato=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXBysA9dGw3YL3zztZrIgDmE/RDEDYcyz2Gj0CZYEVN2hWopLGxXon0t4ibQbqhB2
+         EqNbZ+j3UJJT2VvfkQTA0VCVXVz57//EEOuLUrNLHyByiuQDmx3MPp6OTH07efhXBI
+         67KhtFN0LNQmZm8EXJBQyp00RroD6xCKK2Vf0/NREp1P0GoNAVOlVf063DL89U3b/c
+         1zol1VptsHTriC+gvDSfk9cKYCFf+57Xxtbg8Vr9xz6Ajp39hy1dQnVMCMN1StX5pl
+         fB2DN6M0MEdau3edy7G/bxtMboPissu1E7eLD6+OjL01uMkJXc37aFgIub1igKKISn
+         dI5YqFzjqs40Q==
+Date:   Tue, 17 Jan 2023 19:55:57 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Eric Whitney <enwlinux@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Detecting default signedness of char in ext4 (despite
+ -funsigned-char)
+Message-ID: <Y8dtze3ZLGaUi8pi@sol.localdomain>
 References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+ <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+[Added some Cc's, and updated subject to reflect what this is really about]
 
---Apple-Mail=_E6AB58D9-A35D-4999-8357-C3D05FF9EC98
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+On Tue, Jan 17, 2023 at 05:10:55PM -0700, Andreas Dilger wrote:
+> On Jan 17, 2023, at 11:31 AM, Eric Whitney <enwlinux@gmail.com> wrote:
+> > 
+> > My 6.2-rc1 regression run on the current x86-64 test appliance revealed a new
+> > failure for generic/454 on the 4k file system configuration and all other
+> > configurations using a 4k block size.  This failure reproduces with 100%
+> > reliability and continues to appear as of 6.2-rc4.
+> > 
+> > The test output indicates that the file system under test is inconsistent.
+> 
+> There is actually support in the superblock for both signed and unsigned char
+> hash calculations, exactly because there was a bug like this in the past.
+> It looks like the ext4 code/build is still using the signed hash functions:
+> 
+> 
+> static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+> {
+> 	:
+> 	:
+>                 if (i & EXT2_FLAGS_UNSIGNED_HASH)
+>                         sbi->s_hash_unsigned = 3;
+>                 else if ((i & EXT2_FLAGS_SIGNED_HASH) == 0) {
+> #ifdef __CHAR_UNSIGNED__
+>                         if (!sb_rdonly(sb))
+>                                 es->s_flags |=
+>                                         cpu_to_le32(EXT2_FLAGS_UNSIGNED_HASH);
+>                         sbi->s_hash_unsigned = 3;
+> #else
+>                         if (!sb_rdonly(sb))
+>                                 es->s_flags |=
+>                                         cpu_to_le32(EXT2_FLAGS_SIGNED_HASH);
+> #endif
+>                 }
+> 
+> It looks like this *should* be detecting the unsigned/signed char type
+> automatically based on __CHAR_UNSIGNED__, but that isn't working properly
+> in this case.  I have no idea whether this is a compiler or kernel issue,
+> just thought I'd point out the background of what ext4 is doing here.
+> 
+> Cheers, Andreas
 
-On Jan 17, 2023, at 11:31 AM, Eric Whitney <enwlinux@gmail.com> wrote:
->=20
-> My 6.2-rc1 regression run on the current x86-64 test appliance =
-revealed a new
-> failure for generic/454 on the 4k file system configuration and all =
-other
-> configurations using a 4k block size.  This failure reproduces with =
-100%
-> reliability and continues to appear as of 6.2-rc4.
->=20
-> The test output indicates that the file system under test is =
-inconsistent.
+Well, since v6.2-rc1 the kernel is always compiled with -funsigned-char, so of
+course the above no longer works to detect the "default" signedness of a char.
 
-There is actually support in the superblock for both signed and unsigned =
-char
-hash calculations, exactly because there was a bug like this in the =
-past.
-It looks like the ext4 code/build is still using the signed hash =
-functions:
+Below is one very ugly solution.  It seems to work, based on the output of
+'make V=1'; fs/ext4/char.c is compiled *without* -funsigned-char, and everything
+else is still compiled with -funsigned-char.  Though, I'm not sure that the
+trick I'm using with KBUILD_CFLAGS is meant to be supported.
 
+Better ideas would be appreciated.  If the default signedness of 'char' is a
+per-arch thing, maybe each arch could explicitly select
+ARCH_HAVE_DEFAULT_SIGNED_CHAR or ARCH_HAVE_DEFAULT_UNSIGNED_CHAR?  Or is there
+any chance that this code is obsolete and can be removed from ext4?
 
-static int __ext4_fill_super(struct fs_context *fc, struct super_block =
-*sb)
-{
-	:
-	:
-                if (i & EXT2_FLAGS_UNSIGNED_HASH)
-                        sbi->s_hash_unsigned =3D 3;
-                else if ((i & EXT2_FLAGS_SIGNED_HASH) =3D=3D 0) {
-#ifdef __CHAR_UNSIGNED__
-                        if (!sb_rdonly(sb))
-                                es->s_flags |=3D
-                                        =
-cpu_to_le32(EXT2_FLAGS_UNSIGNED_HASH);
-                        sbi->s_hash_unsigned =3D 3;
-#else
-                        if (!sb_rdonly(sb))
-                                es->s_flags |=3D
-                                        =
-cpu_to_le32(EXT2_FLAGS_SIGNED_HASH);
-#endif
-                }
+From 87b77d02c399d684d906832862ad234ec321ff12 Mon Sep 17 00:00:00 2001
+From: Eric Biggers <ebiggers@google.com>
+Date: Tue, 17 Jan 2023 19:21:35 -0800
+Subject: [PATCH] ext4: fix detection of default char signedness
 
-It looks like this *should* be detecting the unsigned/signed char type
-automatically based on __CHAR_UNSIGNED__, but that isn't working =
-properly
-in this case.  I have no idea whether this is a compiler or kernel =
-issue,
-just thought I'd point out the background of what ext4 is doing here.
+For strange reasons involving a historical bug in ext4's on-disk format,
+ext4 needs to know the default signedness of a char.  Since the kernel
+is now always compiled with -funsigned-char, checking __CHAR_UNSIGNED__
+no longer works.  To make it work again, check __CHAR_UNSIGNED__ in a
+separate translation unit that is compiled without -funsigned-char.
 
-Cheers, Andreas
+Fixes: 3bc753c06dd0 ("kbuild: treat char as always unsigned")
+Reported-by: Eric Whitney <enwlinux@gmail.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/Makefile | 43 +++++++++++++++++++++++++++++++++++++------
+ fs/ext4/char.c   | 24 ++++++++++++++++++++++++
+ fs/ext4/ext4.h   |  2 ++
+ fs/ext4/super.c  | 20 ++++++++++----------
+ 4 files changed, 73 insertions(+), 16 deletions(-)
+ create mode 100644 fs/ext4/char.c
 
-> e2fsck reports:
->=20
-> *** fsck.ext4 output ***
-> fsck from util-linux 2.36.1
-> e2fsck 1.46.2 (28-Feb-2021)
-> Pass 1: Checking inodes, blocks, and sizes
-> Extended attribute in inode 131074 has a hash (857950233) which is =
-invalid
-> Clear? no
->=20
-> Extended attribute in inode 131074 has a hash (736302368) which is =
-invalid
-> Clear? no
->=20
-> Extended attribute in inode 131074 has a hash (674453032) which is =
-invalid
-> Clear? no
->=20
-> Extended attribute in inode 131074 has a hash (2299266654) which is =
-invalid
-> Clear? no
->=20
-> Extended attribute in inode 131074 has a hash (3503002490) which is =
-invalid
-> Clear? no
->=20
-> < and continues with more of the same >
->=20
-> The failure bisects to the following commit in -rc1:
->=20
-> 3bc753c06dd0 ("kbuild: treat char as always unsigned")
->=20
-> The comment for this commit suggests that it's likely to cause things =
-to
-> break where there has been type misuse for char;  presumably, that's =
-what's
-> happened here.
->=20
-> Eric
->=20
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index 72206a2926765..fa7dc62fa1a2c 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -5,12 +5,43 @@
+ 
+ obj-$(CONFIG_EXT4_FS) += ext4.o
+ 
+-ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+-		extents_status.o file.o fsmap.o fsync.o hash.o ialloc.o \
+-		indirect.o inline.o inode.o ioctl.o mballoc.o migrate.o \
+-		mmp.o move_extent.o namei.o page-io.o readpage.o resize.o \
+-		super.o symlink.o sysfs.o xattr.o xattr_hurd.o xattr_trusted.o \
+-		xattr_user.o fast_commit.o orphan.o
++ext4-y	:= balloc.o \
++	   bitmap.o \
++	   block_validity.o \
++	   char.o \
++	   dir.o \
++	   ext4_jbd2.o \
++	   extents.o \
++	   extents_status.o \
++	   fast_commit.o \
++	   file.o \
++	   fsmap.o \
++	   fsync.o \
++	   hash.o \
++	   ialloc.o \
++	   indirect.o \
++	   inline.o \
++	   inode.o \
++	   ioctl.o \
++	   mballoc.o \
++	   migrate.o \
++	   mmp.o \
++	   move_extent.o \
++	   namei.o \
++	   orphan.o \
++	   page-io.o \
++	   readpage.o \
++	   resize.o \
++	   super.o \
++	   symlink.o \
++	   sysfs.o \
++	   xattr.o \
++	   xattr_hurd.o \
++	   xattr_trusted.o \
++	   xattr_user.o
++
++# char.c needs to be compiled with the default char signedness.
++$(obj)/char.o: KBUILD_CFLAGS := $(filter-out -funsigned-char,$(KBUILD_CFLAGS))
+ 
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
+diff --git a/fs/ext4/char.c b/fs/ext4/char.c
+new file mode 100644
+index 0000000000000..2a8b3df44262c
+--- /dev/null
++++ b/fs/ext4/char.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Detect whether char is signed or unsigned by default on this platform,
++ * disregarding the fact that since v6.2, char is always unsigned in the kernel,
++ * i.e. the kernel is now always built with -funsigned char.
++ *
++ * To do this, check __CHAR_UNSIGNED__ in a translation unit that is compiled
++ * *without* -funsigned-char.
++ *
++ * Do *not* include any headers in this file, since it's no longer being tested
++ * that kernel-internal headers build cleanly without -funsigned-char.
++ */
++
++int ext4_is_char_unsigned(void);
++
++int ext4_is_char_unsigned(void)
++{
++#ifdef __CHAR_UNSIGNED__
++	return 1;
++#else
++	return 0;
++#endif
++}
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 140e1eb300d17..bdadad0b4e7ab 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3675,6 +3675,8 @@ extern int ext4_check_blockref(const char *, unsigned int,
+ extern int ext4_sb_block_valid(struct super_block *sb, struct inode *inode,
+ 				ext4_fsblk_t start_blk, unsigned int count);
+ 
++/* char.c */
++int ext4_is_char_unsigned(void);
+ 
+ /* extents.c */
+ struct ext4_ext_path;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 260c1b3e3ef2c..2bd6d1b15d041 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5189,16 +5189,16 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 		if (i & EXT2_FLAGS_UNSIGNED_HASH)
+ 			sbi->s_hash_unsigned = 3;
+ 		else if ((i & EXT2_FLAGS_SIGNED_HASH) == 0) {
+-#ifdef __CHAR_UNSIGNED__
+-			if (!sb_rdonly(sb))
+-				es->s_flags |=
+-					cpu_to_le32(EXT2_FLAGS_UNSIGNED_HASH);
+-			sbi->s_hash_unsigned = 3;
+-#else
+-			if (!sb_rdonly(sb))
+-				es->s_flags |=
+-					cpu_to_le32(EXT2_FLAGS_SIGNED_HASH);
+-#endif
++			if (ext4_is_char_unsigned()) {
++				if (!sb_rdonly(sb))
++					es->s_flags |=
++						cpu_to_le32(EXT2_FLAGS_UNSIGNED_HASH);
++				sbi->s_hash_unsigned = 3;
++			} else {
++				if (!sb_rdonly(sb))
++					es->s_flags |=
++						cpu_to_le32(EXT2_FLAGS_SIGNED_HASH);
++			}
+ 		}
+ 	}
+ 
 
+base-commit: 5dc4c995db9eb45f6373a956eb1f69460e69e6d4
+-- 
+2.39.0
 
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_E6AB58D9-A35D-4999-8357-C3D05FF9EC98
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPHOQ8ACgkQcqXauRfM
-H+A7ww/+KX8Ony4/A0QAS178SGdXM0nVqsMK0fahR+SWCiFNh/Q/2se6sJGgyEPf
-8rEP2VRzvFuWRM8vF91QYSPRzuVHpm/pLqT9/yFb6+vvaqX5gyFhL9m9lq+bpKBI
-cYiRgeC0lVujw7aYpPeTZwP0owmLkFxyVaBdOapAaNoqJMxcmxnJRlCzHAiCDyEU
-q9KNzJk8q2NwVNu8GPDV3ivl5VOHoY+J3k8G/dcV1wbQVxBf6Ym2IOk6kNZQACuH
-IflaXhwBPtg9PmUVPTY4dbkbC2/D0VudxMT+9KQkZ/5OkV1jJeuFF8GnfhG/1Z7W
-YVJs02fphAT1jKjTXNdy4zEH/qDQT7QQdos4dQBqplmOhwfqHuruxS9sMb5H6ykg
-dsQh2Me4Y6wzx/pMZRJbX5q82c6cb5o5l74RsFnG4AqHspeqMtRs37vvgsDh8Fwe
-4D6SUxM/uIQ2aCTTN1RdUScuIG3zu43LIgLGrCAc7ptvMO7s2GxlhGc21e49edIf
-WnLmvBjDnNiLGdAjnWbXaN70Y10xn2fzVX6VmaHQFVlsJk1vml1g7R4dg6gA1jgA
-fSG4DedLhpu1yil5z+npo3ryd2Jua1KnYuHOGUaqs+1cnlgjQSpckNhidp3g5gm2
-6tAkNtmCAIbXv4+TipA4XeNiLX7qxmSJcRR8NWYUeITSzT6Cfqg=
-=ecss
------END PGP SIGNATURE-----
-
---Apple-Mail=_E6AB58D9-A35D-4999-8357-C3D05FF9EC98--
