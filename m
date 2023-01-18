@@ -2,51 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18003671362
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 06:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A098671414
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jan 2023 07:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjARF4e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Jan 2023 00:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S229818AbjARG2a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Jan 2023 01:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjARFyQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 00:54:16 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A180054138
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jan 2023 21:53:40 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 30I5rDNP010782
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Jan 2023 00:53:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1674021195; bh=A436UApHmz0grSqAYwsNLN0MVJOFyYJc8T8oEw5Aluc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=iuWe/uSJv46QhWCIK5FYit3CBPxP0dhNpJSjMJ3JT4uNDpZTBc131WZqhLeknjVxw
-         DM9E+pd1XTGr4RV1EacSLm3TK1EggoE1JK62D6yXaLnjCE9m8NVcZLAdq4E99Vf5Xk
-         Qrtv0CssCwOO8shpU8zFpYk6spa4utIf7edsemF6MwR0V65a1PYiQJc0m38TaxfQwj
-         iXnl6+XBf2gg3800GwgJH5A8ZMKaN+tSCPnQ39XjngZHE4fk5HRsZv/19zCkZAGVNc
-         YGAc6TNXDXqRT0I9cLIZKHbxFWmBBb7fRN52ahKiKb7Qy3CKGxsq6kQ5ZpODMhNL/F
-         T0bICPtUXSu4g==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D41CC15C469B; Wed, 18 Jan 2023 00:53:13 -0500 (EST)
-Date:   Wed, 18 Jan 2023 00:53:13 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Li Jinlin <lijinlin3@huawei.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>, linfeilong@huawei.com
-Subject: Re: [PATCH] e2fsck: subtract acl blocks when setting i_file_acl to
- zero
-Message-ID: <Y8eJSWwlyaVjgY/2@mit.edu>
-References: <20220317172943.2426272-1-lijinlin3@huawei.com>
- <8e8f277d-6222-5f63-0dcb-a17771a0deff@huawei.com>
+        with ESMTP id S229814AbjARG0O (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Jan 2023 01:26:14 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567D759E54;
+        Tue, 17 Jan 2023 22:15:44 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id D02E93200754;
+        Wed, 18 Jan 2023 01:15:40 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 18 Jan 2023 01:15:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1674022540; x=1674108940; bh=TO/h+seJNV
+        m05ESocJCN3sBSEDXTyJue366PaovnosU=; b=L12Sst7hILmrIGa7YMQHjxML+q
+        b3iNKEYYO932Jov1SDdI1RltG12SRapSiXyLY7YJZv98mEc5p3f72ef0atNLO76P
+        01HGt8yn9usYUTwsAti3eufTiQeLs+PJy0M0B8HQchL2ClY5UM4wWPsbZPDLYRLp
+        cBiNfSw9D6H+lmkTWbxb8C+y7/8+lRMn4QXJlV4w+zVW6TU8IupsQoaK78zNJBl6
+        RIIjFsGnXh9kzXHUiQPJIe2vNVfwenBesF83bI2T1ebiulXjbm5wGhWXTkUdGRA/
+        VFzuKboIlb23ktdwpY7SjRD7OmD9aKDR+svSz5IysFOcjMFT8m9i8DS0uU1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1674022540; x=1674108940; bh=TO/h+seJNVm05ESocJCN3sBSEDXT
+        yJue366PaovnosU=; b=NccT6Rl2fq+081r7hEyhAv7tcmXShC7PwfT3k+onmMXc
+        o06N6LCcYgbMx3gV0KGTBI5juFxdyESMGzApRKVnOEgHapBc5Eof7G9F9+F4ptuU
+        lTZO7XzDDiugU0G5BOAK4MXB02D2EXjStJv69+pBaWTgyzNlMX1C2hdJZIl3XgEt
+        bRxzaGWhlRhh33J07uKN+MNVVY8XuhwazHGORYca95dGZFeT7N1e/LPFnjpmGm8O
+        ZQ+3ZJAGGMR61/AVjl/mwUG6sKzjlq/KfcZ9U1myZnd4fhqavwiJvTvR1ZcjHjh0
+        niEojwmr9hndFcjP8oG2tDS06qCfL402X7C6Vhf3Iw==
+X-ME-Sender: <xms:jI7HY3HabxRZ9qUvmR3hGmAip-Cu4nP0CSbmBSCVEPgtwcfLSMDjzg>
+    <xme:jI7HY0WkA9h_OT5fl6YEC6XgSyw29t_wIzFL4WctnjAuDsTnGHEhJOKebw_fltnXK
+    ySalCdQj761Aw>
+X-ME-Received: <xmr:jI7HY5JHH3y-vYIJxfw6VDRCJVMsF5rttjlvJHwdQrEaWdDArlZGQPm7VcE4H8HnNxNFzmuJTQGfeymXhrAgq62U2Ws0BAWn45JKlg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddtjedgleeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:jI7HY1ERGs8iQH62f6Rt4-OOKe8redHBPl6fgNKzEnQMikqHYX5FYg>
+    <xmx:jI7HY9Xplwoz2MRyQP90g1AqBpReKWVb8uZfn2HyVlFk6XPldt4fSA>
+    <xmx:jI7HYwOKBsaKBsm8nQwg37iaQEMweiXFTX4QTiLmJscSyxm9bedOcA>
+    <xmx:jI7HYzzCFZwpbzuxhrftNwYz9k5qXnEH2XYMjnm_B13qqmcdHjaovQ>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Jan 2023 01:15:39 -0500 (EST)
+Date:   Wed, 18 Jan 2023 07:15:38 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 5.15 00/10] ext4 fast-commit fixes for 5.15-stable
+Message-ID: <Y8eOihLNlJuWCsp4@kroah.com>
+References: <20230105071359.257952-1-ebiggers@kernel.org>
+ <Y7a8B2+AjwxpmTfh@kroah.com>
+ <Y8chUKeNaULEhM+V@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8e8f277d-6222-5f63-0dcb-a17771a0deff@huawei.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <Y8chUKeNaULEhM+V@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,15 +83,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch is not correct.  We don't need to create a new
-ext2fs_adjust_ea_refcount4 to return the h_blocks field in the
-extended attribute block, since that only thing that we support is a
-single xattr block.
+On Tue, Jan 17, 2023 at 10:29:36PM +0000, Eric Biggers wrote:
+> Hi Greg,
+> 
+> On Thu, Jan 05, 2023 at 01:01:11PM +0100, Greg KH wrote:
+> > On Wed, Jan 04, 2023 at 11:13:49PM -0800, Eric Biggers wrote:
+> > > This series backports 6 commits with 'Cc stable' that had failed to be
+> > > applied, and 4 related commits that made the backports much easier.
+> > > Please apply this series to 5.15-stable.
+> > > 
+> > > I verified that this series does not cause any regressions with
+> > > 'gce-xfstests -c ext4/fast_commit -g auto'.  There is one test failure
+> > > both before and after (ext4/050).
+> > 
+> > All now queued up, thanks.
+> > 
+> > greg k-h
+> 
+> 
+> It's too late to fix now, but the commits in 5.15-stable all use
+> "Eric Biggers <ebiggers@kernel.org>" as the author instead of the From line in
+> the patch itself.  For example, patch 1 became:
+> 
+> 	commit b0ed9a032e52a175683d18e2e2e8eec0f9ba1ff9
+> 	Author: Eric Biggers <ebiggers@kernel.org>
+> 	Date:   Wed Jan 4 23:13:50 2023 -0800
+> 
+> 	    ext4: remove unused enum EXT4_FC_COMMIT_FAILED
+> 
+> 	    From: Ritesh Harjani <riteshh@linux.ibm.com>
+> 
+> 	    commit c864ccd182d6ff2730a0f5b636c6b7c48f6f4f7f upstream.
+> 
+> For reference, the upstream commit is:
+> 
+> 	commit c864ccd182d6ff2730a0f5b636c6b7c48f6f4f7f
+> 	Author: Ritesh Harjani <riteshh@linux.ibm.com>
+> 	Date:   Sat Mar 12 11:09:46 2022 +0530
+> 
+> 	    ext4: remove unused enum EXT4_FC_COMMIT_FAILED
+> 
+> Do you know how this happened, and how it can be prevented in the future?  I
+> think I sent everything out correctly, so I think this is something on your end.
 
-The real issue, as Zhiqiang Liu pointed out in [1], is that we should
-not be clearing the i_file_acl block is the inode is only being
-truncated, and not being unlinked.
+Yes, this is on my end, sorry, my scripts mess this up when dealing with
+mbox files and I missed having to edit the header "by hand" like I
+normally do when it happens.
 
-[1] https://lore.kernel.org/all/ed518b11-3c38-1c1f-a75d-3293c91f17d4@huawei.com/
+My fault,
 
-						- Ted
+greg k-h
