@@ -2,216 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 032B567321A
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 08:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3409C673249
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 08:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjASHHD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 02:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S229575AbjASHTa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 02:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjASHHB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 02:07:01 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E81359251
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 23:06:52 -0800 (PST)
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.53 with ESMTP; 19 Jan 2023 16:06:51 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.151 with ESMTP; 19 Jan 2023 16:06:51 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
-        hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        longman@redhat.com
-Subject: Re: [PATCH RFC v7 00/23] DEPT(Dependency Tracker)
-Date:   Thu, 19 Jan 2023 16:06:38 +0900
-Message-Id: <1674111998-25175-1-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1674109388-6663-1-git-send-email-byungchul.park@lge.com>
-References: <1674109388-6663-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229379AbjASHT3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 02:19:29 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD874ABE8
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 23:19:28 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 367F861B20
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 07:19:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552E9C433D2;
+        Thu, 19 Jan 2023 07:19:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674112767;
+        bh=93XXio76e/YigwF81sNXKrQdPxG7j/7P2AduQQFXHHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sFXK25ZU9aR7r2lddTzUq9OVwZfNcGefvS896KUlHEPCJRYXOp4VrjNjt6nQSCvuT
+         k0adC2IzPNxfrAwbA/r69HPAIm9xn/FogTmjRPvibePh5YVNMg+1xgAi6cuTZ2/7Fa
+         5IggsVCt77ChIq+NjOkcy/KFj0fcHMq2GjvZ2bjepHpqfHtngzIayhHXUeOz+0jH1w
+         9i4epp5l7tGvb0ndc45VjEV7MLg0aAlHqOoFBHu6r1e/orUZnGXAw70iMPnVxZfjhd
+         /hW6myWzEYSbkG4bUE5UED8ymT9hnSkU1j/m56z2cCWm2s/ojOGfXmX10yzXs9kcP+
+         aiXGR4iQmWQ0w==
+Date:   Wed, 18 Jan 2023 23:19:24 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Eric Whitney <enwlinux@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: Detecting default signedness of char in ext4 (despite
+ -funsigned-char)
+Message-ID: <Y8ju/CuPWA2lTR3W@sol.localdomain>
+References: <Y8bpkm3jA3bDm3eL@debian-BULLSEYE-live-builder-AMD64>
+ <7DE6598D-B60D-466F-8771-5FEC0FDEC57F@dilger.ca>
+ <Y8dtze3ZLGaUi8pi@sol.localdomain>
+ <CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com>
+ <Y8eAJIKikCTJrlcr@sol.localdomain>
+ <Y8hUCIVImjqCmEWv@mit.edu>
+ <CAHk-=wiGdxWtHRZftcqyPf8WbenyjniesKyZ=o73UyxfK9BL-A@mail.gmail.com>
+ <Y8hpZRmHJwdutRr2@mit.edu>
+ <3A9E6D2E-F98F-461C-834D-D4E269CC737F@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3A9E6D2E-F98F-461C-834D-D4E269CC737F@dilger.ca>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Byungchul wrote:
-> Boqun wrote:
-> > On Mon, Jan 16, 2023 at 10:00:52AM -0800, Linus Torvalds wrote:
-> > > [ Back from travel, so trying to make sense of this series..  ]
-> > > 
-> > > On Sun, Jan 8, 2023 at 7:33 PM Byungchul Park <byungchul.park@lge.com> wrote:
-> > > >
-> > > > I've been developing a tool for detecting deadlock possibilities by
-> > > > tracking wait/event rather than lock(?) acquisition order to try to
-> > > > cover all synchonization machanisms. It's done on v6.2-rc2.
-> > > 
-> > > Ugh. I hate how this adds random patterns like
-> > > 
-> > >         if (timeout == MAX_SCHEDULE_TIMEOUT)
-> > >                 sdt_might_sleep_strong(NULL);
-> > >         else
-> > >                 sdt_might_sleep_strong_timeout(NULL);
-> > >    ...
-> > >         sdt_might_sleep_finish();
-> > > 
-> > > to various places, it seems so very odd and unmaintainable.
-> > > 
-> > > I also recall this giving a fair amount of false positives, are they all fixed?
-> > > 
+On Wed, Jan 18, 2023 at 03:20:03PM -0700, Andreas Dilger wrote:
+> > In terms of what should we do for next steps, if we only pick signed,
+> > then it's possible if there are some edge case users who actually did
+> > use non-ASCII characters in the xattr name on PowerPC, ARM, or S/390,
+> > they would be broken.  That's simpler, and if we think there are
+> > darned few of them, I guess we could do that.
 > > 
-> > From the following part in the cover letter, I guess the answer is no?
-> 
-> I fixed what we found anyway.
-> 
-> > 	...
-> > 	6. Multiple reports are allowed.
-> > 	7. Deduplication control on multiple reports.
-> > 	8. Withstand false positives thanks to 6.
-> > 	...
+> > That being said, it's not that much more work to use a flag in the
+> > superblock to indicate whether or not we should be explicitly casting
+> > *name to either a signed or unsigned char, and then setting that flag
+> > automagically to avoid problems on people who started the file system
+> > on say, x86 before the signed to unsigned char transition, and who
+> > started natively on a PowerPC, ARM, or S/390.
 > > 
-> > seems to me that the logic is since DEPT allows multiple reports so that
-> > false positives are fitlerable by users?
+> > The one bit which makes this a bit more complex is either way, we need
+> > to change both the kernel and e2fsprogs, which is why if we do the
+> > signed/unsigned xattr hash flag, it's important to set the flag value
+> > to be whatever the "default" signeded would be on that architecture
+> > pre 6.2-rc1.
 > 
-> At lease, it's needed until DEPT is considered stable because stronger
-> detection inevitably has more chance of false alarms unless we do manual
-> fix on each, which is the same as Lockdep.
+> It makes sense to use the existing UNSIGNED/SIGNED flag in the superblock
+> for the dir hash also for the xattr hash.  That would give the historical
+> value for the xattr hashes prior to the 6.2 unsigned char change, and is
+> correct for all filesystems and xattrs *except* non-ASCII xattr names
+> created on 6.2+ kernels (which should indeed be relatively few cases).
 > 
-> > > Anyway, I'd really like the lockdep people to comment and be involved.
-> > 
-> > I never get Cced, so I'm unware of this for a long time...
-> 
-> Sorry I missed it. I will cc you from now on.
-> 
-> > A few comments after a quick look:
-> > 
-> > *	Looks like the DEPT dependency graph doesn't handle the
-> > 	fair/unfair readers as lockdep current does. Which bring the
-> > 	next question.
-> 
-> No. DEPT works better for unfair read. It works based on wait/event. So
-> read_lock() is considered a potential wait waiting on write_unlock()
-> while write_lock() is considered a potential wait waiting on either
-> write_unlock() or read_unlock(). DEPT is working perfect for it.
-> 
-> For fair read (maybe you meant queued read lock), I think the case
-> should be handled in the same way as normal lock. I might get it wrong.
-> Please let me know if I miss something.
-> 
-> > *	Can DEPT pass all the selftests of lockdep in
-> > 	lib/locking-selftests.c?
-> > 
-> > *	Instead of introducing a brand new detector/dependency tracker,
-> > 	could we first improve the lockdep's dependency tracker? I think
-> 
-> At the beginning of this work, of course I was thinking to improve
-> Lockdep but I decided to implement a new tool because:
-> 
-> 	1. What we need to check for deadlock detection is no longer
-> 	   lock dependency but more fundamental dependency by wait/event.
-> 	   A better design would have a separate dependency engine for
-> 	   that, not within Lockdep. Remind lock/unlock are also
-> 	   wait/event after all.
-> 
-> 	2. I was thinking to revert the revert of cross-release. But it
-> 	   will start to report false alarms as Lockdep was at the
-> 	   beginning, and require us to keep fixing things until being
-> 	   able to see what we are interested in, maybe for ever. How
-> 	   can we control that situation? I wouldn't use this extention.
-> 
-> 	3. Okay. Let's think about modifying the current Lockdep to make
-> 	   it work similar to DEPT. It'd require us to pay more effort
-> 	   than developing a new simple tool from the scratch with the
-> 	   basic requirement.
-> 
-> 	4. Big change at once right away? No way. The new tool need to
-> 	   be matured and there are ones who want to make use of DEPT at
-> 	   the same time. The best approach would be I think to go along
-> 	   together for a while.
+> e2fsck could do the same, and would again be correct for all xattrs names
+> except those created with kernel 6.2+.  It could check both the signed
+> and unsigned forms and correct those few that are reversed compared to
+> the superblock flag, which should be rare, but isn't much work and avoids
+> incorrectly clearing the "corrupted" xattrs.
 
-(Appologize for this. Let me re-write this part.)
+Reusing the existing SIGNED/UNSIGNED dirhash superblock flag wouldn't work in
+the case where a filesystem is created on x86, then flashed to an ARM device.
+That's exactly how Android works.  The dirhash is then explicitly SIGNED,
+whereas the xattr hash is implicitly unsigned.
 
-	4. Big change at once right away? No way. The new feature need
-	   to be matured and there are ones who want to use the new
-	   feature at the same time. The best approach would be I think
-	   to go along together for a while.
+Yes, that case has always been broken if there were non-ASCII xattr names in the
+filesystem to begin with, before it was flashed to the device.  That doesn't
+really happen though.  What *is* plausible is that some random application
+running on the device uses non-ASCII xattr names.
 
-Thanks,
-	Byungchul
+So to be safe, a new pair of SIGNED/UNSIGNED superblock flags for the xattr hash
+would be needed.  The existing pair would be for the dirhash only.
 
-> Please don't look at each detail but the big picture, the architecture.
-> Plus, please consider I introduce a tool only focucing on fundamental
-> dependency itself that Lockdep can make use of. I wish great developers
-> like you would join improve the common engine togather.
-> 
-> > 	Byungchul also agrees that DEPT and lockdep should share the
-> > 	same dependency tracker and the benefit of improving the
-> 
-> I agree that both should share a single tracker.
-> 
-> > 	existing one is that we can always use the self test to catch
-> > 	any regression. Thoughts?
-> 
-> I imagine the follownig look for the final form:
-> 
->      Lock correctness checker(LOCKDEP)
->      +-----------------------------------------+
->      | Lock usage correctness check            |
->      |                                         |
->      |                                         |
->      |       (Request dependency check)        |
->      |                           T             |
->      +---------------------------|-------------+
->                                  |
->      Dependency tracker(DEPT)    V
->      +-----------------------------------------+
->      | Dependency check                        |
->      | (by tracking wait and event context)    |
->      +-----------------------------------------+
-> 
-> > Actually the above sugguest is just to revert revert cross-release
-> > without exposing any annotation, which I think is more practical to
-> > review and test.
-> 
-> Reverting the revert of cross-release is not bad. But I'd suggest a
-> nicer design for the reasons I explained above.
-> 
-> 	Byungchul
-> 
-> > I'd sugguest we 1) first improve the lockdep dependency tracker with
-> > wait/event in mind and then 2) introduce wait related annotation so that
-> > users can use, and then 3) look for practical ways to resolve false
-> > positives/multi reports with the help of users, if all goes well,
-> > 4) make it all operation annotated.
-> > 
-> > Thoughts?
-> > 
-> > Regards,
-> > Boqun
+- Eric
