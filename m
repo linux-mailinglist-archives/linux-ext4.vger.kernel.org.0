@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67258674BEF
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jan 2023 06:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC61674BCB
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jan 2023 06:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbjATFPI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Jan 2023 00:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S230243AbjATFIO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Jan 2023 00:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbjATFOz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Jan 2023 00:14:55 -0500
+        with ESMTP id S230491AbjATFHu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Jan 2023 00:07:50 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D855E45216
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 21:03:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBC57DF87
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:55:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1A0D9B826F6
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 18:25:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C2290C433D2
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 18:25:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 235FBB82739
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:36:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BE2DBC433D2
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674152743;
-        bh=VZ4zy8w3DrCA6zSoyAD6X1i8oJ8Q1eFp3hYs1V8ecpc=;
-        h=From:To:Subject:Date:From;
-        b=UZdNSg0dG75NHNQr5RFEnXLa7I7csldfr5+J5r8hAyFAFhC11Q216Xk56cdb0r9Vo
-         2fE8RwuxqZgciuEM4KUMDf8unLTCRgft6W2USNRDAPQDH985fbLXhKYmuL4/vTEOr4
-         QW+KJjituStg4HTmbH6TNKzC4PFRx9nIPAeIE54PSJ9vHHNos7Ldqm0iz+V317nT5/
-         lu+IHaQIdPodLKExhWTum7YAHurlU06EKwVwb+Yjdxo2qkrUcMHY8q+NVuYTMxAgD7
-         fEtdJHziVlpohGI2nIAet0OVYL69tcB2ZspKEh68LDUE26EVZCU6M8Y6NOkFY7BsPU
-         HEfmW3pdwzQbQ==
+        s=k20201202; t=1674160562;
+        bh=1kMxjYTYkKBRx0tltmCtmov/N+2rbwcyfLjG8KgdTXU=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=gw9hjP2S88ftYmnZ12JZsc7qBJ48dfgvMphvEqhI+uhUI+MnUV8XdreeKZfzEXcmD
+         VW2IJe7HE4ZmGZBUdYPX99U6Q+BMkOgXz5QfEqwnSHHQPOPb/Sl6v14fYr6+1mVzy2
+         QgQWwlXA7acVj0RylC3pW5sgM8es4Rd+m8BlFiwuaSGAC2RbxrRQnyeItfvAR5vNs2
+         HNZcTZy7Fq7vyML4ncmBRAoYvqbfq/js5MQPaSuQohNsweiz79rKK4HIKSVflRsplK
+         Tt63KCHcgLGF05NBL+QVlf2Gk71RY1/jKLpiJonBMnWjJs7cbsdCsOI4W4Z9GlDWkf
+         goc+foM+paZXQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id AA63DC43143; Thu, 19 Jan 2023 18:25:43 +0000 (UTC)
+        id A3D41C43143; Thu, 19 Jan 2023 20:36:02 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 216953] New: BUG: kernel NULL pointer dereference, address:
+Subject: [Bug 216953] BUG: kernel NULL pointer dereference, address:
  0000000000000008
-Date:   Thu, 19 Jan 2023 18:25:43 +0000
+Date:   Thu, 19 Jan 2023 20:36:02 +0000
 X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
+X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Product: File System
 X-Bugzilla-Component: ext4
@@ -52,10 +52,10 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression attachments.created
-Message-ID: <bug-216953-13602@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-216953-13602-1GJ7vmrWtN@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216953-13602@https.bugzilla.kernel.org/>
+References: <bug-216953-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Bugzilla-URL: https://bugzilla.kernel.org/
@@ -72,36 +72,20 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D216953
 
-            Bug ID: 216953
-           Summary: BUG: kernel NULL pointer dereference, address:
-                    0000000000000008
-           Product: File System
-           Version: 2.5
-    Kernel Version: 6.1.7
-          Hardware: Intel
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: gjunk2@sapience.com
-        Regression: No
+--- Comment #6 from Gene (gjunk2@sapience.com) ---
+Thanks Ted - sorry to not have a reproducer - this is the only machine that=
+ had
+a problem and just the once (so far!)
 
-Created attachment 303627
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D303627&action=3Dedit
-kernel config
+I have a second machine running same kernel also with mdadm RAID 6 setup wi=
+th
+ext4 - but no problems on that one as of now.
 
-System has RAID6 with ext4 filesystem - 6 x 8TB drives.
+The other item of note, perhaps, is the compiler used was gcc 12.2.1 - earl=
+ier
+kernels used 12.2.0. Build started on fresh base (git -fddx).
 
-Attached are config used to build kernel, output of ver_linux, the raw jour=
-nal
-as well as same run through scripts/decode_stacktrace.sh.
-
-Note that while selinux is in kernel, there it is not being used.
-
-thanks.
+Thanks again and sorry for pointing this down the wrong road.
 
 --=20
 You may reply to this email to add a comment.
