@@ -2,36 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B99673426
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 10:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725C8673A5E
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 14:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjASJFt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 04:05:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
+        id S231302AbjASNeb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 08:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbjASJFh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 04:05:37 -0500
-Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BC66689DC
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 01:05:25 -0800 (PST)
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.53 with ESMTP; 19 Jan 2023 18:05:24 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
-        by 156.147.1.121 with ESMTP; 19 Jan 2023 18:05:24 +0900
-X-Original-SENDERIP: 10.177.244.38
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-        rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
-        daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        with ESMTP id S231265AbjASNeP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 08:34:15 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617B87CCC7;
+        Thu, 19 Jan 2023 05:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Dd4KE++vWIKamqThkehHj7fJpHW3aChCNzZyFef73OI=; b=ZiBP9IU8e0RQ32NiZKka8MnWTR
+        Dn0s9lTcFdzt4feEZuNn6vIgEPzmD5cviY4HNiw+EGim/+fdqSp83CwedDaJFyd2q2vePAOMF7R47
+        /mT/pV3FrXZ0OCNIOm/rgdNiJAiF9udqbmgCvdv8tlfjrQES8QDp+06hIwoNapYXBTR+i6XKWX5ij
+        qkK3CEH0iS8hZp+JgId9L10gYqA1yZnepzrHrEzU/DThBM4jGZH4pD6906x9w3V5a2ZVJlG7+GsLd
+        IX8t76QoYPJmUT+lx0lOj7EEt0PIr724UtBaPXC85udHqrL+r1umcOCxsWYgULtsg+F/hymdVlFkZ
+        MS0yEAZA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pIV3G-00106x-OP; Thu, 19 Jan 2023 13:33:58 +0000
+Date:   Thu, 19 Jan 2023 13:33:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
         gregkh@linuxfoundation.org, kernel-team@lge.com,
         linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
         minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
@@ -46,79 +51,46 @@ Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         melissa.srw@gmail.com, hamohammed.sa@gmail.com,
         42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
         gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        boqun.feng@gmail.com, longman@redhat.com
+        longman@redhat.com
 Subject: Re: [PATCH RFC v7 00/23] DEPT(Dependency Tracker)
-Date:   Thu, 19 Jan 2023 18:05:11 +0900
-Message-Id: <1674119111-12759-1-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <873588j92x.ffs@tglx>
-References: <873588j92x.ffs@tglx>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-ID: <Y8lGxkBrls6qQOdM@casper.infradead.org>
+References: <Y8bmeffIQ3iXU3Ux@boqun-archlinux>
+ <1674109388-6663-1-git-send-email-byungchul.park@lge.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1674109388-6663-1-git-send-email-byungchul.park@lge.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thomas wrote:
-> On Tue, Jan 17 2023 at 10:18, Boqun Feng wrote:
-> > On Mon, Jan 16, 2023 at 10:00:52AM -0800, Linus Torvalds wrote:
-> > > I also recall this giving a fair amount of false positives, are they all fixed?
-> >
-> > From the following part in the cover letter, I guess the answer is no?
-> >	...
-> >       6. Multiple reports are allowed.
-> >       7. Deduplication control on multiple reports.
-> >       8. Withstand false positives thanks to 6.
-> >	...
-> >
-> > seems to me that the logic is since DEPT allows multiple reports so that
-> > false positives are fitlerable by users?
+On Thu, Jan 19, 2023 at 03:23:08PM +0900, Byungchul Park wrote:
+> Boqun wrote:
+> > *	Looks like the DEPT dependency graph doesn't handle the
+> > 	fair/unfair readers as lockdep current does. Which bring the
+> > 	next question.
 > 
-> I really do not know what's so valuable about multiple reports. They
-> produce a flood of information which needs to be filtered, while a
-> single report ensures that the first detected issue is dumped, which
-> increases the probability that it can be recorded and acted upon.
-
-Assuming the following 2 assumptions, you are right.
-
-Assumption 1. There will be too many reports with the multi-report
-	      support, like all the combination of dependencies between
-	      e.g. in-irq and irq-enabled-context.
-
-Assumption 2. The detection is matured enough so that it barely happens
-	      to fix false onces to see true one which is not a big deal.
-
-However, DEPT doesn't generate all the combination of irq things as
-Lockdep does so we only see a few multi-reports even with the support,
-and I admit DEPT hasn't matured enough yet because fine classification
-is required anyway to suppress false alarms. That's why I introduced
-multi-report support at least for now. IMHO, it'd be still useful even
-if it's gonna report a few true ones at once w/o false ones some day.
-
-> Filtering out false positives is just the wrong approach. Decoding
-> dependency issues from any tracker is complex enough given the nature of
-> the problem, so adding the burden of filtering out issues from a stream
-> of dumps is not helpful at all. It's just a marketing gag.
+> No. DEPT works better for unfair read. It works based on wait/event. So
+> read_lock() is considered a potential wait waiting on write_unlock()
+> while write_lock() is considered a potential wait waiting on either
+> write_unlock() or read_unlock(). DEPT is working perfect for it.
 > 
-> > *	Instead of introducing a brand new detector/dependency tracker,
-> >	could we first improve the lockdep's dependency tracker? I think
-> >	Byungchul also agrees that DEPT and lockdep should share the
-> >	same dependency tracker and the benefit of improving the
-> >	existing one is that we can always use the self test to catch
-> >	any regression. Thoughts?
-> 
-> Ack. If the internal implementation of lockdep has shortcomings, then we
-> can expand and/or replace it instead of having yet another
-> infrastructure which is not even remotely as mature.
+> For fair read (maybe you meant queued read lock), I think the case
+> should be handled in the same way as normal lock. I might get it wrong.
+> Please let me know if I miss something.
 
-Ultimately, yes. We should expand or replace it instead of having
-another ultimately.
+From the lockdep/DEPT point of view, the question is whether:
 
-	Byungchul
-> 
-> Thanks,
-> 
->         tglx
+	read_lock(A)
+	read_lock(A)
+
+can deadlock if a writer comes in between the two acquisitions and
+sleeps waiting on A to be released.  A fair lock will block new
+readers when a writer is waiting, while an unfair lock will allow
+new readers even while a writer is waiting.
+
