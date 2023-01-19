@@ -2,151 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A6F6730F6
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 06:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B724B6731BC
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 07:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbjASFHy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 00:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S229728AbjASGXb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 01:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbjASFG4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 00:06:56 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BE43527D
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 21:01:27 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ny7pF3qGQz4f3xbg
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 11:46:13 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP4 (Coremail) with SMTP id gCh0CgCnD7P4vMhj97D1Bw--.22527S6;
-        Thu, 19 Jan 2023 11:46:15 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
-Subject: [RFC PATCH 2/2] ext4: add journal cycled recording support
-Date:   Thu, 19 Jan 2023 11:46:00 +0800
-Message-Id: <20230119034600.3431194-3-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230119034600.3431194-1-yi.zhang@huaweicloud.com>
-References: <20230119034600.3431194-1-yi.zhang@huaweicloud.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCnD7P4vMhj97D1Bw--.22527S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF4DCry3WFWDJw1UCrW5Awb_yoW5KF47pr
-        yDAFy7Cr1jvr1UurWxXFs3XrW0v34FkFy7ur9akw129a9Fyr1xJFW2qF15Ja4jqFWrX348
-        WFy5J347Ga42kFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9v14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj1lk7UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229695AbjASGX0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 01:23:26 -0500
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B141654DB
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Jan 2023 22:23:23 -0800 (PST)
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.52 with ESMTP; 19 Jan 2023 15:23:21 +0900
+X-Original-SENDERIP: 156.147.1.125
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.177.244.38)
+        by 156.147.1.125 with ESMTP; 19 Jan 2023 15:23:21 +0900
+X-Original-SENDERIP: 10.177.244.38
+X-Original-MAILFROM: byungchul.park@lge.com
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+        sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
+        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
+        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
+        longman@redhat.com
+Subject: Re: [PATCH RFC v7 00/23] DEPT(Dependency Tracker)
+Date:   Thu, 19 Jan 2023 15:23:08 +0900
+Message-Id: <1674109388-6663-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <Y8bmeffIQ3iXU3Ux@boqun-archlinux>
+References: <Y8bmeffIQ3iXU3Ux@boqun-archlinux>
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Boqun wrote:
+> On Mon, Jan 16, 2023 at 10:00:52AM -0800, Linus Torvalds wrote:
+> > [ Back from travel, so trying to make sense of this series..  ]
+> > 
+> > On Sun, Jan 8, 2023 at 7:33 PM Byungchul Park <byungchul.park@lge.com> wrote:
+> > >
+> > > I've been developing a tool for detecting deadlock possibilities by
+> > > tracking wait/event rather than lock(?) acquisition order to try to
+> > > cover all synchonization machanisms. It's done on v6.2-rc2.
+> > 
+> > Ugh. I hate how this adds random patterns like
+> > 
+> >         if (timeout == MAX_SCHEDULE_TIMEOUT)
+> >                 sdt_might_sleep_strong(NULL);
+> >         else
+> >                 sdt_might_sleep_strong_timeout(NULL);
+> >    ...
+> >         sdt_might_sleep_finish();
+> > 
+> > to various places, it seems so very odd and unmaintainable.
+> > 
+> > I also recall this giving a fair amount of false positives, are they all fixed?
+> > 
+> 
+> From the following part in the cover letter, I guess the answer is no?
 
-Introduce a new mount option names 'journal_cycle_record' to let jbd2
-continue record journal log from the recovered head transaction block
-or checkpointed/cleaned transactions on the previous mount.
+I fixed what we found anyway.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ext4.h  |  2 ++
- fs/ext4/super.c | 17 +++++++++++++++++
- 2 files changed, 19 insertions(+)
+> 	...
+> 	6. Multiple reports are allowed.
+> 	7. Deduplication control on multiple reports.
+> 	8. Withstand false positives thanks to 6.
+> 	...
+> 
+> seems to me that the logic is since DEPT allows multiple reports so that
+> false positives are fitlerable by users?
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 140e1eb300d1..b62e7886fc2c 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1267,6 +1267,8 @@ struct ext4_inode_info {
- #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
- 						    * scanning in mballoc
- 						    */
-+#define EXT4_MOUNT2_JOURNAL_CYCLE_RECORD	0x00000100 /* Journal cycled record
-+							    * log on empty logging area */
- 
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 260c1b3e3ef2..8260019830dc 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1591,6 +1591,7 @@ enum {
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
- 	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
- 	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
-+	Opt_journal_cycle_record,
- #ifdef CONFIG_EXT4_DEBUG
- 	Opt_fc_debug_max_replay, Opt_fc_debug_force
- #endif
-@@ -1670,6 +1671,7 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 	fsparam_flag	("journal_checksum",	Opt_journal_checksum),
- 	fsparam_flag	("nojournal_checksum",	Opt_nojournal_checksum),
- 	fsparam_flag	("journal_async_commit",Opt_journal_async_commit),
-+	fsparam_flag	("journal_cycle_record",Opt_journal_cycle_record),
- 	fsparam_flag	("abort",		Opt_abort),
- 	fsparam_enum	("data",		Opt_data, ext4_param_data),
- 	fsparam_enum	("data_err",		Opt_data_err,
-@@ -1826,6 +1828,8 @@ static const struct mount_opts {
- 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
- 	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
- 	 MOPT_SET},
-+	{Opt_journal_cycle_record, EXT4_MOUNT2_JOURNAL_CYCLE_RECORD,
-+	 MOPT_SET | MOPT_2 | MOPT_NO_EXT2},
- #ifdef CONFIG_EXT4_DEBUG
- 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
- 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-@@ -2772,6 +2776,12 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
- 			    !(sbi->s_mount_opt2 & EXT4_MOUNT2_DAX_INODE))) {
- 			goto fail_dax_change_remount;
- 		}
-+
-+		if (ctx_test_mount_opt2(ctx, EXT4_MOUNT2_JOURNAL_CYCLE_RECORD)) {
-+			ext4_msg(NULL, KERN_ERR,
-+				 "can't change journal_cycle_record on remount");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	return ext4_check_quota_consistency(fc, sb);
-@@ -5293,6 +5303,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 			goto failed_mount3a;
- 		}
- 
-+		if (test_opt2(sb, JOURNAL_CYCLE_RECORD)) {
-+			ext4_msg(sb, KERN_ERR, "can't mount with "
-+				 "journal_cycle_record, fs mounted w/o journal");
-+			goto failed_mount3a;
-+		}
- 		if (test_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM)) {
- 			ext4_msg(sb, KERN_ERR, "can't mount with "
- 				 "journal_checksum, fs mounted w/o journal");
-@@ -5698,6 +5713,8 @@ static void ext4_init_journal_params(struct super_block *sb, journal_t *journal)
- 		journal->j_flags |= JBD2_ABORT_ON_SYNCDATA_ERR;
- 	else
- 		journal->j_flags &= ~JBD2_ABORT_ON_SYNCDATA_ERR;
-+	if (test_opt2(sb, JOURNAL_CYCLE_RECORD))
-+		journal->j_flags |= JBD2_CYCLE_RECORD;
- 	write_unlock(&journal->j_state_lock);
- }
- 
--- 
-2.31.1
+At lease, it's needed until DEPT is considered stable because stronger
+detection inevitably has more chance of false alarms unless we do manual
+fix on each, which is the same as Lockdep.
 
+> > Anyway, I'd really like the lockdep people to comment and be involved.
+> 
+> I never get Cced, so I'm unware of this for a long time...
+
+Sorry I missed it. I will cc you from now on.
+
+> A few comments after a quick look:
+> 
+> *	Looks like the DEPT dependency graph doesn't handle the
+> 	fair/unfair readers as lockdep current does. Which bring the
+> 	next question.
+
+No. DEPT works better for unfair read. It works based on wait/event. So
+read_lock() is considered a potential wait waiting on write_unlock()
+while write_lock() is considered a potential wait waiting on either
+write_unlock() or read_unlock(). DEPT is working perfect for it.
+
+For fair read (maybe you meant queued read lock), I think the case
+should be handled in the same way as normal lock. I might get it wrong.
+Please let me know if I miss something.
+
+> *	Can DEPT pass all the selftests of lockdep in
+> 	lib/locking-selftests.c?
+> 
+> *	Instead of introducing a brand new detector/dependency tracker,
+> 	could we first improve the lockdep's dependency tracker? I think
+
+At the beginning of this work, of course I was thinking to improve
+Lockdep but I decided to implement a new tool because:
+
+	1. What we need to check for deadlock detection is no longer
+	   lock dependency but more fundamental dependency by wait/event.
+	   A better design would have a separate dependency engine for
+	   that, not within Lockdep. Remind lock/unlock are also
+	   wait/event after all.
+
+	2. I was thinking to revert the revert of cross-release. But it
+	   will start to report false alarms as Lockdep was at the
+	   beginning, and require us to keep fixing things until being
+	   able to see what we are interested in, maybe for ever. How
+	   can we control that situation? I wouldn't use this extention.
+
+	3. Okay. Let's think about modifying the current Lockdep to make
+	   it work similar to DEPT. It'd require us to pay more effort
+	   than developing a new simple tool from the scratch with the
+	   basic requirement.
+
+	4. Big change at once right away? No way. The new tool need to
+	   be matured and there are ones who want to make use of DEPT at
+	   the same time. The best approach would be I think to go along
+	   together for a while.
+
+Please don't look at each detail but the big picture, the architecture.
+Plus, please consider I introduce a tool only focucing on fundamental
+dependency itself that Lockdep can make use of. I wish great developers
+like you would join improve the common engine togather.
+
+> 	Byungchul also agrees that DEPT and lockdep should share the
+> 	same dependency tracker and the benefit of improving the
+
+I agree that both should share a single tracker.
+
+> 	existing one is that we can always use the self test to catch
+> 	any regression. Thoughts?
+
+I imagine the follownig look for the final form:
+
+     Lock correctness checker(LOCKDEP)
+     +-----------------------------------------+
+     | Lock usage correctness check            |
+     |                                         |
+     |                                         |
+     |       (Request dependency check)        |
+     |                           T             |
+     +---------------------------|-------------+
+                                 |
+     Dependency tracker(DEPT)    V
+     +-----------------------------------------+
+     | Dependency check                        |
+     | (by tracking wait and event context)    |
+     +-----------------------------------------+
+
+> Actually the above sugguest is just to revert revert cross-release
+> without exposing any annotation, which I think is more practical to
+> review and test.
+
+Reverting the revert of cross-release is not bad. But I'd suggest a
+nicer design for the reasons I explained above.
+
+	Byungchul
+
+> I'd sugguest we 1) first improve the lockdep dependency tracker with
+> wait/event in mind and then 2) introduce wait related annotation so that
+> users can use, and then 3) look for practical ways to resolve false
+> positives/multi reports with the help of users, if all goes well,
+> 4) make it all operation annotated.
+> 
+> Thoughts?
+> 
+> Regards,
+> Boqun
