@@ -2,66 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79C673C9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 15:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C7673D41
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 16:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjASOpA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 09:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S230026AbjASPP1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 10:15:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjASOoj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 09:44:39 -0500
+        with ESMTP id S230340AbjASPPW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 10:15:22 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8624B8A0FF;
-        Thu, 19 Jan 2023 06:41:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66885683FA;
+        Thu, 19 Jan 2023 07:15:20 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 94E575CEFC;
-        Thu, 19 Jan 2023 14:41:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1EBD45CF7A;
+        Thu, 19 Jan 2023 15:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674139298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1674141319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OsQDd/QTZ7pOb/Ngb/kjbWLwcZRwcKeJIG/CoHqe140=;
-        b=PGhIpOGeoaqZpz6yDkYkeohpdb1wT+VH2fFe7tZjPYNjOo/Es7eDEP8gg+XhvACKSKpOF5
-        TViROxM/3DgfQVsCFFdsPa5oViqdmizBFJ5DBcWTXj2ypckWYgIenvPIqRzmkc3qL/6pgE
-        n1JcOCP8xLkforiwPnZ60hssW7AV3TA=
+        bh=nxlpDfJWLjmyCV6BKCFVRsN02I0RTjYAzY/0uOI8RT4=;
+        b=mP9CD7LrN1cRVslGrCusJn/GUG44HMnksCuutaquxl+oNVUGp4G+VGxmGxmah1c3+wFu07
+        //nBL2F9cKJDAA54/PSPj2W5A2ClREaYfn836vLyguPKfZzr/aaU6xrzT1e3pRQnP1Ff6t
+        Jkf/0KWdzv4QpzoX0M0gj8qSyIM46gY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674139298;
+        s=susede2_ed25519; t=1674141319;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OsQDd/QTZ7pOb/Ngb/kjbWLwcZRwcKeJIG/CoHqe140=;
-        b=QDJShTR1tmXA1AgaTHj/onIhy2pTDAOTHBp/GcktSDLjUS2St5EMaN9lHGPMSkNs4SvhAk
-        PfmuryFOezXdB8Ag==
+        bh=nxlpDfJWLjmyCV6BKCFVRsN02I0RTjYAzY/0uOI8RT4=;
+        b=AHZ4eJiwec0m2h/uP2N+3yRPuL2A4s8r9BVwZQwMazL5G1njL9lU90asfLFqN7aL7wSbPG
+        Dun1udoI70TNq/Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 843F4139ED;
-        Thu, 19 Jan 2023 14:41:38 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B952134F5;
+        Thu, 19 Jan 2023 15:15:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id R45DIKJWyWPRLQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 19 Jan 2023 14:41:38 +0000
+        id OL7MAodeyWP6QAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Jan 2023 15:15:19 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 8FBBCA06B2; Thu, 19 Jan 2023 15:41:37 +0100 (CET)
-Date:   Thu, 19 Jan 2023 15:41:37 +0100
+        id 39C91A06B2; Thu, 19 Jan 2023 16:15:18 +0100 (CET)
+Date:   Thu, 19 Jan 2023 16:15:18 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>,
-        syzbot+d30838395804afc2fa6f@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix WARNING in ext4_update_inline_data
-Message-ID: <20230119144137.4jaespdaj3s6biov@quack3>
-References: <20230105091526.799343-1-yebin@huaweicloud.com>
+        abuehaze@amazon.com
+Subject: Re: EXT4 IOPS degradation in 5.10 compared to 5.4
+Message-ID: <20230119151518.h3koyxs6tsok72zs@quack3>
+References: <03d52010-06a8-9bff-0565-b698b48850a9@amazon.com>
+ <20230112113820.hjwvieq3ucbwreql@quack3>
+ <1cfef086-b3c1-6607-9328-b1bf70896ce4@amazon.com>
+ <c166a551-8e4a-b68e-cb7f-74b911379c49@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230105091526.799343-1-yebin@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c166a551-8e4a-b68e-cb7f-74b911379c49@amazon.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,104 +76,301 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 05-01-23 17:15:26, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> Syzbot found the following issue:
-> EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: none.
-> fscrypt: AES-256-CTS-CBC using implementation "cts-cbc-aes-aesni"
-> fscrypt: AES-256-XTS using implementation "xts-aes-aesni"
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 5071 at mm/page_alloc.c:5525 __alloc_pages+0x30a/0x560 mm/page_alloc.c:5525
-> Modules linked in:
-> CPU: 1 PID: 5071 Comm: syz-executor263 Not tainted 6.2.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> RIP: 0010:__alloc_pages+0x30a/0x560 mm/page_alloc.c:5525
-> RSP: 0018:ffffc90003c2f1c0 EFLAGS: 00010246
-> RAX: ffffc90003c2f220 RBX: 0000000000000014 RCX: 0000000000000000
-> RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90003c2f248
-> RBP: ffffc90003c2f2d8 R08: dffffc0000000000 R09: ffffc90003c2f220
-> R10: fffff52000785e49 R11: 1ffff92000785e44 R12: 0000000000040d40
-> R13: 1ffff92000785e40 R14: dffffc0000000000 R15: 1ffff92000785e3c
-> FS:  0000555556c0d300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f95d5e04138 CR3: 00000000793aa000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __alloc_pages_node include/linux/gfp.h:237 [inline]
->  alloc_pages_node include/linux/gfp.h:260 [inline]
->  __kmalloc_large_node+0x95/0x1e0 mm/slab_common.c:1113
->  __do_kmalloc_node mm/slab_common.c:956 [inline]
->  __kmalloc+0xfe/0x190 mm/slab_common.c:981
->  kmalloc include/linux/slab.h:584 [inline]
->  kzalloc include/linux/slab.h:720 [inline]
->  ext4_update_inline_data+0x236/0x6b0 fs/ext4/inline.c:346
->  ext4_update_inline_dir fs/ext4/inline.c:1115 [inline]
->  ext4_try_add_inline_entry+0x328/0x990 fs/ext4/inline.c:1307
->  ext4_add_entry+0x5a4/0xeb0 fs/ext4/namei.c:2385
->  ext4_add_nondir+0x96/0x260 fs/ext4/namei.c:2772
->  ext4_create+0x36c/0x560 fs/ext4/namei.c:2817
->  lookup_open fs/namei.c:3413 [inline]
->  open_last_lookups fs/namei.c:3481 [inline]
->  path_openat+0x12ac/0x2dd0 fs/namei.c:3711
->  do_filp_open+0x264/0x4f0 fs/namei.c:3741
->  do_sys_openat2+0x124/0x4e0 fs/open.c:1310
->  do_sys_open fs/open.c:1326 [inline]
->  __do_sys_openat fs/open.c:1342 [inline]
->  __se_sys_openat fs/open.c:1337 [inline]
->  __x64_sys_openat+0x243/0x290 fs/open.c:1337
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> Above issue happens as follows:
-> ext4_iget
->    ext4_find_inline_data_nolock ->i_inline_off=164 i_inline_size=60
-> ext4_try_add_inline_entry
->    __ext4_mark_inode_dirty
->       ext4_expand_extra_isize_ea ->i_extra_isize=32 s_want_extra_isize=44
->          ext4_xattr_shift_entries
-> 	 ->after shift i_inline_off is incorrect, actually is change to 176
-> ext4_try_add_inline_entry
->   ext4_update_inline_dir
->     get_max_inline_xattr_value_size
->       if (EXT4_I(inode)->i_inline_off)
-> 	entry = (struct ext4_xattr_entry *)((void *)raw_inode +
-> 			EXT4_I(inode)->i_inline_off);
->         free += EXT4_XATTR_SIZE(le32_to_cpu(entry->e_value_size));
-> 	->As entry is incorrect, then 'free' may be negative
->    ext4_update_inline_data
->       value = kzalloc(len, GFP_NOFS);
->       -> len is unsigned int, maybe very large, then trigger warning when
->          'kzalloc()'
-> To resolve above issue there's need to update 'i_inline_off' after
-> 'ext4_xattr_shift_entries()'.
-> 
-> Reported-by: syzbot+d30838395804afc2fa6f@syzkaller.appspotmail.com
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+Hello!
 
-...
+On Wed 18-01-23 18:48:10, Bhatnagar, Rishabh wrote:
+> On 1/13/23 2:13 PM, Bhatnagar, Rishabh wrote:
+> > 
+> > On 1/12/23 3:38 AM, Jan Kara wrote:
+> > > CAUTION: This email originated from outside of the organization. Do
+> > > not click links or open attachments unless you can confirm the
+> > > sender and know the content is safe.
+> > > 
+> > > 
+> > > 
+> > > Hi!
+> > > 
+> > > On Wed 11-01-23 18:06:39, Bhatnagar, Rishabh wrote:
+> > > > We have been seeing a consistent 3% degradation in IOPS score
+> > > > between 5.4
+> > > > and 5.10 stable kernels while running fio tests.
+> > > > 
+> > > > I'm running test case on m6g.8xlarge AWS instances using arm64.
+> > > > The test
+> > > > involves:
+> > > > 
+> > > > 1. Creating 100GB volume with IO1 500 iops. Attaching it to the
+> > > > instance.
+> > > > 
+> > > > 2. Setup and mount fs:
+> > > > 
+> > > > mke2fs -m 1 -t ext4 -b 4096 -L /mnt /dev/nvme1n1
+> > > > mount -t ext4 -o noatime,nodiratime,data=ordered /dev/nvme1n1 /mnt
+> > > > 
+> > > > 3. Install fio package and run following test:
+> > > > (running 16 threads doing random buffered 16kb writes on a file.
+> > > > ioengine=psync, runtime=60secs)
+> > > > 
+> > > > jobs=16
+> > > > blocksize="16k"
+> > > > filesize=1000000
+> > > > 
+> > > > if [[ -n $1 ]]; then jobs=$1; fi
+> > > > if [[ -n $2 ]]; then blocksize=$2; fi
+> > > > 
+> > > > /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
+> > > > --ioengine=psync --buffered=1 --bs=${blocksize} \
+> > > >          --max-jobs=${jobs} --numjobs=${jobs} --runtime=30 --thread \
+> > > >          --filename=file0 --filesize=${filesize} \
+> > > >          --fsync=1 --group_reporting --create_only=1 > /dev/null
+> > > > 
+> > > > sudo echo 1 > /proc/sys/vm/drop_caches
+> > > > 
+> > > > set -x
+> > > > echo "Running with jobs=${jobs} filesize=${filesize}
+> > > > blocksize=${blocksize}"
+> > > > /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
+> > > > --ioengine=psync --buffered=1 --bs=${blocksize} \
+> > > >          --max-jobs=${jobs} --numjobs=${jobs} --runtime=60 --thread \
+> > > >          --filename=file0 --filesize=${filesize} \
+> > > >          --fsync=1 --group_reporting --time_based
+> > > > 
+> > > > After doing some kernel bisecting between we were able to pinpoint this
+> > > > commit that drops the iops score by 10~15 points (~3%).
+> > > > ext4: avoid unnecessary transaction starts during writeback
+> > > > (6b8ed62008a49751fc71fefd2a4f89202a7c2d4d)
+> > > > 
+> > > > We see higher iops/bw/total io after reverting the commit
+> > > > compared to base
+> > > > 5.10 kernel.
+> > > > Although the average clat is higher after reverting the commit
+> > > > the higher bw
+> > > > drives the iops score higher as seen in below fio output.
+> > > I expect the difference is somewhere in waiting for the journal. Can you
+> > > just check whether there's a difference if you use --fdatasync=1
+> > > instead of
+> > > --fsync=1? With this workload that should avoid waiting for the journal
+> > > because the only metadata updates are mtime timestamps in the inode.
+> > There is a difference of 5% with and with the commit if i change this to
+> > fdatasync=1.
+> > > > Fio output (5.10.162):
+> > > > write: io=431280KB, bw=7186.3KB/s, iops=449, runt= 60015msec
+> > > > clat (usec): min=6, max=25942, avg=267.76,stdev=1604.25
+> > > > lat (usec): min=6, max=25943, avg=267.93,stdev=1604.25
+> > > > clat percentiles (usec):
+> > > > | 1.00th=[ 9], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24]
+> > > > | 30.00th=[ 34], 40.00th=[ 45], 50.00th=[ 58], 60.00th=[ 70],
+> > > > | 70.00th=[ 81], 80.00th=[ 94], 90.00th=[ 107], 95.00th=[ 114],
+> > > > | 99.00th=[10048], 99.50th=[14016], 99.90th=[20096], 99.95th=[21888],
+> > > > | 99.99th=[24448]
+> > > > lat (usec) : 10=3.46%, 20=12.54%, 50=26.66%, 100=41.16%, 250=13.64%
+> > > > lat (usec) : 500=0.02%, 750=0.03%, 1000=0.01%
+> > > > lat (msec) : 2=0.23%, 4=0.50%, 10=0.73%, 20=0.91%, 50=0.12%
+> > > > cpu : usr=0.02%, sys=0.42%, ctx=299540, majf=0, minf=0
+> > > > IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%,
+> > > > >=64=0.0%
+> > > > submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+> > > > complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%,
+> > > > >=64=0.0%
+> > > > issued : total=r=0/w=26955/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+> > > > latency : target=0, window=0, percentile=100.00%, depth=1
+> > > > Run status group 0 (all jobs):
+> > > > WRITE: io=431280KB, aggrb=7186KB/s, minb=7186KB/s, maxb=7186KB/s,
+> > > > mint=60015msec, maxt=60015msec
+> > > > Disk stats (read/write):
+> > > > nvme1n1: ios=0/30627, merge=0/2125, ticks=0/410990, in_queue=410990,
+> > > > util=99.94%
+> > > > 
+> > > > Fio output (5.10.162 with revert):
+> > > > write: io=441920KB, bw=7363.7KB/s, iops=460, runt= 60014msec
+> > > > clat (usec): min=6, max=35768, avg=289.09, stdev=1736.62
+> > > > lat (usec): min=6, max=35768, avg=289.28,stdev=1736.62
+> > > > clat percentiles (usec):
+> > > > | 1.00th=[ 8], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24],
+> > > > | 30.00th=[ 36], 40.00th=[ 46], 50.00th=[ 59], 60.00th=[ 71],
+> > > > | 70.00th=[ 83], 80.00th=[ 97], 90.00th=[ 110], 95.00th=[ 117],
+> > > > | 99.00th=[10048], 99.50th=[14144], 99.90th=[21632], 99.95th=[25984],
+> > > > | 99.99th=[28288]
+> > > > lat (usec) : 10=4.13%, 20=11.67%, 50=26.59%, 100=39.57%, 250=15.28%
+> > > > lat (usec) : 500=0.03%, 750=0.03%, 1000=0.03%
+> > > > lat (msec) : 2=0.20%, 4=0.64%, 10=0.80%, 20=0.86%, 50=0.18%
+> > > > cpu : usr=0.01%, sys=0.43%, ctx=313909, majf=0, minf=0
+> > > > IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%,
+> > > > >=64=0.0%
+> > > > submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+> > > > complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%,
+> > > > >=64=0.0%
+> > > > issued : total=r=0/w=27620/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+> > > > latency : target=0, window=0, percentile=100.00%, depth=1
+> > > > Run status group 0 (all jobs):
+> > > > WRITE: io=441920KB, aggrb=7363KB/s, minb=7363KB/s, maxb=7363KB/s,
+> > > > mint=60014msec, maxt=60014msec
+> > > > Disk stats (read/write):
+> > > > nvme1n1: ios=0/31549, merge=0/2348, ticks=0/409221, in_queue=409221,
+> > > > util=99.88%
+> > > > 
+> > > > 
+> > > > Also i looked ext4_writepages latency which increases when the
+> > > > commit is
+> > > > reverted. (This makes sense since the commit avoids unnecessary
+> > > > transactions).
+> > > > 
+> > > > ./funclatency ext4_writepages -->(5.10.162)
+> > > > avg = 7734912 nsecs, total: 134131121171 nsecs, count: 17341
+> > > > 
+> > > > ./funclatency ext4_writepages -->(5.10.162 with revert)
+> > > > avg = 9036068 nsecs, total: 168956404886 nsecs, count: 18698
+> > > > 
+> > > > 
+> > > > Looking at the journal transaction data I can see that the average
+> > > > transaction commit time decreases after reverting the commit.
+> > > > This probably helps in the IOPS score.
+> > > So what the workload is doing is:
+> > > write()
+> > >    inode lock
+> > >    dirty 16k of page cache
+> > >    dirty inode i_mtime
+> > >    inode unlock
+> > > fsync()
+> > >    walk all inode pages, write dirty ones
+> > >    wait for all pages under writeback in the inode to complete IO
+> > >    force transaction commit and wait for it
+> > > 
+> > > Now this has the best throughput (and the worst latency) if all 16
+> > > processes work in lockstep - i.e., like:
+> > > 
+> > >    task1         task2           task3 ...
+> > >    write()
+> > >                  write()
+> > >                                  write()
+> > >    fsync()
+> > >                  fsync()
+> > >                                  fsync()
+> > > 
+> > > because in that case we writeout all dirty pages from 16 processes
+> > > in one
+> > > sweep together and also we accumulate 16 mtime updates in single
+> > > transaction commit.
+> > > 
+> > > Now I suspect the commit you've identified leads to less synchronization
+> > > between the processes and thus in less batching happening. In particular
+> > > before the commit we've called mpage_prepare_extent_to_map() twice
+> > > and the
+> > > second invocation starts at where the first invocation saw last
+> > > dirty page.
+> > > So it potentially additionally writes newly dirtied pages beyond
+> > > that place
+> > > and that effectively synchronizes processes more.
+> > > 
+> > > To confirm the theory, it might be interesting to gather a histogram
+> > > of a
+> > > number of pages written back by ext4_writepages() call with /
+> > > without the
+> > > commit.
+> > > 
+> > > Honza
+> > > -- 
+> > > Jan Kara <jack@suse.com>
+> > > SUSE Labs, CR
+> > 
+> > Hi Jan
+> > 
+> > I collected some data w.r.t to number of pages being written by
+> > ext4_writepages. What you pointed out seems to be correct.
+> > Without the commit I see more batching (more writeback count from 4-20
+> > pages)happening compared to with the commit.
+> > 
+> > Without the commit (reverted):
+> > 
+> > [0-1]   —>  4246
+> > [2-3]   —>  312
+> > [4-5]   —>  20836
+> > [6-7]   —>  205
+> > [8-9]   —>  895
+> > [10-11] —>  56
+> > [12-13] —>  422
+> > [14-15] —>  62
+> > [16-17] —>  234
+> > [18-19] —>  66
+> > [20-21] —>  77
+> > [22-23] —>  9
+> > [24-25] —>  26
+> > [26-27] —>  1
+> > [28-29] —>  13
+> > 
+> > Average page count : 3.9194
+> > 
+> > 
+> > With the commit:
+> > 
+> > [0-1]   —> 1635
+> > [2-3]   —> 123
+> > [4-5]   —> 24302
+> > [6-7]   —> 38
+> > [8-9]   —> 604
+> > [10-11] —> 19
+> > [12-13] —> 123
+> > [14-15] —> 12
+> > [16-17] —> 24
+> > [18-19] —> 3
+> > [20-21] —> 8
+> > [22-23] —> 1
+> > [24-25] —> 3
+> > [26-27] —> 0
+> > [28-29] —> 1
+> > 
+> > Average page count : 3.9184
+> > 
+> > Also looking at journal data I see that without the commit we have more
+> > handles per journal transaction:
+> > 
+> > Without the commit:
+> > cat /proc/fs/jbd2/nvme1n1-8/info
+> > 2092 transactions (2091 requested), each up to 8192 blocks
+> > average:
+> > 0ms waiting for transaction
+> > 0ms request delay
+> > 20ms running transaction
+> > 0ms transaction was being locked
+> > 0ms flushing data (in ordered mode)
+> > 20ms logging transaction
+> > 15981us average transaction commit time
+> > 67 handles per transaction
+> > 1 blocks per transaction
+> > 2 logged blocks per transaction
+> > 
+> > With the commit:
+> > cat /proc/fs/jbd2/nvme1n1-8/info
+> > 2143 transactions (2143 requested), each up to 8192 blocks
+> > average:
+> > 0ms waiting for transaction
+> > 0ms request delay
+> > 0ms running transaction
+> > 0ms transaction was being locked
+> > 0ms flushing data (in ordered mode)
+> > 20ms logging transaction
+> > 20731us average transaction commit time
+> > 51 handles per transaction
+> > 1 blocks per transaction
+> > 3 logged blocks per transaction
+> 
+> Gentle reminder.
+> 
+> Any thoughts on this data? Is there a usecase where this commit brings
+> benefits that are worth considering if we decide to revert this?
 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 7decaaf27e82..4cb9fd5bb622 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2778,6 +2778,9 @@ int ext4_expand_extra_isize_ea(struct inode *inode, int new_extra_isize,
->  			(void *)header, total_ino);
->  	EXT4_I(inode)->i_extra_isize = new_extra_isize;
->  
-> +	if (ext4_has_inline_data(inode))
-> +		error = ext4_find_inline_data_nolock(inode);
-> +
+Yes. This change was actually added because it led to significant
+improvement for workloads where one process was just overwriting allocated
+file (so it didn't need to start a transaction in ext4_writepages()) while
+other processes were creating load on the journal (so starting a
+transaction was actually rather expensive). So I don't think reverting this
+commit to re-introduce more synchronization on the journal into
+ext4_writepages() is actually a good tradeoff.
 
-So this would be fine except that ext4_expand_extra_isize_ea() may be
-racing e.g. with pending ext4_do_writepages() call trying to remove inline
-data and thus cause an assertion failure there because
-ext4_expand_extra_isize_ea() sets EXT4_STATE_MAY_INLINE_DATA. So I think
-you need to move setting of EXT4_STATE_MAY_INLINE_DATA out from
-ext4_find_inline_data_nolock() into the callers.
+I'm trying to think if we could somehow improve the performance of your
+workload but it's always going to be a latency vs throughput tradeoff so
+different people will want different behavior. Maybe some fsync batching
+but that is more of an research project than an easy fix.
 
 								Honza
 -- 
