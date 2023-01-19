@@ -2,270 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2FE67494E
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jan 2023 03:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9598A674B14
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jan 2023 05:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjATCYV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 21:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        id S229785AbjATEoD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 23:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjATCYU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 21:24:20 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96443A1007;
-        Thu, 19 Jan 2023 18:24:19 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id x7so3159076qtv.13;
-        Thu, 19 Jan 2023 18:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nXmrGuDkn2/Eo83iFxWHgNA7AWXWKN7q1/fDzp0dVyE=;
-        b=kDK20ncsOnJblkAwd0Y2Y59cRIL8dXnF51upa4ooOnHX1wQqX5ftBtnDYkiI/Ae06M
-         O9EC9eif/MuMYtFZV1lv6hxt1qW/daZXI84Cfd3fVgwCF5++3HWYeNc8a4AQ1Msd2HgR
-         0rUk339PKVfWEvaGynHDn/OXou0xTF8O6qWOli6Prs6phF8O6aI9W6ur6Q6wyAXPKq+K
-         xksp6hoTxHm8qWWXSfxa68JNytzXV+AXbFHCcrxnkwiKgbOiNlO63r0xUhy3ZES1LXXy
-         T2k9wPS8tOQGlrAQ9zTZXi98iBbGK+SxyQx/qM2oV0MH8GgY8jwHy7XC5e+3u9TwTHVK
-         vKJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nXmrGuDkn2/Eo83iFxWHgNA7AWXWKN7q1/fDzp0dVyE=;
-        b=eCr5SgwGK5hLoU05JzKZ6U7VzybvimJkQKL58In6G2fYNgZMZ9x9OJj7hcf+WJ5Mka
-         w0aln9WtTXwSvjFk9Yq1pPUYDttQHlZ3f8L/9Wq++BzLXoUrMt3WRuvc9nYlN+qJxvJP
-         ZSmO//HS6Tc1oogDQbIkdxkaZ+MvZDzCGebyaRdL7KxLYOedUFwLC97c1ZDFN+1jxj0w
-         CdyGAic95v83xFB0ZXxahfwsENUKiCGfXCgeceINbJ+D/+nIP0e2owIOzKBhEn9fLoRo
-         V0oPSC5xg4hhHRJcJYxA7gYNee21BubmJjP64t8ahBP+7ZeIv7B+CaIZMzHQUK43onBT
-         a0oQ==
-X-Gm-Message-State: AFqh2kqNmWkkwWpMuZlw0UpGdpAxI4hDkuVsHbXx3Z4zxi1xyaeAWOeo
-        gk7Yv+AFG7g8et88YZW7BNFcpF6G1ThqFQ==
-X-Google-Smtp-Source: AMrXdXuRJTYkO5Xq8fcDUzUWWm7txooBhHo39gDtPiGOOe5Xv1z+JrHpgHoezV9t7zVStSP5Jqhq1Q==
-X-Received: by 2002:ac8:4c8e:0:b0:3b6:4998:67a1 with SMTP id j14-20020ac84c8e000000b003b6499867a1mr12358612qtv.37.1674181458642;
-        Thu, 19 Jan 2023 18:24:18 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id m20-20020ac866d4000000b003a6a7a20575sm19755088qtp.73.2023.01.19.18.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 18:24:17 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7026227C0054;
-        Thu, 19 Jan 2023 21:24:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 19 Jan 2023 21:24:17 -0500
-X-ME-Sender: <xms:T_vJYzHnHDTMCt8jto_nWcNHcvjGpgV4RvXPMPNFrTftwxZEnGSO0g>
-    <xme:T_vJYwWSJg8VNuVpXyE8E2reWX4XQdWPyjlmAe0rSjk1q18okkcj0DuHJBzrJMq-h
-    2BHgZrbF3-2z5tXPw>
-X-ME-Received: <xmr:T_vJY1ICmQQtrLyW94m-OCcuioCpWG_JQYMNIQrE8vXtpfI-eCbh1FtbvSc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudduuddggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:T_vJYxEVt_E7yCBMkNlpdHT5QTmouUaZCHkbiwwgo9SMC9f1ypeHcg>
-    <xmx:T_vJY5UC0c1dPYjN1YJ_6DhJnOJXFkqidaO7l8UjxcPRdnOLR2EW0w>
-    <xmx:T_vJY8OTkoLcYoXpmUowRiLOhXTP7VGD0CwmQXGUfkwXJRtYYKhXQw>
-    <xmx:UfvJYwNwPTJ1_44JcBxyGjDYBTUUeNqEoQQDIfCiiaDhhOipxIQ6KAhvHfQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Jan 2023 21:24:14 -0500 (EST)
-Date:   Thu, 19 Jan 2023 18:23:49 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
-        hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        longman@redhat.com
-Subject: Re: [PATCH RFC v7 00/23] DEPT(Dependency Tracker)
-Message-ID: <Y8n7NdFl9WEbGXH1@boqun-archlinux>
-References: <Y8mZHKJV4FH17vGn@boqun-archlinux>
- <1674179505-26987-1-git-send-email-byungchul.park@lge.com>
+        with ESMTP id S229648AbjATEng (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 23:43:36 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C08BC74C
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:39:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DE601B82729
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:21:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 92829C433D2
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 20:21:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674159706;
+        bh=D5JkfJWl0Gr2ghPZ7dkEWG0tnL9tSm+mHm/87ImgZTQ=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=UeXnEXnPcGspGkVMJW04wjL9mtkRsVPV8XC4tCOFPdXR2m7YUyMun2FKITCFTRQJh
+         ySqVxnvLfnFIIPmcn9R6pswfWEFXGCqo0cADzkwA5GD65t2MmKxfXAiD5fgwuqvCif
+         oAbjZObbbkMw+6M+xKbVvYLOXO/OyzwUTB8C805bnkKVvqUXBjnm6CjHVdqHRI2Bo8
+         V6+0doOjN7F2hxptJPVUr2x7vGcOoW190KhL62ESyX8Wsca5zp3+EF3Wy64Flw2FfX
+         613ZlV36zeQsTpEnl6S02f/t5HWFHFzfHFMb6Rnkn798JLi1z4kf7I0t4U2IrAfjVV
+         EeeLdHXfKSpiA==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 75CE0C43143; Thu, 19 Jan 2023 20:21:46 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216953] BUG: kernel NULL pointer dereference, address:
+ 0000000000000008
+Date:   Thu, 19 Jan 2023 20:21:46 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-216953-13602-DfRjiRDwj1@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216953-13602@https.bugzilla.kernel.org/>
+References: <bug-216953-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1674179505-26987-1-git-send-email-byungchul.park@lge.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 10:51:45AM +0900, Byungchul Park wrote:
-> Boqun wrote:
-> > On Thu, Jan 19, 2023 at 01:33:58PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Jan 19, 2023 at 03:23:08PM +0900, Byungchul Park wrote:
-> > > > Boqun wrote:
-> > > > > *Looks like the DEPT dependency graph doesn't handle the
-> > > > > fair/unfair readers as lockdep current does. Which bring the
-> > > > > next question.
-> > > > 
-> > > > No. DEPT works better for unfair read. It works based on wait/event. So
-> > > > read_lock() is considered a potential wait waiting on write_unlock()
-> > > > while write_lock() is considered a potential wait waiting on either
-> > > > write_unlock() or read_unlock(). DEPT is working perfect for it.
-> > > > 
-> > > > For fair read (maybe you meant queued read lock), I think the case
-> > > > should be handled in the same way as normal lock. I might get it wrong.
-> > > > Please let me know if I miss something.
-> > > 
-> > > From the lockdep/DEPT point of view, the question is whether:
-> > > 
-> > >	read_lock(A)
-> > >	read_lock(A)
-> > > 
-> > > can deadlock if a writer comes in between the two acquisitions and
-> > > sleeps waiting on A to be released.  A fair lock will block new
-> > > readers when a writer is waiting, while an unfair lock will allow
-> > > new readers even while a writer is waiting.
-> > > 
-> > 
-> > To be more accurate, a fair reader will wait if there is a writer
-> > waiting for other reader (fair or not) to unlock, and an unfair reader
-> > won't.
-> 
-> What a kind guys, both of you! Thanks.
-> 
-> I asked to check if there are other subtle things than this. Fortunately,
-> I already understand what you guys shared.
-> 
-> > In kernel there are read/write locks that can have both fair and unfair
-> > readers (e.g. queued rwlock). Regarding deadlocks,
-> > 
-> > 	T0		T1		T2
-> > 	--		--		--
-> > 	fair_read_lock(A);
-> > 			write_lock(B);
-> > 					write_lock(A);
-> > 	write_lock(B);
-> > 			unfair_read_lock(A);
-> 
-> With the DEPT's point of view (let me re-write the scenario):
-> 
-> 	T0		T1		T2
-> 	--		--		--
-> 	fair_read_lock(A);
-> 			write_lock(B);
-> 					write_lock(A);
-> 	write_lock(B);
-> 			unfair_read_lock(A);
-> 	write_unlock(B);
-> 	read_unlock(A);
-> 			read_unlock(A);
-> 			write_unlock(B);
-> 					write_unlock(A);
-> 
-> T0: read_unlock(A) cannot happen if write_lock(B) is stuck by a B owner
->     not doing either write_unlock(B) or read_unlock(B). In other words:
-> 
->       1. read_unlock(A) happening depends on write_unlock(B) happening.
->       2. read_unlock(A) happening depends on read_unlock(B) happening.
-> 
-> T1: write_unlock(B) cannot happen if unfair_read_lock(A) is stuck by a A
->     owner not doing write_unlock(A). In other words:
-> 
->       3. write_unlock(B) happening depends on write_unlock(A) happening.
-> 
-> 1, 2 and 3 give the following dependencies:
-> 
->     1. read_unlock(A) -> write_unlock(B)
->     2. read_unlock(A) -> read_unlock(B)
->     3. write_unlock(B) -> write_unlock(A)
-> 
-> There's no circular dependency so it's safe. DEPT doesn't report this.
-> 
-> > the above is not a deadlock, since T1's unfair reader can "steal" the
-> > lock. However the following is a deadlock:
-> > 
-> > 	T0		T1		T2
-> > 	--		--		--
-> > 	unfair_read_lock(A);
-> > 			write_lock(B);
-> > 					write_lock(A);
-> > 	write_lock(B);
-> > 			fair_read_lock(A);
-> > 
-> > , since T'1 fair reader will wait.
-> 
-> With the DEPT's point of view (let me re-write the scenario):
-> 
-> 	T0		T1		T2
-> 	--		--		--
-> 	unfair_read_lock(A);
-> 			write_lock(B);
-> 					write_lock(A);
-> 	write_lock(B);
-> 			fair_read_lock(A);
-> 	write_unlock(B);
-> 	read_unlock(A);
-> 			read_unlock(A);
-> 			write_unlock(B);
-> 					write_unlock(A);
-> 
-> T0: read_unlock(A) cannot happen if write_lock(B) is stuck by a B owner
->     not doing either write_unlock(B) or read_unlock(B). In other words:
-> 
->       1. read_unlock(A) happening depends on write_unlock(B) happening.
->       2. read_unlock(A) happening depends on read_unlock(B) happening.
-> 
-> T1: write_unlock(B) cannot happen if fair_read_lock(A) is stuck by a A
->     owner not doing either write_unlock(A) or read_unlock(A). In other
->     words:
-> 
->       3. write_unlock(B) happening depends on write_unlock(A) happening.
->       4. write_unlock(B) happening depends on read_unlock(A) happening.
-> 
-> 1, 2, 3 and 4 give the following dependencies:
-> 
->     1. read_unlock(A) -> write_unlock(B)
->     2. read_unlock(A) -> read_unlock(B)
->     3. write_unlock(B) -> write_unlock(A)
->     4. write_unlock(B) -> read_unlock(A)
-> 
-> With 1 and 4, there's a circular dependency so DEPT definitely report
-> this as a problem.
-> 
-> REMIND: DEPT focuses on waits and events.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216953
 
-Do you have the test cases showing DEPT can detect this?
+Theodore Tso (tytso@mit.edu) changed:
 
-Regards,
-Boqun
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-> 
-> > FWIW, lockdep is able to catch this (figuring out which is deadlock and
-> > which is not) since two years ago, plus other trivial deadlock detection
-> > for read/write locks. Needless to say, if lib/lock-selftests.c was given
-> > a try, one could find it out on one's own.
-> > 
-> > Regards,
-> > Boqun
-> > 
+--- Comment #5 from Theodore Tso (tytso@mit.edu) ---
+To save trouble from people who might need to download and read the attachm=
+ent,
+here it is:
+
+Jan 19 08:25:35 serv209 kernel: RIP: 0010:selinux_inode_free_security+0x5b/=
+0x90
+Jan 19 08:25:35 serv209 kernel: Code: 8b 43 08 4c 8d 63 08 48 03 aa 70 03 0=
+0 00
+49 39 c4 74 2f 48 83 c5
+ 40 48 89 ef e8 20 53 7c 00 48 8b 53 08 48 8b 43 10 48 89 ef <48> 89 42 08 =
+48
+89 10 4c 89 63 08 4c 89 6
+3 10 5b 5d 41 5c e9 6d 54
+Jan 19 08:25:35 serv209 kernel: RSP: 0018:ffffb45c404e7ac0 EFLAGS: 00010246
+Jan 19 08:25:35 serv209 kernel: RAX: 0000000000000000 RBX: ffff9e7e98002da0
+RCX: 0000000000000000
+Jan 19 08:25:35 serv209 kernel: RDX: 0000000000000000 RSI: 0000000000000000
+RDI: ffff9e7c8af2c400
+Jan 19 08:25:35 serv209 kernel: RBP: ffff9e7c8af2c400 R08: 0000000000000000
+R09: 0000000000000000
+Jan 19 08:25:35 serv209 kernel: R10: 0000000000000000 R11: 0000000000000000
+R12: ffff9e7e98002da8
+Jan 19 08:25:35 serv209 kernel: R13: ffff9e7c8d7ea800 R14: 0000000000201c2b
+R15: 000000008070ac00
+Jan 19 08:25:35 serv209 kernel: FS:  0000000000000000(0000)
+GS:ffff9e83cf080000(0000) knlGS:00000000000
+00000
+Jan 19 08:25:35 serv209 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+0000000080050033
+Jan 19 08:25:35 serv209 kernel: CR2: 0000000000000008 CR3: 000000083b610006
+CR4: 00000000003706e0
+Jan 19 08:25:35 serv209 kernel: DR0: 0000000000000000 DR1: 0000000000000000
+DR2: 0000000000000000
+Jan 19 08:25:35 serv209 kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0
+DR7: 0000000000000400
+Jan 19 08:25:35 serv209 kernel: Call Trace:
+Jan 19 08:25:35 serv209 kernel:  <TASK>
+Jan 19 08:25:35 serv209 kernel:  security_inode_free+0x31/0x70
+Jan 19 08:25:35 serv209 kernel:  __destroy_inode+0x71/0x180
+Jan 19 08:25:35 serv209 kernel:  destroy_inode+0x2d/0x80
+Jan 19 08:25:35 serv209 kernel:  prune_icache_sb+0x7c/0xc0
+Jan 19 08:25:35 serv209 kernel:  super_cache_scan+0x15e/0x1f0
+Jan 19 08:25:35 serv209 kernel:  do_shrink_slab+0x13e/0x2f0
+Jan 19 08:25:35 serv209 kernel:  shrink_slab+0x1f8/0x2a0
+Jan 19 08:25:35 serv209 kernel:  shrink_node+0x21c/0x720
+Jan 19 08:25:35 serv209 kernel:  balance_pgdat+0x313/0xa70
+Jan 19 08:25:35 serv209 kernel:  ? __schedule+0x37f/0x1290
+Jan 19 08:25:35 serv209 kernel:  ? get_nohz_timer_target+0x1c/0x1a0
+Jan 19 08:25:35 serv209 kernel:  kswapd+0x1fb/0x3c0
+Jan 19 08:25:35 serv209 kernel:  ? destroy_sched_domains_rcu+0x30/0x30
+Jan 19 08:25:35 serv209 kernel:  ? balance_pgdat+0xa70/0xa70
+Jan 19 08:25:35 serv209 kernel:  kthread+0xed/0x120
+Jan 19 08:25:35 serv209 kernel:  ? kthread_complete_and_exit+0x20/0x20
+Jan 19 08:25:35 serv209 kernel:  ret_from_fork+0x1f/0x30
+Jan 19 08:25:35 serv209 kernel:  </TASK>
+
+If selinux is not being used, it's... strange that we could have ended up in
+this path, since it requires inode->i_security being set and the LSM code
+deciding that selinux was enabled (and so it called
+selinux_inode_free_security).
+
+In any case, this is very clearly not an ext4 bug, so I'm going to pass this
+off to the linux-security-module list for them to investigate.  Without a
+reliable reproducer, though, there may not be much that any of us can do...
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
