@@ -2,101 +2,239 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4147674418
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Jan 2023 22:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47966747DB
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jan 2023 01:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjASVNM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Jan 2023 16:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S229447AbjATAJh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Jan 2023 19:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbjASVMj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 16:12:39 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF8549552
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 13:06:38 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id k1-20020a056830150100b006864d1cb279so1951171otp.5
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 13:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3FoRX2f/YZd1ew3w9a7uXRMrccel34cHi9ReaKIRWJg=;
-        b=oJOlW+iIdsgztiJbGIFj+Ooe2Z71Eij/ZHcbu3TSXSg6mQDzOU+7alzWESWWIVbDyU
-         xBJJ1tKToXA6l/al5COqFvmU3ZDh0ByU0i+gMdNbmfWyzaBvqpViLjVEx/ulV4kXFvkl
-         sM0ck5402dz7IhpBEbzh1Jts8GGfTpjZiCI6+MbbgbOHQC5PeTuPY1ht9Sv29qsP2V1j
-         ICY6lU93Y57QpcI5t1zi2A4lDpnjcSheF82Jq/sugTFJMlSUq4ms7Z60d6rSCQMCRl17
-         ysPD0FUAmHEfhFNbvpTg8NOUp1ndlXhe+LbTqvJXLUKkbwDZXWWYM14jxH1t0r7A1Nz5
-         vKcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FoRX2f/YZd1ew3w9a7uXRMrccel34cHi9ReaKIRWJg=;
-        b=EyiYm1jkz2f4FVwCluZRCOBgBnaqXCkda1aKuvVHGvhjzAgmpx2wd5zjLHYlySdrFA
-         NHlEZ50AWbIFw1ojuzIoe8iffNg4tb1DXfi5402Gu7GCLyPCU7zOWIUpkbVnQ1+LMn+C
-         w6aATG9jfRtCyHarf7TKbWsiJRAliFXWG/e00ydtI4LVh90vlsNqbxqmTnVmTG2ggngW
-         WAZret5WRURAV+hiRdtu/AnzlH7UlWuPx8SL1P8hCRcMHejLP7q5V5teWsVjhPF0CRbZ
-         ag45BcQhA0RRzBJAuujcLPP76TX+3Pw/CQ39juui5nTPnASwsUvbrCXMdhVjO0tzv7M6
-         mTTg==
-X-Gm-Message-State: AFqh2kppRTbeOIUzrxS6uCrwO7LTNKD6ryKImDykPjdt+UNXGchq+GI7
-        spYC5Zy3jEkmwo2yTMZYsi/5JOgL/xQIMM7HTYLPdf95zITnY3rn
-X-Google-Smtp-Source: AMrXdXvtQGM1RFZ5r34V3iH/NxtjsptBGyiUFXMhttSYYiPyjC01TVh6K9xCjDvKfOMl1ZDm6S6+fg63HRHNemCpw/o=
-X-Received: by 2002:a05:6830:54f:b0:677:2287:3c79 with SMTP id
- l15-20020a056830054f00b0067722873c79mr543874otb.104.1674162398194; Thu, 19
- Jan 2023 13:06:38 -0800 (PST)
+        with ESMTP id S229379AbjATAJg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Jan 2023 19:09:36 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB96DA25AD
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Jan 2023 16:09:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E5806CE25E5
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Jan 2023 00:09:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27510C433EF
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Jan 2023 00:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674173371;
+        bh=OjI+upvB+xdK/9pT790KyMj7CMTs0LWpcJMt3qFhIVM=;
+        h=From:To:Subject:Date:From;
+        b=j0yHKxoO6h9/uKfpot1n93aUfylOJMpUzNHQM86wYbvF7HVo2+DMmnZJ76WUTAZL1
+         i8lPvN4elQktbb8iCUzTm9GyWqQB2Z538j8AoI+raNSsbRn1zxeOHjjG4N7DlVN7zv
+         x1u7vRceBg92jFfGaErV7hL0+Hhgm8Vn8hT2EHWAc8UBIteLWgPXaP3n5DSVLpy6no
+         ck78nWHBLJ5htGMFmEB+GzRlUTGiecNVD0GJdm1buw0oIAzezd60J3smnFNcR0cJWd
+         xeu3RjRu5nVhfTJ0hk5jUIVsa+YsM9GjjjovfFC3p2bvy0mbPxsk7jMw4OUQKG00/C
+         C1Wmq9ca1Fjug==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [e2fsprogs PATCH] mk_hugefiles: simplify get_partition_start()
+Date:   Thu, 19 Jan 2023 16:09:21 -0800
+Message-Id: <20230120000921.76265-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Received: by 2002:ac9:6f8e:0:b0:49a:4a8c:dbca with HTTP; Thu, 19 Jan 2023
- 13:06:37 -0800 (PST)
-Reply-To: ab8111977@gmail.com
-From:   MS NADAGE LASSOU <nadagalassou3@gmail.com>
-Date:   Thu, 19 Jan 2023 22:06:37 +0100
-Message-ID: <CAAPPVT03RBU7FK7dyVL-0xSd_5rUAUo7NsLbSw1A8XTtGbvbng@mail.gmail.com>
-Subject: LETS JOIN HANDS FOR THIS ACHIEVEMENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,UNDISC_FREEM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:32d listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4998]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [nadagalassou3[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [ab8111977[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [nadagalassou3[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Greetings.
+From: Eric Biggers <ebiggers@google.com>
 
-I am Ms Nadage lassou,I have a business for our benefit.
-Thanks, i will send you the details once i hear from you.
-Regards.
-Ms Nadage Lassou
+search_sysfs_block() is causing -Wformat-truncation warnings.  These
+could be fixed by checking the return value of snprintf(), instead of
+doing buggy checks like 'strlen(p_de->d_name) > SYSFS_PATH_LEN -
+strlen(path) - 32', which has an integer underflow bug.
+
+However, the only purpose of search_sysfs_block() is to find the sysfs
+directory for a block device by device number.  That can trivially be
+done using /sys/dev/block/$major:$minor.  So just do that instead.  Also
+make get_partition_start() explicitly Linux-only, as it has never worked
+anywhere else.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ misc/mk_hugefiles.c | 131 +++-----------------------------------------
+ 1 file changed, 7 insertions(+), 124 deletions(-)
+
+diff --git a/misc/mk_hugefiles.c b/misc/mk_hugefiles.c
+index 0280b41e7..a7266c8a6 100644
+--- a/misc/mk_hugefiles.c
++++ b/misc/mk_hugefiles.c
+@@ -2,13 +2,8 @@
+  * mk_hugefiles.c -- create huge files
+  */
+ 
+-#define _XOPEN_SOURCE 600 /* for inclusion of PATH_MAX in Solaris */
+-#define _BSD_SOURCE	  /* for makedev() and major() */
+-#define _DEFAULT_SOURCE	  /* since glibc 2.20 _BSD_SOURCE is deprecated */
+-
+ #include "config.h"
+ #include <stdio.h>
+-#include <stdarg.h>
+ #include <string.h>
+ #include <strings.h>
+ #include <fcntl.h>
+@@ -68,141 +63,29 @@ static char *fn_buf;
+ static char *fn_numbuf;
+ int zero_hugefile = 1;
+ 
+-#define SYSFS_PATH_LEN 300
+-typedef char sysfs_path_t[SYSFS_PATH_LEN];
+-
+-#ifndef HAVE_SNPRINTF
+-/*
+- * We are very careful to avoid needing to worry about buffer
+- * overflows, so we don't really need to use snprintf() except as an
+- * additional safety check.  So if snprintf() is not present, it's
+- * safe to fall back to vsprintf().  This provides portability since
+- * vsprintf() is guaranteed by C89, while snprintf() is only
+- * guaranteed by C99 --- which for example, Microsoft Visual Studio
+- * has *still* not bothered to implement.  :-/  (Not that I expect
+- * mke2fs to be ported to MS Visual Studio any time soon, but
+- * libext2fs *does* get built on Microsoft platforms, and we might
+- * want to move this into libext2fs some day.)
+- */
+-static int my_snprintf(char *str, size_t size, const char *format, ...)
+-{
+-	va_list	ap;
+-	int ret;
+-
+-	va_start(ap, format);
+-	ret = vsprintf(str, format, ap);
+-	va_end(ap);
+-	return ret;
+-}
+-
+-#define snprintf my_snprintf
+-#endif
+-
+-/*
+- * Fall back to Linux's definitions of makedev and major are needed.
+- * The search_sysfs_block() function is highly unlikely to work on
+- * non-Linux systems anyway.
+- */
+-#ifndef makedev
+-#define makedev(maj, min) (((maj) << 8) + (min))
+-#endif
+-
+-static char *search_sysfs_block(dev_t devno, sysfs_path_t ret_path)
+-{
+-	struct dirent	*de, *p_de;
+-	DIR		*dir = NULL, *p_dir = NULL;
+-	FILE		*f;
+-	sysfs_path_t	path, p_path;
+-	unsigned int	major, minor;
+-	char		*ret = ret_path;
+-
+-	ret_path[0] = 0;
+-	if ((dir = opendir("/sys/block")) == NULL)
+-		return NULL;
+-	while ((de = readdir(dir)) != NULL) {
+-		if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") ||
+-		    strlen(de->d_name) > sizeof(path)-32)
+-			continue;
+-		snprintf(path, SYSFS_PATH_LEN,
+-			 "/sys/block/%s/dev", de->d_name);
+-		f = fopen(path, "r");
+-		if (f &&
+-		    (fscanf(f, "%u:%u", &major, &minor) == 2)) {
+-			fclose(f); f = NULL;
+-			if (makedev(major, minor) == devno) {
+-				snprintf(ret_path, SYSFS_PATH_LEN,
+-					 "/sys/block/%s", de->d_name);
+-				goto success;
+-			}
+-#ifdef major
+-			if (major(devno) != major)
+-				continue;
+-#endif
+-		}
+-		if (f)
+-			fclose(f);
+-
+-		snprintf(path, SYSFS_PATH_LEN, "/sys/block/%s", de->d_name);
+-
+-		if (p_dir)
+-			closedir(p_dir);
+-		if ((p_dir = opendir(path)) == NULL)
+-			continue;
+-		while ((p_de = readdir(p_dir)) != NULL) {
+-			if (!strcmp(p_de->d_name, ".") ||
+-			    !strcmp(p_de->d_name, "..") ||
+-			    (strlen(p_de->d_name) >
+-			     SYSFS_PATH_LEN - strlen(path) - 32))
+-				continue;
+-			snprintf(p_path, SYSFS_PATH_LEN, "%s/%s/dev",
+-				 path, p_de->d_name);
+-
+-			f = fopen(p_path, "r");
+-			if (f &&
+-			    (fscanf(f, "%u:%u", &major, &minor) == 2) &&
+-			    (((major << 8) + minor) == devno)) {
+-				fclose(f);
+-				snprintf(ret_path, SYSFS_PATH_LEN, "%s/%s",
+-					 path, p_de->d_name);
+-				goto success;
+-			}
+-			if (f)
+-				fclose(f);
+-		}
+-	}
+-	ret = NULL;
+-success:
+-	if (dir)
+-		closedir(dir);
+-	if (p_dir)
+-		closedir(p_dir);
+-	return ret;
+-}
+-
+ static blk64_t get_partition_start(const char *device_name)
+ {
++#ifdef __linux__
+ 	unsigned long long start;
+-	sysfs_path_t	path;
++	char		path[128];
+ 	struct stat	st;
+ 	FILE		*f;
+-	char		*cp;
+ 	int		n;
+ 
+ 	if ((stat(device_name, &st) < 0) || !S_ISBLK(st.st_mode))
+ 		return 0;
+ 
+-	cp = search_sysfs_block(st.st_rdev, path);
+-	if (!cp)
+-		return 0;
+-	if (strlen(path) > SYSFS_PATH_LEN - sizeof("/start"))
+-		return 0;
+-	strcat(path, "/start");
++	sprintf(path, "/sys/dev/block/%d:%d/start",
++		major(st.st_rdev), minor(st.st_rdev));
+ 	f = fopen(path, "r");
+ 	if (!f)
+ 		return 0;
+ 	n = fscanf(f, "%llu", &start);
+ 	fclose(f);
+ 	return (n == 1) ? start : 0;
++#else
++	return 0;
++#endif
+ }
+ 
+ static errcode_t create_directory(ext2_filsys fs, char *dir,
+
+base-commit: 6695555e50a374f897965300568253f242a0b13b
+-- 
+2.39.0
+
