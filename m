@@ -2,42 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39DE676962
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70E6676960
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjAUUhQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Jan 2023 15:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S229686AbjAUUhO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Jan 2023 15:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjAUUgt (ORCPT
+        with ESMTP id S230010AbjAUUgt (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD80B29400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAF629404
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:45 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8873D60B6F
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBF0960B7A
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D36C433A1;
-        Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 820D4C433A0
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1674333405;
-        bh=SBCJzKRGKr2mo1lvVTXZL+ohtZ1777FKKIEY4Px0uhE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BHs72LE4o1ibFawv7A/FhoCcxlwJ1R3iEZTIsZZdjVUX/ZTTFjIq6W3xNHyqiqmp0
-         n8WkiOtqi+pNVNpGI20MhmwFIQmTv8g6nvf4K6yM6HUnUZl+wAnFZ0pCCzsHGqAaVq
-         SwLwmWEBS4gGQPEg5c5ynmrMpDw/5+9R9qoT4emukMHfjthqw0SBxOXH/r5kmq6ec2
-         tOAqpUlQflwkcgqJyoat3iim5Tgy4uuEnTtYNc7LQnL9iJiJmxWLOt8atGpymiQ+o/
-         VITT1Ztj0uhpoeKWGojEO8gRiRO3XWorx+H9ruQ73+df1ccOhUXNFUKgglY2M1BDlC
-         1ER8YhRRDI8OA==
+        bh=oQmgzUdIgg73PPkYMSSJW+stji+THJwg5Hc1tvFGtRQ=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=KYR8tvYEsRdC/Z+h3m5wsozooMCuJ+GmPQbOoSO1xR3OmvI9qEheLI7iq+EmoAQyH
+         8zPTR0E8RZ+eOGG7HsjxkOtYIYg1jVaTmKBNraOezWXmfN+jqwt1To8yZa46evlviq
+         Vr+7jQWLy3vzNy6w7wyTiirp49DNYEgQBQdO63B2dHOr5UFnbrbPiRwIoGSjqubpEN
+         dvyZtpHbQaIBIBx8y//TeogBIG05/vSqFQhP1DFgUYCJp8QdloacBopjhNAC/9TNRG
+         tWFKAP2m7gfRIFrxGERTZcetSfHV1Dfm8kB+QKfDf5XxsLPhknhoi21WPjGa+qF7h6
+         ND3PbYIyugBzw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Cc:     Jeremy Bongio <bongiojp@gmail.com>,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: [PATCH 34/38] misc/tune2fs: fix setting fsuuid::fsu_len
-Date:   Sat, 21 Jan 2023 12:32:26 -0800
-Message-Id: <20230121203230.27624-35-ebiggers@kernel.org>
+Subject: [PATCH 35/38] misc/tune2fs: fix -Wunused-variable warnings in handle_fslabel()
+Date:   Sat, 21 Jan 2023 12:32:27 -0800
+Message-Id: <20230121203230.27624-36-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230121203230.27624-1-ebiggers@kernel.org>
 References: <20230121203230.27624-1-ebiggers@kernel.org>
@@ -54,36 +52,38 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Minus does not mean equals.
+These warnings show up in non-Linux builds.  To fix them, only declare
+local variables when they are needed.
 
-Besides fixing an obvious bug, this avoids the following compiler
-warning with clang -Wall:
+While we're here, also make handle_fslabel() static.
 
-tune2fs.c:3625:20: warning: expression result unused [-Wunused-value]
-                        fsuuid->fsu_len - UUID_SIZE;
-                        ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-
-Fixes: a83e199da0ca ("tune2fs: Add support for get/set UUID ioctls.")
-Reviewed-by: Jeremy Bongio <bongiojp@gmail.com>
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- misc/tune2fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ misc/tune2fs.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 088f87e53..7937b8b56 100644
+index 7937b8b56..d3258149e 100644
 --- a/misc/tune2fs.c
 +++ b/misc/tune2fs.c
-@@ -3622,7 +3622,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 		ret = -1;
- #ifdef __linux__
- 		if (fsuuid) {
--			fsuuid->fsu_len - UUID_SIZE;
-+			fsuuid->fsu_len = UUID_SIZE;
- 			fsuuid->fsu_flags = 0;
- 			memcpy(&fsuuid->fsu_uuid, new_uuid, UUID_SIZE);
- 			ret = ioctl(fd, EXT4_IOC_SETFSUUID, fsuuid);
+@@ -3082,14 +3082,15 @@ fs_update_journal_user(struct ext2_super_block *sb, __u8 old_uuid[UUID_SIZE])
+  *		1 on error
+  *		-1 when the old method should be used
+  */
+-int handle_fslabel(int setlabel) {
++static int handle_fslabel(int setlabel)
++{
++#ifdef __linux__
+ 	errcode_t ret;
+ 	int mnt_flags, fd;
+ 	char label[FSLABEL_MAX];
+ 	int maxlen = FSLABEL_MAX - 1;
+ 	char mntpt[PATH_MAX + 1];
+ 
+-#ifdef __linux__
+ 	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
+ 					  mntpt, sizeof(mntpt));
+ 	if (ret) {
 -- 
 2.39.0
 
