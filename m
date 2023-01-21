@@ -2,40 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8D2676964
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BA6676966
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbjAUUhS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Jan 2023 15:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        id S229687AbjAUUha (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Jan 2023 15:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjAUUgt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:49 -0500
+        with ESMTP id S230022AbjAUUgx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:53 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2208F29405
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F2829409
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:46 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E98E760ADD
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2D3EC4339C
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AE5E60B6C
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3D27C4339B;
+        Sat, 21 Jan 2023 20:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674333405;
-        bh=G0jzgh7IdyeVDxBwCIN9i7zDEFV94xVS5Dm7rVHXGvg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=DgIWQhX0aeqPT2Z52629tb6cjTmogpUQW4d0K7jr+2bQUKxa74nK+NdZ5rftILrWP
-         nQ4xvUY9gmknrHLnHB1fjAXJ2ScF2FzDew4byX+wr15Fgjqyub2dNJWWHJWeDDtuj7
-         WTL3OKqBf8PvcLJog+v8AHGPmVP1yzuY2/t/VmVXxDBt8377x3z0mDh2gA1J9DkQtQ
-         uGAbeG1T6hESgvMW8l/gH8IdDADhBjxSJOlVm81l3D7tXOo21fa/y5qIkMYqD3usio
-         hyWhl2cpcoj/OwBQZ2HbQ3cHiuX8092P9oRIHfx8yY3EnQum2Y1HXrVuSP7AToBzXE
-         r7f3QvjzU0QyA==
+        s=k20201202; t=1674333406;
+        bh=AnN2GfP9pe+y/8eQBQy8xcWtCw/5pKPMCwPQ4aCKKko=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rBo37R+tumOJ7TCJmhI8k+XiLQ8zXEK0xWskVtMJroc9vog+RuAzMCwGVU71Unn9i
+         mHarNFBjd18SLi5KiV1FB39izahaMLFFZ538FPK9yVYTmeZ5E5uJvx9jtE/oIF1BI3
+         lH4cl7tv0gdPdCQPVSmnUAHO8alIhpkpLFhkk98Iil1v/iTc/r2ewwJmNorgnY4cq7
+         6nhH+sZzUryU32lIQHXav+OpCq30zJevYzb8dJVfqXBZSGbm4QwB7/0VND9TEz3XNC
+         fCfuPs4d6LrHBEDQGBXTbD80bs7O6Ke+Qa8COIGEB+7G4AM+XByq3qbHvTO19NWMvy
+         znULM0wUNzF/A==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 36/38] misc/util.c: enable MinGW alarm() when building for Windows
-Date:   Sat, 21 Jan 2023 12:32:28 -0800
-Message-Id: <20230121203230.27624-37-ebiggers@kernel.org>
+Cc:     Lukas Czerner <lczerner@redhat.com>
+Subject: [PATCH 37/38] resize2fs: remove unused variable from adjust_superblock()
+Date:   Sat, 21 Jan 2023 12:32:29 -0800
+Message-Id: <20230121203230.27624-38-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230121203230.27624-1-ebiggers@kernel.org>
 References: <20230121203230.27624-1-ebiggers@kernel.org>
@@ -52,47 +53,49 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-To compile for Windows, this file needs MinGW's implementation of
-alarm().  To expose that definition, some macros must be defined before
-including the system headers.  This was done in Android.bp, but it was
-not done in the autotools-based build system.  Define these macros in
-the source file itself so that all build systems work.
+In adjust_superblock(), the 'group_block' variable is declared and set,
+but it is never actually used.  Remove it.
 
+This addresses the following compiler warning with clang -Wall:
+
+resize2fs.c:1119:11: warning: variable 'group_block' set but not used [-Wunused-but-set-variable]
+        blk64_t         group_block;
+                        ^
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- misc/Android.bp | 2 --
- misc/util.c     | 5 +++++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ resize/resize2fs.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/misc/Android.bp b/misc/Android.bp
-index 2baeac2ad..2b1620ac6 100644
---- a/misc/Android.bp
-+++ b/misc/Android.bp
-@@ -83,8 +83,6 @@ cc_binary {
-         windows: {
-             include_dirs: [ "external/e2fsprogs/include/mingw" ],
-             cflags: [
--                "-D_POSIX",
--                "-D__USE_MINGW_ALARM",
-                 // mke2fs.c has a warning from gcc which cannot be suppressed:
-                 // passing argument 3 of 'ext2fs_get_device_size' from
-                 // incompatible pointer type
-diff --git a/misc/util.c b/misc/util.c
-index e84ebab5b..3e83169f1 100644
---- a/misc/util.c
-+++ b/misc/util.c
-@@ -16,6 +16,11 @@
- #define _LARGEFILE64_SOURCE
- #endif
+diff --git a/resize/resize2fs.c b/resize/resize2fs.c
+index 243cd777d..5eeb7d446 100644
+--- a/resize/resize2fs.c
++++ b/resize/resize2fs.c
+@@ -1116,7 +1116,6 @@ static errcode_t adjust_superblock(ext2_resize_t rfs, blk64_t new_size)
+ 	ext2_filsys	fs = rfs->new_fs;
+ 	int		adj = 0;
+ 	errcode_t	retval;
+-	blk64_t		group_block;
+ 	unsigned long	i;
+ 	unsigned long	max_group;
  
-+#ifdef _WIN32
-+#define _POSIX
-+#define __USE_MINGW_ALARM
-+#endif
-+
- #include "config.h"
- #include <fcntl.h>
- #include <setjmp.h>
+@@ -1181,8 +1180,6 @@ static errcode_t adjust_superblock(ext2_resize_t rfs, blk64_t new_size)
+ 		goto errout;
+ 
+ 	memset(rfs->itable_buf, 0, fs->blocksize * fs->inode_blocks_per_group);
+-	group_block = ext2fs_group_first_block2(fs,
+-						rfs->old_fs->group_desc_count);
+ 	adj = rfs->old_fs->group_desc_count;
+ 	max_group = fs->group_desc_count - adj;
+ 	if (rfs->progress) {
+@@ -1209,7 +1206,6 @@ static errcode_t adjust_superblock(ext2_resize_t rfs, blk64_t new_size)
+ 			if (retval)
+ 				goto errout;
+ 		}
+-		group_block += fs->super->s_blocks_per_group;
+ 	}
+ 	io_channel_flush(fs->io);
+ 	retval = 0;
 -- 
 2.39.0
 
