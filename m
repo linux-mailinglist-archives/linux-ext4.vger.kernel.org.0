@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56907676943
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D738676947
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbjAUUgn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Jan 2023 15:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
+        id S229992AbjAUUgt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Jan 2023 15:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjAUUgm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:42 -0500
+        with ESMTP id S229687AbjAUUgn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:43 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CB829143
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1369F28D32
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A81AD60B6C
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D930E60B6E
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70472C4339B
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0FEFC4339E
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1674333400;
-        bh=6vaEcMU11C00JgLvJinTeK77gDvStZvOlqFTbREyXSM=;
+        bh=cetx1mAkAWZjY6IHf+Af5VO4OdrotI1R9aiRjV/sLsM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=JCzwUxp8O1RrY0XzQ5C/7gJrIHHCf8jyBgR90U1nLLGr8upbLKds6GGt7zg+Slrsc
-         WlOdC6xvOOw4QnSMb3Wrjb30k/6SvPRJ3N2wMpmolR2sihQ31MVwqjSpUYvQQ63cX1
-         0be6GKhf3pKlZpTmT2azYEP0ZDp7YRLZRJYovJook9uQo1M15AqeOquBxcos85oJ8i
-         RACvb+k4fmD2IE/so4YHFLtfMUKVzWQit/NuwI/lJyG7RZN4elkpbqNSHx+P6RIUgH
-         INHixUNzYuDdGAC9CK8n1w3rHyGqHXqvaFY/+wP9snUceth1PtgaIsJFnbivv41RG5
-         UcB4sxFbD51Hw==
+        b=merEyI3StstuHSbg9s1J8ptsLAuRAdufsgHoW10gKV+ioKSpGPZrMckBJA+AQG908
+         W4WfkYC6Itv3EY3xXoILRllRSce+YhZ2LKl6XsFJeyJCr06XbPlyWW6zzC5YLTWL7W
+         uyooZNRLuNTOnUYcERQYGdf/PFEowCuLsAKMpjoOHtOuJbyKAnbI6yXKCagVnH5U5u
+         IW7fZA7D/+lBEO+kgF0GuSp/UJGoXwgIq5AeIr2uHrn5fcDKGRvH3Blx+aBn3GQHan
+         UI/dTer4lD+Tmx2bDYu9l+uG48Zgl26A7wUYo63rWxsHe0Ht5K5QtLlD4aNniDx+Ho
+         QAzs99yNlVKyQ==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 11/38] lib/blkid: suppress -Wstringop-truncation warning in blkid_strndup()
-Date:   Sat, 21 Jan 2023 12:32:03 -0800
-Message-Id: <20230121203230.27624-12-ebiggers@kernel.org>
+Subject: [PATCH 12/38] lib/e2p: fix a -Wunused-variable warning in getflags()
+Date:   Sat, 21 Jan 2023 12:32:04 -0800
+Message-Id: <20230121203230.27624-13-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230121203230.27624-1-ebiggers@kernel.org>
 References: <20230121203230.27624-1-ebiggers@kernel.org>
@@ -52,44 +52,35 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Unfortunately, gcc gets confused by blkid_strndup() and incorrectly
-thinks the destination string is not being null-terminated.  This is
-part of -Wstringop-truncation, enabled automatically by -Wall in gcc 8
-and later.  Let's just suppress this warning here.
+This affected Windows builds.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- lib/blkid/devno.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ lib/e2p/getflags.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/blkid/devno.c b/lib/blkid/devno.c
-index 34ceb3c48..b1cadc9df 100644
---- a/lib/blkid/devno.c
-+++ b/lib/blkid/devno.c
-@@ -37,6 +37,12 @@
+diff --git a/lib/e2p/getflags.c b/lib/e2p/getflags.c
+index e4e2ad735..6708cd68b 100644
+--- a/lib/e2p/getflags.c
++++ b/lib/e2p/getflags.c
+@@ -30,8 +30,8 @@
  
- #include "blkidP.h"
- 
-+#if defined(__GNUC__) && __GNUC__ >= 8
-+/* gcc incorrectly thinks the destination string is not being null-terminated */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wstringop-truncation"
-+#endif
-+
- char *blkid_strndup(const char *s, int length)
+ int getflags (int fd, unsigned long * flags)
  {
- 	char *ret;
-@@ -55,6 +61,10 @@ char *blkid_strndup(const char *s, int length)
- 	return ret;
- }
+-	struct stat buf;
+ #if HAVE_STAT_FLAGS
++	struct stat buf;
  
-+#if defined(__GNUC__) && __GNUC__ >= 8
-+#pragma GCC diagnostic pop
-+#endif
-+
- char *blkid_strdup(const char *s)
- {
- 	return blkid_strndup(s, 0);
+ 	if (fstat (fd, &buf) == -1)
+ 		return -1;
+@@ -53,6 +53,7 @@ int getflags (int fd, unsigned long * flags)
+ 	return 0;
+ #else
+ #if HAVE_EXT2_IOCTLS
++	struct stat buf;
+ 	int r, f;
+ 
+ 	if (!fstat(fd, &buf) &&
 -- 
 2.39.0
 
