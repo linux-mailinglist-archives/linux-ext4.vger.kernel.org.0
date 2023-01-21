@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51738676948
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56907676943
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 21:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjAUUgt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Jan 2023 15:36:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S229769AbjAUUgn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Jan 2023 15:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjAUUgn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1528829147
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:42 -0800 (PST)
+        with ESMTP id S229706AbjAUUgm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 15:36:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CB829143
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 12:36:41 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E1ED260B72
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A81AD60B6C
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F82CC433A8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70472C4339B
         for <linux-ext4@vger.kernel.org>; Sat, 21 Jan 2023 20:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1674333400;
-        bh=U7wI4qHzRE7/py31orTHfxUE3tXqYIJBmnHYRx8/5Ac=;
+        bh=6vaEcMU11C00JgLvJinTeK77gDvStZvOlqFTbREyXSM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=jJ7MmG54Gh4jMe3/+sOba4oPma8Y3PlfXtkIIpi50jgXko230QTGP5NXMmFHyWnkL
-         BV/DYbFxRGH46Oo7WGctwKH8QwFsP5511vYGL9Q4x+I/oqWlgsrtB/LRYXhBRm1cnt
-         pvHBwmJ9dWWi897+4Ad5vCOrbdukWCicJaM6mkCsIJJ4z15/kgbGlYcJ+5dVSTSJj5
-         uZGMiSLDnKd5D5TUAGUV96vrf8OM1gqQiy/d91Zc3+bQYJ4mv1vykR1MtOpqkisp7Q
-         cvjaBs6dNs25oJ4vMZRa/aKk3nV6dYxrKZNCy2E4CLk9A9WhP5JgPZ6TD4noGR5SMe
-         wkQuoSSXuUgmw==
+        b=JCzwUxp8O1RrY0XzQ5C/7gJrIHHCf8jyBgR90U1nLLGr8upbLKds6GGt7zg+Slrsc
+         WlOdC6xvOOw4QnSMb3Wrjb30k/6SvPRJ3N2wMpmolR2sihQ31MVwqjSpUYvQQ63cX1
+         0be6GKhf3pKlZpTmT2azYEP0ZDp7YRLZRJYovJook9uQo1M15AqeOquBxcos85oJ8i
+         RACvb+k4fmD2IE/so4YHFLtfMUKVzWQit/NuwI/lJyG7RZN4elkpbqNSHx+P6RIUgH
+         INHixUNzYuDdGAC9CK8n1w3rHyGqHXqvaFY/+wP9snUceth1PtgaIsJFnbivv41RG5
+         UcB4sxFbD51Hw==
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 10/38] lib/blkid: suppress -Wunused-result warning in blkid_flush_cache()
-Date:   Sat, 21 Jan 2023 12:32:02 -0800
-Message-Id: <20230121203230.27624-11-ebiggers@kernel.org>
+Subject: [PATCH 11/38] lib/blkid: suppress -Wstringop-truncation warning in blkid_strndup()
+Date:   Sat, 21 Jan 2023 12:32:03 -0800
+Message-Id: <20230121203230.27624-12-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230121203230.27624-1-ebiggers@kernel.org>
 References: <20230121203230.27624-1-ebiggers@kernel.org>
@@ -52,37 +52,44 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-When _FORTIFY_SOURCE is defined, glibc annotates link() with the
-warn_unused_result function attribute.  With gcc, that makes
-'(void) link()' cause a -Wunused-result warning, despite the explicit
-cast to void.  That's annoying, since the use case in lib/blkid/save.c
-is legitimate (opportunistic backup).  So let's suppress this warning.
+Unfortunately, gcc gets confused by blkid_strndup() and incorrectly
+thinks the destination string is not being null-terminated.  This is
+part of -Wstringop-truncation, enabled automatically by -Wall in gcc 8
+and later.  Let's just suppress this warning here.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- lib/blkid/save.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ lib/blkid/devno.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/lib/blkid/save.c b/lib/blkid/save.c
-index 036f07a4a..6f4499cfd 100644
---- a/lib/blkid/save.c
-+++ b/lib/blkid/save.c
-@@ -154,7 +154,15 @@ int blkid_flush_cache(blkid_cache cache)
- 			if (backup) {
- 				sprintf(backup, "%s.old", filename);
- 				unlink(backup);
-+#if defined(__GNUC__) && __GNUC__ >= 5
-+/* explicit (void) cast is not enough with glibc and _FORTIFY_SOURCE */
+diff --git a/lib/blkid/devno.c b/lib/blkid/devno.c
+index 34ceb3c48..b1cadc9df 100644
+--- a/lib/blkid/devno.c
++++ b/lib/blkid/devno.c
+@@ -37,6 +37,12 @@
+ 
+ #include "blkidP.h"
+ 
++#if defined(__GNUC__) && __GNUC__ >= 8
++/* gcc incorrectly thinks the destination string is not being null-terminated */
 +#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wunused-result"
++#pragma GCC diagnostic ignored "-Wstringop-truncation"
 +#endif
- 				(void) link(filename, backup);
-+#if defined(__GNUC__) && __GNUC__ >= 5
++
+ char *blkid_strndup(const char *s, int length)
+ {
+ 	char *ret;
+@@ -55,6 +61,10 @@ char *blkid_strndup(const char *s, int length)
+ 	return ret;
+ }
+ 
++#if defined(__GNUC__) && __GNUC__ >= 8
 +#pragma GCC diagnostic pop
 +#endif
- 				free(backup);
- 			}
- 			if (rename(opened, filename) < 0)
++
+ char *blkid_strdup(const char *s)
+ {
+ 	return blkid_strndup(s, 0);
 -- 
 2.39.0
 
