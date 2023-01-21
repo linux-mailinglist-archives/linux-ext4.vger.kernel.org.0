@@ -2,186 +2,371 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ED967661A
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 12:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D05067666E
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Jan 2023 14:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbjAULxY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Jan 2023 06:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S229728AbjAUNIB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Jan 2023 08:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjAULxX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 06:53:23 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184842BEC3;
-        Sat, 21 Jan 2023 03:53:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674302002; x=1705838002;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YAXz73bfRzC4TRnCjnoOuIBuHFdhFbzfUfvKWYHlwQM=;
-  b=jz7ixWo7douEGUfTWgQPm4ABzJYu7JsqXiXK9DRzpPJ8spFQVrk/K2um
-   4HxFSOSOWhMlGzWuUMgbwqRyAtxZ28Lx8viUsZISv4SbKdjDF2MXe4423
-   4XqWHod1NZQjWA+szShmtRstY0SYoWeqbjN01qRczpd2O2iT8jXLStdKA
-   Imac2OUf9+u+uOLJQ/9LJZTSwosVUMI8uAqBKB0y5G/UIGcKAEW06Kdfs
-   ZJPm9EBVDxdWJDl8vwNVfK4axY+h+rpAXzaeZofNDsiJX9R8Gi4N82a4J
-   6DGLR7HN5Djsf7WEc5yhJHC4B2DKI+OKwMPCK5oDKzWnn6vYeTGD/VlAQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10596"; a="309353720"
-X-IronPort-AV: E=Sophos;i="5.97,235,1669104000"; 
-   d="scan'208";a="309353720"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2023 03:53:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10596"; a="610768753"
-X-IronPort-AV: E=Sophos;i="5.97,235,1669104000"; 
-   d="scan'208";a="610768753"
-Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 21 Jan 2023 03:53:17 -0800
-Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pJCQv-00041S-0Y;
-        Sat, 21 Jan 2023 11:53:17 +0000
-Date:   Sat, 21 Jan 2023 19:52:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 7/7] mm: return an ERR_PTR from __filemap_get_folio
-Message-ID: <202301211944.5T9l1RgA-lkp@intel.com>
-References: <20230121065755.1140136-8-hch@lst.de>
+        with ESMTP id S229890AbjAUNIA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Jan 2023 08:08:00 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB8B3EC48;
+        Sat, 21 Jan 2023 05:07:41 -0800 (PST)
+Received: from [2a02:8108:963f:de38:4bc7:2566:28bd:b73c]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1pJDas-0001lm-Rm; Sat, 21 Jan 2023 14:07:38 +0100
+Message-ID: <1da76c53-c88b-1e80-edd7-21ffa89a7b1f@leemhuis.info>
+Date:   Sat, 21 Jan 2023 14:07:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230121065755.1140136-8-hch@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: EXT4 IOPS degradation in 5.10 compared to 5.4
+Content-Language: en-US, de-DE
+To:     Jan Kara <jack@suse.cz>, "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abuehaze@amazon.com
+References: <03d52010-06a8-9bff-0565-b698b48850a9@amazon.com>
+ <20230112113820.hjwvieq3ucbwreql@quack3>
+ <1cfef086-b3c1-6607-9328-b1bf70896ce4@amazon.com>
+ <c166a551-8e4a-b68e-cb7f-74b911379c49@amazon.com>
+ <20230119151518.h3koyxs6tsok72zs@quack3>
+From:   "Linux kernel regression tracking (#update)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20230119151518.h3koyxs6tsok72zs@quack3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1674306461;218ac18f;
+X-HE-SMSGID: 1pJDas-0001lm-Rm
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Christoph,
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-I love your patch! Perhaps something to improve:
+On 19.01.23 16:15, Jan Kara wrote:
+> Hello!
+> 
+> On Wed 18-01-23 18:48:10, Bhatnagar, Rishabh wrote:
+>> On 1/13/23 2:13 PM, Bhatnagar, Rishabh wrote:
+>>>
+>>> On 1/12/23 3:38 AM, Jan Kara wrote:
+>>>> CAUTION: This email originated from outside of the organization. Do
+>>>> not click links or open attachments unless you can confirm the
+>>>> sender and know the content is safe.
+>>>>
+>>>>
+>>>>
+>>>> Hi!
+>>>>
+>>>> On Wed 11-01-23 18:06:39, Bhatnagar, Rishabh wrote:
+>>>>> We have been seeing a consistent 3% degradation in IOPS score
+>>>>> between 5.4
+>>>>> and 5.10 stable kernels while running fio tests.
+>>>>>
+>>>>> I'm running test case on m6g.8xlarge AWS instances using arm64.
+>>>>> The test
+>>>>> involves:
+>>>>>
+>>>>> 1. Creating 100GB volume with IO1 500 iops. Attaching it to the
+>>>>> instance.
+>>>>>
+>>>>> 2. Setup and mount fs:
+>>>>>
+>>>>> mke2fs -m 1 -t ext4 -b 4096 -L /mnt /dev/nvme1n1
+>>>>> mount -t ext4 -o noatime,nodiratime,data=ordered /dev/nvme1n1 /mnt
+>>>>>
+>>>>> 3. Install fio package and run following test:
+>>>>> (running 16 threads doing random buffered 16kb writes on a file.
+>>>>> ioengine=psync, runtime=60secs)
+>>>>>
+>>>>> jobs=16
+>>>>> blocksize="16k"
+>>>>> filesize=1000000
+>>>>>
+>>>>> if [[ -n $1 ]]; then jobs=$1; fi
+>>>>> if [[ -n $2 ]]; then blocksize=$2; fi
+>>>>>
+>>>>> /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
+>>>>> --ioengine=psync --buffered=1 --bs=${blocksize} \
+>>>>>          --max-jobs=${jobs} --numjobs=${jobs} --runtime=30 --thread \
+>>>>>          --filename=file0 --filesize=${filesize} \
+>>>>>          --fsync=1 --group_reporting --create_only=1 > /dev/null
+>>>>>
+>>>>> sudo echo 1 > /proc/sys/vm/drop_caches
+>>>>>
+>>>>> set -x
+>>>>> echo "Running with jobs=${jobs} filesize=${filesize}
+>>>>> blocksize=${blocksize}"
+>>>>> /usr/bin/fio --name=fio-test --directory=/mnt --rw=randwrite
+>>>>> --ioengine=psync --buffered=1 --bs=${blocksize} \
+>>>>>          --max-jobs=${jobs} --numjobs=${jobs} --runtime=60 --thread \
+>>>>>          --filename=file0 --filesize=${filesize} \
+>>>>>          --fsync=1 --group_reporting --time_based
+>>>>>
+>>>>> After doing some kernel bisecting between we were able to pinpoint this
+>>>>> commit that drops the iops score by 10~15 points (~3%).
+>>>>> ext4: avoid unnecessary transaction starts during writeback
+>>>>> (6b8ed62008a49751fc71fefd2a4f89202a7c2d4d)
+>>>>>
+>>>>> We see higher iops/bw/total io after reverting the commit
+>>>>> compared to base
+>>>>> 5.10 kernel.
+>>>>> Although the average clat is higher after reverting the commit
+>>>>> the higher bw
+>>>>> drives the iops score higher as seen in below fio output.
+>>>> I expect the difference is somewhere in waiting for the journal. Can you
+>>>> just check whether there's a difference if you use --fdatasync=1
+>>>> instead of
+>>>> --fsync=1? With this workload that should avoid waiting for the journal
+>>>> because the only metadata updates are mtime timestamps in the inode.
+>>> There is a difference of 5% with and with the commit if i change this to
+>>> fdatasync=1.
+>>>>> Fio output (5.10.162):
+>>>>> write: io=431280KB, bw=7186.3KB/s, iops=449, runt= 60015msec
+>>>>> clat (usec): min=6, max=25942, avg=267.76,stdev=1604.25
+>>>>> lat (usec): min=6, max=25943, avg=267.93,stdev=1604.25
+>>>>> clat percentiles (usec):
+>>>>> | 1.00th=[ 9], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24]
+>>>>> | 30.00th=[ 34], 40.00th=[ 45], 50.00th=[ 58], 60.00th=[ 70],
+>>>>> | 70.00th=[ 81], 80.00th=[ 94], 90.00th=[ 107], 95.00th=[ 114],
+>>>>> | 99.00th=[10048], 99.50th=[14016], 99.90th=[20096], 99.95th=[21888],
+>>>>> | 99.99th=[24448]
+>>>>> lat (usec) : 10=3.46%, 20=12.54%, 50=26.66%, 100=41.16%, 250=13.64%
+>>>>> lat (usec) : 500=0.02%, 750=0.03%, 1000=0.01%
+>>>>> lat (msec) : 2=0.23%, 4=0.50%, 10=0.73%, 20=0.91%, 50=0.12%
+>>>>> cpu : usr=0.02%, sys=0.42%, ctx=299540, majf=0, minf=0
+>>>>> IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%,
+>>>>>> =64=0.0%
+>>>>> submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>>>>> complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%,
+>>>>>> =64=0.0%
+>>>>> issued : total=r=0/w=26955/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+>>>>> latency : target=0, window=0, percentile=100.00%, depth=1
+>>>>> Run status group 0 (all jobs):
+>>>>> WRITE: io=431280KB, aggrb=7186KB/s, minb=7186KB/s, maxb=7186KB/s,
+>>>>> mint=60015msec, maxt=60015msec
+>>>>> Disk stats (read/write):
+>>>>> nvme1n1: ios=0/30627, merge=0/2125, ticks=0/410990, in_queue=410990,
+>>>>> util=99.94%
+>>>>>
+>>>>> Fio output (5.10.162 with revert):
+>>>>> write: io=441920KB, bw=7363.7KB/s, iops=460, runt= 60014msec
+>>>>> clat (usec): min=6, max=35768, avg=289.09, stdev=1736.62
+>>>>> lat (usec): min=6, max=35768, avg=289.28,stdev=1736.62
+>>>>> clat percentiles (usec):
+>>>>> | 1.00th=[ 8], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 24],
+>>>>> | 30.00th=[ 36], 40.00th=[ 46], 50.00th=[ 59], 60.00th=[ 71],
+>>>>> | 70.00th=[ 83], 80.00th=[ 97], 90.00th=[ 110], 95.00th=[ 117],
+>>>>> | 99.00th=[10048], 99.50th=[14144], 99.90th=[21632], 99.95th=[25984],
+>>>>> | 99.99th=[28288]
+>>>>> lat (usec) : 10=4.13%, 20=11.67%, 50=26.59%, 100=39.57%, 250=15.28%
+>>>>> lat (usec) : 500=0.03%, 750=0.03%, 1000=0.03%
+>>>>> lat (msec) : 2=0.20%, 4=0.64%, 10=0.80%, 20=0.86%, 50=0.18%
+>>>>> cpu : usr=0.01%, sys=0.43%, ctx=313909, majf=0, minf=0
+>>>>> IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%,
+>>>>>> =64=0.0%
+>>>>> submit : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>>>>> complete : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%,
+>>>>>> =64=0.0%
+>>>>> issued : total=r=0/w=27620/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+>>>>> latency : target=0, window=0, percentile=100.00%, depth=1
+>>>>> Run status group 0 (all jobs):
+>>>>> WRITE: io=441920KB, aggrb=7363KB/s, minb=7363KB/s, maxb=7363KB/s,
+>>>>> mint=60014msec, maxt=60014msec
+>>>>> Disk stats (read/write):
+>>>>> nvme1n1: ios=0/31549, merge=0/2348, ticks=0/409221, in_queue=409221,
+>>>>> util=99.88%
+>>>>>
+>>>>>
+>>>>> Also i looked ext4_writepages latency which increases when the
+>>>>> commit is
+>>>>> reverted. (This makes sense since the commit avoids unnecessary
+>>>>> transactions).
+>>>>>
+>>>>> ./funclatency ext4_writepages -->(5.10.162)
+>>>>> avg = 7734912 nsecs, total: 134131121171 nsecs, count: 17341
+>>>>>
+>>>>> ./funclatency ext4_writepages -->(5.10.162 with revert)
+>>>>> avg = 9036068 nsecs, total: 168956404886 nsecs, count: 18698
+>>>>>
+>>>>>
+>>>>> Looking at the journal transaction data I can see that the average
+>>>>> transaction commit time decreases after reverting the commit.
+>>>>> This probably helps in the IOPS score.
+>>>> So what the workload is doing is:
+>>>> write()
+>>>>    inode lock
+>>>>    dirty 16k of page cache
+>>>>    dirty inode i_mtime
+>>>>    inode unlock
+>>>> fsync()
+>>>>    walk all inode pages, write dirty ones
+>>>>    wait for all pages under writeback in the inode to complete IO
+>>>>    force transaction commit and wait for it
+>>>>
+>>>> Now this has the best throughput (and the worst latency) if all 16
+>>>> processes work in lockstep - i.e., like:
+>>>>
+>>>>    task1         task2           task3 ...
+>>>>    write()
+>>>>                  write()
+>>>>                                  write()
+>>>>    fsync()
+>>>>                  fsync()
+>>>>                                  fsync()
+>>>>
+>>>> because in that case we writeout all dirty pages from 16 processes
+>>>> in one
+>>>> sweep together and also we accumulate 16 mtime updates in single
+>>>> transaction commit.
+>>>>
+>>>> Now I suspect the commit you've identified leads to less synchronization
+>>>> between the processes and thus in less batching happening. In particular
+>>>> before the commit we've called mpage_prepare_extent_to_map() twice
+>>>> and the
+>>>> second invocation starts at where the first invocation saw last
+>>>> dirty page.
+>>>> So it potentially additionally writes newly dirtied pages beyond
+>>>> that place
+>>>> and that effectively synchronizes processes more.
+>>>>
+>>>> To confirm the theory, it might be interesting to gather a histogram
+>>>> of a
+>>>> number of pages written back by ext4_writepages() call with /
+>>>> without the
+>>>> commit.
+>>>>
+>>>> Honza
+>>>> -- 
+>>>> Jan Kara <jack@suse.com>
+>>>> SUSE Labs, CR
+>>>
+>>> Hi Jan
+>>>
+>>> I collected some data w.r.t to number of pages being written by
+>>> ext4_writepages. What you pointed out seems to be correct.
+>>> Without the commit I see more batching (more writeback count from 4-20
+>>> pages)happening compared to with the commit.
+>>>
+>>> Without the commit (reverted):
+>>>
+>>> [0-1]   —>  4246
+>>> [2-3]   —>  312
+>>> [4-5]   —>  20836
+>>> [6-7]   —>  205
+>>> [8-9]   —>  895
+>>> [10-11] —>  56
+>>> [12-13] —>  422
+>>> [14-15] —>  62
+>>> [16-17] —>  234
+>>> [18-19] —>  66
+>>> [20-21] —>  77
+>>> [22-23] —>  9
+>>> [24-25] —>  26
+>>> [26-27] —>  1
+>>> [28-29] —>  13
+>>>
+>>> Average page count : 3.9194
+>>>
+>>>
+>>> With the commit:
+>>>
+>>> [0-1]   —> 1635
+>>> [2-3]   —> 123
+>>> [4-5]   —> 24302
+>>> [6-7]   —> 38
+>>> [8-9]   —> 604
+>>> [10-11] —> 19
+>>> [12-13] —> 123
+>>> [14-15] —> 12
+>>> [16-17] —> 24
+>>> [18-19] —> 3
+>>> [20-21] —> 8
+>>> [22-23] —> 1
+>>> [24-25] —> 3
+>>> [26-27] —> 0
+>>> [28-29] —> 1
+>>>
+>>> Average page count : 3.9184
+>>>
+>>> Also looking at journal data I see that without the commit we have more
+>>> handles per journal transaction:
+>>>
+>>> Without the commit:
+>>> cat /proc/fs/jbd2/nvme1n1-8/info
+>>> 2092 transactions (2091 requested), each up to 8192 blocks
+>>> average:
+>>> 0ms waiting for transaction
+>>> 0ms request delay
+>>> 20ms running transaction
+>>> 0ms transaction was being locked
+>>> 0ms flushing data (in ordered mode)
+>>> 20ms logging transaction
+>>> 15981us average transaction commit time
+>>> 67 handles per transaction
+>>> 1 blocks per transaction
+>>> 2 logged blocks per transaction
+>>>
+>>> With the commit:
+>>> cat /proc/fs/jbd2/nvme1n1-8/info
+>>> 2143 transactions (2143 requested), each up to 8192 blocks
+>>> average:
+>>> 0ms waiting for transaction
+>>> 0ms request delay
+>>> 0ms running transaction
+>>> 0ms transaction was being locked
+>>> 0ms flushing data (in ordered mode)
+>>> 20ms logging transaction
+>>> 20731us average transaction commit time
+>>> 51 handles per transaction
+>>> 1 blocks per transaction
+>>> 3 logged blocks per transaction
+>>
+>> Gentle reminder.
+>>
+>> Any thoughts on this data? Is there a usecase where this commit brings
+>> benefits that are worth considering if we decide to revert this?
+> 
+> Yes. This change was actually added because it led to significant
+> improvement for workloads where one process was just overwriting allocated
+> file (so it didn't need to start a transaction in ext4_writepages()) while
+> other processes were creating load on the journal (so starting a
+> transaction was actually rather expensive). So I don't think reverting this
+> commit to re-introduce more synchronization on the journal into
+> ext4_writepages() is actually a good tradeoff.
+> 
+> I'm trying to think if we could somehow improve the performance of your
+> workload but it's always going to be a latency vs throughput tradeoff so
+> different people will want different behavior. Maybe some fsync batching
+> but that is more of an research project than an easy fix.
 
-[auto build test WARNING on next-20230120]
-[cannot apply to akpm-mm/mm-everything tytso-ext4/dev kdave/for-next xfs-linux/for-next konis-nilfs2/upstream linus/master v6.2-rc4 v6.2-rc3 v6.2-rc2 v6.2-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thx for this. In that case I'll move this issue to the list of
+regression on the backburner -- and likely will remove it in a few
+months while reminding everyone a final time about it. Sure, in an ideal
+world this would be fixed, but tradeoffs like "latency vs throughput"
+are always tricky -- and if this is only noticed now it's likely not
+that common.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christoph-Hellwig/mm-make-mapping_get_entry-available-outside-of-filemap-c/20230121-155847
-patch link:    https://lore.kernel.org/r/20230121065755.1140136-8-hch%40lst.de
-patch subject: [PATCH 7/7] mm: return an ERR_PTR from __filemap_get_folio
-config: riscv-randconfig-r013-20230119 (https://download.01.org/0day-ci/archive/20230121/202301211944.5T9l1RgA-lkp@intel.com/config)
-compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 4196ca3278f78c6e19246e54ab0ecb364e37d66a)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install riscv cross compiling tool for clang build
-        # apt-get install binutils-riscv-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/3c8a98fd03b82ace84668b3f8bb48d48e9f34af2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Christoph-Hellwig/mm-make-mapping_get_entry-available-outside-of-filemap-c/20230121-155847
-        git checkout 3c8a98fd03b82ace84668b3f8bb48d48e9f34af2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash fs/iomap/
+#regzbot title: ext4: 3% degradation in IOPS score, likely due to a
+change that influences latency vs throughput
+#regzbot backburner: latency vs throughput issue -- fixing it would be
+more of an research project than an easy fix
+#regzbot ignore-activity
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> fs/iomap/buffered-io.c:669:28: warning: variable 'folio' is uninitialized when used here [-Wuninitialized]
-           if (pos + len > folio_pos(folio) + folio_size(folio))
-                                     ^~~~~
-   fs/iomap/buffered-io.c:636:21: note: initialize the variable 'folio' to silence this warning
-           struct folio *folio;
-                              ^
-                               = NULL
-   fs/iomap/buffered-io.c:598:22: warning: unused function '__iomap_get_folio' [-Wunused-function]
-   static struct folio *__iomap_get_folio(struct iomap_iter *iter, loff_t pos,
-                        ^
-   2 warnings generated.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
 
-vim +/folio +669 fs/iomap/buffered-io.c
-
-69f4a26c1e0c7c Gao Xiang               2021-08-03  630  
-d7b64041164ca1 Dave Chinner            2022-11-29  631  static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
-bc6123a84a71b5 Matthew Wilcox (Oracle  2021-05-02  632) 		size_t len, struct folio **foliop)
-afc51aaa22f26c Darrick J. Wong         2019-07-15  633  {
-471859f57d4253 Andreas Gruenbacher     2023-01-15  634  	const struct iomap_folio_ops *folio_ops = iter->iomap.folio_ops;
-fad0a1ab34f777 Christoph Hellwig       2021-08-10  635  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-d1bd0b4ebfe052 Matthew Wilcox (Oracle  2021-11-03  636) 	struct folio *folio;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  637  	int status = 0;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  638  
-1b5c1e36dc0e0f Christoph Hellwig       2021-08-10  639  	BUG_ON(pos + len > iter->iomap.offset + iter->iomap.length);
-1b5c1e36dc0e0f Christoph Hellwig       2021-08-10  640  	if (srcmap != &iter->iomap)
-c039b997927263 Goldwyn Rodrigues       2019-10-18  641  		BUG_ON(pos + len > srcmap->offset + srcmap->length);
-afc51aaa22f26c Darrick J. Wong         2019-07-15  642  
-afc51aaa22f26c Darrick J. Wong         2019-07-15  643  	if (fatal_signal_pending(current))
-afc51aaa22f26c Darrick J. Wong         2019-07-15  644  		return -EINTR;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  645  
-d454ab82bc7f4a Matthew Wilcox (Oracle  2021-12-09  646) 	if (!mapping_large_folio_support(iter->inode->i_mapping))
-d454ab82bc7f4a Matthew Wilcox (Oracle  2021-12-09  647) 		len = min_t(size_t, len, PAGE_SIZE - offset_in_page(pos));
-d454ab82bc7f4a Matthew Wilcox (Oracle  2021-12-09  648) 
-d7b64041164ca1 Dave Chinner            2022-11-29  649  	/*
-d7b64041164ca1 Dave Chinner            2022-11-29  650  	 * Now we have a locked folio, before we do anything with it we need to
-d7b64041164ca1 Dave Chinner            2022-11-29  651  	 * check that the iomap we have cached is not stale. The inode extent
-d7b64041164ca1 Dave Chinner            2022-11-29  652  	 * mapping can change due to concurrent IO in flight (e.g.
-d7b64041164ca1 Dave Chinner            2022-11-29  653  	 * IOMAP_UNWRITTEN state can change and memory reclaim could have
-d7b64041164ca1 Dave Chinner            2022-11-29  654  	 * reclaimed a previously partially written page at this index after IO
-d7b64041164ca1 Dave Chinner            2022-11-29  655  	 * completion before this write reaches this file offset) and hence we
-d7b64041164ca1 Dave Chinner            2022-11-29  656  	 * could do the wrong thing here (zero a page range incorrectly or fail
-d7b64041164ca1 Dave Chinner            2022-11-29  657  	 * to zero) and corrupt data.
-d7b64041164ca1 Dave Chinner            2022-11-29  658  	 */
-471859f57d4253 Andreas Gruenbacher     2023-01-15  659  	if (folio_ops && folio_ops->iomap_valid) {
-471859f57d4253 Andreas Gruenbacher     2023-01-15  660  		bool iomap_valid = folio_ops->iomap_valid(iter->inode,
-d7b64041164ca1 Dave Chinner            2022-11-29  661  							 &iter->iomap);
-d7b64041164ca1 Dave Chinner            2022-11-29  662  		if (!iomap_valid) {
-d7b64041164ca1 Dave Chinner            2022-11-29  663  			iter->iomap.flags |= IOMAP_F_STALE;
-d7b64041164ca1 Dave Chinner            2022-11-29  664  			status = 0;
-d7b64041164ca1 Dave Chinner            2022-11-29  665  			goto out_unlock;
-d7b64041164ca1 Dave Chinner            2022-11-29  666  		}
-d7b64041164ca1 Dave Chinner            2022-11-29  667  	}
-d7b64041164ca1 Dave Chinner            2022-11-29  668  
-d454ab82bc7f4a Matthew Wilcox (Oracle  2021-12-09 @669) 	if (pos + len > folio_pos(folio) + folio_size(folio))
-d454ab82bc7f4a Matthew Wilcox (Oracle  2021-12-09  670) 		len = folio_pos(folio) + folio_size(folio) - pos;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  671  
-c039b997927263 Goldwyn Rodrigues       2019-10-18  672  	if (srcmap->type == IOMAP_INLINE)
-bc6123a84a71b5 Matthew Wilcox (Oracle  2021-05-02  673) 		status = iomap_write_begin_inline(iter, folio);
-1b5c1e36dc0e0f Christoph Hellwig       2021-08-10  674  	else if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
-d1bd0b4ebfe052 Matthew Wilcox (Oracle  2021-11-03  675) 		status = __block_write_begin_int(folio, pos, len, NULL, srcmap);
-afc51aaa22f26c Darrick J. Wong         2019-07-15  676  	else
-bc6123a84a71b5 Matthew Wilcox (Oracle  2021-05-02  677) 		status = __iomap_write_begin(iter, pos, len, folio);
-afc51aaa22f26c Darrick J. Wong         2019-07-15  678  
-afc51aaa22f26c Darrick J. Wong         2019-07-15  679  	if (unlikely(status))
-afc51aaa22f26c Darrick J. Wong         2019-07-15  680  		goto out_unlock;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  681  
-bc6123a84a71b5 Matthew Wilcox (Oracle  2021-05-02  682) 	*foliop = folio;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  683  	return 0;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  684  
-afc51aaa22f26c Darrick J. Wong         2019-07-15  685  out_unlock:
-7a70a5085ed028 Andreas Gruenbacher     2023-01-15  686  	__iomap_put_folio(iter, pos, 0, folio);
-1b5c1e36dc0e0f Christoph Hellwig       2021-08-10  687  	iomap_write_failed(iter->inode, pos, len);
-afc51aaa22f26c Darrick J. Wong         2019-07-15  688  
-afc51aaa22f26c Darrick J. Wong         2019-07-15  689  	return status;
-afc51aaa22f26c Darrick J. Wong         2019-07-15  690  }
-afc51aaa22f26c Darrick J. Wong         2019-07-15  691  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
