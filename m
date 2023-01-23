@@ -2,92 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F28677557
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jan 2023 07:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035416776C9
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jan 2023 09:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjAWG7m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Jan 2023 01:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
+        id S231758AbjAWIwi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Jan 2023 03:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjAWG7l (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Jan 2023 01:59:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48FA13DE9;
-        Sun, 22 Jan 2023 22:59:38 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3251DB80BEA;
-        Mon, 23 Jan 2023 06:59:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896E9C433EF;
-        Mon, 23 Jan 2023 06:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674457175;
-        bh=oruDvn5Mc2ikihY0Gp535LHpXV69DqgvDQhed9bm0sc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uM2qnvMoyR6bH/uoiqSTyrjMVyhh39uGnNOhVzwhonP5ZJytyfswVZ6vOdWk5IpOY
-         koWxTemvu1K3WD2Otz898dCYddboAHzeEA96tjy780rry22qmpU7T5uCQ/0vPcKSyY
-         52aYTfinuWF/MVqHIVqG+QRd0ZJtV7tC6JB+784Nwg00GDmBR/ruk/9NOe5ukFY/bT
-         moEazkRfdn7KuPw2mPP7wM3mjekVMraLHkYVfKKkuUDyUg92o9FpiwwnBQzVPgk+TC
-         HzliX49T3rLuvDIuj13oRaOnqBif9i1ETGVsCkezHqGk139Ee3v8CRZnxKN0TWHkI/
-         J3lYtuGfD6Ksg==
-Date:   Sun, 22 Jan 2023 22:59:33 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     tytso@mit.edu, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, adilger.kernel@dilger.ca,
-        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
-        akpm@linux-foundation.org, linux-ext4@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH 3/5] fs: f2fs: initialize fsdata in pagecache_write()
-Message-ID: <Y84wVf+pZ7tRwCh8@sol.localdomain>
-References: <20221121112134.407362-1-glider@google.com>
- <20221121112134.407362-3-glider@google.com>
- <Y3vXL3Lw+DnVkQYC@gmail.com>
+        with ESMTP id S231604AbjAWIwe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Jan 2023 03:52:34 -0500
+X-Greylist: delayed 558 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Jan 2023 00:52:30 PST
+Received: from mail.tryweryn.pl (mail.tryweryn.pl [5.196.29.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9E91CF58
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Jan 2023 00:52:30 -0800 (PST)
+Received: by mail.tryweryn.pl (Postfix, from userid 1002)
+        id 86ED1A27F9; Mon, 23 Jan 2023 08:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tryweryn.pl; s=mail;
+        t=1674463391; bh=Bo+/jg3TCpOeS79PpZREuOWEeqJV//jojylD9dSrSik=;
+        h=Date:From:To:Subject:From;
+        b=odFT7i4LLrONNJ09uTQIKnbx46U9wvQhpQ9bC9PQuhrpf9cbVFEh99j2rGXv/UfmH
+         39C2fhXtmd5AKfPqcadb88yzRCyKswNqdlxID3D2qdnD5nh9LULIRiV+6UpxzjdSjo
+         POEvlLA3ZbA2ZQ217VdiDbe9tY4aTA3MkeXcQ32BCYeLZiQ9XmrGVeKv/0UMVT9JOb
+         DysaGtFPsAv6BKA27ehmnoptJv5iOLBxwf5NlKxQFecpgPWaofZseQ2cl98rdrFvSR
+         u6NKcOxmbVt2K0NI9v78MIUgtzriP4EnAtJaU1o5hDUPVbhH1RCfFKDf77YxBSo0dm
+         If7KNHTz48j0Q==
+Received: by mail.tryweryn.pl for <linux-ext4@vger.kernel.org>; Mon, 23 Jan 2023 08:42:54 GMT
+Message-ID: <20230123081829-0.1.7p.2rwjw.0.he9ph68lpb@tryweryn.pl>
+Date:   Mon, 23 Jan 2023 08:42:54 GMT
+From:   "Karol Michun" <karol.michun@tryweryn.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.tryweryn.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3vXL3Lw+DnVkQYC@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 07:53:19PM +0000, Eric Biggers wrote:
-> On Mon, Nov 21, 2022 at 12:21:32PM +0100, Alexander Potapenko wrote:
-> > When aops->write_begin() does not initialize fsdata, KMSAN may report
-> > an error passing the latter to aops->write_end().
-> > 
-> > Fix this by unconditionally initializing fsdata.
-> > 
-> > Suggested-by: Eric Biggers <ebiggers@kernel.org>
-> > Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > ---
-> >  fs/f2fs/verity.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-> > index c352fff88a5e6..3f4f3295f1c66 100644
-> > --- a/fs/f2fs/verity.c
-> > +++ b/fs/f2fs/verity.c
-> > @@ -81,7 +81,7 @@ static int pagecache_write(struct inode *inode, const void *buf, size_t count,
-> >  		size_t n = min_t(size_t, count,
-> >  				 PAGE_SIZE - offset_in_page(pos));
-> >  		struct page *page;
-> > -		void *fsdata;
-> > +		void *fsdata = NULL;
-> >  		int res;
-> >  
-> >  		res = aops->write_begin(NULL, mapping, pos, n, &page, &fsdata);
-> 
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> 
+Dzie=C5=84 dobry!
 
-Jaegeuk, can you please apply this patch?
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-- Eric
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
+
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
+
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
+
+
+Pozdrawiam
+Karol Michun
