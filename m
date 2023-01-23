@@ -2,108 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9FE677D47
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jan 2023 14:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4CC678078
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jan 2023 16:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjAWN7T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Jan 2023 08:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        id S232926AbjAWPue (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Jan 2023 10:50:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbjAWN7S (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Jan 2023 08:59:18 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2689626863;
-        Mon, 23 Jan 2023 05:59:06 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id s3so8794269pfd.12;
-        Mon, 23 Jan 2023 05:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bfoL7qpFeEQAso2LlCjuxmJ/O8yOVmGxvnrueZMG658=;
-        b=XRv6qGpn1lv2lKxbaYr/7CJqJ0OUnvzrS/CnDxrg55ArYpZFNNUfEUVfMZ5HoNd82f
-         Xdxit6Q/n0V8CizAQr6O4infdXY12jtsan4xGtv6wazmMo0ydME/m8DQonutQ2kSUIRO
-         K7mSUTqM61tPKuP19O3bR4K1wMO3Po9fjITgJdzkTyhzGNcE9crmg87oggGV7HSywGXz
-         j0JM+X/UhDw1JWnQwdKXxjjK17b+V3+4u9eMZjQcrhO4r/8nG+NwRrXAxS8a/vMWRYq0
-         fuosWqv1B1w/6D7bWFr5JIa/9sbRjPH3vEGZ4rFmyw+JVNaPlfIIvdynekS3NlKwfzUL
-         kHjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bfoL7qpFeEQAso2LlCjuxmJ/O8yOVmGxvnrueZMG658=;
-        b=yDinIgslKzowso4im/ek5LRLyGcm21J8/vZLyDR2hJj8CciyDphtOBH5ZsV2ki3foC
-         Ezfoj8FnflhZr7PkkM1WkCC0G+v33LeidDJtM4i1uMz8Nyz3+JpeI7Sl1fJT9k7d/V1f
-         wIQzB9Ol9r5zzROGFr3Pfojbo90UkAct6D60W05wbmlqFe5tmdvSCaumb2CV67jbAk1J
-         9tWrVG62iqM3HJ0WCWULke+qcpecpgaNa/dGPCPgnPdX81sPJP6sTGwlEKK7HcLelkqC
-         NRtaeFwJOFvddhs9avw7W8/n9CzQzwIgFF2fs1/kETMl49ljTcTnNr9BT8cjq4kIQNcO
-         vGFg==
-X-Gm-Message-State: AFqh2kqgtYjUR3C/o1PmPRA14fQgxbWBkPtemf/9phaZRGH141y9kyWP
-        9jyU1TZy5nNgxJtgS/eHm6o=
-X-Google-Smtp-Source: AMrXdXuf3ZqJbbXGrwSpPQBsRr62KhzmVg4LgAJC1geDIjbSXheDfOM0HrpASVeyVp11/cwxZBscUw==
-X-Received: by 2002:a62:6410:0:b0:58b:c873:54e9 with SMTP id y16-20020a626410000000b0058bc87354e9mr23542843pfb.4.1674482344855;
-        Mon, 23 Jan 2023 05:59:04 -0800 (PST)
-Received: from [192.168.43.80] (subs09b-223-255-225-233.three.co.id. [223.255.225.233])
-        by smtp.gmail.com with ESMTPSA id z30-20020aa7991e000000b005898fcb7c2bsm27189906pff.170.2023.01.23.05.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Jan 2023 05:59:04 -0800 (PST)
-Message-ID: <cb0187ce-7e40-c1e0-f2ce-fc1f9b45f5ad@gmail.com>
-Date:   Mon, 23 Jan 2023 20:59:00 +0700
+        with ESMTP id S232579AbjAWPud (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Jan 2023 10:50:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827DC193FD;
+        Mon, 23 Jan 2023 07:50:30 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2FA6A1F749;
+        Mon, 23 Jan 2023 15:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1674489029;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sUGIH2I54cp4HbnMiIaY15PfXULieuiQ0sW9X9yG6Sc=;
+        b=OPXFoGuJ8BkSymKabi8S/f/rmJEkvx+fgrXVqizmYyDI3KhBbMlUuLj8YQectO2Ngl9/Sf
+        oGaVWENU63tAhnkYzTuPgH+u6QSbPi1G42bWVBQW/Fd77EpB2+8rwpOtlrkGfwdjkyAjny
+        CVCmqcffKPgt8etMatoZ+dSqDZHYXIU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1674489029;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sUGIH2I54cp4HbnMiIaY15PfXULieuiQ0sW9X9yG6Sc=;
+        b=xOcYsz+zrkERuCg65RzTgYDWspE7gLGRBq0M143VodPXwP6GO0FzliKs6WdMBcPvTtIt12
+        vGjp9a9wvCEfUZBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1B05134F5;
+        Mon, 23 Jan 2023 15:50:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id euY6MsSszmOdYgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 23 Jan 2023 15:50:28 +0000
+Date:   Mon, 23 Jan 2023 16:44:47 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 7/7] mm: return an ERR_PTR from __filemap_get_folio
+Message-ID: <20230123154447.GP11562@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230121065755.1140136-1-hch@lst.de>
+ <20230121065755.1140136-8-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] docs: ext4: Fix full name of the GPL
-Content-Language: en-US
-To:     Diederik de Haas <didi.debian@cknow.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:EXT4 FILE SYSTEM" <linux-ext4@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230122180552.53445-1-didi.debian@cknow.org>
- <Y83sssQr5DMg2KMc@debian.me> <3646506.8mSpapujdy@prancing-pony>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <3646506.8mSpapujdy@prancing-pony>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230121065755.1140136-8-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 1/23/23 19:44, Diederik de Haas wrote:
-> On Monday, 23 January 2023 03:10:58 CET Bagas Sanjaya wrote:
->> On Sun, Jan 22, 2023 at 07:05:51PM +0100, Diederik de Haas wrote:
->>> Signed-off-by: Diederik de Haas <didi.debian@cknow.org>
->>
->> No patch description, really?
+On Sat, Jan 21, 2023 at 07:57:55AM +0100, Christoph Hellwig wrote:
+> Instead of returning NULL for all errors, distinguish between:
 > 
-> Please disregard this patch.
-> Next to 'style' issues, I now consider my initial view of the issue as a 
-> spelling error, incorrect. I would be changing the license and IANAL. I'm also 
-> not the copyright holder which I believe is needed to change the license.
+>  - no entry found and not asked to allocated (-ENOENT)
+>  - failed to allocate memory (-ENOMEM)
+>  - would block (-EAGAIN)
 > 
-> Apologies for the noise.
+> so that callers don't have to guess the error based on the passed
+> in flags.
+> 
+> Also pass through the error through the direct callers:
+> filemap_get_folio, filemap_lock_folio filemap_grab_folio
+> and filemap_get_incore_folio.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/afs/dir.c             | 10 +++++-----
+>  fs/afs/dir_edit.c        |  2 +-
+>  fs/afs/write.c           |  4 ++--
 
-Nice to see you reply to the review.
+For
 
-However, as I noticed, it seems like your NAKed review replies
-have the same wording, which make me wonder if these are written
-by a bot behind your email handle. Next time, please write
-variate your writings (write using different words but convey
-the same meaning). I'm also sometimes hard to figure out
-which words should I write.
+>  fs/btrfs/disk-io.c       |  2 +-
 
-Thanks.
-
--- 
-An old man doll... just what I always wanted! - Clara
-
+Acked-by: David Sterba <dsterba@suse.com>
