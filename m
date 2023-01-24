@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFAC679A55
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 14:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E77679A79
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 14:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjAXNqG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Jan 2023 08:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
+        id S234728AbjAXNsQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Jan 2023 08:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbjAXNpi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 08:45:38 -0500
+        with ESMTP id S234722AbjAXNrz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 08:47:55 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB3947ECB;
-        Tue, 24 Jan 2023 05:43:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334DC42BF3;
+        Tue, 24 Jan 2023 05:45:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 069E4B810D9;
-        Tue, 24 Jan 2023 13:43:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C6DC4339B;
-        Tue, 24 Jan 2023 13:43:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 60011B811DD;
+        Tue, 24 Jan 2023 13:44:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D9AC4339B;
+        Tue, 24 Jan 2023 13:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674567836;
-        bh=li8v2iDSB5391kcshDwBM8CL3maGuoZgYFCLRMtzGBc=;
+        s=k20201202; t=1674567845;
+        bh=DZmu8jGSL/L/xJM+5F3ppU3Jofv31JXHg3dhjC8C4II=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aTKq67pbqdOe/ukLObELr9jDi66bX9p2SIL4++4KdeOaqsPrglDIWF725XSj6oPub
-         w5i54zhmLeMk7cfJiVXC3lPJYSB/CxTAv9ggxZxWK8M/OnNGaHuL1cCkuFaFdM5mlS
-         1jXL6OjmIA+uaauj87Wrqt+De63fx8kmYB/SyIfJiYqSD9MPR9rhzgxhNK7vWZpmgs
-         tURzboVZN+kFy1A+65BYNn0RnhDTekmzuAsGXdkf0vD6GefUkSe4bCdqRoWwXI7h7i
-         IzWOMYHsD3MLbYb0EEFjI2sFLAw80rCogtKwi/kN1m9W7UMvAC6cs2eUB2H0bbXCD+
-         mfpA+dTthOX0Q==
+        b=OW9AJ0qDkjlw2lauBJ8ry2D7p9xLBlvO4X/RBLYVg5wc3Nr+sU6I5ESrNRILfRhm4
+         O6Bq92DQP8DvW0PL5ZLrzkRq04sp2nrLQhG6Wx0v9pVrJ4LX8Cqimuuf6ppgBg458p
+         SDvIAWNZqwBCysG+YBHyhkgtVfBLR0slmd6ugAMVqMcjompRJVtfgAYsQVHecRavgd
+         iebiZB6dcI2n7I9Jv0DVAembXFYepom76Y+uFYOdLX6h9qcAhlamnFjnYaivPTOMQ1
+         q8SSjK9t2P8sfQ/ProWYi5icbrVSvUUm6xXdq7QMsji5thGJHGVlPB2bHEDL0SloB2
+         6cVxVcEfzj05A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -42,12 +42,12 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 6/6] ext4: deal with legacy signed xattr name hash values
-Date:   Tue, 24 Jan 2023 08:43:44 -0500
-Message-Id: <20230124134344.637846-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/4] ext4: deal with legacy signed xattr name hash values
+Date:   Tue, 24 Jan 2023 08:43:57 -0500
+Message-Id: <20230124134357.637945-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230124134344.637846-1-sashal@kernel.org>
-References: <20230124134344.637846-1-sashal@kernel.org>
+In-Reply-To: <20230124134357.637945-1-sashal@kernel.org>
+References: <20230124134357.637945-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -94,7 +94,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 39 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 78df2d65998e..fc699d68a23a 100644
+index 0772941bbe92..c26a349af40b 100644
 --- a/fs/ext4/xattr.c
 +++ b/fs/ext4/xattr.c
 @@ -81,6 +81,8 @@ ext4_xattr_block_cache_find(struct inode *, struct ext4_xattr_header *,
@@ -130,7 +130,7 @@ index 78df2d65998e..fc699d68a23a 100644
  	}
  	return 0;
  }
-@@ -3117,6 +3132,28 @@ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
+@@ -3121,6 +3136,28 @@ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
  	return cpu_to_le32(hash);
  }
  
