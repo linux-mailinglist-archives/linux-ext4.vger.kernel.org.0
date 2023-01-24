@@ -2,88 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1AF6795C3
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 11:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB238679A31
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 14:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjAXKwK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Jan 2023 05:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S234573AbjAXNpU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Jan 2023 08:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233439AbjAXKwJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 05:52:09 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD01449E
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Jan 2023 02:52:07 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id f8so7245877ilj.5
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Jan 2023 02:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PZZkl0nuhDOnpS6mpTFr8PbXxlSJ2XVVn7nhNW4knVE=;
-        b=eysX+ECnIsH4FMjfUYT/LQAt9n6rglG6tqxiFcoAUICMiQfGdw6uRCYzxropjiIHWX
-         aGm0Ai3CVpIR3vF+EduIDOySpa/9Cs7/A0TdpklPuDWKFUgQZpGb/QUx7y/gmG1+gJQT
-         R0EgI2WlD8RTdP4mKPBp2BIR3O5cm0XeN7nPZ0SG8//AUcx383pwBNqlJlupg5yLuFLh
-         /Bt4ywpI6JPeuzM6XnPuB0hUMriFJgSFDg1wnWsB4yXnlV+fcImKNZFnp8e56Zo2rLxF
-         LM6SKfI/YCy26+jyb1ULwBcIRsTXvzHOZMkpI89Kjz5MQ29Qw33zMIR8Bf4V25RxB/nC
-         pH4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PZZkl0nuhDOnpS6mpTFr8PbXxlSJ2XVVn7nhNW4knVE=;
-        b=PRedLsBaqEahjwFwcA+xMv4/AZXhuvbG3O7QYOMpebLs/9lFn+W/M/T31B1tv5Vi7K
-         NOs4rTCRVEiUWYhnIZvlB/Jbst1YPGxMGwEOM1ZdpkhaZfvPE3STFbUSsd2/Qi986eCS
-         kVS8MkpHyaMBCnZ/pxUlzRNG645CAMS1s9GW+XuQBb45G3KYwqZlieWzvrQnOCrvm33b
-         u1bdh13dSx94IUjrT7YDfS4sbn/FbDxO51TN2Q5Uu0cXLERKqt/JmtvEzPlDzwaIlJBe
-         kdgKwPQZ269cFWXmoJkpxfPZMG2bfdqprL2sdNN/yxvcQVVlZtabSamRTviN0Dd185Ag
-         KqHA==
-X-Gm-Message-State: AFqh2kp7/JOacgIRMDZFvkBx7Iqndp/wFZ0ncTtsKkFdK49A+5HZEXST
-        a2/tO0DcSEXhQL4gIEYmS9rNaivI6UGviVuQn+tFsA==
-X-Google-Smtp-Source: AMrXdXs9ga503SwE+09dmDEVZS1/XV2RvPbDoA7tJR1Y92okF1PYzLfNb1qZ9UTKSZ00MIBxwWsvnEHJ4Bii4h03Zso=
-X-Received: by 2002:a05:6e02:88d:b0:30f:5d21:e56 with SMTP id
- z13-20020a056e02088d00b0030f5d210e56mr1230055ils.192.1674557526609; Tue, 24
- Jan 2023 02:52:06 -0800 (PST)
+        with ESMTP id S234323AbjAXNot (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 08:44:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E828A46D46;
+        Tue, 24 Jan 2023 05:43:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 893DA611D7;
+        Tue, 24 Jan 2023 13:42:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC0CAC433EF;
+        Tue, 24 Jan 2023 13:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674567777;
+        bh=CH9l79iRr56ZSwumfQ0VkYDiEdL5p8519TJHKvsXIuQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lGlRA/T9E02TYT4JRQKUvXmMpXuQD1oF3pFUU8JZlsl8jj4JpEyDYdxP4S12UmwFI
+         je8igMKBwkwkyvn9T+PjZLROMGJgCEf/2sCncPHzdgJFGJByD/2pCBD1bDNpAW2Hbj
+         8b7u6FJcC0AdH6MJCvkuPUeicBhUoL16LBuyVbcL4Y3iDxEIfWytxoQ3Tc9C+oOHSh
+         fcnJOpoLKE2LE8cXteZCTcUIBwJ6Cv6n8fBs+GFbFR39jIRUrUV3P7m9+JqVjhjSUi
+         nVXviP5Ll49fF4rWzAgUncxpQbfaNPDHuLe+737+356muFPPeGQFq7ZpOTWx6sIt1d
+         rC6WEE9df7MPA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jason Donenfeld <Jason@zx2c4.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 35/35] ext4: deal with legacy signed xattr name hash values
+Date:   Tue, 24 Jan 2023 08:41:31 -0500
+Message-Id: <20230124134131.637036-35-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230124134131.637036-1-sashal@kernel.org>
+References: <20230124134131.637036-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20221121112134.407362-1-glider@google.com> <20221121112134.407362-4-glider@google.com>
-In-Reply-To: <20221121112134.407362-4-glider@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 24 Jan 2023 11:51:30 +0100
-Message-ID: <CAG_fn=WDjw1MVYhEh7K4HOpGNBWsq6YuyG6Xx7XcP4Xpu+KhZg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] fs: hfs: initialize fsdata in hfs_file_truncate()
-To:     glider@google.com
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 12:21 PM Alexander Potapenko <glider@google.com> wrote:
->
-> When aops->write_begin() does not initialize fsdata, KMSAN may report
-> an error passing the latter to aops->write_end().
->
-> Fix this by unconditionally initializing fsdata.
->
-> Suggested-by: Eric Biggers <ebiggers@kernel.org>
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Alexander Potapenko <glider@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-Dear FS maintainers,
+[ Upstream commit f3bbac32475b27f49be201f896d98d4009de1562 ]
 
-HFS/HFSPLUS are orphaned, can someone take this patch to their tree?
-Thanks in advance!
-(same for "fs: hfsplus: initialize fsdata in hfsplus_file_truncate()":
-https://lore.kernel.org/all/20221121112134.407362-5-glider@google.com/)
+We potentially have old hashes of the xattr names generated on systems
+with signed 'char' types.  Now that everybody uses '-funsigned-char',
+those hashes will no longer match.
+
+This only happens if you use xattrs names that have the high bit set,
+which probably doesn't happen in practice, but the xfstest generic/454
+shows it.
+
+Instead of adding a new "signed xattr hash filesystem" bit and having to
+deal with all the possible combinations, just calculate the hash both
+ways if the first one fails, and always generate new hashes with the
+proper unsigned char version.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/oe-lkp/202212291509.704a11c9-oliver.sang@intel.com
+Link: https://lore.kernel.org/all/CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com/
+Exposed-by: 3bc753c06dd0 ("kbuild: treat char as always unsigned")
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+Cc: Jason Donenfeld <Jason@zx2c4.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/xattr.c | 41 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 866772a2e068..5f57a8addcbc 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -81,6 +81,8 @@ ext4_xattr_block_cache_find(struct inode *, struct ext4_xattr_header *,
+ 			    struct mb_cache_entry **);
+ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
+ 				    size_t value_count);
++static __le32 ext4_xattr_hash_entry_signed(char *name, size_t name_len, __le32 *value,
++				    size_t value_count);
+ static void ext4_xattr_rehash(struct ext4_xattr_header *);
+ 
+ static const struct xattr_handler * const ext4_xattr_handler_map[] = {
+@@ -470,8 +472,21 @@ ext4_xattr_inode_verify_hashes(struct inode *ea_inode,
+ 		tmp_data = cpu_to_le32(hash);
+ 		e_hash = ext4_xattr_hash_entry(entry->e_name, entry->e_name_len,
+ 					       &tmp_data, 1);
+-		if (e_hash != entry->e_hash)
+-			return -EFSCORRUPTED;
++		/* All good? */
++		if (e_hash == entry->e_hash)
++			return 0;
++
++		/*
++		 * Not good. Maybe the entry hash was calculated
++		 * using the buggy signed char version?
++		 */
++		e_hash = ext4_xattr_hash_entry_signed(entry->e_name, entry->e_name_len,
++							&tmp_data, 1);
++		if (e_hash == entry->e_hash)
++			return 0;
++
++		/* Still no match - bad */
++		return -EFSCORRUPTED;
+ 	}
+ 	return 0;
+ }
+@@ -3090,6 +3105,28 @@ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
+ 	return cpu_to_le32(hash);
+ }
+ 
++/*
++ * ext4_xattr_hash_entry_signed()
++ *
++ * Compute the hash of an extended attribute incorrectly.
++ */
++static __le32 ext4_xattr_hash_entry_signed(char *name, size_t name_len, __le32 *value, size_t value_count)
++{
++	__u32 hash = 0;
++
++	while (name_len--) {
++		hash = (hash << NAME_HASH_SHIFT) ^
++		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
++		       (signed char)*name++;
++	}
++	while (value_count--) {
++		hash = (hash << VALUE_HASH_SHIFT) ^
++		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
++		       le32_to_cpu(*value++);
++	}
++	return cpu_to_le32(hash);
++}
++
+ #undef NAME_HASH_SHIFT
+ #undef VALUE_HASH_SHIFT
+ 
+-- 
+2.39.0
+
