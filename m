@@ -2,206 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFBA67A112
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 19:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA1267A2B7
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 20:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjAXSVc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Jan 2023 13:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        id S233585AbjAXTae (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Jan 2023 14:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjAXSVc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 13:21:32 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220A02728
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Jan 2023 10:21:30 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id m11so4057011pji.0
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Jan 2023 10:21:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WWXvPikYMQUs6nuOyJEvWH12tcwqLaSqv/qziUhIxQk=;
-        b=T+VjdAFwmWNB/3j45X5TdCxYLyVq0HfLIxtNrK9eL853bLh1Kre7OqTLIs9h/LV4Oe
-         DanFNLDm+gFfjLAHt6Q8YLHSiF3Widlp+5M79nNT6Rjq/FKMELFGrmI7AVxAvJ3uvHep
-         LD/0SNJvY0dQfiB3KO4UdmipVIK+wev5vq+qbjnvx02/wjmGeIrhIaVISQsvL9ac17MO
-         BSR/qd87oixhws/oGek2r+krJuAUY6Y5sntJfOV/L3QazWm3z5HUutxRP9cVU6PPnfs4
-         PYurs03j3QzVHxT1e91+MUzgmytiGWF3tJ/EU2UUCHCFKzjvUR4VJAr7yIVp8QPQ/6zV
-         Jd+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WWXvPikYMQUs6nuOyJEvWH12tcwqLaSqv/qziUhIxQk=;
-        b=SXsrECHeyD3TbWdLN2r2KgSz+yncpTe3Vbvfz9YsBvPlhNR5h8Z+RfY7giL/w+OHK3
-         E3R670pZTelnt/3X19D6+Jbdp/cBxwmylaW6wKnby5mQVQzi9jUgbGzykVm5/Tk3ttTt
-         aaGolamkmL9ikAkC+BBj+IpKT+b6Aiwkg7yJG0AV5cucrhcbNDnvSxd0RArEPtra5+po
-         D0Pdimpyhvs+YXGReKTyzqdUP4BHl7e4oNkbwz8hK33sYRY5L7LeaQLHuue6uT8G2/xW
-         nL2IKlvcY6K+K01GAer14Q7KUwnl0RrJbtoYKeIOx3IoGfgFAOCUUQPYcDg5zvYfHHxU
-         QFJQ==
-X-Gm-Message-State: AFqh2kpHi3sdevrkNVp6pejepQRHp0AhbC78xOkIfhCPbFsOVPZSkvc1
-        yHl55k7KTztfX+UiYi/gbSPTAw==
-X-Google-Smtp-Source: AMrXdXvpi/TqH+DDigJpAh4C3FSYJJpDYk86ruA6AsGIgjAv3DkZdgUpwk9fS+vYWWZSxuGhQlaf3g==
-X-Received: by 2002:a17:902:9a81:b0:194:4b98:42c8 with SMTP id w1-20020a1709029a8100b001944b9842c8mr26025383plp.28.1674584489366;
-        Tue, 24 Jan 2023 10:21:29 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id f3-20020a17090274c300b00196191b6b29sm1405013plt.140.2023.01.24.10.21.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Jan 2023 10:21:28 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <AE27C93A-528E-49F6-85B5-ACF80413FD04@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_2D885FE3-7A54-4BE1-A4C8-F9DE1284985C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 07/38] lib/blkid: remove 32-bit x86 byteswap assembly
-Date:   Tue, 24 Jan 2023 11:21:26 -0700
-In-Reply-To: <20230121203230.27624-8-ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org
-To:     Eric Biggers <ebiggers@kernel.org>, Theodore Ts'o <tytso@mit.edu>
-References: <20230121203230.27624-1-ebiggers@kernel.org>
- <20230121203230.27624-8-ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232952AbjAXTad (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 14:30:33 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5614DBDC;
+        Tue, 24 Jan 2023 11:30:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E23866132C;
+        Tue, 24 Jan 2023 19:30:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C702C433EF;
+        Tue, 24 Jan 2023 19:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674588629;
+        bh=vp0vqry2/AY0zb9xuGn4mOcoj9OvZ/inpse2FNVpqBI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Oq1fgOAvloQhlKFMsUavNC5pfqfY+THTTPrx5v8fc8B/UiuEChO4F4Ko8COr+On1Z
+         nwj3yF3nKBIIdXf8ovX6RRVvFfV3kTuyLA+rGZCxRzNiRWHpQT2Nl3Vr5MJDPw2p9B
+         vvzFgOJBXMYg7ARNBK7bvQblMMhqZHBRJKRVEg8A4unGw0qmIbSFLfyq14bYKhdaFk
+         bQqYGnaccCUoQ0dyCv0zAs8Zdbaqw41mt3wgK2mbnnY0EGhtA5D9OVcOR4Bs03VgRN
+         44MUutfnQgaDajRpEHQjS7oGw8anySs8tLBtiyUFU58t6GNz0yp2NVR9IvrMiLOo89
+         1kcsW3Ky8XpQA==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
+        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH v8 RESEND 0/8] fs: clean up internal i_version handling
+Date:   Tue, 24 Jan 2023 14:30:17 -0500
+Message-Id: <20230124193025.185781-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+I had inteded to send a PR for this for v6.2, but I got sidetracked
+with different issues, and didn't get it together in time. This set has
+been sitting in linux-next since October, and it seems to be behaving,
+so I intend to send a PR when the v6.3 merge window opens.
 
---Apple-Mail=_2D885FE3-7A54-4BE1-A4C8-F9DE1284985C
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+Though nothing has really changed since last year, I'm resending now
+in the hopes I can collect a few more Reviewed-bys (ones from Al, Trond
+and Anna would be particularly welcome).
 
-On Jan 21, 2023, at 1:31 PM, Eric Biggers <ebiggers@kernel.org> wrote:
-> 
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> libblkid contains 32-bit x86 assembly language implementations of 16-bit
-> and 32-bit byteswaps.  However, modern compilers can easily generate the
-> bswap instruction automatically from the corresponding C expression.
-> And no one ever bothered to add assembly for x86_64 or other
-> architectures, anyway.  So let's just remove this outdated code, which
-> was maybe useful in the 90s, but is no longer useful.
+The main consumer of i_version field (knfsd) has to jump through a
+number of hoops to fetch it, depending on what sort of inode it is.
+Rather than do this, we want to offload the responsibility for
+presenting this field to the filesystem's ->getattr operation, which is
+a more natural way to deal with a field that may be implemented
+differently.
 
-I'm not sure what Ted thinks about this, but it might be time to remove
-the libblkid implementation in e2fsprogs, and instead depend on the
-newer version in util-linux?  However, removing it from e2fsprogs
-would add an external dependency on util-linux for non-linux platforms,
-though AFAIK it should still be possible to build e2fsprogs without it.
+The focus of this patchset is to clean up these internal interfaces.
+This should also make it simple to present this attribute to userland in
+the future, which should be possible once the semantics are a bit more
+consistent across different backing filesystems.
 
-That said, I think the current patch looks fine, and you can add:
+Thanks!
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Jeff Layton (8):
+  fs: uninline inode_query_iversion
+  fs: clarify when the i_version counter must be updated
+  vfs: plumb i_version handling into struct kstat
+  nfs: report the inode version in getattr if requested
+  ceph: report the inode version in getattr if requested
+  nfsd: move nfsd4_change_attribute to nfsfh.c
+  nfsd: use the getattr operation to fetch i_version
+  nfsd: remove fetch_iversion export operation
 
-Cheers, Andreas
+ fs/ceph/inode.c          | 16 +++++++----
+ fs/libfs.c               | 36 ++++++++++++++++++++++++
+ fs/nfs/export.c          |  7 -----
+ fs/nfs/inode.c           | 16 ++++++++---
+ fs/nfsd/nfs4xdr.c        |  4 ++-
+ fs/nfsd/nfsfh.c          | 42 ++++++++++++++++++++++++++++
+ fs/nfsd/nfsfh.h          | 29 +-------------------
+ fs/nfsd/vfs.h            |  7 ++++-
+ fs/stat.c                | 17 ++++++++++--
+ include/linux/exportfs.h |  1 -
+ include/linux/iversion.h | 59 ++++++++++++++--------------------------
+ include/linux/stat.h     |  9 ++++++
+ 12 files changed, 156 insertions(+), 87 deletions(-)
 
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> lib/blkid/probe.h | 43 -------------------------------------------
-> 1 file changed, 43 deletions(-)
-> 
-> diff --git a/lib/blkid/probe.h b/lib/blkid/probe.h
-> index dea4081d0..063a5b5c0 100644
-> --- a/lib/blkid/probe.h
-> +++ b/lib/blkid/probe.h
-> @@ -814,46 +814,6 @@ struct exfat_entry_label {
-> #define _INLINE_ static inline
-> #endif
-> 
-> -static __u16 blkid_swab16(__u16 val);
-> -static __u32 blkid_swab32(__u32 val);
-> -static __u64 blkid_swab64(__u64 val);
-> -
-> -#if ((defined __GNUC__) && \
-> -     (defined(__i386__) || defined(__i486__) || defined(__i586__)))
-> -
-> -#define _BLKID_HAVE_ASM_BITOPS_
-> -
-> -_INLINE_ __u32 blkid_swab32(__u32 val)
-> -{
-> -#ifdef EXT2FS_REQUIRE_486
-> -	__asm__("bswap %0" : "=r" (val) : "0" (val));
-> -#else
-> -	__asm__("xchgb %b0,%h0\n\t"	/* swap lower bytes	*/
-> -		"rorl $16,%0\n\t"	/* swap words		*/
-> -		"xchgb %b0,%h0"		/* swap higher bytes	*/
-> -		:"=q" (val)
-> -		: "0" (val));
-> -#endif
-> -	return val;
-> -}
-> -
-> -_INLINE_ __u16 blkid_swab16(__u16 val)
-> -{
-> -	__asm__("xchgb %b0,%h0"		/* swap bytes		*/ \
-> -		: "=q" (val) \
-> -		:  "0" (val)); \
-> -		return val;
-> -}
-> -
-> -_INLINE_ __u64 blkid_swab64(__u64 val)
-> -{
-> -	return (blkid_swab32(val >> 32) |
-> -		(((__u64) blkid_swab32(val & 0xFFFFFFFFUL)) << 32));
-> -}
-> -#endif
-> -
-> -#if !defined(_BLKID_HAVE_ASM_BITOPS_)
-> -
-> _INLINE_  __u16 blkid_swab16(__u16 val)
-> {
-> 	return (val >> 8) | (val << 8);
-> @@ -870,9 +830,6 @@ _INLINE_ __u64 blkid_swab64(__u64 val)
-> 	return (blkid_swab32(val >> 32) |
-> 		(((__u64) blkid_swab32(val & 0xFFFFFFFFUL)) << 32));
-> }
-> -#endif
-> -
-> -
-> 
-> #ifdef WORDS_BIGENDIAN
-> #define blkid_le16(x) blkid_swab16(x)
-> --
-> 2.39.0
-> 
+-- 
+2.39.1
 
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_2D885FE3-7A54-4BE1-A4C8-F9DE1284985C
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPQIacACgkQcqXauRfM
-H+BOQQ//dRd42T2H40dIWysnzk++iHYIbit4aq6A2nki5vhVRAb+y6PUv/pMuij4
-F+Vz58+1RsOQV7KE2RTrF0Kk/6Mr8TAXw3ZPeZ8+hcRI4+6luCIhFJa3geWpieyF
-BKRpfo9SU3nr9DEy1iZfqYZekH9PwIt3LTrwVhVk0WMVouVKAGfJsOSPaTsb/hsm
-YKvJw3taRWPrx1IOpRtUSZdc48VwEu41GGAERow46Q9kYYy51On7Wm+apYQB1xD3
-jV8R5KNNWm3Yv/0GpSzhfk3Bro4EGdfw8CUUFxhmhfmTlygpBzBHDi6MD67cnaPw
-m7qQRhww6FMYAxK+tUm72T2yBoWslEe1MId2U9+En9RNExiGABoSll+/MwaCe4Jv
-nNRBBOqnlrvPv6q8Yl/K0rq+/NeKrjF35YaJhzHnBfIMzYQKBsNyrM1Fb/c3Iddb
-JU8rX9oT83zAGc05vuhPNurZCSBhyswx72JyVgc63nikwgjtnny6tKnRt/slSa44
-W5xZrjbZfm/xsLk/xsMCQhLJ9v1gRUg7bUjipGj/5P4EAJvou87tNUIJR3nn7EVI
-85jnCUAboTYnDVq1K1gno/oaSbrpHKeydWK7a+0Z5ID15BEmyGaRBj6vo60tMbXP
-KmuDmwl7nPMWubZ5NIAfRz70HjGXGfLE58ElfkCtkjBp4DhQKCg=
-=89Ux
------END PGP SIGNATURE-----
-
---Apple-Mail=_2D885FE3-7A54-4BE1-A4C8-F9DE1284985C--
