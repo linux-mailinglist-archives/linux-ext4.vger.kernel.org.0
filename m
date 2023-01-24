@@ -2,163 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C45679A76
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 14:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAB4679EF8
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Jan 2023 17:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbjAXNr0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Jan 2023 08:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S234136AbjAXQlA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Jan 2023 11:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234640AbjAXNrM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 08:47:12 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D3044BF9;
-        Tue, 24 Jan 2023 05:44:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E24A0B811CF;
-        Tue, 24 Jan 2023 13:44:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8A1C433A7;
-        Tue, 24 Jan 2023 13:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674567852;
-        bh=320LOy96niVDCD4DB0IrsME/G/jx6C/XnUurhK+F3vg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZcNwbCyX8bIq2KPGgqrm+fG+46EZhDZTpOtyGgFHLqif6/ZbNw7d0TZ8fAg7/eYr
-         Yk/s5F9RXhl+6FWxtdw/nQI8R29dM35gmKX0omFuJUVQxSrGTNJUk3EchRog8NcFNm
-         tuXTTok2XVg5KiZNFihMPHqnBjsv13WsfuBjIk+Md+AF9PUW2uQy/qT3CjK8VT/Sxj
-         DWbmloprR8tX7KRStkeneecJm0quFwG3gUx9lBmHcEIAiBFLPitYS6CwflDJJCFfc/
-         QUqtMjKfc161nWmZqKsk7L7hpGGiv/xVSyu6a43B6U0ssjnNFYlb3ucD9Ah47UlhN7
-         UZb115quinK3g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jason Donenfeld <Jason@zx2c4.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/2] ext4: deal with legacy signed xattr name hash values
-Date:   Tue, 24 Jan 2023 08:44:06 -0500
-Message-Id: <20230124134407.638009-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230124134407.638009-1-sashal@kernel.org>
-References: <20230124134407.638009-1-sashal@kernel.org>
+        with ESMTP id S232203AbjAXQk7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Jan 2023 11:40:59 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD8147EFA
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Jan 2023 08:40:36 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 30OGeRAi003336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Jan 2023 11:40:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1674578429; bh=C465wp9QRWgcxjXPY1i0s8rlaf67HYP0YRnRYycqN3k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=oZ3SAr8r3ALl54Pf+jYACoHNp+QbqibKlyh5MK7qiZ8cB3FXZh7IJ12AQoHHpqg9w
+         iYpB+xTiWbItGOIzfz3uZtP1ufJV+1i/rIvCk28vQRudK7M7whtKIe22X+kErXrr5q
+         glrZbngElFszEkDKKnka6zuF5aqy8F/g601hG55hUi4v4NHO4rtp/iBFnlhJA2xclD
+         njyl2vZMS4KLAKvKzx85Ns6SyMeBAy9/WTPXhkPFYzEs/GPpEMHcS0te3pi/vNEPwJ
+         uIdDtPIu5PN9hJdhTpI1/ZL+YwyL+q/XQ1o3pBtwlVyPlvWm95RUuRdUuFpg+V36Mx
+         2z4plOuA0WdZQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 8EBB015C469B; Tue, 24 Jan 2023 11:40:27 -0500 (EST)
+Date:   Tue, 24 Jan 2023 11:40:27 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Wang Shilong <wshilong@ddn.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, Li Xi <lixi@ddn.com>
+Subject: Re: [RFCv1 01/72] e2fsck: Fix unbalanced mutex unlock for BOUNCE_MTX
+Message-ID: <Y9AJ+4Pj69pq2fYj@mit.edu>
+References: <cover.1667822611.git.ritesh.list@gmail.com>
+ <febbbd17b3cf4201aaae24e4adb61e4f8a80e9c9.1667822611.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <febbbd17b3cf4201aaae24e4adb61e4f8a80e9c9.1667822611.git.ritesh.list@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+On Mon, Nov 07, 2022 at 05:50:49PM +0530, Ritesh Harjani (IBM) wrote:
+> f_crashdisk test failed with UNIX_IO_FORCE_BOUNCE=yes due to unbalanced
+> mutex unlock in below path.
+> 
+> This patch fixes it.
+> 
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-[ Upstream commit f3bbac32475b27f49be201f896d98d4009de1562 ]
+Applied, thanks.
 
-We potentially have old hashes of the xattr names generated on systems
-with signed 'char' types.  Now that everybody uses '-funsigned-char',
-those hashes will no longer match.
-
-This only happens if you use xattrs names that have the high bit set,
-which probably doesn't happen in practice, but the xfstest generic/454
-shows it.
-
-Instead of adding a new "signed xattr hash filesystem" bit and having to
-deal with all the possible combinations, just calculate the hash both
-ways if the first one fails, and always generate new hashes with the
-proper unsigned char version.
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Link: https://lore.kernel.org/oe-lkp/202212291509.704a11c9-oliver.sang@intel.com
-Link: https://lore.kernel.org/all/CAHk-=whUNjwqZXa-MH9KMmc_CpQpoFKFjAB9ZKHuu=TbsouT4A@mail.gmail.com/
-Exposed-by: 3bc753c06dd0 ("kbuild: treat char as always unsigned")
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Andreas Dilger <adilger@dilger.ca>
-Cc: Theodore Ts'o <tytso@mit.edu>,
-Cc: Jason Donenfeld <Jason@zx2c4.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/xattr.c | 41 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 8a3f0e20c51e..2397fbbe259c 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -80,6 +80,8 @@ ext4_xattr_block_cache_find(struct inode *, struct ext4_xattr_header *,
- 			    struct mb_cache_entry **);
- static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
- 				    size_t value_count);
-+static __le32 ext4_xattr_hash_entry_signed(char *name, size_t name_len, __le32 *value,
-+				    size_t value_count);
- static void ext4_xattr_rehash(struct ext4_xattr_header *);
- 
- static const struct xattr_handler * const ext4_xattr_handler_map[] = {
-@@ -452,8 +454,21 @@ ext4_xattr_inode_verify_hashes(struct inode *ea_inode,
- 		tmp_data = cpu_to_le32(hash);
- 		e_hash = ext4_xattr_hash_entry(entry->e_name, entry->e_name_len,
- 					       &tmp_data, 1);
--		if (e_hash != entry->e_hash)
--			return -EFSCORRUPTED;
-+		/* All good? */
-+		if (e_hash == entry->e_hash)
-+			return 0;
-+
-+		/*
-+		 * Not good. Maybe the entry hash was calculated
-+		 * using the buggy signed char version?
-+		 */
-+		e_hash = ext4_xattr_hash_entry_signed(entry->e_name, entry->e_name_len,
-+							&tmp_data, 1);
-+		if (e_hash == entry->e_hash)
-+			return 0;
-+
-+		/* Still no match - bad */
-+		return -EFSCORRUPTED;
- 	}
- 	return 0;
- }
-@@ -3107,6 +3122,28 @@ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
- 	return cpu_to_le32(hash);
- }
- 
-+/*
-+ * ext4_xattr_hash_entry_signed()
-+ *
-+ * Compute the hash of an extended attribute incorrectly.
-+ */
-+static __le32 ext4_xattr_hash_entry_signed(char *name, size_t name_len, __le32 *value, size_t value_count)
-+{
-+	__u32 hash = 0;
-+
-+	while (name_len--) {
-+		hash = (hash << NAME_HASH_SHIFT) ^
-+		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
-+		       (signed char)*name++;
-+	}
-+	while (value_count--) {
-+		hash = (hash << VALUE_HASH_SHIFT) ^
-+		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
-+		       le32_to_cpu(*value++);
-+	}
-+	return cpu_to_le32(hash);
-+}
-+
- #undef NAME_HASH_SHIFT
- #undef VALUE_HASH_SHIFT
- 
--- 
-2.39.0
-
+						- Ted
