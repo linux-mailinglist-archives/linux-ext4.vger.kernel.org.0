@@ -2,105 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4728167AEE0
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 10:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C0367B13A
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 12:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbjAYJxI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Jan 2023 04:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
+        id S235319AbjAYL36 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Jan 2023 06:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234144AbjAYJxH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 04:53:07 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5383A4C2A
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 01:52:34 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id p12so8546535ilq.10
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 01:52:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OuciH5zAUURnBDw16GG9WV+6Jm2kIAhFJoGWXvuLyzY=;
-        b=A1AB+qgY+bNcqCoh6g/QPfcTbHSdfM703fBk6MwZVQpdjKXroZK1oH0ns7MrSkqpEh
-         EOFNTevaPYrK/s2JxRXzjpxKJuFDLK0q2y5rZGlM4eYwU42FRyAmNuFKT7Bg1y72UQr6
-         97toi8YHPu1hdYbPDOUE8UH3Qse8M8RNx9XwKsItw/AX5ZjEdGoF6VszDeJWjYB0aicF
-         ydXIqaQhWbVJDKjQyaFJQGQ8Tb4O2relzLKrriy0p8DNZHpby7I/ajeseKccsiM2etXU
-         gc06b1Ly5AKuKaPMG0ZIbCmyoYgFf9iOl8HavzkcQOMATVBkyu4NrQfUDAIvJdVcxVmJ
-         W1Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OuciH5zAUURnBDw16GG9WV+6Jm2kIAhFJoGWXvuLyzY=;
-        b=AAWSIz8KOjGh4TmAMRt9nZi51CUEdft/zqvTbTYRfss5DesHDutGZ/NyHNpZ8PnWji
-         g2g2q6P+hxz8isnMNyOpK4RZfjNdtpV6ky9RekQeAuOpJRMeHeqTwWp4Ye0EVTrSbT1S
-         9fh/yuz2XPcvCG/GWRm5MJRRux4SiMtlA9KNC5NCJwScvnyhsERbO02xumSXDD5Mc92u
-         Yh7Q7t+z8PEvTlmoWZfjSLEX5HCMGZ1+HugW9dJbA1pLMzs8Z0j7om7rWZh8hiShi5qa
-         EsaOJlKFCZ8ZFnUDrXI2mW/ssrrImrmdb770YpPPI5Z6soevZ9N4ipxtzHnGKcHU4Flc
-         FNtA==
-X-Gm-Message-State: AO0yUKUOfBdK9tHkqtcG7zmxVF5aTYaiTE1irBNKzKXtV9RmGcVlmzsI
-        QzJTAIcfidfevj5HZUV7clZUv/PiPaeHbAdTkSgfnQ==
-X-Google-Smtp-Source: AK7set/RqxBYpDySUQ4Hf1TOiGHp0yJPE0emZ8yXer/udU2W95b7BNk2ZoGFsf4v/GnYc+LqXkIFjxHDeLUfWqc82qo=
-X-Received: by 2002:a05:6e02:b23:b0:310:9cb4:223d with SMTP id
- e3-20020a056e020b2300b003109cb4223dmr495004ilu.164.1674640351299; Wed, 25 Jan
- 2023 01:52:31 -0800 (PST)
+        with ESMTP id S235398AbjAYL31 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 06:29:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7D42CFF6;
+        Wed, 25 Jan 2023 03:29:26 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 072FE614B8;
+        Wed, 25 Jan 2023 11:29:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AAC2C433EF;
+        Wed, 25 Jan 2023 11:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674646165;
+        bh=iVepgeT7psmWqr/2L8LpCH4RngFmQJ2i/zddXU3Ybms=;
+        h=From:Subject:Date:To:Cc:From;
+        b=aa0adWk8JIHYbDKjUCphZ1mzhrcTx2e5m+zTBZn9obQWuMBhYiKhvxE/PfkC0DrMo
+         n+Ti2ja6VfjxgUnPOpsi1+/EmtHqmyra/AonZ5w9wjQlfzKpsP+4TOI050CJaL0N1y
+         bKz7YhLgOmOvqok9PjXvsoVl3tKqVYUbksPXEapn+w0KefS9YB16xUcTypEO9pAwIN
+         evQ3wG1KZlyA608u+IFmR08EX1UGoUJze8vveYRXvWqAxEv1eQ5rc5zD6Fc879yXFq
+         13JMMXTEhD0lFVC6szsgPPomAG4klotXLnPAg8gEVmP0MH1tcrAZMyEp+bDrceHz66
+         q2f2/uwZQY7jw==
+From:   Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 00/12] acl: remove remaining posix acl handlers
+Date:   Wed, 25 Jan 2023 12:28:45 +0100
+Message-Id: <20230125-fs-acl-remove-generic-xattr-handlers-v1-0-6cf155b492b6@kernel.org>
 MIME-Version: 1.0
-References: <20221121112134.407362-1-glider@google.com> <20221121112134.407362-4-glider@google.com>
- <CAG_fn=WDjw1MVYhEh7K4HOpGNBWsq6YuyG6Xx7XcP4Xpu+KhZg@mail.gmail.com> <20230124130401.eb5d453213d557cf3b7a8ed6@linux-foundation.org>
-In-Reply-To: <20230124130401.eb5d453213d557cf3b7a8ed6@linux-foundation.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 25 Jan 2023 10:51:54 +0100
-Message-ID: <CAG_fn=XgBL00Oo5v7se5ZyP+uBbFSOaed4KReZVgpg3n8Nu95g@mail.gmail.com>
-Subject: Re: [PATCH 4/5] fs: hfs: initialize fsdata in hfs_file_truncate()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG4S0WMC/x2O0QqDMBAEf0XuuSeaVgj9ldKHmGw0YGO5UxHEf
+ 2/s47DMsAcpJEHpWR0k2JKmORdobxX50eUBnEJhMo25N63pOCo7P7HgM2/gAbn4nne3LMJFCBN
+ E+eEjgu06G6ylkuqdgntx2Y9XLGodV0VdQtf6FcS0/0+83uf5A07KJIqUAAAA
+To:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Seth Forshee <sforshee@kernel.org>,
+        "Christian Brauner (Microsoft)" <brauner@kernel.org>,
+        linux-erofs@lists.ozlabs.org, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3964; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=iVepgeT7psmWqr/2L8LpCH4RngFmQJ2i/zddXU3Ybms=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSRfFJq42SCo7mej0syzO7/VS69Ps21sFO48f9znuHr/fZEX
+ p52lO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSeIbhn+X/3zmPrKtsko21fh3Smv
+ 5k/WvP2Uo6Sw92TuXesanV+BYjw7wCO68bLxsFprMsyP59RaXIcbL7hMBFnntnmxRL2pSJsAIA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 10:04 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Tue, 24 Jan 2023 11:51:30 +0100 Alexander Potapenko <glider@google.com> wrote:
->
-> > On Mon, Nov 21, 2022 at 12:21 PM Alexander Potapenko <glider@google.com> wrote:
-> > >
-> > > When aops->write_begin() does not initialize fsdata, KMSAN may report
-> > > an error passing the latter to aops->write_end().
-> > >
-> > > Fix this by unconditionally initializing fsdata.
-> > >
-> > > Suggested-by: Eric Biggers <ebiggers@kernel.org>
-> > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > > Signed-off-by: Alexander Potapenko <glider@google.com>
-> >
-> > Dear FS maintainers,
-> >
-> > HFS/HFSPLUS are orphaned, can someone take this patch to their tree?
-> > Thanks in advance!
-> > (same for "fs: hfsplus: initialize fsdata in hfsplus_file_truncate()":
-> > https://lore.kernel.org/all/20221121112134.407362-5-glider@google.com/)
->
-> I grabbed both.
->
-> I removed the
->
->         Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->
-> because that might provoke the backport bots to backport this fix
-> across eight years worth of kernels.  Before KMSAN existed!
+Hey everyone,
 
-Right, makes sense.
+after we finished the introduction of the new posix acl api last cycle
+we still left the generic POSIX ACL xattr handler around for two
+reasons. First, because a few filesystems relied on the ->list() method
+of the generic POSIX ACL xattr handlers in their ->listxattr() inode
+operation. Second, during inode initalization in inode_init_always() the
+registered xattr handlers in sb->s_xattr are used to raise IOP_XATTR in
+inode->i_opflags.
+
+With the removal of the legacy POSIX ACL handlers it is at least
+possible for a filesystem to only implement POSIX ACLs but no other
+xattrs. If that were to happen we would miss to raise IOP_XATTR because
+sb->s_xattr would be NULL.
+
+Fix these things and then get rid of the misleading and effectively
+already unused generic POSIX ACL handlers.
+
+For most filesystems it is a trivial removal of the generic POSIX ACL
+handlers. Only for erofs, ext2, ext4, f2fs, jffs2, reiserfs, oc2fs the
+handler is used but rather easy to fix.
+
+All filesystems with reasonable integration into xfstests have been
+tested with:
+
+        ./check -g acl,attr,cap,idmapped,io_uring,perms,unlink
+
+All tests pass without regression on xfstests for-next branch.
+
+Since erofs doesn't have integration into xfstests yet afaict I have
+tested it with the testuite available in erofs-utils. They also all pass
+without any regressions.
+
+This branch depends on [1] which hopefully should be merged soon and can
+be pulled from [2] which already includes [1] so it's easy to test and
+compile.
+
+With this all remnants of the old POSIX ACL xattr handling will be gone.
+
+Thanks!
+Christian
+
+[1]: https://lore.kernel.org/lkml/20230125100040.374709-1-brauner@kernel.org
+[2]: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/vfs/idmapping.git tags/fs.acl.remove.generic.xattr.handlers.v1
+
+Signed-off-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+---
+Christian Brauner (12):
+      xattr: simplify listxattr helpers
+      xattr, posix acl: add listxattr helpers
+      xattr: remove unused argument
+      fs: drop unused posix acl handlers
+      erofs: drop posix acl handlers
+      ext2: drop posix acl handlers
+      ext4: drop posix acl handlers
+      f2fs: drop posix acl handlers
+      jffs2: drop posix acl handlers
+      ocfs2: drop posix acl handlers
+      reiserfs: drop posix acl handlers
+      acl: remove posix acl handlers
+
+ fs/9p/xattr.c                   |   4 --
+ fs/btrfs/xattr.c                |   4 --
+ fs/ceph/xattr.c                 |   4 --
+ fs/cifs/xattr.c                 |   4 --
+ fs/ecryptfs/inode.c             |   4 --
+ fs/erofs/xattr.c                |  49 ++++++++++++----
+ fs/erofs/xattr.h                |  21 -------
+ fs/ext2/xattr.c                 |  60 +++++++++++--------
+ fs/ext4/xattr.c                 |  71 +++++++++++++----------
+ fs/f2fs/xattr.c                 |  63 ++++++++++++--------
+ fs/gfs2/xattr.c                 |   2 -
+ fs/jffs2/xattr.c                |  42 +++++++-------
+ fs/jfs/xattr.c                  |   4 --
+ fs/nfs/nfs3_fs.h                |   1 -
+ fs/nfs/nfs3acl.c                |   6 --
+ fs/nfs/nfs3super.c              |   3 -
+ fs/nfsd/nfs4xdr.c               |   3 +-
+ fs/ntfs3/xattr.c                |   4 --
+ fs/ocfs2/xattr.c                |  41 +++++++------
+ fs/orangefs/xattr.c             |   2 -
+ fs/overlayfs/super.c            |   8 ---
+ fs/posix_acl.c                  |  20 -------
+ fs/reiserfs/xattr.c             |  38 ++++++------
+ fs/xattr.c                      | 124 ++++++++++++++++++++--------------------
+ fs/xfs/xfs_xattr.c              |   4 --
+ include/linux/posix_acl_xattr.h |   6 +-
+ include/linux/xattr.h           |   8 ++-
+ mm/shmem.c                      |   4 --
+ 28 files changed, 290 insertions(+), 314 deletions(-)
+---
+base-commit: 1b929c02afd37871d5afb9d498426f83432e71c2
+change-id: 20230125-fs-acl-remove-generic-xattr-handlers-4cfed8558d88
+
