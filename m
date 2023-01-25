@@ -2,190 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B33DD67B6D3
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 17:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1967B757
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 17:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbjAYQVw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Jan 2023 11:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S236030AbjAYQus (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Jan 2023 11:50:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235986AbjAYQVg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 11:21:36 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258DB5A815;
-        Wed, 25 Jan 2023 08:21:10 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3E64F1F854;
-        Wed, 25 Jan 2023 16:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674663640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HKEnDl7csQ+0+t/iqHglTAc7cEfTIinKAWBsLL25EQw=;
-        b=Ud2BsBuClrkdEaqETuF2PE7m3P/lFQfFf0x8jnUGEGmx+lZAVH4mCNi30yEOeORtwOfgHM
-        6nn/h7nzj1liEYUjCRBXlhR9EY+rhhKBZRiG2WxN4N+qMjIZxee1ZQfw3O0pCWPvk77TWF
-        xJ7xkEfiD0h4dHd14mys/wWBhCtgfSQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674663640;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HKEnDl7csQ+0+t/iqHglTAc7cEfTIinKAWBsLL25EQw=;
-        b=9R8LTQinysPeXO1GBb3wDtLBeYizazt1WwrpH1yGLtYHTLA4AFWiTvOG97w9cQBZZNvQke
-        8yon8PzSNCAzneCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24E601358F;
-        Wed, 25 Jan 2023 16:20:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Xkv/CNhW0WPRCwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 25 Jan 2023 16:20:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 96E1FA06B4; Wed, 25 Jan 2023 17:20:39 +0100 (CET)
-Date:   Wed, 25 Jan 2023 17:20:39 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 RESEND 3/8] vfs: plumb i_version handling into struct
- kstat
-Message-ID: <20230125162039.wquoqycq35t2skqj@quack3>
-References: <20230124193025.185781-1-jlayton@kernel.org>
- <20230124193025.185781-4-jlayton@kernel.org>
+        with ESMTP id S235836AbjAYQuP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 11:50:15 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AD46A79
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 08:50:14 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id t7-20020a05683014c700b006864760b1caso11483723otq.0
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 08:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9oBkpwDuDP6Raat/HRHsNpx8MqzIjjZSJojQEumXoyE=;
+        b=telMSbMEB1I/JdT8E+AOlYPkvLPDxj1UCnywL1f/zz+GxB6zyzUgN+Q3Q48l8AYc8X
+         qS5rmRFlzboD9JIVNM4srPZju+Dc0OvfYTnyPjpp4sHdEutwmKfLXtqzcN+4YmFBRVgu
+         A3oTpxaFO/E/7LaM1iu3pe6Iv0CmRV+MC10+sbVUAqr2eeBPD17IhS27buTMH3bCJoMu
+         fEQq5XzvwDAqtF1fp8r2H4g3vh98tijISo+CkjBRkXWvZWGfdkjpWZzF8VgIKtCc5sLs
+         +bZFNae0CmrxcmnBVuga8Dg0CQRlWnW+6m8p+riuFjzQ8BSrHATHKU3+MoO2RS3dWuby
+         cPfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9oBkpwDuDP6Raat/HRHsNpx8MqzIjjZSJojQEumXoyE=;
+        b=v70SAFhkBRE3DqefGBiRiXX7UAEkyr2Kd9a+ppbVs/I2XuKSKZ3EHeo2lx4xxuXKC7
+         Q4vitlMgDjG3HyjnEBH68ZAC1DlZnC618k8Kg5pewufnP8VtOIB1ghgTk/09BSuIqFzI
+         V+gWR3q8tCam0Bur52Y6vQ4epiWgn1RiV6piAe45Dv3JuQ1jWhrLmQGz9Jh1k2QhLYlf
+         PEj26EWlMQAc90EuLxqfR0QwoIu1snUCcFkSXRBFe9bdK9pVI4tUYWixJjtdkz9D+d/C
+         rZRay79UJm4/LkLB9I5Yic4wBiBs70Ef0TH/h6CVEvI+OfreRWxU7PBQdHpMeSbAoPBQ
+         fb/A==
+X-Gm-Message-State: AFqh2kobsT66jZkmfGyoQ90+LVfwG5cnJ4iYD8NVyhKu97U8VaxK9tUo
+        dN4bLtusn1JKiLVK/2RP1eVodD4pU4G99E+KABOTiAgkObA2pN2Vj+g=
+X-Google-Smtp-Source: AMrXdXsah5c2WKVW38d6ZSr7pPop+n/mEJC53KDRGLQOXrHcU20AK6F0ktCN8HrtzVAtxjIN7wyafP19A/nGyLOtNU8=
+X-Received: by 2002:a81:1d2:0:b0:433:f1c0:3f1c with SMTP id
+ 201-20020a8101d2000000b00433f1c03f1cmr4401576ywb.438.1674665403087; Wed, 25
+ Jan 2023 08:50:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230124193025.185781-4-jlayton@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-2-surenb@google.com>
+ <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 25 Jan 2023 08:49:50 -0800
+Message-ID: <CAJuCfpEcVCZaCGzc-Wim25eaV5e6YG1YJAAdKwZ6JHViB0z8aw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com,
+        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
+        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
+        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
+        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
+        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
+        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
+        jannh@google.com, shakeelb@google.com, tatashin@google.com,
+        edumazet@google.com, gthelen@google.com, gurua@google.com,
+        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
+        leewalsh@google.com, posk@google.com, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        qianweili@huawei.com, wangzhou1@hisilicon.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, l.stach@pengutronix.de,
+        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
+        matthias.bgg@gmail.com, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
+        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
+        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
+        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
+        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, miklos@szeredi.hu,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
+        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
+        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
+        loongarch@lists.linux.dev, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
+        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        devel@lists.orangefs.org, kexec@lists.infradead.org,
+        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
+        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 24-01-23 14:30:20, Jeff Layton wrote:
-> The NFS server has a lot of special handling for different types of
-> change attribute access, depending on the underlying filesystem. In
-> most cases, it's doing a getattr anyway and then fetching that value
-> after the fact.
-> 
-> Rather that do that, add a new STATX_CHANGE_COOKIE flag that is a
-> kernel-only symbol (for now). If requested and getattr can implement it,
-> it can fill out this field. For IS_I_VERSION inodes, add a generic
-> implementation in vfs_getattr_nosec. Take care to mask
-> STATX_CHANGE_COOKIE off in requests from userland and in the result
-> mask.
-> 
-> Since not all filesystems can give the same guarantees of monotonicity,
-> claim a STATX_ATTR_CHANGE_MONOTONIC flag that filesystems can set to
-> indicate that they offer an i_version value that can never go backward.
-> 
-> Eventually if we decide to make the i_version available to userland, we
-> can just designate a field for it in struct statx, and move the
-> STATX_CHANGE_COOKIE definition to the uapi header.
-> 
-> Reviewed-by: NeilBrown <neilb@suse.de>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Wed, Jan 25, 2023 at 1:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+>
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 2d6d790d9bed..6c7c70bf50dd 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -491,7 +491,13 @@ struct vm_area_struct {
+> >        * See vmf_insert_mixed_prot() for discussion.
+> >        */
+> >       pgprot_t vm_page_prot;
+> > -     unsigned long vm_flags;         /* Flags, see mm.h. */
+> > +
+> > +     /*
+> > +      * Flags, see mm.h.
+> > +      * WARNING! Do not modify directly.
+> > +      * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
+> > +      */
+> > +     unsigned long vm_flags;
+>
+> We have __private and ACCESS_PRIVATE() to help with enforcing this.
 
-Looks good to me. Feel free to add:
+Thanks for pointing this out, Peter! I guess for that I'll need to
+convert all read accesses and provide get_vm_flags() too? That will
+cause some additional churt (a quick search shows 801 hits over 248
+files) but maybe it's worth it? I think Michal suggested that too in
+another patch. Should I do that while we are at it?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/stat.c            | 17 +++++++++++++++--
->  include/linux/stat.h |  9 +++++++++
->  2 files changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/stat.c b/fs/stat.c
-> index d6cc74ca8486..f43afe0081fe 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -18,6 +18,7 @@
->  #include <linux/syscalls.h>
->  #include <linux/pagemap.h>
->  #include <linux/compat.h>
-> +#include <linux/iversion.h>
->  
->  #include <linux/uaccess.h>
->  #include <asm/unistd.h>
-> @@ -122,6 +123,11 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
->  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
->  				  STATX_ATTR_DAX);
->  
-> +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
-> +		stat->result_mask |= STATX_CHANGE_COOKIE;
-> +		stat->change_cookie = inode_query_iversion(inode);
-> +	}
-> +
->  	mnt_userns = mnt_user_ns(path->mnt);
->  	if (inode->i_op->getattr)
->  		return inode->i_op->getattr(mnt_userns, path, stat,
-> @@ -602,9 +608,11 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
->  
->  	memset(&tmp, 0, sizeof(tmp));
->  
-> -	tmp.stx_mask = stat->result_mask;
-> +	/* STATX_CHANGE_COOKIE is kernel-only for now */
-> +	tmp.stx_mask = stat->result_mask & ~STATX_CHANGE_COOKIE;
->  	tmp.stx_blksize = stat->blksize;
-> -	tmp.stx_attributes = stat->attributes;
-> +	/* STATX_ATTR_CHANGE_MONOTONIC is kernel-only for now */
-> +	tmp.stx_attributes = stat->attributes & ~STATX_ATTR_CHANGE_MONOTONIC;
->  	tmp.stx_nlink = stat->nlink;
->  	tmp.stx_uid = from_kuid_munged(current_user_ns(), stat->uid);
->  	tmp.stx_gid = from_kgid_munged(current_user_ns(), stat->gid);
-> @@ -643,6 +651,11 @@ int do_statx(int dfd, struct filename *filename, unsigned int flags,
->  	if ((flags & AT_STATX_SYNC_TYPE) == AT_STATX_SYNC_TYPE)
->  		return -EINVAL;
->  
-> +	/* STATX_CHANGE_COOKIE is kernel-only for now. Ignore requests
-> +	 * from userland.
-> +	 */
-> +	mask &= ~STATX_CHANGE_COOKIE;
-> +
->  	error = vfs_statx(dfd, filename, flags, &stat, mask);
->  	if (error)
->  		return error;
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index ff277ced50e9..52150570d37a 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -52,6 +52,15 @@ struct kstat {
->  	u64		mnt_id;
->  	u32		dio_mem_align;
->  	u32		dio_offset_align;
-> +	u64		change_cookie;
->  };
->  
-> +/* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-> +
-> +/* mask values */
-> +#define STATX_CHANGE_COOKIE		0x40000000U	/* Want/got stx_change_attr */
-> +
-> +/* file attribute values */
-> +#define STATX_ATTR_CHANGE_MONOTONIC	0x8000000000000000ULL /* version monotonically increases */
-> +
->  #endif
-> -- 
-> 2.39.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
