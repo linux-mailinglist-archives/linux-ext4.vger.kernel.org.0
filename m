@@ -2,47 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD8F67AD78
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 10:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E024A67ADF8
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 10:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbjAYJLN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Jan 2023 04:11:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        id S235291AbjAYJbR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Jan 2023 04:31:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234644AbjAYJLK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 04:11:10 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA8C42BD2;
-        Wed, 25 Jan 2023 01:10:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hk+0OseVD3OO+ksIzhtEU5LrZV8KXEqXC3zpbOGn/ls=; b=qsa+lu0U9mwFGWjutATG/A9iym
-        F+d7IIQowgNB15FNtA53/QA/RcEQKz2NQMKXkkpiUFb08vzCFWx/JFLhZ0br08C5Ckzefhutl3QCt
-        ceW/0pGOVnNMXlzdiPZkUHL2edRHXWt902QL7eOXJMDQBzbzHfjVb3six/mnj0Lwks7UYNitCDD/a
-        WjH6Y7VU5VmGXuLCLjlq1cs0p/QmTHDQxmy7G6T6M9gy021CLYFDOBZwIb0ILx+d/MfDO2qH3S0mE
-        cy+gKIGp5mQPEgu/vJHsyE3Wju/jlQ1l3hOGxA/ErAiDF4zG2A5eFJiQUeMaQql9LtlJhR0gyt8F5
-        77Iz0wbQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pKbmI-0026lz-24;
-        Wed, 25 Jan 2023 09:09:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S234759AbjAYJbK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 04:31:10 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F139953B1A;
+        Wed, 25 Jan 2023 01:30:56 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B63953006C4;
-        Wed, 25 Jan 2023 10:09:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 673382C247607; Wed, 25 Jan 2023 10:09:37 +0100 (CET)
-Date:   Wed, 25 Jan 2023 10:09:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C6E0521C79;
+        Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674639054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jognpwZWDP/caNk47/2I5pB+VrjaxgWmcyaDbH1onsg=;
+        b=Pij8ssoJlw6k6tQr48jFXJyevDWch308vx0CLomRDmV84uEdMgTC6NhqR8VCkgI74II7DW
+        anm6YuwD0GfDOi17b+9Zs5S20/ilyumOWkOAGicsthADYQDP18s2AfYp6RzP5d5hjTOUwm
+        W4uNWFQcSkUDrOF5p/6xahiK2Zzyzto=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 684E91358F;
+        Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yJRSGc720GMeHAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:30:54 +0000
+Date:   Wed, 25 Jan 2023 10:30:53 +0100
+From:   Michal Hocko <mhocko@suse.com>
 To:     Suren Baghdasaryan <surenb@google.com>
 Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com,
+        jglisse@google.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        mgorman@techsingularity.net, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, peterz@infradead.org,
         ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
         songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
         dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
@@ -109,40 +111,42 @@ Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
         linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
         selinux@vger.kernel.org, alsa-devel@alsa-project.org,
         kernel-team@android.com
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
+ with modifier calls
+Message-ID: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-2-surenb@google.com>
+ <20230125083851.27759-4-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-2-surenb@google.com>
+In-Reply-To: <20230125083851.27759-4-surenb@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
+> Replace direct modifications to vma->vm_flags with calls to modifier
+> functions to be able to track flag changes and to keep vma locking
+> correctness.
 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 2d6d790d9bed..6c7c70bf50dd 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -491,7 +491,13 @@ struct vm_area_struct {
->  	 * See vmf_insert_mixed_prot() for discussion.
->  	 */
->  	pgprot_t vm_page_prot;
-> -	unsigned long vm_flags;		/* Flags, see mm.h. */
-> +
-> +	/*
-> +	 * Flags, see mm.h.
-> +	 * WARNING! Do not modify directly.
-> +	 * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
-> +	 */
-> +	unsigned long vm_flags;
+Is this a manual (git grep) based work or have you used Coccinele for
+the patch generation?
 
-We have __private and ACCESS_PRIVATE() to help with enforcing this.
+My potentially incomplete check
+$ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
+
+shows that nothing should be left after this. There is still quite a lot
+of direct checks of the flags (more than 600). Maybe it would be good to
+make flags accessible only via accessors which would also prevent any
+future direct setting of those flags in uncontrolled way as well.
+
+Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
+-- 
+Michal Hocko
+SUSE Labs
