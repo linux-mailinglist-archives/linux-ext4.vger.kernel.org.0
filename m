@@ -2,115 +2,153 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057FA67C9C0
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Jan 2023 12:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2617267CA12
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Jan 2023 12:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbjAZLWc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Jan 2023 06:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S236708AbjAZLg4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Jan 2023 06:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235097AbjAZLWb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Jan 2023 06:22:31 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246789013;
-        Thu, 26 Jan 2023 03:22:31 -0800 (PST)
+        with ESMTP id S237296AbjAZLgv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Jan 2023 06:36:51 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3265A81F;
+        Thu, 26 Jan 2023 03:36:44 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D7A541FFBB;
-        Thu, 26 Jan 2023 11:22:29 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9B7B921E18;
+        Thu, 26 Jan 2023 11:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674732149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yB3FfIu4dWsCpXF98x4AGtRjoXShmEuDW2q5TwTJLKQ=;
-        b=i+15vPCY4+Efg2v8X4MjYaiKQTsKsFp0HjfZd46nXG5qPW6zP+U0z4elzbceJ0Jld6r9WQ
-        eoaSPPdf7AFUWmQK7/GfQTt0jTOZ9yWBUWfNHvOCXNH25O3PphFulAJSrM0RY4GQ6gZ5eq
-        zEmD9NaNikDitKzB1g44IQJmgYYMoPg=
+        t=1674733003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gZo/hipER5aaiyynJccvdQAIsKbKAOOGsG3+fBBawmI=;
+        b=GvmnRp61CutRXZXP9y6Y6BQDkkDMw6NcrQVaYKa4NMurS1PRKjRQhhE4guzKDazs3hSxC+
+        ndP4PVIKfMAayeZZIjnttkWxgXu7oylnqCEHS6M81GaNxm4cZeg+U7oiEy4cmMfqzRpFbi
+        q2pQ2nSX4sjSphVHXuynlbtshf2DcWI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674732149;
+        s=susede2_ed25519; t=1674733003;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yB3FfIu4dWsCpXF98x4AGtRjoXShmEuDW2q5TwTJLKQ=;
-        b=E9GEW4wVEXB+80/P5wMXHn3qwO5RugKpcXwl/fgX6Yo33lYIBdcZNnIkIJDwXCp8K9YIW1
-        aH5wWMYCKx7R8iAA==
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gZo/hipER5aaiyynJccvdQAIsKbKAOOGsG3+fBBawmI=;
+        b=F2/XdjRoMb0rAEXTmbvKuoHDqhYzgQq+nMmEQiW29YDwXldUVDKOLo/j5aTRg747sKaZhV
+        fYz+VdLei7U2jxAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC0EE139B3;
-        Thu, 26 Jan 2023 11:22:29 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85C91139B3;
+        Thu, 26 Jan 2023 11:36:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IlTJMXVi0mOtGgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 26 Jan 2023 11:22:29 +0000
+        id 4ySlIMtl0mO1IgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 26 Jan 2023 11:36:43 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 5D2A5A06B4; Thu, 26 Jan 2023 12:22:29 +0100 (CET)
+        id DCD54A06B4; Thu, 26 Jan 2023 12:36:42 +0100 (CET)
+Date:   Thu, 26 Jan 2023 12:36:42 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH] ext4: Fix possible corruption when moving a directory
-Date:   Thu, 26 Jan 2023 12:22:21 +0100
-Message-Id: <20230126112221.11866-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        neilb@suse.de, viro@zeniv.linux.org.uk, zohar@linux.ibm.com,
+        xiubli@redhat.com, chuck.lever@oracle.com, lczerner@redhat.com,
+        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Colin Walters <walters@verbum.org>
+Subject: Re: [PATCH v8 RESEND 2/8] fs: clarify when the i_version counter
+ must be updated
+Message-ID: <20230126113642.eenghs2wvfrlnlak@quack3>
+References: <20230124193025.185781-1-jlayton@kernel.org>
+ <20230124193025.185781-3-jlayton@kernel.org>
+ <20230125160625.zenzybjgie224jf6@quack3>
+ <3c5cf7c7f9e206a3d7c4253de52015dda97ef41e.camel@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1600; i=jack@suse.cz; h=from:subject; bh=BBtklDzkyhuk9nZhBwgfsOujMuK0kpm5e60aYHGYZ58=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBj0mJn3kGxmRC7e+nneAC9bMxtlGofntiZjHcwZt5J 4/46Z+eJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCY9JiZwAKCRCcnaoHP2RA2QFoB/ wPKCW/39BogJ3VZoskO7j9xLtWg6QeouVXskjwewbGZot8LvnUJWY6KBnBKvhp0wy6w4oRhEJtxoVb xjh1+U/sYawIp7rmt3a3eIHaXNixML5WtpeCY7CGBG4e05qUEdHr+2ewNjLX3qrbGM9M1yb1iVvInM C2sqFLD9DyzbDiZbe3QL2xCH0aOIgw6s1u8XQj1LUlN2tEk/owyeZT0w/k/TMmRTg2FFY3eM3v/x53 09fWUWBwcHQrl8FYVm1ujwFS7uzzhWQGLFI3oV2hQorfReysLaThKO7Bi52lGWyBXHH9bpX6kQZFUL 8RYpdR/CkuDCtpP9h9wQTIY5hWLUJd
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c5cf7c7f9e206a3d7c4253de52015dda97ef41e.camel@kernel.org>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When we are renaming a directory to a different directory, we need to
-update '..' entry in the moved directory. However nothing prevents moved
-directory from being modified and even converted from the inline format
-to the normal format. When such race happens the rename code gets
-confused and we crash. Fix the problem by locking the moved directory.
+On Thu 26-01-23 05:54:16, Jeff Layton wrote:
+> On Wed, 2023-01-25 at 17:06 +0100, Jan Kara wrote:
+> > On Tue 24-01-23 14:30:19, Jeff Layton wrote:
+> > > The i_version field in the kernel has had different semantics over
+> > > the decades, but NFSv4 has certain expectations. Update the comments
+> > > in iversion.h to describe when the i_version must change.
+> > > 
+> > > Cc: Colin Walters <walters@verbum.org>
+> > > Cc: NeilBrown <neilb@suse.de>
+> > > Cc: Trond Myklebust <trondmy@hammerspace.com>
+> > > Cc: Dave Chinner <david@fromorbit.com>
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > Looks good to me. But one note below:
+> > 
+> > > diff --git a/include/linux/iversion.h b/include/linux/iversion.h
+> > > index 6755d8b4f20b..fced8115a5f4 100644
+> > > --- a/include/linux/iversion.h
+> > > +++ b/include/linux/iversion.h
+> > > @@ -9,8 +9,25 @@
+> > >   * ---------------------------
+> > >   * The change attribute (i_version) is mandated by NFSv4 and is mostly for
+> > >   * knfsd, but is also used for other purposes (e.g. IMA). The i_version must
+> > > - * appear different to observers if there was a change to the inode's data or
+> > > - * metadata since it was last queried.
+> > > + * appear larger to observers if there was an explicit change to the inode's
+> > > + * data or metadata since it was last queried.
+> > > + *
+> > > + * An explicit change is one that would ordinarily result in a change to the
+> > > + * inode status change time (aka ctime). i_version must appear to change, even
+> > > + * if the ctime does not (since the whole point is to avoid missing updates due
+> > > + * to timestamp granularity). If POSIX or other relevant spec mandates that the
+> > > + * ctime must change due to an operation, then the i_version counter must be
+> > > + * incremented as well.
+> > > + *
+> > > + * Making the i_version update completely atomic with the operation itself would
+> > > + * be prohibitively expensive. Traditionally the kernel has updated the times on
+> > > + * directories after an operation that changes its contents. For regular files,
+> > > + * the ctime is usually updated before the data is copied into the cache for a
+> > > + * write. This means that there is a window of time when an observer can
+> > > + * associate a new timestamp with old file contents. Since the purpose of the
+> > > + * i_version is to allow for better cache coherency, the i_version must always
+> > > + * be updated after the results of the operation are visible. Updating it before
+> > > + * and after a change is also permitted.
+> > 
+> > This sounds good but it is not the case for any of the current filesystems, is
+> > it? Perhaps the documentation should mention this so that people are not
+> > confused?
+> 
+> Correct. Currently, all filesystems change the times and version before
+> a write instead of after. I'm hoping that situation will change soon
+> though, as I've been working on a patchset to fix this for tmpfs, ext4
+> and btrfs.
 
-CC: stable@vger.kernel.org
-Fixes: 32f7f22c0b52 ("ext4: let ext4_rename handle inline dir")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/namei.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+That is good but we'll see how long it takes to get merged. AFAIR it is not
+a complete nobrainer ;)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index dd28453d6ea3..270fbcba75b6 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3872,9 +3872,16 @@ static int ext4_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 			if (new.dir != old.dir && EXT4_DIR_LINK_MAX(new.dir))
- 				goto end_rename;
- 		}
-+		/*
-+		 * We need to protect against old.inode directory getting
-+		 * converted from inline directory format into a normal one.
-+		 */
-+		inode_lock_nested(old.inode, I_MUTEX_NONDIR2);
- 		retval = ext4_rename_dir_prepare(handle, &old);
--		if (retval)
-+		if (retval) {
-+			inode_unlock(old.inode);
- 			goto end_rename;
-+		}
- 	}
- 	/*
- 	 * If we're renaming a file within an inline_data dir and adding or
-@@ -4006,6 +4013,8 @@ static int ext4_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 	} else {
- 		ext4_journal_stop(handle);
- 	}
-+	if (old.dir_bh)
-+		inode_unlock(old.inode);
- release_bh:
- 	brelse(old.dir_bh);
- 	brelse(old.bh);
+> If you still want to see something for this though, what would you
+> suggest for verbiage?
+
+Sure:
+
+... the i_version must a be updated after the results of the operation are
+visible (note that none of the filesystems currently do this, it is a work
+in progress to fix this).
+
+And once your patches are merged, you can also delete this note :).
+
+								Honza
 -- 
-2.35.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
