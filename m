@@ -2,162 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E06967BACD
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jan 2023 20:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D476667C1BD
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Jan 2023 01:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236203AbjAYTXj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Jan 2023 14:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S236265AbjAZAeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Jan 2023 19:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236208AbjAYTXS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 14:23:18 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349295FEC
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 11:23:01 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id f5-20020a9d5f05000000b00684c0c2eb3fso11697832oti.10
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Jan 2023 11:23:01 -0800 (PST)
+        with ESMTP id S236228AbjAZAeB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Jan 2023 19:34:01 -0500
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B583C2AE;
+        Wed, 25 Jan 2023 16:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PCnMypYs8jymH6Ufuva+9r/69Y/DZs8kYxwQEYrzQFk=;
-        b=hXTUs83qvSMCw0sqrewtph/1zyRGQA8EwV9VOqASoIhN1O27YlTeLHvU30LwpkaPKE
-         6ZtbduOBpeU0Mk6yScQyxHGjdOZ8W8NbAK7HCSbKR2qQVwpslpoP2Mqh8DnM60UrkSEV
-         Fy/rJx/xAj6ReR1yQheSDvUeiLsUOZe36GsXUe+/pA5dp4+pot+ScO1k5jhTafZOkoJo
-         vEjMe7B3/0BupSIQn5CSlkYjolaKBFMYB73xyId061H8p1ZYZbkvvK9SPdZltanRDpUl
-         vOuM+M/xFo7tmOP85pcv8h038+SVqlBqYWxO3Lgun0O5W06va+PJHK2pFsHgrhvmIiGL
-         lvow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PCnMypYs8jymH6Ufuva+9r/69Y/DZs8kYxwQEYrzQFk=;
-        b=1yzbea5L8MD6J4foXCFJAN3L+LCPv6i4N6HE20KZWJ+L52IbEK91uSRVMJl6HHmbuP
-         l5pxced87SXfAc7OjEtsjUcC86/qj1XXB4l+mdBmJhRt36sujYx2XmV8U9h5bkbOWZt/
-         zJk5BF3Bg0nSjpdbzD/5Fwls5JZJyQ3MFuO7eSXFul7OBPrpZUafRGYVXuYgngGfGB5N
-         u2p5qw5BT8683WE80bwhgsS5OJjV0i56ywu1mMmicqsUkdrt3+zoQolTxslXceXvvS/e
-         CbK1crreNn9k5JFXIn0i8DtTl0A5x+GsFDEqzD2uorLwfamsXyfhDz2s/shU9SeLF72R
-         ANUQ==
-X-Gm-Message-State: AFqh2kqvzZYjkWKc0DBxZAE8Q7DgkX98B1EUEIqb9niBURZ0h0VX+Xe7
-        41zeyUb+LZc5MR79fIGDLYnyV6CO/WAwL1CzYmnnlYPoCrcn8LPJrYs=
-X-Google-Smtp-Source: AK7set/Rj29H3r8vHaYccCmp943Un+QyMRF/w8dcRdt99GFw8apI+/L+5tSmXBTsBLdlTBniti7hA8kyFbpjr3H10kc=
-X-Received: by 2002:a0d:d456:0:b0:507:26dc:ebd with SMTP id
- w83-20020a0dd456000000b0050726dc0ebdmr298632ywd.455.1674674569763; Wed, 25
- Jan 2023 11:22:49 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1674693241; x=1706229241;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   content-transfer-encoding;
+  bh=nuFZ7JWueZSk4ZKs2v/HsBakEfBEo8m7KeqzL4CyUT4=;
+  b=WTntRHfkfxbWhMoiYdHNfQDVgNhbj9QdLCSICQuwBFKztyd2UjkAPFil
+   NqwYu+zIAv3tfF085gFpZxZ3rSlbybdCi+Mpv05ky1M3stdyNrL1GhKUl
+   Oqd09OFuqRNHKU8WFmjkznSHXsQ7YrgQgAaMs2kdg3gJWDGelPE//u7+w
+   I=;
+X-IronPort-AV: E=Sophos;i="5.97,246,1669075200"; 
+   d="scan'208";a="175195278"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 00:34:01 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id D7CFE81A79;
+        Thu, 26 Jan 2023 00:33:59 +0000 (UTC)
+Received: from EX19D002UWC004.ant.amazon.com (10.13.138.186) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Thu, 26 Jan 2023 00:33:56 +0000
+Received: from [192.168.18.75] (10.43.162.56) by EX19D002UWC004.ant.amazon.com
+ (10.13.138.186) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.7; Thu, 26 Jan 2023
+ 00:33:55 +0000
+Message-ID: <053b60a6-133e-5d59-0732-464d5160772a@amazon.com>
+Date:   Wed, 25 Jan 2023 16:33:54 -0800
 MIME-Version: 1.0
-References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-2-surenb@google.com>
- <Y9F19QEDX5d/44EV@casper.infradead.org>
-In-Reply-To: <Y9F19QEDX5d/44EV@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 25 Jan 2023 11:22:38 -0800
-Message-ID: <CAJuCfpH+LMFX=TT04gSMA05cz_-CXMum6fobRrduWvzm1HWPmQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net,
-        liam.howlett@oracle.com, peterz@infradead.org,
-        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
-        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
-        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
-        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
-        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
-        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
-        jannh@google.com, shakeelb@google.com, tatashin@google.com,
-        edumazet@google.com, gthelen@google.com, gurua@google.com,
-        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
-        leewalsh@google.com, posk@google.com, will@kernel.org,
-        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
-        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        qianweili@huawei.com, wangzhou1@hisilicon.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
-        airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, l.stach@pengutronix.de,
-        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
-        matthias.bgg@gmail.com, robdclark@gmail.com,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
-        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
-        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
-        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, miklos@szeredi.hu,
-        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
-        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
-        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
-        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
-        loongarch@lists.linux.dev, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
-        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        devel@lists.orangefs.org, kexec@lists.infradead.org,
-        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
-        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Content-Language: en-US
+From:   "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Subject: EXT4 IOPS degradation between 4.14 and 5.10
+To:     Jan Kara <jack@suse.cz>, <tytso@mit.edu>,
+        <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <abuehaze@amazon.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.56]
+X-ClientProxiedBy: EX13D31UWA002.ant.amazon.com (10.43.160.82) To
+ EX19D002UWC004.ant.amazon.com (10.13.138.186)
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 10:33 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > +                              unsigned long flags)
-> > +{
-> > +     vma->vm_flags = flags;
->
-> vm_flags are supposed to have type vm_flags_t.  That's not been
-> fully realised yet, but perhaps we could avoid making it worse?
->
-> >       pgprot_t vm_page_prot;
-> > -     unsigned long vm_flags;         /* Flags, see mm.h. */
-> > +
-> > +     /*
-> > +      * Flags, see mm.h.
-> > +      * WARNING! Do not modify directly.
-> > +      * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
-> > +      */
-> > +     unsigned long vm_flags;
->
-> Including changing this line to vm_flags_t
+Hi Jan
 
-Good point. Will make the change. Thanks!
+As discussed in the previous thread I'm chasing IOPS regression between 
+4.14 -> 5.10 kernels.
+https://lore.kernel.org/lkml/20230112113820.hjwvieq3ucbwreql@quack3/T/
+<https://lore.kernel.org/lkml/20230112113820.hjwvieq3ucbwreql@quack3/T/>
+
+Last issue we discussed was difficult to resolve so keeping it on the 
+back burner for now.
+
+I did some more bisecting and saw another series of patches that 
+potentially impacts iops score:
+72b045aecdd856b083521f2a963705b4c2e59680 (mm: implement 
+find_get_pages_range_tag())
+
+Running fio tests on tip as 9c19a9cb1642c074aa8bc7693cd4c038643960ae 
+(including the 16 patch series) vs tip as
+6b4c54e3787bc03e810062bd257a3b05fd9c72d6 (without the above series) 
+shows an IOPS jump.
+
+Fio with buffered io/fsync=1/randwrite
+
+With HEAD as 9c19a9cb1642c074aa8bc7693cd4c038643960ae (with the above 
+series)
+
+write: io=445360KB, bw=7418.6KB/s, *iops=463*, runt= 60033msec
+clat (usec): min=4, max=32132, avg=311.90, stdev=1812.74
+lat (usec): min=5, max=32132, avg=312.28, stdev=1812.74
+clat percentiles (usec):
+| 1.00th=[ 8], 5.00th=[ 10], 10.00th=[ 16], 20.00th=[ 25],
+| 30.00th=[ 36], 40.00th=[ 47], 50.00th=[ 60], 60.00th=[ 71],
+| 70.00th=[ 84], 80.00th=[ 97], 90.00th=[ 111], 95.00th=[ 118],
+| 99.00th=[11840], 99.50th=[15936], 99.90th=[21888], 99.95th=[23936],
+
+With HEAD as 6b4c54e3787bc03e810062bd257a3b05fd9c72d6(without the above 
+series)
+
+write: io=455184KB, bw=7583.4KB/s, *iops=473*, runt= 60024msec
+clat (usec): min=6, max=24325, avg=319.72, stdev=1694.52
+lat (usec): min=6, max=24326, avg=319.99, stdev=1694.53
+clat percentiles (usec):
+| 1.00th=[ 9], 5.00th=[ 11], 10.00th=[ 17], 20.00th=[ 26],
+| 30.00th=[ 38], 40.00th=[ 50], 50.00th=[ 60], 60.00th=[ 73],
+| 70.00th=[ 85], 80.00th=[ 98], 90.00th=[ 111], 95.00th=[ 118],
+| 99.00th=[ 9792], 99.50th=[14016], 99.90th=[21888], 99.95th=[22400],
+| 99.99th=[24192]
+
+
+I also see that number of handles per transaction were much higher 
+before this patch series
+
+0ms waiting for transaction
+0ms request delay
+20ms running transaction
+0ms transaction was being locked
+0ms flushing data (in ordered mode)
+10ms logging transaction
+*13524us average transaction commit time*
+*73 handles per transaction*
+0 blocks per transaction
+1 logged blocks per transaction
+
+vs after the patch series.
+
+0ms waiting for transaction
+0ms request delay
+20ms running transaction
+0ms transaction was being locked
+0ms flushing data (in ordered mode)
+20ms logging transaction
+*21468us average transaction commit time*
+*66 handles per transaction*
+1 blocks per transaction
+1 logged blocks per transaction
+
+This is probably again helping in bunching the writeback transactions 
+and increasing throughput.
+
+I looked at the code to understand what might be going on.
+It seems like commit 72b045aecdd856b083521f2a963705b4c2e59680 changes 
+the behavior of find_get_pages_range_tag.
+Before this commit if find_get_pages_tag cannot find nr_pages 
+(PAGEVEC_SIZE) it returns the number of pages found as ret and
+sets the *index to the last page it found + 1. After the commit the 
+behavior changes such that if we don’t find nr_pages pages
+we set the index to end and not to the last found page. (added diff from 
+above commit)
+Since pagevec_lookup_range_tag is always called in a while loop (index 
+<= end) the code before the commit helps in coalescing
+writeback of pages if there are multiple threads doing write as it might 
+keep finding new dirty (tagged) pages since it doesn’t set index to end.
+
++ /*
++ * We come here when we got at @end. We take care to not overflow the
++ * index @index as it confuses some of the callers. This breaks the
++ * iteration when there is page at index -1 but that is already broken
++ * anyway.
++ */
++ if (end == (pgoff_t)-1)
++ *index = (pgoff_t)-1;
++ else
++ *index = end + 1;
++out:
+rcu_read_unlock();
+
+- if (ret)
+- *index = pages[ret - 1]->index + 1;
+-
+
+ From the description of the patch i didn't see any mention of this 
+functional change.
+Was this change intentional and did help some usecase or general 
+performance improvement?
+
+Thanks
+Rishabh
+
