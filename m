@@ -2,52 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED5B67ECB6
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jan 2023 18:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4785B67D181
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Jan 2023 17:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbjA0Rrb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Jan 2023 12:47:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S232830AbjAZQ0p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Jan 2023 11:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjA0Rra (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Jan 2023 12:47:30 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8867D2AB
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Jan 2023 09:47:28 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 30RHl07C003043
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Jan 2023 12:47:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1674841622; bh=aGEe9mvjMjdDcvfHbHPcQqZAinng9dGaYQVeh7gV+E8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Y1lAe8HaBr+NaPrzQNZ6uMjYTEynHSH7TGmMR37PsqE355wVhN8sfKfcMPvgyiOXi
-         kpA3VoqZH8rE6TqJNZi/h1sSqYAHLjrPAdWKGjrZBirOGC7OkdfBJpXTqGkVnQ4S6Q
-         O206E8ePoWiH7snsg86s4LWFcqC23WW6N74Rh1d3c+WrEwM+Oq/y2SqWBwsGl/uL05
-         n1/AEp7Fgcgw81LtdiK7HSL0vEIXG5wb/YOrx0a62lJjpgVjQ4xdKlQhmNKfOrxLXX
-         D6xAOt5BXYyy6doBW7ZCgFAWInH8KEzBhkB62wqGq0TXvhQE6ZzrqqlCmkwv/EeHE1
-         yNvcZ4B1UG6Cw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9A49015C3589; Thu, 26 Jan 2023 11:01:53 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "lihaoxiang (F)" <lihaoxiang9@huawei.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        "lijinlin (A)" <lijinlin3@huawei.com>, linfeilong@huawei.com,
-        louhongxiang@huawei.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] mmp:fix wrong comparison in ext2fs_mmp_stop
-Date:   Thu, 26 Jan 2023 11:01:52 -0500
-Message-Id: <167474888836.17682.11878698054727825163.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <d791b3d2-c438-3541-76ae-d228ba7b8cd4@huawei.com>
-References: <d791b3d2-c438-3541-76ae-d228ba7b8cd4@huawei.com>
+        with ESMTP id S232362AbjAZQ0I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Jan 2023 11:26:08 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2FB71678
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Jan 2023 08:25:37 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-50112511ba7so30268657b3.3
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Jan 2023 08:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+        b=BrNExWGHbV1NeR+vu2Js5zAqwDKTAmFhHgoWjYZ0a3qbH7rru8W3QViuclznskZkVo
+         6Q5eqrGX7jMOOdvE9K9lsVmJpHX9roidNQoqd4ah6qpZ3z5AR/LzfumpWsF7qxr+L/L7
+         2EeJAw9MATGkA5VBf2UwOc7KCg21F0CUspP8pGqPmL78PHbmYrJgHGcDXuiJf+tpyEq5
+         mYd3qiJmdB/mmqbT25mkgF6e/9yHOLIF4ZmJU2qiUjSg09+a1L9BOQF70sP/z/t1hEtG
+         N3QguNCw23qX8RL/9XVLJb/vAzwIwx19tcG6Myly1SJ+d6fdbBsCbrW+Wp9iSE9SLjFe
+         r7Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+        b=vG7Q3BFH0RJrnGZSXp+ImZmUTVhRrQUCX0LhWXWbn3eCeNLhcVQgODgiNR9ZyKYFV5
+         ewc9o+pPkbnvuJMXbOVuKCaEra5TqfTZJzz3QEOGoTngBcTbsTOwvvKcd+pmaOISxx0x
+         skK6HDhRRUzZiYwQ3kywk6DvRzEOTbuveorbWRvDeFFnwS3xwrDcHVhLP71424T/EPmJ
+         YqOhSDBwbmXsJ8jEnrvsAtlL7CnyrD1pPhUT6LI90FnL6r7eRqyn1geSgpKyouYCBNqv
+         oQT03TN9nqWR81Nbsz/ZoqnClMaNURuAW2dWKcqyGxyobPtMqpNSxpVj3en+V2Szrp3B
+         7QFQ==
+X-Gm-Message-State: AO0yUKVHyBEAUgaYHgRG80xwZ/3keLOXHgbV+YUu0Eqsy2QLUX1V8qB7
+        6Nl5radlDnCtgAbK8NEA1bxch/Yt9OfHoSBMk4o71sC0ll3PgO8N7n9dOg==
+X-Google-Smtp-Source: AMrXdXvRVLeaIi85wIrJBS5zRkOyr5/BQ66PCe0y1aLe9hmWIu7jqHBlhyy2SYPoXbE9x4WotKo1j1aRHLVU6Hd1LsI=
+X-Received: by 2002:a81:1b8b:0:b0:4ff:774b:7ffb with SMTP id
+ b133-20020a811b8b000000b004ff774b7ffbmr3541685ywb.218.1674750315051; Thu, 26
+ Jan 2023 08:25:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-2-surenb@google.com>
+ <Y9JFFYjfJf9uDijE@kernel.org> <Y9KTUw/04FmBVplw@kernel.org> <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+In-Reply-To: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 26 Jan 2023 08:25:03 -0800
+Message-ID: <CAJuCfpHs4wvQpitiAYc+PQX3LnitF=wvm=zVX7CzMozzmnbcnw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, akpm@linux-foundation.org,
+        michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
+        vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net,
+        dave@stgolabs.net, liam.howlett@oracle.com, peterz@infradead.org,
+        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
+        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
+        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
+        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
+        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
+        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
+        jannh@google.com, shakeelb@google.com, tatashin@google.com,
+        edumazet@google.com, gthelen@google.com, gurua@google.com,
+        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
+        leewalsh@google.com, posk@google.com, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        qianweili@huawei.com, wangzhou1@hisilicon.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, l.stach@pengutronix.de,
+        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
+        matthias.bgg@gmail.com, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
+        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
+        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
+        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
+        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, miklos@szeredi.hu,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
+        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
+        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
+        loongarch@lists.linux.dev, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
+        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        devel@lists.orangefs.org, kexec@lists.infradead.org,
+        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
+        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,27 +136,35 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 29 Nov 2022 15:02:39 +0800, lihaoxiang (F) wrote:
-> In our knowledge, ext2fs_mmp_stop use to process the rest of work
-> when mmp will finish. Critically, it must check if the mmp block is
-> not changed. But there exist an error in comparing the mmp and mmp_cmp.
-> 
-> Look to ext2fs_mmp_read, the assignment of mmp_cmp retrieve from the
-> superblock of disk and it copy to mmp_buf if mmp_buf is not none
-> and not equal to mmp_cmp in the meanwhile. However, ext2fs_mmp_stop
-> pass the no NULL pointer fs->mmp_buf which has possed the mmp info to
-> ext2fs_mmp_read. Consequently, ext2fs_mmp_read override fs->mmp_buf
-> by fs->mmp_cmp so that loss the meaning of comparing themselves
-> after that and worse yet, couldn't judge whether the struct of mmp
-> has changed.
-> 
-> [...]
+On Thu, Jan 26, 2023 at 7:09 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
+> > On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
+> > > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> > > > +/* Use when VMA is not part of the VMA tree and needs no locking */
+> > > > +static inline void init_vm_flags(struct vm_area_struct *vma,
+> > > > +                          unsigned long flags)
+> > >
+> > > I'd suggest to make it vm_flags_init() etc.
+> >
+> > Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+>
+> Perhaps vma_VERB_flags()?
+>
+> vma_init_flags()
+> vma_reset_flags()
+> vma_set_flags()
+> vma_clear_flags()
+> vma_mod_flags()
 
-Applied, thanks!
+Due to excessive email bouncing I posted the v3 of this patchset using
+the original per-VMA patchset's distribution list. That might have
+dropped Mike from the list. Sorry about that Mike, I'll add you to my
+usual list of suspects :)
+The v3 is here:
+https://lore.kernel.org/all/20230125233554.153109-1-surenb@google.com/
+and Andrew did suggest the same renames, so I'll be posting v4 with
+those changes later today.
+Thanks for the feedback!
 
-[1/1] mmp:fix wrong comparison in ext2fs_mmp_stop
-      (no commit info)
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+>
