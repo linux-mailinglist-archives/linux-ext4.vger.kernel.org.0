@@ -2,17 +2,17 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6DC67DBC0
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jan 2023 02:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2682E67DBC4
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jan 2023 02:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbjA0Bvl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Jan 2023 20:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S232552AbjA0Bvo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Jan 2023 20:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233348AbjA0BuX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Jan 2023 20:50:23 -0500
+        with ESMTP id S233367AbjA0Bu1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Jan 2023 20:50:27 -0500
 Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C1D774A6B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 742212BF06
         for <linux-ext4@vger.kernel.org>; Thu, 26 Jan 2023 17:49:47 -0800 (PST)
 Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
         by 156.147.23.53 with ESMTP; 27 Jan 2023 10:19:42 +0900
@@ -46,9 +46,9 @@ Cc:     torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
         42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
         gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
         boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com
-Subject: [PATCH v8 15/25] locking/lockdep, cpu/hotplus: Use a weaker annotation in AP thread
-Date:   Fri, 27 Jan 2023 10:19:08 +0900
-Message-Id: <1674782358-25542-16-git-send-email-max.byungchul.park@gmail.com>
+Subject: [PATCH v8 16/25] dept: Apply sdt_might_sleep_{start,end}() to dma fence wait
+Date:   Fri, 27 Jan 2023 10:19:09 +0900
+Message-Id: <1674782358-25542-17-git-send-email-max.byungchul.park@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1674782358-25542-1-git-send-email-max.byungchul.park@gmail.com>
 References: <1674782358-25542-1-git-send-email-max.byungchul.park@gmail.com>
@@ -62,33 +62,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
-introduced to make lockdep_assert_cpus_held() work in AP thread.
-
-However, the annotation is too strong for that purpose. We don't have to
-use more than try lock annotation for that.
-
-Furthermore, now that Dept was introduced, false positive alarms was
-reported by that. Replaced it with try lock annotation.
+Makes Dept able to track dma fence waits.
 
 Signed-off-by: Byungchul Park <max.byungchul.park@gmail.com>
 ---
- kernel/cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma-buf/dma-fence.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6c0a92c..6a9b9c3 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -356,7 +356,7 @@ int lockdep_is_cpus_held(void)
+diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+index 406b4e2..1db4bc0 100644
+--- a/drivers/dma-buf/dma-fence.c
++++ b/drivers/dma-buf/dma-fence.c
+@@ -16,6 +16,7 @@
+ #include <linux/dma-fence.h>
+ #include <linux/sched/signal.h>
+ #include <linux/seq_file.h>
++#include <linux/dept_sdt.h>
  
- static void lockdep_acquire_cpus_lock(void)
- {
--	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
-+	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 1, _THIS_IP_);
- }
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/dma_fence.h>
+@@ -782,6 +783,7 @@ struct default_wait_cb {
+ 	cb.task = current;
+ 	list_add(&cb.base.node, &fence->cb_list);
  
- static void lockdep_release_cpus_lock(void)
++	sdt_might_sleep_start(NULL);
+ 	while (!test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags) && ret > 0) {
+ 		if (intr)
+ 			__set_current_state(TASK_INTERRUPTIBLE);
+@@ -795,6 +797,7 @@ struct default_wait_cb {
+ 		if (ret > 0 && intr && signal_pending(current))
+ 			ret = -ERESTARTSYS;
+ 	}
++	sdt_might_sleep_end();
+ 
+ 	if (!list_empty(&cb.base.node))
+ 		list_del(&cb.base.node);
+@@ -884,6 +887,7 @@ struct default_wait_cb {
+ 		}
+ 	}
+ 
++	sdt_might_sleep_start(NULL);
+ 	while (ret > 0) {
+ 		if (intr)
+ 			set_current_state(TASK_INTERRUPTIBLE);
+@@ -898,6 +902,7 @@ struct default_wait_cb {
+ 		if (ret > 0 && intr && signal_pending(current))
+ 			ret = -ERESTARTSYS;
+ 	}
++	sdt_might_sleep_end();
+ 
+ 	__set_current_state(TASK_RUNNING);
+ 
 -- 
 1.9.1
 
