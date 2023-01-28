@@ -2,123 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3170067FAF1
-	for <lists+linux-ext4@lfdr.de>; Sat, 28 Jan 2023 21:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1783567FB6D
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Jan 2023 23:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234908AbjA1Ubv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 Jan 2023 15:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S230325AbjA1W6r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 28 Jan 2023 17:58:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234994AbjA1Ubk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 Jan 2023 15:31:40 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505B529E09;
-        Sat, 28 Jan 2023 12:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674937865; x=1706473865;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KMvQ4PikohERJD+6DblQkrJ3J4O0NmthJ12AQuApcLQ=;
-  b=AIF8Usk84yRXoYJ57zIcPQ5uFsLmuR2JKf0UOYFLjLXVBrND1Kti0eTo
-   gj8vseWNutTGUrgXijVtmTttjm/LoK7H2Z0+Wp2xR8+Q87BRr+rBaano6
-   r3utKS4Z+7Ykxk+zTGDrJeLDwjOzN8rQXeE5SKOUdBVnlG6SH3U2wYh3m
-   /4FvTRRqGal5bOBLasq5Jmn2MALyNPRUK4GEL/o2uab9EVdU4rDCPW0uQ
-   zxOSHIBTYM83nZXlQ/0twk/eoBNBjGrh/oKH+QHJUcg/wm/OHNALNirCh
-   cKnc8ZFUUmMpNoKe1pYFAYLyNQmajtpp9RdZ4QTOvOuW9u8KphzNDqF+l
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="325025784"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="325025784"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 12:31:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="837533337"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="837533337"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 28 Jan 2023 12:30:51 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pLrqc-00015I-2y;
-        Sat, 28 Jan 2023 20:30:50 +0000
-Date:   Sun, 29 Jan 2023 04:30:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Byungchul Park <max.byungchul.park@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, torvalds@linux-foundation.org,
-        damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org
-Subject: Re: [PATCH v8 25/25] dept: Track the potential waits of
- PG_{locked,writeback}
-Message-ID: <202301290402.j3poWc84-lkp@intel.com>
-References: <1674782358-25542-26-git-send-email-max.byungchul.park@gmail.com>
+        with ESMTP id S231350AbjA1W6o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 Jan 2023 17:58:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CE62385A
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Jan 2023 14:58:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B40A2B80B98
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Jan 2023 22:58:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42F95C433D2
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Jan 2023 22:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674946721;
+        bh=rFWAdyalPzpS6duMowqA2FZRYCyOGGdFd/CGvObopeA=;
+        h=From:To:Subject:Date:From;
+        b=IjvXSahoOge3faMFlMUocMCexV5YAtRwoH8iLacFfldubBzLuHaXCWMT8+GJaxymP
+         FZODeID1EbH9Hom1+NbOfLQE9fMZngQEczSf9yAnVB/U7YC+qtYbOOuCxKZXguJSuY
+         b0Ma8VVdF4UEKXp2UsyStoVEv2fFT0menJhD/ozcioCUDGjVP+eNheYzF8tq1SXSxr
+         pXz9lOLYZYtkZ5Crw2iH/hgAEMsNUDWllUjMApg58wV1yKiKeJ2hOcekcUeUsgyNp4
+         /HZo/2Cn0sZ89AxRUzh39o63hH+tQwvtupFweyF7NML805Q6XE0/9RERZ0/4NXcHtv
+         O86GoWKhpISsg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH 0/4] e2fsprogs: a few more warning fixes
+Date:   Sat, 28 Jan 2023 14:46:47 -0800
+Message-Id: <20230128224651.59593-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1674782358-25542-26-git-send-email-max.byungchul.park@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Byungchul,
+Fix the GitHub Actions workflow to really use -Werror when building the
+libraries, fix a recently introduced warning in debugfs, and fix two
+warnings in the Windows build.
 
-Thank you for the patch! Yet something to improve:
+Eric Biggers (4):
+  ci.yml: ensure -Werror really gets used in all cases
+  debugfs: fix a -Wformat warning in dump_journal()
+  lib/ext2fs: don't warn about lack of getmntent on Windows
+  lib/uuid: remove unneeded Windows UUID workaround
 
-[auto build test ERROR on tip/locking/core]
-[also build test ERROR on tip/sched/core drm-misc/drm-misc-next linus/master v6.2-rc5 next-20230127]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+ .github/workflows/ci.yml | 28 ++++++++++++++--------------
+ debugfs/logdump.c        |  3 ++-
+ lib/ext2fs/Android.bp    |  1 -
+ lib/ext2fs/ismounted.c   |  2 +-
+ lib/uuid/Android.bp      |  2 --
+ lib/uuid/gen_uuid.c      |  5 -----
+ lib/uuid/tst_uuid.c      |  6 ------
+ lib/uuid/uuid_time.c     |  6 ------
+ 8 files changed, 17 insertions(+), 36 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-Move-llist_-head-node-definition-to-types-h/20230128-102456
-patch link:    https://lore.kernel.org/r/1674782358-25542-26-git-send-email-max.byungchul.park%40gmail.com
-patch subject: [PATCH v8 25/25] dept: Track the potential waits of PG_{locked,writeback}
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20230129/202301290402.j3poWc84-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ba934a05473c5212edeff20f2298a249bfe87351
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Byungchul-Park/llist-Move-llist_-head-node-definition-to-types-h/20230128-102456
-        git checkout ba934a05473c5212edeff20f2298a249bfe87351
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "PG_locked_map" [mm/zsmalloc.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [mm/z3fold.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/reiserfs/reiserfs.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/ext4/ext4.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/ext2/ext2.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/jbd2/jbd2.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/minix/minix.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/ecryptfs/ecryptfs.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/nfs/nfs.ko] undefined!
->> ERROR: modpost: "PG_locked_map" [fs/sysv/sysv.ko] undefined!
-WARNING: modpost: suppressed 44 unresolved symbol warnings because there were too many)
-
+base-commit: 0352d353adbe6c5d6f1937e12c66e599b8657d72
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.1
+
