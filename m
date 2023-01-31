@@ -2,93 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D40B6836AC
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Jan 2023 20:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A63468389E
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Jan 2023 22:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbjAaThm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Jan 2023 14:37:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
+        id S232208AbjAaV1x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Jan 2023 16:27:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjAaThm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Jan 2023 14:37:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EB33CE0E;
-        Tue, 31 Jan 2023 11:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1u+SZDMkJ1vFn+QDbFq5kiRMcjf/G7pulRBSuzHb0xQ=; b=G4xQru/g+xE4Axp6Bs7R6La6Xl
-        v/tCMhhtfCCDQj5EkTyIx6RobnvZpsWRQdqU+NAxnh6q9xI4VpOxu1U3ZrJ+Ciplz0YpSczmJ/zar
-        C/KzhlVVP0HHi7V/e2eH3HMoyaoRTuO4IkkOkKOvRasCogyQbCKufGqVT5Izdfm7djap3bPxxKEEB
-        drrHw1xQqwNgEEv1VTX44gmuQyorDPVGRuxyGtBK+3EvaNFycbrE65oTZmsRmlj/EEzkPm/YgPIOi
-        6adv28/TGsInE9+uEJK1N0eZ37One6xMJsgICt4lNZmJI7OpmeLYmgvRgJkZLuqveoqi6N2Tz6Ydr
-        QUyHGaow==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pMwRj-00Bboe-Ck; Tue, 31 Jan 2023 19:37:35 +0000
-Date:   Tue, 31 Jan 2023 19:37:35 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC v6 05/10] iomap/gfs2: Get page in page_prepare handler
-Message-ID: <Y9lt/95kN6kwp+A1@casper.infradead.org>
-References: <20230108194034.1444764-1-agruenba@redhat.com>
- <20230108194034.1444764-6-agruenba@redhat.com>
+        with ESMTP id S232214AbjAaV1t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Jan 2023 16:27:49 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0725618F;
+        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 78so11035266pgb.8;
+        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
+        b=D6wvD2En7fL/J4jxZGOIQBNq1r2srmO4HOmSSPNUtrliYfnfu+LBoGk5BxIcMiuq2I
+         +zwJ+mRwxgYtBtoDsGT1p7nE5JifYqFUf8hP1sgEtkOKyHfWhW4umWi9ewBl4h6lpann
+         1FKRMTut+C+QYs/Mg9T/XGdMWHxAvc4vm7coGsd3WvOgoQt73PDTLpV3MfO+X+lC2HD/
+         QNpAi6vLbe5SEo1NIxJIxqYOYG4hgDKEIE7e8sbyQhb8Yes6j5hPRgz/GjUPNoMDssZL
+         IfTNvheB70L2NHCzBcWcOzJp3YlrWN80ciuNtnhhN2fCo38Ky5KInmRB9oeQm46P5CX+
+         WVnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
+        b=6YN+Wct8BdUN/kT/tPaAhOxv0QX3gGAPiyGCpIXh0VS2nANxzdChcTdyHeEL7AoI8k
+         B1pmLVfHVlIx/VHBopABxBSjinwofhX5Tne0P4DOnLlR9FHZ2EGE584s2wlAhvWs/JoO
+         vDMi7plbtRR8se3VgzQ+4nZsKO5YeWJVI137PqkdUuNRS4292df026XnBCci7pNVoXvE
+         9bCq/mJZ/QOUAEAOqW0HpN5H6yVhiA4Lt96VIa/eEsdi3t7MvcNuH+q9da03pNtYcOCp
+         CfRSPdZQ9Tsfc2q3mJDdEzXyiqLfeShghq2R8t6j9MBRjHJFfFirWPa5bJCGLbkXaDSR
+         glLA==
+X-Gm-Message-State: AO0yUKU8ZF9dr9W733ACgh7KdsDFgLjCsYpxU37Zt7ID71+3Si/py76l
+        7Z5K4K99sEKpbkriHVwvLjY=
+X-Google-Smtp-Source: AK7set+AB9728U0/MEi1UBcwr36wg/R1RBbFv281U6594rkVfdnrCQy9OnZENcOw/xOdf9mhMZ4riA==
+X-Received: by 2002:a62:7b0e:0:b0:593:a131:3692 with SMTP id w14-20020a627b0e000000b00593a1313692mr4489pfc.13.1675200466095;
+        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:1ad6])
+        by smtp.gmail.com with ESMTPSA id j14-20020a62e90e000000b00590684f016bsm9913968pfh.137.2023.01.31.13.27.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Jan 2023 13:27:45 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 31 Jan 2023 11:27:44 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        stable@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
+ page
+Message-ID: <Y9mH0PCcZoGPryXw@slm.duckdns.org>
+References: <20230129121851.2248378-1-willy@infradead.org>
+ <Y9a2m8uvmXmCVYvE@sol.localdomain>
+ <Y9bkoasmAmtQ2nSV@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230108194034.1444764-6-agruenba@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y9bkoasmAmtQ2nSV@casper.infradead.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jan 08, 2023 at 08:40:29PM +0100, Andreas Gruenbacher wrote:
-> +static struct folio *
-> +gfs2_iomap_page_prepare(struct iomap_iter *iter, loff_t pos, unsigned len)
->  {
-> +	struct inode *inode = iter->inode;
->  	unsigned int blockmask = i_blocksize(inode) - 1;
->  	struct gfs2_sbd *sdp = GFS2_SB(inode);
->  	unsigned int blocks;
-> +	struct folio *folio;
-> +	int status;
->  
->  	blocks = ((pos & blockmask) + len + blockmask) >> inode->i_blkbits;
-> -	return gfs2_trans_begin(sdp, RES_DINODE + blocks, 0);
-> +	status = gfs2_trans_begin(sdp, RES_DINODE + blocks, 0);
-> +	if (status)
-> +		return ERR_PTR(status);
-> +
-> +	folio = iomap_get_folio(iter, pos);
-> +	if (IS_ERR(folio))
-> +		gfs2_trans_end(sdp);
-> +	return folio;
->  }
+Hello,
 
-Hi Andreas,
+On Sun, Jan 29, 2023 at 09:26:57PM +0000, Matthew Wilcox wrote:
+> > > diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+> > > index e78be66bbf01..a4e76f96f291 100644
+> > > --- a/fs/crypto/crypto.c
+> > > +++ b/fs/crypto/crypto.c
+> > > @@ -205,6 +205,9 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+> > >  	}
+> > >  	SetPagePrivate(ciphertext_page);
+> > >  	set_page_private(ciphertext_page, (unsigned long)page);
+> > > +#ifdef CONFIG_MEMCG
+> > > +	ciphertext_page->memcg_data = page->memcg_data;
+> > > +#endif
+> > >  	return ciphertext_page;
+> > >  }
+> > 
+> > Nothing outside mm/ and include/linux/memcontrol.h does anything with memcg_data
+> > directly.  Are you sure this is the right thing to do here?
+> 
+> Nope ;-)  Happy to hear from people who know more about cgroups than I
+> do.  Adding some more ccs.
+> 
+> > Also, this patch causes the following:
+> 
+> Oops.  Clearly memcg_data needs to be set to NULL before we free it.
 
-I didn't think to mention this at the time, but I was reading through
-buffered-io.c and this jumped out at me.  For filesystems which support
-folios, we pass the entire length of the write (or at least the length
-of the remaining iomap length).  That's intended to allow us to decide
-how large a folio to allocate at some point in the future.
+These can usually be handled by explicitly associating the bio's to the
+desired cgroups using one of bio_associate_blkg*() or
+bio_clone_blkg_association(). It is possible to go through memcg ownership
+too using set_active_memcg() so that the page is owned by the target cgroup;
+however, the page ownership doesn't directly map to IO ownership as the
+relationship depends on the type of the page (e.g. IO ownership for
+pagecache writeback is determined per-inode, not per-page). If the in-flight
+pages are limited, it probably is better to set bio association directly.
 
-For GFS2, we do this:
+Thanks.
 
-        if (!mapping_large_folio_support(iter->inode->i_mapping))
-                len = min_t(size_t, len, PAGE_SIZE - offset_in_page(pos));
-
-I'd like to drop that and pass the full length of the write to
-->get_folio().  It looks like you'll have to clamp it yourself at this
-point.  I am kind of curious why you do one transaction per page --
-I would have thought you'd rather do one transaction for the entire write.
+-- 
+tejun
