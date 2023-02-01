@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCE9685D57
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Feb 2023 03:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6352E685DDF
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Feb 2023 04:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjBAC2s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Jan 2023 21:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S230177AbjBADVL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Jan 2023 22:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjBAC2s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Jan 2023 21:28:48 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DDAAD3D;
-        Tue, 31 Jan 2023 18:28:46 -0800 (PST)
+        with ESMTP id S229819AbjBADVK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Jan 2023 22:21:10 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BEF4F354;
+        Tue, 31 Jan 2023 19:20:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675218526; x=1706754526;
+  t=1675221649; x=1706757649;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=toLA3/CCNOUSAf7uhabNH7zDl/Gt2MCQkgKD0DBBBzQ=;
-  b=CyqTowoo7gb046XOHOKKvP7o7WhsFhbjJy8tcX+8838I9/yEaoAKeGmk
-   GbS0i7HhuSz0eQFbSbKv2sD+oLXDspGzwGbZfstkd4TxfqFyUKXlgQPYO
-   Gig0QxUeaoRU1xdPNd5LzhlcXu+0WKxuQFXFuUau5wr0v+7MQMtaFU/SD
-   K6Gx5nsUMHtMVLNDOUIDNKS6HwCfvo2/jPTF7R9K3xFwk89QoNbCDsFXr
-   Kip0LusrdRWCPZ4ZzQVI/j8AwLrxeMDwwKXcU3yU1phD7OFAnmmo4h4EY
-   7ujGYy9EZXJ3u/0XJdIeZ/R0UL7jkuPrEkkPBc2sGA3UIvDzA0etDGk/y
+  bh=PH2OX5Teu6wMvMOs/pvq1Zt3+cHl034fiVKX4vm9w5M=;
+  b=Z78ylTnrA7uvNooD/G50vaJK6lKRsEbBlOCyAP+xJ/XsrnVKS5B+z3aR
+   6TdHMnnbe7NotNbU7nQrQZyTh8HdD6IiTfOrXQD5LZvFOJE137O5QxH6j
+   Q173WwTvJ1qxO1BcAZJK7ez7o9qGIZMoxHw1+0AwU3L1e7VDxr0tJnoxX
+   jMbBlN3qRjCO5esa2KzmDaYEOSypLeH46kOkKLM35+BVxUqOjbYgMIODb
+   7RtmJPc8eJr6bJ+4AUJ4hcv1qJK8Tskw3OnDZEQvaFohapKIHP5SCgjam
+   9eto0oLOn+P6DQ2SHJ10qO48P4sseHd16DZbucBHSHMMYYz69GtKYBFbw
    Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="315989754"
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="390394194"
 X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="315989754"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2023 18:28:45 -0800
+   d="scan'208";a="390394194"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2023 19:20:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="614685237"
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="910153130"
 X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="614685237"
+   d="scan'208";a="910153130"
 Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 31 Jan 2023 18:28:38 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 31 Jan 2023 19:20:41 -0800
 Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pN2rV-0004wA-1F;
-        Wed, 01 Feb 2023 02:28:37 +0000
-Date:   Wed, 1 Feb 2023 10:28:30 +0800
+        id 1pN3fs-0004zn-2z;
+        Wed, 01 Feb 2023 03:20:40 +0000
+Date:   Wed, 1 Feb 2023 11:19:55 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Byungchul Park <max.byungchul.park@gmail.com>,
         linux-kernel@vger.kernel.org
@@ -58,17 +58,17 @@ Cc:     oe-kbuild-all@lists.linux.dev, torvalds@linux-foundation.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
         minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
         sj@kernel.org
-Subject: Re: [PATCH v9 05/25] dept: Tie to Lockdep and IRQ tracing
-Message-ID: <202302011038.V1juoXv1-lkp@intel.com>
-References: <1675154394-25598-6-git-send-email-max.byungchul.park@gmail.com>
+Subject: Re: [PATCH v9 07/25] dept: Apply sdt_might_sleep_{start,end}() to
+ wait_for_completion()/complete()
+Message-ID: <202302011107.Qs35wciq-lkp@intel.com>
+References: <1675154394-25598-8-git-send-email-max.byungchul.park@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1675154394-25598-6-git-send-email-max.byungchul.park@gmail.com>
+In-Reply-To: <1675154394-25598-8-git-send-email-max.byungchul.park@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,89 +86,90 @@ And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-Move-llist_-head-node-definition-to-types-h/20230131-164632
-patch link:    https://lore.kernel.org/r/1675154394-25598-6-git-send-email-max.byungchul.park%40gmail.com
-patch subject: [PATCH v9 05/25] dept: Tie to Lockdep and IRQ tracing
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20230201/202302011038.V1juoXv1-lkp@intel.com/config)
+patch link:    https://lore.kernel.org/r/1675154394-25598-8-git-send-email-max.byungchul.park%40gmail.com
+patch subject: [PATCH v9 07/25] dept: Apply sdt_might_sleep_{start,end}() to wait_for_completion()/complete()
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20230201/202302011107.Qs35wciq-lkp@intel.com/config)
 compiler: arceb-elf-gcc (GCC) 12.1.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ee619b0e7faff81e8b794e2adcdf9102d5bc83e8
+        # https://github.com/intel-lab-lkp/linux/commit/4773cd9b4e467e974a08cfcd690019b170f2e123
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Byungchul-Park/llist-Move-llist_-head-node-definition-to-types-h/20230131-164632
-        git checkout ee619b0e7faff81e8b794e2adcdf9102d5bc83e8
+        git checkout 4773cd9b4e467e974a08cfcd690019b170f2e123
         # save the config file
         mkdir build_dir && cp config build_dir/.config
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arc SHELL=/bin/bash drivers/iommu/ drivers/scsi/qla2xxx/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arc SHELL=/bin/bash drivers/scsi/qla2xxx/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
-   In file included from include/linux/atomic.h:80,
-                    from drivers/iommu/io-pgtable-arm.c:12:
-   drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
-   include/linux/atomic/atomic-arch-fallback.h:60:32: error: implicit declaration of function 'arch_cmpxchg64'; did you mean 'arch_cmpxchg'? [-Werror=implicit-function-declaration]
-      60 | #define arch_cmpxchg64_relaxed arch_cmpxchg64
-         |                                ^~~~~~~~~~~~~~
-   include/linux/atomic/atomic-instrumented.h:1968:9: note: in expansion of macro 'arch_cmpxchg64_relaxed'
-    1968 |         arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-   drivers/iommu/io-pgtable-arm.c:330:15: note: in expansion of macro 'cmpxchg64_relaxed'
-     330 |         old = cmpxchg64_relaxed(ptep, curr, new);
-         |               ^~~~~~~~~~~~~~~~~
-   drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_do_selftests':
->> drivers/iommu/io-pgtable-arm.c:1296:1: warning: the frame size of 1088 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-    1296 | }
+   drivers/scsi/qla2xxx/qla_dfs.c: In function 'qla2x00_dfs_tgt_port_database_show':
+>> drivers/scsi/qla2xxx/qla_dfs.c:227:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+     227 | }
          | ^
-   cc1: some warnings being treated as errors
 
 
-vim +1296 drivers/iommu/io-pgtable-arm.c
+vim +227 drivers/scsi/qla2xxx/qla_dfs.c
 
-fe4b991dcd84e0 Will Deacon        2014-11-17  1256  
-fe4b991dcd84e0 Will Deacon        2014-11-17  1257  static int __init arm_lpae_do_selftests(void)
-fe4b991dcd84e0 Will Deacon        2014-11-17  1258  {
-9062c1d0bedacf Christophe JAILLET 2019-09-09  1259  	static const unsigned long pgsize[] __initconst = {
-fe4b991dcd84e0 Will Deacon        2014-11-17  1260  		SZ_4K | SZ_2M | SZ_1G,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1261  		SZ_16K | SZ_32M,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1262  		SZ_64K | SZ_512M,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1263  	};
-fe4b991dcd84e0 Will Deacon        2014-11-17  1264  
-9062c1d0bedacf Christophe JAILLET 2019-09-09  1265  	static const unsigned int ias[] __initconst = {
-fe4b991dcd84e0 Will Deacon        2014-11-17  1266  		32, 36, 40, 42, 44, 48,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1267  	};
-fe4b991dcd84e0 Will Deacon        2014-11-17  1268  
-fe4b991dcd84e0 Will Deacon        2014-11-17  1269  	int i, j, pass = 0, fail = 0;
-ca25ec247aadbf Robin Murphy       2022-08-15  1270  	struct device dev;
-fe4b991dcd84e0 Will Deacon        2014-11-17  1271  	struct io_pgtable_cfg cfg = {
-fe4b991dcd84e0 Will Deacon        2014-11-17  1272  		.tlb = &dummy_tlb_ops,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1273  		.oas = 48,
-4f41845b340783 Will Deacon        2019-06-25  1274  		.coherent_walk = true,
-ca25ec247aadbf Robin Murphy       2022-08-15  1275  		.iommu_dev = &dev,
-fe4b991dcd84e0 Will Deacon        2014-11-17  1276  	};
-fe4b991dcd84e0 Will Deacon        2014-11-17  1277  
-ca25ec247aadbf Robin Murphy       2022-08-15  1278  	/* __arm_lpae_alloc_pages() merely needs dev_to_node() to work */
-ca25ec247aadbf Robin Murphy       2022-08-15  1279  	set_dev_node(&dev, NUMA_NO_NODE);
-ca25ec247aadbf Robin Murphy       2022-08-15  1280  
-fe4b991dcd84e0 Will Deacon        2014-11-17  1281  	for (i = 0; i < ARRAY_SIZE(pgsize); ++i) {
-fe4b991dcd84e0 Will Deacon        2014-11-17  1282  		for (j = 0; j < ARRAY_SIZE(ias); ++j) {
-fe4b991dcd84e0 Will Deacon        2014-11-17  1283  			cfg.pgsize_bitmap = pgsize[i];
-fe4b991dcd84e0 Will Deacon        2014-11-17  1284  			cfg.ias = ias[j];
-fe4b991dcd84e0 Will Deacon        2014-11-17  1285  			pr_info("selftest: pgsize_bitmap 0x%08lx, IAS %u\n",
-fe4b991dcd84e0 Will Deacon        2014-11-17  1286  				pgsize[i], ias[j]);
-fe4b991dcd84e0 Will Deacon        2014-11-17  1287  			if (arm_lpae_run_tests(&cfg))
-fe4b991dcd84e0 Will Deacon        2014-11-17  1288  				fail++;
-fe4b991dcd84e0 Will Deacon        2014-11-17  1289  			else
-fe4b991dcd84e0 Will Deacon        2014-11-17  1290  				pass++;
-fe4b991dcd84e0 Will Deacon        2014-11-17  1291  		}
-fe4b991dcd84e0 Will Deacon        2014-11-17  1292  	}
-fe4b991dcd84e0 Will Deacon        2014-11-17  1293  
-fe4b991dcd84e0 Will Deacon        2014-11-17  1294  	pr_info("selftest: completed with %d PASS %d FAIL\n", pass, fail);
-fe4b991dcd84e0 Will Deacon        2014-11-17  1295  	return fail ? -EFAULT : 0;
-fe4b991dcd84e0 Will Deacon        2014-11-17 @1296  }
+36c7845282eef0 Quinn Tran       2016-02-04  174  
+c423437e3ff41b Himanshu Madhani 2017-03-15  175  static int
+c423437e3ff41b Himanshu Madhani 2017-03-15  176  qla2x00_dfs_tgt_port_database_show(struct seq_file *s, void *unused)
+c423437e3ff41b Himanshu Madhani 2017-03-15  177  {
+c423437e3ff41b Himanshu Madhani 2017-03-15  178  	scsi_qla_host_t *vha = s->private;
+c423437e3ff41b Himanshu Madhani 2017-03-15  179  	struct qla_hw_data *ha = vha->hw;
+4e5a05d1ecd92c Arun Easi        2020-09-03  180  	struct gid_list_info *gid_list;
+c423437e3ff41b Himanshu Madhani 2017-03-15  181  	dma_addr_t gid_list_dma;
+c423437e3ff41b Himanshu Madhani 2017-03-15  182  	fc_port_t fc_port;
+4e5a05d1ecd92c Arun Easi        2020-09-03  183  	char *id_iter;
+c423437e3ff41b Himanshu Madhani 2017-03-15  184  	int rc, i;
+c423437e3ff41b Himanshu Madhani 2017-03-15  185  	uint16_t entries, loop_id;
+c423437e3ff41b Himanshu Madhani 2017-03-15  186  
+c423437e3ff41b Himanshu Madhani 2017-03-15  187  	seq_printf(s, "%s\n", vha->host_str);
+c423437e3ff41b Himanshu Madhani 2017-03-15  188  	gid_list = dma_alloc_coherent(&ha->pdev->dev,
+c423437e3ff41b Himanshu Madhani 2017-03-15  189  				      qla2x00_gid_list_size(ha),
+c423437e3ff41b Himanshu Madhani 2017-03-15  190  				      &gid_list_dma, GFP_KERNEL);
+c423437e3ff41b Himanshu Madhani 2017-03-15  191  	if (!gid_list) {
+83548fe2fcbb78 Quinn Tran       2017-06-02  192  		ql_dbg(ql_dbg_user, vha, 0x7018,
+c423437e3ff41b Himanshu Madhani 2017-03-15  193  		       "DMA allocation failed for %u\n",
+c423437e3ff41b Himanshu Madhani 2017-03-15  194  		       qla2x00_gid_list_size(ha));
+c423437e3ff41b Himanshu Madhani 2017-03-15  195  		return 0;
+c423437e3ff41b Himanshu Madhani 2017-03-15  196  	}
+c423437e3ff41b Himanshu Madhani 2017-03-15  197  
+c423437e3ff41b Himanshu Madhani 2017-03-15  198  	rc = qla24xx_gidlist_wait(vha, gid_list, gid_list_dma,
+c423437e3ff41b Himanshu Madhani 2017-03-15  199  				  &entries);
+c423437e3ff41b Himanshu Madhani 2017-03-15  200  	if (rc != QLA_SUCCESS)
+c423437e3ff41b Himanshu Madhani 2017-03-15  201  		goto out_free_id_list;
+c423437e3ff41b Himanshu Madhani 2017-03-15  202  
+4e5a05d1ecd92c Arun Easi        2020-09-03  203  	id_iter = (char *)gid_list;
+c423437e3ff41b Himanshu Madhani 2017-03-15  204  
+c423437e3ff41b Himanshu Madhani 2017-03-15  205  	seq_puts(s, "Port Name	Port ID		Loop ID\n");
+c423437e3ff41b Himanshu Madhani 2017-03-15  206  
+c423437e3ff41b Himanshu Madhani 2017-03-15  207  	for (i = 0; i < entries; i++) {
+4e5a05d1ecd92c Arun Easi        2020-09-03  208  		struct gid_list_info *gid =
+4e5a05d1ecd92c Arun Easi        2020-09-03  209  			(struct gid_list_info *)id_iter;
+c423437e3ff41b Himanshu Madhani 2017-03-15  210  		loop_id = le16_to_cpu(gid->loop_id);
+c423437e3ff41b Himanshu Madhani 2017-03-15  211  		memset(&fc_port, 0, sizeof(fc_port_t));
+c423437e3ff41b Himanshu Madhani 2017-03-15  212  
+c423437e3ff41b Himanshu Madhani 2017-03-15  213  		fc_port.loop_id = loop_id;
+c423437e3ff41b Himanshu Madhani 2017-03-15  214  
+c423437e3ff41b Himanshu Madhani 2017-03-15  215  		rc = qla24xx_gpdb_wait(vha, &fc_port, 0);
+c423437e3ff41b Himanshu Madhani 2017-03-15  216  		seq_printf(s, "%8phC  %02x%02x%02x  %d\n",
+c423437e3ff41b Himanshu Madhani 2017-03-15  217  			   fc_port.port_name, fc_port.d_id.b.domain,
+c423437e3ff41b Himanshu Madhani 2017-03-15  218  			   fc_port.d_id.b.area, fc_port.d_id.b.al_pa,
+c423437e3ff41b Himanshu Madhani 2017-03-15  219  			   fc_port.loop_id);
+4e5a05d1ecd92c Arun Easi        2020-09-03  220  		id_iter += ha->gid_list_info_size;
+c423437e3ff41b Himanshu Madhani 2017-03-15  221  	}
+c423437e3ff41b Himanshu Madhani 2017-03-15  222  out_free_id_list:
+c423437e3ff41b Himanshu Madhani 2017-03-15  223  	dma_free_coherent(&ha->pdev->dev, qla2x00_gid_list_size(ha),
+c423437e3ff41b Himanshu Madhani 2017-03-15  224  			  gid_list, gid_list_dma);
+c423437e3ff41b Himanshu Madhani 2017-03-15  225  
+c423437e3ff41b Himanshu Madhani 2017-03-15  226  	return 0;
+c423437e3ff41b Himanshu Madhani 2017-03-15 @227  }
+c423437e3ff41b Himanshu Madhani 2017-03-15  228  
 
 -- 
 0-DAY CI Kernel Test Service
