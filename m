@@ -2,119 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B49568665E
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Feb 2023 14:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B15686689
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Feb 2023 14:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjBANFc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Feb 2023 08:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
+        id S232165AbjBANPj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Feb 2023 08:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjBANFc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Feb 2023 08:05:32 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A21E2B3;
-        Wed,  1 Feb 2023 05:05:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675256730; x=1706792730;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1ezy7vzV4A+mQkaS59I0Os4yOVb8/Gz4isjpFiZSdb8=;
-  b=FxpJn5kVbeWQRegMNBJ55hWkNxhF9McQoYBzFyaoSKeddDjO0Mq8C8i1
-   zKRtqrHU8I4ye8ia8m/uNXDZHyVgyNYNcUcnwRbJSY2Zw9F7MOqbAFpAy
-   5gQANq5y62eQb+SBCSh+C0tJO0lKDr4C1O6MzoXxybn+Ugs8cE8lLjS8D
-   uqEo1HXuru1klnMshSLnx3o2m4oVbAQg7TrnP4onnhQudLLBbuGpZ4mc7
-   GKBRI1zGZ0Vo24gUbCOxCWzMixo1otTVRc3INYeA5BS66juoBsBFve2ZH
-   UEa254EedH5sC9ep04WTA8OKFVszI1YJfOQAGUXG/WdfOeuef1HqlHGPA
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="329426793"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="329426793"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2023 05:05:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="993685455"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="993685455"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Feb 2023 05:05:27 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pNCnm-0005Ry-2J;
-        Wed, 01 Feb 2023 13:05:26 +0000
-Date:   Wed, 1 Feb 2023 21:05:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ye Bin <yebin@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        jack@suse.cz, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH 2/5] ext4: introudce helper for jounral recover handle
-Message-ID: <202302012039.pe8277UH-lkp@intel.com>
-References: <20230201114651.4090446-3-yebin@huaweicloud.com>
+        with ESMTP id S232151AbjBANPh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Feb 2023 08:15:37 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E1822A0E;
+        Wed,  1 Feb 2023 05:15:36 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C8B07B8217D;
+        Wed,  1 Feb 2023 13:15:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AA1C4339C;
+        Wed,  1 Feb 2023 13:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675257333;
+        bh=XAJ9eI3svGJuqVTJUnSxvv9YTA0l+xndj1Jw+Z1jagQ=;
+        h=From:Subject:Date:To:Cc:From;
+        b=L6kcghG3qlSeMxpxJRTGEDsALZmiJfrEU0V/1HEmYbKdW3rFnVUs9UIDGEzRKYWtg
+         tNZzlaYWaIZ/V/zWFYd268DI///8vZp3gH/a3eMLEBUra7aFO5vCuAX3ny4Qg2knsu
+         7SkTsf7m5s+phGrgqngNkAkoJynRpIjDp8j8ze7OkExaens9ORzfEpQk0u7+zU+os7
+         yzrAYpV28OZVUPw87eK7VkGLUZRaFhvqXpHMjCFYujJU0xpJxhkiKFVDQbZEJW5S2X
+         E23YVPr1cktPKIhzi9VOTFNrcHU9h4XmlnPv8G3KBrajxBmW890T7Bup3Dn/V6lTSV
+         PrqccGKzSWKiA==
+From:   Christian Brauner <brauner@kernel.org>
+Subject: [PATCH v3 00/10] acl: drop posix acl handlers from xattr handlers
+Date:   Wed, 01 Feb 2023 14:14:51 +0100
+Message-Id: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230201114651.4090446-3-yebin@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMtl2mMC/52PQQ6CMBBFr0K6dggtlFRX3sO4aMsAjdiaKWkwh
+ Ltb2LnU5Z/Mf/NmZRHJYWSXYmWEyUUXfA71qWB21H5AcF3OTFSirriQ0EfQdgLCZ0gIA/rct7D
+ oeSbIhW5CitDYHjslpeqUYhlldEQwpL0dd9hTxxmpTG0pgGy7b7wIe7ccIrd7zqOLc6D34ZX4P
+ v1RIXGooLU9l9I0Z2Ha6wPJ41QGGth+IYl/qCJTBc//GaWMkd/Ubds+iR28gVEBAAA=
+To:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Seth Forshee <sforshee@kernel.org>,
+        "Christian Brauner (Microsoft)" <brauner@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5419; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=XAJ9eI3svGJuqVTJUnSxvv9YTA0l+xndj1Jw+Z1jagQ=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSTfSv1oIS8Y+vZS+2+RiV9u2ffcfnlfcMkFr9JtvM2zv/pV
+ e8oXdJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExEeRPDP42QU9NFLmeXcj38M226z9
+ yHHdvWpMwS360qvenTKoW1lfsZ/rttUTXnv7b10sa2GD7dbdfYvI9mB9qqrE44tEiQ+fXxRcwA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ye,
+Hey everyone,
 
-Thank you for the patch! Perhaps something to improve:
+After we finished the introduction of the new posix acl api last cycle
+we still left the generic POSIX ACL xattr handlers around in the
+filesystems xattr handlers for two reasons:
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master v6.2-rc6 next-20230201]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+(1) Because a few filesystems rely on the ->list() method of the generic
+    POSIX ACL xattr handlers in their ->listxattr() inode operation.
+(2) POSIX ACLs are only available if IOP_XATTR is raised. The IOP_XATTR
+    flag is raised in inode_init_always() based on whether the
+    sb->s_xattr pointer is non-NULL. IOW, the registered xattr handlers
+    of the filesystem are used to raise IOP_XATTR.
+    If we were to remove the generic POSIX ACL xattr handlers from all
+    filesystems we would risk regressing filesystems that only implement
+    POSIX ACL support and no other xattrs (nfs3 comes to mind).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ye-Bin/jbd2-introduce-callback-for-recovery-journal/20230201-192400
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/20230201114651.4090446-3-yebin%40huaweicloud.com
-patch subject: [PATCH 2/5] ext4: introudce helper for jounral recover handle
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230201/202302012039.pe8277UH-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/316c2a97e3b3629813acbac07b6a03d836a00fa1
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Ye-Bin/jbd2-introduce-callback-for-recovery-journal/20230201-192400
-        git checkout 316c2a97e3b3629813acbac07b6a03d836a00fa1
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash fs/
+This series makes it possible to remove the generic POSIX ACL xattr
+handlers from the sb->s_xattr list of all filesystems. This is a crucial
+step as the generic POSIX ACL xattr handlers aren't used for POSIX ACLs
+anymore and POSIX ACLs don't depend on the xattr infrastructure in a
+meaningful way anymore.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
+Adressing problem (1) will require more work long-term. It would be best
+to get rid of the ->list() method of xattr handlers completely if we
+can.
 
-All warnings (new ones prefixed by >>):
+For erofs, ext{2,4}, f2fs, jffs2, ocfs2, and reiserfs we keep the dummy
+handler around so they can continue to use array-based xattr handler
+indexing. The series does simplify the ->listxattr() implementation of
+all these filesystems.
 
->> fs/ext4/ext4_jbd2.c:399:6: warning: no previous prototype for 'ext4_replay_end_callback' [-Wmissing-prototypes]
-     399 | void ext4_replay_end_callback(struct journal_s *journal)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~
+This series decouples POSIX ACLs from IOP_XATTR as they don't depend on
+xattr handlers anymore. With this we can finally remove the dummy xattr
+handlers from all filesystems xattr handlers.
 
+All filesystems with reasonable integration into xfstests have been
+tested with:
 
-vim +/ext4_replay_end_callback +399 fs/ext4/ext4_jbd2.c
+        ./check -g acl,attr,cap,idmapped,io_uring,perms,unlink
 
-   398	
- > 399	void ext4_replay_end_callback(struct journal_s *journal)
-   400	{
-   401		kfree(journal->j_replay_private_data);
-   402		journal->j_replay_private_data = NULL;
-   403		journal->j_replay_callback = NULL;
-   404		journal->j_replay_end_callback = NULL;
-   405	}
-   406	
+All tests pass without regression on xfstests for-next branch.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Since erofs doesn't have integration into xfstests yet afaict I have
+tested it with the testuite available in erofs-utils. They also all pass
+without any regressions.
+
+Thanks!
+Christian
+
+Signed-off-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+---
+Changes in v3:
+- Decouple POSIX ACLs from IOP_XATTR.
+- Allow vfs_listxattr() to function without checking for IOP_XATTR
+  making it possible to list POSIX ACLs for filesystems that only
+  implement POSIX ACLs and no other xattrs.
+- Give reiserfs a set of dedicated inode operation for private inodes
+  that have turned of xattrs completely.
+- Link to v2: https://lore.kernel.org/r/20230125-fs-acl-remove-generic-xattr-handlers-v2-0-214cfb88bb56@kernel.org
+
+Changes in v2:
+- Please see changelogs of the individual patches.
+- Christoph & Christian:
+  Remove SB_I_XATTR and instead introduce IOP_NOACL so filesystems can
+  opt out of POSIX ACLs for specific inodes. Decouple POSIX ACLs from
+  IOP_XATTR.
+- Keep generic posix acl xattr handlers so filesystems that use array
+  based indexing on xattr handlers can continue to do so.
+- Minor fixes.
+- Link to v1: https://lore.kernel.org/r/20230125-fs-acl-remove-generic-xattr-handlers-v1-0-6cf155b492b6@kernel.org
+
+---
+Christian Brauner (10):
+      xattr: simplify listxattr helpers
+      xattr: add listxattr helper
+      xattr: remove unused argument
+      fs: drop unused posix acl handlers
+      fs: simplify ->listxattr() implementation
+      reiserfs: rework ->listxattr() implementation
+      fs: rename generic posix acl handlers
+      reiserfs: rework priv inode handling
+      ovl: check for ->listxattr() support
+      acl: don't depend on IOP_XATTR
+
+ fs/9p/xattr.c                   |   4 --
+ fs/btrfs/xattr.c                |   4 --
+ fs/ceph/xattr.c                 |   4 --
+ fs/cifs/xattr.c                 |   4 --
+ fs/ecryptfs/inode.c             |   4 --
+ fs/erofs/xattr.c                |  12 +---
+ fs/erofs/xattr.h                |  20 ++++---
+ fs/ext2/xattr.c                 |  25 ++++----
+ fs/ext4/xattr.c                 |  25 ++++----
+ fs/f2fs/xattr.c                 |  24 ++++----
+ fs/gfs2/xattr.c                 |   2 -
+ fs/jffs2/xattr.c                |  29 +++++-----
+ fs/jfs/xattr.c                  |   4 --
+ fs/nfs/nfs3_fs.h                |   1 -
+ fs/nfs/nfs3acl.c                |   6 --
+ fs/nfs/nfs3super.c              |   3 -
+ fs/nfsd/nfs4xdr.c               |   3 +-
+ fs/ntfs3/xattr.c                |   4 --
+ fs/ocfs2/xattr.c                |  14 ++---
+ fs/orangefs/xattr.c             |   2 -
+ fs/overlayfs/copy_up.c          |   3 +-
+ fs/overlayfs/super.c            |   8 ---
+ fs/posix_acl.c                  |  61 +++++++++++++++-----
+ fs/reiserfs/file.c              |   7 +++
+ fs/reiserfs/inode.c             |   6 +-
+ fs/reiserfs/namei.c             |  50 ++++++++++++++--
+ fs/reiserfs/reiserfs.h          |   2 +
+ fs/reiserfs/xattr.c             |  55 +++++++++---------
+ fs/xattr.c                      | 124 ++++++++++++++++++++--------------------
+ fs/xfs/xfs_xattr.c              |   4 --
+ include/linux/posix_acl.h       |   7 +++
+ include/linux/posix_acl_xattr.h |   5 +-
+ include/linux/xattr.h           |  19 +++++-
+ mm/shmem.c                      |   4 --
+ 34 files changed, 292 insertions(+), 257 deletions(-)
+---
+base-commit: ab072681eabe1ce0a9a32d4baa1a27a2d046bc4a
+change-id: 20230125-fs-acl-remove-generic-xattr-handlers-4cfed8558d88
+
