@@ -2,128 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507DE68A430
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 22:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8631668A516
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 22:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjBCVEv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Feb 2023 16:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        id S233892AbjBCV6Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Feb 2023 16:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbjBCVCu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 16:02:50 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17480AF0DF;
-        Fri,  3 Feb 2023 13:01:16 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S233888AbjBCV6O (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 16:58:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C4A79CAE;
+        Fri,  3 Feb 2023 13:57:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C9A705C340;
-        Fri,  3 Feb 2023 21:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1675458074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x+0e9tz1IP7Pd7ZSPnQKoT68y6e8r1cD0eGR4KpbTTI=;
-        b=cC42ef71/eJlubpX7sZQJQxGixmBkSbhdWGdT4z6hSD+6/cWP38jVXUbo2BwXY8DBFLF3K
-        wTHHBa5mdngYs7kFt1uDYzTIPBGQc5a92C/lPgAykXwDknSxEtxV/KPI9PrM7ffOW5bNPY
-        bkVnGBnkuBYp08VTbbtvxwKmSpwrncc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1675458074;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x+0e9tz1IP7Pd7ZSPnQKoT68y6e8r1cD0eGR4KpbTTI=;
-        b=8jz6iRF5GZKUDvkeUSg8EWDwfH5qfCbveKwIahpdxixD5kzqKc1Txd6JEF3IScrgAAJTnt
-        Wp4YVOKZh3QclBAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 589891358A;
-        Fri,  3 Feb 2023 21:01:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4UYICRp23WP6JgAAMHmgww
-        (envelope-from <krisman@suse.de>); Fri, 03 Feb 2023 21:01:14 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     viro@zeniv.linux.org.uk, tytso@mit.edu, jaegeuk@kernel.org,
-        ebiggers@kernel.org, jack@suse.cz
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C99F6200E;
+        Fri,  3 Feb 2023 21:57:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D9ABC433D2;
+        Fri,  3 Feb 2023 21:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675461473;
+        bh=FovPIQM6HFKOKI1lzW4J7FSLHFT+bkGyLmq55x6SG7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYUbcZH0ZCBGSKlJil0dsPrgMpYPFO78WNXNSEDsIC2Ii0sSq21VgJ4io2YRuyVdj
+         VLaltmnqze8tx9ts0rN5xovk3UCDYUZ7PCeMdt03RXwUFXUYW8RIt3mXBnsTDeLJ7b
+         YFnptCIh0vmtbRuGZNV+v27GdRhCVIjzss746nHrXvnv6YE5mdzy3OBZlRJwKFWhF+
+         282/9kXyIlo+sruhVLj4UnufGPc0kXb9/3LJ0e95TwkyIS2xQQKrChvk6tfQzwPms0
+         8SBefQAaAcyraOueuAALeXKMtfoUOCsd4aB+/OC+UEGsmEXbjXlK24+daIw9enbhwp
+         eQVhnACGqzXEg==
+Date:   Fri, 3 Feb 2023 13:57:51 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v2 7/7] f2fs: Enable negative dentries on case-insensitive lookup
-Date:   Fri,  3 Feb 2023 18:00:39 -0300
-Message-Id: <20230203210039.16289-8-krisman@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230203210039.16289-1-krisman@suse.de>
-References: <20230203210039.16289-1-krisman@suse.de>
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] fscrypt: support decrypting data from large folios
+Message-ID: <Y92DX1eB9HT58YJ1@sol.localdomain>
+References: <20230127224202.355629-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230127224202.355629-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Fri, Jan 27, 2023 at 02:42:02PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Try to make the filesystem-level decryption functions in fs/crypto/
+> aware of large folios.  This includes making fscrypt_decrypt_bio()
+> support the case where the bio contains large folios, and making
+> fscrypt_decrypt_pagecache_blocks() take a folio instead of a page.
+> 
+> There's no way to actually test this with large folios yet, but I've
+> tested that this doesn't cause any regressions.
+> 
+> Note that this patch just handles *decryption*, not encryption which
+> will be a little more difficult.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  Documentation/filesystems/fscrypt.rst |  4 ++--
+>  fs/buffer.c                           |  4 ++--
+>  fs/crypto/bio.c                       | 10 ++++------
+>  fs/crypto/crypto.c                    | 28 ++++++++++++++-------------
+>  fs/ext4/inode.c                       |  6 ++++--
+>  include/linux/fscrypt.h               |  9 ++++-----
+>  6 files changed, 31 insertions(+), 30 deletions(-)
 
-Instead of invalidating negative dentries during case-insensitive
-lookups, mark them as such and let them be added to the dcache.
-d_ci_revalidate is able to properly filter them out if necessary based
-on the dentry casefold flag.
+Applied to https://git.kernel.org/pub/scm/fs/fsverity/linux.git/log/?h=for-next
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- fs/f2fs/namei.c | 23 ++---------------------
- 1 file changed, 2 insertions(+), 21 deletions(-)
+(I used the fsverity tree instead of the fscrypt tree, so that I could resolve
+the conflict with "fs/buffer.c: support fsverity in block_read_full_folio()" in
+the fsverity tree.)
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 6032589099ce..558cef6e25fc 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -564,17 +564,8 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
--		/* Eventually we want to call d_add_ci(dentry, NULL)
--		 * for negative dentries in the encoding case as
--		 * well.  For now, prevent the negative dentry
--		 * from being cached.
--		 */
--		trace_f2fs_lookup_end(dir, dentry, ino, err);
--		return NULL;
--	}
--#endif
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
-+		d_set_casefold_lookup(dentry);
- 	new = d_splice_alias(inode, dentry);
- 	err = PTR_ERR_OR_ZERO(new);
- 	trace_f2fs_lookup_end(dir, dentry, ino, !new ? -ENOENT : err);
-@@ -627,16 +618,6 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 	f2fs_delete_entry(de, page, dir, inode);
- 	f2fs_unlock_op(sbi);
- 
--#if IS_ENABLED(CONFIG_UNICODE)
--	/* VFS negative dentries are incompatible with Encoding and
--	 * Case-insensitiveness. Eventually we'll want avoid
--	 * invalidating the dentries here, alongside with returning the
--	 * negative dentries at f2fs_lookup(), when it is better
--	 * supported by the VFS for the CI case.
--	 */
--	if (IS_CASEFOLDED(dir))
--		d_invalidate(dentry);
--#endif
- 	if (IS_DIRSYNC(dir))
- 		f2fs_sync_fs(sbi->sb, 1);
- fail:
--- 
-2.35.3
-
+- Eric
