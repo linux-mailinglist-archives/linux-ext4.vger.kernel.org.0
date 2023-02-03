@@ -2,220 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70504689F58
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 17:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3B968A12A
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 19:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbjBCQfQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Feb 2023 11:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
+        id S232119AbjBCSHW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Feb 2023 13:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjBCQfQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 11:35:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ECE10D4;
-        Fri,  3 Feb 2023 08:35:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B66E861F6F;
-        Fri,  3 Feb 2023 16:35:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1656EC433D2;
-        Fri,  3 Feb 2023 16:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675442114;
-        bh=LAFGFgePgf3ook4iBuOc/zox8M9eHm7XWKurXaYi9tU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=roStwUNZB17qeESPC5wt3x03laInHjWwbx3Ss06y3w9LYsMErvt627S9H7FpxMb1m
-         Og+GQc4Hpj5HsAu8K4dXX0QoT+twn1yLxlSE6JLBp+LjSpNqETOFOCz/KUcqkkQu97
-         2IIYFkvcWCfmrPXr+dppMqQUN7rSSUDrzje8gJz9RqamD68la3WroR4sjygBsewLvj
-         sXxDhRD0pcMI1Lp6yacKN1H0Jq8ak1v01dQ78Ov4xC3Z7W6BAqFbq+DwgO6x7BiP0R
-         mYKw1rfnsJ76aTMAA2yWAI4ZhazhlVOj5D4s+GY4aIaJKi81C2punu2APFLsVghkBa
-         sf7gha6q7Wi6Q==
-Date:   Fri, 3 Feb 2023 08:35:13 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
-        linux-kernel@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH 6/5] generic: test ftruncate zeroes bytes after EOF
-Message-ID: <Y903wcB2kAWwyR+2@magnolia>
-References: <20230202204428.3267832-1-willy@infradead.org>
- <20230202204428.3267832-7-willy@infradead.org>
+        with ESMTP id S229610AbjBCSHW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 13:07:22 -0500
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1FD1F4AB;
+        Fri,  3 Feb 2023 10:07:21 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id cl23-20020a17090af69700b0022c745bfdc3so5663334pjb.3;
+        Fri, 03 Feb 2023 10:07:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nj/kqx8wU5hGioR+ILT8KGaRzW4W5cV2FumlVSJq/aU=;
+        b=b16VDLnS88B+AKkNaCmIzMBJ6rZSDaemT0Mp8iBEW8p8I/Flqb2t0tkchWtT3pBG3H
+         8ZEYT6G3TpXcCk3W2NGhM4aQlXP0FPkplKyadBxtTSOedTZxPOM+DjSWVOrh3tYTQkfG
+         YGkqCsKRZ4nhbzgZqrP/D6I0/aoCyCSyLc94TY9b142vgEmyK4XxWC+bVN0TC31s7YK8
+         J9M81Q9BZ/eyuUB34IgzeW6+e+nXM9HcE1hBhvk7P9TzwU6BE28j333VYBsApbfT4TXv
+         uxGf1kU7vLomTZ+ciatD6/VRQf2b0O1z1koI5JL6I3F4mLWAnTX9ivFvojLXuOFJEDGp
+         4wqg==
+X-Gm-Message-State: AO0yUKV/W83sewXx+8c66BRjZiGOEMhDhKdiDg+Clnm0kPcAuLk/m3To
+        5tLSlbDU+eOI1HoHTG/eMHdsTZO5TFrvGw==
+X-Google-Smtp-Source: AK7set+iP2N3huMFRj7+hUS2vWCM1sydq3uE8KyrXFnykY+b+RATpJjZO+xn3p0DMWixpVNE4lqEOQ==
+X-Received: by 2002:a17:902:e844:b0:196:15a6:7332 with SMTP id t4-20020a170902e84400b0019615a67332mr12234662plg.31.1675447640827;
+        Fri, 03 Feb 2023 10:07:20 -0800 (PST)
+Received: from ?IPV6:2620:15c:211:201:b752:5d03:ec5e:7be5? ([2620:15c:211:201:b752:5d03:ec5e:7be5])
+        by smtp.gmail.com with ESMTPSA id y9-20020a170902ed4900b0019655211783sm1867292plb.306.2023.02.03.10.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Feb 2023 10:07:19 -0800 (PST)
+Message-ID: <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
+Date:   Fri, 3 Feb 2023 10:07:17 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230202204428.3267832-7-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_evict_ea_inode
+Content-Language: en-US
+To:     syzbot <syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, beanhuo@micron.com, hdanton@sina.com,
+        jejb@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, wsa+renesas@sang-engineering.com
+References: <00000000000039fb2d05f3c7d0ed@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <00000000000039fb2d05f3c7d0ed@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 08:44:28PM +0000, Matthew Wilcox (Oracle) wrote:
-> https://pubs.opengroup.org/onlinepubs/9699919799/functions/ftruncate.html
-> specifies that "If the file size is increased, the extended area shall
-> appear as if it were zero-filled."  Many filesystems do not currently
-> do this for the portion of the page after EOF.
+On 2/3/23 00:53, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/truncate-zero.c   | 50 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/707     | 31 +++++++++++++++++++++++++++
->  tests/generic/707.out |  2 ++
->  5 files changed, 85 insertions(+), 1 deletion(-)
->  create mode 100644 src/truncate-zero.c
->  create mode 100755 tests/generic/707
->  create mode 100644 tests/generic/707.out
+> commit 82ede9c19839079e7953a47895729852a440080c
+> Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Date:   Tue Jun 21 14:46:53 2022 +0000
 > 
-> diff --git a/.gitignore b/.gitignore
-> index a6f433f1..6aa5bca9 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -169,6 +169,7 @@ tags
->  /src/test-nextquota
->  /src/testx
->  /src/trunc
-> +/src/truncate-zero
->  /src/truncfile
->  /src/unwritten_mmap
->  /src/unwritten_sync
-> diff --git a/src/Makefile b/src/Makefile
-> index afdf6b30..83ca11ac 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
->  	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
-> -	t_mmap_cow_memory_failure fake-dump-rootino
-> +	t_mmap_cow_memory_failure fake-dump-rootino truncate-zero
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/truncate-zero.c b/src/truncate-zero.c
-> new file mode 100644
-> index 00000000..67f53912
-> --- /dev/null
-> +++ b/src/truncate-zero.c
-> @@ -0,0 +1,50 @@
+>      scsi: ufs: core: Fix typos in error messages
 
-Needs to have a SPDX header and the customary Oracle copyright.
+To the syzbot maintainers: I think this is a good example of a bisection 
+result that is wrong. It is unlikely that fixing typos in kernel 
+messages would affect whether or not the kernel hangs. Additionally, as 
+far as I know, the systems used by syzbot (Google Compute Engine virtual 
+machines) do trigger any code in the UFS driver.
 
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <sys/mman.h>
-> +#include <unistd.h>
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	char *buf;
-> +	int i, fd;
-> +
-> +	if (argc != 2) {
-> +		fprintf(stderr, "Usage: %s <file>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	fd = open(argv[1], O_RDWR | O_CREAT, 0644);
-> +	if (fd < 0) {
-> +		perror(argv[1]);
-> +		return 1;
-> +	}
-> +
-> +	if (ftruncate(fd, 1) < 0) {
-> +		perror("ftruncate");
-> +		return 1;
-> +	}
-> +
-> +	buf = mmap(NULL, 1024, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-> +	if (buf == MAP_FAILED) {
-> +		perror("mmap");
-> +		return 1;
-> +	}
-> +
-> +	memset(buf, 'a', 10);
-> +
-> +	if (ftruncate(fd, 5) < 0) {
-> +		perror("ftruncate");
-> +		return 1;
-> +	}
-> +
-> +	if (memcmp(buf, "a\0\0\0\0", 5) == 0)
-> +		return 0;
-> +
-> +	fprintf(stderr, "Truncation did not zero new bytes:\n");
-> +	for (i = 0; i < 5; i++)
-> +		fprintf(stderr, "%#x ", buf[i]);
-> +	fputc('\n', stderr);
-> +
-> +	return 2;
-> +}
-> diff --git a/tests/generic/707 b/tests/generic/707
-> new file mode 100755
-> index 00000000..ddc82a9a
-> --- /dev/null
-> +++ b/tests/generic/707
-> @@ -0,0 +1,31 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Matthew Wilcox for Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 707
-> +#
-> +# Test whether we obey this part of POSIX-2017 ftruncate:
-> +# "If the file size is increased, the extended area shall appear as if
-> +# it were zero-filled"
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick posix
-> +
-> +_supported_fs generic
-> +_require_test
-> +_require_test_program "truncate-zero"
-> +
-> +test_file=$TEST_DIR/test.$seq
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $test_file
-> +}
-> +
-> +$here/src/truncate-zero $test_file > $seqres.full 2>&1 ||
-> +	_fail "truncate zero failed!"
+Bart.
 
-Omit the _fail here because any extra stdout/stderr output that is not
-in the .out file suffices to record the test as failed.
-
-_fail is only useful if you need to exit the shell script immediately.
-
-> +
-> +echo "Silence is golden"
-
-It's customary (though not required) to put "silence is golden" before
-"but my eyes still see"^W^W^W^W^Wthe test starts running programs.
-
-Other than those minor things, this looks reasonable to me.
-
---D
-
-> +status=0
-> +exit
-> diff --git a/tests/generic/707.out b/tests/generic/707.out
-> new file mode 100644
-> index 00000000..8e57a1d8
-> --- /dev/null
-> +++ b/tests/generic/707.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 707
-> +Silence is golden
-> -- 
-> 2.35.1
-> 
