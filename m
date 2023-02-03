@@ -2,123 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA215689269
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 09:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA56D6892C1
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 09:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbjBCIhZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Feb 2023 03:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S232315AbjBCIxZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Feb 2023 03:53:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjBCIhY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 03:37:24 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A9047ED9;
-        Fri,  3 Feb 2023 00:37:18 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3138Uisk017670;
-        Fri, 3 Feb 2023 08:37:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=A0hof6re8u8bm6k4Ym83IwjdZ/iNuiNk73vuae2ePIM=;
- b=pNPn+10ziFT3bMd1IFQpcbV9UxiH5d9ARGz6Wg6dtiYQBtQUj/WE+wWcUNAO8j7RlMPP
- 784ABAgQw9Fe8OUcgexRPpFJ/vVvKmAG8DIdEuAcj7TnGpiK/SVu5sDRxUvzMEz1a6WR
- 33yZZQrCQctNqdrSBsVyRrdfpAbS9uOKYy3pHbSZAEnChqaVJYhua7q6V5AQk21X7wkg
- q3WqgaVdSRj7oN7R3/wgpDBoVho9LUE49K29m24IT89iHthXXyjoyYbBTIzlKDaba90X
- qfeoWXoolpaMsCZNCLX+dhO9HAiH3bxH5QosniqyXeUOgFKHLUK/FT/B5YZC6dnivFAa AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ngxtu84v9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 08:37:07 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3138b7F2009292;
-        Fri, 3 Feb 2023 08:37:07 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ngxtu84un-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 08:37:06 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 312MGEGr005441;
-        Fri, 3 Feb 2023 08:37:04 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3ncvshd48m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 08:37:04 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3138b2RL25887184
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Feb 2023 08:37:02 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C29620043;
-        Fri,  3 Feb 2023 08:37:02 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DCF820040;
-        Fri,  3 Feb 2023 08:37:00 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.50.106])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri,  3 Feb 2023 08:36:59 +0000 (GMT)
-Date:   Fri, 3 Feb 2023 14:06:56 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
- i_prealloc_list
-Message-ID: <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20230116080216.249195-1-ojaswin@linux.ibm.com>
- <20230116080216.249195-8-ojaswin@linux.ibm.com>
- <20230116122334.k2hlom22o2hlek3m@quack3>
- <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230117110335.7dtlq4catefgjrm3@quack3>
- <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230127144312.3m3hmcufcvxxp6f4@quack3>
+        with ESMTP id S232049AbjBCIxY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 03:53:24 -0500
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F3820D12
+        for <linux-ext4@vger.kernel.org>; Fri,  3 Feb 2023 00:53:21 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id z12-20020a92d6cc000000b00310d4433c8cso2910753ilp.6
+        for <linux-ext4@vger.kernel.org>; Fri, 03 Feb 2023 00:53:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HKmKJPDbIloaVF9wxjUKzLZJm032XxjfFf+EFpRM0Yk=;
+        b=qeSySGxdxVad9f9MysXf2UIc49AP1a3MaJ0j/xgCXgN6GQjPCDOH2482TdeW64ducu
+         yeyMp1x9b9MgN2oabwN+oTeldHImOxA6DarS/J4/DxkzcMp3qYol461Aqhk6I0DwnPNb
+         K4lvQjOFe3JtBcJsIymMSqJhwXVCDlzsqHixJpTIOWVgu4DE1ZJuNDPqOPiKvO4PlNMT
+         Yj39Kj0bvYR7Ql2E2AQNkfUCMlkLqc0iVr0pjzwMEiMNv+mKTBllxa/Mlozn6VYP0b/h
+         CLloaJVR+MR7WGW03Ttp6omHYUzloRmmkDc863EuYQgtGh2vWvhY3lzN4l+OKivDlgs9
+         kGVQ==
+X-Gm-Message-State: AO0yUKX1oVf5sRpm0bOXamz0PHpGFhkpMpi/3IjJ5BquKRU4MUA+Mm5t
+        YuFXNv3Vw2/5aiuQGuho3gW7QC7vFuSwZCTwmkZCbi2dsKnJ
+X-Google-Smtp-Source: AK7set992YEjU59mc5KBs7LOS8DgjU2Yp0XuHbujD6DIew8NCUbNVWokx5RUonIbg1J0OqznsgdoGqUe6RiTEkrlZf+r1Sdtfvj2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230127144312.3m3hmcufcvxxp6f4@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: S1Ys9Hr3qTx5WgoEprq5s_riUOj4rJUW
-X-Proofpoint-GUID: GeekTf8ko8WYwxXtYxFuzeCYJPuYle4H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-03_04,2023-02-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- phishscore=0 suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=813 priorityscore=1501 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302030079
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:ac8e:0:b0:3b1:92c0:ac28 with SMTP id
+ x14-20020a02ac8e000000b003b192c0ac28mr2337676jan.74.1675414401053; Fri, 03
+ Feb 2023 00:53:21 -0800 (PST)
+Date:   Fri, 03 Feb 2023 00:53:21 -0800
+In-Reply-To: <000000000000cbd8aa05f1fd2516@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000039fb2d05f3c7d0ed@google.com>
+Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_evict_ea_inode
+From:   syzbot <syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, beanhuo@micron.com, bvanassche@acm.org,
+        hdanton@sina.com, jejb@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, wsa+renesas@sang-engineering.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 03:43:12PM +0100, Jan Kara wrote:
-> 
-> Well, I think cond_resched() + goto retry would be OK here. We could also
-> cycle the corresponding group lock which would wait for
-> ext4_mb_discard_group_preallocations() to finish but that is going to burn
-> the CPU even more than the cond_resched() + retry as we'll be just spinning
-> on the spinlock. Sleeping is IMHO not warranted as the whole
-> ext4_mb_discard_group_preallocations() is running under a spinlock anyway
-> so it should better be a very short sleep.
-> 
-> Or actually I have one more possible solution: What the adjusting function
-> is doing that it looks up PA before and after ac->ac_o_ex.fe_logical and
-> trims start & end to not overlap these PAs. So we could just lookup these
-> two PAs (ignoring the deleted state) and then just iterate from these with
-> rb_prev() & rb_next() until we find not-deleted ones. What do you think? 
+syzbot has bisected this issue to:
 
-Hey Jan, 
+commit 82ede9c19839079e7953a47895729852a440080c
+Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Date:   Tue Jun 21 14:46:53 2022 +0000
 
-Just thought I'd update you, I'm trying this solution out, and it looks
-good but I'm hitting a few bugs in the implementation. Will update here
-once I have it working correctly.
+    scsi: ufs: core: Fix typos in error messages
 
-Regards,
-Ojaswin
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=132b298b480000
+start commit:   a689b938df39 Merge tag 'block-2023-01-06' of git://git.ker..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ab298b480000
+console output: https://syzkaller.appspot.com/x/log.txt?x=172b298b480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=33ad6720950f996d
+dashboard link: https://syzkaller.appspot.com/bug?extid=38e6635a03c83c76297a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114dd83a480000
+
+Reported-by: syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com
+Fixes: 82ede9c19839 ("scsi: ufs: core: Fix typos in error messages")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
