@@ -2,84 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3B968A12A
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 19:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A4368A175
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Feb 2023 19:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbjBCSHW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Feb 2023 13:07:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
+        id S233019AbjBCSTl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Feb 2023 13:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjBCSHW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 13:07:22 -0500
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1FD1F4AB;
-        Fri,  3 Feb 2023 10:07:21 -0800 (PST)
-Received: by mail-pj1-f42.google.com with SMTP id cl23-20020a17090af69700b0022c745bfdc3so5663334pjb.3;
-        Fri, 03 Feb 2023 10:07:21 -0800 (PST)
+        with ESMTP id S231286AbjBCSTl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Feb 2023 13:19:41 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49836A8A0D;
+        Fri,  3 Feb 2023 10:19:38 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id u9so1816872plf.3;
+        Fri, 03 Feb 2023 10:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YSS5FHpKylReMoriRyUg0We8dtM/MH25AI25xTf4cJo=;
+        b=IqeQpMbEjIhwCGAabrt7tF3pabIq4V/NaysBudDP7S/Y4S3f0i9hmbwWCD2gVjvc/z
+         TPYEWotwlrW4jvKTAqXIBEXwV+ds3/1uBn/ebJqISzYcbvA2G+Ga7cj2IwTwbX6wRwln
+         AkuMFz57nJaupuDPtoKzDA3Rj2MEYp9PMLTowU47gM1H+RmBS+Omy8QOi9hSuB/CK05X
+         2ucSC6ixjnuJjTNMCh24jf0VYgc/oWIqROF/PxiTM5HodUBUGljBvlPOdKECTRq5oxcx
+         NB3xYv1/85bCKC808TfIK2/c5ayXdE+S6FzhA+PYPRgHCDdTcl0KTU1zooPrw3TFsJ3j
+         ZwJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nj/kqx8wU5hGioR+ILT8KGaRzW4W5cV2FumlVSJq/aU=;
-        b=b16VDLnS88B+AKkNaCmIzMBJ6rZSDaemT0Mp8iBEW8p8I/Flqb2t0tkchWtT3pBG3H
-         8ZEYT6G3TpXcCk3W2NGhM4aQlXP0FPkplKyadBxtTSOedTZxPOM+DjSWVOrh3tYTQkfG
-         YGkqCsKRZ4nhbzgZqrP/D6I0/aoCyCSyLc94TY9b142vgEmyK4XxWC+bVN0TC31s7YK8
-         J9M81Q9BZ/eyuUB34IgzeW6+e+nXM9HcE1hBhvk7P9TzwU6BE28j333VYBsApbfT4TXv
-         uxGf1kU7vLomTZ+ciatD6/VRQf2b0O1z1koI5JL6I3F4mLWAnTX9ivFvojLXuOFJEDGp
-         4wqg==
-X-Gm-Message-State: AO0yUKV/W83sewXx+8c66BRjZiGOEMhDhKdiDg+Clnm0kPcAuLk/m3To
-        5tLSlbDU+eOI1HoHTG/eMHdsTZO5TFrvGw==
-X-Google-Smtp-Source: AK7set+iP2N3huMFRj7+hUS2vWCM1sydq3uE8KyrXFnykY+b+RATpJjZO+xn3p0DMWixpVNE4lqEOQ==
-X-Received: by 2002:a17:902:e844:b0:196:15a6:7332 with SMTP id t4-20020a170902e84400b0019615a67332mr12234662plg.31.1675447640827;
-        Fri, 03 Feb 2023 10:07:20 -0800 (PST)
-Received: from ?IPV6:2620:15c:211:201:b752:5d03:ec5e:7be5? ([2620:15c:211:201:b752:5d03:ec5e:7be5])
-        by smtp.gmail.com with ESMTPSA id y9-20020a170902ed4900b0019655211783sm1867292plb.306.2023.02.03.10.07.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Feb 2023 10:07:19 -0800 (PST)
-Message-ID: <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
-Date:   Fri, 3 Feb 2023 10:07:17 -0800
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSS5FHpKylReMoriRyUg0We8dtM/MH25AI25xTf4cJo=;
+        b=TTgawlChKqDa2S2obqVW+sD/c7NIczx5JfDF3V9KanEfjm7AgSj5PrzaosaMMR8PrU
+         EXi7rVI3IYTbyhirZ+GTI6ZLIvpz7j2S9JO8ULbzhngpRiWhuSpjNN6/+V0WnIKFzpum
+         qvYTSj32X0emjYscsJJJGC4GBl4ze/rfS1cGLmsfrLx8JMTqobg1F+TlOZdtUUKDiH1H
+         bJjzWUWx/V+F7Tr1Hi6EqznoUeacBMy1JxXvTpmb6PREYSVsPfELAEetys0QP/RW7YBu
+         1h+LWgOyg13zF0ZHuaRZuodDjwl/DLpKjaxDehjVKPIUvpfhbre/rWI02mbfQb0rPrt3
+         IdZA==
+X-Gm-Message-State: AO0yUKW/KHlkyUju45uzDikBLcexEEd5BKajAwgo4EWv7YP/xj605qlP
+        +b2fUT8GJFgCgbK4Fg3RCBQ=
+X-Google-Smtp-Source: AK7set+2sz2GPwQN9uMeo+pKZ5i6QPDH96mtP0CKmZNkJrtkhv/+GyIvFEFWDyzEIDJS0SBD9c2BGg==
+X-Received: by 2002:a17:90b:4c0e:b0:229:4dcd:ff61 with SMTP id na14-20020a17090b4c0e00b002294dcdff61mr11456794pjb.28.1675448377399;
+        Fri, 03 Feb 2023 10:19:37 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id o60-20020a17090a0a4200b00229bc852468sm5261047pjo.0.2023.02.03.10.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Feb 2023 10:19:36 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 3 Feb 2023 08:19:35 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix cgroup writeback accounting with fs-layer
+ encryption
+Message-ID: <Y91QNz+U/MGs9cPc@slm.duckdns.org>
+References: <20230203005503.141557-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_evict_ea_inode
-Content-Language: en-US
-To:     syzbot <syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, beanhuo@micron.com, hdanton@sina.com,
-        jejb@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, wsa+renesas@sang-engineering.com
-References: <00000000000039fb2d05f3c7d0ed@google.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <00000000000039fb2d05f3c7d0ed@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230203005503.141557-1-ebiggers@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/3/23 00:53, syzbot wrote:
-> syzbot has bisected this issue to:
+On Thu, Feb 02, 2023 at 04:55:03PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> commit 82ede9c19839079e7953a47895729852a440080c
-> Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Date:   Tue Jun 21 14:46:53 2022 +0000
+> When writing a page from an encrypted file that is using
+> filesystem-layer encryption (not inline encryption), ext4 encrypts the
+> pagecache page into a bounce page, then writes the bounce page.
 > 
->      scsi: ufs: core: Fix typos in error messages
+> It also passes the bounce page to wbc_account_cgroup_owner().  That's
+> incorrect, because the bounce page is a newly allocated temporary page
+> that doesn't have the memory cgroup of the original pagecache page.
+> This makes wbc_account_cgroup_owner() not account the I/O to the owner
+> of the pagecache page as it should.
+> 
+> Fix this by always passing the pagecache page to
+> wbc_account_cgroup_owner().
+> 
+> Fixes: 001e4a8775f6 ("ext4: implement cgroup writeback support")
+> Cc: stable@vger.kernel.org
+> Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-To the syzbot maintainers: I think this is a good example of a bisection 
-result that is wrong. It is unlikely that fixing typos in kernel 
-messages would affect whether or not the kernel hangs. Additionally, as 
-far as I know, the systems used by syzbot (Google Compute Engine virtual 
-machines) do trigger any code in the UFS driver.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Bart.
+Thanks.
 
+-- 
+tejun
