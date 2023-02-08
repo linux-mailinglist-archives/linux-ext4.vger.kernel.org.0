@@ -2,121 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A00668DA90
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Feb 2023 15:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B18868E823
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Feb 2023 07:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbjBGOYB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Feb 2023 09:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S229755AbjBHGVj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Feb 2023 01:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjBGOYA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Feb 2023 09:24:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA52EC66
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Feb 2023 06:23:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229517AbjBHGVi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Feb 2023 01:21:38 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8265F40BFB;
+        Tue,  7 Feb 2023 22:21:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D5D9920685;
-        Tue,  7 Feb 2023 14:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1675779837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dqFLgAah+b/bJ1/bJd0kGyaplgnwIMLPj4Alb94lf4c=;
-        b=WGy4zue20xBJE/xneNINHzB7UAMlD6B5lYeBtcFL4PPNuSiql7KEp6ZXZgv1REItdDSt98
-        apQXGdUY6xhJyOisLFoy29WTieeR1Ea1Kotyvo7MHUPQHkQEsGf9v7y/GHBAkd4gguFRcM
-        titnMTZqeH0Ik2oPKT1DkSnBlqkvYjM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1675779837;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dqFLgAah+b/bJ1/bJd0kGyaplgnwIMLPj4Alb94lf4c=;
-        b=qld5sn3ZGXR81sZ2BdywtdEZyFlL9ocnHOL9VuGKDOIzAmYrE3w6jsoqUFmpVP/n+Ag1X6
-        J/CX9MyXN81lNLDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B715F139ED;
-        Tue,  7 Feb 2023 14:23:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lt2pLP1e4mOyDAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 07 Feb 2023 14:23:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A5BADA06D5; Tue,  7 Feb 2023 15:23:56 +0100 (CET)
-Date:   Tue, 7 Feb 2023 15:23:56 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        yi.zhang@huawei.com, linfeilong@huawei.com,
-        liuzhiqiang26@huawei.com
-Subject: Re: [PATCH v3 2/2] ext4: restore len when ext4_ext_insert_extent
- failed
-Message-ID: <20230207142356.frf4zzpqlh7mlwft@quack3>
-References: <20230207070931.2189663-1-zhanchengbin1@huawei.com>
- <20230207070931.2189663-3-zhanchengbin1@huawei.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 297F7B81AB4;
+        Wed,  8 Feb 2023 06:21:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D596C433EF;
+        Wed,  8 Feb 2023 06:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675837294;
+        bh=5/jCW9hCuDP1bPRnmDpSkCHU7uopSOqd4DhFBilNJRU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I8/gHZ3fzWa+jyUy6KyNSxroGCmJEfpCWfi01Wrqimo7Oqt3gpGOv01fKFG6/kLoJ
+         1Rnd09J0j1RgQK9Le3OI12MScPZM4cbR3ftqtHaEfDcMkLvKaQMul+jEP0FH2INKn+
+         58jvH9LKmqZ6J9YGH8BoYV+Y+h4mRNbPvf+UiMnBgotr85EPqODtNnXa4p8uCK8Fwy
+         VkX8XeauE4V1sE8uVb15qARkYw7T84Se2mRDCv3hlgFDM6Jy1pdSW3ynrEPoZ3eWuw
+         v3dMHo+r18cyKs9JCn04GN4PGAYMDiH4PzDGWz8aacPgzoNjtfGNYtcLTT+/t6ZhBX
+         7isGFDAXEfaRg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 0/5] Add the test_dummy_encryption key on-demand
+Date:   Tue,  7 Feb 2023 22:21:02 -0800
+Message-Id: <20230208062107.199831-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230207070931.2189663-3-zhanchengbin1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 07-02-23 15:09:31, zhanchengbin wrote:
-> Inside the ext4_ext_insert_extent function, every error returned will
-> not destroy the consistency of the tree. Even if it fails after changing
-> half of the tree, can also ensure that the tree is self-consistent, like
-> function ext4_ext_create_new_leaf.
+This series eliminates the call to fscrypt_destroy_keyring() from
+__put_super(), which is causing confusion because it looks like (but
+actually isn't) a sleep-in-atomic bug.  See the thread "block: sleeping
+in atomic warnings", i.e.
+https://lore.kernel.org/linux-fsdevel/CAHk-=wg6ohuyrmLJYTfEpDbp2Jwnef54gkcpZ3-BYgy4C6UxRQ@mail.gmail.com
+and its responses.
 
-Hum, but e.g. if ext4_ext_correct_indexes() fails, we *will* end up with
-corrupted extent tree pretty much without a chance for recovery, won't we?
+To do this, this series makes it so that the key associated with the
+"test_dummy_encryption" mount option is added on-demand when files are
+accessed, instead of immediately when the filesystem is mounted.
 
-								Honza
+I was going back and forth between this solution and instead having ext4
+and f2fs call fscrypt_destroy_keyring() on ->fill_super failure.  (Or
+using Linus's suggestion of adding the test dummy key as the very last
+step of ->fill_super.)  It does seem ideal to add the key at mount time,
+but I ended up going with this solution instead because it reduces the
+number of things the individual filesystems have to handle.
 
-> After ext4_ext_insert_extent fails, update extent status tree depends on
-> the incoming split_flag. So restore the len of extent to be split when
-> ext4_ext_insert_extent return failed in ext4_split_extent_at.
-> 
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/ext4/extents.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 3559ea6b0781..b926fef73de4 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -935,6 +935,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
->  
->  		bh = read_extent_tree_block(inode, path[ppos].p_idx, --i, flags);
->  		if (IS_ERR(bh)) {
-> +			EXT4_ERROR_INODE(inode, "IO error reading extent block");
->  			ret = PTR_ERR(bh);
->  			goto err;
->  		}
-> @@ -3251,7 +3252,7 @@ static int ext4_split_extent_at(handle_t *handle,
->  		ext4_ext_mark_unwritten(ex2);
->  
->  	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-> -	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
-> +	if (!err)
->  		goto out;
->  
->  	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-> -- 
-> 2.31.1
-> 
+Eric Biggers (5):
+  fscrypt: add the test dummy encryption key on-demand
+  ext4: stop calling fscrypt_add_test_dummy_key()
+  f2fs: stop calling fscrypt_add_test_dummy_key()
+  fs/super.c: stop calling fscrypt_destroy_keyring() from __put_super()
+  fscrypt: clean up fscrypt_add_test_dummy_key()
+
+ fs/crypto/fscrypt_private.h |  4 ++++
+ fs/crypto/keyring.c         | 26 +++++++-------------------
+ fs/crypto/keysetup.c        | 23 +++++++++++++++++++++--
+ fs/crypto/policy.c          |  3 +--
+ fs/ext4/super.c             | 13 +------------
+ fs/f2fs/super.c             |  6 ------
+ fs/super.c                  |  1 -
+ include/linux/fscrypt.h     |  9 ---------
+ 8 files changed, 34 insertions(+), 51 deletions(-)
+
+
+base-commit: 6d796c50f84ca79f1722bb131799e5a5710c4700
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.1
+
