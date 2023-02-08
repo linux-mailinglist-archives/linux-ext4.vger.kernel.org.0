@@ -2,99 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FF168E8A9
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Feb 2023 08:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A1F68E8B6
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Feb 2023 08:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjBHHBY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Feb 2023 02:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        id S230131AbjBHHKl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Feb 2023 02:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjBHHA5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Feb 2023 02:00:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E8045F43
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Feb 2023 22:59:46 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 94450B81C3A
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Feb 2023 06:59:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C26BC433EF
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Feb 2023 06:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675839574;
-        bh=uXcC4bQ8SgVMP7ZeQz46DXD4L+Rm8k+E7DqiGiOGR3A=;
-        h=From:To:Subject:Date:From;
-        b=SrwTjCJHjWAZLQ+tsd8JGSR2BJJrshqKG5qKYAJyXofu0Zk09gyJ/mWMkYhy8J7HD
-         k/fHc5y1Fbw/OZlN02nuIenO0WFsEU/c+FZHiZHqk8lBpr4sqsb90dyeMjWDp2gWs5
-         g6jrtluARaz463Uf2WsDRtj4DIAh120agCC5f9S9Y0LpJ/C7HtFNrzraJC0GXYxyNk
-         A2+fEebhujP0wbmzliph1TclB4y6Lbkmg8qVoHZbXuWCJVaeFnjU/Zx88L5KG5owYq
-         5XuC0l5AL9XuUiQAAdYGUhe4q56JkESkdw9o5UuSxEhKoDi3YQv2XNe/KcZLJREAZv
-         mtqlsiRsWX11g==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [e2fsprogs PATCH] ci.yml: store the config.h files as workflow artifacts
-Date:   Tue,  7 Feb 2023 22:58:58 -0800
-Message-Id: <20230208065858.227695-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229450AbjBHHKk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Feb 2023 02:10:40 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DD219F11
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Feb 2023 23:10:37 -0800 (PST)
+Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PBWNW10dwzrRt7;
+        Wed,  8 Feb 2023 15:10:19 +0800 (CST)
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 8 Feb 2023 15:10:35 +0800
+Message-ID: <c7a79489-c0d7-968b-4fa5-c698ceb63bf9@huawei.com>
+Date:   Wed, 8 Feb 2023 15:10:35 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v3 2/2] ext4: restore len when ext4_ext_insert_extent
+ failed
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <jack@suse.com>, <linux-ext4@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <linfeilong@huawei.com>,
+        <liuzhiqiang26@huawei.com>
+References: <20230207070931.2189663-1-zhanchengbin1@huawei.com>
+ <20230207070931.2189663-3-zhanchengbin1@huawei.com>
+ <20230207142356.frf4zzpqlh7mlwft@quack3>
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+In-Reply-To: <20230207142356.frf4zzpqlh7mlwft@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml100014.china.huawei.com (7.185.36.96) To
+ dggpeml500016.china.huawei.com (7.185.36.70)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Thanks for your comments.
+I've analyzed this situation, If a failure occurs at a certain layer, the
+start of the upper and lower logical blocks is different, this's same as
+ext4_ext_rm_idx.
+If this happens data is not flushed to disks so data on disks is
+consistent, but data on the memory is inconsistent (have journal). In my
+opinion, we just need to ensure that we don't use the wrong data and flush
+to disk. Look code we can know if ext4_ext_get_access and ext4_ext_dirty
+faild, the verified flag of bh will be cleared, if read this bad inode
+again, read_extent_tree_block will check verified flag and goto
+__ext4_ext_check, finally, return error in the ext4_valid_extent_entries
+function if the logical block start is incorrect, So does not change the
+consistency of data on the disk. (Emmmmmm, I misunderstand the judgment in
+ext4_valid_extent_entries. Later, I will clear the verified flag from the
+modified bh when ext4_valid_extent_entries fails.)
+If no journal, the data on the disk is inconsistent, too. Can use fsck to
+fix it.
+What do you think?
 
-Store the config.h file for each platform as a workflow artifact, so
-that it will be possible to download them and compare them to
-util/android_config.h.
+  - bin.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- .github/workflows/ci.yml | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
-index 51b27c88d..6b0f91506 100644
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -27,6 +27,10 @@ jobs:
-     - run: make -j8 check V=1 CFLAGS_WARN="-Werror"
-     - run: make -j8 install V=1 DESTDIR=$PWD/installdir
-     - run: make -j8 uninstall V=1 DESTDIR=$PWD/installdir
-+    - uses: actions/upload-artifact@v3
-+      with:
-+        name: ubuntu-config.h
-+        path: lib/config.h
- 
-   i386-build-and-test:
-     name: Build and test with gcc -m32
-@@ -79,6 +83,10 @@ jobs:
-     - run: make -j8 check V=1 CFLAGS_WARN="-Werror -Wno-error=deprecated-declarations"
-     - run: make -j8 install DESTDIR=$PWD/installdir
-     - run: make -j8 uninstall DESTDIR=$PWD/installdir
-+    - uses: actions/upload-artifact@v3
-+      with:
-+        name: macOS-config.h
-+        path: lib/config.h
- 
-   windows-msys2-build:
-     name: Build mke2fs on Windows with ${{matrix.sys}}
-@@ -114,3 +122,7 @@ jobs:
-     - run: make -j8 -C misc/ mke2fs V=1 CFLAGS_WARN="-Werror"
-     - run: touch image.ext4
-     - run: misc/mke2fs.exe -T ext4 image.ext4 128M
-+    - uses: actions/upload-artifact@v3
-+      with:
-+        name: windows-${{matrix.env}}-config.h
-+        path: lib/config.h
-
-base-commit: a06369183565bccbbba9a47b6c55622da8a1de85
--- 
-2.39.1
-
+On 2023/2/7 22:23, Jan Kara wrote:
+> On Tue 07-02-23 15:09:31, zhanchengbin wrote:
+>> Inside the ext4_ext_insert_extent function, every error returned will
+>> not destroy the consistency of the tree. Even if it fails after changing
+>> half of the tree, can also ensure that the tree is self-consistent, like
+>> function ext4_ext_create_new_leaf.
+> 
+> Hum, but e.g. if ext4_ext_correct_indexes() fails, we *will* end up with
+> corrupted extent tree pretty much without a chance for recovery, won't we?
+> 
+> 								Honza
+> 
+>> After ext4_ext_insert_extent fails, update extent status tree depends on
+>> the incoming split_flag. So restore the len of extent to be split when
+>> ext4_ext_insert_extent return failed in ext4_split_extent_at.
+>>
+>> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>   fs/ext4/extents.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 3559ea6b0781..b926fef73de4 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -935,6 +935,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+>>   
+>>   		bh = read_extent_tree_block(inode, path[ppos].p_idx, --i, flags);
+>>   		if (IS_ERR(bh)) {
+>> +			EXT4_ERROR_INODE(inode, "IO error reading extent block");
+>>   			ret = PTR_ERR(bh);
+>>   			goto err;
+>>   		}
+>> @@ -3251,7 +3252,7 @@ static int ext4_split_extent_at(handle_t *handle,
+>>   		ext4_ext_mark_unwritten(ex2);
+>>   
+>>   	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+>> -	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
+>> +	if (!err)
+>>   		goto out;
+>>   
+>>   	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+>> -- 
+>> 2.31.1
+>>
