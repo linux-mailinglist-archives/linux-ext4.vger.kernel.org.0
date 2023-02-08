@@ -2,198 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C4468EDE1
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Feb 2023 12:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCED468EE98
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Feb 2023 13:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjBHLZX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Feb 2023 06:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        id S230366AbjBHMJ4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Feb 2023 07:09:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjBHLZW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Feb 2023 06:25:22 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880EA1BD8;
-        Wed,  8 Feb 2023 03:25:20 -0800 (PST)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 318ATgwH020179;
-        Wed, 8 Feb 2023 11:25:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=L+6Lr5mei1+6jAImNdi0HSc1OK4i6MHX0/U+3dqaMBk=;
- b=JVyNO6e4Km8Yvs/Tik6RqKl+1Vhq/ANOyJ5mRqhsXRS4UmXFlpiVQg2vBo3G9ep7PQ6z
- 70N0qYNVSKnbdBgFgNmZKjOZ67n03rtK8A2n//W1/i+7fsi/ahwJcA5i63ogSrKK0/Xc
- tiokr8m4+clh23u1dB644m3I0FwB25WdBjDrFwvym0UKxLvzo1UDr651EZuAiZTDYGGS
- DZKQocoDKnp1UzIseWmHSwLlCXDo7N+Fvsjj/leOzU31zthk4DbmIpxHgQnAcSd0GwkI
- nh4iSJ8X6nJNB0qFlmwEdSR9D2rWzjqPRalGp4JiXy5Oj3pNDSuQIrq6ZTLguKhlxpVC eA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nma1ksmev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Feb 2023 11:25:15 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 318AUFXS021155;
-        Wed, 8 Feb 2023 11:25:15 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nma1ksmec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Feb 2023 11:25:14 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3185ageT024247;
-        Wed, 8 Feb 2023 11:25:13 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3nhf06vu3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Feb 2023 11:25:13 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 318BPADT47579456
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Feb 2023 11:25:10 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6F1220043;
-        Wed,  8 Feb 2023 11:25:10 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 821EE20040;
-        Wed,  8 Feb 2023 11:25:08 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.169])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  8 Feb 2023 11:25:08 +0000 (GMT)
-Date:   Wed, 8 Feb 2023 16:55:05 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
- i_prealloc_list
-Message-ID: <Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20230116080216.249195-1-ojaswin@linux.ibm.com>
- <20230116080216.249195-8-ojaswin@linux.ibm.com>
- <20230116122334.k2hlom22o2hlek3m@quack3>
- <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230117110335.7dtlq4catefgjrm3@quack3>
- <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230127144312.3m3hmcufcvxxp6f4@quack3>
- <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+        with ESMTP id S229519AbjBHMJz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Feb 2023 07:09:55 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96C111651;
+        Wed,  8 Feb 2023 04:09:53 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id bu23so672570wrb.8;
+        Wed, 08 Feb 2023 04:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:subject:from:cc:to:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rGafubzmHRRH6UHRpA5a7k29P/gBmV50GLONDcRP9tI=;
+        b=OpDwTXHnq1CS8kuQCMMQjoDOIsCRJPxSSN5euXdgkvAdI6f2RwAnHMU4yGwyiQe1dj
+         BvbBCTrgT2rwYozNWozVACkVspwEMzh5uEtMbyhzkWS+HGvEeLdlDyg9NjUyOtRgBeu7
+         tTszt+gJNwH6sfB8tR546UGp651CskoSnzYVPTHXmswascLBcLbyVl8K3qgjw8xMXglL
+         DD6NxerciQGOK71VNZnGvQQWZrWpCcpNBQfxFIyJCpoZZRL7qc2baRKSpxEmODRR8JXd
+         SB1A2XyLnK04w1NOgmYvcR0obO5+M5YRmCp2NphEG9tze+8B3FRRrQP9OMoMYG8/Mae7
+         Dokg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:subject:from:cc:to:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rGafubzmHRRH6UHRpA5a7k29P/gBmV50GLONDcRP9tI=;
+        b=fyrErsMaaJ3LUA+tXK0F3imxVQgn9tW628RtUpXQsMz6yM05UZ87Aihop5R6mpJ4o8
+         2JXQJdb0SJeACTaH9drNtJ3ocrpHocl0sEM0v1yjtGFzYywuAsdYI29FkBl8WPVCnQxA
+         UN3VmEeQs6ea+Lg42bpcz24hovooOgtRp/Evhd8o2fjtr77M7hsyr9LtyArJCEjCQUiD
+         YewS/JNX1SZGmw79rqq1e66VFLvh0t8mztgTzlvu+zbK4LyQ9mQXAXlIu7eYNknFJGev
+         DtWhrngLxEckm2cARwyjS/e9ecH8YLzhTn7ZKlVZGLTQ1TbfT4gCBuuTNyht4MtTNaKB
+         dpGQ==
+X-Gm-Message-State: AO0yUKUGmpaBJDctBBRBN5xmYQNO7Zr0XJXZ5olFQU2sX2Aqb67QS3z2
+        hoAaJ3vwBuLpooxReQWbGyvkBiMOUa8+Q6uh
+X-Google-Smtp-Source: AK7set/0LdX34TF42BDs2yb6m8k8qFh+7X8TJYxLo5Uy3rR/6EYZgm5w+Xa0tgTmsWrb5fYtkRbe2g==
+X-Received: by 2002:adf:f60f:0:b0:2c3:dc62:e680 with SMTP id t15-20020adff60f000000b002c3dc62e680mr6328158wrp.30.1675858192347;
+        Wed, 08 Feb 2023 04:09:52 -0800 (PST)
+Received: from [192.168.1.107] (pop.92-184-100-160.mobile.abo.orange.fr. [92.184.100.160])
+        by smtp.gmail.com with ESMTPSA id e7-20020adfdbc7000000b002425be3c9e2sm12637824wrj.60.2023.02.08.04.09.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Feb 2023 04:09:51 -0800 (PST)
+Message-ID: <03a87391-1b19-de2d-5c18-581c1d0c47ca@gmail.com>
+Date:   Wed, 8 Feb 2023 13:09:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3ZbE-ERl6XHQopFhVehSSI88lNRJdVWK
-X-Proofpoint-ORIG-GUID: Y_lDQoHEuzwHFWxNA9VqSV2YqT6fbFH6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-08_03,2023-02-08_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 clxscore=1015 phishscore=0 suspectscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2302080100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+From:   Sebastien Buisson <sbuisson.work@gmail.com>
+Subject: Backup/restore of fscrypt files and directories
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 03, 2023 at 02:06:56PM +0530, Ojaswin Mujoo wrote:
-> On Fri, Jan 27, 2023 at 03:43:12PM +0100, Jan Kara wrote:
-> > 
-> > Well, I think cond_resched() + goto retry would be OK here. We could also
-> > cycle the corresponding group lock which would wait for
-> > ext4_mb_discard_group_preallocations() to finish but that is going to burn
-> > the CPU even more than the cond_resched() + retry as we'll be just spinning
-> > on the spinlock. Sleeping is IMHO not warranted as the whole
-> > ext4_mb_discard_group_preallocations() is running under a spinlock anyway
-> > so it should better be a very short sleep.
-> > 
-> > Or actually I have one more possible solution: What the adjusting function
-> > is doing that it looks up PA before and after ac->ac_o_ex.fe_logical and
-> > trims start & end to not overlap these PAs. So we could just lookup these
-> > two PAs (ignoring the deleted state) and then just iterate from these with
-> > rb_prev() & rb_next() until we find not-deleted ones. What do you think? 
-> 
-> Hey Jan, 
-> 
-> Just thought I'd update you, I'm trying this solution out, and it looks
-> good but I'm hitting a few bugs in the implementation. Will update here
-> once I have it working correctly.
+I am planning to implement backup and restore for fscrypt files and 
+directories and propose the following design, and would welcome feedback 
+on this approach.
 
-Alright, so after spending some time on these bugs I'm hitting I'm
-seeing some strange behavior. Basically, it seems like in scenarios
-where we are not able to allocate as many block as the normalized goal
-request, we can sometimes end up adding a PA that overlaps with existing
-PAs in the inode PA list/tree. This behavior exists even before this
-particular patchset. Due to presence of such overlapping PAs, the above
-logic was failing in some cases.
+There is a need to preserve encrypted file data in case of storage 
+failure and to allow safely moving the data between filesystems and 
+systems without decrypting it, just like we would do for normal files. 
+While backup and restore at the device level is sometimes an option, we 
+need to also be able to carry out back/restore at the ext4 file system 
+level, for instance to allow changing formatting options.
 
-From my understanding of the code, this seems to be a BUG. We should not
-be adding overlapping PA ranges as that causes us to preallocate
-multiple blocks for the same logical offset in a file, however I would
-also like to know if my understanding is incorrect and if this is an
-intended behavior.
+The core principle we want to retain is that we must not make any clear 
+text copy of encrypted files. This means backup/restore must be carried 
+out without the encryption key.
 
------ Analysis of the issue ------
+The first challenge we have to address is to get access to raw encrypted 
+files without the encryption key. By design, fscrypt does not allow such 
+kind of access, and the ext4 file system would not let read or write 
+files flagged as encrypted if the encryption key is not provided. This 
+restriction is not for security reasons, but to avoid applications 
+accidentally accessing the ciphertext. A mechanism must be provided for 
+access to both raw encrypted content, and raw encrypted names.
 
-Here's my analysis of the behavior, which I did by adding some BUG_ONs
-and running generic/269 (4k bs). It happens pretty often, like once
-every 5-10 runs. Testing was done without applying this patch series on
-the Ted's dev branch.
+The second challenge is to deal with the encrypted file's size, when it 
+is accessed with the encryption key vs. when accessed without the 
+encryption key. For the backup operation to retrieve full encrypted 
+content, the encrypted file size should be reported as a multiple of the 
+encryption chunk size when the encryption key is not present. And the 
+clear text file size (size as seen with the encryption key) must be 
+backed up as well in order to properly restore encrypted files later on. 
+This information cannot be inferred by any other means.
 
-1. So taking an example of a real scenario I hit. After we find the best
-len possible, we enter the ext4_mb_new_inode_pa() function with the
-following values for start and end of the extents:
+The third challenge is to get access to the encryption context of files 
+and directories. By design, fscrypt does not expose this information, 
+internally stored as an extended attribute but with no associated 
+handler. However, making a backup of the encryption context is crucial 
+because it preserves the information needed to later decrypt the file 
+content. And it is also a non-trivial operation to restore the 
+encryption context. Indeed, fscrypt imposes that an encryption context 
+can only be set on a new file or an existing but empty directory.
 
-## format: <start>/<end>(<len>)
-orig_ex:503/510(7) goal_ex:0/512(512) best_ex:0/394(394)
 
-2. Since (best_ex len < goal_ex len) we enter the PA window adjustment
-if condition here:
+In order to address this need for backup/restore of encrypted files, we 
+propose to make use of a special extended attribute named 
+security.encdata, containing:
+- encoding method used for binary data. Assume name can be up to 255 chars.
+- clear text file data length in bytes (set to 0 for dirs).
+- encryption context. 40 bytes for v2 encryption context.
+- encrypted name. 256 bytes max.
 
-	if (ac->ac_b_ex.fe_len < ac->ac_g_ex.fe_len)
-		...
-	}
+To improve portability if we need to change the on-disk format in the 
+future, and to make the archived data useful over a longer timeframe, 
+the content of the security.encdata xattr is expressed as ASCII text 
+with a "key: value" YAML format. As encryption context and encrypted 
+file name are binary, they need to be encoded.
+So the content of the security.encdata xattr would be something like:
 
-3. Here, we calc wins, winl and off and adjust logical start and end of
-the best found extent. The idea is to make sure that the best extent
-atleast covers the original request. In this example, the values are:
+   { encoding: base64url, size: 3012, enc_ctx: YWJjZGVmZ2hpamtsbW
+   5vcHFyc3R1dnd4eXphYmNkZWZnaGlqa2xtbg, enc_name: ZmlsZXdpdGh2ZX
+   J5bG9uZ25hbWVmaWxld2l0aHZlcnlsb25nbmFtZWZpbGV3aXRodmVyeWxvbmdu
+   YW1lZmlsZXdpdGg }
 
-winl:503 wins:387 off:109
+Because base64 encoding has a 33% overhead, this gives us a maximum 
+xattr size of approximately 800 characters.
+This extended attribute would not be shown when listing xattrs, only 
+exposed when fetched explicitly, and unmodified tools would not be able 
+to access the encrypted files in any case. It would not be stored on 
+disk, only computed when fetched.
 
-and win = min(winl, wins, off) = 109
 
-4. We then adjust the logical start of the best ex as:
+File and file system backups often use the tar utility either directly 
+or under the covers. We propose to modify the tar utility to make it 
+"encryption aware", but the same relatively small changes could be done 
+with other common backup utilities like cpio as needed. When detecting 
+ext4 encrypted files, tar would need to explicitly fetch the 
+security.encdata extended attribute, and store it along with the backup 
+file. Fetching this extended attribute would internally trigger in ext4 
+a mechanism responsible for gathering the required information. Because 
+we must not make any clear text copy of encrypted files, the encryption 
+key must not be present. Tar would also need to use a special flag that 
+would allow reading raw data without the encryption key. Such a flag 
+could be named O_FILE_ENC, and would need to be coupled with O_DIRECT so 
+that the page cache does not see this raw data. O_FILE_ENC could take 
+the value of (O_NOCTTY | O_NDELAY) as they are unlikely to be used in 
+practice and are not harmful if used incorrectly. The name of the 
+backed-up file would be the encoded+digested form returned by fscrypt.
 
-		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical - EXT4_NUM_B2C(sbi, win);
+The tar utility would be used to extract a previously created tarball 
+containing encrypted files. When restoring the security.encdata extended 
+attribute, instead of storing the xattr as-is on disk, this would 
+internally trigger in ext4 a mechanism responsible for extracting the 
+required information, and storing them accordingly. Tar would also need 
+to specify the O_FILE_ENC | O_DIRECT flags to write raw data without the 
+encryption key.
 
-which makes the new best extent as:
+To create a valid encrypted file with proper encryption context and 
+encrypted name, we can implement a mechanism where the file is first 
+created with O_TMPFILE in the encrypted directory to avoid triggering 
+the encryption context check before setting the security.encdata xattr, 
+and then atomically linking it to the namespace with the correct 
+encrypted name.
 
-best_ex: 394/788(394)
 
-As we can see, the best extent overflows outside the goal range, and
-hence we don't have any guarentee anymore that it will not overlap with
-another PA since we only check overlaps with the goal start and end.
-We then initialze the new PA with the logical start and end of the best
-extent and finaly add it to the inode PA list.
+ From a security standpoint, doing backup and restore of encrypted files 
+must not compromise their security. This is the reason why we want to 
+carry out these operations without the encryption key. It avoids making 
+a clear text copy of encrypted files.
+The security.encdata extended attribute contains the encryption context 
+of the file or directory. This has a 16-byte nonce (per-file random 
+value) that is used along with the master key to derive the per-file key 
+thanks to a KDF function. But the master key is not stored in ext4, so 
+it is not backed up as part of the scenario described above, which makes 
+the backup of the raw encrypted files safe.
+The process of restoring encrypted files must not change the encryption 
+context associated with the files. In particular, setting an encryption 
+context on a file must be possible only once, when the file is restored. 
+And the newly introduced capability of restoring encrypted files must 
+not give the ability to set an arbitrary encryption context on files.
 
-In my testing I was able to actually see overlapping PAs being added to
-the inode list.
 
------------ END ---------------
+ From the backup tool point of view, the only changes needed would be to 
+add "O_FILE_ENC" when the open fails with ENOKEY, and then explicitly 
+backup the "security.encdata" xattr with the file.  On restore, if the 
+"security.encdata" xattr is present, then the file should be created in 
+the directory with O_TMPFILE before restoring the xattrs and file data, 
+and then using link() to link the file to the directory with the 
+encrypted filename.
 
-Again, I would like to know if this is a BUG or intended. If its a BUG,
-is it okay for us to make sure the adjusted best extent length doesn't 
-extend the goal length? 
+ From the filesystem point of view, it needs to generate the encdata 
+xattr on getxattr(), and interpret it correctly on setxattr().  The VFS 
+needs to allow open() and link() on encrypted files with O_FILE_ENC.
 
-Also, another thing I noticed is that after ext4_mb_normalize_request(),
-sometimes the original range can also exceed the normalized goal range,
-which is again was a bit surprising to me since my understanding was
-that normalized range would always encompass the orignal range.
+If this proposal is OK I can provide a series of patches to implement this.
 
-Hoping to get some insights into the above points.
-
-Regards,
-ojaswin
