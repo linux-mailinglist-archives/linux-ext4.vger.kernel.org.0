@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3276907F2
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 446596907F4
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjBIL5T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Feb 2023 06:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
+        id S229934AbjBIL5X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Feb 2023 06:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBIL4O (ORCPT
+        with ESMTP id S229761AbjBIL4O (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Feb 2023 06:56:14 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16B35C490;
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF38F5C495;
         Thu,  9 Feb 2023 03:46:31 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PCFSf5GqPz4f3nTJ;
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PCFSf6FNhz4f3v75;
         Thu,  9 Feb 2023 19:46:26 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S12;
-        Thu, 09 Feb 2023 19:46:28 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S13;
+        Thu, 09 Feb 2023 19:46:29 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/21] ext4: Remove unnecessary release when memory allocation failed in ext4_mb_init_cache
-Date:   Fri, 10 Feb 2023 03:48:14 +0800
-Message-Id: <20230209194825.511043-11-shikemeng@huaweicloud.com>
+Subject: [PATCH 11/21] ext4: remove unnecessary e4b->bd_buddy_page check in ext4_mb_load_buddy_gfp
+Date:   Fri, 10 Feb 2023 03:48:15 +0800
+Message-Id: <20230209194825.511043-12-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 References: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S12
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw1rKw1DWrWUWF4DWFW7Arb_yoWxKFb_Ga
-        4vvrW8X34rJ3WIy3W0yw1rtFyqqa95AF48XrZxtrZxuF15Ww4fCw1kJrs5AwnrW3Wavr98
-        urn3AryrGF40yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S13
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr1rGF1Uuw1xKw13Cry7GFg_yoW3Arc_Ga
+        4I9r48tr4rJryqkF1xZwsIyws8KanY9rWUXFZ3tryUZFyUZrWDZw1kZr1Fya1xuFy29rW5
+        CF13ZF9rJFW09jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbSxYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
         Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
         xGYIkIc2x26280x7IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC
@@ -58,31 +58,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If we alloc array of buffer_head failed, there is no resource need to be
-freed and we can simpily return error.
+e4b->bd_buddy_page is only set if we initialize ext4_buddy successfully. So
+e4b->bd_buddy_page is always NULL in error handle branch. Just remove the
+dead check.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index ad9e3b7d3198..15fc7105becc 100644
+index 15fc7105becc..74da24c9bf14 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -1168,10 +1168,8 @@ static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
- 	if (groups_per_page > 1) {
- 		i = sizeof(struct buffer_head *) * groups_per_page;
- 		bh = kzalloc(i, gfp);
--		if (bh == NULL) {
--			err = -ENOMEM;
--			goto out;
--		}
-+		if (bh == NULL)
-+			return -ENOMEM;
- 	} else
- 		bh = &bhs;
- 
+@@ -1555,8 +1555,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+ 		put_page(page);
+ 	if (e4b->bd_bitmap_page)
+ 		put_page(e4b->bd_bitmap_page);
+-	if (e4b->bd_buddy_page)
+-		put_page(e4b->bd_buddy_page);
++
+ 	e4b->bd_buddy = NULL;
+ 	e4b->bd_bitmap = NULL;
+ 	return ret;
 -- 
 2.30.0
 
