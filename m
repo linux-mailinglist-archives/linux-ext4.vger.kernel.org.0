@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB586907ED
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6E66907EE
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbjBIL5D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Feb 2023 06:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        id S230152AbjBIL5H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Feb 2023 06:57:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjBIL4N (ORCPT
+        with ESMTP id S229564AbjBIL4N (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Feb 2023 06:56:13 -0500
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249045C48C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320C85C48F;
         Thu,  9 Feb 2023 03:46:31 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PCFSd6q5Xz4f3v6t;
-        Thu,  9 Feb 2023 19:46:25 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PCFSf1xcwz4f3v6x;
+        Thu,  9 Feb 2023 19:46:26 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S10;
+        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S11;
         Thu, 09 Feb 2023 19:46:28 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/21] ext4: add missed brelse in ext4_free_blocks_simple
-Date:   Fri, 10 Feb 2023 03:48:12 +0800
-Message-Id: <20230209194825.511043-9-shikemeng@huaweicloud.com>
+Subject: [PATCH 09/21] ext4: remove unused return value of ext4_mb_try_best_found and ext4_mb_free_metadata
+Date:   Fri, 10 Feb 2023 03:48:13 +0800
+Message-Id: <20230209194825.511043-10-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 References: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ary8Xr1ktw4fGF17ZryfXrb_yoW8XFWkpr
-        4qyF48GFn3Wr1qgF4xX34UX3W8twn7W3WUGFWrGwnrCrW3J3saqFs7KF1F93W5KFZ3AanI
-        vFn093yrJF4jgFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWUZFWxZFW8KrWkZrWUJwb_yoW8uFyfpr
+        srJFy8Cr1xXr1DuFZru3W5X3WF9w4xu3WUGryIgw1rCF13urWDKF47t3W0vF1FqrWkuFnx
+        AFWqvr15GrsrK37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -58,51 +58,71 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Release bitmap buffer_head we got if error occurs.
-Besides, this patch remove unused assignment to err.
+Return value static function ext4_mb_try_best_found and
+ext4_mb_free_metadata is not used. Just remove unused return value.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ext4/mballoc.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 4e1caac74b44..17ac98c501ed 100644
+index 17ac98c501ed..ad9e3b7d3198 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -5848,13 +5848,12 @@ static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
- 	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
- 	bitmap_bh = ext4_read_block_bitmap(sb, group);
- 	if (IS_ERR(bitmap_bh)) {
--		err = PTR_ERR(bitmap_bh);
- 		pr_warn("Failed to read block bitmap\n");
- 		return;
- 	}
- 	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
- 	if (!gdp)
--		return;
-+		goto err_out;
- 
- 	for (i = 0; i < count; i++) {
- 		if (!mb_test_bit(blkoff + i, bitmap_bh->b_data))
-@@ -5863,7 +5862,7 @@ static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
- 	mb_clear_bits(bitmap_bh->b_data, blkoff, count);
- 	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
- 	if (err)
--		return;
-+		goto err_out;
- 	ext4_free_group_clusters_set(
- 		sb, gdp, ext4_free_group_clusters(sb, gdp) +
- 		count - already_freed);
-@@ -5872,6 +5871,8 @@ static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
- 	ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
- 	sync_dirty_buffer(bitmap_bh);
- 	sync_dirty_buffer(gdp_bh);
-+
-+err_out:
- 	brelse(bitmap_bh);
+@@ -2124,7 +2124,7 @@ static void ext4_mb_measure_extent(struct ext4_allocation_context *ac,
  }
  
+ static noinline_for_stack
+-int ext4_mb_try_best_found(struct ext4_allocation_context *ac,
++void ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 					struct ext4_buddy *e4b)
+ {
+ 	struct ext4_free_extent ex = ac->ac_b_ex;
+@@ -2135,7 +2135,7 @@ int ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 	BUG_ON(ex.fe_len <= 0);
+ 	err = ext4_mb_load_buddy(ac->ac_sb, group, e4b);
+ 	if (err)
+-		return err;
++		return;
+ 
+ 	ext4_lock_group(ac->ac_sb, group);
+ 	max = mb_find_extent(e4b, ex.fe_start, ex.fe_len, &ex);
+@@ -2147,8 +2147,6 @@ int ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 
+ 	ext4_unlock_group(ac->ac_sb, group);
+ 	ext4_mb_unload_buddy(e4b);
+-
+-	return 0;
+ }
+ 
+ static noinline_for_stack
+@@ -5699,7 +5697,7 @@ static void ext4_try_merge_freed_extent(struct ext4_sb_info *sbi,
+ 	kmem_cache_free(ext4_free_data_cachep, entry);
+ }
+ 
+-static noinline_for_stack int
++static noinline_for_stack void
+ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
+ 		      struct ext4_free_data *new_entry)
+ {
+@@ -5742,7 +5740,7 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
+ 				EXT4_C2B(sbi, cluster),
+ 				"Block already on to-be-freed list");
+ 			kmem_cache_free(ext4_free_data_cachep, new_entry);
+-			return 0;
++			return;
+ 		}
+ 	}
+ 
+@@ -5768,7 +5766,6 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
+ 	list_add_tail(&new_entry->efd_list, &sbi->s_freed_data_list);
+ 	sbi->s_mb_free_pending += clusters;
+ 	spin_unlock(&sbi->s_md_lock);
+-	return 0;
+ }
+ 
+ /*
 -- 
 2.30.0
 
