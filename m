@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035676907FA
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAE06907FE
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Feb 2023 12:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjBIL5n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Feb 2023 06:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        id S230325AbjBIL5r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Feb 2023 06:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjBIL4P (ORCPT
+        with ESMTP id S229633AbjBIL4P (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Feb 2023 06:56:15 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C45C498;
-        Thu,  9 Feb 2023 03:46:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7785C49E;
+        Thu,  9 Feb 2023 03:46:33 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PCFSg6Qshz4f3k5d;
-        Thu,  9 Feb 2023 19:46:27 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PCFSh1nRkz4f3k5q;
+        Thu,  9 Feb 2023 19:46:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S16;
+        by APP4 (Coremail) with SMTP id gCh0CgAn3rEQ3eRjgb0tDQ--.53508S17;
         Thu, 09 Feb 2023 19:46:30 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 14/21] ext4: remove ac->ac_found > sbi->s_mb_min_to_scan dead check in ext4_mb_check_limits
-Date:   Fri, 10 Feb 2023 03:48:18 +0800
-Message-Id: <20230209194825.511043-15-shikemeng@huaweicloud.com>
+Subject: [PATCH 15/21] ext4: use best found when complex scan of group finishs
+Date:   Fri, 10 Feb 2023 03:48:19 +0800
+Message-Id: <20230209194825.511043-16-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 References: <20230209194825.511043-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S16
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrW5tF1rZrW3CryUCr17Wrg_yoW8WF4rpF
-        srCFyUW34xWr1a9wsrK3Z8W3WrKw4fKF1xJryS9r1rAF17X3yqka9xtFyUZF9Fyrs3Z3Z3
-        ZFyYqr4UGw4Ika7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAn3rEQ3eRjgb0tDQ--.53508S17
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr18ZF4rJry5XrW8Kr15urg_yoW8GrW5pr
+        sxJF4UuryfWr1Duw47Ca13X3W5Kw4I9r18ArWIgw18WF17Z39Y9anrtry09FykJrZ5AF9x
+        Zr4jvF4UGw47Ka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -58,44 +58,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Only call trace of ext4_mb_check_limits is as following:
-ext4_mb_complex_scan_group
-	ext4_mb_measure_extent
-		ext4_mb_check_limits(ac, e4b, 0);
-	ext4_mb_check_limits(ac, e4b, 1);
-
-If the first ac->ac_found > sbi->s_mb_max_to_scan check in
-ext4_mb_check_limits is met, we will set ac_status to
-AC_STATUS_BREAK and call ext4_mb_try_best_found to try to use
-ac->ac_b_ex.
-If ext4_mb_try_best_found successes, then block allocation finishs,
-the removed ac->ac_found > sbi->s_mb_min_to_scan check is not reachable.
-If ext4_mb_try_best_found fails, then we set EXT4_MB_HINT_FIRST and
-reset ac->ac_b_ex to retry block allocation. We will use any found
-free extent in ext4_mb_measure_extent before reach the removed
-ac->ac_found > sbi->s_mb_min_to_scan check.
-In summary, the removed ac->ac_found > sbi->s_mb_min_to_scan check is
-not reachable and we can remove that dead check.
+If any bex which meets bex->fe_len >= gex->fe_len is found, then it will
+always be used when complex scan of group that bex belongs to finishs.
+So there will not be any lock-unlock period.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ext4/mballoc.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 0fdbf16ac180..e53f84de5018 100644
+index e53f84de5018..c684758d6dbb 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -2039,8 +2039,7 @@ static void ext4_mb_check_limits(struct ext4_allocation_context *ac,
+@@ -2019,8 +2019,6 @@ static void ext4_mb_check_limits(struct ext4_allocation_context *ac,
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+ 	struct ext4_free_extent *bex = &ac->ac_b_ex;
+ 	struct ext4_free_extent *gex = &ac->ac_g_ex;
+-	struct ext4_free_extent ex;
+-	int max;
+ 
+ 	if (ac->ac_status == AC_STATUS_FOUND)
+ 		return;
+@@ -2039,16 +2037,8 @@ static void ext4_mb_check_limits(struct ext4_allocation_context *ac,
  	if (bex->fe_len < gex->fe_len)
  		return;
  
--	if ((finish_group || ac->ac_found > sbi->s_mb_min_to_scan)
--			&& bex->fe_group == e4b->bd_group) {
-+	if (finish_group && bex->fe_group == e4b->bd_group) {
- 		/* recheck chunk's availability - we don't know
- 		 * when it was found (within this lock-unlock
- 		 * period or not) */
+-	if (finish_group && bex->fe_group == e4b->bd_group) {
+-		/* recheck chunk's availability - we don't know
+-		 * when it was found (within this lock-unlock
+-		 * period or not) */
+-		max = mb_find_extent(e4b, bex->fe_start, gex->fe_len, &ex);
+-		if (max >= gex->fe_len) {
+-			ext4_mb_use_best_found(ac, e4b);
+-			return;
+-		}
+-	}
++	if (finish_group)
++		ext4_mb_use_best_found(ac, e4b);
+ }
+ 
+ /*
 -- 
 2.30.0
 
