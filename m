@@ -2,288 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DB66920E9
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 15:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391EC69214B
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 15:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjBJOh6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Feb 2023 09:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S232383AbjBJO7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Feb 2023 09:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbjBJOh5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Feb 2023 09:37:57 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9A46D63A;
-        Fri, 10 Feb 2023 06:37:55 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S232166AbjBJO7f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Feb 2023 09:59:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E05774D
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 06:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676041109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=P6uxgCNaoi4a43ku7EnfQmdTGr/dbz7HRgUPH7ZPTz0=;
+        b=E5teFaqHqmYk6cjv9OLW0Kc3xgfn/1eBZWGRfP622yTRXEHqbOTGT+3XRV5+1x3rI45/6T
+        t2brVR9YS56VtmlhXi4/nFdskM2nLqofEmRuJpSMJ3WUx6PrMmboVqc4/sVwSJ3GPLrrHR
+        TcaArUMVGyQS853FnJWi6TRVrd8cGno=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-7m4qfjWaPzyNs_w9YNNWrg-1; Fri, 10 Feb 2023 09:58:28 -0500
+X-MC-Unique: 7m4qfjWaPzyNs_w9YNNWrg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CFE2D33E95;
-        Fri, 10 Feb 2023 14:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676039873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9IxGzrWR5KtzShNEpT9W3weNyZVsLsdhzbqLC1nYNA=;
-        b=Te/RVHf9aZoqXOtfEgUhIKdBWYB2YL309JAcOxqOziGs/gpRD8kF/MKifj3shCjTqtxR3h
-        slsQJJfMqg7+QqDuVRMPz/NFd88AVHOidBE+K1KeTXVeNfQ8MV6MjKvIQaSVPUGGp9UJCw
-        NOz6oNSubeE4/S/NrBWIYufQhlARC0c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676039873;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9IxGzrWR5KtzShNEpT9W3weNyZVsLsdhzbqLC1nYNA=;
-        b=8z/bGzA+rwn9D/ov23LTqsYx6MHq+jtY21Oia40m57zN+D0+83mjVaNoUlTNnW+pp3KfYr
-        BDTRxtNiCty6XUDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB0EE13206;
-        Fri, 10 Feb 2023 14:37:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rHs4LcFW5mPYTQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 10 Feb 2023 14:37:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3D94FA06D8; Fri, 10 Feb 2023 15:37:53 +0100 (CET)
-Date:   Fri, 10 Feb 2023 15:37:53 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
- i_prealloc_list
-Message-ID: <20230210143753.ofh6wouk7vi7ygcl@quack3>
-References: <20230116080216.249195-8-ojaswin@linux.ibm.com>
- <20230116122334.k2hlom22o2hlek3m@quack3>
- <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230117110335.7dtlq4catefgjrm3@quack3>
- <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230127144312.3m3hmcufcvxxp6f4@quack3>
- <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230209105418.ucowiqnnptbpwone@quack3>
- <Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0C95F858F09
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 14:58:28 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.8.122])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6E6E2166B29
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 14:58:27 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH RFC] ext4: allow concurrent unaligned dio overwrites
+Date:   Fri, 10 Feb 2023 09:59:54 -0500
+Message-Id: <20230210145954.277611-1-bfoster@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 09-02-23 23:24:31, Ojaswin Mujoo wrote:
-> On Thu, Feb 09, 2023 at 11:54:18AM +0100, Jan Kara wrote:
-> > On Wed 08-02-23 16:55:05, Ojaswin Mujoo wrote:
-> > > On Fri, Feb 03, 2023 at 02:06:56PM +0530, Ojaswin Mujoo wrote:
-> > > > On Fri, Jan 27, 2023 at 03:43:12PM +0100, Jan Kara wrote:
-> > > > > 
-> > > > > Well, I think cond_resched() + goto retry would be OK here. We could also
-> > > > > cycle the corresponding group lock which would wait for
-> > > > > ext4_mb_discard_group_preallocations() to finish but that is going to burn
-> > > > > the CPU even more than the cond_resched() + retry as we'll be just spinning
-> > > > > on the spinlock. Sleeping is IMHO not warranted as the whole
-> > > > > ext4_mb_discard_group_preallocations() is running under a spinlock anyway
-> > > > > so it should better be a very short sleep.
-> > > > > 
-> > > > > Or actually I have one more possible solution: What the adjusting function
-> > > > > is doing that it looks up PA before and after ac->ac_o_ex.fe_logical and
-> > > > > trims start & end to not overlap these PAs. So we could just lookup these
-> > > > > two PAs (ignoring the deleted state) and then just iterate from these with
-> > > > > rb_prev() & rb_next() until we find not-deleted ones. What do you think? 
-> > > > 
-> > > > Hey Jan, 
-> > > > 
-> > > > Just thought I'd update you, I'm trying this solution out, and it looks
-> > > > good but I'm hitting a few bugs in the implementation. Will update here
-> > > > once I have it working correctly.
-> > > 
-> > > Alright, so after spending some time on these bugs I'm hitting I'm
-> > > seeing some strange behavior. Basically, it seems like in scenarios
-> > > where we are not able to allocate as many block as the normalized goal
-> > > request, we can sometimes end up adding a PA that overlaps with existing
-> > > PAs in the inode PA list/tree. This behavior exists even before this
-> > > particular patchset. Due to presence of such overlapping PAs, the above
-> > > logic was failing in some cases.
-> > > 
-> > > From my understanding of the code, this seems to be a BUG. We should not
-> > > be adding overlapping PA ranges as that causes us to preallocate
-> > > multiple blocks for the same logical offset in a file, however I would
-> > > also like to know if my understanding is incorrect and if this is an
-> > > intended behavior.
-> > > 
-> > > ----- Analysis of the issue ------
-> > > 
-> > > Here's my analysis of the behavior, which I did by adding some BUG_ONs
-> > > and running generic/269 (4k bs). It happens pretty often, like once
-> > > every 5-10 runs. Testing was done without applying this patch series on
-> > > the Ted's dev branch.
-> > > 
-> > > 1. So taking an example of a real scenario I hit. After we find the best
-> > > len possible, we enter the ext4_mb_new_inode_pa() function with the
-> > > following values for start and end of the extents:
-> > > 
-> > > ## format: <start>/<end>(<len>)
-> > > orig_ex:503/510(7) goal_ex:0/512(512) best_ex:0/394(394)
-> > > 
-> > > 2. Since (best_ex len < goal_ex len) we enter the PA window adjustment
-> > > if condition here:
-> > > 
-> > > 	if (ac->ac_b_ex.fe_len < ac->ac_g_ex.fe_len)
-> > > 		...
-> > > 	}
-> > > 
-> > > 3. Here, we calc wins, winl and off and adjust logical start and end of
-> > > the best found extent. The idea is to make sure that the best extent
-> > > atleast covers the original request. In this example, the values are:
-> > > 
-> > > winl:503 wins:387 off:109
-> > > 
-> > > and win = min(winl, wins, off) = 109
-> > > 
-> > > 4. We then adjust the logical start of the best ex as:
-> > > 
-> > > 		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical - EXT4_NUM_B2C(sbi, win);
-> > > 
-> > > which makes the new best extent as:
-> > > 
-> > > best_ex: 394/788(394)
-> > > 
-> > > As we can see, the best extent overflows outside the goal range, and
-> > > hence we don't have any guarentee anymore that it will not overlap with
-> > > another PA since we only check overlaps with the goal start and end.
-> > > We then initialze the new PA with the logical start and end of the best
-> > > extent and finaly add it to the inode PA list.
-> > > 
-> > > In my testing I was able to actually see overlapping PAs being added to
-> > > the inode list.
-> > > 
-> > > ----------- END ---------------
-> > > 
-> > > Again, I would like to know if this is a BUG or intended. If its a BUG,
-> > > is it okay for us to make sure the adjusted best extent length doesn't 
-> > > extend the goal length? 
-> > 
-> > Good spotting. So I guess your understanding of mballoc is better than mine
-> > by now :) but at least in my mental model I would also expect the resulting
-> > preallocation to stay withing the goal extent. What is causing here the
-> > issue is this code in ext4_mb_new_inode_pa():
-> > 
-> >                 offs = ac->ac_o_ex.fe_logical %
-> >                         EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-> >                 if (offs && offs < win)
-> >                         win = offs;
-> > 
-> > so we apparently try to align the logical offset of the allocation to a
-> > multiple of the allocated size but that just does not make much sense when
-> 
-> Yep, it is indeed the offset calculation that is cauing issues in this
-> particular example. Any idea why this was originally added?
+Hi all,
 
-So I belive mballoc tries to align everything (offsets & lengths) to powers
-of two to reduce fragmentation and simplify the work for the buddy allocator.
-If ac->ac_b_ex.fe_len is a power-of-two, the alignment makes sense. But
-once we had to resort to higher allocator passes and just got some
-random-length extent, the alignment stops making sense.
+We've had a customer report a significant performance regression of
+sub-block (unaligned) direct writes between a couple distro kernels
+(that span a large range of upstream releases). I've not bisected
+upstream to narrow down to specific commit(s), but the regression
+appears to correspond with added concurrency restrictions of
+unaligned dio in ext4. Obviously this user should ideally move to a
+configuration that minimizes unaligned I/O, but while looking into
+this we also observed that XFS performs noticeably better with the
+same workload, even though it has the same general unaligned dio
+constraints.
 
-> > we found some random leftover extent with shorter-than-goal size. So what
-> > I'd do in the shorter-than-goal preallocation case is:
-> > 
-> > 1) If we can place the allocation at the end of goal window and still cover
-> > the original allocation request, do that.
-> > 
-> > 2) Otherwise if we can place the allocation at the start of the goal
-> > window and still cover the original allocation request, do that.
-> > 
-> > 3) Otherwise place the allocation at the start of the original allocation
-> > request.
-> > 
-> > This would seem to reasonably reduce fragmentation of preallocated space
-> > and still keep things simple.
-> This looks like a good approach to me and it will take care of the issue
-> caused due to offset calculation.
-> 
-> However, after commenting out the offset calculation bit in PA window
-> adjustment logic, I noticed that there is one more way that such an
-> overflow can happen, which would need to be addressed before we can
-> implement the above approach. Basically, this happens when we end up
-> with a goal len greater than the original len.
+The difference appears to be the use of IOMAP_DIO_OVERWRITE_ONLY in
+XFS, which allows optimistic concurrent submission of unaligned
+direct I/O under shared locking. I.e., if the dio turns out to be
+something other than a pure overwrite that may require block
+zeroing, iomap kicks the request back with -EAGAIN so it can be
+resubmitted with appropriate exclusivity.
 
-You probably mean goal end block smaller than original end block here... At
-least that's what you speak about below.
+I initially prototyped this same sort of logic on ext4, but on
+further inspection realized that ext4 seems to already check for dio
+overwrites in ext4_dio_write_checks(). Therefore ISTM that since
+ext4 already knows when a dio is purely overwrite, it can safely
+submit unaligned dios concurrently where it knows zeroing is not
+required, and then fall back to exclusive submission otherwise.
 
-> See my comments at the end for more info.
-> 
-> > 
-> > > Also, another thing I noticed is that after ext4_mb_normalize_request(),
-> > > sometimes the original range can also exceed the normalized goal range,
-> > > which is again was a bit surprising to me since my understanding was
-> > > that normalized range would always encompass the orignal range.
-> > 
-> > Well, isn't that because (part of) the requested original range is already
-> > preallocated? Or what causes the goal range to be shortened?
-> > 
-> Yes I think that pre existing PAs could be one of the cases.
-> 
-> Other than that, I'm also seeing some cases of sparse writes which can cause
-> ext4_mb_normalize_request() to result in having an original range that
-> overflows out of the goal range. For example, I observed these values just
-> after the if else if else conditions in the function, before we check if range
-> overlaps pre existing PAs:
-> 
-> orig_ex:2045/2055(len:10) normalized_range:0/2048, orig_isize:8417280
-> 
-> Basically, since isize is large and we are doing a sparse write, we end
-> up in the following if condition:
-> 
-> 	} else if (NRL_CHECK_SIZE(ac->ac_o_ex.fe_len,
-> 								(8<<20)>>bsbits, max, 8 * 1024)) {
-> 		start_off = ((loff_t)ac->ac_o_ex.fe_logical >> (23 - bsbits)) << 23;
-> 		size = 8 * 1024 * 1024;
->  }
-> 
-> Resulting in normalized range less than original range.
+This RFC prototypes something along those lines using ilock_shared
+as a proxy for non-overwrite (since non-overwrite always means
+non-shared locking). Based on the following fio test against a
+prewritten (i.e. no unwritten extents) file, on an 8xcpu kvm guest,
+using default ext4 options:
 
-I see.
+fio --name=test --ioengine=libaio --direct=1 --group_reporting
+  --overwrite=1 --thread --size=10G --filename=/mnt/fio
+  --readwrite=write --ramp_time=10s --runtime=60s --numjobs=8
+  --blocksize=2k --iodepth=256 --allow_file_create=0
 
-> Now, in any case, once we get such an overflow, if we try to enter the PA
-> adjustment window in ext4_mb_new_inode_pa() function, we will again end
-> up with a best extent overflowing out of goal extent since we would try
-> to cover the original extent. 
-> 
-> So yeah, seems like there are 2 cases where we could result in
-> overlapping PAs:
-> 
-> 1. Due to off calculation in PA adjustment window, as we discussed.  2.
-> Due to original extent overflowing out of goal extent.
-> 
-> I think the 3 step solution you proposed works well to counter 1 but not
-> 2, so we probably need some more logic on top of your solution to take
-> care of that.  I'll think some more on how to fix this but I think this
-> will be as a separate patch.
+... performance goes from something like ~1350 iops / 2.7 MB/s on a
+v6.1 kernel to +350k iops / +700MB/s on a patched v6.2.0-rc7 kernel.
+The latter is much more closely aligned to what I see from the same
+test against XFS.
 
-Well, my algorithm will still result in preallocation being within the goal
-range AFAICS. In the example above we had:
+This also survives an initial fstests regression run, though it does
+leave at least a couple open questions I can think of:
 
-Orig 2045/2055 Goal 0/2048
+1. Do we care to be explicit about overwrites and perhaps plumb
+   through an 'overwrite' flag from ext4_dio_write_checks()?
+2. Do we want to use DIO_OVERWRITE_ONLY and assume iomap will never
+   kick back an overwrite only I/O, or perhaps include retry logic
+   similar to XFS? That may be superfluous, but it's not much
+   additional  code either.
 
-Suppose we found 200 blocks. So we try placing preallocation like:
+Thoughts on any of this? If there's consensus I can followup with a v1
+with a proper implementation, commit log, code comment updates, etc.
 
-1848/2048, it covers the original starting block 2045 so we are fine and
-create preallocation 1848/2048. Nothing has overflown the goal window...
+Not-Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
+ fs/ext4/file.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-								Honza
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 7ac0a81bd371..bb41520f89d0 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -493,15 +493,14 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+ 	bool extend = false, unaligned_io = false;
+ 	bool ilock_shared = true;
++	unsigned int dio_flags = 0;
+ 
+ 	/*
+ 	 * We initially start with shared inode lock unless it is
+ 	 * unaligned IO which needs exclusive lock anyways.
+ 	 */
+-	if (ext4_unaligned_io(inode, from, offset)) {
++	if (ext4_unaligned_io(inode, from, offset))
+ 		unaligned_io = true;
+-		ilock_shared = false;
+-	}
+ 	/*
+ 	 * Quick check here without any i_rwsem lock to see if it is extending
+ 	 * IO. A more reliable check is done in ext4_dio_write_checks() with
+@@ -563,9 +562,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	 * below inode_dio_wait() may anyway become a no-op, since we start
+ 	 * with exclusive lock.
+ 	 */
+-	if (unaligned_io)
+-		inode_dio_wait(inode);
+-
+ 	if (extend) {
+ 		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+ 		if (IS_ERR(handle)) {
+@@ -582,11 +578,18 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		ext4_journal_stop(handle);
+ 	}
+ 
+-	if (ilock_shared)
++	if (ilock_shared) {
+ 		iomap_ops = &ext4_iomap_overwrite_ops;
++		if (unaligned_io)
++			dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
++	} else if (unaligned_io || extend) {
++		dio_flags = IOMAP_DIO_FORCE_WAIT;
++		if (unaligned_io)
++			inode_dio_wait(inode);
++	}
+ 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+-			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
+-			   NULL, 0);
++			   dio_flags, NULL, 0);
++	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
+ 	if (ret == -ENOTBLK)
+ 		ret = 0;
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.1
+
