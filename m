@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5EC6916EB
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 03:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D1C6916EE
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 03:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjBJC5L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Feb 2023 21:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S230491AbjBJC5N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Feb 2023 21:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjBJC5F (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Feb 2023 21:57:05 -0500
+        with ESMTP id S230413AbjBJC5G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Feb 2023 21:57:06 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6C5663D3;
-        Thu,  9 Feb 2023 18:57:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC28663CD;
+        Thu,  9 Feb 2023 18:57:06 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PCdgJ0tC0z4f3nTN;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PCdgJ2fhPz4f3jM0;
         Fri, 10 Feb 2023 10:57:00 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgCHgR96suVjIkgqDA--.35208S9;
+        by APP3 (Coremail) with SMTP id _Ch0CgCHgR96suVjIkgqDA--.35208S10;
         Fri, 10 Feb 2023 10:57:02 +0800 (CST)
 From:   Ye Bin <yebin@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
         Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v2 5/6] ext4: fix super block checksum error
-Date:   Fri, 10 Feb 2023 11:20:43 +0800
-Message-Id: <20230210032044.146115-6-yebin@huaweicloud.com>
+Subject: [PATCH v2 6/6] ext4: make sure fs error flag setted before clear journal error
+Date:   Fri, 10 Feb 2023 11:20:44 +0800
+Message-Id: <20230210032044.146115-7-yebin@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230210032044.146115-1-yebin@huaweicloud.com>
 References: <20230210032044.146115-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgCHgR96suVjIkgqDA--.35208S9
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr18Jw4xWrWfZw4xJw1rCrg_yoW3KFX_Ga
-        yxXw4rWrn3Aa1S93W8Gr4Yv3W0grs2vF1rJas3Cr1rXF1DXFs2qw4kCrZF9rn8ur4ktr45
-        Ar48Kry8Gr97XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: _Ch0CgCHgR96suVjIkgqDA--.35208S10
+X-Coremail-Antispam: 1UD129KBjvdXoWrtryDXF13GrW7XryxXryrZwb_yoWkXwbEq3
+        yxAan5Wrs3Ar1xKa18Can8Ww1vvws2vFnYqasayF15uryDXa4kCa4kWryfurn8uFWrKrZ8
+        JF18ZF1fGrWkZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbVAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
         Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
         0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -61,28 +61,35 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ye Bin <yebin10@huawei.com>
 
-As commit("ext4: fix error flag covered by journal recovery") update
-error record when do journal recovery.There is need to recalculate
-super block checksum after update error record or will lead to super
-block checksum mismatch to data.
+Now, jounral error number maybe cleared even though ext4_commit_super()
+failed. This may lead to error flag miss, then fsck will miss to check
+file system deeply.
 
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext4/ext4_jbd2.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/super.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index af03035606e1..ffcb0d58d407 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -430,6 +430,7 @@ static int ext4_replay_callback(struct journal_s *journal,
- 	       journal->j_replay_private_data, EXT4_S_ERR_LEN);
- 	if (sbi->s_mount_state & EXT4_ERROR_FS)
- 		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-+	ext4_superblock_csum_set(sb);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d86ee5af2db9..b458af1cbf5c 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6143,11 +6143,13 @@ static int ext4_clear_journal_err(struct super_block *sb,
+ 		errstr = ext4_decode_error(sb, j_errno, nbuf);
+ 		ext4_warning(sb, "Filesystem error recorded "
+ 			     "from previous mount: %s", errstr);
+-		ext4_warning(sb, "Marking fs in need of filesystem check.");
  
- 	return 0;
- }
+ 		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+ 		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+-		ext4_commit_super(sb);
++		j_errno = ext4_commit_super(sb);
++		if (j_errno)
++			return j_errno;
++		ext4_warning(sb, "Marked fs in need of filesystem check.");
+ 
+ 		jbd2_journal_clear_err(journal);
+ 		jbd2_journal_update_sb_errno(journal);
 -- 
 2.31.1
 
