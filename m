@@ -2,64 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E210692482
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 18:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B1D69288B
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Feb 2023 21:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjBJRdN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Feb 2023 12:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S233184AbjBJUnM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Feb 2023 15:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjBJRc7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Feb 2023 12:32:59 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA4B79B38
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 09:32:58 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id nd22so1398528qvb.1
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 09:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C5zOq428H1D60CWAtSM7G1bZGl/KkudBslCQRrHWevk=;
-        b=FI03MuCWEb3Qy6NejBd9fHvuCkRuBnLpUDcxhXIjTdmQvtIWdlABtqeniFtc2TkZxE
-         uJ+j+ujBH/PMX5vYJ8fRvm0fGA8HFfTWX1tA8LBXf/+lRcNC8sdzleugyWn/rAjFEoW1
-         Fo+E7V2BZGcMELbjAqHQ3mThdigiBxhFsA7zPNVBbVY4AU6YbMaMcuZl6zyLbzo4Q3by
-         Tj7PiIUCHNG7f8g0W+9jGgZPuG9kpBILfLf5tNp+tv33Ke0qH5qIra57sfOl5Vj3soG4
-         2tNmiXY5eFUQ03kJ82EWdLaEgCqKK+xZvI/edZcjTbnT1Ua5vVz7oAYiwT/AL0PxVY5d
-         o3Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C5zOq428H1D60CWAtSM7G1bZGl/KkudBslCQRrHWevk=;
-        b=4kJsIMk1MbsXC3+i6K8uAh3rK82tnEiEBU1NRyXpJKhGzj2VgGEQ03JCrYGC4kkLrx
-         1Y6lcOWtWfTjloCLpyiAHq2FeXpKIAi6jz7AFqJ0224it/sTCH8hXRmZtf+yWd3oIQoz
-         NS2xCqob1CGKtRpxzO8fmKw2WbuF5IjgL8ll8bGF91wW/KieyFX/ozds55XZa6mNjEsg
-         xWvSqJpddMEO8wB/HeY07uL1Zp27OUgbCTviS9R7Of9hlsopYRrlzxcyZBfO5D9h5SBy
-         1PzS39EjYdaCANhFWwoD0X5+LgReRkfDXdBALdc2dTwCUUYi4gNXOMosnWoP7ocnzBMi
-         vAtQ==
-X-Gm-Message-State: AO0yUKV+1Q8bUe44dc9aX3Z3Vjgia6Pr3wDydkZuBU3ahX1EE+9Q7gc5
-        mnfyoEiadVVV1iXgdyS4IJKG1xNfIWc=
-X-Google-Smtp-Source: AK7set+iunKS6+dRonXdJDA1C5hk0xABp43sRdgxIhn+nEhasMQigjlwTugwpNkJonhPs11qmqo7YA==
-X-Received: by 2002:ad4:5d69:0:b0:56e:8f5e:d9a2 with SMTP id fn9-20020ad45d69000000b0056e8f5ed9a2mr8836814qvb.27.1676050376937;
-        Fri, 10 Feb 2023 09:32:56 -0800 (PST)
-Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id h186-20020a376cc3000000b006fc3fa1f589sm3843982qkc.114.2023.02.10.09.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 09:32:56 -0800 (PST)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: fix RENAME_WHITEOUT handling for inline directories
-Date:   Fri, 10 Feb 2023 12:32:44 -0500
-Message-Id: <20230210173244.679890-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S232935AbjBJUnM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Feb 2023 15:43:12 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8247070A
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Feb 2023 12:43:10 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31AKguqB016352
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Feb 2023 15:42:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1676061778; bh=pdTppfBFbu942mayOz5ovqBKLYyjLl+xg3ENsgaZyAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=GUUyc8wRKs/V5GBvzJ5p2NX5/KKjt4ybnyWOZJrIadSFzQPd91yS5hql4QOpEHXy+
+         K8hQMkSpOsy2/8BucH35Ob+AQ8t3AHdl2ftpK2bNZQq92zbZESq5K4z7fltsyj2ZyI
+         aTPonDLDK5zoBwKT8UniDuE8kBTz96AJn2HZhuK8RYCyMzfRGTnFHYeZdCuQLyl3NR
+         SNjCxFS6jbINL5PmOS2uIU2bQOw804vCOg4RWkHiQncuCvbt8HRzxavNDoJ9Lgn8BW
+         W9667OBJt+wev8dUiyJ2/7bdEzu6SpXixivcp3klpWsuYvYXiITooyX+tmt2rYYpmp
+         JFJumg2/SUghA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id BCE0315C340F; Fri, 10 Feb 2023 15:42:56 -0500 (EST)
+Date:   Fri, 10 Feb 2023 15:42:56 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Sebastien Buisson <sbuisson.work@gmail.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: Backup/restore of fscrypt files and directories
+Message-ID: <Y+asUDeRFGpig+wG@mit.edu>
+References: <03a87391-1b19-de2d-5c18-581c1d0c47ca@gmail.com>
+ <Y+P3wumJK/znOKgl@gmail.com>
+ <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,83 +54,136 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-A significant number of xfstests can cause ext4 to log one or more
-warning messages when they are run on a test file system where the
-inline_data feature has been enabled.  An example:
+On Fri, Feb 10, 2023 at 02:44:22PM +0100, Sebastien Buisson wrote:
+> As for symlinks, you are right I need to dig further. I think at least the
+> security.encdata xattr would need an additional field to hold the ciphertext
+> symlink target.
 
-"EXT4-fs warning (device vdc): ext4_dirblock_csum_set:425: inode
- #16385: comm fsstress: No space for directory leaf checksum. Please
-run e2fsck -D."
+So I'd caution you against the concept of using the security.encdata
+xattr.  In propose, it's being used in two different ways.  The first
+way is as a system call / ioctl like way, and that's something which
+is very much frowned upon, at least by many in the Kernel community.
+The red flag here is when you say that the xattr isn't actually stored
+on disk, but rather is created on the fly when the xattr is fetched.
+If you need to fetch information from the kernel that's not stored as
+part of the on-disk format, then use an ioctl or a system call.  Don't
+try to turn the xattr interface into a system call / ioctl extension
+like thing.
 
-The xfstests include: ext4/057, 058, and 307; generic/013, 051, 068,
-070, 076, 078, 083, 232, 269, 270, 390, 461, 475, 476, 482, 579, 585,
-589, 626, 631, and 650.
+The other way you're using the encdata is that you're presuming that
+this is how you'd store the information in the tar format.  And how we
+fetch information from the kernel, and how it is stored as an exchange
+format, should be decoupled as much as possible.
 
-In this situation, the warning message indicates a bug in the code that
-performs the RENAME_WHITEOUT operation on a directory entry that has
-been stored inline.  It doesn't detect that the directory is stored
-inline, and incorrectly attempts to compute a dirent block checksum on
-the whiteout inode when creating it.  This attempt fails as a result
-of the integrity checking in get_dirent_tail (usually due to a failure
-to match the EXT4_FT_DIR_CSUM magic cookie), and the warning message
-is then emitted.
+In the case of a tar archive, the symlink target is normally stored in
+the data block of the tar archive.  In the case where the symlink is
+encrypted, why should that change?  We aren't storing the encrypted
+data in a different location, such as the encdata xattr; why should
+that be different in the case of the symlink target?
 
-Fix this by simply collecting the inlined data state at the time the
-search for the source directory entry is performed.  Existing code
-handles the rest, and this is sufficient to eliminate all spurious
-warning messages produced by the tests above.  Go one step further
-and do the same in the code that resets the source directory entry in
-the event of failure.  The inlined state should be present in the
-"old" struct, but given the possibility of a race there's no harm
-in taking a conservative approach and getting that information again
-since the directory entry is being reread anyway.
+Now, how you *fetch* the encrypted symlink target might be different,
+such as how we fetch the contents of an unencrypted data file (via the
+read system call) and how we fetch an unencrypted symlink target (via
+the readlink system call) are different.
 
-Fixes: b7ff91fd030d ("ext4: find old entry again if failed to rename whiteout")
+> > A description of the use cases of this feature would also be helpful.
+> > Historically, people have said they needed this feature when they really didn't.
+> 
+> There is really a need for backup/restore at the file system level. For
+> instance, in case of storage failure, we would want to restore files to a
+> newly formatted device, in a finner granularity that cannot be achieved with
+> a backup/restore at the device level, or because that would allow changing
+> formatting options. Also, it particularly makes sense to have per-directory
+> backups, as the block devices are getting larger and larger.
+> 
+> The ability to backup and restore encrypted files is interesting in annother
+> use case: moving files between file systems and systems without the need to
+> decrypt then re-encrypt.
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/namei.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+The use case of being able to restore files without needing to decrypt
+and re-encrypt is quite different from the use case where you want to
+be able to backup the files without needing encryption keys present,
+but the encryption keys *are* needed at restore time is quite
+different --- and the latter is quite a bit easier.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index dd28453d6ea3..924e16b239e0 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1595,11 +1595,10 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 		int has_inline_data = 1;
- 		ret = ext4_find_inline_entry(dir, fname, res_dir,
- 					     &has_inline_data);
--		if (has_inline_data) {
--			if (inlined)
--				*inlined = 1;
-+		if (inlined)
-+			*inlined = has_inline_data;
-+		if (has_inline_data)
- 			goto cleanup_and_exit;
--		}
- 	}
- 
- 	if ((namelen <= 2) && (name[0] == '.') &&
-@@ -3646,7 +3645,8 @@ static void ext4_resetent(handle_t *handle, struct ext4_renament *ent,
- 	 * so the old->de may no longer valid and need to find it again
- 	 * before reset old inode info.
- 	 */
--	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de, NULL);
-+	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de,
-+				 &old.inlined);
- 	if (IS_ERR(old.bh))
- 		retval = PTR_ERR(old.bh);
- 	if (!old.bh)
-@@ -3813,7 +3813,8 @@ static int ext4_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 			return retval;
- 	}
- 
--	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de, NULL);
-+	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de,
-+				 &old.inlined);
- 	if (IS_ERR(old.bh))
- 		return PTR_ERR(old.bh);
- 	/*
--- 
-2.30.2
+For example, some of encryption modes which use the inode number as
+part of the IV, could be handled if keys are needed at restore time;
+but it would be quite a bit harder, if not impossible, if you want to
+be able restore the ecrypted files without doing a decrypt/re-encrypt
+pass.
 
+Can you give more details about why you are interested in implementing
+this?  Does your company have a more specific business justification
+for wanting to invest in this work?  If so, can you say more about it?
+
+The reason why I ask is because very often fscrypt gets used in
+integrated solutions, where the encryption/decryption engine is done
+in-line between the general purpose CPU and the storage device.  In
+some cases, the users' encryption keys might be stored in a something
+like ARM TrustZone or in some other specialized trusted key manager
+where even the kernel running in the general purpose hardware won't
+have access to *any* of the keys.  It's for that reason that we have
+some of these alternate modes where the inode number is used as part
+of the IV, as opposed to the more traditional scheme where the user's
+key is used to derive a file-specific subkey.
+
+One of the original use cases for fscrypt was for Android and ChromeOS
+devices.  And for those devices the state tends to be synchronized
+across multiple devices, including web browsers.  So the state ends up
+getting saved, unencrypted, in an application specific format, so you
+can recover very quickly with no data loss, even if the device gets
+lost or destroyed[1]. 
+
+[1] https://www.youtube.com/watch?v=lm-Vnx58UYo
+
+It was for this reason that ultimately, we decided that there really
+wasn't a need to back up the data in an encrypted form, since for the
+use case that our company was interested in addressing, well over 90%
+of the state was of necesity already being backed up in an unencrypted
+format.  So it was easier to just backup remaining bits of state, and
+if we need decrypt, then re-encrypt in a key which is derived from the
+user's login password before it is sent up to the cloud server.
+
+You may be trying to solve the problem in the most general way
+possible, but sometimes that's not the best solution, especially once
+time to market and cost/complexity of implementation is taken into
+account.  As Linus Torvalds stated earlier today, when talking about
+splice(2) vs sendfile(2):
+
+   "... this is also very much an example of how "generic" may be
+   something that is revered in computer science, but is often a
+   *horrible* thing in reality....
+
+   Special cases are often much simpler and easier, and sometimes the
+   special cases are all you actually want." [2]
+
+[2] https://lore.kernel.org/all/CAHk-=wip9xx367bfCV8xaF9Oaw4DZ6edF9Ojv10XoxJ-iUBwhA@mail.gmail.com/
+
+> In the case of hard links, I do not know how tar for instance handles this
+> for normal files. Do you have any ideas?
+
+   "Tar stores hardlinks in the tarball by storing the first file (of
+   a group of hardlinked files); the subsequent hard links to it are
+   indicated by a special record. When untarring, encountering this
+   record causes tar to create a hard link in the destination
+   filesystem." [3]
+
+[3] https://forums.whirlpool.net.au/archive/2787890
+
+Why are you assuming that tar is the best format to use for storing
+encrypted files?  It's going to require special extensions to the tar
+format, which means it won't necessarily be interoperable across
+different tar implementations.  (For example, the hard link support is
+specific to GNU tar.)
+
+Does your requirements (and this is why a more detailed explanation of
+your use case would be helpful) require supporting hard links?  If it
+doesn't and you don't mind storing N copies of the file in the tar
+archive file, and not restoring the hard links when the tar file is
+unpacked, then life is much simpler.  Which is why it's important to
+be very clear about use cases and requirements before trying to design
+a solution.
+
+Cheers,
+
+					- Ted
