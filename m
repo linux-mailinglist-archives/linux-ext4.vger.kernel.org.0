@@ -2,182 +2,326 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AB5694BD7
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 16:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4142694E85
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 18:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjBMP4t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Feb 2023 10:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S230349AbjBMR7A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Feb 2023 12:59:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjBMP4s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 10:56:48 -0500
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572D91BFC
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Feb 2023 07:56:47 -0800 (PST)
-Received: by mail-il1-f208.google.com with SMTP id i23-20020a056e021d1700b003111192e89aso9568555ila.10
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Feb 2023 07:56:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMO3sspk7P+Mq1nipJz9biyunW+h9MSd0H8isba1l8w=;
-        b=P+KZK3jM+2vvRshprtQZ0wYXlAQzVtxKX58v4Y82LwzB3LfVgYWcqhwG1zR26+kTEk
-         CG6QzDWuGJfnF66f4yK9jvG71KNARhTWwoZBkBJO9V5ntbm3kcRZ6TvuYIGLlQQo7NBO
-         WXIyHqVklIgb+SejAGK2XdSeobKRPRUHfqCKd+9vGMFiot+FV04eNQrJxWUGhBuv+OIb
-         lGaNlpDNoQnQSPM1QkxMsbHsBPg2iNrgBFdSwSnCtFvzg5N8oUiHxf4scVCn7YiiG+Nm
-         FBVUbAWN5jv6k7iv86PudjW5dpFbGosZnjaEBK48MoVSIL+NQo5URETW5PqaUP+QlJcI
-         jwSg==
-X-Gm-Message-State: AO0yUKVMpoReTrHKTlZL+u2aOekBWQ/g729FrnX75+guyJ+58FRBfiQm
-        h9Zd0cURGe1GLpQP74OiEa4pckv17iLBWa295dcVmUtEB5v1
-X-Google-Smtp-Source: AK7set8pPDCFvoxfzaoc+/l3Ansmw2opU4BSGcWSIiBnzk3W6ANAES7x+y/67tHoOkiOMpMr+oEjuTfevRf6TPONNzRRCU6elGkJ
+        with ESMTP id S230310AbjBMR67 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 12:58:59 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26C015CB6;
+        Mon, 13 Feb 2023 09:58:57 -0800 (PST)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31DHlPNT019334;
+        Mon, 13 Feb 2023 17:58:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=WB0AckTsWbHK5Z8sHMUP0j9LMstJfF/yH9GMOPISvqk=;
+ b=m9E9uILU1ZkVC1nRmlsXWD217vv4Fx4P61ny18wW8x9V43l9Y0jBCirb3goLWevBGaew
+ qmpidD5rKRiM8kugT3EgQtAWwfer4wu/htKAjgeFROVi4lh8eKlm4Jul5vO426Tc+rGy
+ 6BNE84mCMZGcPt1UDwgwRvl2H3VeV3rhxggBliphDsHMD99fdUGi7BclKmeWcdJx84o2
+ X9Gcr81h4GTQ/zIXW4tSHL3lRC+3d0XPIw+8X9eTmYZhUMwD7WWH9HRCC25fWGzdPg8V
+ TO2zqZbAW/B7Xg4/f0QUkFnkbqgTWUvGCAoFn1gcTtAGMccSd5zEd5Gyqh7E+svSsL6S Gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nqswt08gn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Feb 2023 17:58:52 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31DHm6m0021240;
+        Mon, 13 Feb 2023 17:58:52 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nqswt08fv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Feb 2023 17:58:52 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31DCsT3D017640;
+        Mon, 13 Feb 2023 17:58:49 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3np2n6jys5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Feb 2023 17:58:49 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31DHwlfr47514000
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Feb 2023 17:58:47 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F3AE20043;
+        Mon, 13 Feb 2023 17:58:47 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F393F20040;
+        Mon, 13 Feb 2023 17:58:43 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.94.235])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Mon, 13 Feb 2023 17:58:43 +0000 (GMT)
+Date:   Mon, 13 Feb 2023 23:28:41 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rookxu <brookxu.cn@gmail.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
+ i_prealloc_list
+Message-ID: <Y+p6URWLBPd6VUHD@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20230116122334.k2hlom22o2hlek3m@quack3>
+ <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230117110335.7dtlq4catefgjrm3@quack3>
+ <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230127144312.3m3hmcufcvxxp6f4@quack3>
+ <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230209105418.ucowiqnnptbpwone@quack3>
+ <Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230210143753.ofh6wouk7vi7ygcl@quack3>
 MIME-Version: 1.0
-X-Received: by 2002:a92:3f04:0:b0:310:efc8:49bf with SMTP id
- m4-20020a923f04000000b00310efc849bfmr2572917ila.5.1676303806719; Mon, 13 Feb
- 2023 07:56:46 -0800 (PST)
-Date:   Mon, 13 Feb 2023 07:56:46 -0800
-In-Reply-To: <000000000000ece18705f3b20934@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef6cf905f496e40b@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-out-of-bounds Read in ext4_group_desc_csum
-From:   syzbot <syzbot+8785e41224a3afd04321@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230210143753.ofh6wouk7vi7ygcl@quack3>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KwIR3TYTC7gn6Z3_f7mzBWw_xWzqqFyX
+X-Proofpoint-ORIG-GUID: 0FhfkqtwpuHGgoRG8LLHV5XsCTHyu2ud
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-13_11,2023-02-13_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302130158
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi Jan!
 
-HEAD commit:    ceaa837f96ad Linux 6.2-rc8
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11727cc7480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=42ba4da8e1e6af9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=8785e41224a3afd04321
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14392a4f480000
+On Fri, Feb 10, 2023 at 03:37:53PM +0100, Jan Kara wrote:
+> On Thu 09-02-23 23:24:31, Ojaswin Mujoo wrote:
+> > On Thu, Feb 09, 2023 at 11:54:18AM +0100, Jan Kara wrote:
+> > > On Wed 08-02-23 16:55:05, Ojaswin Mujoo wrote:
+> > > > On Fri, Feb 03, 2023 at 02:06:56PM +0530, Ojaswin Mujoo wrote:
+> > > > > On Fri, Jan 27, 2023 at 03:43:12PM +0100, Jan Kara wrote:
+> > > > > > 
+> > > > > > Well, I think cond_resched() + goto retry would be OK here. We could also
+> > > > > > cycle the corresponding group lock which would wait for
+> > > > > > ext4_mb_discard_group_preallocations() to finish but that is going to burn
+> > > > > > the CPU even more than the cond_resched() + retry as we'll be just spinning
+> > > > > > on the spinlock. Sleeping is IMHO not warranted as the whole
+> > > > > > ext4_mb_discard_group_preallocations() is running under a spinlock anyway
+> > > > > > so it should better be a very short sleep.
+> > > > > > 
+> > > > > > Or actually I have one more possible solution: What the adjusting function
+> > > > > > is doing that it looks up PA before and after ac->ac_o_ex.fe_logical and
+> > > > > > trims start & end to not overlap these PAs. So we could just lookup these
+> > > > > > two PAs (ignoring the deleted state) and then just iterate from these with
+> > > > > > rb_prev() & rb_next() until we find not-deleted ones. What do you think? 
+> > > > > 
+> > > > > Hey Jan, 
+> > > > > 
+> > > > > Just thought I'd update you, I'm trying this solution out, and it looks
+> > > > > good but I'm hitting a few bugs in the implementation. Will update here
+> > > > > once I have it working correctly.
+> > > > 
+> > > > Alright, so after spending some time on these bugs I'm hitting I'm
+> > > > seeing some strange behavior. Basically, it seems like in scenarios
+> > > > where we are not able to allocate as many block as the normalized goal
+> > > > request, we can sometimes end up adding a PA that overlaps with existing
+> > > > PAs in the inode PA list/tree. This behavior exists even before this
+> > > > particular patchset. Due to presence of such overlapping PAs, the above
+> > > > logic was failing in some cases.
+> > > > 
+> > > > From my understanding of the code, this seems to be a BUG. We should not
+> > > > be adding overlapping PA ranges as that causes us to preallocate
+> > > > multiple blocks for the same logical offset in a file, however I would
+> > > > also like to know if my understanding is incorrect and if this is an
+> > > > intended behavior.
+> > > > 
+> > > > ----- Analysis of the issue ------
+> > > > 
+> > > > Here's my analysis of the behavior, which I did by adding some BUG_ONs
+> > > > and running generic/269 (4k bs). It happens pretty often, like once
+> > > > every 5-10 runs. Testing was done without applying this patch series on
+> > > > the Ted's dev branch.
+> > > > 
+> > > > 1. So taking an example of a real scenario I hit. After we find the best
+> > > > len possible, we enter the ext4_mb_new_inode_pa() function with the
+> > > > following values for start and end of the extents:
+> > > > 
+> > > > ## format: <start>/<end>(<len>)
+> > > > orig_ex:503/510(7) goal_ex:0/512(512) best_ex:0/394(394)
+> > > > 
+> > > > 2. Since (best_ex len < goal_ex len) we enter the PA window adjustment
+> > > > if condition here:
+> > > > 
+> > > > 	if (ac->ac_b_ex.fe_len < ac->ac_g_ex.fe_len)
+> > > > 		...
+> > > > 	}
+> > > > 
+> > > > 3. Here, we calc wins, winl and off and adjust logical start and end of
+> > > > the best found extent. The idea is to make sure that the best extent
+> > > > atleast covers the original request. In this example, the values are:
+> > > > 
+> > > > winl:503 wins:387 off:109
+> > > > 
+> > > > and win = min(winl, wins, off) = 109
+> > > > 
+> > > > 4. We then adjust the logical start of the best ex as:
+> > > > 
+> > > > 		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical - EXT4_NUM_B2C(sbi, win);
+> > > > 
+> > > > which makes the new best extent as:
+> > > > 
+> > > > best_ex: 394/788(394)
+> > > > 
+> > > > As we can see, the best extent overflows outside the goal range, and
+> > > > hence we don't have any guarentee anymore that it will not overlap with
+> > > > another PA since we only check overlaps with the goal start and end.
+> > > > We then initialze the new PA with the logical start and end of the best
+> > > > extent and finaly add it to the inode PA list.
+> > > > 
+> > > > In my testing I was able to actually see overlapping PAs being added to
+> > > > the inode list.
+> > > > 
+> > > > ----------- END ---------------
+> > > > 
+> > > > Again, I would like to know if this is a BUG or intended. If its a BUG,
+> > > > is it okay for us to make sure the adjusted best extent length doesn't 
+> > > > extend the goal length? 
+> > > 
+> > > Good spotting. So I guess your understanding of mballoc is better than mine
+> > > by now :) but at least in my mental model I would also expect the resulting
+> > > preallocation to stay withing the goal extent. What is causing here the
+> > > issue is this code in ext4_mb_new_inode_pa():
+> > > 
+> > >                 offs = ac->ac_o_ex.fe_logical %
+> > >                         EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+> > >                 if (offs && offs < win)
+> > >                         win = offs;
+> > > 
+> > > so we apparently try to align the logical offset of the allocation to a
+> > > multiple of the allocated size but that just does not make much sense when
+> > 
+> > Yep, it is indeed the offset calculation that is cauing issues in this
+> > particular example. Any idea why this was originally added?
+> 
+> So I belive mballoc tries to align everything (offsets & lengths) to powers
+> of two to reduce fragmentation and simplify the work for the buddy allocator.
+> If ac->ac_b_ex.fe_len is a power-of-two, the alignment makes sense. But
+> once we had to resort to higher allocator passes and just got some
+> random-length extent, the alignment stops making sense.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/88042f9b5fc8/disk-ceaa837f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9945b57ec9ee/vmlinux-ceaa837f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/72ff118ed96b/bzImage-ceaa837f.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/dabec17b2679/mount_0.gz
+Got it, thanks for clarifying.
+> 
+> > > we found some random leftover extent with shorter-than-goal size. So what
+> > > I'd do in the shorter-than-goal preallocation case is:
+> > > 
+> > > 1) If we can place the allocation at the end of goal window and still cover
+> > > the original allocation request, do that.
+> > > 
+> > > 2) Otherwise if we can place the allocation at the start of the goal
+> > > window and still cover the original allocation request, do that.
+> > > 
+> > > 3) Otherwise place the allocation at the start of the original allocation
+> > > request.
+> > > 
+> > > This would seem to reasonably reduce fragmentation of preallocated space
+> > > and still keep things simple.
+> > This looks like a good approach to me and it will take care of the issue
+> > caused due to offset calculation.
+> > 
+> > However, after commenting out the offset calculation bit in PA window
+> > adjustment logic, I noticed that there is one more way that such an
+> > overflow can happen, which would need to be addressed before we can
+> > implement the above approach. Basically, this happens when we end up
+> > with a goal len greater than the original len.
+> 
+> You probably mean goal end block smaller than original end block here... At
+> least that's what you speak about below.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8785e41224a3afd04321@syzkaller.appspotmail.com
+Right, my bad :)
 
-==================================================================
-BUG: KASAN: use-after-free in crc16+0x1fb/0x280 lib/crc16.c:58
-Read of size 1 at addr ffff88807de00000 by task syz-executor.1/5339
+> 
+> > See my comments at the end for more info.
+> > 
+> > > 
+> > > > Also, another thing I noticed is that after ext4_mb_normalize_request(),
+> > > > sometimes the original range can also exceed the normalized goal range,
+> > > > which is again was a bit surprising to me since my understanding was
+> > > > that normalized range would always encompass the orignal range.
+> > > 
+> > > Well, isn't that because (part of) the requested original range is already
+> > > preallocated? Or what causes the goal range to be shortened?
+> > > 
+> > Yes I think that pre existing PAs could be one of the cases.
+> > 
+> > Other than that, I'm also seeing some cases of sparse writes which can cause
+> > ext4_mb_normalize_request() to result in having an original range that
+> > overflows out of the goal range. For example, I observed these values just
+> > after the if else if else conditions in the function, before we check if range
+> > overlaps pre existing PAs:
+> > 
+> > orig_ex:2045/2055(len:10) normalized_range:0/2048, orig_isize:8417280
+> > 
+> > Basically, since isize is large and we are doing a sparse write, we end
+> > up in the following if condition:
+> > 
+> > 	} else if (NRL_CHECK_SIZE(ac->ac_o_ex.fe_len,
+> > 								(8<<20)>>bsbits, max, 8 * 1024)) {
+> > 		start_off = ((loff_t)ac->ac_o_ex.fe_logical >> (23 - bsbits)) << 23;
+> > 		size = 8 * 1024 * 1024;
+> >  }
+> > 
+> > Resulting in normalized range less than original range.
+> 
+> I see.
+> 
+> > Now, in any case, once we get such an overflow, if we try to enter the PA
+> > adjustment window in ext4_mb_new_inode_pa() function, we will again end
+> > up with a best extent overflowing out of goal extent since we would try
+> > to cover the original extent. 
+> > 
+> > So yeah, seems like there are 2 cases where we could result in
+> > overlapping PAs:
+> > 
+> > 1. Due to off calculation in PA adjustment window, as we discussed.  2.
+> > Due to original extent overflowing out of goal extent.
+> > 
+> > I think the 3 step solution you proposed works well to counter 1 but not
+> > 2, so we probably need some more logic on top of your solution to take
+> > care of that.  I'll think some more on how to fix this but I think this
+> > will be as a separate patch.
+> 
+> Well, my algorithm will still result in preallocation being within the goal
+> range AFAICS. In the example above we had:
+> 
+> Orig 2045/2055 Goal 0/2048
+> 
+> Suppose we found 200 blocks. So we try placing preallocation like:
+> 
+> 1848/2048, it covers the original starting block 2045 so we are fine and
+> create preallocation 1848/2048. Nothing has overflown the goal window...
+> 
+> 								Honza
+Ahh okay, I though you meant checking if we covered the complete
+original range instead of just the original start. In that case we
+should be good.
 
-CPU: 1 PID: 5339 Comm: syz-executor.1 Not tainted 6.2.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:306 [inline]
- print_report+0x163/0x4f0 mm/kasan/report.c:417
- kasan_report+0x13a/0x170 mm/kasan/report.c:517
- crc16+0x1fb/0x280 lib/crc16.c:58
- ext4_group_desc_csum+0x90f/0xc50 fs/ext4/super.c:3187
- ext4_group_desc_csum_set+0x19b/0x240 fs/ext4/super.c:3210
- ext4_mb_clear_bb fs/ext4/mballoc.c:6027 [inline]
- ext4_free_blocks+0x1c57/0x3010 fs/ext4/mballoc.c:6173
- ext4_remove_blocks fs/ext4/extents.c:2527 [inline]
- ext4_ext_rm_leaf fs/ext4/extents.c:2710 [inline]
- ext4_ext_remove_space+0x289e/0x5270 fs/ext4/extents.c:2958
- ext4_ext_truncate+0x176/0x210 fs/ext4/extents.c:4416
- ext4_truncate+0xafa/0x1450 fs/ext4/inode.c:4342
- ext4_evict_inode+0xc40/0x1230 fs/ext4/inode.c:286
- evict+0x2a4/0x620 fs/inode.c:664
- do_unlinkat+0x4f1/0x930 fs/namei.c:4327
- __do_sys_unlink fs/namei.c:4368 [inline]
- __se_sys_unlink fs/namei.c:4366 [inline]
- __x64_sys_unlink+0x49/0x50 fs/namei.c:4366
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fbc85a8c0f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbc86838168 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007fbc85babf80 RCX: 00007fbc85a8c0f9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000000
-RBP: 00007fbc85ae7ae9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd5743beaf R14: 00007fbc86838300 R15: 0000000000022000
- </TASK>
+However, I still feel that the example where we unnecessarily end up with 
+a lesser goal len than original len should not happen. Maybe in
+ext4_mb_normalize_request(), instead of hardcording the goal lengths for
+different i_sizes, we can select the next power of 2 greater than our
+original length or some similar heuristic. What do you think?
 
-The buggy address belongs to the physical page:
-page:ffffea0001f78000 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x7de00
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000000 ffffea0001f86008 ffffea0001db2a08 0000000000000000
-raw: 0000000000000000 0000000000000001 00000000ffffff7f 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4855, tgid 4855 (sshd), ts 43553490210, free_ts 58249059760
- prep_new_page mm/page_alloc.c:2531 [inline]
- get_page_from_freelist+0x3449/0x35c0 mm/page_alloc.c:4283
- __alloc_pages+0x291/0x7e0 mm/page_alloc.c:5549
- alloc_slab_page+0x6a/0x160 mm/slub.c:1851
- allocate_slab mm/slub.c:1998 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2051
- ___slab_alloc+0xa85/0x10a0 mm/slub.c:3193
- __kmem_cache_alloc_bulk mm/slub.c:3951 [inline]
- kmem_cache_alloc_bulk+0x160/0x430 mm/slub.c:4026
- mt_alloc_bulk lib/maple_tree.c:157 [inline]
- mas_alloc_nodes+0x381/0x640 lib/maple_tree.c:1257
- mas_node_count_gfp lib/maple_tree.c:1316 [inline]
- mas_preallocate+0x131/0x350 lib/maple_tree.c:5724
- vma_expand+0x277/0x850 mm/mmap.c:541
- mmap_region+0xc43/0x1fb0 mm/mmap.c:2592
- do_mmap+0x8c9/0xf70 mm/mmap.c:1411
- vm_mmap_pgoff+0x1ce/0x2e0 mm/util.c:520
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1446 [inline]
- free_pcp_prepare mm/page_alloc.c:1496 [inline]
- free_unref_page_prepare+0xf3a/0x1040 mm/page_alloc.c:3369
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:3464
- qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:187
- kasan_quarantine_reduce+0x15a/0x170 mm/kasan/quarantine.c:294
- __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:302
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook+0x68/0x390 mm/slab.h:761
- slab_alloc_node mm/slub.c:3452 [inline]
- kmem_cache_alloc_node+0x158/0x2c0 mm/slub.c:3497
- __alloc_skb+0xd6/0x2d0 net/core/skbuff.c:552
- alloc_skb include/linux/skbuff.h:1270 [inline]
- alloc_skb_with_frags+0xa8/0x750 net/core/skbuff.c:6194
- sock_alloc_send_pskb+0x919/0xa50 net/core/sock.c:2743
- unix_dgram_sendmsg+0x5b5/0x2050 net/unix/af_unix.c:1943
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg net/socket.c:734 [inline]
- __sys_sendto+0x475/0x5f0 net/socket.c:2117
- __do_sys_sendto net/socket.c:2129 [inline]
- __se_sys_sendto net/socket.c:2125 [inline]
- __x64_sys_sendto+0xde/0xf0 net/socket.c:2125
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807ddfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88807ddfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88807de00000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff88807de00080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807de00100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
+Regards,
+ojaswin
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
