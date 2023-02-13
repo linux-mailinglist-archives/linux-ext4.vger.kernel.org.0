@@ -2,98 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5969395E
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Feb 2023 19:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80A2693D16
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 04:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjBLSdq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Feb 2023 13:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S229902AbjBMDlv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Feb 2023 22:41:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjBLSdp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Feb 2023 13:33:45 -0500
-X-Greylist: delayed 1147 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 12 Feb 2023 10:33:43 PST
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0C71026F
-        for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 10:33:43 -0800 (PST)
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4PFFx10Hd4zXKn
-        for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 19:14:24 +0100 (CET)
-Message-ID: <1620c46d-efcf-aca6-341b-083ef593c612@thelounge.net>
-Date:   Sun, 12 Feb 2023 19:14:23 +0100
+        with ESMTP id S229631AbjBMDls (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Feb 2023 22:41:48 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33280CC29
+        for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 19:41:43 -0800 (PST)
+Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PFVQ31xHczJr47;
+        Mon, 13 Feb 2023 11:36:59 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500016.china.huawei.com
+ (7.185.36.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Mon, 13 Feb
+ 2023 11:41:40 +0800
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+To:     <tytso@mit.edu>, <jack@suse.com>
+CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>,
+        zhanchengbin <zhanchengbin1@huawei.com>
+Subject: [PATCH v4 0/2] fix extents need to be restored when ext4_ext_insert_extent failed
+Date:   Mon, 13 Feb 2023 12:05:20 +0800
+Message-ID: <20230213040522.3339406-1-zhanchengbin1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-To:     linux-ext4@vger.kernel.org
-Content-Language: en-US
-From:   Reindl Harald <h.reindl@thelounge.net>
-Subject: e4defrag don't work really well
-Organization: the lounge interactive design
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_50,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500016.china.huawei.com (7.185.36.70)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Inside the ext4_ext_insert_extent function, every error returned will
+not destroy the consistency of the tree. Even if it fails after changing
+half of the tree, can also ensure that the tree is self-consistent, like
+function ext4_ext_create_new_leaf.
+After ext4_ext_insert_extent fails, update extent status tree depends on
+the incoming split_flag. So restore the len of extent to be split when
+ext4_ext_insert_extent return failed in ext4_split_extent_at.
 
-what's wrong with e4defrag that it pretends it reduced th efragments of 
-a file to 1 while in the next "e4defrag -c" (why does that only list 5 
-files at all) the same file is listed again with the same old frag count?
+Diff v2 Vs v1:
+1) return directly after inserting successfully
+2) restore the length of extent in memory after inserting unsuccessfully
 
-----------------------------
+Diff v3 Vs v2:
+Sorry for not taking into account the successful extent insertion. and I
+reanalyzed the ext4_ext_insert_extent function and modified the conditions
+for restoring the length.
 
-[root@srv-rhsoft:~]$ e4defrag -c /mnt/data/audio/
-e4defrag 1.46.5 (30-Dec-2021)
-<Fragmented files>                             now/best       size/ext
-1. /mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3
-                                                  3/1           2389 KB
-2. /mnt/data/audio/Ace Frehley/Second Sighting/Ace Frehley - Fallen 
-Angel.mp3
-                                                  3/1           2389 KB
-3. /mnt/data/audio/Mr. Big/Defying Gravity/Mr. Big - Mean To Me.mp3
-                                                  3/1           2389 KB
-4. /mnt/data/audio/Juice Newton/Quiet Lies/Juice Newton - Im Gonna Be 
-Strong.mp3
-                                                  3/1           2389 KB
-5. /mnt/data/audio/Vicious Rumors/Something Burning/Vicious Rumors - 
-Ballhog.mp3
-                                                  3/1           2389 KB
+Diff v4 Vs v3:
+Clear the verified flag from the modified bh when failed inext4_ext_rm_idx
+or ext4_ext_correct_indexes.
 
-----------------------------
+zhanchengbin (2):
+  ext4: fix inode tree inconsistency caused by ENOMEM in
+    ext4_split_extent_at
+  ext4: clear the verified flag of the modified leaf or idx if error
 
-[root@srv-rhsoft:~]$ e4defrag "/mnt/data/audio/Smokie/Solid 
-Ground/Smokie - Little Town Flirt.mp3"
-e4defrag 1.46.5 (30-Dec-2021)
-ext4 defragmentation for /mnt/data/audio/Smokie/Solid Ground/Smokie - 
-Little Town Flirt.mp3
-[1/1]/mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3: 
-        100%    [ OK ]
-  Success:                       [1/1]
+ fs/ext4/extents.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-----------------------------
-
-[root@srv-rhsoft:~]$ e4defrag -c /mnt/data/audio/
-e4defrag 1.46.5 (30-Dec-2021)
-<Fragmented files>                             now/best       size/ext
-1. /mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3
-                                                  3/1           2389 KB
-2. /mnt/data/audio/Ace Frehley/Second Sighting/Ace Frehley - Fallen 
-Angel.mp3
-                                                  3/1           2389 KB
-3. /mnt/data/audio/Mr. Big/Defying Gravity/Mr. Big - Mean To Me.mp3
-                                                  3/1           2389 KB
-4. /mnt/data/audio/Juice Newton/Quiet Lies/Juice Newton - Im Gonna Be 
-Strong.mp3
-                                                  3/1           2389 KB
-5. /mnt/data/audio/Vicious Rumors/Something Burning/Vicious Rumors - 
-Ballhog.mp3
-                                                  3/1           2389 KB
+-- 
+2.31.1
 
