@@ -2,34 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80A2693D16
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 04:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0242F693D17
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 04:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjBMDlv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Feb 2023 22:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
+        id S229631AbjBMDlw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Feb 2023 22:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjBMDls (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Feb 2023 22:41:48 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33280CC29
+        with ESMTP id S229619AbjBMDlt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Feb 2023 22:41:49 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DB3DBE0
         for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 19:41:43 -0800 (PST)
-Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PFVQ31xHczJr47;
-        Mon, 13 Feb 2023 11:36:59 +0800 (CST)
+Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PFVSq0pQZznW79;
+        Mon, 13 Feb 2023 11:39:23 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500016.china.huawei.com
  (7.185.36.70) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Mon, 13 Feb
- 2023 11:41:40 +0800
+ 2023 11:41:41 +0800
 From:   zhanchengbin <zhanchengbin1@huawei.com>
 To:     <tytso@mit.edu>, <jack@suse.com>
 CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>,
         <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>,
         zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH v4 0/2] fix extents need to be restored when ext4_ext_insert_extent failed
-Date:   Mon, 13 Feb 2023 12:05:20 +0800
-Message-ID: <20230213040522.3339406-1-zhanchengbin1@huawei.com>
+Subject: [PATCH v4 1/2] ext4: fix inode tree inconsistency caused by ENOMEM in ext4_split_extent_at
+Date:   Mon, 13 Feb 2023 12:05:21 +0800
+Message-ID: <20230213040522.3339406-2-zhanchengbin1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230213040522.3339406-1-zhanchengbin1@huawei.com>
+References: <20230213040522.3339406-1-zhanchengbin1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -45,35 +47,48 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Inside the ext4_ext_insert_extent function, every error returned will
-not destroy the consistency of the tree. Even if it fails after changing
-half of the tree, can also ensure that the tree is self-consistent, like
-function ext4_ext_create_new_leaf.
-After ext4_ext_insert_extent fails, update extent status tree depends on
-the incoming split_flag. So restore the len of extent to be split when
-ext4_ext_insert_extent return failed in ext4_split_extent_at.
+If ENOMEM fails when the extent is splitting, we need to restore the length
+of the split extent.
+In the call stack of the ext4_split_extent_at function, only in
+ext4_ext_create_new_leaf will it alloc memory and change the shape of the
+extent tree,even if an ENOMEM is returned at this time, the extent tree is
+still self-consistent, Just restore the split extent lens in the function
+ext4_split_extent_at.
 
-Diff v2 Vs v1:
-1) return directly after inserting successfully
-2) restore the length of extent in memory after inserting unsuccessfully
+ext4_split_extent_at
+ ext4_ext_insert_extent
+  ext4_ext_create_new_leaf
+   1)ext4_ext_split
+     ext4_find_extent
+   2)ext4_ext_grow_indepth
+     ext4_find_extent
 
-Diff v3 Vs v2:
-Sorry for not taking into account the successful extent insertion. and I
-reanalyzed the ext4_ext_insert_extent function and modified the conditions
-for restoring the length.
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+---
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Diff v4 Vs v3:
-Clear the verified flag from the modified bh when failed inext4_ext_rm_idx
-or ext4_ext_correct_indexes.
-
-zhanchengbin (2):
-  ext4: fix inode tree inconsistency caused by ENOMEM in
-    ext4_split_extent_at
-  ext4: clear the verified flag of the modified leaf or idx if error
-
- fs/ext4/extents.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 9de1c9d1a13d..0f95e857089e 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -935,6 +935,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 
+ 		bh = read_extent_tree_block(inode, path[ppos].p_idx, --i, flags);
+ 		if (IS_ERR(bh)) {
++			EXT4_ERROR_INODE(inode, "IO error reading extent block");
+ 			ret = PTR_ERR(bh);
+ 			goto err;
+ 		}
+@@ -3251,7 +3252,7 @@ static int ext4_split_extent_at(handle_t *handle,
+ 		ext4_ext_mark_unwritten(ex2);
+ 
+ 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+-	if (err != -ENOSPC && err != -EDQUOT)
++	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
+ 		goto out;
+ 
+ 	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
 -- 
 2.31.1
 
