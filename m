@@ -2,117 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59680693FD1
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 09:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CF66940A2
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 10:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjBMInE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Feb 2023 03:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        id S229672AbjBMJRU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Feb 2023 04:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjBMInD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 03:43:03 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C695B775;
-        Mon, 13 Feb 2023 00:43:02 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31D7xgbK004245;
-        Mon, 13 Feb 2023 08:42:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=SQO+Y5aVpcbnpSCkCwLdw9OJ9Tq2Ic/kqk6N9Te4vfM=;
- b=luA+8pq+zoraIo8IAJGJnMYOgFRcnZOf48IQDpKLmi4ibHs9IyZQtOTjPHSs/xzGWzhZ
- nQjWRC7tdMyn08MQmcMH330JUg8vVrdiPi6uhYIfnwOHxMY/BTn6HFaI1Xga+FOGYVdg
- hEHx0y3oA1i1dYFrvn6bP21vKVIWFzeyrbKKFb8f0kTNTa0iDV3ZYnJK75l9HAk49CCf
- /ruvE+141HzrRyRgRIar9GMF2xrMHLlySiSCIZpaiZxQYzLkxNnae3BE3ESBoKNhbudi
- A4paCeyDP7jF+NuuLV1tHNspFKhQPnmC8XkusI5kok6WZDI5bECogunPz9FPJ1Oz5lMH PA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nqha28xhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Feb 2023 08:42:55 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31CIUfP9031193;
-        Mon, 13 Feb 2023 08:42:53 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3np29fjdej-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Feb 2023 08:42:53 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31D8gpwx42729836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Feb 2023 08:42:51 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C22F20049;
-        Mon, 13 Feb 2023 08:42:51 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D03620040;
-        Mon, 13 Feb 2023 08:42:49 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.169])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Mon, 13 Feb 2023 08:42:49 +0000 (GMT)
-Date:   Mon, 13 Feb 2023 14:12:46 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/21] ext4: protect pa->pa_free in
- ext4_discard_allocated_blocks
-Message-ID: <Y+n4Bgph6QpjU8m+@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20230209194825.511043-1-shikemeng@huaweicloud.com>
- <20230209194825.511043-8-shikemeng@huaweicloud.com>
+        with ESMTP id S229742AbjBMJRQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 04:17:16 -0500
+Received: from mail.tryweryn.pl (mail.tryweryn.pl [5.196.29.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED0A14E80
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Feb 2023 01:17:09 -0800 (PST)
+Received: by mail.tryweryn.pl (Postfix, from userid 1002)
+        id 106F3A2E5D; Mon, 13 Feb 2023 09:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tryweryn.pl; s=mail;
+        t=1676279828; bh=Bo+/jg3TCpOeS79PpZREuOWEeqJV//jojylD9dSrSik=;
+        h=Date:From:To:Subject:From;
+        b=P6eBjrGWD4pOdEwAA33k68hQiXQ/UlbGJDBjjUfyej8KmlA0GUcde6QuaNu3eTU+a
+         2on5a8Nuoe1dbJcQQzU1H6DfD26x0n6HhagOGSM3jq26CxgCHDItRBOwtHG77RS0fI
+         1mQT05OrXVS+Esby6suewn5FWhIz+onNFe0DHOmRTlvubl5/mG4X1O/nYi2iLRaUsI
+         akli1M7eVpmjpa/DxbnwVHQvisu8oFtEbjyCT2H4O6RKiOA05R3gCRDjLPytBRjUY4
+         TD2DeAfgYW939Czy8OTuWbPgpjZ82TpjOtQEi9MIpCuoE4+/CuljV/7IFaipm/qinj
+         5brJ48sdvit/Q==
+Received: by mail.tryweryn.pl for <linux-ext4@vger.kernel.org>; Mon, 13 Feb 2023 09:15:46 GMT
+Message-ID: <20230213074500-0.1.84.2y7zm.0.c23bplp5j2@tryweryn.pl>
+Date:   Mon, 13 Feb 2023 09:15:46 GMT
+From:   "Karol Michun" <karol.michun@tryweryn.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.tryweryn.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230209194825.511043-8-shikemeng@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZPFEQGeuuNleqb69f1HLK6oA1D4Gruz8
-X-Proofpoint-GUID: ZPFEQGeuuNleqb69f1HLK6oA1D4Gruz8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-13_04,2023-02-09_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 mlxscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2302130076
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 03:48:11AM +0800, Kemeng Shi wrote:
-> If ext4_mb_mark_diskspace_used fails in ext4_mb_new_blocks, we may
-> discard pa already in list. Protect pa with pa_lock to avoid race.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 433337ac8da2..4e1caac74b44 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4263,8 +4263,11 @@ static void ext4_discard_allocated_blocks(struct ext4_allocation_context *ac)
->  		ext4_mb_unload_buddy(&e4b);
->  		return;
->  	}
-> -	if (pa->pa_type == MB_INODE_PA)
-> +	if (pa->pa_type == MB_INODE_PA) {
-> +		spin_lock(&pa->pa_lock);
->  		pa->pa_free += ac->ac_b_ex.fe_len;
-> +		spin_unlock(&pa->pa_lock);
-> +	}
->  }
->  
->  /*
-> -- 
-> 2.30.0
-> 
-Looks correct. Feel free to add:
+Dzie=C5=84 dobry!
 
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com> 
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
+
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
+
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
+
+
+Pozdrawiam
+Karol Michun
