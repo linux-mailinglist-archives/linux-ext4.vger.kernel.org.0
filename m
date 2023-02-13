@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3F2693E23
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 07:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E46B693E29
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Feb 2023 07:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjBMGTQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Feb 2023 01:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58254 "EHLO
+        id S229489AbjBMGUY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Feb 2023 01:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjBMGTO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 01:19:14 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04E726AE
-        for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 22:19:13 -0800 (PST)
+        with ESMTP id S229477AbjBMGUX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Feb 2023 01:20:23 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8747A6EB0
+        for <linux-ext4@vger.kernel.org>; Sun, 12 Feb 2023 22:20:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676269153; x=1707805153;
+  t=1676269221; x=1707805221;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=mxymkVsN7QPUObvFB96SwwLB6n492jq6nuj6DFWqX54=;
-  b=BtewwCUsVexWjoAOH5JuNcLigQcR1nQt+FwXtcBAu0Pc/rVjgWeEKm4j
-   wW5vtoClZPE3977xmnVttdJDgHDUz1Kbl5np1ls74C6Ucv7rJDV5x4lsS
-   IQkEtLDiHM6WFl4WN3GPnZg1IHBaPwdcUiP2Je/kncSW0NfA65dDYqrXQ
-   NXqb6L2pauwfZL66DG/bqyGcQUW4fZwZi0q4SuIjOD02x569nLtcJWZtI
-   eGggSMSTEtYT5UQF92k8zJwHnWV7kydbwgNhl1l5LbvK88W2Z6XP9xKjl
-   tuBa9x0vWt1CmuRgvgr/wCG5iBEUIgqONGak8CW91G4E01JzoY/NhP49j
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="358228373"
+  bh=W5ovj3A01rCwZrafuh/KA7yhCF+GMCLPpkHfJmH3y3k=;
+  b=PjQ1nRVUKmbtpsQ283TXUANN8uFkeQAyz4823DQkzxNrJtj837WxzurU
+   AHBkzUnflGgAnq/4BbuiazVWVSsHkKN+LHZmeyG2P+6sKVkq7XDUOGAwb
+   R9isjf80Rk1NGHUu6PjPddoc5BW8KoVsJ0n4VtXCb8EebTksINTDKG2h1
+   M2M2YsWpRkP70DL4T9IaHzDDWGNax19/Mq8DshDnfT3JAd0iqzrcccX+v
+   jsevHzWXT1nEkPfqwiA97oOlDhq56fa40xbyzg13op/kLWuD8bYmsq4yc
+   7sJdoOSPCjdf9HS5/6Lela+zNVZM1164kTP3wxYf82459M851GRT1MonT
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="332125085"
 X-IronPort-AV: E=Sophos;i="5.97,293,1669104000"; 
-   d="scan'208";a="358228373"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2023 22:19:13 -0800
+   d="scan'208";a="332125085"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2023 22:20:12 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="668695046"
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="701147179"
 X-IronPort-AV: E=Sophos;i="5.97,293,1669104000"; 
-   d="scan'208";a="668695046"
+   d="scan'208";a="701147179"
 Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 12 Feb 2023 22:19:10 -0800
+  by orsmga001.jf.intel.com with ESMTP; 12 Feb 2023 22:20:10 -0800
 Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pRSBB-0007an-20;
-        Mon, 13 Feb 2023 06:19:09 +0000
-Date:   Mon, 13 Feb 2023 14:18:54 +0800
+        id 1pRSC9-0007ar-25;
+        Mon, 13 Feb 2023 06:20:09 +0000
+Date:   Mon, 13 Feb 2023 14:19:10 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     zhanchengbin <zhanchengbin1@huawei.com>, tytso@mit.edu,
         jack@suse.com
@@ -52,7 +52,7 @@ Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
         zhanchengbin <zhanchengbin1@huawei.com>
 Subject: Re: [PATCH v4 2/2] ext4: clear the verified flag of the modified
  leaf or idx if error
-Message-ID: <202302131414.5RKeHgAZ-lkp@intel.com>
+Message-ID: <202302131407.XrieHNuN-lkp@intel.com>
 References: <20230213040522.3339406-3-zhanchengbin1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -73,7 +73,7 @@ Hi zhanchengbin,
 Thank you for the patch! Yet something to improve:
 
 [auto build test ERROR on tytso-ext4/dev]
-[also build test ERROR on jack-fs/for_next linus/master v6.2-rc8]
+[also build test ERROR on jack-fs/for_next linus/master v6.2-rc8 next-20230210]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
@@ -82,25 +82,23 @@ url:    https://github.com/intel-lab-lkp/linux/commits/zhanchengbin/ext4-fix-ino
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
 patch link:    https://lore.kernel.org/r/20230213040522.3339406-3-zhanchengbin1%40huawei.com
 patch subject: [PATCH v4 2/2] ext4: clear the verified flag of the modified leaf or idx if error
-config: arm-randconfig-r024-20230213 (https://download.01.org/0day-ci/archive/20230213/202302131414.5RKeHgAZ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project db0e6591612b53910a1b366863348bdb9d7d2fb1)
+config: i386-randconfig-a004-20230213 (https://download.01.org/0day-ci/archive/20230213/202302131407.XrieHNuN-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
         # https://github.com/intel-lab-lkp/linux/commit/c6de5d67952addd5ffa288574ed55ebe7aeba755
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review zhanchengbin/ext4-fix-inode-tree-inconsistency-caused-by-ENOMEM-in-ext4_split_extent_at/20230213-114334
         git checkout c6de5d67952addd5ffa288574ed55ebe7aeba755
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash fs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/ext4/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302131414.5RKeHgAZ-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202302131407.XrieHNuN-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
