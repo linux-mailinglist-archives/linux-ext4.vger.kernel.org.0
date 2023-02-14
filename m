@@ -2,127 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 285EE6962A7
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Feb 2023 12:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9276963E9
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Feb 2023 13:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjBNLsj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Feb 2023 06:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
+        id S231859AbjBNMwQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Feb 2023 07:52:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjBNLsi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Feb 2023 06:48:38 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9709F23659
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Feb 2023 03:48:37 -0800 (PST)
+        with ESMTP id S229933AbjBNMwP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Feb 2023 07:52:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9FF10FC
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Feb 2023 04:52:13 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 50D0021B01;
-        Tue, 14 Feb 2023 11:48:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 75DEB21D82;
+        Tue, 14 Feb 2023 12:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676375316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1676379132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bg2/Y5HERea7RV0WXY8nvEIN343mHT7k7cMGFBIts9c=;
-        b=nqPnqzLqJ0jKFYvRW/2ethuZagVs9tanImTmt0IdwAgAKLk4N0GSWsMJyKvfhTONT+RY2l
-        CfbrSCYZPh19hUsOFbM8EJ3xupg3QkPj/b3QJR/k5LU1vxi56uGxi5VycX0OOsYYZgTZU7
-        IdCnCqAoCyBto7tSoMUoHol7a2u2Hls=
+        bh=4Osg1VyqjofsjGy3y84UHeVrjI9q8Dokh042I6TjmQE=;
+        b=Fd6b/iomQl2yw/QPMRZKUxb+24zS+bjPd6diqa1x6NmVea3x9os8XNJYqo2XTN09oFkglI
+        RKiLfziYTfsLeiERnosmBXqbiLpjo79JmL7bW3iKvsLscAsv15rlIpbLNjmdbC3DKl8LtJ
+        Oli5iPownB4619BnmQ+j5D75VDPx6zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676375316;
+        s=susede2_ed25519; t=1676379132;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bg2/Y5HERea7RV0WXY8nvEIN343mHT7k7cMGFBIts9c=;
-        b=IwqqgFszdBPCUDpHT9WVpo05p4IzpHJRw+Zto3HZgcFMCTYxIpMBb4gM7I3s9M+Jz0zro+
-        7kf7226b4zrVIdBQ==
+        bh=4Osg1VyqjofsjGy3y84UHeVrjI9q8Dokh042I6TjmQE=;
+        b=5ou1Whg65mCMG7sv5YZabtn5TmbGGNjJaVJTWA7Yy0S8t/YxJ3F7aqGMFUtcsT9Rlrcr9Y
+        RELg5fsViFGQs4Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 438B313A21;
-        Tue, 14 Feb 2023 11:48:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61A46138E3;
+        Tue, 14 Feb 2023 12:52:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id W/F4EBR162MWBwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 14 Feb 2023 11:48:36 +0000
+        id vu7NF/yD62ORJQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 14 Feb 2023 12:52:12 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D1322A06D8; Tue, 14 Feb 2023 12:48:35 +0100 (CET)
-Date:   Tue, 14 Feb 2023 12:48:35 +0100
+        id BAE94A06D8; Tue, 14 Feb 2023 13:52:11 +0100 (CET)
+Date:   Tue, 14 Feb 2023 13:52:11 +0100
 From:   Jan Kara <jack@suse.cz>
 To:     zhanchengbin <zhanchengbin1@huawei.com>
 Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
         yi.zhang@huawei.com, linfeilong@huawei.com,
-        liuzhiqiang26@huawei.com
-Subject: Re: [PATCH v4 1/2] ext4: fix inode tree inconsistency caused by
- ENOMEM in ext4_split_extent_at
-Message-ID: <20230214114835.hpjr4zgofrcp7hyy@quack3>
-References: <20230213040522.3339406-1-zhanchengbin1@huawei.com>
- <20230213040522.3339406-2-zhanchengbin1@huawei.com>
+        liuzhiqiang26@huawei.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v5 2/2] ext4: clear the verified flag of the modified
+ leaf or idx if error
+Message-ID: <20230214125211.o2j3vpkopvas2niq@quack3>
+References: <20230213080514.535568-1-zhanchengbin1@huawei.com>
+ <20230213080514.535568-3-zhanchengbin1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230213040522.3339406-2-zhanchengbin1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230213080514.535568-3-zhanchengbin1@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 13-02-23 12:05:21, zhanchengbin wrote:
-> If ENOMEM fails when the extent is splitting, we need to restore the length
-> of the split extent.
-> In the call stack of the ext4_split_extent_at function, only in
-> ext4_ext_create_new_leaf will it alloc memory and change the shape of the
-> extent tree,even if an ENOMEM is returned at this time, the extent tree is
-> still self-consistent, Just restore the split extent lens in the function
-> ext4_split_extent_at.
+On Mon 13-02-23 16:05:14, zhanchengbin wrote:
+> Clear the verified flag from the modified bh when failed in ext4_ext_rm_idx
+> or ext4_ext_correct_indexes.
+> In this way, the start value of the logical block itself and its
+> parents' will be checked in ext4_valid_extent_entries.
 > 
-> ext4_split_extent_at
->  ext4_ext_insert_extent
->   ext4_ext_create_new_leaf
->    1)ext4_ext_split
->      ext4_find_extent
->    2)ext4_ext_grow_indepth
->      ext4_find_extent
-> 
+> Reported-by: kernel test robot <lkp@intel.com>
 > Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> ---
->  fs/ext4/extents.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
+> Link: https://lore.kernel.org/oe-kbuild-all/202302131414.5RKeHgAZ-lkp@intel.com/
+> Link: https://lore.kernel.org/oe-kbuild-all/202302131407.XrieHNuN-lkp@intel.com/
+
+Thanks for the patch! Two comments below:
+
 > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 9de1c9d1a13d..0f95e857089e 100644
+> index 0f95e857089e..bbf34679e10c 100644
 > --- a/fs/ext4/extents.c
 > +++ b/fs/ext4/extents.c
-> @@ -935,6 +935,7 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
->  
->  		bh = read_extent_tree_block(inode, path[ppos].p_idx, --i, flags);
->  		if (IS_ERR(bh)) {
-> +			EXT4_ERROR_INODE(inode, "IO error reading extent block");
+> @@ -1756,6 +1756,8 @@ static int ext4_ext_correct_indexes(handle_t *handle, struct inode *inode,
+>  		if (err)
+>  			break;
+>  	}
+> +	while (!(k < 0) && k++ < depth)
+> +		clear_buffer_verified(path[k].p_bh);
 
-Why have you added this? Usually we don't log any additional errors for IO
-errors because the storage layer already reports it... Furthermore this
-would potentialy panic the system / remount the fs RO which we also usually
-don't do in case of IO errors, only in case of FS corruption.
+This would be more understandable as:
+
+	if (k >= 0)
+		while (k++ < depth)
+			...
+
+Also the loop is IMO wrong because it will run with k == depth as well (due
+to post-increment) and that is not initialized. Furthermore it will run
+also if we exit the previous loop due to:
+
+                /* change all left-side indexes */
+                if (path[k+1].p_idx != EXT_FIRST_INDEX(path[k+1].p_hdr))
+                        break;
+
+which is unwanted as well. Which suggests that you didn't test your changes
+much (if at all...). So please make sure your changes are tested next time.
+Thank you!
 
 								Honza
 
->  			ret = PTR_ERR(bh);
->  			goto err;
->  		}
-> @@ -3251,7 +3252,7 @@ static int ext4_split_extent_at(handle_t *handle,
->  		ext4_ext_mark_unwritten(ex2);
 >  
->  	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-> -	if (err != -ENOSPC && err != -EDQUOT)
-> +	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
->  		goto out;
+>  	return err;
+>  }
+> @@ -2304,6 +2306,7 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
+>  {
+>  	int err;
+>  	ext4_fsblk_t leaf;
+> +	int b_depth = depth;
 >  
->  	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+>  	/* free index block */
+>  	depth--;
+> @@ -2345,6 +2348,9 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
+>  		if (err)
+>  			break;
+>  	}
+> +	while (!(depth < 0) && depth++ < b_depth - 1)
+> +		clear_buffer_verified(path[depth].p_bh);
+> +
+>  	return err;
+>  }
+>  
 > -- 
 > 2.31.1
 > 
