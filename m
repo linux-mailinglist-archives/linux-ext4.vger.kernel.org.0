@@ -2,76 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCD96980D3
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Feb 2023 17:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB05698985
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Feb 2023 01:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjBOQ0p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Feb 2023 11:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        id S229551AbjBPAyp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Feb 2023 19:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjBOQ0o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Feb 2023 11:26:44 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B6932E69
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Feb 2023 08:26:43 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id j32-20020a05600c1c2000b003dc4fd6e61dso1980695wms.5
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Feb 2023 08:26:43 -0800 (PST)
+        with ESMTP id S229477AbjBPAyo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Feb 2023 19:54:44 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC992A153
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Feb 2023 16:54:42 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id e17so432453plg.12
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Feb 2023 16:54:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A4BMU3XQ0reGvzDThfdy2mEqaIcU6fwOoymI2H0wZKc=;
-        b=Se1fp/1BW7CM5DwzKF/3Tfxm/QDWge2BVoJGdxId9aMi4UFC9qPsTSTcSYyiTzKlZU
-         dFwHFztBvtMWuEA2wK53ZGl/BjxDwDogpSKaQqsAal6E81a35CefxbEwXJEAhxjKIgWA
-         577ewTFhPmvb9lKLIi5CmurN+FX60MeTS4L4Hw/uZ3dQ7M1qQGQcnz+zGL5s1oi/MWyZ
-         VfaVKgGQZdmWUkKOcW1u/qP74q+CyloGedNtsbctzKDVdqEoghBdFXkuAx8lDcYNoK/h
-         IgdAJy0CxDtWRrjtzAiYVTbLhRgxo2EaQC0VucuA5MrGWO6bYFLP7bIfUPpxSYTU7ZrQ
-         EPRw==
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPXE0KmNwvE+NSY+3rCK3ijNO5IxWNGEaQtRsv6Af1A=;
+        b=KEYiokYkhzlsXe7RhKwvDkI4HLRe0mRzRU+4JX6sUrWv/aP7HXlpys9fLxgq9zcUkH
+         IhuQW/W2yId5YikbZKOHVi2jTuKXHd3NqcdG/eiAWx+FEmZS1rnaI6ovhTmU0RvMTpFO
+         sc7MDTKviswxdi2dvQfsAFUDQ+Odb/MaNPtTu74Nv0zDmfQhZpTtJqcv6Li9u8R4iJG/
+         x96u9kRhEkQpLaWSjb5z7WY1HDxpCs8fVtG/Ftaqg9z9EDfOmP0UjNJGBt5iozDplBhi
+         6OXD9PKD2k3S6npzNu0Jk91WyrhbxTwRalI1vgYUaK+50B0/TnB1cUMXR0sYR5sbGki1
+         zQIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A4BMU3XQ0reGvzDThfdy2mEqaIcU6fwOoymI2H0wZKc=;
-        b=jAj3s1AhJ9u/sVMGn+lKgjUoldokFBCFHeD2/K02oeZ0s+s7s73Fjr9CrIpuEP7mZ6
-         Ndt3DS+C6kOXj1h5tKmt6S6yRwRLk8O1as0jrih5dC1X91rKMF2X5lOgC8RYf1MNUR+u
-         9cEGagKMds9F44iUrRHfclsWIiCosfE0W06ZPa+FaDA6IX9aP1SAjxoLF7Zt7VpeoV1y
-         VFIoqYMcSpd6y/LAI2fV19fel49kptjMf6XCcF+XAM1WdcYSWAhMPQKRD55Ry3h2kIcD
-         LUkUN3i6tUDppdAVJj1tbm+N0IeU+dDZ3mFYfTl4Hf3KDUK4n8UVnDlEp9/8yus5EZ4T
-         hBaQ==
-X-Gm-Message-State: AO0yUKXR1+dGOs7ylZx/ltQ8vjwXmgd+6pMsOacPyeap5ZbQBmBBdnPm
-        EL0flxF/JImSLkSDPXBoBieBaVsHzAdS3nO0
-X-Google-Smtp-Source: AK7set/NwxyHV3oP30BR0hQR2HAJmg5+rVxSa9ZdWxZ6QUjKL3e4M6hbMy/7HBswvepp+uNEz4cNXQ==
-X-Received: by 2002:a05:600c:3414:b0:3dc:4042:5c30 with SMTP id y20-20020a05600c341400b003dc40425c30mr2537055wmp.10.1676478401645;
-        Wed, 15 Feb 2023 08:26:41 -0800 (PST)
-Received: from [192.168.0.108] ([82.77.80.113])
-        by smtp.gmail.com with ESMTPSA id d1-20020adffd81000000b002bfe08c566fsm15625331wrr.106.2023.02.15.08.26.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Feb 2023 08:26:41 -0800 (PST)
-Message-ID: <dbd7cd6f-5d1d-7fcf-bd19-d22fef4db746@linaro.org>
-Date:   Wed, 15 Feb 2023 16:26:39 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] ext4: reject 1k block fs on the first block of disk
-Content-Language: en-US
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>, Jun Nie <jun.nie@linaro.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <joneslee@google.com>
-References: <20221229014502.2322727-1-jun.nie@linaro.org>
- <Y7R/QKIbYQ2TCP+W@magnolia>
- <CABymUCPCT9KbMQDUTxwf6A+Cg9fWJNkefbMHD7SZD3Fc7FMFHg@mail.gmail.com>
- <Y+xgQklC81XCB+q4@mit.edu> <d8f51f11-6942-51bd-7761-a356125d8e53@linaro.org>
- <4e5fb36f-d234-1f94-5e6c-746aef612bb6@linaro.org>
-In-Reply-To: <4e5fb36f-d234-1f94-5e6c-746aef612bb6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPXE0KmNwvE+NSY+3rCK3ijNO5IxWNGEaQtRsv6Af1A=;
+        b=1AgCOF1DoPaGBcpDDgtuUSlEjpKQvz7GMdfypTZ4K7l6Q3qqWcP58rjTJmpm2NomoB
+         A7OK8wMhso7mTmQVncPBpTT6EEM156EvECA0o5w7Vjl9I+Ixfpzt8MtEBKI6yCgBa3Co
+         LIwzVZZzIVIJoCR2CvNKPbY0iMEHAQ5CzV6JKwgkE8DuaT1FLbgn5VaEYTonl4uWLb3k
+         K/pJrxbNkw9kdVXHIx2lmnuR571yuA4U410PEH+fan6GXrg/8GrPQdhjd+8PExCz/1Sa
+         TOmRVWHrte08eQSTCPUcNvYYJP3Sxq1bWoYwxkXc4TI3U/YRwp+GiyOYqjFx2pI6lp+c
+         arvA==
+X-Gm-Message-State: AO0yUKVSFR5gyZ+gGHC3ffOumBmyOVnsMdyBwSrtC/YcalBky5uWVeEg
+        EPvRqmT9Tr8VD8gg5vvJW4e47vp3oTOgIGJS
+X-Google-Smtp-Source: AK7set/pJJQ2Ta1komCdzeNg+vGLeEe7dpM/TTugLDR17iheN95e3PLC6/aEUkJ8btvSi3VCl/4L2w==
+X-Received: by 2002:a17:902:da8d:b0:199:12d5:5b97 with SMTP id j13-20020a170902da8d00b0019912d55b97mr487427plx.12.1676508881345;
+        Wed, 15 Feb 2023 16:54:41 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c15500b0019a95baaaa6sm7613561plj.222.2023.02.15.16.54.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Feb 2023 16:54:40 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <31364B1B-54B5-4048-B71D-C59F2230C353@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_516A95CE-058F-422F-90C3-10422EFF57A2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Backup/restore of fscrypt files and directories
+Date:   Wed, 15 Feb 2023 17:54:15 -0700
+In-Reply-To: <Y+asUDeRFGpig+wG@mit.edu>
+Cc:     Sebastien Buisson <sbuisson.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+To:     Theodore Ts'o <tytso@mit.edu>
+References: <03a87391-1b19-de2d-5c18-581c1d0c47ca@gmail.com>
+ <Y+P3wumJK/znOKgl@gmail.com> <0eaf08a8-ddec-5158-ab2b-ae7e3e1bab9b@gmail.com>
+ <Y+asUDeRFGpig+wG@mit.edu>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,151 +75,250 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
+--Apple-Mail=_516A95CE-058F-422F-90C3-10422EFF57A2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On 2/15/23 11:53, Tudor Ambarus wrote:
-> 
-> 
-> On 2/15/23 11:46, Tudor Ambarus wrote:
->> Hi, Ted!
->>
->> On 2/15/23 04:32, Theodore Ts'o wrote:
->>> On Wed, Jan 04, 2023 at 09:58:03AM +0800, Jun Nie wrote:
->>>> Darrick J. Wong <djwong@kernel.org> 于2023年1月4日周三 03:17写道：
->>>>>
->>>>> On Thu, Dec 29, 2022 at 09:45:02AM +0800, Jun Nie wrote:
->>>>>> For 1k-block filesystems, the filesystem starts at block 1, not 
->>>>>> block 0.
->>>>>> If start_fsb is 0, it will be bump up to s_first_data_block. Then
->>>>>> ext4_get_group_no_and_offset don't know what to do and return garbage
->>>>>> results (blockgroup 2^32-1). The underflow make index
->>>>>> exceed es->s_groups_count in ext4_get_group_info() and trigger the 
->>>>>> BUG_ON.
->>>>>>
->>>>>> Fixes: 4a4956249dac0 ("ext4: fix off-by-one fsmap error on 1k 
->>>>>> block filesystems")
->>>>>> Link: 
->>>>>> https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
->>>>>> Reported-by: syzbot+6be2b977c89f79b6b153@syzkaller.appspotmail.com
->>>>>> Signed-off-by: Jun Nie <jun.nie@linaro.org>
->>>>>> ---
->>>>>>   fs/ext4/fsmap.c | 6 ++++++
->>>>>>   1 file changed, 6 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
->>>>>> index 4493ef0c715e..1aef127b0634 100644
->>>>>> --- a/fs/ext4/fsmap.c
->>>>>> +++ b/fs/ext4/fsmap.c
->>>>>> @@ -702,6 +702,12 @@ int ext4_getfsmap(struct super_block *sb, 
->>>>>> struct ext4_fsmap_head *head,
->>>>>>                if (handlers[i].gfd_dev > 
->>>>>> head->fmh_keys[0].fmr_device)
->>>>>>                        memset(&dkeys[0], 0, sizeof(struct 
->>>>>> ext4_fsmap));
->>>>>>
->>>>>> +             /*
->>>>>> +              * Re-check the range after above limit operation 
->>>>>> and reject
->>>>>> +              * 1K fs on block 0 as fs should start block 1. */
->>>>>> +             if (dkeys[0].fmr_physical ==0 && 
->>>>>> dkeys[1].fmr_physical == 0)
->>>>>> +                     continue;
->>>>>
->>>>> ...and if this filesystem has 4k blocks, and therefore *does* define a
->>>>> block 0?
->>>>
->>>> Yes, this is a real corner case test :-)
->>>
->>> So I'm really nervous about this change.  I don't understand the code;
->>> and I don't understand how the reproducer works.  I can certainly
->>> reproduce it using the reproducer found here[1], but it seems to
->>> require running multiple processes all creating loop devices and then
->>> running FS_IOC_GETMAP.
->>>
->>> [1] 
->>> https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
->>>
->>> If I change the reproducer to just run the execute_one() once, it
->>> doesn't trigger the bug.  It seems to only trigger when you have
->>> multiple processes all racing to create a loop device, mount the file
->>> system, try running FS_IOC_GETMAP --- and then delete the loop device
->>> without actually unmounting the file system.  Which is **weird***.
->>>
->>> I've tried taking the image, and just running "xfs_io -c fsmap /mnt",
->>> and that doesn't trigger it either.
->>>
->>> And I don't understand the reply to Darrick's question about why it's
->>> safe to add the check since for 4k block file systems, block 0 *is*
->>> valid.
->>>
->>> So if someone can explain to me what is going on here with this code
->>> (there are too many abstractions and what's going on with keys is just
->>> making my head hurt), *and* what the change actually does, and how to
->>> reproduce the problem with a ***simple*** reproducer -- the syzbot
->>> mess doesn't count, that would be great.  But applying a change that I
->>> don't understand to code I don't understand, to fix a reproducer which
->>> I also doesn't understand, just doesn't make me feel comfortable.
->>>
->>
->> Let me share what I understood until now. The low key is zeroed. The
->> high key is defined and uses a fmr_physical of value zero, which is
->> smaller than the first data block for the 1k-block ext4 fs (which starts
->> at offset 1024).
->>
->> -> ext4_getfsmap_datadev()
->>    keys[0].fmr_physical = 0, keys[1].fmr_physical = 0
->>    bofs = le32_to_cpu(sbi->s_es->s_first_data_block) = 1, eofs = 256
->>    start_fsb = keys[0].fmr_physical = 1, end_fsb = 
->> keys[1].fmr_physical = 0
->>    -> ext4_get_group_no_and_offset()
->>      blocknr = 1, le32_to_cpu(es->s_first_data_block) =1
->>    start_ag = 0, first_cluster = 0
->>    ->
->>      blocknr = 0, le32_to_cpu(es->s_first_data_block) =1
->>    end_ag = 4294967295, last_cluster = 8191
-> 
-> because of poor key validation we get a wrong end_ag which eventually
-> causes the BUG_ON.
-> 
->>
->>    Then there's a loop that stops when info->gfi_agno <= end_ag; that 
->> will trigger the BUG_ON in ext4_get_group_info() as the group nr 
->> exceeds EXT4_SB(sb)->s_groups_count)
->>    -> ext4_mballoc_query_range()
->>      -> ext4_mb_load_buddy()
->>        -> ext4_mb_load_buddy_gfp()
->>          -> ext4_get_group_info()
->>
->> It's an out of bounds request and Darrick suggested to not return any
->> mapping for the byte range 0-1023 for the 1k-block filesystem. The
->> alternative would be to return -EINVAL when the high key starts at
->> fmr_phisical of value zero for the 1k-block fs.
->>
->> In order to reproduce this one would have to create an 1k-block ext4 fs
->> and to pass a high key with fmr_physical of value zero, thus I would
->> expect to reproduce it with something like this:
->> xfs_io -c 'fsmap -d 0 0' /mnt/scratch
->>
->> However when doing this I notice that in
->> xfsprogs-dev/io/fsmap.c l->fmr_device and h->fmr_device will have value
->> zero, FS_IOC_GETFSMAP is called and then we receive no entries
->> (head->fmh_entries = 0). Now I'm trying to see what I do wrong, and how
->> to reproduce the bug.
->>
+On Feb 10, 2023, at 1:42 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> On Fri, Feb 10, 2023 at 02:44:22PM +0100, Sebastien Buisson wrote:
+>> As for symlinks, you are right I need to dig further. I think at =
+least the
+>> security.encdata xattr would need an additional field to hold the =
+ciphertext
+>> symlink target.
+>=20
+> So I'd caution you against the concept of using the security.encdata
+> xattr.  In propose, it's being used in two different ways.  The first
+> way is as a system call / ioctl like way, and that's something which
+> is very much frowned upon, at least by many in the Kernel community.
+> The red flag here is when you say that the xattr isn't actually stored
+> on disk, but rather is created on the fly when the xattr is fetched.
+> If you need to fetch information from the kernel that's not stored as
+> part of the on-disk format, then use an ioctl or a system call.  Don't
+> try to turn the xattr interface into a system call / ioctl extension
+> like thing.
+
+I don't think the actual xattr format is critical to the process, it
+is a blob saved into the archive from the filesystem and restored later.
+That seems like the textbook definition of an extended attribute.
+
+> The other way you're using the encdata is that you're presuming that
+> this is how you'd store the information in the tar format.  And how we
+> fetch information from the kernel, and how it is stored as an exchange
+> format, should be decoupled as much as possible.
+
+I think using an xattr to do backup/restore of the internal encryption
+state makes sense, both as the interface for getting these attributes
+from the kernel, and for storing them to the archive.  It seems prudent
+to make the userspace interface as "generic" as possible, and handling
+of fscrypt files should be in the filesystem that cares about it.
+
+Avoiding the need for the encryption keys makes life *much* simpler for
+the sysadmin (no need to contact users for backup/restore), and is also
+*much* more secure from the data POV (no need to store keys in a central
+site or anywhere, and data is never in plaintext even in memory on the
+backup machine), as well as a lot faster (no need to both =
+decrypt/encrypt
+the data for both backup and restore).
 
 
-What I think it happens for the reproducer that I proposed, is that when
-both {l, h}->fmr_device have value zero, the code exits early before
-getting the fsmap:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/fsmap.c?h=v6.2-rc8#n691
+In some regards the proposed text-based format is already somewhat
+decoupled from how it is stored internally, and allows abstraction
+from the internal details.  That seems more for the benefit of ext4 to
+be able to (potentially) process older backups in case more/different
+information needs to be stored in the xattr.
 
-Also, to my untrained fs eye it seems that the [-d|-l|-r] xfs_io's fsmap
-options are intended only for XFS, as the {data, log, realtime} sections
-are XFS specific. I wonder why "struct fs_path" from libfrog/paths.h is
-not renamed to "struct xfs_path", it would have been less confusing.
+Storing the real file size in the xattr, but exposing the "encrypted
+chunk size" via st_size would allow userspace to read/write the full
+encrypted data size without any modification, and then setting the
+xattr restores the real file size and fscrypt context to the inode.
 
-It looks there's no support for xfs_io to query for a start and end
-offset when asking for a fsmap on an ext4 fs. I'm checking how I can
-extend the xfs_io fsmap ext4 support to validate my assumptions.
+tar, rsync, and commercial backup programs are already able to backup =
+and
+restore xattrs today, so no changes there.  Making as small changes as
+possible to userspace to handle fscrypt files (e.g. use =
+open(O_CIPHERTEXT)
+flag if ENOKEY is returned, and then save/restore of an extra xattr) is
+IMHO a lot easier sell than adding in multiple fs-specific ioctl calls,
+and then still having to develop some *other* way to save/restore binary
+fscrypt context in the archive.
 
-Cheers,
-ta
+> In the case of a tar archive, the symlink target is normally stored in
+> the data block of the tar archive.  In the case where the symlink is
+> encrypted, why should that change?  We aren't storing the encrypted
+> data in a different location, such as the encdata xattr; why should
+> that be different in the case of the symlink target?
+
+Sure, it seems reasonable to save the symlink target as "file data"
+rather than as part of the security.encdata xattr if that is "more =
+normal"
+for how tar handles this.  I haven't looked into the tar code/format to
+see how symlinks or hardlinks are handled.
+
+> Now, how you *fetch* the encrypted symlink target might be different,
+> such as how we fetch the contents of an unencrypted data file (via the
+> read system call) and how we fetch an unencrypted symlink target (via
+> the readlink system call) are different.
+
+>=20
+>>> A description of the use cases of this feature would also be =
+helpful.
+>>> Historically, people have said they needed this feature when they =
+really didn't.
+>>=20
+>> There is really a need for backup/restore at the file system level. =
+For
+>> instance, in case of storage failure, we would want to restore files =
+to a
+>> newly formatted device, in a finner granularity that cannot be =
+achieved with
+>> a backup/restore at the device level, or because that would allow =
+changing
+>> formatting options. Also, it particularly makes sense to have =
+per-directory
+>> backups, as the block devices are getting larger and larger.
+>>=20
+>> The ability to backup and restore encrypted files is interesting in =
+annother
+>> use case: moving files between file systems and systems without the =
+need to
+>> decrypt then re-encrypt.
+>=20
+> The use case of being able to restore files without needing to decrypt
+> and re-encrypt is quite different from the use case where you want to
+> be able to backup the files without needing encryption keys present,
+> but the encryption keys *are* needed at restore time is quite =
+different
+> --- and the latter is quite a bit easier.
+
+It might be easier on the kernel side, but I can't imagine how requiring
+the user keys at restore time would simplify the life of a sysadmin =
+trying
+to recover from failed storage in the middle of the night and having to
+contact each user in turn to enter their crypto keys as the backup is
+being extracted...
+
+> For example, some of encryption modes which use the inode number as
+> part of the IV, could be handled if keys are needed at restore time;
+> but it would be quite a bit harder, if not impossible, if you want to
+> be able restore the ecrypted files without doing a decrypt/re-encrypt
+> pass.
+
+[snip]
+
+>      Special cases are often much simpler and easier, and sometimes
+>      the special cases are all you actually want.
+
+The mention of strange encryption modes and general-purpose archive
+formats argues for *more* complexity and special cases, but that
+contradicts the Linus quote...
+
+I don't think this would need to handle *all* different encryption types
+before it is useful to have.  The "inode number is part of IV" seems
+fragile/non-portable for a few reasons (e.g. it also breaks resize2fs,
+e4defrag, and possibly other tools), so I would say "don't do that if
+you want to be able to backup your data".
+
+This seems to target the most common use case where the underlying
+backup/restore filesystem are both suitably enhanced ext4 (or maybe
+other fscrypt filesystems with equivalent changes).  IMHO that solves
+the critical issue of doing automated backup/restore without the key(s).
+
+In theory, the same O_CIPHERTEXT flag could be used by other filesystems
+to do backup/restore *to the same target fstype* since the xattr(s) are
+not processed in userspace other than to restore them later.  Even the
+*presence* of the security.encdata xattr (or multiple xattrs) could be
+conditional upon the O_CIPHERTEXT flag at open time.  It would be up to
+the underlying filesystem to interpret the xattr contents as needed.
+
+> Can you give more details about why you are interested in implementing
+> this?  Does your company have a more specific business justification
+> for wanting to invest in this work?  If so, can you say more about it?
+
+I would think an being able to automate backup/restore of a multi-user
+filesystem seems reasonable?  fscrypt is well suited to multi-user data
+encryption (each directory can have a different master key managed by
+the end user), but having a master key is both a single point of failure
+(i.e. it could compromise all of the users' data, assuming the security
+policy allowed this at all), and having to enter the master key (or
+dozens or hundreds of separate user keys) for backup and restore (or
+saving it persistently for automation) is problematic to say the least.
+
+> The reason why I ask is because very often fscrypt gets used in
+> integrated solutions, where the encryption/decryption engine is done
+> in-line between the general purpose CPU and the storage device.
+
+[snip stuff related to Android/ChromeOS fscrypt special case usage]
+
+This relates more to "normal" ext4 filesystems using fscrypt with no
+embedded/hardware/ecosystem. I've been thinking about using fscrypt
+for my home file server for a while, but not being able to make a backup
+of that data seems like a show stopper.
+
+This is good for both personal filesystems that might have an encrypted
+subdirectory, or for file servers that use ext4 for multi-user storage.
+
+>> In the case of hard links, I do not know how tar for instance handles =
+this
+>> for normal files. Do you have any ideas?
+>=20
+>   "Tar stores hardlinks in the tarball by storing the first file (of
+>   a group of hardlinked files); the subsequent hard links to it are
+>   indicated by a special record. When untarring, encountering this
+>   record causes tar to create a hard link in the destination
+>   filesystem." [3]
+>=20
+> [3] https://forums.whirlpool.net.au/archive/2787890
+>=20
+> Why are you assuming that tar is the best format to use for storing
+> encrypted files?  It's going to require special extensions to the tar
+> format, which means it won't necessarily be interoperable across
+> different tar implementations.  (For example, the hard link support is
+> specific to GNU tar.)
+
+I would think that GNU tar is probably the most common backup tool for
+Linux and it already supports all the modern filesystem features =
+(xattrs,
+symlinks, hardlinks, sparse files, etc.) so it seems like a reasonable
+place to start.  Once that is working then adding support to other tools
+can be done on an as-needed basis (ideally with minimal changes to those
+tools).  Like you quoted Linus earlier, the solution doesn't need to
+solve *every* problem, just enough to have a working single-filesystem
+backup and restore.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_516A95CE-058F-422F-90C3-10422EFF57A2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPtfrgACgkQcqXauRfM
+H+A89hAAm/2GOXxplbAkfBldEnb9N7LI6NosOmV58g4dpSgVg1uNZSpSdTIg5kUn
+lMQLn6wN8NrSP3EUmlAbr3Gbp/FZtNGzP3K4DaPNHMObLUqVu7f9pRUIChGE/8Lz
+9M4vTfExWtMnSoFECGMScea6djf+BK/HudqYxQJeHpUIPovprFJ06EOlQ7Ys1LIw
+H2v+lFoeRW9xy+qH81qT/WWMmtOt/pUFSHbnIQQGot7Y3QaDciMGeajvsQaJ3hIE
+pBFBjE5b0JUbFvD5J2SifFqVt++BUgIoe7zsvOED3YqFXeOFxiUBelKIZVLvtN/u
+DgbVeG60tcKtwg+HrL9P87VrhaMGqg/QMCv7+owJ4hRckmj3PlbAYe7Z5YOw/yH+
+3npTdRz9PJ0AtpRoByl0Xm43t/Y47HEirM+nT3uC1f4pqgSFEPWDo1pb1GZ+do7/
+o+dZWMY7C9IswtiOek4tzaoWGwpWieBi/YZANQmyLTNGboI7LHn2xfgYXDertr4O
+cls31xSJlT5D4q4VrFB2K61wYGNSodV0Dkt6SGUQ/IEopLfq0DVY6jGIYjoROHNZ
+2M99LzF1o1oshKNI8fEUVnIgQkJFCcAX8QLpFNYmJm4Bx0ZCQ9MUohXn7a+Ol0gp
+ZDT5iwN4JVfRXAz594sylHVWOLSyNopB97LHLaVdJzLdGUzN5s0=
+=qIIE
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_516A95CE-058F-422F-90C3-10422EFF57A2--
