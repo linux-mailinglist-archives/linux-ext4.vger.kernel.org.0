@@ -2,106 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB390699980
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Feb 2023 17:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B6A699AAA
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Feb 2023 17:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjBPQLO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Feb 2023 11:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        id S229990AbjBPQ5j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Feb 2023 11:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjBPQLN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Feb 2023 11:11:13 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7DE4CCAC
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Feb 2023 08:10:48 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id kk7-20020a17090b4a0700b00234463de251so6308879pjb.3
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Feb 2023 08:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GEswlEoANnCYJZ4CQNeZ3b7/tLKIkxyJxKO8y46Blss=;
-        b=t77I3zq/lsWwoijj5yg3nMALMbETP32lnruynx3xKn2jaAc0/sE0sOtaJVdYlBCrYJ
-         b8bWpF5nwzQfr7t+XI4tCDItPZm0rd9LduV1mzvHNnB1grdCCgSodJW0AJn+xrfMg1U2
-         ZrkpeZ2QK56qhNKA5WtC+7vb7EKkPUXUnpnJ7MkdvB8jS+lkivH4VU/2yudTOdaItpQQ
-         GVh7gy5dKbQ6UcybdbjMuxCnIPfmzyfJjO6FNLiiMk5qKDWfnJG8JhHtoSrnzeoFOAYO
-         U+58Vjz6eAADFgqEvTz1gMqHFPjsDjL5QuuXhnno2ndpkfD5oEa6qkGjcVJwShgX/C3W
-         gWtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GEswlEoANnCYJZ4CQNeZ3b7/tLKIkxyJxKO8y46Blss=;
-        b=WVDrTt6C8YYzfLINBavbnk/R4yMsRvNflfFj1aX3FXt3F+fZudB5Unzh/eMzK8zQjJ
-         yEpbEhM0bBnYDn/xtC7y3WNYRrN2xz1nvYMnTQt+zQ9H/tmrDFEvb4VnV9FX8IEZLkn2
-         Zj986/LJyDoqRAB6FE5xAqMsKx/6pTZbsZoIKviyPX+Vx+gqnxh02pb5lNV/g4XcDrPC
-         YbhgjWbkteaKJL/MF0D7UMjUWoQi36jIVsYLlRMN/pa2Vm3c6SKSrb4RrKEL8IsnrcHI
-         GpjdoMZU1mlqIywakLj0wW4ftA8hYLxCobt6axDd5OPN4HS+RSlx/AgIcPH0/5UJr0WP
-         ZfrA==
-X-Gm-Message-State: AO0yUKUOYlark5+A2B6h2zWl6+jGrSAjTopa0rN4kRVsRChHiFqftkkN
-        vvr1Dyte89BhvOnojwRL7DZ6Zg==
-X-Google-Smtp-Source: AK7set/U5E34SKCpowgonDjLfLHp7GBOTSycnR5f8A4foP5WZo/kPZQngijv8VMRHs8I56nZRsFnGA==
-X-Received: by 2002:a17:903:d1:b0:19a:996c:5c2b with SMTP id x17-20020a17090300d100b0019a996c5c2bmr4671596plc.39.1676563847574;
-        Thu, 16 Feb 2023 08:10:47 -0800 (PST)
-Received: from [10.255.2.172] ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id g1-20020a170902c38100b001993411d66bsm1490186plg.272.2023.02.16.08.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Feb 2023 08:10:47 -0800 (PST)
-Message-ID: <bc8f48ce-7280-c70a-db7d-825923f08b48@bytedance.com>
-Date:   Fri, 17 Feb 2023 00:10:42 +0800
+        with ESMTP id S229673AbjBPQ5j (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Feb 2023 11:57:39 -0500
+X-Greylist: delayed 453 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Feb 2023 08:57:38 PST
+Received: from sandeen.net (sandeen.net [63.231.237.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50AFE2684F
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Feb 2023 08:57:38 -0800 (PST)
+Received: from [10.0.0.146] (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id A11F54DCA02;
+        Thu, 16 Feb 2023 10:48:34 -0600 (CST)
+Message-ID: <e21a53a9-10c5-a9da-02a6-338a78688c11@sandeen.net>
+Date:   Thu, 16 Feb 2023 10:50:04 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH v2] ext4: make dioread_nolock consistent in
- each mapping round
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-References: <87fsb5lpn1.fsf@doe.com>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <87fsb5lpn1.fsf@doe.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Gecko/20100101 Thunderbird/102.7.2
+Content-Language: en-US
+To:     Reindl Harald <h.reindl@thelounge.net>, linux-ext4@vger.kernel.org
+References: <1620c46d-efcf-aca6-341b-083ef593c612@thelounge.net>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: e4defrag don't work really well
+In-Reply-To: <1620c46d-efcf-aca6-341b-083ef593c612@thelounge.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 2/12/23 12:14 PM, Reindl Harald wrote:
+> 
+> what's wrong with e4defrag that it pretends it reduced th efragments of a file to 1 while in the next "e4defrag -c" (why does that only list 5 files at all) the same file is listed again with the same old frag count?
 
+You might want to examine the actual allocation before and after with "filefrag -v"
+which could offer some clues to whether anything was modified by e4defrag.
 
-在 2023/2/16 下午9:13, Ritesh Harjani (IBM) 写道:
-> Jinke Han <hanjinke.666@bytedance.com> writes:
-> 
->> From: Jinke Han <hanjinke.666@bytedance.com>
->>
->> When disable and enable dioread_nolock by remount, we may see
->> dioread_lock in ext4_do_writepages while see dioread_nolock in
->> mpage_map_one_extent. This inconsistency may triger the warning
->> in ext4_add_complete_io when the io_end->handle is NULL. Although
->> this warning is harmless in most cases, there is still a risk of
->> insufficient log reservation in conversion of unwritten extents.
->>
-> 
-> Sorry, I haven't completely gone through the patch yet. But this idea of
-> caching the initial value of mount parameter and passing it do different
-> functions while an I/O request completes, is not looking right to me.
-> 
-> If that's the case shouldn't we disallow this mount option to change
-> until all the outstanding I/O's are done or complete?
-> Then we need not cache the value of dioread_nolock at the start of
-> writepages and continue to pass it down in case it it changes.
-> 
-> Just my initial thoughts.
-> 
-> -ritesh
-> 
+(I would also suggest that there is no need to defragment a 3-extent 2 megabyte
+file, in general.)
 
-Fair enough, thanks.
+-Eric
 
+> ----------------------------
+> 
+> [root@srv-rhsoft:~]$ e4defrag -c /mnt/data/audio/
+> e4defrag 1.46.5 (30-Dec-2021)
+> <Fragmented files>                             now/best       size/ext
+> 1. /mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3
+>                                                  3/1           2389 KB
+> 2. /mnt/data/audio/Ace Frehley/Second Sighting/Ace Frehley - Fallen Angel.mp3
+>                                                  3/1           2389 KB
+> 3. /mnt/data/audio/Mr. Big/Defying Gravity/Mr. Big - Mean To Me.mp3
+>                                                  3/1           2389 KB
+> 4. /mnt/data/audio/Juice Newton/Quiet Lies/Juice Newton - Im Gonna Be Strong.mp3
+>                                                  3/1           2389 KB
+> 5. /mnt/data/audio/Vicious Rumors/Something Burning/Vicious Rumors - Ballhog.mp3
+>                                                  3/1           2389 KB
+> 
+> ----------------------------
+> 
+> [root@srv-rhsoft:~]$ e4defrag "/mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3"
+> e4defrag 1.46.5 (30-Dec-2021)
+> ext4 defragmentation for /mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3
+> [1/1]/mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3:        100%    [ OK ]
+>  Success:                       [1/1]
+> 
+> ----------------------------
+> 
+> [root@srv-rhsoft:~]$ e4defrag -c /mnt/data/audio/
+> e4defrag 1.46.5 (30-Dec-2021)
+> <Fragmented files>                             now/best       size/ext
+> 1. /mnt/data/audio/Smokie/Solid Ground/Smokie - Little Town Flirt.mp3
+>                                                  3/1           2389 KB
+> 2. /mnt/data/audio/Ace Frehley/Second Sighting/Ace Frehley - Fallen Angel.mp3
+>                                                  3/1           2389 KB
+> 3. /mnt/data/audio/Mr. Big/Defying Gravity/Mr. Big - Mean To Me.mp3
+>                                                  3/1           2389 KB
+> 4. /mnt/data/audio/Juice Newton/Quiet Lies/Juice Newton - Im Gonna Be Strong.mp3
+>                                                  3/1           2389 KB
+> 5. /mnt/data/audio/Vicious Rumors/Something Burning/Vicious Rumors - Ballhog.mp3
+>                                                  3/1           2389 KB
+> 
