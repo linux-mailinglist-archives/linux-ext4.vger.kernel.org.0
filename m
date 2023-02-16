@@ -2,68 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46795699CD6
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Feb 2023 20:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FEE699D3C
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Feb 2023 20:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjBPTH7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Feb 2023 14:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        id S229524AbjBPT4y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Feb 2023 14:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjBPTH6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Feb 2023 14:07:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF5F16AFB;
-        Thu, 16 Feb 2023 11:07:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229462AbjBPT4x (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Feb 2023 14:56:53 -0500
+Received: from sandeen.net (sandeen.net [63.231.237.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CEAA216337
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Feb 2023 11:56:52 -0800 (PST)
+Received: from [10.0.0.146] (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34D7F60A54;
-        Thu, 16 Feb 2023 19:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74702C433D2;
-        Thu, 16 Feb 2023 19:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676574476;
-        bh=yrjdiEesNIFfMenZTZuZqyUWgAI/SirIUzvfM3o+UyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TrtQzDxMdqVVGbKpUaNHWxsjLu32jQD+kpKoxcm+sOWgyN1B/lvTShLZmewVZG1AQ
-         PQOJKK9ioz8svyFgcR9rukWQYm95K85c4WWqN+5c297q/TsqLnhbgO6J9lijzIEQp3
-         CDm+R9ZSlcRw0BRrmx1OmVuRCLaadXFuP6jtHJdcsakUG7iAIki4/2SCTan/hvqXG8
-         R4+D0c7AvFjy8xLXI3utIls2DxWUDOQCMgAY6rIUZmZLPazeyjSnGhPQjHgDQQP597
-         gmNHOcindc/nvmVpgUE2nn+Z6USs/RysfPJXsS+f2MzcqM+LdoyiWzTfuHB7kJeb9s
-         MORSGGJcinsMA==
-Date:   Thu, 16 Feb 2023 19:07:55 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Jun Nie <jun.nie@linaro.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <joneslee@google.com>
-Subject: Re: [PATCH] ext4: fix another off-by-one fsmap error on 1k block
- filesystems
-Message-ID: <Y+5/C6wi6UC9rOCy@gmail.com>
-References: <Y+58NPTH7VNGgzdd@magnolia>
+        by sandeen.net (Postfix) with ESMTPSA id 5F8EC4DCA02;
+        Thu, 16 Feb 2023 13:55:21 -0600 (CST)
+Message-ID: <abcc1ec6-a1d6-28a2-d0f5-29baac0722b8@sandeen.net>
+Date:   Thu, 16 Feb 2023 13:56:51 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+58NPTH7VNGgzdd@magnolia>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Content-Language: en-US
+To:     Reindl Harald <h.reindl@thelounge.net>, linux-ext4@vger.kernel.org
+References: <1620c46d-efcf-aca6-341b-083ef593c612@thelounge.net>
+ <e21a53a9-10c5-a9da-02a6-338a78688c11@sandeen.net>
+ <95b1df7e-3eb9-484c-d655-c42501ce7429@thelounge.net>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: e4defrag don't work really well
+In-Reply-To: <95b1df7e-3eb9-484c-d655-c42501ce7429@thelounge.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 10:55:48AM -0800, Darrick J. Wong wrote:
-> Fixes: 4a4956249dac ("ext4: fix off-by-one fsmap error on 1k block filesystems")
-> Link: https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+On 2/16/23 12:21 PM, Reindl Harald wrote:
+> 
+> 
+> Am 16.02.23 um 17:50 schrieb Eric Sandeen:
+>> On 2/12/23 12:14 PM, Reindl Harald wrote:
+>>>
+>>> what's wrong with e4defrag that it pretends it reduced th efragments of a file to 1 while in the next "e4defrag -c" (why does that only list 5 files at all) the same file is listed again with the same old frag count?
+>>
+>> You might want to examine the actual allocation before and after with "filefrag -v"
+>> which could offer some clues to whether anything was modified by e4defrag.
+>>
+>> (I would also suggest that there is no need to defragment a 3-extent 2 megabyte
+>> file, in general.)
+> 
+> it's not a question if it's needed
+> 
+> the point is it pretends "Success: [1/1]" but a following "e4defrag -c" still says "now/best 3/1"
 
-Please add:
+I understand. It seems that your irritation at my parenthetical caused you
+to skip over the request for more information from filefrag, though.
 
-Reported-by: syzbot+6be2b977c89f79b6b153@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-
-- Eric
+-Eric
