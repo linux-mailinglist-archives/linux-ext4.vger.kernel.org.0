@@ -2,48 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1A869A38C
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 02:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E639869A5A7
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 07:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjBQBpC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Feb 2023 20:45:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S229748AbjBQGhW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Feb 2023 01:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjBQBpC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Feb 2023 20:45:02 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812A33A85D;
-        Thu, 16 Feb 2023 17:45:00 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PHvhs5g6JzGpdn;
-        Fri, 17 Feb 2023 09:43:09 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.6; Fri, 17 Feb 2023 09:44:58 +0800
-Subject: Re: [PATCH v3 1/2] ext4: commit super block if fs record error when
- journal record without error
-To:     Jan Kara <jack@suse.cz>, Ye Bin <yebin@huaweicloud.com>
-References: <20230214022905.765088-1-yebin@huaweicloud.com>
- <20230214022905.765088-2-yebin@huaweicloud.com>
- <20230216173159.zkj4qd2nmj2yjpkr@quack3>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <63EEDC19.6010204@huawei.com>
-Date:   Fri, 17 Feb 2023 09:44:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
-MIME-Version: 1.0
-In-Reply-To: <20230216173159.zkj4qd2nmj2yjpkr@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S229477AbjBQGhV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 01:37:21 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4454E5C0;
+        Thu, 16 Feb 2023 22:37:20 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id j6so534779plh.1;
+        Thu, 16 Feb 2023 22:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6C1SIQQP1gyo68CYQuiNgQYo/e8nc5EHGL0dfbTivTQ=;
+        b=LA56g0wuQUdF6eil5NRihahKyK2ou8kA9rsjjxzuhBSiN0NF2JHkV9kTZFYvEswNpb
+         495F4hs8s5RxowyqGbwXuwouiZBCC3lh4udBI/Xt09ykoIFxAr9RAvDgLtz9O3CmQcTD
+         UucUfCBmqVdTSCQTozV510PmKXmpmWz7c2tPeItRACCqkZJ9vmuFuoP/3kL6IcMqMdKH
+         PQXPTQHltFYRIoiY0p+5FyarpUfJnOYwWMSk34Cqx24wH/FToGfh9DDtwEDJ/3MDdGn6
+         mgvTiB1/thRQHLuAWaq14CGZYV/EZSaCWFIUr6DXnZxYpQseYWQXG+nLfJkDVuRMckBJ
+         fZAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6C1SIQQP1gyo68CYQuiNgQYo/e8nc5EHGL0dfbTivTQ=;
+        b=3hSQZNV2O6KbPChz2kA6+B0MjYcSOZbGkj6OUhdbpEkxNFAah63VGL7cSLmLJQKP7G
+         Kr5Hc9z+6ysnmSR1sExTyMh4xlFwRxrlxid8j1p5y0Oj48I3ZFQd16veS10En4ch1EEX
+         mu+bOwI/jGehkCnsPnnshj+BGRyqb4dgu0QfStugNcuZBPAwwG2WUe1we4tDsLIz1FyI
+         naeoXbZgrXVX7T4UnxbUgtvUaJiabQbVEuPX/5t2eVd08EZ0i55KEbOozSTXxoIHpJ1o
+         nUIBSJq1LyGCanSSzixTb1txYdrt3Q2pcIzCzDn5AlzTCET9qi5DO3cUsyGlnVblQwph
+         3PqQ==
+X-Gm-Message-State: AO0yUKVCoPASb8TGMUa4Qdv+ix4yzR41OLAkGtyh1uRmFlxirSZErCC6
+        poJfc2a9LKvnko0wY4RfaXMeiYZeFsLogw==
+X-Google-Smtp-Source: AK7set9saCwePeX6dQunOSjWUhjVF7TL2nEScuv/WW6p0j++ESfSLRkclVb4aqD/tF6wrAdDd/zlpg==
+X-Received: by 2002:a17:902:f690:b0:19a:81c1:e743 with SMTP id l16-20020a170902f69000b0019a81c1e743mr10417610plg.2.1676615839569;
+        Thu, 16 Feb 2023 22:37:19 -0800 (PST)
+Received: from rh-tp ([2406:7400:63:5056:148f:873b:4bc8:1e77])
+        by smtp.gmail.com with ESMTPSA id ix11-20020a170902f80b00b0019615a0d083sm2335646plb.210.2023.02.16.22.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Feb 2023 22:37:19 -0800 (PST)
+Date:   Fri, 17 Feb 2023 12:06:54 +0530
+Message-Id: <87wn4giyrd.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 18/21] ext4: remove unnecessary goto in ext4_mb_mark_diskspace_used
+In-Reply-To: <20230209194825.511043-19-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,78 +65,42 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
+
+> When ext4_read_block_bitmap fails, we can return PTR_ERR(bitmap_bh) to
+> remove unnecessary NULL check of bitmap_bh.
+
+bitmap_bh is a local pointer variable. So not setting it to NULL is not
+a problem. I guess for consistency in return error code paths the author
+would have kept it this way, but since this is the first return from the
+function in case of an error, hence it looks ok if we simply call
+return PTR_ERR(bitmap_bh), rather than a goto out_err.
+
+Hence this looks good to me. Feel free to add - 
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
 
-On 2023/2/17 1:31, Jan Kara wrote:
-> On Tue 14-02-23 10:29:04, Ye Bin wrote:
->> From: Ye Bin <yebin10@huawei.com>
->>
->> Now, 'es->s_state' maybe covered by recover journal. And journal errno
->> maybe not recorded in journal sb as IO error. ext4_update_super() only
->> update error information when 'sbi->s_add_error_count' large than zero.
->> Then 'EXT4_ERROR_FS' flag maybe lost.
->> To solve above issue commit error information after recover journal.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/ext4/super.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index dc3907dff13a..b94754ba8556 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -5932,6 +5932,18 @@ static int ext4_load_journal(struct super_block *sb,
->>   		goto err_out;
->>   	}
->>   
->> +	if (unlikely(es->s_error_count && !jbd2_journal_errno(journal) &&
->> +		     !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS))) {
->> +		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
->> +		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
->> +		err = ext4_commit_super(sb);
->> +		if (err) {
->> +			ext4_msg(sb, KERN_ERR,
->> +				 "Failed to commit error information, please repair fs force!");
->> +			goto err_out;
->> +		}
->> +	}
->> +
-> Hum, I'm not sure I follow here. If journal replay has overwritten the
-> superblock (and thus the stored error info), then I'd expect
-> es->s_error_count got overwritten (possibly to 0) as well. And this is
-> actually relatively realistic scenario with errors=remount-ro behavior when
-> the first fs error happens.
 >
-> What I intended in my original suggestion was to save es->s_error_count,
-> es->s_state & EXT4_ERROR_FS, es->s_first_error_*, es->s_last_error_* before
-> doing journal replay in ext4_load_journal() and then after journal replay
-> merge this info back to the superblock
-Actually，commit 1c13d5c08728 ("ext4: Save error information to the 
-superblock for analysis")
-already merged error info back to the superblock after journal replay 
-except 'es->s_state'.
-The problem I have now is that the error flag in the journal superblock 
-was not recorded,
-but the error message was recorded in the superblock. So it leads to 
-ext4_clear_journal_err()
-does not detect errors and marks the file system as an error. Because 
-ext4_update_super() is
-only set error flag  when 'sbi->s_add_error_count  > 0'. Although 
-'sbi->s_mount_state' is
-written to the super block when umount, but it is also conditional.
-So I handle the scenario "es->s_error_count && 
-!jbd2_journal_errno(journal) &&
-!(le16_to_cpu(es->s_state) & EXT4_ERROR_FS)". Maybe we can just store
-'EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS' back to the superblock. But i
-prefer to mark fs as error if it contain detail error info without 
-EXT4_ERROR_FS.
-> - if EXT4_ERROR_FS was set, set it
-> now as well, take max of old and new s_error_count, set s_first_error_* if
-> it is now unset, set s_last_error_* if stored timestamp is newer than
-> current timestamp.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 >
-> Or am I overengineering it now? :)
->
-> 								Honza
-
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index f9fc461b633f..7d6991af50d8 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3739,9 +3739,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+>  
+>  	bitmap_bh = ext4_read_block_bitmap(sb, ac->ac_b_ex.fe_group);
+>  	if (IS_ERR(bitmap_bh)) {
+> -		err = PTR_ERR(bitmap_bh);
+> -		bitmap_bh = NULL;
+> -		goto out_err;
+> +		return PTR_ERR(bitmap_bh);
+>  	}
+>  
+>  	BUFFER_TRACE(bitmap_bh, "getting write access");
+> -- 
+> 2.30.0
