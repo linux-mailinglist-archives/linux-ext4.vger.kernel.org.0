@@ -2,227 +2,252 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D57269AB34
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 13:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD5169AD2E
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 14:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjBQMQM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Feb 2023 07:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S229922AbjBQNxR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Feb 2023 08:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjBQMPi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 07:15:38 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33ED68562;
-        Fri, 17 Feb 2023 04:15:08 -0800 (PST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31H9Auwo031984;
-        Fri, 17 Feb 2023 12:14:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Pn7cHwYbMvyyd16yHtFxnaw23zykUOX8S45rh2u7WBg=;
- b=lRLyCMP0+IoWzETfB7NucxUdZodhYunzSCp6ZuxBTwzFwsXflV6g9unR1GLIDOZtgd50
- oJ1tYfTlIL1nU8F4zFOcQwFuxDASdqh6QjpmJv84EAVoHg5bwwuhajyGW3xcSo+I86Ci
- BhxTBVvzjPvTuwNWh0pQUeSPWYXvZvgpkYziCZlW75tWEhHBq8uDVIsLYs9a5IX3UVYb
- V0hCAwJhBRDSUJJd4950VKg4cSbAXkfC6uZkqrbmhIWqiGEdUqXhlE45vIBSZyZfLOsd
- MLVyNOeiKhw/1pH8cYJTqjcSy3tluhzurmTDac3Y/NsxUWM4bLAlA47qNek9CcDUFwoh FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nt49ses45-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 12:14:50 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31HBg6eS013255;
-        Fri, 17 Feb 2023 12:14:49 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nt49ses3m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 12:14:49 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31HBegas029878;
-        Fri, 17 Feb 2023 12:14:47 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3np29fr17n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 12:14:47 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31HCEjjt26346112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Feb 2023 12:14:45 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 068C020043;
-        Fri, 17 Feb 2023 12:14:45 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0FB4C20040;
-        Fri, 17 Feb 2023 12:14:43 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.3.39])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Feb 2023 12:14:42 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: [PATCH v4 9/9] ext4: Remove the logic to trim inode PAs
-Date:   Fri, 17 Feb 2023 17:44:18 +0530
-Message-Id: <c20518c180ab3ddcc66ce23529ccd70f260edaab.1676634592.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1676634592.git.ojaswin@linux.ibm.com>
-References: <cover.1676634592.git.ojaswin@linux.ibm.com>
+        with ESMTP id S229897AbjBQNxQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 08:53:16 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2376014995
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Feb 2023 05:52:29 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PJCPw2CqBz4f3nxc
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Feb 2023 21:31:16 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLOige9jOnMwDw--.27840S3;
+        Fri, 17 Feb 2023 21:31:16 +0800 (CST)
+Subject: Re: [RFC PATCH v2] ext4: dio take shared inode lock when overwriting
+ preallocated blocks
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yukuai3@huawei.com,
+        Brian Foster <bfoster@redhat.com>
+References: <87cz69ld7d.fsf@doe.com>
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <ed78744f-5494-a5aa-0ebb-e66c6588edb0@huaweicloud.com>
+Date:   Fri, 17 Feb 2023 21:31:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NvqCev5n7nr537Ns5wWGCStJwybc3jk2
-X-Proofpoint-GUID: j6Bc3skFP1D2ldejZAwKJFxZ5zNVU6F_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-17_06,2023-02-17_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 impostorscore=0 bulkscore=0 phishscore=0
- adultscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302170109
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <87cz69ld7d.fsf@doe.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgAHcLOige9jOnMwDw--.27840S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw43ZF1DWryDJF4kAFy3XFb_yoWxKF1xpF
+        y3tF43CrsFgryUur1kta1xXr1Ygw1ktrWxJrW3G3WrZryDuryxtFyvqFyFka45ArZ7Cw12
+        qFs0yr9rW3Z8trJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Earlier, inode PAs were stored in a linked list. This caused a need to
-periodically trim the list down inorder to avoid growing it to a very
-large size, as this would severly affect performance during list
-iteration.
+Hello.
 
-Recent patches changed this list to an rbtree, and since the tree scales
-up much better, we no longer need to have the trim functionality, hence
-remove it.
+On 2023/2/17 1:41, Ritesh Harjani (IBM) wrote:
+> Zhang Yi <yi.zhang@huaweicloud.com> writes:
+> 
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> In the dio write path, we only take shared inode lock for the case of
+>> aligned overwriting initialized blocks inside EOF. But for overwriting
+>> preallocated blocks, it may only need to split unwritten extents, this
+>> procedure has been protected under i_data_sem lock, it's safe to
+>> release the exclusive inode lock and take shared inode lock.
+> 
+> Ok. One question though. Should we be passing IOMAP_DIO_FORCE_WAIT
+> (in this case as well) which will wait for the completion of dio
+> request even if the submitted IO is not synchronous. Like how it's being
+> done for unaligned overwrites case [1].
+> What I am mostly curious to know about is, how do we take care of
+> unwritten
+> to written conversion without racing which can happen in a
+> seperate workqueue context and/or are there any zeroing of extents
+> involved in this scenario which can race with one another?
+> 
+> So, I think in case of a non-aligned write it make sense [1] because it
+> might involve zeroing of the partial blocks. But in this case as you
+> said this already happens within i_data_sem lock context, so it won't be
+> necessary. I still thought it will be worth while to confirm it's indeed
+> the case or not.
+> 
 
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- Documentation/admin-guide/ext4.rst |  3 ---
- fs/ext4/ext4.h                     |  1 -
- fs/ext4/mballoc.c                  | 20 --------------------
- fs/ext4/mballoc.h                  |  5 -----
- fs/ext4/sysfs.c                    |  2 --
- 5 files changed, 31 deletions(-)
+I'm not quite get your question, do you mean passing IOMAP_DIO_FORCE_WAIT
+for the case of unaligned writing to pre-allocated(unwritten) blocks?
+IIUC, That's how it's done now if you only merge my patch. And it should be
+cautious to slove the conflict if you also want to merge [1] together.
 
-diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-index 4c559e08d11e..5740d85439ff 100644
---- a/Documentation/admin-guide/ext4.rst
-+++ b/Documentation/admin-guide/ext4.rst
-@@ -489,9 +489,6 @@ Files in /sys/fs/ext4/<devname>:
-         multiple of this tuning parameter if the stripe size is not set in the
-         ext4 superblock
- 
--  mb_max_inode_prealloc
--        The maximum length of per-inode ext4_prealloc_space list.
--
-   mb_max_to_scan
-         The maximum number of extents the multiblock allocator will search to
-         find the best extent.
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index fad5f087e4c6..d2869ad7d885 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1612,7 +1612,6 @@ struct ext4_sb_info {
- 	unsigned int s_mb_stats;
- 	unsigned int s_mb_order2_reqs;
- 	unsigned int s_mb_group_prealloc;
--	unsigned int s_mb_max_inode_prealloc;
- 	unsigned int s_max_dir_size_kb;
- 	/* where last allocation was done - for stream allocation */
- 	unsigned long s_mb_last_group;
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 1bee8a46662b..dfd90d7a9735 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3419,7 +3419,6 @@ int ext4_mb_init(struct super_block *sb)
- 	sbi->s_mb_stats = MB_DEFAULT_STATS;
- 	sbi->s_mb_stream_request = MB_DEFAULT_STREAM_THRESHOLD;
- 	sbi->s_mb_order2_reqs = MB_DEFAULT_ORDER2_REQS;
--	sbi->s_mb_max_inode_prealloc = MB_DEFAULT_MAX_INODE_PREALLOC;
- 	/*
- 	 * The default group preallocation is 512, which for 4k block
- 	 * sizes translates to 2 megabytes.  However for bigalloc file
-@@ -5607,29 +5606,11 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
- 	return ;
- }
- 
--/*
-- * if per-inode prealloc list is too long, trim some PA
-- */
--static void ext4_mb_trim_inode_pa(struct inode *inode)
--{
--	struct ext4_inode_info *ei = EXT4_I(inode);
--	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
--	int count, delta;
--
--	count = atomic_read(&ei->i_prealloc_active);
--	delta = (sbi->s_mb_max_inode_prealloc >> 2) + 1;
--	if (count > sbi->s_mb_max_inode_prealloc + delta) {
--		count -= sbi->s_mb_max_inode_prealloc;
--		ext4_discard_preallocations(inode, count);
--	}
--}
--
- /*
-  * release all resource we used in allocation
-  */
- static int ext4_mb_release_context(struct ext4_allocation_context *ac)
- {
--	struct inode *inode = ac->ac_inode;
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_prealloc_space *pa = ac->ac_pa;
- 	if (pa) {
-@@ -5665,7 +5646,6 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
- 	if (ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC)
- 		mutex_unlock(&ac->ac_lg->lg_mutex);
- 	ext4_mb_collect_stats(ac);
--	ext4_mb_trim_inode_pa(inode);
- 	return 0;
- }
- 
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index f8e8ee493867..6d85ee8674a6 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -73,11 +73,6 @@
-  */
- #define MB_DEFAULT_GROUP_PREALLOC	512
- 
--/*
-- * maximum length of inode prealloc list
-- */
--#define MB_DEFAULT_MAX_INODE_PREALLOC	512
--
- /*
-  * Number of groups to search linearly before performing group scanning
-  * optimization.
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index d233c24ea342..f0d42cf44c71 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -214,7 +214,6 @@ EXT4_RW_ATTR_SBI_UI(mb_min_to_scan, s_mb_min_to_scan);
- EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
- EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
- EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
--EXT4_RW_ATTR_SBI_UI(mb_max_inode_prealloc, s_mb_max_inode_prealloc);
- EXT4_RW_ATTR_SBI_UI(mb_max_linear_groups, s_mb_max_linear_groups);
- EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
- EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
-@@ -264,7 +263,6 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(mb_order2_req),
- 	ATTR_LIST(mb_stream_req),
- 	ATTR_LIST(mb_group_prealloc),
--	ATTR_LIST(mb_max_inode_prealloc),
- 	ATTR_LIST(mb_max_linear_groups),
- 	ATTR_LIST(max_writeback_mb_bump),
- 	ATTR_LIST(extent_max_zeroout_kb),
--- 
-2.31.1
+After looking at [1], I think it should be:
+
+           |  pure overwrite       |  write to pre-allocated |
+-------------------------------------------------------------|
+aligned    | share lock, nowait (1)| share lock, nowait  (3) |
+unaligned  | share lock, nowait (2)| excl lock, wait     (4) |
+
+In case(3), each AIO-DIO's unwritten->written conversion do not disturb each
+other because of the i_data_sem lock, and the potential zeroing extents(e.g.
+ext4_zero_range()) also call inode_dio_wait() to wait DIO complete. So I don't
+find any race problem.
+
+Am I missing something? or which case you want to confirm?
+
+Thanks,
+Yi.
+
+> [1]:
+> https://lore.kernel.org/linux-ext4/20230210145954.277611-1-bfoster@redhat.com/
+> 
+> Oh, one of the patch might run into some patch conflict depending upon
+> which one gets picked first...
+> 
+> -ritesh
+> 
+> 
+>>
+>> This could give a significant speed up for multi-threaded writes. Test
+>> on Intel Xeon Gold 6140 and nvme SSD with below fio parameters.
+>>
+>>  direct=1
+>>  ioengine=libaio
+>>  iodepth=10
+>>  numjobs=10
+>>  runtime=60
+>>  rw=randwrite
+>>  size=100G
+>>
+>> And the test result are:
+>> Before:
+>>  bs=4k       IOPS=11.1k, BW=43.2MiB/s
+>>  bs=16k      IOPS=11.1k, BW=173MiB/s
+>>  bs=64k      IOPS=11.2k, BW=697MiB/s
+>>
+>> After:
+>>  bs=4k       IOPS=41.4k, BW=162MiB/s
+>>  bs=16k      IOPS=41.3k, BW=646MiB/s
+>>  bs=64k      IOPS=13.5k, BW=843MiB/s
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>> v2->v1:
+>>  - Negate the 'inited' related arguments to 'unwritten'.
+>>
+>>  fs/ext4/file.c | 34 ++++++++++++++++++++++------------
+>>  1 file changed, 22 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index a7a597c727e6..21abe95a0ee7 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -202,8 +202,9 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
+>>  	return false;
+>>  }
+>>
+>> -/* Is IO overwriting allocated and initialized blocks? */
+>> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+>> +/* Is IO overwriting allocated or initialized blocks? */
+>> +static bool ext4_overwrite_io(struct inode *inode,
+>> +			      loff_t pos, loff_t len, bool *unwritten)
+>>  {
+>>  	struct ext4_map_blocks map;
+>>  	unsigned int blkbits = inode->i_blkbits;
+>> @@ -217,12 +218,15 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+>>  	blklen = map.m_len;
+>>
+>>  	err = ext4_map_blocks(NULL, inode, &map, 0);
+>> +	if (err != blklen)
+>> +		return false;
+>>  	/*
+>>  	 * 'err==len' means that all of the blocks have been preallocated,
+>> -	 * regardless of whether they have been initialized or not. To exclude
+>> -	 * unwritten extents, we need to check m_flags.
+>> +	 * regardless of whether they have been initialized or not. We need to
+>> +	 * check m_flags to distinguish the unwritten extents.
+>>  	 */
+>> -	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
+>> +	*unwritten = !(map.m_flags & EXT4_MAP_MAPPED);
+>> +	return true;
+>>  }
+>>
+>>  static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
+>> @@ -431,11 +435,16 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
+>>   * - For extending writes case we don't take the shared lock, since it requires
+>>   *   updating inode i_disksize and/or orphan handling with exclusive lock.
+>>   *
+>> - * - shared locking will only be true mostly with overwrites. Otherwise we will
+>> - *   switch to exclusive i_rwsem lock.
+>> + * - shared locking will only be true mostly with overwrites, including
+>> + *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
+>> + *   we protect splitting extents by i_data_sem in ext4_inode_info, so we can
+>> + *   also release exclusive i_rwsem lock.
+>> + *
+>> + * - Otherwise we will switch to exclusive i_rwsem lock.
+>>   */
+>>  static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>> -				     bool *ilock_shared, bool *extend)
+>> +				     bool *ilock_shared, bool *extend,
+>> +				     bool *unwritten)
+>>  {
+>>  	struct file *file = iocb->ki_filp;
+>>  	struct inode *inode = file_inode(file);
+>> @@ -459,7 +468,7 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>>  	 * in file_modified().
+>>  	 */
+>>  	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
+>> -	     !ext4_overwrite_io(inode, offset, count))) {
+>> +	     !ext4_overwrite_io(inode, offset, count, unwritten))) {
+>>  		if (iocb->ki_flags & IOCB_NOWAIT) {
+>>  			ret = -EAGAIN;
+>>  			goto out;
+>> @@ -491,7 +500,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  	loff_t offset = iocb->ki_pos;
+>>  	size_t count = iov_iter_count(from);
+>>  	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+>> -	bool extend = false, unaligned_io = false;
+>> +	bool extend = false, unaligned_io = false, unwritten = false;
+>>  	bool ilock_shared = true;
+>>
+>>  	/*
+>> @@ -534,7 +543,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  		return ext4_buffered_write_iter(iocb, from);
+>>  	}
+>>
+>> -	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
+>> +	ret = ext4_dio_write_checks(iocb, from,
+>> +				    &ilock_shared, &extend, &unwritten);
+>>  	if (ret <= 0)
+>>  		return ret;
+>>
+>> @@ -582,7 +592,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  		ext4_journal_stop(handle);
+>>  	}
+>>
+>> -	if (ilock_shared)
+>> +	if (ilock_shared && !unwritten)
+>>  		iomap_ops = &ext4_iomap_overwrite_ops;
+>>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+>>  			   (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
+>> --
+>> 2.31.1
 
