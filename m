@@ -2,114 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E03A69A887
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 10:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD6069A97B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 11:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjBQJpv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Feb 2023 04:45:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S229745AbjBQK45 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Feb 2023 05:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjBQJpu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 04:45:50 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1155B8A
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Feb 2023 01:45:49 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PJ6Ll1b1hzRs98;
-        Fri, 17 Feb 2023 17:43:11 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Fri, 17 Feb
- 2023 17:45:47 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH 2/2] tune2fs/fuse2fs/debugfs: save error information during journal replay
-Date:   Fri, 17 Feb 2023 18:09:22 +0800
-Message-ID: <20230217100922.588961-3-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230217100922.588961-1-libaokun1@huawei.com>
-References: <20230217100922.588961-1-libaokun1@huawei.com>
+        with ESMTP id S229523AbjBQK44 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 05:56:56 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261F962417;
+        Fri, 17 Feb 2023 02:56:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9D549338A7;
+        Fri, 17 Feb 2023 10:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1676631412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0icnSjV6p2tYL/IFIMO5M+a6b0d7zKlUxCpA97UBnGg=;
+        b=Ceq+ODo0RygeP8wplXpW0L1f/uOwsnKz/QIcinNNg1QSoflovnSG9aia1X59tIDUtG3LGJ
+        67YByy/OAkLlCGA0FSl+/kuCF4gxUzrZ8eEpjEBMRQqLHpWP+KifUQtXk/e/QvEMjYab4l
+        +PwKfv8EZ0tNfm2rLV4tccEx4wjMSsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1676631412;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0icnSjV6p2tYL/IFIMO5M+a6b0d7zKlUxCpA97UBnGg=;
+        b=23Dsqnfqj+sIQVsWhmfKk1v6vrTvMwv768xHFOBkkJYJ5jI3UUdQeIbppTadz3kbpO1Fux
+        uSdvmafnzDDhExBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6AA66138E3;
+        Fri, 17 Feb 2023 10:56:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fL76GXRd72O0OwAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 17 Feb 2023 10:56:52 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 17177A06E1; Fri, 17 Feb 2023 11:56:47 +0100 (CET)
+Date:   Fri, 17 Feb 2023 11:56:47 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "yebin (H)" <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin@huaweicloud.com>,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ext4: commit super block if fs record error when
+ journal record without error
+Message-ID: <20230217105647.g6blbinkvnsyy2or@quack3>
+References: <20230214022905.765088-1-yebin@huaweicloud.com>
+ <20230214022905.765088-2-yebin@huaweicloud.com>
+ <20230216173159.zkj4qd2nmj2yjpkr@quack3>
+ <63EEDC19.6010204@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63EEDC19.6010204@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Saving error information during journal replay, as in the kernel,
-prevents information loss from making problems difficult to locate.
-We save these error information until someone uses e2fsck to check
-for and fix possible errors.
+On Fri 17-02-23 09:44:57, yebin (H) wrote:
+> On 2023/2/17 1:31, Jan Kara wrote:
+> > On Tue 14-02-23 10:29:04, Ye Bin wrote:
+> > > From: Ye Bin <yebin10@huawei.com>
+> > > 
+> > > Now, 'es->s_state' maybe covered by recover journal. And journal errno
+> > > maybe not recorded in journal sb as IO error. ext4_update_super() only
+> > > update error information when 'sbi->s_add_error_count' large than zero.
+> > > Then 'EXT4_ERROR_FS' flag maybe lost.
+> > > To solve above issue commit error information after recover journal.
+> > > 
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > ---
+> > >   fs/ext4/super.c | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > > index dc3907dff13a..b94754ba8556 100644
+> > > --- a/fs/ext4/super.c
+> > > +++ b/fs/ext4/super.c
+> > > @@ -5932,6 +5932,18 @@ static int ext4_load_journal(struct super_block *sb,
+> > >   		goto err_out;
+> > >   	}
+> > > +	if (unlikely(es->s_error_count && !jbd2_journal_errno(journal) &&
+> > > +		     !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS))) {
+> > > +		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+> > > +		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> > > +		err = ext4_commit_super(sb);
+> > > +		if (err) {
+> > > +			ext4_msg(sb, KERN_ERR,
+> > > +				 "Failed to commit error information, please repair fs force!");
+> > > +			goto err_out;
+> > > +		}
+> > > +	}
+> > > +
+> > Hum, I'm not sure I follow here. If journal replay has overwritten the
+> > superblock (and thus the stored error info), then I'd expect
+> > es->s_error_count got overwritten (possibly to 0) as well. And this is
+> > actually relatively realistic scenario with errors=remount-ro behavior when
+> > the first fs error happens.
+> > 
+> > What I intended in my original suggestion was to save es->s_error_count,
+> > es->s_state & EXT4_ERROR_FS, es->s_first_error_*, es->s_last_error_* before
+> > doing journal replay in ext4_load_journal() and then after journal replay
+> > merge this info back to the superblock
+> Actually，commit 1c13d5c08728 ("ext4: Save error information to the
+> superblock for analysis")
+> already merged error info back to the superblock after journal replay except
+> 'es->s_state'.
+> The problem I have now is that the error flag in the journal superblock was
+> not recorded,
+> but the error message was recorded in the superblock. So it leads to
+> ext4_clear_journal_err()
+> does not detect errors and marks the file system as an error. Because
+> ext4_update_super() is
+> only set error flag  when 'sbi->s_add_error_count  > 0'. Although
+> 'sbi->s_mount_state' is
+> written to the super block when umount, but it is also conditional.
+> So I handle the scenario "es->s_error_count && !jbd2_journal_errno(journal)
+> &&
+> !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS)". Maybe we can just store
+> 'EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS' back to the superblock. But i
+> prefer to mark fs as error if it contain detail error info without
+> EXT4_ERROR_FS.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- debugfs/journal.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Aha, thanks for explanation! So now I finally understand what the problem
+exactly is. I'm not sure relying on es->s_error_count is too good. Probably
+it works but I'd be calmer if when saving error info we also did:
 
-diff --git a/debugfs/journal.c b/debugfs/journal.c
-index 5bac0d3b..79e3fff8 100644
---- a/debugfs/journal.c
-+++ b/debugfs/journal.c
-@@ -789,6 +789,8 @@ errcode_t ext2fs_run_ext3_journal(ext2_filsys *fsp)
- 	char *fsname;
- 	int fsflags;
- 	int fsblocksize;
-+	char *save;
-+	__u16 s_error_state;
- 
- 	if (!(fs->flags & EXT2_FLAG_RW))
- 		return EXT2_ET_FILE_RO;
-@@ -808,6 +810,12 @@ errcode_t ext2fs_run_ext3_journal(ext2_filsys *fsp)
- 	if (stats && stats->bytes_written)
- 		kbytes_written = stats->bytes_written >> 10;
- 
-+	save = malloc(EXT4_S_ERR_LEN);
-+	if (save)
-+		memcpy(save, ((char *) fs->super) + EXT4_S_ERR_START,
-+		       EXT4_S_ERR_LEN);
-+	s_error_state = fs->super->s_state & EXT2_ERROR_FS;
-+
- 	ext2fs_mmp_stop(fs);
- 	fsname = fs->device_name;
- 	fs->device_name = NULL;
-@@ -818,11 +826,15 @@ errcode_t ext2fs_run_ext3_journal(ext2_filsys *fsp)
- 	retval = ext2fs_open(fsname, fsflags, 0, fsblocksize, io_ptr, fsp);
- 	ext2fs_free_mem(&fsname);
- 	if (retval)
--		return retval;
-+		goto outfree;
- 
- 	fs = *fsp;
- 	fs->flags |= EXT2_FLAG_MASTER_SB_ONLY;
- 	fs->super->s_kbytes_written += kbytes_written;
-+	fs->super->s_state |= s_error_state;
-+	if (save)
-+		memcpy(((char *) fs->super) + EXT4_S_ERR_START, save,
-+		       EXT4_S_ERR_LEN);
- 
- 	/* Set the superblock flags */
- 	ext2fs_clear_recover(fs, recover_retval != 0);
-@@ -832,6 +844,9 @@ errcode_t ext2fs_run_ext3_journal(ext2_filsys *fsp)
- 	 * the EXT2_ERROR_FS flag in the fs superblock if needed.
- 	 */
- 	retval = ext2fs_check_ext3_journal(fs);
-+
-+outfree:
-+	free(save);
- 	return retval ? retval : recover_retval;
- }
- 
+	bool error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
+
+	copy other info
+	err = jbd2_journal_load(journal);
+	restore other info
+	if (error_fs)
+		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+	/* Write out restored error information to the superblock */
+	err2 = ext4_commit_super(sb);
+
+and be done with this. I don't think trying to optimize away the committing
+of the superblock when we had to replay the journal is really worth it.
+
+Does this solve your concerns?
+
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
