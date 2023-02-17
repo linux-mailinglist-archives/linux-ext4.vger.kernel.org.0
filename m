@@ -2,125 +2,219 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA3D69AFA7
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 16:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00F769B1AD
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Feb 2023 18:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjBQPjz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Feb 2023 10:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
+        id S229498AbjBQRSy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Feb 2023 12:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBQPjy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 10:39:54 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5116FF0D;
-        Fri, 17 Feb 2023 07:39:43 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 65EDF205AC;
-        Fri, 17 Feb 2023 15:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676648382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1wxI2fnQI0J8e7xSOYfqIUBNqAP5lh3gjEjH9f2TlJM=;
-        b=dviz929Yaol/nXcSaB5aWmlBZH8bQe2k3TNS8nVxhz7ZGHFWcI6JncgRyOTcMocn7ocjMQ
-        ttP3tpcX4vWU0Pmn7aIOB/aE/p1Cc5TZQS2bYXz2Zjuw/KWYOMlnETzNOLzTX3t576DgJi
-        W1vjVoE0jG+Q16y+jAKz6x28prB/hXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676648382;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1wxI2fnQI0J8e7xSOYfqIUBNqAP5lh3gjEjH9f2TlJM=;
-        b=5wH3wb6IOH7SObSuXO5IjPns/NxnH7DAQcQqlTdoyymthGCnvzSHmdL9NoCX4rPBtn+f26
-        1JF9MZvuOB+7Z5Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5987A138E3;
-        Fri, 17 Feb 2023 15:39:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UtXRFb6f72PxPAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 17 Feb 2023 15:39:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E8AE1A06E1; Fri, 17 Feb 2023 16:39:41 +0100 (CET)
-Date:   Fri, 17 Feb 2023 16:39:41 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: make kobj_type structures constant
-Message-ID: <20230217153941.ehxoa55lerv5ofve@quack3>
-References: <20230209-kobj_type-ext4-v1-1-6865fb05c1f8@weissschuh.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230209-kobj_type-ext4-v1-1-6865fb05c1f8@weissschuh.net>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229445AbjBQRSx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Feb 2023 12:18:53 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7596E66A;
+        Fri, 17 Feb 2023 09:18:52 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id u14-20020a17090a4bce00b002341fadc370so1974365pjl.1;
+        Fri, 17 Feb 2023 09:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lLoPiL+Bl5cJxv/Z23Pv5jjxu3Y23joxQvM0JTjE3HI=;
+        b=JLrFL/3qJ9Q03JzZPOXVUyu8Hm50p6XEdl9X35oFQA5OIyZlpLsPaZQOO9q1cCItGq
+         lnEk7CD1rkvtzlIm2I+OgjlowdG+0Zzg5NmRbJWTy+nNU26Xqd4l/erff4PKtEs863MS
+         OQNvkV8CELyRfXwASoli076XpEGm0SwxMhj4jMp0xNQqw994sLXiU2veiVdPNaakrR2L
+         AfK+Qv9qxw/U/u8PfIgaG7ZAYaRfq9fRQMck4HRyvBulGCLQCeeP8LsPVvGNmntHctiH
+         RKKo2v+5zQW4lbcYe6hLUJg0Kt03SomKcMYI67Ai+GFg2d+UEquWXel1u99wmVv6ADw/
+         Qgig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lLoPiL+Bl5cJxv/Z23Pv5jjxu3Y23joxQvM0JTjE3HI=;
+        b=s/krIU0Se6exSc0fXsYUQgC7nnbkxHG7ZKhM736JPHhPX0lrVjly38wRED+S9j2bru
+         07TBLwOAcHFRIoTegPSa1+tf+O/Q9r61TZpNoi9/oBmmWWLKhn4C/8lOzcPLx6eUsUA3
+         XKuXGJyjTM53nvK2PlFqG/KjLMgEThG3myAtSD5+WQqvOtyXhMm+uw4MQLAx8NgOcArz
+         oeXcWjaiRuOEJK0lDb/mCC5hjV8W3A3dg8/9Y7l8zvG5FyrQQexE78BdJ7zXBCXvN/6B
+         +ParNHeTmb6w8kzRmrOQqYeZdyED3NYwhc+xtx3MQiJVzPI/xVbPtqT7Jl2qkdhURx5S
+         tEQg==
+X-Gm-Message-State: AO0yUKXJ3PNRKfAJ+M8ghO3nCwj0yjDa4nd3g+VssBw6V8TK+dwDN9Px
+        20FezSdNT3+qdXWE8JP+MG8=
+X-Google-Smtp-Source: AK7set/8AdalfE/tq+pq98wfMxdA2pZS+PRYmwKvvd6OMZFOpd47m0pSraqNvtpwD+0/Pjqb2eRIFA==
+X-Received: by 2002:a17:903:41d0:b0:19a:a9dd:ed34 with SMTP id u16-20020a17090341d000b0019aa9dded34mr414969ple.59.1676654331767;
+        Fri, 17 Feb 2023 09:18:51 -0800 (PST)
+Received: from rh-tp ([2406:7400:63:5056:148f:873b:4bc8:1e77])
+        by smtp.gmail.com with ESMTPSA id bi12-20020a170902bf0c00b0019a70a42b0asm3391832plb.169.2023.02.17.09.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 09:18:50 -0800 (PST)
+Date:   Fri, 17 Feb 2023 22:48:31 +0530
+Message-Id: <87y1ow6wig.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>
+Subject: Re: [PATCH v4 6/9] ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()
+In-Reply-To: <79b5240a6168171577b1bb9ef7a27c0c52676d37.1676634592.git.ojaswin@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 09-02-23 03:18:35, Thomas Weiﬂschuh wrote:
-> Since commit ee6d3dd4ed48 ("driver core: make kobj_type constant.")
-> the driver core allows the usage of const struct kobj_type.
-> 
-> Take advantage of this to constify the structure definitions to prevent
-> modification at runtime.
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
 
-Looks good. Feel free to add:
+> When the length of best extent found is less than the length of goal extent
+> we need to make sure that the best extent atleast covers the start of the
+> original request. This is done by adjusting the ac_b_ex.fe_logical (logical
+> start) of the extent.
+>
+> While doing so, the current logic sometimes results in the best extent's logical
+> range overflowing the goal extent. Since this best extent is later added to the
+> inode preallocation list, we have a possibility of introducing overlapping
+> preallocations. This is discussed in detail here [1].
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+So if the best extent range overflows the goal extent range, then it
+causes the overlapping ranges to be added to the list is because at the
+time of normalization of the request during allocation, we decide goal
+start and end based on the existing PAs in the list. And if we end up
+adding the best found extent range which overflows the goal range, then
+that will add a PA whose logical start/end might overlap with an
+existing PA range.
 
-								Honza
+>
+> To fix this, replace the existing logic with the below logic for adjusting best
+> extent as it keeps fragmentation in check while ensuring logical range of best
+> extent doesn't overflow out of goal extent:
+>
+> 1. Check if best extent can be kept at end of goal range and still cover
+>    original start.
+> 2. Else, check if best extent can be kept at start of goal range and still cover
+>    original start.
+> 3. Else, keep the best extent at start of original request.
+>
+> Also, add a few extra BUG_ONs that might help catch errors faster.
 
+Thanks for the detailed explaination. I think it makes sense.
+
+>
+> [1] https://lore.kernel.org/r/Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com
+
+Yes, the example in the above link was helpful.
+
+>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > ---
->  fs/ext4/sysfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index d233c24ea342..364e3da49b03 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -496,13 +496,13 @@ static const struct sysfs_ops ext4_attr_ops = {
->  	.store	= ext4_attr_store,
->  };
->  
-> -static struct kobj_type ext4_sb_ktype = {
-> +static const struct kobj_type ext4_sb_ktype = {
->  	.default_groups = ext4_groups,
->  	.sysfs_ops	= &ext4_attr_ops,
->  	.release	= ext4_sb_release,
->  };
->  
-> -static struct kobj_type ext4_feat_ktype = {
-> +static const struct kobj_type ext4_feat_ktype = {
->  	.default_groups = ext4_feat_groups,
->  	.sysfs_ops	= &ext4_attr_ops,
->  	.release	= (void (*)(struct kobject *))kfree,
-> 
-> ---
-> base-commit: 0983f6bf2bfc0789b51ddf7315f644ff4da50acb
-> change-id: 20230209-kobj_type-ext4-962d5425769a
-> 
-> Best regards,
-> -- 
-> Thomas Weiﬂschuh <linux@weissschuh.net>
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  fs/ext4/mballoc.c | 49 ++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 31 insertions(+), 18 deletions(-)
+
+Also this looks like, it was not a problem till now because while finding a
+right PA with existing list implementation, we adjust our allocation
+window based on all the elements in the inode PA list (full scan of
+inode PAs)
+
+But in case of rbtree, we try to do a log(n) search and if we have an
+overlapping range, then we might end up missing a subtree and calculate
+a wrong allocation request range.
+
+So the only problem in the current code would be that we might
+have some overlapping ranges in the inode PAs which means we have some
+extra reservations done for the same logical file ranges. But other than
+that I guess we don't have any other issue.
+
+Is that also the reason why we are not adding any fixes tag and cc'ing
+it to stable?
+
+I have reviewed the patch along with my understanding above.
+Looks good to me. So please feel free to add -
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index fdb9d0a8f35d..ba9d26e2f2aa 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4330,6 +4330,7 @@ static void ext4_mb_use_inode_pa(struct ext4_allocation_context *ac,
+>  	BUG_ON(start < pa->pa_pstart);
+>  	BUG_ON(end > pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len));
+>  	BUG_ON(pa->pa_free < len);
+> +	BUG_ON(ac->ac_b_ex.fe_len <= 0);
+>  	pa->pa_free -= len;
+>
+>  	mb_debug(ac->ac_sb, "use %llu/%d from inode pa %p\n", start, len, pa);
+> @@ -4668,10 +4669,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  	pa = ac->ac_pa;
+>
+>  	if (ac->ac_b_ex.fe_len < ac->ac_g_ex.fe_len) {
+> -		int winl;
+> -		int wins;
+> -		int win;
+> -		int offs;
+> +		int new_bex_start;
+> +		int new_bex_end;
+>
+>  		/* we can't allocate as much as normalizer wants.
+>  		 * so, found space must get proper lstart
+> @@ -4679,26 +4678,40 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  		BUG_ON(ac->ac_g_ex.fe_logical > ac->ac_o_ex.fe_logical);
+>  		BUG_ON(ac->ac_g_ex.fe_len < ac->ac_o_ex.fe_len);
+>
+> -		/* we're limited by original request in that
+> -		 * logical block must be covered any way
+> -		 * winl is window we can move our chunk within */
+> -		winl = ac->ac_o_ex.fe_logical - ac->ac_g_ex.fe_logical;
+> +		/*
+> +		 * Use the below logic for adjusting best extent as it keeps
+> +		 * fragmentation in check while ensuring logical range of best
+> +		 * extent doesn't overflow out of goal extent:
+> +		 *
+> +		 * 1. Check if best ex can be kept at end of goal and still
+> +		 *    cover original start
+> +		 * 2. Else, check if best ex can be kept at start of goal and
+> +		 *    still cover original start
+> +		 * 3. Else, keep the best ex at start of original request.
+> +		 */
+> +		new_bex_end = ac->ac_g_ex.fe_logical +
+> +			EXT4_C2B(sbi, ac->ac_g_ex.fe_len);
+> +		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+> +		if (ac->ac_o_ex.fe_logical >= new_bex_start)
+> +				goto adjust_bex;
+>
+> -		/* also, we should cover whole original request */
+> -		wins = EXT4_C2B(sbi, ac->ac_b_ex.fe_len - ac->ac_o_ex.fe_len);
+> +		new_bex_start = ac->ac_g_ex.fe_logical;
+> +		new_bex_end =
+> +			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+> +		if (ac->ac_o_ex.fe_logical < new_bex_end)
+> +			goto adjust_bex;
+>
+> -		/* the smallest one defines real window */
+> -		win = min(winl, wins);
+> +		new_bex_start = ac->ac_o_ex.fe_logical;
+> +		new_bex_end =
+> +			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+>
+> -		offs = ac->ac_o_ex.fe_logical %
+> -			EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+> -		if (offs && offs < win)
+> -			win = offs;
+> +adjust_bex:
+> +		ac->ac_b_ex.fe_logical = new_bex_start;
+>
+> -		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical -
+> -			EXT4_NUM_B2C(sbi, win);
+>  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+>  		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
+> +		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
+> +				      EXT4_C2B(sbi, ac->ac_g_ex.fe_len)));
+>  	}
+>
+>  	/* preallocation can change ac_b_ex, thus we store actually
+> --
+> 2.31.1
