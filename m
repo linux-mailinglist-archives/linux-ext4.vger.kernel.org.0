@@ -2,49 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92F069C289
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Feb 2023 21:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC9C69C35A
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Feb 2023 00:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbjBSUsg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Feb 2023 15:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S229681AbjBSXQR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Feb 2023 18:16:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjBSUsg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Feb 2023 15:48:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C26CDE3;
-        Sun, 19 Feb 2023 12:48:32 -0800 (PST)
+        with ESMTP id S229656AbjBSXQQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Feb 2023 18:16:16 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FD41A941
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Feb 2023 15:16:15 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8779A60C5F;
-        Sun, 19 Feb 2023 20:48:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A891DC433D2;
-        Sun, 19 Feb 2023 20:48:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F57360C75
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Feb 2023 23:16:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DA983C433D2
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Feb 2023 23:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676839711;
-        bh=pPKAZ01/fvm24mHTwEi4mThE8LjTnMIHE3uOq5HgJ2A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oSlao0JM5OYo6ACCVQAkZY5Q93HpYAmJpHW43ds1Q+OotpwLMAC3C9/0HAr7TFg3j
-         6iIScv4Z4TH0wEmaVQkCJdPjTX6g/FquCqjZVYcGvxDH07+RM8m6LDrUySsLDBPuqi
-         kx6b261+A/6sLtqlXctM6FSJAAIPJJv77aUq42aj0pCr5WDIc1kyWj5lhvOVYLkn0r
-         cUh/UmZQFRoSM6xwvOh9KAflYXuOznidceBSBU+f2ggZiirn5X6fhwfMXGWTtNFT8S
-         6TdKb8FV8xBjDKCf2hVWu6N3Wia/s6Wev2JmhPmVMgbPD47DmxWaULT29NvK4TcFeJ
-         G9byS+5xJ9d0A==
-Date:   Sun, 19 Feb 2023 12:48:29 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] fsverity updates for 6.3
-Message-ID: <Y/KLHT3zaA0QFhVJ@sol.localdomain>
+        s=k20201202; t=1676848574;
+        bh=u7zOc80YCIIZHkFKO+nVSRYhy2/n8V8uSs9dOWD+15s=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=AMj/fdrZI4CP++pNZI02BCFIN7jPLSA+QmPLdq92GJb5DIPgb+Nb0DPGWBzRpRvE2
+         Ryz9mQq9haHYyjIjdwLTGueSxq5cT0cZUm/BY7ElnO3rz9uLuSG7A+DOTQorydN3pI
+         FrtmeC0sO4jEPtNKIBPoN27XcL6eFMptvz8ioyys+OU5nmMai3aGk92rae2ISHDsZX
+         JPWv+OIjhLRe6VbPqb8SM3+/UibYN2v6eSjBKpl2LnrRL3fKBy3mYPJoo3BcAEV1n/
+         xHbQSRZwA6HDl0e/VR5zMAKBwuixxJuM7QTWq/YW/xGjHW8uj4gXRShpYZGQLZbA7+
+         2SS8wqH1madFQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id C5EC4C43144; Sun, 19 Feb 2023 23:16:14 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 215879] EXT4-fs error - __ext4_find_entry:1612: inode #2: comm
+ systemd: reading directory lblock 0
+Date:   Sun, 19 Feb 2023 23:16:14 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: high
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: RESOLVED
+X-Bugzilla-Resolution: INVALID
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_status resolution
+Message-ID: <bug-215879-13602-OnrqXzrHTo@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-215879-13602@https.bugzilla.kernel.org/>
+References: <bug-215879-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,80 +70,44 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 88603b6dc419445847923fcb7fe5080067a30f98:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D215879
 
-  Linux 6.2-rc2 (2023-01-01 13:53:16 -0800)
+Theodore Tso (tytso@mit.edu) changed:
 
-are available in the Git repository at:
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+             Status|NEW                         |RESOLVED
+         Resolution|---                         |INVALID
 
-  https://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
+--- Comment #6 from Theodore Tso (tytso@mit.edu) ---
+Note that what you found in your stack exchange search was from five years =
+ago,
+and described a workaround in a Linux kernel versiojn 4.10.   In addition to
+manually disabling APST (a quirk for a very specific Samsung SSD which has
+since been added to newer kernels), other suggestions in the stack exchange=
+ or
+linked web pages included " removing SDD, blowing air into M.2 connector and
+reinserting it back" and "switching off the 'UEFI Secure Boot' setting in t=
+he
+BIOS"
 
-for you to fetch changes up to 51e4e3153ebc32d3280d5d17418ae6f1a44f1ec1:
+All of which is to say that the symptom is caused by an I/O error, and there
+are many potential causes for an I/O error --- everything from missing quir=
+ks
+(to work around broken firmware / hardware design) to bad connections to
+misconfigured BIOS settings to just plain broken hardware.
 
-  fscrypt: support decrypting data from large folios (2023-01-28 15:10:12 -0800)
+This is why blindly web searching based on symptoms can often lead to
+misleading results; an abdominal pain could mean anything from indigestion,=
+ to
+a pulled muscle, to an infected appendix, to a heart attack.  It's also why=
+ I
+am not fond of people finding bug reports on the web and assuming that anyt=
+hing
+that has the same symptom must have the same root cause.....
 
-----------------------------------------------------------------
+--=20
+You may reply to this email to add a comment.
 
-Fix the longstanding implementation limitation that fsverity was only
-supported when the Merkle tree block size, filesystem block size, and
-PAGE_SIZE were all equal.  Specifically, add support for Merkle tree
-block sizes less than PAGE_SIZE, and make ext4 support fsverity on
-filesystems where the filesystem block size is less than PAGE_SIZE.
-
-Effectively, this means that fsverity can now be used on systems with
-non-4K pages, at least on ext4.  These changes have been tested using
-the verity group of xfstests, newly updated to cover the new code paths.
-
-Also update fs/verity/ to support verifying data from large folios.
-There's also a similar patch for fs/crypto/, to support decrypting data
-from large folios, which I'm including in this pull request to avoid a
-merge conflict between the fscrypt and fsverity branches.
-
-There will be a merge conflict in fs/buffer.c with some of the foliation
-work in the mm tree.  Please use the merge resolution from linux-next.
-
-----------------------------------------------------------------
-Eric Biggers (19):
-      fsverity: optimize fsverity_file_open() on non-verity files
-      fsverity: optimize fsverity_prepare_setattr() on non-verity files
-      fsverity: optimize fsverity_cleanup_inode() on non-verity files
-      fsverity: pass pos and size to ->write_merkle_tree_block
-      fsverity: remove debug messages and CONFIG_FS_VERITY_DEBUG
-      fsverity: use unsigned long for level_start
-      fsverity: simplify Merkle tree readahead size calculation
-      fsverity: store log2(digest_size) precomputed
-      fsverity: use EFBIG for file too large to enable verity
-      fsverity: replace fsverity_hash_page() with fsverity_hash_block()
-      fsverity: support verification with tree block size < PAGE_SIZE
-      fsverity: support enabling with tree block size < PAGE_SIZE
-      ext4: simplify ext4_readpage_limit()
-      f2fs: simplify f2fs_readpage_limit()
-      fs/buffer.c: support fsverity in block_read_full_folio()
-      ext4: allow verity with fs block size < PAGE_SIZE
-      fsverity.rst: update git repo URL for fsverity-utils
-      fsverity: support verifying data from large folios
-      fscrypt: support decrypting data from large folios
-
- Documentation/filesystems/fscrypt.rst  |   4 +-
- Documentation/filesystems/fsverity.rst |  96 +++++----
- fs/btrfs/verity.c                      |  19 +-
- fs/buffer.c                            |  72 +++++--
- fs/crypto/bio.c                        |  10 +-
- fs/crypto/crypto.c                     |  28 +--
- fs/ext4/inode.c                        |   6 +-
- fs/ext4/readpage.c                     |   3 +-
- fs/ext4/super.c                        |   5 -
- fs/ext4/verity.c                       |   6 +-
- fs/f2fs/data.c                         |   3 +-
- fs/f2fs/verity.c                       |   6 +-
- fs/verity/Kconfig                      |   8 -
- fs/verity/enable.c                     | 271 ++++++++++++--------------
- fs/verity/fsverity_private.h           |  24 +--
- fs/verity/hash_algs.c                  |  24 ++-
- fs/verity/init.c                       |   1 -
- fs/verity/open.c                       | 163 +++++++++-------
- fs/verity/signature.c                  |   2 -
- fs/verity/verify.c                     | 346 ++++++++++++++++++++++-----------
- include/linux/fscrypt.h                |   9 +-
- include/linux/fsverity.h               |  93 +++++++--
- 22 files changed, 699 insertions(+), 500 deletions(-)
+You are receiving this mail because:
+You are watching the assignee of the bug.=
