@@ -2,53 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D3B69BEA8
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Feb 2023 06:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59EC69BEA3
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Feb 2023 06:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjBSFlu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Feb 2023 00:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
+        id S229758AbjBSFl2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Feb 2023 00:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjBSFli (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Feb 2023 00:41:38 -0500
+        with ESMTP id S229667AbjBSFl1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Feb 2023 00:41:27 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C2E13DF8
-        for <linux-ext4@vger.kernel.org>; Sat, 18 Feb 2023 21:41:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B0913D4C
+        for <linux-ext4@vger.kernel.org>; Sat, 18 Feb 2023 21:41:22 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31J5evJY024869
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31J5evIg024876
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 19 Feb 2023 00:40:59 -0500
+        Sun, 19 Feb 2023 00:40:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1676785262; bh=L1BHkHi6T6qz27wZYhHErthtb81Jb5TkLhnb88KVfFc=;
+        t=1676785260; bh=casH54JtW/otMH7sj7fBvGYiaTIafQTckJf0Umd3EPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=W8q1MJILVWeW7U0Rr0HxqnkfP4cIr5QB0Q4dXqkSq+6YYZUmxY2nQnWQti4HUlQsv
-         ox3yih4VNlr/QeeFX39vnbJauYNwbFc5Xc37McUH/Lx+G+7tKKX9+Aey/JEgfyE9Cl
-         He+1J9s/GWZapxXm9YJUhcC8HqTFl096W3dR9svjlG2/o2s9PYQSexPiKfHHGrRq5/
-         oVAxgjJHFztjaPIMgwk4A3krlcTVoYAy/v5rJc2QG12FpH2mmMdKHu4j5OSr0z+x8W
-         1IzbgAMpNTEHiBQdYbKmVOjkKeaIfkRPgGxXX+UjwzpiT6FeGA4RJSFJyaosDOTF7C
-         JwVRQKmkeeLgQ==
+        b=QC5edBPTCn1iCizX0crRRvtxqyBvPyakApt/+J7ECVjEAh8kYC2LJvc9TFX6kMUIG
+         eQrA0UZ2V24OzuApaPmc0ElZkIvgGvg+FAmAVK68YJvjYKGl4apcsue/J/NBY5vAYi
+         36lsdflVuuvNamMlrF+BXD3K60eTbwDBN1IOIh4a/wodQ4fMKfZTsUfyVqLtffe1GM
+         rpfiYe2g52ak+TeH+wgyFD5oLaeVOIfdWe3qyA7gTzWzsXD4LxEecE8O3zdD1KlMz3
+         MPK1VvZBAuzPH6WFV4GLsh+gzPnWTYV8DOBtzQRwfqtRMSAESu5rB5PiisuXaXP3L+
+         ReKUI6nYEr5Zg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C977B15C35A7; Sun, 19 Feb 2023 00:40:55 -0500 (EST)
+        id CB41915C35A8; Sun, 19 Feb 2023 00:40:55 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        llvm@lists.linux.dev, Tom Rix <trix@redhat.com>,
-        linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, stable@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Riccardo Schirone <sirmy15@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v2] ext4: Fix function prototype mismatch for ext4_feat_ktype
-Date:   Sun, 19 Feb 2023 00:40:47 -0500
-Message-Id: <167678522170.2723470.13730761644590168004.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, yukuai3@huawei.com, jack@suse.cz,
+        ritesh.list@gmail.com, adilger.kernel@dilger.ca,
+        yi.zhang@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ext4: fix possible null pointer dereference in ext4_get_group_info
+Date:   Sun, 19 Feb 2023 00:40:48 -0500
+Message-Id: <167678522171.2723470.10131660626461360692.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230104210908.gonna.388-kees@kernel.org>
-References: <20230104210908.gonna.388-kees@kernel.org>
+In-Reply-To: <20230107032126.4165860-1-libaokun1@huawei.com>
+References: <20230107032126.4165860-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -61,23 +54,23 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 4 Jan 2023 13:09:12 -0800, Kees Cook wrote:
-> With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-> indirect call targets are validated against the expected function
-> pointer prototype to make sure the call target is valid to help mitigate
-> ROP attacks. If they are not identical, there is a failure at run time,
-> which manifests as either a kernel panic or thread getting killed.
+On Sat, 7 Jan 2023 11:21:24 +0800, Baokun Li wrote:
+> V1->V2:
+> 	In PATCH 1/2, -EFSCORRUPTED instead of -ESTALE is returned for
+> 	special inode errors, and extra parentheses are removed.
 > 
-> ext4_feat_ktype was setting the "release" handler to "kfree", which
-> doesn't have a matching function prototype. Add a simple wrapper
-> with the correct prototype.
+> Baokun Li (2):
+>   ext4: fail ext4_iget if special inode unallocated
+>   ext4: update s_journal_inum if it changes after journal replay
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Fix function prototype mismatch for ext4_feat_ktype
-      commit: d99a55a94a0db8eda4a336a6f21730b844b8d2d2
+[1/2] ext4: fail ext4_iget if special inode unallocated
+      commit: 5cd740287ae5e3f9d1c46f5bfe8778972fd6d3fe
+[2/2] ext4: update s_journal_inum if it changes after journal replay
+      commit: 3039d8b8692408438a618fac2776b629852663c3
 
 Best regards,
 -- 
