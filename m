@@ -2,209 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE2669D9F6
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Feb 2023 04:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E483C69DFCF
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Feb 2023 13:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbjBUD6C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Feb 2023 22:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
+        id S234679AbjBUMBl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Feb 2023 07:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbjBUD5q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Feb 2023 22:57:46 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15FF23327;
-        Mon, 20 Feb 2023 19:57:39 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PLQV70FJkz4f3wQx;
-        Tue, 21 Feb 2023 11:57:35 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgC3q+ktQfRj8VfgDw--.30652S9;
-        Tue, 21 Feb 2023 11:57:37 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com
-Subject: [PATCH 7/7] ext4: improve inode table blocks counting in ext4_num_overhead_clusters
-Date:   Tue, 21 Feb 2023 19:59:19 +0800
-Message-Id: <20230221115919.1918161-8-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230221115919.1918161-1-shikemeng@huaweicloud.com>
-References: <20230221115919.1918161-1-shikemeng@huaweicloud.com>
+        with ESMTP id S234820AbjBUMBD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Feb 2023 07:01:03 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2053.outbound.protection.outlook.com [40.107.7.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE53B29403
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Feb 2023 04:00:26 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V179PYeHxFp/6wNtTSF2mF8s0nWiLZgAAUprjz4pLuxeEryvNXBdH3/cmOJfMUoBvAvXw+mivJr4X7bQx5whmUEV16KFWshHrl8eTyrwSnQsLxyTV8cJtT8Pf9f5vh78WtEfLXeefRu4sVdiCKIaT3u2VbErZXcsK8lntwyey8TtiSd/I0HL5By7HtmwN0K1gALq2MlqftFKlJ8lIk4FixTueyz1z8il9tTbmMcNRq21lk8KIWuzU3CyMS9CE7ypdgiGVPFA5LzqjPlOmkWDpqXSWT9uhUX+ukaJZYxpYLIvPMltdtZlElgmknmoJXPFX6Sm4QCA7ct4SMsldF56bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L8L8wDhVMfTA7uh7DvwJSW9UR2Vs26otduoDeUqFFus=;
+ b=T9ag6zm+FJ7XHE0AzoQPYHBj1D74DSlVmVyo/rLp+AI0zJ/pozTe9SvEtjTOn//Vxxy9dYpxvlTqou360X1jqmyK59DWQ2vRcqIFxVQ3IvX4lXmaedemO7j2+p49TZXUYN+db3Wyo69BHODR8nRHRj5EXR3SGPYlW4cJ5YVFdlXwuAWDGv1Nt7lQgukK+zys42EZezRkmHQfXLdzYkyW2CAOpMAS6Ssq4x0cw/xa6zi5l4R2Qq+DKht+o3lmf1YWivTAlbx2SQP4+OkaSP38hh9J1P+l/ZxBGKW0qlWPPkIxX3lUeVy9eLH52fDbkfEWdo+c9ZoE7/j59kUuoRADjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=weidmueller.com; dmarc=pass action=none
+ header.from=weidmueller.com; dkim=pass header.d=weidmueller.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=weidmueller.onmicrosoft.com; s=selector1-weidmueller-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L8L8wDhVMfTA7uh7DvwJSW9UR2Vs26otduoDeUqFFus=;
+ b=O6bQ+bssTB2oxQL4ME+CUVHuqxcub95+qi1oOCriglW4nm0g95mvUjP0hxkO8ZxfkSiD6XmNMZpJ1g9okZxv7q/9ziOqcGmLSq0o41dfsu98gzHaRQZWc67kL6paphjvWCFPSDjvgQm2CvsegdLwcn7XEI4UzmmK64uSGZvziy8=
+Received: from AM0PR08MB3857.eurprd08.prod.outlook.com (2603:10a6:208:104::15)
+ by AS8PR08MB6280.eurprd08.prod.outlook.com (2603:10a6:20b:29b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.21; Tue, 21 Feb
+ 2023 11:57:37 +0000
+Received: from AM0PR08MB3857.eurprd08.prod.outlook.com
+ ([fe80::fb08:2d74:ddf8:f021]) by AM0PR08MB3857.eurprd08.prod.outlook.com
+ ([fe80::fb08:2d74:ddf8:f021%7]) with mapi id 15.20.6111.021; Tue, 21 Feb 2023
+ 11:57:36 +0000
+From:   Etienne Schmidt OSS <Etienne.Schmidt-oss@weidmueller.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Bug: Buffer I/O error with an ext4 filesystem inside a file
+Thread-Topic: Bug: Buffer I/O error with an ext4 filesystem inside a file
+Thread-Index: AdlF64qBQYm0utMdTLiyiFI2WE3/fg==
+Date:   Tue, 21 Feb 2023 11:57:36 +0000
+Message-ID: <AM0PR08MB38573D4128D2EB770D79604AFAA59@AM0PR08MB3857.eurprd08.prod.outlook.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=weidmueller.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM0PR08MB3857:EE_|AS8PR08MB6280:EE_
+x-ms-office365-filtering-correlation-id: a3133876-7c5f-4214-5a01-08db1402d32f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3c3e4oc6Bwmu1dav+azCT8bkdlacClTX0iexoeo5IIqxE9qG0a10is0bEFkl//URgLs5azqUlYr7UYmTCVME/gzVZd2y/jFXPAuyBKurt0YXVbG05S3bXAiUd2oTOwQ06ZzO0+rXPAB5K5SzgG0wozOXUUKmW//t4W0Vnvicj8BXaMUAM3hXcG+qh0J/QpSYiexqxutrBizCTR6C7QlGA47ddhpgeyw1OIPRIPWY2cUTaUIu9Soa0zJD+Bui396cQgBNRIv9jSQcpRvXb6HBN9azFxutJXEGHgLvj7JPrOPlkknRJtsEKkyvux12PtQ7WwYE5Gr9laM6QW8wK73396Ypa6DIVkaKDwJ7B+Vqbha14JxnuwinTaDHvTm4waCnr+dN47hcVIXwuERzEh5/IX6RQW2r58Fcjtjc8FZMdFFTXmMvQikMDMYPO68wdmFRJ4RoDWPDEglg0tCY3nMoIv8raK9Jzo8gdoRIBpd/1Qb+x8FnAZSJDfj0Bi8MYD6ADK3anglA0/5Pn7O3k3NYGRrpXC/KXQXsYXks0oVJlA4jThA3RutJsVN8cl5r/heN1B038w1uPRSly1j+delqA/CD8JbilHRak+pDTV9l4jX5xSBawD3v5qxJr0jsral6A8HVUpLhLcON8WYN5lB1WEonBzKc790E0+HvvOSDFVchFNFmb9SiK0ciXm6rDWaUYx3v82aEecV0QttyWZHFyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR08MB3857.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(366004)(39860400002)(346002)(396003)(376002)(451199018)(33656002)(38100700002)(86362001)(38070700005)(41300700001)(52536014)(5660300002)(2906002)(8936002)(122000001)(83380400001)(478600001)(66946007)(66446008)(66476007)(6916009)(8676002)(66556008)(76116006)(7696005)(64756008)(71200400001)(186003)(9686003)(26005)(316002)(55016003)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/ZbAlAbZb8FiVyAzzsrIP7t6z+zJhGvIoqhiD8NbF+Evh1Mn3nfcdey1EnDw?=
+ =?us-ascii?Q?fVfl559/bPhhj5NfXc0C8IDkCLjQJLgd2n0gxMMtUU4GUnA9Kq8riCU34n0D?=
+ =?us-ascii?Q?wRriDrZcu4qakmXsZsdDij6polBoq6VkTrqSHHn1WMIawmQyCfK/GqJCmiUZ?=
+ =?us-ascii?Q?+HuZ+aSZJ52aa0G5tklULr5h0ho3w/DjlM+50fCp/Ab93Gj5AhWnoxww1WKK?=
+ =?us-ascii?Q?XEaFIqIseZ20lXnmtMnsmKCKvyqJC5kArC+mgL6GlZea08eEAjumFWYyDqOw?=
+ =?us-ascii?Q?m+Ye4ZdasJk0BJm+EaLuAI0TUaBSvcrH0JzPiR560ZV/M4Am5Iv88Libj9CJ?=
+ =?us-ascii?Q?DmGz+g7E3O/7CtoKk7H9iXRacZ/qgYbhmrKUlcZlSTf7OjXpZd6k5MF+AErb?=
+ =?us-ascii?Q?TEx/7a6s3r4OnkwGqk4roZ9FZmyVMzi3l6inoX9uuZXpyclM1Knl/f4pjvvQ?=
+ =?us-ascii?Q?UnBtQbokvfD9DE6Af5LrxhB3Leqhfglkz4AX/SxUnXqd594i+2138d61bxtt?=
+ =?us-ascii?Q?vqy/kwixqegfTpir547icNir/H8XctDZs+i8e6fVnbFUD+VGIcfCj/E7Kipi?=
+ =?us-ascii?Q?B/0shT8UlDOKHqoST/xXwcpouDJHND7nILdBRt3mh2pgIT1ceeVu00TMRqyR?=
+ =?us-ascii?Q?d50W8QaJh4aAvKkqc9+QFQ5J3veYf7AeCvfksnK+NdD4iQKBx1aoj4yPLEwc?=
+ =?us-ascii?Q?GbWXYkPMTwncddGSVqBqifUf+xwObMtAlHLTct3leeQlRc/cCi6BWlfRzGX9?=
+ =?us-ascii?Q?V31KuuoNVWftu+LpdkA85e/L5lJt8K64Oj/wsxwok3STikYP7YOS9SSmT1wp?=
+ =?us-ascii?Q?hbVN/sXkDFN7ZMlFpgDNyc1v0gipVrEfLA7ETvBWYVL21Lt4ANUe1NZ6o3na?=
+ =?us-ascii?Q?MwyuSORaOzyU842A4V3tQpXu3fpknCehhcwlVMO6rXeMTDNQeR+1v/MeA9qh?=
+ =?us-ascii?Q?kaOTwXyVhEKUIM7UF3vqKNRen9PH0OBhTiLSjDqIG6BcHSDnMDyczWduRp2R?=
+ =?us-ascii?Q?rYS7p/IxY5RN+skyiVoHyv30N9wFhr3sAbCSbsgqOc5QH0CmWWJ8/mTq7u4/?=
+ =?us-ascii?Q?j7t6vqfo1DkuD23hRu51VOSzBl3A2KWwohIbNrmhZJ3J7ROabrB9oU6/hpSO?=
+ =?us-ascii?Q?hAGCC/oxS39xIwY2TrtmFY12D3csYNpR0OcLBhd4r66H2SGC81dqSWvI/p1Z?=
+ =?us-ascii?Q?FflSd6HS7ItrDQnV14BA5bFhWQmDAkqqpjj+G7SyL/IA9sMtomkrTlTGrt8C?=
+ =?us-ascii?Q?NTyfjJgeqLHGj9ZHRRkz/bi40Cdiq1iS28MzVfW38Mump30PSk1J+rdKk9oW?=
+ =?us-ascii?Q?/oSgoNvCycft+4HvRy5VsDJd5s3iiqG8k15Hkf/8AY5whExxy5pcJnFe0Ade?=
+ =?us-ascii?Q?5hMHSb42rICEL+fPloqAUa1/1PeSLqpLyOOupw5fS7aB7/B12S0rN3TBZP7s?=
+ =?us-ascii?Q?xtFTBc6fh+FESG+5jRXHXm+5wgx8xFTEXndtoecomO0pnOSSPU287OXPLqaD?=
+ =?us-ascii?Q?YMFNVHCcRlvxRLz63MlB3x3zvLPqbawmX04v7niVDNd6tzEV8BngepE7HPBT?=
+ =?us-ascii?Q?+OpiC1AbTUOPh8msbnSpJ6SwjsbOOrefR6xWrbMjl8r5QtoNhY11bSjrByj5?=
+ =?us-ascii?Q?SP0sL4JFG6WRfAZ1RrLHxoo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgC3q+ktQfRj8VfgDw--.30652S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gw4rCry5CF4DZry7Cw1rZwb_yoW7WF48pr
-        47tF1rJr45WF1qgr4ftr1qgryrGw1rKr4UJa43JF13GF9rZr4Ikr9xJrn8AFyqg3W7Xw1q
-        vF1UC34Uu393G37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
-        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
-        IIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xv
-        wVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFc
-        xC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_
-        Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2
-        IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRvJPtU
-        UUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        SPF_HELO_NONE,SPF_NONE,TVD_PH_BODY_ACCOUNTS_PRE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: weidmueller.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR08MB3857.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3133876-7c5f-4214-5a01-08db1402d32f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2023 11:57:36.8330
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e4289438-1c5f-4c95-a51a-ee553b8b18ec
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NyqPZsEdAwnB17hRsaCxdA1P1eh5Bqmqf94zzcFPIyVdThIoABZ4lLQCrLpL8q9XlU1vyaxNVLIbZtDP4XBEDPPepXyyME1ByuyjqelaWbE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6280
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As inode table blocks are contiguous, inode table blocks inside the
-block_group can be represented as range [itbl_cluster_start,
-itbl_cluster_last]. Then we can simply account inode table cluters and
-check cluster overlap with [itbl_cluster_start, itbl_cluster_last] instead
-of traverse each block of inode table.
-By the way, this patch fixes code style problem of comment for
-ext4_num_overhead_clusters.
+Hello everyone!
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/ext4/balloc.c | 90 +++++++++++++++++++++++++-----------------------
- 1 file changed, 47 insertions(+), 43 deletions(-)
+I have tried to allocate disk space for a service. To do this I created a f=
+ile with fixed disk usage and created an ext4 file system in it. When I mou=
+nt this file the mount point should be reserved space but something went wr=
+ong. With full memory I get a buffer I/O error.
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index dab46274d591..689edfed231a 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -80,32 +80,56 @@ static inline int ext4_block_in_group(struct super_block *sb,
- 	return (actual_group == block_group) ? 1 : 0;
- }
- 
--/* Return the number of clusters used for file system metadata; this
-+/*
-+ * Return the number of clusters used for file system metadata; this
-  * represents the overhead needed by the file system.
-  */
- static unsigned ext4_num_overhead_clusters(struct super_block *sb,
- 					   ext4_group_t block_group,
- 					   struct ext4_group_desc *gdp)
- {
--	unsigned num_clusters;
--	int block_cluster = -1, inode_cluster = -1, itbl_cluster = -1, i, c;
-+	unsigned base_clusters, num_clusters;
-+	int block_cluster, inode_cluster;
-+	int itbl_cluster_start = -1, itbl_cluster_end = -1;
- 	ext4_fsblk_t start = ext4_group_first_block_no(sb, block_group);
--	ext4_fsblk_t itbl_blk;
-+	ext4_fsblk_t end = start + EXT4_BLOCKS_PER_GROUP(sb) - 1;
-+	ext4_fsblk_t itbl_blk_start, itbl_blk_end;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 
- 	/* This is the number of clusters used by the superblock,
- 	 * block group descriptors, and reserved block group
- 	 * descriptor blocks */
--	num_clusters = ext4_num_base_meta_clusters(sb, block_group);
-+	base_clusters = ext4_num_base_meta_clusters(sb, block_group);
-+	num_clusters = base_clusters;
- 
- 	/*
--	 * For the allocation bitmaps and inode table, we first need
--	 * to check to see if the block is in the block group.  If it
--	 * is, then check to see if the cluster is already accounted
--	 * for in the clusters used for the base metadata cluster, or
--	 * if we can increment the base metadata cluster to include
--	 * that block.  Otherwise, we will have to track the cluster
--	 * used for the allocation bitmap or inode table explicitly.
-+	 * Account and record inode table clusters if any cluster
-+	 * is in the block group, or inode table cluster range is
-+	 * [-1, -1] and won't overlap with block/inode bitmap cluster
-+	 * accounted below.
-+	 */
-+	itbl_blk_start = ext4_inode_table(sb, gdp);
-+	itbl_blk_end = itbl_blk_start + sbi->s_itb_per_group - 1;
-+	if (itbl_blk_start <= end && itbl_blk_end >= start) {
-+		itbl_blk_start = itbl_blk_start >= start ?
-+			itbl_blk_start : start;
-+		itbl_blk_end = itbl_blk_end <= end ?
-+			itbl_blk_end : end;
-+
-+		itbl_cluster_start = EXT4_B2C(sbi, itbl_blk_start - start);
-+		itbl_cluster_end = EXT4_B2C(sbi, itbl_blk_end - start);
-+
-+		num_clusters += itbl_cluster_end - itbl_cluster_start + 1;
-+		/* check if border cluster is overlapped */
-+		if (itbl_cluster_start == base_clusters - 1)
-+			num_clusters--;
-+	}
-+
-+	/*
-+	 * For the allocation bitmaps, we first need to check to see
-+	 * if the block is in the block group.  If it is, then check
-+	 * to see if the cluster is already accounted for in the clusters
-+	 * used for the base metadata cluster and inode tables cluster.
- 	 * Normally all of these blocks are contiguous, so the special
- 	 * case handling shouldn't be necessary except for *very*
- 	 * unusual file system layouts.
-@@ -113,46 +137,26 @@ static unsigned ext4_num_overhead_clusters(struct super_block *sb,
- 	if (ext4_block_in_group(sb, ext4_block_bitmap(sb, gdp), block_group)) {
- 		block_cluster = EXT4_B2C(sbi,
- 					 ext4_block_bitmap(sb, gdp) - start);
--		if (block_cluster < num_clusters)
--			block_cluster = -1;
--		else if (block_cluster == num_clusters) {
-+		if (block_cluster >= base_clusters &&
-+		    (block_cluster < itbl_cluster_start ||
-+		    block_cluster > itbl_cluster_end))
- 			num_clusters++;
--			block_cluster = -1;
--		}
- 	}
- 
- 	if (ext4_block_in_group(sb, ext4_inode_bitmap(sb, gdp), block_group)) {
- 		inode_cluster = EXT4_B2C(sbi,
- 					 ext4_inode_bitmap(sb, gdp) - start);
--		if (inode_cluster < num_clusters)
--			inode_cluster = -1;
--		else if (inode_cluster == num_clusters) {
--			num_clusters++;
--			inode_cluster = -1;
--		}
--	}
--
--	itbl_blk = ext4_inode_table(sb, gdp);
--	for (i = 0; i < sbi->s_itb_per_group; i++) {
--		if (ext4_block_in_group(sb, itbl_blk + i, block_group)) {
--			c = EXT4_B2C(sbi, itbl_blk + i - start);
--			if ((c < num_clusters) || (c == inode_cluster) ||
--			    (c == block_cluster) || (c == itbl_cluster))
--				continue;
--			if (c == num_clusters) {
--				num_clusters++;
--				continue;
--			}
-+		/*
-+		 * Additional check if inode bitmap is in just accounted
-+		 * block_cluster
-+		 */
-+		if (inode_cluster != block_cluster &&
-+		    inode_cluster >= base_clusters &&
-+		    (inode_cluster < itbl_cluster_start ||
-+		    inode_cluster > itbl_cluster_end))
- 			num_clusters++;
--			itbl_cluster = c;
--		}
- 	}
- 
--	if (block_cluster != -1)
--		num_clusters++;
--	if (inode_cluster != -1)
--		num_clusters++;
--
- 	return num_clusters;
- }
- 
--- 
-2.30.0
+Observation
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I created an ext4 filesystem inside a file (ext4 partition below) and mount=
+ed it (e.g. in /var/persistent/reserved). Then I fill up the underlying fil=
+e system. There is enough space inside the file but when I write a file to =
+it the journal gives a "buffer I/O error". =20
+
+Steps to Reproduce
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The following steps reproduce these bug. I execute them as root user.
+
+Preparation:
+1.	Create a file with fix disk usage:
+	`fallocate -l 32M /var/reserved.ext4`
+2.	Create a ext4 filesystem inside it:
+	`mkfs.ext4 /var/reserved.ext4`
+3.	Create the mountpoint:
+	`mkdir /var/reserved/`
+4.	Mount the file:
+	`mount /var/reserved.ext4 /var/reserved/`
+5.	(Optional) Check the filesystem with fsck.
+
+Now the reserved storage works fine!
+
+The Bug:
+1.	Fill up the underlying filesystem:
+	`fallocate -l 100G /var/very_big_file`
+2.	Write into the reserved storage:
+	`echo "Test" > /var/reserved/test_file_1`
+	or anything else.
+3.	The file is written but the journal shows the following error:
+
+	```
+	May 03 08:31:42 ucm kernel: loop: Write error at byte offset 8913920, leng=
+th 1024.
+	May 03 08:31:42 ucm kernel: blk_update_request: I/O error, dev loop0, sect=
+or 17410 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 0
+	May 03 08:31:42 ucm kernel: EXT4-fs warning (device loop0): ext4_end_bio:3=
+44: I/O error 10 writing to inode 12 starting block 8706)
+	May 03 08:31:42 ucm kernel: Buffer I/O error on device loop0, logical bloc=
+k 8705
+	May 03 08:31:42 ucm kernel: JBD2: Detected IO errors while flushing file d=
+ata on loop0-8
+	```
+
+Quick fix
+=3D=3D=3D=3D=3D=3D=3D
+
+Allocate a larger space to the file AFTER creating the ext4 file system.
+E.g after step 2. within the reserved space preparation: `fallocate -l 33M =
+/var/reserved.ext4`
+
+
+Is this a bug or is my usage wrong?
+
+Best regards
+
+Etienne Schmidt
 
