@@ -2,75 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C4B69F7C8
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Feb 2023 16:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5656A00A5
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Feb 2023 02:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbjBVP34 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Feb 2023 10:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
+        id S229461AbjBWBcF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Feb 2023 20:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjBVP3z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Feb 2023 10:29:55 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE114E8D
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Feb 2023 07:29:53 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id ck15so33173383edb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Feb 2023 07:29:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YRpTGuARTRBMn36r7tlXq3qs+CoLxHqb66PgbsuqrJE=;
-        b=aFfhi1Q8liHmCDttqXt4BsRE4pKOyZ0BsLYT1rHW4sAf2cDnZaVnaOcNi9Srhgcri4
-         2weua2b9PjnHvF7A69aGjDs61at2sWlxZmigpK+jmJ4eCpM7a7WEeWr+XpLtekbFlpbZ
-         wRsPek9Mr2Mh4aACdHW4f4dYR9reJpqp5g2cvHoquprU9j2kexlgxVaQLFxX0aPfDcJ/
-         xMs3kLPlD6FGyc3s412vZaYpD2CCj1M4dXX7kW28PTf1/pEVmY66qa0XpVEqfzrfeqbr
-         MM00XJKfXUwonXSrZZNSoc1vDYVIQKUK8Cgw8EeZLsxrZVDuYVUSQ9F6Pdv0lPPvT1Fo
-         EAkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YRpTGuARTRBMn36r7tlXq3qs+CoLxHqb66PgbsuqrJE=;
-        b=57J6v5yMQA4PMvS/Nl7cxgPUH0jBX0pXsI+T6XH3yJlmdHJkQJXWdokCjUwzRM3NG1
-         tYtsG1KufbBvNHf85iClnbnx3yBL3NyBfN6K65eeAVmQLczFSnSmiTXiV889GYDg9Ihs
-         YtaATv/ZfUgI+3bzFL3j1rpLDyUoPnPbSsYRDOkgy6kVmWQtfgQ/diBmsMaM18pePGN0
-         jWtYXnGTldH0zxc1ti9iEzPc3z3W+N9QkOH8SBrSCjsHNclBd/h29cG+u31YeBB2os7g
-         QpDszQavl1kmKJO4q3jOjcWQPyadZXM+TuZkMKn6RKn0gn0B5sfXTI5eMUl9Lz4J7zwR
-         Xwhg==
-X-Gm-Message-State: AO0yUKUS7QuSdBAulZvMLzH7o5kQrlzmglXfz4vfYRV2hv85n9da/jqI
-        FID4eUk/BYBXk7/veL+1FC3ptQ==
-X-Google-Smtp-Source: AK7set8PzT2qWIgKTOfPggUjC00P2pwJYwx3QVR25wRd+rFFsKXlbkH/ugDvhVjFizuu6pcEOnFeaQ==
-X-Received: by 2002:aa7:c054:0:b0:4ae:f496:f32 with SMTP id k20-20020aa7c054000000b004aef4960f32mr10274813edo.26.1677079791760;
-        Wed, 22 Feb 2023 07:29:51 -0800 (PST)
-Received: from [192.168.0.109] ([82.77.80.204])
-        by smtp.gmail.com with ESMTPSA id c23-20020a50f617000000b004acde0a1ae5sm3650529edn.89.2023.02.22.07.29.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Feb 2023 07:29:51 -0800 (PST)
-Message-ID: <68ed0578-f4e9-250d-9742-cbb7815b1d61@linaro.org>
-Date:   Wed, 22 Feb 2023 15:29:49 +0000
+        with ESMTP id S233060AbjBWBcD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Feb 2023 20:32:03 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1843D924;
+        Wed, 22 Feb 2023 17:32:01 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PMb991g68z4f3lXC;
+        Thu, 23 Feb 2023 09:31:57 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgAXB+UKwvZjQ_FXEA--.62830S2;
+        Thu, 23 Feb 2023 09:31:55 +0800 (CST)
+Subject: Re: [PATCH 7/7] ext4: improve inode table blocks counting in
+ ext4_num_overhead_clusters
+To:     Dan Carpenter <error27@gmail.com>, oe-kbuild@lists.linux.dev,
+        tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <202302222219.u328sqfs-lkp@intel.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <1802222f-9c10-9ea3-93fb-6fce086e201a@huaweicloud.com>
+Date:   Thu, 23 Feb 2023 09:31:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] ext4: fix another off-by-one fsmap error on 1k block
- filesystems
-Content-Language: en-US
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Cc:     Jun Nie <jun.nie@linaro.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <joneslee@google.com>
-References: <Y+58NPTH7VNGgzdd@magnolia>
- <5da85766-65c7-107f-e525-2ae75b04750a@linaro.org>
-In-Reply-To: <5da85766-65c7-107f-e525-2ae75b04750a@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+In-Reply-To: <202302222219.u328sqfs-lkp@intel.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgAXB+UKwvZjQ_FXEA--.62830S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr13XryUKF4kCr47Wr17Jrb_yoW5tFyrpr
+        4jgFn5Jry3Ww429Fs7tw4kX3WrGw1kKw1DJF1rGw13ZF9rWryxurn2gF98uFW2grn8K3ZF
+        vrZ7CryUu3Z8Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,151 +63,60 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Darrick,
 
-On 2/17/23 08:10, Tudor Ambarus wrote:
-> Hi, Darrick,
-> 
-> On 2/16/23 18:55, Darrick J. Wong wrote:
->> From: Darrick J. Wong <djwong@kernel.org>
->>
->> Apparently syzbot figured out that issuing this FSMAP call:
->>
->> struct fsmap_head cmd = {
->>     .fmh_count    = ...;
->>     .fmh_keys    = {
->>         { .fmr_device = /* ext4 dev */, .fmr_physical = 0, },
->>         { .fmr_device = /* ext4 dev */, .fmr_physical = 0, },
->>     },
->> ...
->> };
->> ret = ioctl(fd, FS_IOC_GETFSMAP, &cmd);
->>
->> Produces this crash if the underlying filesystem is a 1k-block ext4
->> filesystem:
->>
->> kernel BUG at fs/ext4/ext4.h:3331!
->> invalid opcode: 0000 [#1] PREEMPT SMP
->> CPU: 3 PID: 3227965 Comm: xfs_io Tainted: G        W  O       
->> 6.2.0-rc8-achx
->> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 
->> 04/01/2014
->> RIP: 0010:ext4_mb_load_buddy_gfp+0x47c/0x570 [ext4]
->> RSP: 0018:ffffc90007c03998 EFLAGS: 00010246
->> RAX: ffff888004978000 RBX: ffffc90007c03a20 RCX: ffff888041618000
->> RDX: 0000000000000000 RSI: 00000000000005a4 RDI: ffffffffa0c99b11
->> RBP: ffff888012330000 R08: ffffffffa0c2b7d0 R09: 0000000000000400
->> R10: ffffc90007c03950 R11: 0000000000000000 R12: 0000000000000001
->> R13: 00000000ffffffff R14: 0000000000000c40 R15: ffff88802678c398
->> FS:  00007fdf2020c880(0000) GS:ffff88807e100000(0000) 
->> knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007ffd318a5fe8 CR3: 000000007f80f001 CR4: 00000000001706e0
->> Call Trace:
->>   <TASK>
->>   ext4_mballoc_query_range+0x4b/0x210 [ext4 
->> dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->>   ext4_getfsmap_datadev+0x713/0x890 [ext4 
->> dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->>   ext4_getfsmap+0x2b7/0x330 [ext4 
->> dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->>   ext4_ioc_getfsmap+0x153/0x2b0 [ext4 
->> dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->>   __ext4_ioctl+0x2a7/0x17e0 [ext4 
->> dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->>   __x64_sys_ioctl+0x82/0xa0
->>   do_syscall_64+0x2b/0x80
->>   entry_SYSCALL_64_after_hwframe+0x46/0xb0
->> RIP: 0033:0x7fdf20558aff
->> RSP: 002b:00007ffd318a9e30 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->> RAX: ffffffffffffffda RBX: 00000000000200c0 RCX: 00007fdf20558aff
->> RDX: 00007fdf1feb2010 RSI: 00000000c0c0583b RDI: 0000000000000003
->> RBP: 00005625c0634be0 R08: 00005625c0634c40 R09: 0000000000000001
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdf1feb2010
->> R13: 00005625be70d994 R14: 0000000000000800 R15: 0000000000000000
->>
->> For GETFSMAP calls, the caller selects a physical block device by
->> writing its block number into fsmap_head.fmh_keys[01].fmr_device.
->> To query mappings for a subrange of the device, the starting byte of the
->> range is written to fsmap_head.fmh_keys[0].fmr_physical and the last
->> byte of the range goes in fsmap_head.fmh_keys[1].fmr_physical.
->>
->> IOWs, to query what mappings overlap with bytes 3-14 of /dev/sda, you'd
->> set the inputs as follows:
->>
->>     fmh_keys[0] = { .fmr_device = major(8, 0), .fmr_physical = 3},
->>     fmh_keys[1] = { .fmr_device = major(8, 0), .fmr_physical = 14},
->>
->> Which would return you whatever is mapped in the 12 bytes starting at
->> physical offset 3.
->>
->> The crash is due to insufficient range validation of keys[1] in
->> ext4_getfsmap_datadev.  On 1k-block filesystems, block 0 is not part of
->> the filesystem, which means that s_first_data_block is nonzero.
->> ext4_get_group_no_and_offset subtracts this quantity from the blocknr
->> argument before cracking it into a group number and a block number
->> within a group.  IOWs, block group 0 spans blocks 1-8192 (1-based)
->> instead of 0-8191 (0-based) like what happens with larger blocksizes.
->>
->> The net result of this encoding is that blocknr < s_first_data_block is
->> not a valid input to this function.  The end_fsb variable is set from
->> the keys that are copied from userspace, which means that in the above
->> example, its value is zero.  That leads to an underflow here:
->>
->>     blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
->>
->> The division then operates on -1:
->>
->>     offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
->>         EXT4_SB(sb)->s_cluster_bits;
->>
->> Leaving an impossibly large group number (2^32-1) in blocknr.
->> ext4_getfsmap_check_keys checked that keys[0].fmr_physical and
->> keys[1].fmr_physical are in increasing order, but
->> ext4_getfsmap_datadev adjusts keys[0].fmr_physical to be at least
->> s_first_data_block.  This implies that we have to check it again after
->> the adjustment, which is the piece that I forgot.
->>
->> Fixes: 4a4956249dac ("ext4: fix off-by-one fsmap error on 1k block 
->> filesystems")
->> Link: 
->> https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
->> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
->> ---
->>   fs/ext4/fsmap.c |    2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
->> index 4493ef0c715e..cdf9bfe10137 100644
->> --- a/fs/ext4/fsmap.c
->> +++ b/fs/ext4/fsmap.c
->> @@ -486,6 +486,8 @@ static int ext4_getfsmap_datadev(struct 
->> super_block *sb,
->>           keys[0].fmr_physical = bofs;
->>       if (keys[1].fmr_physical >= eofs)
->>           keys[1].fmr_physical = eofs - 1;
->> +    if (keys[1].fmr_physical < keys[0].fmr_physical)
->> +        return 0;
-> 
-> This is an indirect implication, we can be more straightforward. Also we
-> should stop the execution when high_key->fmr_physical == bofs. So maybe:
-> 
-> --- a/fs/ext4/fsmap.c
-> +++ b/fs/ext4/fsmap.c
-> @@ -479,6 +479,8 @@ static int ext4_getfsmap_datadev(struct super_block 
-> *sb,
->          int error = 0;
-> 
->          bofs = le32_to_cpu(sbi->s_es->s_first_data_block);
-> +       if (keys[1].fmr_physical <= bofs)
-> +               return 0;
->          eofs = ext4_blocks_count(sbi->s_es);
->          if (keys[0].fmr_physical >= eofs)
->                  return 0;
 
-Just wanted to let you know that I sent this patch together with two 
-others at:
-https://lore.kernel.org/linux-ext4/20230222131211.3898066-1-tudor.ambarus@linaro.org/T/
+on 2/22/2023 11:13 PM, Dan Carpenter wrote:
+> Hi Kemeng,
+> 
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Kemeng-Shi/ext4-properly-handle-error-of-ext4_init_block_bitmap-in-ext4_read_block_bitmap_nowait/20230221-115830
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+> patch link:    https://lore.kernel.org/r/20230221115919.1918161-8-shikemeng%40huaweicloud.com
+> patch subject: [PATCH 7/7] ext4: improve inode table blocks counting in ext4_num_overhead_clusters
+> config: riscv-randconfig-m031-20230219 (https://download.01.org/0day-ci/archive/20230222/202302222219.u328sqfs-lkp@intel.com/config)
+> compiler: riscv32-linux-gcc (GCC) 12.1.0
+> 
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <error27@gmail.com>
+> | Link: https://lore.kernel.org/r/202302222219.u328sqfs-lkp@intel.com/
+> 
+> New smatch warnings:
+> fs/ext4/balloc.c:153 ext4_num_overhead_clusters() error: uninitialized symbol 'block_cluster'.
+> 
+> vim +/block_cluster +153 fs/ext4/balloc.c
+[...]
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  128  	/*
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  129  	 * For the allocation bitmaps, we first need to check to see
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  130  	 * if the block is in the block group.  If it is, then check
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  131  	 * to see if the cluster is already accounted for in the clusters
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  132  	 * used for the base metadata cluster and inode tables cluster.
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  133  	 * Normally all of these blocks are contiguous, so the special
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  134  	 * case handling shouldn't be necessary except for *very*
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  135  	 * unusual file system layouts.
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  136  	 */
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  137  	if (ext4_block_in_group(sb, ext4_block_bitmap(sb, gdp), block_group)) {
+> b0dd6b70f0fda1 Theodore Ts'o     2012-06-07  138  		block_cluster = EXT4_B2C(sbi,
+> b0dd6b70f0fda1 Theodore Ts'o     2012-06-07  139  					 ext4_block_bitmap(sb, gdp) - start);
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  140  		if (block_cluster >= base_clusters &&
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  141  		    (block_cluster < itbl_cluster_start ||
+> 2b59a2fd93873a Kemeng Shi        2023-02-21  142  		    block_cluster > itbl_cluster_end))
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  143  			num_clusters++;
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  144  	}
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  145  
+> d5b8f31007a937 Theodore Ts'o     2011-09-09  146  	if (ext4_block_in_group(sb, ext4_inode_bitmap(sb, gdp), block_group)) {
+> 
+> These two conditions are exactly the same so I don't see why they can't
+> be combined into one condition.  I have read the comment, but I guess I
+> don't understand ext4 well enough to really understand it.
+These two conditions check two kinds of bitmap block: *block* bitmap block
+and *inode* bitmap block. For case that block bitmap in the block group
+while inode bitmap in a different group, there is a risk to access
+uninitialized  block_cluster.
+I will fix this in next version, Thanks!
 
-Cheers,
-ta
+-- 
+Best wishes
+Kemeng Shi
+
