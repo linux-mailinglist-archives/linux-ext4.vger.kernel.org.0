@@ -2,74 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7096A4076
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Feb 2023 12:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C84F6A4151
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Feb 2023 13:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbjB0LUG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Feb 2023 06:20:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        id S229590AbjB0MBb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Feb 2023 07:01:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjB0LUF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 06:20:05 -0500
+        with ESMTP id S229735AbjB0MBa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 07:01:30 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2A31E1FC;
-        Mon, 27 Feb 2023 03:20:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B28B1E1E9;
+        Mon, 27 Feb 2023 04:01:29 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6CBF01FD66;
-        Mon, 27 Feb 2023 11:20:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1AF3A1FD63;
+        Mon, 27 Feb 2023 12:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1677496802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1677499288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pr5MzRMFbU4/ps/joBezT106U4zCzTdTfHhjWZwvaOQ=;
-        b=TqJVNs04w0F+4aOgUi9XHFrGESg2eLrdy03UA3eIJynpw/wQIF4nSByag7bQ0ohG67JX3P
-        798ol50U7qpTXL1e2PJh2G/M1sJU1M3abRqAfSMfdyVj4oxNSRyLvFQAZSyYid0FuDAFgp
-        RhQvGJeZssSKbK7G3iXuymzHsbHU3DU=
+        bh=G5gTAfyOlTzJ4oNO8+DLYyEkz3s3GJLc/VFSfJCGKz0=;
+        b=FIyedv0JYW76OtvV3yup4m9Qj3D6wyMeLRm9cQpsCMISbtFtQvlBaaJ7ocZL5bRyTjVrHG
+        ph+isYzOGm/oNxrbgKnFU16cSaedQnUwzYy0MvkxpfeFIc9wZDIiS77n5MvsdB5lRdXN4F
+        58wd10GQ7iI8OGjyj0mmDObloRWXrzw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1677496802;
+        s=susede2_ed25519; t=1677499288;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pr5MzRMFbU4/ps/joBezT106U4zCzTdTfHhjWZwvaOQ=;
-        b=7LcojbpqnA7r93cgS4KrZbEMoBl2Ddfnl6buxLcB2B8quOnZK2s1NPOoMco8SctjyROFOq
-        3uH8/z95LIVsMPBw==
+        bh=G5gTAfyOlTzJ4oNO8+DLYyEkz3s3GJLc/VFSfJCGKz0=;
+        b=WjFZ2KFENIJoscFRwD5VRAkucF7ktW5jlnLnZiu3spXSMrnA2BWhKSrdChAGrLgDp7VTt0
+        7RdDZF06n3cveVDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C20713A5C;
-        Mon, 27 Feb 2023 11:20:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0DFCA13912;
+        Mon, 27 Feb 2023 12:01:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IiJ3FuKR/GOpFQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 27 Feb 2023 11:20:02 +0000
+        id NjBlA5ib/GMzLwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 27 Feb 2023 12:01:28 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E0D7FA06F2; Mon, 27 Feb 2023 12:20:01 +0100 (CET)
-Date:   Mon, 27 Feb 2023 12:20:01 +0100
+        id 7C909A06F2; Mon, 27 Feb 2023 13:01:27 +0100 (CET)
+Date:   Mon, 27 Feb 2023 13:01:27 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     "yebin (H)" <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin@huaweicloud.com>,
-        tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ext4: commit super block if fs record error when
- journal record without error
-Message-ID: <20230227112001.hfcp7mmay6vzihck@quack3>
-References: <20230214022905.765088-1-yebin@huaweicloud.com>
- <20230214022905.765088-2-yebin@huaweicloud.com>
- <20230216173159.zkj4qd2nmj2yjpkr@quack3>
- <63EEDC19.6010204@huawei.com>
- <20230217105647.g6blbinkvnsyy2or@quack3>
- <63F03582.1020303@huawei.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, rookxu <brookxu.cn@gmail.com>
+Subject: Re: [PATCH v4 6/9] ext4: Fix best extent lstart adjustment logic in
+ ext4_mb_new_inode_pa()
+Message-ID: <20230227120127.ki3ydzdbi25d5wmp@quack3>
+References: <cover.1676634592.git.ojaswin@linux.ibm.com>
+ <79b5240a6168171577b1bb9ef7a27c0c52676d37.1676634592.git.ojaswin@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <63F03582.1020303@huawei.com>
+In-Reply-To: <79b5240a6168171577b1bb9ef7a27c0c52676d37.1676634592.git.ojaswin@linux.ibm.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -79,125 +73,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 18-02-23 10:18:42, yebin (H) wrote:
-> On 2023/2/17 18:56, Jan Kara wrote:
-> > On Fri 17-02-23 09:44:57, yebin (H) wrote:
-> > > On 2023/2/17 1:31, Jan Kara wrote:
-> > > > On Tue 14-02-23 10:29:04, Ye Bin wrote:
-> > > > > From: Ye Bin <yebin10@huawei.com>
-> > > > > 
-> > > > > Now, 'es->s_state' maybe covered by recover journal. And journal errno
-> > > > > maybe not recorded in journal sb as IO error. ext4_update_super() only
-> > > > > update error information when 'sbi->s_add_error_count' large than zero.
-> > > > > Then 'EXT4_ERROR_FS' flag maybe lost.
-> > > > > To solve above issue commit error information after recover journal.
-> > > > > 
-> > > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > > > > ---
-> > > > >    fs/ext4/super.c | 12 ++++++++++++
-> > > > >    1 file changed, 12 insertions(+)
-> > > > > 
-> > > > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > > > > index dc3907dff13a..b94754ba8556 100644
-> > > > > --- a/fs/ext4/super.c
-> > > > > +++ b/fs/ext4/super.c
-> > > > > @@ -5932,6 +5932,18 @@ static int ext4_load_journal(struct super_block *sb,
-> > > > >    		goto err_out;
-> > > > >    	}
-> > > > > +	if (unlikely(es->s_error_count && !jbd2_journal_errno(journal) &&
-> > > > > +		     !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS))) {
-> > > > > +		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
-> > > > > +		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-> > > > > +		err = ext4_commit_super(sb);
-> > > > > +		if (err) {
-> > > > > +			ext4_msg(sb, KERN_ERR,
-> > > > > +				 "Failed to commit error information, please repair fs force!");
-> > > > > +			goto err_out;
-> > > > > +		}
-> > > > > +	}
-> > > > > +
-> > > > Hum, I'm not sure I follow here. If journal replay has overwritten the
-> > > > superblock (and thus the stored error info), then I'd expect
-> > > > es->s_error_count got overwritten (possibly to 0) as well. And this is
-> > > > actually relatively realistic scenario with errors=remount-ro behavior when
-> > > > the first fs error happens.
-> > > > 
-> > > > What I intended in my original suggestion was to save es->s_error_count,
-> > > > es->s_state & EXT4_ERROR_FS, es->s_first_error_*, es->s_last_error_* before
-> > > > doing journal replay in ext4_load_journal() and then after journal replay
-> > > > merge this info back to the superblock
-> > > Actually，commit 1c13d5c08728 ("ext4: Save error information to the
-> > > superblock for analysis")
-> > > already merged error info back to the superblock after journal replay except
-> > > 'es->s_state'.
-> > > The problem I have now is that the error flag in the journal superblock was
-> > > not recorded,
-> > > but the error message was recorded in the superblock. So it leads to
-> > > ext4_clear_journal_err()
-> > > does not detect errors and marks the file system as an error. Because
-> > > ext4_update_super() is
-> > > only set error flag  when 'sbi->s_add_error_count  > 0'. Although
-> > > 'sbi->s_mount_state' is
-> > > written to the super block when umount, but it is also conditional.
-> > > So I handle the scenario "es->s_error_count && !jbd2_journal_errno(journal)
-> > > &&
-> > > !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS)". Maybe we can just store
-> > > 'EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS' back to the superblock. But i
-> > > prefer to mark fs as error if it contain detail error info without
-> > > EXT4_ERROR_FS.
-> > Aha, thanks for explanation! So now I finally understand what the problem
-> > exactly is. I'm not sure relying on es->s_error_count is too good. Probably
-> > it works but I'd be calmer if when saving error info we also did:
-> > 
-> > 	bool error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
-> > 
-> > 	copy other info
-> > 	err = jbd2_journal_load(journal);
-> > 	restore other info
-> > 	if (error_fs)
-> > 		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-> > 	/* Write out restored error information to the superblock */
-> > 	err2 = ext4_commit_super(sb);
-> > 
-> > and be done with this. I don't think trying to optimize away the committing
-> > of the superblock when we had to replay the journal is really worth it.
-> > 
-> > Does this solve your concerns?
-> Thanks for your suggestion.
+On Fri 17-02-23 17:44:15, Ojaswin Mujoo wrote:
+> When the length of best extent found is less than the length of goal extent
+> we need to make sure that the best extent atleast covers the start of the
+> original request. This is done by adjusting the ac_b_ex.fe_logical (logical
+> start) of the extent.
 > 
-> I think if journal super block has 'j_errno' ext4_clear_journal_err()
-> will commit error info.  The scenario we need to deal with is:(1) journal
-> super block has no 'j_errno'; (2) super block has detail error info, but
-> 'es->s_state' has no 'EXT4_ERROR_FS', It means super block in journal has
-> no error flag and the newest super block has error flag.
+> While doing so, the current logic sometimes results in the best extent's logical
+> range overflowing the goal extent. Since this best extent is later added to the
+> inode preallocation list, we have a possibility of introducing overlapping
+> preallocations. This is discussed in detail here [1].
+> 
+> To fix this, replace the existing logic with the below logic for adjusting best
+> extent as it keeps fragmentation in check while ensuring logical range of best
+> extent doesn't overflow out of goal extent:
+> 
+> 1. Check if best extent can be kept at end of goal range and still cover
+>    original start.
+> 2. Else, check if best extent can be kept at start of goal range and still cover
+>    original start.
+> 3. Else, keep the best extent at start of original request.
+> 
+> Also, add a few extra BUG_ONs that might help catch errors faster.
+> 
+> [1] https://lore.kernel.org/r/Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com
+> 
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-But my code above should be handling this situation you describe - the
-check:
+Looks good to me. Feel free to add:
 
-error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-will check the newest state in the superblock before journal replay. Then
-we replay the journal - es->s_state may loose the EXT4_ERROR_FS flag if the
-superblock version in the journal didn't have it. So we do:
+Just one style nit below.
 
-if (error_fs)
-	es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> +		/*
+> +		 * Use the below logic for adjusting best extent as it keeps
+> +		 * fragmentation in check while ensuring logical range of best
+> +		 * extent doesn't overflow out of goal extent:
+> +		 *
+> +		 * 1. Check if best ex can be kept at end of goal and still
+> +		 *    cover original start
+> +		 * 2. Else, check if best ex can be kept at start of goal and
+> +		 *    still cover original start
+> +		 * 3. Else, keep the best ex at start of original request.
+> +		 */
+> +		new_bex_end = ac->ac_g_ex.fe_logical +
+> +			EXT4_C2B(sbi, ac->ac_g_ex.fe_len);
+> +		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+> +		if (ac->ac_o_ex.fe_logical >= new_bex_start)
+> +				goto adjust_bex;
+		^^^ The indentation looks too big here
 
-which makes sure EXT4_ERROR_FS is set either if it was set in the journal
-or in the newest superblock version before journal replay.
-
-> so we need to
-> store error flag to 'es->s_state', and commit it to disk.If 'es->s_state'
-> has 'EXT4_ERROR_FS', it means super block in journal has error flag, so
-> we do not need to store error flag in super block.
-
-Why do you think that if es->s_state has EXT4_ERROR_FS, the super block in
-the journal has that flag? During mount, we load the superblock directly
-from the first block in the filesystem and until we call
-jbd2_journal_load(), es->s_state contains this newest value of the
-superblock state. What am I missing?
-
-								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
