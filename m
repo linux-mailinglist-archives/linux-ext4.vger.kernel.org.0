@@ -2,191 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D16A26A5128
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 03:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7756A5214
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 04:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjB1CYe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Feb 2023 21:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        id S229520AbjB1DxH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Feb 2023 22:53:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjB1CYc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 21:24:32 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6722610A9C;
-        Mon, 27 Feb 2023 18:24:29 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PQgzj5HhnzKmJ2;
-        Tue, 28 Feb 2023 10:19:29 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 28 Feb 2023 10:24:26 +0800
-Subject: Re: [PATCH v3 1/2] ext4: commit super block if fs record error when
- journal record without error
-To:     Jan Kara <jack@suse.cz>
-References: <20230214022905.765088-1-yebin@huaweicloud.com>
- <20230214022905.765088-2-yebin@huaweicloud.com>
- <20230216173159.zkj4qd2nmj2yjpkr@quack3> <63EEDC19.6010204@huawei.com>
- <20230217105647.g6blbinkvnsyy2or@quack3> <63F03582.1020303@huawei.com>
- <20230227112001.hfcp7mmay6vzihck@quack3>
-CC:     Ye Bin <yebin@huaweicloud.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <63FD65DA.6050805@huawei.com>
-Date:   Tue, 28 Feb 2023 10:24:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        with ESMTP id S229486AbjB1DxG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 22:53:06 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B168B44A;
+        Mon, 27 Feb 2023 19:53:05 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E847FB80CA7;
+        Tue, 28 Feb 2023 03:53:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302CFC433D2;
+        Tue, 28 Feb 2023 03:53:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677556382;
+        bh=u8P31QxD6VV0jVGuvboxfDzZUtsbvH8OqzD+6Goz13Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e2ZMcf24XxXbmCDzekB/T7YgJd/1GyrFRUrcuJfG9m4ayef66+7XXgKFql4BMYnLI
+         p3ky/n0i1OnZR19uWIXn1JvY16gg4xY0q+gyTYsqXUGGVBpkRbqy7K11DH7OLx5oQg
+         f7COZR8BF+TRB8PPa6/um00w3t3VQDwhMNyrVXQIwYLR235/Uw3h1WX6XJZ1dYtcV/
+         qHMFfpCP07a6FXcHhw/nYLLJkaStaw6d1+MUfdsMtT8+tPcRNOb2D9Qoa/StZ1rRjT
+         HIYWGv7xoXxJxIRin1Ui40Le9yyuYE2MfFWwbjN5W1hvaCdmsqgZbuZscnkHj1knk4
+         zPMU2QcVCsdSw==
+Date:   Mon, 27 Feb 2023 19:53:00 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     patchwork-bot+f2fs@kernel.org, linux-fscrypt@vger.kernel.org,
+        aalbersh@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/11] fsverity: support for non-4K pages
+Message-ID: <Y/16nEs4stc/0qmb@google.com>
+References: <20221223203638.41293-1-ebiggers@kernel.org>
+ <167754611492.27916.393758892204411776.git-patchwork-notify@kernel.org>
+ <Y/1ZP9pc1Zw9xh/L@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20230227112001.hfcp7mmay6vzihck@quack3>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y/1ZP9pc1Zw9xh/L@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 02/28, Eric Biggers wrote:
+> On Tue, Feb 28, 2023 at 01:01:54AM +0000, patchwork-bot+f2fs@kernel.org wrote:
+> > Hello:
+> > 
+> > This series was applied to jaegeuk/f2fs.git (dev)
+> > by Eric Biggers <ebiggers@google.com>:
+> > 
+> > On Fri, 23 Dec 2022 12:36:27 -0800 you wrote:
+> > > [This patchset applies to mainline + some fsverity cleanups I sent out
+> > >  recently.  You can get everything from tag "fsverity-non4k-v2" of
+> > >  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git ]
+> > > 
+> > > Currently, filesystems (ext4, f2fs, and btrfs) only support fsverity
+> > > when the Merkle tree block size, filesystem block size, and page size
+> > > are all the same.  In practice that means 4K, since increasing the page
+> > > size, e.g. to 16K, forces the Merkle tree block size and filesystem
+> > > block size to be increased accordingly.  That can be impractical; for
+> > > one, users want the same file signatures to work on all systems.
+> > > 
+> > > [...]
+> > 
+> > Here is the summary with links:
+> >   - [f2fs-dev,v2,01/11] fsverity: use unsigned long for level_start
+> >     https://git.kernel.org/jaegeuk/f2fs/c/284d5db5f99e
+> >   - [f2fs-dev,v2,02/11] fsverity: simplify Merkle tree readahead size calculation
+> >     https://git.kernel.org/jaegeuk/f2fs/c/9098f36b739d
+> >   - [f2fs-dev,v2,03/11] fsverity: store log2(digest_size) precomputed
+> >     https://git.kernel.org/jaegeuk/f2fs/c/579a12f78d88
+> >   - [f2fs-dev,v2,04/11] fsverity: use EFBIG for file too large to enable verity
+> >     https://git.kernel.org/jaegeuk/f2fs/c/55eed69cc8fd
+> >   - [f2fs-dev,v2,05/11] fsverity: replace fsverity_hash_page() with fsverity_hash_block()
+> >     https://git.kernel.org/jaegeuk/f2fs/c/f45555bf23cf
+> >   - [f2fs-dev,v2,06/11] fsverity: support verification with tree block size < PAGE_SIZE
+> >     https://git.kernel.org/jaegeuk/f2fs/c/5306892a50bf
+> >   - [f2fs-dev,v2,07/11] fsverity: support enabling with tree block size < PAGE_SIZE
+> >     https://git.kernel.org/jaegeuk/f2fs/c/56124d6c87fd
+> >   - [f2fs-dev,v2,08/11] ext4: simplify ext4_readpage_limit()
+> >     https://git.kernel.org/jaegeuk/f2fs/c/5e122148a3d5
+> >   - [f2fs-dev,v2,09/11] f2fs: simplify f2fs_readpage_limit()
+> >     https://git.kernel.org/jaegeuk/f2fs/c/feb0576a361a
+> >   - [f2fs-dev,v2,10/11] fs/buffer.c: support fsverity in block_read_full_folio()
+> >     https://git.kernel.org/jaegeuk/f2fs/c/4fa512ce7051
+> >   - [f2fs-dev,v2,11/11] ext4: allow verity with fs block size < PAGE_SIZE
+> >     https://git.kernel.org/jaegeuk/f2fs/c/db85d14dc5c5
+> > 
+> > You are awesome, thank you!
+> > -- 
+> > Deet-doot-dot, I am a bot.
+> > https://korg.docs.kernel.org/patchwork/pwbot.html
+> > 
+> 
+> These commits reached the f2fs tree through mainline, not through being applied
+> to the f2fs tree.  So this email shouldn't have been sent.  Jaegeuk, can you
+> look into fixing the configuration of the f2fs patchwork bot to prevent this?
 
+Hmm, not sure how to fix that, since it seems patchwork bot reports this, once
+I pulled mainline into f2fs/dev branch.
 
-On 2023/2/27 19:20, Jan Kara wrote:
-> On Sat 18-02-23 10:18:42, yebin (H) wrote:
->> On 2023/2/17 18:56, Jan Kara wrote:
->>> On Fri 17-02-23 09:44:57, yebin (H) wrote:
->>>> On 2023/2/17 1:31, Jan Kara wrote:
->>>>> On Tue 14-02-23 10:29:04, Ye Bin wrote:
->>>>>> From: Ye Bin <yebin10@huawei.com>
->>>>>>
->>>>>> Now, 'es->s_state' maybe covered by recover journal. And journal errno
->>>>>> maybe not recorded in journal sb as IO error. ext4_update_super() only
->>>>>> update error information when 'sbi->s_add_error_count' large than zero.
->>>>>> Then 'EXT4_ERROR_FS' flag maybe lost.
->>>>>> To solve above issue commit error information after recover journal.
->>>>>>
->>>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->>>>>> ---
->>>>>>     fs/ext4/super.c | 12 ++++++++++++
->>>>>>     1 file changed, 12 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>>>>> index dc3907dff13a..b94754ba8556 100644
->>>>>> --- a/fs/ext4/super.c
->>>>>> +++ b/fs/ext4/super.c
->>>>>> @@ -5932,6 +5932,18 @@ static int ext4_load_journal(struct super_block *sb,
->>>>>>     		goto err_out;
->>>>>>     	}
->>>>>> +	if (unlikely(es->s_error_count && !jbd2_journal_errno(journal) &&
->>>>>> +		     !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS))) {
->>>>>> +		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
->>>>>> +		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
->>>>>> +		err = ext4_commit_super(sb);
->>>>>> +		if (err) {
->>>>>> +			ext4_msg(sb, KERN_ERR,
->>>>>> +				 "Failed to commit error information, please repair fs force!");
->>>>>> +			goto err_out;
->>>>>> +		}
->>>>>> +	}
->>>>>> +
->>>>> Hum, I'm not sure I follow here. If journal replay has overwritten the
->>>>> superblock (and thus the stored error info), then I'd expect
->>>>> es->s_error_count got overwritten (possibly to 0) as well. And this is
->>>>> actually relatively realistic scenario with errors=remount-ro behavior when
->>>>> the first fs error happens.
->>>>>
->>>>> What I intended in my original suggestion was to save es->s_error_count,
->>>>> es->s_state & EXT4_ERROR_FS, es->s_first_error_*, es->s_last_error_* before
->>>>> doing journal replay in ext4_load_journal() and then after journal replay
->>>>> merge this info back to the superblock
->>>> Actually，commit 1c13d5c08728 ("ext4: Save error information to the
->>>> superblock for analysis")
->>>> already merged error info back to the superblock after journal replay except
->>>> 'es->s_state'.
->>>> The problem I have now is that the error flag in the journal superblock was
->>>> not recorded,
->>>> but the error message was recorded in the superblock. So it leads to
->>>> ext4_clear_journal_err()
->>>> does not detect errors and marks the file system as an error. Because
->>>> ext4_update_super() is
->>>> only set error flag  when 'sbi->s_add_error_count  > 0'. Although
->>>> 'sbi->s_mount_state' is
->>>> written to the super block when umount, but it is also conditional.
->>>> So I handle the scenario "es->s_error_count && !jbd2_journal_errno(journal)
->>>> &&
->>>> !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS)". Maybe we can just store
->>>> 'EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS' back to the superblock. But i
->>>> prefer to mark fs as error if it contain detail error info without
->>>> EXT4_ERROR_FS.
->>> Aha, thanks for explanation! So now I finally understand what the problem
->>> exactly is. I'm not sure relying on es->s_error_count is too good. Probably
->>> it works but I'd be calmer if when saving error info we also did:
->>>
->>> 	bool error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
->>>
->>> 	copy other info
->>> 	err = jbd2_journal_load(journal);
->>> 	restore other info
->>> 	if (error_fs)
->>> 		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
->>> 	/* Write out restored error information to the superblock */
->>> 	err2 = ext4_commit_super(sb);
->>>
->>> and be done with this. I don't think trying to optimize away the committing
->>> of the superblock when we had to replay the journal is really worth it.
->>>
->>> Does this solve your concerns?
->> Thanks for your suggestion.
->>
->> I think if journal super block has 'j_errno' ext4_clear_journal_err()
->> will commit error info.  The scenario we need to deal with is:(1) journal
->> super block has no 'j_errno'; (2) super block has detail error info, but
->> 'es->s_state' has no 'EXT4_ERROR_FS', It means super block in journal has
->> no error flag and the newest super block has error flag.
-> But my code above should be handling this situation you describe - the
-> check:
->
-> error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
-Here, we do not need to backup 'error_fs', as 
-'EXT4_SB(sb)->s_mount_state' already
-record this flag when fs has error flag before do journal replay.
-> will check the newest state in the superblock before journal replay. Then
-> we replay the journal - es->s_state may loose the EXT4_ERROR_FS flag if the
-> superblock version in the journal didn't have it. So we do:
->
-> if (error_fs)
-> 	es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
->
-> which makes sure EXT4_ERROR_FS is set either if it was set in the journal
-> or in the newest superblock version before journal replay.
-My modification is to deal with the situation we missed, and I don't 
-want to introduce
-an invalid super block submission.
-If you think my judgment is too obscure, I can send another version 
-according to your
-suggestion.
->> so we need to
->> store error flag to 'es->s_state', and commit it to disk.If 'es->s_state'
->> has 'EXT4_ERROR_FS', it means super block in journal has error flag, so
->> we do not need to store error flag in super block.
-> Why do you think that if es->s_state has EXT4_ERROR_FS, the super block in
-> the journal has that flag? During mount, we load the superblock directly
-> from the first block in the filesystem and until we call
-> jbd2_journal_load(), es->s_state contains this newest value of the
-> superblock state. What am I missing?
-After jbd2_journal_load() 'es->s_state' is already covered by the super 
-block in journal.
-If there is super block in journal and 'es->s_state' has error flag this 
-means super block
-in journal has error flag. If there is no super block in journal and  
-'es->s_state' has error
-flag, this means super block already has error flag.In both cases we can 
-do nothing.
->
-> 								Honza
-
+> 
+> - Eric
