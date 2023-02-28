@@ -2,84 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7006A4528
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Feb 2023 15:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4410F6A507C
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 02:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjB0Ouv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Feb 2023 09:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        id S229830AbjB1BCT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Feb 2023 20:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjB0Ouu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 09:50:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4C421293
-        for <linux-ext4@vger.kernel.org>; Mon, 27 Feb 2023 06:50:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677509405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xVFwiCBVIfFFR8kctTViBDKk1JETgkz4F8ffh+Bi2ks=;
-        b=MSi6pmchD705itdvYdhsp2iUdLgacitW1FZeAfSTZQLEf+eujnlnSoDhnmS9qtdCqYvG+F
-        HdWXPzgxLXMcijiG7ownNMIR3WgWqeMqYCavPybZMyJlPWgoaOZW7L/hatcUdeM6Ncejlz
-        /sANjKTzc56erLJZzujkPxIe5aiD50g=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-515-dV-XsYO5MwWkEY5Fc18XgQ-1; Mon, 27 Feb 2023 09:50:02 -0500
-X-MC-Unique: dV-XsYO5MwWkEY5Fc18XgQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229732AbjB1BCK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 20:02:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37F329E2B;
+        Mon, 27 Feb 2023 17:01:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5B4A32A59570;
-        Mon, 27 Feb 2023 14:50:01 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4476243FBB;
-        Mon, 27 Feb 2023 14:50:00 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <Y/y5rFX2koj2W6Wa@casper.infradead.org>
-References: <Y/y5rFX2koj2W6Wa@casper.infradead.org> <20230202204428.3267832-5-willy@infradead.org> <20230202204428.3267832-1-willy@infradead.org> <2730679.1677505767@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org,
-        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH 4/5] afs: Zero bytes after 'oldsize' if we're expanding the file
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7977DB80DD5;
+        Tue, 28 Feb 2023 01:01:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 15E2BC433EF;
+        Tue, 28 Feb 2023 01:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677546115;
+        bh=SOFnAzz1BpATHblwfDPCUsbi+PYozLGsV7wjyMHjkQk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Yrv42d67C/zchBY/GRxlF2I0lPmwe05knllpu/5rTK8vNLkpKkCLGXRW/EjYeRcQY
+         aHuxa5lUaSLE2Afe8ejaxjxddX83InNC8yYf/n7QqXsiOwRK1tdC/PAWG2IXcNQOgY
+         ctsys9m1rsLd6yP7b7tBdN812nYX2LYEo8qPe+oBIPHLt89g0Cwqkm0p51fR8fPCcg
+         TdetilTXNnPAfk0reqGCm2sT8/+GsltnN7i+3VER2zpwbvwtW7x3LYVUOVdHbsdst+
+         nRsbnEVQZZ/TZDNRZDCtUZfjm+T1pc4gWZZkfyI00zmudv+MED+Nr1dAn0L670B0wj
+         RaBYdXnRZfKoA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E53C0E1CF31;
+        Tue, 28 Feb 2023 01:01:54 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2736266.1677509399.1@warthog.procyon.org.uk>
-Date:   Mon, 27 Feb 2023 14:49:59 +0000
-Message-ID: <2736267.1677509399@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH v2 00/11] fsverity: support for non-4K pages
+From:   patchwork-bot+f2fs@kernel.org
+Message-Id: <167754611492.27916.393758892204411776.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Feb 2023 01:01:54 +0000
+References: <20221223203638.41293-1-ebiggers@kernel.org>
+In-Reply-To: <20221223203638.41293-1-ebiggers@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, aalbersh@redhat.com,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+Hello:
 
-> I'll send a patch series with all of this; it doesn't seem terribly
-> urgent.  Do you think there's a similar problem for AFS that Brian
-> noted with the generic patch?
+This series was applied to jaegeuk/f2fs.git (dev)
+by Eric Biggers <ebiggers@google.com>:
 
-Probably not.  To avoid deadlocking itself, afs uses a mutex to prevent
-writepages racing with truncate (vnode->validate_lock).
+On Fri, 23 Dec 2022 12:36:27 -0800 you wrote:
+> [This patchset applies to mainline + some fsverity cleanups I sent out
+>  recently.  You can get everything from tag "fsverity-non4k-v2" of
+>  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git ]
+> 
+> Currently, filesystems (ext4, f2fs, and btrfs) only support fsverity
+> when the Merkle tree block size, filesystem block size, and page size
+> are all the same.  In practice that means 4K, since increasing the page
+> size, e.g. to 16K, forces the Merkle tree block size and filesystem
+> block size to be increased accordingly.  That can be impractical; for
+> one, users want the same file signatures to work on all systems.
+> 
+> [...]
 
-	commit ec0fa0b659144d9c68204d23f627b6a65fa53e50
-	afs: Fix deadlock between writeback and truncate
+Here is the summary with links:
+  - [f2fs-dev,v2,01/11] fsverity: use unsigned long for level_start
+    https://git.kernel.org/jaegeuk/f2fs/c/284d5db5f99e
+  - [f2fs-dev,v2,02/11] fsverity: simplify Merkle tree readahead size calculation
+    https://git.kernel.org/jaegeuk/f2fs/c/9098f36b739d
+  - [f2fs-dev,v2,03/11] fsverity: store log2(digest_size) precomputed
+    https://git.kernel.org/jaegeuk/f2fs/c/579a12f78d88
+  - [f2fs-dev,v2,04/11] fsverity: use EFBIG for file too large to enable verity
+    https://git.kernel.org/jaegeuk/f2fs/c/55eed69cc8fd
+  - [f2fs-dev,v2,05/11] fsverity: replace fsverity_hash_page() with fsverity_hash_block()
+    https://git.kernel.org/jaegeuk/f2fs/c/f45555bf23cf
+  - [f2fs-dev,v2,06/11] fsverity: support verification with tree block size < PAGE_SIZE
+    https://git.kernel.org/jaegeuk/f2fs/c/5306892a50bf
+  - [f2fs-dev,v2,07/11] fsverity: support enabling with tree block size < PAGE_SIZE
+    https://git.kernel.org/jaegeuk/f2fs/c/56124d6c87fd
+  - [f2fs-dev,v2,08/11] ext4: simplify ext4_readpage_limit()
+    https://git.kernel.org/jaegeuk/f2fs/c/5e122148a3d5
+  - [f2fs-dev,v2,09/11] f2fs: simplify f2fs_readpage_limit()
+    https://git.kernel.org/jaegeuk/f2fs/c/feb0576a361a
+  - [f2fs-dev,v2,10/11] fs/buffer.c: support fsverity in block_read_full_folio()
+    https://git.kernel.org/jaegeuk/f2fs/c/4fa512ce7051
+  - [f2fs-dev,v2,11/11] ext4: allow verity with fs block size < PAGE_SIZE
+    https://git.kernel.org/jaegeuk/f2fs/c/db85d14dc5c5
 
-the afs_setattr_edit_file() call that changes i_size and partially clears the
-pagecache is applied to the local inode before the mutex is dropped.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-David
 
