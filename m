@@ -2,191 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF836A60E8
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 22:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BE26A626D
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 23:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjB1VFd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Feb 2023 16:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        id S229574AbjB1Wcr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Feb 2023 17:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjB1VF2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 16:05:28 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D11F199D3
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 13:05:01 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id g14-20020a92dd8e000000b00316ea7ce6d3so6579489iln.15
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 13:05:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QOkx/k0GvA2d+uljSK2CrlcxxihOM+XG9a1+0aogejo=;
-        b=VXqZfN8NEPYlU+X9zbARPg9RtoVWG56TCX8zFt0D03b8uMLF41YE7VC31TWxTfTIuh
-         b3Sj+M4lWCU2c5nnk0iPmcb89LzAPrI3f9dnUT3kI6CuwHUnHLLA2ChxK1nba8ZdF3iI
-         j3AbTbE7ax32hMKIkvtMd+pIyiS18sNJJD6W1Z9/2q7pWv6ZwrPWhDRZkCez0dDpJuSs
-         6hHR/lABx6fZjwTXMcxc4G7SELJJO4Zb2ECuINMxJCr1IFwD+D89AnRC85fvKW1zgi8m
-         aSZ3YyKWneqe+Fkm9rlgQQQ/Ow4H3TFmjYTUv84N+jZsMZH0I9ltohaSy7Ct9FYknNhP
-         2Ywg==
-X-Gm-Message-State: AO0yUKU8KlZWRMGa1dUDuEw5xb00+L8Am9xc/PWQ+UBmtMz7paNa0aYJ
-        2QUPTbh0lJLmdStoc7DjJw5+9wc2V9KUYy6MVN1Q3/ue7F68
-X-Google-Smtp-Source: AK7set8+5axy42qlZHj/9YZ/jxWKqxFLY56j1jcsgjhMBwgru2dWW/Z/ykq7MVp/KTq7B0N9iij+k08vYn8zaogICqZPpSgzMz8K
+        with ESMTP id S229520AbjB1Wcr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 17:32:47 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EBE2ED5C
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 14:32:45 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31SMUPCV016770
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 17:30:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1677623428; bh=z4a5dDxBQA7AcZTaXSR++HSOb7UmJWz7GB0EAM00kaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=IWHmt5JvPjAWDcjEjQdEQHk3pb9ibzUUtGME8OIHZ+4x7pBLQsgEDM2GS27+eDgtC
+         sYtpQ0KcBUmFfOZ1HiS1wfLKhk8KPEc6/yS9FcPEA1MgGdroLC8BcXSFGTIRhHPuWA
+         Q+RWDyCS6Hcvq9+YFOt8HgSwbrOwnv+dGZrLF9IRD7uvQRKVtxbtNw96Qd5BzEo61K
+         Z94BHujMBNcVQ87gv64Q6zqZhLcF+8+OFtjVI4HFtZk8YCFz5QKNuv28JWSXGpRfs1
+         iEDspwav6z4t94E/p8XEk0FT0O8Uiqhesyg10D/sDRR7CbqIRJ2/9pzpIRGkT20KI9
+         6bmpusgPFxVsw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3D0AE15C3593; Tue, 28 Feb 2023 17:30:25 -0500 (EST)
+Date:   Tue, 28 Feb 2023 17:30:25 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>, adilger.kernel@dilger.ca,
+        jack@suse.cz, ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/20] Some bugfix and cleanup to mballoc
+Message-ID: <Y/6AgYotmMdjei3w@mit.edu>
+References: <20230228114306.3328235-1-shikemeng@huaweicloud.com>
+ <87356pwxyc.fsf@doe.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ee19:0:b0:745:405d:b703 with SMTP id
- i25-20020a6bee19000000b00745405db703mr1905837ioh.3.1677618291310; Tue, 28 Feb
- 2023 13:04:51 -0800 (PST)
-Date:   Tue, 28 Feb 2023 13:04:51 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052865105f5c8f2c8@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in jbd2_log_wait_commit
-From:   syzbot <syzbot+9d16c39efb5fade84574@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87356pwxyc.fsf@doe.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue, Feb 28, 2023 at 10:04:35PM +0530, Ritesh Harjani wrote:
+> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+> 
+> > Hi, this series contain some random cleanup patches and some bugfix
+> > patches to make EXT4_MB_HINT_GOAL_ONLY work properly, protect pa->pa_free
+> > from race and so on. More details can be found in git log.
+> > Thanks!
+> 
+> Hi Kemeng,
+> 
+> Did you run any testing on these patches? Because I was very easily able
+> to hit ext/009 causing kernel BUG_ON with default mkfs/mount options.
+> It's always a good and recommended practice to ensure some level of
+> testing on any of the patches we submit to community for review
+> and call out in the cover letter on what has been tested and what is not.
 
-syzbot found the following issue on:
+Hi Kemeng,
 
-HEAD commit:    e492250d5252 Merge tag 'pwm/for-6.3-rc1' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1306a9acc80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f763d89e26d3d4c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d16c39efb5fade84574
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+If you need help running xfstests, I maintain a test appliance which
+makes it very easy to run xfstests on development kernels.  Please see:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
+https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2a637f17a777/disk-e492250d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a9bfdbca6f2d/vmlinux-e492250d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dc120ec8d398/bzImage-e492250d.xz
+This test appliance can also be run on Android devices and using
+Google Compute Engine; for more information see:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9d16c39efb5fade84574@syzkaller.appspotmail.com
+	https://thunk.org/android-xfstests
+	https://thunk.org/gce-xfstests
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.2.0-syzkaller-12944-ge492250d5252 #0 Not tainted
-------------------------------------------------------
-syz-executor.5/13484 is trying to acquire lock:
-ffff88814c5be990 (jbd2_handle){++++}-{0:0}, at: jbd2_log_wait_commit+0x153/0x4a0 fs/jbd2/journal.c:692
+If you're just getting started, I recommend that you start with
+kvm-xfstests, and this is the simplest way to get started.
 
-but task is already holding lock:
-ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:793 [inline]
-ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: ext4_rename fs/ext4/namei.c:3879 [inline]
-ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: ext4_rename2+0x2633/0x4410 fs/ext4/namei.c:4193
+Cheers,
 
-which lock already depends on the new lock.
+					- Ted
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}:
-       lock_acquire+0x23e/0x630 kernel/locking/lockdep.c:5669
-       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1689
-       inode_lock_nested include/linux/fs.h:793 [inline]
-       ext4_rename fs/ext4/namei.c:3879 [inline]
-       ext4_rename2+0x2633/0x4410 fs/ext4/namei.c:4193
-       vfs_rename+0xb1b/0xfa0 fs/namei.c:4772
-       do_renameat2+0xb9b/0x13c0 fs/namei.c:4923
-       __do_sys_renameat2 fs/namei.c:4956 [inline]
-       __se_sys_renameat2 fs/namei.c:4953 [inline]
-       __x64_sys_renameat2+0xd2/0xe0 fs/namei.c:4953
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (jbd2_handle){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3098 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
-       validate_chain+0x166b/0x58e0 kernel/locking/lockdep.c:3832
-       __lock_acquire+0x125b/0x1f80 kernel/locking/lockdep.c:5056
-       lock_acquire+0x23e/0x630 kernel/locking/lockdep.c:5669
-       jbd2_log_wait_commit+0x173/0x4a0 fs/jbd2/journal.c:692
-       jbd2_journal_stop+0x95b/0xf50 fs/jbd2/transaction.c:1959
-       __ext4_journal_stop+0xfc/0x1a0 fs/ext4/ext4_jbd2.c:133
-       ext4_rename fs/ext4/namei.c:4014 [inline]
-       ext4_rename2+0x3c40/0x4410 fs/ext4/namei.c:4193
-       vfs_rename+0xb1b/0xfa0 fs/namei.c:4772
-       do_renameat2+0xb9b/0x13c0 fs/namei.c:4923
-       __do_sys_renameat2 fs/namei.c:4956 [inline]
-       __se_sys_renameat2 fs/namei.c:4953 [inline]
-       __x64_sys_renameat2+0xd2/0xe0 fs/namei.c:4953
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&type->i_mutex_dir_key#3/4);
-                               lock(jbd2_handle);
-                               lock(&type->i_mutex_dir_key#3/4);
-  lock(jbd2_handle);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.5/13484:
- #0: ffff88814c5ba460 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:394
- #1: ffff8880764b5440 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: lock_rename+0x186/0x1a0
- #2: ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:793 [inline]
- #2: ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: ext4_rename fs/ext4/namei.c:3879 [inline]
- #2: ffff888032243628 (&type->i_mutex_dir_key#3/4){+.+.}-{3:3}, at: ext4_rename2+0x2633/0x4410 fs/ext4/namei.c:4193
-
-stack backtrace:
-CPU: 0 PID: 13484 Comm: syz-executor.5 Not tainted 6.2.0-syzkaller-12944-ge492250d5252 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/16/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x2fe/0x3b0 kernel/locking/lockdep.c:2178
- check_prev_add kernel/locking/lockdep.c:3098 [inline]
- check_prevs_add kernel/locking/lockdep.c:3217 [inline]
- validate_chain+0x166b/0x58e0 kernel/locking/lockdep.c:3832
- __lock_acquire+0x125b/0x1f80 kernel/locking/lockdep.c:5056
- lock_acquire+0x23e/0x630 kernel/locking/lockdep.c:5669
- jbd2_log_wait_commit+0x173/0x4a0 fs/jbd2/journal.c:692
- jbd2_journal_stop+0x95b/0xf50 fs/jbd2/transaction.c:1959
- __ext4_journal_stop+0xfc/0x1a0 fs/ext4/ext4_jbd2.c:133
- ext4_rename fs/ext4/namei.c:4014 [inline]
- ext4_rename2+0x3c40/0x4410 fs/ext4/namei.c:4193
- vfs_rename+0xb1b/0xfa0 fs/namei.c:4772
- do_renameat2+0xb9b/0x13c0 fs/namei.c:4923
- __do_sys_renameat2 fs/namei.c:4956 [inline]
- __se_sys_renameat2 fs/namei.c:4953 [inline]
- __x64_sys_renameat2+0xd2/0xe0 fs/namei.c:4953
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd61e08c0f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd61ee4f168 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
-RAX: ffffffffffffffda RBX: 00007fd61e1abf80 RCX: 00007fd61e08c0f9
-RDX: 0000000000000003 RSI: 0000000020005780 RDI: 0000000000000004
-RBP: 00007fd61e0e7ae9 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000200016c0 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fffc899a5ef R14: 00007fd61ee4f300 R15: 0000000000022000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
