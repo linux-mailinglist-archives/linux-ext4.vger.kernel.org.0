@@ -2,117 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7756A5214
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 04:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4126A524F
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 05:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjB1DxH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Feb 2023 22:53:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S229660AbjB1EZf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Feb 2023 23:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjB1DxG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 22:53:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B168B44A;
-        Mon, 27 Feb 2023 19:53:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E847FB80CA7;
-        Tue, 28 Feb 2023 03:53:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302CFC433D2;
-        Tue, 28 Feb 2023 03:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677556382;
-        bh=u8P31QxD6VV0jVGuvboxfDzZUtsbvH8OqzD+6Goz13Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e2ZMcf24XxXbmCDzekB/T7YgJd/1GyrFRUrcuJfG9m4ayef66+7XXgKFql4BMYnLI
-         p3ky/n0i1OnZR19uWIXn1JvY16gg4xY0q+gyTYsqXUGGVBpkRbqy7K11DH7OLx5oQg
-         f7COZR8BF+TRB8PPa6/um00w3t3VQDwhMNyrVXQIwYLR235/Uw3h1WX6XJZ1dYtcV/
-         qHMFfpCP07a6FXcHhw/nYLLJkaStaw6d1+MUfdsMtT8+tPcRNOb2D9Qoa/StZ1rRjT
-         HIYWGv7xoXxJxIRin1Ui40Le9yyuYE2MfFWwbjN5W1hvaCdmsqgZbuZscnkHj1knk4
-         zPMU2QcVCsdSw==
-Date:   Mon, 27 Feb 2023 19:53:00 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     patchwork-bot+f2fs@kernel.org, linux-fscrypt@vger.kernel.org,
-        aalbersh@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/11] fsverity: support for non-4K pages
-Message-ID: <Y/16nEs4stc/0qmb@google.com>
-References: <20221223203638.41293-1-ebiggers@kernel.org>
- <167754611492.27916.393758892204411776.git-patchwork-notify@kernel.org>
- <Y/1ZP9pc1Zw9xh/L@gmail.com>
+        with ESMTP id S229542AbjB1EZe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Feb 2023 23:25:34 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930D81F5C3
+        for <linux-ext4@vger.kernel.org>; Mon, 27 Feb 2023 20:25:32 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31S4PRsf013175
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Feb 2023 23:25:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1677558329; bh=Lp8Z5+z1Eqg0l7nzuxwWdkxw2feaaHoh3SzrVRHC6YU=;
+        h=Date:From:To:Cc:Subject;
+        b=QXA3m3M9rLBA5wd6ex9RB5StqnFnYBXDyEVjyQsH+HL05ZyG2CVgjcnYWbBCgZWQV
+         4yegwXIHD9fsC8MRI/2oqOmgX2aCoMqXojYcYcGy8kd7TX+DAxMoJy7KLqJwezNU/G
+         m/+uAQ2TMu4SW1Cc6jHqyog838FWfEoptZwzTY4v9/XsZfJRSEozMiHyh12v0q2VCR
+         PJtHSllgLc/Jkn3h/ijQuKwv499fGtCtvMP61me6XGAate1lB7sjP0Ly9T6yHYMxEo
+         k9jLmLYeusjox56i5eRpsrBXBco/jj9sXTBAHHjP/7J2VD081efPeUJmKt020goLYb
+         zdGtE1p7t1kzA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 91B5F15C5823; Mon, 27 Feb 2023 23:25:27 -0500 (EST)
+Date:   Mon, 27 Feb 2023 23:25:27 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ext4 changes for 6.3, part I
+Message-ID: <Y/2CN+FpmGsfzgdE@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y/1ZP9pc1Zw9xh/L@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 02/28, Eric Biggers wrote:
-> On Tue, Feb 28, 2023 at 01:01:54AM +0000, patchwork-bot+f2fs@kernel.org wrote:
-> > Hello:
-> > 
-> > This series was applied to jaegeuk/f2fs.git (dev)
-> > by Eric Biggers <ebiggers@google.com>:
-> > 
-> > On Fri, 23 Dec 2022 12:36:27 -0800 you wrote:
-> > > [This patchset applies to mainline + some fsverity cleanups I sent out
-> > >  recently.  You can get everything from tag "fsverity-non4k-v2" of
-> > >  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git ]
-> > > 
-> > > Currently, filesystems (ext4, f2fs, and btrfs) only support fsverity
-> > > when the Merkle tree block size, filesystem block size, and page size
-> > > are all the same.  In practice that means 4K, since increasing the page
-> > > size, e.g. to 16K, forces the Merkle tree block size and filesystem
-> > > block size to be increased accordingly.  That can be impractical; for
-> > > one, users want the same file signatures to work on all systems.
-> > > 
-> > > [...]
-> > 
-> > Here is the summary with links:
-> >   - [f2fs-dev,v2,01/11] fsverity: use unsigned long for level_start
-> >     https://git.kernel.org/jaegeuk/f2fs/c/284d5db5f99e
-> >   - [f2fs-dev,v2,02/11] fsverity: simplify Merkle tree readahead size calculation
-> >     https://git.kernel.org/jaegeuk/f2fs/c/9098f36b739d
-> >   - [f2fs-dev,v2,03/11] fsverity: store log2(digest_size) precomputed
-> >     https://git.kernel.org/jaegeuk/f2fs/c/579a12f78d88
-> >   - [f2fs-dev,v2,04/11] fsverity: use EFBIG for file too large to enable verity
-> >     https://git.kernel.org/jaegeuk/f2fs/c/55eed69cc8fd
-> >   - [f2fs-dev,v2,05/11] fsverity: replace fsverity_hash_page() with fsverity_hash_block()
-> >     https://git.kernel.org/jaegeuk/f2fs/c/f45555bf23cf
-> >   - [f2fs-dev,v2,06/11] fsverity: support verification with tree block size < PAGE_SIZE
-> >     https://git.kernel.org/jaegeuk/f2fs/c/5306892a50bf
-> >   - [f2fs-dev,v2,07/11] fsverity: support enabling with tree block size < PAGE_SIZE
-> >     https://git.kernel.org/jaegeuk/f2fs/c/56124d6c87fd
-> >   - [f2fs-dev,v2,08/11] ext4: simplify ext4_readpage_limit()
-> >     https://git.kernel.org/jaegeuk/f2fs/c/5e122148a3d5
-> >   - [f2fs-dev,v2,09/11] f2fs: simplify f2fs_readpage_limit()
-> >     https://git.kernel.org/jaegeuk/f2fs/c/feb0576a361a
-> >   - [f2fs-dev,v2,10/11] fs/buffer.c: support fsverity in block_read_full_folio()
-> >     https://git.kernel.org/jaegeuk/f2fs/c/4fa512ce7051
-> >   - [f2fs-dev,v2,11/11] ext4: allow verity with fs block size < PAGE_SIZE
-> >     https://git.kernel.org/jaegeuk/f2fs/c/db85d14dc5c5
-> > 
-> > You are awesome, thank you!
-> > -- 
-> > Deet-doot-dot, I am a bot.
-> > https://korg.docs.kernel.org/patchwork/pwbot.html
-> > 
-> 
-> These commits reached the f2fs tree through mainline, not through being applied
-> to the f2fs tree.  So this email shouldn't have been sent.  Jaegeuk, can you
-> look into fixing the configuration of the f2fs patchwork bot to prevent this?
+The following changes since commit 2241ab53cbb5cdb08a6b2d4688feb13971058f65:
 
-Hmm, not sure how to fix that, since it seems patchwork bot reports this, once
-I pulled mainline into f2fs/dev branch.
+  Linux 6.2-rc5 (2023-01-21 16:27:01 -0800)
 
-> 
-> - Eric
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+
+for you to fetch changes up to e3645d72f8865ffe36f9dc811540d40aa3c848d3:
+
+  ext4: fix incorrect options show of original mount_opt and extend mount_opt2 (2023-02-25 15:39:08 -0500)
+
+----------------------------------------------------------------
+Improve performance for ext4 by allowing multiple process to perform
+direct I/O writes to preallocated blocks by using a shared inode lock
+instead of taking an exclusive lock.
+
+In addition, multiple bug fixes and cleanups.
+
+----------------------------------------------------------------
+Baokun Li (3):
+      ext4: fail ext4_iget if special inode unallocated
+      ext4: update s_journal_inum if it changes after journal replay
+      ext4: fix task hung in ext4_xattr_delete_inode
+
+Eric Biggers (1):
+      ext4: use ext4_fc_tl_mem in fast-commit replay path
+
+Jan Kara (1):
+      ext4: Fix possible corruption when moving a directory
+
+Jun Nie (2):
+      ext4: optimize ea_inode block expansion
+      ext4: refuse to create ea block when umounted
+
+Kees Cook (1):
+      ext4: fix function prototype mismatch for ext4_feat_ktype
+
+Tanmay Bhushan (1):
+      ext4: remove dead code in updating backup sb
+
+Theodore Ts'o (1):
+      ext4: improve xattr consistency checking and error reporting
+
+Wang Jianjian (1):
+      ext4: don't show commit interval if it is zero
+
+XU pengfei (1):
+      ext4: remove unnecessary variable initialization
+
+Ye Bin (1):
+      ext4: init error handle resource before init group descriptors
+
+Zhang Yi (2):
+      ext4: dio take shared inode lock when overwriting preallocated blocks
+      ext4: fix incorrect options show of original mount_opt and extend mount_opt2
+
+Zhihao Cheng (1):
+      jbd2: fix data missing when reusing bh which is ready to be checkpointed
+
+zhanchengbin (1):
+      ext4: fix inode tree inconsistency caused by ENOMEM
+
+ fs/ext4/ext4.h        |   1 +
+ fs/ext4/extents.c     |   2 +-
+ fs/ext4/fast_commit.c |  44 +++++++++++++++-----------
+ fs/ext4/file.c        |  34 +++++++++++++-------
+ fs/ext4/inode.c       |  20 ++++++------
+ fs/ext4/ioctl.c       |   3 --
+ fs/ext4/namei.c       |  11 ++++++-
+ fs/ext4/super.c       |  56 +++++++++++++++++++-------------
+ fs/ext4/sysfs.c       |   7 +++-
+ fs/ext4/xattr.c       | 172 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------
+ fs/jbd2/transaction.c |  50 +++++++++++++++++------------
+ 11 files changed, 253 insertions(+), 147 deletions(-)
