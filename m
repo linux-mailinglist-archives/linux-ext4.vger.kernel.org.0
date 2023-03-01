@@ -2,87 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCAF6A642A
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 01:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6E16A64CA
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 02:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjCAATf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Feb 2023 19:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S229527AbjCAB24 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Feb 2023 20:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjCAATf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 19:19:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0458937B49;
-        Tue, 28 Feb 2023 16:19:31 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ACD9FB80EE4;
-        Wed,  1 Mar 2023 00:19:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36193C433EF;
-        Wed,  1 Mar 2023 00:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677629968;
-        bh=Dp6YGll9fEq0i6/pi+lpCFF50nvydZGLY0lYQFlc3q8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KYYbEtIhVA3RWaS2xg2q0EfXodh4GOmNY4tvxi0H4nLyzYrhWFpOdD72CH8RSx/Fs
-         xo7oO1X6WU4IaJbbLF9mpPXsZu+uepDR7eZ9E/xOHQk6DduUX8NJD0LyPybDASGdD2
-         ZmHMwXFi3S0pfxzs27uWkvqVjDBKt5gIS93lfERCan2xoJndgBoXHTnXu0O3q6ZIqf
-         TLb8FfdJDyvbO+P7Qk4BDTTUMD9QMeQgjfcUeeptUmdVhOOmjdovvnLFJOVyrO+DRm
-         AvmmtMsDV1wJS+CJ+ESkqcokj8RzBbfrTr8zz0egPiFT7is9BVQjLWjH0qdqv2mB16
-         Tn7QJS4XudfSw==
-Date:   Tue, 28 Feb 2023 16:19:26 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+cf0b4280f19be4031cf2@syzkaller.appspotmail.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [syzbot] [ext4?] possible deadlock in start_this_handle (4)
-Message-ID: <Y/6aDmrx8Q9ob+Zi@sol.localdomain>
-References: <00000000000009d6c905f5cb6e07@google.com>
+        with ESMTP id S229662AbjCAB2z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 20:28:55 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53997B446;
+        Tue, 28 Feb 2023 17:28:47 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PRGpf0JHqz4f3jHj;
+        Wed,  1 Mar 2023 09:28:42 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP1 (Coremail) with SMTP id cCh0CgAnlS9Iqv5jSnztEA--.47939S2;
+        Wed, 01 Mar 2023 09:28:42 +0800 (CST)
+Subject: Re: [PATCH v2 00/20] Some bugfix and cleanup to mballoc
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230228114306.3328235-1-shikemeng@huaweicloud.com>
+ <87356pwxyc.fsf@doe.com> <Y/6AgYotmMdjei3w@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <81568343-36fb-aa90-2952-d1f26547541c@huaweicloud.com>
+Date:   Wed, 1 Mar 2023 09:28:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000009d6c905f5cb6e07@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y/6AgYotmMdjei3w@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: cCh0CgAnlS9Iqv5jSnztEA--.47939S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArWUCr48Kry7CrW5XrWkWFg_yoW8Wr1Dpa
+        y8GF1akF4fKrWftr97ur1IgFyrtrZ5AFWUJF45Gw1UuFZ8Z3s2ga4xKr4rZF98AryI9r1a
+        ya1Iq3ZIg3Wxt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 04:02:36PM -0800, syzbot wrote:
-> -> #1 (fscrypt_init_mutex){+.+.}-{3:3}:
->        __mutex_lock_common kernel/locking/mutex.c:603 [inline]
->        __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
->        fscrypt_initialize+0x40/0xa0 fs/crypto/crypto.c:326
->        fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
->        fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
->        fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
->        ext4_fname_setup_filename+0x8c/0x110 fs/ext4/crypto.c:28
->        ext4_add_entry+0x3aa/0xe30 fs/ext4/namei.c:2380
->        ext4_rename+0x1979/0x2620 fs/ext4/namei.c:3904
->        ext4_rename2+0x1c7/0x270 fs/ext4/namei.c:4184
->        vfs_rename+0xef6/0x17a0 fs/namei.c:4772
->        do_renameat2+0xb62/0xc90 fs/namei.c:4923
->        __do_sys_renameat2 fs/namei.c:4956 [inline]
->        __se_sys_renameat2 fs/namei.c:4953 [inline]
->        __ia32_sys_renameat2+0xe8/0x120 fs/namei.c:4953
->        do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
->        __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
->        do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
->        entry_SYSENTER_compat_after_hwframe+0x70/0x82
+on 3/1/2023 6:30 AM, Theodore Ts'o wrote:
+> On Tue, Feb 28, 2023 at 10:04:35PM +0530, Ritesh Harjani wrote:
+>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+>>
+>>> Hi, this series contain some random cleanup patches and some bugfix
+>>> patches to make EXT4_MB_HINT_GOAL_ONLY work properly, protect pa->pa_free
+>>> from race and so on. More details can be found in git log.
+>>> Thanks!
+>>
+>> Hi Kemeng,
+>>
+>> Did you run any testing on these patches? Because I was very easily able
+>> to hit ext/009 causing kernel BUG_ON with default mkfs/mount options.
+>> It's always a good and recommended practice to ensure some level of
+>> testing on any of the patches we submit to community for review
+>> and call out in the cover letter on what has been tested and what is not.
+> 
+> Hi Kemeng,
+> 
+> If you need help running xfstests, I maintain a test appliance which
+> makes it very easy to run xfstests on development kernels.  Please see:
+> 
+> https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
+> https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+> 
+> This test appliance can also be run on Android devices and using
+> Google Compute Engine; for more information see:
+> 
+> 	https://thunk.org/android-xfstests
+> 	https://thunk.org/gce-xfstests
+> 
+> If you're just getting started, I recommend that you start with
+> kvm-xfstests, and this is the simplest way to get started.
+Hi, Theodore and Ritesh. Thanks for feedback. I will run xfstests before submitting
+next version. Thanks!
 
-Interesting.  The above call stack is not supposed to be possible.  It says that
-the target directory's encryption key is being set up in the middle of
-ext4_rename().  But, fscrypt_prepare_rename() is supposed to return an error if
-either the source or target directory's key isn't set up already.
+-- 
+Best wishes
+Kemeng Shi
 
-> Unfortunately, I don't have any reproducer for this issue yet.
-
-That's quite unfortunate :-(
-
-- Eric
