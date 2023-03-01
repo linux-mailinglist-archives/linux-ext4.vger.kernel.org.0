@@ -2,252 +2,232 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078CC6A67B1
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 07:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A789B6A6975
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 10:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjCAGol (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Mar 2023 01:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+        id S229534AbjCAJHP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Mar 2023 04:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjCAGok (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 01:44:40 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CCE32504;
-        Tue, 28 Feb 2023 22:44:39 -0800 (PST)
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3213hesn024166;
-        Wed, 1 Mar 2023 06:44:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=WTZCQYGUaufbYgRNIsn1AVRsdFAHWc+heWSesaphOCo=;
- b=OQbIXh/pbn6PM3cgQtHggPhSitU9a88Q4Tm/OwseWpNafh3PzWFPOanwYazRTPxb2AcY
- inUCetLR0MPT4Q0qiA2lnwlazL1l+3g2qfFpSuZoi62/jXpqFTeYuXPEW3b3P5bapLT8
- kUZltE4zAdDB+/l2aYpL4DGIvdcaCwTbhzddX45C3obe799NdbwP0MklQdO6LlvrCiAL
- UmxD/YlYIdVcoJfiNVeI9PrIpBrwCSj2MyQpvfohuNyqDxTWorlBOldW91OLWirVDGMR
- no3u3bv5gJxa5Eh8E0KtbuM4GVCi0hUHeGsTG7QUGC5Q/5wDBMLAQ4Ylv8I93480OaAy TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1y23bj96-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Mar 2023 06:44:34 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3216XhV8005116;
-        Wed, 1 Mar 2023 06:44:34 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1y23bj8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Mar 2023 06:44:34 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31SIMTmS017670;
-        Wed, 1 Mar 2023 06:44:32 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3nybbyu1sx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Mar 2023 06:44:32 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3216iTE664225674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Mar 2023 06:44:30 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E33DD2004E;
-        Wed,  1 Mar 2023 06:44:29 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C11D320063;
-        Wed,  1 Mar 2023 06:44:27 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.62.226])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  1 Mar 2023 06:44:27 +0000 (GMT)
-Date:   Wed, 1 Mar 2023 12:14:24 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rookxu <brookxu.cn@gmail.com>
-Subject: Re: [PATCH v4 8/9] ext4: Use rbtrees to manage PAs instead of inode
- i_prealloc_list
-Message-ID: <Y/70SFCCfKxcpHcp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1676634592.git.ojaswin@linux.ibm.com>
- <bc5f70ca1d2974a41b77154966e736d1e58a8d20.1676634592.git.ojaswin@linux.ibm.com>
- <20230227121925.6hfrrhq4gn5g2vlh@quack3>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230227121925.6hfrrhq4gn5g2vlh@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rhl0Fw51WbUdRng5kzEm3IzlUeQIXq7N
-X-Proofpoint-GUID: Zr7ZdsraZuUJ-oW9dal2LVVV43TIXPe8
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229501AbjCAJHO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 04:07:14 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945E42D159;
+        Wed,  1 Mar 2023 01:07:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ED1261FE15;
+        Wed,  1 Mar 2023 09:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1677661630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkvS1ZS82FkR5HQxCLJx+REXczDxk4WNj+Mp+puCHM4=;
+        b=H/MKVg1p/0vH9xzgknFkRQ7tuzoTJF9Yz9FZFzVnsUYtD+3yI+hqJI1opwxd7vEidgCcNM
+        4hJF2+Sso5DzmThl2jLCI0Cuzi4qpRYMIuOi2zlJqQbrmSUIAaJmHY46VMJdz3vrXPK5uL
+        JXT6thmlrSk/I5xeuswqBHw5l1jloKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1677661630;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkvS1ZS82FkR5HQxCLJx+REXczDxk4WNj+Mp+puCHM4=;
+        b=Ta1IMPKWQYpKkundfUx3BYXcDK3NjogyFD1iCkCzIs8I3IA3hlI+YRqskjXbkmKlafEJBJ
+        c6vWAvHx8tHslvBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DFEB713A3E;
+        Wed,  1 Mar 2023 09:07:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 24SjNr4V/2PzewAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 01 Mar 2023 09:07:10 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 6CCE3A06F2; Wed,  1 Mar 2023 10:07:10 +0100 (CET)
+Date:   Wed, 1 Mar 2023 10:07:10 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "yebin (H)" <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin@huaweicloud.com>,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ext4: commit super block if fs record error when
+ journal record without error
+Message-ID: <20230301090710.hwjvumiikbe2vbdc@quack3>
+References: <20230214022905.765088-1-yebin@huaweicloud.com>
+ <20230214022905.765088-2-yebin@huaweicloud.com>
+ <20230216173159.zkj4qd2nmj2yjpkr@quack3>
+ <63EEDC19.6010204@huawei.com>
+ <20230217105647.g6blbinkvnsyy2or@quack3>
+ <63F03582.1020303@huawei.com>
+ <20230227112001.hfcp7mmay6vzihck@quack3>
+ <63FD65DA.6050805@huawei.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-01_02,2023-02-28_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 mlxscore=0
- adultscore=0 bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303010047
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63FD65DA.6050805@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 01:19:25PM +0100, Jan Kara wrote:
-> On Fri 17-02-23 17:44:17, Ojaswin Mujoo wrote:
-> > Currently, the kernel uses i_prealloc_list to hold all the inode
-> > preallocations. This is known to cause degradation in performance in
-> > workloads which perform large number of sparse writes on a single file.
-> > This is mainly because functions like ext4_mb_normalize_request() and
-> > ext4_mb_use_preallocated() iterate over this complete list, resulting in
-> > slowdowns when large number of PAs are present.
+On Tue 28-02-23 10:24:26, yebin (H) wrote:
+> On 2023/2/27 19:20, Jan Kara wrote:
+> > On Sat 18-02-23 10:18:42, yebin (H) wrote:
+> > > On 2023/2/17 18:56, Jan Kara wrote:
+> > > > On Fri 17-02-23 09:44:57, yebin (H) wrote:
+> > > > > On 2023/2/17 1:31, Jan Kara wrote:
+> > > > > > On Tue 14-02-23 10:29:04, Ye Bin wrote:
+> > > > > > > From: Ye Bin <yebin10@huawei.com>
+> > > > > > > 
+> > > > > > > Now, 'es->s_state' maybe covered by recover journal. And journal errno
+> > > > > > > maybe not recorded in journal sb as IO error. ext4_update_super() only
+> > > > > > > update error information when 'sbi->s_add_error_count' large than zero.
+> > > > > > > Then 'EXT4_ERROR_FS' flag maybe lost.
+> > > > > > > To solve above issue commit error information after recover journal.
+> > > > > > > 
+> > > > > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > > > > > ---
+> > > > > > >     fs/ext4/super.c | 12 ++++++++++++
+> > > > > > >     1 file changed, 12 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > > > > > > index dc3907dff13a..b94754ba8556 100644
+> > > > > > > --- a/fs/ext4/super.c
+> > > > > > > +++ b/fs/ext4/super.c
+> > > > > > > @@ -5932,6 +5932,18 @@ static int ext4_load_journal(struct super_block *sb,
+> > > > > > >     		goto err_out;
+> > > > > > >     	}
+> > > > > > > +	if (unlikely(es->s_error_count && !jbd2_journal_errno(journal) &&
+> > > > > > > +		     !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS))) {
+> > > > > > > +		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+> > > > > > > +		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> > > > > > > +		err = ext4_commit_super(sb);
+> > > > > > > +		if (err) {
+> > > > > > > +			ext4_msg(sb, KERN_ERR,
+> > > > > > > +				 "Failed to commit error information, please repair fs force!");
+> > > > > > > +			goto err_out;
+> > > > > > > +		}
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > Hum, I'm not sure I follow here. If journal replay has overwritten the
+> > > > > > superblock (and thus the stored error info), then I'd expect
+> > > > > > es->s_error_count got overwritten (possibly to 0) as well. And this is
+> > > > > > actually relatively realistic scenario with errors=remount-ro behavior when
+> > > > > > the first fs error happens.
+> > > > > > 
+> > > > > > What I intended in my original suggestion was to save es->s_error_count,
+> > > > > > es->s_state & EXT4_ERROR_FS, es->s_first_error_*, es->s_last_error_* before
+> > > > > > doing journal replay in ext4_load_journal() and then after journal replay
+> > > > > > merge this info back to the superblock
+> > > > > Actually，commit 1c13d5c08728 ("ext4: Save error information to the
+> > > > > superblock for analysis")
+> > > > > already merged error info back to the superblock after journal replay except
+> > > > > 'es->s_state'.
+> > > > > The problem I have now is that the error flag in the journal superblock was
+> > > > > not recorded,
+> > > > > but the error message was recorded in the superblock. So it leads to
+> > > > > ext4_clear_journal_err()
+> > > > > does not detect errors and marks the file system as an error. Because
+> > > > > ext4_update_super() is
+> > > > > only set error flag  when 'sbi->s_add_error_count  > 0'. Although
+> > > > > 'sbi->s_mount_state' is
+> > > > > written to the super block when umount, but it is also conditional.
+> > > > > So I handle the scenario "es->s_error_count && !jbd2_journal_errno(journal)
+> > > > > &&
+> > > > > !(le16_to_cpu(es->s_state) & EXT4_ERROR_FS)". Maybe we can just store
+> > > > > 'EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS' back to the superblock. But i
+> > > > > prefer to mark fs as error if it contain detail error info without
+> > > > > EXT4_ERROR_FS.
+> > > > Aha, thanks for explanation! So now I finally understand what the problem
+> > > > exactly is. I'm not sure relying on es->s_error_count is too good. Probably
+> > > > it works but I'd be calmer if when saving error info we also did:
+> > > > 
+> > > > 	bool error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
+> > > > 
+> > > > 	copy other info
+> > > > 	err = jbd2_journal_load(journal);
+> > > > 	restore other info
+> > > > 	if (error_fs)
+> > > > 		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> > > > 	/* Write out restored error information to the superblock */
+> > > > 	err2 = ext4_commit_super(sb);
+> > > > 
+> > > > and be done with this. I don't think trying to optimize away the committing
+> > > > of the superblock when we had to replay the journal is really worth it.
+> > > > 
+> > > > Does this solve your concerns?
+> > > Thanks for your suggestion.
+> > > 
+> > > I think if journal super block has 'j_errno' ext4_clear_journal_err()
+> > > will commit error info.  The scenario we need to deal with is:(1) journal
+> > > super block has no 'j_errno'; (2) super block has detail error info, but
+> > > 'es->s_state' has no 'EXT4_ERROR_FS', It means super block in journal has
+> > > no error flag and the newest super block has error flag.
+> > But my code above should be handling this situation you describe - the
+> > check:
 > > 
-> > Patch 27bc446e2 partially fixed this by enforcing a limit of 512 for
-> > the inode preallocation list and adding logic to continually trim the
-> > list if it grows above the threshold, however our testing revealed that
-> > a hardcoded value is not suitable for all kinds of workloads.
-> > 
-> > To optimize this, add an rbtree to the inode and hold the inode
-> > preallocations in this rbtree. This will make iterating over inode PAs
-> > faster and scale much better than a linked list. Additionally, we also
-> > had to remove the LRU logic that was added during trimming of the list
-> > (in ext4_mb_release_context()) as it will add extra overhead in rbtree.
-> > The discards now happen in the lowest-logical-offset-first order.
-> > 
-> > ** Locking notes **
-> > 
-> > With the introduction of rbtree to maintain inode PAs, we can't use RCU
-> > to walk the tree for searching since it can result in partial traversals
-> > which might miss some nodes(or entire subtrees) while discards happen
-> > in parallel (which happens under a lock).  Hence this patch converts the
-> > ei->i_prealloc_lock spin_lock to rw_lock.
-> > 
-> > Almost all the codepaths that read/modify the PA rbtrees are protected
-> > by the higher level inode->i_data_sem (except
-> > ext4_mb_discard_group_preallocations() and ext4_clear_inode()) IIUC, the
-> > only place we need lock protection is when one thread is reading
-> > "searching" the PA rbtree (earlier protected under rcu_read_lock()) and
-> > another is "deleting" the PAs in ext4_mb_discard_group_preallocations()
-> > function (which iterates all the PAs using the grp->bb_prealloc_list and
-> > deletes PAs from the tree without taking any inode lock (i_data_sem)).
-> > 
-> > So, this patch converts all rcu_read_lock/unlock() paths for inode list
-> > PA to use read_lock() and all places where we were using
-> > ei->i_prealloc_lock spinlock will now be using write_lock().
-> > 
-> > Note that this makes the fast path (searching of the right PA e.g.
-> > ext4_mb_use_preallocated() or ext4_mb_normalize_request()), now use
-> > read_lock() instead of rcu_read_lock/unlock().  Ths also will now block
-> > due to slow discard path (ext4_mb_discard_group_preallocations()) which
-> > uses write_lock().
-> > 
-> > But this is not as bad as it looks. This is because -
-> > 
-> > 1. The slow path only occurs when the normal allocation failed and we
-> >    can say that we are low on disk space.  One can argue this scenario
-> >    won't be much frequent.
-> > 
-> > 2. ext4_mb_discard_group_preallocations(), locks and unlocks the rwlock
-> >    for deleting every individual PA.  This gives enough opportunity for
-> >    the fast path to acquire the read_lock for searching the PA inode
-> >    list.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> 
-> Looks good to me. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Just a few style nits below...
-> 
-> > @@ -3992,80 +4010,162 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
-> >  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
-> >  	struct ext4_prealloc_space *tmp_pa;
-> >  	ext4_lblk_t tmp_pa_start, tmp_pa_end;
-> > +	struct rb_node *iter;
-> >  
-> > -	rcu_read_lock();
-> > -	list_for_each_entry_rcu(tmp_pa, &ei->i_prealloc_list, pa_node.inode_list) {
-> > -		spin_lock(&tmp_pa->pa_lock);
-> > -		if (tmp_pa->pa_deleted == 0) {
-> > -			tmp_pa_start = tmp_pa->pa_lstart;
-> > -			tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-> > +	read_lock(&ei->i_prealloc_lock);
-> > +	for (iter = ei->i_prealloc_node.rb_node; iter;
-> > +	     iter = ext4_mb_pa_rb_next_iter(start, tmp_pa_start, iter)) {
-> > +		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
-> > +				  pa_node.inode_node);
-> > +		tmp_pa_start = tmp_pa->pa_lstart;
-> > +		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-> >  
-> > +		spin_lock(&tmp_pa->pa_lock);
-> > +		if (tmp_pa->pa_deleted == 0)
-> >  			BUG_ON(!(start >= tmp_pa_end || end <= tmp_pa_start));
-> > -		}
-> >  		spin_unlock(&tmp_pa->pa_lock);
-> >  	}
-> > -	rcu_read_unlock();
-> > +	read_unlock(&ei->i_prealloc_lock);
-> >  }
-> > -
-> 
-> Please keep the empty line here.
-> 
-> > @@ -4402,6 +4502,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
-> >  	struct ext4_locality_group *lg;
-> >  	struct ext4_prealloc_space *tmp_pa, *cpa = NULL;
-> >  	ext4_lblk_t tmp_pa_start, tmp_pa_end;
-> > +	struct rb_node *iter;
-> >  	ext4_fsblk_t goal_block;
-> >  
-> >  	/* only data can be preallocated */
-> > @@ -4409,14 +4510,17 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
-> >  		return false;
-> >  
-> >  	/* first, try per-file preallocation */
-> > -	rcu_read_lock();
-> > -	list_for_each_entry_rcu(tmp_pa, &ei->i_prealloc_list, pa_node.inode_list) {
-> > +	read_lock(&ei->i_prealloc_lock);
-> > +	for (iter = ei->i_prealloc_node.rb_node; iter;
-> > +	     iter = ext4_mb_pa_rb_next_iter(ac->ac_o_ex.fe_logical, tmp_pa_start, iter)) {
-> > +		tmp_pa = rb_entry(iter, struct ext4_prealloc_space, pa_node.inode_node);
-> 
-> Perhaps wrap above two lines to fit in 80 characters?
-> 
-> > @@ -5043,17 +5177,18 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
-> >  
-> >  repeat:
-> >  	/* first, collect all pa's in the inode */
-> > -	spin_lock(&ei->i_prealloc_lock);
-> > -	while (!list_empty(&ei->i_prealloc_list) && needed) {
-> > -		pa = list_entry(ei->i_prealloc_list.prev,
-> > -				struct ext4_prealloc_space, pa_node.inode_list);
-> > +	write_lock(&ei->i_prealloc_lock);
-> > +	for (iter = rb_first(&ei->i_prealloc_node); iter && needed; iter = rb_next(iter)) {
-> 
-> Wrap this line as well?
-> 
-> > +		pa = rb_entry(iter, struct ext4_prealloc_space,
-> > +				pa_node.inode_node);
-> >  		BUG_ON(pa->pa_node_lock.inode_lock != &ei->i_prealloc_lock);
-> > +
+> > error_fs = es->s_state & cpu_to_le16(EXT4_ERROR_FS);
+>
+> Here, we do not need to backup 'error_fs', as
+> 'EXT4_SB(sb)->s_mount_state' already record this flag when fs has error
+> flag before do journal replay.
 
-Thanks for the review Jan and Ritesh. I'll fix the styling issues and
-resend the series. 
+Yeah, right. We don't need error_fs variable and can just look at
+EXT4_SB(sb)->s_mount_state.
 
-Ted, just wanted to check if you still want me to rebase this over
-Kemeng's [1] mballoc cleanup series since seems like they'll have to
-send another version.
+> > will check the newest state in the superblock before journal replay. Then
+> > we replay the journal - es->s_state may loose the EXT4_ERROR_FS flag if the
+> > superblock version in the journal didn't have it. So we do:
+> > 
+> > if (error_fs)
+> > 	es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+> > 
+> > which makes sure EXT4_ERROR_FS is set either if it was set in the journal
+> > or in the newest superblock version before journal replay.
+>
+> My modification is to deal with the situation we missed, and I don't want
+> to introduce an invalid super block submission.  If you think my judgment
+> is too obscure, I can send another version according to your suggestion.
 
-[1]
-https://lore.kernel.org/linux-ext4/81568343-36fb-aa90-2952-d1f26547541c@huaweicloud.com/T/#t
+So is the extra superblock write your only concern? Honestly, I prefer code
+simplicity over saved one superblock write in case we had to replay the
+journal (which should be rare anyway). If you look at the code, we can
+writeout superblock several times in that mount path anyway.
 
-Regards,
-Ojaswin
+> > > so we need to
+> > > store error flag to 'es->s_state', and commit it to disk.If 'es->s_state'
+> > > has 'EXT4_ERROR_FS', it means super block in journal has error flag, so
+> > > we do not need to store error flag in super block.
+> > Why do you think that if es->s_state has EXT4_ERROR_FS, the super block in
+> > the journal has that flag? During mount, we load the superblock directly
+> > from the first block in the filesystem and until we call
+> > jbd2_journal_load(), es->s_state contains this newest value of the
+> > superblock state. What am I missing?
+> After jbd2_journal_load() 'es->s_state' is already covered by the super
+> block in journal.  If there is super block in journal and 'es->s_state'
+> has error flag this means super block in journal has error flag. If there
+> is no super block in journal and 'es->s_state' has error flag, this means
+> super block already has error flag.In both cases we can do nothing.
 
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+If what you wanted to say: "It is not necessary to write the superblock if
+EXT4_ERROR_FS is already set." I tend to agree although not 100% because
+journal replay could result in rewinding 's_last_error_*' fields and so
+writing superblock would still make sense even if EXT4_ERROR_FS is set in
+es->s_state after journal reply. That's why I wouldn't complicate things
+and just always write the superblock after journal replay.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
