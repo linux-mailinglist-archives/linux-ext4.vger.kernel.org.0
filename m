@@ -2,107 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0B96A6C81
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 13:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766586A6C8D
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 13:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjCAMnI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Mar 2023 07:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S229725AbjCAMql (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Mar 2023 07:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjCAMmx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 07:42:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730D103;
-        Wed,  1 Mar 2023 04:42:51 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A994521A81;
-        Wed,  1 Mar 2023 12:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1677674569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lsv1DuXMnRsAXWN1/iMg2zCHw6wIP8mEYOtvYwGdNCU=;
-        b=hT6F6gfxlhGLyH4lFvA8/XrwgfMxpIpX7voqeaDOHacYJEQFoqCjdseLrVa9Gh1AIT2AyS
-        vv1wLQRR/w0VAdEX/8nt4V7Rvqy6lyJD/Yl3O3M0sUyyaPXsolE5kWTU6UTOrN9tNwUsd3
-        HJ0BkFcr+gDBISQkpOShRCC+nEmm2uU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1677674569;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lsv1DuXMnRsAXWN1/iMg2zCHw6wIP8mEYOtvYwGdNCU=;
-        b=oUQI3h05w/jZ2zPFPeJWyGpmk6PwrqMi7r8hpPIT5cgG9ykEsmZ+ts6yEUTNVyFdM1ahd1
-        yV5ttFU9eeGODvAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C22613A63;
-        Wed,  1 Mar 2023 12:42:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GagLJklI/2PaeAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 01 Mar 2023 12:42:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2877EA06E5; Wed,  1 Mar 2023 13:42:49 +0100 (CET)
-Date:   Wed, 1 Mar 2023 13:42:49 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+9d16c39efb5fade84574@syzkaller.appspotmail.com>
-Cc:     hdanton@sina.com, jack@suse.com, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] possible deadlock in jbd2_log_wait_commit
-Message-ID: <20230301124249.tj7oub3r35q5z3rx@quack3>
-References: <00000000000052865105f5c8f2c8@google.com>
- <0000000000003845ba05f5d3e416@google.com>
+        with ESMTP id S229486AbjCAMql (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 07:46:41 -0500
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A95302BE
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 04:46:40 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id h12-20020a92c08c000000b00316f82f1d98so7673969ile.7
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 04:46:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V5gRBWvCrC4ivORDLYanYAKruxMNDrxF3nhXlCgZ6d4=;
+        b=D78Z4q5VHLIJy1lBlyzyS2PNK7XkW0fNg1WTNz7lFw5xnAYoYjfsEbpgbnXJKRUUaw
+         G3kYk1aIXNL/Nrar3oKgVA1HLeviTknluBECzpyEbK4oMNtMe0jp/SEqfNm9cI1FhmfS
+         A+gqdQLLd/LDTFarnXALjxajIdvesVd+agHiP09+uzuks4NZtn/lQZ8U87+JdQk+yVgv
+         eJf/H8gVyOFHX9Kzzdx38aib6fEGrVz0hbj9ZjHWdfU1LBknsAR5kGNHUD42TKKRFn2u
+         hKsz6j5renH9UKTE2dWIjBJVyGCbue18Dgr6mwZno2q262Z3D5cO/5efIYTnbB5AKCRq
+         Ymgw==
+X-Gm-Message-State: AO0yUKWn/Ah1xoSV2kB/wVfQwRByD50nffTr4jpjXzEQ13eEZYqx/lMK
+        tAoxglJbGUGMz03htFVRdVtkGw+BEKZktkr1eIH7/gOONod+
+X-Google-Smtp-Source: AK7set+jinAjUAWYrdG6kv0VrfxDnBTCXLpXXJuHSxiCG5jjotaU+gO2m6Gn4BjUeDtSSYYxYS1qjF7hYGwhrzXiIgt3sUFd+X2Y
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000003845ba05f5d3e416@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:ae12:0:b0:310:d348:e59b with SMTP id
+ s18-20020a92ae12000000b00310d348e59bmr2898095ilh.4.1677674799832; Wed, 01 Mar
+ 2023 04:46:39 -0800 (PST)
+Date:   Wed, 01 Mar 2023 04:46:39 -0800
+In-Reply-To: <0000000000006c411605e2f127e5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e24fb05f5d61afb@google.com>
+Subject: Re: [Android 5.10] kernel BUG in ext4_free_blocks (2)
+From:   syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
+        joneslee@google.com, lczerner@redhat.com, lee@kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nogikh@google.com, sashal@kernel.org, stable@vger.kernel.org,
+        syzkaller-android-bugs@googlegroups.com, tadeusz.struk@linaro.org,
+        tudor.ambarus@linaro.org, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 01-03-23 02:08:19, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 0813299c586b175d7edb25f56412c54b812d0379
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Thu Jan 26 11:22:21 2023 +0000
-> 
->     ext4: Fix possible corruption when moving a directory
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14845d50c80000
-> start commit:   e492250d5252 Merge tag 'pwm/for-6.3-rc1' of git://git.kern..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16845d50c80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12845d50c80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f763d89e26d3d4c4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9d16c39efb5fade84574
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d96208c80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176d917f480000
-> 
-> Reported-by: syzbot+9d16c39efb5fade84574@syzkaller.appspotmail.com
-> Fixes: 0813299c586b ("ext4: Fix possible corruption when moving a directory")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+This bug is marked as fixed by commit:
+ext4: block range must be validated before use in ext4_mb_clear_bb()
 
-Drat, yeah, lockdep is actually right. We should not be grabbing i_rwsem
-while having transaction started in ext4_rename(). I'm somewhat surprised
-we didn't hit this lockdep warning earlier during the testing. So we need
-to move the locking earlier in ext4_rename(). I'll send a patch...
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-								Honza
+#syz fix: exact-commit-title
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Android 5.10
+Dashboard link: https://syzkaller.appspot.com/bug?extid=15cd994e273307bf5cfa
+
+---
+[1] I expect the commit to be present in:
+
+1. android12-5.10-lts branch of
+https://android.googlesource.com/kernel/common
