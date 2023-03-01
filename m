@@ -2,255 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35AB6A63FB
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 01:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCAF6A642A
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 01:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjCAACj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Feb 2023 19:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S229540AbjCAATf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Feb 2023 19:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjCAACj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 19:02:39 -0500
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBAE367CC
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 16:02:37 -0800 (PST)
-Received: by mail-il1-f198.google.com with SMTP id v3-20020a92c6c3000000b003159a0109ceso7125631ilm.12
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 16:02:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7FUfIDj4D8j6RMb63P8VxiauNL1Smwo79tHVupo7sXQ=;
-        b=LewnuonCkA11VIP6AxK0E6XEluJQ8/rJKzUFKDZPkwlo/Cfqsp3zJ8ASVddxgXRkuq
-         kgsnOj+tWSbu+JSbDmbZtebBLHMiejsa+TM8t1orIjQPnFVnGopiDxH8mvuhd7MLeFFU
-         LhfdhAgTAhx+32rsX3osq7ZeFeUtZRWnnPA2BZzXMDdrfDrqDJGhO5DGGvu1/hKLioD8
-         MFQMMTvWb30X/AxWP7hy0hnt5hKQ49aIyNdG011jsdNyPBlJQqf2On3TVbvmvLh4XHnB
-         dc+oE6joSA7QLsYrP7Yyg7QHgoPnrlBEQefG32BM0PqSfMvCaL0qX9JYHsfrCzm/zANR
-         Ph2A==
-X-Gm-Message-State: AO0yUKXo6SN6NtCfC9pGu1BRYFm/J9CCAnEKlcGXw9VxzoO1/dt5MvUO
-        py9Jkqe0XSV8L72RcX9S/ArdN0FoHzGqQk3GfHzUyQW4ECMT
-X-Google-Smtp-Source: AK7set8eP3JGOiihkwa0Xht5oStOFmLrGikIDEsudE2a47Kd2GwDVQn6txOQVlZFrQ5JUo6NDVGRzspJPPcRm3XlsnhpiKrw2yKs
-MIME-Version: 1.0
-X-Received: by 2002:a5d:841a:0:b0:745:dfde:ecec with SMTP id
- i26-20020a5d841a000000b00745dfdeececmr2147625ion.1.1677628956854; Tue, 28 Feb
- 2023 16:02:36 -0800 (PST)
-Date:   Tue, 28 Feb 2023 16:02:36 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000009d6c905f5cb6e07@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in start_this_handle (4)
-From:   syzbot <syzbot+cf0b4280f19be4031cf2@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        with ESMTP id S229520AbjCAATf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 19:19:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0458937B49;
+        Tue, 28 Feb 2023 16:19:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ACD9FB80EE4;
+        Wed,  1 Mar 2023 00:19:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36193C433EF;
+        Wed,  1 Mar 2023 00:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677629968;
+        bh=Dp6YGll9fEq0i6/pi+lpCFF50nvydZGLY0lYQFlc3q8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KYYbEtIhVA3RWaS2xg2q0EfXodh4GOmNY4tvxi0H4nLyzYrhWFpOdD72CH8RSx/Fs
+         xo7oO1X6WU4IaJbbLF9mpPXsZu+uepDR7eZ9E/xOHQk6DduUX8NJD0LyPybDASGdD2
+         ZmHMwXFi3S0pfxzs27uWkvqVjDBKt5gIS93lfERCan2xoJndgBoXHTnXu0O3q6ZIqf
+         TLb8FfdJDyvbO+P7Qk4BDTTUMD9QMeQgjfcUeeptUmdVhOOmjdovvnLFJOVyrO+DRm
+         AvmmtMsDV1wJS+CJ+ESkqcokj8RzBbfrTr8zz0egPiFT7is9BVQjLWjH0qdqv2mB16
+         Tn7QJS4XudfSw==
+Date:   Tue, 28 Feb 2023 16:19:26 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     syzbot <syzbot+cf0b4280f19be4031cf2@syzkaller.appspotmail.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [syzbot] [ext4?] possible deadlock in start_this_handle (4)
+Message-ID: <Y/6aDmrx8Q9ob+Zi@sol.localdomain>
+References: <00000000000009d6c905f5cb6e07@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000009d6c905f5cb6e07@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Tue, Feb 28, 2023 at 04:02:36PM -0800, syzbot wrote:
+> -> #1 (fscrypt_init_mutex){+.+.}-{3:3}:
+>        __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+>        __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
+>        fscrypt_initialize+0x40/0xa0 fs/crypto/crypto.c:326
+>        fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
+>        fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
+>        fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
+>        ext4_fname_setup_filename+0x8c/0x110 fs/ext4/crypto.c:28
+>        ext4_add_entry+0x3aa/0xe30 fs/ext4/namei.c:2380
+>        ext4_rename+0x1979/0x2620 fs/ext4/namei.c:3904
+>        ext4_rename2+0x1c7/0x270 fs/ext4/namei.c:4184
+>        vfs_rename+0xef6/0x17a0 fs/namei.c:4772
+>        do_renameat2+0xb62/0xc90 fs/namei.c:4923
+>        __do_sys_renameat2 fs/namei.c:4956 [inline]
+>        __se_sys_renameat2 fs/namei.c:4953 [inline]
+>        __ia32_sys_renameat2+0xe8/0x120 fs/namei.c:4953
+>        do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+>        __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+>        do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+>        entry_SYSENTER_compat_after_hwframe+0x70/0x82
 
-syzbot found the following issue on:
+Interesting.  The above call stack is not supposed to be possible.  It says that
+the target directory's encryption key is being set up in the middle of
+ext4_rename().  But, fscrypt_prepare_rename() is supposed to return an error if
+either the source or target directory's key isn't set up already.
 
-HEAD commit:    a93e884edf61 Merge tag 'driver-core-6.3-rc1' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b9dea8c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=537cd86b8ac8f12d
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+That's quite unfortunate :-(
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cf0b4280f19be4031cf2@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.2.0-syzkaller-10217-ga93e884edf61 #0 Not tainted
-------------------------------------------------------
-kswapd0/100 is trying to acquire lock:
-ffff888043c64990 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xfb4/0x14e0 fs/jbd2/transaction.c:461
-
-but task is already holding lock:
-ffffffff8c8e9ae0 (fs_reclaim){+.+.}-{0:0}, at: set_task_reclaim_state mm/vmscan.c:200 [inline]
-ffffffff8c8e9ae0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x170/0x1ac0 mm/vmscan.c:7338
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
-       fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
-       might_alloc include/linux/sched/mm.h:271 [inline]
-       slab_pre_alloc_hook mm/slab.h:728 [inline]
-       slab_alloc_node mm/slub.c:3434 [inline]
-       __kmem_cache_alloc_node+0x41/0x330 mm/slub.c:3491
-       kmalloc_node_trace+0x21/0x60 mm/slab_common.c:1074
-       kmalloc_node include/linux/slab.h:606 [inline]
-       kzalloc_node include/linux/slab.h:731 [inline]
-       mempool_create_node mm/mempool.c:272 [inline]
-       mempool_create+0x52/0xc0 mm/mempool.c:261
-       mempool_create_page_pool include/linux/mempool.h:112 [inline]
-       fscrypt_initialize+0x8a/0xa0 fs/crypto/crypto.c:332
-       fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
-       fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
-       fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
-       __fscrypt_prepare_lookup+0x2c/0xf0 fs/crypto/hooks.c:100
-       fscrypt_prepare_lookup include/linux/fscrypt.h:935 [inline]
-       ext4_fname_prepare_lookup+0x1be/0x200 fs/ext4/crypto.c:46
-       ext4_lookup_entry fs/ext4/namei.c:1745 [inline]
-       ext4_lookup fs/ext4/namei.c:1820 [inline]
-       ext4_lookup+0x131/0x700 fs/ext4/namei.c:1811
-       __lookup_slow+0x24c/0x460 fs/namei.c:1686
-       lookup_slow fs/namei.c:1703 [inline]
-       walk_component+0x33f/0x5a0 fs/namei.c:1994
-       lookup_last fs/namei.c:2451 [inline]
-       path_lookupat+0x1ba/0x840 fs/namei.c:2475
-       filename_lookup+0x1d2/0x590 fs/namei.c:2504
-       user_path_at_empty+0x46/0x60 fs/namei.c:2877
-       user_path_at include/linux/namei.h:57 [inline]
-       __do_sys_chdir fs/open.c:515 [inline]
-       __se_sys_chdir fs/open.c:509 [inline]
-       __ia32_sys_chdir+0xbb/0x260 fs/open.c:509
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
--> #1 (fscrypt_init_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
-       fscrypt_initialize+0x40/0xa0 fs/crypto/crypto.c:326
-       fscrypt_setup_encryption_info+0xef/0xeb0 fs/crypto/keysetup.c:563
-       fscrypt_get_encryption_info+0x375/0x450 fs/crypto/keysetup.c:668
-       fscrypt_setup_filename+0x23c/0xec0 fs/crypto/fname.c:458
-       ext4_fname_setup_filename+0x8c/0x110 fs/ext4/crypto.c:28
-       ext4_add_entry+0x3aa/0xe30 fs/ext4/namei.c:2380
-       ext4_rename+0x1979/0x2620 fs/ext4/namei.c:3904
-       ext4_rename2+0x1c7/0x270 fs/ext4/namei.c:4184
-       vfs_rename+0xef6/0x17a0 fs/namei.c:4772
-       do_renameat2+0xb62/0xc90 fs/namei.c:4923
-       __do_sys_renameat2 fs/namei.c:4956 [inline]
-       __se_sys_renameat2 fs/namei.c:4953 [inline]
-       __ia32_sys_renameat2+0xe8/0x120 fs/namei.c:4953
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
--> #0 (jbd2_handle){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3098 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
-       validate_chain kernel/locking/lockdep.c:3832 [inline]
-       __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
-       lock_acquire kernel/locking/lockdep.c:5669 [inline]
-       lock_acquire+0x1e3/0x670 kernel/locking/lockdep.c:5634
-       start_this_handle+0xfe7/0x14e0 fs/jbd2/transaction.c:463
-       jbd2__journal_start+0x39d/0x9d0 fs/jbd2/transaction.c:520
-       __ext4_journal_start_sb+0x706/0x890 fs/ext4/ext4_jbd2.c:111
-       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
-       ext4_dirty_inode+0xa5/0x130 fs/ext4/inode.c:6107
-       __mark_inode_dirty+0x247/0x1250 fs/fs-writeback.c:2421
-       mark_inode_dirty_sync include/linux/fs.h:2132 [inline]
-       iput.part.0+0x57/0x8a0 fs/inode.c:1771
-       iput+0x5c/0x80 fs/inode.c:1764
-       dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
-       __dentry_kill+0x3c0/0x640 fs/dcache.c:607
-       shrink_dentry_list+0x12c/0x4f0 fs/dcache.c:1201
-       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
-       super_cache_scan+0x33a/0x590 fs/super.c:104
-       do_shrink_slab+0x464/0xd20 mm/vmscan.c:853
-       shrink_slab_memcg mm/vmscan.c:922 [inline]
-       shrink_slab+0x388/0x660 mm/vmscan.c:1001
-       shrink_one+0x502/0x810 mm/vmscan.c:5343
-       shrink_many mm/vmscan.c:5394 [inline]
-       lru_gen_shrink_node mm/vmscan.c:5511 [inline]
-       shrink_node+0x2064/0x35f0 mm/vmscan.c:6459
-       kswapd_shrink_node mm/vmscan.c:7262 [inline]
-       balance_pgdat+0xa02/0x1ac0 mm/vmscan.c:7452
-       kswapd+0x70b/0x1000 mm/vmscan.c:7712
-       kthread+0x2e8/0x3a0 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-
-other info that might help us debug this:
-
-Chain exists of:
-  jbd2_handle --> fscrypt_init_mutex --> fs_reclaim
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(fscrypt_init_mutex);
-                               lock(fs_reclaim);
-  lock(jbd2_handle);
-
- *** DEADLOCK ***
-
-3 locks held by kswapd0/100:
- #0: ffffffff8c8e9ae0 (fs_reclaim){+.+.}-{0:0}, at: set_task_reclaim_state mm/vmscan.c:200 [inline]
- #0: ffffffff8c8e9ae0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x170/0x1ac0 mm/vmscan.c:7338
- #1: ffffffff8c8a06d0 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab_memcg mm/vmscan.c:895 [inline]
- #1: ffffffff8c8a06d0 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x2a0/0x660 mm/vmscan.c:1001
- #2: ffff88801b18a0e0 (&type->s_umount_key#31){++++}-{3:3}, at: trylock_super fs/super.c:414 [inline]
- #2: ffff88801b18a0e0 (&type->s_umount_key#31){++++}-{3:3}, at: super_cache_scan+0x70/0x590 fs/super.c:79
-
-stack backtrace:
-CPU: 1 PID: 100 Comm: kswapd0 Not tainted 6.2.0-syzkaller-10217-ga93e884edf61 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2178
- check_prev_add kernel/locking/lockdep.c:3098 [inline]
- check_prevs_add kernel/locking/lockdep.c:3217 [inline]
- validate_chain kernel/locking/lockdep.c:3832 [inline]
- __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
- lock_acquire kernel/locking/lockdep.c:5669 [inline]
- lock_acquire+0x1e3/0x670 kernel/locking/lockdep.c:5634
- start_this_handle+0xfe7/0x14e0 fs/jbd2/transaction.c:463
- jbd2__journal_start+0x39d/0x9d0 fs/jbd2/transaction.c:520
- __ext4_journal_start_sb+0x706/0x890 fs/ext4/ext4_jbd2.c:111
- __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
- ext4_dirty_inode+0xa5/0x130 fs/ext4/inode.c:6107
- __mark_inode_dirty+0x247/0x1250 fs/fs-writeback.c:2421
- mark_inode_dirty_sync include/linux/fs.h:2132 [inline]
- iput.part.0+0x57/0x8a0 fs/inode.c:1771
- iput+0x5c/0x80 fs/inode.c:1764
- dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
- __dentry_kill+0x3c0/0x640 fs/dcache.c:607
- shrink_dentry_list+0x12c/0x4f0 fs/dcache.c:1201
- prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
- super_cache_scan+0x33a/0x590 fs/super.c:104
- do_shrink_slab+0x464/0xd20 mm/vmscan.c:853
- shrink_slab_memcg mm/vmscan.c:922 [inline]
- shrink_slab+0x388/0x660 mm/vmscan.c:1001
- shrink_one+0x502/0x810 mm/vmscan.c:5343
- shrink_many mm/vmscan.c:5394 [inline]
- lru_gen_shrink_node mm/vmscan.c:5511 [inline]
- shrink_node+0x2064/0x35f0 mm/vmscan.c:6459
- kswapd_shrink_node mm/vmscan.c:7262 [inline]
- balance_pgdat+0xa02/0x1ac0 mm/vmscan.c:7452
- kswapd+0x70b/0x1000 mm/vmscan.c:7712
- kthread+0x2e8/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Eric
