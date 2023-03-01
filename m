@@ -2,92 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BE26A626D
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Feb 2023 23:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 247C26A63F7
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 01:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjB1Wcr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Feb 2023 17:32:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S229565AbjCAABu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Feb 2023 19:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjB1Wcr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 17:32:47 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EBE2ED5C
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 14:32:45 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 31SMUPCV016770
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 17:30:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1677623428; bh=z4a5dDxBQA7AcZTaXSR++HSOb7UmJWz7GB0EAM00kaQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=IWHmt5JvPjAWDcjEjQdEQHk3pb9ibzUUtGME8OIHZ+4x7pBLQsgEDM2GS27+eDgtC
-         sYtpQ0KcBUmFfOZ1HiS1wfLKhk8KPEc6/yS9FcPEA1MgGdroLC8BcXSFGTIRhHPuWA
-         Q+RWDyCS6Hcvq9+YFOt8HgSwbrOwnv+dGZrLF9IRD7uvQRKVtxbtNw96Qd5BzEo61K
-         Z94BHujMBNcVQ87gv64Q6zqZhLcF+8+OFtjVI4HFtZk8YCFz5QKNuv28JWSXGpRfs1
-         iEDspwav6z4t94E/p8XEk0FT0O8Uiqhesyg10D/sDRR7CbqIRJ2/9pzpIRGkT20KI9
-         6bmpusgPFxVsw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3D0AE15C3593; Tue, 28 Feb 2023 17:30:25 -0500 (EST)
-Date:   Tue, 28 Feb 2023 17:30:25 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Kemeng Shi <shikemeng@huaweicloud.com>, adilger.kernel@dilger.ca,
-        jack@suse.cz, ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/20] Some bugfix and cleanup to mballoc
-Message-ID: <Y/6AgYotmMdjei3w@mit.edu>
-References: <20230228114306.3328235-1-shikemeng@huaweicloud.com>
- <87356pwxyc.fsf@doe.com>
+        with ESMTP id S229563AbjCAABs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Feb 2023 19:01:48 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C6036455
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 16:01:47 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id n6so10851269plf.5
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Feb 2023 16:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dase/rKwb8olXZw4+LDNprv2RVCPainY9pi10HK+tM4=;
+        b=EoN6tMUySbv/wFvH2G/QeYhTnLIx3gjJeTQtsMNGzRTnISlnTeG8+r+tvwK6CmYT41
+         OeouGTxgJLPsn272MRkAGA4Olp0GdYTo6rrImv8mCMuQ/Wp44Ka7nK2wTZ0z0lgh/Qx+
+         dZJ9uNPfEhxRodhq6vnIxcWla5T03eiWYMPAFlMAt+7sFP9HaC7pVlTp+A52Wy/bSG5M
+         yDzO5Ph6nQh2T+pjRfVh0cVTEjft9Nbp2dpYrAeGm06yuGmsQ+JaGppvhOUkNS0W+raw
+         5tW+xZ9ho/DJ3URoql/D5S1tetpNq4lNmlxjBpF3L5XvUGZojRlGcBfn2gAnhMDOVRnC
+         lxyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dase/rKwb8olXZw4+LDNprv2RVCPainY9pi10HK+tM4=;
+        b=nZXNS0OljOqABXsLmTrEQO0gAWeNe8MHJcZZ1GrP1jRa/X8AsEib7c55c7yqEGjKBi
+         e4uJNSu/cqqMfzMNgBX8Kn0rYOCHvYpUHVt8I/ezN0dgIuNE+YwBVahyx0ZF062oHtkE
+         Tj1L3qI5ttgRCa+7rTTzSSK3x88FIU9GbsADncEehyIxt9GyovRp45Yi1OgWgw+XOJs9
+         dH14v8p9SGGin2hVIoiFiRsLXE8EpFx7vgMSMK7VgoD8G1OC/IrW4KUJZ0c6vY+w6xFi
+         jArlhvHnm9BcmWajOkSwJ6J1xNQwKOWIc76OV0RpPAJ+pXJ4kFS4uQ65q4QUsoZrmLUs
+         cNCw==
+X-Gm-Message-State: AO0yUKVOr+H5uya+6cY9f7Om7OrZPTMFXaJ34rbdWJ+qfUs+TpErbKkS
+        G4B7xSUYL1o+eRNyqEkf1I4nRw==
+X-Google-Smtp-Source: AK7set/KzrMuIbnrMYbSMOuNfdjL2hXTWzj1HCDFNgudNuM3MC2YID6lT6+Gg5o1CKvOP0NhVRyMqQ==
+X-Received: by 2002:a17:902:e543:b0:19d:62b:f040 with SMTP id n3-20020a170902e54300b0019d062bf040mr5423860plf.37.1677628906585;
+        Tue, 28 Feb 2023 16:01:46 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-4-237.pa.vic.optusnet.com.au. [49.186.4.237])
+        by smtp.gmail.com with ESMTPSA id u8-20020a656708000000b005004919b31dsm6278906pgf.72.2023.02.28.16.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 16:01:45 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pX9ug-003JtX-7K; Wed, 01 Mar 2023 11:01:42 +1100
+Date:   Wed, 1 Mar 2023 11:01:42 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     syzbot <syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] possible deadlock in evict (3)
+Message-ID: <20230301000142.GK2825702@dread.disaster.area>
+References: <00000000000065970505f5c5e3fb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87356pwxyc.fsf@doe.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <00000000000065970505f5c5e3fb@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 10:04:35PM +0530, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+[obvious one for the ext4 people]
+
+On Tue, Feb 28, 2023 at 09:25:55AM -0800, syzbot wrote:
+> Hello,
 > 
-> > Hi, this series contain some random cleanup patches and some bugfix
-> > patches to make EXT4_MB_HINT_GOAL_ONLY work properly, protect pa->pa_free
-> > from race and so on. More details can be found in git log.
-> > Thanks!
+> syzbot found the following issue on:
 > 
-> Hi Kemeng,
+> HEAD commit:    ae3419fbac84 vc_screen: don't clobber return value in vcs_..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1136fe18c80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff98a3b3c1aed3ab
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 > 
-> Did you run any testing on these patches? Because I was very easily able
-> to hit ext/009 causing kernel BUG_ON with default mkfs/mount options.
-> It's always a good and recommended practice to ensure some level of
-> testing on any of the patches we submit to community for review
-> and call out in the cover letter on what has been tested and what is not.
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 6.2.0-syzkaller-12913-gae3419fbac84 #0 Not tainted
+> ------------------------------------------------------
+> kswapd0/100 is trying to acquire lock:
+> ffff888047aea650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:665
+> 
+> but task is already holding lock:
+> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: set_task_reclaim_state mm/vmscan.c:200 [inline]
+> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x170/0x1ac0 mm/vmscan.c:7338
+> 
+> which lock already depends on the new lock.
+> 
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #3 (fs_reclaim){+.+.}-{0:0}:
+>        __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
+>        fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
+>        might_alloc include/linux/sched/mm.h:271 [inline]
+>        prepare_alloc_pages+0x159/0x570 mm/page_alloc.c:5362
+>        __alloc_pages+0x149/0x5c0 mm/page_alloc.c:5580
+>        alloc_pages+0x1aa/0x270 mm/mempolicy.c:2283
+>        __get_free_pages+0xc/0x40 mm/page_alloc.c:5641
+>        kasan_populate_vmalloc_pte mm/kasan/shadow.c:309 [inline]
+>        kasan_populate_vmalloc_pte+0x27/0x150 mm/kasan/shadow.c:300
+>        apply_to_pte_range mm/memory.c:2578 [inline]
+>        apply_to_pmd_range mm/memory.c:2622 [inline]
+>        apply_to_pud_range mm/memory.c:2658 [inline]
+>        apply_to_p4d_range mm/memory.c:2694 [inline]
+>        __apply_to_page_range+0x68c/0x1030 mm/memory.c:2728
+>        alloc_vmap_area+0x536/0x1f20 mm/vmalloc.c:1638
+>        __get_vm_area_node+0x145/0x3f0 mm/vmalloc.c:2495
+>        __vmalloc_node_range+0x250/0x1300 mm/vmalloc.c:3141
+>        kvmalloc_node+0x156/0x1a0 mm/util.c:628
+>        kvmalloc include/linux/slab.h:737 [inline]
+>        ext4_xattr_move_to_block fs/ext4/xattr.c:2570 [inline]
 
-Hi Kemeng,
+	buffer = kvmalloc(value_size, GFP_NOFS);
 
-If you need help running xfstests, I maintain a test appliance which
-makes it very easy to run xfstests on development kernels.  Please see:
+Yeah, this doesn't work like the code says it should. The gfp mask
+is not passed down to the page table population code and it hard
+codes GFP_KERNEL allocations so you have to do:
 
-https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
-https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+	memalloc_nofs_save();
+	buffer = kvmalloc(value_size, GFP_KERNEL);
+	memalloc_nofs_restore();
 
-This test appliance can also be run on Android devices and using
-Google Compute Engine; for more information see:
+to apply GFP_NOFS to allocations in the pte population code to avoid
+memory reclaim recursion in kvmalloc.
 
-	https://thunk.org/android-xfstests
-	https://thunk.org/gce-xfstests
-
-If you're just getting started, I recommend that you start with
-kvm-xfstests, and this is the simplest way to get started.
-
-Cheers,
-
-					- Ted
-
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
