@@ -2,119 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBA76A71C8
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 18:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2016A7674
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 22:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjCAREU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Mar 2023 12:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+        id S229515AbjCAVza (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Mar 2023 16:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjCARET (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 12:04:19 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0A843919
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 09:04:06 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id y14-20020a92c74e000000b003157134a9fbso8153904ilp.2
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 09:04:06 -0800 (PST)
+        with ESMTP id S229498AbjCAVz3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 16:55:29 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119653D918
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 13:55:15 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so735684pjg.4
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 13:55:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AE61FwVgXloNhSM5ZenfX5y6Vo/6+yh3Dr6aPcvzdng=;
+        b=z6PaE6nerM9FUo86l1KBLYZPqhEYrwMnGztbwCVf5DcnhX5ZZfcdO12L5+kIEyAIjg
+         GnGdIQhnuLCCTT72IjV2d98YrTtxZq6HXayw9WsLBOXEMWrgxeSKD/KJmglliI0Pa42a
+         iJvoiFTDdCYUjV9FgU2fCnGexyqzpkveefAcRL42rfRifdbRLpAX7dQflk6xzoWWEii1
+         2LF9U8ao+edu7MyG7sWfTDY8zVVeWji++EaPBZX6IOrxEON6Z++PBqGVdfuggFOqR5rN
+         gb5d1PUrXVLtKsOO8CtRmX86WJiFvKftJfEEkF4r1HenSDabg89RfINkHGFqvdSY+8Mb
+         GIrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4ijtyYwUSpPiADlS8jXaq8RNP7rAhwQrJbgxXtqNnsk=;
-        b=aNUqPIv2eZJxWrGGkC84egX1QyZQSK6WTKLLUs4CbwVQNfdYBNygO81E0oyi2ZkKmg
-         ntcwrSttaJhp66LiYq11HsrV3dCCQ0D2wUrS2aBzgVjH0F0hEbQecxj0iVNkAI14pr9e
-         bsevLU2Tajrxm113axuwlzmYGnYvOGy8IASDYpc+cItSQipCpKAhtM6MHawvombU3UVg
-         ANOMbSHXMt11JTofSR6zuYLQ5RrcEvayXAgxA5l7wJFim6qqLa6JwpwUAzKXsK6BBFTM
-         kcJNZ9cpXsVjcM7pwm+0SDD1S3wUlnIkEyH1ZBIL8MAXyJHLbqfKLTotpgpiQRrQ0QIJ
-         TUvA==
-X-Gm-Message-State: AO0yUKWoEVbpTeNRi7Ydzwp3Jn+epn1xemEmnSInHHk+NrivbyQs1ZBt
-        2d0GNgsk5SsVIYM1U9YlmaYHsE5IrjlCPftigtZRejn980xy
-X-Google-Smtp-Source: AK7set8uFRynAEITgWsfrGesrBup2CAk3VxbpWdX/bYU859iY/Hj9DUIPdja/medu71lSLKEl+EqARAhgw2v71t/elag0Fpb4znZ
-MIME-Version: 1.0
-X-Received: by 2002:a02:3312:0:b0:3c4:dda2:da6e with SMTP id
- c18-20020a023312000000b003c4dda2da6emr3316494jae.4.1677690246030; Wed, 01 Mar
- 2023 09:04:06 -0800 (PST)
-Date:   Wed, 01 Mar 2023 09:04:06 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000286e1a05f5d9b3c6@google.com>
-Subject: [syzbot] [ext4?] memory leak in ext4_expand_extra_isize_ea
-From:   syzbot <syzbot+0d042627c4f2ad332195@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AE61FwVgXloNhSM5ZenfX5y6Vo/6+yh3Dr6aPcvzdng=;
+        b=HeGs6sUHN9FqtZ/4GwVlAAym3ubBJI4Ad+yEhBZhRado0EaxGPGmAjQYVgb+lPNIxJ
+         dqy8XFdFKz1BCot43G8KOHhGiQqffPD9ZcOGFiZix+BIfB3JVmPFCmqAgGCDBlu1NRao
+         tOER+33vc9cIcUPTR1vC0E43ieLhqvTjY7oCAT9vsyM3gLhcUbuJLU3KaRQwAfGqz2E1
+         Hg+y6KzxbXSImaG14ZQ6VpnhgLGQKFKY2RBLRS6QeyQnsGG0hoCH/qsqGhXr/RjhFHRi
+         m00X9LbOS3s91wouuSD8PxoLzj3vyNzIXPDXRUmMPzenEMUSaVp3Z+8y442Ba4yYnNTp
+         r12w==
+X-Gm-Message-State: AO0yUKWJ4Cfja6fEJvaU/yIa10HIw45y97fkceR40eKfDhrt7ZWSkfL4
+        UApPqaoakx+7Ad3DVT+2/W3LlA==
+X-Google-Smtp-Source: AK7set9DeyfsrZffzNp8g6/B9oLZMWp1hH0JhV6Y5X/KLVSOSkkHmWx3FGOYQhSNzmwg/KcjheFeVg==
+X-Received: by 2002:a05:6a20:9150:b0:cd:ed5c:4be with SMTP id x16-20020a056a20915000b000cded5c04bemr7310602pzc.25.1677707714480;
+        Wed, 01 Mar 2023 13:55:14 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-4-237.pa.vic.optusnet.com.au. [49.186.4.237])
+        by smtp.gmail.com with ESMTPSA id a6-20020a631a46000000b004fc1d91e695sm7821235pgm.79.2023.03.01.13.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 13:55:13 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pXUPn-003gHe-23; Thu, 02 Mar 2023 08:55:11 +1100
+Date:   Thu, 2 Mar 2023 08:55:10 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     syzbot <syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [syzbot] [ext4?] possible deadlock in evict (3)
+Message-ID: <20230301215510.GM2825702@dread.disaster.area>
+References: <20230301000142.GK2825702@dread.disaster.area>
+ <87v8jka12p.fsf@doe.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v8jka12p.fsf@doe.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed, Mar 01, 2023 at 09:57:58PM +0530, Ritesh Harjani wrote:
+> Dave Chinner <david@fromorbit.com> writes:
+> 
+> > [obvious one for the ext4 people]
+> >
+> > On Tue, Feb 28, 2023 at 09:25:55AM -0800, syzbot wrote:
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    ae3419fbac84 vc_screen: don't clobber return value in vcs_..
+> >> git tree:       upstream
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=1136fe18c80000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff98a3b3c1aed3ab
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+> >> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> >>
+> >> Unfortunately, I don't have any reproducer for this issue yet.
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com
+> >>
+> >> ======================================================
+> >> WARNING: possible circular locking dependency detected
+> >> 6.2.0-syzkaller-12913-gae3419fbac84 #0 Not tainted
+> >> ------------------------------------------------------
+> >> kswapd0/100 is trying to acquire lock:
+> >> ffff888047aea650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:665
+> >>
+> >> but task is already holding lock:
+> >> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: set_task_reclaim_state mm/vmscan.c:200 [inline]
+> >> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x170/0x1ac0 mm/vmscan.c:7338
+> >>
+> >> which lock already depends on the new lock.
+> >>
+> >>
+> >> the existing dependency chain (in reverse order) is:
+> >>
+> >> -> #3 (fs_reclaim){+.+.}-{0:0}:
+> >>        __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
+> >>        fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
+> >>        might_alloc include/linux/sched/mm.h:271 [inline]
+> >>        prepare_alloc_pages+0x159/0x570 mm/page_alloc.c:5362
+> >>        __alloc_pages+0x149/0x5c0 mm/page_alloc.c:5580
+> >>        alloc_pages+0x1aa/0x270 mm/mempolicy.c:2283
+> >>        __get_free_pages+0xc/0x40 mm/page_alloc.c:5641
+> >>        kasan_populate_vmalloc_pte mm/kasan/shadow.c:309 [inline]
+> >>        kasan_populate_vmalloc_pte+0x27/0x150 mm/kasan/shadow.c:300
+> >>        apply_to_pte_range mm/memory.c:2578 [inline]
+> >>        apply_to_pmd_range mm/memory.c:2622 [inline]
+> >>        apply_to_pud_range mm/memory.c:2658 [inline]
+> >>        apply_to_p4d_range mm/memory.c:2694 [inline]
+> >>        __apply_to_page_range+0x68c/0x1030 mm/memory.c:2728
+> >>        alloc_vmap_area+0x536/0x1f20 mm/vmalloc.c:1638
+> >>        __get_vm_area_node+0x145/0x3f0 mm/vmalloc.c:2495
+> >>        __vmalloc_node_range+0x250/0x1300 mm/vmalloc.c:3141
+> >>        kvmalloc_node+0x156/0x1a0 mm/util.c:628
+> >>        kvmalloc include/linux/slab.h:737 [inline]
+> >>        ext4_xattr_move_to_block fs/ext4/xattr.c:2570 [inline]
+> >
+> > 	buffer = kvmalloc(value_size, GFP_NOFS);
+> >
+> > Yeah, this doesn't work like the code says it should. The gfp mask
+> > is not passed down to the page table population code and it hard
+> > codes GFP_KERNEL allocations so you have to do:
+> >
+> > 	memalloc_nofs_save();
+> > 	buffer = kvmalloc(value_size, GFP_KERNEL);
+> > 	memalloc_nofs_restore();
+> >
+> > to apply GFP_NOFS to allocations in the pte population code to avoid
+> > memory reclaim recursion in kvmalloc.
+> 
+> What about this patch mentioned below? Is it the kasan allocations
+> (kasan_populate_vmalloc()), which hasn't been taken care of in this
+> patch. Does this means we need kvmalloc fixed instead for kasan allocations?
+> 
+> Though I agree we can have the fix like you mentioned above
+> (as many of the API users are already doing above). Just wanted to have the
+> full context of what is going on here.
+> 
+> 451769ebb7e792c3404db53b3c2a422990de654e
+> Author:     Michal Hocko <mhocko@suse.com>
+> 
+> mm/vmalloc: alloc GFP_NO{FS,IO} for vmalloc
 
-syzbot found the following issue on:
+Oh, you're right, I didn't realise that had been smacked into the
+guts of the vmalloc implementation instead of just being wrapped
+around the whole lot of it. That's an exact example of *how not to
+use scoped allocation contexts* because it leads to stupid
+whack-a-mole bugs like this one.  I made this exact point in the
+discussion you pointed to when I noticed an anti-pattern of scoped
+contexts were being used to wrap single kmalloc(GFP_KERNEL) calls.
 
-HEAD commit:    c0927a7a5391 Merge tag 'xfs-6.3-merge-4' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d973a8c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5733ca1757172ad
-dashboard link: https://syzkaller.appspot.com/bug?extid=0d042627c4f2ad332195
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16598c22c80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12376874c80000
+KASAN essentialy requires explicit use of allocation scopes to avoid
+spurious lockdep GFP_NOFS/GFP_NOIO allocation context warnings
+because most of it's low level tracking allocations are GFP_KERNEL.
+If we wrap the whole of kvmalloc() with the correct context,
+everything is fine. But using contexts for fined-grained internal
+"fix only the specific call-chain" patches like the above commit,
+then it just doesn't work.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a5732f39d793/disk-c0927a7a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a0b9fb85e380/vmlinux-c0927a7a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0f4253a65ff3/bzImage-c0927a7a.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2162c5bd66e2/mount_0.gz
+So in this case, I agree with you that this is a kvmalloc() bug in
+that kvmalloc is failing to apply the GFP_NOFS scoped context across
+the entire vmalloc operation. As it currently stands, any low level
+allocation in the vmalloc path that isn't passed the correct gfp
+mask will trigger this sort of warning.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0d042627c4f2ad332195@syzkaller.appspotmail.com
+This is one of the reasons we use the scopes extensively in XFS -
+whenever we enter a NOFS context, we call memalloc_nofs_save() and
+so we always get disconnected low level allocations (like KASAN
+does) doing the right thing. Hence we simply haven't noticed how
+badly vmalloc() screwed up setting allocation contexts....
 
-BUG: memory leak
-unreferenced object 0xffff88810658dc00 (size 1024):
-  comm "syz-executor463", pid 5080, jiffies 4294961132 (age 13.510s)
-  hex dump (first 32 bytes):
-    00 fb 8e 00 00 cf e8 9e ac aa 80 5a e1 26 a9 9c  ...........Z.&..
-    71 e3 ea 67 33 7f 9a ef ca d1 17 51 5c 7f 0e 4b  q..g3......Q\..K
-  backtrace:
-    [<ffffffff8153410d>] __do_kmalloc_node mm/slab_common.c:966 [inline]
-    [<ffffffff8153410d>] __kmalloc_node+0x4d/0x120 mm/slab_common.c:974
-    [<ffffffff81523dd2>] kmalloc_node include/linux/slab.h:610 [inline]
-    [<ffffffff81523dd2>] kvmalloc_node+0xa2/0x180 mm/util.c:603
-    [<ffffffff8188b446>] kvmalloc include/linux/slab.h:737 [inline]
-    [<ffffffff8188b446>] ext4_xattr_move_to_block fs/ext4/xattr.c:2635 [inline]
-    [<ffffffff8188b446>] ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
-    [<ffffffff8188b446>] ext4_expand_extra_isize_ea+0x786/0xb80 fs/ext4/xattr.c:2835
-    [<ffffffff8181539b>] __ext4_expand_extra_isize+0x18b/0x200 fs/ext4/inode.c:5955
-    [<ffffffff8181fa55>] ext4_try_to_expand_extra_isize fs/ext4/inode.c:5998 [inline]
-    [<ffffffff8181fa55>] __ext4_mark_inode_dirty+0x245/0x370 fs/ext4/inode.c:6076
-    [<ffffffff818942fe>] ext4_set_acl+0x21e/0x340 fs/ext4/acl.c:263
-    [<ffffffff8170e672>] set_posix_acl+0x112/0x150 fs/posix_acl.c:956
-    [<ffffffff8170eb72>] vfs_set_acl+0x2b2/0x4a0 fs/posix_acl.c:1098
-    [<ffffffff81710ea0>] do_set_acl+0x90/0x140 fs/posix_acl.c:1247
-    [<ffffffff81690a63>] do_setxattr+0x73/0xf0 fs/xattr.c:606
-    [<ffffffff81690b9d>] setxattr+0xbd/0xe0 fs/xattr.c:632
-    [<ffffffff81690cd8>] path_setxattr+0x118/0x130 fs/xattr.c:651
-    [<ffffffff81690d79>] __do_sys_lsetxattr fs/xattr.c:674 [inline]
-    [<ffffffff81690d79>] __se_sys_lsetxattr fs/xattr.c:670 [inline]
-    [<ffffffff81690d79>] __x64_sys_lsetxattr+0x29/0x30 fs/xattr.c:670
-    [<ffffffff849ad699>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff849ad699>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Cheers,
 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
