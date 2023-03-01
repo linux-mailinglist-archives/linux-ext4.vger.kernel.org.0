@@ -2,78 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766586A6C8D
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 13:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09D76A6CC6
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 14:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjCAMql (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Mar 2023 07:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        id S229591AbjCANDh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Mar 2023 08:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjCAMql (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 07:46:41 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A95302BE
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 04:46:40 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id h12-20020a92c08c000000b00316f82f1d98so7673969ile.7
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 04:46:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V5gRBWvCrC4ivORDLYanYAKruxMNDrxF3nhXlCgZ6d4=;
-        b=D78Z4q5VHLIJy1lBlyzyS2PNK7XkW0fNg1WTNz7lFw5xnAYoYjfsEbpgbnXJKRUUaw
-         G3kYk1aIXNL/Nrar3oKgVA1HLeviTknluBECzpyEbK4oMNtMe0jp/SEqfNm9cI1FhmfS
-         A+gqdQLLd/LDTFarnXALjxajIdvesVd+agHiP09+uzuks4NZtn/lQZ8U87+JdQk+yVgv
-         eJf/H8gVyOFHX9Kzzdx38aib6fEGrVz0hbj9ZjHWdfU1LBknsAR5kGNHUD42TKKRFn2u
-         hKsz6j5renH9UKTE2dWIjBJVyGCbue18Dgr6mwZno2q262Z3D5cO/5efIYTnbB5AKCRq
-         Ymgw==
-X-Gm-Message-State: AO0yUKWn/Ah1xoSV2kB/wVfQwRByD50nffTr4jpjXzEQ13eEZYqx/lMK
-        tAoxglJbGUGMz03htFVRdVtkGw+BEKZktkr1eIH7/gOONod+
-X-Google-Smtp-Source: AK7set+jinAjUAWYrdG6kv0VrfxDnBTCXLpXXJuHSxiCG5jjotaU+gO2m6Gn4BjUeDtSSYYxYS1qjF7hYGwhrzXiIgt3sUFd+X2Y
-MIME-Version: 1.0
-X-Received: by 2002:a92:ae12:0:b0:310:d348:e59b with SMTP id
- s18-20020a92ae12000000b00310d348e59bmr2898095ilh.4.1677674799832; Wed, 01 Mar
- 2023 04:46:39 -0800 (PST)
-Date:   Wed, 01 Mar 2023 04:46:39 -0800
-In-Reply-To: <0000000000006c411605e2f127e5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e24fb05f5d61afb@google.com>
-Subject: Re: [Android 5.10] kernel BUG in ext4_free_blocks (2)
-From:   syzbot <syzbot+15cd994e273307bf5cfa@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        joneslee@google.com, lczerner@redhat.com, lee@kernel.org,
+        with ESMTP id S229969AbjCANDa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 08:03:30 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A056C3E616;
+        Wed,  1 Mar 2023 05:03:21 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A92B1FE12;
+        Wed,  1 Mar 2023 13:03:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1677675800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nsUz2ZF21Zo4pWO3KKHyhfS3MF4yNcPvkS7A8IQtuU8=;
+        b=pHxeUmVKlSTo/HVAG3z4o2zf4mzCEkC+OfvEWLqR7lyiovqPWV30aqNsVryKQriUY6GFI9
+        q3/HCFuJMoMG0BdsUykqDwVdVsDZzjcK3Zy5j6Qvt2+QpaqdapJNJLKFfq6mlKRC+8Q9uz
+        Orfh+6SejhrT12p0VQ/t9LYYbGe+qJs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1677675800;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nsUz2ZF21Zo4pWO3KKHyhfS3MF4yNcPvkS7A8IQtuU8=;
+        b=1ubwTF6tL+EaLPagUvR5obN/BMwGZ9coW1BGjGBlKuY/QdR+yjq+UF8pPkspnUWfN5825K
+        G9Zk/AXcO/e58tDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CDD913A3E;
+        Wed,  1 Mar 2023 13:03:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3VZfBhhN/2N+BgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 01 Mar 2023 13:03:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 8EAC7A06E5; Wed,  1 Mar 2023 14:03:19 +0100 (CET)
+Date:   Wed, 1 Mar 2023 14:03:19 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin@huaweicloud.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nogikh@google.com, sashal@kernel.org, stable@vger.kernel.org,
-        syzkaller-android-bugs@googlegroups.com, tadeusz.struk@linaro.org,
-        tudor.ambarus@linaro.org, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        jack@suse.cz, Ye Bin <yebin10@huawei.com>
+Subject: Re: [PATCH v4 1/2] ext4: commit super block if fs record error when
+ journal record without error
+Message-ID: <20230301130319.yrh65hqjl2ve5d2v@quack3>
+References: <20230301115909.184772-1-yebin@huaweicloud.com>
+ <20230301115909.184772-2-yebin@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230301115909.184772-2-yebin@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: block range must be validated before use in ext4_mb_clear_bb()
+On Wed 01-03-23 19:59:08, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
+> 
+> Now, 'es->s_state' maybe covered by recover journal. And journal errno
+> maybe not recorded in journal sb as IO error. ext4_update_super() only
+> update error information when 'sbi->s_add_error_count' large than zero.
+> Then 'EXT4_ERROR_FS' flag maybe lost.
+> To solve above issue just recover 'es->s_state' error flag after journal
+> replay like error info.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Thanks. The patch looks good to me. Feel free to add:
 
-#syz fix: exact-commit-title
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+								Honza
 
-Kernel: Android 5.10
-Dashboard link: https://syzkaller.appspot.com/bug?extid=15cd994e273307bf5cfa
-
----
-[1] I expect the commit to be present in:
-
-1. android12-5.10-lts branch of
-https://android.googlesource.com/kernel/common
+> ---
+>  fs/ext4/super.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index faae05493471..9df8fada2dce 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5910,7 +5910,9 @@ static int ext4_load_journal(struct super_block *sb,
+>  	if (!ext4_has_feature_journal_needs_recovery(sb))
+>  		err = jbd2_journal_wipe(journal, !really_read_only);
+>  	if (!err) {
+> +		int err2;
+>  		char *save = kmalloc(EXT4_S_ERR_LEN, GFP_KERNEL);
+> +
+>  		if (save)
+>  			memcpy(save, ((char *) es) +
+>  			       EXT4_S_ERR_START, EXT4_S_ERR_LEN);
+> @@ -5919,6 +5921,11 @@ static int ext4_load_journal(struct super_block *sb,
+>  			memcpy(((char *) es) + EXT4_S_ERR_START,
+>  			       save, EXT4_S_ERR_LEN);
+>  		kfree(save);
+> +		es->s_state |= cpu_to_le16(EXT4_SB(sb)->s_mount_state &
+> +					   EXT4_ERROR_FS);
+> +		/* Write out restored error information to the superblock */
+> +		err2 = ext4_commit_super(sb);
+> +		err = err ? : err2;
+>  	}
+>  
+>  	if (err) {
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
