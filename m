@@ -2,70 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2016A7674
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Mar 2023 22:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA1A6A7868
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Mar 2023 01:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjCAVza (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Mar 2023 16:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S229564AbjCBAa5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Mar 2023 19:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjCAVz3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 16:55:29 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119653D918
-        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 13:55:15 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so735684pjg.4
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 13:55:15 -0800 (PST)
+        with ESMTP id S229552AbjCBAa4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Mar 2023 19:30:56 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40738457C6
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Mar 2023 16:30:55 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id p3-20020a17090ad30300b0023a1cd5065fso1088162pju.0
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Mar 2023 16:30:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AE61FwVgXloNhSM5ZenfX5y6Vo/6+yh3Dr6aPcvzdng=;
-        b=z6PaE6nerM9FUo86l1KBLYZPqhEYrwMnGztbwCVf5DcnhX5ZZfcdO12L5+kIEyAIjg
-         GnGdIQhnuLCCTT72IjV2d98YrTtxZq6HXayw9WsLBOXEMWrgxeSKD/KJmglliI0Pa42a
-         iJvoiFTDdCYUjV9FgU2fCnGexyqzpkveefAcRL42rfRifdbRLpAX7dQflk6xzoWWEii1
-         2LF9U8ao+edu7MyG7sWfTDY8zVVeWji++EaPBZX6IOrxEON6Z++PBqGVdfuggFOqR5rN
-         gb5d1PUrXVLtKsOO8CtRmX86WJiFvKftJfEEkF4r1HenSDabg89RfINkHGFqvdSY+8Mb
-         GIrQ==
+        bh=ZEfabSCp43QhqfB0SyHwstZnkFYZGWQHuKxqbl01Qrc=;
+        b=Fz+0nQX0M3bCI9yyqAUwTWZ7nCQyIf55zIf5cW6AnTF0YdhjK61lTzZaquyFW+1j1B
+         RSQwjpwXOpvUQxn6EjPl9U9xfkNcYpNIOCAQI/iMDi5AG8zP7mxFXAILN4PvJT11eWgS
+         NH+EP4CfsIgGKFMcgw8gV9S/fVGz4OvT7yiqdMHQmCbE5+yCd7Jj6AEaV/bgbXH6H2DB
+         NatZn/uokrYSWXBDpeFzxpKOk5/xvKIOiXIYR7r4ZK7U5QhocipNUjSsqifd01d3O2TI
+         HLto6lNxJOxprR7Stu3rqpAQ+vZx+zrKpSzcsDJSh7IDR+Pi+OLnfj2z+X0bdB0Yu2Vs
+         JCZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AE61FwVgXloNhSM5ZenfX5y6Vo/6+yh3Dr6aPcvzdng=;
-        b=HeGs6sUHN9FqtZ/4GwVlAAym3ubBJI4Ad+yEhBZhRado0EaxGPGmAjQYVgb+lPNIxJ
-         dqy8XFdFKz1BCot43G8KOHhGiQqffPD9ZcOGFiZix+BIfB3JVmPFCmqAgGCDBlu1NRao
-         tOER+33vc9cIcUPTR1vC0E43ieLhqvTjY7oCAT9vsyM3gLhcUbuJLU3KaRQwAfGqz2E1
-         Hg+y6KzxbXSImaG14ZQ6VpnhgLGQKFKY2RBLRS6QeyQnsGG0hoCH/qsqGhXr/RjhFHRi
-         m00X9LbOS3s91wouuSD8PxoLzj3vyNzIXPDXRUmMPzenEMUSaVp3Z+8y442Ba4yYnNTp
-         r12w==
-X-Gm-Message-State: AO0yUKWJ4Cfja6fEJvaU/yIa10HIw45y97fkceR40eKfDhrt7ZWSkfL4
-        UApPqaoakx+7Ad3DVT+2/W3LlA==
-X-Google-Smtp-Source: AK7set9DeyfsrZffzNp8g6/B9oLZMWp1hH0JhV6Y5X/KLVSOSkkHmWx3FGOYQhSNzmwg/KcjheFeVg==
-X-Received: by 2002:a05:6a20:9150:b0:cd:ed5c:4be with SMTP id x16-20020a056a20915000b000cded5c04bemr7310602pzc.25.1677707714480;
-        Wed, 01 Mar 2023 13:55:14 -0800 (PST)
+        bh=ZEfabSCp43QhqfB0SyHwstZnkFYZGWQHuKxqbl01Qrc=;
+        b=3yNp/0r/wIXC6eW/p8GtNfdugmjQ4ptMm5+O7ldmSCja/eHXdI4i/aqxhqBZUPm++A
+         BA0K5txICfAe7HO7egAVXG+tEjul6bvC6NhXLVvfGQ0jpUbNa5OI4FLaMM6eRkgcjh62
+         jIIywgprYr7JAkZs9+skUIIjrrZO9lcu9Xy3943rHHmKAZQU1MTcBUPVtH4hSBhjGSyK
+         J+Dz0LYqcPxLBauEEXhGxkxRE7UUUWRYcWzM5oaLnXotL6gSX9epoCG81n1V6O1wp51M
+         Dh064RLgk2Cro+dluf7h76zds2nF++YkL2DNKucGKV2YxLcjoeJzrH08iSp0Np3FNrf3
+         7pSA==
+X-Gm-Message-State: AO0yUKV4auv1Nldg41Jc8EgpHWso/QQM/xBJ6XoELZ6HsJ4tEBxCfUjU
+        0xN8KieYVfIigocG1/CWQQNfldP0+KzjzdmD
+X-Google-Smtp-Source: AK7set/ohYphdqi8H6Ih8jwhlS6b9fdJmP5PfntnIPn2GT5iLGVQQbZ7U3f+KBexXWIkCqsANWF38Q==
+X-Received: by 2002:a17:90b:4b8d:b0:234:68d:b8ea with SMTP id lr13-20020a17090b4b8d00b00234068db8eamr9269752pjb.39.1677717054642;
+        Wed, 01 Mar 2023 16:30:54 -0800 (PST)
 Received: from dread.disaster.area (pa49-186-4-237.pa.vic.optusnet.com.au. [49.186.4.237])
-        by smtp.gmail.com with ESMTPSA id a6-20020a631a46000000b004fc1d91e695sm7821235pgm.79.2023.03.01.13.55.13
+        by smtp.gmail.com with ESMTPSA id bg9-20020a17090b0d8900b002310ed024adsm361502pjb.12.2023.03.01.16.30.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 13:55:13 -0800 (PST)
+        Wed, 01 Mar 2023 16:30:53 -0800 (PST)
 Received: from dave by dread.disaster.area with local (Exim 4.92.3)
         (envelope-from <david@fromorbit.com>)
-        id 1pXUPn-003gHe-23; Thu, 02 Mar 2023 08:55:11 +1100
-Date:   Thu, 2 Mar 2023 08:55:10 +1100
+        id 1pXWqQ-003iuX-Of; Thu, 02 Mar 2023 11:30:50 +1100
+Date:   Thu, 2 Mar 2023 11:30:50 +1100
 From:   Dave Chinner <david@fromorbit.com>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     syzbot <syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] possible deadlock in evict (3)
-Message-ID: <20230301215510.GM2825702@dread.disaster.area>
-References: <20230301000142.GK2825702@dread.disaster.area>
- <87v8jka12p.fsf@doe.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Ted Tso <tytso@mit.edu>, linux-xfs@vger.kernel.org
+Subject: Re: Locking issue with directory renames
+Message-ID: <20230302003050.GI360264@dread.disaster.area>
+References: <20230117123735.un7wbamlbdihninm@quack3>
+ <20230117214457.GG360264@dread.disaster.area>
+ <Y/mEsfyhNCs8orCY@magnolia>
+ <20230228015807.GC360264@dread.disaster.area>
+ <20230301123628.4jghcm4wqci6spii@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v8jka12p.fsf@doe.com>
+In-Reply-To: <20230301123628.4jghcm4wqci6spii@quack3>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -75,119 +78,71 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 09:57:58PM +0530, Ritesh Harjani wrote:
-> Dave Chinner <david@fromorbit.com> writes:
+On Wed, Mar 01, 2023 at 01:36:28PM +0100, Jan Kara wrote:
+> On Tue 28-02-23 12:58:07, Dave Chinner wrote:
+> > On Fri, Feb 24, 2023 at 07:46:57PM -0800, Darrick J. Wong wrote:
+> > > So xfs_dir2_sf_replace can rewrite the shortform structure (or even
+> > > convert it to block format!) while readdir is accessing it.  Or am I
+> > > mising something?
+> > 
+> > True, I missed that.
+> > 
+> > Hmmmm. ISTR that holding ILOCK over filldir callbacks causes
+> > problems with lock ordering{1], and that's why we removed the ILOCK
+> > from the getdents path in the first place and instead relied on the
+> > IOLOCK being held by the VFS across readdir for exclusion against
+> > concurrent modification from the VFS.
+> > 
+> > Yup, the current code only holds the ILOCK for the extent lookup and
+> > buffer read process, it drops it while it is walking the locked
+> > buffer and calling the filldir callback. Which is why we don't hold
+> > it for xfs_dir2_sf_getdents() - the VFS is supposed to be holding
+> > i_rwsem in exclusive mode for any operation that modifies a
+> > directory entry. We should only need the ILOCK for serialising the
+> > extent tree loading, not for serialising access vs modification to
+> > the directory.
+> > 
+> > So, yeah, I think you're right, Darrick. And the fix is that the VFS
+> > needs to hold the i_rwsem correctly for allo inodes that may be
+> > modified during rename...
 > 
-> > [obvious one for the ext4 people]
-> >
-> > On Tue, Feb 28, 2023 at 09:25:55AM -0800, syzbot wrote:
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit:    ae3419fbac84 vc_screen: don't clobber return value in vcs_..
-> >> git tree:       upstream
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=1136fe18c80000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff98a3b3c1aed3ab
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
-> >> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> >>
-> >> Unfortunately, I don't have any reproducer for this issue yet.
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+dd426ae4af71f1e74729@syzkaller.appspotmail.com
-> >>
-> >> ======================================================
-> >> WARNING: possible circular locking dependency detected
-> >> 6.2.0-syzkaller-12913-gae3419fbac84 #0 Not tainted
-> >> ------------------------------------------------------
-> >> kswapd0/100 is trying to acquire lock:
-> >> ffff888047aea650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:665
-> >>
-> >> but task is already holding lock:
-> >> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: set_task_reclaim_state mm/vmscan.c:200 [inline]
-> >> ffffffff8c8e29e0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x170/0x1ac0 mm/vmscan.c:7338
-> >>
-> >> which lock already depends on the new lock.
-> >>
-> >>
-> >> the existing dependency chain (in reverse order) is:
-> >>
-> >> -> #3 (fs_reclaim){+.+.}-{0:0}:
-> >>        __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
-> >>        fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
-> >>        might_alloc include/linux/sched/mm.h:271 [inline]
-> >>        prepare_alloc_pages+0x159/0x570 mm/page_alloc.c:5362
-> >>        __alloc_pages+0x149/0x5c0 mm/page_alloc.c:5580
-> >>        alloc_pages+0x1aa/0x270 mm/mempolicy.c:2283
-> >>        __get_free_pages+0xc/0x40 mm/page_alloc.c:5641
-> >>        kasan_populate_vmalloc_pte mm/kasan/shadow.c:309 [inline]
-> >>        kasan_populate_vmalloc_pte+0x27/0x150 mm/kasan/shadow.c:300
-> >>        apply_to_pte_range mm/memory.c:2578 [inline]
-> >>        apply_to_pmd_range mm/memory.c:2622 [inline]
-> >>        apply_to_pud_range mm/memory.c:2658 [inline]
-> >>        apply_to_p4d_range mm/memory.c:2694 [inline]
-> >>        __apply_to_page_range+0x68c/0x1030 mm/memory.c:2728
-> >>        alloc_vmap_area+0x536/0x1f20 mm/vmalloc.c:1638
-> >>        __get_vm_area_node+0x145/0x3f0 mm/vmalloc.c:2495
-> >>        __vmalloc_node_range+0x250/0x1300 mm/vmalloc.c:3141
-> >>        kvmalloc_node+0x156/0x1a0 mm/util.c:628
-> >>        kvmalloc include/linux/slab.h:737 [inline]
-> >>        ext4_xattr_move_to_block fs/ext4/xattr.c:2570 [inline]
-> >
-> > 	buffer = kvmalloc(value_size, GFP_NOFS);
-> >
-> > Yeah, this doesn't work like the code says it should. The gfp mask
-> > is not passed down to the page table population code and it hard
-> > codes GFP_KERNEL allocations so you have to do:
-> >
-> > 	memalloc_nofs_save();
-> > 	buffer = kvmalloc(value_size, GFP_KERNEL);
-> > 	memalloc_nofs_restore();
-> >
-> > to apply GFP_NOFS to allocations in the pte population code to avoid
-> > memory reclaim recursion in kvmalloc.
-> 
-> What about this patch mentioned below? Is it the kasan allocations
-> (kasan_populate_vmalloc()), which hasn't been taken care of in this
-> patch. Does this means we need kvmalloc fixed instead for kasan allocations?
-> 
-> Though I agree we can have the fix like you mentioned above
-> (as many of the API users are already doing above). Just wanted to have the
-> full context of what is going on here.
-> 
-> 451769ebb7e792c3404db53b3c2a422990de654e
-> Author:     Michal Hocko <mhocko@suse.com>
-> 
-> mm/vmalloc: alloc GFP_NO{FS,IO} for vmalloc
+> But Al Viro didn't want to lock the inode in the VFS (as some filesystems
+> don't need the lock)
 
-Oh, you're right, I didn't realise that had been smacked into the
-guts of the vmalloc implementation instead of just being wrapped
-around the whole lot of it. That's an exact example of *how not to
-use scoped allocation contexts* because it leads to stupid
-whack-a-mole bugs like this one.  I made this exact point in the
-discussion you pointed to when I noticed an anti-pattern of scoped
-contexts were being used to wrap single kmalloc(GFP_KERNEL) calls.
+Was any reason given?
 
-KASAN essentialy requires explicit use of allocation scopes to avoid
-spurious lockdep GFP_NOFS/GFP_NOIO allocation context warnings
-because most of it's low level tracking allocations are GFP_KERNEL.
-If we wrap the whole of kvmalloc() with the correct context,
-everything is fine. But using contexts for fined-grained internal
-"fix only the specific call-chain" patches like the above commit,
-then it just doesn't work.
+We know we have to modify the ".." entry of the child directory
+being moved, so I'd really like to understand why the locking rule
+of "directory i_rwsem must be held exclusively over modifications"
+so that we can use shared access for read operations has been waived
+for this specific case.
 
-So in this case, I agree with you that this is a kvmalloc() bug in
-that kvmalloc is failing to apply the GFP_NOFS scoped context across
-the entire vmalloc operation. As it currently stands, any low level
-allocation in the vmalloc path that isn't passed the correct gfp
-mask will trigger this sort of warning.
+Apart from exposing multiple filesystems to modifications racing
+with operations that hold the i_rwsem shared to *prevent concurrent
+directory modifications*, what performance or scalability benefit is
+seen as a result of eliding this inode lock from the VFS rename
+setup?
 
-This is one of the reasons we use the scopes extensively in XFS -
-whenever we enter a NOFS context, we call memalloc_nofs_save() and
-so we always get disconnected low level allocations (like KASAN
-does) doing the right thing. Hence we simply haven't noticed how
-badly vmalloc() screwed up setting allocation contexts....
+This looks like a straight forward VFS level directory
+locking violation, and now we are playing whack-a-mole to fix it in
+each filesystem we discover that requires the child directory inode
+to be locked...
+
+> so in ext4 we ended up grabbing the lock in
+> ext4_rename() like:
+> 
+> +               /*
+> +                * We need to protect against old.inode directory getting
+> +                * converted from inline directory format into a normal one.
+> +                */
+> +               inode_lock_nested(old.inode, I_MUTEX_NONDIR2);
+
+Why are you using the I_MUTEX_NONDIR2 annotation when locking a
+directory inode? That doesn't seem right.
+
+Further, how do we guarantee correct i_rwsem lock ordering against
+the all the other inodes that the VFS has already locked and/or
+other multi-inode i_rwsem locking primitives in the VFS?
 
 Cheers,
 
