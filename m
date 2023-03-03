@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D8E6A93A3
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 10:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C746A93A7
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 10:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjCCJUD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Mar 2023 04:20:03 -0500
+        id S230201AbjCCJUI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Mar 2023 04:20:08 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjCCJTx (ORCPT
+        with ESMTP id S230000AbjCCJTx (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 04:19:53 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820EF41B7F;
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C8C23DA8;
         Fri,  3 Mar 2023 01:19:52 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PSj9H6VZqz4f3mJd;
-        Fri,  3 Mar 2023 17:19:47 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PSj9J3XCHz4f3nTZ;
+        Fri,  3 Mar 2023 17:19:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgDnnbGyuwFkFpqfEg--.45687S7;
-        Fri, 03 Mar 2023 17:19:49 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgDnnbGyuwFkFpqfEg--.45687S8;
+        Fri, 03 Mar 2023 17:19:50 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
         ritesh.list@gmail.com
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         shikemeng@huaweicloud.com
-Subject: [PATCH v3 05/20] ext4: correct start of used group pa for debug in ext4_mb_use_group_pa
-Date:   Sat,  4 Mar 2023 01:21:05 +0800
-Message-Id: <20230303172120.3800725-6-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 06/20] ext4: protect pa->pa_free in ext4_discard_allocated_blocks
+Date:   Sat,  4 Mar 2023 01:21:06 +0800
+Message-Id: <20230303172120.3800725-7-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230303172120.3800725-1-shikemeng@huaweicloud.com>
 References: <20230303172120.3800725-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDnnbGyuwFkFpqfEg--.45687S7
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF17Jr1ftr1rZrWxKFWxZwb_yoW3GFbE9a
-        40yrZ7Wa4rX3s3u3Z5tr4SganIgFs5AF1UXFs3Jr1ru3W5WF48Gw1DWrs5XFW5WrW7Ary7
-        JasxAryUJFyFvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgDnnbGyuwFkFpqfEg--.45687S8
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr1UGF18KFyfKw1fXF1rCrg_yoW3KrbE9a
+        48CF4xJFWrJw1fu3W8tay0qrs5KF4Fyr4UWFWrtw1fu3WrXF4fG3WDXr1rJr9rWa1jy343
+        C3s5uryUGF40gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbDkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -61,25 +61,29 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As we don't correct pa_lstart here, so there is no need to subtract
-pa_lstart with consumed len.
+If ext4_mb_mark_diskspace_used fails in ext4_mb_new_blocks, we may
+discard pa already in list. Protect pa with pa_lock to avoid race.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- fs/ext4/mballoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/mballoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index d7ea3c2014ff..d6a27e47584a 100644
+index d6a27e47584a..56f35a25842c 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -4322,7 +4322,7 @@ static void ext4_mb_use_group_pa(struct ext4_allocation_context *ac,
- 	 * Other CPUs are prevented from allocating from this pa by lg_mutex
- 	 */
- 	mb_debug(ac->ac_sb, "use %u/%u from group pa %p\n",
--		 pa->pa_lstart-len, len, pa);
-+		 pa->pa_lstart, len, pa);
+@@ -4266,8 +4266,11 @@ static void ext4_discard_allocated_blocks(struct ext4_allocation_context *ac)
+ 		ext4_mb_unload_buddy(&e4b);
+ 		return;
+ 	}
+-	if (pa->pa_type == MB_INODE_PA)
++	if (pa->pa_type == MB_INODE_PA) {
++		spin_lock(&pa->pa_lock);
+ 		pa->pa_free += ac->ac_b_ex.fe_len;
++		spin_unlock(&pa->pa_lock);
++	}
  }
  
  /*
