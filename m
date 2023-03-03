@@ -2,43 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BA36A8E88
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 02:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEEC6A8E8A
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 02:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjCCBOz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Mar 2023 20:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        id S229811AbjCCBPA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Mar 2023 20:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjCCBN5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Mar 2023 20:13:57 -0500
+        with ESMTP id S229852AbjCCBOD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Mar 2023 20:14:03 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92E75942C;
-        Thu,  2 Mar 2023 17:12:16 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PSVJP6wNDz9tDy;
-        Fri,  3 Mar 2023 09:10:13 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA74199FD;
+        Thu,  2 Mar 2023 17:13:13 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PSVKV5y0Zz9stS;
+        Fri,  3 Mar 2023 09:11:10 +0800 (CST)
 Received: from [10.174.178.185] (10.174.178.185) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 3 Mar 2023 09:12:14 +0800
-Subject: Re: [PATCH] ext4: fix use-after-free Read in ext4_find_extent for
- bigalloc + inline
+ 15.1.2507.21; Fri, 3 Mar 2023 09:13:11 +0800
+Subject: Re: [PATCH v2] ext4: fix WARNING in mb_find_extent
 To:     Ye Bin <yebin@huaweicloud.com>, <tytso@mit.edu>,
         <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-References: <20230104071559.2051847-1-yebin@huaweicloud.com>
+References: <20230116020015.1506120-1-yebin@huaweicloud.com>
 CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        <syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com>
+        <syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com>
 From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <6401496D.2090308@huawei.com>
-Date:   Fri, 3 Mar 2023 09:12:13 +0800
+Message-ID: <640149A6.7000702@huawei.com>
+Date:   Fri, 3 Mar 2023 09:13:10 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
  Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <20230104071559.2051847-1-yebin@huaweicloud.com>
+In-Reply-To: <20230116020015.1506120-1-yebin@huaweicloud.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -52,82 +51,124 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 ping...
 
-On 2023/1/4 15:15, Ye Bin wrote:
+On 2023/1/16 10:00, Ye Bin wrote:
 > From: Ye Bin <yebin10@huawei.com>
 >
 > Syzbot found the following issue:
-> loop0: detected capacity change from 0 to 2048
-> EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: none.
-> ==================================================================
-> BUG: KASAN: use-after-free in ext4_ext_binsearch_idx fs/ext4/extents.c:768 [inline]
-> BUG: KASAN: use-after-free in ext4_find_extent+0x76e/0xd90 fs/ext4/extents.c:931
-> Read of size 4 at addr ffff888073644750 by task syz-executor420/5067
 >
-> CPU: 0 PID: 5067 Comm: syz-executor420 Not tainted 6.2.0-rc1-syzkaller #0
+> EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
+> EXT4-fs (loop0): orphan cleanup on readonly fs
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
+> Modules linked in:
+> CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
 > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
+> RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
+> RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
+> RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
+> RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
+> R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
+> R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
+> FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > Call Trace:
 >   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x1b1/0x290 lib/dump_stack.c:106
->   print_address_description+0x74/0x340 mm/kasan/report.c:306
->   print_report+0x107/0x1f0 mm/kasan/report.c:417
->   kasan_report+0xcd/0x100 mm/kasan/report.c:517
->   ext4_ext_binsearch_idx fs/ext4/extents.c:768 [inline]
->   ext4_find_extent+0x76e/0xd90 fs/ext4/extents.c:931
->   ext4_clu_mapped+0x117/0x970 fs/ext4/extents.c:5809
->   ext4_insert_delayed_block fs/ext4/inode.c:1696 [inline]
->   ext4_da_map_blocks fs/ext4/inode.c:1806 [inline]
->   ext4_da_get_block_prep+0x9e8/0x13c0 fs/ext4/inode.c:1870
->   ext4_block_write_begin+0x6a8/0x2290 fs/ext4/inode.c:1098
->   ext4_da_write_begin+0x539/0x760 fs/ext4/inode.c:3082
->   generic_perform_write+0x2e4/0x5e0 mm/filemap.c:3772
->   ext4_buffered_write_iter+0x122/0x3a0 fs/ext4/file.c:285
->   ext4_file_write_iter+0x1d0/0x18f0
->   call_write_iter include/linux/fs.h:2186 [inline]
->   new_sync_write fs/read_write.c:491 [inline]
->   vfs_write+0x7dc/0xc50 fs/read_write.c:584
->   ksys_write+0x177/0x2a0 fs/read_write.c:637
+>   ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
+>   ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
+>   ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
+>   ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
+>   ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
+>   ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
+>   ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
+>   ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
+>   write_blk fs/quota/quota_tree.c:64 [inline]
+>   get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
+>   do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
+>   do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>   do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>   do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>   dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+>   qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
+>   v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
+>   dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
+>   ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
+>   dqget+0x999/0xdc0 fs/quota/dquot.c:914
+>   __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
+>   ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
+>   ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
+>   __ext4_fill_super fs/ext4/super.c:5516 [inline]
+>   ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
+>   get_tree_bdev+0x400/0x620 fs/super.c:1282
+>   vfs_get_tree+0x88/0x270 fs/super.c:1489
+>   do_new_mount+0x289/0xad0 fs/namespace.c:3145
+>   do_mount fs/namespace.c:3488 [inline]
+>   __do_sys_mount fs/namespace.c:3697 [inline]
+>   __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
 >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
 >   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
 >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f4b7a9737b9
-> RSP: 002b:00007ffc5cac3668 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f4b7a9737b9
-> RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
-> RBP: 00007f4b7a933050 R08: 0000000000000000 R09: 0000000000000000
-> R10: 000000000000079f R11: 0000000000000246 R12: 00007f4b7a9330e0
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->   </TASK>
 >
-> Above issue is happens when enable bigalloc and inline data feature. As
-> commit 131294c35ed6 fixed delayed allocation bug in ext4_clu_mapped for
-> bigalloc + inline. But it only resolved issue when has inline data, if
-> inline data has been converted to extent(ext4_da_convert_inline_data_to_extent)
-> before writepages, there is no EXT4_STATE_MAY_INLINE_DATA flag. However
-> i_data is still store inline data in this scene. Then will trigger UAF
-> when find extent.
-> To resolve above issue, there is need to add judge "ext4_has_inline_data(inode)"
-> in ext4_clu_mapped().
+> Add some debug information:
+> mb_find_extent: mb_find_extent block=41, order=0 needed=64 next=0 ex=0/41/1@3735929054 64 64 7
+> block_bitmap: ff 3f 0c 00 fc 01 00 00 d2 3d 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 >
-> Reported-by: syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
-> Fixes: 131294c35ed6 ("ext4: fix delayed allocation bug in ext4_clu_mapped for bigalloc + inline")
+> Acctually, blocks per group is 64, but block bitmap indicate at least has
+> 128 blocks. Now, ext4_validate_block_bitmap() didn't check invalid block's
+> bitmap if set.
+> To resolve above issue, add check like fsck "Padding at end of block bitmap is
+> not set".
+>
+> Reported-by: syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->   fs/ext4/extents.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>   fs/ext4/balloc.c | 25 +++++++++++++++++++++++++
+>   1 file changed, 25 insertions(+)
 >
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 9de1c9d1a13d..ee5acf2bd5e6 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -5802,7 +5802,8 @@ int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu)
->   	 * mapped - no physical clusters have been allocated, and the
->   	 * file has no extents
->   	 */
-> -	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
-> +	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) ||
-> +	    ext4_has_inline_data(inode))
->   		return 0;
+> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+> index 8ff4b9192a9f..f2c415f31b75 100644
+> --- a/fs/ext4/balloc.c
+> +++ b/fs/ext4/balloc.c
+> @@ -303,6 +303,22 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
+>   	return desc;
+>   }
 >   
->   	/* search for the extent closest to the first block in the cluster */
+> +static ext4_fsblk_t ext4_valid_block_bitmap_padding(struct super_block *sb,
+> +						    ext4_group_t block_group,
+> +						    struct buffer_head *bh)
+> +{
+> +	ext4_grpblk_t next_zero_bit;
+> +	unsigned long bitmap_size = sb->s_blocksize * 8;
+> +	unsigned int offset = num_clusters_in_group(sb, block_group);
+> +
+> +	if (bitmap_size <= offset)
+> +		return 0;
+> +
+> +	next_zero_bit = ext4_find_next_zero_bit(bh->b_data, bitmap_size, offset);
+> +
+> +	return (next_zero_bit < bitmap_size ? next_zero_bit : 0);
+> +}
+> +
+>   /*
+>    * Return the block number which was discovered to be invalid, or 0 if
+>    * the block bitmap is valid.
+> @@ -401,6 +417,15 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
+>   					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>   		return -EFSCORRUPTED;
+>   	}
+> +	blk = ext4_valid_block_bitmap_padding(sb, block_group, bh);
+> +	if (unlikely(blk != 0)) {
+> +		ext4_unlock_group(sb, block_group);
+> +		ext4_error(sb, "bg %u: block %llu: padding at end of block bitmap is not set",
+> +			   block_group, blk);
+> +		ext4_mark_group_bitmap_corrupted(sb, block_group,
+> +						 EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+> +		return -EFSCORRUPTED;
+> +	}
+>   	set_buffer_verified(bh);
+>   verified:
+>   	ext4_unlock_group(sb, block_group);
 
