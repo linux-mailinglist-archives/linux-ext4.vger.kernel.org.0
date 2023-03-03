@@ -2,133 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EC56A8590
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Mar 2023 16:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BA36A8E88
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 02:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbjCBPtB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Mar 2023 10:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
+        id S229808AbjCCBOz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Mar 2023 20:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjCBPtA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Mar 2023 10:49:00 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413B3193D5
-        for <linux-ext4@vger.kernel.org>; Thu,  2 Mar 2023 07:48:59 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id z5-20020a6b5c05000000b007447572f3f8so10758084ioh.3
-        for <linux-ext4@vger.kernel.org>; Thu, 02 Mar 2023 07:48:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/n/K/3RHA4xTQoVXC4jaK6WOJ78Yt5GL4rZVXOaD90Q=;
-        b=Q4EoHOfCZUOIVfHh9zN2GDUaI+/jG70I5fK54e33cO+qlIe1tOdzdaVRA71XZEll7w
-         U1mrHCN1RTMOxPgR9AryZoviZ1/m9UUeJoCTiFvyvbwVmi3noxRln9EH6VFo42u5keGN
-         D9VIrHUBGXv6oQBfsAHSKkTQdna+/BZzG8x0WvwIj7ukBCor4gFCd+ycbqeTmvjKalZf
-         2L8pfBKO8JaJTGSNP7rp0YDqohrq34HGuSlw8o4Zqge4igRO88zusIz3OJ+OIlUw1+dI
-         jsy7/mcOVymPMQjGLRs7swviHii2uTLFThaWBgqF+wzwg4gxCLNFKEdX1yghEq6S8MJU
-         0tMA==
-X-Gm-Message-State: AO0yUKWQ6vYPvXcIaF2JyTE1Hdbgo+91eE7/RLQzKgG1B8X4oI8yFoIW
-        YY/nKY3LDTBb82t2ozLkJzcG050SzdKY3P9RHRGU5V+YNY5a
-X-Google-Smtp-Source: AK7set/znnO3YPzxVExuJmcztdQN+pgOa3zswTUqOVqNKOeXhuNuoBX4V/MbspPKMQlXP1igfFl0tyEvJwqmClChuztQ1+u+pJpr
+        with ESMTP id S229780AbjCCBN5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Mar 2023 20:13:57 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92E75942C;
+        Thu,  2 Mar 2023 17:12:16 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PSVJP6wNDz9tDy;
+        Fri,  3 Mar 2023 09:10:13 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 3 Mar 2023 09:12:14 +0800
+Subject: Re: [PATCH] ext4: fix use-after-free Read in ext4_find_extent for
+ bigalloc + inline
+To:     Ye Bin <yebin@huaweicloud.com>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+References: <20230104071559.2051847-1-yebin@huaweicloud.com>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        <syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com>
+From:   "yebin (H)" <yebin10@huawei.com>
+Message-ID: <6401496D.2090308@huawei.com>
+Date:   Fri, 3 Mar 2023 09:12:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:11ad:b0:315:459e:177d with SMTP id
- 13-20020a056e0211ad00b00315459e177dmr1173113ilj.2.1677772138620; Thu, 02 Mar
- 2023 07:48:58 -0800 (PST)
-Date:   Thu, 02 Mar 2023 07:48:58 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000562d8105f5ecc4ca@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data_end
-From:   syzbot <syzbot+198e7455f3a4f38b838a@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230104071559.2051847-1-yebin@huaweicloud.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+ping...
 
-syzbot found the following issue on:
+On 2023/1/4 15:15, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
+>
+> Syzbot found the following issue:
+> loop0: detected capacity change from 0 to 2048
+> EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: none.
+> ==================================================================
+> BUG: KASAN: use-after-free in ext4_ext_binsearch_idx fs/ext4/extents.c:768 [inline]
+> BUG: KASAN: use-after-free in ext4_find_extent+0x76e/0xd90 fs/ext4/extents.c:931
+> Read of size 4 at addr ffff888073644750 by task syz-executor420/5067
+>
+> CPU: 0 PID: 5067 Comm: syz-executor420 Not tainted 6.2.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x1b1/0x290 lib/dump_stack.c:106
+>   print_address_description+0x74/0x340 mm/kasan/report.c:306
+>   print_report+0x107/0x1f0 mm/kasan/report.c:417
+>   kasan_report+0xcd/0x100 mm/kasan/report.c:517
+>   ext4_ext_binsearch_idx fs/ext4/extents.c:768 [inline]
+>   ext4_find_extent+0x76e/0xd90 fs/ext4/extents.c:931
+>   ext4_clu_mapped+0x117/0x970 fs/ext4/extents.c:5809
+>   ext4_insert_delayed_block fs/ext4/inode.c:1696 [inline]
+>   ext4_da_map_blocks fs/ext4/inode.c:1806 [inline]
+>   ext4_da_get_block_prep+0x9e8/0x13c0 fs/ext4/inode.c:1870
+>   ext4_block_write_begin+0x6a8/0x2290 fs/ext4/inode.c:1098
+>   ext4_da_write_begin+0x539/0x760 fs/ext4/inode.c:3082
+>   generic_perform_write+0x2e4/0x5e0 mm/filemap.c:3772
+>   ext4_buffered_write_iter+0x122/0x3a0 fs/ext4/file.c:285
+>   ext4_file_write_iter+0x1d0/0x18f0
+>   call_write_iter include/linux/fs.h:2186 [inline]
+>   new_sync_write fs/read_write.c:491 [inline]
+>   vfs_write+0x7dc/0xc50 fs/read_write.c:584
+>   ksys_write+0x177/0x2a0 fs/read_write.c:637
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f4b7a9737b9
+> RSP: 002b:00007ffc5cac3668 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f4b7a9737b9
+> RDX: 00000000175d9003 RSI: 0000000020000200 RDI: 0000000000000004
+> RBP: 00007f4b7a933050 R08: 0000000000000000 R09: 0000000000000000
+> R10: 000000000000079f R11: 0000000000000246 R12: 00007f4b7a9330e0
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>   </TASK>
+>
+> Above issue is happens when enable bigalloc and inline data feature. As
+> commit 131294c35ed6 fixed delayed allocation bug in ext4_clu_mapped for
+> bigalloc + inline. But it only resolved issue when has inline data, if
+> inline data has been converted to extent(ext4_da_convert_inline_data_to_extent)
+> before writepages, there is no EXT4_STATE_MAY_INLINE_DATA flag. However
+> i_data is still store inline data in this scene. Then will trigger UAF
+> when find extent.
+> To resolve above issue, there is need to add judge "ext4_has_inline_data(inode)"
+> in ext4_clu_mapped().
+>
+> Reported-by: syzbot+bf4bb7731ef73b83a3b4@syzkaller.appspotmail.com
+> Fixes: 131294c35ed6 ("ext4: fix delayed allocation bug in ext4_clu_mapped for bigalloc + inline")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   fs/ext4/extents.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 9de1c9d1a13d..ee5acf2bd5e6 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -5802,7 +5802,8 @@ int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu)
+>   	 * mapped - no physical clusters have been allocated, and the
+>   	 * file has no extents
+>   	 */
+> -	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+> +	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) ||
+> +	    ext4_has_inline_data(inode))
+>   		return 0;
+>   
+>   	/* search for the extent closest to the first block in the cluster */
 
-HEAD commit:    2ebd1fbb946d Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=13de1350c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3519974f3f27816d
-dashboard link: https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160fccacc80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e5963cc80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/16985cc7a274/disk-2ebd1fbb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fd3452567115/vmlinux-2ebd1fbb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c75510922212/Image-2ebd1fbb.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/0427397bf5ad/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+198e7455f3a4f38b838a@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inline.c:226!
-Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 6191 Comm: syz-executor142 Not tainted 6.2.0-syzkaller-18300-g2ebd1fbb946d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : ext4_write_inline_data fs/ext4/inline.c:226 [inline]
-pc : ext4_write_inline_data_end+0xe28/0xf84 fs/ext4/inline.c:767
-lr : ext4_write_inline_data fs/ext4/inline.c:226 [inline]
-lr : ext4_write_inline_data_end+0xe28/0xf84 fs/ext4/inline.c:767
-sp : ffff80001eac7520
-x29: ffff80001eac7630 x28: ffff0000d7a63680 x27: dfff800000000000
-x26: 0000000000000060 x25: ffff80001eac75c0 x24: 0000000040000000
-x23: 000000000000006c x22: 0000000000000060 x21: 000000000000000c
-x20: ffff0000de2e48e8 x19: 0000000000000000 x18: ffff80001eac70d8
-x17: ffff800015b8d000 x16: ffff80001231393c x15: 00000000200002c0
-x14: 1ffff00002b720af x13: 0000000000000007 x12: 0000000000000001
-x11: ff80800008e4087c x10: 0000000000000000 x9 : ffff800008e4087c
-x8 : ffff0000d7a63680 x7 : ffff800008de16f0 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 00000000000008a5 x3 : ffff800008b36a88
-x2 : 0000000000000001 x1 : 0000000000000060 x0 : 000000000000006c
-Call trace:
- ext4_write_inline_data fs/ext4/inline.c:226 [inline]
- ext4_write_inline_data_end+0xe28/0xf84 fs/ext4/inline.c:767
- ext4_da_write_end+0x330/0x9fc fs/ext4/inode.c:3150
- generic_perform_write+0x384/0x55c mm/filemap.c:3784
- ext4_buffered_write_iter+0x2e0/0x538 fs/ext4/file.c:285
- ext4_file_write_iter+0x188/0x16c0
- call_write_iter include/linux/fs.h:2189 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x610/0x914 fs/read_write.c:584
- ksys_write+0x15c/0x26c fs/read_write.c:637
- __do_sys_write fs/read_write.c:649 [inline]
- __se_sys_write fs/read_write.c:646 [inline]
- __arm64_sys_write+0x7c/0x90 fs/read_write.c:646
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
- el0_svc+0x58/0x168 arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-Code: 14000043 97db2731 d4210000 97db272f (d4210000) 
----[ end trace 0000000000000000 ]---
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
