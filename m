@@ -2,106 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47BD6A9562
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 11:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33E06A93A9
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Mar 2023 10:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjCCKiQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Mar 2023 05:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S229987AbjCCJUG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Mar 2023 04:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjCCKiL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 05:38:11 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E782E212B
-        for <linux-ext4@vger.kernel.org>; Fri,  3 Mar 2023 02:38:07 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 91D4E22AE9;
-        Fri,  3 Mar 2023 10:38:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1677839886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zSS+CD1nbaNyzqa8cmbNDWaoAJLF2v5SosoyorZy/Cc=;
-        b=JPSRLbQUHW1gPYbD6ZImCjDWgMmUB00pbIePM4ODoxg7U/czR5ihysown5o2y/8AASJMHp
-        reJjmdl+EQtspUHIGWmAF7UwMiQhR1Q+NuprnqG8kuLdmaUeeg1c201dushzhp7J2DG1ts
-        MUKJr0ozGaS3u5Hgxq8GXNzgMCyl2pM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1677839886;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zSS+CD1nbaNyzqa8cmbNDWaoAJLF2v5SosoyorZy/Cc=;
-        b=H0i4/V6EJTdoNiU1jpnzyVtNcyMYnvPKerLZfbgWRcrA0sRx94QMTiWFTV2jPHZCSnzEdj
-        y15O0Znn4A8PK3BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8529B139D3;
-        Fri,  3 Mar 2023 10:38:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9vd8IA7OAWRdFAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 03 Mar 2023 10:38:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0F373A06E5; Fri,  3 Mar 2023 11:38:06 +0100 (CET)
-Date:   Fri, 3 Mar 2023 11:38:06 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH REBASED 0/7] ext4: Cleanup data=journal writeback path
-Message-ID: <20230303103806.77ipbtzz7n5hawim@quack3>
-References: <20230228051319.4085470-1-tytso@mit.edu>
- <20230228135854.ky2zpwal7trz6yg3@quack3>
- <ZACmnwm9in84kbOB@mit.edu>
- <20230303092939.kq4mlowe2y2x6ncx@quack3>
+        with ESMTP id S229928AbjCCJTw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 04:19:52 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DADDBDB;
+        Fri,  3 Mar 2023 01:19:51 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PSj9G2pD6z4f3jJ8;
+        Fri,  3 Mar 2023 17:19:46 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgDnnbGyuwFkFpqfEg--.45687S2;
+        Fri, 03 Mar 2023 17:19:48 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        ritesh.list@gmail.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shikemeng@huaweicloud.com
+Subject: [PATCH v3 00/20] Some bugfix and cleanup to mballoc
+Date:   Sat,  4 Mar 2023 01:21:00 +0800
+Message-Id: <20230303172120.3800725-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230303092939.kq4mlowe2y2x6ncx@quack3>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDnnbGyuwFkFpqfEg--.45687S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr4kCFWDur4kXw1fAw4rGrg_yoW5Wr1kpF
+        43GwnIk34xXr12kFZxuw45X3WfJ3y8Cw1UGFyIg348Ar13Ar9aqrnrKF1ruFW5JrWvq3Zx
+        ZFW2yry3Gw4kAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 03-03-23 10:29:39, Jan Kara wrote:
-> On Thu 02-03-23 08:37:35, Theodore Ts'o wrote:
-> > On Tue, Feb 28, 2023 at 02:58:54PM +0100, Jan Kara wrote:
-> > > 
-> > > Regarding the warning somehow there are dirty pages left after the
-> > > procedures freeze_super() goes through to flush all dirty data. That is not
-> > > too surprising since in data=journal mode pages get (as a surprise to
-> > > freezing code) dirtied when transaction commits. I thought we have this
-> > > covered by jbd2_journal_flush() call in ext4_freeze() but maybe there are
-> > > some stranded PageDirty bits left? It needs more debugging...
-> > 
-> > So the question I have is whether this is a bug that was always there,
-> > or perhaps code changes affected the timing, so that it was much more
-> > likely to happen (although in my testing it's still only triggering
-> > about 50% of the time).
-> > 
-> > This warning can mean that data can be lost, especially if someone was
-> > doing hibernation, right?  We can discuss this at today's ext4 video
-> > conference, but I'm inclined to wait until the next merge cycle for
-> > this patch series until we can figure out what's going on.  Jan, what
-> > do you think?
-> 
-> As we discussed in the meeting, I'll have a look into the failure. For now
-> I'd keep patches on hold as it is not urgent patchset.
+Hi, this series contain some random cleanup patches and some bugfix
+patches to make EXT4_MB_HINT_GOAL_ONLY work properly, protect pa->pa_free
+from race and so on. More details can be found in git log.
+Thanks!
 
-FWIW I'm able to reproduce the issue and also as I'm looking into the
-freeze to it was always there in principle. But my patches likely made it
-much more probable. I'll have a look what I can do...
+---
+V3:
+-patch 01/20 "ext4: set goal start correctly in
+ext4_mb_normalize_request" correctly record goal in ac_g_ex instead of
+ac_f_ex, this also trigger another original bug that wanted goal maybe
+out of valid data block range. Add valid range check in patch 01/20
+to fully fix the bug.
+-run "kvm-xfstests smoke" and all tests are passed except generic/454.
+This test also failed in running kernel without this patchset, so
+it's unlikely caused by this patchset. I'm trying to figure out the
+reason but it may take a while as I'm not family with kvm-xfstests.
+Just send this series for early review and maybe some help to pass
+the failed test case.
+---
+V2:
+-Add signed-off from Ritesh and Ojaswin to patch 3/20 "ext4: get correct
+ext4_group_info in ext4_mb_prefetch_fini" as this is a duplicate of
+a patch under reviewing.
+-Split out original patch "ext4: avoid to use preallocated blocks if
+EXT4_MB_HINT_GOAL_ONLY is set" which will be resend after improved.
+-Improve log information of patch 20.
+-Collect Reviewed-by from Ojaswin and Ritesh. Now only patch 3, 12 and
+20 need futher review.
+---
 
-								Honza
+
+Kemeng Shi (20):
+  ext4: set goal start correctly in ext4_mb_normalize_request
+  ext4: allow to find by goal if EXT4_MB_HINT_GOAL_ONLY is set
+  ext4: get correct ext4_group_info in ext4_mb_prefetch_fini
+  ext4: correct calculation of s_mb_preallocated
+  ext4: correct start of used group pa for debug in ext4_mb_use_group_pa
+  ext4: protect pa->pa_free in ext4_discard_allocated_blocks
+  ext4: add missed brelse in ext4_free_blocks_simple
+  ext4: remove unused return value of ext4_mb_try_best_found and
+    ext4_mb_free_metadata
+  ext4: Remove unnecessary release when memory allocation failed in
+    ext4_mb_init_cache
+  ext4: remove unnecessary e4b->bd_buddy_page check in
+    ext4_mb_load_buddy_gfp
+  ext4: remove unnecessary check in ext4_mb_new_blocks
+  ext4: remove dead check in mb_buddy_mark_free
+  ext4: remove ac->ac_found > sbi->s_mb_min_to_scan dead check in
+    ext4_mb_check_limits
+  ext4: use best found when complex scan of group finishs
+  ext4: remove unnecessary exit_meta_group_info tag
+  ext4: remove unnecessary count2 in ext4_free_data_in_buddy
+  ext4: remove unnecessary goto in ext4_mb_mark_diskspace_used
+  ext4: remove repeat assignment to ac_f_ex
+  ext4: remove comment code ext4_discard_preallocations
+  ext4: simplify calculation of blkoff in ext4_mb_new_blocks_simple
+
+ fs/ext4/mballoc.c | 111 ++++++++++++++++++----------------------------
+ 1 file changed, 43 insertions(+), 68 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.30.0
+
