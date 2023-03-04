@@ -2,161 +2,245 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5F36AA795
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 Mar 2023 03:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AA76AA7B7
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 Mar 2023 03:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjCDCbv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Mar 2023 21:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
+        id S229564AbjCDC4t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Mar 2023 21:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjCDCbu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 21:31:50 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8DA1E1F4;
-        Fri,  3 Mar 2023 18:31:49 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PT83z6yN8z4f3jYx;
-        Sat,  4 Mar 2023 10:31:43 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgCnUiCPrQJk3eg0EQ--.50517S6;
-        Sat, 04 Mar 2023 10:31:45 +0800 (CST)
-From:   Ye Bin <yebin@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
-        Ye Bin <yebin10@huawei.com>,
-        syzbot+d30838395804afc2fa6f@syzkaller.appspotmail.com
-Subject: [PATCH v3 2/2] ext4: fix WARNING in ext4_update_inline_data
-Date:   Sat,  4 Mar 2023 10:54:58 +0800
-Message-Id: <20230304025458.4007825-3-yebin@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230304025458.4007825-1-yebin@huaweicloud.com>
-References: <20230304025458.4007825-1-yebin@huaweicloud.com>
+        with ESMTP id S229500AbjCDC4t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 21:56:49 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22901588C;
+        Fri,  3 Mar 2023 18:56:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 33D39B80CAC;
+        Sat,  4 Mar 2023 02:56:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E780DC433D2;
+        Sat,  4 Mar 2023 02:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677898605;
+        bh=yKpl7ZcJEA2hgxvJuZEFKnjBMUgk01GSNiUjpWcx89w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XEeXaJxjw3zni9yR95d0Md8mlsj0drTK4QW/9kKmE8sjCqf+Mxiq7mgxOWfZtKtfr
+         /vRGYSPX8prejDLKns49OIQ2vzNlReMlVjcnkhCO+sphDrpkRt+fc338IoIO8EXk7e
+         jsuHRw5PMGXjl65Z+S7B7B+kOpIX9bWtHvQXotkHIiHbuibK4UmpG1W6a0pMkZpRGg
+         eHfDYoYfVcSyfYen5g9HHsBiwbwuCbTHPEoATeWaVkuIgPSN+ndoERKARFZoPkwcKv
+         VzovKCeiCINTNDppfuxB3jrulwd+TCJpQoHwPpsTJS3K2IMTgr7E2Eos7Iu2/tuiTy
+         OR02sbaL9cewg==
+Date:   Fri, 3 Mar 2023 18:56:44 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     tytso@mit.edu, darrick.wong@oracle.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com
+Subject: Re: [PATCH 2/3] ext4: fsmap: Consolidate fsmap_head checks
+Message-ID: <20230304025644.GA1637890@frogsfrogsfrogs>
+References: <20230222131211.3898066-1-tudor.ambarus@linaro.org>
+ <20230222131211.3898066-3-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgCnUiCPrQJk3eg0EQ--.50517S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWxZw4DCryDXw4fGw15urg_yoWrKF4xpF
-        WrGr1UGr48XFyUCFWxAr17Ary5Ww13CF4UJrZ7Wr4DZFyUtw1IgFyrtF13JFyUtrsYkry2
-        qF98t340gr15GaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-        JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07jeWlkUUUUU=
-X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230222131211.3898066-3-tudor.ambarus@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+On Wed, Feb 22, 2023 at 01:12:10PM +0000, Tudor Ambarus wrote:
+> Sanity checks should be done the soonest possible to avoid superfluous
+> computations when user provides wrong data. Gather all the checks on
+> user provided data in a single method and call it immediately after
+> copying the data from user.
 
-Syzbot found the following issue:
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: none.
-fscrypt: AES-256-CTS-CBC using implementation "cts-cbc-aes-aesni"
-fscrypt: AES-256-XTS using implementation "xts-aes-aesni"
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5071 at mm/page_alloc.c:5525 __alloc_pages+0x30a/0x560 mm/page_alloc.c:5525
-Modules linked in:
-CPU: 1 PID: 5071 Comm: syz-executor263 Not tainted 6.2.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:__alloc_pages+0x30a/0x560 mm/page_alloc.c:5525
-RSP: 0018:ffffc90003c2f1c0 EFLAGS: 00010246
-RAX: ffffc90003c2f220 RBX: 0000000000000014 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90003c2f248
-RBP: ffffc90003c2f2d8 R08: dffffc0000000000 R09: ffffc90003c2f220
-R10: fffff52000785e49 R11: 1ffff92000785e44 R12: 0000000000040d40
-R13: 1ffff92000785e40 R14: dffffc0000000000 R15: 1ffff92000785e3c
-FS:  0000555556c0d300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f95d5e04138 CR3: 00000000793aa000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x95/0x1e0 mm/slab_common.c:1113
- __do_kmalloc_node mm/slab_common.c:956 [inline]
- __kmalloc+0xfe/0x190 mm/slab_common.c:981
- kmalloc include/linux/slab.h:584 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- ext4_update_inline_data+0x236/0x6b0 fs/ext4/inline.c:346
- ext4_update_inline_dir fs/ext4/inline.c:1115 [inline]
- ext4_try_add_inline_entry+0x328/0x990 fs/ext4/inline.c:1307
- ext4_add_entry+0x5a4/0xeb0 fs/ext4/namei.c:2385
- ext4_add_nondir+0x96/0x260 fs/ext4/namei.c:2772
- ext4_create+0x36c/0x560 fs/ext4/namei.c:2817
- lookup_open fs/namei.c:3413 [inline]
- open_last_lookups fs/namei.c:3481 [inline]
- path_openat+0x12ac/0x2dd0 fs/namei.c:3711
- do_filp_open+0x264/0x4f0 fs/namei.c:3741
- do_sys_openat2+0x124/0x4e0 fs/open.c:1310
- do_sys_open fs/open.c:1326 [inline]
- __do_sys_openat fs/open.c:1342 [inline]
- __se_sys_openat fs/open.c:1337 [inline]
- __x64_sys_openat+0x243/0x290 fs/open.c:1337
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+This patch changes the validation criteria, moves chunks of code around,
+and constifies parameters all at once.  And all you say here is that
+you're moving validation code up in the sequence!
 
-Above issue happens as follows:
-ext4_iget
-   ext4_find_inline_data_nolock ->i_inline_off=164 i_inline_size=60
-ext4_try_add_inline_entry
-   __ext4_mark_inode_dirty
-      ext4_expand_extra_isize_ea ->i_extra_isize=32 s_want_extra_isize=44
-         ext4_xattr_shift_entries
-	 ->after shift i_inline_off is incorrect, actually is change to 176
-ext4_try_add_inline_entry
-  ext4_update_inline_dir
-    get_max_inline_xattr_value_size
-      if (EXT4_I(inode)->i_inline_off)
-	entry = (struct ext4_xattr_entry *)((void *)raw_inode +
-			EXT4_I(inode)->i_inline_off);
-        free += EXT4_XATTR_SIZE(le32_to_cpu(entry->e_value_size));
-	->As entry is incorrect, then 'free' may be negative
-   ext4_update_inline_data
-      value = kzalloc(len, GFP_NOFS);
-      -> len is unsigned int, maybe very large, then trigger warning when
-         'kzalloc()'
-To resolve above issue there's need to update 'i_inline_off' after
-'ext4_xattr_shift_entries()'. At here we do not need to set
-EXT4_STATE_MAY_INLINE_DATA flag. As if do mark inode dirty we already set
-this flag if need. If we set EXT4_STATE_MAY_INLINE_DATA flag may lead to
-BUG_ON in ext4_writepages().
+Also, how does moving callsites around improve things?  Do the fstests
+still pass?
 
-Reported-by: syzbot+d30838395804afc2fa6f@syzkaller.appspotmail.com
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/xattr.c | 3 +++
- 1 file changed, 3 insertions(+)
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  fs/ext4/fsmap.c | 52 ++++++++++++++++++++++++++++++++++++-------------
+>  fs/ext4/fsmap.h |  3 +++
+>  fs/ext4/ioctl.c | 17 +++-------------
+>  3 files changed, 44 insertions(+), 28 deletions(-)
+> 
+> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+> index b5289378a761..a27d9f0967b7 100644
+> --- a/fs/ext4/fsmap.c
+> +++ b/fs/ext4/fsmap.c
+> @@ -9,6 +9,7 @@
+>  #include "fsmap.h"
+>  #include "mballoc.h"
+>  #include <linux/sort.h>
+> +#include <linux/string.h>
+>  #include <linux/list_sort.h>
+>  #include <trace/events/ext4.h>
+>  
+> @@ -571,7 +572,7 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
+>  
+>  /* Do we recognize the device? */
+>  static bool ext4_getfsmap_is_valid_device(struct super_block *sb,
+> -					  struct ext4_fsmap *fm)
+> +					  const struct fsmap *fm)
+>  {
+>  	if (fm->fmr_device == 0 || fm->fmr_device == UINT_MAX ||
+>  	    fm->fmr_device == new_encode_dev(sb->s_bdev->bd_dev))
+> @@ -583,17 +584,19 @@ static bool ext4_getfsmap_is_valid_device(struct super_block *sb,
+>  }
+>  
+>  /* Ensure that the low key is less than the high key. */
+> -static bool ext4_getfsmap_check_keys(struct ext4_fsmap *low_key,
+> -				     struct ext4_fsmap *high_key)
+> +static bool ext4_getfsmap_check_keys(const struct fsmap *low_key,
+> +				     const struct fsmap *high_key)
+>  {
+> +	u64 l_fmr_phys = low_key->fmr_physical + low_key->fmr_length;
+> +
+>  	if (low_key->fmr_device > high_key->fmr_device)
+>  		return false;
+>  	if (low_key->fmr_device < high_key->fmr_device)
+>  		return true;
+>  
+> -	if (low_key->fmr_physical > high_key->fmr_physical)
+> +	if (l_fmr_phys > high_key->fmr_physical)
+>  		return false;
+> -	if (low_key->fmr_physical < high_key->fmr_physical)
+> +	if (l_fmr_phys < high_key->fmr_physical)
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 62f2ec599218..767454d74cd6 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2852,6 +2852,9 @@ int ext4_expand_extra_isize_ea(struct inode *inode, int new_extra_isize,
- 			(void *)header, total_ino);
- 	EXT4_I(inode)->i_extra_isize = new_extra_isize;
- 
-+	if (ext4_has_inline_data(inode))
-+		error = ext4_find_inline_data_nolock(inode);
-+
- cleanup:
- 	if (error && (mnt_count != le16_to_cpu(sbi->s_es->s_mnt_count))) {
- 		ext4_warning(inode->i_sb, "Unable to expand inode %lu. Delete some EAs or run e2fsck.",
--- 
-2.31.1
+Why are you changing the comparison here?
 
+>  		return true;
+>  
+>  	if (low_key->fmr_owner > high_key->fmr_owner)
+> @@ -604,6 +607,36 @@ static bool ext4_getfsmap_check_keys(struct ext4_fsmap *low_key,
+>  	return false;
+>  }
+>  
+> +int ext4_fsmap_check_head(struct super_block *sb,
+> +			  const struct fsmap_head *head)
+> +{
+> +	const struct fsmap *l = &head->fmh_keys[0];
+> +	const struct fsmap *h = &head->fmh_keys[1];
+> +
+> +	if (memchr_inv(head->fmh_reserved, 0, sizeof(head->fmh_reserved)) ||
+> +	    memchr_inv(l->fmr_reserved, 0, sizeof(l->fmr_reserved)) ||
+> +	    memchr_inv(h->fmr_reserved, 0, sizeof(h->fmr_reserved)))
+> +		return -EINVAL;
+> +	/*
+> +	 * ext4 doesn't report file extents at all, so the only valid
+> +	 * file offsets are the magic ones (all zeroes or all ones).
+> +	 */
+> +	if (l->fmr_offset || (h->fmr_offset != 0 && h->fmr_offset != -1ULL))
+> +		return -EINVAL;
+> +
+> +	if (head->fmh_iflags & ~FMH_IF_VALID)
+> +		return -EINVAL;
+> +
+> +	if (!ext4_getfsmap_is_valid_device(sb, l) ||
+> +	    !ext4_getfsmap_is_valid_device(sb, h))
+> +		return -EINVAL;
+> +
+> +	if (!ext4_getfsmap_check_keys(l, h))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>  #define EXT4_GETFSMAP_DEVS	2
+>  /*
+>   * Get filesystem's extents as described in head, and format for
+> @@ -635,12 +668,6 @@ int ext4_getfsmap(struct super_block *sb, struct ext4_fsmap_head *head,
+>  	int i;
+>  	int error = 0;
+>  
+> -	if (head->fmh_iflags & ~FMH_IF_VALID)
+> -		return -EINVAL;
+> -	if (!ext4_getfsmap_is_valid_device(sb, &head->fmh_keys[0]) ||
+> -	    !ext4_getfsmap_is_valid_device(sb, &head->fmh_keys[1]))
+> -		return -EINVAL;
+> -
+>  	head->fmh_entries = 0;
+>  
+>  	/* Set up our device handlers. */
+> @@ -673,9 +700,6 @@ int ext4_getfsmap(struct super_block *sb, struct ext4_fsmap_head *head,
+>  	dkeys[0].fmr_length = 0;
+>  	memset(&dkeys[1], 0xFF, sizeof(struct ext4_fsmap));
+>  
+> -	if (!ext4_getfsmap_check_keys(dkeys, &head->fmh_keys[1]))
+> -		return -EINVAL;
+
+And why is it ok to turn validation of dkeys[0] vs. fmh_keys[1] into a
+validation of fmh_keys[0..1] ?  I guess that's why check_keys now adds
+the low key physical offset and length?
+
+But why not leave the key checks the where they are, since it's
+dkeys[0..1] that get passed around the implementations?
+
+--D
+
+> -
+>  	info.gfi_next_fsblk = head->fmh_keys[0].fmr_physical +
+>  			  head->fmh_keys[0].fmr_length;
+>  	info.gfi_formatter = formatter;
+> diff --git a/fs/ext4/fsmap.h b/fs/ext4/fsmap.h
+> index ac642be2302e..8325258def7b 100644
+> --- a/fs/ext4/fsmap.h
+> +++ b/fs/ext4/fsmap.h
+> @@ -8,6 +8,7 @@
+>  #define	__EXT4_FSMAP_H__
+>  
+>  struct fsmap;
+> +struct fsmap_head;
+>  
+>  /* internal fsmap representation */
+>  struct ext4_fsmap {
+> @@ -32,6 +33,8 @@ void ext4_fsmap_from_internal(struct super_block *sb, struct fsmap *dest,
+>  		struct ext4_fsmap *src);
+>  void ext4_fsmap_to_internal(struct super_block *sb, struct ext4_fsmap *dest,
+>  		struct fsmap *src);
+> +int ext4_fsmap_check_head(struct super_block *sb,
+> +			  const struct fsmap_head *head);
+>  
+>  /* fsmap to userspace formatter - copy to user & advance pointer */
+>  typedef int (*ext4_fsmap_format_t)(struct ext4_fsmap *, void *);
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index 8067ccda34e4..eb0ecb012e6a 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -874,20 +874,9 @@ static int ext4_ioc_getfsmap(struct super_block *sb,
+>  
+>  	if (copy_from_user(&head, arg, sizeof(struct fsmap_head)))
+>  		return -EFAULT;
+> -	if (memchr_inv(head.fmh_reserved, 0, sizeof(head.fmh_reserved)) ||
+> -	    memchr_inv(head.fmh_keys[0].fmr_reserved, 0,
+> -		       sizeof(head.fmh_keys[0].fmr_reserved)) ||
+> -	    memchr_inv(head.fmh_keys[1].fmr_reserved, 0,
+> -		       sizeof(head.fmh_keys[1].fmr_reserved)))
+> -		return -EINVAL;
+> -	/*
+> -	 * ext4 doesn't report file extents at all, so the only valid
+> -	 * file offsets are the magic ones (all zeroes or all ones).
+> -	 */
+> -	if (head.fmh_keys[0].fmr_offset ||
+> -	    (head.fmh_keys[1].fmr_offset != 0 &&
+> -	     head.fmh_keys[1].fmr_offset != -1ULL))
+> -		return -EINVAL;
+> +	error = ext4_fsmap_check_head(sb, &head);
+> +	if (error)
+> +		return error;
+>  
+>  	xhead.fmh_iflags = head.fmh_iflags;
+>  	xhead.fmh_count = head.fmh_count;
+> -- 
+> 2.39.2.637.g21b0678d19-goog
+> 
