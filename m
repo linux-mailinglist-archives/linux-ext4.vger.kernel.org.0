@@ -2,48 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FD46AA798
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 Mar 2023 03:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8146AA796
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 Mar 2023 03:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbjCDCbx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Mar 2023 21:31:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
+        id S229692AbjCDCbw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Mar 2023 21:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjCDCbv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 21:31:51 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E88664CA;
+        with ESMTP id S229447AbjCDCbu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 21:31:50 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D78BEC52;
         Fri,  3 Mar 2023 18:31:49 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PT83z1NwRz4f3jHY;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PT83z4qb3z4f3jLh;
         Sat,  4 Mar 2023 10:31:43 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgCnUiCPrQJk3eg0EQ--.50517S4;
+        by APP3 (Coremail) with SMTP id _Ch0CgCnUiCPrQJk3eg0EQ--.50517S5;
         Sat, 04 Mar 2023 10:31:45 +0800 (CST)
 From:   Ye Bin <yebin@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
         Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v3 0/2] ext4: fix WARNING in ext4_update_inline_data
-Date:   Sat,  4 Mar 2023 10:54:56 +0800
-Message-Id: <20230304025458.4007825-1-yebin@huaweicloud.com>
+Subject: [PATCH v3 1/2] ext4: remove set 'EXT4_STATE_MAY_INLINE_DATA' flag from ext4_find_inline_data_nolock()
+Date:   Sat,  4 Mar 2023 10:54:57 +0800
+Message-Id: <20230304025458.4007825-2-yebin@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230304025458.4007825-1-yebin@huaweicloud.com>
+References: <20230304025458.4007825-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgCnUiCPrQJk3eg0EQ--.50517S4
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5l7kC6x804xWl14x267AKxVW8JVW5JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-        14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-TRANSID: _Ch0CgCnUiCPrQJk3eg0EQ--.50517S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFyUWF4fAF43Aw47WFykXwb_yoW8Ww43pr
+        s8GrykGw4kZFyDuFZ2gr1UZr1a9a1xCr4UWFWS9r4kXF98J34xKr1Yyr13AFyUGrZFy3ya
+        gFy5trW8uw43CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+        A2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+        JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07U_pnPUUUUU=
 X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -56,22 +61,48 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ye Bin <yebin10@huawei.com>
 
-Diff v3 vs v2:
-Remove set 'EXT4_STATE_MAY_INLINE_DATA' flag from ext4_find_inline_data_nolock()
+As only ext4_iget_extra_inode() call ext4_find_inline_data_nolock() need
+to set 'EXT4_STATE_MAY_INLINE_DATA' flag. The call in ext4_write_inline_data_end()
+is there only need to update i_inline_off. So move set 'EXT4_STATE_MAY_INLINE_DATA'
+flag from ext4_find_inline_data_nolock() to ext4_iget_extra_inode().
 
-Diff v2 vs v1:
-Only update 'inline_off' when do extra expand.
-
-Ye Bin (2):
-  ext4: remove set 'EXT4_STATE_MAY_INLINE_DATA' flag from
-    ext4_find_inline_data_nolock()
-  ext4: fix WARNING in ext4_update_inline_data
-
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
  fs/ext4/inline.c | 1 -
  fs/ext4/inode.c  | 7 ++++++-
- fs/ext4/xattr.c  | 3 +++
- 3 files changed, 9 insertions(+), 2 deletions(-)
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 2b42ececa46d..1602d74b5eeb 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -159,7 +159,6 @@ int ext4_find_inline_data_nolock(struct inode *inode)
+ 					(void *)ext4_raw_inode(&is.iloc));
+ 		EXT4_I(inode)->i_inline_size = EXT4_MIN_INLINE_DATA_SIZE +
+ 				le32_to_cpu(is.s.here->e_value_size);
+-		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 	}
+ out:
+ 	brelse(is.iloc.bh);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d251d705c276..bf0b7dea4900 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4797,8 +4797,13 @@ static inline int ext4_iget_extra_inode(struct inode *inode,
+ 
+ 	if (EXT4_INODE_HAS_XATTR_SPACE(inode)  &&
+ 	    *magic == cpu_to_le32(EXT4_XATTR_MAGIC)) {
++		int err;
++
+ 		ext4_set_inode_state(inode, EXT4_STATE_XATTR);
+-		return ext4_find_inline_data_nolock(inode);
++		err = ext4_find_inline_data_nolock(inode);
++		if (!err && ext4_has_inline_data(inode))
++			ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
++		return err;
+ 	} else
+ 		EXT4_I(inode)->i_inline_off = 0;
+ 	return 0;
 -- 
 2.31.1
 
