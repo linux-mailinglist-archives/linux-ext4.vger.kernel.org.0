@@ -2,172 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E2E6AA7B5
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 Mar 2023 03:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51CE6AAEA3
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Mar 2023 09:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjCDC5a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Mar 2023 21:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S229673AbjCEIxf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Mar 2023 03:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjCDC5a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Mar 2023 21:57:30 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F291588C;
-        Fri,  3 Mar 2023 18:57:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC83C61991;
-        Sat,  4 Mar 2023 02:57:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 339DAC433D2;
-        Sat,  4 Mar 2023 02:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677898648;
-        bh=vMTzq2Z9CpdGBfTSlvfXqRVhrFs51nyHyXb7XattogA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dXgwCVWr0924yRU+5/FzwCt6PgAlivt2wsg6ObEhePng47EYRFE1qwxGfC7y1tHEJ
-         uYT0KisQ7Pi70tZxf/Ig/WJBwBQBOagcK8Bud35g0Fq1uR5U9jPTmHePvauFmjSA5H
-         TMbwgSP7n3/9InkbHQGMV8M7GOvvyo6Gz5wHVyBgzlaO73ZYfxnW+9JMB8TJc/EVEi
-         JDfa9Qc4LSo3zSwGPwSIUk3sJfD2CLET0OdGgtrg3yFZGXwrTZwqliYW7kfcxfZcn4
-         xVMRW+B7506Z4sczIL1rX/E2HwMEh8za9kkrxyLm/pWpK0ZH1D9ysBtJieXptZqqM2
-         bnr6za+AB7gFA==
-Date:   Fri, 3 Mar 2023 18:57:27 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Jun Nie <jun.nie@linaro.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <joneslee@google.com>
-Subject: Re: [PATCH] ext4: fix another off-by-one fsmap error on 1k block
- filesystems
-Message-ID: <20230304025727.GB1637890@frogsfrogsfrogs>
-References: <Y+58NPTH7VNGgzdd@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+58NPTH7VNGgzdd@magnolia>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229379AbjCEIxe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Mar 2023 03:53:34 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3158BBBC;
+        Sun,  5 Mar 2023 00:53:33 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id y2so6859297pjg.3;
+        Sun, 05 Mar 2023 00:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Iv+GuZ1uASGnLzqpdUE7BOfQ48/mQJ2SDTfiMkwx1fU=;
+        b=KWsZOgtA5eH49SdP6icthsD9GYeCiRbMJ5yK9bFryYg+hXs3C1s/g/D8tgFWGq7Sdv
+         HGYKs46HFI8+S+LfWbNBV9IfT6YWC9XjEdWtDRT2IDBF9EjcjxW5LFnMxkVR5J0wi5Vw
+         Wq7JotHjttVQclsXp2SJ47N+Wzzo5jUEFNntCNwnOyvLQTYv/dYt9XdhJFS9f3Yq2rMH
+         hB4XhbPgjLEUlgkkQcTEBNsrV1sMjBH/iqDbWM1y/z/DAFuCnpzaxaCuCClPheQ6FxOG
+         LUt4RvhVpEhR4+b37nXeH6xsWIMTB53OY7xja2TL1kwXCtaiO8/OyYGbsiX+7PRhpr5B
+         LPEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iv+GuZ1uASGnLzqpdUE7BOfQ48/mQJ2SDTfiMkwx1fU=;
+        b=3LdhqIr/NQkvJHNmq8dL48IMtSLFmMk4cPS/qYW4NpyfXmxmJJGKSIiSVWqtLgfrlq
+         uWQ58TX8yn8/X5J7SKbXIk2Kfe1a6MhrJIZnzeyvJuOgJHNQURTwYtKfINDacAHigPua
+         /bW/a2jY7XYyBQ4zfXPgbmULvQBQcoKqPY2mzM4/u+ZZxjreaf7tQjZLNyZPUQ00ujOR
+         CZC76kUPk65rqVMkLNRyYklWnkXmSU7qfd+7c8XTxxJFdgdihEoeK0nY/hVsZzjag2YL
+         i402tLHybujhSR8B5Y9bvnHOiLKK33yLqzozWMgStoW1bgiepVejSbFF42u0DZNN+AGG
+         Uchg==
+X-Gm-Message-State: AO0yUKWyeIBIgKt0yksIoG4FDPZkUYM1sR4jfYoaHH93lPZRc3SYLJYX
+        GWT3KVu+NkUBF8zdbvdQjotXg3slTeapOQ==
+X-Google-Smtp-Source: AK7set+N7K8jaRUG0luofeYUmt+lldIvZ8Xk74I1NliydEzceGIpXSTXZuRDgBd71cnPoUNUYHLQ5A==
+X-Received: by 2002:a17:90b:3505:b0:234:dc4:2006 with SMTP id ls5-20020a17090b350500b002340dc42006mr8091203pjb.4.1678006412621;
+        Sun, 05 Mar 2023 00:53:32 -0800 (PST)
+Received: from rh-tp ([2406:7400:63:469f:eb50:3ffb:dc1b:2d55])
+        by smtp.gmail.com with ESMTPSA id u2-20020a17090a890200b0023a71a06c86sm3670373pjn.29.2023.03.05.00.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Mar 2023 00:53:32 -0800 (PST)
+Date:   Sun, 05 Mar 2023 14:23:19 +0530
+Message-Id: <87mt4rmveo.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/31] fs: Add FGP_WRITEBEGIN
+In-Reply-To: <20230126202415.1682629-2-willy@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ping, Ted?
+"Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
 
---D
+> This particular combination of flags is used by most filesystems
+> in their ->write_begin method, although it does find use in a
+> few other places.  Before folios, it warranted its own function
+> (grab_cache_page_write_begin()), but I think that just having specialised
+> flags is enough.  It certainly helps the few places that have been
+> converted from grab_cache_page_write_begin() to __filemap_get_folio().
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-On Thu, Feb 16, 2023 at 10:55:48AM -0800, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
-> 
-> Apparently syzbot figured out that issuing this FSMAP call:
-> 
-> struct fsmap_head cmd = {
-> 	.fmh_count	= ...;
-> 	.fmh_keys	= {
-> 		{ .fmr_device = /* ext4 dev */, .fmr_physical = 0, },
-> 		{ .fmr_device = /* ext4 dev */, .fmr_physical = 0, },
-> 	},
-> ...
-> };
-> ret = ioctl(fd, FS_IOC_GETFSMAP, &cmd);
-> 
-> Produces this crash if the underlying filesystem is a 1k-block ext4
-> filesystem:
-> 
-> kernel BUG at fs/ext4/ext4.h:3331!
-> invalid opcode: 0000 [#1] PREEMPT SMP
-> CPU: 3 PID: 3227965 Comm: xfs_io Tainted: G        W  O       6.2.0-rc8-achx
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:ext4_mb_load_buddy_gfp+0x47c/0x570 [ext4]
-> RSP: 0018:ffffc90007c03998 EFLAGS: 00010246
-> RAX: ffff888004978000 RBX: ffffc90007c03a20 RCX: ffff888041618000
-> RDX: 0000000000000000 RSI: 00000000000005a4 RDI: ffffffffa0c99b11
-> RBP: ffff888012330000 R08: ffffffffa0c2b7d0 R09: 0000000000000400
-> R10: ffffc90007c03950 R11: 0000000000000000 R12: 0000000000000001
-> R13: 00000000ffffffff R14: 0000000000000c40 R15: ffff88802678c398
-> FS:  00007fdf2020c880(0000) GS:ffff88807e100000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ffd318a5fe8 CR3: 000000007f80f001 CR4: 00000000001706e0
-> Call Trace:
->  <TASK>
->  ext4_mballoc_query_range+0x4b/0x210 [ext4 dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->  ext4_getfsmap_datadev+0x713/0x890 [ext4 dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->  ext4_getfsmap+0x2b7/0x330 [ext4 dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->  ext4_ioc_getfsmap+0x153/0x2b0 [ext4 dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->  __ext4_ioctl+0x2a7/0x17e0 [ext4 dfa189daddffe8fecd3cdfd00564e0f265a8ab80]
->  __x64_sys_ioctl+0x82/0xa0
->  do_syscall_64+0x2b/0x80
->  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fdf20558aff
-> RSP: 002b:00007ffd318a9e30 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00000000000200c0 RCX: 00007fdf20558aff
-> RDX: 00007fdf1feb2010 RSI: 00000000c0c0583b RDI: 0000000000000003
-> RBP: 00005625c0634be0 R08: 00005625c0634c40 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdf1feb2010
-> R13: 00005625be70d994 R14: 0000000000000800 R15: 0000000000000000
-> 
-> For GETFSMAP calls, the caller selects a physical block device by
-> writing its block number into fsmap_head.fmh_keys[01].fmr_device.
-> To query mappings for a subrange of the device, the starting byte of the
-> range is written to fsmap_head.fmh_keys[0].fmr_physical and the last
-> byte of the range goes in fsmap_head.fmh_keys[1].fmr_physical.
-> 
-> IOWs, to query what mappings overlap with bytes 3-14 of /dev/sda, you'd
-> set the inputs as follows:
-> 
-> 	fmh_keys[0] = { .fmr_device = major(8, 0), .fmr_physical = 3},
-> 	fmh_keys[1] = { .fmr_device = major(8, 0), .fmr_physical = 14},
-> 
-> Which would return you whatever is mapped in the 12 bytes starting at
-> physical offset 3.
-> 
-> The crash is due to insufficient range validation of keys[1] in
-> ext4_getfsmap_datadev.  On 1k-block filesystems, block 0 is not part of
-> the filesystem, which means that s_first_data_block is nonzero.
-> ext4_get_group_no_and_offset subtracts this quantity from the blocknr
-> argument before cracking it into a group number and a block number
-> within a group.  IOWs, block group 0 spans blocks 1-8192 (1-based)
-> instead of 0-8191 (0-based) like what happens with larger blocksizes.
-> 
-> The net result of this encoding is that blocknr < s_first_data_block is
-> not a valid input to this function.  The end_fsb variable is set from
-> the keys that are copied from userspace, which means that in the above
-> example, its value is zero.  That leads to an underflow here:
-> 
-> 	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
-> 
-> The division then operates on -1:
-> 
-> 	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
-> 		EXT4_SB(sb)->s_cluster_bits;
-> 
-> Leaving an impossibly large group number (2^32-1) in blocknr.
-> ext4_getfsmap_check_keys checked that keys[0].fmr_physical and
-> keys[1].fmr_physical are in increasing order, but
-> ext4_getfsmap_datadev adjusts keys[0].fmr_physical to be at least
-> s_first_data_block.  This implies that we have to check it again after
-> the adjustment, which is the piece that I forgot.
-> 
-> Fixes: 4a4956249dac ("ext4: fix off-by-one fsmap error on 1k block filesystems")
-> Link: https://syzkaller.appspot.com/bug?id=79d5768e9bfe362911ac1a5057a36fc6b5c30002
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+Looks good to me. With small comment below.
+
+Please feel free to add -
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
 > ---
->  fs/ext4/fsmap.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-> index 4493ef0c715e..cdf9bfe10137 100644
-> --- a/fs/ext4/fsmap.c
-> +++ b/fs/ext4/fsmap.c
-> @@ -486,6 +486,8 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
->  		keys[0].fmr_physical = bofs;
->  	if (keys[1].fmr_physical >= eofs)
->  		keys[1].fmr_physical = eofs - 1;
-> +	if (keys[1].fmr_physical < keys[0].fmr_physical)
-> +		return 0;
->  	start_fsb = keys[0].fmr_physical;
->  	end_fsb = keys[1].fmr_physical;
->  
+>  fs/ext4/move_extent.c    | 5 ++---
+>  fs/iomap/buffered-io.c   | 2 +-
+>  fs/netfs/buffered_read.c | 3 +--
+>  include/linux/pagemap.h  | 2 ++
+>  mm/folio-compat.c        | 4 +---
+>  5 files changed, 7 insertions(+), 9 deletions(-)
+
+After below patch got added to mainline, we should use FGP_WRITEBEGIN
+flag in fs/nfs/file.c as well.
+
+54d99381b7371d2999566d1fb4ea88d46cf9d865
+Author:     Trond Myklebust <trond.myklebust@hammerspace.com>
+CommitDate: Tue Feb 14 14:22:32 2023 -0500
+
+NFS: Convert nfs_write_begin/end to use folios
+
+
+In fact we don't even need the helper
+(nfs_folio_grab_cache_write_begin()) anymore, since we can directly pass
+FGP_WRITEBEGIN flag in __filemap_get_folio() in the caller itself.
+
+static struct folio *
+nfs_folio_grab_cache_write_begin(struct address_space *mapping, pgoff_t index)
+{
+	unsigned fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
+
+	return __filemap_get_folio(mapping, index, fgp_flags,
+				   mapping_gfp_mask(mapping));
+}
+
+
+-ritesh
+
+>
+> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+> index 2de9829aed63..0cb361f0a4fe 100644
+> --- a/fs/ext4/move_extent.c
+> +++ b/fs/ext4/move_extent.c
+> @@ -126,7 +126,6 @@ mext_folio_double_lock(struct inode *inode1, struct inode *inode2,
+>  {
+>  	struct address_space *mapping[2];
+>  	unsigned int flags;
+> -	unsigned fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
+>
+>  	BUG_ON(!inode1 || !inode2);
+>  	if (inode1 < inode2) {
+> @@ -139,14 +138,14 @@ mext_folio_double_lock(struct inode *inode1, struct inode *inode2,
+>  	}
+>
+>  	flags = memalloc_nofs_save();
+> -	folio[0] = __filemap_get_folio(mapping[0], index1, fgp_flags,
+> +	folio[0] = __filemap_get_folio(mapping[0], index1, FGP_WRITEBEGIN,
+>  			mapping_gfp_mask(mapping[0]));
+>  	if (!folio[0]) {
+>  		memalloc_nofs_restore(flags);
+>  		return -ENOMEM;
+>  	}
+>
+> -	folio[1] = __filemap_get_folio(mapping[1], index2, fgp_flags,
+> +	folio[1] = __filemap_get_folio(mapping[1], index2, FGP_WRITEBEGIN,
+>  			mapping_gfp_mask(mapping[1]));
+>  	memalloc_nofs_restore(flags);
+>  	if (!folio[1]) {
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 6f4c97a6d7e9..10a203515583 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -467,7 +467,7 @@ EXPORT_SYMBOL_GPL(iomap_is_partially_uptodate);
+>   */
+>  struct folio *iomap_get_folio(struct iomap_iter *iter, loff_t pos)
+>  {
+> -	unsigned fgp = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE | FGP_NOFS;
+> +	unsigned fgp = FGP_WRITEBEGIN | FGP_NOFS;
+>  	struct folio *folio;
+>
+>  	if (iter->flags & IOMAP_NOWAIT)
+> diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
+> index 7679a68e8193..e3d754a9e1b0 100644
+> --- a/fs/netfs/buffered_read.c
+> +++ b/fs/netfs/buffered_read.c
+> @@ -341,14 +341,13 @@ int netfs_write_begin(struct netfs_inode *ctx,
+>  {
+>  	struct netfs_io_request *rreq;
+>  	struct folio *folio;
+> -	unsigned int fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
+>  	pgoff_t index = pos >> PAGE_SHIFT;
+>  	int ret;
+>
+>  	DEFINE_READAHEAD(ractl, file, NULL, mapping, index);
+>
+>  retry:
+> -	folio = __filemap_get_folio(mapping, index, fgp_flags,
+> +	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
+>  				    mapping_gfp_mask(mapping));
+>  	if (!folio)
+>  		return -ENOMEM;
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 9f1081683771..47069662f4b8 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -507,6 +507,8 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
+>  #define FGP_ENTRY		0x00000080
+>  #define FGP_STABLE		0x00000100
+>
+> +#define FGP_WRITEBEGIN		(FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE)
+> +
+>  struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  		int fgp_flags, gfp_t gfp);
+>  struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+> index 18c48b557926..668350748828 100644
+> --- a/mm/folio-compat.c
+> +++ b/mm/folio-compat.c
+> @@ -106,9 +106,7 @@ EXPORT_SYMBOL(pagecache_get_page);
+>  struct page *grab_cache_page_write_begin(struct address_space *mapping,
+>  					pgoff_t index)
+>  {
+> -	unsigned fgp_flags = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE;
+> -
+> -	return pagecache_get_page(mapping, index, fgp_flags,
+> +	return pagecache_get_page(mapping, index, FGP_WRITEBEGIN,
+>  			mapping_gfp_mask(mapping));
+>  }
+>  EXPORT_SYMBOL(grab_cache_page_write_begin);
+> --
+> 2.35.1
