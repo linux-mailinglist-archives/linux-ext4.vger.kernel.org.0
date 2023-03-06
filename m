@@ -2,130 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FCB6AB503
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 04:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB196AB691
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 07:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbjCFDSD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 Mar 2023 22:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S229587AbjCFGwG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Mar 2023 01:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjCFDSD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Mar 2023 22:18:03 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29F86A4D;
-        Sun,  5 Mar 2023 19:18:01 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id me6-20020a17090b17c600b0023816b0c7ceso11830827pjb.2;
-        Sun, 05 Mar 2023 19:18:01 -0800 (PST)
+        with ESMTP id S229555AbjCFGwE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 01:52:04 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4128683F9;
+        Sun,  5 Mar 2023 22:52:03 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id ce8-20020a17090aff0800b0023a61cff2c6so6906519pjb.0;
+        Sun, 05 Mar 2023 22:52:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678072681;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/KQzd9XueLqI63AeDIMil5F/+DkbaEc2qfGIFqYE5OI=;
-        b=hNNvm2vUJ8ZBjimgo1npA8fVR8lW2pk/HMbY6dWwlZD2U/VDXE6N3v2JCVmvTDtTDV
-         Op1I03n0jT6tY6f2dWezrLqU3wHd1q0afsF2F/E/gco26XHRVRf4tNZNZRyzVlAjpinE
-         /I2H8WjV6vq99AnQrwPqEOJSBK+p6TiAXL7C8wmWWEKSuHFw0eTH1MhzI0bh/wVB/1/x
-         39e0wLQT2FMBPrOIf9GdTsOLcYP6CRmXOyenwIUCEZ9Y42u10qjKj9rJO2zFrQ40TPxl
-         kVY+wa29zvGm46+a1qrQ648jwd9QqSAyAWHYkUHhtXViBUNRYWByQVgpmqSQIIhZYDd8
-         s+uA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IT1FiVQMyBFwjF1wOpOa6ILmz5MNm2RKjHdSLDxlVi0=;
+        b=o/ek07NRjadh5WM060XSa5573dj9v+Rf2qVPmZttIdPa3TxKr0Ki9zxyvB8WhkDGX9
+         o+2Xz6s4UXE4a3BJ4XEozK+wPRCgydRzYtPMWbTvq1SV4vErnL6CYqEimgL9TZjobAKU
+         gmNNg+ra9tlu2YbX5cjOJFWq8nfiVGCZ87wX6y6y3LHGzM9Y1+Gqdp/7jNcRFLrr1ksy
+         ARRuFvVw8SQ+BKkHz1u2yBGPO5RSmbR3Nhv50WYxrp95RZvEM9gWwMofYqooBzqkpnc8
+         8pr+c8jEVkGlU5b2O43SvSoAf9kUwKRl0qjuoTUPDyTAcQlVo3IHjmVgHWqAvu5FPdZx
+         DvqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678072681;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/KQzd9XueLqI63AeDIMil5F/+DkbaEc2qfGIFqYE5OI=;
-        b=MUzYEJJUYh79tDQ5dOmX3jv20v3Nc0cFXcaRST+bVTRJuU524Wf1D15CfR6IdKnl/Z
-         AYrhbEBo+IJsmmJY2Joze4KNGukmX9Uz+k/gVinSqEwtFDUWOKUqfeY2oQImxybeGOXh
-         JV+noJVx293iCBZznjzJ90V82VuSRWXzcv5yZz4HeOpbUgZMb8ZZ3BrMeXfL8dL4IzQF
-         eeFAv0GyU7Ipw3BUsA8+wSMERGJU02d0Buad4asSedz6ttTfqT766b5Pu6x78EELrIns
-         bGMSnLmHiheVbwqSWseQOarjAlaUdSJlCnxiFhJWWM+eA6GlzWxfNMqGe+B29Lap9MjV
-         VkVg==
-X-Gm-Message-State: AO0yUKWyVz2+2fNzWgTrHssqkp8j/kSgQGlg9N1nNFP7YXpujg5EYmOp
-        SqzCnjPULDZxWTN8cw6GV43WJMAy+WM=
-X-Google-Smtp-Source: AK7set+LVVTNqr6aoI6BmNRE9xggFXF9QUVLWnl+MDQDGFIUvMfdxcsF6by2kLQ5a6d6BQudUdfHYg==
-X-Received: by 2002:a17:902:ea02:b0:19c:c8c8:b544 with SMTP id s2-20020a170902ea0200b0019cc8c8b544mr12451217plg.64.1678072681382;
-        Sun, 05 Mar 2023 19:18:01 -0800 (PST)
-Received: from debian.me (subs02-180-214-232-85.three.co.id. [180.214.232.85])
-        by smtp.gmail.com with ESMTPSA id ko7-20020a17090307c700b0019a6cce2060sm3449739plb.57.2023.03.05.19.18.00
+        d=1e100.net; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IT1FiVQMyBFwjF1wOpOa6ILmz5MNm2RKjHdSLDxlVi0=;
+        b=mzdlbsDUXUHQzkEX7rZxOEMvKVoc8LuMmXWyjfGMUHmylOUjhE/Hazbm61BXSXEqZ9
+         SFMfOl3gvpU4lE0cnfkO9hoi1reE+6p5HXHRUM/e3/WhtV2T6c/sVPSIYSzs8yy8MJvT
+         m2aTItU7kAjsTlANoxohOJmdKKORiDluKGklGOekRM04TkTfUjUZuOXNgmiGOCpGam2/
+         kaFFc4aRdnLRdMxcdQ7H7psP2KJVwQpzNuNQynS0JOiVJGhK2gofaF2WNHNRgMxPzLx6
+         2KGW7yMsQdA1uhtHEzaGjftyGhfCVFJhk+idCB8faevS5ZMAJQA4lZKj0pIldK4Nngor
+         aKBg==
+X-Gm-Message-State: AO0yUKXjApLLbLqTuIMHwH9NsoedBQNKb4mHFhnza3eX+3JEWC20wFre
+        eb19d9abgpgGlk8VdkMYfzbo38POwN8=
+X-Google-Smtp-Source: AK7set8QiaMSVNVIna4KA3HvnUmGd1xiu/sVigD2uWobd4WwF13/d/BlTao1YrUOuOeV1IuoT5U9cw==
+X-Received: by 2002:a17:902:e844:b0:19c:d97f:5d28 with SMTP id t4-20020a170902e84400b0019cd97f5d28mr13343148plg.32.1678085522316;
+        Sun, 05 Mar 2023 22:52:02 -0800 (PST)
+Received: from rh-tp ([129.41.58.21])
+        by smtp.gmail.com with ESMTPSA id j14-20020a170903024e00b0019462aa090bsm5815593plh.284.2023.03.05.22.51.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Mar 2023 19:18:00 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id DDC7A106595; Mon,  6 Mar 2023 10:17:56 +0700 (WIB)
-Date:   Mon, 6 Mar 2023 10:17:56 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        ext4 Development <linux-ext4@vger.kernel.org>
-Subject: The state of ext4 tree merging (was Re: Linux 6.3-rc1)
-Message-ID: <ZAVbZJSyOdF0BxAJ@debian.me>
-References: <CAHk-=wgr1D8hb75Z+nn+4LXUnosp0HM+gP+YJEcEav1DgTC=Cw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K1nqM47Qf7ezryjK"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgr1D8hb75Z+nn+4LXUnosp0HM+gP+YJEcEav1DgTC=Cw@mail.gmail.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        Sun, 05 Mar 2023 22:52:01 -0800 (PST)
+Date:   Mon, 06 Mar 2023 12:21:48 +0530
+Message-Id: <87wn3u1iez.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 25/31] ext4: Convert ext4_block_write_begin() to take a folio
+In-Reply-To: <20230126202415.1682629-26-willy@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+"Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
 
---K1nqM47Qf7ezryjK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> All the callers now have a folio, so pass that in and operate on folios.
+> Removes four calls to compound_head().
 
-On Sun, Mar 05, 2023 at 03:24:41PM -0800, Linus Torvalds wrote:
-> In fact, it was quite nice in a couple of ways: not only didn't I have
-> a hugely compressed merge window where I felt I had to cram as much as
-> possible into the first few days, but the fact that we _have_ had a
-> couple of merge windows where I really asked for people to have
-> everything ready when the merge window opened seems to have set a
-> pattern: the bulk of everything really did come in early.
->=20
+Why do you say four? Isn't it 3 calls of PageUptodate(page) which
+removes calls to compound_head()? Which one did I miss?
 
-Not so for me watching updates to ext4 merging hell...
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/ext4/inode.c | 41 +++++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 20 deletions(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index dbfc0670de75..507c7f88d737 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1055,12 +1055,12 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+>  }
+>
+>  #ifdef CONFIG_FS_ENCRYPTION
+> -static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
+> +static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  				  get_block_t *get_block)
+>  {
+>  	unsigned from = pos & (PAGE_SIZE - 1);
+>  	unsigned to = from + len;
+> -	struct inode *inode = page->mapping->host;
+> +	struct inode *inode = folio->mapping->host;
+>  	unsigned block_start, block_end;
+>  	sector_t block;
+>  	int err = 0;
+> @@ -1070,22 +1070,24 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  	int nr_wait = 0;
+>  	int i;
+>
+> -	BUG_ON(!PageLocked(page));
+> +	BUG_ON(!folio_test_locked(folio));
+>  	BUG_ON(from > PAGE_SIZE);
+>  	BUG_ON(to > PAGE_SIZE);
+>  	BUG_ON(from > to);
+>
+> -	if (!page_has_buffers(page))
+> -		create_empty_buffers(page, blocksize, 0);
+> -	head = page_buffers(page);
+> +	head = folio_buffers(folio);
+> +	if (!head) {
+> +		create_empty_buffers(&folio->page, blocksize, 0);
+> +		head = folio_buffers(folio);
+> +	}
+>  	bbits = ilog2(blocksize);
+> -	block = (sector_t)page->index << (PAGE_SHIFT - bbits);
+> +	block = (sector_t)folio->index << (PAGE_SHIFT - bbits);
+>
+>  	for (bh = head, block_start = 0; bh != head || !block_start;
+>  	    block++, block_start = block_end, bh = bh->b_this_page) {
+>  		block_end = block_start + blocksize;
+>  		if (block_end <= from || block_start >= to) {
+> -			if (PageUptodate(page)) {
+> +			if (folio_test_uptodate(folio)) {
+>  				set_buffer_uptodate(bh);
+>  			}
+>  			continue;
+> @@ -1098,19 +1100,20 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  			if (err)
+>  				break;
+>  			if (buffer_new(bh)) {
+> -				if (PageUptodate(page)) {
+> +				if (folio_test_uptodate(folio)) {
+>  					clear_buffer_new(bh);
+>  					set_buffer_uptodate(bh);
+>  					mark_buffer_dirty(bh);
+>  					continue;
+>  				}
+>  				if (block_end > to || block_start < from)
+> -					zero_user_segments(page, to, block_end,
+> -							   block_start, from);
+> +					folio_zero_segments(folio, to,
+> +							    block_end,
+> +							    block_start, from);
+>  				continue;
+>  			}
+>  		}
+> -		if (PageUptodate(page)) {
+> +		if (folio_test_uptodate(folio)) {
+>  			set_buffer_uptodate(bh);
+>  			continue;
+>  		}
+> @@ -1130,13 +1133,13 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  			err = -EIO;
+>  	}
+>  	if (unlikely(err)) {
+> -		page_zero_new_buffers(page, from, to);
+> +		page_zero_new_buffers(&folio->page, from, to);
+>  	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+>  		for (i = 0; i < nr_wait; i++) {
+>  			int err2;
+>
+> -			err2 = fscrypt_decrypt_pagecache_blocks(page, blocksize,
+> -								bh_offset(wait[i]));
+> +			err2 = fscrypt_decrypt_pagecache_blocks(&folio->page,
+> +						blocksize, bh_offset(wait[i]));
 
-In this merge window, Ted only submitted the first part of ext4 updates
-[1] as noted in the resolution message [2]. The second part didn't make
-through the merge window (PR not sent). As such, the data=3Dwritepage
-cleanups have to wait for 6.4 merge window, and it is IMO inconvenient
-for linux-next to contain ext4 tree from next-20230217 for about
-seven weeks, as any enhancements and fixes applied to the tree are
-holding back from testing in linux-next until this hell can be sorted
-out.
+folio_decrypt_pagecache_blocks() takes folio as it's argument now.
 
-In the long term, I'd like to see a co-maintainer step in to help
-maintaining the tree in case Ted is busy. Of couse I'm not eligible
-for that role (I played as documentation janitor instead), but
-any developer with deep knowledge and experience for the fs and its
-internals should fit the role.
-
-Thanks.
-
-[1]: https://lore.kernel.org/lkml/Y%2F2CN+FpmGsfzgdE@mit.edu/
-[2]: https://lore.kernel.org/linux-next/Y%2Fk4Jvph15ugcY54@mit.edu/
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---K1nqM47Qf7ezryjK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZAVbXgAKCRD2uYlJVVFO
-o5LTAQC1Pe5CNLI2h3bQQD3C3AnoAuWiOqaghCSbN7fG88PBmQD/cb6Ux3PAGrRU
-rG3n9SP4sB3l7TfyphAyo+hwFoJOeg0=
-=29nc
------END PGP SIGNATURE-----
-
---K1nqM47Qf7ezryjK--
+Other than that it looks good to me. Please feel free to add -
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
