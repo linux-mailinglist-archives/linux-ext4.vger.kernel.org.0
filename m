@@ -2,42 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777CA6AC7F4
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 17:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0FE6ACCCC
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 19:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjCFQa3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Mar 2023 11:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S229585AbjCFSiz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Mar 2023 13:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjCFQa2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 11:30:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212262B630
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 08:29:57 -0800 (PST)
+        with ESMTP id S229524AbjCFSiy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 13:38:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AA738015
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 10:38:49 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BF1C8B80EF3
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 16:05:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 81A46C433A0
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 16:05:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DF766108D
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 18:38:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6640EC4339C
+        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 18:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678118734;
-        bh=7I2OfeWS/sVRI1Ygkkx4TgkzepCtEt+OBWAq+mEq/7M=;
+        s=k20201202; t=1678127928;
+        bh=AK6/3o0wE+MvKwEMz0Nbb9jn5HutIG/9h4xYWnMYy1s=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AmIda0Bd9pv+YXUoQqMoR8JTUDumCQQbsY1ukfe1CPN5xO18JTQ3R+ZSX3vcmPFe0
-         OkysQcUOFka0z5G2QpvZ4X8ETK3K7ua70nqdt98vSiCWt8iIIV00BX0at2Tq8kqUPT
-         qSACgsCc5X9XEevxUH7qftyk4JccQkDMxbzjqLI/bd1EGbWonAm/Yee4qtflg0oeir
-         x6kDBFFNYyfdoGLq55oDOFkvt6718eG14xjNSOGq4wuh47IVIJYB7iLUVev4qhToTT
-         wHpS9t64lGpqeZttqPSAxewhWKOuVvWYExo9RI522eIi2qUYxmApICNLjSKkiyAI7G
-         Ot6M2YELdEUmQ==
+        b=FAlr9dzaTS7SrkVShHmfEKWbZp8V5dtxiBGCzgGBkxDDevByGpZMr5dkeQGA4uof3
+         n6g+X5S95CDhniExFCkODBVbXjMh+jKODbuAcyC5O7Dj/5+G8VYvjd1Lfi9+T0UaS4
+         A8IcXcDQ1jJfxwVJ4EVf/vWqHWAoMwh738sbag03iYSgr7Vra1qMMZSHJmbKW0v96H
+         1Tb2L66ss8o9yP8n/S37945T9mCfjdMgTZSOkBT/52+Z5m47oVVwwWCFYYeJp1PyI5
+         7vD1Vjf3QBKjfzMATXr7ilTyc9JOA5rsiuQr7bvwsb/tvG02M5I4Egb87zNCq0Ukqe
+         eA54/2wvRn9mw==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 6C3C1C43145; Mon,  6 Mar 2023 16:05:34 +0000 (UTC)
+        id 4F1D0C43141; Mon,  6 Mar 2023 18:38:48 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 217145] Feature request: I need very long directory and file
  names
-Date:   Mon, 06 Mar 2023 16:05:34 +0000
+Date:   Mon, 06 Mar 2023 18:38:47 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -46,14 +46,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: kernel@nerdbynature.de
+X-Bugzilla-Who: adilger.kernelbugzilla@dilger.ca
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217145-13602-RhtaZGKGz4@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-217145-13602-ES9F83zYrS@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217145-13602@https.bugzilla.kernel.org/>
 References: <bug-217145-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -72,25 +72,28 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217145
 
---- Comment #3 from Christian Kujau (kernel@nerdbynature.de) ---
-"video file name is a story"...interesting setup :-) But as you already fou=
-nd
-in your Askubuntu forum: "The problem is the common Linux file systems only
-support up to 255 characters filename lengths". This is explained in more
-detail in the following SE answers:
+Andreas Dilger (adilger.kernelbugzilla@dilger.ca) changed:
 
-> To what extent does Linux support file names longer than 255 bytes?
-> https://unix.stackexchange.com/a/619646
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |adilger.kernelbugzilla@dilg
+                   |                            |er.ca
 
-> Is there a reasonble way to increase the file name limitation of 255 byte=
-s?
-> https://unix.stackexchange.com/a/619492
+--- Comment #4 from Andreas Dilger (adilger.kernelbugzilla@dilger.ca) ---
+The problem with "long filename is a description of the video" is that 1-3K=
+iB
+today may grow to 4KiB or 16KiB in the future, so fixing the filename lengt=
+h to
+allow 1KiB or 3KiB names (out of a full 4KiB PATH_MAX) is only a short term
+solution.  Changing ext4 or XFS to support 3KiB or 4KiB *filenames* would b=
+e a
+lot of effort for very marginal benefit.=20
 
-So, this would not be a feature request of Ext4 (or any other Linux file
-system) but of the Linux VFS, but I don't think that will be easliy impleme=
-nted
-in the near future. Your best bet would be to change your workflow and use
-shorter file names.
+I think the right solution is to put the "full description" into a separate
+xattr on the file (which can be up to 64KiB in modern ext4) and then restri=
+ct
+filenames to 255 bytes. That allows very long descriptions without impacting
+interoperability.
 
 --=20
 You may reply to this email to add a comment.
