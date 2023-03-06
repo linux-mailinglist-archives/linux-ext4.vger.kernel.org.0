@@ -2,181 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDA36AB965
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 10:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBFE6AB9AF
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 10:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbjCFJLN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Mar 2023 04:11:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        id S229996AbjCFJXx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Mar 2023 04:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjCFJLK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 04:11:10 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5B722DC5;
-        Mon,  6 Mar 2023 01:11:09 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id m8-20020a17090a4d8800b002377bced051so12559153pjh.0;
-        Mon, 06 Mar 2023 01:11:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mUAjzJ8IzCY5Wkgn8cd2LZwJjvmVx8dZSoBFT4ZwXBs=;
-        b=FDWGrVlAXFzJI8In6ZdbBDv9hyxoq1c5bwEazCtHa1SdGc3RYyavvkv6uiuMT3zJpV
-         2rIlX2WvxMw6+y6pvjqOP6bNL13d7u7KG9p/OVTdA+VmAiCqLwpdLdVD46HhrmKZmfYX
-         sS3aLA3J1JESZeZooVk49lcBbasJITabM3kmK/Ytq1jQLf+R+3QvsUxxogiFMWyq0z+S
-         2OIbrpddIfHBv0jmKqDOKTC3PXAH9JCBzefbHbFEaLPYK7bLh4cyNSScK4/xN9CTcJMe
-         FWbE29kyHThlcWs5Ouwg2vgAkJlCVPE1PgoZoOQ5KWtZ3mJwZ+tnZHWDAID0FcIwdaPw
-         9Iaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mUAjzJ8IzCY5Wkgn8cd2LZwJjvmVx8dZSoBFT4ZwXBs=;
-        b=sVji05jOJTlLGFyi+SreFnppywu+5Tlsp3kPRU+s+sdc/xkQja2RGyZQtTjkqBIEFR
-         OSefmrBdNkDAfBafUvL1DJYZEATgxTmyTYWR9BBtB6e0M1fHHz3is3eVM8ZYeCb1L9gV
-         jhuUpPJQgCDNuvt+RJ60mQ8XS8zJUy2zs1eiSDy8xmb1J0g1euZPNBJ6Dqbvx22geq1o
-         bCsQtkcMGriDLqkXQjZVyKzyhZ/B3scbm+e+fYaRV11CfQCbHRcajwkTBm30J29YGUY1
-         A+OjwDWj/uSEuw9n/Y5RviUsdPOm9ci3weISek4zOiM7IeV+wS/vM+qLmCzlAzcBnmhg
-         6JhQ==
-X-Gm-Message-State: AO0yUKWMOvOm1kTgF7zRu8xbVCtjt1fBM5c23+NH9rtdCebkoUOLL+D+
-        qcpVAjLOH7wI2XhyWmClAp9aenjkfTE=
-X-Google-Smtp-Source: AK7set9QQW08iEsXBh4iP4wdez/TKWXRYPcgfmJzhxvQDk3P2GIqIWFLj2gtxtqtRpGsMb8pJ5DiIA==
-X-Received: by 2002:a05:6a20:7aa7:b0:c7:6232:c6e2 with SMTP id u39-20020a056a207aa700b000c76232c6e2mr8322562pzh.48.1678093867803;
-        Mon, 06 Mar 2023 01:11:07 -0800 (PST)
-Received: from rh-tp ([129.41.58.18])
-        by smtp.gmail.com with ESMTPSA id t8-20020aa79388000000b0058bb79beefcsm5837456pfe.123.2023.03.06.01.11.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 01:11:07 -0800 (PST)
-Date:   Mon, 06 Mar 2023 14:40:55 +0530
-Message-Id: <87ttyy1bz4.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 04/31] ext4: Convert ext4_finish_bio() to use folios
-In-Reply-To: <20230126202415.1682629-5-willy@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229956AbjCFJXr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 04:23:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59E37DB7;
+        Mon,  6 Mar 2023 01:23:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 10E2660B1B;
+        Mon,  6 Mar 2023 09:23:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 905C7C433EF;
+        Mon,  6 Mar 2023 09:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678094625;
+        bh=YuHiNibTfvsVI3IB9f2dBIPvtAF+oVsFjShxdpWt8vI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vRHqvzLb1zE9mcjQ1jp4FZpy4X8k8BOCAlO9Bd5FU1F4TVtHEQxIzWeAF7S818xQ+
+         7xK3kfsNq0N4FRkmFjgxeb0F6ohOwO36ABYH1YAeso+eRkf84EFU0ogvHt4F1UJ1RJ
+         oQemTFv/ifce2YxmokP97eoLfW9/UsnnpgZxsZeJQcMQA/7ILKaFJXh9YrPt7cRamg
+         RYtyJOTKXDNXB8Tey1paVCbZneSuXCyW4nM76R0EHO4qdYqbr8CIzaLd4NYRGY4Jv8
+         yzWzxlwfCzfkqcpdRm8guCNMHC0sEE+P+I82LhGfpNNbQlZBEoP8fpH3vG+O9o9ih1
+         nbwR4a4OxfI6A==
+From:   Christian Brauner <brauner@kernel.org>
+To:     linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Seth Forshee <sforshee@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v3 00/10] acl: drop posix acl handlers from xattr handlers
+Date:   Mon,  6 Mar 2023 10:23:26 +0100
+Message-Id: <167809442083.601764.7315016407199154883.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
+References: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2098; i=brauner@kernel.org; h=from:subject:message-id; bh=6frdtzvyOBNLoWw4RvF5CPVqSoJpiwQ7PJrxxeWRt78=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSwbmQwlN8kdf9RF1PvK6H2638aD35gZ2WS5V7SlrHx1a6k lP/zO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZSN4nhv/tGP83DZ7cU/t0z7Qyb+v 13JVdvP12bIhN1RohDPt/PgIHhr8j29aLnKn8d6Lkdl8x5d16OtfgjxcXyB3axNO7KuBFczQ4A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
-
-> Prepare ext4 to support large folios in the page writeback path.
-
-Sure. I am guessing for ext4 to completely support large folio
-requires more work like fscrypt bounce page handling doesn't
-yet support folios right?
-
-Could you please give a little background on what all would be required
-to add large folio support in ext4 buffered I/O path?
-(I mean ofcourse other than saying move ext4 to iomap ;))
-
-What I was interested in was, what other components in particular for
-e.g. fscrypt, fsverity, ext4's xyz component needs large folio support?
-
-And how should one go about in adding this support? So can we move
-ext4's read path to have large folio support to get started?
-Have you already identified what all is missing from this path to
-convert it?
-
-> Also set the actual error in the mapping, not just -EIO.
-
-Right. I looked at the history and I think it always just had EIO.
-I think setting the actual err in mapping_set_error() is the right thing
-to do here.
-
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-w.r.t this patch series. I reviewed the mechanical changes & error paths
-which converts ext4 ext4_finish_bio() to use folio.
-
-The changes looks good to me from that perspective. Feel free to add -
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+From: Christian Brauner (Microsoft) <brauner@kernel.org>
 
 
-> ---
->  fs/ext4/page-io.c | 32 ++++++++++++++++----------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
->
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index 982791050892..fd6c0dca24b9 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -99,30 +99,30 @@ static void buffer_io_error(struct buffer_head *bh)
->
->  static void ext4_finish_bio(struct bio *bio)
->  {
-> -	struct bio_vec *bvec;
-> -	struct bvec_iter_all iter_all;
-> +	struct folio_iter fi;
->
-> -	bio_for_each_segment_all(bvec, bio, iter_all) {
-> -		struct page *page = bvec->bv_page;
-> -		struct page *bounce_page = NULL;
-> +	bio_for_each_folio_all(fi, bio) {
-> +		struct folio *folio = fi.folio;
-> +		struct folio *io_folio = NULL;
->  		struct buffer_head *bh, *head;
-> -		unsigned bio_start = bvec->bv_offset;
-> -		unsigned bio_end = bio_start + bvec->bv_len;
-> +		size_t bio_start = fi.offset;
-> +		size_t bio_end = bio_start + fi.length;
->  		unsigned under_io = 0;
->  		unsigned long flags;
->
-> -		if (fscrypt_is_bounce_page(page)) {
-> -			bounce_page = page;
-> -			page = fscrypt_pagecache_page(bounce_page);
-> +		if (fscrypt_is_bounce_folio(folio)) {
-> +			io_folio = folio;
-> +			folio = fscrypt_pagecache_folio(folio);
->  		}
->
->  		if (bio->bi_status) {
-> -			SetPageError(page);
-> -			mapping_set_error(page->mapping, -EIO);
-> +			int err = blk_status_to_errno(bio->bi_status);
-> +			folio_set_error(folio);
-> +			mapping_set_error(folio->mapping, err);
->  		}
-> -		bh = head = page_buffers(page);
-> +		bh = head = folio_buffers(folio);
->  		/*
-> -		 * We check all buffers in the page under b_uptodate_lock
-> +		 * We check all buffers in the folio under b_uptodate_lock
->  		 * to avoid races with other end io clearing async_write flags
->  		 */
->  		spin_lock_irqsave(&head->b_uptodate_lock, flags);
-> @@ -141,8 +141,8 @@ static void ext4_finish_bio(struct bio *bio)
->  		} while ((bh = bh->b_this_page) != head);
->  		spin_unlock_irqrestore(&head->b_uptodate_lock, flags);
->  		if (!under_io) {
-> -			fscrypt_free_bounce_page(bounce_page);
-> -			end_page_writeback(page);
-> +			fscrypt_free_bounce_page(&io_folio->page);
+On Wed, 01 Feb 2023 14:14:51 +0100, Christian Brauner wrote:
+> Hey everyone,
+> 
+> After we finished the introduction of the new posix acl api last cycle
+> we still left the generic POSIX ACL xattr handlers around in the
+> filesystems xattr handlers for two reasons:
+> 
+> (1) Because a few filesystems rely on the ->list() method of the generic
+>     POSIX ACL xattr handlers in their ->listxattr() inode operation.
+> (2) POSIX ACLs are only available if IOP_XATTR is raised. The IOP_XATTR
+>     flag is raised in inode_init_always() based on whether the
+>     sb->s_xattr pointer is non-NULL. IOW, the registered xattr handlers
+>     of the filesystem are used to raise IOP_XATTR.
+>     If we were to remove the generic POSIX ACL xattr handlers from all
+>     filesystems we would risk regressing filesystems that only implement
+>     POSIX ACL support and no other xattrs (nfs3 comes to mind).
+> 
+> [...]
 
-Could you please help understand what would it take to convert bounce
-page in fscrypt to folio?
+With v6.3-rc1 out, I've applied this now. Please keep an eye out for any
+regressions as this has been a delicate undertaking: 
 
-Today, we allocate 32 bounce pages of order 0 via mempool in
-    fscrypt_initialize()
-    <...>
-        fscrypt_bounce_page_pool =
-            mempool_create_page_pool(num_prealloc_crypto_pages, 0);
-    <...>
+[01/10] xattr: simplify listxattr helpers
+        commit: f2620f166e2a4db08f016b7b30b904ab28c265e4
+[02/10] xattr: add listxattr helper
+        commit: 2db8a948046cab3a2f707561592906a3d096972f
+[03/10] xattr: remove unused argument
+        commit: 831be973aa21d1cf8948bf4b1d4e73e6d5d028c0
+[04/10] fs: drop unused posix acl handlers
+        commit: 0c95c025a02e477b2d112350e1c78bb0cc994c51
+[05/10] fs: simplify ->listxattr() implementation
+        commit: a5488f29835c0eb5561b46e71c23f6c39aab6c83
+[06/10] reiserfs: rework ->listxattr() implementation
+        commit: 387b96a5891c075986afbf13e84cba357710068e
+[07/10] fs: rename generic posix acl handlers
+        commit: d549b741740e63e87e661754e2d1b336fdc51d50
+[08/10] reiserfs: rework priv inode handling
+        commit: d9f892b9bdc22b12bc960837a09f014d5a324975
+[09/10] ovl: check for ->listxattr() support
+        commit: a1fbb607340d49f208e90cc0d7bdfff2141cce8d
+[10/10] acl: don't depend on IOP_XATTR
+        commit: e499214ce3ef50c50522719e753a1ffc928c2ec1
 
-And IIUC, we might need to add some support for having higher order
-pages in the pool so that one can allocate a folio->_folio_order
-folio from this pool for bounce page to support large folio.
-Is that understanding correct? Your thoughts on this please?
-
--ritesh
+Christian
