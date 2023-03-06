@@ -2,75 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B956ABC6C
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 11:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A8B6ABA63
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 10:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjCFK1F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Mar 2023 05:27:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S229789AbjCFJwg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Mar 2023 04:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjCFK0f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 05:26:35 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8402B2687E
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Mar 2023 02:26:07 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-176d1a112bfso1976088fac.5
-        for <linux-ext4@vger.kernel.org>; Mon, 06 Mar 2023 02:26:07 -0800 (PST)
+        with ESMTP id S229865AbjCFJwe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 04:52:34 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7328023641;
+        Mon,  6 Mar 2023 01:52:31 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id h8so9618438plf.10;
+        Mon, 06 Mar 2023 01:52:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678098351;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vh7FN/ulAdnmY8O0LKz7bqpIFk4oOSQ9iCZ8VQ/AkNo=;
-        b=EDbhPO1WKzSJy97Cp1KR4Ue1wIcLFSscoH9L1E67CyPoJvstONJwP7RxKCqsDiuar/
-         4XZc6UhnyOFrEHlIQ3KmGU6oX8xWOyZpiVA4bD6F27cjopM5KQeiwoXnQq1r2hu/0hkW
-         LgiQ9FGonNq8AsMsEKBqZEvtwgOfW2lv3iUKapY2ocqE+LRWfsVifUNA3eNbIcULbvPT
-         nBBU0ns0xWwmvS7ETCAh5Z5lhdCiLVSRis+m63aq8CObwyUrMLAjGQpDeSf4OVAOQav5
-         5TuEH4NOUnTGCqcHGRIE0/tBavRRplzW4HaWY1DRs+pas+nyfL/37adPjYmqfexbl/Di
-         PS3w==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wG8c7belK9OM/OT139DOvd0umxDg1Jwx48LfTTUoDq8=;
+        b=Bqk84XzlHXdUfL5jaevO/928dBaaKnaQ/6iMPIvzXXK4wXwLhD8T6jH72W2O9clYGr
+         w4468W4AUtB14ezm/PNepGojuEiqbA3wwrhczCUmfTyMcUCq/qHaHETuhPdN3sceUATq
+         kjFclmdVx8nb3gOomQeOZS2/43S6EDre1NqDWzHyRwePjObcFmiQ6/PyvjUa0vFW1sCB
+         +sP9OvcIZ4mDCMQafARVvfE6MvvGiB6YhK8uV8Jw6eaPXHgUboGFoQPrtpYshvuo2KE+
+         P54u+DEuJzRaKNJDcsrTj999zPH45FGYMPJVVy33hABYOjS5ASLFiJ1tli7793TEwIy0
+         DHMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678098351;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vh7FN/ulAdnmY8O0LKz7bqpIFk4oOSQ9iCZ8VQ/AkNo=;
-        b=w3APujMVEbbADdBuI/8x4mhFuMPsBKUjleadDUESFnX6xd7ATutFxxDsXSnp/p2jL7
-         xKvDq6lGouNca81q/13hqyoGl7MCNPoOx1rkfHXlFlFRBqs8Qs9yMSi4fNjLh2Y/TJQC
-         fCpALeq7xvPmz6OyEsQ1T3nUF0UKvmjCBL/qi/mz8HCRzDu1D1gI6Xp5/mz0re8gZblq
-         t9asXznbZIiFuMczP9TsdiijI4GbeEChG5rd3aLp6d8Pi3utnDGpUmd4psHkUcafS93Y
-         X8Wf6ENHCtbnZSXsjQVm4onm8B/tMOaJVr8/YWhneLUlxfSCyPnT3rxTYFZLkgCEY+Xy
-         AQLQ==
-X-Gm-Message-State: AO0yUKXUWoaWBvyIXuvOSHLVlexD1uU0UB/APItJ/6g523LmoDQYJFqP
-        mWIq2zs8ffPv5l/HhYOX1QRDkSTGgdZljRkHwjupAodKxLw=
-X-Google-Smtp-Source: AK7set9YqazPiOkBuGm+YrFZOLe51O90+qKBrIr6WBjXtnVrmZ9RIOYyWRLBWcHI+/rsVoNhMQhwnCpcR6G8n2Z6mzE=
-X-Received: by 2002:a05:6102:e44:b0:402:999f:44d3 with SMTP id
- p4-20020a0561020e4400b00402999f44d3mr6975472vst.1.1678098330725; Mon, 06 Mar
- 2023 02:25:30 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a59:ce6f:0:b0:3ae:930b:3e70 with HTTP; Mon, 6 Mar 2023
- 02:25:30 -0800 (PST)
-Reply-To: madis.scarl@terlera.it
-From:   "Ms Eve from U.N" <denisagotou@gmail.com>
-Date:   Mon, 6 Mar 2023 11:25:30 +0100
-Message-ID: <CAD6bNBi6bPCYboaF4-xBgmeUTFn6JMXqU6TNepQig=NRMqhdUg@mail.gmail.com>
-Subject: Re: Claim of Fund:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_SCAM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
+        d=1e100.net; s=20210112;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wG8c7belK9OM/OT139DOvd0umxDg1Jwx48LfTTUoDq8=;
+        b=cL2AC2iAw6O4HxzbTgvug/CufLH2Nn3dx913oGl+zQ36eR1q7xrR8MmyBfNRQjj0Il
+         H9z89tCUcRJiKFTz+CwB0FJADJ2CbXK3M1U0eIUzgILhLwYC5Nswryotyf8eBJhy3ZKT
+         YuapAFm7uYZlUBhSz+vwblvZ8MBbShkoFGFcEb7iZfcbpxaAnDt4HJ62w4kHXDL8x91R
+         79+b6TQNr5uJWftXdsoVvXElWH8qRnnhFi/jcL/SEpOUYFQxoSPCdON63KhHN7tC2C7n
+         iUsxPFjeYllKvw857j7fILF7IIJnRWyCdRy2GybylCk3ZHZ8okfYYQ8LZD1r/c/CTWMR
+         TaHA==
+X-Gm-Message-State: AO0yUKWFvMzeLPQQHuKZ0hQTEfCtWQAVBhfd74bvHLunP/7AhEgIdmuB
+        35rkirXib3Fntfr8CSfzpJjE1m7kW28=
+X-Google-Smtp-Source: AK7set/bBdX5zqdpORgqfqafnX6iscVVZGVVNV/7vxmq/Vj9Zf+JCNzxV2mm3lWUKcFbiEvJ7NsuKA==
+X-Received: by 2002:a17:903:32d0:b0:19a:a810:542 with SMTP id i16-20020a17090332d000b0019aa8100542mr13107676plr.61.1678096350554;
+        Mon, 06 Mar 2023 01:52:30 -0800 (PST)
+Received: from rh-tp ([129.41.58.18])
+        by smtp.gmail.com with ESMTPSA id u4-20020a170902e80400b0019d397b0f18sm6238132plg.214.2023.03.06.01.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Mar 2023 01:52:30 -0800 (PST)
+Date:   Mon, 06 Mar 2023 20:51:45 +0530
+Message-Id: <87r0u129di.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 25/31] ext4: Convert ext4_block_write_begin() to take a folio
+In-Reply-To: <ZAWj4FHczOQwwEbK@casper.infradead.org>
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Good Morning,
-This is to bring to your notice that all our efforts to contact you
-through this your email ID failed Please Kindly contact Barrister.
-Steven Mike { mbarrsteven@gmail.com } on his private email for the
-claim of your compensation entitlement
+Matthew Wilcox <willy@infradead.org> writes:
 
-Note: You have to pay for the delivery fee.
-Yours Sincerely
-Mrs EVE LEWIS
+> On Mon, Mar 06, 2023 at 12:21:48PM +0530, Ritesh Harjani wrote:
+>> "Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
+>>
+>> > All the callers now have a folio, so pass that in and operate on folios.
+>> > Removes four calls to compound_head().
+>>
+>> Why do you say four? Isn't it 3 calls of PageUptodate(page) which
+>> removes calls to compound_head()? Which one did I miss?
+>>
+>> > -	BUG_ON(!PageLocked(page));
+>> > +	BUG_ON(!folio_test_locked(folio));
+>
+> That one ;-)
+
+__PAGEFLAG(Locked, locked, PF_NO_TAIL)
+
+#define __PAGEFLAG(uname, lname, policy)				\
+	TESTPAGEFLAG(uname, lname, policy)				\
+	__SETPAGEFLAG(uname, lname, policy)				\
+	__CLEARPAGEFLAG(uname, lname, policy)
+
+#define TESTPAGEFLAG(uname, lname, policy)				\
+static __always_inline bool folio_test_##lname(struct folio *folio)	\
+{ return test_bit(PG_##lname, folio_flags(folio, FOLIO_##policy)); }	\
+static __always_inline int Page##uname(struct page *page)		\
+{ return test_bit(PG_##lname, &policy(page, 0)->flags); }
+
+How? PageLocked(page) doesn't do any compount_head() calls no?
+
+-ritesh
+
+>
+>> >  	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+>> >  		for (i = 0; i < nr_wait; i++) {
+>> >  			int err2;
+>> >
+>> > -			err2 = fscrypt_decrypt_pagecache_blocks(page, blocksize,
+>> > -								bh_offset(wait[i]));
+>> > +			err2 = fscrypt_decrypt_pagecache_blocks(&folio->page,
+>> > +						blocksize, bh_offset(wait[i]));
+>>
+>> folio_decrypt_pagecache_blocks() takes folio as it's argument now.
+>>
+>> Other than that it looks good to me. Please feel free to add -
+>> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>
+> Thanks.  I'll refresh this patchset next week.
+
+Sure. Thanks!
