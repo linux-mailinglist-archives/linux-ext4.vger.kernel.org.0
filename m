@@ -2,63 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4287E6ADB8D
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Mar 2023 11:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7D66ADC1D
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Mar 2023 11:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjCGKPu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Mar 2023 05:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
+        id S230109AbjCGKjV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Mar 2023 05:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjCGKPt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 05:15:49 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FBD51CA4
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Mar 2023 02:15:47 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id s22so16362554lfi.9
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Mar 2023 02:15:47 -0800 (PST)
+        with ESMTP id S230123AbjCGKjQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 05:39:16 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0296E5370C
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Mar 2023 02:39:08 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id b10so12723419ljr.0
+        for <linux-ext4@vger.kernel.org>; Tue, 07 Mar 2023 02:39:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678184146;
+        d=linaro.org; s=google; t=1678185547;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kIPrOomFPF3BZ8TyURLFE/IfN8UJGe928Gc5eWAUcrw=;
-        b=XL2cC23x5XXz9qM6SzuEX18D3bJbqA8j9eXk4FHdyiWqkEMTTULC1EwWHo4Rd35oMj
-         f1nwlevJALSbfvpob5K11oj4ONxCzV7HY4UVYZpPgSpA6LnFZ3KhvgaYz91ZmqL4+Qr9
-         Ce0dIESQB+hBLF7MlFX1rYGvCFCxLXW8IT/uAhBStszYFKMdePqn+oLD1dKwjzgpvLxB
-         8myIbAZFn459k7/pReBMhAn11qOFz4jpiLEyyov5PA/wXB3zgWJ62m/JuJdlf71ITjfc
-         vdUhPM8ZPZJ6KqZc3nfQLnSEDytVB4Omwnbh3/r/y6c69rpA/Zw8J1drSIEqr3tsCBjd
-         1qJw==
+        bh=27gb/Vmx4k0wozNmy7fvDOxlzhfN36LbW43vZixFfHI=;
+        b=LB5NNYwJK9A8gI1Ir3XLYf4kX1RUndQW7ukWmZ/6UeKv1mJ46FjWuzjDblQXPJ/keC
+         x2RzIGhJth6LYv86bzoVx4l9MrhxvywwNnA9nwIEuRycr/yhDGOFjTouVdHIWofYC1P0
+         8LJENbZiGuXb6gNKX8M2srTPFhs53htu3dsFcuznDV1e+3qO5GUZze6QGljPxDdZXkDJ
+         YAfs/F3h0XEIwwfLkfhAFmaZn21GtNGv7iReNwS5jzDdIerl6XetpoGdAkUB63VWKeoL
+         DxMxjQZDsJLE5zHo7u8armDzw/7FH5B3V9hxCj80DL1LGyR/qR1AlUMa49mS28s379KZ
+         UHUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678184146;
+        d=1e100.net; s=20210112; t=1678185547;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kIPrOomFPF3BZ8TyURLFE/IfN8UJGe928Gc5eWAUcrw=;
-        b=czd4aQWBXz/dQjNGtdM5vTinvg2IODxp6X1o+FbJc8q/4jpMk/F/uiSgDRVP5UevJl
-         urFcoqVCdvCqNIMN1TfDyuWhqnmxyxuExMde1H0OJ0cIVCy4AEaB7GmTBuMPxkQm15vi
-         kiuycgw4T9ly6SpD9xf3YRqgBsDNsFYqI8fUUoRc4PW92RjjTiM4g/lr1F/bfJ/mpRLy
-         ltmrVuXUrnvD4bjopiqWD+OaTsaMCz6tNfbnIzk6p3tY+Z09UiRRGm+vWQi6HiXy/eky
-         jpP9N8famtgFpZPv45+6D3EbPJTODUOMlwy4obmz+R9RkS2Z/Ex09JbJYXzCv+JHtLAI
-         XJ2Q==
-X-Gm-Message-State: AO0yUKWpyNrF2bN9+KQpUe7hkvUoA6Xg81rQ7eyfD5+SosaMM0AIO+fu
-        giOLqyPKoVTWZ5z8uAHyhOdEWA==
-X-Google-Smtp-Source: AK7set84E6gE0GZNmnd+pY1MvdAFNN5xSImQrvjxjDWdXt6QR4czirAhIoW2NBHNqzCwxeOT5uQXYQ==
-X-Received: by 2002:ac2:5dd9:0:b0:4cd:7fe0:24 with SMTP id x25-20020ac25dd9000000b004cd7fe00024mr3205656lfq.27.1678184146106;
-        Tue, 07 Mar 2023 02:15:46 -0800 (PST)
+        bh=27gb/Vmx4k0wozNmy7fvDOxlzhfN36LbW43vZixFfHI=;
+        b=cGIB3DMZS0OUdR/rbP9KRieHUkAUZ3rHIM5USSYfumjMFezTNKgw1LKCsDXFG8oYbf
+         1W7SeflHL3YOOnM6OcVXaECRMHI9KeLF8W61nyOE4sKRphOsjX15Chf9gtimvn7fBW/K
+         s3S9scMukI5q4wNkAiEv8hibeCd4WbThyDlHwHpKBMskbp6342LO1Cxg7nFRHnYG3044
+         jSfdsYC1aBBcjZYEe9n783R3E3c+8/dQsJlubEs5hxmA6voUokzWU8CcsKVRnCPbVR28
+         50RcVmNoiGyWbcKLcMGSIvCaoHQcVP5hvXMSmz7VL1no8Ycw9DvEDiLe+5CsdQO0WF9s
+         +UXA==
+X-Gm-Message-State: AO0yUKUOsrpPT95cio9vKkxiNwV7Vx9SnvUIgWOqiiIg1Ixlo+yDgNP+
+        CjbUXWLpvvlCaLXNqmMOvxVDgw==
+X-Google-Smtp-Source: AK7set80rMkkDr/jl894AszLa4kNVOz4G6dreNnvMaoZjjE9f5/9fbLebt9VOr6yMgii01BLLVmqcA==
+X-Received: by 2002:a2e:3109:0:b0:293:3128:3fd1 with SMTP id x9-20020a2e3109000000b0029331283fd1mr4008745ljx.21.1678185546908;
+        Tue, 07 Mar 2023 02:39:06 -0800 (PST)
 Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
-        by smtp.gmail.com with ESMTPSA id w5-20020a19c505000000b004d8729d4150sm1983492lfe.145.2023.03.07.02.15.45
+        by smtp.gmail.com with ESMTPSA id y13-20020a2e9d4d000000b00295965f7495sm2125244ljj.0.2023.03.07.02.39.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 02:15:45 -0800 (PST)
+        Tue, 07 Mar 2023 02:39:06 -0800 (PST)
 From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     boyu.mt@taobao.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, leejones@google.com,
-        Ye Bin <yebin10@huawei.com>,
+To:     stable@kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, boyu.mt@taobao.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        leejones@google.com, Ye Bin <yebin10@huawei.com>,
         syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com,
-        Jun Nie <jun.nie@linaro.org>, stable@kernel.org,
+        Jun Nie <jun.nie@linaro.org>,
         Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH][for-stable 5.10, 5.4, 4.19, 4.14] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
-Date:   Tue,  7 Mar 2023 10:15:41 +0000
-Message-Id: <20230307101541.2601829-1-tudor.ambarus@linaro.org>
+Subject: [PATCH RESEND][for-stable 5.10, 5.4, 4.19, 4.14] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+Date:   Tue,  7 Mar 2023 10:38:40 +0000
+Message-Id: <20230307103840.2603092-1-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -174,6 +174,8 @@ Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Cc: stable@kernel.org
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
+For RESEND I put stable@kernel.org in To:
+
  fs/ext4/inode.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
