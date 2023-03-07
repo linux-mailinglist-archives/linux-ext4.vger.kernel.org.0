@@ -2,272 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03D46ADCC8
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Mar 2023 12:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFA76ADCE3
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Mar 2023 12:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjCGLGI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Mar 2023 06:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S230311AbjCGLK6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Mar 2023 06:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbjCGLFn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 06:05:43 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B6CA273
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Mar 2023 03:03:04 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id s11so50578629edy.8
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Mar 2023 03:03:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678186972;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=frEBSfwVVAyr4pdSyuAY9vvRlxUP8T5BQJ0Z00nG41A=;
-        b=im0oIIUZ5/gInk140cg4pYxnRjLzSkfzRh6TvbvrPEgotxRbm2vmkqSAppJwzaFb20
-         q++qWP7WpvHjoT44RneK0QqCXF8Wctg0Q24kf8kEmgCWDiHogOyAS+sHZjyXMSBjmooE
-         Ez5RY9esNHzgP2A4J0qa8oOQC3GtrI2BWUdqnlDBPQxeUWF9kWzkWRIKJCMm97lrc0i/
-         ++ms5kpRS2G+FovJJE+mvkkl61wcp4Z43nrZpTl+2jE9tWwK78zx+1cJMIX3wVTXZl33
-         TiE8BpqGn9tUK/OCaAfp2mJuHxP6qVXTKzBEQO+PageaqA/YMtuJZfG49oiOv+r2iLB3
-         RW+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678186972;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=frEBSfwVVAyr4pdSyuAY9vvRlxUP8T5BQJ0Z00nG41A=;
-        b=d9ZgWdR2HCenXNmmMpDwUbF5DJO6AnPifLxn9OcGZQtOu9Dd/o05budPydizPZZ9Ym
-         bx1KwAtSdb3BBIxILiTn+wAAKvZQfwR7NkHCw9UWhRbY6+0XEvAjD+Y5zqojVrgb6MeK
-         G3whOOJnw2VBSPR6CAYONHkh5qFQuagaiJlre58yuQH+TbiUKKDk94FpxfEkt0IHvaLZ
-         mmiwq2qUc0I8RJhMmVi1E8x78R5wqGnA3dLOAilLHOvhm6h0Nce2XLV/E2LNl+blN6zG
-         TUcmpPVKZBYoGFPZrql0h0Z8T9a/zcqwGCKZwje7gym51UE945jMGXjhAeYsQaE+AM9u
-         pChg==
-X-Gm-Message-State: AO0yUKXtb24kt5a9gsPvbQUfRo15WGzKCAol/xpk02rCTeR2hDoZJepy
-        GGIH1gqEXaALYA0kyOJuh3P9Nw==
-X-Google-Smtp-Source: AK7set9x8o+QbFb7l1E1dDJadr7/KNHgSKih4XJbEyoFtDrJXlXc86uPrxf0hPLpOkT40+OSsDq2MA==
-X-Received: by 2002:aa7:d683:0:b0:4ac:bbb4:9772 with SMTP id d3-20020aa7d683000000b004acbbb49772mr8967897edr.40.1678186972075;
-        Tue, 07 Mar 2023 03:02:52 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.78])
-        by smtp.gmail.com with ESMTPSA id v16-20020a50a450000000b004af6c5f1805sm6577630edb.52.2023.03.07.03.02.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Mar 2023 03:02:51 -0800 (PST)
-Message-ID: <60788e5d-5c7c-1142-e554-c21d709acfd9@linaro.org>
-Date:   Tue, 7 Mar 2023 11:02:50 +0000
+        with ESMTP id S230494AbjCGLKi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 06:10:38 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27FE65A5;
+        Tue,  7 Mar 2023 03:07:30 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 887651FE18;
+        Tue,  7 Mar 2023 11:07:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1678187249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s5lYVFvLUJHOQaXldz65EVuoP5HIEFAFGY3pzs8N9dM=;
+        b=l9R4WFb3i7lfT+ef+orkdhnr1fuOMn6143z5744I+GzS45ewy3IS2uht3yl9XrH6T+dN6E
+        2Nw6D/HzpJnI5Kyy0v8yYwpZ1DgMlWRwb+nkv/HaX+hnc/jfv3Q83WGWMIMcw1/zMsx7yR
+        w2TP1tf501DR8DksXKqNwd3VAMc8L3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1678187249;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s5lYVFvLUJHOQaXldz65EVuoP5HIEFAFGY3pzs8N9dM=;
+        b=J7t5v4TMf/duuwNdpKNG00ZYHvhz2FLMqRodgCE+JlgIugHx1jK3SsVt+9Z6A/EbEU3aDf
+        jPe60YijXqX8hgCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F3AF13440;
+        Tue,  7 Mar 2023 11:07:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sEcfG/EaB2TDegAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 07 Mar 2023 11:07:29 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A6DF6A06F3; Tue,  7 Mar 2023 12:07:28 +0100 (CET)
+Date:   Tue, 7 Mar 2023 12:07:28 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linfeilong@huawei.com
+Subject: Re: [PATCH 1/4] ext4: remove unused group parameter in
+ ext4_inode_bitmap_csum_verify
+Message-ID: <20230307110728.l6fdsdsrsl4k7hrz@quack3>
+References: <20230221203027.2359920-1-shikemeng@huaweicloud.com>
+ <20230221203027.2359920-2-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [syzbot] [ext4?] KASAN: slab-out-of-bounds Read in
- ext4_group_desc_csum
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     syzbot <syzbot+8785e41224a3afd04321@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu,
-        Lee Jones <joneslee@google.com>
-References: <000000000000ef6cf905f496e40b@google.com>
- <7e4a0f15-4d82-6026-c14b-59852ffab08e@linaro.org>
- <20230307103958.lo6ynoypgwreqmnq@quack3>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230307103958.lo6ynoypgwreqmnq@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230221203027.2359920-2-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 3/7/23 10:39, Jan Kara wrote:
-> Hi!
-
-Hi!
-
-Thanks for taking the time to review the proposal!
-
+On Wed 22-02-23 04:30:24, Kemeng Shi wrote:
+> Remove unused group parameter in ext4_inode_bitmap_csum_verify.
 > 
-> On Wed 01-03-23 12:13:51, Tudor Ambarus wrote:
->> On 2/13/23 15:56, syzbot wrote:
->>> syzbot has found a reproducer for the following issue on:
->>>
->>> HEAD commit:    ceaa837f96ad Linux 6.2-rc8
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=11727cc7480000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=42ba4da8e1e6af9f
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=8785e41224a3afd04321
->>> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14392a4f480000
->>>
->>> Downloadable assets:
->>> disk image: https://storage.googleapis.com/syzbot-assets/88042f9b5fc8/disk-ceaa837f.raw.xz
->>> vmlinux: https://storage.googleapis.com/syzbot-assets/9945b57ec9ee/vmlinux-ceaa837f.xz
->>> kernel image: https://storage.googleapis.com/syzbot-assets/72ff118ed96b/bzImage-ceaa837f.xz
->>> mounted in repro: https://storage.googleapis.com/syzbot-assets/dabec17b2679/mount_0.gz
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+8785e41224a3afd04321@syzkaller.appspotmail.com
->>>
->>> ==================================================================
->>> BUG: KASAN: use-after-free in crc16+0x1fb/0x280 lib/crc16.c:58
->>> Read of size 1 at addr ffff88807de00000 by task syz-executor.1/5339
->>>
->>> CPU: 1 PID: 5339 Comm: syz-executor.1 Not tainted 6.2.0-rc8-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
->>> Call Trace:
->>>    <TASK>
->>>    __dump_stack lib/dump_stack.c:88 [inline]
->>>    dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->>>    print_address_description mm/kasan/report.c:306 [inline]
->>>    print_report+0x163/0x4f0 mm/kasan/report.c:417
->>>    kasan_report+0x13a/0x170 mm/kasan/report.c:517
->>>    crc16+0x1fb/0x280 lib/crc16.c:58
->>>    ext4_group_desc_csum+0x90f/0xc50 fs/ext4/super.c:3187
->>>    ext4_group_desc_csum_set+0x19b/0x240 fs/ext4/super.c:3210
->>>    ext4_mb_clear_bb fs/ext4/mballoc.c:6027 [inline]
->>>    ext4_free_blocks+0x1c57/0x3010 fs/ext4/mballoc.c:6173
->>>    ext4_remove_blocks fs/ext4/extents.c:2527 [inline]
->>>    ext4_ext_rm_leaf fs/ext4/extents.c:2710 [inline]
->>>    ext4_ext_remove_space+0x289e/0x5270 fs/ext4/extents.c:2958
->>>    ext4_ext_truncate+0x176/0x210 fs/ext4/extents.c:4416
->>>    ext4_truncate+0xafa/0x1450 fs/ext4/inode.c:4342
->>>    ext4_evict_inode+0xc40/0x1230 fs/ext4/inode.c:286
->>>    evict+0x2a4/0x620 fs/inode.c:664
->>>    do_unlinkat+0x4f1/0x930 fs/namei.c:4327
->>>    __do_sys_unlink fs/namei.c:4368 [inline]
->>>    __se_sys_unlink fs/namei.c:4366 [inline]
->>>    __x64_sys_unlink+0x49/0x50 fs/namei.c:4366
->>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> RIP: 0033:0x7fbc85a8c0f9
->>> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
->>> RSP: 002b:00007fbc86838168 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
->>> RAX: ffffffffffffffda RBX: 00007fbc85babf80 RCX: 00007fbc85a8c0f9
->>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000000
->>> RBP: 00007fbc85ae7ae9 R08: 0000000000000000 R09: 0000000000000000
->>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
->>> R13: 00007ffd5743beaf R14: 00007fbc86838300 R15: 0000000000022000
->>>    </TASK>
->>>
->>> The buggy address belongs to the physical page:
->>> page:ffffea0001f78000 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x7de00
->>> flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
->>> raw: 00fff00000000000 ffffea0001f86008 ffffea0001db2a08 0000000000000000
->>> raw: 0000000000000000 0000000000000001 00000000ffffff7f 0000000000000000
->>> page dumped because: kasan: bad access detected
->>> page_owner tracks the page as freed
->>> page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4855, tgid 4855 (sshd), ts 43553490210, free_ts 58249059760
->>>    prep_new_page mm/page_alloc.c:2531 [inline]
->>>    get_page_from_freelist+0x3449/0x35c0 mm/page_alloc.c:4283
->>>    __alloc_pages+0x291/0x7e0 mm/page_alloc.c:5549
->>>    alloc_slab_page+0x6a/0x160 mm/slub.c:1851
->>>    allocate_slab mm/slub.c:1998 [inline]
->>>    new_slab+0x84/0x2f0 mm/slub.c:2051
->>>    ___slab_alloc+0xa85/0x10a0 mm/slub.c:3193
->>>    __kmem_cache_alloc_bulk mm/slub.c:3951 [inline]
->>>    kmem_cache_alloc_bulk+0x160/0x430 mm/slub.c:4026
->>>    mt_alloc_bulk lib/maple_tree.c:157 [inline]
->>>    mas_alloc_nodes+0x381/0x640 lib/maple_tree.c:1257
->>>    mas_node_count_gfp lib/maple_tree.c:1316 [inline]
->>>    mas_preallocate+0x131/0x350 lib/maple_tree.c:5724
->>>    vma_expand+0x277/0x850 mm/mmap.c:541
->>>    mmap_region+0xc43/0x1fb0 mm/mmap.c:2592
->>>    do_mmap+0x8c9/0xf70 mm/mmap.c:1411
->>>    vm_mmap_pgoff+0x1ce/0x2e0 mm/util.c:520
->>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> page last free stack trace:
->>>    reset_page_owner include/linux/page_owner.h:24 [inline]
->>>    free_pages_prepare mm/page_alloc.c:1446 [inline]
->>>    free_pcp_prepare mm/page_alloc.c:1496 [inline]
->>>    free_unref_page_prepare+0xf3a/0x1040 mm/page_alloc.c:3369
->>>    free_unref_page+0x37/0x3f0 mm/page_alloc.c:3464
->>>    qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:187
->>>    kasan_quarantine_reduce+0x15a/0x170 mm/kasan/quarantine.c:294
->>>    __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:302
->>>    kasan_slab_alloc include/linux/kasan.h:201 [inline]
->>>    slab_post_alloc_hook+0x68/0x390 mm/slab.h:761
->>>    slab_alloc_node mm/slub.c:3452 [inline]
->>>    kmem_cache_alloc_node+0x158/0x2c0 mm/slub.c:3497
->>>    __alloc_skb+0xd6/0x2d0 net/core/skbuff.c:552
->>>    alloc_skb include/linux/skbuff.h:1270 [inline]
->>>    alloc_skb_with_frags+0xa8/0x750 net/core/skbuff.c:6194
->>>    sock_alloc_send_pskb+0x919/0xa50 net/core/sock.c:2743
->>>    unix_dgram_sendmsg+0x5b5/0x2050 net/unix/af_unix.c:1943
->>>    sock_sendmsg_nosec net/socket.c:714 [inline]
->>>    sock_sendmsg net/socket.c:734 [inline]
->>>    __sys_sendto+0x475/0x5f0 net/socket.c:2117
->>>    __do_sys_sendto net/socket.c:2129 [inline]
->>>    __se_sys_sendto net/socket.c:2125 [inline]
->>>    __x64_sys_sendto+0xde/0xf0 net/socket.c:2125
->>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>>    do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>>
->>> Memory state around the buggy address:
->>>    ffff88807ddfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>>    ffff88807ddfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>>> ffff88807de00000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>                      ^
->>>    ffff88807de00080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>    ffff88807de00100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>> ==================================================================
->>>
->>
->>
->> I think the patch from below should fix it.
->>
->> I printed le16_to_cpu(sbi->s_es->s_desc_size) and it was greater than
->> EXT4_MAX_DESC_SIZE. What I think it happens is that the contents of the
->> super block in the buffer get corrupted sometime after the .get_tree
->> (which eventually calls __ext4_fill_super()) is called. So instead of
->> relying on the contents of the buffer, we should instead rely on the
->> s_desc_size initialized at the __ext4_fill_super() time.
->>
->> If someone finds this good (or bad), or has a more in depth explanation,
->> please let me know, it will help me better understand the subsystem. In
->> the meantime I'll continue to investigate this and prepare a patch for
->> it.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+
+Looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/bitmap.c | 2 +-
+>  fs/ext4/ext4.h   | 2 +-
+>  fs/ext4/ialloc.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> If there's something corrupting the superblock while the filesystem is
-> mounted, we need to find what is corrupting the SB and fix *that*. Not try
-> to paper over the problem by not using the on-disk data... Maybe journal
-> replay is corrupting the value or something like that?
+> diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
+> index f63e028c638c..3bb28fad624f 100644
+> --- a/fs/ext4/bitmap.c
+> +++ b/fs/ext4/bitmap.c
+> @@ -16,7 +16,7 @@ unsigned int ext4_count_free(char *bitmap, unsigned int numchars)
+>  	return numchars * BITS_PER_BYTE - memweight(bitmap, numchars);
+>  }
+>  
+> -int ext4_inode_bitmap_csum_verify(struct super_block *sb, ext4_group_t group,
+> +int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+>  				  struct ext4_group_desc *gdp,
+>  				  struct buffer_head *bh, int sz)
+>  {
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 6479146140d2..db2476daebd2 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2679,7 +2679,7 @@ extern unsigned int ext4_count_free(char *bitmap, unsigned numchars);
+>  void ext4_inode_bitmap_csum_set(struct super_block *sb, ext4_group_t group,
+>  				struct ext4_group_desc *gdp,
+>  				struct buffer_head *bh, int sz);
+> -int ext4_inode_bitmap_csum_verify(struct super_block *sb, ext4_group_t group,
+> +int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+>  				  struct ext4_group_desc *gdp,
+>  				  struct buffer_head *bh, int sz);
+>  void ext4_block_bitmap_csum_set(struct super_block *sb, ext4_group_t group,
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index 63f9bb6e8851..7e388340f588 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -98,7 +98,7 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
+>  	if (buffer_verified(bh))
+>  		goto verified;
+>  	blk = ext4_inode_bitmap(sb, desc);
+> -	if (!ext4_inode_bitmap_csum_verify(sb, block_group, desc, bh,
+> +	if (!ext4_inode_bitmap_csum_verify(sb, desc, bh,
+>  					   EXT4_INODES_PER_GROUP(sb) / 8) ||
+>  	    ext4_simulate_fail(sb, EXT4_SIM_IBITMAP_CRC)) {
+>  		ext4_unlock_group(sb, block_group);
+> -- 
+> 2.30.0
 > 
-> 								Honza
->
-
-Ok, I agree. First thing would be to understand the reproducer and to
-simplify it if possible. I haven't yet decoded what the syz repro is
-doing at
-https://syzkaller.appspot.com/text?tag=ReproSyz&x=16ce3de4c80000
-Will reply to this email thread once I understand what's happening. If 
-you or someone else can decode the syz repro faster than me, shoot.
-
-Cheers,
-ta
-
->> index 260c1b3e3ef2..91d41e84da32 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -3182,11 +3182,9 @@ static __le16 ext4_group_desc_csum(struct super_block
->> *sb, __u32 block_group,
->>          crc = crc16(crc, (__u8 *)gdp, offset);
->>          offset += sizeof(gdp->bg_checksum); /* skip checksum */
->>          /* for checksum of struct ext4_group_desc do the rest...*/
->> -       if (ext4_has_feature_64bit(sb) &&
->> -           offset < le16_to_cpu(sbi->s_es->s_desc_size))
->> +       if (ext4_has_feature_64bit(sb) && offset < sbi->s_desc_size)
->>                  crc = crc16(crc, (__u8 *)gdp + offset,
->> -                           le16_to_cpu(sbi->s_es->s_desc_size) -
->> -                               offset);
->> +                           sbi->s_desc_size - offset);
->>
->>   out:
->>          return cpu_to_le16(crc);
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
