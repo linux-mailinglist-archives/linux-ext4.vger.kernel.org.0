@@ -2,103 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580076AD132
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Mar 2023 23:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575DE6AD3D6
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Mar 2023 02:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjCFWJb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Mar 2023 17:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
+        id S229811AbjCGB34 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Mar 2023 20:29:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjCFWJa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 17:09:30 -0500
-X-Greylist: delayed 434 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Mar 2023 14:09:28 PST
-Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [103.230.158.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C4F3A86A;
-        Mon,  6 Mar 2023 14:09:28 -0800 (PST)
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4PVsxT2rNJz10D8;
-        Tue,  7 Mar 2023 09:02:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothwell.id.au;
-        s=201702; t=1678140128;
-        bh=CT3TMcpY6lA0teNpfbCN+jQnW4E+gRCV+4UTTjMGssc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lnIMNfLIUI7olNLDKs9n+tXXOi8l7ihqREx1UhulmGiXDoQ11PR1r+P1Et1pck5kh
-         YEfAWenwbH616KGWrC10Feqk9XWjVtzo4p8sHbV1mSSRMcsWlCBdreo/w91nIEA/yQ
-         CybzKjirCMvMcAx5dEy/2vHq7BKbSt266tIeBbHBo6HhYYXLqd+JMsd/s9VP2POfuK
-         bTHdZsqk5sG8L0OXGksmFi572maPf8/gMr8arwdGMeu2zse4/ni3TaiOGG36D4k7NB
-         VpcHZAUMecXBk/RRhY6Rw0lLKmbhXBS3XLZCbxPjkAy9sLTEvHAhbzJenE4gP6K57A
-         E2lzj/xiwtoAg==
-Date:   Tue, 7 Mar 2023 09:02:03 +1100
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        ext4 Development <linux-ext4@vger.kernel.org>
-Subject: Re: The state of ext4 tree merging (was Re: Linux 6.3-rc1)
-Message-ID: <20230307090203.56c41488@oak.ozlabs.ibm.com>
-In-Reply-To: <20230306124134.hmeuvjhihs4ubpmz@quack3>
-References: <CAHk-=wgr1D8hb75Z+nn+4LXUnosp0HM+gP+YJEcEav1DgTC=Cw@mail.gmail.com>
-        <ZAVbZJSyOdF0BxAJ@debian.me>
-        <20230306124134.hmeuvjhihs4ubpmz@quack3>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; aarch64-unknown-linux-gnu)
+        with ESMTP id S229876AbjCGB3t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Mar 2023 20:29:49 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF44C37F22;
+        Mon,  6 Mar 2023 17:29:47 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PVyY20KZ6z4f3jJ5;
+        Tue,  7 Mar 2023 09:29:42 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP3 (Coremail) with SMTP id _Ch0CgBH9CGFkwZk1RTkEQ--.45801S4;
+        Tue, 07 Mar 2023 09:29:43 +0800 (CST)
+From:   Ye Bin <yebin@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jack@suse.cz,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v4 0/2] ext4: fix WARNING in ext4_update_inline_data
+Date:   Tue,  7 Mar 2023 09:52:51 +0800
+Message-Id: <20230307015253.2232062-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/azmCj37hp48XC88B.Q0BoGS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgBH9CGFkwZk1RTkEQ--.45801S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5L7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---Sig_/azmCj37hp48XC88B.Q0BoGS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Ye Bin <yebin10@huawei.com>
 
-Hi all,
+Diff v4 vs v3:
+Change the first patch's changelog.
 
-On Mon, 6 Mar 2023 13:41:34 +0100 Jan Kara <jack@suse.cz> wrote:
->
-> To be fair, the data=3Djournal cleanups got held back only partially due =
-to
-> the merge issues. Another problem is that they somehow make problems with
-> filesystem freezing in data=3Djournal mode more frequent and we wanted to
-> understand (and hopefully fix) that. Of course if Ted could look into this
-> earlier or I could earlier debug these issues, we could have merged the
-> cleanups but that's always the case that you have to prioritize and these
-> cleanups don't have that high priority...
+Diff v3 vs v2:
+Remove set 'EXT4_STATE_MAY_INLINE_DATA' flag from ext4_find_inline_data_nolock()
 
-In that case, it would be nice (for me at least) if the ext4 tree was
-now reset to be v6.3-rc1 i.e. get rid of the duplicate commits and the
-new stuff that is still being worked on.
+Diff v2 vs v1:
+Only update 'inline_off' when do extra expand.
 
---=20
-Cheers,
-Stephen Rothwell
+Ye Bin (2):
+  ext4: remove set 'EXT4_STATE_MAY_INLINE_DATA' flag from
+    ext4_find_inline_data_nolock()
+  ext4: fix WARNING in ext4_update_inline_data
 
---Sig_/azmCj37hp48XC88B.Q0BoGS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ fs/ext4/inline.c | 1 -
+ fs/ext4/inode.c  | 7 ++++++-
+ fs/ext4/xattr.c  | 3 +++
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.31.1
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmQGYtsACgkQAVBC80lX
-0Gzs2wgAjNS8RWpLPCi6vkgiXrAVXehIVNeARS5omvrCfoPz7D00jC2QkzjfjV69
-IskkliLupht9ZvOllPkerP5ToqZSof+qDQZBJqGUkbPnK/+jnq1mvPn1OLdjYR6A
-7PBWiBhcJ3nyU7wxLmdu5GPt1ETViOgWl6SM7Cj+y482kfM0+OiTbdN8Xtfyj8rD
-i0Z7J50DlFFq6xqKCPhUvZiYj1L7L1vHX3klSGbjc3AW5VFjkJfJXELUS0P4foOu
-v17o7RbnjlA1UMFFdXQyNg9PEG4lf68vNUmiKR6MW5KPzJ0i2BDuRpe77plBzE1o
-gBaFfrT0rplyWiWfJHBWVi81NFohJA==
-=z0a5
------END PGP SIGNATURE-----
-
---Sig_/azmCj37hp48XC88B.Q0BoGS--
