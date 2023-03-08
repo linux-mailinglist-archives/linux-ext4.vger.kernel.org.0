@@ -2,107 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847486AFBB5
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Mar 2023 02:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF106AFC0E
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Mar 2023 02:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjCHBEX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Mar 2023 20:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S229819AbjCHBS4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Mar 2023 20:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjCHBEW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 20:04:22 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA07A224D;
-        Tue,  7 Mar 2023 17:04:20 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PWYt34p8Sz16Nxd;
-        Wed,  8 Mar 2023 09:01:31 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 8 Mar 2023 09:04:18 +0800
-Message-ID: <0f0ac9eb-1432-a61f-717f-88bd3d6fa7fc@huawei.com>
-Date:   Wed, 8 Mar 2023 09:04:18 +0800
+        with ESMTP id S229808AbjCHBSz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 20:18:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B66827D5D;
+        Tue,  7 Mar 2023 17:18:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E2A74B81B4F;
+        Wed,  8 Mar 2023 01:18:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E29C433D2;
+        Wed,  8 Mar 2023 01:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678238331;
+        bh=2NmP/pkRo9go4O+zCA7/qKRxq8rwrCPelZOe2MuMEGs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vBqtIc2DVqTgPrqbfXobMPXj8RPeKNRlqjg0XgytMQ0MrFy18E+2tDo8nig0aqaYv
+         8wLj97E6+RUJjzUz30U9aHXrzEb5HYJd+FUzDPq/ZGSUq8V2nf0VaOgBDy7xrub41/
+         J1aUV2mj9/w6xZYL/7YqoQM7wfGVbObW9E6/ruqbzERYwhcp2MWVutsKz1FPsZL3+t
+         w2b1cG3WB8F7oDVpfttf/NtTULr6gs0Nig7bVQRmXce3AbOwQmU8DuQA1nysiFSBIL
+         gLFIAulfPbKEgbOkGF8hh9WKnacszewvbalgXrSl996x0SrGgI3L3EfbUVUPoKijZl
+         dYGwiSWHv39Bg==
+From:   Chao Yu <chao@kernel.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH] ext4: fix to report fstrim.minlen back to userspace
+Date:   Wed,  8 Mar 2023 09:18:07 +0800
+Message-Id: <20230308011807.411478-1-chao@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v5 1/2] ext4: commit super block if fs record error when
- journal record without error
-Content-Language: en-US
-To:     Ye Bin <yebin@huaweicloud.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-References: <20230307061703.245965-1-yebin@huaweicloud.com>
- <20230307061703.245965-2-yebin@huaweicloud.com>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230307061703.245965-2-yebin@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/3/7 14:17, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
->
-> Now, 'es->s_state' maybe covered by recover journal. And journal errno
-> maybe not recorded in journal sb as IO error. ext4_update_super() only
-> update error information when 'sbi->s_add_error_count' large than zero.
-> Then 'EXT4_ERROR_FS' flag maybe lost.
-> To solve above issue just recover 'es->s_state' error flag after journal
-> replay like error info.
->
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+Quoted from manual of fstrim:
 
+"-m, --minimum minimum-size
+	..., if it's smaller than the device's minimum, and report that
+(fstrim_range.minlen) back to userspace."
 
+So this patch tries to report adjusted fstrim_range.minlen back to
+userspace via FITRIM interface, if the value is smaller than device's
+minimum discard granularity.
 
-Looks good to me.
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/ext4/mballoc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
-
-
-> ---
->   fs/ext4/super.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 88f7b8a88c76..dfa31eea1346 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5920,6 +5920,7 @@ static int ext4_load_journal(struct super_block *sb,
->   		err = jbd2_journal_wipe(journal, !really_read_only);
->   	if (!err) {
->   		char *save = kmalloc(EXT4_S_ERR_LEN, GFP_KERNEL);
-> +
->   		if (save)
->   			memcpy(save, ((char *) es) +
->   			       EXT4_S_ERR_START, EXT4_S_ERR_LEN);
-> @@ -5928,6 +5929,14 @@ static int ext4_load_journal(struct super_block *sb,
->   			memcpy(((char *) es) + EXT4_S_ERR_START,
->   			       save, EXT4_S_ERR_LEN);
->   		kfree(save);
-> +		es->s_state |= cpu_to_le16(EXT4_SB(sb)->s_mount_state &
-> +					   EXT4_ERROR_FS);
-> +		/* Write out restored error information to the superblock */
-> +		if (!bdev_read_only(sb->s_bdev)) {
-> +			int err2;
-> +			err2 = ext4_commit_super(sb);
-> +			err = err ? : err2;
-> +		}
->   	}
->   
->   	if (err) {
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 5b2ae37a8b80..bd3ef29cf8a6 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6491,6 +6491,9 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
+ 				discard_granularity >> sb->s_blocksize_bits);
+ 		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
+ 			goto out;
++
++		/* Report adjusted minlen back to userspace */
++		range->minlen = minlen;
+ 	}
+ 	if (end >= max_blks - 1) {
+ 		end = max_blks - 1;
 -- 
-With Best Regards,
-Baokun Li
-.
+2.25.1
+
