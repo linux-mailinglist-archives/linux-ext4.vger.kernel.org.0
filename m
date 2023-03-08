@@ -2,46 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4866AFDEB
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Mar 2023 05:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B606AFDE1
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Mar 2023 05:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjCHEeG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Mar 2023 23:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S229717AbjCHEdo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Mar 2023 23:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjCHEdu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 23:33:50 -0500
+        with ESMTP id S229755AbjCHEdi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Mar 2023 23:33:38 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEC44108E
-        for <linux-ext4@vger.kernel.org>; Tue,  7 Mar 2023 20:33:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C093495E0E
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Mar 2023 20:33:33 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3284XTvr021510
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3284XTwP021501
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 7 Mar 2023 23:33:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678250011; bh=5pMWU6jII+CDzJ3zfBYzkUuOg2Vxa1wRZCqfVcF9NJw=;
+        t=1678250011; bh=/ofLAobISyWG4eGB29qn5insCmJ/hmVFSzIUdpK3DbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=fQhdRuF0Ca9IEXfQKd+n1CWjT4/CljpFoikCFVl7AO2kkLJZ1QrGEPJcagh7ta2rY
-         BGXxUedt75uaQKW7xU1cgPnuBe//MVsbHRA6aCnxEuj6oWspQ7Z91SvYoXoqIpbliP
-         hMhV7kimgU4zNhgCardZfP3GqqqajPTIRl8j0b2pfjDWL38Ye2Kl8FAzgS4Xc5ImWD
-         OUMXf52s2nH5CtbxDuU+VwC5StYHrIWm9lLlRnsPvWemVDXhTNlIagqLz5YSZthj4X
-         Ru2u5eR7BMIj+DqlkfW+7Fpm47kjVB9Eo3HseBZnt6KVmCZYKTwjCBbGDoOmC8fzNP
-         FbaBkJ14wWcVg==
+        b=bRFwSl4ib4NScGtn6+eY9ZK/v6iMoCRpOAb/1qbqaRXt7d8MhWdqkzKB34yEcommG
+         VV49zF+tP8Twr769cnU9GNrxdtFlLq9ooWqVzIWTz2LHejWDdde4RU3fk30tnlLHOY
+         BqeYMMWic74czZjxZE5pEbMYZymnhTPzfNF6Jg6dmyGWk7zbFzvgj8ZPkQUkaeo9It
+         xvlIdAzdHic6HX7XAwSflIFHzTA2rr+9m/QxUO/S8Q8wn4OTkyF9iDJ/Ij0WVIgqp0
+         Pv756b9Acxnh1L3Dd/4bFojknjuyWx/mUvmYVcvD2ugdvw4SMAKCeHd4m3H3sf1sGF
+         GyLIaMxk6xtUA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id CF9E715C3444; Tue,  7 Mar 2023 23:33:29 -0500 (EST)
+        id D140015C3448; Tue,  7 Mar 2023 23:33:29 -0500 (EST)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-fscrypt@vger.kernel.org,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix cgroup writeback accounting with fs-layer encryption
-Date:   Tue,  7 Mar 2023 23:33:22 -0500
-Message-Id: <167824999281.2129363.12204207098890359786.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Eric Whitney <enwlinux@gmail.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH] ext4: fix RENAME_WHITEOUT handling for inline directories
+Date:   Tue,  7 Mar 2023 23:33:23 -0500
+Message-Id: <167824999281.2129363.15378666529053966811.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230203005503.141557-1-ebiggers@kernel.org>
-References: <20230203005503.141557-1-ebiggers@kernel.org>
+In-Reply-To: <20230210173244.679890-1-enwlinux@gmail.com>
+References: <20230210173244.679890-1-enwlinux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,25 +52,21 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2 Feb 2023 16:55:03 -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, 10 Feb 2023 12:32:44 -0500, Eric Whitney wrote:
+> A significant number of xfstests can cause ext4 to log one or more
+> warning messages when they are run on a test file system where the
+> inline_data feature has been enabled.  An example:
 > 
-> When writing a page from an encrypted file that is using
-> filesystem-layer encryption (not inline encryption), ext4 encrypts the
-> pagecache page into a bounce page, then writes the bounce page.
-> 
-> It also passes the bounce page to wbc_account_cgroup_owner().  That's
-> incorrect, because the bounce page is a newly allocated temporary page
-> that doesn't have the memory cgroup of the original pagecache page.
-> This makes wbc_account_cgroup_owner() not account the I/O to the owner
-> of the pagecache page as it should.
+> "EXT4-fs warning (device vdc): ext4_dirblock_csum_set:425: inode
+>  #16385: comm fsstress: No space for directory leaf checksum. Please
+> run e2fsck -D."
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: fix cgroup writeback accounting with fs-layer encryption
-      commit: ffec85d53d0f39ee4680a2cf0795255e000e1feb
+[1/1] ext4: fix RENAME_WHITEOUT handling for inline directories
+      commit: c9f62c8b2dbf7240536c0cc9a4529397bb8bf38e
 
 Best regards,
 -- 
