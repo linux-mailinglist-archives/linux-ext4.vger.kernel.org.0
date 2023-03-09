@@ -2,44 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EED9B6B2941
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Mar 2023 17:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E66B2C53
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Mar 2023 18:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjCIQAL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Mar 2023 11:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S229998AbjCIRuG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Mar 2023 12:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjCIQAF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Mar 2023 11:00:05 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A3FE4D99;
-        Thu,  9 Mar 2023 08:00:02 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231249AbjCIRuF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Mar 2023 12:50:05 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3080F6B46;
+        Thu,  9 Mar 2023 09:49:55 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8798C61C27;
-        Thu,  9 Mar 2023 16:00:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0615C433EF;
-        Thu,  9 Mar 2023 16:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678377601;
-        bh=TCGj+jCb+aLsG5MBAK0JtHzR56Kzw6zpg0Kno4kbW+4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ok+YY9ob/iQASLBpOfIu3g0pOqvHK04WV9Y/En7T3Vt+lYQFd+KyXFGVNXYOok2AI
-         XKXIIneW0EUB4+gN+ANZgxgSuWyeC0mOduXPKHGBaMHnVFZ5yjZNdxpcBesap3bZMD
-         8NNGmwYyDpyoB0eugrqfU14I1RzwL/BRr3cXM+XwTFJRQVLcTSrpmNYOs/3jjcuVWL
-         k2I+kzUUaaCvrzQioWxX/XVBv47OcJnnHRIbs+nenWURaiEZMAkQlKYMuwvkz8Y/UK
-         1Nuu90nG6QPuoyT/eLhGznDPJnCk5Ej5lVm8cKuruYpW7IvcFepQJNM3cqQ7G83IhB
-         TBrz40px48E9w==
-Date:   Thu, 9 Mar 2023 08:00:00 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A66E5201F8;
+        Thu,  9 Mar 2023 17:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1678384194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNYZmtX9imuOnxTUoztWoeMpp9iMYfzTp6MSeU5OgnE=;
+        b=lXRDm63xXB6n23XHoZpM9TRjc8yzJZL3eR2ZlTydqnmqS3G2t5YwSQDdB3JxrEY6h2ak5T
+        B5Oq6Lh+nTU6gH/dZYkkrvtIXvZyAzLMDlrv6BmwJbpcy+ogz+oCbzDK76b9ozlDGeELf4
+        /osyLyvfJMDVfzMxXwqMpzJ1w6QAyoQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1678384194;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNYZmtX9imuOnxTUoztWoeMpp9iMYfzTp6MSeU5OgnE=;
+        b=Sn81RpcF4/+kiswfyg5jp3skQJRNP8KJm142jGNkHUKAxWiEiQMur2pqyDqL1ZRgQDkEbH
+        Xrvgl5Or0uA99MBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9165213A10;
+        Thu,  9 Mar 2023 17:49:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qWtuI0IcCmQ1JgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 09 Mar 2023 17:49:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 0E8EAA06FF; Thu,  9 Mar 2023 18:49:54 +0100 (CET)
+Date:   Thu, 9 Mar 2023 18:49:54 +0100
+From:   Jan Kara <jack@suse.cz>
 To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, lsf-pc@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+Cc:     Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 Subject: Re: [LSF TOPIC] online repair of filesystems: what next?
-Message-ID: <20230309160000.GC1637786@frogsfrogsfrogs>
+Message-ID: <20230309174954.t6kxdhgxlmeg6xcu@quack3>
 References: <Y/5ovz6HI2Z47jbk@magnolia>
  <20230308171206.zuci3wdd3yg7amw5@quack3>
  <20230308215439.GM360264@dread.disaster.area>
@@ -47,16 +65,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230308215439.GM360264@dread.disaster.area>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 08:54:39AM +1100, Dave Chinner wrote:
+On Thu 09-03-23 08:54:39, Dave Chinner wrote:
 > On Wed, Mar 08, 2023 at 06:12:06PM +0100, Jan Kara wrote:
 > > Hi!
 > > 
@@ -100,15 +118,7 @@ On Thu, Mar 09, 2023 at 08:54:39AM +1100, Dave Chinner wrote:
 > Worst case, we throw all bios that have IO errors flagged to the
 > same IO completion workqueues, and the problem of memory allocation,
 > locks, etc in interrupt context goes away entire.
-
-Indeed.  For XFS I think the only time we might need to fsnotify about
-errors from interrupt context is writeback completions for a pure
-overwrite?  We could punt those to a workqueue as Dave says.  Or figure
-out a way for whoever's initiating writeback to send it for us?
-
-I think this is a general issue for the pagecache, not XFS.  I'll
-brainstorm with willy the next time I encounter him.
-
+> 
 > > But
 > > offloading of error event generation to a workqueue should be doable (and
 > > event delivery is async anyway so from userspace POV there's no
@@ -118,7 +128,10 @@ brainstorm with willy the next time I encounter him.
 > allocation to offload the error information to the work queue to
 > allow the fsnotify error message to be generated in an async manner.
 > That doesn't seem to solve anything.
-> 
+
+I think your "punt bio completions with errors to a workqueue" is perfectly
+fine for our purposes and solves all the problems I had in mind.
+
 > > Otherwise locking shouldn't be a problem AFAICT. WRT memory
 > > allocation, we currently preallocate the error events to avoid the loss of
 > > event due to ENOMEM. With current usecases (filesystem catastrophical error
@@ -134,10 +147,7 @@ brainstorm with willy the next time I encounter him.
 > individual sickness notifications because everything is sick at this
 > point.
 
-I was thinking that the existing fsnotify error set should adopt a 'YOUR
-FS IS DEAD' notification.  Then when the fs goes down due to errors or
-the shutdown ioctl, we can broadcast that as the final last gasp of the
-filesystem.
+Yup.
 
 > > > As a result of (2), XFS now retains quite a bit of incore state about
 > > > its own health.  The structure that fsnotify gives to userspace is very
@@ -163,8 +173,13 @@ filesystem.
 > to implement a useful generic set of notifications, but until then I
 > don't think we should try.
 
-Same here.  XFS might want to send the generic notifications and follow
-them up with more specific information?
+Fine grained health information is definitely always going to be fs
+specific. I agree. I was just thinking loud whether the event should be all
+fs-specific blob or whether we should not have event containing stuff like:
+errno (EIO, EFSCORRUPTED,...), inode, offset, length, <and some fs-specific
+blob here with more details> so that e.g. application monitoring service
+could listen to such events and act on them (e.g. by failing over to
+another node) without needing to understand fs-specific details.
 
 > We should just export the notifications the filesystem utilities
 > need to do their work for the moment.  When management applications
@@ -174,14 +189,12 @@ them up with more specific information?
 > fine grained events across those filesystems that the applications
 > can listen for.
 
-If someone wants to write xfs_scrubd that listens for events and issues
-XFS_IOC_SCRUB_METADATA calls I'd be all ears. :)
+And I guess this is a fair point that we should not try to craft generic
+info in events for uncertain usecases because we'll almost certainly get it
+wrong and need to change the info anyway for it to be useful.
 
---D
+								Honza
 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
