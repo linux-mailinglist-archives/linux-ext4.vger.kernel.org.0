@@ -2,141 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D356B3799
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 08:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004CE6B37F4
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 09:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjCJHmj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Mar 2023 02:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S230118AbjCJICg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Mar 2023 03:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbjCJHmL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 02:42:11 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9C91102BA
-        for <linux-ext4@vger.kernel.org>; Thu,  9 Mar 2023 23:40:39 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id m7-20020a924b07000000b003170cef3f12so2265194ilg.22
-        for <linux-ext4@vger.kernel.org>; Thu, 09 Mar 2023 23:40:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678434037;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/nJfyPakHYE9kTDMLkuRc4t+DYY4gH0qdvBeHT8GXbQ=;
-        b=zGR6uCRuG4ABYl1vA3IEj01ObgDOnRJ6typaX9K/cRSuib//2hNiJC58Hfl10sx9ks
-         7rxEKFYNxcCsNrRBF/zvQFf7jN49e80pUQpS0CcLq41EOWBFFkeoDT4cL2IfHywCwwMK
-         IFZMh23t0jv0PlgXswq/1A66AzVCNp+6IMC57nDS/YOvaKgeHIjcJVyUICWJ09puCUvx
-         +nI0ZaEHw6ySejfdoMifn6LZFnLFZfQnRGC9whLN6CtHi+b9ZTOP9zhPKBGPD8LclH/N
-         mDJh35wKDN8e1A0vK8KlU8g2P329ciq0PNN6VkUmYMpta0pu7sZ+TwKeWPApj0fGwQrD
-         ncvw==
-X-Gm-Message-State: AO0yUKVQYx/uszLSEguASpEQdOGycnaAVHMSM3/JszSTfvZi4s6oOd5T
-        iggBwyAmrM8NmKgAF+2TJoEVDFw8a+Thpr778B8aeZdT3dru
-X-Google-Smtp-Source: AK7set+pa58mbWkG1BAHWu6B+XkE6aF23TCxl016pIwmQ6iljeAmoBRZGSlg1OU9l4B7qM7qMrqP1vlxPEq4brbfL+tGdkr9P2dE
+        with ESMTP id S229761AbjCJICf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 03:02:35 -0500
+X-Greylist: delayed 12643 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Mar 2023 00:02:33 PST
+Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [IPv6:2001:41d0:1004:224b::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393F2E8AA3
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 00:02:32 -0800 (PST)
+Date:   Fri, 10 Mar 2023 17:02:22 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678435350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xp9xWG2NFzHRjHc+BoxHoDF//7nBHv8YZ/vDhrkzT3k=;
+        b=gnuNkIfwv5KCUPFp3S4GvQnGUzgD/Q0gbKJl7O/oEP7X9OOGsjwy09oogkcynWjzL9kIkt
+        eCnsByz9QC1zPQ/K+cuDRKxq2r1yUZLqCgR6nAn0RBmDQ4FgFAzDKXLENqZ6PKA28Ib6J5
+        9dcgtjrsHhjBzKoNqambYF7gtRvrZ+Q=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, naoya.horiguchi@nec.com
+Subject: Re: [PATCH 7/7] mm: return an ERR_PTR from __filemap_get_folio
+Message-ID: <20230310080222.GA1659148@u2004>
+References: <20230121065755.1140136-1-hch@lst.de>
+ <20230121065755.1140136-8-hch@lst.de>
+ <20230310043137.GA1624890@u2004>
+ <20230310070023.GA13563@lst.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ca7:b0:316:fcbe:522d with SMTP id
- 7-20020a056e020ca700b00316fcbe522dmr11001504ilg.4.1678434037601; Thu, 09 Mar
- 2023 23:40:37 -0800 (PST)
-Date:   Thu, 09 Mar 2023 23:40:37 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000097201305f686e06a@google.com>
-Subject: [syzbot] [ext4?] KMSAN: uninit-value in mb_find_extent
-From:   syzbot <syzbot+b6451edec162751aba49@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, glider@google.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230310070023.GA13563@lst.de>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri, Mar 10, 2023 at 08:00:23AM +0100, Christoph Hellwig wrote:
+> On Fri, Mar 10, 2023 at 01:31:37PM +0900, Naoya Horiguchi wrote:
+> > On Sat, Jan 21, 2023 at 07:57:55AM +0100, Christoph Hellwig wrote:
+> > > Instead of returning NULL for all errors, distinguish between:
+> > > 
+> > >  - no entry found and not asked to allocated (-ENOENT)
+> > >  - failed to allocate memory (-ENOMEM)
+> > >  - would block (-EAGAIN)
+> > > 
+> > > so that callers don't have to guess the error based on the passed
+> > > in flags.
+> > > 
+> > > Also pass through the error through the direct callers:
+> > > filemap_get_folio, filemap_lock_folio filemap_grab_folio
+> > > and filemap_get_incore_folio.
+> > > 
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > 
+> > Hello,
+> > 
+> > I found a NULL pointer dereference issue related to this patch,
+> > so let me share it.
+> > 
+> > Here is the bug message (I used akpm/mm-unstable on Mar 9):
+> > 
+> > [ 2871.648659] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > [ 2871.651286] #PF: supervisor read access in kernel mode
+> > [ 2871.653231] #PF: error_code(0x0000) - not-present page
+> > [ 2871.655170] PGD 80000001517dd067 P4D 80000001517dd067 PUD 1491d1067 PMD 0
+> > [ 2871.657739] Oops: 0000 [#1] PREEMPT SMP PTI
+> > [ 2871.659329] CPU: 4 PID: 1599 Comm: page-types Tainted: G            E    N 6.3.0-rc1-v6.3-rc1-230309-1629-189-ga71a7+ #36
+> > [ 2871.663362] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+> > [ 2871.666507] RIP: 0010:mincore_page+0x19/0x90
+> > [ 2871.668086] Code: cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 41 54 55 53 e8 92 2b 03 00 48 3d 00 f0 ff ff 77 54 48 89 c3 <48> 8b 00 48 c1 e8 02 89 c5 83 e5 01 75 21 8b 43 34 85 c0 74 47 f0
+> > [ 2871.678313] RSP: 0018:ffffbe57c203fd00 EFLAGS: 00010207
+> > [ 2871.681422] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > [ 2871.685609] RDX: 0000000000000000 RSI: ffff9f59ca1506d8 RDI: ffff9f59ce7c2880
+> > [ 2871.689599] RBP: 0000000000000000 R08: 00007f9f14200000 R09: ffff9f59c9078508
+> > [ 2871.693295] R10: 00007f9ed4400000 R11: 0000000000000000 R12: 0000000000000200
+> > [ 2871.695969] R13: 0000000000000001 R14: ffff9f59c9ef4450 R15: ffff9f59c4ac9000
+> > [ 2871.699927] FS:  00007f9ed47ee740(0000) GS:ffff9f5abbc00000(0000) knlGS:0000000000000000
+> > [ 2871.703969] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 2871.706689] CR2: 0000000000000000 CR3: 0000000149ffe006 CR4: 0000000000170ee0
+> > [ 2871.709923] DR0: ffffffff91531760 DR1: ffffffff91531761 DR2: ffffffff91531762
+> > [ 2871.713424] DR3: ffffffff91531763 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+> > [ 2871.716758] Call Trace:
+> > [ 2871.717998]  <TASK>
+> > [ 2871.719008]  __mincore_unmapped_range+0x6e/0xd0
+> > [ 2871.721220]  mincore_unmapped_range+0x16/0x30
+> > [ 2871.723288]  walk_pgd_range+0x485/0x9e0
+> > [ 2871.725128]  __walk_page_range+0x195/0x1b0
+> > [ 2871.727224]  walk_page_range+0x151/0x180
+> > [ 2871.728883]  __do_sys_mincore+0xec/0x2b0
+> > [ 2871.730707]  do_syscall_64+0x3a/0x90
+> > [ 2871.732179]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > [ 2871.734148] RIP: 0033:0x7f9ed443f4ab
+> > [ 2871.735548] Code: 73 01 c3 48 8b 0d 75 99 1b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 1b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 45 99 1b 00 f7 d8 64 89 01 48
+> > [ 2871.742194] RSP: 002b:00007ffe924d72b8 EFLAGS: 00000206 ORIG_RAX: 000000000000001b
+> > [ 2871.744787] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9ed443f4ab
+> > [ 2871.747186] RDX: 00007ffe92557300 RSI: 0000000000200000 RDI: 00007f9ed4200000
+> > [ 2871.749404] RBP: 00007ffe92567330 R08: 0000000000000005 R09: 0000000000000000
+> > [ 2871.751683] R10: 00007f9ed4405d68 R11: 0000000000000206 R12: 00007ffe925674b8
+> > [ 2871.753925] R13: 0000000000404af1 R14: 000000000040ad78 R15: 00007f9ed4833000
+> > [ 2871.756493]  </TASK>
+> > 
+> > The precedure to reproduce this is (1) punch hole some page in a shmem
+> > file, then (2) call mincore() over the punch-holed address range. 
+> > 
+> > I confirmed that filemap_get_incore_folio() (actually filemap_get_entry()
+> > inside it) returns NULL in that case, so we unexpectedly enter the following
+> > if-block for the "not found" case.
+> 
+> Yes.  Please try this fix:
+> 
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index c7160070b9daa9..b76a65ac28b319 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -390,6 +390,8 @@ struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>  	struct swap_info_struct *si;
+>  	struct folio *folio = filemap_get_entry(mapping, index);
+>  
+> +	if (!folio)
+> +		return ERR_PTR(-ENOENT);
+>  	if (!xa_is_value(folio))
+>  		return folio;
+>  	if (!shmem_mapping(mapping))
 
-syzbot found the following issue on:
+Confirmed the fix, thank you very much!
 
-HEAD commit:    e919e2b1bc1c Revert "kmsan: disallow CONFIG_KMSAN with CON..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1199a6ea480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b63e082c4fda2e77
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6451edec162751aba49
-compiler:       clang version 15.0.0 (https://github.com/llvm/llvm-project.git 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5676c9771994/disk-e919e2b1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7f53a1472ca4/vmlinux-e919e2b1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/eb021c0a44de/bzImage-e919e2b1.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6451edec162751aba49@syzkaller.appspotmail.com
-
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
----[ end trace 0000000000000000 ]---
-=====================================================
-BUG: KMSAN: uninit-value in mb_find_extent+0x1603/0x1640 fs/ext4/mballoc.c:1870
- mb_find_extent+0x1603/0x1640 fs/ext4/mballoc.c:1870
- ext4_mb_complex_scan_group+0x456/0x1760 fs/ext4/mballoc.c:2307
- ext4_mb_regular_allocator+0x2e60/0x5c30 fs/ext4/mballoc.c:2735
- ext4_mb_new_blocks+0x1708/0x2fe0 fs/ext4/mballoc.c:5605
- ext4_ext_map_blocks+0x2fb5/0x5a60 fs/ext4/extents.c:4286
- ext4_map_blocks+0x13ae/0x2d70 fs/ext4/inode.c:651
- ext4_getblk+0x228/0xd10 fs/ext4/inode.c:864
- ext4_bread+0x46/0x370 fs/ext4/inode.c:920
- ext4_quota_write+0x2f5/0x9c0 fs/ext4/super.c:7105
- write_blk fs/quota/quota_tree.c:64 [inline]
- get_free_dqblk+0x46e/0x910 fs/quota/quota_tree.c:130
- do_insert_tree+0x300/0x3190 fs/quota/quota_tree.c:340
- do_insert_tree+0xd42/0x3190 fs/quota/quota_tree.c:375
- do_insert_tree+0xd42/0x3190 fs/quota/quota_tree.c:375
- dq_insert_tree fs/quota/quota_tree.c:401 [inline]
- qtree_write_dquot+0x616/0x730 fs/quota/quota_tree.c:420
- v2_write_dquot+0x14e/0x220 fs/quota/quota_v2.c:358
- dquot_acquire+0x450/0x700 fs/quota/dquot.c:444
- ext4_acquire_dquot+0x44d/0x540 fs/ext4/super.c:6740
- dqget+0x12db/0x1a90 fs/quota/dquot.c:914
- __dquot_initialize+0x67a/0x1730 fs/quota/dquot.c:1492
- dquot_initialize+0x2e/0x40 fs/quota/dquot.c:1550
- ext4_process_orphan+0x56/0x4f0 fs/ext4/orphan.c:329
- ext4_orphan_cleanup+0x1160/0x1c60 fs/ext4/orphan.c:474
- __ext4_fill_super fs/ext4/super.c:5516 [inline]
- ext4_fill_super+0xd0dc/0xd7f0 fs/ext4/super.c:5644
- get_tree_bdev+0x8a3/0xd30 fs/super.c:1282
- ext4_get_tree+0x30/0x40 fs/ext4/super.c:5675
- vfs_get_tree+0xa1/0x500 fs/super.c:1489
- do_new_mount+0x694/0x1580 fs/namespace.c:3145
- path_mount+0x71a/0x1eb0 fs/namespace.c:3475
- do_mount fs/namespace.c:3488 [inline]
- __do_sys_mount fs/namespace.c:3697 [inline]
- __se_sys_mount+0x734/0x840 fs/namespace.c:3674
- __ia32_sys_mount+0xdf/0x140 fs/namespace.c:3674
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
-Local variable ex created at:
- ext4_mb_complex_scan_group+0xa3/0x1760 fs/ext4/mballoc.c:2279
- ext4_mb_regular_allocator+0x2e60/0x5c30 fs/ext4/mballoc.c:2735
-
-CPU: 1 PID: 6514 Comm: syz-executor.3 Tainted: G        W          6.2.0-rc3-syzkaller-79343-ge919e2b1bc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Naoya Horiguchi
