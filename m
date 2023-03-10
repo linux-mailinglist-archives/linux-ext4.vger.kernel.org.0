@@ -2,93 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F416B3D6B
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 12:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC7E6B3F6C
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 13:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjCJLNv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Mar 2023 06:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S229577AbjCJMgV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Mar 2023 07:36:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjCJLNS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 06:13:18 -0500
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A2C5B89;
-        Fri, 10 Mar 2023 03:13:14 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0VdX95E7_1678446789;
-Received: from 30.221.128.251(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VdX95E7_1678446789)
-          by smtp.aliyun-inc.com;
-          Fri, 10 Mar 2023 19:13:10 +0800
-Message-ID: <faca55dc-fe0d-9014-ede2-f55124cb4227@linux.alibaba.com>
-Date:   Fri, 10 Mar 2023 19:13:09 +0800
+        with ESMTP id S230515AbjCJMgM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 07:36:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F6F11050D
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 04:35:45 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2DB82B82292
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 12:35:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2877C433EF
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 12:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678451742;
+        bh=LY7DNygh9UDqHoFOmuPjhP2YMpt71dMzZlWV1gDnBLg=;
+        h=From:To:Subject:Date:From;
+        b=dr2DJCuLQ0xWtBndbVbTqR/fumcObMwOfXyq5qxzM+l/o7+5W+96gYQh3LOU4dUwx
+         lr1IiHzTBaHaoQP0yE81mlEJDCSTHEYqNIWTlT2uSSM64+bBTWQS4sQVdLeP2umLMg
+         ALZI97aYhB8VWUCMB/7497bUnJIun39sCTROhnp9//El9AjbayZ0Ls0syP5jiMylXM
+         dxikkfqv/cuIykp5DURrAMV0/Y6PO2jHrKBWzxAwwx1KGI7OXlNBWgZ3qqZrh7/+Jq
+         boEDs+pLNNH5jp9Z11v5agCW+iOu1katpdpqlu4hCcBaDrFbyJ8xZCXdZlvo4Soejn
+         J8uUOcuv0E8VQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 8BE9CC43143; Fri, 10 Mar 2023 12:35:42 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217171] New: ext4: stale buffer loading from last failed
+ mounting
+Date:   Fri, 10 Mar 2023 12:35:42 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: chengzhihao1@huawei.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-217171-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH v4 4/5] ocfs2: convert to use i_blockmask()
-To:     Yangtao Li <frank.li@vivo.com>, xiang@kernel.org, chao@kernel.org,
-        huyue2@coolpad.com, jefflexu@linux.alibaba.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        mark@fasheh.com, jlbec@evilplan.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org
-References: <20230310054829.4241-1-frank.li@vivo.com>
- <20230310054829.4241-4-frank.li@vivo.com>
-Content-Language: en-US
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20230310054829.4241-4-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217171
 
+            Bug ID: 217171
+           Summary: ext4: stale buffer loading from last failed mounting
+           Product: File System
+           Version: 2.5
+    Kernel Version: 6.3.0-rc1
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: chengzhihao1@huawei.com
+        Regression: No
 
-On 3/10/23 1:48 PM, Yangtao Li wrote:
-> Use i_blockmask() to simplify code. BTW convert ocfs2_is_io_unaligned
-> to return bool type and the fact that the value will be the same
-> (i.e. that ->i_blkbits is never changed by ocfs2).
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  fs/ocfs2/file.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
-> index efb09de4343d..7fd06a4d27d4 100644
-> --- a/fs/ocfs2/file.c
-> +++ b/fs/ocfs2/file.c
-> @@ -2159,14 +2159,9 @@ int ocfs2_check_range_for_refcount(struct inode *inode, loff_t pos,
->  	return ret;
->  }
->  
-> -static int ocfs2_is_io_unaligned(struct inode *inode, size_t count, loff_t pos)
-> +static bool ocfs2_is_io_unaligned(struct inode *inode, size_t count, loff_t pos)
->  {
-> -	int blockmask = inode->i_sb->s_blocksize - 1;
-> -	loff_t final_size = pos + count;
-> -
-> -	if ((pos & blockmask) || (final_size & blockmask))
-> -		return 1;
-> -	return 0;
-> +	return ((pos | count) & i_blockmask(inode)) != 0;
+Following process makes ext4 load stale buffer heads from last failed
+mounting in a new mounting operation:
+mount_bdev
+ ext4_fill_super
+ | ext4_load_and_init_journal
+ |  ext4_load_journal
+ |   jbd2_journal_load
+ |    load_superblock
+ |     journal_get_superblock
+ |      set_buffer_verified(bh) // buffer head is verified
+ |   jbd2_journal_recover // failed caused by EIO
+ | goto failed_mount3a // skip 'sb->s_root' initialization
+ deactivate_locked_super
+  kill_block_super
+   generic_shutdown_super
+    if (sb->s_root)
+    // false, skip ext4_put_super->invalidate_bdev->
+    // invalidate_mapping_pages->mapping_evict_folio->
+    // filemap_release_folio->try_to_free_buffers, which
+    // cannot drop buffer head.
+   blkdev_put
+    blkdev_put_whole
+     if (atomic_dec_and_test(&bdev->bd_openers))
+     // false, systemd-udev happens to open the device. Then
+     // blkdev_flush_mapping->kill_bdev->truncate_inode_pages->
+     // truncate_inode_folio->truncate_cleanup_folio->
+     // folio_invalidate->block_invalidate_folio->
+     // filemap_release_folio->try_to_free_buffers will be skipped,
+     // dropping buffer head is missed again.
 
-Or !!((pos | count) & i_blockmask(inode))?
+Second mount:
+ext4_fill_super
+ ext4_load_and_init_journal
+  ext4_load_journal
+   ext4_get_journal
+    jbd2_journal_init_inode
+     journal_init_common
+      bh =3D getblk_unmovable
+       bh =3D __find_get_block // Found stale bh in last failed mounting
+      journal->j_sb_buffer =3D bh
+   jbd2_journal_load
+    load_superblock
+     journal_get_superblock
+      if (buffer_verified(bh))
+      // true, skip journal->j_format_version =3D 2, value is 0
+    jbd2_journal_recover
+     do_one_pass
+      next_log_block +=3D count_tags(journal, bh)
+      // According to journal_tag_bytes(), 'tag_bytes' calculating is
+      // affected by jbd2_has_feature_csum3(), jbd2_has_feature_csum3()
+      // returns false because 'j->j_format_version >=3D 2' is not true,
+      // then we get wrong next_log_block. The do_one_pass may exit
+      // early whenoccuring non JBD2_MAGIC_NUMBER in 'next_log_block'.
 
-My concern is just like erofs, we'd better get vfs helper into mainline
-first. Or can we fold the whole series into one patch? Since it's simple
-enough I think.
+The filesystem is corrupted here, journal is partially replayed, and
+new journal sequence number actually is already used by last mounting.
 
-Thanks,
-Joseph
+--=20
+You may reply to this email to add a comment.
 
->  }
->  
->  static int ocfs2_inode_lock_for_extent_tree(struct inode *inode,
+You are receiving this mail because:
+You are watching the assignee of the bug.=
