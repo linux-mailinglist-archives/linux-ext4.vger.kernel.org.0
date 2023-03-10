@@ -2,151 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C622F6B36E6
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 07:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABCE6B36FC
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 08:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjCJGyp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Mar 2023 01:54:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        id S229928AbjCJHAf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Mar 2023 02:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjCJGyo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 01:54:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3381160A8F;
-        Thu,  9 Mar 2023 22:54:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D731EB82150;
-        Fri, 10 Mar 2023 06:54:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 797B8C433EF;
-        Fri, 10 Mar 2023 06:54:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678431280;
-        bh=Bu5tDIHBLFUCQZoY3qbp4UXGwqPmi3R7ym2zrBVXXbs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LjnshkUpe2MV75sBlOBTNzfXrxp/ypYEMNgmZ7GprVSPMl80ACwrzoC+qeoYDpLc+
-         3jTd+wa+8lO0YYSzMlMEJjUrOd0Q/LdOVXI4BASxQNfhYjGMpP6Z0huAXR55w0xBpR
-         m+uPFbm0a5yseE/ETDI38WklhmGE/3A99XSWQsWdcY7MWJPLRdVtCUlpBtG/t7IOB5
-         JRvXEVGvKh4vkLHNIkkLlVU9OIVjjFnT3qcWQcRJouhZmi8ansWz5uNuxmkZvLP+Pw
-         fo5h4LVUfIsFuNI7DThFiabp+ZVsnRdMxciQBwjU2UGmwqoC4cXz1qJr60Zog5n8FS
-         TFYerntfqyGmQ==
-Date:   Thu, 9 Mar 2023 22:54:38 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Yangtao Li <frank.li@vivo.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: convert to DIV_ROUND_UP() in
- mpage_process_page_bufs()
-Message-ID: <ZArULrNVaxl7e42r@sol.localdomain>
-References: <20230310060734.8780-1-frank.li@vivo.com>
- <ZArLbO1ckmcXwQf0@sol.localdomain>
- <20230310063729.GO3390869@ZenIV>
- <ZArRq/25a5Gt+YMB@sol.localdomain>
- <20230310064612.GQ3390869@ZenIV>
+        with ESMTP id S229523AbjCJHAe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 02:00:34 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D2DF92C5;
+        Thu,  9 Mar 2023 23:00:32 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DE68868BEB; Fri, 10 Mar 2023 08:00:24 +0100 (CET)
+Date:   Fri, 10 Mar 2023 08:00:23 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, naoya.horiguchi@nec.com
+Subject: Re: [PATCH 7/7] mm: return an ERR_PTR from __filemap_get_folio
+Message-ID: <20230310070023.GA13563@lst.de>
+References: <20230121065755.1140136-1-hch@lst.de> <20230121065755.1140136-8-hch@lst.de> <20230310043137.GA1624890@u2004>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230310064612.GQ3390869@ZenIV>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230310043137.GA1624890@u2004>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 06:46:12AM +0000, Al Viro wrote:
-> On Thu, Mar 09, 2023 at 10:43:55PM -0800, Eric Biggers wrote:
-> > On Fri, Mar 10, 2023 at 06:37:29AM +0000, Al Viro wrote:
-> > > On Thu, Mar 09, 2023 at 10:17:16PM -0800, Eric Biggers wrote:
-> > > > On Fri, Mar 10, 2023 at 02:07:34PM +0800, Yangtao Li wrote:
-> > > > > Just for better readability, no code logic change.
-> > > > > 
-> > > > > Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> > > > > ---
-> > > > >  fs/ext4/inode.c | 3 +--
-> > > > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > > > > index d251d705c276..d121cde74522 100644
-> > > > > --- a/fs/ext4/inode.c
-> > > > > +++ b/fs/ext4/inode.c
-> > > > > @@ -2218,8 +2218,7 @@ static int mpage_process_page_bufs(struct mpage_da_data *mpd,
-> > > > >  {
-> > > > >  	struct inode *inode = mpd->inode;
-> > > > >  	int err;
-> > > > > -	ext4_lblk_t blocks = (i_size_read(inode) + i_blocksize(inode) - 1)
-> > > > > -							>> inode->i_blkbits;
-> > > > > +	ext4_lblk_t blocks = DIV_ROUND_UP(i_size_read(inode), i_blocksize(inode));
-> > > > >  
-> > > > 
-> > > > Please don't do this.  This makes the code compile down to a division, which is
-> > > > far less efficient.  I've verified this by checking the assembly generated.
-> > > 
-> > > Which compiler is doing that?
+On Fri, Mar 10, 2023 at 01:31:37PM +0900, Naoya Horiguchi wrote:
+> On Sat, Jan 21, 2023 at 07:57:55AM +0100, Christoph Hellwig wrote:
+> > Instead of returning NULL for all errors, distinguish between:
 > > 
-> > $ gcc --version
-> > gcc (GCC) 12.2.1 20230201
+> >  - no entry found and not asked to allocated (-ENOENT)
+> >  - failed to allocate memory (-ENOMEM)
+> >  - would block (-EAGAIN)
 > > 
-> > i_blocksize(inode) is not a constant, so this should not be particularly
-> > surprising.  One might hope that a / (1 << b) would be optimized into a >> b,
-> > but that doesn't seem to happen.
+> > so that callers don't have to guess the error based on the passed
+> > in flags.
+> > 
+> > Also pass through the error through the direct callers:
+> > filemap_get_folio, filemap_lock_folio filemap_grab_folio
+> > and filemap_get_incore_folio.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> It really ought to be a / (1u << b), though...
+> Hello,
+> 
+> I found a NULL pointer dereference issue related to this patch,
+> so let me share it.
+> 
+> Here is the bug message (I used akpm/mm-unstable on Mar 9):
+> 
+> [ 2871.648659] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [ 2871.651286] #PF: supervisor read access in kernel mode
+> [ 2871.653231] #PF: error_code(0x0000) - not-present page
+> [ 2871.655170] PGD 80000001517dd067 P4D 80000001517dd067 PUD 1491d1067 PMD 0
+> [ 2871.657739] Oops: 0000 [#1] PREEMPT SMP PTI
+> [ 2871.659329] CPU: 4 PID: 1599 Comm: page-types Tainted: G            E    N 6.3.0-rc1-v6.3-rc1-230309-1629-189-ga71a7+ #36
+> [ 2871.663362] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+> [ 2871.666507] RIP: 0010:mincore_page+0x19/0x90
+> [ 2871.668086] Code: cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 41 54 55 53 e8 92 2b 03 00 48 3d 00 f0 ff ff 77 54 48 89 c3 <48> 8b 00 48 c1 e8 02 89 c5 83 e5 01 75 21 8b 43 34 85 c0 74 47 f0
+> [ 2871.678313] RSP: 0018:ffffbe57c203fd00 EFLAGS: 00010207
+> [ 2871.681422] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> [ 2871.685609] RDX: 0000000000000000 RSI: ffff9f59ca1506d8 RDI: ffff9f59ce7c2880
+> [ 2871.689599] RBP: 0000000000000000 R08: 00007f9f14200000 R09: ffff9f59c9078508
+> [ 2871.693295] R10: 00007f9ed4400000 R11: 0000000000000000 R12: 0000000000000200
+> [ 2871.695969] R13: 0000000000000001 R14: ffff9f59c9ef4450 R15: ffff9f59c4ac9000
+> [ 2871.699927] FS:  00007f9ed47ee740(0000) GS:ffff9f5abbc00000(0000) knlGS:0000000000000000
+> [ 2871.703969] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2871.706689] CR2: 0000000000000000 CR3: 0000000149ffe006 CR4: 0000000000170ee0
+> [ 2871.709923] DR0: ffffffff91531760 DR1: ffffffff91531761 DR2: ffffffff91531762
+> [ 2871.713424] DR3: ffffffff91531763 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+> [ 2871.716758] Call Trace:
+> [ 2871.717998]  <TASK>
+> [ 2871.719008]  __mincore_unmapped_range+0x6e/0xd0
+> [ 2871.721220]  mincore_unmapped_range+0x16/0x30
+> [ 2871.723288]  walk_pgd_range+0x485/0x9e0
+> [ 2871.725128]  __walk_page_range+0x195/0x1b0
+> [ 2871.727224]  walk_page_range+0x151/0x180
+> [ 2871.728883]  __do_sys_mincore+0xec/0x2b0
+> [ 2871.730707]  do_syscall_64+0x3a/0x90
+> [ 2871.732179]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [ 2871.734148] RIP: 0033:0x7f9ed443f4ab
+> [ 2871.735548] Code: 73 01 c3 48 8b 0d 75 99 1b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 1b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 45 99 1b 00 f7 d8 64 89 01 48
+> [ 2871.742194] RSP: 002b:00007ffe924d72b8 EFLAGS: 00000206 ORIG_RAX: 000000000000001b
+> [ 2871.744787] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9ed443f4ab
+> [ 2871.747186] RDX: 00007ffe92557300 RSI: 0000000000200000 RDI: 00007f9ed4200000
+> [ 2871.749404] RBP: 00007ffe92567330 R08: 0000000000000005 R09: 0000000000000000
+> [ 2871.751683] R10: 00007f9ed4405d68 R11: 0000000000000206 R12: 00007ffe925674b8
+> [ 2871.753925] R13: 0000000000404af1 R14: 000000000040ad78 R15: 00007f9ed4833000
+> [ 2871.756493]  </TASK>
+> 
+> The precedure to reproduce this is (1) punch hole some page in a shmem
+> file, then (2) call mincore() over the punch-holed address range. 
+> 
+> I confirmed that filemap_get_incore_folio() (actually filemap_get_entry()
+> inside it) returns NULL in that case, so we unexpectedly enter the following
+> if-block for the "not found" case.
 
-Sure, that does better:
+Yes.  Please try this fix:
 
-uint64_t f(uint64_t a, int b)
-{
-        return a / (1U << b);
-}
-
-gcc:
-	0000000000000000 <f>:
-	   0:	48 89 f8             	mov    %rdi,%rax
-	   3:	89 f1                	mov    %esi,%ecx
-	   5:	48 d3 e8             	shr    %cl,%rax
-	   8:	c3                   	ret
-
-clang:
-	0000000000000000 <f>:
-	   0:	89 f1                	mov    %esi,%ecx
-	   2:	48 89 f8             	mov    %rdi,%rax
-	   5:	48 d3 e8             	shr    %cl,%rax
-	   8:	c3                   	ret
-
-But with a signed dividend (which is the case here) it gets messed up:
-
-int64_t f(int64_t a, int b)
-{
-        return a / (1U << b);
-}
-
-gcc:
-	0000000000000000 <f>:
-	   0:	48 89 f8             	mov    %rdi,%rax
-	   3:	89 f1                	mov    %esi,%ecx
-	   5:	bf 01 00 00 00       	mov    $0x1,%edi
-	   a:	d3 e7                	shl    %cl,%edi
-	   c:	48 99                	cqto
-	   e:	48 f7 ff             	idiv   %rdi
-	  11:	c3                   	ret
-
-clang:
-	0000000000000000 <f>:
-	   0:	89 f1                	mov    %esi,%ecx
-	   2:	be 01 00 00 00       	mov    $0x1,%esi
-	   7:	d3 e6                	shl    %cl,%esi
-	   9:	48 89 f8             	mov    %rdi,%rax
-	   c:	48 89 f9             	mov    %rdi,%rcx
-	   f:	48 c1 e9 20          	shr    $0x20,%rcx
-	  13:	74 06                	je     1b <f+0x1b>
-	  15:	48 99                	cqto
-	  17:	48 f7 fe             	idiv   %rsi
-	  1a:	c3                   	ret
-	  1b:	31 d2                	xor    %edx,%edx
-	  1d:	f7 f6                	div    %esi
-	  1f:	c3                   	ret
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index c7160070b9daa9..b76a65ac28b319 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -390,6 +390,8 @@ struct folio *filemap_get_incore_folio(struct address_space *mapping,
+ 	struct swap_info_struct *si;
+ 	struct folio *folio = filemap_get_entry(mapping, index);
+ 
++	if (!folio)
++		return ERR_PTR(-ENOENT);
+ 	if (!xa_is_value(folio))
+ 		return folio;
+ 	if (!shmem_mapping(mapping))
