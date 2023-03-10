@@ -2,151 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F726B350F
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 04:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD94A6B3517
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 05:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjCJDv7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Mar 2023 22:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S230193AbjCJEBN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Mar 2023 23:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjCJDv4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Mar 2023 22:51:56 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2118.outbound.protection.outlook.com [40.107.255.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE88102B6E;
-        Thu,  9 Mar 2023 19:51:37 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aLxWzBWi4M0REgLTFT74eP2kAjAlneNaUiDPySBHgzWaZuN+XP7NA1wo5uMjioT8secySzgJYMS1+f/+ORfDakcOXgqrONThdmfQb0BzEfApBFEDCRwCi+3QGxpUx8pGq/lKJNi6cyQ8oIAKlTMo/FKurZrdyhUeDg9VNvTLVdH4H6QSm4iDsSlVpyCFDAVCfTgwLMGoTjZ7WLAHlfnD7ORnj5UT1ZtvLbrwmNCYGMd+yXszmTypxWCdhMevpyMmQEO3plNypdEu7ujO+NvIogVaiFsXc5gXKK9BosOW5JEec9HW6HAJBYkCQrOOj37igUxwRWPEEpzbbo2E/JPsOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FNaAin5rvfyFZdChOCBe7oxzl6tLuiG+uUVnz8hQOso=;
- b=j+ol55t/WoRpFiJyQAMYp7CVVCDGIvCxljcu/sriDqJWUsBoaYskfwGHEv9EDUbCj8V+UBoiwt//0ySwQNMhNb1NURj3OmN1ZrzXgEqBGVsCifk0jpjm6k9uCc0KsaDcIHqxkPIbnhqQK4nm17ivNg7u8foU+ahjMd8sf6iEeaFXnMp9E76kOK4HeSpWJxSsgJnSoQTfRecHG+rJIKnsZO17VdrVI+mxTFnRFaXs14WtuumKYxDp3WG+X3WJRMy052sT12dUYnEm0l8IhupiSoXGTZfRXcZWpz9a94nqI4I2AJumAA+3WH2dFS55Twv3f+tEeJ7LaxdZTocRBcnRTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FNaAin5rvfyFZdChOCBe7oxzl6tLuiG+uUVnz8hQOso=;
- b=hdItbUhXWN+9LtXlhcUaB2SIL11opTT0S4loPrs2xpbL4a9Er3oVzXbXQVfWqXOVPdGd4Gsz3y2enowKlxU40fkrbnA2WWMEvZWTYOsHwUj2MKNl7bU4gagqbOl1Rla04rto6q+/FZhUtVbwHPpfWE0C8sKKLO7C85lRE8WGPtEr1fH1M2HnSbf6tMmmzruJTJ4HH/d9vxya+zZ6lAHt9/fToH1kk+lT5lJ/7m9eVRmYGbP3QwBP1kMWO9RHlcbW9xiLwF5O2+f/fzKb42OU/7w4XUULo20Sy5KuiV6NwyfOquhko16ajdGcrQng8tXakZqit65Q4IlZuSWWMtj66A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by KL1PR0601MB4212.apcprd06.prod.outlook.com (2603:1096:820:31::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.19; Fri, 10 Mar
- 2023 03:51:30 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::daf6:5ebb:a93f:1869]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::daf6:5ebb:a93f:1869%9]) with mapi id 15.20.6178.019; Fri, 10 Mar 2023
- 03:51:30 +0000
-From:   Yangtao Li <frank.li@vivo.com>
-To:     xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
-        jefflexu@linux.alibaba.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org
-Subject: Re: erofs: convert to use i_blockmask()
-Date:   Fri, 10 Mar 2023 11:51:21 +0800
-Message-Id: <20230310035121.56591-1-frank.li@vivo.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230310031547.GD3390869@ZenIV>
-References: <20230310031547.GD3390869@ZenIV>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0042.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::17) To SEZPR06MB5269.apcprd06.prod.outlook.com
- (2603:1096:101:78::6)
+        with ESMTP id S230176AbjCJEBC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Mar 2023 23:01:02 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC68102B6C
+        for <linux-ext4@vger.kernel.org>; Thu,  9 Mar 2023 20:00:56 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id k23-20020a5e8917000000b0074cbfb58b5bso1908622ioj.14
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Mar 2023 20:00:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678420855;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7Fz06YZUC1A3BSkG+VjaMAUzJWyCavf9Mnx3/HzzAdM=;
+        b=2uP1Va+Vn1+PqZA3RFShT73nLMCMsZ8h9C78QyxU4OL/7pPau/lMWSTzhVbyksqf1e
+         cMDtVUiKpkEm3gMAYqghPYbdHl/nYZg7Cy81FyOyCi2g4acqwY1ywbntNZgEWMTG6Cae
+         gdMY6fktbryGfKWtkeZ38f3WeRW7KGA2t+K1yKJt8cCJQMQraQMISfoFTHVZjkDqAhMV
+         3dj65PLi63+61oHujstCjhVwmsIOF/S3rGIh8/BpA520jN+eFo0esyc1KJ7bHj+6wFZB
+         B7+R1HihpJxG1t36Hp1nW3pgEqYgsrfqJoj7VU8EgQ4NmjUiPp3z0ric41HGn1X2aLYD
+         m4Ww==
+X-Gm-Message-State: AO0yUKWbEH6t5PhCKehD4KX90WJ3173yyvXzu1u/UU/lqT31CVUMAaD3
+        Oq/W8qElVyaYILXsjKJB9F3B2il57UeWFNNE60fZpNO/xXIz
+X-Google-Smtp-Source: AK7set+7yppofA/utux1mLS6MDSD5I8lh5RFL/UwnMt03JhO7zeykExKdQZjtgEmkab/ts97ewzrOZQF8RonQ/Druls/ywknS8gD
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|KL1PR0601MB4212:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3135a3c-96d4-47cc-e172-08db211abbaa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yg8BVGjUFyhqms0sYq1Gh3qCmNMQSqDIwCypoMkqptYOpLlqfAMc0pD6yfYtzN9W8eCsSh1Y9sTHhlLXkP2vfGzcBGruHHQQMM4wS4APwkJd7qcGKtXgBwR5RsYT3ZQbvt66FEk6PF7+5RiL9VbjMQApbQg1PhPWzM4FC5ZfSX4w6KjUDZcEZ6cSZ4GLf7bKW/zMwZOG4mfD2lbqx/b7J3lT0o0wsiS0dHFXSzklFfALCbigFIDSLAvGjSButoKTAZMJwyijqFm8caAeHiIyzE5/YxehnEzKgLWcNiG8ejDIvRyFQ3E/5jpNRC0p9Q6KYrw471Qj/HR9PJAVtQ+BohQXe4Md7oc5EXPdirWLVpNJF7lSI+nSvJWB2oiq7bzNp8OcHHeVJnmlbsl2tby0um/BBtwnTAGM8XX3sCsD5M/UST0ACr/jgY9ugsU9lDCJxJF496KOLXXZtemMf9wm54T209AI5+Knr9mH4uh4OBkOZIq1wzrFwWkua/8tcLEOFstRugGPzQjDT69DJy9WAtDWm4udbnHYFYx+Y6s9ypZU175BmSaPAHtJT81A28xyKCDj+LE+RbkLvL6X94og6ggL6HXWodxfT41KQvKovOpw4OYiGbh33t+xAaRtVuYm97Q52/tsK+sm8gumkpmCqBJCZfHuQFE5Jl2YIwHhLttaBJRc7/C0w+lTb+BIsifNUinyx/svzFZBNkWNURDpGQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(39860400002)(136003)(396003)(366004)(346002)(451199018)(7416002)(36756003)(5660300002)(83380400001)(966005)(186003)(6666004)(26005)(52116002)(6486002)(1076003)(6512007)(2616005)(6506007)(921005)(86362001)(478600001)(316002)(4326008)(8676002)(66946007)(8936002)(66556008)(41300700001)(66476007)(38350700002)(38100700002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0WADcUw11cEVwQB7tlEvN01FwCe8pz+KkR1nG5rG39gepYUDdPMgH6337Nqi?=
- =?us-ascii?Q?ShySlqfWOPjzOnU+OzxKBugEl/tGwUNqIaTPqujBXPA4f4I2qPh99WddX26D?=
- =?us-ascii?Q?iUD2f2/N9irt6RUmDBw7HEy/3YOmYy8qFCPGu1FVGzazMdFmMmDRxPYibk+s?=
- =?us-ascii?Q?D6Qo9fll10rHI8bvQ8nh80SYpE99I1doW7LuaEW8WVIyPViCAF3zu5vFeq7m?=
- =?us-ascii?Q?ypecLQKX4BHx3tSTfeTRnV6c3MC0u8Dyii2+FubC7UWcAub36E+dqhz1p+Eo?=
- =?us-ascii?Q?n1Ag3FO4AbH30c/Bqbg+xLlr7hJOw2CuWKK0++T+7Vy5hxrlR1zeB2t6X4LI?=
- =?us-ascii?Q?DLjoPW5n9X12o4OzYjNjmBiXU/kJMNOkNo5NWPgoRdaFC/UWFgUvacpX412E?=
- =?us-ascii?Q?ERHjpS+L2veaTGxnioK4/TtDQ4AAXWZPIYIrvgDRBdqUNwVpt39yp2EaQSvC?=
- =?us-ascii?Q?Xel6P1SFocKvmDDlF1ZWt1bogXm1bEHx2diytGg49kW/SLTNzSAGjct9pHS7?=
- =?us-ascii?Q?wZn3L3vJesvYgrjYueYtBgI7jsO2JFLQgIffKAEP/tfJUElUj3t4i5jUATvc?=
- =?us-ascii?Q?vKVb5bEWVx8jWXzCn+zIPpZRqxvcRll7iBsEaL+aFtzvP/IcjFLcIyiz6tjU?=
- =?us-ascii?Q?wgekBmc6urFZCUi6+b+u86zxaFLSKBovUJQDdbGi0WaDMr/k9kiKyRQ5bG2Z?=
- =?us-ascii?Q?exs6NtrTtqfY6nTN+/3Vevhxt8HvpG1HtIA7Y3Gpz+xRUvOvgeQIqjbaaR1S?=
- =?us-ascii?Q?77pTiIHBA3lzxWtOoOJRkLwcosPNEdacgFmOKLNRdBOU3sQcD2qx68V3kFCA?=
- =?us-ascii?Q?5ceePphUmbDLdMaTDxIBe0yvqOezHJSl65euNCn8saIhUttSom/88r6AXsdj?=
- =?us-ascii?Q?g5GKVRMApUxETrEKg9IZVFUaH8t8Rb/NrrkhAwWuNO6/Pcufa3NPWd2x/Ae5?=
- =?us-ascii?Q?VGQyBGpqBLG6/e0zMICXNDz/NptPOdG9BPwsvHVKbwj71/DjVVTN1WLn0wxp?=
- =?us-ascii?Q?hGTywryF+Sz1jtZZuaVj655dT+S4hHMl8nbOBP5pg8/nJrYWxt0GBtLx3nb0?=
- =?us-ascii?Q?mqMNrpmsjUTBW/cs0L07gL2L+5Lp+Ga5pXm8WxpTXND4X1rwBiQ6pPu2cfaV?=
- =?us-ascii?Q?+GtlHYxEa8CLcbugtXtZkoyjWa1AVHjg05QRgARgy98CFRBkKrCagK+wo+s9?=
- =?us-ascii?Q?5sAcOnVtE0VHXwcvrSskr5XWQ6gjlUFMsUc9zPczqSghcPl3Zqa4Lqhy73v1?=
- =?us-ascii?Q?lfO4K3WbBb0iMWy+EKvHCXNCTvDfuXfXiUp0FxslVW3WemmxVuTEDPGjgTfu?=
- =?us-ascii?Q?GIpRlHGtlWyd+91xcaOuhWtf3OMWFcwkDdrKJPHatrx3HOuyclWVBoOYWH6A?=
- =?us-ascii?Q?uxAt1gkXL0Tt4GeF+G+bRyDxzLSHSu3LgGe0AhBGrB02AU8t9jkL8h036/Wr?=
- =?us-ascii?Q?xmx/m+SYQJpuW76DobC8Rye7QBSfyzI9eqdz7yMBCdmFN+dgbKK7+TQ+IIBl?=
- =?us-ascii?Q?q457BkG7CVIq9D0zD9TwqrBwdhE/4vFmeUXvS2TNim08oj+nHPYQw1y+ke/x?=
- =?us-ascii?Q?uKbQ0MwO72EfRJJoNYS1ohc5liFX/zsrQgUe4p0H?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3135a3c-96d4-47cc-e172-08db211abbaa
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2023 03:51:30.6648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wD7LNWD1QfbA57WzobeXYoht1JD7BJL8fvC29uV4mt8louNa/xM9HOgM0FEH+284m6ANSYRGC/4NV3zf7eZ/jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4212
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:6a11:0:b0:745:68ef:e410 with SMTP id
+ x17-20020a6b6a11000000b0074568efe410mr11301247iog.0.1678420855331; Thu, 09
+ Mar 2023 20:00:55 -0800 (PST)
+Date:   Thu, 09 Mar 2023 20:00:55 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dda0af05f683ce66@google.com>
+Subject: [syzbot] [ext4?] WARNING in ext4_expand_extra_isize_ea (2)
+From:   syzbot <syzbot+7f99d7ca409ff61ff282@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi AI,
+Hello,
 
-> Umm...  What's the branchpoint for that series?
-> Not the mainline - there we have i_blocksize() open-coded...
+syzbot found the following issue on:
 
-Sorry, I'm based on the latest branch of the erofs repository.
+HEAD commit:    f915322fe014 Merge tag 'v6.3-p2' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f98c6cc80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dc0f7cfe5b32efe2
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f99d7ca409ff61ff282
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git/log/?h=dev-test
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I think I can resend based on mainline.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b5906c911a8/disk-f915322f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/dba92a9c1a17/vmlinux-f915322f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e4fca23736a8/bzImage-f915322f.xz
 
-> Umm...  That actually asks for DIV_ROUND_UP(i_size_read_inode(), i_blocksize(inode))
-> - compiler should bloody well be able to figure out that division by (1 << n)
-> is shift down by n and it's easier to follow that way...
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f99d7ca409ff61ff282@syzkaller.appspotmail.com
 
-So it seems better to change to DIV_ROUND_UP(i_size_read_inode(), i_blocksize(inode))?
+EXT4-fs (loop5): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: writeback.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 10480 at mm/slab_common.c:935 folio_order include/linux/mm.h:850 [inline]
+WARNING: CPU: 1 PID: 10480 at mm/slab_common.c:935 free_large_kmalloc+0x3d/0x190 mm/slab_common.c:933
+Modules linked in:
+CPU: 1 PID: 10480 Comm: syz-executor.5 Not tainted 6.2.0-syzkaller-13563-gf915322fe014 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
+RIP: 0010:free_large_kmalloc+0x3d/0x190 mm/slab_common.c:935
+Code: 48 8b 04 25 28 00 00 00 48 89 44 24 08 48 8b 47 08 a8 01 0f 85 4e 01 00 00 49 89 f6 0f 1f 44 00 00 49 f7 07 00 00 01 00 75 25 <0f> 0b 31 db 80 3d 90 02 97 0c 00 75 21 c6 05 87 02 97 0c 01 48 c7
+RSP: 0018:ffffc90006707748 EFLAGS: 00010246
+RAX: ffffea0000afcf08 RBX: 0000000000000012 RCX: ffffea0000afcf08
+RDX: ffffea0000000000 RSI: ffff88804f4105a4 RDI: ffffea00013d0400
+RBP: ffffc90006707968 R08: ffffffff813ed30c R09: fffffbfff209e04c
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88804f4105a4
+R13: 0000000000000000 R14: ffff88804f4105a4 R15: ffffea00013d0400
+FS:  00007f5424471700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020002000 CR3: 000000008f925000 CR4: 00000000003506e0
+DR0: 00000000ffff070c DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2680 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
+ ext4_expand_extra_isize_ea+0x1227/0x1c40 fs/ext4/xattr.c:2835
+ __ext4_expand_extra_isize+0x2f7/0x3d0 fs/ext4/inode.c:5955
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5998 [inline]
+ __ext4_mark_inode_dirty+0x60e/0x9d0 fs/ext4/inode.c:6076
+ __ext4_unlink+0x997/0xbb0 fs/ext4/namei.c:3256
+ ext4_unlink+0x294/0x840 fs/ext4/namei.c:3299
+ vfs_unlink+0x35d/0x5f0 fs/namei.c:4250
+ do_unlinkat+0x4a1/0x940 fs/namei.c:4316
+ __do_sys_unlinkat fs/namei.c:4359 [inline]
+ __se_sys_unlinkat fs/namei.c:4352 [inline]
+ __x64_sys_unlinkat+0xce/0xf0 fs/namei.c:4352
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f542368c0f9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5424471168 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
+RAX: ffffffffffffffda RBX: 00007f54237abf80 RCX: 00007f542368c0f9
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00007f54236e7ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffff833d89f R14: 00007f5424471300 R15: 0000000000022000
+ </TASK>
 
-> And the fact that the value will be the same (i.e. that ->i_blkbits is never changed by ocfs2)
-> is worth mentioning in commit message...
 
-How about the following msg?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Use i_blockmask() to simplify code. BTW convert ocfs2_is_io_unaligned
-to return bool type and the fact that the value will be the same
-(i.e. that ->i_blkbits is never changed by ocfs2).
-
-
-
-A small question, whether this series of changes will be merged
-into each fs branch or all merged into vfs?
-
-Thx,
-Yangtao
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
