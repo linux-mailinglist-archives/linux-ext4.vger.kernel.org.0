@@ -2,97 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C6A6B3FBC
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 13:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7126B50BE
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Mar 2023 20:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjCJMxQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Mar 2023 07:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S229928AbjCJTL0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Mar 2023 14:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjCJMxM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 07:53:12 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7B42130;
-        Fri, 10 Mar 2023 04:52:54 -0800 (PST)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PY5Vd5HDhznWZn;
-        Fri, 10 Mar 2023 20:50:01 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 10 Mar
- 2023 20:52:52 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH 5/5] jbd2: remove j_format_version
-Date:   Fri, 10 Mar 2023 20:52:06 +0800
-Message-ID: <20230310125206.2867822-6-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230310125206.2867822-1-chengzhihao1@huawei.com>
-References: <20230310125206.2867822-1-chengzhihao1@huawei.com>
+        with ESMTP id S229612AbjCJTLS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 14:11:18 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9867224BE1;
+        Fri, 10 Mar 2023 11:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678475463; x=1710011463;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Sj89mkIxbdQ4VKaoPz17QlIBDrLJBxmyjmVCcpHbqlg=;
+  b=DnJmjL0Cyx8ol8Ba7siUShOjGeXZqTp6vKnST7n3hw3PY2O9Ulwevfzu
+   u/PHebQIKLm0BPbLIR1fNd/bkQxKz/NZAGMhWiDHFJq0EltYYEZj3ahNo
+   1oY29gILfPi7SMYR02LwB59s1pJC77Sk2b0cssweQpH32yiG+VoWF8PAQ
+   W9uDp2r5LVGdguQijCa39qrS7nNthN4hV5HHObYKMoq0JTSY5XvDV7N8m
+   cLH41gs86PSwqumQKBoob7sX3719wENFXS6oOq1MHnbevwVmM/fD9WNiE
+   d6rQSpHQXBOTck5qWhZvftEARwtz/VRXTqxdsyd1slMZAnvHAD6lbflTX
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="325162142"
+X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
+   d="scan'208";a="325162142"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2023 11:08:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="1007230595"
+X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
+   d="scan'208";a="1007230595"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Mar 2023 11:08:27 -0800
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pai6M-00043u-2K;
+        Fri, 10 Mar 2023 19:08:26 +0000
+Date:   Sat, 11 Mar 2023 03:07:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yangtao Li <frank.li@vivo.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        Yangtao Li <frank.li@vivo.com>
+Subject: Re: [PATCH] ext4: convert to DIV_ROUND_UP() in
+ mpage_process_page_bufs()
+Message-ID: <202303110211.LXeNm5uw-lkp@intel.com>
+References: <20230310060734.8780-1-frank.li@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230310060734.8780-1-frank.li@vivo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Hi Yangtao,
 
-journal->j_format_version is no longer used, remove it.
+I love your patch! Yet something to improve:
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/jbd2/journal.c    | 9 ---------
- include/linux/jbd2.h | 5 -----
- 2 files changed, 14 deletions(-)
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v6.3-rc1 next-20230310]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index cd94d068b4e6..fbada835b6b7 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1997,15 +1997,6 @@ static int load_superblock(journal_t *journal)
- 
- 	sb = journal->j_superblock;
- 
--	switch (be32_to_cpu(sb->s_header.h_blocktype)) {
--	case JBD2_SUPERBLOCK_V1:
--		journal->j_format_version = 1;
--		break;
--	case JBD2_SUPERBLOCK_V2:
--		journal->j_format_version = 2;
--		break;
--	}
--
- 	journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
- 	journal->j_tail = be32_to_cpu(sb->s_start);
- 	journal->j_first = be32_to_cpu(sb->s_first);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 7095c0f17ad0..b7c79f68f7ca 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -792,11 +792,6 @@ struct journal_s
- 	 */
- 	journal_superblock_t	*j_superblock;
- 
--	/**
--	 * @j_format_version: Version of the superblock format.
--	 */
--	int			j_format_version;
--
- 	/**
- 	 * @j_state_lock: Protect the various scalars in the journal.
- 	 */
+url:    https://github.com/intel-lab-lkp/linux/commits/Yangtao-Li/ext4-convert-to-DIV_ROUND_UP-in-mpage_process_page_bufs/20230310-140903
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20230310060734.8780-1-frank.li%40vivo.com
+patch subject: [PATCH] ext4: convert to DIV_ROUND_UP() in mpage_process_page_bufs()
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20230311/202303110211.LXeNm5uw-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/f4d2db5f59592a5688be6e4d2d3dd6f3f94d4f96
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Yangtao-Li/ext4-convert-to-DIV_ROUND_UP-in-mpage_process_page_bufs/20230310-140903
+        git checkout f4d2db5f59592a5688be6e4d2d3dd6f3f94d4f96
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303110211.LXeNm5uw-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: fs/ext4/inode.o: in function `mpage_process_page_bufs':
+>> inode.c:(.text+0xbda): undefined reference to `__divdi3'
+
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
