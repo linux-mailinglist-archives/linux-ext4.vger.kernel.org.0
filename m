@@ -2,49 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DE36B599F
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 10:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826B26B59A0
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 10:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjCKJGv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Mar 2023 04:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        id S230217AbjCKJGw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Mar 2023 04:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjCKJGs (ORCPT
+        with ESMTP id S230186AbjCKJGs (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 04:06:48 -0500
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6773811CBED;
-        Sat, 11 Mar 2023 01:06:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E661011E6EB;
+        Sat, 11 Mar 2023 01:06:46 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PYcVS56wLz4f3jLf;
-        Sat, 11 Mar 2023 17:06:40 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PYcVT0wGdz4f3jHm;
+        Sat, 11 Mar 2023 17:06:41 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHu+mhRAxkx4BgFA--.7403S2;
+        by APP2 (Coremail) with SMTP id Syh0CgDHu+mhRAxkx4BgFA--.7403S3;
         Sat, 11 Mar 2023 17:06:42 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         shikemeng@huaweicloud.com
-Subject: [PATCH 0/2] two cleanups for mballoc
-Date:   Sun, 12 Mar 2023 01:09:47 +0800
-Message-Id: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
+Subject: [PATCH 1/2] ext4: fix typos in mballoc
+Date:   Sun, 12 Mar 2023 01:09:48 +0800
+Message-Id: <20230311170949.1047958-2-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
+References: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHu+mhRAxkx4BgFA--.7403S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JF
-        v_Gryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AK
-        xVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14
-        v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY
-        62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7V
-        C2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0
-        x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
-        73UjIFyTuYvjTRCApnUUUUU
+X-CM-TRANSID: Syh0CgDHu+mhRAxkx4BgFA--.7403S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw1fGw4rXFy3Gw1fAF1rXrb_yoW8Gr4rpr
+        s7XF1akwsxWryY9an2k3Wjqw1fG397Cr15Gr1Ygw15ZFW3JrWIkF4DtryrGFyrC39rXF1a
+        vFs0vr13uwsruaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
+        0E87I2jVAFwI0_Jr4l82xGYIkIc2x26xkF7I0E14v26r1Y6r1xM28lY4IEw2IIxxk0rwA2
+        F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjx
+        v20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
+        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
+        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYx
+        C7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
+        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x
+        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWU
+        JVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
+        AIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjTRN189UUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -57,17 +61,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, this series contain two cleanups to fix typo and remove unnecessary
-pointer dereference. Thanks!
+pa_plen -> pa_len
+pa_start -> pa_pstart
 
-Kemeng Shi (2):
-  ext4: fix typos in mballoc
-  ext4: avoid unnecessary pointer dereference in
-    ext4_mb_normalize_request
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+---
+ fs/ext4/mballoc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- fs/ext4/mballoc.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 85d5e219933f..13dce6f07fa4 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4146,7 +4146,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 	 * provide gurantee on number of contiguous blocks allocation since that
+ 	 * depends upon free space left, etc).
+ 	 * In case of inode pa, later we use the allocated blocks
+-	 * [pa_start + fe_logical - pa_lstart, fe_len/size] from the preallocated
++	 * [pa_pstart + fe_logical - pa_lstart, fe_len/size] from the preallocated
+ 	 * range of goal/best blocks [start, size] to put it at the
+ 	 * ac_o_ex.fe_logical extent of this inode.
+ 	 * (See ext4_mb_use_inode_pa() for more details)
+@@ -4298,7 +4298,7 @@ static void ext4_mb_use_group_pa(struct ext4_allocation_context *ac,
+ 	ac->ac_status = AC_STATUS_FOUND;
+ 	ac->ac_pa = pa;
+ 
+-	/* we don't correct pa_pstart or pa_plen here to avoid
++	/* we don't correct pa_pstart or pa_len here to avoid
+ 	 * possible race when the group is being loaded concurrently
+ 	 * instead we correct pa later, after blocks are marked
+ 	 * in on-disk bitmap -- see ext4_mb_release_context()
 -- 
 2.30.0
 
