@@ -2,100 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6EE6B5879
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 06:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DE36B599F
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 10:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjCKFRA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Mar 2023 00:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
+        id S230204AbjCKJGv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Mar 2023 04:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjCKFQ7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 00:16:59 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE96613E099
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 21:16:54 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32B5GDTQ001604
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Mar 2023 00:16:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678511777; bh=SS52Xzz5bwd6jrm6cbVS0S269ALZLJ/7KmthouJjEwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=YV1mgqWjAmFOygxxsB8WmBMXg6N93/ePszfhQLuMYYCBpjjDF7NExcT/YBKecRqqQ
-         5JsSKo60lHzNd8yEQdMLQOC4/kWzMp5AJJQV5rbrBQrpf5wLoPF4zza37CqJdQsEeG
-         CUzvPsgk5W3bVchnG43ZxGthkysJXhJUEvePBCKQzj4aYa/5+dE99F4zKLUpmWEiDV
-         1JvJdnzAuchc/EcsvwBtNr/Zbn7JkHLp2BFWaDXXWsvatiMuuP3qbfDC89xp3oYqkS
-         d/0fGmY3Wo1Wn2dFOZ78+Y9xOZ/eYL0kWVbYMj9btD9mGuq/iLGnYdjIkUU1iSopn9
-         7QRBx0bqUmvWg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A4D8315C42F6; Sat, 11 Mar 2023 00:16:13 -0500 (EST)
-Date:   Sat, 11 Mar 2023 00:16:13 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     jack@suse.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] ext4: Fix WANRON caused by unconsistent boot loader
- inode's i_size and i_disksize
-Message-ID: <20230311051613.GG860405@mit.edu>
-References: <20230308032643.641113-1-chengzhihao1@huawei.com>
- <20230308043139.GD860405@mit.edu>
+        with ESMTP id S230184AbjCKJGs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 04:06:48 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6773811CBED;
+        Sat, 11 Mar 2023 01:06:45 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PYcVS56wLz4f3jLf;
+        Sat, 11 Mar 2023 17:06:40 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgDHu+mhRAxkx4BgFA--.7403S2;
+        Sat, 11 Mar 2023 17:06:42 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shikemeng@huaweicloud.com
+Subject: [PATCH 0/2] two cleanups for mballoc
+Date:   Sun, 12 Mar 2023 01:09:47 +0800
+Message-Id: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230308043139.GD860405@mit.edu>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgDHu+mhRAxkx4BgFA--.7403S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JF
+        v_Gryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AK
+        xVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14
+        v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY
+        62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7V
+        C2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0
+        x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjTRCApnUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        KHOP_HELO_FCRDNS,MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Actually, after looking more closely at swap_boot_loader_inode(), your
-patch is better one.  I've dropped mine and applied yours, with commit
-message clarified a bit:
+Hi, this series contain two cleanups to fix typo and remove unnecessary
+pointer dereference. Thanks!
 
-    ext4: zero i_disksize when initializing the bootloader inode
-    
-    If the boot loader inode has never been used before, the
-    EXT4_IOC_SWAP_BOOT inode will initialize it, including setting the
-    i_size to 0.  However, if the "never before used" boot loader has a
-    non-zero i_size, then i_disksize will be non-zero, and the
-    inconsistency between i_size and i_disksize can trigger a kernel
-    warning:
-    
-     WARNING: CPU: 0 PID: 2580 at fs/ext4/file.c:319
-     CPU: 0 PID: 2580 Comm: bb Not tainted 6.3.0-rc1-00004-g703695902cfa
-     RIP: 0010:ext4_file_write_iter+0xbc7/0xd10
-     Call Trace:
-      vfs_write+0x3b1/0x5c0
-      ksys_write+0x77/0x160
-      __x64_sys_write+0x22/0x30
-      do_syscall_64+0x39/0x80
-    
-    Reproducer:
-     1. create corrupted image and mount it:
-           mke2fs -t ext4 /tmp/foo.img 200
-           debugfs -wR "sif <5> size 25700" /tmp/foo.img
-           mount -t ext4 /tmp/foo.img /mnt
-           cd /mnt
-           echo 123 > file
-     2. Run the reproducer program:
-           posix_memalign(&buf, 1024, 1024)
-           fd = open("file", O_RDWR | O_DIRECT);
-           ioctl(fd, EXT4_IOC_SWAP_BOOT);
-           write(fd, buf, 1024);
-    
-    Fix this by setting i_disksize as well as i_size to zero when
-    initiaizing the boot loader inode.
-    
-    Link: https://bugzilla.kernel.org/show_bug.cgi?id=217159
-    Cc: stable@kernel.org
-    Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-    Link: https://lore.kernel.org/r/20230308032643.641113-1-chengzhihao1@huawei.com
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Kemeng Shi (2):
+  ext4: fix typos in mballoc
+  ext4: avoid unnecessary pointer dereference in
+    ext4_mb_normalize_request
+
+ fs/ext4/mballoc.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+-- 
+2.30.0
 
