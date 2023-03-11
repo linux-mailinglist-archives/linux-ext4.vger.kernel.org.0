@@ -2,47 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147626B5806
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 04:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6EE6B5879
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 06:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbjCKDTG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Mar 2023 22:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S229589AbjCKFRA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Mar 2023 00:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjCKDTF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Mar 2023 22:19:05 -0500
+        with ESMTP id S229522AbjCKFQ7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 00:16:59 -0500
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EA8F34D6
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 19:19:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE96613E099
+        for <linux-ext4@vger.kernel.org>; Fri, 10 Mar 2023 21:16:54 -0800 (PST)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32B3IhlV019914
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32B5GDTQ001604
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Mar 2023 22:18:44 -0500
+        Sat, 11 Mar 2023 00:16:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678504726; bh=X4SZPPPjSfymhSVu5DOfCp8XWFcI0/91jN3YaYnh/AE=;
+        t=1678511777; bh=SS52Xzz5bwd6jrm6cbVS0S269ALZLJ/7KmthouJjEwo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=inJyC4xtFBH9CwaQZxr2uT733jlfDXRzFuOBxpU4u+x/PEmIohblrJ+8FMMZjMKka
-         VNuwM8LZRZD/xsIvyR7z6rtiC6XAhOAon/6X9GYsmJROp3I4FZQLrgLz3W7249nKCh
-         S33LO4qyQ3m3cGdWVHlueO/kKNGNFpOxgvt5rVT4HGvlyp8MrRb0nstxNNj9V3zy8C
-         eX+ZXY93IqG+UmRah8WBnYeeIjCPp2wZy+0dLCJtVXeFxRsJETOJdOA8uAmm+pOFS7
-         xbDM7LSqSMXNVaFO+pRVelDnQlNWdbZmn8A6QJEcW7pSaHEkUCDnpPO8VgAVWFmeQz
-         eywN6d83PkPew==
+        b=YV1mgqWjAmFOygxxsB8WmBMXg6N93/ePszfhQLuMYYCBpjjDF7NExcT/YBKecRqqQ
+         5JsSKo60lHzNd8yEQdMLQOC4/kWzMp5AJJQV5rbrBQrpf5wLoPF4zza37CqJdQsEeG
+         CUzvPsgk5W3bVchnG43ZxGthkysJXhJUEvePBCKQzj4aYa/5+dE99F4zKLUpmWEiDV
+         1JvJdnzAuchc/EcsvwBtNr/Zbn7JkHLp2BFWaDXXWsvatiMuuP3qbfDC89xp3oYqkS
+         d/0fGmY3Wo1Wn2dFOZ78+Y9xOZ/eYL0kWVbYMj9btD9mGuq/iLGnYdjIkUU1iSopn9
+         7QRBx0bqUmvWg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A805F15C42F6; Fri, 10 Mar 2023 22:18:43 -0500 (EST)
-Date:   Fri, 10 Mar 2023 22:18:43 -0500
+        id A4D8315C42F6; Sat, 11 Mar 2023 00:16:13 -0500 (EST)
+Date:   Sat, 11 Mar 2023 00:16:13 -0500
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Chao Yu <chao@kernel.org>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
-Subject: Re: [PATCH] ext4: fix to report fstrim.minlen back to userspace
-Message-ID: <20230311031843.GF860405@mit.edu>
-References: <20230308011807.411478-1-chao@kernel.org>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     jack@suse.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] ext4: Fix WANRON caused by unconsistent boot loader
+ inode's i_size and i_disksize
+Message-ID: <20230311051613.GG860405@mit.edu>
+References: <20230308032643.641113-1-chengzhihao1@huawei.com>
+ <20230308043139.GD860405@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230308011807.411478-1-chao@kernel.org>
+In-Reply-To: <20230308043139.GD860405@mit.edu>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -52,69 +55,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 08, 2023 at 09:18:07AM +0800, Chao Yu wrote:
-> Quoted from manual of fstrim:
-> 
-> "-m, --minimum minimum-size
-> 	..., if it's smaller than the device's minimum, and report that
-> (fstrim_range.minlen) back to userspace."
+Actually, after looking more closely at swap_boot_loader_inode(), your
+patch is better one.  I've dropped mine and applied yours, with commit
+message clarified a bit:
 
-First of all, I'll note that the fstrim(8) man page, which is
-describing how the userspace fstrim application work, is a really
-weird place to put information about how the fstrim _ioctl_ works.
+    ext4: zero i_disksize when initializing the bootloader inode
+    
+    If the boot loader inode has never been used before, the
+    EXT4_IOC_SWAP_BOOT inode will initialize it, including setting the
+    i_size to 0.  However, if the "never before used" boot loader has a
+    non-zero i_size, then i_disksize will be non-zero, and the
+    inconsistency between i_size and i_disksize can trigger a kernel
+    warning:
+    
+     WARNING: CPU: 0 PID: 2580 at fs/ext4/file.c:319
+     CPU: 0 PID: 2580 Comm: bb Not tainted 6.3.0-rc1-00004-g703695902cfa
+     RIP: 0010:ext4_file_write_iter+0xbc7/0xd10
+     Call Trace:
+      vfs_write+0x3b1/0x5c0
+      ksys_write+0x77/0x160
+      __x64_sys_write+0x22/0x30
+      do_syscall_64+0x39/0x80
+    
+    Reproducer:
+     1. create corrupted image and mount it:
+           mke2fs -t ext4 /tmp/foo.img 200
+           debugfs -wR "sif <5> size 25700" /tmp/foo.img
+           mount -t ext4 /tmp/foo.img /mnt
+           cd /mnt
+           echo 123 > file
+     2. Run the reproducer program:
+           posix_memalign(&buf, 1024, 1024)
+           fd = open("file", O_RDWR | O_DIRECT);
+           ioctl(fd, EXT4_IOC_SWAP_BOOT);
+           write(fd, buf, 1024);
+    
+    Fix this by setting i_disksize as well as i_size to zero when
+    initiaizing the boot loader inode.
+    
+    Link: https://bugzilla.kernel.org/show_bug.cgi?id=217159
+    Cc: stable@kernel.org
+    Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+    Link: https://lore.kernel.org/r/20230308032643.641113-1-chengzhihao1@huawei.com
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-I've added Lukas, who is listed as one of the authors of fstrim, and
-who probably had a hand in writing the man page.  The text in that
-paragraph describing -m is extremely confusing, and probably needs to
-be rewritten, and factored out into a fstrim(8) for system
-adminsitrators, and ioctl_fitrim(2) which documents the the ioctl.
-
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 5b2ae37a8b80..bd3ef29cf8a6 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6491,6 +6491,9 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  				discard_granularity >> sb->s_blocksize_bits);
->  		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
->  			goto out;
-> +
-> +		/* Report adjusted minlen back to userspace */
-> +		range->minlen = minlen;
->  	}
-
-Unfortunately, this patch is not correct.  The units of struct
-fstrim_range's minlen (here, range->minlen) is bytes.
-
-However the minlen variable in ext4_trim_fs is in units of *clusters*.
-And so it gets rounded up two places.  The first time is when it is
-converted into units of a cluster:
-
-	minlen = EXT4_NUM_B2C(EXT4_SB(sb),
-			      range->minlen >> sb->s_blocksize_bits);
-
-And the second time is when it is rounded up to the block device's
-discard granularity.
-
-So after that if statement, we need to convert minlen from clusters to
-bytes, like so:
-
-	range->minlen = EXT4_C2B(EXT4_SB(sb), minlen) << sb->s_blocksize_bits);
-
-Oh, and by the way, that first conversion is not correct as currently
-written in ext4_fs_trim().   It should be
-
-	minlen = (range->minlen + EXT4_CLUSTER_SIZE(sb) - 1) >>
-		(sb->s_blocksize_bits + EXT4_CLUSTER_BITS(sb));
-
-The explanation of why
-
-	minlen = EXT4_NUM_B2C(EXT4_SB(sb),
-			      range->minlen >> sb->s_blocksize_bits);
-
-is wrong is left as an exercise to the reader.  (Hint: what is
-supposed to happen if a value of 1 byte is passed in
-fstrim_range.minlen?)
-
-Cheers,
-
-					- Ted
