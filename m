@@ -2,108 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA55B6B599E
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Mar 2023 10:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021BA6B6332
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Mar 2023 05:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjCKJGt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Mar 2023 04:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
+        id S229437AbjCLEl2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Mar 2023 23:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjCKJGs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 04:06:48 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AD511D0AA;
-        Sat, 11 Mar 2023 01:06:45 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PYcVT22K8z4f3jJJ;
-        Sat, 11 Mar 2023 17:06:41 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHu+mhRAxkx4BgFA--.7403S4;
-        Sat, 11 Mar 2023 17:06:43 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com
-Subject: [PATCH 2/2] ext4: avoid unnecessary pointer dereference in ext4_mb_normalize_request
-Date:   Sun, 12 Mar 2023 01:09:49 +0800
-Message-Id: <20230311170949.1047958-3-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
-References: <20230311170949.1047958-1-shikemeng@huaweicloud.com>
+        with ESMTP id S229515AbjCLEl1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 23:41:27 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93B038B7C
+        for <linux-ext4@vger.kernel.org>; Sat, 11 Mar 2023 20:41:23 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32C4fG8t031509
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Mar 2023 23:41:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1678596078; bh=MUTFrTJV2TG1PRFQ5UV72VyZiWZbhttWsOcRl7qYvuo=;
+        h=Date:From:To:Cc:Subject;
+        b=fSsgTgMOLSRvblisQ50uGYd0giPA+5GY1xJ1NgtVAXyj4cguEg42JnMDD/zddz2CO
+         L4blTxMaq0zeP7LT8Vs0P7MmQycMTxmVXgYYmvmIUQJ7jioNdAA/1QDkIbvDMjAGSR
+         8G4nG0bnC5Yba141Fsu9kYts84xszbPyBoIiyf8jVnffS+yznAvCxuXnEToqrbI/J0
+         naJdF6nEVzv9wJzGW9bSImxWvLjS/YF6cfL+syMWOyxyUGFBHsbxTgQ6XY5JLWPz4I
+         2/TF7l+uCkVYaA8asQK6Mu/4uuFf8E/tcgOx1fUxDvJ4f042SRAo3jg4XbLeCzeYmc
+         uUSiJQSmqnXyw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3DBF215C45B9; Sat, 11 Mar 2023 23:41:16 -0500 (EST)
+Date:   Sat, 11 Mar 2023 23:41:16 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 fixes for 6.3-rc2
+Message-ID: <20230312044116.GA2694785@mit.edu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHu+mhRAxkx4BgFA--.7403S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr15GFWxZrW5JF1ftw4xJFb_yoW8XF43pF
-        43JF1YgrW3XryDursrWFn8ua48tw4kCw1Dtry8Jr1jyrWUG3yxZwnrta4UW3ZxCr4fZr13
-        ZrZ0qFW7Ww4a93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_Jryl82xGYIkIc2x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2
-        F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjx
-        v20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
-        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYx
-        C7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sREO6pDUUUUU=
-        =
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        KHOP_HELO_FCRDNS,MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Result of EXT4_SB(ac->ac_sb) is already stored in sbi at beginning of
-ext4_mb_normalize_request. Use sbi instead of EXT4_SB(ac->ac_sb) to
-remove unnecessary pointer dereference.
+The following changes since commit e3645d72f8865ffe36f9dc811540d40aa3c848d3:
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/ext4/mballoc.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+  ext4: fix incorrect options show of original mount_opt and extend mount_opt2 (2023-02-25 15:39:08 -0500)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 13dce6f07fa4..d94eb52dda17 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4049,7 +4049,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 		size = 8 * 1024 * 1024;
- 	} else {
- 		start_off = (loff_t) ac->ac_o_ex.fe_logical << bsbits;
--		size	  = (loff_t) EXT4_C2B(EXT4_SB(ac->ac_sb),
-+		size	  = (loff_t) EXT4_C2B(sbi,
- 					      ac->ac_o_ex.fe_len) << bsbits;
- 	}
- 	size = size >> bsbits;
-@@ -4094,8 +4094,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 			continue;
- 		}
- 
--		pa_end = pa->pa_lstart + EXT4_C2B(EXT4_SB(ac->ac_sb),
--						  pa->pa_len);
-+		pa_end = pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
- 
- 		/* PA must not overlap original request */
- 		BUG_ON(!(ac->ac_o_ex.fe_logical >= pa_end ||
-@@ -4128,8 +4127,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 
- 		spin_lock(&pa->pa_lock);
- 		if (pa->pa_deleted == 0) {
--			pa_end = pa->pa_lstart + EXT4_C2B(EXT4_SB(ac->ac_sb),
--							  pa->pa_len);
-+			pa_end = pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
- 			BUG_ON(!(start >= pa_end || end <= pa->pa_lstart));
- 		}
- 		spin_unlock(&pa->pa_lock);
--- 
-2.30.0
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+
+for you to fetch changes up to f5361da1e60d54ec81346aee8e3d8baf1be0b762:
+
+  ext4: zero i_disksize when initializing the bootloader inode (2023-03-11 00:44:24 -0500)
+
+----------------------------------------------------------------
+Bug fixes and regressions for ext4, the most serious of which is a
+potential deadlock during directory renames that was introduced during
+the merge window discovered by a combination of syzbot and lockdep.
+
+----------------------------------------------------------------
+Darrick J. Wong (1):
+      ext4: fix another off-by-one fsmap error on 1k block filesystems
+
+Eric Biggers (1):
+      ext4: fix cgroup writeback accounting with fs-layer encryption
+
+Eric Whitney (1):
+      ext4: fix RENAME_WHITEOUT handling for inline directories
+
+Jan Kara (1):
+      ext4: Fix deadlock during directory rename
+
+Theodore Ts'o (1):
+      ext4, jbd2: add an optimized bmap for the journal inode
+
+Thomas Weiﬂschuh (1):
+      ext4: make kobj_type structures constant
+
+Tudor Ambarus (1):
+      ext4: Fix comment about the 64BIT feature
+
+Wu Bo (1):
+      docs: ext4: modify the group desc size to 64
+
+Ye Bin (4):
+      ext4: move where set the MAY_INLINE_DATA flag is set
+      ext4: fix WARNING in ext4_update_inline_data
+      ext4: commit super block if fs record error when journal record without error
+      ext4: make sure fs error flag setted before clear journal error
+
+Zhihao Cheng (1):
+      ext4: zero i_disksize when initializing the bootloader inode
+
+ Documentation/filesystems/ext4/blockgroup.rst |  6 +++---
+ fs/ext4/ext4.h                                |  2 +-
+ fs/ext4/fsmap.c                               |  2 ++
+ fs/ext4/inline.c                              |  1 -
+ fs/ext4/inode.c                               |  7 +++++-
+ fs/ext4/ioctl.c                               |  1 +
+ fs/ext4/namei.c                               | 39 +++++++++++++++++++++-------------
+ fs/ext4/page-io.c                             | 11 +++++-----
+ fs/ext4/super.c                               | 38 +++++++++++++++++++++++++++++++--
+ fs/ext4/sysfs.c                               |  4 ++--
+ fs/ext4/xattr.c                               |  3 +++
+ fs/jbd2/journal.c                             |  9 +++++---
+ include/linux/jbd2.h                          |  8 +++++++
+ 13 files changed, 98 insertions(+), 33 deletions(-)
