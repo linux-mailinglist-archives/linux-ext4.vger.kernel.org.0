@@ -2,116 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021BA6B6332
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Mar 2023 05:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2593C6B64C9
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Mar 2023 11:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjCLEl2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Mar 2023 23:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S229528AbjCLKQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Mar 2023 06:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjCLEl1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Mar 2023 23:41:27 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93B038B7C
-        for <linux-ext4@vger.kernel.org>; Sat, 11 Mar 2023 20:41:23 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32C4fG8t031509
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Mar 2023 23:41:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678596078; bh=MUTFrTJV2TG1PRFQ5UV72VyZiWZbhttWsOcRl7qYvuo=;
-        h=Date:From:To:Cc:Subject;
-        b=fSsgTgMOLSRvblisQ50uGYd0giPA+5GY1xJ1NgtVAXyj4cguEg42JnMDD/zddz2CO
-         L4blTxMaq0zeP7LT8Vs0P7MmQycMTxmVXgYYmvmIUQJ7jioNdAA/1QDkIbvDMjAGSR
-         8G4nG0bnC5Yba141Fsu9kYts84xszbPyBoIiyf8jVnffS+yznAvCxuXnEToqrbI/J0
-         naJdF6nEVzv9wJzGW9bSImxWvLjS/YF6cfL+syMWOyxyUGFBHsbxTgQ6XY5JLWPz4I
-         2/TF7l+uCkVYaA8asQK6Mu/4uuFf8E/tcgOx1fUxDvJ4f042SRAo3jg4XbLeCzeYmc
-         uUSiJQSmqnXyw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3DBF215C45B9; Sat, 11 Mar 2023 23:41:16 -0500 (EST)
-Date:   Sat, 11 Mar 2023 23:41:16 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for 6.3-rc2
-Message-ID: <20230312044116.GA2694785@mit.edu>
+        with ESMTP id S229745AbjCLKQG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Mar 2023 06:16:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E233445;
+        Sun, 12 Mar 2023 03:15:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 97A40B8074D;
+        Sun, 12 Mar 2023 10:15:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EA6C433EF;
+        Sun, 12 Mar 2023 10:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678616144;
+        bh=0QoZ25WKO3KeHJjM6NGw13wdy4JSU0OnGMtI6QJDCJQ=;
+        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+        b=kiqI9HhI+w8bSxtDQI7ueuco+IZWwUXVsdcXz2Opm9qF9y0iGi2ioixxlDUTUP/7p
+         11IJXROpXi+8n/yeG7gqCvwEE0gVv3mMJxXDbDojn/NASfpZdZbCo4arRYxFY/R7sc
+         SzHWy5DW9bz4rSvbsCC4FHsElSc+5OQeUFBJln0iy6tVuI/18qFGK4OWnWWCbG039p
+         74xRbqOfy2qN9yaM3ejP95f36faBpqOdrKYGJ3sxe4dHG56zFHUbCaU9mgLatSrt7B
+         K9SRWVkW74VrgUhEx5Ey0+eulXIvIHLYmnutC+0jylsSuDACZ4XGSBMmv3X2v9+FQy
+         IuwXGkAgf9QgA==
+Message-ID: <265f6c37-fae7-6ab2-594f-e7785aedb4e6@kernel.org>
+Date:   Sun, 12 Mar 2023 18:15:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
+References: <20230308011807.411478-1-chao@kernel.org>
+ <20230311031843.GF860405@mit.edu>
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH] ext4: fix to report fstrim.minlen back to userspace
+In-Reply-To: <20230311031843.GF860405@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit e3645d72f8865ffe36f9dc811540d40aa3c848d3:
+On 2023/3/11 11:18, Theodore Ts'o wrote:
+> Unfortunately, this patch is not correct.  The units of struct
+> fstrim_range's minlen (here, range->minlen) is bytes.
 
-  ext4: fix incorrect options show of original mount_opt and extend mount_opt2 (2023-02-25 15:39:08 -0500)
+Oh, that's right, sorry for the mistake.
 
-are available in the Git repository at:
+> 
+> However the minlen variable in ext4_trim_fs is in units of *clusters*.
+> And so it gets rounded up two places.  The first time is when it is
+> converted into units of a cluster:
+> 
+> 	minlen = EXT4_NUM_B2C(EXT4_SB(sb),
+> 			      range->minlen >> sb->s_blocksize_bits);
+IIUC, if range->minlen is smaller than block size of ext4, above calculation
+may return a wrong value, due to it looks EXT4_NUM_B2C() expects a non-zero
+in-parameter.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+So it needs to round up minlen to block size first and then round up block
+size to cluster size:
 
-for you to fetch changes up to f5361da1e60d54ec81346aee8e3d8baf1be0b762:
+	minlen =  EXT4_NUM_B2C(EXT4_SB(sb),
+		EXT4_BLOCK_ALIGN(range->minlen, sb->s_blocksize_bits));
 
-  ext4: zero i_disksize when initializing the bootloader inode (2023-03-11 00:44:24 -0500)
+Or do the conversion at a time as you reminded:
 
-----------------------------------------------------------------
-Bug fixes and regressions for ext4, the most serious of which is a
-potential deadlock during directory renames that was introduced during
-the merge window discovered by a combination of syzbot and lockdep.
+	minlen = (range->minlen + EXT4_CLUSTER_SIZE(sb) - 1) >>
+		(sb->s_blocksize_bits + EXT4_CLUSTER_BITS(sb));
 
-----------------------------------------------------------------
-Darrick J. Wong (1):
-      ext4: fix another off-by-one fsmap error on 1k block filesystems
+> 
+> And the second time is when it is rounded up to the block device's
+> discard granularity.
+> 
+> So after that if statement, we need to convert minlen from clusters to
+> bytes, like so:
+> 
+> 	range->minlen = EXT4_C2B(EXT4_SB(sb), minlen) << sb->s_blocksize_bits);
 
-Eric Biggers (1):
-      ext4: fix cgroup writeback accounting with fs-layer encryption
+Thanks for the detailed explanation and reminder. :)
 
-Eric Whitney (1):
-      ext4: fix RENAME_WHITEOUT handling for inline directories
-
-Jan Kara (1):
-      ext4: Fix deadlock during directory rename
-
-Theodore Ts'o (1):
-      ext4, jbd2: add an optimized bmap for the journal inode
-
-Thomas Weiﬂschuh (1):
-      ext4: make kobj_type structures constant
-
-Tudor Ambarus (1):
-      ext4: Fix comment about the 64BIT feature
-
-Wu Bo (1):
-      docs: ext4: modify the group desc size to 64
-
-Ye Bin (4):
-      ext4: move where set the MAY_INLINE_DATA flag is set
-      ext4: fix WARNING in ext4_update_inline_data
-      ext4: commit super block if fs record error when journal record without error
-      ext4: make sure fs error flag setted before clear journal error
-
-Zhihao Cheng (1):
-      ext4: zero i_disksize when initializing the bootloader inode
-
- Documentation/filesystems/ext4/blockgroup.rst |  6 +++---
- fs/ext4/ext4.h                                |  2 +-
- fs/ext4/fsmap.c                               |  2 ++
- fs/ext4/inline.c                              |  1 -
- fs/ext4/inode.c                               |  7 +++++-
- fs/ext4/ioctl.c                               |  1 +
- fs/ext4/namei.c                               | 39 +++++++++++++++++++++-------------
- fs/ext4/page-io.c                             | 11 +++++-----
- fs/ext4/super.c                               | 38 +++++++++++++++++++++++++++++++--
- fs/ext4/sysfs.c                               |  4 ++--
- fs/ext4/xattr.c                               |  3 +++
- fs/jbd2/journal.c                             |  9 +++++---
- include/linux/jbd2.h                          |  8 +++++++
- 13 files changed, 98 insertions(+), 33 deletions(-)
+Thanks,
