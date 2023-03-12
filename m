@@ -2,53 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2593C6B64C9
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Mar 2023 11:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9F76B6837
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Mar 2023 17:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbjCLKQH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Mar 2023 06:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
+        id S230443AbjCLQYF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Mar 2023 12:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjCLKQG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Mar 2023 06:16:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E233445;
-        Sun, 12 Mar 2023 03:15:46 -0700 (PDT)
+        with ESMTP id S230308AbjCLQXy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Mar 2023 12:23:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788E41DBB5;
+        Sun, 12 Mar 2023 09:23:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 97A40B8074D;
-        Sun, 12 Mar 2023 10:15:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EA6C433EF;
-        Sun, 12 Mar 2023 10:15:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DAB56B80D1A;
+        Sun, 12 Mar 2023 16:21:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9DB82C433D2;
+        Sun, 12 Mar 2023 16:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678616144;
-        bh=0QoZ25WKO3KeHJjM6NGw13wdy4JSU0OnGMtI6QJDCJQ=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=kiqI9HhI+w8bSxtDQI7ueuco+IZWwUXVsdcXz2Opm9qF9y0iGi2ioixxlDUTUP/7p
-         11IJXROpXi+8n/yeG7gqCvwEE0gVv3mMJxXDbDojn/NASfpZdZbCo4arRYxFY/R7sc
-         SzHWy5DW9bz4rSvbsCC4FHsElSc+5OQeUFBJln0iy6tVuI/18qFGK4OWnWWCbG039p
-         74xRbqOfy2qN9yaM3ejP95f36faBpqOdrKYGJ3sxe4dHG56zFHUbCaU9mgLatSrt7B
-         K9SRWVkW74VrgUhEx5Ey0+eulXIvIHLYmnutC+0jylsSuDACZ4XGSBMmv3X2v9+FQy
-         IuwXGkAgf9QgA==
-Message-ID: <265f6c37-fae7-6ab2-594f-e7785aedb4e6@kernel.org>
-Date:   Sun, 12 Mar 2023 18:15:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
+        s=k20201202; t=1678638059;
+        bh=6AT9DE5uIT4fNvp6jRC1cglsUcG6b/Erf3QkOKmtCL4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=fz0Y8V7Qhn60E7awgpranlXywdG9T7D9Cpy7U3L30AWUT6bVgJTeex3g96y5/PXtY
+         y998wGt/2xmGKdTfDz69llpoHo3KAr9NqigJ60ZJivlV+yrnMq1Y0exsqRlbW1nW6t
+         qXGplCM8YHkmdIlubKCS9coCpL1LumvXdcPwZWpXuv37fm9Xs4t8smSSLKPgT8hNWv
+         Rlp8tg7HaWC2kqLtQxmLB1RzcgQMr61gjNv5Lvtf/9Znng1MAtok1n73vft9HhaNXm
+         tJeka47QchkPqCTIauYuM7tanQThDuzrxHR9XBOv7nxP1oNeWqAg1la7cYxHZAlYmk
+         n4xVMYxS9SOKQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8C7D1E61B75;
+        Sun, 12 Mar 2023 16:20:59 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 fixes for 6.3-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230312044116.GA2694785@mit.edu>
+References: <20230312044116.GA2694785@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230312044116.GA2694785@mit.edu>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: f5361da1e60d54ec81346aee8e3d8baf1be0b762
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 40d0c0901e6c19cf268d2f505bce0b50319c5653
+Message-Id: <167863805957.16000.4074357502595179662.pr-tracker-bot@kernel.org>
+Date:   Sun, 12 Mar 2023 16:20:59 +0000
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>
-References: <20230308011807.411478-1-chao@kernel.org>
- <20230311031843.GF860405@mit.edu>
-Content-Language: en-US
-From:   Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH] ext4: fix to report fstrim.minlen back to userspace
-In-Reply-To: <20230311031843.GF860405@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,43 +59,15 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/3/11 11:18, Theodore Ts'o wrote:
-> Unfortunately, this patch is not correct.  The units of struct
-> fstrim_range's minlen (here, range->minlen) is bytes.
+The pull request you sent on Sat, 11 Mar 2023 23:41:16 -0500:
 
-Oh, that's right, sorry for the mistake.
+> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-> 
-> However the minlen variable in ext4_trim_fs is in units of *clusters*.
-> And so it gets rounded up two places.  The first time is when it is
-> converted into units of a cluster:
-> 
-> 	minlen = EXT4_NUM_B2C(EXT4_SB(sb),
-> 			      range->minlen >> sb->s_blocksize_bits);
-IIUC, if range->minlen is smaller than block size of ext4, above calculation
-may return a wrong value, due to it looks EXT4_NUM_B2C() expects a non-zero
-in-parameter.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/40d0c0901e6c19cf268d2f505bce0b50319c5653
 
-So it needs to round up minlen to block size first and then round up block
-size to cluster size:
+Thank you!
 
-	minlen =  EXT4_NUM_B2C(EXT4_SB(sb),
-		EXT4_BLOCK_ALIGN(range->minlen, sb->s_blocksize_bits));
-
-Or do the conversion at a time as you reminded:
-
-	minlen = (range->minlen + EXT4_CLUSTER_SIZE(sb) - 1) >>
-		(sb->s_blocksize_bits + EXT4_CLUSTER_BITS(sb));
-
-> 
-> And the second time is when it is rounded up to the block device's
-> discard granularity.
-> 
-> So after that if statement, we need to convert minlen from clusters to
-> bytes, like so:
-> 
-> 	range->minlen = EXT4_C2B(EXT4_SB(sb), minlen) << sb->s_blocksize_bits);
-
-Thanks for the detailed explanation and reminder. :)
-
-Thanks,
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
