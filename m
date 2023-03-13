@@ -2,60 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E890C6B6D59
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Mar 2023 03:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C2D6B6D5B
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Mar 2023 03:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbjCMCNH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Mar 2023 22:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
+        id S229782AbjCMCNu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Mar 2023 22:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjCMCNG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Mar 2023 22:13:06 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE04E1117E;
-        Sun, 12 Mar 2023 19:13:03 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id i3so11333715plg.6;
-        Sun, 12 Mar 2023 19:13:03 -0700 (PDT)
+        with ESMTP id S229493AbjCMCNt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Mar 2023 22:13:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2792D152;
+        Sun, 12 Mar 2023 19:13:48 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id x20-20020a17090a8a9400b00233ba727724so11916764pjn.1;
+        Sun, 12 Mar 2023 19:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678673582;
+        d=gmail.com; s=20210112; t=1678673628;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=K+n4Q9Elg6fENVtexuGItppUU9Gn6UAzLaqr/BQkJN0=;
-        b=oE61nHcBmT2TIg2q7mM9+n/kO02Ag6KJ6+WWTDHnS32+pxO5wVg+z9LAlx0ZZEdYqi
-         szzXcXWhbdDoQo1p+CpwRD45T+yEooxGEeMMi5oqgbOrcFr7bCuu/2EsMDZbhEoG+u+u
-         jtuntKeF2y5wLLM/l7M/VgV6PVkgzC0hW0nWRlMEQhwwTGqoS+VFUrN6CHbsQRU1pVo2
-         ihdIot257hhSQQpMD6rwDP0j7AO7HmDFf1JN5u502hr3lNxd/4FetXlpIWy/MJC7GjKh
-         0X9mMQeVloxE0M33PyAH4chasPOMumqkPjL/eR8sV4HHbOKVLbOowxL/+cnQd+JEZYmH
-         eLlQ==
+        bh=G5M4veBYufJzjA6KeJEbr/OhWNwQRqEHVIYpMQs6GyU=;
+        b=J+xEjPiN74JFK3jJ9S4F2ql6EodVAV5SxPFHTqaMSRUpX3M8JRR3W6yWSj71RxToAS
+         3cOj+o9z0r/rqb25YkaXeoKYJMZmj1HNS8TfPy6wwuJeiAdc50TftB55d7ZDccBNGMV6
+         twio7Qk97jM4LMQo1Ur8yXCu3XWfJXwVdvotSOIK6ECDnoBFQdgTcfb5dKjHESCOL00R
+         VqO3yrn7T9wmcA/KEQ/dvzykwx/iGk5fpdB4Ex+QWOjKtmUesX/4AWjTwFSxA4w3nFuv
+         8d9aZZFn//Sky6DBcUvaBK2sTWC2H4VajkNHytHaeZDcZcHsgKKY+Ow8btsu59o4LkTJ
+         QSxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678673582;
+        d=1e100.net; s=20210112; t=1678673628;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=K+n4Q9Elg6fENVtexuGItppUU9Gn6UAzLaqr/BQkJN0=;
-        b=oST16DuwJPpygBLJjv0KBoaz/7+NorxPbw1Cb+cEQybg/4FZRMnr3YiU21mgwfU95e
-         QgXrcAPT1nIlPsZ6c/y26ZgTn6Dvr5j7FmGFT5jMR46XbhMSQHRoxp63ltcISA5px2wi
-         Ff2i6Ygx8u+tzZ7b4xZJRbNQwqX0oi3p9zNwTaCFkt7AlMqHfbi/k4DTztz/CCBpN89+
-         h8BIryxTXQ7BWii8MaV1jiFpanQMnPxt5NG7IaF9gJs8meU26EyqlY67uysQcu1AATCm
-         dCgzKdnn/PhoHCT0kT2FJi8+/5GUtw6ukWO47AzkNDP/I4/VCoei9sC/kA2Aq544wT6a
-         27Hw==
-X-Gm-Message-State: AO0yUKXpO5Hd4BfLuzCOqfI+xkvfUaMvtJ4WExPtKudpapvXr/p8F6zI
-        VHwLpk6+LgLCEaOP+/Oa2TQbhG+8R0/Cew==
-X-Google-Smtp-Source: AK7set+rw2jvQFAQ1PJ1ybma1APMuGOa/itY8ZuKki/97LNJipWSsnM5beJVFdXmPiWx+0pb6Dl0tw==
-X-Received: by 2002:a17:903:1111:b0:199:1160:956c with SMTP id n17-20020a170903111100b001991160956cmr9573628plh.31.1678673582529;
-        Sun, 12 Mar 2023 19:13:02 -0700 (PDT)
+        bh=G5M4veBYufJzjA6KeJEbr/OhWNwQRqEHVIYpMQs6GyU=;
+        b=CMwp3TOoqihVtO8UBRLpTjP0JL1canfTZ8L6f5ULnY2LmI1ZJ8zik0l2vInP5VsCiS
+         y1NcQs+Y6hI8REd+yD888a+a43bSWPyA4sLvcbnmmrX84lDC+bh25d7gwUQJSTluNhEm
+         TVPas+br18U2g/0+PzdGkr2/dJzb5lu3IjWRby6AcKO4miohc2Jrii5/VK5RnT5IJEtz
+         LU4JdL1mBYne/HXEXU/pz/Iq0gQJUE9J5Imr7Gu1UFEaz7jq0ad0BbwXAHojzf+9rcTo
+         tlHKMiUCxKQ99co3NFkC67busrn3+FO7wR6u4EP/exWwBr1fJ7ref1CST6/tikK1FH6q
+         I96Q==
+X-Gm-Message-State: AO0yUKVdefUilSgAMu3N6SB4kn/7GGuYrdyLVkyouPWoE/0FiGrNPM56
+        u6D3Z8mapMjQzx/SlGF2XZg=
+X-Google-Smtp-Source: AK7set/qGlLdxK8V4INRJNzjSuOAIjb/6g/te7G0wNvJEZLwAgGuQhpc1+gEfgFU5CErh9kpzyUTYA==
+X-Received: by 2002:a05:6a20:3d0b:b0:c9:9312:5f1d with SMTP id y11-20020a056a203d0b00b000c993125f1dmr43333630pzi.4.1678673627944;
+        Sun, 12 Mar 2023 19:13:47 -0700 (PDT)
 Received: from rh-tp ([2406:7400:63:469f:1474:7c59:3a57:aab6])
-        by smtp.gmail.com with ESMTPSA id g1-20020a1709026b4100b0019a97f180fcsm3476764plt.37.2023.03.12.19.13.00
+        by smtp.gmail.com with ESMTPSA id d13-20020aa78e4d000000b00592417157f2sm3388390pfr.148.2023.03.12.19.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Mar 2023 19:13:02 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 07:42:56 +0530
-Message-Id: <87sfe9flg7.fsf@doe.com>
+        Sun, 12 Mar 2023 19:13:47 -0700 (PDT)
+Date:   Mon, 13 Mar 2023 07:43:42 +0530
+Message-Id: <87pm9dflex.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         shikemeng@huaweicloud.com
-Subject: Re: [PATCH 1/2] ext4: fix typos in mballoc
-In-Reply-To: <20230311170949.1047958-2-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH 2/2] ext4: avoid unnecessary pointer dereference in ext4_mb_normalize_request
+In-Reply-To: <20230311170949.1047958-3-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,40 +68,53 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> pa_plen -> pa_len
-> pa_start -> pa_pstart
+> Result of EXT4_SB(ac->ac_sb) is already stored in sbi at beginning of
+> ext4_mb_normalize_request. Use sbi instead of EXT4_SB(ac->ac_sb) to
+> remove unnecessary pointer dereference.
 >
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > ---
->  fs/ext4/mballoc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/ext4/mballoc.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
 
 Looks good to me. Please feel free to add -
 
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
->
+
 > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 85d5e219933f..13dce6f07fa4 100644
+> index 13dce6f07fa4..d94eb52dda17 100644
 > --- a/fs/ext4/mballoc.c
 > +++ b/fs/ext4/mballoc.c
-> @@ -4146,7 +4146,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
->  	 * provide gurantee on number of contiguous blocks allocation since that
->  	 * depends upon free space left, etc).
->  	 * In case of inode pa, later we use the allocated blocks
-> -	 * [pa_start + fe_logical - pa_lstart, fe_len/size] from the preallocated
-> +	 * [pa_pstart + fe_logical - pa_lstart, fe_len/size] from the preallocated
->  	 * range of goal/best blocks [start, size] to put it at the
->  	 * ac_o_ex.fe_logical extent of this inode.
->  	 * (See ext4_mb_use_inode_pa() for more details)
-> @@ -4298,7 +4298,7 @@ static void ext4_mb_use_group_pa(struct ext4_allocation_context *ac,
->  	ac->ac_status = AC_STATUS_FOUND;
->  	ac->ac_pa = pa;
+> @@ -4049,7 +4049,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  		size = 8 * 1024 * 1024;
+>  	} else {
+>  		start_off = (loff_t) ac->ac_o_ex.fe_logical << bsbits;
+> -		size	  = (loff_t) EXT4_C2B(EXT4_SB(ac->ac_sb),
+> +		size	  = (loff_t) EXT4_C2B(sbi,
+>  					      ac->ac_o_ex.fe_len) << bsbits;
+>  	}
+>  	size = size >> bsbits;
+> @@ -4094,8 +4094,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  			continue;
+>  		}
 >
-> -	/* we don't correct pa_pstart or pa_plen here to avoid
-> +	/* we don't correct pa_pstart or pa_len here to avoid
->  	 * possible race when the group is being loaded concurrently
->  	 * instead we correct pa later, after blocks are marked
->  	 * in on-disk bitmap -- see ext4_mb_release_context()
+> -		pa_end = pa->pa_lstart + EXT4_C2B(EXT4_SB(ac->ac_sb),
+> -						  pa->pa_len);
+> +		pa_end = pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
+>
+>  		/* PA must not overlap original request */
+>  		BUG_ON(!(ac->ac_o_ex.fe_logical >= pa_end ||
+> @@ -4128,8 +4127,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>
+>  		spin_lock(&pa->pa_lock);
+>  		if (pa->pa_deleted == 0) {
+> -			pa_end = pa->pa_lstart + EXT4_C2B(EXT4_SB(ac->ac_sb),
+> -							  pa->pa_len);
+> +			pa_end = pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
+>  			BUG_ON(!(start >= pa_end || end <= pa->pa_lstart));
+>  		}
+>  		spin_unlock(&pa->pa_lock);
 > --
 > 2.30.0
