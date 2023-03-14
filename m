@@ -2,48 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA376BA1C7
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 23:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E1C6BA1D4
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 23:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjCNWHc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Mar 2023 18:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S229675AbjCNWIa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Mar 2023 18:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjCNWHc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 18:07:32 -0400
+        with ESMTP id S230458AbjCNWI3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 18:08:29 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36A22D17D
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Mar 2023 15:07:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E493211FE
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Mar 2023 15:08:25 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32EM7OaZ027324
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32EM8Hc3027717
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Mar 2023 18:07:25 -0400
+        Tue, 14 Mar 2023 18:08:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678831646; bh=jcmelG6obrC15YOqB2zcZfmcMci+2RWg70Q75ODKlSg=;
+        t=1678831699; bh=uTzVv+GLchUoYNO2lcP21RTevceX/z3OHphC4GnsC1w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=jIJEaJsNu8tUzxBuKvtdVz9Hm7mXbuONAGoKXhUOX7uCrogEPAZNh03MyiivVfpRQ
-         328ZjMuVO6RiTygP3wzsA1IQ3q8cjEg4KXszoMMrfbKw18xXnfrJI24XuGU+yqC2uY
-         trYVcxvWzeWbFRQBJq+frjr3CRDgiFWTtAKEnaH3UmcqGSjYSxBxSon9mWz/ea9wCG
-         U1Fr8nLpxnvwuVKTVdQUGAYOmriD7Va57LwmN7MRpPZkug+x3tCbxGj5Q72eVCG7WI
-         fKewjolgLVmQQKWmDbgHvYXokc/UIznRou9t08PwrS9EGv5DyTUBkhZa9jSk3gkS+h
-         jA6gYO94Be0KA==
+        b=RG4/tBOU/GN4cTwzuJa2gTrAWXGAtkH/9zMUhlKjzH7QR0sRXn2zkK8TaShsoXT24
+         k/YJH6ZJ2NQ5JaVtDZqFWys7Dl7OjWzLMoTxou3WWYVFGJyz8CEh/3NvtOoPGCTI7m
+         /jNnaRHr6K7+rShO60LXlKvUQbyP2/xfEUzh4cms+RhtE23047CPCme55i3bYejUse
+         Nw3gxuBmDzuM0L/zf06a/SO5xZXXABV6okcQUjp2J4Co4XR7f+ys6VL0wu93xMSO2n
+         Ye0B8gKuPATptMeBJShUQSTaFOxWdAuYhPKXMKYFGFVfe4jDr+Ti3jECtZn5QBz+em
+         4IM0+qHAyXFsQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A13A415C5830; Tue, 14 Mar 2023 18:07:24 -0400 (EDT)
-Date:   Tue, 14 Mar 2023 18:07:24 -0400
+        id 6655015C5830; Tue, 14 Mar 2023 18:08:17 -0400 (EDT)
+Date:   Tue, 14 Mar 2023 18:08:17 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 03/31] ext4: Convert ext4_bio_write_page() to use a folio
-Message-ID: <20230314220724.GR860405@mit.edu>
+Subject: Re: [PATCH 04/31] ext4: Convert ext4_finish_bio() to use folios
+Message-ID: <20230314220817.GS860405@mit.edu>
 References: <20230126202415.1682629-1-willy@infradead.org>
- <20230126202415.1682629-4-willy@infradead.org>
+ <20230126202415.1682629-5-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230126202415.1682629-4-willy@infradead.org>
+In-Reply-To: <20230126202415.1682629-5-willy@infradead.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -53,9 +53,9 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 08:23:47PM +0000, Matthew Wilcox (Oracle) wrote:
-> Remove several calls to compound_head() and the last caller of
-> set_page_writeback_keepwrite(), so remove the wrapper too.
+On Thu, Jan 26, 2023 at 08:23:48PM +0000, Matthew Wilcox (Oracle) wrote:
+> Prepare ext4 to support large folios in the page writeback path.
+> Also set the actual error in the mapping, not just -EIO.
 > 
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
