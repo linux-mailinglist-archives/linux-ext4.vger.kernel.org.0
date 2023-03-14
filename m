@@ -2,89 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253A56B94F0
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 13:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DD36B94F5
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 13:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjCNM4C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Mar 2023 08:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
+        id S232199AbjCNM4D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Mar 2023 08:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232689AbjCNMzP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 08:55:15 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1A8ACB8C;
-        Tue, 14 Mar 2023 05:50:43 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PbXrH5Q8MznXTd;
-        Tue, 14 Mar 2023 20:28:47 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 14 Mar 2023 20:31:43 +0800
-Subject: Re: [PATCH v2 1/5] ext4: Fix reusing stale buffer heads from last
- failed mounting
-To:     Jan Kara <jack@suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
-        <tudor.ambarus@linaro.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20230313132021.672134-1-chengzhihao1@huawei.com>
- <20230313132021.672134-2-chengzhihao1@huawei.com>
- <20230314113342.74g2pfwe5y7b5poa@quack3>
- <b7d108d6-9e5a-d88a-305d-932e75098b09@huawei.com>
- <20230314121125.tnz22hckcaj46kp6@quack3>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f86584f6-3877-ff18-47a1-2efaa12d18b2@huawei.com>
-Date:   Tue, 14 Mar 2023 20:31:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        with ESMTP id S232530AbjCNMyx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 08:54:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBBFA5912;
+        Tue, 14 Mar 2023 05:50:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A7DD6176A;
+        Tue, 14 Mar 2023 12:43:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D804DC433EF;
+        Tue, 14 Mar 2023 12:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678797793;
+        bh=RlGw2+zN3x2Zf8Mx3lPRTadiNVQxpPa6Pt0D5V+jmt4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jCThL6xs4e5AhtIXeEka6iEno5fAhjERXBBeLUIFWwg6ZgzVx3nFGWe1MKGmk3vnk
+         f014qGrEI2H8tCeXZOK0ofiveALVJ6nedx5cuDdCzMe0jTJ9WwXtXBqSgUGLSlE8y/
+         9SeitXC3ovyXSqaJi16kCTfLP9OXV6NzeSHdifp9wbp7nQQJSq+tiFk3HiIzUE6N3R
+         rMnaIwjagRADdjvmP+BuPdUI1sq6CgVOaOoLnlJrFaqwxFF9p6xdcoHoEvIXuzYNOu
+         wU7OJ+EjHDDKf2UjK601hPqNejhIJq4peD4Y40iDordmw5z2u7r5X8/DTMkWHZaxkg
+         to2cQXhQziz6A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Baokun Li <libaokun1@huawei.com>,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.2 05/13] ext4: fail ext4_iget if special inode unallocated
+Date:   Tue, 14 Mar 2023 08:42:57 -0400
+Message-Id: <20230314124305.470657-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230314124305.470657-1-sashal@kernel.org>
+References: <20230314124305.470657-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230314121125.tnz22hckcaj46kp6@quack3>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> On Tue 14-03-23 20:01:46, Zhihao Cheng wrote:
->> 在 2023/3/14 19:33, Jan Kara 写道:
->> Hi Jan,
->>
->>>
->>>> @@ -1271,14 +1277,8 @@ static void ext4_put_super(struct super_block *sb)
->>>>    	sync_blockdev(sb->s_bdev);
->>>>    	invalidate_bdev(sb->s_bdev);
->>
->> For journal in the inode case, journal bhs come from block device, which
->> means buffers will be dropped after this line 'invalidate_bdev(sb->s_bdev)'
->> being executed.
-> 
-> Right, I've missed that. But then why do you remove the sbi->s_journal_bdev
-> != sb->s_bdev condition below?
-> 
+From: Baokun Li <libaokun1@huawei.com>
 
-I think 'sbi->s_journal_bdev != sb->s_bdev' always becomes true if 
-sbi->s_journal_bdev exists.
+[ Upstream commit 5cd740287ae5e3f9d1c46f5bfe8778972fd6d3fe ]
 
+In ext4_fill_super(), EXT4_ORPHAN_FS flag is cleared after
+ext4_orphan_cleanup() is executed. Therefore, when __ext4_iget() is
+called to get an inode whose i_nlink is 0 when the flag exists, no error
+is returned. If the inode is a special inode, a null pointer dereference
+may occur. If the value of i_nlink is 0 for any inodes (except boot loader
+inodes) got by using the EXT4_IGET_SPECIAL flag, the current file system
+is corrupted. Therefore, make the ext4_iget() function return an error if
+it gets such an abnormal special inode.
 
-mount_bdev
-  fmode_t mode = FMODE_READ | FMODE_EXCL
-  bdev_a = blkdev_get_by_path(dev_name, mode, fs_type)
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=199179
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216541
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216539
+Reported-by: Luís Henriques <lhenriques@suse.de>
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20230107032126.4165860-2-libaokun1@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/inode.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 9d9f414f99fec..ed7598127e7c5 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4872,13 +4872,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 		goto bad_inode;
+ 	raw_inode = ext4_raw_inode(&iloc);
+ 
+-	if ((ino == EXT4_ROOT_INO) && (raw_inode->i_links_count == 0)) {
+-		ext4_error_inode(inode, function, line, 0,
+-				 "iget: root inode unallocated");
+-		ret = -EFSCORRUPTED;
+-		goto bad_inode;
+-	}
+-
+ 	if ((flags & EXT4_IGET_HANDLE) &&
+ 	    (raw_inode->i_links_count == 0) && (raw_inode->i_mode == 0)) {
+ 		ret = -ESTALE;
+@@ -4951,11 +4944,16 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	 * NeilBrown 1999oct15
+ 	 */
+ 	if (inode->i_nlink == 0) {
+-		if ((inode->i_mode == 0 ||
++		if ((inode->i_mode == 0 || flags & EXT4_IGET_SPECIAL ||
+ 		     !(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_ORPHAN_FS)) &&
+ 		    ino != EXT4_BOOT_LOADER_INO) {
+-			/* this inode is deleted */
+-			ret = -ESTALE;
++			/* this inode is deleted or unallocated */
++			if (flags & EXT4_IGET_SPECIAL) {
++				ext4_error_inode(inode, function, line, 0,
++						 "iget: special inode unallocated");
++				ret = -EFSCORRUPTED;
++			} else
++				ret = -ESTALE;
+ 			goto bad_inode;
+ 		}
+ 		/* The only unlinked inodes we let through here have
+-- 
+2.39.2
 
-mount_bdev->ext4_fill_super->ext4_load_and_init_journal->ext4_load_journal->ext4_get_dev_journal:
-  bdev_b = ext4_blkdev_get(j_dev, sb)
-   bdev_b = blkdev_get_by_dev(dev, FMODE_READ|FMODE_WRITE|FMODE_EXCL, sb)
-  EXT4_SB(sb)->s_journal_bdev = bdev_b
-
-
-bdev_a cannot be bdev_b, because bd_prepare_to_claim() makes sure the 
-same block device cannot be openned twice with mode 'FMODE_EXCL'.
