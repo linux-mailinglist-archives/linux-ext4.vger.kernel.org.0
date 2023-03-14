@@ -2,48 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E1C6BA1D4
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 23:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5088A6BA26D
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 23:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjCNWIa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Mar 2023 18:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
+        id S229705AbjCNW1G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Mar 2023 18:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjCNWI3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 18:08:29 -0400
+        with ESMTP id S230398AbjCNW1C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 18:27:02 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E493211FE
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Mar 2023 15:08:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997D22A6ED
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Mar 2023 15:27:01 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32EM8Hc3027717
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32EMQk8r005549
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Mar 2023 18:08:18 -0400
+        Tue, 14 Mar 2023 18:26:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1678831699; bh=uTzVv+GLchUoYNO2lcP21RTevceX/z3OHphC4GnsC1w=;
+        t=1678832808; bh=9WAwmkJGWs5lYMlYzHHW4hlu0f+6SGDZ/gDMxZXWqrg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=RG4/tBOU/GN4cTwzuJa2gTrAWXGAtkH/9zMUhlKjzH7QR0sRXn2zkK8TaShsoXT24
-         k/YJH6ZJ2NQ5JaVtDZqFWys7Dl7OjWzLMoTxou3WWYVFGJyz8CEh/3NvtOoPGCTI7m
-         /jNnaRHr6K7+rShO60LXlKvUQbyP2/xfEUzh4cms+RhtE23047CPCme55i3bYejUse
-         Nw3gxuBmDzuM0L/zf06a/SO5xZXXABV6okcQUjp2J4Co4XR7f+ys6VL0wu93xMSO2n
-         Ye0B8gKuPATptMeBJShUQSTaFOxWdAuYhPKXMKYFGFVfe4jDr+Ti3jECtZn5QBz+em
-         4IM0+qHAyXFsQ==
+        b=HCVtwV4z3Inqu2eOChBdPDfTKN7jtI+0gFdOj8wMnIpwaLw8zwFVvRoFfwH/9EESD
+         Qtt4WoxJaY14jSLGe+uk7kvNnqj1deT6tGCPPqCQ/eevRTz2fTr/IqgQwsER2Zdipb
+         QG9WJTZk6JJZhNc9IBsIEt9U5IQMFlHPTnp0qYXppz6QXttVPeXsZc/pF4mJ8sdvVK
+         QOoLLJhGN06H5KcLC/BrW86t4n3jSWfQeFFupEOMTZHP6M4thBYBx84AWAWgu6jZi2
+         GLHmb+yi3bTMe7m2T7jjjB4HSoLMxYkMXF1dUC1a5JSZGp4+PsYBuG5Gbq/2qBw2Sz
+         tchirH++xeZIw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6655015C5830; Tue, 14 Mar 2023 18:08:17 -0400 (EDT)
-Date:   Tue, 14 Mar 2023 18:08:17 -0400
+        id 7A1E415C5830; Tue, 14 Mar 2023 18:26:46 -0400 (EDT)
+Date:   Tue, 14 Mar 2023 18:26:46 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 04/31] ext4: Convert ext4_finish_bio() to use folios
-Message-ID: <20230314220817.GS860405@mit.edu>
-References: <20230126202415.1682629-1-willy@infradead.org>
- <20230126202415.1682629-5-willy@infradead.org>
+Subject: Re: [PATCH 05/31] ext4: Convert ext4_writepage() to use a folio
+Message-ID: <20230314222646.GT860405@mit.edu>
+References: <20230126202415.1682629-6-willy@infradead.org>
+ <87y1o9vhvq.fsf@doe.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230126202415.1682629-5-willy@infradead.org>
+In-Reply-To: <87y1o9vhvq.fsf@doe.com>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -53,10 +54,30 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 08:23:48PM +0000, Matthew Wilcox (Oracle) wrote:
-> Prepare ext4 to support large folios in the page writeback path.
-> Also set the actual error in the mapping, not just -EIO.
+On Tue, Mar 07, 2023 at 12:15:13AM +0530, Ritesh Harjani wrote:
+> "Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Prepare for multi-page folios and save some instructions by converting
+> > to the folio API.
+> 
+> Mostly a straight forward change. The changes looks good to me.
+> Please feel free to add -
+> 
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> 
+> In later few patches I see ext4_readpage converted to ext4_read_folio().
+> I think the reason why we have not changed ext4_writepage() to
+> ext4_write_folio() is because we anyway would like to get rid of
+> ->writepage ops eventually in future, so no point.
+> I think there is even patch series from Jan which tries to kill
+> ext4_writepage() completely.
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Indeed, Jan's patch series[1] is about to land in the ext4 tree, and
+that's going to remove ext4_writepages.  The main reason why this
+hadn't landed yet was due to some conflicts with some other folio
+changes, so you should be able to drop this patch when you rebase this
+patch series.
+
+					- Ted
+
+[1] https://lore.kernel.org/all/20230228051319.4085470-1-tytso@mit.edu/
