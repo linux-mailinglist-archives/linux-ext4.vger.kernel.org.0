@@ -2,89 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 342AA6B91B6
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 12:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEB46B93AD
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Mar 2023 13:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbjCNLfJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Mar 2023 07:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S231592AbjCNMYn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Mar 2023 08:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjCNLfH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 07:35:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800699AFE6;
-        Tue, 14 Mar 2023 04:35:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3813721E8B;
-        Tue, 14 Mar 2023 11:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1678793705; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSYroVqJpfDBDtAYsBz5VWYKwbIZ2RSRG2OfXtHR+MI=;
-        b=U9ZzX+ocPjAlV0r1OGHLJbUSDiF6fjr6pPmZ2NVtTRA6vY6pStLwQ3/v1qk97fq0M5/o9r
-        zlrSHKwTS9k7f6mTVHhvZA+9R03Ihmo8HLIAkrenYJiRdD10sA8wV9alnfcju0RUI29tYN
-        Zd8/WJqPXpQOq1735tiomp7Q2w9VSfE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1678793705;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSYroVqJpfDBDtAYsBz5VWYKwbIZ2RSRG2OfXtHR+MI=;
-        b=+KeUU3D/JHatauMFTgjH5qBZcSn0alfUtwMMsFMZaQH7MnvKd6w+uCdv+NtF7R8yKet0N6
-        yVrNhFEQsyUatkAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A9EA13A1B;
-        Tue, 14 Mar 2023 11:35:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SlJgCulbEGRdNwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 14 Mar 2023 11:35:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id B5B51A06FD; Tue, 14 Mar 2023 12:35:04 +0100 (CET)
-Date:   Tue, 14 Mar 2023 12:35:04 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
-        tudor.ambarus@linaro.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v2 2/5] jbd2: remove unused feature macros
-Message-ID: <20230314113504.xfo7q2uy6q623vzb@quack3>
+        with ESMTP id S231290AbjCNMYY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 08:24:24 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDD9A189E;
+        Tue, 14 Mar 2023 05:20:46 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PbX9l19g8znX5q;
+        Tue, 14 Mar 2023 19:58:51 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 14 Mar 2023 20:01:47 +0800
+Subject: Re: [PATCH v2 1/5] ext4: Fix reusing stale buffer heads from last
+ failed mounting
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
+        <tudor.ambarus@linaro.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
 References: <20230313132021.672134-1-chengzhihao1@huawei.com>
- <20230313132021.672134-3-chengzhihao1@huawei.com>
+ <20230313132021.672134-2-chengzhihao1@huawei.com>
+ <20230314113342.74g2pfwe5y7b5poa@quack3>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <b7d108d6-9e5a-d88a-305d-932e75098b09@huawei.com>
+Date:   Tue, 14 Mar 2023 20:01:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230313132021.672134-3-chengzhihao1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230314113342.74g2pfwe5y7b5poa@quack3>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 13-03-23 21:20:18, Zhihao Cheng wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+ÔÚ 2023/3/14 19:33, Jan Kara Ð´µÀ:
+Hi Jan,
+
 > 
-> JBD2_HAS_[IN|RO_]COMPAT_FEATURE macros are no longer used, just remove
-> them.
+>> @@ -1271,14 +1277,8 @@ static void ext4_put_super(struct super_block *sb)
+>>   
+>>   	sync_blockdev(sb->s_bdev);
+>>   	invalidate_bdev(sb->s_bdev);
+
+For journal in the inode case, journal bhs come from block device, which 
+means buffers will be dropped after this line 
+'invalidate_bdev(sb->s_bdev)' being executed.
+
+>> -	if (sbi->s_journal_bdev && sbi->s_journal_bdev != sb->s_bdev) {
+>> -		/*
+>> -		 * Invalidate the journal device's buffers.  We don't want them
+>> -		 * floating about in memory - the physical journal device may
+>> -		 * hotswapped, and it breaks the `ro-after' testing code.
+>> -		 */
+>> +	if (sbi->s_journal_bdev) {
+>>   		sync_blockdev(sbi->s_journal_bdev);
+>> -		invalidate_bdev(sbi->s_journal_bdev);
+>>   		ext4_blkdev_remove(sbi);
+>>   	}
+>  > Hum, but this will invalidate bhs only if journal is stored on a block
+> device. If journal is in the inode (the common case), we won't invalidate
+> anything (sbi->s_journal_bdev is NULL) and the same problem can happen?
 > 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-
-I gave you my Reviewed-by on this patch (and a few others in this series).
-Why didn't you include it?
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
