@@ -2,91 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E256BBB0F
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 18:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9870C6BBB8B
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 18:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbjCORkG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 13:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
+        id S232490AbjCOR6R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 13:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjCORkF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 13:40:05 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C154DE25
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 10:40:03 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id bp11so5359645ilb.3
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 10:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112; t=1678902003; x=1681494003;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/5df0VVcQalC1bXRcr/ZzFE9DW4g6pmup34uWUxk2BE=;
-        b=zwxQprHXlzq84Q96JdMBQaXVvSCHCBcJxqwLAdS2/M6P2PZf8X+QBMdh444n639VR4
-         9WawyHfreN9zeFpPIMhQsN7v7r0TWD5dW79rcxlqjdiRYD9CKeuHkVzP5OWvsI8S+cvb
-         GDC4tEZKH/QFkrr8nDLOkHeZriSUz/RbHofPkaXRLz6fCHLG90K7wPEWbwpuibh0EhcR
-         33COVEz8u5PDhku1P4VHqFjFgejAw7CwBqNz45vHuiNQSzxFc3uFKrVQz8nlcFD8nJwq
-         dMtxuCBUyahbswuu6YxFGozBwSWkHygIp6T2Q+IOaD+QgWYfWWa0Sr2JJEOOVVm6dXWr
-         6wqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678902003; x=1681494003;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/5df0VVcQalC1bXRcr/ZzFE9DW4g6pmup34uWUxk2BE=;
-        b=IcGDGaPK2fcU53rj6Z3ZqLdDmLBZV6GSTfUxLYucDXLF+fcPZ1BQX+f/MdlQPQsvC5
-         iON8VH7rzJCthGVmEROjrJ0y/Chx0rLu+BuaqMADKiMTYyqoyOZ/O++heCX9BbwRjzI9
-         qGFgE2SxbTt4kV/7p+ALB002bghzLAOlFwf5n9zpPIjUnxvHjuEfwfhKr6d3GAvXtmQY
-         EiPA6tjzWvudVVMruZel/CDqlvdf1kSyqGK+5hsg0EB7Hp2vc+sOTsE4Kb2M5ujtsyQE
-         llz73upU1GJ5LagNIx6FCAGROT0Bi4LAn9H7BedlXmhH/8JTR2URx4qNeTTu9hq8jpl8
-         AyKw==
-X-Gm-Message-State: AO0yUKXULuuLjx/2tS1NfoXNZOaK+U6vs8Kxn4PX1yGKQ18a5kxijEHW
-        9+5s5IZOFRQlzSzZmzE516UxGQ==
-X-Google-Smtp-Source: AK7set8OzK+A6f5D0yNLMn24/3DUQDhPAXFB5nnrO48ARbTVMVcy3wWxXjFNd9A785kMM5Plifl11g==
-X-Received: by 2002:a05:6e02:dd3:b0:317:2f8d:528f with SMTP id l19-20020a056e020dd300b003172f8d528fmr62272ilj.2.1678902003223;
-        Wed, 15 Mar 2023 10:40:03 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id y17-20020a056e02119100b0031798b87a14sm1786576ili.19.2023.03.15.10.40.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Mar 2023 10:40:02 -0700 (PDT)
-Message-ID: <b11d27d5-8e83-7144-cdc8-3966abf42db5@kernel.dk>
-Date:   Wed, 15 Mar 2023 11:40:02 -0600
+        with ESMTP id S232207AbjCOR6J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 13:58:09 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A23337571
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 10:58:03 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32FHvbS8006202
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Mar 2023 13:57:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1678903060; bh=09grMownhl4xwuVSr+pgF+GRSd0lyBDxZ4GNkmzKy2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=RPZhtmNcVeepYUr98JKqT8rlvIeu0ui2J2dVmZSBj8WxGHIlq+jyNgFn3+RSXFPL4
+         3w7Sibfm65Ovj3WeOm3phrVyAXPaYTXrK8xf8EevulHqQYOGOyGtlhbj5yPhqn+nog
+         HIZZXQyDahR0q8yueHachC+zWnCohDtJuQVvpYqbNEwg0IzvdZGf3wnkYG2ypN+A5k
+         blnnb9AAzvYWw85wxZtq3ihZSrTktW2bB1T65bhePW8h9yfBet+sJOFo8sHabBLiQy
+         WkDdKl197G7yrPAHSVKN6AYM7Yd3dfs98qwmCYfpv9kxe+A9OKVN8EKBB9WAjcJc5N
+         leCulAuVZPvVw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CE5BD15C5830; Wed, 15 Mar 2023 13:57:37 -0400 (EDT)
+Date:   Wed, 15 Mar 2023 13:57:37 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 00/31] Convert most of ext4 to folios
+Message-ID: <20230315175737.GA3024297@mit.edu>
+References: <20230126202415.1682629-1-willy@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCHSET for-next 0/2] Flag file systems as supporting parallel
- dio writes
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
-References: <20230307172015.54911-1-axboe@kernel.dk>
-In-Reply-To: <20230307172015.54911-1-axboe@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230126202415.1682629-1-willy@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 3/7/23 10:20 AM, Jens Axboe wrote:
-> Hi,
-> 
-> This has been on my TODO list for a while, and now that ext4 supports
-> parallel dio writes as well, time to dust it off and send it out... This
-> adds an FMODE flag to inform users that a given file supports parallel
-> dio writes. io_uring can use this to avoid serializing dio writes
-> upfront, in case it isn't needed. A few details in patch #2, patch 1 does
-> nothing by itself.
+I've pushed Jan's data=writeback cleanup patches, which, among other
+things completely eliminates ext4_writepage) to the ext4 tree's dev
+branch.  So when you rebase these patches for the next version of this
+series, please base them on
 
-I'm assuming silence is consent here and folks are fine with this
-change?
+https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
 
--- 
-Jens Axboe
+Thanks!!
 
-
+					- Ted
