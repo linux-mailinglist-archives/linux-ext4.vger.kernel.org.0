@@ -2,64 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FC86BAF5C
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 12:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A5B6BB2DE
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 13:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbjCOLfS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 07:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        id S232597AbjCOMjN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 08:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjCOLe5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 07:34:57 -0400
-X-Greylist: delayed 424 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Mar 2023 04:34:20 PDT
-Received: from us.icdsoft.com (us.icdsoft.com [192.252.146.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872EA14995
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 04:34:20 -0700 (PDT)
-Received: (qmail 28977 invoked by uid 1001); 15 Mar 2023 11:27:14 -0000
-Received: from unknown (HELO ?94.155.37.249?) (famzah@icdsoft.com@94.155.37.249)
-  by 192.252.159.165 with ESMTPA; 15 Mar 2023 11:27:14 -0000
-Message-ID: <ea6a88c7-5603-af1d-e775-0857fc605224@icdsoft.com>
-Date:   Wed, 15 Mar 2023 13:27:11 +0200
+        with ESMTP id S232831AbjCOMi5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 08:38:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A33B61ABF
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 05:37:55 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Pc8wW068Tzfbb1;
+        Wed, 15 Mar 2023 20:34:35 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 15 Mar 2023 20:37:32 +0800
+Subject: Re: [PATCH v3 1/2] jbd2: continue to record log between each mount
+To:     Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
+        <ocfs2-devel@oss.oracle.com>
+References: <20230314140522.3266591-1-yi.zhang@huaweicloud.com>
+ <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
+ <20230315094826.okdarxaapjyqmlhq@quack3>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <8c4ff3ab-4af2-58ed-4d08-3050c044f445@huawei.com>
+Date:   Wed, 15 Mar 2023 20:37:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: kernel BUG at fs/ext4/inode.c:1914 - page_buffers()
+In-Reply-To: <20230315094826.okdarxaapjyqmlhq@quack3>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <c9e47bc3-3c5f-09ae-9dcc-eb5957d78b1b@icdsoft.com>
- <Y45eV/nA2tj8C94W@mit.edu> <20230112150708.y2ws5q3wu2xxow3p@quack3>
-From:   Ivan Zahariev <famzah@icdsoft.com>
-In-Reply-To: <20230112150708.y2ws5q3wu2xxow3p@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_20,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 12.1.2023 г. 17:07, Jan Kara wrote:
-> So after a bit of thought I agree that the commit 5c48a7df91499 ("ext4: fix
-> an use-after-free issue about data=journal writeback mode") is broken. The
-> problem is when we unlock the page in __ext4_journalled_writepage() anybody
-> else can come, writeout the page, and reclaim page buffers (due to memory
-> pressure). Previously, bh references were preventing the buffer reclaim to
-> happen but now there's nothing to prevent it.
->
-> My rewrite of data=journal writeback path fixes this problem as a
-> side-effect but perhaps we need a quickfix for stable kernels? Something
-> like attached patch?
->
-> 								Honza
+On 2023/3/15 17:48, Jan Kara wrote:
+> On Tue 14-03-23 22:05:21, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> For a newly mounted file system, the journal committing thread always
+>> record new transactions from the start of the journal area, no matter
+>> whether the journal was clean or just has been recovered. So the logdump
+>> code in debugfs cannot dump continuous logs between each mount, it is
+>> disadvantageous to analysis corrupted file system image and locate the
+>> file system inconsistency bugs.
+>>
+>> If we get a corrupted file system in the running products and want to
+>> find out what has happened, besides lookup the system log, one effective
+>> way is to backtrack the journal log. But we may not always run e2fsck
+>> before each mount and the default fsck -a mode also cannot always
+>> checkout all inconsistencies, so it could left over some inconsistencies
+>> into the next mount until we detect it. Finally, transactions in the
+>> journal may probably discontinuous and some relatively new transactions
+>> has been covered, it becomes hard to analyse. If we could record
+>> transactions continuously between each mount, we could acquire more
+>> useful info from the journal. Like this:
+>>
+>>  |Previous mount checkpointed/recovered logs|Current mount logs         |
+>>  |{------}{---}{--------} ... {------}| ... |{======}{========}...000000|
+>>
+>> And yes the journal area is limited and cannot record everything, the
+>> problematic transaction may also be covered even if we do this, but
+>> this is still useful for fuzzy tests and short-running products.
+>>
+>> This patch save the head blocknr in the superblock after flushing the
+>> journal or unmounting the file system, let the next mount could continue
+>> to record new transaction behind it. This change is backward compatible
+>> because the old kernel does not care about the head blocknr of the
+>> journal. It is also fine if we mount a clean old image without valid
+>> head blocknr, we fail back to set it to s_first just like before.
+>> Finally, for the case of mount an unclean file system, we could also get
+>> the journal head easily after scanning/replaying the journal, it will
+>> continue to record new transaction after the recovered transactions.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> I like this implementation! I even think we could perhaps make ext4 always
+> behave this way to not increase size of the test matrix. Or do you see any
+> downside to this option?
+> 
 
-Do you consider this patch production ready?
+Thanks for your suggestion. Indeed, I don't find any side effect on this
+option both in theory and in the actual use tests on ext4, I added a new
+option was just from the safe point of view and let user could disable it if
+they don't want it. I also prefer to make ext4 always behave this way.:)
 
-Should we test it on real production machines with a peace of mind that 
-nothing can go wrong in regards to data loss or corruption?
+I would like to keep the JBD2_CYCLE_RECORD flag(ocfs2 also use jbd2, I don't
+want to disturb it until it needs), remove EXT4_MOUNT2_JOURNAL_CYCLE_RECORD
+and always set JBD2_CYCLE_RECORD on ext4 in patch 2 in the next iteration.
 
---Ivan
-
+Thanks,
+Yi.
