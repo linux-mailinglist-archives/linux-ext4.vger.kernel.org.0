@@ -2,99 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBA36BA4BD
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 02:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA16BA55A
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 03:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbjCOBdS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Mar 2023 21:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S229447AbjCOCxh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Mar 2023 22:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjCOBdD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 21:33:03 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7805C32513;
-        Tue, 14 Mar 2023 18:32:34 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Pbt8y1ks7znX4T;
-        Wed, 15 Mar 2023 09:29:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 15 Mar
- 2023 09:32:19 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
-        <tudor.ambarus@linaro.org>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v3 6/6] jbd2: remove j_format_version
-Date:   Wed, 15 Mar 2023 09:31:28 +0800
-Message-ID: <20230315013128.3911115-7-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230315013128.3911115-1-chengzhihao1@huawei.com>
-References: <20230315013128.3911115-1-chengzhihao1@huawei.com>
+        with ESMTP id S229596AbjCOCxg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Mar 2023 22:53:36 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3944129176
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Mar 2023 19:53:34 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32F2r3nQ001093
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Mar 2023 22:53:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1678848785; bh=J2lVUPoIz1nGYzwa1ZCqgo7rhP2Z54xdTsDxHZ9Xm0I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=QpsvQ/84K+pIxR/1exfKLHzemZi3amvI/fa6gSHhrrkadMbAb28lsslazJta+N+AA
+         S0p/3SWTJqqgDfcf6ZS+fJ0+3PmAMVNEF6qpz1jKRR2amESgOquw4/1h2Hjj4xqMFc
+         80jRleWu1NNA0AZTtYa8hYA2w2kVV67gnwvyQ9NnX4ETbr5F2RKFbCPAdC8RODodmx
+         3bgMGXHs5YsAA94Iiyr3ZP4+gxm67ZBxcaQOO/IA2JPNRoKZVck3AcBJy80OVmlENT
+         FWlNVoluseG8ae44yc+MacIo3ha4c2bdEqPq4/q1Ext1ivia41nKndvAsh10lr2TNB
+         PfJO6fgf+0SIw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2180E15C5830; Tue, 14 Mar 2023 22:53:02 -0400 (EDT)
+Date:   Tue, 14 Mar 2023 22:53:02 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 02/31] fscrypt: Add some folio helper functions
+Message-ID: <20230315025302.GI860405@mit.edu>
+References: <20230126202415.1682629-1-willy@infradead.org>
+ <20230126202415.1682629-3-willy@infradead.org>
+ <Y9M+tl5CcNfRScds@sol.localdomain>
+ <Y9P4MYXE9NcC8+gv@casper.infradead.org>
+ <20230314220551.GQ860405@mit.edu>
+ <ZBD/Z5Yvs0LavNms@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZBD/Z5Yvs0LavNms@sol.localdomain>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Tue, Mar 14, 2023 at 04:12:39PM -0700, Eric Biggers wrote:
+> 
+> I think large folio support for fscrypt and fsverity is not that far away.  I
+> already made the following changes in 6.3:
+> 
+>     51e4e3153ebc ("fscrypt: support decrypting data from large folios")
+>     5d0f0e57ed90 ("fsverity: support verifying data from large folios")
 
-journal->j_format_version is no longer used, remove it.
+Cool!  I was thinking that fscrypt and fsverity might end up lagging
+as far as the large folio support was concerned, but I'm glad that
+this might not be the case.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/journal.c    | 9 ---------
- include/linux/jbd2.h | 5 -----
- 2 files changed, 14 deletions(-)
+> AFAICT, absent actual testing of course, the only major thing that's still
+> needed is that fscrypt_encrypt_pagecache_blocks() needs to support large folios.
+> I'm not sure how it should work, exactly.  Matthew gave a couple options.
+> Another option is to just continue to use bounce *pages*, and keep track of all
+> the bounce pages for each folio.
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index ee678f9e40c4..837a9a85e585 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2006,15 +2006,6 @@ static int load_superblock(journal_t *journal)
- 
- 	sb = journal->j_superblock;
- 
--	switch (be32_to_cpu(sb->s_header.h_blocktype)) {
--	case JBD2_SUPERBLOCK_V1:
--		journal->j_format_version = 1;
--		break;
--	case JBD2_SUPERBLOCK_V2:
--		journal->j_format_version = 2;
--		break;
--	}
--
- 	journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
- 	journal->j_tail = be32_to_cpu(sb->s_start);
- 	journal->j_first = be32_to_cpu(sb->s_first);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 1ffcea5c024e..6990fc891612 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -792,11 +792,6 @@ struct journal_s
- 	 */
- 	journal_superblock_t	*j_superblock;
- 
--	/**
--	 * @j_format_version: Version of the superblock format.
--	 */
--	int			j_format_version;
--
- 	/**
- 	 * @j_state_lock: Protect the various scalars in the journal.
- 	 */
--- 
-2.31.1
+We don't have to solve that right away; it is possible to support
+reads of large folios, but not writes.  If someone reads in a 128k
+folio, and then modifies a 4k page in the middle of the page, we could
+just split up the 128k folio and then writing out either the single 4k
+page that was modified.  (It might very well be that in that case, we
+*want* to break up the folio anyway, to avoid the write amplification
+problem.)
 
+In any case, I suspect that how we would support large folios for ext4
+by first is to support using iomap for buffer I/O --- but only for
+file systems where page size == block size, with no fscrypt, no
+fsverity, no data=journal, and only for buffered reads.  And for
+buffered writes, we'll break apart the folio and then use the existing
+ext4_writepages() code path.
+
+We can then gradually start relying on iomap and using large folios
+for additional scenarios, both on the read and eventually, on the
+write side.  I suspect we'll want to have a way of enabling and
+disabling large folios on a fine-grained manner, as well has
+potentially proactively breaking up large folios in page_mkwrite (so
+that a 4k random page modification doesn't get amplified into the
+entire contents of a large folio needing to be written back).
+
+       		     	   	 	    - Ted
