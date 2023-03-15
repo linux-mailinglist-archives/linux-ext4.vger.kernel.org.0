@@ -2,51 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A748B6BBB87
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 18:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E716C6BBBE4
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 19:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbjCOR6G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 13:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S232602AbjCOSTn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 14:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjCOR6F (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 13:58:05 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C2932500
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 10:57:56 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id v14-20020a92c80e000000b0031faea6493cso10185797iln.11
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 10:57:56 -0700 (PDT)
+        with ESMTP id S232496AbjCOSTe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 14:19:34 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7425479B09
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 11:19:32 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id x8so2127507qvr.9
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 11:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678904372;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zopkQ37OTbb3jqgpfO1W4/ZEQgiXwNommG9IMZvT2rg=;
+        b=TLYClVd+VJLKTpszbcY+j5Cmv4IE4AGWIiTfyq5wjafEITguH3DeszdQNA3wA+fTJP
+         Iu1VSWCUseU8K3SHSlfuwq9B/N9dua+Daz7K8vnKt4UH++qSDzv/Q6FTB8oS7N7seNRM
+         0uau9GpCOhyskfAsaKnRFlCO4F1KMLe6iOvig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678903076;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zfP2RrGfa+6Gegi6FbN5052XrJmeuObXATx/IVMNmRc=;
-        b=lt38rhedGMbTAMzU1Ez8q417PIQGzDrD3iI64a9GtMkhFkhKDoeNt1j9t7fxGNcjnl
-         2mEiDOXtZf1Q8vklPhmJikB6zQN27rhmibhGpu79fM4EC8aaYa3W0U50Z1WJ7iDa/8R3
-         sUaPX+AKOm3/r5jcMQHw5p5OohES5b4D6uLg7fr3zrsAHaqq1cEvnbjl6GL+q7FKtqXv
-         oVtRv4SLegWo7mxM/6j1w+/gb599Sjx1ehsbSLTercwmdEGr1iL/HWVWcndwdevKrrpX
-         jJZn1MKjAxnNipSySsUs+F6D8Ru4lt/h8yNKE7gcCrNDQkgELDdzDrBPAzZTvIj/Ntik
-         QZvQ==
-X-Gm-Message-State: AO0yUKUUigy54EvXRJHzxvi/Gx7Bv6AQdSDjQBim4dvzPopJXKv5KxZ3
-        ndE79h24admG389D6LHBi3ZCBuamNxaCELze5Pxy7baQCEj8
-X-Google-Smtp-Source: AK7set+CvUevlQ/ozJc/gsCV323wqZhj4dpP3PLYQoJzXwEYZLxNHHJY/caAiaGCwPiT2h/UZvutF/h9WRAsjmwizceuLfgm88M8
+        d=1e100.net; s=20210112; t=1678904372;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zopkQ37OTbb3jqgpfO1W4/ZEQgiXwNommG9IMZvT2rg=;
+        b=jdK8Ub+YDgFhXfin5RPqJw8Jqk/hTDWgIjU7f0FNImG+lQ330UiGW8T3nNcz1UfEF7
+         QOrXrAZTN6U6iyvMNiorfnOC56znAcgQ5msms0n46VfJX+6BuvFw61WgUf7SxyziSlnF
+         zdfESp/ldgrQjU9S6yjzuJcjERqqeDUSJl3sQUaQQE/K5MWlQo6h6F5JHD1K4JejY58s
+         BAlyagsvZC4bS9ZQnV6KgY60cP3rPB+H541KpHblE667JpE8pRTM3Zf8X2qNFrSO51Ep
+         i8acKs5X0vbQIFg+AHRJOStmOkb5cq+ja1m4JLDZ/fOG5iMSeEBGTTi9l+Ys5ddSuCWt
+         SzCw==
+X-Gm-Message-State: AO0yUKWlQYxZgzfmJAqEdWu9vsSt/V+DHgk0RC/bdHDmbx1OiJZDpVA4
+        IUOBbR5BWJmGPkJ6VBnATMO9tA==
+X-Google-Smtp-Source: AK7set/hCCFJOC2Yg+Yoi2Re2vblNTj2n9yVDq3z2Os1uV34xJ6baMyuRQji3/AZqoHcyys1zoL/Cw==
+X-Received: by 2002:a05:6214:d89:b0:56e:ac97:85da with SMTP id e9-20020a0562140d8900b0056eac9785damr26734276qve.30.1678904372039;
+        Wed, 15 Mar 2023 11:19:32 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id v125-20020a379383000000b007458ae32290sm4113974qkd.128.2023.03.15.11.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 11:19:31 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Lukas Czerner <lczerner@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 07/14] ext4/super: Rename kfree_rcu() to kfree_rcu_mightsleep()
+Date:   Wed, 15 Mar 2023 18:18:54 +0000
+Message-Id: <20230315181902.4177819-7-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+In-Reply-To: <20230315181902.4177819-1-joel@joelfernandes.org>
+References: <20230315181902.4177819-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d46:b0:310:9d77:6063 with SMTP id
- h6-20020a056e020d4600b003109d776063mr3650597ilj.5.1678903076058; Wed, 15 Mar
- 2023 10:57:56 -0700 (PDT)
-Date:   Wed, 15 Mar 2023 10:57:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000075fe1b05f6f415f7@google.com>
-Subject: [syzbot] [ext4?] WARNING in kvfree (2)
-From:   syzbot <syzbot+64b645917ce07d89bde5@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,141 +72,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-syzbot found the following issue on:
+The kfree_rcu() and kvfree_rcu() macros' single-argument forms are
+deprecated.  Therefore switch to the new kfree_rcu_mightsleep() and
+kvfree_rcu_mightsleep() variants. The goal is to avoid accidental use
+of the single-argument forms, which can introduce functionality bugs in
+atomic contexts and latency bugs in non-atomic contexts.
 
-HEAD commit:    fe15c26ee26e Linux 6.3-rc1
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1100fce2c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7573cbcd881a88c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=64b645917ce07d89bde5
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/89d41abd07bd/disk-fe15c26e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fa75f5030ade/vmlinux-fe15c26e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/590d0f5903ee/Image-fe15c26e.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+64b645917ce07d89bde5@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 9389 at mm/slab_common.c:935 free_large_kmalloc+0x34/0x138 mm/slab_common.c:936
-Modules linked in:
-CPU: 1 PID: 9389 Comm: syz-executor.5 Not tainted 6.3.0-rc1-syzkaller-gfe15c26ee26e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : free_large_kmalloc+0x34/0x138 mm/slab_common.c:936
-lr : kfree+0x184/0x228 mm/slab_common.c:1013
-sp : ffff8000227974e0
-x29: ffff8000227974e0 x28: 00000000000003bc x27: ffff000142fd15a4
-x26: dfff800000000000 x25: 0000000000000020 x24: ffff0000c4f01c00
-x23: 0000000000000020 x22: ffff00012f6d48e8 x21: ffff800008829ce8
-x20: ffff000142fd15a4 x19: fffffc00050bf440 x18: ffff8000227970e0
-x17: ffff800015cdd000 x16: ffff800008313a3c x15: 0000000000000000
-x14: 00000000ffff8000 x13: 00000000ecdf532c x12: 0000000000000003
-x11: ff8080000809b854 x10: 0000000000000000 x9 : 05ffc0000000203a
-x8 : ffff8000186ee000 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : fffffffffffffff0 x3 : 0000000000000000
-x2 : 0000000000000006 x1 : ffff000142fd15a4 x0 : fffffc00050bf440
-Call trace:
- free_large_kmalloc+0x34/0x138 mm/slab_common.c:936
- kfree+0x184/0x228 mm/slab_common.c:1013
- kvfree+0x40/0x50 mm/util.c:649
- ext4_xattr_move_to_block fs/ext4/xattr.c:2680 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
- ext4_expand_extra_isize_ea+0xcf8/0x1620 fs/ext4/xattr.c:2835
- __ext4_expand_extra_isize+0x290/0x348 fs/ext4/inode.c:5955
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:5998 [inline]
- __ext4_mark_inode_dirty+0x5dc/0xa94 fs/ext4/inode.c:6076
- __ext4_unlink+0x768/0x998 fs/ext4/namei.c:3256
- ext4_unlink+0x2ec/0xb10 fs/ext4/namei.c:3299
- vfs_unlink+0x2f0/0x508 fs/namei.c:4250
- do_unlinkat+0x4c8/0x82c fs/namei.c:4316
- __do_sys_unlinkat fs/namei.c:4359 [inline]
- __se_sys_unlinkat fs/namei.c:4352 [inline]
- __arm64_sys_unlinkat+0xcc/0xfc fs/namei.c:4352
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
- el0_svc+0x58/0x168 arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 3482
-hardirqs last  enabled at (3481): [<ffff80000898bb44>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:242
-hardirqs last disabled at (3482): [<ffff80001245e098>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:405
-softirqs last  enabled at (3300): [<ffff800008034240>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (3298): [<ffff80000803420c>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-object pointer: 0x000000000b8c335f
-==================================================================
-BUG: KASAN: invalid-free in kfree+0x184/0x228 mm/slab_common.c:1013
-Free of addr ffff000142fd15a4 by task syz-executor.5/9389
-
-CPU: 0 PID: 9389 Comm: syz-executor.5 Tainted: G        W          6.3.0-rc1-syzkaller-gfe15c26ee26e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-Call trace:
- dump_backtrace+0x1c8/0x1f4 arch/arm64/kernel/stacktrace.c:158
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:165
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:319 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:430
- kasan_report_invalid_free+0xc4/0x114 mm/kasan/report.c:501
- __kasan_kfree_large+0xa4/0xc0 mm/kasan/common.c:272
- kasan_kfree_large include/linux/kasan.h:170 [inline]
- free_large_kmalloc+0x70/0x138 mm/slab_common.c:939
- kfree+0x184/0x228 mm/slab_common.c:1013
- kvfree+0x40/0x50 mm/util.c:649
- ext4_xattr_move_to_block fs/ext4/xattr.c:2680 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
- ext4_expand_extra_isize_ea+0xcf8/0x1620 fs/ext4/xattr.c:2835
- __ext4_expand_extra_isize+0x290/0x348 fs/ext4/inode.c:5955
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:5998 [inline]
- __ext4_mark_inode_dirty+0x5dc/0xa94 fs/ext4/inode.c:6076
- __ext4_unlink+0x768/0x998 fs/ext4/namei.c:3256
- ext4_unlink+0x2ec/0xb10 fs/ext4/namei.c:3299
- vfs_unlink+0x2f0/0x508 fs/namei.c:4250
- do_unlinkat+0x4c8/0x82c fs/namei.c:4316
- __do_sys_unlinkat fs/namei.c:4359 [inline]
- __se_sys_unlinkat fs/namei.c:4352 [inline]
- __arm64_sys_unlinkat+0xcc/0xfc fs/namei.c:4352
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
- el0_svc+0x58/0x168 arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-
-The buggy address belongs to the physical page:
-page:000000004ed01e6f refcount:2 mapcount:0 mapping:0000000047d3c139 index:0x1 pfn:0x182fd1
-memcg:ffff000131a56000
-aops:def_blk_aops ino:700005
-flags: 0x5ffc0000000203a(referenced|dirty|lru|active|private|node=0|zone=2|lastcpupid=0x7ff)
-raw: 05ffc0000000203a fffffc0003531048 fffffc0005118988 ffff0000c0497610
-raw: 0000000000000001 ffff0000e0738cb0 00000002ffffffff ffff000131a56000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff000142fd1480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff000142fd1500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff000142fd1580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                               ^
- ffff000142fd1600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff000142fd1680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ext4/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 88f7b8a88c76..405a66b47311 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2500,7 +2500,7 @@ static void ext4_apply_quota_options(struct fs_context *fc,
+ 			qname = rcu_replace_pointer(sbi->s_qf_names[i], qname,
+ 						lockdep_is_held(&sb->s_umount));
+ 			if (qname)
+-				kfree_rcu(qname);
++				kfree_rcu_mightsleep(qname);
+ 		}
+ 	}
+ 
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
+
