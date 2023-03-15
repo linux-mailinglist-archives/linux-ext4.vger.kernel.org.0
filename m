@@ -2,90 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262846BA64F
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 05:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF5F6BAA96
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 09:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjCOEk7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 00:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
+        id S231649AbjCOIRk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 04:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjCOEk5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 00:40:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4665F59E6F;
-        Tue, 14 Mar 2023 21:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XQn9K+UzLrDPyuo7ook5H7WpKOw9ZxwwCdJZVb5L5bI=; b=bOXTATtvTMVgkMtGn99pO6U6Fp
-        tl+KKVNcUxqRyjy5Ksj1fNnzkk0cWk/in2soDZDKwIb1SwCo3t+aSmj2hlGAZJjqsdVhk9xZrndAg
-        ealIn6kACDzAwDN9aCaw9penuSta6TodFASiTCU/ba+VP5EocNPKjJod5JMnsZAkF/l+qMbn6/up/
-        sUdV5CH2rQFU0G9V6VIA510azfRt23Cs3u/MMuDbb5U+dPRYOr0RQ70m8q+0kRv9GAygWVZePeJLx
-        q4hO9KYZXyxFMP1tEyJ/ypy3lQzugJfBiFqJc2PTwUcliTN95hMdGoiEp1jIVFiWUp+kqyxuJI6iV
-        qfxXkHSA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pcIwR-00DWwO-L8; Wed, 15 Mar 2023 04:40:47 +0000
-Date:   Wed, 15 Mar 2023 04:40:47 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Theodore Tso <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 25/31] ext4: Convert ext4_block_write_begin() to take a
- folio
-Message-ID: <ZBFMT6L0QqpDcWNm@casper.infradead.org>
-References: <ZAWj4FHczOQwwEbK@casper.infradead.org>
- <87r0u129di.fsf@doe.com>
+        with ESMTP id S231575AbjCOIRj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 04:17:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CC469CD8;
+        Wed, 15 Mar 2023 01:17:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A36B061BFA;
+        Wed, 15 Mar 2023 08:17:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4A6DC433D2;
+        Wed, 15 Mar 2023 08:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1678868257;
+        bh=129136KonHnvA/Qh8RW1qIvuJJElxgMtb5QysSBmDXM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RuemUmY2H9Pp6TblhS05t/859Psk8kNxoHNN44y8h+cATtrNYdKX+soy5I1nMggi7
+         YRqT7Za/2WY/HDqjB5PJlux0L0jyAMdxo5mhSRMSiIdu8dqn8KRtcrFAcr7RvFd1fc
+         XBBgN1LifzGAl45oGYVNIIx4HRN/pB5rDtUHIuYk=
+Date:   Wed, 15 Mar 2023 09:17:34 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     stable@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com
+Subject: Re: [PATCH][for stable 5.{15, 10} 0/4] ext4: Fix kernel BUG in
+ ext4_free_blocks
+Message-ID: <ZBF/HpuRkBVQxcrp@kroah.com>
+References: <20230302153610.1204653-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r0u129di.fsf@doe.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230302153610.1204653-1-tudor.ambarus@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 06, 2023 at 08:51:45PM +0530, Ritesh Harjani wrote:
-> Matthew Wilcox <willy@infradead.org> writes:
+On Thu, Mar 02, 2023 at 03:36:06PM +0000, Tudor Ambarus wrote:
+> Hi,
 > 
-> > On Mon, Mar 06, 2023 at 12:21:48PM +0530, Ritesh Harjani wrote:
-> >> "Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
-> >>
-> >> > All the callers now have a folio, so pass that in and operate on folios.
-> >> > Removes four calls to compound_head().
-> >>
-> >> Why do you say four? Isn't it 3 calls of PageUptodate(page) which
-> >> removes calls to compound_head()? Which one did I miss?
-> >>
-> >> > -	BUG_ON(!PageLocked(page));
-> >> > +	BUG_ON(!folio_test_locked(folio));
-> >
-> > That one ;-)
+> This patch set is intended for stable/linux-5.{15, 10}.y. The patches
+> applied cleanly without deviations from the original upstream patches.
+> The last patch is fixing the bug reported at [1]. The other three are
+> prerequisites for the last commit. I tested the patches and I confirm
+> that the reproducer no longer complains on linux-5.{15, 10}.y. Older
+> LTS kernels have more dependencies, let's fix these until I sort out
+> what else should be backported for the older LTS kernels.
 > 
-> __PAGEFLAG(Locked, locked, PF_NO_TAIL)
+> [1] LINK: https://syzkaller.appspot.com/bug?id=5266d464285a03cee9dbfda7d2452a72c3c2ae7c 
 > 
-> #define __PAGEFLAG(uname, lname, policy)				\
-> 	TESTPAGEFLAG(uname, lname, policy)				\
-> 	__SETPAGEFLAG(uname, lname, policy)				\
-> 	__CLEARPAGEFLAG(uname, lname, policy)
+> Cheers,
+> ta
 > 
-> #define TESTPAGEFLAG(uname, lname, policy)				\
-> static __always_inline bool folio_test_##lname(struct folio *folio)	\
-> { return test_bit(PG_##lname, folio_flags(folio, FOLIO_##policy)); }	\
-> static __always_inline int Page##uname(struct page *page)		\
-> { return test_bit(PG_##lname, &policy(page, 0)->flags); }
+> Lukas Czerner (1):
+>   ext4: block range must be validated before use in ext4_mb_clear_bb()
 > 
-> How? PageLocked(page) doesn't do any compount_head() calls no?
+> Ritesh Harjani (3):
+>   ext4: refactor ext4_free_blocks() to pull out ext4_mb_clear_bb()
+>   ext4: add ext4_sb_block_valid() refactored out of
+>     ext4_inode_block_valid()
+>   ext4: add strict range checks while freeing blocks
+> 
+>  fs/ext4/block_validity.c |  26 +++--
+>  fs/ext4/ext4.h           |   3 +
+>  fs/ext4/mballoc.c        | 205 +++++++++++++++++++++++----------------
+>  3 files changed, 139 insertions(+), 95 deletions(-)
 
-You missed one piece of the definition ...
+Now queued up, thanks.
 
-#define PF_NO_TAIL(page, enforce) ({                                    \
-                VM_BUG_ON_PGFLAGS(enforce && PageTail(page), page);     \
-                PF_POISONED_CHECK(compound_head(page)); })
-
-
+greg k-h
