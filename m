@@ -2,114 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2A96BED4D
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 16:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4666BF546
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 23:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjCQPvT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 11:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
+        id S230123AbjCQWkw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 18:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjCQPvS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 11:51:18 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25538457C4
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 08:51:17 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32HFolij015247
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 11:50:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1679068250; bh=tsuI/3AQbb01opNQjlPT5OtU6shs2k5NRqebA+XQ/O4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=oGQSktXGSx7A73SE3u8bOgcG6CYh40tQTA0hbo3KWAxrR4P/XVYNa/tT5l8cteSqy
-         6wZt7G7NO/Bn3tiQsQixOtl87C2xELVCdHL2l0PNYsD3jian/BBX0SVVQSNix5snOY
-         mrlK650tq/w+I2gqnkeDV8+5VTBjzy8n9PjPH8kp9EWCtUgN9sD90PeBJf1s59X/AR
-         DPsjzjeKYLH4Ro84Yfv2UDibyOlLDqlL/eF2bnG/i1lAXJWI+2T8kUWhi+hfcjNzAe
-         rxGigEa5azKlALNSjDB/tpS4YNjycjNuORbUws1NEECTsVeubgnJRVgADf+Hotlurh
-         IWTrg4dPzxkjg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B108615C33A7; Fri, 17 Mar 2023 11:50:47 -0400 (EDT)
-Date:   Fri, 17 Mar 2023 11:50:47 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        ritesh.list@gmail.com,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 20/20] ext4: simplify calculation of blkoff in
- ext4_mb_new_blocks_simple
-Message-ID: <20230317155047.GB3270589@mit.edu>
-References: <20230303172120.3800725-1-shikemeng@huaweicloud.com>
- <20230303172120.3800725-21-shikemeng@huaweicloud.com>
- <20230316050740.GL860405@mit.edu>
- <d88a3d33-6832-2921-c8bb-b935b19e7db4@huaweicloud.com>
+        with ESMTP id S229560AbjCQWkv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 18:40:51 -0400
+Received: from sragenkab.go.id (mail.sragenkab.go.id [103.172.109.4])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 59AF46F48F
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 15:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sragenkab.go.id;
+         h=mime-version:content-type:content-transfer-encoding:date:from
+        :to:subject:reply-to:message-id; q=dns/txt; s=dkim1; bh=QGcIAmD5
+        O/Y9qXzDV8MxyimbsW3+rMaQ/kz75GzBHbk=; b=oEVojCWI0MgHnlba85Al8Hro
+        44yYA9IGj9EopU1n7bOszXm++4ixEao9a1avQecKzx5xyF1mZbyTSPWVhD58n3J1
+        1BbM41Q9IdmHFMH2T8gcNEja1LAv6DAxudS8VO2Omn2lcpwerCk4KyF6ORMyxOKQ
+        4k1S9/LANo0yVo2NsKzpURqlQ/GCZAB4MCsw30pJs5xeD5T0xi2vm1Q0GJrM6qQJ
+        bUtX8Bw3QFNIfq1/HE1/JbsHgVd6EsiT8/bLVm+P+P6wJhzedHGgX0sPsX2FICmn
+        LR/l01BF5dPek2STVrnmPj0YcUC13tMYU2pH/NdGdpSP/8iB6AEM7aZ3f5Zc+w==
+Received: (qmail 60445 invoked from network); 15 Mar 2023 01:57:35 -0000
+Received: from localhost (HELO mail2.sragenkab.go.id) (127.0.0.1)
+  by localhost with SMTP; 15 Mar 2023 01:57:35 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d88a3d33-6832-2921-c8bb-b935b19e7db4@huaweicloud.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Mar 2023 18:57:34 -0700
+From:   Ibrahim Tafa <jurnalsukowati@sragenkab.go.id>
+To:     undisclosed-recipients:;
+Subject: LOAN OPPORTUNITY AT LOW-INTEREST RATE.!
+Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Mail-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Message-ID: <e93142c879ba8c06196254d51fc47470@sragenkab.go.id>
+X-Sender: jurnalsukowati@sragenkab.go.id
+User-Agent: Roundcube Webmail/0.8.1
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,SUBJ_ALL_CAPS,UNDISC_MONEY,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 06:19:40PM +0800, Kemeng Shi wrote:
-> Hi Theodore, thanks for feedback. I will submit another patchset for
-> mballoc and I would like to include this fix if no one else does. As
-> new patches may be conflicted with old ones I submited, I would submit
-> the new patchset after the old ones are fully reviewed and applied
-> if this fix is not in rush. Thanks!
 
-Hi, I've already taken the your patches into the dev branch; were
-there any changes you were intending to make to your patches?
 
-If you could submit a separate fix for the bug that I noticed, that
-would be great.
+-- 
+Greetings,
+   I am contacting you based on the Investment/Loan opportunity for 
+companies in need of financing a project/business, We have developed a 
+new method of financing that doesn't take long to receive financing from 
+our clients.
+    If you are looking for funds to finance your project/Business or if 
+you are willing to work as our agent in your country to find clients in 
+need of financing and earn commissions, then get back to me for more 
+details.
 
-Also, if you are interested in doing some more work in mballoc.c, I
-was wondering if you would be interested in adding some Kunit tests
-for mballoc.c.  A simple example Kunit test for ext4 can be found in
-fs/ext4/inode_test.c.  (The convention is to place tests for foo.c in
-foo_test.c.)
-
-[1] https://docs.kernel.org/dev-tools/kunit/
-
-In order to add mballoc Kunit tests, we will need to add some "mock"[2]
-functions to simulate what happens when mballoc.c tries reading a
-block bitmap.  My thinking was to have a test provide an array of some
-data structure like this:
-
-struct test_bitmap {
-       unsigned int	start;
-       unsigned int	len;
-};
-
-[2] https://en.wikipedia.org/wiki/Mock_object
-
-... which indicates the starting block, and the length of a run of
-blocks that are marked as in use, where the list of blocks are sorted
-by starting block number, and where a starting block of ~0 indicates
-the end of the list of block extents.
-
-We would also need have a set of utility ext4 Kunit functions to
-create "fake" ext4 superblocks and ext4_sb_info structures.
-
-I was originally thinking that obvious starting Kunit tests would be
-for fs/ext4/hash.c and fs/ext4/extents_status.c, since they require
-the little or no "mocking" support.  However, there are so many
-changes in fs/ext4/mballoc.c, the urgency in having unit tests for it
-is getting more urgent --- since if there is a bug in one of these
-functions, such as the one that I noted in
-ext4_mb_new_blocks_simple(), since it's harder to exhaustively test
-some of these smaller sub-functions in integration tests such as those
-found in xfstests.  Unit tests are the best way to make sure we're
-testing all of the code paths in a complex module such as mballoc.c
-
-Cheers,
-
-						- Ted
+Regards,
+Ibrahim Tafa
+ABIENCE INVESTMENT GROUP FZE, United Arab Emirates
