@@ -2,49 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A5B6BB2DE
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 13:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B986BB6D0
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 15:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbjCOMjN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 08:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
+        id S233339AbjCOO7c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 10:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbjCOMi5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 08:38:57 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A33B61ABF
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 05:37:55 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Pc8wW068Tzfbb1;
-        Wed, 15 Mar 2023 20:34:35 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 15 Mar 2023 20:37:32 +0800
-Subject: Re: [PATCH v3 1/2] jbd2: continue to record log between each mount
-To:     Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
-        <ocfs2-devel@oss.oracle.com>
-References: <20230314140522.3266591-1-yi.zhang@huaweicloud.com>
- <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
- <20230315094826.okdarxaapjyqmlhq@quack3>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <8c4ff3ab-4af2-58ed-4d08-3050c044f445@huawei.com>
-Date:   Wed, 15 Mar 2023 20:37:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20230315094826.okdarxaapjyqmlhq@quack3>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.34]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S233225AbjCOO7N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 10:59:13 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41719749E;
+        Wed, 15 Mar 2023 07:58:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id h12-20020a17090aea8c00b0023d1311fab3so2301520pjz.1;
+        Wed, 15 Mar 2023 07:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678892284;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dokgrxg7LsaZ2JGu50D2m9zJ1ZTRNdIVZnZRE9TyiYA=;
+        b=JOC7Mx3fWiA0zvfzLyHe7LRt+2rWixnacoz+bNjQ8+ZMI8yHWZBIt1yPfC81kq39ch
+         xOfgrbI84b5FYqRMGFLEZSA3/ViD+njB6PJajq/s+uq/EA2ADgk/zUcVrmbBevFkgX+8
+         QYw20yj8LRrlb3xGJYC/WVaolFWkbQ9c8hRXTsVCtLxMUhfwJbQ0K4msRG2bPaStks5M
+         IoSp1JfCsyXnLeeKALXNY4Rm7UzEuJFb00I3uXtw57qtPVvDq+FNdm4ros/BMM31wzJF
+         UClxpKxyjcjZpHj7/kCzMf0Ly49DZ7NRtdVVzuIuLKrODSNvNQDOtQkBDOn77D1agNJA
+         yOLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678892284;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dokgrxg7LsaZ2JGu50D2m9zJ1ZTRNdIVZnZRE9TyiYA=;
+        b=7yi0PPJtcHvOPlAq4+Qh9MzdkWjbRFWcwek2ZYQw59VnGM/Lutg3H9F3YfZQ0p8tDz
+         lvnSm3V5fdSWpg5jU6gJunY/KBQT4qiCd3kaws5lXhRMCeAOYIRORs0S3KuHf13yyUgt
+         5d+z3LG9Li2dc1otJUz31HIPyJzbXgJfKB9KaG4/RO2Il6oHM/jFZUVCzeztmnOnNIDl
+         9dOO9VucA8b3QVfS+0e5F4lZfY+I5XhDEZs92/LinJbP9UDgBG8RcgIi9ZMLohEYpsV8
+         ytfE2paXG3R8N+rSBpeZTDXG9Q8KgNm4F0QEOc2KL/EZJeIWSiCgE0oMgPRu0wtduQnr
+         +4Lg==
+X-Gm-Message-State: AO0yUKUnxwecqfz4aaRV/CArs6j2kElVGIPcP5RuBc58qJ553zCcnXs1
+        SSQ4D03MQD3gT9xRzG5P333/p+khuaBtAQ==
+X-Google-Smtp-Source: AK7set8AwaWLXTj1ENvzQEn1jH4j8u0dxhPBRYCKYfKuP0E894bHLAaP+DtFYemzWsyvHC1obYkKxA==
+X-Received: by 2002:a05:6a20:7b28:b0:d5:8207:9f08 with SMTP id s40-20020a056a207b2800b000d582079f08mr54647pzh.33.1678892284282;
+        Wed, 15 Mar 2023 07:58:04 -0700 (PDT)
+Received: from rh-tp ([2406:7400:63:469f:1474:7c59:3a57:aab6])
+        by smtp.gmail.com with ESMTPSA id s5-20020aa78285000000b005d296facfa3sm3643422pfm.36.2023.03.15.07.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 07:58:03 -0700 (PDT)
+Date:   Wed, 15 Mar 2023 20:27:50 +0530
+Message-Id: <874jqm83kh.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 25/31] ext4: Convert ext4_block_write_begin() to take a folio
+In-Reply-To: <ZBFMT6L0QqpDcWNm@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,60 +66,46 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/3/15 17:48, Jan Kara wrote:
-> On Tue 14-03-23 22:05:21, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> For a newly mounted file system, the journal committing thread always
->> record new transactions from the start of the journal area, no matter
->> whether the journal was clean or just has been recovered. So the logdump
->> code in debugfs cannot dump continuous logs between each mount, it is
->> disadvantageous to analysis corrupted file system image and locate the
->> file system inconsistency bugs.
->>
->> If we get a corrupted file system in the running products and want to
->> find out what has happened, besides lookup the system log, one effective
->> way is to backtrack the journal log. But we may not always run e2fsck
->> before each mount and the default fsck -a mode also cannot always
->> checkout all inconsistencies, so it could left over some inconsistencies
->> into the next mount until we detect it. Finally, transactions in the
->> journal may probably discontinuous and some relatively new transactions
->> has been covered, it becomes hard to analyse. If we could record
->> transactions continuously between each mount, we could acquire more
->> useful info from the journal. Like this:
->>
->>  |Previous mount checkpointed/recovered logs|Current mount logs         |
->>  |{------}{---}{--------} ... {------}| ... |{======}{========}...000000|
->>
->> And yes the journal area is limited and cannot record everything, the
->> problematic transaction may also be covered even if we do this, but
->> this is still useful for fuzzy tests and short-running products.
->>
->> This patch save the head blocknr in the superblock after flushing the
->> journal or unmounting the file system, let the next mount could continue
->> to record new transaction behind it. This change is backward compatible
->> because the old kernel does not care about the head blocknr of the
->> journal. It is also fine if we mount a clean old image without valid
->> head blocknr, we fail back to set it to s_first just like before.
->> Finally, for the case of mount an unclean file system, we could also get
->> the journal head easily after scanning/replaying the journal, it will
->> continue to record new transaction after the recovered transactions.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> I like this implementation! I even think we could perhaps make ext4 always
-> behave this way to not increase size of the test matrix. Or do you see any
-> downside to this option?
-> 
+Matthew Wilcox <willy@infradead.org> writes:
 
-Thanks for your suggestion. Indeed, I don't find any side effect on this
-option both in theory and in the actual use tests on ext4, I added a new
-option was just from the safe point of view and let user could disable it if
-they don't want it. I also prefer to make ext4 always behave this way.:)
+> On Mon, Mar 06, 2023 at 08:51:45PM +0530, Ritesh Harjani wrote:
+>> Matthew Wilcox <willy@infradead.org> writes:
+>> 
+>> > On Mon, Mar 06, 2023 at 12:21:48PM +0530, Ritesh Harjani wrote:
+>> >> "Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
+>> >>
+>> >> > All the callers now have a folio, so pass that in and operate on folios.
+>> >> > Removes four calls to compound_head().
+>> >>
+>> >> Why do you say four? Isn't it 3 calls of PageUptodate(page) which
+>> >> removes calls to compound_head()? Which one did I miss?
+>> >>
+>> >> > -	BUG_ON(!PageLocked(page));
+>> >> > +	BUG_ON(!folio_test_locked(folio));
+>> >
+>> > That one ;-)
+>> 
+>> __PAGEFLAG(Locked, locked, PF_NO_TAIL)
+>> 
+>> #define __PAGEFLAG(uname, lname, policy)				\
+>> 	TESTPAGEFLAG(uname, lname, policy)				\
+>> 	__SETPAGEFLAG(uname, lname, policy)				\
+>> 	__CLEARPAGEFLAG(uname, lname, policy)
+>> 
+>> #define TESTPAGEFLAG(uname, lname, policy)				\
+>> static __always_inline bool folio_test_##lname(struct folio *folio)	\
+>> { return test_bit(PG_##lname, folio_flags(folio, FOLIO_##policy)); }	\
+>> static __always_inline int Page##uname(struct page *page)		\
+>> { return test_bit(PG_##lname, &policy(page, 0)->flags); }
+>> 
+>> How? PageLocked(page) doesn't do any compount_head() calls no?
+>
+> You missed one piece of the definition ...
+>
+> #define PF_NO_TAIL(page, enforce) ({                                    \
+>                 VM_BUG_ON_PGFLAGS(enforce && PageTail(page), page);     \
+>                 PF_POISONED_CHECK(compound_head(page)); })
 
-I would like to keep the JBD2_CYCLE_RECORD flag(ocfs2 also use jbd2, I don't
-want to disturb it until it needs), remove EXT4_MOUNT2_JOURNAL_CYCLE_RECORD
-and always set JBD2_CYCLE_RECORD on ext4 in patch 2 in the next iteration.
+aah yes, right. Thanks for pointing it.
 
-Thanks,
-Yi.
+-ritesh
