@@ -2,292 +2,225 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A896BAC8A
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 10:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A682D6BAF1B
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Mar 2023 12:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjCOJt3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Mar 2023 05:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
+        id S231751AbjCOLVU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Mar 2023 07:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjCOJsl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 05:48:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0FF460BC
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 02:48:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3365E2199F;
-        Wed, 15 Mar 2023 09:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1678873707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRspJf+DSGnnBiaF0f0/n7qSmIESgC2h7Zm93NJz7CI=;
-        b=3ENUXG+2onjA+zOLHs25qB8X8CVV0Vy+R6pc/oB8T1zuA5PmZnVm17z8xAFc2yAl8pJw8v
-        zo4H5bY2poSYScsiJcsmOY4MdwsIptMIw9r7FuAATHW4HpHvy5dYWMZFA7BaDIQAK+Gc4V
-        OTzP9o7G22WP6hi0jXmkg7sIbdlzfVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1678873707;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRspJf+DSGnnBiaF0f0/n7qSmIESgC2h7Zm93NJz7CI=;
-        b=S+Dwja3iay2HGYDjU7cXu/egihFpI78+G2yvFBpk1y4+hUNWe3UVGD07f5xsWrpG3EPJta
-        hbbujfi2H9PB9BBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BF1B13A2F;
-        Wed, 15 Mar 2023 09:48:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UeDABmuUEWTQNAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 15 Mar 2023 09:48:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9A5F3A06FD; Wed, 15 Mar 2023 10:48:26 +0100 (CET)
-Date:   Wed, 15 Mar 2023 10:48:26 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v3 1/2] jbd2: continue to record log between each mount
-Message-ID: <20230315094826.okdarxaapjyqmlhq@quack3>
-References: <20230314140522.3266591-1-yi.zhang@huaweicloud.com>
- <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
+        with ESMTP id S231785AbjCOLUk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Mar 2023 07:20:40 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D25166D0
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 04:20:17 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id h3so19028343lja.12
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Mar 2023 04:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678879215;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TcZe62watmsrNWNr+0xVUg5ns1bQCkpf6JEkAYSSRnQ=;
+        b=jEKOTpXWBgetyvBOTcq07ZVms4OzGIZaIeNU2rzx3ydcLvu2cG2uT8OiNwi0RkzH8+
+         EbireJXYYekGTGE6kq9tgYaysO5S1wmAxwgSDQ04ZQn5ISAyDtDAA04i5/tP+QUBXIgM
+         qvSMLreKOTUGBxRji8i97cXAAHLnPRGzOE7OItuRWtJ76sMyRsxiwYqmwMkpgjyy1gIt
+         QEh3yk98BEGhnU+9/YTx7GinRxV/xtC5NthxpnRFV1Urj0N97PtXyBCfFl/lWocXD+Dn
+         lfHVlRFUxoZtpLJUvzX5MvDBXUCHocr+0jcWRlAyDtqKu8bs+8EGJlkouRIltgjL549q
+         o8HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678879215;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TcZe62watmsrNWNr+0xVUg5ns1bQCkpf6JEkAYSSRnQ=;
+        b=kNiZ8gUP62Q2OTTczJS4ONglSIcCos/JSseW8dfM4FsAYzvVKCpYcTk13eglT4ULFn
+         /1kray71c3cvALePkAR5MMeYhV11QN8fWJvjV9C1EGFPgVFUKnlleSYadjFL/bVTPbph
+         SdIFStzyYDCEj+QBCsvk99IdBvltYV0tES/gF/6O1EBSIypYs0ewqVS/WenMP2ag/48B
+         GWbwjED5d5Z08fHvQcpBtyonyNpgEpxsGaBSK1BwOL+gN8YcBKn+0B+5hddmDEMZP21C
+         q4uTHMfX4Ui/vKsAAYoVXDGemNc1vman0HVYx/OGudT5JD0SLl7Gggo19NmVoGrEgXyo
+         W+Qg==
+X-Gm-Message-State: AO0yUKV0irzopUWcC+bykDvyuPvWEJ5LS/72rQT1pP1ZkcLEPpnwSmCK
+        qpWR798xXalwot2ZChPd2m/3Pw==
+X-Google-Smtp-Source: AK7set/3CUMDDiss89unCTHeA53FeidCS8ibgSCy1cIYfEWTq4ghTouy+BTRT2HTVXVun1FA5IgMoA==
+X-Received: by 2002:a05:651c:2220:b0:295:9829:47b0 with SMTP id y32-20020a05651c222000b00295982947b0mr955554ljq.49.1678879215485;
+        Wed, 15 Mar 2023 04:20:15 -0700 (PDT)
+Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
+        by smtp.gmail.com with ESMTPSA id k2-20020a2e92c2000000b00295da33c42dsm817410ljh.15.2023.03.15.04.20.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 04:20:14 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        djwong@kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        leejones@google.com, Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v2 0/5] ext4: fsmap: Consolidate fsmap_head checks
+Date:   Wed, 15 Mar 2023 11:20:06 +0000
+Message-Id: <20230315112011.927091-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 14-03-23 22:05:21, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> For a newly mounted file system, the journal committing thread always
-> record new transactions from the start of the journal area, no matter
-> whether the journal was clean or just has been recovered. So the logdump
-> code in debugfs cannot dump continuous logs between each mount, it is
-> disadvantageous to analysis corrupted file system image and locate the
-> file system inconsistency bugs.
-> 
-> If we get a corrupted file system in the running products and want to
-> find out what has happened, besides lookup the system log, one effective
-> way is to backtrack the journal log. But we may not always run e2fsck
-> before each mount and the default fsck -a mode also cannot always
-> checkout all inconsistencies, so it could left over some inconsistencies
-> into the next mount until we detect it. Finally, transactions in the
-> journal may probably discontinuous and some relatively new transactions
-> has been covered, it becomes hard to analyse. If we could record
-> transactions continuously between each mount, we could acquire more
-> useful info from the journal. Like this:
-> 
->  |Previous mount checkpointed/recovered logs|Current mount logs         |
->  |{------}{---}{--------} ... {------}| ... |{======}{========}...000000|
-> 
-> And yes the journal area is limited and cannot record everything, the
-> problematic transaction may also be covered even if we do this, but
-> this is still useful for fuzzy tests and short-running products.
-> 
-> This patch save the head blocknr in the superblock after flushing the
-> journal or unmounting the file system, let the next mount could continue
-> to record new transaction behind it. This change is backward compatible
-> because the old kernel does not care about the head blocknr of the
-> journal. It is also fine if we mount a clean old image without valid
-> head blocknr, we fail back to set it to s_first just like before.
-> Finally, for the case of mount an unclean file system, we could also get
-> the journal head easily after scanning/replaying the journal, it will
-> continue to record new transaction after the recovered transactions.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Hi,
 
-I like this implementation! I even think we could perhaps make ext4 always
-behave this way to not increase size of the test matrix. Or do you see any
-downside to this option?
+The sanity checks on user provided data were scattered, some fields
+were checked directly after copying the data from user, but others were
+checked on the ext4 internal fsmap representation, see patch 3/5.
+Consolidate the logic around fsmap sanity checks.
 
-								Honza
+No functional change in the code. Tested with the ext4 fsmap xfstests
+027, 028, 029. All passed, see the summary reports below.
 
-> ---
->  fs/jbd2/journal.c    | 18 ++++++++++++++++--
->  fs/jbd2/recovery.c   | 22 +++++++++++++++++-----
->  include/linux/jbd2.h |  9 +++++++--
->  3 files changed, 40 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index e80c781731f8..c57ab466fc18 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1556,8 +1556,21 @@ static int journal_reset(journal_t *journal)
->  	journal->j_first = first;
->  	journal->j_last = last;
->  
-> -	journal->j_head = journal->j_first;
-> -	journal->j_tail = journal->j_first;
-> +	if (journal->j_head != 0 && journal->j_flags & JBD2_CYCLE_RECORD) {
-> +		/*
-> +		 * Disable the cycled recording mode if the journal head block
-> +		 * number is not correct.
-> +		 */
-> +		if (journal->j_head < first || journal->j_head >= last) {
-> +			printk(KERN_WARNING "JBD2: Incorrect Journal head block %lu, "
-> +			       "disable journal_cycle_record\n",
-> +			       journal->j_head);
-> +			journal->j_head = journal->j_first;
-> +		}
-> +	} else {
-> +		journal->j_head = journal->j_first;
-> +	}
-> +	journal->j_tail = journal->j_head;
->  	journal->j_free = journal->j_last - journal->j_first;
->  
->  	journal->j_tail_sequence = journal->j_transaction_sequence;
-> @@ -1729,6 +1742,7 @@ static void jbd2_mark_journal_empty(journal_t *journal, blk_opf_t write_flags)
->  
->  	sb->s_sequence = cpu_to_be32(journal->j_tail_sequence);
->  	sb->s_start    = cpu_to_be32(0);
-> +	sb->s_head     = cpu_to_be32(journal->j_head);
->  	if (jbd2_has_feature_fast_commit(journal)) {
->  		/*
->  		 * When journal is clean, no need to commit fast commit flag and
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 8286a9ec122f..0184931d47f7 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -29,6 +29,7 @@ struct recovery_info
->  {
->  	tid_t		start_transaction;
->  	tid_t		end_transaction;
-> +	unsigned long	head_block;
->  
->  	int		nr_replays;
->  	int		nr_revokes;
-> @@ -301,11 +302,11 @@ int jbd2_journal_recover(journal_t *journal)
->  	 * is always zero if, and only if, the journal was cleanly
->  	 * unmounted.
->  	 */
-> -
->  	if (!sb->s_start) {
-> -		jbd2_debug(1, "No recovery required, last transaction %d\n",
-> -			  be32_to_cpu(sb->s_sequence));
-> +		jbd2_debug(1, "No recovery required, last transaction %d, head block %u\n",
-> +			  be32_to_cpu(sb->s_sequence), be32_to_cpu(sb->s_head));
->  		journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
-> +		journal->j_head = be32_to_cpu(sb->s_head);
->  		return 0;
->  	}
->  
-> @@ -324,6 +325,9 @@ int jbd2_journal_recover(journal_t *journal)
->  	/* Restart the log at the next transaction ID, thus invalidating
->  	 * any existing commit records in the log. */
->  	journal->j_transaction_sequence = ++info.end_transaction;
-> +	journal->j_head = info.head_block;
-> +	jbd2_debug(1, "JBD2: last transaction %d, head block %lu\n",
-> +		  journal->j_transaction_sequence, journal->j_head);
->  
->  	jbd2_journal_clear_revoke(journal);
->  	err2 = sync_blockdev(journal->j_fs_dev);
-> @@ -364,6 +368,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
->  	if (err) {
->  		printk(KERN_ERR "JBD2: error %d scanning journal\n", err);
->  		++journal->j_transaction_sequence;
-> +		journal->j_head = journal->j_first;
->  	} else {
->  #ifdef CONFIG_JBD2_DEBUG
->  		int dropped = info.end_transaction - 
-> @@ -373,6 +378,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
->  			  dropped, (dropped == 1) ? "" : "s");
->  #endif
->  		journal->j_transaction_sequence = ++info.end_transaction;
-> +		journal->j_head = info.head_block;
->  	}
->  
->  	journal->j_tail = 0;
-> @@ -462,7 +468,7 @@ static int do_one_pass(journal_t *journal,
->  			struct recovery_info *info, enum passtype pass)
->  {
->  	unsigned int		first_commit_ID, next_commit_ID;
-> -	unsigned long		next_log_block;
-> +	unsigned long		next_log_block, head_block;
->  	int			err, success = 0;
->  	journal_superblock_t *	sb;
->  	journal_header_t *	tmp;
-> @@ -485,6 +491,7 @@ static int do_one_pass(journal_t *journal,
->  	sb = journal->j_superblock;
->  	next_commit_ID = be32_to_cpu(sb->s_sequence);
->  	next_log_block = be32_to_cpu(sb->s_start);
-> +	head_block = next_log_block;
->  
->  	first_commit_ID = next_commit_ID;
->  	if (pass == PASS_SCAN)
-> @@ -809,6 +816,7 @@ static int do_one_pass(journal_t *journal,
->  				if (commit_time < last_trans_commit_time)
->  					goto ignore_crc_mismatch;
->  				info->end_transaction = next_commit_ID;
-> +				info->head_block = head_block;
->  
->  				if (!jbd2_has_feature_async_commit(journal)) {
->  					journal->j_failed_commit =
-> @@ -817,8 +825,10 @@ static int do_one_pass(journal_t *journal,
->  					break;
->  				}
->  			}
-> -			if (pass == PASS_SCAN)
-> +			if (pass == PASS_SCAN) {
->  				last_trans_commit_time = commit_time;
-> +				head_block = next_log_block;
-> +			}
->  			brelse(bh);
->  			next_commit_ID++;
->  			continue;
-> @@ -868,6 +878,8 @@ static int do_one_pass(journal_t *journal,
->  	if (pass == PASS_SCAN) {
->  		if (!info->end_transaction)
->  			info->end_transaction = next_commit_ID;
-> +		if (!info->head_block)
-> +			info->head_block = head_block;
->  	} else {
->  		/* It's really bad news if different passes end up at
->  		 * different places (but possible due to IO errors). */
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 5962072a4b19..475f135260c9 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -265,8 +265,10 @@ typedef struct journal_superblock_s
->  	__u8	s_padding2[3];
->  /* 0x0054 */
->  	__be32	s_num_fc_blks;		/* Number of fast commit blocks */
-> -/* 0x0058 */
-> -	__u32	s_padding[41];
-> +	__be32	s_head;			/* blocknr of head of log, only uptodate
-> +					 * while the filesystem is clean */
-> +/* 0x005C */
-> +	__u32	s_padding[40];
->  	__be32	s_checksum;		/* crc32c(superblock) */
->  
->  /* 0x0100 */
-> @@ -1392,6 +1394,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
->  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
->  						 * data write error in ordered
->  						 * mode */
-> +#define JBD2_CYCLE_RECORD		0x080	/* Journal cycled record log on
-> +						 * clean and empty filesystem
-> +						 * logging area */
->  #define JBD2_FAST_COMMIT_ONGOING	0x100	/* Fast commit is ongoing */
->  #define JBD2_FULL_COMMIT_ONGOING	0x200	/* Full commit is ongoing */
->  #define JBD2_JOURNAL_FLUSH_DISCARD	0x0001
-> -- 
-> 2.31.1
-> 
+Cheers,
+ta
+
+v2:
+- ext4: fsmap: Consolidate fsmap_head checks
+  - split patch for easier review
+  - rewrite commit message
+  - new patches {1, 2, 4}/5
+v1:
+https://lore.kernel.org/linux-ext4/20230222131211.3898066-1-tudor.ambarus@linaro.org/
+
+-------------------- Summary report
+KERNEL:    kernel 6.2.0-rc5-xfstests-00005-gf59f84395275 #16 SMP PREEMPT_DYNAMIC Wed Mar 15 11:06:14 UTC 2023 x86_64
+CMDLINE:   ext4/027
+CPUS:      2
+MEM:       1975.31
+
+ext4/4k: 1 tests, 1 seconds
+  ext4/027     Pass     1s
+ext4/1k: 1 tests, 1 seconds
+  ext4/027     Pass     0s
+ext4/ext3: 1 tests, 1 seconds
+  ext4/027     Pass     0s
+ext4/encrypt: 1 tests, 1 seconds
+  ext4/027     Pass     1s
+ext4/nojournal: 1 tests, 0 seconds
+  ext4/027     Pass     0s
+ext4/ext3conv: 1 tests, 1 seconds
+  ext4/027     Pass     0s
+ext4/adv: 1 tests, 1 seconds
+  ext4/027     Pass     1s
+ext4/dioread_nolock: 1 tests, 1 seconds
+  ext4/027     Pass     1s
+ext4/data_journal: 1 tests, 0 seconds
+  ext4/027     Pass     0s
+ext4/bigalloc: 1 tests, 0 seconds
+  ext4/027     Pass     0s
+ext4/bigalloc_1k: 1 tests, 1 seconds
+  ext4/027     Pass     0s
+Totals: 11 tests, 0 skipped, 0 failures, 0 errors, 4s
+
+FSTESTVER: blktests 4e07b0c (Fri, 15 Jul 2022 14:40:03 +0900)
+FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
+FSTESTVER: fsverity v1.5 (Sun, 6 Feb 2022 10:59:13 -0800)
+FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+FSTESTVER: quota  v4.05-43-gd2256ac (Fri, 17 Sep 2021 14:04:16 +0200)
+FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
+FSTESTVER: xfsprogs v5.19.0 (Fri, 12 Aug 2022 13:45:01 -0500)
+FSTESTVER: xfstests v2022.08.21-8-g289f50f8 (Sun, 21 Aug 2022 15:21:34 -0400)
+FSTESTVER: xfstests-bld bb566bcf (Wed, 24 Aug 2022 23:07:24 -0400)
+FSTESTVER: zz_build-distro bullseye
+FSTESTCFG: all
+FSTESTSET: ext4/027
+FSTESTOPT: aex
+[   59.850894] ACPI: PM: Preparing to enter system sleep state S5
+[   59.855495] reboot: Power down
+
+-------------------- Summary report
+KERNEL:    kernel 6.2.0-rc5-xfstests-00005-gf59f84395275 #16 SMP PREEMPT_DYNAMIC Wed Mar 15 11:06:14 UTC 2023 x86_64
+CMDLINE:   ext4/028
+CPUS:      2
+MEM:       1975.31
+
+ext4/4k: 1 tests, 5 seconds
+  ext4/028     Pass     5s
+ext4/1k: 1 tests, 2 seconds
+  ext4/028     Pass     2s
+ext4/ext3: 1 tests, 1 skipped, 1 seconds
+  ext4/028     Skipped  0s
+ext4/encrypt: 0 tests, 0 seconds
+ext4/nojournal: 1 tests, 4 seconds
+  ext4/028     Pass     4s
+ext4/ext3conv: 1 tests, 4 seconds
+  ext4/028     Pass     4s
+ext4/adv: 1 tests, 4 seconds
+  ext4/028     Pass     4s
+ext4/dioread_nolock: 1 tests, 1 seconds
+  ext4/028     Pass     0s
+ext4/data_journal: 1 tests, 1 seconds
+  ext4/028     Pass     0s
+ext4/bigalloc: 1 tests, 5 seconds
+  ext4/028     Pass     5s
+ext4/bigalloc_1k: 1 tests, 2 seconds
+  ext4/028     Pass     2s
+Totals: 10 tests, 1 skipped, 0 failures, 0 errors, 26s
+
+FSTESTVER: blktests 4e07b0c (Fri, 15 Jul 2022 14:40:03 +0900)
+FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
+FSTESTVER: fsverity v1.5 (Sun, 6 Feb 2022 10:59:13 -0800)
+FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+FSTESTVER: quota  v4.05-43-gd2256ac (Fri, 17 Sep 2021 14:04:16 +0200)
+FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
+FSTESTVER: xfsprogs v5.19.0 (Fri, 12 Aug 2022 13:45:01 -0500)
+FSTESTVER: xfstests v2022.08.21-8-g289f50f8 (Sun, 21 Aug 2022 15:21:34 -0400)
+FSTESTVER: xfstests-bld bb566bcf (Wed, 24 Aug 2022 23:07:24 -0400)
+FSTESTVER: zz_build-distro bullseye
+FSTESTCFG: all
+FSTESTSET: ext4/028
+FSTESTOPT: aex
+[   79.583715] ACPI: PM: Preparing to enter system sleep state S5
+[   79.588092] reboot: Power down
+
+-------------------- Summary report
+KERNEL:    kernel 6.2.0-rc5-xfstests-00005-gf59f84395275 #16 SMP PREEMPT_DYNAMIC Wed Mar 15 11:06:14 UTC 2023 x86_64
+CMDLINE:   -c logdev ext4/029
+CPUS:      2
+MEM:       1975.31
+
+ext4/logdev: 1 tests, 1 seconds
+  ext4/029     Pass     1s
+Totals: 1 tests, 0 skipped, 0 failures, 0 errors, 1s
+
+FSTESTVER: blktests 4e07b0c (Fri, 15 Jul 2022 14:40:03 +0900)
+FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
+FSTESTVER: fsverity v1.5 (Sun, 6 Feb 2022 10:59:13 -0800)
+FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
+FSTESTVER: quota  v4.05-43-gd2256ac (Fri, 17 Sep 2021 14:04:16 +0200)
+FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
+FSTESTVER: xfsprogs v5.19.0 (Fri, 12 Aug 2022 13:45:01 -0500)
+FSTESTVER: xfstests v2022.08.21-8-g289f50f8 (Sun, 21 Aug 2022 15:21:34 -0400)
+FSTESTVER: xfstests-bld bb566bcf (Wed, 24 Aug 2022 23:07:24 -0400)
+FSTESTVER: zz_build-distro bullseye
+FSTESTCFG: logdev
+FSTESTSET: ext4/029
+FSTESTOPT: aex
+[    8.712254] reboot: Power down
+
+Tudor Ambarus (5):
+  ext4: ioctl: Add missing linux/string.h header
+  ext4: fsmap: Check fmh_iflags value directly on the user copied data
+  ext4: fsmap: Consolidate fsmap_head checks
+  ext4: fsmap: Do the validation checks on constified fsmap data
+  ext4: fsmap: Remove duplicated initialization
+
+ fs/ext4/fsmap.c | 52 ++++++++++++++++++++++++++++++++++---------------
+ fs/ext4/fsmap.h |  3 +++
+ fs/ext4/ioctl.c | 18 ++++-------------
+ 3 files changed, 43 insertions(+), 30 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.0.rc1.284.g88254d51c5-goog
+
