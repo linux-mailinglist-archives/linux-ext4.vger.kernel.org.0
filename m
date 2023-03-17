@@ -2,67 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 183166BE0F7
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 07:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2666BE070
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 06:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjCQGG3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 02:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        id S229875AbjCQFFX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 01:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjCQGG3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 02:06:29 -0400
-Received: from sragenkab.go.id (mail.sragenkab.go.id [103.172.109.4])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id EAE8012863
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Mar 2023 23:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sragenkab.go.id;
-         h=mime-version:content-type:content-transfer-encoding:date:from
-        :to:subject:reply-to:message-id; q=dns/txt; s=dkim1; bh=QGcIAmD5
-        O/Y9qXzDV8MxyimbsW3+rMaQ/kz75GzBHbk=; b=DnqtwA+0764ge2Zqp5hBbOs6
-        OWj7GeEPyRLanq93AimsFLRGnftP3jt4lYAIeYyfvATrQPuTyd4FZV3aJsuoCG/J
-        OkPDdqbt+EQwKu0uNAaiYln4aNJl3vmEkBK1XbM0qZPY2X29wxIre/TNJicj8f4/
-        eupzUIv4f1u45uViN7+ztJa3rZuQ2MtbZsy99ymfprSySy1ef5HZ0MkhYe+CFDE2
-        Qj5e1RUZiIK8ru3RfL4BXz9+Bstgaj0H5YMhY7bdLNWIedfrWYWmno/8EFzFz8qX
-        kTORPVEJ19GaQeD4v2GlIeWCU0F0ogAmYlN5qVq8wWYHBhoJi0pC0nlD/L6/7w==
-Received: (qmail 61193 invoked from network); 14 Mar 2023 19:40:26 -0000
-Received: from localhost (HELO mail2.sragenkab.go.id) (127.0.0.1)
-  by localhost with SMTP; 14 Mar 2023 19:40:26 -0000
+        with ESMTP id S229489AbjCQFFX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 01:05:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEED5231F4;
+        Thu, 16 Mar 2023 22:05:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2510EB82401;
+        Fri, 17 Mar 2023 05:05:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D649C433EF;
+        Fri, 17 Mar 2023 05:05:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679029518;
+        bh=+FCsAePNiEbZwQOAc4eWABK4quiynO1ZGWgjAZOkSBg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=huTFhY5Jr/7vbHIbYrNlAvwONQTZNgPii/fR4rcV/BgnxLZ6JDgpFZ0DtTeLIyRoi
+         JeA7kcM5AP4nuqj5knHPHkQSxgmn/cyG3agSCH7LmxR+AReSeLyIYZy5snW+sjhyQv
+         DDiRfWzgu24DDgNgcr7+o5k0f4TUGuLwvuCq4OvsVDOTFNCjAvHib2aGGTKC6/h9IA
+         OxbBg/dOw5WlJ7pEvmllpE5s9Fo7oHsRaPfy0ypTyHb4DwK+wqVOB29hl/TqKqomKL
+         bfdMjgk3ZOvv0KiGz63S6N9Wo0bAesLUZjYc73dP1O0qV6e/9fBM/kRpIwsdfao9NH
+         Lt1SHW+4SrM4g==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH 4.19] ext4: fix cgroup writeback accounting with fs-layer encryption
+Date:   Thu, 16 Mar 2023 22:05:10 -0700
+Message-Id: <20230317050510.61555-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 14 Mar 2023 12:40:25 -0700
-From:   Ibrahim Tafa <jurnalsukowati@sragenkab.go.id>
-To:     undisclosed-recipients:;
-Subject: LOAN OPPORTUNITY AT LOW-INTEREST RATE
-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
-Mail-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
-Message-ID: <12c229c46960fafac2f738250cf64388@sragenkab.go.id>
-X-Sender: jurnalsukowati@sragenkab.go.id
-User-Agent: Roundcube Webmail/0.8.1
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,SUBJ_ALL_CAPS,UNDISC_MONEY,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Eric Biggers <ebiggers@google.com>
 
+commit ffec85d53d0f39ee4680a2cf0795255e000e1feb upstream.
 
+When writing a page from an encrypted file that is using
+filesystem-layer encryption (not inline encryption), ext4 encrypts the
+pagecache page into a bounce page, then writes the bounce page.
+
+It also passes the bounce page to wbc_account_cgroup_owner().  That's
+incorrect, because the bounce page is a newly allocated temporary page
+that doesn't have the memory cgroup of the original pagecache page.
+This makes wbc_account_cgroup_owner() not account the I/O to the owner
+of the pagecache page as it should.
+
+Fix this by always passing the pagecache page to
+wbc_account_cgroup_owner().
+
+Fixes: 001e4a8775f6 ("ext4: implement cgroup writeback support")
+Cc: stable@vger.kernel.org
+Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20230203005503.141557-1-ebiggers@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/page-io.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index 3de933354a08b..bf910f2664690 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -388,7 +388,8 @@ static int io_submit_init_bio(struct ext4_io_submit *io,
+ 
+ static int io_submit_add_bh(struct ext4_io_submit *io,
+ 			    struct inode *inode,
+-			    struct page *page,
++			    struct page *pagecache_page,
++			    struct page *bounce_page,
+ 			    struct buffer_head *bh)
+ {
+ 	int ret;
+@@ -403,10 +404,11 @@ static int io_submit_add_bh(struct ext4_io_submit *io,
+ 			return ret;
+ 		io->io_bio->bi_write_hint = inode->i_write_hint;
+ 	}
+-	ret = bio_add_page(io->io_bio, page, bh->b_size, bh_offset(bh));
++	ret = bio_add_page(io->io_bio, bounce_page ?: pagecache_page,
++			   bh->b_size, bh_offset(bh));
+ 	if (ret != bh->b_size)
+ 		goto submit_and_retry;
+-	wbc_account_io(io->io_wbc, page, bh->b_size);
++	wbc_account_io(io->io_wbc, pagecache_page, bh->b_size);
+ 	io->io_next_block++;
+ 	return 0;
+ }
+@@ -514,8 +516,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 	do {
+ 		if (!buffer_async_write(bh))
+ 			continue;
+-		ret = io_submit_add_bh(io, inode,
+-				       data_page ? data_page : page, bh);
++		ret = io_submit_add_bh(io, inode, page, data_page, bh);
+ 		if (ret) {
+ 			/*
+ 			 * We only get here on ENOMEM.  Not much else
 -- 
-Greetings,
-   I am contacting you based on the Investment/Loan opportunity for 
-companies in need of financing a project/business, We have developed a 
-new method of financing that doesn't take long to receive financing from 
-our clients.
-    If you are looking for funds to finance your project/Business or if 
-you are willing to work as our agent in your country to find clients in 
-need of financing and earn commissions, then get back to me for more 
-details.
+2.39.2
 
-Regards,
-Ibrahim Tafa
-ABIENCE INVESTMENT GROUP FZE, United Arab Emirates
