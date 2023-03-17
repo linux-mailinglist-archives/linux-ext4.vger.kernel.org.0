@@ -2,132 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 138CC6BE982
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 13:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0935B6BE98D
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 13:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjCQMlT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 08:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S230248AbjCQMpR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 08:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjCQMlS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 08:41:18 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E11995BF8;
-        Fri, 17 Mar 2023 05:41:06 -0700 (PDT)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32HBohq2023920;
-        Fri, 17 Mar 2023 12:41:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=7ML8qvCc7bsbgf0VRkbvrNELPBTFwwaHfEsnoYoxBho=;
- b=ZMLcCgggNP5gtpkWqB9KkDydI32aK7JKVEj9p8aBd4dMnS+QpVSe45mZMweMR9an4+jM
- FqnVp4ttkJqWXUdttCQqv+x4pzyZPkWL2mTqZU6ZQiqRSWjYxpV2zzVwtySFSX+VkkaH
- YmFVMbSh/Dd0tU3cEpC+d4OOQbfl599okpsuVEO9Dl3iZH29vMmAG8DDC/yCKeL9Xfv6
- 96YSxX19G/yyGfB3tA/r4IZKn6bp5XETUQ9DVnHkfaR/fi2BV6gGlkvs4R1poawsmqzX
- DShDZocdyESLyniaSPN6wZr3vRpY1yJKnJHBLLsYau2iH/fE0ms7MxW/K+INpJx4cT8a Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcqpkh9p0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 12:41:01 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32HCIw6f023668;
-        Fri, 17 Mar 2023 12:41:01 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcqpkh9mp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 12:41:01 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32H6uCuq030602;
-        Fri, 17 Mar 2023 12:40:58 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3pbskt25b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 12:40:58 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32HCeuJB66781560
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Mar 2023 12:40:56 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E30D2004E;
-        Fri, 17 Mar 2023 12:40:56 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FD4C20043;
-        Fri, 17 Mar 2023 12:40:53 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.91.202])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 17 Mar 2023 12:40:53 +0000 (GMT)
-Date:   Fri, 17 Mar 2023 18:10:50 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rookxu <brookxu.cn@gmail.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
- i_prealloc_list
-Message-ID: <ZBRf0i+hR2lDvi/P@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230117110335.7dtlq4catefgjrm3@quack3>
- <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230127144312.3m3hmcufcvxxp6f4@quack3>
- <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230209105418.ucowiqnnptbpwone@quack3>
- <Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230210143753.ofh6wouk7vi7ygcl@quack3>
- <542D3378-3214-4D0D-AA63-5A149E2B00EE@dilger.ca>
+        with ESMTP id S229480AbjCQMpQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 08:45:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FCAA54C2;
+        Fri, 17 Mar 2023 05:45:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E2E3921A57;
+        Fri, 17 Mar 2023 12:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679057113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=13wHn270QC2EQIv2STg6ZbJmqaKqLZmBmJiFjnKTwvs=;
+        b=Qut3hqc62LhEoqknDZyCmGO2oR93XHZ3JzqRD6vpejnvwODTQcV6jJeK3sasp0abOxdFC/
+        PRdjRh0NkBRKNn+biTi/XsseBY//nkxiqSFdrRutvWidOENOs51014KWRYmY+ufwrLunbV
+        R7V9tDEqB3j9a4oQ8y5DfhWG9aYUQRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679057113;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=13wHn270QC2EQIv2STg6ZbJmqaKqLZmBmJiFjnKTwvs=;
+        b=q8H+KfiNRWMn9w/fU7d84yvMgpfML13d2YqlfrM54CFcIT80izEqu3difcTYOK7UuCqiCB
+        D7WpQry3Ka05QDCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1AB213428;
+        Fri, 17 Mar 2023 12:45:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3wgjM9lgFGS4PgAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 17 Mar 2023 12:45:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 57DC4A06FD; Fri, 17 Mar 2023 13:45:13 +0100 (CET)
+Date:   Fri, 17 Mar 2023 13:45:13 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        tudor.ambarus@linaro.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] ext4: Fix i_disksize exceeding i_size problem in
+ paritally written case
+Message-ID: <20230317124513.drx3wywcjnap5jme@quack3>
+References: <20230317013553.1009553-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <542D3378-3214-4D0D-AA63-5A149E2B00EE@dilger.ca>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SBkpyyo-RXdzCNY5E1a7Q2hPaD94ed66
-X-Proofpoint-GUID: ITi_cxAx98Y05cHqO-SNxVVoatqpqM5d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-17_08,2023-03-16_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303170085
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230317013553.1009553-1-chengzhihao1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 10:07:39AM -0700, Andreas Dilger wrote:
-> On Feb 10, 2023, at 7:37 AM, Jan Kara <jack@suse.cz> wrote:
-> > So I belive mballoc tries to align everything (offsets & lengths)
-> > to powers of two to reduce fragmentation and simplify the work for
-> > the buddy allocator.  If ac->ac_b_ex.fe_len is a power-of-two, the
-> > alignment makes sense. But once we had to resort to higher allocator
-> > passes and just got some random-length extent, the alignment stops
-> > making sense.
+On Fri 17-03-23 09:35:53, Zhihao Cheng wrote:
+> Following process makes i_disksize exceed i_size:
 > 
-> In addition to optimizing for the buddy allocator, the other reason that
-> the allocations are aligned to power-of-two offsets is to better align
-> with underlying RAID stripes.  Otherwise, unaligned writes will cause
-> parity read-modify-write updates to multiple RAID stripes.  This alignment
-> can also help (though to a lesser degree) with NAND flash erase blocks.
+> generic_perform_write
+>  copied = iov_iter_copy_from_user_atomic(len) // copied < len
+>  ext4_da_write_end
+>  | ext4_update_i_disksize
+>  |  new_i_size = pos + copied;
+>  |  WRITE_ONCE(EXT4_I(inode)->i_disksize, newsize) // update i_disksize
+>  | generic_write_end
+>  |  copied = block_write_end(copied, len) // copied = 0
+>  |   if (unlikely(copied < len))
+>  |    if (!PageUptodate(page))
+>  |     copied = 0;
+>  |  if (pos + copied > inode->i_size) // return false
+>  if (unlikely(copied == 0))
+>   goto again;
+>  if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
+>   status = -EFAULT;
+>   break;
+>  }
 > 
-> Cheers, Andreas
+> We get i_disksize greater than i_size here, which could trigger WARNING
+> check 'i_size_read(inode) < EXT4_I(inode)->i_disksize' while doing dio:
 > 
-Got it, thanks. So from my limited understanding of RAID, if the write
-is stripe aligned and the (length % stripe == 0) then we won't need a 
-RMW cycle for parity bits and thats one of the reasons to pay attention
-to alignment and length in mballoc code. 
+> ext4_dio_write_iter
+>  iomap_dio_rw
+>   __iomap_dio_rw // return err, length is not aligned to 512
+>  ext4_handle_inode_extension
+>   WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize) // Oops
+> 
+>  WARNING: CPU: 2 PID: 2609 at fs/ext4/file.c:319
+>  CPU: 2 PID: 2609 Comm: aa Not tainted 6.3.0-rc2
+>  RIP: 0010:ext4_file_write_iter+0xbc7
+>  Call Trace:
+>   vfs_write+0x3b1
+>   ksys_write+0x77
+>   do_syscall_64+0x39
+> 
+> Fix it by putting block_write_end() before i_disksize updating just
+> like ext4_write_end() does.
+> 
+> Fetch a reproducer in [Link].
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217209
+> Fixes: 64769240bd07f ("ext4: Add delayed allocation support in data=writeback mode")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Then I think Jan's reasoning still holds that if ac_b_ex.fe_len is already
-not of a proper size then we'll anyways be ending with a RMW write in
-RAID so no point of paying attention to its alignment, right?
+Good catch (although practically this will hardly have any negative
+effect). But rather than opencoding generic_write_end() I'd do:
 
-Regards,
-ojaswin
+        if (unlikely(copied < len) && !PageUptodate(page))
+                copied = 0;
+
+at the beginning of ext4_da_write_end() and that should solve these
+problems as well?
+
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 32 +++++++++++++++++++++++++-------
+>  1 file changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index bf0b7dea4900..577dc23f3b78 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3136,6 +3136,8 @@ static int ext4_da_write_end(struct file *file,
+>  	loff_t new_i_size;
+>  	unsigned long start, end;
+>  	int write_mode = (int)(unsigned long)fsdata;
+> +	bool i_size_changed = false;
+> +	loff_t old_size = inode->i_size;
+>  
+>  	if (write_mode == FALL_BACK_TO_NONDELALLOC)
+>  		return ext4_write_end(file, mapping, pos,
+> @@ -3148,6 +3150,8 @@ static int ext4_da_write_end(struct file *file,
+>  	    ext4_has_inline_data(inode))
+>  		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+>  
+> +	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
+> +
+>  	start = pos & (PAGE_SIZE - 1);
+>  	end = start + copied - 1;
+>  
+> @@ -3162,16 +3166,30 @@ static int ext4_da_write_end(struct file *file,
+>  	 * check), we need to update i_disksize here as neither
+>  	 * ext4_writepage() nor certain ext4_writepages() paths not
+>  	 * allocating blocks update i_disksize.
+> -	 *
+> -	 * Note that we defer inode dirtying to generic_write_end() /
+> -	 * ext4_da_write_inline_data_end().
+>  	 */
+>  	new_i_size = pos + copied;
+> -	if (copied && new_i_size > inode->i_size &&
+> -	    ext4_da_should_update_i_disksize(page, end))
+> -		ext4_update_i_disksize(inode, new_i_size);
+> +	if (new_i_size > inode->i_size) {
+> +		i_size_write(inode, new_i_size);
+> +		i_size_changed = true;
+> +		if (copied && ext4_da_should_update_i_disksize(page, end))
+> +			ext4_update_i_disksize(inode, new_i_size);
+> +	}
+> +
+> +	unlock_page(page);
+> +	put_page(page);
+> +
+> +	if (old_size < pos)
+> +		pagecache_isize_extended(inode, old_size, pos);
+> +	/*
+> +	 * Don't mark the inode dirty under page lock. First, it unnecessarily
+> +	 * makes the holding time of page lock longer. Second, it forces lock
+> +	 * ordering of page lock and transaction start for journaling
+> +	 * filesystems.
+> +	 */
+> +	if (i_size_changed)
+> +		mark_inode_dirty(inode);
+>  
+> -	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
+> +	return copied;
+>  }
+>  
+>  /*
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
