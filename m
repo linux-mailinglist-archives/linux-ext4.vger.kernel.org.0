@@ -2,113 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E36BE7AF
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 12:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AE86BE7FD
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 12:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjCQLI7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 07:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S229523AbjCQLZj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 07:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjCQLI6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 07:08:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38758244A6
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 04:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679051287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S229539AbjCQLZi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 07:25:38 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBA58C5AA
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 04:25:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3AE081FDDE;
+        Fri, 17 Mar 2023 11:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679052329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DFrkZcgMRFqj/YL76AsZyo+pZLdDkc3U0vHb8n1dWOc=;
-        b=YYZk2JD5yvCbVQiyOf/9nfQs5tB5j6aZwTasSMmk5XquQylFu9gV2BS4ZxqT0ItOYtZ5Fx
-        LtrL+19xIuHvFeUNEd7dnNOK9GrT7FbhM06+24cqH/iMwnCEeXDNlLYpCcetkfe2ckxPFk
-        tPrXT+H7495Cq9wZ3jcsophr8emP/Is=
-Received: from mail-qt1-f197.google.com (209.85.160.197 [209.85.160.197]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-300-8MXUoDciMRO_xs3z62KtHg-1; Fri,
- 17 Mar 2023 07:08:05 -0400
-X-MC-Unique: 8MXUoDciMRO_xs3z62KtHg-1
-Received: by mail-qt1-f197.google.com with SMTP id l16-20020a05622a175000b003d7d7b8136bso2324532qtk.11
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679051285;
-        h=content-language:content-transfer-encoding:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DFrkZcgMRFqj/YL76AsZyo+pZLdDkc3U0vHb8n1dWOc=;
-        b=BBZ7CHR1F0Utnn4axCKBiPngIHmmi4l7DaJpRdkWAzdjuFSKFPxYUtX3N/HKpBXlhZ
-         TL3nuUEBXNAQ2czUAZ4Uc3pS43xfZhYKnrQFULN8TYp6kQqC5+V7F89EOdyzbwjNw2du
-         qu/OVPg5/0sEORfZ/ljWfB2VybphlMepGcSgXRCEIjrdU2oSzZEp3udzpk9rGjHn9QOr
-         dtaRIZwPBgU300LdIx5g3Z5MkdqWhzmFHrSYB0cldBWSrsKafqcnENQK6CurhThg0rpJ
-         6EB9n6Blo3BpW1Qfd1kyYghB5Revnwq322fQQRBGo5crqaypexBEn9u0VdG9JWa7XUMc
-         8Q4Q==
-X-Gm-Message-State: AO0yUKWS4pHlLoZQr977zsslfJKmsVVhuZHqwihlV+1pjNFaVmvxh+lm
-        iXjsFe+zaV2qfPSVdIFeCWxFzn3S488/PrtpW0PzRoCperv/bNmnJt4gmsT8pKfx1SLPDnc84rJ
-        /GACm+Cw5LTSz0TYUIK1jUg==
-X-Received: by 2002:ac8:5c96:0:b0:3bf:df2e:a494 with SMTP id r22-20020ac85c96000000b003bfdf2ea494mr12230083qta.6.1679051285418;
-        Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
-X-Google-Smtp-Source: AK7set/0k3uYz5kgjWc7xcseMVq0TkOVZC6Wmp9XEep8Xuy3onXi/3HlEgtGMuN8MojLsBrYKEFdOA==
-X-Received: by 2002:ac8:5c96:0:b0:3bf:df2e:a494 with SMTP id r22-20020ac85c96000000b003bfdf2ea494mr12230066qta.6.1679051285195;
-        Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
-Received: from localhost.localdomain (024-205-208-113.res.spectrum.com. [24.205.208.113])
-        by smtp.gmail.com with ESMTPSA id d188-20020a37b4c5000000b007426ec97253sm1410746qkf.111.2023.03.17.04.08.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 04:08:04 -0700 (PDT)
-Subject: Re: [PATCH] ext4: remove unneeded check of nr_to_submit
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230316204831.2472537-1-trix@redhat.com>
- <20230317045836.GA882@sol.localdomain>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <7833722c-3618-14f5-0e49-cff96eb06ea8@redhat.com>
-Date:   Fri, 17 Mar 2023 04:08:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=fWG+Yn5EAQxzdh2xDZYpvdlnWCphXvTLSc2lBNlF3b4=;
+        b=HN3gdng9O2oxG8BCnEjOLaPeZJECYZjEqNTn2U2UukRydeAizDCEGsjruyq3/C0cKjzZjB
+        qhZh5BaCaMfSnbSS+4XIjOkT0OVbuNJwtWY7Uc2G44U7CDOyC+5LlfkGsTgy2S2bEZkxmA
+        3HTtOyAKBlNGsjgBhp0Ho5qIYKJm574=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679052329;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fWG+Yn5EAQxzdh2xDZYpvdlnWCphXvTLSc2lBNlF3b4=;
+        b=UpOAL8dyObsfBmOFjpfYutrPUMzJZ8mQH5jP0HF3QEGtfNSfoT0kJjoSVEUoSOK3HrBcz7
+        ZLgxMiBiUSs8bMCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CBC713428;
+        Fri, 17 Mar 2023 11:25:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3KX+BilOFGQVEQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 17 Mar 2023 11:25:29 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 523A3A06FD; Fri, 17 Mar 2023 12:25:28 +0100 (CET)
+Date:   Fri, 17 Mar 2023 12:25:28 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, yukuai3@huawei.com,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v3 1/2] jbd2: continue to record log between each mount
+Message-ID: <20230317112528.cig7fczuoezn23wy@quack3>
+References: <20230314140522.3266591-1-yi.zhang@huaweicloud.com>
+ <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
+ <20230315094826.okdarxaapjyqmlhq@quack3>
+ <8c4ff3ab-4af2-58ed-4d08-3050c044f445@huawei.com>
+ <20230315172817.egezft3msc5z4omm@quack3>
 MIME-Version: 1.0
-In-Reply-To: <20230317045836.GA882@sol.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230315172817.egezft3msc5z4omm@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed 15-03-23 18:28:17, Jan Kara wrote:
+> On Wed 15-03-23 20:37:32, Zhang Yi wrote:
+> > On 2023/3/15 17:48, Jan Kara wrote:
+> > > On Tue 14-03-23 22:05:21, Zhang Yi wrote:
+> > >> From: Zhang Yi <yi.zhang@huawei.com>
+> > >>
+> > >> For a newly mounted file system, the journal committing thread always
+> > >> record new transactions from the start of the journal area, no matter
+> > >> whether the journal was clean or just has been recovered. So the logdump
+> > >> code in debugfs cannot dump continuous logs between each mount, it is
+> > >> disadvantageous to analysis corrupted file system image and locate the
+> > >> file system inconsistency bugs.
+> > >>
+> > >> If we get a corrupted file system in the running products and want to
+> > >> find out what has happened, besides lookup the system log, one effective
+> > >> way is to backtrack the journal log. But we may not always run e2fsck
+> > >> before each mount and the default fsck -a mode also cannot always
+> > >> checkout all inconsistencies, so it could left over some inconsistencies
+> > >> into the next mount until we detect it. Finally, transactions in the
+> > >> journal may probably discontinuous and some relatively new transactions
+> > >> has been covered, it becomes hard to analyse. If we could record
+> > >> transactions continuously between each mount, we could acquire more
+> > >> useful info from the journal. Like this:
+> > >>
+> > >>  |Previous mount checkpointed/recovered logs|Current mount logs         |
+> > >>  |{------}{---}{--------} ... {------}| ... |{======}{========}...000000|
+> > >>
+> > >> And yes the journal area is limited and cannot record everything, the
+> > >> problematic transaction may also be covered even if we do this, but
+> > >> this is still useful for fuzzy tests and short-running products.
+> > >>
+> > >> This patch save the head blocknr in the superblock after flushing the
+> > >> journal or unmounting the file system, let the next mount could continue
+> > >> to record new transaction behind it. This change is backward compatible
+> > >> because the old kernel does not care about the head blocknr of the
+> > >> journal. It is also fine if we mount a clean old image without valid
+> > >> head blocknr, we fail back to set it to s_first just like before.
+> > >> Finally, for the case of mount an unclean file system, we could also get
+> > >> the journal head easily after scanning/replaying the journal, it will
+> > >> continue to record new transaction after the recovered transactions.
+> > >>
+> > >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> > > 
+> > > I like this implementation! I even think we could perhaps make ext4 always
+> > > behave this way to not increase size of the test matrix. Or do you see any
+> > > downside to this option?
+> > > 
+> > 
+> > Thanks for your suggestion. Indeed, I don't find any side effect on this
+> > option both in theory and in the actual use tests on ext4, I added a new
+> > option was just from the safe point of view and let user could disable it if
+> > they don't want it. I also prefer to make ext4 always behave this way.:)
+> > 
+> > I would like to keep the JBD2_CYCLE_RECORD flag(ocfs2 also use jbd2, I don't
+> > want to disturb it until it needs), remove EXT4_MOUNT2_JOURNAL_CYCLE_RECORD
+> > and always set JBD2_CYCLE_RECORD on ext4 in patch 2 in the next iteration.
+> 
+> Yes, that makes sense.
 
-On 3/16/23 9:58 PM, Eric Biggers wrote:
-> On Thu, Mar 16, 2023 at 04:48:31PM -0400, Tom Rix wrote:
->> cppcheck reports
->> fs/ext4/page-io.c:516:51: style:
->>    Condition 'nr_to_submit' is always true [knownConditionTrueFalse]
->>   if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
->>                                                    ^
->> This earlier check to bail, makes this check unncessary
->> 	/* Nothing to submit? Just unlock the page... */
->> 	if (!nr_to_submit)
->> 		return 0;
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
-> Maybe add:
->
-> Fixes: dff4ac75eeee ("ext4: move keep_towrite handling to ext4_bio_write_page()")
+FWIW yesterday I'v spoken with Ted and he also agrees that we don't need
+ext4 mount option for this.
 
-The rule of thumb I use is 'would this require a recompile?'
-
-In this case, the existing code will work, so no fixes:
-
-Tom
-
-> Either way, looks good to me.
->
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
->
-> - Eric
->
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
