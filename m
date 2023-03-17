@@ -2,159 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 536466BDE2D
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 02:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABC36BDE4B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 02:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjCQBgu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Mar 2023 21:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        id S229542AbjCQBwT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Mar 2023 21:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjCQBgs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Mar 2023 21:36:48 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D72A219B;
-        Thu, 16 Mar 2023 18:36:46 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Pd6DC0P6NzKmr8;
-        Fri, 17 Mar 2023 09:36:27 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 17 Mar
- 2023 09:36:42 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
-        <tudor.ambarus@linaro.org>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] ext4: Fix i_disksize exceeding i_size problem in paritally written case
-Date:   Fri, 17 Mar 2023 09:35:53 +0800
-Message-ID: <20230317013553.1009553-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229516AbjCQBwT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Mar 2023 21:52:19 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE71B22111
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Mar 2023 18:52:16 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32H1qDHr031596
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Mar 2023 21:52:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1679017934; bh=9Fc3z1wx9HRZ98NfjO0FfH5e1OIvOjratNA/m+uy4I8=;
+        h=From:To:Cc:Subject:Date;
+        b=QVXhXKJhCLuXlholrH23QwHz+8VTo5RpDn7xzj68cOMC6VCDFqLE5p/hd8za5JR0o
+         1HdDdmyYmZQwP9bOsf13Pm+b94/Og4A3X1Ah6+W7TreKcE44OFij+dJhEOSvToOjnU
+         6Y//b+mEr+Qrm2y8sggE5CY6ogP6BpY9rV0J8fdBr8acccJXvTgk9QaWj/hb2fyEH5
+         Z5OXuJzSBAQxkTWnnOWDHKT3n/SXTQlC5F/bK3x8cE5Ii0L4JZM7dXdJx1QhE+2o3G
+         h/ZQ719sAXOQwScTdCoEGmilEhkRF/uNqsdS2xpwzIosGQitm4oMy/smAh4H4zdSSK
+         Zg+3n6oTt8Zzw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0F87415C33A7; Thu, 16 Mar 2023 21:52:13 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH] ext4: convert some BUG_ON's in mballoc to use WARN_RATELIMITED instead
+Date:   Thu, 16 Mar 2023 21:52:10 -0400
+Message-Id: <20230317015210.3178317-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Following process makes i_disksize exceed i_size:
+In cases where we have an obvious way of continuing, let's use
+WARN_RATELIMITED() instead of BUG_ON().
 
-generic_perform_write
- copied = iov_iter_copy_from_user_atomic(len) // copied < len
- ext4_da_write_end
- | ext4_update_i_disksize
- |  new_i_size = pos + copied;
- |  WRITE_ONCE(EXT4_I(inode)->i_disksize, newsize) // update i_disksize
- | generic_write_end
- |  copied = block_write_end(copied, len) // copied = 0
- |   if (unlikely(copied < len))
- |    if (!PageUptodate(page))
- |     copied = 0;
- |  if (pos + copied > inode->i_size) // return false
- if (unlikely(copied == 0))
-  goto again;
- if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
-  status = -EFAULT;
-  break;
- }
-
-We get i_disksize greater than i_size here, which could trigger WARNING
-check 'i_size_read(inode) < EXT4_I(inode)->i_disksize' while doing dio:
-
-ext4_dio_write_iter
- iomap_dio_rw
-  __iomap_dio_rw // return err, length is not aligned to 512
- ext4_handle_inode_extension
-  WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize) // Oops
-
- WARNING: CPU: 2 PID: 2609 at fs/ext4/file.c:319
- CPU: 2 PID: 2609 Comm: aa Not tainted 6.3.0-rc2
- RIP: 0010:ext4_file_write_iter+0xbc7
- Call Trace:
-  vfs_write+0x3b1
-  ksys_write+0x77
-  do_syscall_64+0x39
-
-Fix it by putting block_write_end() before i_disksize updating just
-like ext4_write_end() does.
-
-Fetch a reproducer in [Link].
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217209
-Fixes: 64769240bd07f ("ext4: Add delayed allocation support in data=writeback mode")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/inode.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+ fs/ext4/mballoc.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index bf0b7dea4900..577dc23f3b78 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3136,6 +3136,8 @@ static int ext4_da_write_end(struct file *file,
- 	loff_t new_i_size;
- 	unsigned long start, end;
- 	int write_mode = (int)(unsigned long)fsdata;
-+	bool i_size_changed = false;
-+	loff_t old_size = inode->i_size;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index ddea281b6467..63a68cee36c6 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1487,7 +1487,13 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+ 			put_page(page);
+ 		page = find_or_create_page(inode->i_mapping, pnum, gfp);
+ 		if (page) {
+-			BUG_ON(page->mapping != inode->i_mapping);
++			if (WARN_RATELIMIT(page->mapping != inode->i_mapping,
++	"ext4: bitmap's paging->mapping != inode->i_mapping\n")) {
++				/* should never happen */
++				unlock_page(page);
++				ret = -EINVAL;
++				goto err;
++			}
+ 			if (!PageUptodate(page)) {
+ 				ret = ext4_mb_init_cache(page, NULL, gfp);
+ 				if (ret) {
+@@ -1523,7 +1529,13 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+ 			put_page(page);
+ 		page = find_or_create_page(inode->i_mapping, pnum, gfp);
+ 		if (page) {
+-			BUG_ON(page->mapping != inode->i_mapping);
++			if (WARN_RATELIMIT(page->mapping != inode->i_mapping,
++	"ext4: buddy bitmap's page->mapping != inode->i_mapping\n")) {
++				/* should never happen */
++				unlock_page(page);
++				ret = -EINVAL;
++				goto err;
++			}
+ 			if (!PageUptodate(page)) {
+ 				ret = ext4_mb_init_cache(page, e4b->bd_bitmap,
+ 							 gfp);
+@@ -2221,7 +2233,9 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
+ 			continue;
  
- 	if (write_mode == FALL_BACK_TO_NONDELALLOC)
- 		return ext4_write_end(file, mapping, pos,
-@@ -3148,6 +3150,8 @@ static int ext4_da_write_end(struct file *file,
- 	    ext4_has_inline_data(inode))
- 		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+ 		buddy = mb_find_buddy(e4b, i, &max);
+-		BUG_ON(buddy == NULL);
++		if (WARN_RATELIMIT(buddy == NULL,
++			 "ext4: mb_simple_scan_group: mb_find_buddy failed, (%d)\n", i))
++			continue;
  
-+	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
-+
- 	start = pos & (PAGE_SIZE - 1);
- 	end = start + copied - 1;
- 
-@@ -3162,16 +3166,30 @@ static int ext4_da_write_end(struct file *file,
- 	 * check), we need to update i_disksize here as neither
- 	 * ext4_writepage() nor certain ext4_writepages() paths not
- 	 * allocating blocks update i_disksize.
--	 *
--	 * Note that we defer inode dirtying to generic_write_end() /
--	 * ext4_da_write_inline_data_end().
- 	 */
- 	new_i_size = pos + copied;
--	if (copied && new_i_size > inode->i_size &&
--	    ext4_da_should_update_i_disksize(page, end))
--		ext4_update_i_disksize(inode, new_i_size);
-+	if (new_i_size > inode->i_size) {
-+		i_size_write(inode, new_i_size);
-+		i_size_changed = true;
-+		if (copied && ext4_da_should_update_i_disksize(page, end))
-+			ext4_update_i_disksize(inode, new_i_size);
-+	}
-+
-+	unlock_page(page);
-+	put_page(page);
-+
-+	if (old_size < pos)
-+		pagecache_isize_extended(inode, old_size, pos);
-+	/*
-+	 * Don't mark the inode dirty under page lock. First, it unnecessarily
-+	 * makes the holding time of page lock longer. Second, it forces lock
-+	 * ordering of page lock and transaction start for journaling
-+	 * filesystems.
-+	 */
-+	if (i_size_changed)
-+		mark_inode_dirty(inode);
- 
--	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
-+	return copied;
- }
- 
- /*
+ 		k = mb_find_next_zero_bit(buddy, max, 0);
+ 		if (k >= max) {
+@@ -4228,15 +4242,14 @@ static void ext4_discard_allocated_blocks(struct ext4_allocation_context *ac)
+ 		if (ac->ac_f_ex.fe_len == 0)
+ 			return;
+ 		err = ext4_mb_load_buddy(ac->ac_sb, ac->ac_f_ex.fe_group, &e4b);
+-		if (err) {
++		if (WARN_RATELIMIT(err,
++				   "ext4: mb_load_buddy failed (%d)", err))
+ 			/*
+ 			 * This should never happen since we pin the
+ 			 * pages in the ext4_allocation_context so
+ 			 * ext4_mb_load_buddy() should never fail.
+ 			 */
+-			WARN(1, "mb_load_buddy failed (%d)", err);
+ 			return;
+-		}
+ 		ext4_lock_group(ac->ac_sb, ac->ac_f_ex.fe_group);
+ 		mb_free_blocks(ac->ac_inode, &e4b, ac->ac_f_ex.fe_start,
+ 			       ac->ac_f_ex.fe_len);
 -- 
-2.31.1
+2.31.0
 
