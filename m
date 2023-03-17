@@ -2,170 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF8D6BE755
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 11:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9E36BE7AF
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 12:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjCQKz0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 06:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        id S229716AbjCQLI7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 07:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjCQKzZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 06:55:25 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AF9DDF35;
-        Fri, 17 Mar 2023 03:55:23 -0700 (PDT)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32HAe8Pk020672;
-        Fri, 17 Mar 2023 10:55:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RUMpbwc4wqUe3MjJ+ltbvkY9rJ1XIpkrtSkNguYYYYU=;
- b=GkYkcWuhW0C7LoU/lfin6dQFbRnhkxk2RMY1SKZNC5RXfjqx6hX+D6vttucVH/4IpdXO
- h1/2E/MRsRoKkblDQSklJmp/47WjOBX/HLUHRGzNZGgJRJS3es0hLBZzka86kvhF46Sp
- UgPdk+hcODiPSvZxKZe0Z8aVwCKY5jzMLFcmJnn9J2NJQV3CUre5eFHsGls9Xfylyqjt
- d/o44ljsO/m+H+oD1iLNGXwJ1hc8e95u4/E1FAy/TkvmKA3e6u89BbZbLuHGZiBgLaCP
- LgutpWPoXys1I8NIvT+u0yvNx3DwLsCOKD6yg+RAh5HULP9qLnXtQp3J7QGnKuxMK+1c mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcjfhpwc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 10:55:19 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32HAeZfB022275;
-        Fri, 17 Mar 2023 10:55:18 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcjfhpwbs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 10:55:18 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32H6uoAx022101;
-        Fri, 17 Mar 2023 10:55:16 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3pbsvb210m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 10:55:16 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32HAtEkQ8258098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Mar 2023 10:55:14 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A0792004B;
-        Fri, 17 Mar 2023 10:55:14 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A01B20049;
-        Fri, 17 Mar 2023 10:55:12 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.91.202])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 17 Mar 2023 10:55:12 +0000 (GMT)
-Date:   Fri, 17 Mar 2023 16:25:04 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [RFC 08/11] ext4: Don't skip prefetching BLOCK_UNINIT groups
-Message-ID: <ZBRHCHySeQ0KC/f7@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1674822311.git.ojaswin@linux.ibm.com>
- <4881693a4f5ba1fed367310b27c793e4e78520d3.1674822311.git.ojaswin@linux.ibm.com>
- <20230309141422.b2nbl554ngna327k@quack3>
+        with ESMTP id S229703AbjCQLI6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 07:08:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38758244A6
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 04:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679051287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DFrkZcgMRFqj/YL76AsZyo+pZLdDkc3U0vHb8n1dWOc=;
+        b=YYZk2JD5yvCbVQiyOf/9nfQs5tB5j6aZwTasSMmk5XquQylFu9gV2BS4ZxqT0ItOYtZ5Fx
+        LtrL+19xIuHvFeUNEd7dnNOK9GrT7FbhM06+24cqH/iMwnCEeXDNlLYpCcetkfe2ckxPFk
+        tPrXT+H7495Cq9wZ3jcsophr8emP/Is=
+Received: from mail-qt1-f197.google.com (209.85.160.197 [209.85.160.197]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-300-8MXUoDciMRO_xs3z62KtHg-1; Fri,
+ 17 Mar 2023 07:08:05 -0400
+X-MC-Unique: 8MXUoDciMRO_xs3z62KtHg-1
+Received: by mail-qt1-f197.google.com with SMTP id l16-20020a05622a175000b003d7d7b8136bso2324532qtk.11
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679051285;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DFrkZcgMRFqj/YL76AsZyo+pZLdDkc3U0vHb8n1dWOc=;
+        b=BBZ7CHR1F0Utnn4axCKBiPngIHmmi4l7DaJpRdkWAzdjuFSKFPxYUtX3N/HKpBXlhZ
+         TL3nuUEBXNAQ2czUAZ4Uc3pS43xfZhYKnrQFULN8TYp6kQqC5+V7F89EOdyzbwjNw2du
+         qu/OVPg5/0sEORfZ/ljWfB2VybphlMepGcSgXRCEIjrdU2oSzZEp3udzpk9rGjHn9QOr
+         dtaRIZwPBgU300LdIx5g3Z5MkdqWhzmFHrSYB0cldBWSrsKafqcnENQK6CurhThg0rpJ
+         6EB9n6Blo3BpW1Qfd1kyYghB5Revnwq322fQQRBGo5crqaypexBEn9u0VdG9JWa7XUMc
+         8Q4Q==
+X-Gm-Message-State: AO0yUKWS4pHlLoZQr977zsslfJKmsVVhuZHqwihlV+1pjNFaVmvxh+lm
+        iXjsFe+zaV2qfPSVdIFeCWxFzn3S488/PrtpW0PzRoCperv/bNmnJt4gmsT8pKfx1SLPDnc84rJ
+        /GACm+Cw5LTSz0TYUIK1jUg==
+X-Received: by 2002:ac8:5c96:0:b0:3bf:df2e:a494 with SMTP id r22-20020ac85c96000000b003bfdf2ea494mr12230083qta.6.1679051285418;
+        Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
+X-Google-Smtp-Source: AK7set/0k3uYz5kgjWc7xcseMVq0TkOVZC6Wmp9XEep8Xuy3onXi/3HlEgtGMuN8MojLsBrYKEFdOA==
+X-Received: by 2002:ac8:5c96:0:b0:3bf:df2e:a494 with SMTP id r22-20020ac85c96000000b003bfdf2ea494mr12230066qta.6.1679051285195;
+        Fri, 17 Mar 2023 04:08:05 -0700 (PDT)
+Received: from localhost.localdomain (024-205-208-113.res.spectrum.com. [24.205.208.113])
+        by smtp.gmail.com with ESMTPSA id d188-20020a37b4c5000000b007426ec97253sm1410746qkf.111.2023.03.17.04.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Mar 2023 04:08:04 -0700 (PDT)
+Subject: Re: [PATCH] ext4: remove unneeded check of nr_to_submit
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230316204831.2472537-1-trix@redhat.com>
+ <20230317045836.GA882@sol.localdomain>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <7833722c-3618-14f5-0e49-cff96eb06ea8@redhat.com>
+Date:   Fri, 17 Mar 2023 04:08:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230309141422.b2nbl554ngna327k@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: D9YVdtmD-D3rJBeAV2lkCzxwOK-kRLei
-X-Proofpoint-ORIG-GUID: JTnpt8bXAF7aeoR6KCJMuv1bUoA8YMJ5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-17_06,2023-03-16_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 adultscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 spamscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303170071
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230317045836.GA882@sol.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 03:14:22PM +0100, Jan Kara wrote:
-> On Fri 27-01-23 18:07:35, Ojaswin Mujoo wrote:
-> > Currently, ext4_mb_prefetch() and ext4_mb_prefetch_fini() skip
-> > BLOCK_UNINIT groups since fetching their bitmaps doesn't need disk IO.
-> > As a consequence, we end not initializing the buddy structures and CR0/1
-> > lists for these BGs, even though it can be done without any disk IO
-> > overhead. Hence, don't skip such BGs during prefetch and prefetch_fini.
-> > 
-> > This improves the accuracy of CR0/1 allocation as earlier, we could have
-> > essentially empty BLOCK_UNINIT groups being ignored by CR0/1 due to their buddy
-> > not being initialized, leading to slower CR2 allocations. With this patch CR0/1
-> > will be able to discover these groups as well, thus improving performance.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> 
-> The patch looks good. I just somewhat wonder - this change may result in
-> uninitialized groups being initialized and used earlier (previously we'd
-> rather search in other already initialized groups) which may spread
-> allocations more. But I suppose that's fine and uninit groups are not
-> really a feature meant to limit fragmentation and as the filesystem ages
-> the differences should be minimal. So feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
-Thanks for the review. As for the allocation spread, I agree that it
-should be something our goal determination logic should take care of
-rather than limiting the BGs available to the allocator.
 
-Another point I wanted to discuss wrt this patch series was why were the
-BLOCK_UNINIT groups not being prefetched earlier. One point I can think
-of is that this might lead to memory pressure when we have too many
-empty BGs in a very large (say terabytes) disk.
+On 3/16/23 9:58 PM, Eric Biggers wrote:
+> On Thu, Mar 16, 2023 at 04:48:31PM -0400, Tom Rix wrote:
+>> cppcheck reports
+>> fs/ext4/page-io.c:516:51: style:
+>>    Condition 'nr_to_submit' is always true [knownConditionTrueFalse]
+>>   if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
+>>                                                    ^
+>> This earlier check to bail, makes this check unncessary
+>> 	/* Nothing to submit? Just unlock the page... */
+>> 	if (!nr_to_submit)
+>> 		return 0;
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+> Maybe add:
+>
+> Fixes: dff4ac75eeee ("ext4: move keep_towrite handling to ext4_bio_write_page()")
 
-But i'd still like to know if there's some history behind not
-prefetching block uninit.
+The rule of thumb I use is 'would this require a recompile?'
 
-Cc'ing Andreas as well to check if they came across anything in Lustre
-in the past.
-> 
-> > ---
-> >  fs/ext4/mballoc.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > index 14529d2fe65f..48726a831264 100644
-> > --- a/fs/ext4/mballoc.c
-> > +++ b/fs/ext4/mballoc.c
-> > @@ -2557,9 +2557,7 @@ ext4_group_t ext4_mb_prefetch(struct super_block *sb, ext4_group_t group,
-> >  		 */
-> >  		if (!EXT4_MB_GRP_TEST_AND_SET_READ(grp) &&
-> >  		    EXT4_MB_GRP_NEED_INIT(grp) &&
-> > -		    ext4_free_group_clusters(sb, gdp) > 0 &&
-> > -		    !(ext4_has_group_desc_csum(sb) &&
-> > -		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)))) {
-> > +		    ext4_free_group_clusters(sb, gdp) > 0 ) {
-> >  			bh = ext4_read_block_bitmap_nowait(sb, group, true);
-> >  			if (bh && !IS_ERR(bh)) {
-> >  				if (!buffer_uptodate(bh) && cnt)
-> > @@ -2600,9 +2598,7 @@ void ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
-> >  		grp = ext4_get_group_info(sb, group);
-> >  
-> >  		if (EXT4_MB_GRP_NEED_INIT(grp) &&
-> > -		    ext4_free_group_clusters(sb, gdp) > 0 &&
-> > -		    !(ext4_has_group_desc_csum(sb) &&
-> > -		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)))) {
-> > +		    ext4_free_group_clusters(sb, gdp) > 0) {
-> >  			if (ext4_mb_init_group(sb, group, GFP_NOFS))
-> >  				break;
-> >  		}
-> > -- 
-> > 2.31.1
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+In this case, the existing code will work, so no fixes:
+
+Tom
+
+> Either way, looks good to me.
+>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+>
+> - Eric
+>
+
