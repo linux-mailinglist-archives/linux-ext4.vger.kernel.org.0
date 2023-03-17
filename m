@@ -2,225 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C028D6BE86F
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 12:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138CC6BE982
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 13:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjCQLjY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 07:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S230304AbjCQMlT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 08:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjCQLjR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 07:39:17 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DE7A6755;
-        Fri, 17 Mar 2023 04:38:50 -0700 (PDT)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32HBAVJW035099;
-        Fri, 17 Mar 2023 11:37:32 GMT
+        with ESMTP id S230198AbjCQMlS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 08:41:18 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E11995BF8;
+        Fri, 17 Mar 2023 05:41:06 -0700 (PDT)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32HBohq2023920;
+        Fri, 17 Mar 2023 12:41:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
  subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RHd2xuUbJVsrE+lDQWezGvyR0QUXW4R0cjT3qw7Db94=;
- b=NEjWDkuQx4WfXU8JTFs3HYh4e0cYCf/DabKeT7eMxXtfIGTpFzQyT+Hiw0dy39sB7gtn
- 07maVfvGKESW5OCTRSpo6BvdyIPXC2e+9frZmBBaKJq4I6OBSHzx29t+kSeEhA2vQ9ba
- 3p6ZEAmRC/VQmKCsNQtskmu2r3Zj+X7vNYI67SM9jD7pJUtMKynG5Nggw8stBDVyBwsk
- vE8uKpsNyxE7z7pQaAva5EaLM96kb9ASpVobIgH8348mHb/MQuyrk0/PnP4gJV6Pvf9b
- FPrfd+NMZfY6qbbYQZdKuVyIaSPg1f4D90mF3RdS6WQtWu6pjGXnqahR0xn05aR9nx6p Ew== 
+ in-reply-to; s=pp1; bh=7ML8qvCc7bsbgf0VRkbvrNELPBTFwwaHfEsnoYoxBho=;
+ b=ZMLcCgggNP5gtpkWqB9KkDydI32aK7JKVEj9p8aBd4dMnS+QpVSe45mZMweMR9an4+jM
+ FqnVp4ttkJqWXUdttCQqv+x4pzyZPkWL2mTqZU6ZQiqRSWjYxpV2zzVwtySFSX+VkkaH
+ YmFVMbSh/Dd0tU3cEpC+d4OOQbfl599okpsuVEO9Dl3iZH29vMmAG8DDC/yCKeL9Xfv6
+ 96YSxX19G/yyGfB3tA/r4IZKn6bp5XETUQ9DVnHkfaR/fi2BV6gGlkvs4R1poawsmqzX
+ DShDZocdyESLyniaSPN6wZr3vRpY1yJKnJHBLLsYau2iH/fE0ms7MxW/K+INpJx4cT8a Jw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcpbtsj25-1
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcqpkh9p0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 11:37:31 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32HBKgl2029519;
-        Fri, 17 Mar 2023 11:37:31 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcpbtsj18-1
+        Fri, 17 Mar 2023 12:41:01 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32HCIw6f023668;
+        Fri, 17 Mar 2023 12:41:01 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcqpkh9mp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 11:37:31 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32H78tBF022053;
-        Fri, 17 Mar 2023 11:37:28 GMT
+        Fri, 17 Mar 2023 12:41:01 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32H6uCuq030602;
+        Fri, 17 Mar 2023 12:40:58 GMT
 Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3pbsvb22h9-1
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3pbskt25b8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 11:37:28 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32HBbQWv21955116
+        Fri, 17 Mar 2023 12:40:58 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32HCeuJB66781560
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Mar 2023 11:37:26 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66C3C20040;
-        Fri, 17 Mar 2023 11:37:26 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CEFC20043;
-        Fri, 17 Mar 2023 11:37:24 +0000 (GMT)
+        Fri, 17 Mar 2023 12:40:56 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4E30D2004E;
+        Fri, 17 Mar 2023 12:40:56 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FD4C20043;
+        Fri, 17 Mar 2023 12:40:53 +0000 (GMT)
 Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.91.202])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 17 Mar 2023 11:37:24 +0000 (GMT)
-Date:   Fri, 17 Mar 2023 17:07:21 +0530
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri, 17 Mar 2023 12:40:53 +0000 (GMT)
+Date:   Fri, 17 Mar 2023 18:10:50 +0530
 From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Ritesh Harjani <riteshh@linux.ibm.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rookxu <brookxu.cn@gmail.com>,
         Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [RFC 11/11] ext4: Add allocation criteria 1.5 (CR1_5)
-Message-ID: <ZBRQ8W/RL/Tjju68@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1674822311.git.ojaswin@linux.ibm.com>
- <08173ee255f70cdc8de9ac3aa2e851f9d74acb12.1674822312.git.ojaswin@linux.ibm.com>
- <20230309150649.5pnhqsf2khvffl6l@quack3>
+Subject: Re: [PATCH v3 7/8] ext4: Use rbtrees to manage PAs instead of inode
+ i_prealloc_list
+Message-ID: <ZBRf0i+hR2lDvi/P@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <Y8Z413XTPMr//bln@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230117110335.7dtlq4catefgjrm3@quack3>
+ <Y8jizbGg6l2WxJPF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230127144312.3m3hmcufcvxxp6f4@quack3>
+ <Y9zHkMx7w4Io0TTv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230209105418.ucowiqnnptbpwone@quack3>
+ <Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230210143753.ofh6wouk7vi7ygcl@quack3>
+ <542D3378-3214-4D0D-AA63-5A149E2B00EE@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230309150649.5pnhqsf2khvffl6l@quack3>
+In-Reply-To: <542D3378-3214-4D0D-AA63-5A149E2B00EE@dilger.ca>
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YfD3d6Iv9TI2t4v1ls7vZcS1W_G0Q0B4
-X-Proofpoint-GUID: AgVLpbIiXyGlNVdbEeJzuL4DS1tNfKv5
+X-Proofpoint-ORIG-GUID: SBkpyyo-RXdzCNY5E1a7Q2hPaD94ed66
+X-Proofpoint-GUID: ITi_cxAx98Y05cHqO-SNxVVoatqpqM5d
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-17_06,2023-03-16_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303170078
+ definitions=2023-03-17_08,2023-03-16_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303150002 definitions=main-2303170085
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 04:06:49PM +0100, Jan Kara wrote:
-> On Fri 27-01-23 18:07:38, Ojaswin Mujoo wrote:
-> > CR1_5 aims to optimize allocations which can't be satisfied in CR1. The
-> > fact that we couldn't find a group in CR1 suggests that it would be
-> > difficult to find a continuous extent to compleltely satisfy our
-> > allocations. So before falling to the slower CR2, in CR1.5 we
-> > proactively trim the the preallocations so we can find a group with
-> > (free / fragments) big enough.  This speeds up our allocation at the
-> > cost of slightly reduced preallocation.
-> > 
-> > The patch also adds a new sysfs tunable:
-> > 
-> > * /sys/fs/ext4/<partition>/mb_cr1_5_max_trim_order
-> > 
-> > This controls how much CR1.5 can trim a request before falling to CR2.
-> > For example, for a request of order 7 and max trim order 2, CR1.5 can
-> > trim this upto order 5.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+On Thu, Feb 16, 2023 at 10:07:39AM -0700, Andreas Dilger wrote:
+> On Feb 10, 2023, at 7:37 AM, Jan Kara <jack@suse.cz> wrote:
+> > So I belive mballoc tries to align everything (offsets & lengths)
+> > to powers of two to reduce fragmentation and simplify the work for
+> > the buddy allocator.  If ac->ac_b_ex.fe_len is a power-of-two, the
+> > alignment makes sense. But once we had to resort to higher allocator
+> > passes and just got some random-length extent, the alignment stops
+> > making sense.
 > 
-> The idea looks good. Couple of questions below...
+> In addition to optimizing for the buddy allocator, the other reason that
+> the allocations are aligned to power-of-two offsets is to better align
+> with underlying RAID stripes.  Otherwise, unaligned writes will cause
+> parity read-modify-write updates to multiple RAID stripes.  This alignment
+> can also help (though to a lesser degree) with NAND flash erase blocks.
 > 
-> > +/*
-> > + * We couldn't find a group in CR1 so try to find the highest free fragment
-> > + * order we have and proactively trim the goal request length to that order to
-> > + * find a suitable group faster.
-> > + *
-> > + * This optimizes allocation speed at the cost of slightly reduced
-> > + * preallocations. However, we make sure that we don't trim the request too
-> > + * much and fall to CR2 in that case.
-> > + */
-> > +static void ext4_mb_choose_next_group_cr1_5(struct ext4_allocation_context *ac,
-> > +		enum criteria *new_cr, ext4_group_t *group, ext4_group_t ngroups)
-> > +{
-> > +	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
-> > +	struct ext4_group_info *grp = NULL;
-> > +	int i, order, min_order;
-> > +
-> > +	if (unlikely(ac->ac_flags & EXT4_MB_CR1_5_OPTIMIZED)) {
-> > +		if (sbi->s_mb_stats)
-> > +			atomic_inc(&sbi->s_bal_cr1_5_bad_suggestions);
-> > +	}
-> > +
-> > +	/*
-> > +	 * mb_avg_fragment_size_order() returns order in a way that makes
-> > +	 * retrieving back the length using (1 << order) inaccurate. Hence, use
-> > +	 * fls() instead since we need to know the actual length while modifying
-> > +	 * goal length.
-> > +	 */
-> > +	order = fls(ac->ac_g_ex.fe_len);
-> > +	min_order = order - sbi->s_mb_cr1_5_max_trim_order;
+> Cheers, Andreas
 > 
-> Given we still require the allocation contains at least originally
-> requested blocks, is it ever the case that goal size would be 8 times
-> larger than original alloc size? Otherwise the
-> sbi->s_mb_cr1_5_max_trim_order logic seems a bit pointless...
+Got it, thanks. So from my limited understanding of RAID, if the write
+is stripe aligned and the (length % stripe == 0) then we won't need a 
+RMW cycle for parity bits and thats one of the reasons to pay attention
+to alignment and length in mballoc code. 
 
-Yes that is possible. In ext4_mb_normalize_request, for orignal request len <
-8MB we actually determine the goal length based on the length of the
-file (i_size) rather than the length of the original request. For eg:
+Then I think Jan's reasoning still holds that if ac_b_ex.fe_len is already
+not of a proper size then we'll anyways be ending with a RMW write in
+RAID so no point of paying attention to its alignment, right?
 
-	if (size <= 16 * 1024) {
-		size = 16 * 1024;
-	} else if (size <= 32 * 1024) {
-		size = 32 * 1024;
-	} else if (size <= 64 * 1024) {
-		size = 64 * 1024;
-
-and this goes all the way upto size = 8MB. So for a case where the file
-is >8MB, even if the original len is of 1 block(4KB), the goal len would
-be of 2048 blocks(8MB). That's why we decided to add a tunable depending
-on the user's preference.
-> 
-> > +	if (min_order < 0)
-> > +		min_order = 0;
-> 
-> Perhaps add:
-> 
-> 	if (1 << min_order < ac->ac_o_ex.fe_len)
-> 		min_order = fls(ac->ac_o_ex.fe_len) + 1;
-> 
-> and then you can drop the condition from the loop below...
-That looks better, will do it. Thanks!
-> 
-> > +
-> > +	for (i = order; i >= min_order; i--) {
-> > +		if (ac->ac_o_ex.fe_len <= (1 << i)) {
-> > +			/*
-> > +			 * Scale down goal len to make sure we find something
-> > +			 * in the free fragments list. Basically, reduce
-> > +			 * preallocations.
-> > +			 */
-> > +			ac->ac_g_ex.fe_len = 1 << i;
-> 
-> When scaling down the size with sbi->s_stripe > 1, it would be better to
-> choose multiple of sbi->s_stripe and not power of two. But our stripe
-> support is fairly weak anyway (e.g. initial goal size does not reflect it
-> at all AFAICT) so probably we don't care here either.
-Oh right, i missed that. I'll make the change as it doesn't harm to have
-it here.
-
-Thanks for the review!
-
-regards,
+Regards,
 ojaswin
-> 
-> > +		} else {
-> > +			break;
-> > +		}
-> > +
-> > +		grp = ext4_mb_find_good_group_avg_frag_lists(ac,
-> > +							     mb_avg_fragment_size_order(ac->ac_sb,
-> > +							     ac->ac_g_ex.fe_len));
-> > +		if (grp)
-> > +			break;
-> > +	}
-> > +
-> > +	if (grp) {
-> > +		*group = grp->bb_group;
-> > +		ac->ac_flags |= EXT4_MB_CR1_5_OPTIMIZED;
-> > +	} else {
-> > +		/* Reset goal length to original goal length before falling into CR2 */
-> > +		ac->ac_g_ex.fe_len = ac->ac_orig_goal_len;
-> >  		*new_cr = CR2;
-> >  	}
-> >  }
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
