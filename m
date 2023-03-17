@@ -2,95 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953A56BE9BB
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 13:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DDE6BE9C7
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 14:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjCQM5T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 08:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        id S229669AbjCQNBg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 09:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjCQM5P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 08:57:15 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839836BC35;
-        Fri, 17 Mar 2023 05:57:13 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 18C145C00C2;
-        Fri, 17 Mar 2023 08:57:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 17 Mar 2023 08:57:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1679057831; x=1679144231; bh=wH
-        WJBfMShjSFXsFCq5Zk4cPStZjnt2HZow5SXTrbR1M=; b=ocKgd9SpcBruwflJI3
-        NQNli0D84J6K/1wC+siptfN3QvlrUNAagJY+/mliyoxTo2Um/ABgjOex7tTszw2S
-        cSPoUQdIY3dYX0V/HtUZ4+ch1YrD32DPvqtK6nAP7Zn9R1Ac82VqLfShiqXTS0Rt
-        Qz9wGevBHvynazlgqeyhWoQAQnyKZes/6THQYGh80FeblFE1ZeoEVPZppp04NJgh
-        7z0z1VfHhhUEN7IDDIUf/do7k5itKbcOh9tV67zDMcszhoDa0vDQDxjPjNnu4I6B
-        OhtToeemRArGpniM9lkLdmnoY0sUAwDMTl9FGTsxeHQbPk9tPoW+elKMiZLBv+Qr
-        om+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679057831; x=1679144231; bh=wHWJBfMShjSFX
-        sFCq5Zk4cPStZjnt2HZow5SXTrbR1M=; b=Bv1LUJCxrgEpcdXPsfdmUSEmkC0nR
-        ZDGSKCt+u1Gi5vnVVk6v0aSFEtXxOAW3oIiHJTqmm1pzs4+ZgBwnP95cvA4DPCrw
-        /PGVwTppHr290LGb2KFa8GbjAMoLA27mnCIC4Kpzf+R7zt7WuQfyFNMvXD7PQUDh
-        sMGj4rQZKayKmtVU/mCU4hohaXpN3R4t9ohU7/SGf+P40KSdNLvqVbKLA04IU9Jp
-        3cY5WTsl5AN4ePhWB37ii9eDCEnJQVncxE2xvMvP5/E0nso0B9QmHDAiM26nGhVB
-        QL/ZO0/XiJY4GeD2+bVGMTzsS3pNYjykjd0TVyWahTHTWY7V4xQPFushw==
-X-ME-Sender: <xms:pmMUZC7ptSIlbM2gWy7XOhucz4BDQZ3QQryGuhPVIpmUEtyNP_1JaA>
-    <xme:pmMUZL64UVkoSJ-A83NQJGUt10rOtEhltjeFkpTujnYLXbWPfBLF6LgSX-PF6yvgX
-    8UGJpbEPuqaUg>
-X-ME-Received: <xmr:pmMUZBe1Tn4JoScfyfxc-lsPazYba8vlS0E1o-TGoKaOliy36RIyjg0tEmJTvyMVfQOpzPfTXwkcLqTeFbD5vn_A5Za4EjaQDElvjA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefvddggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:pmMUZPIwTaZgAgmSRMWnsGCqxdgzlbqud6PsRAdiTpSeX9kKh-sBHg>
-    <xmx:pmMUZGIHM2D0WJWqk7XccSi6n5ed39Rp6sYgTaphyDPuaRPTyXEppA>
-    <xmx:pmMUZAzNmhlPZbxdlXum2Zn2fyfJ6qSiKlEwlcFdPmdfLI_I-8r1xw>
-    <xmx:p2MUZDA20ntsMYjCKU9RgTkuSai-KdFn1xP6Ix44WirJQAWxjJNd0A>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Mar 2023 08:57:10 -0400 (EDT)
-Date:   Fri, 17 Mar 2023 13:57:07 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     stable@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 5.4] ext4: fix cgroup writeback accounting with fs-layer
- encryption
-Message-ID: <ZBRjozEki2sRr9vR@kroah.com>
-References: <20230317050119.55794-1-ebiggers@kernel.org>
+        with ESMTP id S229978AbjCQNBf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 09:01:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BDEB3E37
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 06:01:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4EDE521A6D;
+        Fri, 17 Mar 2023 13:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679058092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vbbeiHVcLJZjsBTuzDslYr85ahpqKRSM12wkly6J6EY=;
+        b=O+mqQFMJwEz5dbd1Jv3sUjAjFZhC0+rUxRXRDXs+9xL42VsWINx3bskUtBl2+OI97ZlZud
+        UFd8tz9kSGVpSNvfvTOvTNogq03SrFBG+J7gBfShfVbY9PBG8hf9nNV3fKPcgcSY+qfGPl
+        8adRxaWVvulu0gXbXsxcQggGOzqQq7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679058092;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vbbeiHVcLJZjsBTuzDslYr85ahpqKRSM12wkly6J6EY=;
+        b=h30kRFKe0v60hYiO/ZbiJNaWURNvZJar/ik1WZPIBD7zuLkvVquXe5OVMgN/3a53bwvOZ4
+        hvEgTlfPNWjQ51Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 342E413428;
+        Fri, 17 Mar 2023 13:01:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xdmlDKxkFGRTSQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 17 Mar 2023 13:01:32 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B9BBFA06FD; Fri, 17 Mar 2023 14:01:31 +0100 (CET)
+Date:   Fri, 17 Mar 2023 14:01:31 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huaweicloud.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v4 2/2] ext4: add journal cycled recording support
+Message-ID: <20230317130131.k2oabqxikk6p36en@quack3>
+References: <20230317090926.4149399-1-yi.zhang@huaweicloud.com>
+ <20230317090926.4149399-3-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230317050119.55794-1-ebiggers@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230317090926.4149399-3-yi.zhang@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 10:01:19PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri 17-03-23 17:09:26, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> commit ffec85d53d0f39ee4680a2cf0795255e000e1feb upstream.
+> Always enable 'JBD2_CYCLE_RECORD' journal option on ext4, letting the
+> jbd2 continue to record new journal transactions from the recovered
+> journal head or the checkpointed transactions in the previous mount.
 > 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Thanks, all queued up.
+Looks good to me. Feel free to add:
 
-greg k-h
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/super.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 88f7b8a88c76..9b46adae241b 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5691,6 +5691,11 @@ static void ext4_init_journal_params(struct super_block *sb, journal_t *journal)
+>  		journal->j_flags |= JBD2_ABORT_ON_SYNCDATA_ERR;
+>  	else
+>  		journal->j_flags &= ~JBD2_ABORT_ON_SYNCDATA_ERR;
+> +	/*
+> +	 * Always enable journal cycle record option, letting the journal
+> +	 * records log transactions continuously between each mount.
+> +	 */
+> +	journal->j_flags |= JBD2_CYCLE_RECORD;
+>  	write_unlock(&journal->j_state_lock);
+>  }
+>  
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
