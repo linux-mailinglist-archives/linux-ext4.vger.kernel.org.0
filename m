@@ -2,67 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1349E6BDE29
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 02:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536466BDE2D
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Mar 2023 02:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbjCQBdd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Mar 2023 21:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
+        id S229436AbjCQBgu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Mar 2023 21:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjCQBdc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Mar 2023 21:33:32 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E961259B
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Mar 2023 18:33:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 79D32CE1D32
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 01:33:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AD3D1C433D2
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 01:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679016806;
-        bh=QIsKk9H8VfHJ9RPl0zSut+NINBN9yZE7S4vUuV8t1Lg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=LvsDXwfiGqaFhqkig0hPw4T5ne5lnIVazjwdr2U7lD41FrSFnhpNkSFSkr5XjNLJm
-         BA2S1X7xh4/rupNp56x2hU1CpUDVElm+KIz2DHum76AUn+zrpcqsFuNf4MRgziY5KP
-         M5VXgK41Tixrpjpr2hKLeqsK5NWeADP65QE5ltc7+3aG6U6Dn9VdFcw7sdCgWzVw4J
-         +ezN62mPeE7s9RQEaTdjF6Ms8aZcF9MKYi3ky8u+wnewCAqxwm0PMHqgYuz1KD1SYU
-         iaJDdHewsj3ggxK1NDAhQt95HLCbanwC9qnjhzPkgZv5iDBZ5ZGGlzko71HKcrFDUU
-         mOvnZ9/CK+NMA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 9BA92C43143; Fri, 17 Mar 2023 01:33:26 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217209] ext4_da_write_end: i_disksize exceeds i_size in
- paritally written case
-Date:   Fri, 17 Mar 2023 01:33:26 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: chengzhihao1@huawei.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: attachments.created
-Message-ID: <bug-217209-13602-xcwpTgXtKj@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217209-13602@https.bugzilla.kernel.org/>
-References: <bug-217209-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S229589AbjCQBgs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Mar 2023 21:36:48 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D72A219B;
+        Thu, 16 Mar 2023 18:36:46 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Pd6DC0P6NzKmr8;
+        Fri, 17 Mar 2023 09:36:27 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 17 Mar
+ 2023 09:36:42 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
+        <tudor.ambarus@linaro.org>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] ext4: Fix i_disksize exceeding i_size problem in paritally written case
+Date:   Fri, 17 Mar 2023 09:35:53 +0800
+Message-ID: <20230317013553.1009553-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,15 +45,116 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217209
+Following process makes i_disksize exceed i_size:
 
---- Comment #3 from Zhihao Cheng (chengzhihao1@huawei.com) ---
-Created attachment 303970
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D303970&action=3Dedit
-diff
+generic_perform_write
+ copied = iov_iter_copy_from_user_atomic(len) // copied < len
+ ext4_da_write_end
+ | ext4_update_i_disksize
+ |  new_i_size = pos + copied;
+ |  WRITE_ONCE(EXT4_I(inode)->i_disksize, newsize) // update i_disksize
+ | generic_write_end
+ |  copied = block_write_end(copied, len) // copied = 0
+ |   if (unlikely(copied < len))
+ |    if (!PageUptodate(page))
+ |     copied = 0;
+ |  if (pos + copied > inode->i_size) // return false
+ if (unlikely(copied == 0))
+  goto again;
+ if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
+  status = -EFAULT;
+  break;
+ }
 
---=20
-You may reply to this email to add a comment.
+We get i_disksize greater than i_size here, which could trigger WARNING
+check 'i_size_read(inode) < EXT4_I(inode)->i_disksize' while doing dio:
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+ext4_dio_write_iter
+ iomap_dio_rw
+  __iomap_dio_rw // return err, length is not aligned to 512
+ ext4_handle_inode_extension
+  WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize) // Oops
+
+ WARNING: CPU: 2 PID: 2609 at fs/ext4/file.c:319
+ CPU: 2 PID: 2609 Comm: aa Not tainted 6.3.0-rc2
+ RIP: 0010:ext4_file_write_iter+0xbc7
+ Call Trace:
+  vfs_write+0x3b1
+  ksys_write+0x77
+  do_syscall_64+0x39
+
+Fix it by putting block_write_end() before i_disksize updating just
+like ext4_write_end() does.
+
+Fetch a reproducer in [Link].
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217209
+Fixes: 64769240bd07f ("ext4: Add delayed allocation support in data=writeback mode")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/ext4/inode.c | 32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index bf0b7dea4900..577dc23f3b78 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3136,6 +3136,8 @@ static int ext4_da_write_end(struct file *file,
+ 	loff_t new_i_size;
+ 	unsigned long start, end;
+ 	int write_mode = (int)(unsigned long)fsdata;
++	bool i_size_changed = false;
++	loff_t old_size = inode->i_size;
+ 
+ 	if (write_mode == FALL_BACK_TO_NONDELALLOC)
+ 		return ext4_write_end(file, mapping, pos,
+@@ -3148,6 +3150,8 @@ static int ext4_da_write_end(struct file *file,
+ 	    ext4_has_inline_data(inode))
+ 		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+ 
++	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
++
+ 	start = pos & (PAGE_SIZE - 1);
+ 	end = start + copied - 1;
+ 
+@@ -3162,16 +3166,30 @@ static int ext4_da_write_end(struct file *file,
+ 	 * check), we need to update i_disksize here as neither
+ 	 * ext4_writepage() nor certain ext4_writepages() paths not
+ 	 * allocating blocks update i_disksize.
+-	 *
+-	 * Note that we defer inode dirtying to generic_write_end() /
+-	 * ext4_da_write_inline_data_end().
+ 	 */
+ 	new_i_size = pos + copied;
+-	if (copied && new_i_size > inode->i_size &&
+-	    ext4_da_should_update_i_disksize(page, end))
+-		ext4_update_i_disksize(inode, new_i_size);
++	if (new_i_size > inode->i_size) {
++		i_size_write(inode, new_i_size);
++		i_size_changed = true;
++		if (copied && ext4_da_should_update_i_disksize(page, end))
++			ext4_update_i_disksize(inode, new_i_size);
++	}
++
++	unlock_page(page);
++	put_page(page);
++
++	if (old_size < pos)
++		pagecache_isize_extended(inode, old_size, pos);
++	/*
++	 * Don't mark the inode dirty under page lock. First, it unnecessarily
++	 * makes the holding time of page lock longer. Second, it forces lock
++	 * ordering of page lock and transaction start for journaling
++	 * filesystems.
++	 */
++	if (i_size_changed)
++		mark_inode_dirty(inode);
+ 
+-	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
++	return copied;
+ }
+ 
+ /*
+-- 
+2.31.1
+
