@@ -2,190 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF26BF6EC
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Mar 2023 01:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259C56BF756
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Mar 2023 03:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjCRAbI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 20:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S229575AbjCRCH7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 22:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjCRAbI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 20:31:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678DC3C7B5;
-        Fri, 17 Mar 2023 17:31:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E47C660EDD;
-        Sat, 18 Mar 2023 00:31:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47E48C433D2;
-        Sat, 18 Mar 2023 00:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679099465;
-        bh=MfEFtAhXnCXN3yXbojWZKf2XyT2w1O8pFFHNP09wb3g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sVW18bjKf7Tg2NPuE3Y9OjFOiu7CbCSiJ82nUHzN5P2eMyiFqvPB4kSkZMhjLE/uj
-         ScI7dZRvuBTv8/QG6ITVNTJsHCvnNJJYSi8C2ElbYUYF6mOg4b1cf22fDQSh7ladkN
-         H6uSKPJDZcR2wWh8571jyUh+zcGiScFshODH1flJVCt/0aEeAHYw8dwX0BWRiTBqFq
-         ufof641Otn81g4Aah2aMi3BPDhx2Karelxz0P2ziaVUMW5TreKdCKiQyM6DGXsrL76
-         G+8NlGCRE/gc2ejnz7Hi+Zs66IZm1fvkRBXG7aaWihiU9IPQsww+Q7hFxMyYy9CpIY
-         ygLktB2eMT2IA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D124D1540381; Fri, 17 Mar 2023 17:31:04 -0700 (PDT)
-Date:   Fri, 17 Mar 2023 17:31:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-ext4@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH 1/1] ext4: Replace ext4_kvfree_array_rcu() by
- kvfree_rcu_mightsleep()
-Message-ID: <28e1585c-7062-49c2-b08e-a5d33ca06577@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230317071558.335645-1-urezki@gmail.com>
+        with ESMTP id S229488AbjCRCH7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 22:07:59 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E33574DF
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 19:07:56 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32I27hPR014331
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Mar 2023 22:07:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1679105265; bh=k8qLgf6Cw3s7LDvzTCnWXsnwAnee0SEfvv3sO096Sls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=a4o//qngWjcH7c0r9Id22PeRaJGITgw4KgCuv+dyd/dr+kDlK5RXoRsmqLoPeCSYC
+         aHL6ZHG7DpSDg6m2TSGIhdUfGL95rVxC3Ri2WlolufvJCWc6o68nB9FRycyL2TM/oX
+         tnPcTmDiSklIhwxYEpXT7UtSIbFNjHwYCfec8Yu7rHHjNBq5xZXGRfbp/dfYTEYLcB
+         rh0/7unMrQ/hgaoJ6UufYCVZn2f4FhHqghBBXgeGHawZzUzos9jMiAeO7ovxDAQo0n
+         vJXgfERA0rtsRRIG9pjHrcxsGFNhwtSABTHw9vmFx1LnqY0yyQlxYcZ1aIQN5lYxQJ
+         1q9YRGPc6KOMw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 97B9F15C33A7; Fri, 17 Mar 2023 22:07:43 -0400 (EDT)
+Date:   Fri, 17 Mar 2023 22:07:43 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Dan Carpenter <error27@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: [bug report] ext4: Fix possible corruption when moving a
+ directory
+Message-ID: <20230318020743.GO860405@mit.edu>
+References: <5efbe1b9-ad8b-4a4f-b422-24824d2b775c@kili.mountain>
+ <ZAeOFzbhCNvskQ6b@gmail.com>
+ <20230308104234.z7vmgmjz2smepwlg@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230317071558.335645-1-urezki@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230308104234.z7vmgmjz2smepwlg@quack3>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 08:15:58AM +0100, Uladzislau Rezki (Sony) wrote:
-> The ext4_kvfree_array_rcu() function was introduced in order to
-> release some memory after a grace period during resizing of a
-> partition. An object that is freed does not contain any rcu_head
-> filed.
+On Wed, Mar 08, 2023 at 11:42:34AM +0100, Jan Kara wrote:
+> > That analysis looks correct.  FYI, I think this is the same as the syzbot report
+> > "[ext4?] WARNING: bad unlock balance in ext4_rename2"
+> > (https://lore.kernel.org/linux-ext4/000000000000435c6905f639ae8e@google.com).
 > 
-> To do so, it requires to allocate some extra memory for a special
-> structure that has an rcu_head filed and pointer one where a freed
-> memory is attached. Finally call_rcu() API is invoked.
-> 
-> Since we have a single argument of kvfree_rcu() API, we can easily
-> replace all that tricky code by one single call that does the same
-> but in more efficient way.
-> 
-> Cc: linux-ext4@vger.kernel.org
-> Cc: Lukas Czerner <lczerner@redhat.com>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Good spotting! This should be fixed (along with the lock ordering problem)
+> by 3c92792da8506 ("ext4: Fix deadlock during directory rename") Ted has
+> just merged couple hours ago.
 
-From an RCU perspective:
+Unfortunately, the Syzkaller report is still triggering after the
+merge and commit 3c92792da8506.  The double unlock is still there, and
+so the following fix is still needed (which I will be sending to Linus).
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+       		     	      	     	    - Ted
 
-> ---
->  fs/ext4/ext4.h    |  1 -
->  fs/ext4/mballoc.c |  2 +-
->  fs/ext4/resize.c  | 31 ++-----------------------------
->  fs/ext4/super.c   |  2 +-
->  4 files changed, 4 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 140e1eb300d1..e43d1a2d175e 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3057,7 +3057,6 @@ extern int ext4_generic_delete_entry(struct inode *dir,
->  extern bool ext4_empty_dir(struct inode *inode);
->  
->  /* resize.c */
-> -extern void ext4_kvfree_array_rcu(void *to_free);
->  extern int ext4_group_add(struct super_block *sb,
->  				struct ext4_new_group_data *input);
->  extern int ext4_group_extend(struct super_block *sb,
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 5b2ae37a8b80..96b4e3317640 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3055,7 +3055,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
->  	rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
->  	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
->  	if (old_groupinfo)
-> -		ext4_kvfree_array_rcu(old_groupinfo);
-> +		kvfree_rcu_mightsleep(old_groupinfo);
->  	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
->  		   sbi->s_group_info_size);
->  	return 0;
-> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-> index 6b91443d6bf3..330b81f36e10 100644
-> --- a/fs/ext4/resize.c
-> +++ b/fs/ext4/resize.c
-> @@ -18,33 +18,6 @@
->  
->  #include "ext4_jbd2.h"
->  
-> -struct ext4_rcu_ptr {
-> -	struct rcu_head rcu;
-> -	void *ptr;
-> -};
-> -
-> -static void ext4_rcu_ptr_callback(struct rcu_head *head)
-> -{
-> -	struct ext4_rcu_ptr *ptr;
-> -
-> -	ptr = container_of(head, struct ext4_rcu_ptr, rcu);
-> -	kvfree(ptr->ptr);
-> -	kfree(ptr);
-> -}
-> -
-> -void ext4_kvfree_array_rcu(void *to_free)
-> -{
-> -	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
-> -
-> -	if (ptr) {
-> -		ptr->ptr = to_free;
-> -		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
-> -		return;
-> -	}
-> -	synchronize_rcu();
-> -	kvfree(to_free);
-> -}
-> -
->  int ext4_resize_begin(struct super_block *sb)
->  {
->  	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> @@ -931,7 +904,7 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
->  	n_group_desc[gdb_num] = gdb_bh;
->  	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->  	EXT4_SB(sb)->s_gdb_count++;
-> -	ext4_kvfree_array_rcu(o_group_desc);
-> +	kvfree_rcu_mightsleep(o_group_desc);
->  
->  	lock_buffer(EXT4_SB(sb)->s_sbh);
->  	le16_add_cpu(&es->s_reserved_gdt_blocks, -1);
-> @@ -994,7 +967,7 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
->  
->  	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
->  	EXT4_SB(sb)->s_gdb_count++;
-> -	ext4_kvfree_array_rcu(o_group_desc);
-> +	kvfree_rcu_mightsleep(o_group_desc);
->  	return err;
->  }
->  
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 87aa23d047c9..34d802848d6d 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3108,7 +3108,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
->  	rcu_assign_pointer(sbi->s_flex_groups, new_groups);
->  	sbi->s_flex_groups_allocated = size;
->  	if (old_groups)
-> -		ext4_kvfree_array_rcu(old_groups);
-> +		kvfree_rcu_mightsleep(old_groups);
->  	return 0;
->  }
->  
-> -- 
-> 2.30.2
-> 
+From 70e42feab2e20618ddd0cbfc4ab4b08628236ecd Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Fri, 17 Mar 2023 21:53:52 -0400
+Subject: [PATCH] ext4: fix possible double unlock when moving a directory
+
+Fixes: 0813299c586b ("ext4: Fix possible corruption when moving a directory")
+Link: https://lore.kernel.org/r/5efbe1b9-ad8b-4a4f-b422-24824d2b775c@kili.mountain
+Reported-by: Dan Carpenter <error27@gmail.com>
+Reported-by: syzbot+0c73d1d8b952c5f3d714@syzkaller.appspotmail.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/namei.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 31e21de56432..a5010b5b8a8c 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3884,10 +3884,8 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 				goto end_rename;
+ 		}
+ 		retval = ext4_rename_dir_prepare(handle, &old);
+-		if (retval) {
+-			inode_unlock(old.inode);
++		if (retval)
+ 			goto end_rename;
+-		}
+ 	}
+ 	/*
+ 	 * If we're renaming a file within an inline_data dir and adding or
+-- 
+2.31.0
+
