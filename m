@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 259C56BF756
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Mar 2023 03:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AA26BF75F
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Mar 2023 03:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbjCRCH7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Mar 2023 22:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S229671AbjCRCZX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Mar 2023 22:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjCRCH7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 22:07:59 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E33574DF
-        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 19:07:56 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 32I27hPR014331
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Mar 2023 22:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1679105265; bh=k8qLgf6Cw3s7LDvzTCnWXsnwAnee0SEfvv3sO096Sls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=a4o//qngWjcH7c0r9Id22PeRaJGITgw4KgCuv+dyd/dr+kDlK5RXoRsmqLoPeCSYC
-         aHL6ZHG7DpSDg6m2TSGIhdUfGL95rVxC3Ri2WlolufvJCWc6o68nB9FRycyL2TM/oX
-         tnPcTmDiSklIhwxYEpXT7UtSIbFNjHwYCfec8Yu7rHHjNBq5xZXGRfbp/dfYTEYLcB
-         rh0/7unMrQ/hgaoJ6UufYCVZn2f4FhHqghBBXgeGHawZzUzos9jMiAeO7ovxDAQo0n
-         vJXgfERA0rtsRRIG9pjHrcxsGFNhwtSABTHw9vmFx1LnqY0yyQlxYcZ1aIQN5lYxQJ
-         1q9YRGPc6KOMw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 97B9F15C33A7; Fri, 17 Mar 2023 22:07:43 -0400 (EDT)
-Date:   Fri, 17 Mar 2023 22:07:43 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
+        with ESMTP id S229488AbjCRCZW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Mar 2023 22:25:22 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF8E23C41
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Mar 2023 19:25:19 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PdlDz5cnczrSQH;
+        Sat, 18 Mar 2023 10:24:19 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Sat, 18 Mar 2023 10:25:15 +0800
+Subject: Re: [PATCH v3 1/2] jbd2: continue to record log between each mount
 To:     Jan Kara <jack@suse.cz>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Dan Carpenter <error27@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: [bug report] ext4: Fix possible corruption when moving a
- directory
-Message-ID: <20230318020743.GO860405@mit.edu>
-References: <5efbe1b9-ad8b-4a4f-b422-24824d2b775c@kili.mountain>
- <ZAeOFzbhCNvskQ6b@gmail.com>
- <20230308104234.z7vmgmjz2smepwlg@quack3>
+CC:     Zhang Yi <yi.zhang@huaweicloud.com>, <linux-ext4@vger.kernel.org>,
+        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <yukuai3@huawei.com>,
+        <ocfs2-devel@oss.oracle.com>
+References: <20230314140522.3266591-1-yi.zhang@huaweicloud.com>
+ <20230314140522.3266591-2-yi.zhang@huaweicloud.com>
+ <20230315094826.okdarxaapjyqmlhq@quack3>
+ <8c4ff3ab-4af2-58ed-4d08-3050c044f445@huawei.com>
+ <20230315172817.egezft3msc5z4omm@quack3>
+ <20230317112528.cig7fczuoezn23wy@quack3>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <6769d7eb-35bc-fbc1-0c15-a62309fbdb81@huawei.com>
+Date:   Sat, 18 Mar 2023 10:25:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230308104234.z7vmgmjz2smepwlg@quack3>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <20230317112528.cig7fczuoezn23wy@quack3>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,51 +55,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 08, 2023 at 11:42:34AM +0100, Jan Kara wrote:
-> > That analysis looks correct.  FYI, I think this is the same as the syzbot report
-> > "[ext4?] WARNING: bad unlock balance in ext4_rename2"
-> > (https://lore.kernel.org/linux-ext4/000000000000435c6905f639ae8e@google.com).
+On 2023/3/17 19:25, Jan Kara wrote:
+> On Wed 15-03-23 18:28:17, Jan Kara wrote:
+>> On Wed 15-03-23 20:37:32, Zhang Yi wrote:
+>>> On 2023/3/15 17:48, Jan Kara wrote:
+>>>> On Tue 14-03-23 22:05:21, Zhang Yi wrote:
+>>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>>
+>>>>> For a newly mounted file system, the journal committing thread always
+>>>>> record new transactions from the start of the journal area, no matter
+>>>>> whether the journal was clean or just has been recovered. So the logdump
+>>>>> code in debugfs cannot dump continuous logs between each mount, it is
+>>>>> disadvantageous to analysis corrupted file system image and locate the
+>>>>> file system inconsistency bugs.
+>>>>>
+>>>>> If we get a corrupted file system in the running products and want to
+>>>>> find out what has happened, besides lookup the system log, one effective
+>>>>> way is to backtrack the journal log. But we may not always run e2fsck
+>>>>> before each mount and the default fsck -a mode also cannot always
+>>>>> checkout all inconsistencies, so it could left over some inconsistencies
+>>>>> into the next mount until we detect it. Finally, transactions in the
+>>>>> journal may probably discontinuous and some relatively new transactions
+>>>>> has been covered, it becomes hard to analyse. If we could record
+>>>>> transactions continuously between each mount, we could acquire more
+>>>>> useful info from the journal. Like this:
+>>>>>
+>>>>>  |Previous mount checkpointed/recovered logs|Current mount logs         |
+>>>>>  |{------}{---}{--------} ... {------}| ... |{======}{========}...000000|
+>>>>>
+>>>>> And yes the journal area is limited and cannot record everything, the
+>>>>> problematic transaction may also be covered even if we do this, but
+>>>>> this is still useful for fuzzy tests and short-running products.
+>>>>>
+>>>>> This patch save the head blocknr in the superblock after flushing the
+>>>>> journal or unmounting the file system, let the next mount could continue
+>>>>> to record new transaction behind it. This change is backward compatible
+>>>>> because the old kernel does not care about the head blocknr of the
+>>>>> journal. It is also fine if we mount a clean old image without valid
+>>>>> head blocknr, we fail back to set it to s_first just like before.
+>>>>> Finally, for the case of mount an unclean file system, we could also get
+>>>>> the journal head easily after scanning/replaying the journal, it will
+>>>>> continue to record new transaction after the recovered transactions.
+>>>>>
+>>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>>
+>>>> I like this implementation! I even think we could perhaps make ext4 always
+>>>> behave this way to not increase size of the test matrix. Or do you see any
+>>>> downside to this option?
+>>>>
+>>>
+>>> Thanks for your suggestion. Indeed, I don't find any side effect on this
+>>> option both in theory and in the actual use tests on ext4, I added a new
+>>> option was just from the safe point of view and let user could disable it if
+>>> they don't want it. I also prefer to make ext4 always behave this way.:)
+>>>
+>>> I would like to keep the JBD2_CYCLE_RECORD flag(ocfs2 also use jbd2, I don't
+>>> want to disturb it until it needs), remove EXT4_MOUNT2_JOURNAL_CYCLE_RECORD
+>>> and always set JBD2_CYCLE_RECORD on ext4 in patch 2 in the next iteration.
+>>
+>> Yes, that makes sense.
 > 
-> Good spotting! This should be fixed (along with the lock ordering problem)
-> by 3c92792da8506 ("ext4: Fix deadlock during directory rename") Ted has
-> just merged couple hours ago.
+> FWIW yesterday I'v spoken with Ted and he also agrees that we don't need
+> ext4 mount option for this.
+> 
 
-Unfortunately, the Syzkaller report is still triggering after the
-merge and commit 3c92792da8506.  The double unlock is still there, and
-so the following fix is still needed (which I will be sending to Linus).
+Thanks! I've removed this mount option in v4.
 
-       		     	      	     	    - Ted
-
-From 70e42feab2e20618ddd0cbfc4ab4b08628236ecd Mon Sep 17 00:00:00 2001
-From: Theodore Ts'o <tytso@mit.edu>
-Date: Fri, 17 Mar 2023 21:53:52 -0400
-Subject: [PATCH] ext4: fix possible double unlock when moving a directory
-
-Fixes: 0813299c586b ("ext4: Fix possible corruption when moving a directory")
-Link: https://lore.kernel.org/r/5efbe1b9-ad8b-4a4f-b422-24824d2b775c@kili.mountain
-Reported-by: Dan Carpenter <error27@gmail.com>
-Reported-by: syzbot+0c73d1d8b952c5f3d714@syzkaller.appspotmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/namei.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 31e21de56432..a5010b5b8a8c 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3884,10 +3884,8 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
- 				goto end_rename;
- 		}
- 		retval = ext4_rename_dir_prepare(handle, &old);
--		if (retval) {
--			inode_unlock(old.inode);
-+		if (retval)
- 			goto end_rename;
--		}
- 	}
- 	/*
- 	 * If we're renaming a file within an inline_data dir and adding or
--- 
-2.31.0
-
+Yi.
