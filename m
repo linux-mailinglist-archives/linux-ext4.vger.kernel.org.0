@@ -2,108 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4198F6C122B
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 13:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6586C1255
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 13:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjCTMp0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Mar 2023 08:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
+        id S231530AbjCTMvQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Mar 2023 08:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjCTMpO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 08:45:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43F5C67C;
-        Mon, 20 Mar 2023 05:44:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5B43F1F86C;
-        Mon, 20 Mar 2023 12:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679316285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=csb4A/GteL7sk6OWuZo8wtDFvG6wLJAej3F6d9wonWM=;
-        b=BF/wbRGhwSoWqJjgX/ILwVnn1R/mNxSiPXfU8njNErZvQns2PrdZvgXVBOmT/BGHTqBaV/
-        yLN5fHWc9uykN18/5p2CAcTTHeqTBB4IHtmWBHfMGVQwW/NCZZ4/zsa13k5nlP0Z9OdpLp
-        ZluulV6ziGnelgY5Q0PtQ1khAjVddrE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679316285;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=csb4A/GteL7sk6OWuZo8wtDFvG6wLJAej3F6d9wonWM=;
-        b=93OYhAZFDIDPEt4KKwCA1czSGoIpnWvo7DsK8xXn/X8UD4kx/eSF7YyO21V7yRvlxzBatL
-        ec6DDmaQYe2JwyBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4885113A00;
-        Mon, 20 Mar 2023 12:44:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HbSzET1VGGRNZQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 20 Mar 2023 12:44:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AD839A0719; Mon, 20 Mar 2023 13:44:44 +0100 (CET)
-Date:   Mon, 20 Mar 2023 13:44:44 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] ext4: improve inode table blocks counting in
- ext4_num_overhead_clusters
-Message-ID: <20230320124444.kkp4es2wyke7vqgx@quack3>
-References: <20230221115919.1918161-1-shikemeng@huaweicloud.com>
- <20230221115919.1918161-8-shikemeng@huaweicloud.com>
+        with ESMTP id S231520AbjCTMu5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 08:50:57 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196E116ACA;
+        Mon, 20 Mar 2023 05:49:34 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PgF0c5jkgz9vFC;
+        Mon, 20 Mar 2023 20:48:48 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 20 Mar 2023 20:49:08 +0800
+Subject: Re: [PATCH] ext4: Fix i_disksize exceeding i_size problem in
+ paritally written case
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>,
+        <tudor.ambarus@linaro.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20230317013553.1009553-1-chengzhihao1@huawei.com>
+ <20230317124513.drx3wywcjnap5jme@quack3>
+ <884950ac-e60a-d331-9f68-310ab81ee595@huawei.com>
+ <71990726-c677-34df-d29b-a0fec1a6f68c@huawei.com>
+ <20230320112038.3q2eqpv6xsmj22br@quack3>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <48deeadf-05cd-3535-a589-907cfa252799@huawei.com>
+Date:   Mon, 20 Mar 2023 20:49:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230221115919.1918161-8-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230320112038.3q2eqpv6xsmj22br@quack3>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 21-02-23 19:59:19, Kemeng Shi wrote:
-> As inode table blocks are contiguous, inode table blocks inside the
-> block_group can be represented as range [itbl_cluster_start,
-> itbl_cluster_last]. Then we can simply account inode table cluters and
-> check cluster overlap with [itbl_cluster_start, itbl_cluster_last] instead
-> of traverse each block of inode table.
-> By the way, this patch fixes code style problem of comment for
-> ext4_num_overhead_clusters.
+[...]
+
+>> BTW, I want send another patch as follows:
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index bf0b7dea4900..570a687ae847 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -3149,7 +3149,7 @@ static int ext4_da_write_end(struct file *file,
+>>                  return ext4_write_inline_data_end(inode, pos, len, copied,
+>> page);
+>>
+>>          start = pos & (PAGE_SIZE - 1);
+>> -       end = start + copied - 1;
+>> +       end = start + (copied ? copied - 1 : copied);
+>>
+>>          /*
+>>           * Since we are holding inode lock, we are sure i_disksize <=
+>> @@ -3167,7 +3167,7 @@ static int ext4_da_write_end(struct file *file,
+>>           * ext4_da_write_inline_data_end().
+>>           */
+>>          new_i_size = pos + copied;
+>> -       if (copied && new_i_size > inode->i_size &&
+>> +       if (new_i_size > inode->i_size &&
+>>              ext4_da_should_update_i_disksize(page, end))
+>>                  ext4_update_i_disksize(inode, new_i_size);
+>>
+>> This modification handle unconsistent i_size and i_disksize imported by
+>> ea51d132dbf9 ("ext4: avoid hangs in ext4_da_should_update_i_disksize()").
+>>
+>> Paritially written may display a fake inode size for user, for example:
+>>
+>>
+>>
+>> i_disksize=1
+>>
+>> generic_perform_write
+>>
+>>   copied = iov_iter_copy_from_user_atomic(len) // copied = 0
+>>
+>>   ext4_da_write_end // skip updating i_disksize
+>>
+>>   generic_write_end
+>>
+>>    if (pos + copied > inode->i_size) {  // 10 + 0 > 1, true
+>>
+>>     i_size_write(inode, pos + copied);  // i_size = 10
+>>
+>>    }
+>>
+>>
+>>
+>>     0 1      10                4096
+>>
+>>     |_|_______|_________..._____|
+>>
+>>       |       |
+>>
+>>      i_size  pos
+>>
+>>
+>>
+>> Now, user see the i_size is 10 (i_disksize is still 1). After inode
+>>
+>> destroyed, user will get the i_size is 1 read from disk.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> OK, but shouldn't we rather change generic_write_end() to not increase
+> i_size if no write happened? Because that is what seems somewhat
+> problematic...
+> 
+> 								Honza
+> 
 
-FWIW this is triggering Coverity warning:
+After looking through some code, I find some other places have similar 
+problem:
+1. In ext4_write_end(), i_size is updated by ext4 not generic_write_end().
+2. The iommap framework, i_size is updated even copied is zero.
+3. ubifs_write_end, i_size is updated even copied is zero.
 
-*** CID 1536792:  Uninitialized variables  (UNINIT)
-/fs/ext4/balloc.c: 153 in ext4_num_overhead_clusters()
-147                     inode_cluster = EXT4_B2C(sbi,
-148                                              ext4_inode_bitmap(sb, gdp) - st
-149                     /*
-150                      * Additional check if inode bitmap is in just accounted
-151                      * block_cluster
-152                      */
->>>     CID 1536792:  Uninitialized variables  (UNINIT)
->>>     Using uninitialized value "block_cluster".
-153                     if (inode_cluster != block_cluster &&
-154                         inode_cluster >= base_clusters &&
-155                         (inode_cluster < itbl_cluster_start ||
-156                         inode_cluster > itbl_cluster_end))
-157                             num_clusters++;
-158             }
-
-which actually looks valid AFAICT.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+It seems that fixing all places is not an easy work.
