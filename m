@@ -2,73 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4186C6C0A06
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 06:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2886C0B62
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 08:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjCTFXp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Mar 2023 01:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S229906AbjCTHcJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Mar 2023 03:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjCTFXn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 01:23:43 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D56D11661
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Mar 2023 22:23:40 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id r16so11843172qtx.9
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Mar 2023 22:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679289819;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AAg/di4awCbENQSDHCw3uwPaVCnYn/JqQu0b5lYNlhA=;
-        b=p9Y2XtE4tcxGUhH+2fluWD0s4npx8Ylcmiofp0dtrqwoGanjdCTVnqg/qMO9B2Eqee
-         kJXhUMep3Gz11MElDyCICekSrou5OCXn0KcsjLzta/7S4NXBQ0kAPCCVyubft88a3Elh
-         nqu9KKJuvvc4mgDntldKav+//BdLjpY+W1y9F+/oC6RLQag0ajP/d8mSihCI0LQHTscN
-         iw4DDucZAA8uSQduK5FuwKdRjql9QLvxP/TP1GhC2AgZJo7kkKfwT7aIEbKJ45sCYU3I
-         WQfFiYo6WhPxnQFuL1eZb84t4CXllzGE4KX05JrDvIh2ChxlBcEN4ACNkRgNjlZBwVgk
-         gQ5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679289819;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AAg/di4awCbENQSDHCw3uwPaVCnYn/JqQu0b5lYNlhA=;
-        b=TrGfikhkD+un5VwEyfKFSOUOL8s828nwoHJ5NhYe/wgnP/yuRspb2gFJ2D81yoQKn5
-         F6Q21CNkz8O/If7i+b0VAEOqKVus84QtUh+Q/MlEhmvq5ciE0ujwq3aLkWzA/kjRKvjb
-         punObJNoxcdKHDYsoRMnwemJp9P424jhj3HFf6I5Tetu+oIkUpZ+9vazzVg+eICqqlQ1
-         pfgPxWmsQQkvVUowRU+OP5k0JFkxJagiVP/ntZovy7CquUqAbh2u7BFyeNHzc/JBW/dH
-         xyfHiyccB5ZADI/773ze/wiK4OU1xPiCWUciSNUbKPsAxqDYGMLMZQDWjO0itj1FR7xL
-         unGQ==
-X-Gm-Message-State: AO0yUKWX3dHLKlzHvI87Ix93QtJ/zelgXApRNt6oMW+f7w9Nt076eHL8
-        fuQz9HZ9OmQ6DxvNi5TsplBviw==
-X-Google-Smtp-Source: AK7set+IHAVwOVPGzgDiA1M/gc/Y2e4sY27FJ8NVOQKNJGtuM2ssre+J8mfq1AKrGS8jlMrrQZHYtw==
-X-Received: by 2002:ac8:7dc2:0:b0:3b8:4076:1de0 with SMTP id c2-20020ac87dc2000000b003b840761de0mr25174802qte.30.1679289819622;
-        Sun, 19 Mar 2023 22:23:39 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id r19-20020ac85213000000b003b643951117sm6038919qtn.38.2023.03.19.22.23.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Mar 2023 22:23:39 -0700 (PDT)
-Date:   Sun, 19 Mar 2023 22:23:36 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH 5/7] shmem: open code the page cache lookup in
- shmem_get_folio_gfp
-In-Reply-To: <20230307143410.28031-6-hch@lst.de>
-Message-ID: <af178ebb-1076-a38c-1dc1-2a37ccce4a3@google.com>
-References: <20230307143410.28031-1-hch@lst.de> <20230307143410.28031-6-hch@lst.de>
+        with ESMTP id S229655AbjCTHcI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 03:32:08 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C515BCA17;
+        Mon, 20 Mar 2023 00:32:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pg5z26JmRz4f3jYp;
+        Mon, 20 Mar 2023 15:31:58 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgC3qObrCxhktKaXFg--.12780S2;
+        Mon, 20 Mar 2023 15:31:56 +0800 (CST)
+Subject: Re: [PATCH v3 20/20] ext4: simplify calculation of blkoff in
+ ext4_mb_new_blocks_simple
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        ritesh.list@gmail.com,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230303172120.3800725-1-shikemeng@huaweicloud.com>
+ <20230303172120.3800725-21-shikemeng@huaweicloud.com>
+ <20230316050740.GL860405@mit.edu>
+ <d88a3d33-6832-2921-c8bb-b935b19e7db4@huaweicloud.com>
+ <20230317155047.GB3270589@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <c4ac2156-b773-bc9e-a764-8c3beeeaf3ac@huaweicloud.com>
+Date:   Mon, 20 Mar 2023 15:31:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+In-Reply-To: <20230317155047.GB3270589@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgC3qObrCxhktKaXFg--.12780S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFWkWrW5AF4fZrWrtr45Awb_yoW5WrWrpa
+        n3GF18trs8Ca48Xr97Zr4xtw4F9393AF17Cr45W34UZa98Xrya9Fs2krWFvF9F9rZxuFy2
+        v3WYkrsxWwn8Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,41 +68,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 7 Mar 2023, Christoph Hellwig wrote:
 
-> Use the very low level filemap_get_entry helper to look up the
-> entry in the xarray, and then:
+
+on 3/17/2023 11:50 PM, Theodore Ts'o wrote:
+> On Thu, Mar 16, 2023 at 06:19:40PM +0800, Kemeng Shi wrote:
+>> Hi Theodore, thanks for feedback. I will submit another patchset for
+>> mballoc and I would like to include this fix if no one else does. As
+>> new patches may be conflicted with old ones I submited, I would submit
+>> the new patchset after the old ones are fully reviewed and applied
+>> if this fix is not in rush. Thanks!
 > 
->  - don't bother locking the folio if only doing a userfault notification
->  - open code locking the page and checking for truncation in a related
->    code block
+> Hi, I've already taken the your patches into the dev branch; were
+> there any changes you were intending to make to your patches?
 > 
-> This will allow to eventually remove the FGP_ENTRY flag.
+> If you could submit a separate fix for the bug that I noticed, that
+> would be great.
+Hi, I was stuck in some urgent work recently and I will do this ASAP and
+it should be done in this week.
+> Also, if you are interested in doing some more work in mballoc.c, I
+> was wondering if you would be interested in adding some Kunit tests
+> for mballoc.c.  A simple example Kunit test for ext4 can be found in
+> fs/ext4/inode_test.c.  (The convention is to place tests for foo.c in
+> foo_test.c.)
+
+> [1] https://docs.kernel.org/dev-tools/kunit/
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> In order to add mballoc Kunit tests, we will need to add some "mock"[2]
+> functions to simulate what happens when mballoc.c tries reading a
+> block bitmap.  My thinking was to have a test provide an array of some
+> data structure like this:
+> 
+> struct test_bitmap {
+>        unsigned int	start;
+>        unsigned int	len;
+> };
+> 
+> [2] https://en.wikipedia.org/wiki/Mock_object
+> 
+> ... which indicates the starting block, and the length of a run of
+> blocks that are marked as in use, where the list of blocks are sorted
+> by starting block number, and where a starting block of ~0 indicates
+> the end of the list of block extents.
+> We would also need have a set of utility ext4 Kunit functions to
+> create "fake" ext4 superblocks and ext4_sb_info structures.
+The Kunit tests thing sounds interesting and I would like to this. But
+I still need some time to get basic knowledge then I maybe able to discuss
+detais. Of couse, anyone is also interesting in this and can make this work
+soon is fine.:)
+> I was originally thinking that obvious starting Kunit tests would be
+> for fs/ext4/hash.c and fs/ext4/extents_status.c, since they require
+> the little or no "mocking" support.  However, there are so many
+> changes in fs/ext4/mballoc.c, the urgency in having unit tests for it
+> is getting more urgent --- since if there is a bug in one of these
+> functions, such as the one that I noted in
+> ext4_mb_new_blocks_simple(), since it's harder to exhaustively test
+> some of these smaller sub-functions in integration tests such as those
+> found in xfstests.  Unit tests are the best way to make sure we're
+> testing all of the code paths in a complex module such as mballoc.c
+Yes, I can't agree more and this may be able to find other exsiting bugs.
 
-Acked-by: Hugh Dickins <hughd@google.com>
+-- 
+Best wishes
+Kemeng Shi
 
-but Andrew, please fold in this small improvement to its comment:
-
-[PATCH] shmem: open code the page cache lookup in shmem_get_folio_gfp fix
-
-Adjust the new comment line: shmem folio may have been swapped out.
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
-
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1905,7 +1905,7 @@ static int shmem_get_folio_gfp(struct inode *inode, pgoff_t index,
- 	if (folio) {
- 		folio_lock(folio);
- 
--		/* Has the page been truncated? */
-+		/* Has the folio been truncated or swapped out? */
- 		if (unlikely(folio->mapping != mapping)) {
- 			folio_unlock(folio);
- 			folio_put(folio);
