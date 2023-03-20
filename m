@@ -2,49 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0180D6C09D9
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 06:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC846C09FA
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Mar 2023 06:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjCTFFd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Mar 2023 01:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        id S229685AbjCTFTk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Mar 2023 01:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjCTFFc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 01:05:32 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2E61E9EA
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Mar 2023 22:05:29 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Pg2hc3gNxzrVCw;
-        Mon, 20 Mar 2023 13:04:16 +0800 (CST)
-Received: from [10.174.179.254] (10.174.179.254) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 20 Mar 2023 13:05:14 +0800
-Subject: Re: tune2fs: check whether filesystem is in use for I_flag and Q_flag
- test
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>, <adilger@whamcloud.com>,
-        <jack@suse.cz>, linfeilong <linfeilong@huawei.com>,
-        wuguanghao <wuguanghao3@huawei.com>,
-        zhanchengbin <zhanchengbin1@huawei.com>, <libaokun1@huawei.com>
-References: <3a908642-b2ff-b4c3-b0c9-add71f764267@huawei.com>
-Message-ID: <073cd819-a7a0-b32b-a7cb-c0068de4cdce@huawei.com>
-Date:   Mon, 20 Mar 2023 13:05:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        with ESMTP id S229458AbjCTFTi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Mar 2023 01:19:38 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40AAE05B
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Mar 2023 22:19:35 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id cu4so7006517qvb.3
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Mar 2023 22:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679289575;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=76ELY9xLQn4IJW/KKPmxMLn2xf0xOodzC5hbi9tbLEo=;
+        b=VIOl8mEl+TRm12B9vr0x3MI5qg8HBc3Nvf52ADz2JTRE/pUljORPAwc9zGnOtL4n1q
+         vY+fhSDADSjmuqWodTBtrH1DhVZeZ2kit132/OUM0iOL20vYKI667wtJE/oms15hgrXf
+         dC6EpWmifHlAfRjrxg6QBYvE8ZqZwVq1TYZgOrdvLuc5N4pedfxUdPHf1feziMopEW0b
+         SpjoYiMhcD12XJr9g0F0C6O1oDAreASe3as52lgZsY5Jt+89aEdG66BxLERBD5SirCqV
+         FcaIo7as2beEAwrD58d10DhNG6Sgy5ZDddUiykyc3xGAhVNWJgAvdw9XEon+S0h4faek
+         qWbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679289575;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=76ELY9xLQn4IJW/KKPmxMLn2xf0xOodzC5hbi9tbLEo=;
+        b=tEV9T1KuXXbCfiejEKtUxCoQFiLZ9EKkQJ9YX7mw7ITQCFeklSgW5SnEnPdlKfFeCr
+         hw24k5eNEg8yfDA9h1fno/RZlKU8b8YoDpVO8LJclvfXlZN/sqsxWg7WbC1paIjfI/NZ
+         A4JgTiG27XxSpzHJjoAK3AqW4rMiSsCRJ3f8SBwZjRtzqE+l8qqo+t5vbI9VoTarRvZH
+         AbGP10NIaGjfUWGILPHss1JnmeQKvK7ZwXnUc+h5oBBsOgr2FpH4ijyoFX8cD+hp6joe
+         vfOQ/W1eI+dNVLHiVvxCzeh6EKk5B7Hc+JzHPs+UGtqotoVYAG0GSWTlhLg74HSKg73w
+         96YA==
+X-Gm-Message-State: AO0yUKXuJ6rczsISXNfLfz4PDpu0dw78mmrELhldw/V7TcB64SsX29CB
+        rE3R7lTZmCw9gdmabKF84Rdcwg==
+X-Google-Smtp-Source: AK7set/4aSMg0lOiupi+qDtWYFFs7L1A7Zocw+KE8xhWhyWQ8cPaDq5MMjDuNzS9Qd93vE1UyEn9+g==
+X-Received: by 2002:a05:6214:29e4:b0:5b9:3f17:b219 with SMTP id jv4-20020a05621429e400b005b93f17b219mr20607901qvb.3.1679289574718;
+        Sun, 19 Mar 2023 22:19:34 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e14-20020a05620a014e00b0073b45004754sm6694504qkn.34.2023.03.19.22.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Mar 2023 22:19:32 -0700 (PDT)
+Date:   Sun, 19 Mar 2023 22:19:21 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 4/7] shmem: remove shmem_get_partial_folio
+In-Reply-To: <20230307143410.28031-5-hch@lst.de>
+Message-ID: <9d1aaa4-1337-fb81-6f37-74ebc96f9ef@google.com>
+References: <20230307143410.28031-1-hch@lst.de> <20230307143410.28031-5-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <3a908642-b2ff-b4c3-b0c9-add71f764267@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.254]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,54 +75,87 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-please ignore the patch.
-sorry for that.
+On Tue, 7 Mar 2023, Christoph Hellwig wrote:
 
-On 2023/3/20 13:03, Zhiqiang Liu wrote:
-> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> Add a new SGP_FIND mode for shmem_get_partial_folio that works like
+> SGP_READ, but does not check i_size.  Use that instead of open coding
+> the page cache lookup in shmem_get_partial_folio.  Note that this is
+> a behavior change in that it reads in swap cache entries for offsets
+> outside i_size, possibly causing a little bit of extra work.
 > 
-> For changing inode size (-I) and setting quota fearture (-Q), tune2fs
-> only check whether the filesystem is umounted. Considering mount
-> namepspaces, the filesystem is umounted, however it already be left
-> in other mount namespace.
-> So we add one check whether the filesystem is not in use with using
-> EXT2_MF_BUSY flag, which can indicate the device is already opened
-> with O_EXCL, as suggested by Ted.
-> 
-> Reported-by: Baokun Li <libaokun1@huawei.com>
-> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  misc/tune2fs.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 458f7cf6..d75f4d94 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -3520,9 +3520,9 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  	}
-> 
->  	if (Q_flag) {
-> -		if (mount_flags & EXT2_MF_MOUNTED) {
-> +		if (mount_flags & (EXT2_MF_BUSY | EXT2_MF_MOUNTED)) {
->  			fputs(_("The quota feature may only be changed when "
-> -				"the filesystem is unmounted.\n"), stderr);
-> +				"the filesystem is unmounted and not in use.\n"), stderr);
->  			rc = 1;
->  			goto closefs;
->  		}
-> @@ -3673,10 +3673,10 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  	}
-> 
->  	if (I_flag) {
-> -		if (mount_flags & EXT2_MF_MOUNTED) {
-> +		if (mount_flags & (EXT2_MF_BUSY | EXT2_MF_MOUNTED)) {
->  			fputs(_("The inode size may only be "
->  				"changed when the filesystem is "
-> -				"unmounted.\n"), stderr);
-> +				"unmounted and not in use.\n"), stderr);
->  			rc = 1;
->  			goto closefs;
->  		}
-> 
+>  include/linux/shmem_fs.h |  1 +
+>  mm/shmem.c               | 46 ++++++++++++----------------------------
+>  2 files changed, 15 insertions(+), 32 deletions(-)
+
+I thought this was fine at first, and of course it's good for all the
+usual cases; but not for shmem_get_partial_folio()'s awkward cases.
+
+Two issues with it.
+
+One, as you highlight above, the possibility of reading more swap
+unnecessarily.  I do not mind if partial truncation entails reading
+a little unnecessary swap; but I don't like the common case of
+truncation to 0 to entail that; even less eviction; even less
+unmounting, when eviction of all risks reading lots of swap.
+The old code behaved well at i_size 0, the new code not so much.
+
+Two, truncating a large folio is expected to trim that folio down
+to the smaller sizei (if splitting allows); but SGP_FIND was coded
+too much like SGP_READ, in reporting fallocated (!uptodate) folios
+as NULL, unlike before.  Then the following loop of shmem_undo_range()
+removed that whole folio - removing pages "promised" to the file by
+the earlier fallocate.  Not as seriously bad as deleting data would be,
+and not very likely to be noticed, but still not right.
+
+Replacing shmem_get_partial_folio() by SGP_FIND was a good direction
+to try, but it hasn't worked out.  I tried to get SGPs to work right
+for it before, when shmem_get_partial_page() was introduced; but I
+did not manage to do so.  I think we have to go back to how this was.
+
+Andrew, please replace Christoph's "shmem: remove shmem_get_partial_folio"
+in mm-unstable by this patch below, which achieves the same object
+(eliminating FGP_ENTRY) while keeping closer to the old mechanism.
+
+[PATCH] shmem: shmem_get_partial_folio use filemap_get_entry
+
+To avoid use of the FGP_ENTRY flag, adapt shmem_get_partial_folio() to
+use filemap_get_entry() and folio_lock() instead of __filemap_get_folio().
+Update "page" in the comments there to "folio".
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+
+ mm/shmem.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -886,14 +886,21 @@ static struct folio *shmem_get_partial_folio(struct inode *inode, pgoff_t index)
+ 
+ 	/*
+ 	 * At first avoid shmem_get_folio(,,,SGP_READ): that fails
+-	 * beyond i_size, and reports fallocated pages as holes.
++	 * beyond i_size, and reports fallocated folios as holes.
+ 	 */
+-	folio = __filemap_get_folio(inode->i_mapping, index,
+-					FGP_ENTRY | FGP_LOCK, 0);
+-	if (!xa_is_value(folio))
++	folio = filemap_get_entry(inode->i_mapping, index);
++	if (!folio)
+ 		return folio;
++	if (!xa_is_value(folio)) {
++		folio_lock(folio);
++		if (folio->mapping == inode->i_mapping)
++			return folio;
++		/* The folio has been swapped out */
++		folio_unlock(folio);
++		folio_put(folio);
++	}
+ 	/*
+-	 * But read a page back from swap if any of it is within i_size
++	 * But read a folio back from swap if any of it is within i_size
+ 	 * (although in some cases this is just a waste of time).
+ 	 */
+ 	folio = NULL;
