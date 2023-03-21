@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8026C2BF1
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1AF6C2BF0
 	for <lists+linux-ext4@lfdr.de>; Tue, 21 Mar 2023 09:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbjCUIJd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S229981AbjCUIJd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Tue, 21 Mar 2023 04:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjCUIJb (ORCPT
+        with ESMTP id S230298AbjCUIJb (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Mar 2023 04:09:31 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE80A305D7;
-        Tue, 21 Mar 2023 01:09:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB2F1ABC5;
+        Tue, 21 Mar 2023 01:09:28 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pgkll5T8lz4f3tpw;
-        Tue, 21 Mar 2023 16:09:23 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pgklm0lw2z4f3vdV;
+        Tue, 21 Mar 2023 16:09:24 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgDnnbEzZhlk+NQhFw--.4478S4;
+        by APP4 (Coremail) with SMTP id gCh0CgDnnbEzZhlk+NQhFw--.4478S5;
         Tue, 21 Mar 2023 16:09:25 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     ojaswin@linux.ibm.com, shikemeng@huaweicloud.com
-Subject: [PATCH 2/8] ext4: fix unit mismatch in ext4_mb_new_blocks_simple
-Date:   Wed, 22 Mar 2023 00:12:14 +0800
-Message-Id: <20230321161220.418652-3-shikemeng@huaweicloud.com>
+Subject: [PATCH 3/8] ext4: fix wrong unit use in ext4_mb_new_inode_pa
+Date:   Wed, 22 Mar 2023 00:12:15 +0800
+Message-Id: <20230321161220.418652-4-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230321161220.418652-1-shikemeng@huaweicloud.com>
 References: <20230321161220.418652-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDnnbEzZhlk+NQhFw--.4478S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw1DGw1rWFyDKr18tFW5ZFb_yoW8GF13pw
-        sIyF10kr1fWr1Dua17u3ySqw1fZ34xur47XrWfu34rWrWxXryxGFs3tF1rtF1rtFZxZ3ZI
-        qr15Zryruw48G3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zV
-        CS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
-        5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAV
-        WUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY
-        1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-        0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7s
-        RNVbyUUUUUU==
+X-CM-TRANSID: gCh0CgDnnbEzZhlk+NQhFw--.4478S5
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWUKw47uF4kZry7GryUWrg_yoW3Zrc_Ca
+        1DCr4IvFyrtr1I9a1Syay8Ar9YgF1kJr4jqr45try3ZF18ur42kwsFvr45XayxGry7A3sx
+        G3WYgr1FgF1S9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbqAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
+        xGYIkIc2x26280x7IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kI
+        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7
+        xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
+        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
+        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
+        AqYI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r
+        1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+        7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
+        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTR
+        HMKAUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -60,46 +60,28 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The "i" returned from mb_find_next_zero_bit is in cluster unit and we
-need offset "block" corresponding to "i" in block unit. Convert "i" to
-block unit to fix the unit mismatch.
+fe_logical and win are both in block unit. Remove wrong convertion for
+win from block unit to cluster unit.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/ext4/mballoc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 6318c763a239..7f695830621a 100644
+index 7f695830621a..86d978e1f7dc 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -5761,6 +5761,7 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
- {
- 	struct buffer_head *bitmap_bh;
- 	struct super_block *sb = ar->inode->i_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	ext4_group_t group;
- 	ext4_grpblk_t blkoff;
- 	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
-@@ -5789,7 +5790,8 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
- 			if (i >= max)
- 				break;
- 			if (ext4_fc_replay_check_excluded(sb,
--				ext4_group_first_block_no(sb, group) + i)) {
-+				ext4_group_first_block_no(sb, group) +
-+				EXT4_C2B(sbi, i))) {
- 				blkoff = i + 1;
- 			} else
- 				break;
-@@ -5806,7 +5808,7 @@ static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
- 		return 0;
+@@ -4640,8 +4640,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 		if (offs && offs < win)
+ 			win = offs;
+ 
+-		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical -
+-			EXT4_NUM_B2C(sbi, win);
++		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical - win;
+ 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+ 		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
  	}
- 
--	block = ext4_group_first_block_no(sb, group) + i;
-+	block = ext4_group_first_block_no(sb, group) + EXT4_C2B(sbi, i);
- 	ext4_mb_mark_bb(sb, block, 1, 1);
- 	ar->len = 1;
- 
 -- 
 2.30.0
 
