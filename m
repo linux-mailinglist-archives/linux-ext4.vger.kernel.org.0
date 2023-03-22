@@ -2,107 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCBE6C410A
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Mar 2023 04:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5081B6C45F4
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Mar 2023 10:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjCVDbE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Mar 2023 23:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S230368AbjCVJPD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Mar 2023 05:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjCVDa4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Mar 2023 23:30:56 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FE1521EB
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Mar 2023 20:30:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id E2A03CE1752
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 03:30:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED269C4339E
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 03:30:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679455851;
-        bh=66AQ56/04mhYjEyUiKf393oDj5WdENXsAVT0hnBeAag=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=HyHaf4t79+JiwCVyJULhLSZcdfDHaNoknsWg4Wz/2asPDxbzD4iMYVcpX9ixGEsSf
-         nJE+vMGaIBaTtunFKgXGbcRyr0ebS2NHv4tdXKVa9FkEV2Om1getkGNRIVjJT5iXm2
-         x3RWYHBDkWiy7zyveevJfoHfIAIPNDXTmnhixpIskD0GWpVMW4Jyi+D5LXXo3Q3Wqx
-         PeMY5HPCtsaYgGulRfNCB3B9is/lvsTIPiU0mF7ILm/68E1jggwzOIZ3VlEhIqvJK0
-         ru+24GIm4PP1nZo4rv+vg04FHn1SiMPsAMlI2XJyEvmuPekr+YjaCw3ReYVcLzdCqs
-         +niF4S9ilnSwg==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 3/3] ci.yml: test cross-compiling for Android
-Date:   Tue, 21 Mar 2023 20:29:45 -0700
-Message-Id: <20230322032945.31779-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230322032945.31779-1-ebiggers@kernel.org>
-References: <20230322032945.31779-1-ebiggers@kernel.org>
+        with ESMTP id S230449AbjCVJOz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Mar 2023 05:14:55 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2861A5CC3A;
+        Wed, 22 Mar 2023 02:14:48 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DNt-1pe5WZ3vkT-003eDo; Wed, 22
+ Mar 2023 10:09:31 +0100
+Message-ID: <4034e634-59d3-e9a5-a1c5-1f275d8e2832@gmx.com>
+Date:   Wed, 22 Mar 2023 17:09:28 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Content-Language: en-US
+To:     Ext4 <linux-ext4@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: A new special orphan inode 12 in ext4 only?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:Lj2TGhuEY4N9ivI7PKhSnIW3RmrZeSw4RKNhtGxF/xCTWFDCWZ/
+ AtNmVzLQVq05vSanJXdoNsDGvMPA0xN9x1KaGO2/Zau2H2xS5JJU9qC9/cv610LOw6d98hw
+ i2eQF9cNTsE1q7r7rapVakwgSnZvcbVt8jNioNKa4mGq5lfNNxMiL/EpX8cUoGWxTcU+wzA
+ EB0Q3EOWpknFjjEHbrStw==
+UI-OutboundReport: notjunk:1;M01:P0:AQcTDENzByY=;3iesccGb1D2r4WJTvkTB8LdP3hd
+ CVAq8IXPgMoOoJsoYLV6PsyqnX+qAbM/IosB+S+yHXpcmo84FOMyBTzd7LvcnnLwCLrDWBXTB
+ 4ZBqXW0EO3lBu4potDHQaeP10vMSRHDNHpemKQAvbWh9m0hwV7vWwIQAJWNLJ6EF0FFdV3Dhk
+ KdbWYI+6UeKvJxo+ABPsfr6o0R9COg/FxuQUwvjPq5+drYZfY2EpnOy+qD/chKdYu6C1Ts8oP
+ BNw8o8SZHdF6moB03W9A7U9ItPScdRh28G7Gey+mYF7EUCtXfwwJAK8tv+/5DctmVCMSTFNEx
+ 0W5JyjM+S/ihlOUVWOOxtAmn2DGTp2VHdAKxPLNk0FYr++u6Ku8o0t9dFX85p/z9uxoCB7Xu6
+ k//87vbbB4aRN0KvKWYIdTcynFUCIe2ZbHH24q1RpbEAa33mpcSvn99sHq5sUS0373Sfhi7Yn
+ B6WQ1Hj7IWjTreerc5/PkOiTaX5OKhRXsgJiYhwuokGyZjRK6IiB/W5TKqpNn+mZROLshfpmD
+ h+NBP90msnK2Xqtsz3/xKzKfbuxl2CnVzBxHl7Koc7OqrRA5kZjZAwc2dHaeYlS1zSVYLk5SR
+ 4uZQD/rRKxXdwVKhc1zf7dsPjGrjwkYk5XLogYDbPEjp1uHaWO/9kZlCTwdtY0pfWF0tQAWDo
+ Vxm3/sV29vGtCBeJZ3bvcYoL2R97vJpsBx8KurUMf2KM9zi6U/TgnufGO2ipJBhUVgPvualgx
+ belem22GqOChqLtzhdLjzvyUvmMeFWBneg/FbitItRCH5NHWH0qIVo6efBGyK4rcUmfdLhKh+
+ jnSygfBTkr5ZbucXhKSU4LSH+IN+XPbA8lMFkwA8wAfQyjOFb5JkrqJ2yxQPH7qAthLFq9+vK
+ fms7iG9Unk7Q+DOI4btpN1T/QHK5iLSOYnbsfBPEr6FlY0Itwxml2qldh8KFEvPNMn7gt+reG
+ P0T9TPDaD2cYKEHWaFWc27kJaN4=
+X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi,
 
-Add jobs that cross-compile e2fsprogs for Android using the Android NDK.
-These use the autotools-based build system, so they're a bit different
-from the actual Android builds, but they should still be useful.
+Recently I observed newer mkfs.ext4 seems to create a new orphan inode 
+12, with some file extents.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- .github/workflows/ci.yml | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+Which seems to have no direct parent directory, thus tools like 
+btrfs-convert would also follow the ext4 inodes by creating an orphan 
+inode too.
 
-diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
-index 6b0f91506..0c14250a4 100644
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -126,3 +126,36 @@ jobs:
-       with:
-         name: windows-${{matrix.env}}-config.h
-         path: lib/config.h
-+
-+  # Jobs that cross-compile e2fsprogs for Android using the Android NDK.  Note
-+  # that these use the autotools-based build system, which makes them a bit
-+  # different from the actual Android builds from the Android source tree.
-+  cross-compile-for-android:
-+    name: Cross-compile for Android (${{matrix.arch}})
-+    strategy:
-+      matrix:
-+        include:
-+        - { arch: aarch64, target: aarch64-linux-android }
-+        - { arch: armv7a, target: armv7a-linux-androideabi }
-+        - { arch: i686, target: i686-linux-android }
-+        - { arch: x86_64, target: x86_64-linux-android }
-+    runs-on: ubuntu-latest
-+    steps:
-+    - uses: actions/checkout@v3
-+    # See https://developer.android.com/ndk/guides/other_build_systems#autoconf
-+    - name: configure
-+      run: |
-+        TOOLCHAIN=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64
-+        API_LEVEL=29 # Android 10
-+        export AR=$TOOLCHAIN/bin/llvm-ar
-+        export CC=$TOOLCHAIN/bin/${{matrix.target}}${API_LEVEL}-clang
-+        export AS=$CC
-+        export LD=$TOOLCHAIN/bin/ld
-+        export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
-+        export STRIP=$TOOLCHAIN/bin/llvm-strip
-+        ./configure --host=${{matrix.target}} CFLAGS="$DEF_CFLAGS"
-+    - run: make -j8 V=1 CFLAGS_WARN="-Werror"
-+    - uses: actions/upload-artifact@v3
-+      with:
-+        name: android-${{matrix.arch}}-config.h
-+        path: lib/config.h
--- 
-2.40.0
+On the other hand, if I go mkfs.ext3, the mysterious inode seems to be gone.
 
+Is this inode 12 a known special inode?
+If so, how can we avoid such special inode?
+(s_special_ino is still 11, thus checking against that value doesn't 
+seem to help).
+
+
+Some details of btrfs-convert:
+
+It goes with ext2fs_open_inode_scan() to iterate all inodes of an ext4.
+
+And if we hit an directory inode, we iterate the directory by using 
+ext2fs_dir_iterate2() to insert the dir entries between parent and child 
+inodes.
+
+So if we hit an inode without any parent dir, an equivalent btrfs inode 
+would still be created, but btrfs-check would complain about such orphan 
+inode.
+
+Thanks,
+Qu
