@@ -2,121 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCD66C5270
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Mar 2023 18:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6CF6C58D3
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Mar 2023 22:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjCVR1W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Mar 2023 13:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        id S229654AbjCVVek (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Mar 2023 17:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjCVR1V (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Mar 2023 13:27:21 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E384AFEC;
-        Wed, 22 Mar 2023 10:27:20 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s20so12542595ljp.1;
-        Wed, 22 Mar 2023 10:27:20 -0700 (PDT)
+        with ESMTP id S229487AbjCVVek (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Mar 2023 17:34:40 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25E7F74C
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id l7so2662418pjg.5
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679506038; x=1682098038;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJP3mA1N4qF5Kw86SxStXRq+7tB5BmUkuhCWnMdCRHQ=;
-        b=VwHNSNQJiMpcoSFj+q/06EUjF1UVKz8k4D3lt4JqIwXCM8BCePwBR3MVvk7TKc8Gmj
-         BJcD9LytKDciE94i9R4EgLuxO6wbtaNM7yAU5oSFlyccFfWztxMSGTYSS0iSAGZQOhWT
-         Myl5rmPDS5lAJU71/GCJXwQHjqoZmE+LxQI7q6fAKVxPClHOI5Wd5tpxfZjV20Jvr4lB
-         s+GIXZ2BX8thcFbdL6BBU4MV8J6cxeXUYNYUIbBqQJehzaioq33rrBG7GmfbB1BKrWj6
-         HdaV1epFGsHjtCdhPSkMuHaCOROQUnyaUGTidWiEgh4KcguiNhinuyYGmprrTS1WlvUf
-         9aqw==
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112; t=1679520878;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6cf5ZrocLuP8eawgd/E60BNCFQFk3YmpTvolIL7gKtM=;
+        b=faeZG4hdCo63xtvEwQPUpWCfDvsFDutyznovvy6/bZ98AS0UU71WEzQGJUR7W5tSHk
+         B1Hsj6F9JacOellvN0OTgxD/E6WleiOQ3iyKGlogFrHx+qwp08RGZ0mj+QhpJNuAE3MC
+         hIYLd2L1yNJ8b67wymi2bKPuFWD1KthvNoT4n/rbLLf8keMJKz2N1BBalkMOv/7naqqU
+         BjRA6ygmeIFqgcd/AJVZqdZeaCtDD5Flsd/9+01c0FDrX+NXCZjImup6kZn41GXLPg9a
+         5KW6AR/7+qY+u1zzHzNU1wkUnLPWQ1MZcuKgpDvMiKf+n7AbluhYZzWSzQ9U1OyxFYJo
+         oYww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679506038; x=1682098038;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJP3mA1N4qF5Kw86SxStXRq+7tB5BmUkuhCWnMdCRHQ=;
-        b=izp7+Jnh3SXktAo25xsizEU6XQ7XotSIXqZwoqpTQeLda7SLuvCp3f21il0hAJ0Mui
-         yynp5Jr219DodbbZU0yRFiWzTR2143SQaETIZrhQWjkQopzc3EO4bl+JLQ1BtylkMegX
-         NKZEMmNsq8Fsys+SvQJnSIe9Mbcg4iVWD2t0XqxXhph/PCpZmtOJRzVD/T61YwhhDc2l
-         hjpUycTGp+eoBQXC1wBjg+ckWLucT2lWk1KgT/QToEZ0IrL2ZThyd1B+LNS5WyHtxcHw
-         2/U9nO5nHySDTV6b+dyq6fIYEUOGLOkxRNF8h/Qxs7Yw3EfaTmlgQmi9/9KtQR/aUH59
-         ha/w==
-X-Gm-Message-State: AO0yUKVkwNvi8k29Uiq+qcxeb5Ya95yW+TDo8v6tM27Q/P5sc3RNu7Ru
-        h4+fBnesQK3gZN18yG0Hzz5sUnBvza8=
-X-Google-Smtp-Source: AK7set/2xDyaUZKtAHQquRnidpNmdEtc6L18U+06co46lYPcoVnhnmVKNEDVj0PcroyF7FBDHMsa+g==
-X-Received: by 2002:a05:651c:545:b0:29b:9e76:6ca3 with SMTP id q5-20020a05651c054500b0029b9e766ca3mr2812781ljp.4.1679506038170;
-        Wed, 22 Mar 2023 10:27:18 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8182:2677:3d56:cefd:fe23:69dd? ([2a00:1370:8182:2677:3d56:cefd:fe23:69dd])
-        by smtp.gmail.com with ESMTPSA id s26-20020a2e9c1a000000b00298dc945e9bsm2669910lji.125.2023.03.22.10.27.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Mar 2023 10:27:17 -0700 (PDT)
-Message-ID: <6cde43c8-3300-9269-7a8a-8ff6e8b1e287@gmail.com>
-Date:   Wed, 22 Mar 2023 20:27:15 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: A new special orphan inode 12 in ext4 only?
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <4034e634-59d3-e9a5-a1c5-1f275d8e2832@gmx.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <4034e634-59d3-e9a5-a1c5-1f275d8e2832@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1679520878;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6cf5ZrocLuP8eawgd/E60BNCFQFk3YmpTvolIL7gKtM=;
+        b=jljWnFFnDNmKz7rAcaYh58T0wLXoPGMNTfac9hNs3H06na2HuaHZ9mEoMI2du2T/gQ
+         Wpt561UIre8q6HNzqSploeCxX1ZUWrqTlaYnT31E9Icurtx3yzF//Nvt41Iqeu2bQPaY
+         QcyP13HvRzwSUloYZlteMbbKLrsjWnksJzTkXNIQtfGnAbPSxZU3HOy4lt5yVF+O7qUU
+         ZvPMAVOYG1rt/dCOUJntiwATlhZzYEs9XO5yZ1MuclHXcMUyAzbc6e9SMOzfwGBlvSUp
+         ozp7rmgVMs6tcSV22IGCkQHvFXUfnScsyTa83OvkviruHq7zlSyCsl49fhASHUL57i5E
+         rYcQ==
+X-Gm-Message-State: AO0yUKVJvi+qCdGiOoecUrT4FUZNpyg0ytgsuD4056GSUeA4+9KFTqDA
+        MDJCaDzGVLyLBieDt6vIuZYsLSjH7wcgxnssyrIWZA==
+X-Google-Smtp-Source: AK7set/y/iOOkoStxY6EOAoilZhJseSMFoch9SYTr94VAgGKeQBhx3vTLTEzlORFdORD0M0vlEHpOg==
+X-Received: by 2002:a17:90b:38c5:b0:23f:81de:6a77 with SMTP id nn5-20020a17090b38c500b0023f81de6a77mr4981404pjb.28.1679520878075;
+        Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id o5-20020a17090ad24500b00234e6d2de3dsm10206340pjw.11.2023.03.22.14.34.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 Mar 2023 14:34:37 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <06F8DFC9-26F5-475F-9428-06FED2CA01AA@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v5 0/3] ext4, jbd2: journal cycled record transactions
+ between each mount
+Date:   Wed, 22 Mar 2023 15:34:49 -0600
+In-Reply-To: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Zhang Yi <yi.zhang@huawei.com>, yukuai3@huawei.com
+To:     Zhang Yi <yi.zhang@huaweicloud.com>
+References: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22.03.2023 12:09, Qu Wenruo wrote:
-> Hi,
-> 
-> Recently I observed newer mkfs.ext4 seems to create a new orphan inode
-> 12, with some file extents.
-> 
-> Which seems to have no direct parent directory, thus tools like
-> btrfs-convert would also follow the ext4 inodes by creating an orphan
-> inode too.
-> 
-> On the other hand, if I go mkfs.ext3, the mysterious inode seems to be gone.
-> 
-> Is this inode 12 a known special inode?
 
-This is orphan file. It is normal file; mke2fs creates first normal 
-inode for lost+found (11) and if enabled creates orphan file next which 
-gets next inode number (12). Inode number is recorded in superblock as 
-s_orphan_file_num.
+--Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-/*27c*/ __le16  s_encoding;             /* Filename charset encoding */
-         __le16  s_encoding_flags;       /* Filename charset encoding 
-flags */
-         __le32  s_orphan_file_inum;     /* Inode for tracking orphan 
-inodes */
+On Mar 21, 2023, at 7:33 PM, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+> This patch set add a new journal option 'JBD2_CYCLE_RECORD' and always
+> enable on ext4. It saves journal head for a clean unmounted file system
+> in the journal super block, which could let us record journal
+> transactions between each mount continuously. It could help us to do
+> journal backtrack and find root cause from a corrupted filesystem.
+> Current filesystem's corruption analysis is difficult and less useful
+> information, especially on the real products. It is useful to some
+> extent, especially for the cases of doing fuzzy tests and deploy in some
+> shout-runing products.
+
+Another interesting side benefit of this change is that it gets a step
+closer to the "lazy ext4" (log-structured optimization) that had been
+described some time ago at FAST:
+
+https://lwn.net/Articles/720226/
+https://www.usenix.org/system/files/conference/fast17/fast17-aghayev.pdf
+https://lists.openwall.net/linux-ext4/2017/04/11/1
+
+Essentially, free space in the filesystem (or a large external device)
+could be used as a continuous journal, and metadata would only rarely
+be checkpointed to the actual filesystem.  If the "journal" is close to
+wrapping to the start, either the meta/data is checkpointed (if it is
+no longer actively used or can make a large write), or re-journaled to
+the end of the journal.  At remount time, the full journal is read into
+memory (discarding old copies of blocks) and this is used to identify
+the current metadata rather than reading from the filesystem itself.
+
+This would allow e.g. very efficient flash caching of metadata (and also
+journaled data for small writes) for an HDD (or QLC) device.
+
+Cheers, Andreas
 
 
-> If so, how can we avoid such special inode?
-> (s_special_ino is still 11, thus checking against that value doesn't
-> seem to help).
-> 
-> 
-> Some details of btrfs-convert:
-> 
-> It goes with ext2fs_open_inode_scan() to iterate all inodes of an ext4.
-> 
-> And if we hit an directory inode, we iterate the directory by using
-> ext2fs_dir_iterate2() to insert the dir entries between parent and child
-> inodes.
-> 
-> So if we hit an inode without any parent dir, an equivalent btrfs inode
-> would still be created, but btrfs-check would complain about such orphan
-> inode.
-> 
-> Thanks,
-> Qu
 
+
+
+
+--Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmQbdHoACgkQcqXauRfM
+H+CvOxAAs8h7UWeM/XFNozgG2NrYa4eEnPHUxApEP5jcmij0B72Zg48cFi5Nivjg
+DXPkslM1kDIA7Dn0a94cnwfJT6BXQrpgmhLggZtFnVVILb7+WHUuLx+1hYbILtWa
+wndRZwnaV3nVWdaEL6HiZlHgmyw9fS+gWXUOSP07Me48Ox8pQVrKJ5ht0uXQszgg
+ff9DaUCVmTX1OY9JvslqFh84BHCSV3/Q1fMcy8JGile1MBduRLZg2IEi+DvS+FTe
+Xrwm7BSfD7MdfSSWnt5EbiZibAYNH69cCDIAHPPdDHbLVDRw/HmUcD31+OiOlriz
+eme991yqCKE4BGxUl01m8WJ4uqCFEvRszAxrOFpLjtuO28xUeTkOgoqTfCwuFVDF
+ifywPCKZDX9rX06t7D2DSiyupK/vFS88/7cKDraULD7vB6gXJg+sjKzSNRryKUlA
+o5koFfpl8cVXAyAvARA/lIf1OyVh/jlvFcwhshMPSBh5NuP+OUvxmTdlhN44VRnH
+e0enPVD+ZSZ4pDAlNYvDzo2FgQ43aCwEBxdL7H3MQ4KPwl4CZT0qwR5u9EehNJHK
+BX7x/O0d8tG3dMVbfm8juQU9zSvMwgAqBEtQbGRIuKlacXs0rwUHciZyMPkohfQJ
+8D5JAJ5cj/yg+WqDno1IivFvYnsxpjgSKx4JC62bEQ7w0q87qcI=
+=c7GG
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD--
