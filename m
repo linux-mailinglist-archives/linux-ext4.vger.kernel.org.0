@@ -2,249 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 002B66C66FC
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 12:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B3C6C6842
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 13:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbjCWLoP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 07:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        id S230367AbjCWM1J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 08:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjCWLoM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 07:44:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C9615881;
-        Thu, 23 Mar 2023 04:44:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 76AD3339C9;
-        Thu, 23 Mar 2023 11:44:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679571848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=02wHikqJQjlQXDxF4J81KE4SFli5AhbVDrvqB/d55To=;
-        b=eCCG0uhqFbuznYxi3bOPXwK2H6eAior6LfRZbZLZA4znSHPJcoC6dqHyM/jarktXKPLiHV
-        8N7WMf+yZ/Kq7VSryJQlMsi+pFET/6RBWdGiIQwJaPy4F/1uWG4fqfWi1JAZVp+s5xrKta
-        YBXwzQekR8I2Ca1tLbfiUZePMMXUjz4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679571848;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=02wHikqJQjlQXDxF4J81KE4SFli5AhbVDrvqB/d55To=;
-        b=PKlN7ad4ktsCSEoI6PlUkec6xcQY5gHH1Pb45eT5ZsO2Y081n1thQtThO0PGEwe3W6ZIwa
-        uDoQY+iuZhyVrvDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 674A5132C2;
-        Thu, 23 Mar 2023 11:44:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xN0mGYg7HGRjGwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 23 Mar 2023 11:44:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DC7BFA071C; Thu, 23 Mar 2023 12:44:07 +0100 (CET)
-Date:   Thu, 23 Mar 2023 12:44:07 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext4: fix race between writepages and remount
-Message-ID: <20230323114407.xenntblzv4ewfqkk@quack3>
-References: <20230316112832.2711783-1-libaokun1@huawei.com>
- <20230316112832.2711783-4-libaokun1@huawei.com>
+        with ESMTP id S229847AbjCWM1E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 08:27:04 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256BE231CE;
+        Thu, 23 Mar 2023 05:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679574422; x=1711110422;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g0HrI5NEKrbmgscOSpZOd8GAmA8hg3OJUpDame2NVD0=;
+  b=HV5vebDz/5We/YY0zuc7Mz0HRK8vHh6G62jFojGCEsAb5yQtFj/S7Ksb
+   tbczVupT7+6ECn4CsFuA9ugu1aMfMW9IEyhTEpFvOk4KN9QB17Ev9QyhK
+   tyoKbfHFL3jFuciJzAU22FchapV6GLi+YRkbl3v+8uM4MZb/sUGFerD4r
+   2eFb1REWqOzIHpEjvg0Udq4n3NARsaW21wOO40IW3iovr11bewerF7oQA
+   LbJ6GSqhhag+o10SsajD8EPsDZBJSpHFAeGW8Ytnl3+VW1fVgpMim4cDK
+   2Qkbs9HdciJu8yqzuCVS/R/L6nKTWX/86gVyYwFowtIDd/OeAgHy+Jkju
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="341009923"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="341009923"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 05:27:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="682287118"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="682287118"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 23 Mar 2023 05:26:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1pfK1w-007VRl-2B;
+        Thu, 23 Mar 2023 14:26:56 +0200
+Date:   Thu, 23 Mar 2023 14:26:56 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 2/3] lib/string_helpers: Change returned value of the
+ strreplace()
+Message-ID: <ZBxFkFlR3c7zX4fi@smile.fi.intel.com>
+References: <20230322141206.56347-1-andriy.shevchenko@linux.intel.com>
+ <20230322141206.56347-3-andriy.shevchenko@linux.intel.com>
+ <641b320b.a70a0220.2bb1d.30fc@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230316112832.2711783-4-libaokun1@huawei.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <641b320b.a70a0220.2bb1d.30fc@mx.google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-03-23 19:28:32, Baokun Li wrote:
-> We got a WARNING in ext4_add_complete_io:
-> ==================================================================
->  WARNING: at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0x182/0x250
->  CPU: 10 PID: 77 Comm: ksoftirqd/10 Tainted: 6.3.0-rc2 #85
->  RIP: 0010:ext4_put_io_end_defer+0x182/0x250 [ext4]
->  [...]
->  Call Trace:
->   <TASK>
->   ext4_end_bio+0xa8/0x240 [ext4]
->   bio_endio+0x195/0x310
->   blk_update_request+0x184/0x770
->   scsi_end_request+0x2f/0x240
->   scsi_io_completion+0x75/0x450
->   scsi_finish_command+0xef/0x160
->   scsi_complete+0xa3/0x180
->   blk_complete_reqs+0x60/0x80
->   blk_done_softirq+0x25/0x40
->   __do_softirq+0x119/0x4c8
->   run_ksoftirqd+0x42/0x70
->   smpboot_thread_fn+0x136/0x3c0
->   kthread+0x140/0x1a0
->   ret_from_fork+0x2c/0x50
-> ==================================================================
+On Wed, Mar 22, 2023 at 09:51:22AM -0700, Kees Cook wrote:
+> On Wed, Mar 22, 2023 at 04:12:05PM +0200, Andy Shevchenko wrote:
+> > It's more useful to return the original string with strreplace(),
 > 
-> Above issue may happen as follows:
->            cpu1                           cpu2
-> ______________________________|_____________________________
-> mount -o dioread_lock
-> ext4_writepages
->  ext4_do_writepages
->   *if (ext4_should_dioread_nolock(inode))*
->     // rsv_blocks is not assigned here
->                                  mount -o remount,dioread_nolock
->   ext4_journal_start_with_reserve
->    __ext4_journal_start
->     __ext4_journal_start_sb
->      jbd2__journal_start
->       *if (rsv_blocks)*
->         // h_rsv_handle is not initialized here
->   mpage_map_and_submit_extent
->     mpage_map_one_extent
->       dioread_nolock = ext4_should_dioread_nolock(inode)
->       if (dioread_nolock && (map->m_flags & EXT4_MAP_UNWRITTEN))
->         mpd->io_submit.io_end->handle = handle->h_rsv_handle
->         ext4_set_io_unwritten_flag
->           io_end->flag |= EXT4_IO_END_UNWRITTEN
->       // now io_end->handle is NULL but has EXT4_IO_END_UNWRITTEN flag
-> 
-> scsi_finish_command
->  scsi_io_completion
->   scsi_io_completion_action
->    scsi_end_request
->     blk_update_request
->      req_bio_endio
->       bio_endio
->        bio->bi_end_io  > ext4_end_bio
->         ext4_put_io_end_defer
-> 	 ext4_add_complete_io
-> 	  // trigger WARN_ON(!io_end->handle && sbi->s_journal);
-> 
-> The immediate cause of this problem is that ext4_should_dioread_nolock()
-> function returns inconsistent values in the ext4_do_writepages() and
-> mpage_map_one_extent(). There are four conditions in this function that
-> can be changed at mount time to cause this problem. These four conditions
-> can be divided into two categories:
->     (1) journal_data and EXT4_EXTENTS_FL, which can be changed by ioctl
->     (2) DELALLOC and DIOREAD_NOLOCK, which can be changed by remount
-> The two in the first category have been fixed by commit c8585c6fcaf2
-> ("ext4: fix races between changing inode journal mode and ext4_writepages")
-> and commit cb85f4d23f79 ("ext4: fix race between writepages and enabling
-> EXT4_EXTENTS_FL") respectively.
-> Two cases in the other category have not yet been fixed, and the above
-> issue is caused by this situation. We refer to the fix for the first
-> category, When DELALLOC or DIOREAD_NOLOCK is detected to be changed
-> during remount, we hold the s_writepages_rwsem lock to avoid racing with
-> ext4_writepages to trigger the problem.
-> Moreover, we add an EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK macro to ensure that
-> the mount options used by ext4_should_dioread_nolock() and __ext4_remount()
-> are always consistent.
-> 
-> Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> I found the use of "original" confusing here and in the comments. This
+> just returns arg 1, yes? i.e. it's not the original (unreplaced) string,
+> but rather just the string itself.
 
-Nice catch! One comment below:
+Yes.
 
-> ---
->  fs/ext4/ext4.h      |  3 ++-
->  fs/ext4/ext4_jbd2.h |  9 +++++----
->  fs/ext4/super.c     | 14 ++++++++++++++
->  3 files changed, 21 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 08b29c289da4..f60967fa648f 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1703,7 +1703,8 @@ struct ext4_sb_info {
->  
->  	/*
->  	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
-> -	 * or EXTENTS flag.
-> +	 * or EXTENTS flag or between changing SHOULD_DIOREAD_NOLOCK flag on
-> +	 * remount and writepages ops.
->  	 */
->  	struct percpu_rw_semaphore s_writepages_rwsem;
->  	struct dax_device *s_daxdev;
-> diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-> index 0c77697d5e90..d82bfcdd56e5 100644
-> --- a/fs/ext4/ext4_jbd2.h
-> +++ b/fs/ext4/ext4_jbd2.h
-> @@ -488,6 +488,9 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
->  	return blocks + 2*(EXT4_SB(inode->i_sb)->s_cluster_ratio - 1);
->  }
->  
-> +/* delalloc is a temporary fix to prevent generic/422 test failures*/
-> +#define EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK (EXT4_MOUNT_DIOREAD_NOLOCK | \
-> +					  EXT4_MOUNT_DELALLOC)
->  /*
->   * This function controls whether or not we should try to go down the
->   * dioread_nolock code paths, which makes it safe to avoid taking
-> @@ -499,7 +502,8 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
->   */
->  static inline int ext4_should_dioread_nolock(struct inode *inode)
->  {
-> -	if (!test_opt(inode->i_sb, DIOREAD_NOLOCK))
-> +	if (test_opt(inode->i_sb, SHOULD_DIOREAD_NOLOCK) !=
-> +	    EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK)
->  		return 0;
->  	if (!S_ISREG(inode->i_mode))
->  		return 0;
-> @@ -507,9 +511,6 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
->  		return 0;
->  	if (ext4_should_journal_data(inode))
->  		return 0;
-> -	/* temporary fix to prevent generic/422 test failures */
-> -	if (!test_opt(inode->i_sb, DELALLOC))
-> -		return 0;
->  	return 1;
->  }
+Okay, I will try my best as non-native speaker to fix that for v2. Meanwhile
+I'm open ears for the better suggestions.
 
-Is there a need for this SHOULD_DIOREAD_NOLOCK? When called from writeback
-we will be protected by s_writepages_rwsem anyway. When called from other
-places, we either decide to do dioread_nolock or don't but the situation
-can change at any instant so I don't see how unifying this check would
-help. And the new SHOULD_DIOREAD_NOLOCK somewhat obfuscates what's going
-on.
+> I agree, though, that's much more useful than a pointer to the end of
+> the string.
 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index fefcd42f34ea..bdf6b288aeff 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6403,8 +6403,22 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
->  
->  	}
->  
-> +	/* Get the flag we really need to set/clear. */
-> +	ctx->mask_s_mount_opt &= sbi->s_mount_opt;
-> +	ctx->vals_s_mount_opt &= ~sbi->s_mount_opt;
-> +
-> +	/*
-> +	 * If EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK change on remount, we need
-> +	 * to hold s_writepages_rwsem to avoid racing with writepages ops.
-> +	 */
-> +	if (ctx_changed_mount_opt(ctx, EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK))
-> +		percpu_down_write(&sbi->s_writepages_rwsem);
-> +
+Thank you!
 
-Honestly, I'd be inclined to grab s_writepages_rwsem unconditionally during
-remount. Remount is not a fast path operation and waiting for writepages
-isn't too bad. Also it's easier for testing :).
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
