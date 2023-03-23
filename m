@@ -2,118 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3734E6C6426
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 10:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4A06C65D9
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 11:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjCWJzg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 05:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
+        id S231659AbjCWK4f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 06:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjCWJzJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 05:55:09 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D6A35EE3;
-        Thu, 23 Mar 2023 02:53:49 -0700 (PDT)
+        with ESMTP id S231289AbjCWK4V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 06:56:21 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEF410A96;
+        Thu, 23 Mar 2023 03:55:39 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 31E065C253;
-        Thu, 23 Mar 2023 09:53:48 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8EA281FD91;
+        Thu, 23 Mar 2023 10:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679565228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1679568937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vDlGr14ZVvQg1Nj6sP7mL6XAaiIugwM/EnaIl8Ce8Bs=;
-        b=vqHmF5Ytl9nJ/0BSI1GNg58lvmUqekplnYMCmLIS7GpetvrsOvjvpvsJkA6+cCzwkOFTTZ
-        /wL0I0+d9cXOJ/LzoMY6zI6xWZPcmq1dFddhPXljMDX2SuFvtlkrEzhcnlbVDg/0YqvmtG
-        N1DouTqk9qc51uNg+ovSsQJ99HHEdDA=
+        bh=YwF6wTKRf8byZK5auIOmvz8r+sMLSBZV/2T+3zUIqww=;
+        b=PBAY6JEFTGRFQJTGeTj1kB063NZfdx92B8IWGZ4bFf4q/nu0vAQl/tH8k2c8m9ntaS1wdO
+        +y5PDue0qck38XhgzsEWzqFQ6Vtdup6eExo5lpdDCSIKFUc0ehtPxBUL00w3q1zclieMo7
+        ojq/dJc7ZEW7H+Q5xmMp7Iw8QUReTjI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679565228;
+        s=susede2_ed25519; t=1679568937;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vDlGr14ZVvQg1Nj6sP7mL6XAaiIugwM/EnaIl8Ce8Bs=;
-        b=74iHc4MZnIzKnYRZuvqQaO3S94VEbcG2MHgzha/Y8y5WKksbl4j6Y+aPe+37ZZtaK3Obty
-        tXQyGI17fRMzXaDQ==
+        bh=YwF6wTKRf8byZK5auIOmvz8r+sMLSBZV/2T+3zUIqww=;
+        b=nJBg5WfzdIvgC1sZCld+XnBkvk8uMNqo+/NbL/LUUjXIhbjgptejUcrJu7OlGkU3fF+Ma1
+        IT5Nibb0+iPcfhDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18414132C2;
-        Thu, 23 Mar 2023 09:53:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 99BAB13596;
+        Thu, 23 Mar 2023 10:55:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id lDTlBawhHGQ+VgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 23 Mar 2023 09:53:48 +0000
+        id 4iaBJSkwHGScegAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 23 Mar 2023 10:55:37 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 085E7A071C; Thu, 23 Mar 2023 10:53:47 +0100 (CET)
-Date:   Thu, 23 Mar 2023 10:53:46 +0100
+        id 0F78BA071C; Thu, 23 Mar 2023 11:55:37 +0100 (CET)
+Date:   Thu, 23 Mar 2023 11:55:37 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v1 1/3] jbd2: Avoid printing out the boundary
-Message-ID: <20230323095346.ibpv25xjjf6rozpv@quack3>
-References: <20230322141206.56347-1-andriy.shevchenko@linux.intel.com>
- <20230322141206.56347-2-andriy.shevchenko@linux.intel.com>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [RFC 04/11] ext4: Convert mballoc cr (criteria) to enum
+Message-ID: <20230323105537.rrecw5xqqzmw567d@quack3>
+References: <cover.1674822311.git.ojaswin@linux.ibm.com>
+ <9670431b31aa62e83509fa2802aad364910ee52e.1674822311.git.ojaswin@linux.ibm.com>
+ <20230309121122.vzfswandgqqm4yk5@quack3>
+ <ZBRAZsvbcSBNJ+Pl@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230322141206.56347-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <ZBRAZsvbcSBNJ+Pl@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 22-03-23 16:12:04, Andy Shevchenko wrote:
-> Theoretically possible that "%pg" will take all room for the j_devname
-> and hence the "-%lu" will go out the boundary due to unconditional
-> sprintf() in use. To make this code more robust, replace two sequential
-> s*printf():s by a single call and then replace forbidden character.
-> It's possible to do this way, because '/' won't ever be in the result
-> of "-%lu".
+On Fri 17-03-23 15:56:46, Ojaswin Mujoo wrote:
+> On Thu, Mar 09, 2023 at 01:11:22PM +0100, Jan Kara wrote:
+> > Also when going for symbolic allocator scan names maybe we could actually
+> > make names sensible instead of CR[0-4]? Perhaps like CR_ORDER2_ALIGNED,
+> > CR_BEST_LENGHT_FAST, CR_BEST_LENGTH_ALL, CR_ANY_FREE. And probably we could
+> > deal with ordered comparisons like in:
+> I like this idea, it should make the code a bit more easier to
+> understand. However just wondering if I should do it as a part of this
+> series or a separate patch since we'll be touching code all around and 
+> I don't want to confuse people with the noise :) 
+
+I guess a mechanical rename should not be really confusing. It just has to
+be a separate patch.
+
+> > 
+> >                 if (cr < 2 &&
+> >                     (!sbi->s_log_groups_per_flex ||
+> >                      ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &
+> >                     !(ext4_has_group_desc_csum(sb) &&
+> >                       (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
+> >                         return 0;
+> > 
+> > to declare CR_FAST_SCAN = 2, or something like that. What do you think?
+> About this, wont it be better to just use something like
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> cr < CR_BEST_LENGTH_ALL 
+> 
+> instead of defining a new CR_FAST_SCAN = 2.
 
-Looks good. Feel free to add:
+Yeah, that works as well.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> The only concern is that if we add a new "fast" CR (say between
+> CR_BEST_LENGTH_FAST and CR_BEST_LENGTH_ALL) then we'll need to make
+> sure we also update CR_FAST_SCAN to 3 which is easy to miss.
+
+Well, you have that problem with any naming scheme (and even with numbers).
+So as long as names are all defined together, there's reasonable chance
+you'll remember to verify the limits still hold :)
 
 								Honza
-
-> ---
->  fs/jbd2/journal.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 8ae419152ff6..00c0aa4a3a91 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1515,9 +1515,8 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
->  
->  	journal->j_inode = inode;
->  	snprintf(journal->j_devname, sizeof(journal->j_devname),
-> -		 "%pg", journal->j_dev);
-> -	p = strreplace(journal->j_devname, '/', '!');
-> -	sprintf(p, "-%lu", journal->j_inode->i_ino);
-> +		 "%pg-%lu", journal->j_dev, journal->j_inode->i_ino);
-> +	strreplace(journal->j_devname, '/', '!');
->  	jbd2_stats_proc_init(journal);
->  
->  	return journal;
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
