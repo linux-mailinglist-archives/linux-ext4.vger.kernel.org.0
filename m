@@ -2,33 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215946C6A77
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 15:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94576C6A79
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 15:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbjCWOI3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 10:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        id S231375AbjCWOIb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 10:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjCWOIZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:08:25 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2CF19F20
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:07:06 -0700 (PDT)
-Received: from canpemm100004.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Pj6Zy6PC6zKnGq;
-        Thu, 23 Mar 2023 22:06:34 +0800 (CST)
+        with ESMTP id S231416AbjCWOI1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:08:27 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E429A15142
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:07:07 -0700 (PDT)
+Received: from canpemm100004.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Pj6Wn64GJzbcSY;
+        Thu, 23 Mar 2023 22:03:49 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm100004.china.huawei.com
  (7.192.105.92) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 23 Mar
- 2023 22:06:57 +0800
+ 2023 22:06:58 +0800
 From:   Jason Yan <yanaijie@huawei.com>
 To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <lczerner@redhat.com>,
         <linux-ext4@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH 5/8] ext4: rename two functions with 'check'
-Date:   Thu, 23 Mar 2023 22:05:14 +0800
-Message-ID: <20230323140517.1070239-6-yanaijie@huawei.com>
+Subject: [PATCH 6/8] ext4: move s_reserved_gdt_blocks and addressable checking into ext4_check_geometry()
+Date:   Thu, 23 Mar 2023 22:05:15 +0800
+Message-ID: <20230323140517.1070239-7-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230323140517.1070239-1-yanaijie@huawei.com>
 References: <20230323140517.1070239-1-yanaijie@huawei.com>
@@ -48,68 +48,77 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The naming styles are different for some functions with 'check' in their
-names. Some of them are like:
-
-ext4_check_quota_consistency
-ext4_check_test_dummy_encryption
-ext4_check_opt_consistency
-ext4_check_descriptors
-ext4_check_feature_compatibility
-
-While the others looks like below:
-
-ext4_geometry_check
-ext4_journal_data_mode_check
-
-This is not a big deal and boils down to personal preference. But I'd
-like to make them consistent.
+These two checkings are more suitable to be put into
+ext4_check_geometry() rather than spreading outside.
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- fs/ext4/super.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ext4/super.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ed7bd3bb45f2..66f0da764d58 100644
+index 66f0da764d58..6c9ffbe5095f 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -4713,7 +4713,7 @@ static int ext4_check_feature_compatibility(struct super_block *sb,
- 	return 0;
- }
- 
--static int ext4_geometry_check(struct super_block *sb,
-+static int ext4_check_geometry(struct super_block *sb,
- 			       struct ext4_super_block *es)
+@@ -4718,6 +4718,25 @@ static int ext4_check_geometry(struct super_block *sb,
  {
  	struct ext4_sb_info *sbi = EXT4_SB(sb);
-@@ -4922,7 +4922,7 @@ static int ext4_load_and_init_journal(struct super_block *sb,
- 	return -EINVAL;
- }
+ 	__u64 blocks_count;
++	int err;
++
++	if (le16_to_cpu(sbi->s_es->s_reserved_gdt_blocks) > (sb->s_blocksize / 4)) {
++		ext4_msg(sb, KERN_ERR,
++			 "Number of reserved GDT blocks insanely large: %d",
++			 le16_to_cpu(sbi->s_es->s_reserved_gdt_blocks));
++		return -EINVAL;
++	}
++	/*
++	 * Test whether we have more sectors than will fit in sector_t,
++	 * and whether the max offset is addressable by the page cache.
++	 */
++	err = generic_check_addressable(sb->s_blocksize_bits,
++					ext4_blocks_count(es));
++	if (err) {
++		ext4_msg(sb, KERN_ERR, "filesystem"
++			 " too large to mount safely on this system");
++		return err;
++	}
  
--static int ext4_journal_data_mode_check(struct super_block *sb)
-+static int ext4_check_journal_data_mode(struct super_block *sb)
- {
- 	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
- 		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with "
-@@ -5162,7 +5162,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	if (ext4_encoding_init(sb, es))
+ 	/* check blocks count against device size */
+ 	blocks_count = sb_bdev_nr_blocks(sb);
+@@ -5174,13 +5193,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	if (ext4_check_feature_compatibility(sb, es, silent))
  		goto failed_mount;
  
--	if (ext4_journal_data_mode_check(sb))
-+	if (ext4_check_journal_data_mode(sb))
+-	if (le16_to_cpu(sbi->s_es->s_reserved_gdt_blocks) > (sb->s_blocksize / 4)) {
+-		ext4_msg(sb, KERN_ERR,
+-			 "Number of reserved GDT blocks insanely large: %d",
+-			 le16_to_cpu(sbi->s_es->s_reserved_gdt_blocks));
+-		goto failed_mount;
+-	}
+-
+ 	if (sbi->s_daxdev) {
+ 		if (sb->s_blocksize == PAGE_SIZE)
+ 			set_bit(EXT4_FLAGS_BDEV_IS_DAX, &sbi->s_ext4_flags);
+@@ -5252,18 +5264,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	if (ext4_handle_clustersize(sb))
  		goto failed_mount;
  
- 	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
-@@ -5264,7 +5264,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+-	/*
+-	 * Test whether we have more sectors than will fit in sector_t,
+-	 * and whether the max offset is addressable by the page cache.
+-	 */
+-	err = generic_check_addressable(sb->s_blocksize_bits,
+-					ext4_blocks_count(es));
+-	if (err) {
+-		ext4_msg(sb, KERN_ERR, "filesystem"
+-			 " too large to mount safely on this system");
+-		goto failed_mount;
+-	}
+-
+ 	if (ext4_check_geometry(sb, es))
  		goto failed_mount;
- 	}
  
--	if (ext4_geometry_check(sb, es))
-+	if (ext4_check_geometry(sb, es))
- 		goto failed_mount;
- 
- 	timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
 -- 
 2.31.1
 
