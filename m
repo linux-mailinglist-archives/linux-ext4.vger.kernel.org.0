@@ -2,74 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1996C6B9D
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6EC6C6B9C
 	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 15:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjCWOyM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 10:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        id S231273AbjCWOyL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 10:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbjCWOyK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:54:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12768193F3
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:54:06 -0700 (PDT)
+        with ESMTP id S231916AbjCWOyJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:54:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B806C17CF9
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:54:07 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6CF5A1FE54;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 84AFB1FE58;
         Thu, 23 Mar 2023 14:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1679583245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZcJrGzhHByPSzpppID6b3QFV7NR8MbQoeqWk6c4rNRw=;
-        b=jXUvs6EpstWciAAXyjAnqxE1IH4lJSmt/C3pf/KSQrDGkucrCovOuTpDsL6W+7rmfqUf37
-        2XytigoKX3g0wpE6QiC/xg/Af4kUUEsK7VGOSiZpdn17coYd6E8GM4JEL8HARFyY+Gn5jY
-        UD0RS3NjE6KFwdGdXl4IH+YynM7cAnM=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dmk5Q4C3guQmEpiXuzzzuPN4hd6KwB+S4yuEEvg06U=;
+        b=d2sPERhFl5BpnZUCJU4amQHOYFS7GHUXNse5CSovuyi13nsJgAZPgYTiW26Q9JYseuHX/7
+        dMac2disrDMPvJ1kha6OGsyzLwUJvoNKSwj9kOSV4bOvvaxAn8StywsrQqnjd5SGBYCAGl
+        Dl7XmxCYToQv1t681/21KxNwCn8xiUo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1679583245;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZcJrGzhHByPSzpppID6b3QFV7NR8MbQoeqWk6c4rNRw=;
-        b=LpMokttL9Z5ysuykxUYyAw0OQ/LXsGQDWp/LPpc/3Dq84cvW7g3LS45rEerjDo9lOF63g2
-        IAgTeGA2lRz0AsDg==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dmk5Q4C3guQmEpiXuzzzuPN4hd6KwB+S4yuEEvg06U=;
+        b=JCAqyA9rOUk5xOrKbiKd8MRITsEfPDRWUO4Dlbw8HBMJrvVoI9GOp0gWaAoo+byAFDk48I
+        e0x5rm8SWniVRMCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5AEAD132C2;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 717DF132C2;
         Thu, 23 Mar 2023 14:54:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id RqUoFg1oHGSWDwAAMHmgww
+        id YjG3Gw1oHGSaDwAAMHmgww
         (envelope-from <jack@suse.cz>); Thu, 23 Mar 2023 14:54:05 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id BEE1AA071C; Thu, 23 Mar 2023 15:54:04 +0100 (CET)
+        id C19F9A06F2; Thu, 23 Mar 2023 15:54:04 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>,
         Jan Kara <jack@suse.cz>
-Subject: [PATCH 0/2] ext4: Fix two bugs in journalled writepages rework
-Date:   Thu, 23 Mar 2023 15:53:57 +0100
-Message-Id: <20230323145102.3042-1-jack@suse.cz>
+Subject: [PATCH 1/2] ext4: Fix data=journal writeback of DMA pinned page
+Date:   Thu, 23 Mar 2023 15:53:58 +0100
+Message-Id: <20230323145404.21381-1-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230323145102.3042-1-jack@suse.cz>
+References: <20230323145102.3042-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=120; i=jack@suse.cz; h=from:subject:message-id; bh=j6gs6b3aODdOtAtAwNgZt0/O5CQ+fYFlevsRJOzhLa4=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkHGf/Cl5LDv/0q1hVYish3zFQ34+c2E+3/N9eUwp8 lcx+LvWJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZBxn/wAKCRCcnaoHP2RA2YzECA C59Yh6pQNcQrqMjGcZRM2wfg8kwVf1WiMi6NkpN7y4AbD9NKJ5GRULzoMnJyEh6YfVxCePgk9Xayb0 Sg4RCnwfPtfl98RwxbxyMNqRkn3vA+TqFf9Rab73s+5GI+O+hQVQ/kvCn/mcwRVgiZdUA8k3u3xdYu RCGAEbiuwqwiUuSSZX+Wjz9fgd+dX162FvB+YxNv3owWPNs8GZ0vE5dU+BXScVHgVUDAKcfe0kiGmj 3CUyFFxIx+1I1msEwqXPqjwjz2srDPnFH9+XNpTB3Ih1/WXBj1662tOfRgRwb1kgGZ1cQ0aEp9Lowa mH6WcLie8sahfAZSUb/XJ8hXW7Bmh3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1023; i=jack@suse.cz; h=from:subject; bh=4auudl/oofRIzGTxWiDlBiCE3uHqE84wg8RsV/7Br9Y=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkHGgFhIX1w8j+AIY5PW0aX0jFbJE2gw5D1BuMSFyl jIBNF4KJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZBxoBQAKCRCcnaoHP2RA2Y7KB/ 9hgWvYacbRvu3mtE+6R6z6WuLQj5MPy/XS09G9Q6eHpNRRHDl75cuPxErTxl6sThbUxWZfFnznW+x7 x/xXc8h0G/0BN+BhxYdU/ijNzCiVsl5QvL+pQOeiWIlum/NFwf3fERN5YH3d/JDvlOlxlRhtBqcwqD qJOUbWV5Q/FIXPr7yw+qYifpCDS3VUk4hg3+BNAGrKuG8bNawyt/l6BPKsfXe33EJ+b+QedIzWXwKu VuN8IrTOi+UHJQveLNHG6ge+BuGjRXTFuXU4hCvgmGYFNYU6bVs57HJ6ZrTSwXYWtG+BCOLeErZBPY 57FATkvvWDXwFoFdBwOdpWVBwp5rmt
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+The condition in ext4_writepages() checking whether the filesystem is
+frozen had a brown paper bag bug resulting in us never writing back
+DMA pinned pages. Fix the condition.
 
-These two patches fix two problems introduced by the rewrite of journalled
-writeback path.
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Link: https://lore.kernel.org/all/20230319183617.GA896@sol.localdomain
+Fixes: 18b7f4107219 ("ext4: Fix warnings when freezing filesystem with journaled data")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-								Honza
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 3e311c85df08..15bac8181798 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2436,7 +2436,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 	 * loop clears them.
+ 	 */
+ 	if (ext4_should_journal_data(mpd->inode) &&
+-	    sb->s_writers.frozen >= SB_FREEZE_FS) {
++	    sb->s_writers.frozen < SB_FREEZE_FS) {
+ 		handle = ext4_journal_start(mpd->inode, EXT4_HT_WRITE_PAGE,
+ 					    bpp);
+ 		if (IS_ERR(handle))
+-- 
+2.35.3
+
