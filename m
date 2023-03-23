@@ -2,70 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F7D6C6B9B
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 15:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F026C6C50
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 16:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbjCWOyK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 10:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        id S230377AbjCWPaw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 11:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjCWOyJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:54:09 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4B5196B2
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:54:07 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 863341FE92;
-        Thu, 23 Mar 2023 14:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679583245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKRAlNt64iKYXXbCZJYG2+NeCIHtLmxkDAc5tTzA+1M=;
-        b=Z6U128bWqbe5pWWwoxDT0JQUWHSSuKmTEYBlSTQGuRTbcWhRlf5LlXexZK1WbuZp13RP/7
-        aJ2GFhINofqb381mz6W6dIXsxQ4WSAoLgZQQhC8iQlrM8lqTUX1Djh/V3otjLieo1hz20k
-        POtBBCYKARodnE0drdcU6famk8jks18=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679583245;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKRAlNt64iKYXXbCZJYG2+NeCIHtLmxkDAc5tTzA+1M=;
-        b=HsSE0EdcVpzH8OZsRDHkZZFAIl8btr4QTgzfDn8ji5LCGNR1RyOy58e2rLzl/l5XNr4xR6
-        O48Ucu9m/jv1zEBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75DD713A2F;
-        Thu, 23 Mar 2023 14:54:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Us4pHA1oHGSdDwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 23 Mar 2023 14:54:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C6CBDA071E; Thu, 23 Mar 2023 15:54:04 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 2/2] ext4: Fix crash on shutdown filesystem
-Date:   Thu, 23 Mar 2023 15:53:59 +0100
-Message-Id: <20230323145404.21381-2-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230323145102.3042-1-jack@suse.cz>
-References: <20230323145102.3042-1-jack@suse.cz>
+        with ESMTP id S232177AbjCWPau (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 11:30:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3440B34C2E;
+        Thu, 23 Mar 2023 08:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eeOG5CigAADDhpiWzbHe93M8aJDDgCUGp/z1aQBsav4=; b=XP940pVAUyP7Thq6nocMQueT0P
+        vDcKjK5NtAZ3V18MnVXY3gmuO1GUEaN+iWy1ZK0K3SHEw8qar7B9cx6PxP0FOUu8Oox/JCnAvIDUB
+        393SoMsSZ+bXIrK2X9VE00xgrhDJSCBdjM7uVR81onvctRZqeoG3hAwvFTzWC+9/pI4bztXd4H1lT
+        PUtO2p08y5GpBNutKUHXZ2jPLNGjAdegsS5ttXEYy70LHMaFc6FIt4hoyrh6bd57GM5WJpiWqwkyK
+        OjYNRw7VOVfrMQDQaAJrlTFxUAPPj/TTep2x40iMrCOCgnEp0OPjyJOxNJZGa7jeyNJrHx+pwjYQW
+        sq6mVCZA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pfMti-0042lO-Ra; Thu, 23 Mar 2023 15:30:38 +0000
+Date:   Thu, 23 Mar 2023 15:30:38 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/31] ext4: Convert ext4_finish_bio() to use folios
+Message-ID: <ZBxwnlKOZxHmLtdR@casper.infradead.org>
+References: <20230126202415.1682629-5-willy@infradead.org>
+ <87ttyy1bz4.fsf@doe.com>
+ <ZBvG8xbGHwQ+PPQa@casper.infradead.org>
+ <20230323145109.GA466457@frogsfrogsfrogs>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1377; i=jack@suse.cz; h=from:subject; bh=1Mcqxse+4pvCNgWMJO09+091ZcUMGLycR2cUG+2cfRo=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkHGgGAiZ5MfVkM9vDppEFki/hVesEPYWtu56vnK7J 9f5HpYOJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZBxoBgAKCRCcnaoHP2RA2bUbB/ 0ShYeh63ONwoE2lIm7yD/2vdsWoKwhWK/1Yr1YT2o7Uazv4Eye0Dw89W7d879oYax29GMFT6Xjir+t IZ3LNzxQPJ26qqw2slz3oSMkFjpeTZxQWMn1t8kDAoS4mqar3ANN/SsjMcZLf6w2Aq3zBtTmfHbYoM o4V7JohMlwIyL1EtHh8BnS1tpAdpY0AIJFoF4lLMa14Jjo/gPNEf30L79vcSiBtX0ZtM85a0gNPUey NLp+4If7gCZqELDl6c7S7B6gMBRRmzxTLWBA2TEL8e1pEtm9Ia+2KC1lGiLST7vZRnq+csB+EuhOsE gSLKJzddKUz3RWcB4YyGBZyc4TaqKX
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230323145109.GA466457@frogsfrogsfrogs>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,41 +52,49 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Test generic/388 triggered a crash in mpage_release_unused_pages()
-because a page in mpd->first_page..mpd->next_page range was not locked.
-This can happen in data=journal mode when we exit from
-mpage_prepare_extent_to_map() before actually initializing
-mpd->next_page. Move the initialization to a place before we can exit
-with error from mpage_prepare_extent_to_map().
+On Thu, Mar 23, 2023 at 07:51:09AM -0700, Darrick J. Wong wrote:
+> On Thu, Mar 23, 2023 at 03:26:43AM +0000, Matthew Wilcox wrote:
+> > On Mon, Mar 06, 2023 at 02:40:55PM +0530, Ritesh Harjani wrote:
+> > > "Matthew Wilcox (Oracle)" <willy@infradead.org> writes:
+> > > 
+> > > > Prepare ext4 to support large folios in the page writeback path.
+> > > 
+> > > Sure. I am guessing for ext4 to completely support large folio
+> > > requires more work like fscrypt bounce page handling doesn't
+> > > yet support folios right?
+> > > 
+> > > Could you please give a little background on what all would be required
+> > > to add large folio support in ext4 buffered I/O path?
+> > > (I mean ofcourse other than saying move ext4 to iomap ;))
+> > > 
+> > > What I was interested in was, what other components in particular for
+> > > e.g. fscrypt, fsverity, ext4's xyz component needs large folio support?
+> > > 
+> > > And how should one go about in adding this support? So can we move
+> > > ext4's read path to have large folio support to get started?
+> > > Have you already identified what all is missing from this path to
+> > > convert it?
+> > 
+> > Honestly, I don't know what else needs to be done beyond this patch
+> > series.  I can point at some stuff and say "This doesn't work", but in
+> > general, you have to just enable it and see what breaks.  A lot of the
+> > buffer_head code is not large-folio safe right now, so that's somewhere
+> > to go and look.  Or maybe we "just" convert to iomap, and never bother
+> > fixing the bufferhead code for large folios.
+> 
+> Yes.  Let's leave bufferheads in the legacy doo-doo-dooooo basement
+> instead of wasting more time on them.  Ideally we'd someday run all the
+> filesystems through:
+> 
+> bufferheads -> iomap with bufferheads -> iomap with folios -> iomap with
+> large folios -> retire to somewhere cheaper than Hawaii
 
-Fixes: f7233fb54d18 ("ext4: Convert data=journal writeback to use ext4_writepages()")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Places cheaper than Hawaii probably aren't as pretty as Hawaii though :-(
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 15bac8181798..dbcc8b48c7ba 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2428,6 +2428,8 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 	else
- 		tag = PAGECACHE_TAG_DIRTY;
- 
-+	mpd->map.m_len = 0;
-+	mpd->next_page = index;
- 	/*
- 	 * Start a transaction for writeback of journalled data. We don't start
- 	 * the transaction if the filesystem is frozen. In that case we
-@@ -2443,8 +2445,6 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
- 			return PTR_ERR(handle);
- 	}
- 	folio_batch_init(&fbatch);
--	mpd->map.m_len = 0;
--	mpd->next_page = index;
- 	while (index <= end) {
- 		nr_folios = filemap_get_folios_tag(mapping, &index, end,
- 				tag, &fbatch);
--- 
-2.35.3
+XFS is fine because it uses xfs_buf, but if we don't add support for
+large folios to bufferheads, we can't support LBA size > PAGE_SIZE even
+to read the superblock.  Maybe that's fine ... only filesystems which
+don't use sb_bread() get to support LBA size > PAGE_SIZE.
 
+I really want to see a cheaper abstraction for accessing the block device
+than BHs.  Or xfs_buf for that matter.
