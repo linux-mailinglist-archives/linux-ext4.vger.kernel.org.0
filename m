@@ -2,93 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAC66C687B
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 13:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53076C6A76
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 15:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjCWMgi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Mar 2023 08:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        id S231376AbjCWOI1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Mar 2023 10:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjCWMgi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 08:36:38 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B071B56F;
-        Thu, 23 Mar 2023 05:36:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679574984; x=1711110984;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Uqba7KW+LSTrR6KDuN+F/tgiTmPx6AhRcJexGJYfzL0=;
-  b=DVpEUyVcB9cuHQaevin9Hs+FrKfkjYEBilsuB7NZEcmJ68Q6q5r1gG31
-   aoUldmS7ijsb/RnEvdcQ/AGw8VWqYvT6mbmJ6cLoVQsk4OO66IizRsR+9
-   fn8AHZvaZmXMiEgWNtxCHFpi7wc7WMocpWf/Xj/0JxGQnz565QA0Mnj+P
-   zrHZePsVE6HiBlKFLldJVcYA02CXlD85JCEo5fBX1YHKugzTDpCtEztlt
-   4Dlx6rJ5qYBKowjEn0nlMqB6bOFEQbUtxhFd/TaiD7InqMnD1Z5Gy7Vof
-   +QYZaieWqldzU0n3Z5ZzMpOa9gz1waTZ3elG1kpxSQOv/AjfNMM09BSk6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="404359764"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="404359764"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 05:36:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675681050"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="675681050"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 23 Mar 2023 05:36:20 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 3AE4C176; Thu, 23 Mar 2023 14:37:07 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v2 3/3] kobject: Use return value of strreplace()
-Date:   Thu, 23 Mar 2023 14:37:04 +0200
-Message-Id: <20230323123704.37983-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com>
-References: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com>
+        with ESMTP id S231355AbjCWOIU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Mar 2023 10:08:20 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC4510A99
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Mar 2023 07:07:01 -0700 (PDT)
+Received: from canpemm100004.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Pj6Wl65PTz17LMp;
+        Thu, 23 Mar 2023 22:03:47 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm100004.china.huawei.com
+ (7.192.105.92) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 23 Mar
+ 2023 22:06:55 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <lczerner@redhat.com>,
+        <linux-ext4@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH 0/8] some refactor of __ext4_fill_super(), part 2.
+Date:   Thu, 23 Mar 2023 22:05:09 +0800
+Message-ID: <20230323140517.1070239-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm100004.china.huawei.com (7.192.105.92)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Since strreplace() returns the pointer to the string itself,
-we may use it directly in the code.
+This is a continuous effort to make __ext4_fill_super() shorter and more
+readable. The previous work is here[1]. I'm using my spare time to do this
+work so it's a bit late after the previous series.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- lib/kobject.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+[1] http://patchwork.ozlabs.org/project/linux-ext4/cover/20220916141527.1012715-1-yanaijie@huawei.com/
 
-diff --git a/lib/kobject.c b/lib/kobject.c
-index f79a434e1231..16d530f9c174 100644
---- a/lib/kobject.c
-+++ b/lib/kobject.c
-@@ -281,8 +281,7 @@ int kobject_set_name_vargs(struct kobject *kobj, const char *fmt,
- 		kfree_const(s);
- 		if (!t)
- 			return -ENOMEM;
--		strreplace(t, '/', '!');
--		s = t;
-+		s = strreplace(t, '/', '!');
- 	}
- 	kfree_const(kobj->name);
- 	kobj->name = s;
+Jason Yan (8):
+  ext4: factor out ext4_hash_info_init()
+  ext4: factor out ext4_percpu_param_init() and
+    ext4_percpu_param_destroy()
+  ext4: use ext4_group_desc_free() in ext4_put_super() to save some
+    duplicated code
+  ext4: factor out ext4_flex_groups_free()
+  ext4: rename two functions with 'check'
+  ext4: move s_reserved_gdt_blocks and addressable checking into
+    ext4_check_geometry()
+  ext4: factor out ext4_block_group_meta_init()
+  ext4: move dax and encrypt checking into
+    ext4_check_feature_compatibility()
+
+ fs/ext4/super.c | 392 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 209 insertions(+), 183 deletions(-)
+
 -- 
-2.40.0.1.gaa8946217a0b
+2.31.1
 
