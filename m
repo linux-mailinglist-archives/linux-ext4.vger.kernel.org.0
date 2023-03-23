@@ -2,144 +2,267 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6CF6C58D3
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Mar 2023 22:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825296C5D14
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Mar 2023 04:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbjCVVek (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Mar 2023 17:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
+        id S229863AbjCWDOm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Mar 2023 23:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjCVVek (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Mar 2023 17:34:40 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25E7F74C
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id l7so2662418pjg.5
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112; t=1679520878;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6cf5ZrocLuP8eawgd/E60BNCFQFk3YmpTvolIL7gKtM=;
-        b=faeZG4hdCo63xtvEwQPUpWCfDvsFDutyznovvy6/bZ98AS0UU71WEzQGJUR7W5tSHk
-         B1Hsj6F9JacOellvN0OTgxD/E6WleiOQ3iyKGlogFrHx+qwp08RGZ0mj+QhpJNuAE3MC
-         hIYLd2L1yNJ8b67wymi2bKPuFWD1KthvNoT4n/rbLLf8keMJKz2N1BBalkMOv/7naqqU
-         BjRA6ygmeIFqgcd/AJVZqdZeaCtDD5Flsd/9+01c0FDrX+NXCZjImup6kZn41GXLPg9a
-         5KW6AR/7+qY+u1zzHzNU1wkUnLPWQ1MZcuKgpDvMiKf+n7AbluhYZzWSzQ9U1OyxFYJo
-         oYww==
+        with ESMTP id S229702AbjCWDOl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Mar 2023 23:14:41 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E692F04B
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 20:14:39 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id i7-20020a056e021b0700b0031dc4cdc47cso11375989ilv.23
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Mar 2023 20:14:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679520878;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6cf5ZrocLuP8eawgd/E60BNCFQFk3YmpTvolIL7gKtM=;
-        b=jljWnFFnDNmKz7rAcaYh58T0wLXoPGMNTfac9hNs3H06na2HuaHZ9mEoMI2du2T/gQ
-         Wpt561UIre8q6HNzqSploeCxX1ZUWrqTlaYnT31E9Icurtx3yzF//Nvt41Iqeu2bQPaY
-         QcyP13HvRzwSUloYZlteMbbKLrsjWnksJzTkXNIQtfGnAbPSxZU3HOy4lt5yVF+O7qUU
-         ZvPMAVOYG1rt/dCOUJntiwATlhZzYEs9XO5yZ1MuclHXcMUyAzbc6e9SMOzfwGBlvSUp
-         ozp7rmgVMs6tcSV22IGCkQHvFXUfnScsyTa83OvkviruHq7zlSyCsl49fhASHUL57i5E
-         rYcQ==
-X-Gm-Message-State: AO0yUKVJvi+qCdGiOoecUrT4FUZNpyg0ytgsuD4056GSUeA4+9KFTqDA
-        MDJCaDzGVLyLBieDt6vIuZYsLSjH7wcgxnssyrIWZA==
-X-Google-Smtp-Source: AK7set/y/iOOkoStxY6EOAoilZhJseSMFoch9SYTr94VAgGKeQBhx3vTLTEzlORFdORD0M0vlEHpOg==
-X-Received: by 2002:a17:90b:38c5:b0:23f:81de:6a77 with SMTP id nn5-20020a17090b38c500b0023f81de6a77mr4981404pjb.28.1679520878075;
-        Wed, 22 Mar 2023 14:34:38 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id o5-20020a17090ad24500b00234e6d2de3dsm10206340pjw.11.2023.03.22.14.34.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Mar 2023 14:34:37 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <06F8DFC9-26F5-475F-9428-06FED2CA01AA@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v5 0/3] ext4, jbd2: journal cycled record transactions
- between each mount
-Date:   Wed, 22 Mar 2023 15:34:49 -0600
-In-Reply-To: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Zhang Yi <yi.zhang@huawei.com>, yukuai3@huawei.com
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-References: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1679541278;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xv7dlT07bhytpQH6+HIJVHPdJktguAUbYyAxEjJ2CA8=;
+        b=GmINdVgj3G4cI3UEWxmBNG76XgfYvJQBKNPKi1JNkyiIyxG/a8wtFznwWjF3my6Jkq
+         ReEg8CdN6ij0AvnkRy54AGd/WfFd9DsjDhXYt/Wn8e5DJ46J5ObpwbN5XaQ+EgMlk+3B
+         dWiHi+YAJ6+tQ26mce3eCq6S8eCRfHCFClNwdMI/aT4OB8RlhGG04VtAyApw9q2INWZu
+         ZDnaa8Jvq1fjfvC/99AMF6clUClmtLy0s1+5h+aOE4FD4Gg2iux3wbINE+eSMp06ktZf
+         WJUHaj4opjd3X54N3i6Ld+BhrwdgV+Jxy4cnk4sr0D5Xdd3FINrVJrcE/q3z+XL4xN0R
+         gvtw==
+X-Gm-Message-State: AO0yUKXs2EdvWstCZGlA/RjmqQa03yclk5+fRlJg4cFTbKDPYARp+xaa
+        ORXt4yKAREQYSfKNlV2nqKQ4YAwSeIdiauopQZAWBoKE3DbI
+X-Google-Smtp-Source: AK7set+QsSWHgyUqgDPGWjqUg0/6yNUx1vnD/4MMh9XKj1Db2PO1EnmiT2Atzr8ctktT0blfyZeTdAqNVCG/FgfdX1SRIPz7ZBkQ
+MIME-Version: 1.0
+X-Received: by 2002:a92:c5ae:0:b0:324:610a:5956 with SMTP id
+ r14-20020a92c5ae000000b00324610a5956mr3642389ilt.4.1679541278602; Wed, 22 Mar
+ 2023 20:14:38 -0700 (PDT)
+Date:   Wed, 22 Mar 2023 20:14:38 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004bffe205f788ad8e@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_inline_data_truncate
+From:   syzbot <syzbot+b8e6e6822d493a4630f3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
---Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+syzbot found the following issue on:
 
-On Mar 21, 2023, at 7:33 PM, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
-> This patch set add a new journal option 'JBD2_CYCLE_RECORD' and always
-> enable on ext4. It saves journal head for a clean unmounted file system
-> in the journal super block, which could let us record journal
-> transactions between each mount continuously. It could help us to do
-> journal backtrack and find root cause from a corrupted filesystem.
-> Current filesystem's corruption analysis is difficult and less useful
-> information, especially on the real products. It is useful to some
-> extent, especially for the cases of doing fuzzy tests and deploy in some
-> shout-runing products.
+HEAD commit:    534293368afa Merge tag 'kbuild-fixes-v6.3' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12247281c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e23c4bcf73cdc669
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8e6e6822d493a4630f3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
-Another interesting side benefit of this change is that it gets a step
-closer to the "lazy ext4" (log-structured optimization) that had been
-described some time ago at FAST:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-https://lwn.net/Articles/720226/
-https://www.usenix.org/system/files/conference/fast17/fast17-aghayev.pdf
-https://lists.openwall.net/linux-ext4/2017/04/11/1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b8e6e6822d493a4630f3@syzkaller.appspotmail.com
 
-Essentially, free space in the filesystem (or a large external device)
-could be used as a continuous journal, and metadata would only rarely
-be checkpointed to the actual filesystem.  If the "journal" is close to
-wrapping to the start, either the meta/data is checkpointed (if it is
-no longer actively used or can make a large write), or re-journaled to
-the end of the journal.  At remount time, the full journal is read into
-memory (discarding old copies of blocks) and this is used to identify
-the current metadata rather than reading from the filesystem itself.
+EXT4-fs (loop2): 1 truncate cleaned up
+EXT4-fs (loop2): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: writeback.
+======================================================
+WARNING: possible circular locking dependency detected
+6.3.0-rc2-syzkaller-00387-g534293368afa #0 Not tainted
+------------------------------------------------------
+syz-executor.2/1999 is trying to acquire lock:
+ffff888029121ee0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ffff888029121ee0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_inline_data_truncate+0x1a8/0xd70 fs/ext4/inline.c:1932
 
-This would allow e.g. very efficient flash caching of metadata (and also
-journaled data for small writes) for an HDD (or QLC) device.
+but task is already holding lock:
+ffff88801ae60650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:665
 
-Cheers, Andreas
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
+
+-> #2 (sb_internal){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1477 [inline]
+       sb_start_intwrite include/linux/fs.h:1599 [inline]
+       ext4_evict_inode+0x114b/0x1ca0 fs/ext4/inode.c:240
+       evict+0x2ed/0x6b0 fs/inode.c:665
+       iput_final fs/inode.c:1748 [inline]
+       iput.part.0+0x50a/0x740 fs/inode.c:1774
+       iput+0x5c/0x80 fs/inode.c:1764
+       dentry_unlink_inode+0x2b1/0x460 fs/dcache.c:401
+       __dentry_kill+0x3c0/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x12c/0x4f0 fs/dcache.c:1201
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
+       super_cache_scan+0x33a/0x590 fs/super.c:104
+       do_shrink_slab+0x428/0xaa0 mm/vmscan.c:853
+       shrink_slab_memcg mm/vmscan.c:922 [inline]
+       shrink_slab+0x388/0x660 mm/vmscan.c:1001
+       shrink_one+0x502/0x810 mm/vmscan.c:5343
+       shrink_many mm/vmscan.c:5394 [inline]
+       lru_gen_shrink_node mm/vmscan.c:5511 [inline]
+       shrink_node+0x2064/0x35f0 mm/vmscan.c:6459
+       kswapd_shrink_node mm/vmscan.c:7262 [inline]
+       balance_pgdat+0xa02/0x1ac0 mm/vmscan.c:7452
+       kswapd+0x677/0xd60 mm/vmscan.c:7712
+       kthread+0x2e8/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:4716 [inline]
+       fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:4730
+       might_alloc include/linux/sched/mm.h:271 [inline]
+       slab_pre_alloc_hook mm/slab.h:728 [inline]
+       slab_alloc_node mm/slub.c:3434 [inline]
+       __kmem_cache_alloc_node+0x41/0x320 mm/slub.c:3491
+       __do_kmalloc_node mm/slab_common.c:966 [inline]
+       __kmalloc_node+0x51/0x1a0 mm/slab_common.c:974
+       kmalloc_node include/linux/slab.h:610 [inline]
+       kvmalloc_node+0xa2/0x1a0 mm/util.c:603
+       kvmalloc include/linux/slab.h:737 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1552 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1595 [inline]
+       ext4_xattr_set_entry+0x1d82/0x39e0 fs/ext4/xattr.c:1737
+       ext4_xattr_block_set+0x618/0x3030 fs/ext4/xattr.c:1974
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2668 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
+       ext4_expand_extra_isize_ea+0xa84/0x1880 fs/ext4/xattr.c:2835
+       __ext4_expand_extra_isize+0x33e/0x470 fs/ext4/inode.c:5960
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:6003 [inline]
+       __ext4_mark_inode_dirty+0x51b/0x800 fs/ext4/inode.c:6081
+       __ext4_unlink+0x667/0xcd0 fs/ext4/namei.c:3269
+       ext4_unlink+0x41f/0x590 fs/ext4/namei.c:3298
+       vfs_unlink+0x355/0x930 fs/namei.c:4250
+       do_unlinkat+0x3df/0x670 fs/namei.c:4316
+       __do_sys_unlinkat fs/namei.c:4359 [inline]
+       __se_sys_unlinkat fs/namei.c:4352 [inline]
+       __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4352
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+-> #0 (&ei->xattr_sem){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3098 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+       validate_chain kernel/locking/lockdep.c:3832 [inline]
+       __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
+       lock_acquire kernel/locking/lockdep.c:5669 [inline]
+       lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
+       down_write+0x92/0x200 kernel/locking/rwsem.c:1573
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_inline_data_truncate+0x1a8/0xd70 fs/ext4/inline.c:1932
+       ext4_truncate+0x992/0x1340 fs/ext4/inode.c:4298
+       ext4_evict_inode+0xb9f/0x1ca0 fs/ext4/inode.c:286
+       evict+0x2ed/0x6b0 fs/inode.c:665
+       iput_final fs/inode.c:1748 [inline]
+       iput.part.0+0x50a/0x740 fs/inode.c:1774
+       iput+0x5c/0x80 fs/inode.c:1764
+       do_unlinkat+0x42e/0x670 fs/namei.c:4323
+       __do_sys_unlinkat fs/namei.c:4359 [inline]
+       __se_sys_unlinkat fs/namei.c:4352 [inline]
+       __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4352
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->xattr_sem --> fs_reclaim --> sb_internal
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(sb_internal);
+                               lock(fs_reclaim);
+                               lock(sb_internal);
+  lock(&ei->xattr_sem);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.2/1999:
+ #0: ffff88801ae60460 (sb_writers#4){.+.+}-{0:0}, at: do_unlinkat+0x18c/0x670 fs/namei.c:4297
+ #1: ffff88801ae60650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:665
+
+stack backtrace:
+CPU: 0 PID: 1999 Comm: syz-executor.2 Not tainted 6.3.0-rc2-syzkaller-00387-g534293368afa #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2178
+ check_prev_add kernel/locking/lockdep.c:3098 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+ validate_chain kernel/locking/lockdep.c:3832 [inline]
+ __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
+ lock_acquire kernel/locking/lockdep.c:5669 [inline]
+ lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
+ down_write+0x92/0x200 kernel/locking/rwsem.c:1573
+ ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ ext4_inline_data_truncate+0x1a8/0xd70 fs/ext4/inline.c:1932
+ ext4_truncate+0x992/0x1340 fs/ext4/inode.c:4298
+ ext4_evict_inode+0xb9f/0x1ca0 fs/ext4/inode.c:286
+ evict+0x2ed/0x6b0 fs/inode.c:665
+ iput_final fs/inode.c:1748 [inline]
+ iput.part.0+0x50a/0x740 fs/inode.c:1774
+ iput+0x5c/0x80 fs/inode.c:1764
+ do_unlinkat+0x42e/0x670 fs/namei.c:4323
+ __do_sys_unlinkat fs/namei.c:4359 [inline]
+ __se_sys_unlinkat fs/namei.c:4352 [inline]
+ __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4352
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7fcf579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7fca5cc EFLAGS: 00000296 ORIG_RAX: 000000000000012d
+RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 00000000200003c0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	retq
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
---Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmQbdHoACgkQcqXauRfM
-H+CvOxAAs8h7UWeM/XFNozgG2NrYa4eEnPHUxApEP5jcmij0B72Zg48cFi5Nivjg
-DXPkslM1kDIA7Dn0a94cnwfJT6BXQrpgmhLggZtFnVVILb7+WHUuLx+1hYbILtWa
-wndRZwnaV3nVWdaEL6HiZlHgmyw9fS+gWXUOSP07Me48Ox8pQVrKJ5ht0uXQszgg
-ff9DaUCVmTX1OY9JvslqFh84BHCSV3/Q1fMcy8JGile1MBduRLZg2IEi+DvS+FTe
-Xrwm7BSfD7MdfSSWnt5EbiZibAYNH69cCDIAHPPdDHbLVDRw/HmUcD31+OiOlriz
-eme991yqCKE4BGxUl01m8WJ4uqCFEvRszAxrOFpLjtuO28xUeTkOgoqTfCwuFVDF
-ifywPCKZDX9rX06t7D2DSiyupK/vFS88/7cKDraULD7vB6gXJg+sjKzSNRryKUlA
-o5koFfpl8cVXAyAvARA/lIf1OyVh/jlvFcwhshMPSBh5NuP+OUvxmTdlhN44VRnH
-e0enPVD+ZSZ4pDAlNYvDzo2FgQ43aCwEBxdL7H3MQ4KPwl4CZT0qwR5u9EehNJHK
-BX7x/O0d8tG3dMVbfm8juQU9zSvMwgAqBEtQbGRIuKlacXs0rwUHciZyMPkohfQJ
-8D5JAJ5cj/yg+WqDno1IivFvYnsxpjgSKx4JC62bEQ7w0q87qcI=
-=c7GG
------END PGP SIGNATURE-----
-
---Apple-Mail=_91D2A469-7A61-4CB1-93C3-4B807A11CBBD--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
