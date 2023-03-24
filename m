@@ -2,90 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B016C8200
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 16:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6405E6C8457
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 19:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjCXP7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Mar 2023 11:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S231863AbjCXSDf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Mar 2023 14:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbjCXP7t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 11:59:49 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD2022117
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 08:59:48 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id a21-20020a5d9595000000b0074c9dc19e16so1360028ioo.15
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 08:59:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679673587;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aU4lvqzTsj4oTR3MxWa2VVfTmYihFf5fMUtRbA8JGCY=;
-        b=UpI5DtYUN/45T+6TX4pPMgsL+hvmn8vl5sbZsohTTarJozZSJ+rqLN85jiEVWMJIfN
-         809HLDYm4gtTgkqpGKNX/Xvua98u9QcRnTvQxdVhjtBkIkSHuZ9fBykg/6p1OKCGjdS/
-         Isu5bfYlU1bNlDH8GbYZ8lw1oHCG/gXrZE7vxOPRKc6BqLo1KjxholSv7TrJ3dOAVhHI
-         xw7zDhtoTyAWfbXLFUG2SVYGfk5eMZvb9BTciITVsnx4y0wIKmJcgeKT43Z9bfenMtAF
-         p6++KmX2SQWExby2H8vKNGrjImU+WVdy0c9J6H1pSLGCz+qGufRYUDHiETQ+SlYT/tjV
-         6GSQ==
-X-Gm-Message-State: AAQBX9e5h3sX2HXV58v0ftuvpVXwt7GIUa6zlX6aChMNxXZxKC0XUUv2
-        GhCjfyiOOIsqKbHn/BOfygpwfMSnrA92mlmDsN2F3zfJooI+DQ4=
-X-Google-Smtp-Source: AKy350ZsuAufE6bu9FQLZNsGkHxqsA1ORS7Q0ORagXa3v9v0p6hfTuoxI9RdzgAzIc+RNEsoVbz4fxIfdR+JmrrK8xZEnJ2oQxnL
+        with ESMTP id S232041AbjCXSCZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 14:02:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFD91BAEB;
+        Fri, 24 Mar 2023 11:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=rnAo4L7RmnIku5i+IL0cWPvo7OyCYgpklRMlOVhR32U=; b=j/l857Wi8xGShCZKdRe7OlnU2M
+        UUN534rzq3/viXWPJ4LTgd71npb4oCul35QKqSp9rf+TaWan8pPH3mWTCire5lwgoMpeG2ru30lMs
+        DQ4nG13TYquzGkyv/bTPS+qcle4HLVDeNnol8B47Ck/kLXUjHIsRk8ZEkj2DabPiPVRMbLy3yD2W3
+        Pm+mrZc351yJEtfMLncC0JFDcrTGROCTMLwlRJAc/ZSnjRWuPG8uvoBgfc9RsSQKafNNHcOFwm1/t
+        CzzTrCHS07DrHEB+UynalWwd8fvGjNJPmg1T/7M480Is4RvvtjIWd3cI46cT4jvsG7Py8CprJrWfc
+        O36zIOjg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pfljK-0057Yn-Ob; Fri, 24 Mar 2023 18:01:34 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 00/29] Convert most of ext4 to folios
+Date:   Fri, 24 Mar 2023 18:01:00 +0000
+Message-Id: <20230324180129.1220691-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1988:b0:325:e254:8ef1 with SMTP id
- g8-20020a056e02198800b00325e2548ef1mr676754ilf.4.1679673587531; Fri, 24 Mar
- 2023 08:59:47 -0700 (PDT)
-Date:   Fri, 24 Mar 2023 08:59:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000860b5105f7a77b97@google.com>
-Subject: [syzbot] [ext4] Monthly Report
-From:   syzbot <syzbot+list0d9154e4f559c9f5f96f@syzkaller.appspotmail.com>
-To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello ext4 maintainers/developers,
+On top of next-20230321, this converts most of ext4 to use folios instead
+of pages.  It does not enable large folios although it fixes some places
+that will need to be fixed before they can be enabled for ext4.  It does
+not convert mballoc to use folios.  write_begin() and write_end() still
+take a page parameter instead of a folio.
 
-This is a 30-day syzbot report for ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+It does convert a lot of code away from the page APIs that we're trying
+to remove.  It does remove a lot of calls to compound_head().  I'd like
+to see it land in 6.4.
 
-During the period, 17 new issues were detected and 4 were fixed.
-In total, 94 issues are still open and 92 have been fixed so far.
+v2:
+ Address all the feedback I received on v1.  At least I hope I did.
 
-Some of the still happening issues:
+Matthew Wilcox (Oracle) (29):
+  fs: Add FGP_WRITEBEGIN
+  fscrypt: Add some folio helper functions
+  ext4: Convert ext4_bio_write_page() to use a folio
+  ext4: Convert ext4_finish_bio() to use folios
+  ext4: Turn mpage_process_page() into mpage_process_folio()
+  ext4: Convert mpage_submit_page() to mpage_submit_folio()
+  ext4: Convert mpage_page_done() to mpage_folio_done()
+  ext4: Convert ext4_bio_write_page() to ext4_bio_write_folio()
+  ext4: Convert ext4_readpage_inline() to take a folio
+  ext4: Convert ext4_convert_inline_data_to_extent() to use a folio
+  ext4: Convert ext4_try_to_write_inline_data() to use a folio
+  ext4: Convert ext4_da_convert_inline_data_to_extent() to use a folio
+  ext4: Convert ext4_da_write_inline_data_begin() to use a folio
+  ext4: Convert ext4_read_inline_page() to ext4_read_inline_folio()
+  ext4: Convert ext4_write_inline_data_end() to use a folio
+  ext4: Convert ext4_write_begin() to use a folio
+  ext4: Convert ext4_write_end() to use a folio
+  ext4: Use a folio in ext4_journalled_write_end()
+  ext4: Convert ext4_journalled_zero_new_buffers() to use a folio
+  ext4: Convert __ext4_block_zero_page_range() to use a folio
+  ext4: Convert ext4_page_nomap_can_writeout to
+    ext4_folio_nomap_can_writeout
+  ext4: Use a folio in ext4_da_write_begin()
+  ext4: Convert ext4_mpage_readpages() to work on folios
+  ext4: Convert ext4_block_write_begin() to take a folio
+  ext4: Use a folio in ext4_page_mkwrite()
+  ext4: Use a folio iterator in __read_end_io()
+  ext4: Convert mext_page_mkuptodate() to take a folio
+  ext4: Convert pagecache_read() to use a folio
+  ext4: Use a folio in ext4_read_merkle_tree_page
 
-Crashes Repro Title
-81778   Yes   possible deadlock in jbd2_journal_lock_updates
-              https://syzkaller.appspot.com/bug?extid=79e6bbabf3ce17357969
-34932   Yes   possible deadlock in __jbd2_log_wait_for_space
-              https://syzkaller.appspot.com/bug?extid=fa1bbda326271b8808c9
-6768    Yes   WARNING in ext4_dirty_folio
-              https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
-4301    Yes   possible deadlock in dquot_commit (2)
-              https://syzkaller.appspot.com/bug?extid=70ff52e51b7e7714db8a
-846     Yes   INFO: task hung in iterate_supers
-              https://syzkaller.appspot.com/bug?extid=2349f5067b1772c1d8a5
-817     Yes   BUG: soft lockup in smp_call_function
-              https://syzkaller.appspot.com/bug?extid=cce3691658bef1b12ac9
-550     Yes   INFO: task hung in __sync_dirty_buffer
-              https://syzkaller.appspot.com/bug?extid=91dccab7c64e2850a4e5
-388     No    possible deadlock in ext4_map_blocks
-              https://syzkaller.appspot.com/bug?extid=6de5025c31d33047d2a4
-168     Yes   possible deadlock in process_measurement (3)
-              https://syzkaller.appspot.com/bug?extid=ccfcdc8958f74084f16d
-167     No    INFO: task hung in path_openat (7)
-              https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
+ block/bio.c                |   1 +
+ fs/ext4/ext4.h             |   9 +-
+ fs/ext4/inline.c           | 171 ++++++++++----------
+ fs/ext4/inode.c            | 312 +++++++++++++++++++------------------
+ fs/ext4/move_extent.c      |  33 ++--
+ fs/ext4/page-io.c          |  98 ++++++------
+ fs/ext4/readpage.c         |  72 ++++-----
+ fs/ext4/verity.c           |  30 ++--
+ fs/iomap/buffered-io.c     |   2 +-
+ fs/netfs/buffered_read.c   |   3 +-
+ fs/nfs/file.c              |  12 +-
+ include/linux/fscrypt.h    |  21 +++
+ include/linux/page-flags.h |   5 -
+ include/linux/pagemap.h    |   2 +
+ mm/folio-compat.c          |   4 +-
+ 15 files changed, 387 insertions(+), 388 deletions(-)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+2.39.2
+
