@@ -2,151 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F966C7E58
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 14:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B016C8200
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 16:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjCXNAV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Mar 2023 09:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S230015AbjCXP7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Mar 2023 11:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbjCXNAV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 09:00:21 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF51B30E1
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 06:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679662819; x=1711198819;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0gQbiAEwFlaGRGOxkHt7lqh8x5ufN1CTssACc2w11cA=;
-  b=JFnzbyYXeJcQSB8kPryQDwXBp1dHhndmohXiq/EoFy5pkPEz5mH/x9/d
-   /+ZNM3sX26UEyBJqNhhL7MlmHuhghK2daFt+G6t/EJLGAuTcepcV8CxPR
-   2ML7TzK3rDwpc7+S+YlFmpG65SdHhlOeQVrecb1QfCxC6l+GXDNsdduak
-   TPE1VNrClGItyiDVshfQyGu7sSXXdQVAG+nsIufpudxYmuz2PWVB9RpFg
-   oF0YwLzV2jOTvWpdyPD3C4lXSdLVWJbmr8ZPwmCD518lZTOSa6wXnNMfy
-   NXENWP7HLzaoR8wJldisl2H/aq0QqEu//qppOp35WF+oAXhnt03aapV9E
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="426040546"
-X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
-   d="scan'208";a="426040546"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2023 06:00:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="751889599"
-X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
-   d="scan'208";a="751889599"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Mar 2023 06:00:16 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pfh1j-000FKK-2u;
-        Fri, 24 Mar 2023 13:00:15 +0000
-Date:   Fri, 24 Mar 2023 20:59:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chung-Chiang Cheng <cccheng@synology.com>,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com
-Cc:     oe-kbuild-all@lists.linux.dev, shepjeng@gmail.com,
-        kernel@cccheng.net, Chung-Chiang Cheng <cccheng@synology.com>,
-        Robbie Ko <robbieko@synology.com>
-Subject: Re: [PATCH] ext4: defer updating i_disksize until endio
-Message-ID: <202303242033.wiXS9jKn-lkp@intel.com>
-References: <20230324092907.1341457-1-cccheng@synology.com>
+        with ESMTP id S232163AbjCXP7t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 11:59:49 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD2022117
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 08:59:48 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id a21-20020a5d9595000000b0074c9dc19e16so1360028ioo.15
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 08:59:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679673587;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aU4lvqzTsj4oTR3MxWa2VVfTmYihFf5fMUtRbA8JGCY=;
+        b=UpI5DtYUN/45T+6TX4pPMgsL+hvmn8vl5sbZsohTTarJozZSJ+rqLN85jiEVWMJIfN
+         809HLDYm4gtTgkqpGKNX/Xvua98u9QcRnTvQxdVhjtBkIkSHuZ9fBykg/6p1OKCGjdS/
+         Isu5bfYlU1bNlDH8GbYZ8lw1oHCG/gXrZE7vxOPRKc6BqLo1KjxholSv7TrJ3dOAVhHI
+         xw7zDhtoTyAWfbXLFUG2SVYGfk5eMZvb9BTciITVsnx4y0wIKmJcgeKT43Z9bfenMtAF
+         p6++KmX2SQWExby2H8vKNGrjImU+WVdy0c9J6H1pSLGCz+qGufRYUDHiETQ+SlYT/tjV
+         6GSQ==
+X-Gm-Message-State: AAQBX9e5h3sX2HXV58v0ftuvpVXwt7GIUa6zlX6aChMNxXZxKC0XUUv2
+        GhCjfyiOOIsqKbHn/BOfygpwfMSnrA92mlmDsN2F3zfJooI+DQ4=
+X-Google-Smtp-Source: AKy350ZsuAufE6bu9FQLZNsGkHxqsA1ORS7Q0ORagXa3v9v0p6hfTuoxI9RdzgAzIc+RNEsoVbz4fxIfdR+JmrrK8xZEnJ2oQxnL
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230324092907.1341457-1-cccheng@synology.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:1988:b0:325:e254:8ef1 with SMTP id
+ g8-20020a056e02198800b00325e2548ef1mr676754ilf.4.1679673587531; Fri, 24 Mar
+ 2023 08:59:47 -0700 (PDT)
+Date:   Fri, 24 Mar 2023 08:59:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000860b5105f7a77b97@google.com>
+Subject: [syzbot] [ext4] Monthly Report
+From:   syzbot <syzbot+list0d9154e4f559c9f5f96f@syzkaller.appspotmail.com>
+To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Chung-Chiang,
+Hello ext4 maintainers/developers,
 
-Thank you for the patch! Perhaps something to improve:
+This is a 30-day syzbot report for ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-[auto build test WARNING on v6.3-rc3]
-[also build test WARNING on linus/master]
-[cannot apply to tytso-ext4/dev next-20230324]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+During the period, 17 new issues were detected and 4 were fixed.
+In total, 94 issues are still open and 92 have been fixed so far.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chung-Chiang-Cheng/ext4-defer-updating-i_disksize-until-endio/20230324-173716
-patch link:    https://lore.kernel.org/r/20230324092907.1341457-1-cccheng%40synology.com
-patch subject: [PATCH] ext4: defer updating i_disksize until endio
-config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230324/202303242033.wiXS9jKn-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9a02b364d2cffe71a45866edf750b0280c8cb990
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Chung-Chiang-Cheng/ext4-defer-updating-i_disksize-until-endio/20230324-173716
-        git checkout 9a02b364d2cffe71a45866edf750b0280c8cb990
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash fs/
+Some of the still happening issues:
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303242033.wiXS9jKn-lkp@intel.com/
+Crashes Repro Title
+81778   Yes   possible deadlock in jbd2_journal_lock_updates
+              https://syzkaller.appspot.com/bug?extid=79e6bbabf3ce17357969
+34932   Yes   possible deadlock in __jbd2_log_wait_for_space
+              https://syzkaller.appspot.com/bug?extid=fa1bbda326271b8808c9
+6768    Yes   WARNING in ext4_dirty_folio
+              https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
+4301    Yes   possible deadlock in dquot_commit (2)
+              https://syzkaller.appspot.com/bug?extid=70ff52e51b7e7714db8a
+846     Yes   INFO: task hung in iterate_supers
+              https://syzkaller.appspot.com/bug?extid=2349f5067b1772c1d8a5
+817     Yes   BUG: soft lockup in smp_call_function
+              https://syzkaller.appspot.com/bug?extid=cce3691658bef1b12ac9
+550     Yes   INFO: task hung in __sync_dirty_buffer
+              https://syzkaller.appspot.com/bug?extid=91dccab7c64e2850a4e5
+388     No    possible deadlock in ext4_map_blocks
+              https://syzkaller.appspot.com/bug?extid=6de5025c31d33047d2a4
+168     Yes   possible deadlock in process_measurement (3)
+              https://syzkaller.appspot.com/bug?extid=ccfcdc8958f74084f16d
+167     No    INFO: task hung in path_openat (7)
+              https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
 
-All warnings (new ones prefixed by >>):
-
-   fs/ext4/inode.c: In function 'ext4_da_write_end':
->> fs/ext4/inode.c:3115:30: warning: variable 'end' set but not used [-Wunused-but-set-variable]
-    3115 |         unsigned long start, end;
-         |                              ^~~
-
-
-vim +/end +3115 fs/ext4/inode.c
-
-64769240bd07f4 Alex Tomas         2008-07-11  3108  
-64769240bd07f4 Alex Tomas         2008-07-11  3109  static int ext4_da_write_end(struct file *file,
-64769240bd07f4 Alex Tomas         2008-07-11  3110  			     struct address_space *mapping,
-64769240bd07f4 Alex Tomas         2008-07-11  3111  			     loff_t pos, unsigned len, unsigned copied,
-64769240bd07f4 Alex Tomas         2008-07-11  3112  			     struct page *page, void *fsdata)
-64769240bd07f4 Alex Tomas         2008-07-11  3113  {
-64769240bd07f4 Alex Tomas         2008-07-11  3114  	struct inode *inode = mapping->host;
-632eaeab1feb5d Mingming Cao       2008-07-11 @3115  	unsigned long start, end;
-79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3116  	int write_mode = (int)(unsigned long)fsdata;
-79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3117  
-74d553aad7926e Theodore Ts'o      2013-04-03  3118  	if (write_mode == FALL_BACK_TO_NONDELALLOC)
-74d553aad7926e Theodore Ts'o      2013-04-03  3119  		return ext4_write_end(file, mapping, pos,
-79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3120  				      len, copied, page, fsdata);
-632eaeab1feb5d Mingming Cao       2008-07-11  3121  
-9bffad1ed2a003 Theodore Ts'o      2009-06-17  3122  	trace_ext4_da_write_end(inode, pos, len, copied);
-6984aef59814fb Zhang Yi           2021-07-16  3123  
-6984aef59814fb Zhang Yi           2021-07-16  3124  	if (write_mode != CONVERT_INLINE_DATA &&
-6984aef59814fb Zhang Yi           2021-07-16  3125  	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) &&
-6984aef59814fb Zhang Yi           2021-07-16  3126  	    ext4_has_inline_data(inode))
-6984aef59814fb Zhang Yi           2021-07-16  3127  		return ext4_write_inline_data_end(inode, pos, len, copied, page);
-6984aef59814fb Zhang Yi           2021-07-16  3128  
-09cbfeaf1a5a67 Kirill A. Shutemov 2016-04-01  3129  	start = pos & (PAGE_SIZE - 1);
-632eaeab1feb5d Mingming Cao       2008-07-11  3130  	end = start + copied - 1;
-64769240bd07f4 Alex Tomas         2008-07-11  3131  
-64769240bd07f4 Alex Tomas         2008-07-11  3132  	/*
-4df031ff5876d9 Zhang Yi           2021-07-16  3133  	 * Since we are holding inode lock, we are sure i_disksize <=
-4df031ff5876d9 Zhang Yi           2021-07-16  3134  	 * i_size. We also know that if i_disksize < i_size, there are
-9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3135  	 * delalloc writes pending in the range upto i_size. There's no
-9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3136  	 * need to touch i_disksize since the endio of writeback will
-9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3137  	 * push i_disksize upto i_size eventually.
-4df031ff5876d9 Zhang Yi           2021-07-16  3138  	 *
-4df031ff5876d9 Zhang Yi           2021-07-16  3139  	 * Note that we defer inode dirtying to generic_write_end() /
-4df031ff5876d9 Zhang Yi           2021-07-16  3140  	 * ext4_da_write_inline_data_end().
-64769240bd07f4 Alex Tomas         2008-07-11  3141  	 */
-9c3569b50f12e4 Tao Ma             2012-12-10  3142  
-cc883236b79297 Zhang Yi           2021-07-16  3143  	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
-64769240bd07f4 Alex Tomas         2008-07-11  3144  }
-64769240bd07f4 Alex Tomas         2008-07-11  3145  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
