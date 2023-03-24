@@ -2,288 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E4C6C7E56
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 13:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F966C7E58
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 14:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjCXM6p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Mar 2023 08:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S229870AbjCXNAV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Mar 2023 09:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjCXM6o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 08:58:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D42272D
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 05:58:42 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PjhzT444FzKtRR;
-        Fri, 24 Mar 2023 20:56:21 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 24 Mar 2023 20:58:40 +0800
-Subject: Re: [PATCH] ext4: defer updating i_disksize until endio
+        with ESMTP id S231153AbjCXNAV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 09:00:21 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF51B30E1
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Mar 2023 06:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679662819; x=1711198819;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0gQbiAEwFlaGRGOxkHt7lqh8x5ufN1CTssACc2w11cA=;
+  b=JFnzbyYXeJcQSB8kPryQDwXBp1dHhndmohXiq/EoFy5pkPEz5mH/x9/d
+   /+ZNM3sX26UEyBJqNhhL7MlmHuhghK2daFt+G6t/EJLGAuTcepcV8CxPR
+   2ML7TzK3rDwpc7+S+YlFmpG65SdHhlOeQVrecb1QfCxC6l+GXDNsdduak
+   TPE1VNrClGItyiDVshfQyGu7sSXXdQVAG+nsIufpudxYmuz2PWVB9RpFg
+   oF0YwLzV2jOTvWpdyPD3C4lXSdLVWJbmr8ZPwmCD518lZTOSa6wXnNMfy
+   NXENWP7HLzaoR8wJldisl2H/aq0QqEu//qppOp35WF+oAXhnt03aapV9E
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="426040546"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="426040546"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2023 06:00:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="751889599"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="751889599"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Mar 2023 06:00:16 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pfh1j-000FKK-2u;
+        Fri, 24 Mar 2023 13:00:15 +0000
+Date:   Fri, 24 Mar 2023 20:59:44 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Chung-Chiang Cheng <cccheng@synology.com>,
-        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <jack@suse.cz>
-CC:     <shepjeng@gmail.com>, <kernel@cccheng.net>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com
+Cc:     oe-kbuild-all@lists.linux.dev, shepjeng@gmail.com,
+        kernel@cccheng.net, Chung-Chiang Cheng <cccheng@synology.com>,
         Robbie Ko <robbieko@synology.com>
+Subject: Re: [PATCH] ext4: defer updating i_disksize until endio
+Message-ID: <202303242033.wiXS9jKn-lkp@intel.com>
 References: <20230324092907.1341457-1-cccheng@synology.com>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <220871a0-50fd-9017-9ffa-2464a2542498@huawei.com>
-Date:   Fri, 24 Mar 2023 20:58:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20230324092907.1341457-1-cccheng@synology.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.34]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+Hi Chung-Chiang,
 
-On 2023/3/24 17:29, Chung-Chiang Cheng wrote:
-> During a buffer write, the on-disk inode size (i_disksize) gets updated
-> at ext4_da_write_end() or mpage_map_and_submit_extent(). This update is
-> then committed into the journal. However, at that point, the writeback
-> process is not yet completed. If an interruption occurs, the content of
-> the file may not be in a consistent state because the i_disksize is
-> replayed by the journal, but the corresponding content may not have been
-> actually submitted to the disk.
-> 
->     $ mount -o commit=1 /dev/vdc /mnt
->     $ echo -n foo >> /mnt/test; sync
->     $ echo -n bar >> /mnt/test; sleep 3; echo b > /proc/sysrq-trigger
-> 
->     $ xxd /mnt/test
->     00000000: 666f 6f00 0000                           foo...
-> 
-> After the above steps have been executed, there are padding zeros at the
-> end of the file, which are obviously not part of the actual content.
-> To fix this issue, we can defer updating i_disksize until the endio. The
-> original ext4_end_io_rsv_work() was to convert unwritten extents to
-> extents, but it now also updates the disk size.
-> 
+Thank you for the patch! Perhaps something to improve:
 
-Thanks for the patch, but I'm sorry this patch doesn't looks right. Firstly,
-the ext4 filesystem just do best efforts and don't guarantee data integrity
-after system crash or power-off, so the best way is doing fsync() to reduce
-the window of lose data. And then, we cannot simply postpone updating
-i_disksize until IO end procedure because the related block allocating and
-inode's extents changes are not atomic(they will not belong to one journal
-transaction), so it may probability lead to file system inconsistency (please
-run xfstests with the patch). Finally, we also cannot start a new handle in
-the IO end procedure because it may lead to potential deadlock on page
-writeback (please looks reserve handle).
+[auto build test WARNING on v6.3-rc3]
+[also build test WARNING on linus/master]
+[cannot apply to tytso-ext4/dev next-20230324]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Yi.
+url:    https://github.com/intel-lab-lkp/linux/commits/Chung-Chiang-Cheng/ext4-defer-updating-i_disksize-until-endio/20230324-173716
+patch link:    https://lore.kernel.org/r/20230324092907.1341457-1-cccheng%40synology.com
+patch subject: [PATCH] ext4: defer updating i_disksize until endio
+config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230324/202303242033.wiXS9jKn-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9a02b364d2cffe71a45866edf750b0280c8cb990
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Chung-Chiang-Cheng/ext4-defer-updating-i_disksize-until-endio/20230324-173716
+        git checkout 9a02b364d2cffe71a45866edf750b0280c8cb990
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash fs/
 
-> Reviewed-by: Robbie Ko <robbieko@synology.com>
-> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
-> ---
->  fs/ext4/inode.c   | 41 ++++--------------------------
->  fs/ext4/page-io.c | 64 +++++++++++++++++++++++++++++++++++++++--------
->  2 files changed, 58 insertions(+), 47 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 96517785a9f8..c3537cd603dc 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2515,6 +2515,8 @@ static int mpage_map_and_submit_extent(handle_t *handle,
->  			goto update_disksize;
->  	} while (map->m_len);
->  
-> +	return err;
-> +
->  update_disksize:
->  	/*
->  	 * Update on-disk size after IO is submitted.  Races with
-> @@ -3105,36 +3107,12 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
->  	return ret;
->  }
->  
-> -/*
-> - * Check if we should update i_disksize
-> - * when write to the end of file but not require block allocation
-> - */
-> -static int ext4_da_should_update_i_disksize(struct page *page,
-> -					    unsigned long offset)
-> -{
-> -	struct buffer_head *bh;
-> -	struct inode *inode = page->mapping->host;
-> -	unsigned int idx;
-> -	int i;
-> -
-> -	bh = page_buffers(page);
-> -	idx = offset >> inode->i_blkbits;
-> -
-> -	for (i = 0; i < idx; i++)
-> -		bh = bh->b_this_page;
-> -
-> -	if (!buffer_mapped(bh) || (buffer_delay(bh)) || buffer_unwritten(bh))
-> -		return 0;
-> -	return 1;
-> -}
-> -
->  static int ext4_da_write_end(struct file *file,
->  			     struct address_space *mapping,
->  			     loff_t pos, unsigned len, unsigned copied,
->  			     struct page *page, void *fsdata)
->  {
->  	struct inode *inode = mapping->host;
-> -	loff_t new_i_size;
->  	unsigned long start, end;
->  	int write_mode = (int)(unsigned long)fsdata;
->  
-> @@ -3155,22 +3133,13 @@ static int ext4_da_write_end(struct file *file,
->  	/*
->  	 * Since we are holding inode lock, we are sure i_disksize <=
->  	 * i_size. We also know that if i_disksize < i_size, there are
-> -	 * delalloc writes pending in the range upto i_size. If the end of
-> -	 * the current write is <= i_size, there's no need to touch
-> -	 * i_disksize since writeback will push i_disksize upto i_size
-> -	 * eventually. If the end of the current write is > i_size and
-> -	 * inside an allocated block (ext4_da_should_update_i_disksize()
-> -	 * check), we need to update i_disksize here as neither
-> -	 * ext4_writepage() nor certain ext4_writepages() paths not
-> -	 * allocating blocks update i_disksize.
-> +	 * delalloc writes pending in the range upto i_size. There's no
-> +	 * need to touch i_disksize since the endio of writeback will
-> +	 * push i_disksize upto i_size eventually.
->  	 *
->  	 * Note that we defer inode dirtying to generic_write_end() /
->  	 * ext4_da_write_inline_data_end().
->  	 */
-> -	new_i_size = pos + copied;
-> -	if (copied && new_i_size > inode->i_size &&
-> -	    ext4_da_should_update_i_disksize(page, end))
-> -		ext4_update_i_disksize(inode, new_i_size);
->  
->  	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
->  }
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index 1e4db96a04e6..f893d26c4b88 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -182,6 +182,10 @@ static int ext4_end_io_end(ext4_io_end_t *io_end)
->  		   "list->prev 0x%p\n",
->  		   io_end, inode->i_ino, io_end->list.next, io_end->list.prev);
->  
-> +	/* Only reserved conversions from writeback should enter here */
-> +	WARN_ON(!(io_end->flag & EXT4_IO_END_UNWRITTEN));
-> +	WARN_ON(!io_end->handle && EXT4_SB(inode->i_sb)->s_journal);
-> +
->  	io_end->handle = NULL;	/* Following call will use up the handle */
->  	ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
->  	if (ret < 0 && !ext4_forced_shutdown(EXT4_SB(inode->i_sb))) {
-> @@ -226,9 +230,6 @@ static void ext4_add_complete_io(ext4_io_end_t *io_end)
->  	struct workqueue_struct *wq;
->  	unsigned long flags;
->  
-> -	/* Only reserved conversions from writeback should enter here */
-> -	WARN_ON(!(io_end->flag & EXT4_IO_END_UNWRITTEN));
-> -	WARN_ON(!io_end->handle && sbi->s_journal);
->  	spin_lock_irqsave(&ei->i_completed_io_lock, flags);
->  	wq = sbi->rsv_conversion_wq;
->  	if (list_empty(&ei->i_rsv_conversion_list))
-> @@ -237,6 +238,43 @@ static void ext4_add_complete_io(ext4_io_end_t *io_end)
->  	spin_unlock_irqrestore(&ei->i_completed_io_lock, flags);
->  }
->  
-> +static int ext4_endio_update_disksize(ext4_io_end_t *io_end)
-> +{
-> +	int ret = 0;
-> +	loff_t i_size, disksize = 0;
-> +	handle_t *handle;
-> +	struct ext4_io_end_vec *io_end_vec;
-> +	struct inode *inode = io_end->inode;
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +
-> +	list_for_each_entry(io_end_vec, &io_end->list_vec, list) {
-> +		if (disksize < io_end_vec->offset + io_end_vec->size)
-> +			disksize = io_end_vec->offset + io_end_vec->size;
-> +	}
-> +
-> +	if (disksize > ei->i_disksize) {
-> +		down_write(&ei->i_data_sem);
-> +		i_size = inode->i_size;
-> +		if (disksize > i_size)
-> +			disksize = i_size;
-> +		if (disksize > ei->i_disksize)
-> +			WRITE_ONCE(ei->i_disksize, i_size);
-> +		up_write(&ei->i_data_sem);
-> +
-> +		handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
-> +		if (IS_ERR(handle))
-> +			return PTR_ERR(handle);
-> +
-> +		ret = ext4_mark_inode_dirty(handle, inode);
-> +		if (ret)
-> +			ext4_error_err(inode->i_sb, ret, "Failed to mark inode %lu dirty",
-> +				       inode->i_ino);
-> +		ext4_journal_stop(handle);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int ext4_do_flush_completed_IO(struct inode *inode,
->  				      struct list_head *head)
->  {
-> @@ -253,10 +291,16 @@ static int ext4_do_flush_completed_IO(struct inode *inode,
->  
->  	while (!list_empty(&unwritten)) {
->  		io_end = list_entry(unwritten.next, ext4_io_end_t, list);
-> -		BUG_ON(!(io_end->flag & EXT4_IO_END_UNWRITTEN));
->  		list_del_init(&io_end->list);
->  
-> -		err = ext4_end_io_end(io_end);
-> +		err = ext4_endio_update_disksize(io_end);
-> +		if (unlikely(!ret && err))
-> +			ret = err;
-> +
-> +		if (io_end->flag & EXT4_IO_END_UNWRITTEN)
-> +			err = ext4_end_io_end(io_end);
-> +		else
-> +			ext4_release_io_end(io_end);
->  		if (unlikely(!ret && err))
->  			ret = err;
->  	}
-> @@ -264,7 +308,7 @@ static int ext4_do_flush_completed_IO(struct inode *inode,
->  }
->  
->  /*
-> - * work on completed IO, to convert unwritten extents to extents
-> + * work on completed IO, to convert unwritten extents to extents and update disksize
->   */
->  void ext4_end_io_rsv_work(struct work_struct *work)
->  {
-> @@ -289,12 +333,10 @@ ext4_io_end_t *ext4_init_io_end(struct inode *inode, gfp_t flags)
->  void ext4_put_io_end_defer(ext4_io_end_t *io_end)
->  {
->  	if (refcount_dec_and_test(&io_end->count)) {
-> -		if (!(io_end->flag & EXT4_IO_END_UNWRITTEN) ||
-> -				list_empty(&io_end->list_vec)) {
-> +		if (list_empty(&io_end->list_vec))
->  			ext4_release_io_end(io_end);
-> -			return;
-> -		}
-> -		ext4_add_complete_io(io_end);
-> +		else
-> +			ext4_add_complete_io(io_end);
->  	}
->  }
->  
-> 
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303242033.wiXS9jKn-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   fs/ext4/inode.c: In function 'ext4_da_write_end':
+>> fs/ext4/inode.c:3115:30: warning: variable 'end' set but not used [-Wunused-but-set-variable]
+    3115 |         unsigned long start, end;
+         |                              ^~~
+
+
+vim +/end +3115 fs/ext4/inode.c
+
+64769240bd07f4 Alex Tomas         2008-07-11  3108  
+64769240bd07f4 Alex Tomas         2008-07-11  3109  static int ext4_da_write_end(struct file *file,
+64769240bd07f4 Alex Tomas         2008-07-11  3110  			     struct address_space *mapping,
+64769240bd07f4 Alex Tomas         2008-07-11  3111  			     loff_t pos, unsigned len, unsigned copied,
+64769240bd07f4 Alex Tomas         2008-07-11  3112  			     struct page *page, void *fsdata)
+64769240bd07f4 Alex Tomas         2008-07-11  3113  {
+64769240bd07f4 Alex Tomas         2008-07-11  3114  	struct inode *inode = mapping->host;
+632eaeab1feb5d Mingming Cao       2008-07-11 @3115  	unsigned long start, end;
+79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3116  	int write_mode = (int)(unsigned long)fsdata;
+79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3117  
+74d553aad7926e Theodore Ts'o      2013-04-03  3118  	if (write_mode == FALL_BACK_TO_NONDELALLOC)
+74d553aad7926e Theodore Ts'o      2013-04-03  3119  		return ext4_write_end(file, mapping, pos,
+79f0be8d2e6ebd Aneesh Kumar K.V   2008-10-08  3120  				      len, copied, page, fsdata);
+632eaeab1feb5d Mingming Cao       2008-07-11  3121  
+9bffad1ed2a003 Theodore Ts'o      2009-06-17  3122  	trace_ext4_da_write_end(inode, pos, len, copied);
+6984aef59814fb Zhang Yi           2021-07-16  3123  
+6984aef59814fb Zhang Yi           2021-07-16  3124  	if (write_mode != CONVERT_INLINE_DATA &&
+6984aef59814fb Zhang Yi           2021-07-16  3125  	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) &&
+6984aef59814fb Zhang Yi           2021-07-16  3126  	    ext4_has_inline_data(inode))
+6984aef59814fb Zhang Yi           2021-07-16  3127  		return ext4_write_inline_data_end(inode, pos, len, copied, page);
+6984aef59814fb Zhang Yi           2021-07-16  3128  
+09cbfeaf1a5a67 Kirill A. Shutemov 2016-04-01  3129  	start = pos & (PAGE_SIZE - 1);
+632eaeab1feb5d Mingming Cao       2008-07-11  3130  	end = start + copied - 1;
+64769240bd07f4 Alex Tomas         2008-07-11  3131  
+64769240bd07f4 Alex Tomas         2008-07-11  3132  	/*
+4df031ff5876d9 Zhang Yi           2021-07-16  3133  	 * Since we are holding inode lock, we are sure i_disksize <=
+4df031ff5876d9 Zhang Yi           2021-07-16  3134  	 * i_size. We also know that if i_disksize < i_size, there are
+9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3135  	 * delalloc writes pending in the range upto i_size. There's no
+9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3136  	 * need to touch i_disksize since the endio of writeback will
+9a02b364d2cffe Chung-Chiang Cheng 2023-03-24  3137  	 * push i_disksize upto i_size eventually.
+4df031ff5876d9 Zhang Yi           2021-07-16  3138  	 *
+4df031ff5876d9 Zhang Yi           2021-07-16  3139  	 * Note that we defer inode dirtying to generic_write_end() /
+4df031ff5876d9 Zhang Yi           2021-07-16  3140  	 * ext4_da_write_inline_data_end().
+64769240bd07f4 Alex Tomas         2008-07-11  3141  	 */
+9c3569b50f12e4 Tao Ma             2012-12-10  3142  
+cc883236b79297 Zhang Yi           2021-07-16  3143  	return generic_write_end(file, mapping, pos, len, copied, page, fsdata);
+64769240bd07f4 Alex Tomas         2008-07-11  3144  }
+64769240bd07f4 Alex Tomas         2008-07-11  3145  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
