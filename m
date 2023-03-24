@@ -2,93 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2916C846A
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 19:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B626C8854
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Mar 2023 23:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjCXSEB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Mar 2023 14:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
+        id S231569AbjCXW35 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Mar 2023 18:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjCXSC1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 14:02:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6624F1CF7E;
-        Fri, 24 Mar 2023 11:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=7JmN+9SsTrOVuR3U9s6cPTX78SVj5kDXNdVOIgSxghc=; b=CSUt6XsXbzHmp6n7xQY5Ige94+
-        aAShX/2DOcob2VEvxd4EST95lqZkJCAGvs/k1LrtN8X3tKTeITaqiBZHtTWXQLl2n60leIsiD3ljh
-        hpdw9vhi1GqFFcvD0qtfQvr11hmj6LSICYfhKhecAF/5e1o6BBU8rzkZv6uZHdYmb0TcTowW9mjkJ
-        JriP4kCaoPKL4PiITBYc4HSjVCFlBwuxU6aj27dK1DgYHmxnjeH6G02EyJMM+qybqL6JrfT4Hpr+I
-        oXRutivS9HP10H+OCTB1YWC6f7s9WK3wctymBsWde3Kom5XmsnH/MOrQ8gnzp/UquTIgv5/6Dw6Yo
-        tab3P41Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pfljO-0057cD-Qm; Fri, 24 Mar 2023 18:01:38 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        with ESMTP id S231572AbjCXW34 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Mar 2023 18:29:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70DC9030;
+        Fri, 24 Mar 2023 15:29:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5F2F8B8263C;
+        Fri, 24 Mar 2023 22:29:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6997C433EF;
+        Fri, 24 Mar 2023 22:29:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679696993;
+        bh=AAbNs8yXqUH1VLSX1EbrMvKD4w9xN6cND5bc44EXnNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oub1ERdZpGa3VXfqNJirfBHoExS41xguPkv2XJ0Yn6CIYq2Uj0hWsuDUfxH4zLOyl
+         TuPfAJRDy1U+yYcDKhvEQurhpP0MALiu8x/6PLJJ5q6Gu3SQqvQOe7kd7vtZ1SuCoV
+         eT0rp5WEz7VHugRV8OFFXrt7yI7sIUsaJS01ZuFOlMcb6vA6qBdYXew+TfVSfgXDzf
+         vR0jrgsgvKNNI2CCXFKeyTMw4DCBAzkeZU1v8DhD28tlABtLeuEqCzocGXI4kLHMWj
+         NwBk3heZKxnNTrRzR7JPyVo2Hop0Hf5sZOjKjbyjdcCyYefBcTSFE2QL5YMa+Ctdef
+         H7Q8Td4itDxOw==
+Date:   Fri, 24 Mar 2023 15:29:51 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 29/29] ext4: Use a folio in ext4_read_merkle_tree_page
-Date:   Fri, 24 Mar 2023 18:01:29 +0000
-Message-Id: <20230324180129.1220691-30-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230324180129.1220691-1-willy@infradead.org>
+Subject: Re: [PATCH v2 23/29] ext4: Convert ext4_mpage_readpages() to work on
+ folios
+Message-ID: <20230324222951.GA5083@sol.localdomain>
 References: <20230324180129.1220691-1-willy@infradead.org>
+ <20230324180129.1220691-24-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230324180129.1220691-24-willy@infradead.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This is an implementation of fsverity_operations read_merkle_tree_page,
-so it must still return the precise page asked for, but we can use the
-folio API to reduce the number of conversions between folios & pages.
+On Fri, Mar 24, 2023 at 06:01:23PM +0000, Matthew Wilcox (Oracle) wrote:
+>  		if (first_hole != blocks_per_page) {
+> -			zero_user_segment(page, first_hole << blkbits,
+> -					  PAGE_SIZE);
+> +			folio_zero_segment(folio, first_hole << blkbits,
+> +					  folio_size(folio));
+>  			if (first_hole == 0) {
+> -				if (ext4_need_verity(inode, page->index) &&
+> -				    !fsverity_verify_page(page))
+> +				if (ext4_need_verity(inode, folio->index) &&
+> +				    !fsverity_verify_page(&folio->page))
+>  					goto set_error_page;
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ext4/verity.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+This can use fsverity_verify_folio().
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index afe847c967a4..3b01247066dd 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -361,21 +361,21 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
- 					       pgoff_t index,
- 					       unsigned long num_ra_pages)
- {
--	struct page *page;
-+	struct folio *folio;
- 
- 	index += ext4_verity_metadata_pos(inode) >> PAGE_SHIFT;
- 
--	page = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
--	if (!page || !PageUptodate(page)) {
-+	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
-+	if (!folio || !folio_test_uptodate(folio)) {
- 		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
- 
--		if (page)
--			put_page(page);
-+		if (folio)
-+			folio_put(folio);
- 		else if (num_ra_pages > 1)
- 			page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
--		page = read_mapping_page(inode->i_mapping, index, NULL);
-+		folio = read_mapping_folio(inode->i_mapping, index, NULL);
- 	}
--	return page;
-+	return folio_file_page(folio, index);
- }
- 
- static int ext4_write_merkle_tree_block(struct inode *inode, const void *buf,
--- 
-2.39.2
-
+- Eric
