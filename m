@@ -2,157 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 429436CA234
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Mar 2023 13:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C426CA23E
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Mar 2023 13:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjC0LMB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Mar 2023 07:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
+        id S229967AbjC0LRx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Mar 2023 07:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjC0LMA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Mar 2023 07:12:00 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A1010D0;
-        Mon, 27 Mar 2023 04:11:58 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PlVRv3jqJz17KJF;
-        Mon, 27 Mar 2023 19:08:43 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+        with ESMTP id S229577AbjC0LRw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Mar 2023 07:17:52 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555AF423A
+        for <linux-ext4@vger.kernel.org>; Mon, 27 Mar 2023 04:17:51 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PlVbg3lb0zKt1Y;
+        Mon, 27 Mar 2023 19:15:27 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 27 Mar 2023 19:11:55 +0800
-Message-ID: <7144edc4-b771-7c92-5ec3-ac78a123d37c@huawei.com>
-Date:   Mon, 27 Mar 2023 19:11:55 +0800
+ 15.1.2507.21; Mon, 27 Mar 2023 19:17:48 +0800
+Subject: Re: [PATCH] ext4: defer updating i_disksize until endio
+To:     Chung-Chiang Cheng <shepjeng@gmail.com>, Jan Kara <jack@suse.cz>
+CC:     Chung-Chiang Cheng <cccheng@synology.com>,
+        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <kernel@cccheng.net>,
+        Robbie Ko <robbieko@synology.com>
+References: <20230324092907.1341457-1-cccheng@synology.com>
+ <20230327092914.mzizhh52izbvjhhv@quack3>
+ <CAHuHWt=LaNBwNy-1RY2-OZ4zGKEgTBfZZGWoQJSjL3ADbRRCoQ@mail.gmail.com>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <08c67287-53d8-58ce-e4bb-b1656bc6013e@huawei.com>
+Date:   Mon, 27 Mar 2023 19:17:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 3/3] ext4: fix race between writepages and remount
+In-Reply-To: <CAHuHWt=LaNBwNy-1RY2-OZ4zGKEgTBfZZGWoQJSjL3ADbRRCoQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        <stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20230316112832.2711783-1-libaokun1@huawei.com>
- <20230316112832.2711783-4-libaokun1@huawei.com>
- <20230323114407.xenntblzv4ewfqkk@quack3>
- <269d37fd-d3f2-d059-b71f-acaea2e7ce4b@huawei.com>
- <20230327093553.up7dhoyqe4ecpn7y@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230327093553.up7dhoyqe4ecpn7y@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/3/27 17:35, Jan Kara wrote:
-> On Thu 23-03-23 22:18:53, Baokun Li wrote:
->> On 2023/3/23 19:44, Jan Kara wrote:
->>>> ---
->>>>    fs/ext4/ext4.h      |  3 ++-
->>>>    fs/ext4/ext4_jbd2.h |  9 +++++----
->>>>    fs/ext4/super.c     | 14 ++++++++++++++
->>>>    3 files changed, 21 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>>> index 08b29c289da4..f60967fa648f 100644
->>>> --- a/fs/ext4/ext4.h
->>>> +++ b/fs/ext4/ext4.h
->>>> @@ -1703,7 +1703,8 @@ struct ext4_sb_info {
->>>>    	/*
->>>>    	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
->>>> -	 * or EXTENTS flag.
->>>> +	 * or EXTENTS flag or between changing SHOULD_DIOREAD_NOLOCK flag on
->>>> +	 * remount and writepages ops.
->>>>    	 */
->>>>    	struct percpu_rw_semaphore s_writepages_rwsem;
->>>>    	struct dax_device *s_daxdev;
->>>> diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
->>>> index 0c77697d5e90..d82bfcdd56e5 100644
->>>> --- a/fs/ext4/ext4_jbd2.h
->>>> +++ b/fs/ext4/ext4_jbd2.h
->>>> @@ -488,6 +488,9 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
->>>>    	return blocks + 2*(EXT4_SB(inode->i_sb)->s_cluster_ratio - 1);
->>>>    }
->>>> +/* delalloc is a temporary fix to prevent generic/422 test failures*/
->>>> +#define EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK (EXT4_MOUNT_DIOREAD_NOLOCK | \
->>>> +					  EXT4_MOUNT_DELALLOC)
->>>>    /*
->>>>     * This function controls whether or not we should try to go down the
->>>>     * dioread_nolock code paths, which makes it safe to avoid taking
->>>> @@ -499,7 +502,8 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
->>>>     */
->>>>    static inline int ext4_should_dioread_nolock(struct inode *inode)
->>>>    {
->>>> -	if (!test_opt(inode->i_sb, DIOREAD_NOLOCK))
->>>> +	if (test_opt(inode->i_sb, SHOULD_DIOREAD_NOLOCK) !=
->>>> +	    EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK)
->>>>    		return 0;
->>>>    	if (!S_ISREG(inode->i_mode))
->>>>    		return 0;
->>>> @@ -507,9 +511,6 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
->>>>    		return 0;
->>>>    	if (ext4_should_journal_data(inode))
->>>>    		return 0;
->>>> -	/* temporary fix to prevent generic/422 test failures */
->>>> -	if (!test_opt(inode->i_sb, DELALLOC))
->>>> -		return 0;
->>>>    	return 1;
->>>>    }
->>> Is there a need for this SHOULD_DIOREAD_NOLOCK? When called from writeback
->>> we will be protected by s_writepages_rwsem anyway. When called from other
->>> places, we either decide to do dioread_nolock or don't but the situation
->>> can change at any instant so I don't see how unifying this check would
->>> help. And the new SHOULD_DIOREAD_NOLOCK somewhat obfuscates what's going
->>> on.
->> We're thinking that the mount-related flags in
->> ext4_should_dioread_nolock() might be modified, such as DELALLOC being
->> removed because generic/422 test failures were fixed in some other way,
->> resulting in some unnecessary locking during remount, or for whatever
->> reason a mount-related flag was added to ext4_should_dioread_nolock(),
->> and we didn't make a synchronization change in __ext4_remount() that
->> would cause the problem to recur.  So we added this flag to this function
->> (instead of in ext4.h), so that when we change the mount option in
->> ext4_should_dioread_nolock(), we directly change this flag, and we don't
->> have to consider making synchronization changes in __ext4_remount().
+On 2023/3/27 18:28, Chung-Chiang Cheng wrote:
+> On Mon, Mar 27, 2023 at 5:29 PM Jan Kara <jack@suse.cz> wrote:
 >>
->> We have checked where this function is called and there are two types of
->> calls to this function:
->> 1. One category is ext4_do_writepages() and mpage_map_one_extent(), which
->> are protected by s_writepages_rwsem, the location of the problem;
->> 2. The other type is in ext4_page_mkwrite(),
->> ext4_convert_inline_data_to_extent(), ext4_write_begin() to determine
->> whether to get the block using ext4_get_block_unwritten() or
->> ext4_get_block().
+>> As Zhang Yi already noted in his review, this is expected at least with
+>> data=writeback mount option. With data=ordered this should not happen
+>> though as the commit of the transaction with i_disksize update will wait
+>> for page writeback to complete (this is exactly the reason why data=ordered
+>> exists after all). Are you able to observe this problem with data=ordered
+>> mount option?
 >>
->>      1) If we just started fetching written blocks, it looks like there is no
->> problem;
->>      2) If we start getting unwritten blocks, when DIOREAD_NOLOCK is cleared
->> by remount,
->>          we will convert the blocks to written in ext4_map_blocks(). The
->> data=ordered mode ensures that we don't see stale data.
-> Yes. So do you agree that EXT4_MOUNT_SHOULD_DIOREAD_NOLOCK is not really
-> needed?
->
-> 								Honza
-Yes, I totally agree!
-If we unconditionally grabbed s_writepages_rwsem when remounting,
-there would be no mount option synchronization problem, and the flag
-would be completely unnecessary.
+>>                                                                 Honza
+> 
+> It's a pity that this issue also occurs with data=ordered due to delayed
+> allocation being enabled by default. If delayed allocation were disabled,
+> it would not be as easy to reproduce.
+> 
+> This is because if data is written to the end of a file and the block is
+> allocated, the new i_disksize will be immediately committed to the journal
+> at ext4_da_write_end(), but the writeback procedure is not yet triggered.
+> By default, ext4 commits the journal every 5 seconds, but a dirty page may
+> not be written back until 30 seconds later. This is not a short time window,
+> and any improper shutdown during this time may lead to the issue :(
+> 
 
-I will send a patch V2 with the changes suggested by you.
--- 
-With Best Regards,
-Baokun Li
-.
+It seems that the case you've mentioned is intra-block append write (no?),
+current data=ordered mount option doesn't work in this case because
+ext4_map_blocks() doesn't attach inode to the t_inode_list of the running
+transaction. If delayed allocation were disabled, the lose data window is still
+there, because ext4_write_end()->ext4_update_inode_size() is also updating
+i_disksize before writing data back. This is at least guarantee no store data.
+We had discussed this in [1].
+
+[1]. https://lore.kernel.org/linux-ext4/1554370192-113254-1-git-send-email-yi.zhang@huawei.com/
+
+Thanks,
+Yi.
