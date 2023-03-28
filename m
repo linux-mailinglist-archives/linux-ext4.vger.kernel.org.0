@@ -2,239 +2,213 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634356CB8C3
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Mar 2023 09:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FF86CBA0E
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Mar 2023 11:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbjC1HyI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Mar 2023 03:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        id S230368AbjC1JGC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Mar 2023 05:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjC1HyG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Mar 2023 03:54:06 -0400
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50659420A
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Mar 2023 00:53:48 -0700 (PDT)
-Received: by mail-il1-f206.google.com with SMTP id a17-20020a921a11000000b00325f9878441so4571320ila.7
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Mar 2023 00:53:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679990027;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1SlVrSmVb4xLt28lrc5slQniv6oNhQ+2/mxD6CxBMnM=;
-        b=Ir2E4fiA0eo1Bm2x09pmzJ/1nHigEu3+0M8ahLzVEXkOwuK34+4ikiTBVC0en+QlZr
-         1tztIjbus0fPRhSb+hCiHyfKHsWbLGHHozvm5HhaU16u7Z5Um18SGzD930Xu1KaLomBZ
-         SzIFLXtpgvQ5HXk+2MwRpCpnUy3y0XiE3QTGbXysXuaWY92egJGnukO4jyc8iAD88MLd
-         qJ7OqGXQWOSu1CF7xveXMOsYLJL/sqB2p3fSzZQXt5Lnvl90KXAaERZOGP5LQPojE0+d
-         QUdNfom8yt4f7D50sRx9g0stDUeQsABp15f4THK444YcSzBkF8nHhXnHHDyJ2UbEj/DM
-         3FVg==
-X-Gm-Message-State: AO0yUKUfxR1tTDvUPfUvxf70Q0wBfHaFB3IL5JJBNr9X033F9Eh/eFxZ
-        7RPq2IiG3AHW4vmxweA9n5vj4IaO4xiV0YYK0jk2FnbjhbFf
-X-Google-Smtp-Source: AK7set9w0J7tYYWkCa59KAloy9lJH8PRgS4e+UfBX0Ci5HFNAeOkbDqka+QmM0mYaMf4xOzO3vsSo/lX0wTW79iAyooUuv0bhkt2
+        with ESMTP id S230433AbjC1JF7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Mar 2023 05:05:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49E75FFD;
+        Tue, 28 Mar 2023 02:05:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7D062219C2;
+        Tue, 28 Mar 2023 09:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679994335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W19ZNXTUmBCwNQocRmCqq2y9UHESHO1aWNxN/I1GB78=;
+        b=MlNlKlZYLM6ewuuC9uBNJIkHk1M+5gQngFAbugPMPRTm9QCRWtc4OVM0SMHAK7GNwu0a6C
+        zkpp+RPGpiC3ITaAkd3F3SdgdTVVGPMJWrLN0FYyAiWy1ZszjOuyLHoTekqc/B+Gjvlucd
+        Oqg+8+LhV9fO6Y6WtQqh3YmG2bsvnBc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679994335;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W19ZNXTUmBCwNQocRmCqq2y9UHESHO1aWNxN/I1GB78=;
+        b=AAEjZZRXNTN9hk42r0YqoUFTEyGQtUPPHAT3DCF8uz4X12KivRjzE19ULV0g2/BYkvIlf8
+        KglenEAJcPJWsUDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 688311390B;
+        Tue, 28 Mar 2023 09:05:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uNR2Gd+tImT7OgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 28 Mar 2023 09:05:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D556BA071C; Tue, 28 Mar 2023 11:05:34 +0200 (CEST)
+Date:   Tue, 28 Mar 2023 11:05:34 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: fix race between writepages and remount
+Message-ID: <20230328090534.662l7yxj2e425j7w@quack3>
+References: <20230328034853.2900007-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b0c1:0:b0:406:3588:9456 with SMTP id
- w1-20020a02b0c1000000b0040635889456mr5541455jah.0.1679990027693; Tue, 28 Mar
- 2023 00:53:47 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 00:53:47 -0700
-In-Reply-To: <000000000000b62cdb05f7dfab8b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d3b32005f7f12805@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in ext4_convert_inline_data_nolock
-From:   syzbot <syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230328034853.2900007-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue 28-03-23 11:48:53, Baokun Li wrote:
+> We got a WARNING in ext4_add_complete_io:
+> ==================================================================
+>  WARNING: at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0x182/0x250
+>  CPU: 10 PID: 77 Comm: ksoftirqd/10 Tainted: 6.3.0-rc2 #85
+>  RIP: 0010:ext4_put_io_end_defer+0x182/0x250 [ext4]
+>  [...]
+>  Call Trace:
+>   <TASK>
+>   ext4_end_bio+0xa8/0x240 [ext4]
+>   bio_endio+0x195/0x310
+>   blk_update_request+0x184/0x770
+>   scsi_end_request+0x2f/0x240
+>   scsi_io_completion+0x75/0x450
+>   scsi_finish_command+0xef/0x160
+>   scsi_complete+0xa3/0x180
+>   blk_complete_reqs+0x60/0x80
+>   blk_done_softirq+0x25/0x40
+>   __do_softirq+0x119/0x4c8
+>   run_ksoftirqd+0x42/0x70
+>   smpboot_thread_fn+0x136/0x3c0
+>   kthread+0x140/0x1a0
+>   ret_from_fork+0x2c/0x50
+> ==================================================================
+> 
+> Above issue may happen as follows:
+> 
+>             cpu1                        cpu2
+> ----------------------------|----------------------------
+> mount -o dioread_lock
+> ext4_writepages
+>  ext4_do_writepages
+>   *if (ext4_should_dioread_nolock(inode))*
+>     // rsv_blocks is not assigned here
+>                                  mount -o remount,dioread_nolock
+>   ext4_journal_start_with_reserve
+>    __ext4_journal_start
+>     __ext4_journal_start_sb
+>      jbd2__journal_start
+>       *if (rsv_blocks)*
+>         // h_rsv_handle is not initialized here
+>   mpage_map_and_submit_extent
+>     mpage_map_one_extent
+>       dioread_nolock = ext4_should_dioread_nolock(inode)
+>       if (dioread_nolock && (map->m_flags & EXT4_MAP_UNWRITTEN))
+>         mpd->io_submit.io_end->handle = handle->h_rsv_handle
+>         ext4_set_io_unwritten_flag
+>           io_end->flag |= EXT4_IO_END_UNWRITTEN
+>       // now io_end->handle is NULL but has EXT4_IO_END_UNWRITTEN flag
+> 
+> scsi_finish_command
+>  scsi_io_completion
+>   scsi_io_completion_action
+>    scsi_end_request
+>     blk_update_request
+>      req_bio_endio
+>       bio_endio
+>        bio->bi_end_io  > ext4_end_bio
+>         ext4_put_io_end_defer
+> 	 ext4_add_complete_io
+> 	  // trigger WARN_ON(!io_end->handle && sbi->s_journal);
+> 
+> The immediate cause of this problem is that ext4_should_dioread_nolock()
+> function returns inconsistent values in the ext4_do_writepages() and
+> mpage_map_one_extent(). There are four conditions in this function that
+> can be changed at mount time to cause this problem. These four conditions
+> can be divided into two categories:
+> 
+>     (1) journal_data and EXT4_EXTENTS_FL, which can be changed by ioctl
+>     (2) DELALLOC and DIOREAD_NOLOCK, which can be changed by remount
+> 
+> The two in the first category have been fixed by commit c8585c6fcaf2
+> ("ext4: fix races between changing inode journal mode and ext4_writepages")
+> and commit cb85f4d23f79 ("ext4: fix race between writepages and enabling
+> EXT4_EXTENTS_FL") respectively.
+> 
+> Two cases in the other category have not yet been fixed, and the above
+> issue is caused by this situation. We refer to the fix for the first
+> category, when applying options during remount, we grab s_writepages_rwsem
+> to avoid racing with writepages ops to trigger this problem.
+> 
+> Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-HEAD commit:    3a93e40326c8 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1034aed5c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668
-dashboard link: https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a2cd05c80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158e1f29c80000
+Looks good to me. Feel free to add:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65fe3e7679b9/disk-3a93e403.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/169220ad146c/vmlinux-3a93e403.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6f5e2d192c51/bzImage-3a93e403.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/343663881b01/mount_0.gz
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com
+								Honza
 
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: none.
-==================================================================
-BUG: KASAN: slab-out-of-bounds in ext4_read_inline_data fs/ext4/inline.c:199 [inline]
-BUG: KASAN: slab-out-of-bounds in ext4_convert_inline_data_nolock+0x31a/0xd80 fs/ext4/inline.c:1204
-Read of size 20 at addr ffff88807645e1a3 by task syz-executor378/5075
-
-CPU: 0 PID: 5075 Comm: syz-executor378 Not tainted 6.3.0-rc4-syzkaller-00025-g3a93e40326c8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:319 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:430
- kasan_report+0x176/0x1b0 mm/kasan/report.c:536
- kasan_check_range+0x283/0x290 mm/kasan/generic.c:187
- __asan_memcpy+0x29/0x70 mm/kasan/shadow.c:105
- ext4_read_inline_data fs/ext4/inline.c:199 [inline]
- ext4_convert_inline_data_nolock+0x31a/0xd80 fs/ext4/inline.c:1204
- ext4_convert_inline_data+0x4da/0x620 fs/ext4/inline.c:2065
- ext4_fallocate+0x14d/0x2050 fs/ext4/extents.c:4701
- vfs_fallocate+0x54b/0x6b0 fs/open.c:324
- ksys_fallocate fs/open.c:347 [inline]
- __do_sys_fallocate fs/open.c:355 [inline]
- __se_sys_fallocate fs/open.c:353 [inline]
- __x64_sys_fallocate+0xbd/0x100 fs/open.c:353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb0579425c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 31 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdcef99758 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb0579425c9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 0000000000000003 R09: 0000000000000003
-R10: 0000000000008000 R11: 0000000000000246 R12: 00007ffdcef99790
-R13: 00007ffdcef99788 R14: 00007ffdcef99784 R15: 0000000000000003
- </TASK>
-
-Allocated by task 5023:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:328
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook+0x68/0x3a0 mm/slab.h:769
- slab_alloc_node mm/slub.c:3452 [inline]
- slab_alloc mm/slub.c:3460 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3467 [inline]
- kmem_cache_alloc+0x11f/0x2e0 mm/slub.c:3476
- mt_alloc_one lib/maple_tree.c:159 [inline]
- mas_alloc_nodes+0x26e/0x780 lib/maple_tree.c:1233
- mas_node_count_gfp lib/maple_tree.c:1318 [inline]
- mas_preallocate+0x131/0x350 lib/maple_tree.c:5717
- vma_iter_prealloc mm/internal.h:972 [inline]
- __split_vma+0x1e0/0x7f0 mm/mmap.c:2177
- mprotect_fixup+0x5f5/0x920 mm/mprotect.c:663
- do_mprotect_pkey+0x8f8/0xc60 mm/mprotect.c:831
- __do_sys_mprotect mm/mprotect.c:852 [inline]
- __se_sys_mprotect mm/mprotect.c:849 [inline]
- __x64_sys_mprotect+0x80/0x90 mm/mprotect.c:849
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5023:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:521
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1781 [inline]
- slab_free_freelist_hook mm/slub.c:1807 [inline]
- slab_free mm/slub.c:3787 [inline]
- kmem_cache_free+0x297/0x520 mm/slub.c:3809
- mas_destroy+0x1bdc/0x2280 lib/maple_tree.c:5774
- mas_store_prealloc+0x351/0x460 lib/maple_tree.c:5702
- vma_complete+0x1ed/0x970 mm/mmap.c:572
- __split_vma+0x7b9/0x7f0 mm/mmap.c:2214
- mprotect_fixup+0x5f5/0x920 mm/mprotect.c:663
- do_mprotect_pkey+0x8f8/0xc60 mm/mprotect.c:831
- __do_sys_mprotect mm/mprotect.c:852 [inline]
- __se_sys_mprotect mm/mprotect.c:849 [inline]
- __x64_sys_mprotect+0x80/0x90 mm/mprotect.c:849
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff88807645e000
- which belongs to the cache maple_node of size 256
-The buggy address is located 163 bytes to the right of
- allocated 256-byte region [ffff88807645e000, ffff88807645e100)
-
-The buggy address belongs to the physical page:
-page:ffffea0001d91780 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7645e
-head:ffffea0001d91780 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 ffff8880124cd000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5023, tgid 5023 (rm), ts 57145564531, free_ts 41308598324
- prep_new_page mm/page_alloc.c:2553 [inline]
- get_page_from_freelist+0x3246/0x33c0 mm/page_alloc.c:4326
- __alloc_pages+0x255/0x670 mm/page_alloc.c:5592
- alloc_slab_page+0x6a/0x160 mm/slub.c:1851
- allocate_slab mm/slub.c:1998 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2051
- ___slab_alloc+0xa85/0x10a0 mm/slub.c:3193
- __slab_alloc mm/slub.c:3292 [inline]
- __slab_alloc_node mm/slub.c:3345 [inline]
- slab_alloc_node mm/slub.c:3442 [inline]
- slab_alloc mm/slub.c:3460 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3467 [inline]
- kmem_cache_alloc+0x1b9/0x2e0 mm/slub.c:3476
- mt_alloc_one lib/maple_tree.c:159 [inline]
- mas_alloc_nodes+0x26e/0x780 lib/maple_tree.c:1233
- mas_node_count_gfp lib/maple_tree.c:1318 [inline]
- mas_preallocate+0x131/0x350 lib/maple_tree.c:5717
- vma_iter_prealloc mm/internal.h:972 [inline]
- __split_vma+0x1e0/0x7f0 mm/mmap.c:2177
- mprotect_fixup+0x5f5/0x920 mm/mprotect.c:663
- do_mprotect_pkey+0x8f8/0xc60 mm/mprotect.c:831
- __do_sys_mprotect mm/mprotect.c:852 [inline]
- __se_sys_mprotect mm/mprotect.c:849 [inline]
- __x64_sys_mprotect+0x80/0x90 mm/mprotect.c:849
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1454 [inline]
- free_pcp_prepare mm/page_alloc.c:1504 [inline]
- free_unref_page_prepare+0xe2f/0xe70 mm/page_alloc.c:3388
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:3483
- discard_slab mm/slub.c:2098 [inline]
- __unfreeze_partials+0x1b1/0x1f0 mm/slub.c:2637
- put_cpu_partial+0x116/0x180 mm/slub.c:2713
- qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:187
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:294
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook+0x68/0x3a0 mm/slab.h:769
- slab_alloc_node mm/slub.c:3452 [inline]
- slab_alloc mm/slub.c:3460 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3467 [inline]
- kmem_cache_alloc+0x11f/0x2e0 mm/slub.c:3476
- vm_area_alloc+0x24/0xe0 kernel/fork.c:458
- mmap_region+0xbfb/0x20c0 mm/mmap.c:2553
- do_mmap+0x8c9/0xf70 mm/mmap.c:1364
- vm_mmap_pgoff+0x1ce/0x2e0 mm/util.c:542
- ksys_mmap_pgoff+0x4f9/0x6d0 mm/mmap.c:1410
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807645e080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807645e100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88807645e180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                               ^
- ffff88807645e200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807645e280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
+> ---
+> V1->V2:
+> 	Grab s_writepages_rwsem unconditionally during remount.
+> 	Remove patches 1,2 that are no longer needed.
+> 
+>  fs/ext4/ext4.h  | 3 ++-
+>  fs/ext4/super.c | 9 +++++++++
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 9b2cfc32cf78..5f5ee0c20673 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1703,7 +1703,8 @@ struct ext4_sb_info {
+>  
+>  	/*
+>  	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
+> -	 * or EXTENTS flag.
+> +	 * or EXTENTS flag or between writepages ops and changing DELALLOC or
+> +	 * DIOREAD_NOLOCK mount options on remount.
+>  	 */
+>  	struct percpu_rw_semaphore s_writepages_rwsem;
+>  	struct dax_device *s_daxdev;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index e6d84c1e34a4..607ebf2a008b 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -6403,7 +6403,16 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+>  
+>  	}
+>  
+> +	/*
+> +	 * Changing the DIOREAD_NOLOCK or DELALLOC mount options may cause
+> +	 * two calls to ext4_should_dioread_nolock() to return inconsistent
+> +	 * values, triggering WARN_ON in ext4_add_complete_io(). we grab
+> +	 * here s_writepages_rwsem to avoid race between writepages ops and
+> +	 * remount.
+> +	 */
+> +	percpu_down_write(&sbi->s_writepages_rwsem);
+>  	ext4_apply_options(fc, sb);
+> +	percpu_up_write(&sbi->s_writepages_rwsem);
+>  
+>  	if ((old_opts.s_mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) ^
+>  	    test_opt(sb, JOURNAL_CHECKSUM)) {
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
