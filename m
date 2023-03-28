@@ -2,136 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8BE6CA755
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Mar 2023 16:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D69C6CB51B
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Mar 2023 05:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjC0OSp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Mar 2023 10:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
+        id S230391AbjC1DtZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Mar 2023 23:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjC0OSU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Mar 2023 10:18:20 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D839761AF;
-        Mon, 27 Mar 2023 07:16:48 -0700 (PDT)
+        with ESMTP id S232659AbjC1DtN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Mar 2023 23:49:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0BDB5;
+        Mon, 27 Mar 2023 20:49:12 -0700 (PDT)
 Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PlZY95kpHz17Pn6;
-        Mon, 27 Mar 2023 22:13:33 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Plwcz1nMgzrYJZ;
+        Tue, 28 Mar 2023 11:48:03 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Mon, 27 Mar
- 2023 22:16:46 +0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 28 Mar
+ 2023 11:49:09 +0800
 From:   Baokun Li <libaokun1@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
         <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v3 2/2] ext4: refactoring to use the unified helper ext4_quotas_off()
-Date:   Mon, 27 Mar 2023 22:16:30 +0800
-Message-ID: <20230327141630.156875-3-libaokun1@huawei.com>
+        <yukuai3@huawei.com>, <libaokun1@huawei.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2] ext4: fix race between writepages and remount
+Date:   Tue, 28 Mar 2023 11:48:53 +0800
+Message-ID: <20230328034853.2900007-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230327141630.156875-1-libaokun1@huawei.com>
-References: <20230327141630.156875-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Rename ext4_quota_off_umount() to ext4_quotas_off(), and add type
-parameter to replace open code in ext4_enable_quotas().
+We got a WARNING in ext4_add_complete_io:
+==================================================================
+ WARNING: at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0x182/0x250
+ CPU: 10 PID: 77 Comm: ksoftirqd/10 Tainted: 6.3.0-rc2 #85
+ RIP: 0010:ext4_put_io_end_defer+0x182/0x250 [ext4]
+ [...]
+ Call Trace:
+  <TASK>
+  ext4_end_bio+0xa8/0x240 [ext4]
+  bio_endio+0x195/0x310
+  blk_update_request+0x184/0x770
+  scsi_end_request+0x2f/0x240
+  scsi_io_completion+0x75/0x450
+  scsi_finish_command+0xef/0x160
+  scsi_complete+0xa3/0x180
+  blk_complete_reqs+0x60/0x80
+  blk_done_softirq+0x25/0x40
+  __do_softirq+0x119/0x4c8
+  run_ksoftirqd+0x42/0x70
+  smpboot_thread_fn+0x136/0x3c0
+  kthread+0x140/0x1a0
+  ret_from_fork+0x2c/0x50
+==================================================================
 
+Above issue may happen as follows:
+
+            cpu1                        cpu2
+----------------------------|----------------------------
+mount -o dioread_lock
+ext4_writepages
+ ext4_do_writepages
+  *if (ext4_should_dioread_nolock(inode))*
+    // rsv_blocks is not assigned here
+                                 mount -o remount,dioread_nolock
+  ext4_journal_start_with_reserve
+   __ext4_journal_start
+    __ext4_journal_start_sb
+     jbd2__journal_start
+      *if (rsv_blocks)*
+        // h_rsv_handle is not initialized here
+  mpage_map_and_submit_extent
+    mpage_map_one_extent
+      dioread_nolock = ext4_should_dioread_nolock(inode)
+      if (dioread_nolock && (map->m_flags & EXT4_MAP_UNWRITTEN))
+        mpd->io_submit.io_end->handle = handle->h_rsv_handle
+        ext4_set_io_unwritten_flag
+          io_end->flag |= EXT4_IO_END_UNWRITTEN
+      // now io_end->handle is NULL but has EXT4_IO_END_UNWRITTEN flag
+
+scsi_finish_command
+ scsi_io_completion
+  scsi_io_completion_action
+   scsi_end_request
+    blk_update_request
+     req_bio_endio
+      bio_endio
+       bio->bi_end_io  > ext4_end_bio
+        ext4_put_io_end_defer
+	 ext4_add_complete_io
+	  // trigger WARN_ON(!io_end->handle && sbi->s_journal);
+
+The immediate cause of this problem is that ext4_should_dioread_nolock()
+function returns inconsistent values in the ext4_do_writepages() and
+mpage_map_one_extent(). There are four conditions in this function that
+can be changed at mount time to cause this problem. These four conditions
+can be divided into two categories:
+
+    (1) journal_data and EXT4_EXTENTS_FL, which can be changed by ioctl
+    (2) DELALLOC and DIOREAD_NOLOCK, which can be changed by remount
+
+The two in the first category have been fixed by commit c8585c6fcaf2
+("ext4: fix races between changing inode journal mode and ext4_writepages")
+and commit cb85f4d23f79 ("ext4: fix race between writepages and enabling
+EXT4_EXTENTS_FL") respectively.
+
+Two cases in the other category have not yet been fixed, and the above
+issue is caused by this situation. We refer to the fix for the first
+category, when applying options during remount, we grab s_writepages_rwsem
+to avoid racing with writepages ops to trigger this problem.
+
+Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
+Cc: stable@vger.kernel.org
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
 V1->V2:
-	Adapting to the changes in PATCH 1/2.
-V2->V3:
-	Adapting to the changes in PATCH 1/2.
+	Grab s_writepages_rwsem unconditionally during remount.
+	Remove patches 1,2 that are no longer needed.
 
- fs/ext4/super.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+ fs/ext4/ext4.h  | 3 ++-
+ fs/ext4/super.c | 9 +++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9b2cfc32cf78..5f5ee0c20673 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1703,7 +1703,8 @@ struct ext4_sb_info {
+ 
+ 	/*
+ 	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
+-	 * or EXTENTS flag.
++	 * or EXTENTS flag or between writepages ops and changing DELALLOC or
++	 * DIOREAD_NOLOCK mount options on remount.
+ 	 */
+ 	struct percpu_rw_semaphore s_writepages_rwsem;
+ 	struct dax_device *s_daxdev;
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 97addf5fd642..75bc263c2d92 100644
+index e6d84c1e34a4..607ebf2a008b 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -1157,12 +1157,12 @@ static void dump_orphan_list(struct super_block *sb, struct ext4_sb_info *sbi)
- #ifdef CONFIG_QUOTA
- static int ext4_quota_off(struct super_block *sb, int type);
+@@ -6403,7 +6403,16 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
  
--static inline void ext4_quota_off_umount(struct super_block *sb)
-+static inline void ext4_quotas_off(struct super_block *sb, int type)
- {
--	int type;
-+	BUG_ON(type > EXT4_MAXQUOTAS);
+ 	}
  
- 	/* Use our quota_off function to clear inode flags etc. */
--	for (type = 0; type < EXT4_MAXQUOTAS; type++)
-+	for (type--; type >= 0; type--)
- 		ext4_quota_off(sb, type);
- }
++	/*
++	 * Changing the DIOREAD_NOLOCK or DELALLOC mount options may cause
++	 * two calls to ext4_should_dioread_nolock() to return inconsistent
++	 * values, triggering WARN_ON in ext4_add_complete_io(). we grab
++	 * here s_writepages_rwsem to avoid race between writepages ops and
++	 * remount.
++	 */
++	percpu_down_write(&sbi->s_writepages_rwsem);
+ 	ext4_apply_options(fc, sb);
++	percpu_up_write(&sbi->s_writepages_rwsem);
  
-@@ -1178,7 +1178,7 @@ static inline char *get_qf_name(struct super_block *sb,
- 					 lockdep_is_held(&sb->s_umount));
- }
- #else
--static inline void ext4_quota_off_umount(struct super_block *sb)
-+static inline void ext4_quotas_off(struct super_block *sb, int type)
- {
- }
- #endif
-@@ -1209,7 +1209,7 @@ static void ext4_put_super(struct super_block *sb)
- 			 &sb->s_uuid);
- 
- 	ext4_unregister_li_request(sb);
--	ext4_quota_off_umount(sb);
-+	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
- 
- 	flush_work(&sbi->s_error_work);
- 	destroy_workqueue(sbi->rsv_conversion_wq);
-@@ -5540,7 +5540,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	return 0;
- 
- failed_mount10:
--	ext4_quota_off_umount(sb);
-+	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
- failed_mount9: __maybe_unused
- 	ext4_release_orphan_info(sb);
- failed_mount8:
-@@ -7012,20 +7012,8 @@ int ext4_enable_quotas(struct super_block *sb)
- 					"(type=%d, err=%d, ino=%lu). "
- 					"Please run e2fsck to fix.", type,
- 					err, qf_inums[type]);
--				for (type--; type >= 0; type--) {
--					struct inode *inode;
--
--					inode = sb_dqopt(sb)->files[type];
--					if (inode)
--						inode = igrab(inode);
--					dquot_quota_off(sb, type);
--					if (inode) {
--						lockdep_set_quota_inode(inode,
--							I_DATA_SEM_NORMAL);
--						iput(inode);
--					}
--				}
- 
-+				ext4_quotas_off(sb, type);
- 				return err;
- 			}
- 		}
+ 	if ((old_opts.s_mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) ^
+ 	    test_opt(sb, JOURNAL_CHECKSUM)) {
 -- 
 2.31.1
 
