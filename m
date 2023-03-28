@@ -2,66 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FF86CBA0E
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Mar 2023 11:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571D56CBA36
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Mar 2023 11:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjC1JGC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Mar 2023 05:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
+        id S230478AbjC1JPQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Mar 2023 05:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbjC1JF7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Mar 2023 05:05:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49E75FFD;
-        Tue, 28 Mar 2023 02:05:36 -0700 (PDT)
+        with ESMTP id S231717AbjC1JPO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Mar 2023 05:15:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06205FC3;
+        Tue, 28 Mar 2023 02:15:03 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7D062219C2;
-        Tue, 28 Mar 2023 09:05:35 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 87E051FD6A;
+        Tue, 28 Mar 2023 09:15:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679994335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1679994902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=W19ZNXTUmBCwNQocRmCqq2y9UHESHO1aWNxN/I1GB78=;
-        b=MlNlKlZYLM6ewuuC9uBNJIkHk1M+5gQngFAbugPMPRTm9QCRWtc4OVM0SMHAK7GNwu0a6C
-        zkpp+RPGpiC3ITaAkd3F3SdgdTVVGPMJWrLN0FYyAiWy1ZszjOuyLHoTekqc/B+Gjvlucd
-        Oqg+8+LhV9fO6Y6WtQqh3YmG2bsvnBc=
+        bh=A3PY4kAmdN+G4LKEzbQiBUxXWfapjGR4y3Y+c4QLJFE=;
+        b=2/x+U4R7qqP+59Noj8UT5qLT6YBLSdNNO5wbMKW+dorYuJpNMvYwB/6rVUq3UwWkDl1o/3
+        lYL9BUpOObcbbaMYZ5fWsXHepA04B9BYh2KjAEZLsx2CxdS9esUa2QBSokD4Y5BP0Zhr8S
+        moxZIItpN8HWEQi+0kuwnrdJ7FAMgyg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679994335;
+        s=susede2_ed25519; t=1679994902;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=W19ZNXTUmBCwNQocRmCqq2y9UHESHO1aWNxN/I1GB78=;
-        b=AAEjZZRXNTN9hk42r0YqoUFTEyGQtUPPHAT3DCF8uz4X12KivRjzE19ULV0g2/BYkvIlf8
-        KglenEAJcPJWsUDQ==
+        bh=A3PY4kAmdN+G4LKEzbQiBUxXWfapjGR4y3Y+c4QLJFE=;
+        b=yaK7nTFXoeCKjoidyd5uUSiAA+mKW7ilMdRveXZkMGvpA8dq6oIXbtHiVDKgOgbG5b1zJz
+        4RtjTok0IuvDLwDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 688311390B;
-        Tue, 28 Mar 2023 09:05:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77E161390B;
+        Tue, 28 Mar 2023 09:15:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uNR2Gd+tImT7OgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 28 Mar 2023 09:05:35 +0000
+        id uAw7HRawImRcQAAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 28 Mar 2023 09:15:02 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D556BA071C; Tue, 28 Mar 2023 11:05:34 +0200 (CEST)
-Date:   Tue, 28 Mar 2023 11:05:34 +0200
+        id F150CA071C; Tue, 28 Mar 2023 11:15:01 +0200 (CEST)
+Date:   Tue, 28 Mar 2023 11:15:01 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Baokun Li <libaokun1@huawei.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
         adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix race between writepages and remount
-Message-ID: <20230328090534.662l7yxj2e425j7w@quack3>
-References: <20230328034853.2900007-1-libaokun1@huawei.com>
+        yangerkun@huawei.com, yukuai3@huawei.com, stable@kernel.org
+Subject: Re: [PATCH v3 1/2] ext4: turning quotas off if mount failed after
+ enable quotas
+Message-ID: <20230328091501.o27zc5yjnrotgyfl@quack3>
+References: <20230327141630.156875-1-libaokun1@huawei.com>
+ <20230327141630.156875-2-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230328034853.2900007-1-libaokun1@huawei.com>
+In-Reply-To: <20230327141630.156875-2-libaokun1@huawei.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
@@ -71,92 +73,46 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 28-03-23 11:48:53, Baokun Li wrote:
-> We got a WARNING in ext4_add_complete_io:
-> ==================================================================
->  WARNING: at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0x182/0x250
->  CPU: 10 PID: 77 Comm: ksoftirqd/10 Tainted: 6.3.0-rc2 #85
->  RIP: 0010:ext4_put_io_end_defer+0x182/0x250 [ext4]
->  [...]
->  Call Trace:
->   <TASK>
->   ext4_end_bio+0xa8/0x240 [ext4]
->   bio_endio+0x195/0x310
->   blk_update_request+0x184/0x770
->   scsi_end_request+0x2f/0x240
->   scsi_io_completion+0x75/0x450
->   scsi_finish_command+0xef/0x160
->   scsi_complete+0xa3/0x180
->   blk_complete_reqs+0x60/0x80
->   blk_done_softirq+0x25/0x40
->   __do_softirq+0x119/0x4c8
->   run_ksoftirqd+0x42/0x70
->   smpboot_thread_fn+0x136/0x3c0
->   kthread+0x140/0x1a0
->   ret_from_fork+0x2c/0x50
-> ==================================================================
+On Mon 27-03-23 22:16:29, Baokun Li wrote:
+> Yi found during a review of the patch "ext4: don't BUG on inconsistent
+> journal feature" that when ext4_mark_recovery_complete() returns an error
+> value, the error handling path does not turn off the enabled quotas,
+> which triggers the following kmemleak:
 > 
-> Above issue may happen as follows:
+> ================================================================
+> unreferenced object 0xffff8cf68678e7c0 (size 64):
+> comm "mount", pid 746, jiffies 4294871231 (age 11.540s)
+> hex dump (first 32 bytes):
+> 00 90 ef 82 f6 8c ff ff 00 00 00 00 41 01 00 00  ............A...
+> c7 00 00 00 bd 00 00 00 0a 00 00 00 48 00 00 00  ............H...
+> backtrace:
+> [<00000000c561ef24>] __kmem_cache_alloc_node+0x4d4/0x880
+> [<00000000d4e621d7>] kmalloc_trace+0x39/0x140
+> [<00000000837eee74>] v2_read_file_info+0x18a/0x3a0
+> [<0000000088f6c877>] dquot_load_quota_sb+0x2ed/0x770
+> [<00000000340a4782>] dquot_load_quota_inode+0xc6/0x1c0
+> [<0000000089a18bd5>] ext4_enable_quotas+0x17e/0x3a0 [ext4]
+> [<000000003a0268fa>] __ext4_fill_super+0x3448/0x3910 [ext4]
+> [<00000000b0f2a8a8>] ext4_fill_super+0x13d/0x340 [ext4]
+> [<000000004a9489c4>] get_tree_bdev+0x1dc/0x370
+> [<000000006e723bf1>] ext4_get_tree+0x1d/0x30 [ext4]
+> [<00000000c7cb663d>] vfs_get_tree+0x31/0x160
+> [<00000000320e1bed>] do_new_mount+0x1d5/0x480
+> [<00000000c074654c>] path_mount+0x22e/0xbe0
+> [<0000000003e97a8e>] do_mount+0x95/0xc0
+> [<000000002f3d3736>] __x64_sys_mount+0xc4/0x160
+> [<0000000027d2140c>] do_syscall_64+0x3f/0x90
+> ================================================================
 > 
->             cpu1                        cpu2
-> ----------------------------|----------------------------
-> mount -o dioread_lock
-> ext4_writepages
->  ext4_do_writepages
->   *if (ext4_should_dioread_nolock(inode))*
->     // rsv_blocks is not assigned here
->                                  mount -o remount,dioread_nolock
->   ext4_journal_start_with_reserve
->    __ext4_journal_start
->     __ext4_journal_start_sb
->      jbd2__journal_start
->       *if (rsv_blocks)*
->         // h_rsv_handle is not initialized here
->   mpage_map_and_submit_extent
->     mpage_map_one_extent
->       dioread_nolock = ext4_should_dioread_nolock(inode)
->       if (dioread_nolock && (map->m_flags & EXT4_MAP_UNWRITTEN))
->         mpd->io_submit.io_end->handle = handle->h_rsv_handle
->         ext4_set_io_unwritten_flag
->           io_end->flag |= EXT4_IO_END_UNWRITTEN
->       // now io_end->handle is NULL but has EXT4_IO_END_UNWRITTEN flag
+> To solve this problem, we add a "failed_mount10" tag, and call
+> ext4_quota_off_umount() in this tag to release the enabled qoutas.
 > 
-> scsi_finish_command
->  scsi_io_completion
->   scsi_io_completion_action
->    scsi_end_request
->     blk_update_request
->      req_bio_endio
->       bio_endio
->        bio->bi_end_io  > ext4_end_bio
->         ext4_put_io_end_defer
-> 	 ext4_add_complete_io
-> 	  // trigger WARN_ON(!io_end->handle && sbi->s_journal);
-> 
-> The immediate cause of this problem is that ext4_should_dioread_nolock()
-> function returns inconsistent values in the ext4_do_writepages() and
-> mpage_map_one_extent(). There are four conditions in this function that
-> can be changed at mount time to cause this problem. These four conditions
-> can be divided into two categories:
-> 
->     (1) journal_data and EXT4_EXTENTS_FL, which can be changed by ioctl
->     (2) DELALLOC and DIOREAD_NOLOCK, which can be changed by remount
-> 
-> The two in the first category have been fixed by commit c8585c6fcaf2
-> ("ext4: fix races between changing inode journal mode and ext4_writepages")
-> and commit cb85f4d23f79 ("ext4: fix race between writepages and enabling
-> EXT4_EXTENTS_FL") respectively.
-> 
-> Two cases in the other category have not yet been fixed, and the above
-> issue is caused by this situation. We refer to the fix for the first
-> category, when applying options during remount, we grab s_writepages_rwsem
-> to avoid racing with writepages ops to trigger this problem.
-> 
-> Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
-> Cc: stable@vger.kernel.org
+> Fixes: 11215630aada ("ext4: don't BUG on inconsistent journal feature")
+> Cc: stable@kernel.org
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Looks good to me. Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
@@ -164,48 +120,41 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 
 > ---
 > V1->V2:
-> 	Grab s_writepages_rwsem unconditionally during remount.
-> 	Remove patches 1,2 that are no longer needed.
+>         Add judgment for CONFIG_QUOTA to avoid warning
+>         "label 'failed_mount9' defined but not used".
+>         (Reported-by: kernel test robot <lkp@intel.com>)
+> V2->V3:
+>         By adding __maybe_unused to silence possible compilation
+>         complain in patch one, instead of adding the judgment.
+>         (Suggested by Jan Kara).
 > 
->  fs/ext4/ext4.h  | 3 ++-
->  fs/ext4/super.c | 9 +++++++++
->  2 files changed, 11 insertions(+), 1 deletion(-)
+>  fs/ext4/super.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 9b2cfc32cf78..5f5ee0c20673 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1703,7 +1703,8 @@ struct ext4_sb_info {
->  
->  	/*
->  	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
-> -	 * or EXTENTS flag.
-> +	 * or EXTENTS flag or between writepages ops and changing DELALLOC or
-> +	 * DIOREAD_NOLOCK mount options on remount.
->  	 */
->  	struct percpu_rw_semaphore s_writepages_rwsem;
->  	struct dax_device *s_daxdev;
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index e6d84c1e34a4..607ebf2a008b 100644
+> index e6d84c1e34a4..97addf5fd642 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -6403,7 +6403,16 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
->  
+> @@ -5520,7 +5520,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  		ext4_msg(sb, KERN_INFO, "recovery complete");
+>  		err = ext4_mark_recovery_complete(sb, es);
+>  		if (err)
+> -			goto failed_mount9;
+> +			goto failed_mount10;
 >  	}
 >  
-> +	/*
-> +	 * Changing the DIOREAD_NOLOCK or DELALLOC mount options may cause
-> +	 * two calls to ext4_should_dioread_nolock() to return inconsistent
-> +	 * values, triggering WARN_ON in ext4_add_complete_io(). we grab
-> +	 * here s_writepages_rwsem to avoid race between writepages ops and
-> +	 * remount.
-> +	 */
-> +	percpu_down_write(&sbi->s_writepages_rwsem);
->  	ext4_apply_options(fc, sb);
-> +	percpu_up_write(&sbi->s_writepages_rwsem);
+>  	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
+> @@ -5539,7 +5539,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
 >  
->  	if ((old_opts.s_mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) ^
->  	    test_opt(sb, JOURNAL_CHECKSUM)) {
+>  	return 0;
+>  
+> -failed_mount9:
+> +failed_mount10:
+> +	ext4_quota_off_umount(sb);
+> +failed_mount9: __maybe_unused
+>  	ext4_release_orphan_info(sb);
+>  failed_mount8:
+>  	ext4_unregister_sysfs(sb);
 > -- 
 > 2.31.1
 > 
