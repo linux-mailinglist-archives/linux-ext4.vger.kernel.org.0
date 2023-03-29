@@ -2,65 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA736CED67
+	by mail.lfdr.de (Postfix) with ESMTP id 22B926CED66
 	for <lists+linux-ext4@lfdr.de>; Wed, 29 Mar 2023 17:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbjC2PuP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Mar 2023 11:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
+        id S230336AbjC2PuO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Mar 2023 11:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjC2PuG (ORCPT
+        with ESMTP id S230247AbjC2PuG (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Mar 2023 11:50:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4725590
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61285588
         for <linux-ext4@vger.kernel.org>; Wed, 29 Mar 2023 08:50:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8DC2C1FDFF;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8D8E221A1C;
         Wed, 29 Mar 2023 15:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1680105003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qginDrDPhWvURCYSKzNZeybzI8E2Q19RupKMewFftA8=;
-        b=1aijEkaaS5niMv/YV5J2HI9snxD1Nv9GcUkv1o6yne15Ou4gT3s2UmW2RiDKtapcsxXzU1
-        pcfUN7+/Atw/JfmL0vhXD/xrDBtuDjoGaH4hS2gzkvXB1wDgcR5bkV4Z79xJacgUIS4Yow
-        R5Py78GF3R5j+X1GdacCs+md3fsWY8g=
+        bh=n6mFTNsPAlX4aM7ayWY6bDtyV8ROmsAxRc6wOQ4NTzs=;
+        b=tb2IkMootnQyJmz8gYwcGKLaFlI3jf7Tg3G3Jy+pYylQbpGtoM4Zk94epXTVrauLiihB+u
+        QQS6PHyDaXC6Eh3k++50wm7RAM8IULQ/zk1vw7paCpZsxAEWC6NDFIlH9IPp3uF83CkZlU
+        Jd8L915eE/dym5woJozE3Tt244IiD0c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1680105003;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qginDrDPhWvURCYSKzNZeybzI8E2Q19RupKMewFftA8=;
-        b=DbW7HV/Lxs9PzjIDHvRHPmg8oYow2IYCzqLEyJU93xPayJNpEmp/KvKLzqjXV6NPQ3tosS
-        EMaxqH9dBYtVFGAQ==
+        bh=n6mFTNsPAlX4aM7ayWY6bDtyV8ROmsAxRc6wOQ4NTzs=;
+        b=knbrPh8Gw/E9OQ2YLjkL2rALvYlm+aeaRAYB4QTO3WDZUq/qMmvZVgfXMGyNIOKOfT1IiI
+        tbJi5SpBd53/ApAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B09C513A2A;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B08E913A18;
         Wed, 29 Mar 2023 15:50:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Y0AbKypeJGRhYwAAMHmgww
+        id gc8VKypeJGRiYwAAMHmgww
         (envelope-from <jack@suse.cz>); Wed, 29 Mar 2023 15:50:02 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 6611FA0754; Wed, 29 Mar 2023 17:49:50 +0200 (CEST)
+        id 6B103A0755; Wed, 29 Mar 2023 17:49:50 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 11/13] ext4: Simplify handling of journalled data in ext4_bmap()
-Date:   Wed, 29 Mar 2023 17:49:42 +0200
-Message-Id: <20230329154950.19720-11-jack@suse.cz>
+Subject: [PATCH 12/13] ext4: Update comment in mpage_prepare_extent_to_map()
+Date:   Wed, 29 Mar 2023 17:49:43 +0200
+Message-Id: <20230329154950.19720-12-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230329125740.4127-1-jack@suse.cz>
 References: <20230329125740.4127-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3652; i=jack@suse.cz; h=from:subject; bh=MsyqEWAHaPf8fnwRj15WiSvHd22BcxkZdh7of5Oc1iA=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkJF4VNZsSmltjy1FxjmYG7BpyowaQLeqHAY1wJRo8 8ksso+uJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZCReFQAKCRCcnaoHP2RA2UdvCA CRh8RwLsNVdXgiCXttvlx4N7gdDorU7KqE4MOtvnZ+S+TgZjoPVi3o04Ia53gpxMfuSy5mOxt5ZemD Ln2p5dj6E5lRqioehSwTsQPLhVszu3w4D5fH9LGlE0HLzrczmcpcuTQgMbV8dzoUch3EEdCtv8TLfv C3dYaeauw8NGO3lxmii9U6fMPWDUusOoV0ybtbF2iKKoDktT6oE/kUwNlsU1Kooz6pr98SnlwJHGqR ZOVB+yEeRl/+L1fIAM3fgrIlm43VNjFhsSoeEvS843jcNAXp9JRPXdkZmGOlX684gjnbsWsOF8Zny5 zDv6vWV0XveLRYRJG4ZNig+Nu0Aby8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1258; i=jack@suse.cz; h=from:subject; bh=JuJKMzle1SxXfisUwr+OoJQBJlYVLkJcuPotCRuJdSg=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkJF4WeEVZqr4amnqsj7mdL7xepPJnfgOxiwfFHQVu IHph6OOJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZCReFgAKCRCcnaoHP2RA2ea0B/ 41OnehWlQSX9ZYC392iy6CG2Gzn2qgtZwC9yO71m7oOLMw3t8d+d3OoywRliorDfVUrtVjbp3JsibH 3yXvMx5xo1y+ZMijmU6ElapLUqDo6R+LV+YRCxEGv0HkHmdcUnMd2lPh9/E3XyNaAKsF5LYogreLBJ WXUsdfUyIH0ixK9Eat5DlT+TuLbrWDi3UQxaNyMd4LJWUVww3xxtxRIA0nqd69DDBirIor3U4BoKnD Xo0wzlQXn69oL9mVJfLMK0Piq9Fo2XyE+asTAvroyYVAZH9MIF7V8MjLi0wXZPIgiROqDMVG0iP/UI MszF8tM4ShILAGbULkJh1uDpt15H28
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -72,111 +72,34 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that ext4_writepages() gets journalled data into its final location
-we just use filemap_write_and_wait() instead of special handling of
-journalled data in ext4_bmap(). We can also drop EXT4_STATE_JDATA flag
-as it is not used anymore.
+Since filemap_write_and_wait() is now enough to get journalled data to
+final location update the comment in mpage_prepare_extent_to_map().
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h  |  1 -
- fs/ext4/inode.c | 44 +++++---------------------------------------
- 2 files changed, 5 insertions(+), 40 deletions(-)
+ fs/ext4/inode.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 9b2cfc32cf78..7a6e03da5a3d 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1887,7 +1887,6 @@ static inline void ext4_simulate_fail_bh(struct super_block *sb,
-  * Inode dynamic state flags
-  */
- enum {
--	EXT4_STATE_JDATA,		/* journaled data exists */
- 	EXT4_STATE_NEW,			/* inode is newly created */
- 	EXT4_STATE_XATTR,		/* has in-inode xattrs */
- 	EXT4_STATE_NO_EXPAND,		/* No space for expansion */
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 94bfb12aaa9e..3c6bce0afb20 100644
+index 3c6bce0afb20..25a9e7586c50 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -1408,7 +1408,6 @@ static int ext4_journalled_write_end(struct file *file,
- 	}
- 	if (!verity)
- 		size_changed = ext4_update_inode_size(inode, pos + copied);
--	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
- 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
- 	unlock_page(page);
- 	put_page(page);
-@@ -2334,8 +2333,6 @@ static int ext4_journal_page_buffers(handle_t *handle, struct page *page,
- 		ret = err;
- 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
- 
--	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
--
- 	return ret;
- }
- 
-@@ -3079,9 +3076,7 @@ int ext4_alloc_da_blocks(struct inode *inode)
- static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
--	journal_t *journal;
- 	sector_t ret = 0;
--	int err;
- 
- 	inode_lock_shared(inode);
- 	/*
-@@ -3091,45 +3086,16 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
- 		goto out;
- 
- 	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY) &&
--			test_opt(inode->i_sb, DELALLOC)) {
-+	    (test_opt(inode->i_sb, DELALLOC) ||
-+	     ext4_should_journal_data(inode))) {
- 		/*
--		 * With delalloc we want to sync the file
--		 * so that we can make sure we allocate
--		 * blocks for file
-+		 * With delalloc or journalled data we want to sync the file so
-+		 * that we can make sure we allocate blocks for file and data
-+		 * is in place for the user to see it
- 		 */
- 		filemap_write_and_wait(mapping);
- 	}
- 
--	if (EXT4_JOURNAL(inode) &&
--	    ext4_test_inode_state(inode, EXT4_STATE_JDATA)) {
--		/*
--		 * This is a REALLY heavyweight approach, but the use of
--		 * bmap on dirty files is expected to be extremely rare:
--		 * only if we run lilo or swapon on a freshly made file
--		 * do we expect this to happen.
--		 *
--		 * (bmap requires CAP_SYS_RAWIO so this does not
--		 * represent an unprivileged user DOS attack --- we'd be
--		 * in trouble if mortal users could trigger this path at
--		 * will.)
--		 *
--		 * NB. EXT4_STATE_JDATA is not set on files other than
--		 * regular files.  If somebody wants to bmap a directory
--		 * or symlink and gets confused because the buffer
--		 * hasn't yet been flushed to disk, they deserve
--		 * everything they get.
--		 */
--
--		ext4_clear_inode_state(inode, EXT4_STATE_JDATA);
--		journal = EXT4_JOURNAL(inode);
--		jbd2_journal_lock_updates(journal);
--		err = jbd2_journal_flush(journal, 0);
--		jbd2_journal_unlock_updates(journal);
--
--		if (err)
--			goto out;
--	}
--
- 	ret = iomap_bmap(mapping, block, &ext4_iomap_ops);
- 
- out:
+@@ -2490,11 +2490,10 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 			 * Just submit the page. For data=journal mode we
+ 			 * first handle writeout of the page for checkpoint and
+ 			 * only after that handle delayed page dirtying. This
+-			 * is crutial so that forcing a transaction commit and
+-			 * then calling filemap_write_and_wait() guarantees
+-			 * current state of data is in its final location. Such
+-			 * sequence is used for example by insert/collapse
+-			 * range operations before discarding the page cache.
++			 * makes sure current data is checkpointed to the final
++			 * location before possibly journalling it again which
++			 * is desirable when the page is frequently dirtied
++			 * through a pin.
+ 			 */
+ 			if (!mpd->can_map) {
+ 				WARN_ON_ONCE(sb->s_writers.frozen ==
 -- 
 2.35.3
 
