@@ -2,102 +2,936 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030416CFE25
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 10:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46ED6D0028
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 11:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjC3IWp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Mar 2023 04:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        id S230499AbjC3JuR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Mar 2023 05:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjC3IWV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Mar 2023 04:22:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A4E7ABC
-        for <linux-ext4@vger.kernel.org>; Thu, 30 Mar 2023 01:21:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S230303AbjC3Jtz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Mar 2023 05:49:55 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870D08A51;
+        Thu, 30 Mar 2023 02:48:28 -0700 (PDT)
+Received: from theinternet.molgen.mpg.de (theinternet.molgen.mpg.de [141.14.31.7])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5A3D01FE9F;
-        Thu, 30 Mar 2023 08:21:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680164507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5HQ1hG3raYLBNlVMyGJg6RogG331RllJgBkkYFlNngE=;
-        b=Izk9pP4dJn3kn+4t/3a7o5rZlSwqEN8ODOW8yEovoNgYY3lqQullYo6PHHZ7XNnkTuCRII
-        xkRkTUT5IyNVcuO6suhLWUH+F4seicuvogtY/PLjcyTCms1cuqSi1Xxfgpjf3KMF5cH64O
-        FfA44UOIMAiTOnoY539/zS72okAztAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680164507;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5HQ1hG3raYLBNlVMyGJg6RogG331RllJgBkkYFlNngE=;
-        b=OZbawG7q4y51Alm/3cJnXnIr8tg5Ia1Ybz4xDPNcuoRxL5JbNLtmy6C/DiX/8mK0k6cDqF
-        ZSD/pCpXV4GKI+Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44B51138FF;
-        Thu, 30 Mar 2023 08:21:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wD4oEJtGJWRSFAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 30 Mar 2023 08:21:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A0283A071E; Thu, 30 Mar 2023 10:21:46 +0200 (CEST)
-Date:   Thu, 30 Mar 2023 10:21:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 06/13] ext4: Drop special handling of journalled data
- from ext4_sync_file()
-Message-ID: <20230330082146.muy4j4ehf3l7w3xi@quack3>
-References: <20230329125740.4127-1-jack@suse.cz>
- <20230329154950.19720-6-jack@suse.cz>
- <ZCTSWQk+8jxQckXG@infradead.org>
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E3D6F6244DFBA;
+        Thu, 30 Mar 2023 11:48:04 +0200 (CEST)
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Subject: kernel BUG at fs/ext4/inline.c:226!
+Message-ID: <0511e953-254e-21df-f3ee-6b1df5d4df88@molgen.mpg.de>
+Date:   Thu, 30 Mar 2023 11:48:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCTSWQk+8jxQckXG@infradead.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 29-03-23 17:05:45, Christoph Hellwig wrote:
-> On Wed, Mar 29, 2023 at 05:49:37PM +0200, Jan Kara wrote:
-> >  	/*
-> > -	 * data=writeback,ordered:
-> >  	 *  The caller's filemap_fdatawrite()/wait will sync the data.
-> >  	 *  Metadata is in the journal, we wait for proper transaction to
-> >  	 *  commit here.
-> 
-> Nit: without the list, the two space indent looks a bit weird here.
-> 
-> >  	if (!sbi->s_journal)
-> >  		ret = ext4_fsync_nojournal(inode, datasync, &needs_barrier);
-> > -	else if (ext4_should_journal_data(inode))
-> > -		ret = ext4_force_commit(inode->i_sb);
-> >  	else
-> >  		ret = ext4_fsync_journal(inode, datasync, &needs_barrier);
-> 
-> Also if there is not journale the above comment doesn't make much sense.
-> But I'm really not sure the comment adds any value to start with, so
-> maybe just drop it entirely?
+Hi,
 
-Hum, right. I'll just drop the whole comment. Thanks for the suggestion.
+we've got "BUG at fs/ext4/inline.c:226!" on two systems doing cluster jobs, one with 5.15.77, one with 5.15.86. Many more systems are doing the same processing without symptoms. So if it is a race, it must be a small window.
 
-								Honza
+The block device, that the ext4 filesystem is on, is on a "linear" dm device on top of a loop device on top of a file in an xfs filesytem. We might have called ioctl EXT4_IOC_SHUTDOWN with EXT4_GOING_FLAGS_NOLOGFLUSH on the filesystem, see [1] for context.
+
+fs/ext4/inline.c:
+
+    static void ext4_write_inline_data(struct inode *inode, struct ext4_iloc *iloc,
+                       void *buffer, loff_t pos, unsigned int len)
+    {
+        struct ext4_xattr_entry *entry;
+        struct ext4_xattr_ibody_header *header;
+        struct ext4_inode *raw_inode;
+        int cp_len = 0;
+    
+        if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
+            return;
+    
+        BUG_ON(!EXT4_I(inode)->i_inline_off);
+        BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
+
+
+The atomic `set_bit(EXT4_FLAGS_SHUTDOWN, ...)` used in ext4_shutdown() and the `set_bit(EXT4_FLAGS_SHUTDOWN, ...)` used
+in ext4_forced_shutdown() are not synchronized over multi-core, right? Could it be part of the problem that the above guard is unreliable?
+
+Unfortunately, the dmesg output of both systems has multiple threads interleaved, so it is a bit difficult to parse.
+
+Anyway, I append both of them. Any ideas?
+
+Thanks
+
+  Donald
+
+[1]: https://lore.kernel.org/linux-ext4/4e83fb26-4d4a-d482-640c-8104973b7ebf@molgen.mpg.de/
+
+
+===== snip ====
+
+[    0.000000] Linux version 5.15.77.mx64.440 (root@theinternet.molgen.mpg.de) (gcc (GCC) 10.4.0, GNU ld (GNU Binutils) 2.37) #1 SMP Tue Nov 8 15:42:33 CET 2022
+
+...
+
+[9190862.943220] ------------[ cut here ]------------
+[9190862.949673] kernel BUG at fs/ext4/inline.c:226!
+[9190862.955945] invalid opcode: 0000 [#1] SMP PTI
+[9190862.961980] CPU: 66 PID: 51226 Comm: _toil_worker Kdump: loaded Not tainted 5.15.77.mx64.440 #1
+[9190862.972862] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190862.982383] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190862.985981] ------------[ cut here ]------------
+[9190862.990088] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190862.990092] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+[9190862.990096] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190862.990097] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190862.996519] kernel BUG at fs/ext4/inline.c:226!
+[9190862.997299] ------------[ cut here ]------------
+[9190862.997302] kernel BUG at fs/ext4/inline.c:226!
+[9190863.019687] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190863.019691] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190863.019692] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190863.019693] FS:  00007f0692d03380(0000) GS:ffff893f7fc00000(0000) knlGS:0000000000000000
+[9190863.019695] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190863.019696] CR2: 00007f068bfea024 CR3: 00000080b266c001 CR4: 00000000001706e0
+[9190863.019697] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190863.019698] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190863.019699] Call Trace:
+[9190863.019705]  <TASK>
+[9190863.025700] ------------[ cut here ]------------
+[9190863.025703] kernel BUG at fs/ext4/inline.c:226!
+[9190863.153679]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[9190863.160702]  generic_perform_write+0x107/0x1f0
+[9190863.166525]  ? generic_update_time+0x69/0xd0
+[9190863.172133]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[9190863.178809]  new_sync_write+0x11c/0x1b0
+[9190863.183897]  vfs_write+0x1fe/0x2a0
+[9190863.188481]  ksys_write+0x5f/0xe0
+[9190863.192947]  do_syscall_64+0x43/0x90
+[9190863.197687]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[9190863.204061] RIP: 0033:0x7f0692dfea60
+[9190863.208756] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[9190863.230963] RSP: 002b:00007ffea1aceeb8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[9190863.240191] RAX: ffffffffffffffda RBX: 00007f0692d03300 RCX: 00007f0692dfea60
+[9190863.248928] RDX: 00000000000000f2 RSI: 000056424be452b0 RDI: 0000000000000002
+[9190863.257670] RBP: 00000000000000f2 R08: 0000000000000000 R09: 0000000000000000
+[9190863.266414] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f068bfbddc0
+[9190863.275155] R13: 0000000000000002 R14: 000056424be452b0 R15: 000056424bc02530
+[9190863.283905]  </TASK>
+[9190863.287128] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190863.335560] invalid opcode: 0000 [#2] SMP PTI
+[9190863.335633] ---[ end trace 7677810932ee94ee ]---
+[9190863.341523] CPU: 63 PID: 51227 Comm: _toil_worker Kdump: loaded Tainted: G      D           5.15.77.mx64.440 #1
+[9190863.347784] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190863.360167] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190863.360170] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190863.367799] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190863.377260] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190863.377265] RSP: 0018:ffffc90030027cf8 EFLAGS: 00010216
+[9190863.384877] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+
+[9190863.407648] RAX: 0000000000000234 RBX: 0000000000000174 RCX: 0000000000000057
+[9190863.407649] RDX: ffff896c4d9ed000 RSI: ffffc90030027d48 RDI: ffff894afd0adac8
+[9190863.407650] RBP: ffff894afd0adac8 R08: 00000000000000c0 R09: 0000000000000000
+[9190863.407651] R10: ffff894afd0ada08 R11: ffff8940b6530000 R12: 00000000000000c0
+
+[9190863.437389] R13: 0000000000000174 R14: 0000000000000000 R15: ffffea03b1367b40
+[9190863.437392] FS:  00007f7ec435d380(0000) GS:ffff89807f5c0000(0000) knlGS:0000000000000000
+[9190863.437394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190863.437395] CR2: 00005601f2b2a000 CR3: 000000c0acc30004 CR4: 00000000001706e0
+[9190863.444347] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190863.447137] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190863.447139] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190863.447141] Call Trace:
+[9190863.447146]  <TASK>
+[9190863.456235] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190863.465336]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[9190863.474423] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190863.483501]  generic_perform_write+0x107/0x1f0
+[9190863.486292] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190863.495363]  ? generic_update_time+0x69/0xd0
+[9190863.505505] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190863.513032]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[9190863.522126] FS:  00007f0692d03380(0000) GS:ffff893f7fc00000(0000) knlGS:0000000000000000
+[9190863.531221]  new_sync_write+0x11c/0x1b0
+[9190863.540321] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190863.549420]  vfs_write+0x1fe/0x2a0
+[9190863.553284] CR2: 00007f068bfea024 CR3: 00000080b266c001 CR4: 00000000001706e0
+[9190863.556763]  ksys_write+0x5f/0xe0
+[9190863.556767]  do_syscall_64+0x43/0x90
+[9190863.565870] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190863.573121]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[9190863.582238] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190863.588356] RIP: 0033:0x7f7ec4458a60
+[9190863.588362] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[9190863.718948] RSP: 002b:00007ffca7916ed8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[9190863.728622] RAX: ffffffffffffffda RBX: 00007f7ec435d300 RCX: 00007f7ec4458a60
+[9190863.737823] RDX: 00000000000000c0 RSI: 00005601f1c0b2b0 RDI: 0000000000000002
+[9190863.746762] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
+[9190863.755938] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f7ebd623580
+[9190863.764866] R13: 0000000000000002 R14: 00005601f1c0b2b0 R15: 00005601f19c8530
+[9190863.774043]  </TASK>
+[9190863.777411] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190863.826376] invalid opcode: 0000 [#3] SMP PTI
+[9190863.826468] ---[ end trace 7677810932ee94ef ]---
+[9190863.832376] CPU: 62 PID: 51225 Comm: _toil_worker Kdump: loaded Tainted: G      D           5.15.77.mx64.440 #1
+[9190863.838703] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190863.851133] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190863.851136] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190863.858814] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190863.868318] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190863.868322] RSP: 0018:ffffc9001f967cf8 EFLAGS: 00010206
+[9190863.868325] RAX: 00000000000004bd RBX: 0000000000000326 RCX: 0000000000000057
+[9190863.875990] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+[9190863.898890] RDX: ffff891b76601000 RSI: ffffc9001f967d48 RDI: ffff8922d8e4f710
+[9190863.898894] RBP: ffff8922d8e4f710 R08: 0000000000000197 R09: 0000000000000000
+[9190863.898895] R10: ffff8922d8e4f650 R11: ffff8900af971f00 R12: 0000000000000197
+[9190863.898896] R13: 0000000000000326 R14: 0000000000000000 R15: ffffea026dd98040
+[9190863.898897] FS:  00007fa211902380(0000) GS:ffff893f7fbc0000(0000) knlGS:0000000000000000
+[9190863.898899] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190863.898900] CR2: 00007fa20abed024 CR3: 00000080acccc006 CR4: 00000000001706e0
+
+[9190863.928828] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190863.928831] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190863.928832] Call Trace:
+[9190863.928839]  <TASK>
+[9190863.937981] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190863.944983]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[9190863.954129] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190863.963277]  generic_perform_write+0x107/0x1f0
+[9190863.972439] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190863.981592]  ? generic_update_time+0x69/0xd0
+[9190863.991816] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190863.999432]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[9190864.008598] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190864.011457]  new_sync_write+0x11c/0x1b0
+[9190864.020631] FS:  00007f7ec435d380(0000) GS:ffff89807f5c0000(0000) knlGS:0000000000000000
+[9190864.029791]  vfs_write+0x1fe/0x2a0
+[9190864.033729] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190864.037257]  ksys_write+0x5f/0xe0
+[9190864.037261]  do_syscall_64+0x43/0x90
+[9190864.046417] CR2: 00005601f2b2a000 CR3: 000000c0acc30004 CR4: 00000000001706e0
+[9190864.053730]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[9190864.062888] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190864.069047] RIP: 0033:0x7fa2119fda60
+[9190864.069053] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[9190864.069055] RSP: 002b:00007ffc1a88cd98 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[9190864.078220] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190864.084184] RAX: ffffffffffffffda RBX: 00007fa211902300 RCX: 00007fa2119fda60
+[9190864.084188] RDX: 0000000000000197 RSI: 00005557065672b0 RDI: 0000000000000002
+[9190864.084189] RBP: 0000000000000197 R08: 0000000000000000 R09: 0000000000000000
+[9190864.084189] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fa20abbcdc0
+[9190864.084190] R13: 0000000000000002 R14: 00005557065672b0 R15: 0000555706324530
+[9190864.084193]  </TASK>
+[9190864.264548] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190864.313248] invalid opcode: 0000 [#4] SMP PTI
+[9190864.313341] ---[ end trace 7677810932ee94f0 ]---
+[9190864.319292] CPU: 69 PID: 51224 Comm: _toil_worker Kdump: loaded Tainted: G      D           5.15.77.mx64.440 #1
+[9190864.325628] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190864.338077] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190864.338080] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190864.345777] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190864.355325] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190864.355330] RSP: 0018:ffffc9001ffefcf8 EFLAGS: 00010206
+[9190864.363025] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+
+[9190864.385966] RAX: 00000000000004bd RBX: 0000000000000326 RCX: 0000000000000057
+[9190864.385968] RDX: ffff88f7b01ba000 RSI: ffffc9001ffefd48 RDI: ffff88f4868d3690
+[9190864.385969] RBP: ffff88f4868d3690 R08: 0000000000000197 R09: 0000000000000000
+
+[9190864.415926] R10: ffff88f4868d35d0 R11: ffff88c086ddd600 R12: 0000000000000197
+[9190864.415930] R13: 0000000000000326 R14: 0000000000000000 R15: ffffea01dec06e80
+[9190864.415931] FS:  00007f0885052380(0000) GS:ffff88ff7fc40000(0000) knlGS:0000000000000000
+[9190864.415933] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190864.422940] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190864.425756] CR2: 00007f087e34a024 CR3: 00000040a7c4a003 CR4: 00000000001706e0
+[9190864.425760] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190864.425761] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190864.425762] Call Trace:
+[9190864.434911] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190864.444060]  <TASK>
+[9190864.453220] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190864.456061]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[9190864.465224] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190864.474367]  generic_perform_write+0x107/0x1f0
+[9190864.484589] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190864.492194]  ? generic_update_time+0x69/0xd0
+[9190864.501351] FS:  00007fa211902380(0000) GS:ffff893f7fbc0000(0000) knlGS:0000000000000000
+[9190864.510516]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[9190864.519678] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190864.528837]  new_sync_write+0x11c/0x1b0
+[9190864.532767] CR2: 00007fa20abed024 CR3: 00000080acccc006 CR4: 00000000001706e0
+[9190864.541908]  vfs_write+0x1fe/0x2a0
+[9190864.545440] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190864.554583]  ksys_write+0x5f/0xe0
+[9190864.554589]  do_syscall_64+0x43/0x90
+[9190864.561904] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190864.571059]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[9190864.670972] RIP: 0033:0x7f088514da60
+[9190864.676179] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[9190864.698860] RSP: 002b:00007fffd2a33808 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[9190864.708517] RAX: ffffffffffffffda RBX: 00007f0885052300 RCX: 00007f088514da60
+[9190864.717729] RDX: 0000000000000197 RSI: 000055da4836e2b0 RDI: 0000000000000002
+[9190864.726674] RBP: 0000000000000197 R08: 0000000000000000 R09: 0000000000000000
+[9190864.735871] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f087e319dc0
+[9190864.744820] R13: 0000000000000002 R14: 000055da4836e2b0 R15: 000055da4812b530
+[9190864.754012]  </TASK>
+[9190864.757383] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190864.806443] ---[ end trace 7677810932ee94f1 ]---
+[9190864.812779] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190864.820266] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190864.842936] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+[9190864.849852] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190864.858786] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190864.867716] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190864.876639] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190864.885560] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190864.894477] FS:  00007f0885052380(0000) GS:ffff88ff7fc40000(0000) knlGS:0000000000000000
+[9190864.904468] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190864.911842] CR2: 00007f087e34a024 CR3: 00000040a7c4a003 CR4: 00000000001706e0
+[9190864.920773] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190864.929705] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190865.055158] ------------[ cut here ]------------
+[9190865.062626] kernel BUG at fs/ext4/inode.c:2724!
+[9190865.069873] invalid opcode: 0000 [#5] SMP PTI
+[9190865.076891] CPU: 15 PID: 49322 Comm: kworker/u164:0 Kdump: loaded Tainted: G      D           5.15.77.mx64.440 #1
+[9190865.090556] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190865.101145] Workqueue: writeback wb_workfn (flush-251:0)
+[9190865.109278] RIP: 0010:ext4_writepages+0xd5a/0x1000 [ext4]
+[9190865.117519] Code: 8d 94 24 d0 00 00 00 48 89 de e8 01 25 02 00 e9 3e f9 ff ff 0f 0b 8b 44 24 34 4c 8b 64 24 10 31 db 89 44 24 04 e9 9d fc ff ff <0f> 0b 89 44 24 04 e9 45 f6 ff ff 48 8d bc 24 10 01 00 00 e8 6e 8e
+[9190865.142726] RSP: 0018:ffffc9001e557a10 EFLAGS: 00010203
+[9190865.150836] RAX: 000000cc10000000 RBX: ffffc9001e557cd8 RCX: 0000000000000001
+[9190865.161051] RDX: ffff8940b6953000 RSI: 0000000000000a9f RDI: 0000000000000000
+[9190865.171244] RBP: ffff888bc0b30000 R08: 0000000000000000 R09: ffffffffa0461050
+[9190865.181428] R10: 000000000000001a R11: 0000000000000000 R12: ffff88f4868d3800
+[9190865.191589] R13: 0000000000000001 R14: ffff88f4868d3690 R15: ffffc9001e557cd8
+[9190865.201742] FS:  0000000000000000(0000) GS:ffff89807f2c0000(0000) knlGS:0000000000000000
+[9190865.212989] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190865.221591] CR2: 00007ff1dc01d820 CR3: 00000040a1fb4002 CR4: 00000000001706e0
+[9190865.231744] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190865.241894] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190865.252006] Call Trace:
+[9190865.256824]  <TASK>
+[9190865.261206]  ? pagecache_get_page+0x270/0x520
+[9190865.268111]  ? __cond_resched+0x16/0x50
+[9190865.274419]  ? __getblk_gfp+0x27/0x60
+[9190865.280533]  ? __ext4_get_inode_loc+0xf0/0x410 [ext4]
+[9190865.288238]  do_writepages+0xc3/0x1f0
+[9190865.294373]  ? __ext4_get_inode_loc_noinmem+0x3d/0xa0 [ext4]
+[9190865.302756]  ? ext4_write_inode+0x136/0x190 [ext4]
+[9190865.310121]  __writeback_single_inode+0x40/0x2b0
+[9190865.317226]  writeback_sb_inodes+0x1f8/0x450
+[9190865.323888]  wb_writeback+0xb7/0x2a0
+[9190865.329720]  wb_workfn+0xc4/0x4c0
+[9190865.335221]  ? sched_clock_cpu+0x11/0xb0
+[9190865.341389]  ? psi_task_switch+0x74/0x310
+[9190865.347618]  ? __switch_to_asm+0x3a/0x60
+[9190865.353693]  ? __switch_to_asm+0x34/0x60
+[9190865.359730]  ? __schedule+0x2e5/0x880
+[9190865.365454]  process_one_work+0x1c8/0x3a0
+[9190865.371555]  worker_thread+0x4d/0x3d0
+[9190865.377252]  ? rescuer_thread+0x380/0x380
+[9190865.383343]  kthread+0x127/0x150
+[9190865.388541]  ? set_kthread_struct+0x50/0x50
+[9190865.394788]  ret_from_fork+0x22/0x30
+[9190865.400331]  </TASK>
+[9190865.404288] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190865.456104] ---[ end trace 7677810932ee94f2 ]---
+[9190865.462248] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[9190865.469565] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 c8 83 66 e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[9190865.491901] RSP: 0018:ffffc9003001fcf8 EFLAGS: 00010216
+[9190865.498674] RAX: 0000000000000326 RBX: 0000000000000234 RCX: 0000000000000057
+[9190865.507434] RDX: ffff8926a550c000 RSI: ffffc9003001fd48 RDI: ffff892f2e38ea88
+[9190865.516198] RBP: ffff892f2e38ea88 R08: 00000000000000f2 R09: 0000000000000000
+[9190865.524950] R10: ffff892f2e38e9c8 R11: ffff8900a4b57300 R12: 00000000000000f2
+[9190865.533688] R13: 0000000000000234 R14: 0000000000000000 R15: ffffea029a954300
+[9190865.542427] FS:  0000000000000000(0000) GS:ffff89807f2c0000(0000) knlGS:0000000000000000
+[9190865.552242] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190865.559445] CR2: 00007ff1dc01d820 CR3: 00000040a1fb4002 CR4: 00000000001706e0
+[9190865.568195] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190865.576940] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190865.585673] ------------[ cut here ]------------
+[9190865.591589] WARNING: CPU: 15 PID: 49322 at kernel/exit.c:739 do_exit+0x47/0xa30
+[9190865.600527] Modules linked in: nfsd dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc mgag200 drm_kms_helper drm x86_pkg_temp_thermal ixgbe kvm_intel igb fb_sys_fops kvm mdio_devres mdio libphy wmi irqbypass syscopyarea sysfillrect sysimgblt hid_led led_class iTCO_wdt iTCO_vendor_support i2c_algo_bit crc32c_intel ipmi_si auth_rpcgss oid_registry nfs_acl lockd grace sunrpc ip_tables x_tables unix ipv6 autofs4 [last unloaded: nfsd]
+[9190865.648844] CPU: 15 PID: 49322 Comm: kworker/u164:0 Kdump: loaded Tainted: G      D           5.15.77.mx64.440 #1
+[9190865.661293] Hardware name: Dell Inc. PowerEdge R930/0T55KM, BIOS 2.8.1 01/02/2020
+[9190865.670527] Workqueue: writeback wb_workfn (flush-251:0)
+[9190865.677343] RIP: 0010:do_exit+0x47/0xa30
+[9190865.682591] Code: ec 28 65 48 8b 04 25 28 00 00 00 48 89 44 24 20 31 c0 48 8b 83 c8 07 00 00 48 85 c0 74 0e 48 8b 10 48 39 d0 0f 84 26 04 00 00 <0f> 0b 65 8b 0d d0 49 fa 7e 89 c8 25 00 ff ff 00 89 44 24 0c 0f 85
+[9190865.705162] RSP: 0018:ffffc9001e557ef8 EFLAGS: 00010216
+[9190865.711924] RAX: ffffc9001e557d80 RBX: ffff8940b6953000 RCX: 0000000000000000
+[9190865.720810] RDX: ffff888119226ac8 RSI: ffff89807f2db640 RDI: 000000000000000b
+[9190865.729699] RBP: 000000000000000b R08: ffff89807f8a0be8 R09: 0000000000027ffb
+[9190865.738591] R10: 00000000ffff8000 R11: 3fffffffffffffff R12: 000000000000000b
+[9190865.747485] R13: 0000000000000000 R14: ffff8940b6953000 R15: 0000000000000006
+[9190865.756376] FS:  0000000000000000(0000) GS:ffff89807f2c0000(0000) knlGS:0000000000000000
+[9190865.766343] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[9190865.773702] CR2: 00007ff1dc01d820 CR3: 00000040a1fb4002 CR4: 00000000001706e0
+[9190865.782623] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[9190865.791537] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[9190865.800460] Call Trace:
+[9190865.804142]  <TASK>
+[9190865.807429]  ? kthread+0x127/0x150
+[9190865.812179]  rewind_stack_do_exit+0x17/0x20
+[9190865.817804] RIP: 0000:0x0
+[9190865.821680] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+[9190865.830302] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+[9190865.839682] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[9190865.848566] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[9190865.857425] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[9190865.866274] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[9190865.875113] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[9190865.883930]  </TASK>
+[9190865.887201] ---[ end trace 7677810932ee94f3 ]---
+
+
+==== snip ====
+
+
+[    0.000000] Linux version 5.15.86.mx64.443 (root@theinternet.molgen.mpg.de) (gcc (GCC) 10.4.0, GNU ld (GNU Binutils) 2.37) #1 SMP Thu Jan 5 12:40:04 CET 2023
+
+...
+
+[6038037.204804] ------------[ cut here ]------------
+[6038037.210534] kernel BUG at fs/ext4/inline.c:226!
+[6038037.215857] ------------[ cut here ]------------
+[6038037.216205] invalid opcode: 0000 [#1] SMP NOPTI
+[6038037.219600] ------------[ cut here ]------------
+[6038037.219602] kernel BUG at fs/ext4/inline.c:226!
+[6038037.222234] kernel BUG at fs/ext4/inline.c:226!
+[6038037.227793] CPU: 226 PID: 59722 Comm: _toil_worker Not tainted 5.15.86.mx64.443 #1
+[6038037.227796] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038037.227798] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038037.268110] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038037.288494] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038037.289440] ------------[ cut here ]------------
+[6038037.294671] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038037.294673] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038037.294674] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038037.294675] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038037.294676] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038037.294677] FS:  00007f25d4a4a380(0000) GS:ffff895fffa80000(0000) knlGS:0000000000000000
+[6038037.300455] kernel BUG at fs/ext4/inline.c:226!
+[6038037.308659] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038037.308662] CR2: 00007fda2cf09450 CR3: 00000107b8ce6002 CR4: 0000000000770ee0
+[6038037.308663] PKRU: 55555554
+[6038037.308664] Call Trace:
+[6038037.308670]  <TASK>
+[6038037.313316] ------------[ cut here ]------------
+[6038037.313317] ------------[ cut here ]------------
+[6038037.313319] kernel BUG at fs/ext4/inline.c:226!
+[6038037.313319] kernel BUG at fs/ext4/inline.c:226!
+[6038037.318248] ------------[ cut here ]------------
+[6038037.324929]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038037.333065] kernel BUG at fs/ext4/inline.c:226!
+[6038037.341192]  generic_perform_write+0x110/0x200
+[6038037.373591] ------------[ cut here ]------------
+[6038037.373974]  ? generic_update_time+0x69/0xd0
+[6038037.377323] kernel BUG at fs/ext4/inline.c:226!
+[6038037.380286]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038037.445167]  new_sync_write+0x11c/0x1b0
+[6038037.449637]  vfs_write+0x1fe/0x2a0
+[6038037.453632]  ksys_write+0x5f/0xe0
+[6038037.457547]  do_syscall_64+0x43/0x90
+[6038037.461717]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038037.467370] RIP: 0033:0x7f25d4b45a60
+[6038037.471510] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038037.491323] RSP: 002b:00007ffcd09c80a8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038037.499720] RAX: ffffffffffffffda RBX: 00007f25d4a4a300 RCX: 00007f25d4b45a60
+[6038037.507633] RDX: 0000000000000196 RSI: 0000559888c072b0 RDI: 0000000000000002
+[6038037.515503] RBP: 0000000000000196 R08: 0000000000000000 R09: 0000000000000000
+[6038037.523370] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f25cdd1bf40
+[6038037.531285] R13: 0000000000000002 R14: 0000559888c072b0 R15: 00005598889c4530
+[6038037.539158]  </TASK>
+[6038037.542068] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038037.588507] invalid opcode: 0000 [#2] SMP NOPTI
+[6038037.588663] ---[ end trace 91f69e2e735a49ac ]---
+[6038037.594287] CPU: 234 PID: 59723 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038037.671090] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038037.728220] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038037.769631] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038037.900644] RSP: 0018:ffffc900369f3cf8 EFLAGS: 00010206
+[6038037.937748] RAX: 00000000000004b7 RBX: 0000000000000322 RCX: 0000000000000057
+[6038037.992070] RDX: ffff894785604000 RSI: ffffc900369f3d48 RDI: ffff895ad1346690
+[6038038.032629] RBP: ffff895ad1346690 R08: 0000000000000195 R09: 0000000000000000
+[6038038.085944] R10: ffff895ad13465d0 R11: ffff894949dd1b00 R12: 0000000000000195
+[6038038.139187] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e158100
+[6038038.155512] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038038.161844] FS:  00007fbb18875380(0000) GS:ffff895fffc80000(0000) knlGS:0000000000000000
+[6038038.161847] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038038.161849] CR2: 00007fbb15d05024 CR3: 0000010050288003 CR4: 0000000000770ee0
+[6038038.169089] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038038.178545] PKRU: 55555554
+[6038038.178547] Call Trace:
+[6038038.178556]  <TASK>
+[6038038.178559]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038038.185639] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038038.193938]  generic_perform_write+0x110/0x200
+[6038038.193949]  ? generic_update_time+0x69/0xd0
+[6038038.214732] 
+[6038038.218637]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038038.218670]  new_sync_write+0x11c/0x1b0
+[6038038.222298] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038038.225501]  vfs_write+0x1fe/0x2a0
+[6038038.225505]  ksys_write+0x5f/0xe0
+[6038038.225507]  do_syscall_64+0x43/0x90
+[6038038.232289] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038038.238727]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038038.238735] RIP: 0033:0x7fbb18970a60
+[6038038.244423] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038038.249855] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038038.249858] RSP: 002b:00007ffc1557f648 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038038.249862] RAX: ffffffffffffffda RBX: 00007fbb18875300 RCX: 00007fbb18970a60
+[6038038.252511] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038038.258893] RDX: 0000000000000195 RSI: 0000555710bb12b0 RDI: 0000000000000002
+[6038038.258894] RBP: 0000000000000195 R08: 0000000000000000 R09: 0000000000000000
+[6038038.258896] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fbb11b4ef40
+[6038038.258897] R13: 0000000000000002 R14: 0000555710bb12b0 R15: 000055571096e530
+[6038038.258898]  </TASK>
+[6038038.258900] Modules linked in:
+[6038038.263897] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038038.272189]  af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp
+[6038038.276856] FS:  00007f25d4a4a380(0000) GS:ffff895fffa80000(0000) knlGS:0000000000000000
+[6038038.281505]  llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect
+[6038038.286378] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038038.294765]  deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si
+[6038038.300993] CR2: 00007fda2cf09450 CR3: 00000107b8ce6002 CR4: 0000000000770ee0
+[6038038.305678]  rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs
+[6038038.313940] PKRU: 55555554
+[6038038.334675]  ip_tables x_tables unix ipv6 autofs4
+[6038038.334686] invalid opcode: 0000 [#3] SMP NOPTI
+[6038038.334693] CPU: 233 PID: 59725 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038038.334714] ---[ end trace 91f69e2e735a49ad ]---
+[6038038.556749] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038038.557585] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038038.557587] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038038.565675] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038038.575631] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038038.575633] RSP: 0018:ffffc90036a03cf8 EFLAGS: 00010212
+[6038038.575636] RAX: 0000000000000230 RBX: 0000000000000170 RCX: 0000000000000057
+[6038038.575638] RDX: ffff894581e9b000 RSI: ffffc90036a03d48 RDI: ffff895ad1142610
+[6038038.575638] RBP: ffff895ad1142610 R08: 00000000000000c0 R09: 0000000000000000
+[6038038.575639] R10: ffff895ad1142550 R11: ffff8940ba9cbe00 R12: 00000000000000c0
+[6038038.585850] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038038.601464] R13: 0000000000000170 R14: 0000000000000000 R15: ffffea031607a6c0
+[6038038.601467] FS:  00007f23db3d6380(0000) GS:ffff895fffc40000(0000) knlGS:0000000000000000
+[6038038.601468] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038038.601470] CR2: 000055a795c44000 CR3: 0000010051628005 CR4: 0000000000770ee0
+[6038038.601471] PKRU: 55555554
+[6038038.601473] Call Trace:
+[6038038.608196] 
+[6038038.622984]  <TASK>
+[6038038.622989]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038038.631900] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038038.642330]  generic_perform_write+0x110/0x200
+[6038038.646803] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038038.652366]  ? generic_update_time+0x69/0xd0
+[6038038.657716] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038038.667455]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038038.673629] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038038.680328]  new_sync_write+0x11c/0x1b0
+[6038038.689512] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038038.696193]  vfs_write+0x1fe/0x2a0
+[6038038.696198]  ksys_write+0x5f/0xe0
+[6038038.696200]  do_syscall_64+0x43/0x90
+[6038038.717295] FS:  00007fbb18875380(0000) GS:ffff895fffc80000(0000) knlGS:0000000000000000
+[6038038.738542]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038038.738552] RIP: 0033:0x7f23db4d1a60
+[6038038.745468] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038038.753541] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038038.753544] RSP: 002b:00007ffeaebd89a8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038038.753549] RAX: ffffffffffffffda RBX: 00007f23db3d6300 RCX: 00007f23db4d1a60
+[6038038.753550] RDX: 00000000000000c0 RSI: 000055a794d232b0 RDI: 0000000000000002
+[6038038.753551] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
+[6038038.753551] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f23d46b7580
+[6038038.753552] R13: 0000000000000002 R14: 000055a794d232b0 R15: 000055a794ae0530
+[6038038.753553]  </TASK>
+[6038038.762595] CR2: 00007fbb15d05024 CR3: 0000010050288003 CR4: 0000000000770ee0
+[6038038.770718] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q
+[6038038.779728] PKRU: 55555554
+[6038038.785930]  garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038039.077114] invalid opcode: 0000 [#4] SMP NOPTI
+[6038039.077133] ---[ end trace 91f69e2e735a49ae ]---
+[6038039.082411] CPU: 236 PID: 59721 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038039.097545] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038039.105925] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038039.112582] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038039.132671] RSP: 0018:ffffc900369d3cf8 EFLAGS: 00010212
+[6038039.138841] RAX: 0000000000000230 RBX: 0000000000000170 RCX: 0000000000000057
+[6038039.178942] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038039.179550] RDX: ffff894644a15000 RSI: ffffc900369d3d48 RDI: ffff895ad1289650
+[6038039.179553] RBP: ffff895ad1289650 R08: 00000000000000c0 R09: 0000000000000000
+[6038039.186194] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038039.194456] R10: ffff895ad1289590 R11: ffff8940caebd600 R12: 00000000000000c0
+[6038039.194458] R13: 0000000000000170 R14: 0000000000000000 R15: ffffea0319128540
+[6038039.194459] FS:  00007fd23cf15380(0000) GS:ffff895fffd00000(0000) knlGS:0000000000000000
+[6038039.194461] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038039.194461] CR2: 00007fd2361fc024 CR3: 00000107b8ce4004 CR4: 0000000000770ee0
+[6038039.194462] PKRU: 55555554
+[6038039.194464] Call Trace:
+[6038039.194472]  <TASK>
+[6038039.202372] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038039.222540]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038039.230670] 
+[6038039.238641]  generic_perform_write+0x110/0x200
+[6038039.247589] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038039.254103]  ? generic_update_time+0x69/0xd0
+[6038039.261980] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038039.265410]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038039.268586] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038039.271374]  new_sync_write+0x11c/0x1b0
+[6038039.277323] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038039.283498]  vfs_write+0x1fe/0x2a0
+[6038039.283502]  ksys_write+0x5f/0xe0
+[6038039.283504]  do_syscall_64+0x43/0x90
+[6038039.285719] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038039.290848]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038039.298722] FS:  00007f23db3d6380(0000) GS:ffff895fffc40000(0000) knlGS:0000000000000000
+[6038039.303718] RIP: 0033:0x7fd23d010a60
+[6038039.303723] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038039.303726] RSP: 002b:00007ffe83dd1f08 EFLAGS: 00000202
+[6038039.311585] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038039.317540]  ORIG_RAX: 0000000000000001
+[6038039.317543] RAX: ffffffffffffffda RBX: 00007fd23cf15300 RCX: 00007fd23d010a60
+[6038039.317548] RDX: 00000000000000c0 RSI: 00005641632ca2b0 RDI: 0000000000000002
+[6038039.317549] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
+[6038039.317550] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fd2361e8580
+[6038039.317551] R13: 0000000000000002 R14: 00005641632ca2b0 R15: 0000564163087530
+[6038039.317554]  </TASK>
+[6038039.317555] Modules linked in:
+[6038039.325459] CR2: 000055a795c44000 CR3: 0000010051628005 CR4: 0000000000770ee0
+[6038039.330057]  af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q
+[6038039.337930] PKRU: 55555554
+[6038039.342016]  garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038039.518854] invalid opcode: 0000 [#5] SMP NOPTI
+[6038039.518904] ---[ end trace 91f69e2e735a49af ]---
+[6038039.524462] CPU: 239 PID: 59724 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038039.603485] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038039.650581] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038039.699404] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038039.848548] RSP: 0018:ffffc900369fbcf8 EFLAGS: 00010212
+[6038039.887291] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038039.889712] RAX: 0000000000000230 RBX: 0000000000000170 RCX: 0000000000000057
+[6038039.889715] RDX: ffff8956feab1000 RSI: ffffc900369fbd48 RDI: ffff8940f9b605d0
+[6038039.896637] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038039.904627] RBP: ffff8940f9b605d0 R08: 00000000000000c0 R09: 0000000000000000
+[6038039.904629] R10: ffff8940f9b60510 R11: ffff8940a4a82f00 R12: 00000000000000c0
+[6038039.904630] R13: 0000000000000170 R14: 0000000000000000 R15: ffffea035bfaac40
+[6038039.904632] FS:  00007f5aef3f9380(0000) GS:ffff895fffdc0000(0000) knlGS:0000000000000000
+[6038039.904633] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038039.904634] CR2: 00007f5ae86d7024 CR3: 000001005028a001 CR4: 0000000000770ee0
+[6038039.904635] PKRU: 55555554
+[6038039.904638] Call Trace:
+[6038039.904648]  <TASK>
+[6038039.912640] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038039.932928]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038039.941295] 
+[6038039.949365]  generic_perform_write+0x110/0x200
+[6038039.957544] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038039.966571]  ? generic_update_time+0x69/0xd0
+[6038039.973243] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038039.981321]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038039.984922] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038039.988284]  new_sync_write+0x11c/0x1b0
+[6038039.991292] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038039.997461]  vfs_write+0x1fe/0x2a0
+[6038039.997470]  ksys_write+0x5f/0xe0
+[6038040.003841] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038040.006064]  do_syscall_64+0x43/0x90
+[6038040.011459] FS:  00007fd23cf15380(0000) GS:ffff895fffd00000(0000) knlGS:0000000000000000
+[6038040.019552]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038040.024639] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038040.032725] RIP: 0033:0x7f5aef4f4a60
+[6038040.032733] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038040.038809] CR2: 00007fd2361fc024 CR3: 00000107b8ce4004 CR4: 0000000000770ee0
+[6038040.046807] RSP: 002b:00007ffc69ab6218 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038040.046812] RAX: ffffffffffffffda RBX: 00007f5aef3f9300 RCX: 00007f5aef4f4a60
+[6038040.046813] RDX: 00000000000000c0 RSI: 0000558aeef8b2b0 RDI: 0000000000000002
+[6038040.046814] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
+[6038040.046815] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f5ae86c3580
+[6038040.046816] R13: 0000000000000002 R14: 0000558aeef8b2b0 R15: 0000558aeed48530
+[6038040.051463] PKRU: 55555554
+[6038040.059539]  </TASK>
+[6038040.059542] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038040.237642] invalid opcode: 0000 [#6] SMP NOPTI
+[6038040.237703] ---[ end trace 91f69e2e735a49b0 ]---
+[6038040.244062] CPU: 20 PID: 59731 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038040.244067] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038040.269579] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038040.276513] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038040.295245] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038040.297372] RSP: 0018:ffffc90036a2bcf8 EFLAGS: 00010202
+[6038040.304813] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038040.311575] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038040.311578] RDX: ffff88b8bbac0000 RSI: ffffc90036a2bd48 RDI: ffff88bef3cbe750
+[6038040.311579] RBP: ffff88bef3cbe750 R08: 0000000000000196 R09: 0000000000000000
+[6038040.311581] R10: ffff88bef3cbe690 R11: ffff88a0cf89d100 R12: 0000000000000196
+[6038040.311583] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea00e2eeb000
+[6038040.311585] FS:  00007f5974a39380(0000) GS:ffff88bfff700000(0000) knlGS:0000000000000000
+[6038040.333067] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038040.341806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038040.341810] CR2: 00007f5971ec8024 CR3: 00000020fba5a001 CR4: 0000000000770ee0
+[6038040.341812] PKRU: 55555554
+[6038040.341812] Call Trace:
+[6038040.341818]  <TASK>
+[6038040.350633] 
+[6038040.359462]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038040.368287] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038040.377066]  generic_perform_write+0x110/0x200
+[6038040.377073]  ? generic_update_time+0x69/0xd0
+[6038040.386722] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038040.393539]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038040.400891] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038040.409722]  new_sync_write+0x11c/0x1b0
+[6038040.409730]  vfs_write+0x1fe/0x2a0
+[6038040.413890] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038040.417807]  ksys_write+0x5f/0xe0
+[6038040.417813]  do_syscall_64+0x43/0x90
+[6038040.421372] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038040.424280]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038040.424286] RIP: 0033:0x7f5974b34a60
+[6038040.431375] FS:  00007f5aef3f9380(0000) GS:ffff895fffdc0000(0000) knlGS:0000000000000000
+[6038040.440287] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038040.440290] RSP: 002b:00007ffef6751d58 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038040.440295] RAX: ffffffffffffffda RBX: 00007f5974a39300 RCX: 00007f5974b34a60
+[6038040.446187] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038040.451979] RDX: 0000000000000196 RSI: 0000556428e412b0 RDI: 0000000000000002
+[6038040.451982] RBP: 0000000000000196 R08: 0000000000000000 R09: 0000000000000000
+[6038040.451984] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f596dd12f40
+[6038040.451985] R13: 0000000000000002 R14: 0000556428e412b0 R15: 0000556428bfe530
+[6038040.451988]  </TASK>
+[6038040.460804] CR2: 00007f5ae86d7024 CR3: 000001005028a001 CR4: 0000000000770ee0
+[6038040.467629] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4
+[6038040.476379] PKRU: 55555554
+[6038040.481712]  nfs 8021q garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038040.676806] invalid opcode: 0000 [#7] SMP NOPTI
+[6038040.676904] ---[ end trace 91f69e2e735a49b1 ]---
+[6038040.682282] CPU: 21 PID: 59726 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038040.682286] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038040.808999] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038040.857178] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038040.998946] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038041.003367] RSP: 0018:ffffc90036a0bcf8 EFLAGS: 00010212
+[6038041.003371] RAX: 0000000000000230 RBX: 0000000000000170 RCX: 0000000000000057
+[6038041.010185] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038041.016279] RDX: ffff88b03ebb8000 RSI: ffffc90036a0bd48 RDI: ffff88a08cda1ac8
+[6038041.016280] RBP: ffff88a08cda1ac8 R08: 00000000000000c0 R09: 0000000000000000
+[6038041.016281] R10: ffff88a08cda1a08 R11: ffff88af03c9f800 R12: 00000000000000c0
+[6038041.016282] R13: 0000000000000170 R14: 0000000000000000 R15: ffffea00c0faee00
+[6038041.016283] FS:  00007f98b088e380(0000) GS:ffff88bfff740000(0000) knlGS:0000000000000000
+[6038041.016284] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038041.016285] CR2: 000055c00c23e000 CR3: 000001005162a002 CR4: 0000000000770ee0
+[6038041.016285] PKRU: 55555554
+[6038041.016286] Call Trace:
+[6038041.016293]  <TASK>
+[6038041.024633] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038041.045542]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038041.045554]  generic_perform_write+0x110/0x200
+[6038041.054003] 
+[6038041.062179]  ? generic_update_time+0x69/0xd0
+[6038041.062186]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038041.070454] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038041.078719]  new_sync_write+0x11c/0x1b0
+[6038041.078724]  vfs_write+0x1fe/0x2a0
+[6038041.078726]  ksys_write+0x5f/0xe0
+[6038041.078727]  do_syscall_64+0x43/0x90
+[6038041.087891] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038041.094629]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038041.094635] RIP: 0033:0x7f98b0989a60
+[6038041.094638] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038041.102894] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038041.106449] RSP: 002b:00007ffed45adb48 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038041.106452] RAX: ffffffffffffffda RBX: 00007f98b088e300 RCX: 00007f98b0989a60
+[6038041.106453] RDX: 00000000000000c0 RSI: 000055c00b31d2b0 RDI: 0000000000000002
+[6038041.106455] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
+[6038041.106456] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f98a9b6a580
+[6038041.106457] R13: 0000000000000002 R14: 000055c00b31d2b0 R15: 000055c00b0da530
+[6038041.106458]  </TASK>
+[6038041.106459] Modules linked in: af_packet
+[6038041.109887] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038041.112802]  dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc input_leds led_class
+[6038041.118979] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038041.125371]  mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis
+[6038041.130800] FS:  00007f5974a39380(0000) GS:ffff88bfff700000(0000) knlGS:0000000000000000
+[6038041.133057]  irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry
+[6038041.138286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038041.144444]  nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038041.144456] invalid opcode: 0000 [#8] SMP NOPTI
+[6038041.144479] ---[ end trace 91f69e2e735a49b2 ]---
+[6038041.194284] CR2: 00007f5971ec8024 CR3: 00000020fba5a001 CR4: 0000000000770ee0
+[6038041.241715] CPU: 237 PID: 59729 Comm: _toil_worker Tainted: G      D           5.15.86.mx64.443 #1
+[6038041.241721] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038041.241724] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038041.266712] PKRU: 55555554
+[6038041.314634] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038041.314640] RSP: 0018:ffffc90036a13cf8 EFLAGS: 00010202
+[6038041.314643] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038041.314645] RDX: ffff8954d28fa000 RSI: ffffc90036a13d48 RDI: ffff895dc5957258
+[6038041.314646] RBP: ffff895dc5957258 R08: 0000000000000196 R09: 0000000000000000
+[6038041.314649] R10: ffff895dc5957198 R11: ffff8941e994c600 R12: 0000000000000196
+[6038041.480145] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038041.482355] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea03534a3e80
+[6038041.482360] FS:  00007fdc1d96d380(0000) GS:ffff895fffd40000(0000) knlGS:0000000000000000
+[6038041.486969] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038041.508970] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038041.508973] CR2: 00007fdc1adfd024 CR3: 0000010092820003 CR4: 0000000000770ee0
+[6038041.508975] PKRU: 55555554
+[6038041.508976] Call Trace:
+[6038041.508984]  <TASK>
+[6038041.517275] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038041.526529]  ext4_write_inline_data_end+0x102/0x480 [ext4]
+[6038041.534886] 
+[6038041.543709]  generic_perform_write+0x110/0x200
+[6038041.551970] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038041.560796]  ? generic_update_time+0x69/0xd0
+[6038041.560806]  ext4_buffered_write_iter+0xa7/0x180 [ext4]
+[6038041.569051] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038041.572619]  new_sync_write+0x11c/0x1b0
+[6038041.572626]  vfs_write+0x1fe/0x2a0
+[6038041.577482] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038041.585740]  ksys_write+0x5f/0xe0
+[6038041.585746]  do_syscall_64+0x43/0x90
+[6038041.597450] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038041.605883]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[6038041.605891] RIP: 0033:0x7fdc1da68a60
+[6038041.621537] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038041.630798] Code: 40 00 48 8b 15 d1 c3 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d 81 4b 0e 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+[6038041.630803] RSP: 002b:00007ffc5891cf08 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+[6038041.647179] FS:  00007f98b088e380(0000) GS:ffff88bfff740000(0000) knlGS:0000000000000000
+[6038041.654449] RAX: ffffffffffffffda RBX: 00007fdc1d96d300 RCX: 00007fdc1da68a60
+[6038041.654451] RDX: 0000000000000196 RSI: 0000558df907d2b0 RDI: 0000000000000002
+[6038041.654453] RBP: 0000000000000196 R08: 0000000000000000 R09: 0000000000000000
+[6038041.654454] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fdc16c4ef40
+[6038041.654455] R13: 0000000000000002 R14: 0000558df907d2b0 R15: 0000558df8e3a530
+[6038041.654457]  </TASK>
+[6038041.663537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038041.669445] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc
+[6038041.675183] CR2: 000055c00c23e000 CR3: 000001005162a002 CR4: 0000000000770ee0
+[6038041.683448]  input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy
+[6038041.693626] PKRU: 55555554
+[6038041.702361]  fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038042.103558] ---[ end trace 91f69e2e735a49b3 ]---
+[6038042.417596] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038042.425116] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038042.446176] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038042.452367] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038042.460625] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038042.468796] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038042.476969] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038042.485174] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038042.493357] FS:  00007fdc1d96d380(0000) GS:ffff895fffd40000(0000) knlGS:0000000000000000
+[6038042.502535] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038042.509269] CR2: 00007fdc1adfd024 CR3: 0000010092820003 CR4: 0000000000770ee0
+[6038042.517452] PKRU: 55555554
+[6038068.548894] ------------[ cut here ]------------
+[6038068.554276] kernel BUG at fs/ext4/inode.c:2724!
+[6038068.559493] invalid opcode: 0000 [#9] SMP NOPTI
+[6038068.564675] CPU: 224 PID: 59484 Comm: kworker/u519:2 Tainted: G      D           5.15.86.mx64.443 #1
+[6038068.574448] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038068.582665] Workqueue: writeback wb_workfn (flush-251:2)
+[6038068.588629] RIP: 0010:ext4_writepages+0xd5a/0x1000 [ext4]
+[6038068.594684] Code: 8d 94 24 d0 00 00 00 48 89 de e8 b1 25 02 00 e9 3e f9 ff ff 0f 0b 8b 44 24 34 4c 8b 64 24 10 31 db 89 44 24 04 e9 9d fc ff ff <0f> 0b 89 44 24 04 e9 45 f6 ff ff 48 8d bc 24 10 01 00 00 e8 ae 9c
+[6038068.614576] RSP: 0018:ffffc900363439d0 EFLAGS: 00010203
+[6038068.620476] RAX: 000000cc10000000 RBX: ffffc90036343c98 RCX: 0000000000000001
+[6038068.628293] RDX: ffff894619333000 RSI: 0000000000000a9f RDI: 0000000000000000
+[6038068.636102] RBP: ffff8920bb881000 R08: 0000000000000000 R09: ffffffffa04e1040
+[6038068.643896] R10: 0000000000000005 R11: 0000000000000000 R12: ffff894bc6534448
+[6038068.651687] R13: 0000000000000001 R14: ffff894bc65342d8 R15: ffffc90036343c98
+[6038068.659511] FS:  0000000000000000(0000) GS:ffff895fffa00000(0000) knlGS:0000000000000000
+[6038068.668256] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038068.674662] CR2: 00007ffc6ce53458 CR3: 000000000240a001 CR4: 0000000000770ee0
+[6038068.682470] PKRU: 55555554
+[6038068.685834] Call Trace:
+[6038068.688923]  <TASK>
+[6038068.691659]  ? find_get_pages_range_tag+0x1b9/0x240
+[6038068.697213]  ? pagecache_get_page+0x270/0x520
+[6038068.702214]  ? __cond_resched+0x16/0x50
+[6038068.706694]  ? __getblk_gfp+0x27/0x60
+[6038068.711004]  ? __ext4_get_inode_loc+0xf0/0x410 [ext4]
+[6038068.716731]  do_writepages+0xc3/0x1f0
+[6038068.721040]  ? __ext4_get_inode_loc_noinmem+0x3d/0xa0 [ext4]
+[6038068.727349]  ? ext4_write_inode+0x136/0x190 [ext4]
+[6038068.732774]  __writeback_single_inode+0x40/0x2b0
+[6038068.738008]  writeback_sb_inodes+0x1f8/0x450
+[6038068.742907]  __writeback_inodes_wb+0x4c/0xe0
+[6038068.747776]  wb_writeback+0x1de/0x2a0
+[6038068.752012]  wb_workfn+0x299/0x4c0
+[6038068.756002]  ? psi_task_switch+0x74/0x310
+[6038068.760575]  ? __switch_to_asm+0x3a/0x60
+[6038068.765057]  ? __switch_to_asm+0x34/0x60
+[6038068.769520]  process_one_work+0x1c8/0x3a0
+[6038068.774088]  worker_thread+0x4d/0x3d0
+[6038068.778275]  ? rescuer_thread+0x380/0x380
+[6038068.782816]  kthread+0x127/0x150
+[6038068.786602]  ? set_kthread_struct+0x50/0x50
+[6038068.791308]  ret_from_fork+0x22/0x30
+[6038068.795399]  </TASK>
+[6038068.798094] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038068.843964] ---[ end trace 91f69e2e735a49b4 ]---
+[6038069.161627] RIP: 0010:ext4_write_inline_data+0xea/0x100 [ext4]
+[6038069.168738] Code: 44 89 e2 48 01 df 5b 5d 4c 01 ef 41 5c 41 5d 41 5e 41 5f e9 f8 b2 5e e1 41 be 3c 00 00 00 45 8d 64 18 c4 41 29 de eb 8f 0f 0b <0f> 0b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[6038069.189705] RSP: 0018:ffffc900369dbcf8 EFLAGS: 00010202
+[6038069.195888] RAX: 00000000000004b8 RBX: 0000000000000322 RCX: 0000000000000057
+[6038069.203871] RDX: ffff89478f8d9000 RSI: ffffc900369dbd48 RDI: ffff894bc65342d8
+[6038069.211735] RBP: ffff894bc65342d8 R08: 0000000000000196 R09: 0000000000000000
+[6038069.219523] R10: ffff894bc6534218 R11: ffff8940c35e1400 R12: 0000000000000196
+[6038069.227310] R13: 0000000000000322 R14: 0000000000000000 R15: ffffea031e3e3640
+[6038069.235047] FS:  0000000000000000(0000) GS:ffff895fffa00000(0000) knlGS:0000000000000000
+[6038069.243744] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038069.250182] CR2: 00007ffc6ce53458 CR3: 000000c3dfd42004 CR4: 0000000000770ee0
+[6038069.258069] PKRU: 55555554
+[6038069.261402] ------------[ cut here ]------------
+[6038069.266609] WARNING: CPU: 224 PID: 59484 at kernel/exit.c:739 do_exit+0x47/0xa30
+[6038069.274608] Modules linked in: af_packet dm_zero ext4 mbcache jbd2 dm_mod rpcsec_gss_krb5 nfsv4 nfs 8021q garp stp mrp llc input_leds led_class mgag200 drm_kms_helper kvm_amd i40e tg3 drm kvm i2c_algo_bit libphy fb_sys_fops syscopyarea sysfillrect deflate tpm_crb efi_pstore tpm_tis irqbypass crc32c_intel sysimgblt i2c_piix4 wmi_bmof tpm_tis_core tpm k10temp pstore ipmi_si rng_core acpi_cpufreq wmi nfsd auth_rpcgss oid_registry nfs_acl lockd grace sunrpc efivarfs ip_tables x_tables unix ipv6 autofs4
+[6038069.320665] CPU: 224 PID: 59484 Comm: kworker/u519:2 Tainted: G      D           5.15.86.mx64.443 #1
+[6038069.330914] Hardware name: Dell Inc. PowerEdge R7525/0T4KXC, BIOS 2.9.3 08/05/2022
+[6038069.339543] Workqueue: writeback wb_workfn (flush-251:2)
+[6038069.345828] RIP: 0010:do_exit+0x47/0xa30
+[6038069.350694] Code: ec 28 65 48 8b 04 25 28 00 00 00 48 89 44 24 20 31 c0 48 8b 83 c8 07 00 00 48 85 c0 74 0e 48 8b 10 48 39 d0 0f 84 26 04 00 00 <0f> 0b 65 8b 0d 60 49 fa 7e 89 c8 25 00 ff ff 00 89 44 24 0c 0f 85
+[6038069.371051] RSP: 0018:ffffc90036343ef8 EFLAGS: 00010216
+[6038069.377138] RAX: ffffc90036343d80 RBX: ffff894619333000 RCX: 0000000000000000
+[6038069.385182] RDX: ffff888142a62bc8 RSI: ffff895fffa1b640 RDI: 000000000000000b
+[6038069.393181] RBP: 000000000000000b R08: ffff899fffdedfe8 R09: 000000000004fffb
+[6038069.401178] R10: 00000000ffff0000 R11: 3fffffffffffffff R12: 000000000000000b
+[6038069.409134] R13: 0000000000000000 R14: ffff894619333000 R15: 0000000000000006
+[6038069.417093] FS:  0000000000000000(0000) GS:ffff895fffa00000(0000) knlGS:0000000000000000
+[6038069.426061] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[6038069.432648] CR2: 00007ffc6ce53458 CR3: 000000c3dfd42004 CR4: 0000000000770ee0
+[6038069.440647] PKRU: 55555554
+[6038069.444176] Call Trace:
+[6038069.447410]  <TASK>
+[6038069.450305]  ? kthread+0x127/0x150
+[6038069.454489]  rewind_stack_do_exit+0x17/0x20
+[6038069.459447] RIP: 0000:0x0
+[6038069.462837] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+[6038069.470478] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+[6038069.478824] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[6038069.486801] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[6038069.494694] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[6038069.502563] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[6038069.510442] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[6038069.518321]  </TASK>
+[6038069.521183] ---[ end trace 91f69e2e735a49b5 ]---
+
+=== snip ===
+
+
+
 
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
