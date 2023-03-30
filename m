@@ -2,70 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AF96CF7EA
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 02:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6385E6CF95A
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 04:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjC3AFt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Mar 2023 20:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
+        id S229481AbjC3C5I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Mar 2023 22:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjC3AFs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Mar 2023 20:05:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BD92D48
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Mar 2023 17:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wfcpaQZ1NDBaNRb61sEVJGMkagHxtXwTcJUTY0B3et8=; b=uSG35dPg5bu7ibnWLGeLQpJHqa
-        8yPtmO3971hx+XX9CEY56D3mYtCF9fQCfXWNzJJRmOhrCvd0q8Pqt5zb9a/NoU0hKgELUa61W83Mg
-        DO7+Arl8yPLU6bxdlwr1OBUtCv+yp6IIMtlOxtUphTW0xdh5OmooXsVvs55pSfcC7ls8cNlZVJUaD
-        GonMCWtBGU7+13NaKSrbUVlmvE+Dtj7nsSiN0ZiatJ8vwjb3WW1AoAXstlPr+hVayI091POb+D1LT
-        M2w3ZlmFvPciCpHwUQKNxr8GGNDT0eLlHgyMXp+guftXtnrrYm2tHenus7xSs9uAGC/ucmt+Q+POv
-        IpHTMzYA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1phfnV-0027Kj-1M;
-        Thu, 30 Mar 2023 00:05:45 +0000
-Date:   Wed, 29 Mar 2023 17:05:45 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 06/13] ext4: Drop special handling of journalled data
- from ext4_sync_file()
-Message-ID: <ZCTSWQk+8jxQckXG@infradead.org>
-References: <20230329125740.4127-1-jack@suse.cz>
- <20230329154950.19720-6-jack@suse.cz>
+        with ESMTP id S229776AbjC3C5I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Mar 2023 22:57:08 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4F75259
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Mar 2023 19:57:02 -0700 (PDT)
+Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Pn7LN69K8zKwtC;
+        Thu, 30 Mar 2023 10:54:36 +0800 (CST)
+Received: from [10.174.176.102] (10.174.176.102) by
+ dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 30 Mar 2023 10:57:00 +0800
+Message-ID: <9d3ad717-e3c2-69c8-4ef0-3f5f24c4ae1c@huawei.com>
+Date:   Thu, 30 Mar 2023 10:56:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230329154950.19720-6-jack@suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 0/2] Add some msg for io error
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <linfeilong@huawei.com>,
+        <louhongxiang@huawei.com>, <liuzhiqiang26@huawei.com>
+References: <20230325065652.2111384-1-zhanchengbin1@huawei.com>
+ <20230326143128.GA436186@mit.edu>
+From:   zhanchengbin <zhanchengbin1@huawei.com>
+In-Reply-To: <20230326143128.GA436186@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.102]
+X-ClientProxiedBy: dggpeml500014.china.huawei.com (7.185.36.63) To
+ dggpeml500016.china.huawei.com (7.185.36.70)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 05:49:37PM +0200, Jan Kara wrote:
->  	/*
-> -	 * data=writeback,ordered:
->  	 *  The caller's filemap_fdatawrite()/wait will sync the data.
->  	 *  Metadata is in the journal, we wait for proper transaction to
->  	 *  commit here.
 
-Nit: without the list, the two space indent looks a bit weird here.
+On 2023/3/26 22:31, Theodore Ts'o wrote:
+> On Sat, Mar 25, 2023 at 02:56:50PM +0800, zhanchengbin wrote:
+>> If there is an EIO during the process of fsck, the user can be notified of it.
+> 
+> Can you identify a code path where the user is *not* getting notified
+> while e2fsck is running without this patch series?
+> 
+> The unix_io.c module calls fsync() through unix_flush() only.  When
+> unix_write_byte() calls flush_cached blocks(), if the read or write
+> system call fails, the error will be returned to the caller of
+> flush_cached_byte(), and the unix_write_byte() will return the error
+> back to the caller (in this case, e2fsck).
+> 
 
->  	if (!sbi->s_journal)
->  		ret = ext4_fsync_nojournal(inode, datasync, &needs_barrier);
-> -	else if (ext4_should_journal_data(inode))
-> -		ret = ext4_force_commit(inode->i_sb);
->  	else
->  		ret = ext4_fsync_journal(inode, datasync, &needs_barrier);
+io_channel_flush and io_channel_write_byte do have return values, but
+they may not necessarily be checked at their calling points. As in the
+following path:
 
-Also if there is not journale the above comment doesn't make much sense.
-But I'm really not sure the comment adds any value to start with, so
-maybe just drop it entirely?
+e2fsck_run_ext3_journal
+  ext2fs_flush // Ignore errors.
+   ext2fs_flush2
+    io_channel_flush
+  ext2fs_mmp_stop // Ignore errors.
+   ext2fs_mmp_write
+    io_channel_flush
+
+ext2fs_flush // Many calls ignore errors.
+  ext2fs_flush2
+   write_primary_superblock
+    io_channel_write_byte
+
+Thanks,
+  - bin.
+
+> So in both cases, e2fsck checks the error return from ext2fs_flush()
+> (which is the only place where write_byte gets called) and
+> io_channel->flush(), and so the user will get some kind of error
+> report already.
+> 
+> The error message might not identify exactly what I/O failed, but the
+> "Error sync" message that this commit series provides is not going to
+> be much better.
+> 
+> 						- Ted
+> 
+> .
+> 
