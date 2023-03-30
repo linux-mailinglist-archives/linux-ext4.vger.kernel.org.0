@@ -2,109 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6326D0748
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 15:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A466D071D
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Mar 2023 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbjC3Nuk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Mar 2023 09:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S232119AbjC3NnO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Mar 2023 09:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbjC3Nui (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Mar 2023 09:50:38 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A45B86;
-        Thu, 30 Mar 2023 06:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680184236; x=1711720236;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0RFB1dYZ9F2StXue2dw6vh4Fi8li3Ziwy4v/kPzxaaQ=;
-  b=lyayXXt0GM7m6k/XxvD5TSE9A3oHJgvmpiZamgOH10syR0w/TN58jPKF
-   ncppL7wXIas07HXkrqIchrxNwYMKnCRX9jW5kSSnPwvqDNGaQ5OSOa19L
-   +je0qhEBoPjNjFUs+vxVE3H5adhWkhTxjx4jUhxnr5eHk+A9T4nF3kqWs
-   zIt+OGr1sasyfP6LmpJlF4DEHsxu6SkB12IR0nupKspI+gscGog3WUsBD
-   njgeb5qaf28JeYpf46rTLcYXd2IEr+fRkNdbQaunbQqT/n9O4ziN4r+0d
-   tjEhQBgf/y0SYVZ3HhEkmvE9VexLrplPNklS69XFo7GbAODHoTlul1iqt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="343638563"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="343638563"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 06:22:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="753990820"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="753990820"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Mar 2023 06:22:56 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1phsEx-000KtE-0z;
-        Thu, 30 Mar 2023 13:22:55 +0000
-Date:   Thu, 30 Mar 2023 21:22:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Josh Triplett <josh@joshtriplett.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] ext4: Add a uapi header for ext4 userspace APIs
-Message-ID: <202303302155.FBlvXAL3-lkp@intel.com>
-References: <f0c650c0a0bcc799101573d265f3006c6f6bd046.1680149153.git.josh@joshtriplett.org>
+        with ESMTP id S231536AbjC3NnN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 Mar 2023 09:43:13 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1050A9EEF
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Mar 2023 06:42:42 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id h11so17599097lfu.8
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Mar 2023 06:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680183758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ciy/j7+gGpGGitemo6zgFmtrTpHLEWhuusaBGl9ec5Q=;
+        b=T+UONiVles7QSlLTBwZEbV0faj7CrqST29KkE+UlBDfk7bionukH/9OM0YOq9zjxoa
+         T+Op4cMRQRAqxVBYeLCLucVKivl+yDUkckhKbad/XGjaoZJLVLYn25+4lBGVHD97Zhto
+         2I6REBckOisb962zv73UkrhIsjjZvSC8UGOmAYgIx/Ba54siHP8uHtIZfRHkN3t9/G4E
+         oAzUcgWff8/tg2JjxRk941gyU3OI7PNtro/T/zZqQdLVXy8ysbTwDEGgkKh2juv5FzYL
+         Hdxu+8QoUr5c6njEEhXx/9d+rGA7XDmmzA8yzbfApVBzGrx724SSQCQLZuezrYRCRAI4
+         17sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680183758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ciy/j7+gGpGGitemo6zgFmtrTpHLEWhuusaBGl9ec5Q=;
+        b=Unz1L1EcxCDOBlV29xlLK3pCg5E12OtJCRqFMZopWOb4Apgvt9ocVj+RAN7dyJfnjv
+         vKilakA1e+w8C5Z4BmzCJBCWXAG9OdRoVaSzQPRX/aVjV5w11YkThUbcwo6xhxYYwX8R
+         MX0EYewqn0GoI4QZxfNqxcQLTqynRWAqPW8MbZMvZAqP2Kr8yZ7UgHN5UO6U9RV2/enS
+         rP1+uAemY80ooU+vZbr25MpJmkNzW15YHDoq0rCZBdy2DJV2b0pgqj5aD/0nrItNqMay
+         J05fx3fhNs5uoYdmrfbgs5vXfL2jdguOLUd/G9ExiUnAbBCrzgyzrmhRuDQLlXBfu/yh
+         ud7g==
+X-Gm-Message-State: AAQBX9cKIqLvTHeXoN1wu7gbDCFmnYI4vZr8T77bOWcOf6C83X56mbJV
+        6NJq3FrnUFynEWFVPhH2UaJjTA==
+X-Google-Smtp-Source: AKy350Y9KerGNjDv64cU9kzSoNCuewKUv+cuq95fj5p1J7M64jevLHIqZYRQP8Mws6GAvR+hqn/Zcg==
+X-Received: by 2002:a19:7003:0:b0:4dd:af76:d3c with SMTP id h3-20020a197003000000b004ddaf760d3cmr7640686lfc.48.1680183757940;
+        Thu, 30 Mar 2023 06:42:37 -0700 (PDT)
+Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
+        by smtp.gmail.com with ESMTPSA id m10-20020ac2428a000000b004b6f00832cesm5848001lfh.166.2023.03.30.06.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Mar 2023 06:42:37 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, boyu.mt@taobao.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        leejones@google.com, yebin10@huawei.com,
+        syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com,
+        jun.nie@linaro.org, stable@kernel.org,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v2][for-stable 5.10, 5.4, 4.19, 4.14] ext4: fix kernel BUG in 'ext4_write_inline_data_end()'
+Date:   Thu, 30 Mar 2023 13:42:33 +0000
+Message-Id: <20230330134233.3407390-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0c650c0a0bcc799101573d265f3006c6f6bd046.1680149153.git.josh@joshtriplett.org>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Josh,
+From: Ye Bin <yebin10@huawei.com>
 
-I love your patch! Yet something to improve:
+[ Upstream commit 5c099c4fdc438014d5893629e70a8ba934433ee8 ]
 
-[auto build test ERROR on tytso-ext4/dev]
-[also build test ERROR on linus/master v6.3-rc4 next-20230330]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Syzbot report follow issue:
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:227!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3629 Comm: syz-executor212 Not tainted 6.1.0-rc5-syzkaller-00018-g59d0d52c30d4 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:227
+RSP: 0018:ffffc90003b3f368 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8880704e16c0 RCX: 0000000000000000
+RDX: ffff888021763a80 RSI: ffffffff821e31a4 RDI: 0000000000000006
+RBP: 000000000006818e R08: 0000000000000006 R09: 0000000000068199
+R10: 0000000000000079 R11: 0000000000000000 R12: 000000000000000b
+R13: 0000000000068199 R14: ffffc90003b3f408 R15: ffff8880704e1c82
+FS:  000055555723e3c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffe8ac9080 CR3: 0000000079f81000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ ext4_write_inline_data_end+0x2a3/0x12f0 fs/ext4/inline.c:768
+ ext4_write_end+0x242/0xdd0 fs/ext4/inode.c:1313
+ ext4_da_write_end+0x3ed/0xa30 fs/ext4/inode.c:3063
+ generic_perform_write+0x316/0x570 mm/filemap.c:3764
+ ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:285
+ ext4_file_write_iter+0x8bc/0x16e0 fs/ext4/file.c:700
+ call_write_iter include/linux/fs.h:2191 [inline]
+ do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+ do_iter_write+0x182/0x700 fs/read_write.c:861
+ vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+ iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x114/0x180 fs/splice.c:931
+ splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+ do_splice_direct+0x1ab/0x280 fs/splice.c:974
+ do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+ __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+ __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1309
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+---[ end trace 0000000000000000 ]---
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Josh-Triplett/ext4-Add-a-uapi-header-for-ext4-userspace-APIs/20230330-123712
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/f0c650c0a0bcc799101573d265f3006c6f6bd046.1680149153.git.josh%40joshtriplett.org
-patch subject: [PATCH] ext4: Add a uapi header for ext4 userspace APIs
-config: x86_64-randconfig-a016 (https://download.01.org/0day-ci/archive/20230330/202303302155.FBlvXAL3-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9e61a3eab96b327fb2392b2ae665c6bc25e4b004
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Josh-Triplett/ext4-Add-a-uapi-header-for-ext4-userspace-APIs/20230330-123712
-        git checkout 9e61a3eab96b327fb2392b2ae665c6bc25e4b004
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+Above issue may happens as follows:
+ext4_da_write_begin
+  ext4_da_write_inline_data_begin
+    ext4_da_convert_inline_data_to_extent
+      ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ext4_da_write_end
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303302155.FBlvXAL3-lkp@intel.com/
+ext4_run_li_request
+  ext4_mb_prefetch
+    ext4_read_block_bitmap_nowait
+      ext4_validate_block_bitmap
+        ext4_mark_group_bitmap_corrupted(sb, block_group, EXT4_GROUP_INFO_BBITMAP_CORRUPT)
+	 percpu_counter_sub(&sbi->s_freeclusters_counter,grp->bb_free);
+	  -> sbi->s_freeclusters_counter become zero
+ext4_da_write_begin
+  if (ext4_nonda_switch(inode->i_sb)) -> As freeclusters_counter is zero will return true
+    *fsdata = (void *)FALL_BACK_TO_NONDELALLOC;
+    ext4_write_begin
+ext4_da_write_end
+  if (write_mode == FALL_BACK_TO_NONDELALLOC)
+    ext4_write_end
+      if (inline_data)
+        ext4_write_inline_data_end
+	  ext4_write_inline_data
+	    BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
+           -> As inode is already convert to extent, so 'pos + len' > inline_size
+	   -> then trigger BUG.
 
-All errors (new ones prefixed by >>):
+To solve this issue, instead of checking ext4_has_inline_data() which
+is only cleared after data has been written back, check the
+EXT4_STATE_MAY_INLINE_DATA flag in ext4_write_end().
 
-   In file included from <built-in>:1:
->> ./usr/include/linux/ext4.h:7:10: fatal error: 'uapi/linux/fiemap.h' file not found
-   #include <uapi/linux/fiemap.h>
-            ^~~~~~~~~~~~~~~~~~~~~
-   1 error generated.
+Fixes: f19d5870cbf7 ("ext4: add normal write support for inline data")
+Reported-by: syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
+Reported-by: Jun Nie <jun.nie@linaro.org>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Link: https://lore.kernel.org/r/20221206144134.1919987-1-yebin@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+[ta: Fix conflict in if expression and use the local variable inline_data
+as it is initialized with ext4_has_inline_data(inode) anyway.]
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+v2: update description on how the conflict was fixed
 
+ fs/ext4/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 6ba185b46ba3..9bd5f8b0511b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1303,7 +1303,8 @@ static int ext4_write_end(struct file *file,
+ 	bool verity = ext4_verity_in_progress(inode);
+ 
+ 	trace_ext4_write_end(inode, pos, len, copied);
+-	if (inline_data) {
++	if (inline_data &&
++	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
+ 		ret = ext4_write_inline_data_end(inode, pos, len,
+ 						 copied, page);
+ 		if (ret < 0) {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.40.0.348.gf938b09366-goog
+
