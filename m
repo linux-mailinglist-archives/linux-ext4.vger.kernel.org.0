@@ -2,341 +2,397 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEC66D203C
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Mar 2023 14:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFF96D22D2
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Mar 2023 16:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbjCaM1M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 Mar 2023 08:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        id S230025AbjCaOpN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 Mar 2023 10:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbjCaM1L (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Mar 2023 08:27:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A201EFF9
-        for <linux-ext4@vger.kernel.org>; Fri, 31 Mar 2023 05:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680265580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DH2TEGtbu6b5LqxnMSb70uBmRZl7fmkRGu9vSpf9xqk=;
-        b=i8/ZevfIEEKjY49zjeVNPUASff5cam28/XNkCdvGDevIjNfKZxpivbkUHA0pK20JhV2ohW
-        XbdfNR8GrBLxVnXn3lKaql2d8jX8GMxaeIbvtNu8Z2d1HmRHlpceXqVjYfUtDQUVkoppAS
-        wmOLUyLPZQdWOGbOxQgG3kz/hJRBjQs=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-324-fY2RBy3JMZOhMjy9kqu-jA-1; Fri, 31 Mar 2023 08:26:19 -0400
-X-MC-Unique: fY2RBy3JMZOhMjy9kqu-jA-1
-Received: by mail-qv1-f70.google.com with SMTP id dg8-20020a056214084800b005acc280bf19so9630791qvb.22
-        for <linux-ext4@vger.kernel.org>; Fri, 31 Mar 2023 05:26:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680265579;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DH2TEGtbu6b5LqxnMSb70uBmRZl7fmkRGu9vSpf9xqk=;
-        b=KyX38PNW5EjJnpl99Cxn8gUIaVeeW0QFxXpPfxlWEgKDL4URdxdr40bBYuf5tvOEd7
-         LZ1/HXLD+WJ06ooB/d4Gh7TytD8p5mCV3kFxQs5xIH4Kg32WTeJ7n9frOTtEu/U8O8q7
-         4SxUrWFeXfEjvIdD2z64NdPN1dP+gEd7Nmzr0FwD1CQ+ymHVxJkZap+XbnIZKg01Kjy6
-         xMlURNj/zyN0yCaipmp8lMPBVEhvdaqLqaZEebYxhqM8q20H4kHoyVOL/VZQWVeEKnuA
-         ydxBL1hsG6WnMcrgD4R1/UoACLImU3UUmkpwVswXfo2k8b8qPKUTiF/7Z9lM5g+E/eWL
-         PuJg==
-X-Gm-Message-State: AAQBX9d/nXvWpDkAJ1mimWDPBfNryeiY8thB+iwvgYolKNlFSoxWrlbA
-        LjedH+u4HmwDK5vtCxhJq0noeNuYJalN8CCazi4fFpQ86pK8hszzcWxKBxbTq1qJGRs9XJZpSPl
-        ILikq8KtLPlG6TFGsrlc9XA==
-X-Received: by 2002:ad4:5dc9:0:b0:5ac:fb9a:677f with SMTP id m9-20020ad45dc9000000b005acfb9a677fmr34608096qvh.34.1680265578980;
-        Fri, 31 Mar 2023 05:26:18 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Z6rYxqMC+gfIXFXxm8RLwpDPGgPB876v8cq7C6XuwWCma4+tnHWKvrv1GKg+lUyow88OEGQA==
-X-Received: by 2002:ad4:5dc9:0:b0:5ac:fb9a:677f with SMTP id m9-20020ad45dc9000000b005acfb9a677fmr34608064qvh.34.1680265578627;
-        Fri, 31 Mar 2023 05:26:18 -0700 (PDT)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id s11-20020a05621412cb00b005dd8b9345efsm536061qvv.135.2023.03.31.05.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 05:26:18 -0700 (PDT)
-Date:   Fri, 31 Mar 2023 08:28:17 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
+        with ESMTP id S229967AbjCaOpL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Mar 2023 10:45:11 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD549B44E;
+        Fri, 31 Mar 2023 07:45:09 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 78A68320094B;
+        Fri, 31 Mar 2023 10:45:06 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 31 Mar 2023 10:45:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        joshtriplett.org; h=cc:content-type:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1680273906; x=
+        1680360306; bh=b9V9pc9Sw0SCXTmATmrdEc1EN0tSPLfauduH3d2l+BA=; b=K
+        RCLPyFpxhTrBfemPvc3M1czSn+7Wy9pT22WX2LbfYEwHNBAFdg4Kcbfxer4Gb0xo
+        8RCm1r0vVFmy+WMHs5Vnll4Ka+1AfXVrljEFeRt/rO5teHbP8nIoAXvj7anf0llP
+        h7gQID6+9rF1xAhqbbur+i5M1lSsneyOGBRA0rDjHwApa8lzizMrG1+2UtRaDO0i
+        8L6qUUUJiQ4qC8ya1GW0OEbcTyEKu/NKxRFOcmxoyQesSPBzdUSIvnfh9TSbvT2R
+        AblSfDNASFUdt9rAELzsaEr7LAE1G1lKgg7jjXB1nfYq0JpbjcOY4NNn1HBBUg3Y
+        goz1+ktNhbPUbJdwy3D0g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1680273906; x=1680360306; bh=b9V9pc9Sw0SCX
+        TmATmrdEc1EN0tSPLfauduH3d2l+BA=; b=Qc9bokSVCJKXVG7pWNepSHfA/bm5M
+        I09RMv7ExMCckGxETzpqHtVIzRDMUor1ZsITqo3HuxHmP6wuvFCeOFuhpi+GzJCw
+        88wS2vCIihg4SkNBhyHZR6tloUVPL945FjvBa9rdXvYEzUYoR9nDbGTbdSEwp477
+        1SOghUrwUy1qcVmeN/zXAD8ScscbtDwwOM1DxDYeOzf2mbt9GslED51bjq75weZf
+        iEbrKmWAxATUbdRBn++symbJRrlKBUpzYkXWpQyJSV7pu9yKOjITfDQT0IH6jdC7
+        khVDpcH93ETKqY+qZ2OuODTgBTBXP2aUxGQTN1iHFf6+7gv8nsC2bKH4g==
+X-ME-Sender: <xms:8fEmZC5qJEPcjZvEX2nPcXTphKWcisRLgCE5nvg-kDSeP_2mkI8Jbw>
+    <xme:8fEmZL6lRFxypNO_-q7qizqLg8gn_HY9FNzZFg-8yHzPDFE2FfZAFxtqqSHuVcgC8
+    9L3CtYvbPWSN9Buv3E>
+X-ME-Received: <xmr:8fEmZBeeq3ybQojpruefWNMk74dHQZRuiHEnV8XGk7Ke97gdQ45_sn5aLKh_sQs6pKRyXh80gNrRgMpjxlaupa2IxMjkA48xOz6vMdE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeiuddgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomheplfhoshhhucfvrhhiphhlvghtthcuoehjohhshhesjhhoshhh
+    thhrihhplhgvthhtrdhorhhgqeenucggtffrrghtthgvrhhnpeejieethfeufeevvdekfe
+    dthfevueeuvddtudeiieevtdelvedtieevkeduvdeitdenucffohhmrghinhepkhgvrhhn
+    vghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgh
+X-ME-Proxy: <xmx:8fEmZPJlMjkH15D0cgFW8yr_3cyEL4dXbpb40iC69BdDumrtUeqNEg>
+    <xmx:8fEmZGKYaLUgXhsosdPXqGrRXJ4MQRVMWLvOVLuGxUvywpuFeXDpdA>
+    <xmx:8fEmZAyKry0fwco0N4JY57GKWUSbxOw9lVxXk3djwO0c2ai3_HIRpQ>
+    <xmx:8vEmZNWPFfqPWMkxeJl-d1Yuin3Qw3m6mm6nmhj-1TojTrVx83EyHA>
+Feedback-ID: i83e94755:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 31 Mar 2023 10:45:04 -0400 (EDT)
+Date:   Fri, 31 Mar 2023 23:45:01 +0900
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v2 2/7] dm: Add support for block provisioning
-Message-ID: <ZCbR4euMpUauJ0iI@bfoster>
-References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
- <20221229081252.452240-3-sarthakkukreti@chromium.org>
- <Y7biAQyLKJDjsAlz@bfoster>
- <CAG9=OMNLAL8M2AqzSWzecXJzR7jfC_3Ckc_L24MzNBgz_+u-wQ@mail.gmail.com>
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [PATCH v2] ext4: Add a uapi header for ext4 userspace APIs
+Message-ID: <152752fa6b148e0ea304a3cdb3cc33bae0117918.1680272908.git.josh@joshtriplett.org>
+References: <f0c650c0a0bcc799101573d265f3006c6f6bd046.1680149153.git.josh@joshtriplett.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMNLAL8M2AqzSWzecXJzR7jfC_3Ckc_L24MzNBgz_+u-wQ@mail.gmail.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <f0c650c0a0bcc799101573d265f3006c6f6bd046.1680149153.git.josh@joshtriplett.org>
+X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 05:30:22PM -0700, Sarthak Kukreti wrote:
-> On Thu, Jan 5, 2023 at 6:42 AM Brian Foster <bfoster@redhat.com> wrote:
-> >
-> > On Thu, Dec 29, 2022 at 12:12:47AM -0800, Sarthak Kukreti wrote:
-> > > Add support to dm devices for REQ_OP_PROVISION. The default mode
-> > > is to pass through the request and dm-thin will utilize it to provision
-> > > blocks.
-> > >
-> > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > ---
-> > >  drivers/md/dm-crypt.c         |  4 +-
-> > >  drivers/md/dm-linear.c        |  1 +
-> > >  drivers/md/dm-snap.c          |  7 +++
-> > >  drivers/md/dm-table.c         | 25 ++++++++++
-> > >  drivers/md/dm-thin.c          | 90 ++++++++++++++++++++++++++++++++++-
-> > >  drivers/md/dm.c               |  4 ++
-> > >  include/linux/device-mapper.h | 11 +++++
-> > >  7 files changed, 139 insertions(+), 3 deletions(-)
-> > >
-> > ...
-> > > diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-> > > index 64cfcf46881d..ab3f1abfabaf 100644
-> > > --- a/drivers/md/dm-thin.c
-> > > +++ b/drivers/md/dm-thin.c
-> > ...
-> > > @@ -1980,6 +1992,70 @@ static void process_cell(struct thin_c *tc, struct dm_bio_prison_cell *cell)
-> > >       }
-> > >  }
-> > >
-> > > +static void process_provision_cell(struct thin_c *tc, struct dm_bio_prison_cell *cell)
-> > > +{
-> > > +     int r;
-> > > +     struct pool *pool = tc->pool;
-> > > +     struct bio *bio = cell->holder;
-> > > +     dm_block_t begin, end;
-> > > +     struct dm_thin_lookup_result lookup_result;
-> > > +
-> > > +     if (tc->requeue_mode) {
-> > > +             cell_requeue(pool, cell);
-> > > +             return;
-> > > +     }
-> > > +
-> > > +     get_bio_block_range(tc, bio, &begin, &end);
-> > > +
-> > > +     while (begin != end) {
-> > > +             r = ensure_next_mapping(pool);
-> > > +             if (r)
-> > > +                     /* we did our best */
-> > > +                     return;
-> > > +
-> > > +             r = dm_thin_find_block(tc->td, begin, 1, &lookup_result);
-> >
-> > Hi Sarthak,
-> >
-> > I think we discussed this before.. but remind me if/how we wanted to
-> > handle the case if the thin blocks are shared..? Would a provision op
-> > carry enough information to distinguish an FALLOC_FL_UNSHARE_RANGE
-> > request from upper layers to conditionally provision in that case?
-> >
-> I think that should depend on how the filesystem implements unsharing:
-> assuming that we use provision on first allocation, unsharing on xfs
-> should result in xfs calling REQ_OP_PROVISION on the newly allocated
-> blocks first. But for ext4, we'd fail UNSHARE_RANGE unless provision
-> (instead of noprovision, provision_on_alloc), in which case, we'd send
-> REQ_OP_PROVISION.
-> 
+Create a uapi header include/uapi/linux/ext4.h, move the ioctls and
+associated data structures to the uapi header, and include it from
+fs/ext4/ext4.h.
 
-I think my question was unclear... It doesn't necessarily have much to
-do with the filesystem or associated provision policy. Since dm-thin can
-share blocks internally via snapshots, do you intend to support
-FL_UNSHARE_RANGE via blkdev_fallocate() and REQ_OP_PROVISION?
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+---
+v2:
+- Add UAPI header to MAINTAINERS
+- Fix include paths in UAPI header
+- Formatting fix for EXT4_IOC_SHUTDOWN
 
-If so, then presumably this wants an UNSHARE request flag to pair with
-REQ_OP_PROVISION. Also, the dm-thin code above needs to check whether an
-existing block it finds is shared and basically do whatever COW breaking
-is necessary during the PROVISION request.
+ MAINTAINERS               |   1 +
+ fs/ext4/ext4.h            | 117 +----------------------------------
+ include/uapi/linux/ext4.h | 127 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 129 insertions(+), 116 deletions(-)
+ create mode 100644 include/uapi/linux/ext4.h
 
-If not, why? And what is expected behavior if blkdev_fallocate() is
-called with FL_UNSHARE_RANGE?
-
-Brian 
-
-> Best
-> Sarthak
-> 
-> 
-> Sarthak
-> 
-> > Brian
-> >
-> > > +             switch (r) {
-> > > +             case 0:
-> > > +                     begin++;
-> > > +                     break;
-> > > +             case -ENODATA:
-> > > +                     bio_inc_remaining(bio);
-> > > +                     provision_block(tc, bio, begin, cell);
-> > > +                     begin++;
-> > > +                     break;
-> > > +             default:
-> > > +                     DMERR_LIMIT(
-> > > +                             "%s: dm_thin_find_block() failed: error = %d",
-> > > +                             __func__, r);
-> > > +                     cell_defer_no_holder(tc, cell);
-> > > +                     bio_io_error(bio);
-> > > +                     begin++;
-> > > +                     break;
-> > > +             }
-> > > +     }
-> > > +     bio_endio(bio);
-> > > +     cell_defer_no_holder(tc, cell);
-> > > +}
-> > > +
-> > > +static void process_provision_bio(struct thin_c *tc, struct bio *bio)
-> > > +{
-> > > +     dm_block_t begin, end;
-> > > +     struct dm_cell_key virt_key;
-> > > +     struct dm_bio_prison_cell *virt_cell;
-> > > +
-> > > +     get_bio_block_range(tc, bio, &begin, &end);
-> > > +     if (begin == end) {
-> > > +             bio_endio(bio);
-> > > +             return;
-> > > +     }
-> > > +
-> > > +     build_key(tc->td, VIRTUAL, begin, end, &virt_key);
-> > > +     if (bio_detain(tc->pool, &virt_key, bio, &virt_cell))
-> > > +             return;
-> > > +
-> > > +     process_provision_cell(tc, virt_cell);
-> > > +}
-> > > +
-> > >  static void process_bio(struct thin_c *tc, struct bio *bio)
-> > >  {
-> > >       struct pool *pool = tc->pool;
-> > > @@ -2200,6 +2276,8 @@ static void process_thin_deferred_bios(struct thin_c *tc)
-> > >
-> > >               if (bio_op(bio) == REQ_OP_DISCARD)
-> > >                       pool->process_discard(tc, bio);
-> > > +             else if (bio_op(bio) == REQ_OP_PROVISION)
-> > > +                     process_provision_bio(tc, bio);
-> > >               else
-> > >                       pool->process_bio(tc, bio);
-> > >
-> > > @@ -2716,7 +2794,8 @@ static int thin_bio_map(struct dm_target *ti, struct bio *bio)
-> > >               return DM_MAPIO_SUBMITTED;
-> > >       }
-> > >
-> > > -     if (op_is_flush(bio->bi_opf) || bio_op(bio) == REQ_OP_DISCARD) {
-> > > +     if (op_is_flush(bio->bi_opf) || bio_op(bio) == REQ_OP_DISCARD ||
-> > > +         bio_op(bio) == REQ_OP_PROVISION) {
-> > >               thin_defer_bio_with_throttle(tc, bio);
-> > >               return DM_MAPIO_SUBMITTED;
-> > >       }
-> > > @@ -3355,6 +3434,8 @@ static int pool_ctr(struct dm_target *ti, unsigned argc, char **argv)
-> > >       pt->low_water_blocks = low_water_blocks;
-> > >       pt->adjusted_pf = pt->requested_pf = pf;
-> > >       ti->num_flush_bios = 1;
-> > > +     ti->num_provision_bios = 1;
-> > > +     ti->provision_supported = true;
-> > >
-> > >       /*
-> > >        * Only need to enable discards if the pool should pass
-> > > @@ -4053,6 +4134,7 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
-> > >               blk_limits_io_opt(limits, pool->sectors_per_block << SECTOR_SHIFT);
-> > >       }
-> > >
-> > > +
-> > >       /*
-> > >        * pt->adjusted_pf is a staging area for the actual features to use.
-> > >        * They get transferred to the live pool in bind_control_target()
-> > > @@ -4243,6 +4325,9 @@ static int thin_ctr(struct dm_target *ti, unsigned argc, char **argv)
-> > >               ti->num_discard_bios = 1;
-> > >       }
-> > >
-> > > +     ti->num_provision_bios = 1;
-> > > +     ti->provision_supported = true;
-> > > +
-> > >       mutex_unlock(&dm_thin_pool_table.mutex);
-> > >
-> > >       spin_lock_irq(&tc->pool->lock);
-> > > @@ -4457,6 +4542,7 @@ static void thin_io_hints(struct dm_target *ti, struct queue_limits *limits)
-> > >
-> > >       limits->discard_granularity = pool->sectors_per_block << SECTOR_SHIFT;
-> > >       limits->max_discard_sectors = 2048 * 1024 * 16; /* 16G */
-> > > +     limits->max_provision_sectors = 2048 * 1024 * 16; /* 16G */
-> > >  }
-> > >
-> > >  static struct target_type thin_target = {
-> > > diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> > > index e1ea3a7bd9d9..4d19bae9da4a 100644
-> > > --- a/drivers/md/dm.c
-> > > +++ b/drivers/md/dm.c
-> > > @@ -1587,6 +1587,7 @@ static bool is_abnormal_io(struct bio *bio)
-> > >               case REQ_OP_DISCARD:
-> > >               case REQ_OP_SECURE_ERASE:
-> > >               case REQ_OP_WRITE_ZEROES:
-> > > +             case REQ_OP_PROVISION:
-> > >                       return true;
-> > >               default:
-> > >                       break;
-> > > @@ -1611,6 +1612,9 @@ static blk_status_t __process_abnormal_io(struct clone_info *ci,
-> > >       case REQ_OP_WRITE_ZEROES:
-> > >               num_bios = ti->num_write_zeroes_bios;
-> > >               break;
-> > > +     case REQ_OP_PROVISION:
-> > > +             num_bios = ti->num_provision_bios;
-> > > +             break;
-> > >       default:
-> > >               break;
-> > >       }
-> > > diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-> > > index 04c6acf7faaa..b4d97d5d75b8 100644
-> > > --- a/include/linux/device-mapper.h
-> > > +++ b/include/linux/device-mapper.h
-> > > @@ -333,6 +333,12 @@ struct dm_target {
-> > >        */
-> > >       unsigned num_write_zeroes_bios;
-> > >
-> > > +     /*
-> > > +      * The number of PROVISION bios that will be submitted to the target.
-> > > +      * The bio number can be accessed with dm_bio_get_target_bio_nr.
-> > > +      */
-> > > +     unsigned num_provision_bios;
-> > > +
-> > >       /*
-> > >        * The minimum number of extra bytes allocated in each io for the
-> > >        * target to use.
-> > > @@ -357,6 +363,11 @@ struct dm_target {
-> > >        */
-> > >       bool discards_supported:1;
-> > >
-> > > +     /* Set if this target needs to receive provision requests regardless of
-> > > +      * whether or not its underlying devices have support.
-> > > +      */
-> > > +     bool provision_supported:1;
-> > > +
-> > >       /*
-> > >        * Set if we need to limit the number of in-flight bios when swapping.
-> > >        */
-> > > --
-> > > 2.37.3
-> > >
-> >
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1dc8bd26b6cf..7d1e56a88f2f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7728,6 +7728,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ F:	Documentation/filesystems/ext4/
+ F:	fs/ext4/
+ F:	include/trace/events/ext4.h
++F:	include/uapi/linux/ext4.h
+ 
+ Extended Verification Module (EVM)
+ M:	Mimi Zohar <zohar@linux.ibm.com>
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 08b29c289da4..e976c272cc77 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -40,6 +40,7 @@
+ #ifdef __KERNEL__
+ #include <linux/compat.h>
+ #endif
++#include <uapi/linux/ext4.h>
+ 
+ #include <linux/fscrypt.h>
+ #include <linux/fsverity.h>
+@@ -591,29 +592,6 @@ static inline void ext4_check_flag_values(void)
+ 	CHECK_FLAG_VALUE(RESERVED);
+ }
+ 
+-/* Used to pass group descriptor data when online resize is done */
+-struct ext4_new_group_input {
+-	__u32 group;		/* Group number for this data */
+-	__u64 block_bitmap;	/* Absolute block number of block bitmap */
+-	__u64 inode_bitmap;	/* Absolute block number of inode bitmap */
+-	__u64 inode_table;	/* Absolute block number of inode table start */
+-	__u32 blocks_count;	/* Total number of blocks in this group */
+-	__u16 reserved_blocks;	/* Number of reserved blocks in this group */
+-	__u16 unused;
+-};
+-
+-#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+-struct compat_ext4_new_group_input {
+-	u32 group;
+-	compat_u64 block_bitmap;
+-	compat_u64 inode_bitmap;
+-	compat_u64 inode_table;
+-	u32 blocks_count;
+-	u16 reserved_blocks;
+-	u16 unused;
+-};
+-#endif
+-
+ /* The struct ext4_new_group_input in kernel space, with free_blocks_count */
+ struct ext4_new_group_data {
+ 	__u32 group;
+@@ -698,90 +676,6 @@ enum {
+ #define EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER	0x0020
+ #define EXT4_FREE_BLOCKS_RERESERVE_CLUSTER      0x0040
+ 
+-/*
+- * ioctl commands
+- */
+-#define	EXT4_IOC_GETVERSION		_IOR('f', 3, long)
+-#define	EXT4_IOC_SETVERSION		_IOW('f', 4, long)
+-#define	EXT4_IOC_GETVERSION_OLD		FS_IOC_GETVERSION
+-#define	EXT4_IOC_SETVERSION_OLD		FS_IOC_SETVERSION
+-#define EXT4_IOC_GETRSVSZ		_IOR('f', 5, long)
+-#define EXT4_IOC_SETRSVSZ		_IOW('f', 6, long)
+-#define EXT4_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
+-#define EXT4_IOC_GROUP_ADD		_IOW('f', 8, struct ext4_new_group_input)
+-#define EXT4_IOC_MIGRATE		_IO('f', 9)
+- /* note ioctl 10 reserved for an early version of the FIEMAP ioctl */
+- /* note ioctl 11 reserved for filesystem-independent FIEMAP ioctl */
+-#define EXT4_IOC_ALLOC_DA_BLKS		_IO('f', 12)
+-#define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
+-#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
+-#define EXT4_IOC_SWAP_BOOT		_IO('f', 17)
+-#define EXT4_IOC_PRECACHE_EXTENTS	_IO('f', 18)
+-/* ioctl codes 19--39 are reserved for fscrypt */
+-#define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
+-#define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
+-#define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
+-#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
+-#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
+-#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
+-
+-#define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
+-
+-/*
+- * Flags for going down operation
+- */
+-#define EXT4_GOING_FLAGS_DEFAULT		0x0	/* going down */
+-#define EXT4_GOING_FLAGS_LOGFLUSH		0x1	/* flush log but not data */
+-#define EXT4_GOING_FLAGS_NOLOGFLUSH		0x2	/* don't flush log nor data */
+-
+-/*
+- * Flags returned by EXT4_IOC_GETSTATE
+- *
+- * We only expose to userspace a subset of the state flags in
+- * i_state_flags
+- */
+-#define EXT4_STATE_FLAG_EXT_PRECACHED	0x00000001
+-#define EXT4_STATE_FLAG_NEW		0x00000002
+-#define EXT4_STATE_FLAG_NEWENTRY	0x00000004
+-#define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
+-
+-/* flags for ioctl EXT4_IOC_CHECKPOINT */
+-#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
+-#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
+-#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
+-#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
+-						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
+-						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
+-
+-/*
+- * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
+- */
+-struct fsuuid {
+-	__u32       fsu_len;
+-	__u32       fsu_flags;
+-	__u8        fsu_uuid[];
+-};
+-
+-#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+-/*
+- * ioctl commands in 32 bit emulation
+- */
+-#define EXT4_IOC32_GETVERSION		_IOR('f', 3, int)
+-#define EXT4_IOC32_SETVERSION		_IOW('f', 4, int)
+-#define EXT4_IOC32_GETRSVSZ		_IOR('f', 5, int)
+-#define EXT4_IOC32_SETRSVSZ		_IOW('f', 6, int)
+-#define EXT4_IOC32_GROUP_EXTEND		_IOW('f', 7, unsigned int)
+-#define EXT4_IOC32_GROUP_ADD		_IOW('f', 8, struct compat_ext4_new_group_input)
+-#define EXT4_IOC32_GETVERSION_OLD	FS_IOC32_GETVERSION
+-#define EXT4_IOC32_SETVERSION_OLD	FS_IOC32_SETVERSION
+-#endif
+-
+-/*
+- * Returned by EXT4_IOC_GET_ES_CACHE as an additional possible flag.
+- * It indicates that the entry in extent status cache is for a hole.
+- */
+-#define EXT4_FIEMAP_EXTENT_HOLE		0x08000000
+-
+ /* Max physical block we can address w/o extents */
+ #define EXT4_MAX_BLOCK_FILE_PHYS	0xFFFFFFFF
+ 
+@@ -852,15 +746,6 @@ struct ext4_inode {
+ 	__le32	i_projid;	/* Project ID */
+ };
+ 
+-struct move_extent {
+-	__u32 reserved;		/* should be zero */
+-	__u32 donor_fd;		/* donor file descriptor */
+-	__u64 orig_start;	/* logical start offset in block for orig */
+-	__u64 donor_start;	/* logical start offset in block for donor */
+-	__u64 len;		/* block length to be moved */
+-	__u64 moved_len;	/* moved block length */
+-};
+-
+ #define EXT4_EPOCH_BITS 2
+ #define EXT4_EPOCH_MASK ((1 << EXT4_EPOCH_BITS) - 1)
+ #define EXT4_NSEC_MASK  (~0UL << EXT4_EPOCH_BITS)
+diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
+new file mode 100644
+index 000000000000..afd4ff834890
+--- /dev/null
++++ b/include/uapi/linux/ext4.h
+@@ -0,0 +1,127 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef _UAPI_LINUX_EXT4_H
++#define _UAPI_LINUX_EXT4_H
++#include <linux/fiemap.h>
++#include <linux/fs.h>
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++/*
++ * ext4-specific ioctl commands
++ */
++#define	EXT4_IOC_GETVERSION		_IOR('f', 3, long)
++#define	EXT4_IOC_SETVERSION		_IOW('f', 4, long)
++#define	EXT4_IOC_GETVERSION_OLD		FS_IOC_GETVERSION
++#define	EXT4_IOC_SETVERSION_OLD		FS_IOC_SETVERSION
++#define EXT4_IOC_GETRSVSZ		_IOR('f', 5, long)
++#define EXT4_IOC_SETRSVSZ		_IOW('f', 6, long)
++#define EXT4_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
++#define EXT4_IOC_GROUP_ADD		_IOW('f', 8, struct ext4_new_group_input)
++#define EXT4_IOC_MIGRATE		_IO('f', 9)
++ /* note ioctl 10 reserved for an early version of the FIEMAP ioctl */
++ /* note ioctl 11 reserved for filesystem-independent FIEMAP ioctl */
++#define EXT4_IOC_ALLOC_DA_BLKS		_IO('f', 12)
++#define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
++#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
++#define EXT4_IOC_SWAP_BOOT		_IO('f', 17)
++#define EXT4_IOC_PRECACHE_EXTENTS	_IO('f', 18)
++/* ioctl codes 19--39 are reserved for fscrypt */
++#define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
++#define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
++#define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
++#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
++#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
++#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
++
++#define EXT4_IOC_SHUTDOWN _IOR('X', 125, __u32)
++
++/*
++ * ioctl commands in 32 bit emulation
++ */
++#define EXT4_IOC32_GETVERSION		_IOR('f', 3, int)
++#define EXT4_IOC32_SETVERSION		_IOW('f', 4, int)
++#define EXT4_IOC32_GETRSVSZ		_IOR('f', 5, int)
++#define EXT4_IOC32_SETRSVSZ		_IOW('f', 6, int)
++#define EXT4_IOC32_GROUP_EXTEND		_IOW('f', 7, unsigned int)
++#define EXT4_IOC32_GROUP_ADD		_IOW('f', 8, struct compat_ext4_new_group_input)
++#define EXT4_IOC32_GETVERSION_OLD	FS_IOC32_GETVERSION
++#define EXT4_IOC32_SETVERSION_OLD	FS_IOC32_SETVERSION
++
++/*
++ * Flags returned by EXT4_IOC_GETSTATE
++ *
++ * We only expose to userspace a subset of the state flags in
++ * i_state_flags
++ */
++#define EXT4_STATE_FLAG_EXT_PRECACHED	0x00000001
++#define EXT4_STATE_FLAG_NEW		0x00000002
++#define EXT4_STATE_FLAG_NEWENTRY	0x00000004
++#define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
++
++/*
++ * Flags for ioctl EXT4_IOC_CHECKPOINT
++ */
++#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
++#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
++#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
++#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
++						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
++						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
++
++/*
++ * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
++ */
++struct fsuuid {
++	__u32       fsu_len;
++	__u32       fsu_flags;
++	__u8        fsu_uuid[];
++};
++
++/*
++ * Structure for EXT4_IOC_MOVE_EXT
++ */
++struct move_extent {
++	__u32 reserved;		/* should be zero */
++	__u32 donor_fd;		/* donor file descriptor */
++	__u64 orig_start;	/* logical start offset in block for orig */
++	__u64 donor_start;	/* logical start offset in block for donor */
++	__u64 len;		/* block length to be moved */
++	__u64 moved_len;	/* moved block length */
++};
++
++/*
++ * Flags used by EXT4_IOC_SHUTDOWN
++ */
++#define EXT4_GOING_FLAGS_DEFAULT		0x0	/* going down */
++#define EXT4_GOING_FLAGS_LOGFLUSH		0x1	/* flush log but not data */
++#define EXT4_GOING_FLAGS_NOLOGFLUSH		0x2	/* don't flush log nor data */
++
++/* Used to pass group descriptor data when online resize is done */
++struct ext4_new_group_input {
++	__u32 group;		/* Group number for this data */
++	__u64 block_bitmap;	/* Absolute block number of block bitmap */
++	__u64 inode_bitmap;	/* Absolute block number of inode bitmap */
++	__u64 inode_table;	/* Absolute block number of inode table start */
++	__u32 blocks_count;	/* Total number of blocks in this group */
++	__u16 reserved_blocks;	/* Number of reserved blocks in this group */
++	__u16 unused;
++};
++
++struct compat_ext4_new_group_input {
++	__u32 group;
++	compat_u64 block_bitmap;
++	compat_u64 inode_bitmap;
++	compat_u64 inode_table;
++	__u32 blocks_count;
++	__u16 reserved_blocks;
++	__u16 unused;
++};
++
++/*
++ * Returned by EXT4_IOC_GET_ES_CACHE as an additional possible flag.
++ * It indicates that the entry in extent status cache is for a hole.
++ */
++#define EXT4_FIEMAP_EXTENT_HOLE		0x08000000
++
++#endif /* _UAPI_LINUX_EXT4_H */
+-- 
+2.40.0
 
