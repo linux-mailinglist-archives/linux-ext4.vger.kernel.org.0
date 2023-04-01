@@ -2,61 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F656D33DC
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Apr 2023 22:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10F26D341E
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Apr 2023 23:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjDAUln (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 1 Apr 2023 16:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S229567AbjDAVnq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 1 Apr 2023 17:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjDAUln (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Apr 2023 16:41:43 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E62658B
-        for <linux-ext4@vger.kernel.org>; Sat,  1 Apr 2023 13:41:41 -0700 (PDT)
+        with ESMTP id S229379AbjDAVnp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Apr 2023 17:43:45 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E341E73D
+        for <linux-ext4@vger.kernel.org>; Sat,  1 Apr 2023 14:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680381701; x=1711917701;
+  t=1680385424; x=1711921424;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=xnHQdrKDzsuOE6knyYbMZdyNPH3XjpnVUqHRgcCIU5Y=;
-  b=oJnW5crbTmr4JBr8orCrTybhH3LB2qkruaDMbYAFKp1fbvoXUXLfapBE
-   yQJYHUxUJPh6+X/WhUOslcu7UiwjTkQxjHzsKAa7nj8rKqVkKKTwSiD/Y
-   RB18mmWPchWxk/ZPnU72Og9KdPt+arKoJVTMsZAB4eB7h1kchliPMT6a3
-   u2VPtXp8AMMIHppSL9ht7sVUjCHczP0PIiTquglcTYi9yNwSWlSGqQq4U
-   Hmp6cf/INPkQIz9HMeycjjmo44Wz/sJfDCYi6g4ZCFqRj8oxf7PxTPegs
-   HhDxsmW3aqv8CQyA9DRcx77wERcHotsFR3m/hZEjSRdcE+lPf14a13Q+2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="404431740"
+  bh=0vIGX5hGfH7diHlqyUfyzjM93nZHuh3/GA+FeZDGsuA=;
+  b=Qy6aVl2TmJAHFrL2D9tHOmEZQJnU5PPNKnmleRz19pZJKBSqUhW2wfJP
+   +5i5P1DM5/I3UwdWMwOjgFAOnwYt8wr2AAnLLXQ6BnRxVucOV5HvoaJ0C
+   qnvCP6lLtJYjKC8YYfbhqejaMJOuDGgpt/3cQL7JOdGSJ7A7rEpC3CWKq
+   Gl0Kz0Uvant5YH7PEly84Cj2OIlCjE2DG4m6kzR6selriVW0czdN6cx/H
+   WWZxFyxrmFHCLjhrMS5SLVBS0UZ2wI6xFAwhEmfZtYVOGvKnJK/twTzk9
+   DNbA78UQbzzRpP84pAjAvo53xR5L20mqq64RAx28C0x3nkvSLZH9EVPYV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="369483445"
 X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
-   d="scan'208";a="404431740"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2023 13:41:41 -0700
+   d="scan'208";a="369483445"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2023 14:43:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="685494399"
+X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="715829037"
 X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
-   d="scan'208";a="685494399"
+   d="scan'208";a="715829037"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 01 Apr 2023 13:41:39 -0700
+  by orsmga008.jf.intel.com with ESMTP; 01 Apr 2023 14:43:40 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pii2c-000N1f-1D;
-        Sat, 01 Apr 2023 20:41:38 +0000
-Date:   Sun, 2 Apr 2023 04:40:38 +0800
+        id 1pij0d-000N3z-2a;
+        Sat, 01 Apr 2023 21:43:39 +0000
+Date:   Sun, 2 Apr 2023 05:43:04 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     JunChao Sun <sunjunchao2870@gmail.com>, linux-ext4@vger.kernel.org
 Cc:     oe-kbuild-all@lists.linux.dev, tytso@mit.edu, jun.nie@linaro.org,
         JunChao Sun <sunjunchao2870@gmail.com>
 Subject: Re: [PATCH] ext4: fix performance issue of xattr when expanding inode
-Message-ID: <202304020403.NMWak0xA-lkp@intel.com>
+Message-ID: <202304020546.k5RbPsBr-lkp@intel.com>
 References: <20230401143244.70332-1-sunjunchao2870@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230401143244.70332-1-sunjunchao2870@gmail.com>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,8 +78,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/JunChao-Sun/ext4-fix-perf
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
 patch link:    https://lore.kernel.org/r/20230401143244.70332-1-sunjunchao2870%40gmail.com
 patch subject: [PATCH] ext4: fix performance issue of xattr when expanding inode
-config: mips-randconfig-s033-20230402 (https://download.01.org/0day-ci/archive/20230402/202304020403.NMWak0xA-lkp@intel.com/config)
-compiler: mips64el-linux-gcc (GCC) 12.1.0
+config: sparc-randconfig-s033-20230402 (https://download.01.org/0day-ci/archive/20230402/202304020546.k5RbPsBr-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 12.1.0
 reproduce:
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -90,20 +91,20 @@ reproduce:
         git checkout 715c6d399c95e6914f37b3dfc08bb88a9d6b2120
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=mips olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=mips SHELL=/bin/bash fs/ext4/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=sparc olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=sparc SHELL=/bin/bash fs/ext4/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304020403.NMWak0xA-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202304020546.k5RbPsBr-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
-   fs/ext4/xattr.c:2707:49: sparse: sparse: restricted __le16 degrades to integer
->> fs/ext4/xattr.c:2709:35: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned long [usertype] offs @@     got restricted __le16 [usertype] e_value_offs @@
-   fs/ext4/xattr.c:2709:35: sparse:     expected unsigned long [usertype] offs
+>> fs/ext4/xattr.c:2707:49: sparse: sparse: restricted __le16 degrades to integer
+>> fs/ext4/xattr.c:2709:35: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] offs @@     got restricted __le16 [usertype] e_value_offs @@
+   fs/ext4/xattr.c:2709:35: sparse:     expected unsigned int [usertype] offs
    fs/ext4/xattr.c:2709:35: sparse:     got restricted __le16 [usertype] e_value_offs
 
-vim +2709 fs/ext4/xattr.c
+vim +2707 fs/ext4/xattr.c
 
   2601	
   2602	/*
@@ -211,7 +212,7 @@ vim +2709 fs/ext4/xattr.c
   2704		} else if (here->e_value_size) {
   2705			/* Remove the old value in ibody */
   2706			void *first_val = is->s.base + min_offs;
-  2707			void *rm_val = is->s.base + here->e_value_offs;
+> 2707			void *rm_val = is->s.base + here->e_value_offs;
   2708			size_t rm_size = EXT4_XATTR_SIZE(le32_to_cpu(here->e_value_size));
 > 2709			size_t offs = here->e_value_offs;
   2710	
