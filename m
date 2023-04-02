@@ -2,294 +2,376 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC02A6D3528
-	for <lists+linux-ext4@lfdr.de>; Sun,  2 Apr 2023 03:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1626D3548
+	for <lists+linux-ext4@lfdr.de>; Sun,  2 Apr 2023 04:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjDBBaU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 1 Apr 2023 21:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S230053AbjDBChz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 1 Apr 2023 22:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjDBBaT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Apr 2023 21:30:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8C2191F6;
-        Sat,  1 Apr 2023 18:30:18 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id cu12so17027182pfb.13;
-        Sat, 01 Apr 2023 18:30:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680399017;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fx2kcupyV130/bJobMOpT9hod1ARX/5gdftwksDD8V8=;
-        b=qVeUEN0LhbVTcqG0WKLiszX8RU7bVbnvR2a/SJPOb5gr7/qRs7GO2gSN2E8CuPiFyq
-         RbGdbQMg5zTvRELTtwQ/r3Ij2WFc1SYUcgcpQFhoinypRxx+dr/eh/U1WSXvvlA0uig4
-         vcPmUnN7IN4rUETTzoF9/u11vdnRothUvVzvRCLd1lBwj4UTDYNN1HjnuhpkluUI6lEZ
-         UVr5rv3EO0LF8oIaZtj9D5+IujxKblBx0Hg/ppyxWZbTLhO9DYlhlljmuqRrW6RyNtlT
-         ZW+el+4SnIHzEI9gXfl1ArYhyqh2ckOxUT7+EpFWY98xuufGShUaKUlB7/WgD8O1xWiE
-         PN2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680399017;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fx2kcupyV130/bJobMOpT9hod1ARX/5gdftwksDD8V8=;
-        b=awxEVCNOBQGKr7mH21hqCXhBwK8cZKa6t0mF562eCEr2e8JpvKd/6Y0i+eiBm2MXoK
-         cNwOko4m2uWcID6ANdANLR7Scabfhksg/SIaUc8l25qwuzDFFy9Lj/eLgSqik5Ss9/Ux
-         D8nI4hsCpfaOLDBpS58BHIjIMyXuKPLKYnysKAF8C1aWLqn6TMqfPjJU9CrK4oV+CZzB
-         xt0+U1ceIXggzmOslBp463BrlJTWz7s4yaKaYwcpXKpagArG4pt9ENUg2m+TghbhadPr
-         uktLJTUcBG7wm26XTLnmWwZfzbBB3zS30Dj/9f1GCo8+B302j4O+0HY1qyY85vOk7Nvc
-         bDcA==
-X-Gm-Message-State: AAQBX9fddrezinDL0o/IV3nhzjPWRb3SPCeaOzERUAUY8cWbJlNQtfeh
-        GE2TNj7EL5VaPD0Z1TPyGj5DAklc0wQMi63F
-X-Google-Smtp-Source: AKy350bqGSTywFOFZdP2S1xeboBxAM6UeVUULjHmy1ZGf2RJbByg9osdjHXWh8fmtYG8Zxv9r4NkhA==
-X-Received: by 2002:aa7:96e5:0:b0:627:fc3b:4cb4 with SMTP id i5-20020aa796e5000000b00627fc3b4cb4mr8577493pfq.19.1680399016842;
-        Sat, 01 Apr 2023 18:30:16 -0700 (PDT)
-Received: from localhost ([223.104.210.138])
-        by smtp.gmail.com with ESMTPSA id s25-20020aa78d59000000b0059442ec49a2sm3965744pfe.146.2023.04.01.18.30.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 01 Apr 2023 18:30:16 -0700 (PDT)
-From:   JunChao Sun <sunjunchao2870@gmail.com>
-To:     linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     tytso@mit.edu, jun.nie@linaro.org,
-        JunChao Sun <sunjunchao2870@gmail.com>
-Subject: [PATCH v2] ext4: fix performance issue of xattr when expanding inode
-Date:   Sat,  1 Apr 2023 18:30:00 -0700
-Message-Id: <20230402013000.73713-1-sunjunchao2870@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229379AbjDBChy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Apr 2023 22:37:54 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E15F0;
+        Sat,  1 Apr 2023 19:37:51 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 53CBF320094C;
+        Sat,  1 Apr 2023 22:37:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sat, 01 Apr 2023 22:37:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        joshtriplett.org; h=cc:content-type:content-type:date:date:from
+        :from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1680403067; x=1680489467; bh=Ma
+        XWLS/nhQZwaTMtsdXoJ6M+0qaPQNoA1bM1WRsxPcw=; b=SGKTsorRgoBlgCt4YJ
+        jNmtcNI+DTyOBB8iU69uG+YJLOKGlrxbmo8by4Rv0Is3ylgpBqxF2h02WBC+ezQ7
+        VpyE+NRLGp+nd3n8ZoYcSmPoipMywYdmX8jk7iqLE8Yyb8RjzFJkfHR1XaUi7GRh
+        iC0alJvhaDCXP1u1wVhd3j+8X8k+uEaYqUxZrT/p+elHsOuMV8jnjigLaE2kWoL4
+        o9HLzImHSB5iIc1myqqLpz1WsvIEl/UqN8Q0BUxkWDeVUJABvVRxdP9p8vwty1q9
+        8OIqywmtvd1tphpsveAfxBEMbtfs7l0z5SKMN6keN5KlyHfaUPm0Qcqo5+9QWVVs
+        7A7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1680403067; x=1680489467; bh=MaXWLS/nhQZwaTMtsdXoJ6M+0qaPQNoA1bM
+        1WRsxPcw=; b=JJLQnB97qKJQ9B7B89YD0v+5VXQVXSoS34JhTRZiHHOq8xaugZn
+        kx0TuCqeeLxA5fnTN9/Vbn2nglNWQAeh5fHxbFf4L0Bjb8w68whW/9jOnrCyWlAA
+        sk8sQ4FL48y6TlAojfzsBOjdNnowJLiHZMnFUR5tqU+GIfxhtqx0+Kcy6QldW+3b
+        BJR8sp3eQ1omCU2e4uoyrTf+MF9irxPzsTxmZXPEhbsTYiQncKrrLnypw1m1sYI7
+        1bvcVAL400/7o9KXShNylrNA1Wg6eBdbXIovnDDTPQfR6jiZD9eHXCLe3cjt8GMH
+        QxwexGVlZ8UG7aWp+/Hy7W5cTTFW8DnVdWg==
+X-ME-Sender: <xms:e-ooZFHUV-ZUD4PIbl9sRqb54aGsuCxSZeS9X2DywN6pG9qSYYV8Kw>
+    <xme:e-ooZKVIyDw2Zz4MtnT6KuqlM_pWdT4I3-SE8tsSwgqHRUdvTf6ouECynWlEw6EKq
+    2W4RkKtF9AyEY4WbiQ>
+X-ME-Received: <xmr:e-ooZHKEB9grLU0AA5DjNIhX0OBg99Uyu6aD7u7ZyZLsjUQgn4Gqxlmo3cI0hXmK8T-X-vZgQxVxYh5XB717ZTZyn1GbD1xEdfznr0Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeigedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkgggtugesthdtredttd
+    dtvdenucfhrhhomheplfhoshhhucfvrhhiphhlvghtthcuoehjohhshhesjhhoshhhthhr
+    ihhplhgvthhtrdhorhhgqeenucggtffrrghtthgvrhhnpeelteekheejvdfffedvjeduke
+    evtefhffdugeffveffgeffkeekteefudeuteehveenucffohhmrghinhepkhgvrhhnvghl
+    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgh
+X-ME-Proxy: <xmx:e-ooZLE8LfbNhR0MCcDcJ9pMB1_UAV687K8UUK22RZPLAuEWBWSGgQ>
+    <xmx:e-ooZLWhOSOnRv1R_QTonkrawrnQm5odcTvhGpmLBXRD8L2IEFhBig>
+    <xmx:e-ooZGMUlVAa0V6wuc-3ei3-x9yp5jlLPdBM43vodAW0lr6eXE75sA>
+    <xmx:e-ooZIhQ0dwLUu8d81KFtfW2JCX-3ZG_AtVENIT6FrI37ktQ7ynH8Q>
+Feedback-ID: i83e94755:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 1 Apr 2023 22:37:45 -0400 (EDT)
+Date:   Sun, 2 Apr 2023 11:37:42 +0900
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [PATCH v3] ext4: Add a uapi header for ext4 userspace APIs
+Message-ID: <680175260970d977d16b5cc7e7606483ec99eb63.1680402881.git.josh@joshtriplett.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently ext4 will delete ea entry from ibody and recreate ea entry
-which store the same value when expanding inode. The main performance
-issue is caused by the fact that ext4 will destroy and recreate the
-ea inode, and such behavior is redundant.
+Create a uapi header include/uapi/linux/ext4.h, move the ioctls and
+associated data structures to the uapi header, and include it from
+fs/ext4/ext4.h.
 
-The patch is a bit ugly, because ext4_xattr_set_entry() contains the
-creating,deleting,replacing of xattr without external intervention,
-this looks good. But the movement of ea entry from ibody to block
-breaks this, so add an argument for ext4_xattr_set_entry() for this
-break, and then ext4_xattr_block_set() will reuse the ea_inode instead
-of recreating an ea_inode which store the same value.
-
-Signed-off-by: JunChao Sun <sunjunchao2870@gmail.com>
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
 ---
- fs/ext4/xattr.c | 99 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 81 insertions(+), 18 deletions(-)
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 767454d74cd6..439581e630d4 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1634,7 +1634,7 @@ static int ext4_xattr_inode_lookup_create(handle_t *handle, struct inode *inode,
- static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 				struct ext4_xattr_search *s,
- 				handle_t *handle, struct inode *inode,
--				bool is_block)
-+				bool is_block, struct inode *mv_ea_inode)
- {
- 	struct ext4_xattr_entry *last, *next;
- 	struct ext4_xattr_entry *here = s->here;
-@@ -1727,7 +1727,7 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 			goto out;
- 		}
- 	}
--	if (i->value && in_inode) {
-+	if (i->value && in_inode && !mv_ea_inode) {
- 		WARN_ON_ONCE(!i->value_len);
+Sorry for the churn; I didn't encounter these errors in local
+test builds.
+
+v2:
+- Add UAPI header to MAINTAINERS
+- Fix include paths in UAPI header
+- Formatting fix for EXT4_IOC_SHUTDOWN
+
+v3:
+- Leave compat ioctls in the private ext4.h header. It appears that some other
+  UAPI headers already follow this pattern, with compat defined privately. For
+  instance, quota and ethtool both follow that pattern.
+
+ MAINTAINERS               |   1 +
+ fs/ext4/ext4.h            |  91 +----------------------------
+ include/uapi/linux/ext4.h | 117 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 119 insertions(+), 90 deletions(-)
+ create mode 100644 include/uapi/linux/ext4.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1dc8bd26b6cf..7d1e56a88f2f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7728,6 +7728,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ F:	Documentation/filesystems/ext4/
+ F:	fs/ext4/
+ F:	include/trace/events/ext4.h
++F:	include/uapi/linux/ext4.h
  
- 		ret = ext4_xattr_inode_alloc_quota(inode, i->value_len);
-@@ -1819,7 +1819,9 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
+ Extended Verification Module (EVM)
+ M:	Mimi Zohar <zohar@linux.ibm.com>
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 08b29c289da4..a395030cd0c8 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -40,6 +40,7 @@
+ #ifdef __KERNEL__
+ #include <linux/compat.h>
+ #endif
++#include <uapi/linux/ext4.h>
  
- 	if (i->value) {
- 		/* Insert new value. */
--		if (in_inode) {
-+		if (in_inode && mv_ea_inode) {
-+			here->e_value_inum = cpu_to_le32(mv_ea_inode->i_ino);
-+		} else if (in_inode) {
- 			here->e_value_inum = cpu_to_le32(new_ea_inode->i_ino);
- 		} else if (i->value_len) {
- 			void *val = s->base + min_offs - new_size;
-@@ -1838,7 +1840,7 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	}
- 
- update_hash:
--	if (i->value) {
-+	if (i->value && !mv_ea_inode) {
- 		__le32 hash = 0;
- 
- 		/* Entry hash calculation. */
-@@ -1922,7 +1924,7 @@ ext4_xattr_block_find(struct inode *inode, struct ext4_xattr_info *i,
- static int
- ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 		     struct ext4_xattr_info *i,
--		     struct ext4_xattr_block_find *bs)
-+		     struct ext4_xattr_block_find *bs, struct inode *mv_ea_inode)
- {
- 	struct super_block *sb = inode->i_sb;
- 	struct buffer_head *new_bh = NULL;
-@@ -1972,7 +1974,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 			}
- 			ea_bdebug(bs->bh, "modifying in-place");
- 			error = ext4_xattr_set_entry(i, s, handle, inode,
--						     true /* is_block */);
-+						     true /* is_block */, NULL);
- 			ext4_xattr_block_csum_set(inode, bs->bh);
- 			unlock_buffer(bs->bh);
- 			if (error == -EFSCORRUPTED)
-@@ -2040,7 +2042,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 		s->end = s->base + sb->s_blocksize;
- 	}
- 
--	error = ext4_xattr_set_entry(i, s, handle, inode, true /* is_block */);
-+	error = ext4_xattr_set_entry(i, s, handle, inode, true /* is_block */, mv_ea_inode);
- 	if (error == -EFSCORRUPTED)
- 		goto bad_block;
- 	if (error)
-@@ -2286,7 +2288,7 @@ int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
- 	if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
- 		return -ENOSPC;
- 
--	error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */);
-+	error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */, NULL);
- 	if (error)
- 		return error;
- 	header = IHDR(inode, ext4_raw_inode(&is->iloc));
-@@ -2429,7 +2431,7 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
- 		if (!is.s.not_found)
- 			error = ext4_xattr_ibody_set(handle, inode, &i, &is);
- 		else if (!bs.s.not_found)
--			error = ext4_xattr_block_set(handle, inode, &i, &bs);
-+			error = ext4_xattr_block_set(handle, inode, &i, &bs, NULL);
- 	} else {
- 		error = 0;
- 		/* Xattr value did not change? Save us some work and bail out */
-@@ -2446,7 +2448,7 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
- 		error = ext4_xattr_ibody_set(handle, inode, &i, &is);
- 		if (!error && !bs.s.not_found) {
- 			i.value = NULL;
--			error = ext4_xattr_block_set(handle, inode, &i, &bs);
-+			error = ext4_xattr_block_set(handle, inode, &i, &bs, NULL);
- 		} else if (error == -ENOSPC) {
- 			if (EXT4_I(inode)->i_file_acl && !bs.s.base) {
- 				brelse(bs.bh);
-@@ -2455,7 +2457,7 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
- 				if (error)
- 					goto cleanup;
- 			}
--			error = ext4_xattr_block_set(handle, inode, &i, &bs);
-+			error = ext4_xattr_block_set(handle, inode, &i, &bs, NULL);
- 			if (!error && !is.s.not_found) {
- 				i.value = NULL;
- 				error = ext4_xattr_ibody_set(handle, inode, &i,
-@@ -2615,6 +2617,10 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 		.in_inode = !!entry->e_value_inum,
- 	};
- 	struct ext4_xattr_ibody_header *header = IHDR(inode, raw_inode);
-+	struct ext4_xattr_entry *here = NULL, *last = NULL, *next = NULL;
-+	struct inode *old_ea_inode = NULL;
-+	size_t name_size = EXT4_XATTR_LEN(entry->e_name_len);
-+	size_t min_offs;
- 	int error;
- 
- 	is = kzalloc(sizeof(struct ext4_xattr_ibody_find), GFP_NOFS);
-@@ -2660,20 +2666,76 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 
- 	i.value = buffer;
- 	i.value_len = value_size;
-+	here = is->s.here;
-+	last = is->s.first;
-+	min_offs = is->s.end - is->s.base;
-+	/* Compute min_offs and last entry */
-+	for (; !IS_LAST_ENTRY(last); last = next) {
-+		next = EXT4_XATTR_NEXT(last);
-+		if ((void *)next >= is->s.end) {
-+			EXT4_ERROR_INODE(inode, "corrupted xattr entries");
-+			error = -EFSCORRUPTED;
-+			goto out;
-+		}
-+		if (!last->e_value_inum && last->e_value_size) {
-+			size_t offs = le16_to_cpu(last->e_value_offs);
-+
-+			if (offs < min_offs)
-+				min_offs = offs;
-+		}
-+	}
-+
-+	/* Remove the name in ibody */
-+	last = ENTRY((void *)last - name_size);
-+	memmove(here, (void *)here + name_size,
-+		(void *)last - (void *)here + sizeof(__u32));
-+	memset(last, 0, name_size);
-+
-+	/* Get the ea_inode which store the old value */
-+	if (here->e_value_inum) {
-+		error = ext4_xattr_inode_iget(inode,
-+					    le32_to_cpu(here->e_value_inum),
-+					    le32_to_cpu(here->e_hash),
-+					    &old_ea_inode);
-+		if (error) {
-+			old_ea_inode = NULL;
-+			goto out;
-+		}
-+	} else if (here->e_value_size) {
-+		/* Remove the old value in ibody */
-+		void *first_val = is->s.base + min_offs;
-+		void *rm_val = is->s.base + le16_to_cpu(here->e_value_offs);
-+		size_t rm_size = EXT4_XATTR_SIZE(le32_to_cpu(here->e_value_size));
-+		size_t offs = le16_to_cpu(here->e_value_offs);
-+
-+		memmove(first_val + rm_size, first_val, rm_val - first_val);
-+		memset(first_val, 0, rm_size);
-+		min_offs += rm_size;
-+
-+		/* Adjust all value offsets */
-+		last = is->s.first;
-+		while (!IS_LAST_ENTRY(last)) {
-+			size_t o = le16_to_cpu(last->e_value_offs);
-+
-+			if (!last->e_value_inum &&
-+			    last->e_value_size && o < offs)
-+				last->e_value_offs = cpu_to_le16(o + rm_size);
-+			last = EXT4_XATTR_NEXT(last);
-+		}
-+	}
-+
- 	error = ext4_xattr_block_find(inode, &i, bs);
- 	if (error)
- 		goto out;
- 
--	/* Move ea entry from the inode into the block */
--	error = ext4_xattr_block_set(handle, inode, &i, bs);
-+	/*
-+	 * Move ea entry from the inode into the block, and do not need to
-+	 * recreate an ea_inode that store the same value.
-+	 */
-+	error = ext4_xattr_block_set(handle, inode, &i, bs, old_ea_inode);
- 	if (error)
- 		goto out;
- 
--	/* Remove the chosen entry from the inode */
--	i.value = NULL;
--	i.value_len = 0;
--	error = ext4_xattr_ibody_set(handle, inode, &i, is);
--
- out:
- 	kfree(b_entry_name);
- 	if (entry->e_value_inum && buffer)
-@@ -2684,6 +2746,7 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 		brelse(bs->bh);
- 	kfree(is);
- 	kfree(bs);
-+	iput(old_ea_inode);
- 
- 	return error;
+ #include <linux/fscrypt.h>
+ #include <linux/fsverity.h>
+@@ -591,17 +592,6 @@ static inline void ext4_check_flag_values(void)
+ 	CHECK_FLAG_VALUE(RESERVED);
  }
+ 
+-/* Used to pass group descriptor data when online resize is done */
+-struct ext4_new_group_input {
+-	__u32 group;		/* Group number for this data */
+-	__u64 block_bitmap;	/* Absolute block number of block bitmap */
+-	__u64 inode_bitmap;	/* Absolute block number of inode bitmap */
+-	__u64 inode_table;	/* Absolute block number of inode table start */
+-	__u32 blocks_count;	/* Total number of blocks in this group */
+-	__u16 reserved_blocks;	/* Number of reserved blocks in this group */
+-	__u16 unused;
+-};
+-
+ #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+ struct compat_ext4_new_group_input {
+ 	u32 group;
+@@ -698,70 +688,6 @@ enum {
+ #define EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER	0x0020
+ #define EXT4_FREE_BLOCKS_RERESERVE_CLUSTER      0x0040
+ 
+-/*
+- * ioctl commands
+- */
+-#define	EXT4_IOC_GETVERSION		_IOR('f', 3, long)
+-#define	EXT4_IOC_SETVERSION		_IOW('f', 4, long)
+-#define	EXT4_IOC_GETVERSION_OLD		FS_IOC_GETVERSION
+-#define	EXT4_IOC_SETVERSION_OLD		FS_IOC_SETVERSION
+-#define EXT4_IOC_GETRSVSZ		_IOR('f', 5, long)
+-#define EXT4_IOC_SETRSVSZ		_IOW('f', 6, long)
+-#define EXT4_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
+-#define EXT4_IOC_GROUP_ADD		_IOW('f', 8, struct ext4_new_group_input)
+-#define EXT4_IOC_MIGRATE		_IO('f', 9)
+- /* note ioctl 10 reserved for an early version of the FIEMAP ioctl */
+- /* note ioctl 11 reserved for filesystem-independent FIEMAP ioctl */
+-#define EXT4_IOC_ALLOC_DA_BLKS		_IO('f', 12)
+-#define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
+-#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
+-#define EXT4_IOC_SWAP_BOOT		_IO('f', 17)
+-#define EXT4_IOC_PRECACHE_EXTENTS	_IO('f', 18)
+-/* ioctl codes 19--39 are reserved for fscrypt */
+-#define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
+-#define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
+-#define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
+-#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
+-#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
+-#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
+-
+-#define EXT4_IOC_SHUTDOWN _IOR ('X', 125, __u32)
+-
+-/*
+- * Flags for going down operation
+- */
+-#define EXT4_GOING_FLAGS_DEFAULT		0x0	/* going down */
+-#define EXT4_GOING_FLAGS_LOGFLUSH		0x1	/* flush log but not data */
+-#define EXT4_GOING_FLAGS_NOLOGFLUSH		0x2	/* don't flush log nor data */
+-
+-/*
+- * Flags returned by EXT4_IOC_GETSTATE
+- *
+- * We only expose to userspace a subset of the state flags in
+- * i_state_flags
+- */
+-#define EXT4_STATE_FLAG_EXT_PRECACHED	0x00000001
+-#define EXT4_STATE_FLAG_NEW		0x00000002
+-#define EXT4_STATE_FLAG_NEWENTRY	0x00000004
+-#define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
+-
+-/* flags for ioctl EXT4_IOC_CHECKPOINT */
+-#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
+-#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
+-#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
+-#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
+-						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
+-						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
+-
+-/*
+- * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
+- */
+-struct fsuuid {
+-	__u32       fsu_len;
+-	__u32       fsu_flags;
+-	__u8        fsu_uuid[];
+-};
+-
+ #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+ /*
+  * ioctl commands in 32 bit emulation
+@@ -776,12 +702,6 @@ struct fsuuid {
+ #define EXT4_IOC32_SETVERSION_OLD	FS_IOC32_SETVERSION
+ #endif
+ 
+-/*
+- * Returned by EXT4_IOC_GET_ES_CACHE as an additional possible flag.
+- * It indicates that the entry in extent status cache is for a hole.
+- */
+-#define EXT4_FIEMAP_EXTENT_HOLE		0x08000000
+-
+ /* Max physical block we can address w/o extents */
+ #define EXT4_MAX_BLOCK_FILE_PHYS	0xFFFFFFFF
+ 
+@@ -852,15 +772,6 @@ struct ext4_inode {
+ 	__le32	i_projid;	/* Project ID */
+ };
+ 
+-struct move_extent {
+-	__u32 reserved;		/* should be zero */
+-	__u32 donor_fd;		/* donor file descriptor */
+-	__u64 orig_start;	/* logical start offset in block for orig */
+-	__u64 donor_start;	/* logical start offset in block for donor */
+-	__u64 len;		/* block length to be moved */
+-	__u64 moved_len;	/* moved block length */
+-};
+-
+ #define EXT4_EPOCH_BITS 2
+ #define EXT4_EPOCH_MASK ((1 << EXT4_EPOCH_BITS) - 1)
+ #define EXT4_NSEC_MASK  (~0UL << EXT4_EPOCH_BITS)
+diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
+new file mode 100644
+index 000000000000..1c4c2dd29112
+--- /dev/null
++++ b/include/uapi/linux/ext4.h
+@@ -0,0 +1,117 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef _UAPI_LINUX_EXT4_H
++#define _UAPI_LINUX_EXT4_H
++#include <linux/fiemap.h>
++#include <linux/fs.h>
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++/*
++ * ext4-specific ioctl commands
++ */
++#define	EXT4_IOC_GETVERSION		_IOR('f', 3, long)
++#define	EXT4_IOC_SETVERSION		_IOW('f', 4, long)
++#define	EXT4_IOC_GETVERSION_OLD		FS_IOC_GETVERSION
++#define	EXT4_IOC_SETVERSION_OLD		FS_IOC_SETVERSION
++#define EXT4_IOC_GETRSVSZ		_IOR('f', 5, long)
++#define EXT4_IOC_SETRSVSZ		_IOW('f', 6, long)
++#define EXT4_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
++#define EXT4_IOC_GROUP_ADD		_IOW('f', 8, struct ext4_new_group_input)
++#define EXT4_IOC_MIGRATE		_IO('f', 9)
++ /* note ioctl 10 reserved for an early version of the FIEMAP ioctl */
++ /* note ioctl 11 reserved for filesystem-independent FIEMAP ioctl */
++#define EXT4_IOC_ALLOC_DA_BLKS		_IO('f', 12)
++#define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
++#define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
++#define EXT4_IOC_SWAP_BOOT		_IO('f', 17)
++#define EXT4_IOC_PRECACHE_EXTENTS	_IO('f', 18)
++/* ioctl codes 19--39 are reserved for fscrypt */
++#define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
++#define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
++#define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
++#define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
++#define EXT4_IOC_GETFSUUID		_IOR('f', 44, struct fsuuid)
++#define EXT4_IOC_SETFSUUID		_IOW('f', 44, struct fsuuid)
++
++#define EXT4_IOC_SHUTDOWN _IOR('X', 125, __u32)
++
++/*
++ * ioctl commands in 32 bit emulation
++ */
++#define EXT4_IOC32_GETVERSION		_IOR('f', 3, int)
++#define EXT4_IOC32_SETVERSION		_IOW('f', 4, int)
++#define EXT4_IOC32_GETRSVSZ		_IOR('f', 5, int)
++#define EXT4_IOC32_SETRSVSZ		_IOW('f', 6, int)
++#define EXT4_IOC32_GROUP_EXTEND		_IOW('f', 7, unsigned int)
++#define EXT4_IOC32_GROUP_ADD		_IOW('f', 8, struct compat_ext4_new_group_input)
++#define EXT4_IOC32_GETVERSION_OLD	FS_IOC32_GETVERSION
++#define EXT4_IOC32_SETVERSION_OLD	FS_IOC32_SETVERSION
++
++/*
++ * Flags returned by EXT4_IOC_GETSTATE
++ *
++ * We only expose to userspace a subset of the state flags in
++ * i_state_flags
++ */
++#define EXT4_STATE_FLAG_EXT_PRECACHED	0x00000001
++#define EXT4_STATE_FLAG_NEW		0x00000002
++#define EXT4_STATE_FLAG_NEWENTRY	0x00000004
++#define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
++
++/*
++ * Flags for ioctl EXT4_IOC_CHECKPOINT
++ */
++#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
++#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
++#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
++#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
++						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
++						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
++
++/*
++ * Structure for EXT4_IOC_GETFSUUID/EXT4_IOC_SETFSUUID
++ */
++struct fsuuid {
++	__u32       fsu_len;
++	__u32       fsu_flags;
++	__u8        fsu_uuid[];
++};
++
++/*
++ * Structure for EXT4_IOC_MOVE_EXT
++ */
++struct move_extent {
++	__u32 reserved;		/* should be zero */
++	__u32 donor_fd;		/* donor file descriptor */
++	__u64 orig_start;	/* logical start offset in block for orig */
++	__u64 donor_start;	/* logical start offset in block for donor */
++	__u64 len;		/* block length to be moved */
++	__u64 moved_len;	/* moved block length */
++};
++
++/*
++ * Flags used by EXT4_IOC_SHUTDOWN
++ */
++#define EXT4_GOING_FLAGS_DEFAULT		0x0	/* going down */
++#define EXT4_GOING_FLAGS_LOGFLUSH		0x1	/* flush log but not data */
++#define EXT4_GOING_FLAGS_NOLOGFLUSH		0x2	/* don't flush log nor data */
++
++/* Used to pass group descriptor data when online resize is done */
++struct ext4_new_group_input {
++	__u32 group;		/* Group number for this data */
++	__u64 block_bitmap;	/* Absolute block number of block bitmap */
++	__u64 inode_bitmap;	/* Absolute block number of inode bitmap */
++	__u64 inode_table;	/* Absolute block number of inode table start */
++	__u32 blocks_count;	/* Total number of blocks in this group */
++	__u16 reserved_blocks;	/* Number of reserved blocks in this group */
++	__u16 unused;
++};
++
++/*
++ * Returned by EXT4_IOC_GET_ES_CACHE as an additional possible flag.
++ * It indicates that the entry in extent status cache is for a hole.
++ */
++#define EXT4_FIEMAP_EXTENT_HOLE		0x08000000
++
++#endif /* _UAPI_LINUX_EXT4_H */
 -- 
-2.17.1
+2.40.0
 
