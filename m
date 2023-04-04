@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E19C6D664B
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 16:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18B06D6656
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 16:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbjDDO46 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Apr 2023 10:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S234717AbjDDO5D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Apr 2023 10:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbjDDO4b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 10:56:31 -0400
+        with ESMTP id S234758AbjDDO4f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 10:56:35 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01ED119A3
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Apr 2023 07:55:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AEF4EC8
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Apr 2023 07:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680620132;
+        s=mimecast20190719; t=1680620135;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VcQmWR+9Y5ByK+ATZGapbO5pnH99zCU6qprkC/Vu/Vo=;
-        b=eU6N0VXJNRAr7DZ0RE//JSnLYXqVLX8cRcM0jYMwecmRey+qUYGtPe+7hJ9JWdTDTtkYPq
-        VyEgxYIuPAvJmWs2xNZK6uEDoeBMn7Dj/H3zjTEQXZeK2DPh1ojMl2X+UHnFsFeIpacdMv
-        SUVwiTSvgKZTCMYEB4LfXGX6Ygptm+w=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=s5CBlu3rB6FB4/gHV+J994sqM8eAaiIHabLpvipzBAI=;
+        b=gOUgCrfeQUjKxwtOafUhZRjKFm8ryWBwbpIMc8Gqnk1cufqOeLFVE7Ftd1ILfxTlPWDYSa
+        tz9/Oth60C9wZWt7pRnUnd2qVt8CDTjfvAVUpgxsYn7T9swqxCeF0tzhGTVriNm2VtOU6n
+        orrXhvOYfXoI//EeuVup1Jy3DpjKM4s=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-280-7bQK0F2wOWajjyMup1TUSQ-1; Tue, 04 Apr 2023 10:55:31 -0400
-X-MC-Unique: 7bQK0F2wOWajjyMup1TUSQ-1
-Received: by mail-qt1-f200.google.com with SMTP id u22-20020a05622a011600b003dfd61e8594so22278151qtw.15
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Apr 2023 07:55:30 -0700 (PDT)
+ us-mta-98-tOZ1bAylMGKfA33Mv7ASKA-1; Tue, 04 Apr 2023 10:55:34 -0400
+X-MC-Unique: tOZ1bAylMGKfA33Mv7ASKA-1
+Received: by mail-qk1-f200.google.com with SMTP id t23-20020a374617000000b0074a4dba4b5aso2201130qka.16
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Apr 2023 07:55:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680620130;
+        d=1e100.net; s=20210112; t=1680620133;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VcQmWR+9Y5ByK+ATZGapbO5pnH99zCU6qprkC/Vu/Vo=;
-        b=BNJw8J8IU4rbsWsSMYqIJf4aZhO8yTlTiI2dEj338h+MIIc4pa3TswSR6QwgImhkRr
-         bZRL7zygNEtt32PiIR5nzCGaTaKimodWH6t1LIjiCAAjqjJxL58pE7v1zPKIu4X5ysQT
-         WoMoLdJoPwqn1zxAxwa9C1RR4p+PF2R96CqFQUjEPLqVYw5bI+ErHuIpCVwiasSsqtwq
-         IkMTuVO/aNSwOx5XNRK8pNi3D3XicW4o/QlvPgaR0aAm7CJtAkc16hs/aVyD1tDf6gTn
-         05qUAQtQGO1/cfRX5aIdy5PGG/PBX7DymLW5Ho1DpILLShOZgeBmqKcjELN5ly8/oFag
-         shLw==
-X-Gm-Message-State: AAQBX9cTAP8RUn5t7uz+kWfc3CZn29wQSs7ud2hI03coEBI90ih1hlDo
-        rpHr0A7bQcZBYPgWPDeaeo+oU0QicY+536oEwarp8DF9e4JsvavtoJrF7LVcc74/MMu5o6G/Wfk
-        WYdnBJL8WaUUhaWtNvGzo
-X-Received: by 2002:ac8:7e96:0:b0:3e6:3c76:84c4 with SMTP id w22-20020ac87e96000000b003e63c7684c4mr4113051qtj.42.1680620130423;
-        Tue, 04 Apr 2023 07:55:30 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Zr2rxw/Z5UAEkY/x+zomx2LR8SpENS3uogBfhkrXJlt+UiOQV8XzWD8t3/6Y5inpxjlQNwhw==
-X-Received: by 2002:ac8:7e96:0:b0:3e6:3c76:84c4 with SMTP id w22-20020ac87e96000000b003e63c7684c4mr4113018qtj.42.1680620130035;
-        Tue, 04 Apr 2023 07:55:30 -0700 (PDT)
+        bh=s5CBlu3rB6FB4/gHV+J994sqM8eAaiIHabLpvipzBAI=;
+        b=AwGLoUYdgG97NigbBDvOP3cBUTTN988tJPv/w/B7k1La+3DCo9SmAdg8/OGhBH0Qul
+         0Fug9RMDiLtNKvo1YvNhTVxWlRddSz81DnmKuxSFbqK4P1vCConVpgWXCQYHdc406K/u
+         4yO2Sl4Y/bCx3Py4WM5bTP8FYexH1j++zUHEwcWnVgfnBpheb9m6XEavWE2pJ+B/yOHq
+         4jDbjMLkSme9T1bmInngMAZqzG5uyg9avffMULzyLa+y82QKqzD92BxEYr/jJVAtAn0L
+         xOVuXZypg/CPCOLNfVCIF/A9aO/UMIivVBcb0EcnoQdDtArNfcd46EOzrdjcNF21dg1b
+         rH1A==
+X-Gm-Message-State: AAQBX9f09YxaNHHiCesA18SkNhULFoONrIAJmkaS+WalinnGj+7E23mJ
+        8EEoJYS6TouS6XpXseV/0mSydu8My6lSw97bjf1bUxmdLlxGw+OOuzTVJ3ET4csdQgqT/otS4qu
+        p8g9gQWbdFRRmHpKHov7o
+X-Received: by 2002:a05:622a:1116:b0:3d7:7d98:d202 with SMTP id e22-20020a05622a111600b003d77d98d202mr4199908qty.32.1680620133267;
+        Tue, 04 Apr 2023 07:55:33 -0700 (PDT)
+X-Google-Smtp-Source: AKy350agz24OCLzc85AGxUuPb8W7opye3ABchefrsnh9VPCEo+l0sKKLvduzLpg+Bm8Xk2N7Z0je6A==
+X-Received: by 2002:a05:622a:1116:b0:3d7:7d98:d202 with SMTP id e22-20020a05622a111600b003d77d98d202mr4199873qty.32.1680620132920;
+        Tue, 04 Apr 2023 07:55:32 -0700 (PDT)
 Received: from aalbersh.remote.csb ([109.183.6.197])
-        by smtp.gmail.com with ESMTPSA id j4-20020ac86644000000b003e6387431dcsm3296539qtp.7.2023.04.04.07.55.27
+        by smtp.gmail.com with ESMTPSA id j4-20020ac86644000000b003e6387431dcsm3296539qtp.7.2023.04.04.07.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 07:55:29 -0700 (PDT)
+        Tue, 04 Apr 2023 07:55:32 -0700 (PDT)
 From:   Andrey Albershteyn <aalbersh@redhat.com>
 To:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
         hch@infradead.org, linux-xfs@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
         linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com, Andrey Albershteyn <aalbersh@redhat.com>
-Subject: [PATCH v2 15/23] xfs: add fs-verity ro-compat flag
-Date:   Tue,  4 Apr 2023 16:53:11 +0200
-Message-Id: <20230404145319.2057051-16-aalbersh@redhat.com>
+Subject: [PATCH v2 16/23] xfs: add inode on-disk VERITY flag
+Date:   Tue,  4 Apr 2023 16:53:12 +0200
+Message-Id: <20230404145319.2057051-17-aalbersh@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230404145319.2057051-1-aalbersh@redhat.com>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
@@ -82,62 +82,102 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-To mark inodes sealed with fs-verity the new XFS_DIFLAG2_VERITY flag
-will be added in further patch. This requires ro-compat flag to let
-older kernels know that fs with fs-verity can not be modified.
+Add flag to mark inodes which have fs-verity enabled on them (i.e.
+descriptor exist and tree is built).
 
 Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
 ---
- fs/xfs/libxfs/xfs_format.h | 1 +
- fs/xfs/libxfs/xfs_sb.c     | 2 ++
- fs/xfs/xfs_mount.h         | 2 ++
- 3 files changed, 5 insertions(+)
+ fs/ioctl.c                 | 4 ++++
+ fs/xfs/libxfs/xfs_format.h | 4 +++-
+ fs/xfs/xfs_inode.c         | 2 ++
+ fs/xfs/xfs_iops.c          | 2 ++
+ include/uapi/linux/fs.h    | 1 +
+ 5 files changed, 12 insertions(+), 1 deletion(-)
 
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 5b2481cd4750..a274b33b2fd0 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -480,6 +480,8 @@ void fileattr_fill_xflags(struct fileattr *fa, u32 xflags)
+ 		fa->flags |= FS_DAX_FL;
+ 	if (fa->fsx_xflags & FS_XFLAG_PROJINHERIT)
+ 		fa->flags |= FS_PROJINHERIT_FL;
++	if (fa->fsx_xflags & FS_XFLAG_VERITY)
++		fa->flags |= FS_VERITY_FL;
+ }
+ EXPORT_SYMBOL(fileattr_fill_xflags);
+ 
+@@ -510,6 +512,8 @@ void fileattr_fill_flags(struct fileattr *fa, u32 flags)
+ 		fa->fsx_xflags |= FS_XFLAG_DAX;
+ 	if (fa->flags & FS_PROJINHERIT_FL)
+ 		fa->fsx_xflags |= FS_XFLAG_PROJINHERIT;
++	if (fa->flags & FS_VERITY_FL)
++		fa->fsx_xflags |= FS_XFLAG_VERITY;
+ }
+ EXPORT_SYMBOL(fileattr_fill_flags);
+ 
 diff --git a/fs/xfs/libxfs/xfs_format.h b/fs/xfs/libxfs/xfs_format.h
-index 371dc07233e0..ef617be2839c 100644
+index ef617be2839c..ccb2ae5c2c93 100644
 --- a/fs/xfs/libxfs/xfs_format.h
 +++ b/fs/xfs/libxfs/xfs_format.h
-@@ -353,6 +353,7 @@ xfs_sb_has_compat_feature(
- #define XFS_SB_FEAT_RO_COMPAT_RMAPBT   (1 << 1)		/* reverse map btree */
- #define XFS_SB_FEAT_RO_COMPAT_REFLINK  (1 << 2)		/* reflinked files */
- #define XFS_SB_FEAT_RO_COMPAT_INOBTCNT (1 << 3)		/* inobt block counts */
-+#define XFS_SB_FEAT_RO_COMPAT_VERITY   (1 << 4)		/* fs-verity */
- #define XFS_SB_FEAT_RO_COMPAT_ALL \
- 		(XFS_SB_FEAT_RO_COMPAT_FINOBT | \
- 		 XFS_SB_FEAT_RO_COMPAT_RMAPBT | \
-diff --git a/fs/xfs/libxfs/xfs_sb.c b/fs/xfs/libxfs/xfs_sb.c
-index 99cc03a298e2..b1f1b21e8953 100644
---- a/fs/xfs/libxfs/xfs_sb.c
-+++ b/fs/xfs/libxfs/xfs_sb.c
-@@ -161,6 +161,8 @@ xfs_sb_version_to_features(
- 		features |= XFS_FEAT_REFLINK;
- 	if (sbp->sb_features_ro_compat & XFS_SB_FEAT_RO_COMPAT_INOBTCNT)
- 		features |= XFS_FEAT_INOBTCNT;
-+	if (sbp->sb_features_ro_compat & XFS_SB_FEAT_RO_COMPAT_VERITY)
-+		features |= XFS_FEAT_VERITY;
- 	if (sbp->sb_features_incompat & XFS_SB_FEAT_INCOMPAT_FTYPE)
- 		features |= XFS_FEAT_FTYPE;
- 	if (sbp->sb_features_incompat & XFS_SB_FEAT_INCOMPAT_SPINODES)
-diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
-index 53a4a9304937..9254c3cd9077 100644
---- a/fs/xfs/xfs_mount.h
-+++ b/fs/xfs/xfs_mount.h
-@@ -279,6 +279,7 @@ typedef struct xfs_mount {
- #define XFS_FEAT_BIGTIME	(1ULL << 24)	/* large timestamps */
- #define XFS_FEAT_NEEDSREPAIR	(1ULL << 25)	/* needs xfs_repair */
- #define XFS_FEAT_NREXT64	(1ULL << 26)	/* large extent counters */
-+#define XFS_FEAT_VERITY		(1ULL << 27)	/* fs-verity */
+@@ -1070,16 +1070,18 @@ static inline void xfs_dinode_put_rdev(struct xfs_dinode *dip, xfs_dev_t rdev)
+ #define XFS_DIFLAG2_COWEXTSIZE_BIT   2  /* copy on write extent size hint */
+ #define XFS_DIFLAG2_BIGTIME_BIT	3	/* big timestamps */
+ #define XFS_DIFLAG2_NREXT64_BIT 4	/* large extent counters */
++#define XFS_DIFLAG2_VERITY_BIT	5	/* inode sealed by fsverity */
  
- /* Mount features */
- #define XFS_FEAT_NOATTR2	(1ULL << 48)	/* disable attr2 creation */
-@@ -342,6 +343,7 @@ __XFS_HAS_FEAT(inobtcounts, INOBTCNT)
- __XFS_HAS_FEAT(bigtime, BIGTIME)
- __XFS_HAS_FEAT(needsrepair, NEEDSREPAIR)
- __XFS_HAS_FEAT(large_extent_counts, NREXT64)
-+__XFS_HAS_FEAT(verity, VERITY)
+ #define XFS_DIFLAG2_DAX		(1 << XFS_DIFLAG2_DAX_BIT)
+ #define XFS_DIFLAG2_REFLINK     (1 << XFS_DIFLAG2_REFLINK_BIT)
+ #define XFS_DIFLAG2_COWEXTSIZE  (1 << XFS_DIFLAG2_COWEXTSIZE_BIT)
+ #define XFS_DIFLAG2_BIGTIME	(1 << XFS_DIFLAG2_BIGTIME_BIT)
+ #define XFS_DIFLAG2_NREXT64	(1 << XFS_DIFLAG2_NREXT64_BIT)
++#define XFS_DIFLAG2_VERITY	(1 << XFS_DIFLAG2_VERITY_BIT)
  
- /*
-  * Mount features
+ #define XFS_DIFLAG2_ANY \
+ 	(XFS_DIFLAG2_DAX | XFS_DIFLAG2_REFLINK | XFS_DIFLAG2_COWEXTSIZE | \
+-	 XFS_DIFLAG2_BIGTIME | XFS_DIFLAG2_NREXT64)
++	 XFS_DIFLAG2_BIGTIME | XFS_DIFLAG2_NREXT64 | XFS_DIFLAG2_VERITY)
+ 
+ static inline bool xfs_dinode_has_bigtime(const struct xfs_dinode *dip)
+ {
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index 5808abab786c..3b2bf9e7580b 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -634,6 +634,8 @@ xfs_ip2xflags(
+ 			flags |= FS_XFLAG_DAX;
+ 		if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
+ 			flags |= FS_XFLAG_COWEXTSIZE;
++		if (ip->i_diflags2 & XFS_DIFLAG2_VERITY)
++			flags |= FS_XFLAG_VERITY;
+ 	}
+ 
+ 	if (xfs_inode_has_attr_fork(ip))
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index 24718adb3c16..5398be75a76a 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -1232,6 +1232,8 @@ xfs_diflags_to_iflags(
+ 		flags |= S_NOATIME;
+ 	if (init && xfs_inode_should_enable_dax(ip))
+ 		flags |= S_DAX;
++	if (xflags & FS_XFLAG_VERITY)
++		flags |= S_VERITY;
+ 
+ 	/*
+ 	 * S_DAX can only be set during inode initialization and is never set by
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index b7b56871029c..5172a2eb902c 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -140,6 +140,7 @@ struct fsxattr {
+ #define FS_XFLAG_FILESTREAM	0x00004000	/* use filestream allocator */
+ #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
+ #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
++#define FS_XFLAG_VERITY		0x00020000	/* fs-verity sealed inode */
+ #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
+ 
+ /* the read-only stuff doesn't really belong here, but any other place is
 -- 
 2.38.4
 
