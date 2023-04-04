@@ -2,55 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F8C6D70A5
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 01:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E45D6D70B7
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 01:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbjDDX0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Apr 2023 19:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        id S236549AbjDDXc2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Apr 2023 19:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbjDDX0T (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 19:26:19 -0400
+        with ESMTP id S236366AbjDDXc2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 19:32:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED10DFB;
-        Tue,  4 Apr 2023 16:26:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54301171A;
+        Tue,  4 Apr 2023 16:32:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 88A1D639EB;
-        Tue,  4 Apr 2023 23:26:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E20C1C433D2;
-        Tue,  4 Apr 2023 23:26:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0AFA63317;
+        Tue,  4 Apr 2023 23:32:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF8AEC433EF;
+        Tue,  4 Apr 2023 23:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680650777;
-        bh=/JyZmGk+myakLaCI1hhSwfIXR6hWB6PhXWV1RmrEmtQ=;
+        s=k20201202; t=1680651146;
+        bh=mzC9yxS3pU0gQe8btlzdUEVy3UG1HFMbmPEVa9F5ySY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SAMn41ZDLqNoE6Vm+Ws6NlgV5JNtcTsUfptIJYmSWkQXDoMlNthiN90l/6s3+s165
-         zakb05T4J4axjmNGiNnSg/PLXu2mm3dIwNe0EsxcSRGtsA6eQKHcGUglH5oPWJiPln
-         Dnh6qUYxcYXaByVI2SRX7KIUb5nJ3EW1SYPR/1H9VUb+ZU1nIskrAL356E3Fr1G3fL
-         phSprFPiWpHqQwH9IaxCrGVhnGNlQ+9W281nygerSAi/jRifQP+6OPEKpbziDA2KNC
-         ugBoZkZROddJxKcgQ9Fr3rXsP5BUTRC+q5V4S69CQ1Y9d015ztJzol3MHxJztXrSe+
-         8F3ncUmDR1/ag==
-Date:   Tue, 4 Apr 2023 16:26:16 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Zorro Lang <zlang@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        b=IQ5deiEXGx1gFAZISmhBLeCx8NzxQoUgL9nmQTkP3esfYaFFQQ3b7ESc/W//rQnfl
+         3sC6jG70uboYZiTYrN8C1P21fsc+gnsV48CY7KPCfaJ/OQnp8UfTYsmdcdkTEW4buW
+         hVn+2CEI8t2/lO/2BdLWwWucOOyJ253E2xRfYlRB0Mh95jIzG88ZgJaCkbFY/S4ke/
+         DQzAT3I9w8UZewW6kTUEN8IG68kmycB6WIeZaSCrRu4RRTDEL/ofiUNKTs5kJkkHKg
+         x1+XwPQ6O+zGp2wSQJhkj/co7Ojg7M32UskAXMdTeQ7xaEOcp4FpffpkAMVswDrSRa
+         iX8vXvvL6hmJg==
+Date:   Tue, 4 Apr 2023 16:32:24 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Andrey Albershteyn <aalbersh@redhat.com>
+Cc:     djwong@kernel.org, dchinner@redhat.com, hch@infradead.org,
+        linux-xfs@vger.kernel.org, fsverity@lists.linux.dev,
+        rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
+        chao@kernel.org, damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
-        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
-        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
-        anand.jain@oracle.com
-Subject: Re: [PATCH 5/5] fstests/MAINTAINERS: add a co-maintainer for btrfs
- testing part
-Message-ID: <20230404232616.GE109960@frogsfrogsfrogs>
-References: <20230404171411.699655-1-zlang@kernel.org>
- <20230404171411.699655-6-zlang@kernel.org>
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
+ blocksize != PAGE_SIZE
+Message-ID: <20230404233224.GE1893@sol.localdomain>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404145319.2057051-22-aalbersh@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404171411.699655-6-zlang@kernel.org>
+In-Reply-To: <20230404145319.2057051-22-aalbersh@redhat.com>
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
@@ -60,60 +59,116 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 01:14:11AM +0800, Zorro Lang wrote:
-> Darrick J. Wong would like to nominate Anand Jain to help more on
+Hi Andrey,
 
-In case anyone's wondering how this all came about -- Anand asked me how
-he could do more upstream fstests review work, so I suggested that he
-and I talk to Zorro about delegating some of the review and maintainer
-work so that it's not all on Zorro to keep everything running.
-
-> btrfs testing part (tests/btrfs and common/btrfs). He would like to
-> be a co-maintainer of btrfs part, will help to review and test
-> fstests btrfs related patches, and I might merge from him if there's
-> big patchset. So CC him besides send to fstests@ list, when you have
-> a btrfs fstests patch.
+On Tue, Apr 04, 2023 at 04:53:17PM +0200, Andrey Albershteyn wrote:
+> In case of different Merkle tree block size fs-verity expects
+> ->read_merkle_tree_page() to return Merkle tree page filled with
+> Merkle tree blocks. The XFS stores each merkle tree block under
+> extended attribute. Those attributes are addressed by block offset
+> into Merkle tree.
 > 
-> Signed-off-by: Zorro Lang <zlang@kernel.org>
+> This patch make ->read_merkle_tree_page() to fetch multiple merkle
+> tree blocks based on size ratio. Also the reference to each xfs_buf
+> is passed with page->private to ->drop_page().
+> 
+> Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
 > ---
+>  fs/xfs/xfs_verity.c | 74 +++++++++++++++++++++++++++++++++++----------
+>  fs/xfs/xfs_verity.h |  8 +++++
+>  2 files changed, 66 insertions(+), 16 deletions(-)
 > 
-> Please btrfs list help to review this change, if you agree (or no objection),
-> then I'll push this change.
-
-This is what Zorro, Anand, and I sketched out as far as co-maintainer
-resposibilities go:
-
-> A co-maintainer will do:
-> 1) Review patches are related with him.
-> 2) Merge and test patches in his local git repo, and give the patch an ACK.
-> 3) Maintainer will trust the ack from co-maintainer more (might merge directly).
-> 4) Maintainer might merge from co-maintainer when he has a big patchset wait for
->    merging.
-> 
-> Thanks,
-> Zorro
-> 
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0ad12a38..9fc6c6b5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -108,6 +108,7 @@ Maintainers List
->  	  or reviewer or co-maintainer can be in cc list.
+> diff --git a/fs/xfs/xfs_verity.c b/fs/xfs/xfs_verity.c
+> index a9874ff4efcd..ef0aff216f06 100644
+> --- a/fs/xfs/xfs_verity.c
+> +++ b/fs/xfs/xfs_verity.c
+> @@ -134,6 +134,10 @@ xfs_read_merkle_tree_page(
+>  	struct page		*page = NULL;
+>  	__be64			name = cpu_to_be64(index << PAGE_SHIFT);
+>  	uint32_t		bs = 1 << log_blocksize;
+> +	int			blocks_per_page =
+> +		(1 << (PAGE_SHIFT - log_blocksize));
+> +	int			n = 0;
+> +	int			offset = 0;
+>  	struct xfs_da_args	args = {
+>  		.dp		= ip,
+>  		.attr_filter	= XFS_ATTR_VERITY,
+> @@ -143,26 +147,59 @@ xfs_read_merkle_tree_page(
+>  		.valuelen	= bs,
+>  	};
+>  	int			error = 0;
+> +	bool			is_checked = true;
+> +	struct xfs_verity_buf_list	*buf_list;
 >  
->  BTRFS
-> +M:	Anand Jain <anand.jain@oracle.com>
+>  	page = alloc_page(GFP_KERNEL);
+>  	if (!page)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	error = xfs_attr_get(&args);
+> -	if (error) {
+> -		kmem_free(args.value);
+> -		xfs_buf_rele(args.bp);
+> +	buf_list = kzalloc(sizeof(struct xfs_verity_buf_list), GFP_KERNEL);
+> +	if (!buf_list) {
+>  		put_page(page);
+> -		return ERR_PTR(-EFAULT);
+> +		return ERR_PTR(-ENOMEM);
+>  	}
+>  
+> -	if (args.bp->b_flags & XBF_VERITY_CHECKED)
+> +	/*
+> +	 * Fill the page with Merkle tree blocks. The blcoks_per_page is higher
+> +	 * than 1 when fs block size != PAGE_SIZE or Merkle tree block size !=
+> +	 * PAGE SIZE
+> +	 */
+> +	for (n = 0; n < blocks_per_page; n++) {
+> +		offset = bs * n;
+> +		name = cpu_to_be64(((index << PAGE_SHIFT) + offset));
+> +		args.name = (const uint8_t *)&name;
+> +
+> +		error = xfs_attr_get(&args);
+> +		if (error) {
+> +			kmem_free(args.value);
+> +			/*
+> +			 * No more Merkle tree blocks (e.g. this was the last
+> +			 * block of the tree)
+> +			 */
+> +			if (error == -ENOATTR)
+> +				break;
+> +			xfs_buf_rele(args.bp);
+> +			put_page(page);
+> +			kmem_free(buf_list);
+> +			return ERR_PTR(-EFAULT);
+> +		}
+> +
+> +		buf_list->bufs[buf_list->buf_count++] = args.bp;
+> +
+> +		/* One of the buffers was dropped */
+> +		if (!(args.bp->b_flags & XBF_VERITY_CHECKED))
+> +			is_checked = false;
+> +
+> +		memcpy(page_address(page) + offset, args.value, args.valuelen);
+> +		kmem_free(args.value);
+> +		args.value = NULL;
+> +	}
 
-I would like to hear agreement from the btrfs community about this
-before making this particular change official.
+I was really hoping for a solution where the cached data can be used directly,
+instead allocating a temporary page and copying the cached data into it every
+time the cache is accessed.  The problem with what you have now is that every
+time a single 32-byte hash is accessed, a full page (potentially 64KB!) will be
+allocated and filled.  That's not very efficient.  The need to allocate the
+temporary page can also cause ENOMEM (which will get reported as EIO).
 
---D
+Did you consider alternatives that would work more efficiently?  I think it
+would be worth designing something that works properly with how XFS is planned
+to cache the Merkle tree, instead of designing a workaround.
+->read_merkle_tree_page was not really designed for what you are doing here.
 
->  R:	Filipe Manana <fdmanana@suse.com>
->  L:	linux-btrfs@vger.kernel.org
->  S:	Supported
-> -- 
-> 2.39.2
-> 
+How about replacing ->read_merkle_tree_page with a function that takes in a
+Merkle tree block index (not a page index!) and hands back a (page, offset) pair
+that identifies where the Merkle tree block's data is located?  Or (folio,
+offset), I suppose.
+
+With that, would it be possible to directly return the XFS cache?
+
+- Eric
