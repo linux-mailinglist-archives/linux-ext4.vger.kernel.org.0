@@ -2,57 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3CE6D5F04
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 13:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268E66D660C
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 16:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbjDDLcB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Apr 2023 07:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        id S232948AbjDDOz4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Apr 2023 10:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbjDDLcA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 07:32:00 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38158268A;
-        Tue,  4 Apr 2023 04:31:58 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PrQZJ4xRTzKqv7;
-        Tue,  4 Apr 2023 19:31:20 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 4 Apr 2023 19:31:55 +0800
-Message-ID: <2b8d916c-c3a0-3d1c-220a-727f47321df6@huawei.com>
-Date:   Tue, 4 Apr 2023 19:31:55 +0800
+        with ESMTP id S232586AbjDDOzz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 10:55:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B33344A2
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Apr 2023 07:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680620082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oD3C5F3LGtukmBxzahEExE7hRIVYDTE1CCzX3qZAvIY=;
+        b=hX/qSGrFfU/7n4KcK8sh8TLyvFVsQqVYUb9/cYiEEXFXjHH/F2gvbc9UU9KibM76fY8UtN
+        z1I/CgugQKj3WLjxSL1gNLouNMoet1pOX8ardeA97yhZ9EyS1XRy3AG3AWHlp0UZE41/qb
+        9SXZQ6VmrYSjxWxNqO3t5Sr97YTBFi8=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-18-sJNhJXM5PgWEIQg2B90V_g-1; Tue, 04 Apr 2023 10:54:41 -0400
+X-MC-Unique: sJNhJXM5PgWEIQg2B90V_g-1
+Received: by mail-qk1-f200.google.com with SMTP id s190-20020ae9dec7000000b00746b7fae197so3535321qkf.12
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Apr 2023 07:54:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680620080;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oD3C5F3LGtukmBxzahEExE7hRIVYDTE1CCzX3qZAvIY=;
+        b=nWf4X6/dVQYtiqZadZtTJ9vkemP6gcL3Yx/oOYjJE6tvKXrD7NNEYahtND7XPVlLk5
+         i4CSJN63PRuymD5nysL53sfkqoQrfWpIQ5nhxEc213VF6GNUFXoqd7nhA4xeDO/qtbsZ
+         6KY/Fe0wicuxlryiKQkoRKyP1Irg7eYdvRM9jV1taLQTb1V2N5g1YsG59RgY2hXNmSHd
+         0rVSF3WFdx3XkVtPaSP8gHVRppqld0o3c0eNmwplpqZvvrWSGvfYtx6DpvxXvEbgfJT+
+         X7PBev+6DuGQkwIzNpKvwSg9VwlzD0rlMoPMco1GRFCBw2AXp5IQRGxoymHYUfy8nP/Y
+         3xKg==
+X-Gm-Message-State: AAQBX9eU3ip/sLGnCrkjnb09Swb9Vee9Yzsi6hcihABDLNt7e3Hfv1Rf
+        QuC7EbXli/iw/U8GBHJjALL+M26Ds3MTiJ6P4VeogE6B9dhGdRs1W6xXNKfwTQRHDAY5eAt8dge
+        bCtadmiZ9NmEcBBBXcAtU
+X-Received: by 2002:a05:622a:183:b0:3e4:9f9a:54b2 with SMTP id s3-20020a05622a018300b003e49f9a54b2mr3125035qtw.65.1680620080399;
+        Tue, 04 Apr 2023 07:54:40 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aQaTUsx1W6QCtRYW4E/BPPbSUPOo7MRSxPdoArP74ywpcoKBragJvpDtJCE5UocjgeAZeoJA==
+X-Received: by 2002:a05:622a:183:b0:3e4:9f9a:54b2 with SMTP id s3-20020a05622a018300b003e49f9a54b2mr3124990qtw.65.1680620080023;
+        Tue, 04 Apr 2023 07:54:40 -0700 (PDT)
+Received: from aalbersh.remote.csb ([109.183.6.197])
+        by smtp.gmail.com with ESMTPSA id j4-20020ac86644000000b003e6387431dcsm3296539qtp.7.2023.04.04.07.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Apr 2023 07:54:39 -0700 (PDT)
+From:   Andrey Albershteyn <aalbersh@redhat.com>
+To:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
+        hch@infradead.org, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev
+Cc:     rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
+        chao@kernel.org, damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, Andrey Albershteyn <aalbersh@redhat.com>
+Subject: [PATCH v2 00/23] fs-verity support for XFS
+Date:   Tue,  4 Apr 2023 16:52:56 +0200
+Message-Id: <20230404145319.2057051-1-aalbersh@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ext4: only update i_reserved_data_blocks on successful
- block allocation
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20230325063443.1839558-1-libaokun1@huawei.com>
- <20230327124700.mnldh4sosp3ptbls@quack3>
- <a4ee8f3e-9428-ebb1-c0b4-9348075902b6@huawei.com>
- <20230328100037.vy23wsnl437ujdoh@quack3>
- <7410b9be-da2d-57e0-c4f8-19900df2c440@huawei.com>
- <20230329162228.evbppkkcbbbnaeeo@quack3>
- <e2b97584-4305-8dac-51f0-12656c295bc9@huawei.com>
- <20230404100439.wrtlibaiu5nsvdem@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230404100439.wrtlibaiu5nsvdem@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,180 +79,145 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/4/4 18:04, Jan Kara wrote:
-> On Mon 03-04-23 22:02:56, Baokun Li wrote:
->> On 2023/3/30 0:22, Jan Kara wrote:
->>> On Wed 29-03-23 15:23:19, Baokun Li wrote:
->>>> On 2023/3/28 18:00, Jan Kara wrote:
->>>>> On Mon 27-03-23 21:09:42, Baokun Li wrote:
->>>>>> On 2023/3/27 20:47, Jan Kara wrote:
->>>>>>> On Sat 25-03-23 14:34:43, Baokun Li wrote:
->>>>>>>> In our fault injection test, we create an ext4 file, migrate it to
->>>>>>>> non-extent based file, then punch a hole and finally trigger a WARN_ON
->>>>>>>> in the ext4_da_update_reserve_space():
->>>>>>>>
->>>>>>>> EXT4-fs warning (device sda): ext4_da_update_reserve_space:369:
->>>>>>>> ino 14, used 11 with only 10 reserved data blocks
->>>>>>>>
->>>>>>>> When writing back a non-extent based file, if we enable delalloc, the
->>>>>>>> number of reserved blocks will be subtracted from the number of blocks
->>>>>>>> mapped by ext4_ind_map_blocks(), and the extent status tree will be
->>>>>>>> updated. We update the extent status tree by first removing the old
->>>>>>>> extent_status and then inserting the new extent_status. If the block range
->>>>>>>> we remove happens to be in an extent, then we need to allocate another
->>>>>>>> extent_status with ext4_es_alloc_extent().
->>>>>>>>
->>>>>>>>            use old    to remove   to add new
->>>>>>>>         |----------|------------|------------|
->>>>>>>>                   old extent_status
->>>>>>>>
->>>>>>>> The problem is that the allocation of a new extent_status failed due to a
->>>>>>>> fault injection, and __es_shrink() did not get free memory, resulting in
->>>>>>>> a return of -ENOMEM. Then do_writepages() retries after receiving -ENOMEM,
->>>>>>>> we map to the same extent again, and the number of reserved blocks is again
->>>>>>>> subtracted from the number of blocks in that extent. Since the blocks in
->>>>>>>> the same extent are subtracted twice, we end up triggering WARN_ON at
->>>>>>>> ext4_da_update_reserve_space() because used > ei->i_reserved_data_blocks.
->>>>>>> Hum, but this second call to ext4_map_blocks() should find already allocated
->>>>>>> blocks in the indirect block and thus should not be subtracting
->>>>>>> ei->i_reserved_data_blocks for the second time. What am I missing?
->>>>>>>
->>>>>>> 								Honza
->>>>>>>
->>>>>> ext4_map_blocks
->>>>>>      1. Lookup extent status tree firstly
->>>>>>           goto found;
->>>>>>      2. get the block without requesting a new file system block.
->>>>>> found:
->>>>>>      3. ceate and map the block
->>>>>>
->>>>>> When we call ext4_map_blocks() for the second time, we directly find the
->>>>>> corresponding blocks in the extent status tree, and then go directly to step
->>>>>> 3,
->>>>>> because our flag is brand new and therefore does not contain EXT4_MAP_MAPPED
->>>>>> but contains EXT4_GET_BLOCKS_CREATE, thus subtracting
->>>>>> ei->i_reserved_data_blocks
->>>>>> for the second time.
->>>>> Ah, I see. Thanks for explanation. But then the problem is deeper than just
->>>>> a mismatch in number of reserved delalloc block. The problem really is that
->>>>> if extent status tree update fails, we have inconsistency between what is
->>>>> stored in the extent status tree and what is stored on disk. And that can
->>>>> cause even data corruption issues in some cases.
->>>> The scenario we encountered was this:
->>>> ```
->>>> write:
->>>>       ext4_es_insert_delayed_block
->>>>       [0/16) 576460752303423487 (U,D)
->>>> writepages:
->>>>       alloc lblk 11 pblk 35328
->>>>       [0/16) 576460752303423487 (U,D)
->>>>       -- remove block 11 from extent
->>>>         [0/11) 576460752303423487 (U,D,R)  +  (Newly allocated)[12/4)
->>>> 549196775151 (U,D,R)
->>>>         --Failure to allocate memory for a new extent will undo as:
->>>>               [0/16) 576460752303423487 (U,D,R)
->>> Yes, this is what I was expecting. So now extent status tree is
->>> inconsistent with the on-disk allocation info because the block 11 is
->>> already allocated on disk but recorded as unallocated in the extent status
->>> tree.
->> Yes! There is an inconsistency here, but do_writepages finds that the
->> writeback returns -ENOMEM and keeps retrying until it succeeds, at which
->> point the above inconsistency does not exist.
-> Well, do_writepages() will not retry if wbc->sync_mode == WB_SYNC_NONE. So
-> the inconsistency can stay for a long time.
+Hi all,
 
-Indeed! There may still be problems in WB_SYNC_NONE mode.
+This is V2 of fs-verity support in XFS. In this series I did
+numerous changes from V1 which are described below.
 
->>> If the similar problem happened say when we punch a hole into a middle of a
->>> written extent and so block on disk got freed but extent status tree would
->>> still record it as allocated, user would be able to access freed block thus
->>> potentially exposing sensitive data.
->> ext4_punch_hole
->>    // remove extents in extents status tree
->>    ext4_es_remove_extent
->>    // remove extents tree on disk
->>    ext4_ext_remove_space
->>
->> In this scenario, we always try to delete the extents in the in-memory
->> extents status tree first, and then delete the extents tree on disk. So
->> even if we fail in deleting extents in memory, there is no inconsistency,
->> am I missing something?
-> No, you are right, this case is safe. Still I suspect inconsistencies with
-> extent status tree can cause more problems and possibly stale data
-> exposure.
+This patchset introduces fs-verity [5] support for XFS. This
+implementation utilizes extended attributes to store fs-verity
+metadata. The Merkle tree blocks are stored in the remote extended
+attributes.
 
-Yes, we also suspect that this inconsistency may cause problems, but we have
-not found a scenario where the problem may occur, which is why we asked you
-for advice on what scenarios would be problematic. But in any case, the 
-fix you
-suggested before would avoid this problem.
+A few key points:
+- fs-verity metadata is stored in extended attributes
+- Direct path and DAX are disabled for inodes with fs-verity
+- Pages are verified in iomap's read IO path (offloaded to
+  workqueue)
+- New workqueue for verification processing
+- New ro-compat flag
+- Inodes with fs-verity have new on-disk diflag
+- xfs_attr_get() can return buffer with the attribute
 
-Thank you for your confirmation!
+The patchset is tested with xfstests -g auto on xfs_1k, xfs_4k,
+xfs_1k_quota, and xfs_4k_quota. Haven't found any major failures.
 
->>>>       -- if success insert block 11 to extent status tree
->>>>         [0/11) 576460752303423487 (U,D,R) + (Newly allocated)[11/1) 35328 (W)
->>>> + [12/4) 549196775151 (U,D,R)
->>>>
->>>> U: UNWRITTEN
->>>> D: DELAYED
->>>> W: WRITTEN
->>>> R: REFERENCED
->>>> ```
->>>>
->>>> When we fail to allocate a new extent, we don't map buffer and we don't do
->>>> io_submit, so why is the extent tree in memory inconsistent with the one
->>>> stored on disk? Am I missing something?
->>>>
->>>> I would appreciate it if you could explain under what cases and what kind of
->>>> data corruption issues can be caused.
->>> See above.
->>>
->>>>> And this should also fix the problem you've hit because in case of
->>>>> allocation failure we may just end up with removed extent from the extent
->>>>> status tree and thus we refetch info from the disk and find out blocks are
->>>>> already allocated.
->>>> Reloading extent tree from disk I don't quite understand here, how do we
->>>> handle reserved blocks? could you explain it in more detail?
->>>>
->>>> Logically, I think it is still necessary to update i_reserved_data_blocks
->>>> only after a successful allocation. This is also done in
->>>> ext4_ext_map_blocks().
->>> I guess there is some misunderstanding here. Both with
->>> ext4_ext_map_blocks() and ext4_ind_map_blocks() we end up updating
->>> i_reserved_data_blocks only after the blocks are successfully allocated and
->>> inserted in the respective data structure but *before* updating extent
->>> status tree. If extent status tree operation fails, we currently get
->>> inconsistency between extent status tree and on-disk info in both cases
->>> AFAICS. Am I missing something?
->> Yes, our code is indeed designed to only update the number of reserved
->> blocks after the block allocation is complete. We have different
->> treatment for extent based file and non-extent based file in commit
->> 5f634d064c70 ("ext4: Fix quota accounting error with fallocate").
->>
->> For extent based file, we update the number of reserved blocks before the
->> "got_allocated_blocks" tag after the blocks are successfully allocated in
->> ext4_ext_map_blocks().
->>
->> For the non-extent based file we update the number of reserved blocks
->> after ext4_ind_map_blocks() is executed, which leads to the problem that
->> when we call ext4_ind_map_blocks() to create a block, it does not always
->> create a block.  For example, if the extents status tree we encountered
->> earlier does not match the extents tree on disk, this is of course a
->> problem in itself, but in terms of code logic, updating the number of
->> reserved blocks as ext4_ext_map_blocks() does can prevent us from trying
->> to create a block and not creating it, resulting in an incorrect number
->> of reserved blocks.
-> I see, thanks for explanation! Indeed it may be good to cleanup this code
-> so that indirect block and extent based inodes are handled in the same way.
->
-> 								Honza
+Patches [6/23] and [7/23] touch ext4, f2fs, btrfs, and patch [8/23]
+touches erofs, gfs2, and zonefs.
 
-Thanks for your support!
+The patchset consist of four parts:
+- [1..4]: Patches from Parent Pointer patchset which add binary
+          xattr names with a few deps
+- [5..7]: Improvements to core fs-verity
+- [8..9]: Add read path verification to iomap
+- [10..23]: Integration of fs-verity to xfs
 
-I will send a patch V2 with the changes suggested by you!
+Changes from V1:
+- Added parent pointer patches for easier testing
+- Many issues and refactoring points fixed from the V1 review
+- Adjusted for recent changes in fs-verity core (folios, non-4k)
+- Dropped disabling of large folios
+- Completely new fsverity patches (fix, callout, log_blocksize)
+- Change approach to verification in iomap to the same one as in
+  write path. Callouts to fs instead of direct fs-verity use.
+- New XFS workqueue for post read folio verification
+- xfs_attr_get() can return underlying xfs_buf
+- xfs_bufs are marked with XBF_VERITY_CHECKED to track verified
+  blocks
 
+kernel:
+[1]: https://github.com/alberand/linux/tree/xfs-verity-v2
+
+xfsprogs:
+[2]: https://github.com/alberand/xfsprogs/tree/fsverity-v2
+
+xfstests:
+[3]: https://github.com/alberand/xfstests/tree/fsverity-v2
+
+v1:
+[4]: https://lore.kernel.org/linux-xfs/20221213172935.680971-1-aalbersh@redhat.com/
+
+fs-verity:
+[5]: https://www.kernel.org/doc/html/latest/filesystems/fsverity.html
+
+Thanks,
+Andrey
+
+Allison Henderson (4):
+  xfs: Add new name to attri/d
+  xfs: add parent pointer support to attribute code
+  xfs: define parent pointer xattr format
+  xfs: Add xfs_verify_pptr
+
+Andrey Albershteyn (19):
+  fsverity: make fsverity_verify_folio() accept folio's offset and size
+  fsverity: add drop_page() callout
+  fsverity: pass Merkle tree block size to ->read_merkle_tree_page()
+  iomap: hoist iomap_readpage_ctx from the iomap_readahead/_folio
+  iomap: allow filesystem to implement read path verification
+  xfs: add XBF_VERITY_CHECKED xfs_buf flag
+  xfs: add XFS_DA_OP_BUFFER to make xfs_attr_get() return buffer
+  xfs: introduce workqueue for post read IO work
+  xfs: add iomap's readpage operations
+  xfs: add attribute type for fs-verity
+  xfs: add fs-verity ro-compat flag
+  xfs: add inode on-disk VERITY flag
+  xfs: initialize fs-verity on file open and cleanup on inode
+    destruction
+  xfs: don't allow to enable DAX on fs-verity sealsed inode
+  xfs: disable direct read path for fs-verity sealed files
+  xfs: add fs-verity support
+  xfs: handle merkle tree block size != fs blocksize != PAGE_SIZE
+  xfs: add fs-verity ioctls
+  xfs: enable ro-compat fs-verity flag
+
+ fs/btrfs/verity.c               |  15 +-
+ fs/erofs/data.c                 |  12 +-
+ fs/ext4/verity.c                |   9 +-
+ fs/f2fs/verity.c                |   9 +-
+ fs/gfs2/aops.c                  |  10 +-
+ fs/ioctl.c                      |   4 +
+ fs/iomap/buffered-io.c          |  89 ++++++-----
+ fs/verity/read_metadata.c       |   7 +-
+ fs/verity/verify.c              |   9 +-
+ fs/xfs/Makefile                 |   1 +
+ fs/xfs/libxfs/xfs_attr.c        |  81 +++++++++-
+ fs/xfs/libxfs/xfs_attr.h        |   7 +-
+ fs/xfs/libxfs/xfs_attr_leaf.c   |   7 +
+ fs/xfs/libxfs/xfs_attr_remote.c |  13 +-
+ fs/xfs/libxfs/xfs_da_btree.h    |   7 +-
+ fs/xfs/libxfs/xfs_da_format.h   |  46 +++++-
+ fs/xfs/libxfs/xfs_format.h      |  14 +-
+ fs/xfs/libxfs/xfs_log_format.h  |   8 +-
+ fs/xfs/libxfs/xfs_sb.c          |   2 +
+ fs/xfs/scrub/attr.c             |   4 +-
+ fs/xfs/xfs_aops.c               |  61 +++++++-
+ fs/xfs/xfs_attr_item.c          | 142 +++++++++++++++---
+ fs/xfs/xfs_attr_item.h          |   1 +
+ fs/xfs/xfs_attr_list.c          |  17 ++-
+ fs/xfs/xfs_buf.h                |  17 ++-
+ fs/xfs/xfs_file.c               |  22 ++-
+ fs/xfs/xfs_inode.c              |   2 +
+ fs/xfs/xfs_inode.h              |   3 +-
+ fs/xfs/xfs_ioctl.c              |  22 +++
+ fs/xfs/xfs_iomap.c              |  14 ++
+ fs/xfs/xfs_iops.c               |   4 +
+ fs/xfs/xfs_linux.h              |   1 +
+ fs/xfs/xfs_mount.h              |   3 +
+ fs/xfs/xfs_ondisk.h             |   4 +
+ fs/xfs/xfs_super.c              |  19 +++
+ fs/xfs/xfs_trace.h              |   1 +
+ fs/xfs/xfs_verity.c             | 256 ++++++++++++++++++++++++++++++++
+ fs/xfs/xfs_verity.h             |  27 ++++
+ fs/xfs/xfs_xattr.c              |   9 ++
+ fs/zonefs/file.c                |  12 +-
+ include/linux/fsverity.h        |  18 ++-
+ include/linux/iomap.h           |  39 ++++-
+ include/uapi/linux/fs.h         |   1 +
+ 43 files changed, 923 insertions(+), 126 deletions(-)
+ create mode 100644 fs/xfs/xfs_verity.c
+ create mode 100644 fs/xfs/xfs_verity.h
 
 -- 
-With Best Regards,
-Baokun Li
-.
+2.38.4
+
