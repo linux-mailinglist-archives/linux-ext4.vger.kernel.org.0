@@ -2,377 +2,247 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A446D5502
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 00:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46E56D5C96
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 12:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjDCW52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Apr 2023 18:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S233917AbjDDKEo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Apr 2023 06:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbjDCW50 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Apr 2023 18:57:26 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3895244B6
-        for <linux-ext4@vger.kernel.org>; Mon,  3 Apr 2023 15:57:24 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id r11so123467683edd.5
-        for <linux-ext4@vger.kernel.org>; Mon, 03 Apr 2023 15:57:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1680562642;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pNQNHEmyxWKm570ezYESleHypk8TjPfYsCf01llgY1E=;
-        b=YZMXl6HZpBFkK69HxALQ7LA0GcIzQxO+oxSrRlChPUnularuOQlzYizTdFKd8zbW/8
-         4CVmgjvUboiGywJcL7luFa82xvVPYnz9Sn0I9fMLtpcE6UKa+WDCIp3PFn6kJGTf4E4C
-         92u1WER03J780X/cN8/5CkoYeSKdYCx7tEzsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680562642;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pNQNHEmyxWKm570ezYESleHypk8TjPfYsCf01llgY1E=;
-        b=q9X8zEpguB//W6sy+NDFFEXe59vSsjPzGDFRKEWSusL7CUtycRR0wDypwDpKtcUisE
-         UWfJdDsUwNFh7+mcQg0+elzBoOa256GznUC1sEd0BOLpdunIyoq8QhBderSW4LH8wvqa
-         XbaFCcoStmC0FivgKRNSRGCOT8Q0Ixdtux7/OvWu8LVzJpaik3ThKWEVDXNV0yMt5d0P
-         rCWN86BeMgfpRRogUSLPhps6dGMFL4jDMEeh1P4cJPv2CQdZ4sTxUHva832wdiGFZ4+u
-         ndxVGKQlttNzoqaFz2ENsjkgKTI4Juit3L53De5ulh6i4ilb9HQ4VmZLuziZ6RI9IBtO
-         kg6w==
-X-Gm-Message-State: AAQBX9dH+64pyaUEGXUTxfYWIX2y+LnDPn5c130jEue47XQA++C2u9Jr
-        DBT+QiP6sGfVtXDImEB+DBUMb78zsooE7b1c6Vu/bA==
-X-Google-Smtp-Source: AKy350ao2Y0z8CpV79IpYns3sYFnAYql88bE6K8ADZnpZfXRr8sA9XZZYmJgi9xahsU6f2Xyn8JJh7ATYaoK/WVvgJY=
-X-Received: by 2002:a17:906:9f28:b0:934:b5d6:14d0 with SMTP id
- fy40-20020a1709069f2800b00934b5d614d0mr194797ejc.2.1680562642663; Mon, 03 Apr
- 2023 15:57:22 -0700 (PDT)
+        with ESMTP id S233365AbjDDKEn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 06:04:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC741BD9;
+        Tue,  4 Apr 2023 03:04:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C9FD228E3;
+        Tue,  4 Apr 2023 10:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1680602680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0AB/drouMtDRwvcSkIGBTa/IBApGxJYPT6bYboWjO4=;
+        b=CiwoJwzMO0jOjX0KFkCr4dql9rxdBCULSTMxNtECHzXk0s8TLDPIjKYJHsgKaFLubKSJzD
+        Uvu6F7Id9sKUQkvAJeGiVC+9WNwqquIXDexmB8KrHnus/YeW5BNEyU8usVPlPifNmLHKir
+        Crv8n+crVSdTm6nWyMF60yui22CtByw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1680602680;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0AB/drouMtDRwvcSkIGBTa/IBApGxJYPT6bYboWjO4=;
+        b=KKdeodU3fiYTbBKoRQlTDvi3af12U/SmQtJcTJyMflgDanPv8vT/IeaQalMX27fNK8wbUV
+        ElDlhQ2Rn/sscrBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 467B713920;
+        Tue,  4 Apr 2023 10:04:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ysw/ETj2K2TsUAAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 04 Apr 2023 10:04:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C63CAA0732; Tue,  4 Apr 2023 12:04:39 +0200 (CEST)
+Date:   Tue, 4 Apr 2023 12:04:39 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: only update i_reserved_data_blocks on successful
+ block allocation
+Message-ID: <20230404100439.wrtlibaiu5nsvdem@quack3>
+References: <20230325063443.1839558-1-libaokun1@huawei.com>
+ <20230327124700.mnldh4sosp3ptbls@quack3>
+ <a4ee8f3e-9428-ebb1-c0b4-9348075902b6@huawei.com>
+ <20230328100037.vy23wsnl437ujdoh@quack3>
+ <7410b9be-da2d-57e0-c4f8-19900df2c440@huawei.com>
+ <20230329162228.evbppkkcbbbnaeeo@quack3>
+ <e2b97584-4305-8dac-51f0-12656c295bc9@huawei.com>
 MIME-Version: 1.0
-References: <20221229081252.452240-1-sarthakkukreti@chromium.org>
- <20221229081252.452240-3-sarthakkukreti@chromium.org> <Y7biAQyLKJDjsAlz@bfoster>
- <CAG9=OMNLAL8M2AqzSWzecXJzR7jfC_3Ckc_L24MzNBgz_+u-wQ@mail.gmail.com> <ZCbR4euMpUauJ0iI@bfoster>
-In-Reply-To: <ZCbR4euMpUauJ0iI@bfoster>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Mon, 3 Apr 2023 15:57:11 -0700
-Message-ID: <CAG9=OMNT8c=Pkzd-Nw99R32i5VjYtyQsscY0huJFg3EbtRJ5BQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] dm: Add support for block provisioning
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e2b97584-4305-8dac-51f0-12656c295bc9@huawei.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 5:26=E2=80=AFAM Brian Foster <bfoster@redhat.com> w=
-rote:
->
-> On Thu, Mar 30, 2023 at 05:30:22PM -0700, Sarthak Kukreti wrote:
-> > On Thu, Jan 5, 2023 at 6:42=E2=80=AFAM Brian Foster <bfoster@redhat.com=
-> wrote:
-> > >
-> > > On Thu, Dec 29, 2022 at 12:12:47AM -0800, Sarthak Kukreti wrote:
-> > > > Add support to dm devices for REQ_OP_PROVISION. The default mode
-> > > > is to pass through the request and dm-thin will utilize it to provi=
-sion
-> > > > blocks.
-> > > >
-> > > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > > ---
-> > > >  drivers/md/dm-crypt.c         |  4 +-
-> > > >  drivers/md/dm-linear.c        |  1 +
-> > > >  drivers/md/dm-snap.c          |  7 +++
-> > > >  drivers/md/dm-table.c         | 25 ++++++++++
-> > > >  drivers/md/dm-thin.c          | 90 +++++++++++++++++++++++++++++++=
-+++-
-> > > >  drivers/md/dm.c               |  4 ++
-> > > >  include/linux/device-mapper.h | 11 +++++
-> > > >  7 files changed, 139 insertions(+), 3 deletions(-)
-> > > >
-> > > ...
-> > > > diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-> > > > index 64cfcf46881d..ab3f1abfabaf 100644
-> > > > --- a/drivers/md/dm-thin.c
-> > > > +++ b/drivers/md/dm-thin.c
-> > > ...
-> > > > @@ -1980,6 +1992,70 @@ static void process_cell(struct thin_c *tc, =
-struct dm_bio_prison_cell *cell)
-> > > >       }
-> > > >  }
-> > > >
-> > > > +static void process_provision_cell(struct thin_c *tc, struct dm_bi=
-o_prison_cell *cell)
-> > > > +{
-> > > > +     int r;
-> > > > +     struct pool *pool =3D tc->pool;
-> > > > +     struct bio *bio =3D cell->holder;
-> > > > +     dm_block_t begin, end;
-> > > > +     struct dm_thin_lookup_result lookup_result;
-> > > > +
-> > > > +     if (tc->requeue_mode) {
-> > > > +             cell_requeue(pool, cell);
-> > > > +             return;
-> > > > +     }
-> > > > +
-> > > > +     get_bio_block_range(tc, bio, &begin, &end);
-> > > > +
-> > > > +     while (begin !=3D end) {
-> > > > +             r =3D ensure_next_mapping(pool);
-> > > > +             if (r)
-> > > > +                     /* we did our best */
-> > > > +                     return;
-> > > > +
-> > > > +             r =3D dm_thin_find_block(tc->td, begin, 1, &lookup_re=
-sult);
-> > >
-> > > Hi Sarthak,
-> > >
-> > > I think we discussed this before.. but remind me if/how we wanted to
-> > > handle the case if the thin blocks are shared..? Would a provision op
-> > > carry enough information to distinguish an FALLOC_FL_UNSHARE_RANGE
-> > > request from upper layers to conditionally provision in that case?
-> > >
-> > I think that should depend on how the filesystem implements unsharing:
-> > assuming that we use provision on first allocation, unsharing on xfs
-> > should result in xfs calling REQ_OP_PROVISION on the newly allocated
-> > blocks first. But for ext4, we'd fail UNSHARE_RANGE unless provision
-> > (instead of noprovision, provision_on_alloc), in which case, we'd send
-> > REQ_OP_PROVISION.
-> >
->
-> I think my question was unclear... It doesn't necessarily have much to
-> do with the filesystem or associated provision policy. Since dm-thin can
-> share blocks internally via snapshots, do you intend to support
-> FL_UNSHARE_RANGE via blkdev_fallocate() and REQ_OP_PROVISION?
->
-> If so, then presumably this wants an UNSHARE request flag to pair with
-> REQ_OP_PROVISION. Also, the dm-thin code above needs to check whether an
-> existing block it finds is shared and basically do whatever COW breaking
-> is necessary during the PROVISION request.
->
-> If not, why? And what is expected behavior if blkdev_fallocate() is
-> called with FL_UNSHARE_RANGE?
->
-I think the handling of REQ_OP_PROVISION by each snapshot target is
-kind-of implicit:
+On Mon 03-04-23 22:02:56, Baokun Li wrote:
+> On 2023/3/30 0:22, Jan Kara wrote:
+> > On Wed 29-03-23 15:23:19, Baokun Li wrote:
+> > > On 2023/3/28 18:00, Jan Kara wrote:
+> > > > On Mon 27-03-23 21:09:42, Baokun Li wrote:
+> > > > > On 2023/3/27 20:47, Jan Kara wrote:
+> > > > > > On Sat 25-03-23 14:34:43, Baokun Li wrote:
+> > > > > > > In our fault injection test, we create an ext4 file, migrate it to
+> > > > > > > non-extent based file, then punch a hole and finally trigger a WARN_ON
+> > > > > > > in the ext4_da_update_reserve_space():
+> > > > > > > 
+> > > > > > > EXT4-fs warning (device sda): ext4_da_update_reserve_space:369:
+> > > > > > > ino 14, used 11 with only 10 reserved data blocks
+> > > > > > > 
+> > > > > > > When writing back a non-extent based file, if we enable delalloc, the
+> > > > > > > number of reserved blocks will be subtracted from the number of blocks
+> > > > > > > mapped by ext4_ind_map_blocks(), and the extent status tree will be
+> > > > > > > updated. We update the extent status tree by first removing the old
+> > > > > > > extent_status and then inserting the new extent_status. If the block range
+> > > > > > > we remove happens to be in an extent, then we need to allocate another
+> > > > > > > extent_status with ext4_es_alloc_extent().
+> > > > > > > 
+> > > > > > >           use old    to remove   to add new
+> > > > > > >        |----------|------------|------------|
+> > > > > > >                  old extent_status
+> > > > > > > 
+> > > > > > > The problem is that the allocation of a new extent_status failed due to a
+> > > > > > > fault injection, and __es_shrink() did not get free memory, resulting in
+> > > > > > > a return of -ENOMEM. Then do_writepages() retries after receiving -ENOMEM,
+> > > > > > > we map to the same extent again, and the number of reserved blocks is again
+> > > > > > > subtracted from the number of blocks in that extent. Since the blocks in
+> > > > > > > the same extent are subtracted twice, we end up triggering WARN_ON at
+> > > > > > > ext4_da_update_reserve_space() because used > ei->i_reserved_data_blocks.
+> > > > > > Hum, but this second call to ext4_map_blocks() should find already allocated
+> > > > > > blocks in the indirect block and thus should not be subtracting
+> > > > > > ei->i_reserved_data_blocks for the second time. What am I missing?
+> > > > > > 
+> > > > > > 								Honza
+> > > > > > 
+> > > > > ext4_map_blocks
+> > > > >     1. Lookup extent status tree firstly
+> > > > >          goto found;
+> > > > >     2. get the block without requesting a new file system block.
+> > > > > found:
+> > > > >     3. ceate and map the block
+> > > > > 
+> > > > > When we call ext4_map_blocks() for the second time, we directly find the
+> > > > > corresponding blocks in the extent status tree, and then go directly to step
+> > > > > 3,
+> > > > > because our flag is brand new and therefore does not contain EXT4_MAP_MAPPED
+> > > > > but contains EXT4_GET_BLOCKS_CREATE, thus subtracting
+> > > > > ei->i_reserved_data_blocks
+> > > > > for the second time.
+> > > > Ah, I see. Thanks for explanation. But then the problem is deeper than just
+> > > > a mismatch in number of reserved delalloc block. The problem really is that
+> > > > if extent status tree update fails, we have inconsistency between what is
+> > > > stored in the extent status tree and what is stored on disk. And that can
+> > > > cause even data corruption issues in some cases.
+> > > The scenario we encountered was this:
+> > > ```
+> > > write:
+> > >      ext4_es_insert_delayed_block
+> > >      [0/16) 576460752303423487 (U,D)
+> > > writepages:
+> > >      alloc lblk 11 pblk 35328
+> > >      [0/16) 576460752303423487 (U,D)
+> > >      -- remove block 11 from extent
+> > >        [0/11) 576460752303423487 (U,D,R)  +  (Newly allocated)[12/4)
+> > > 549196775151 (U,D,R)
+> > >        --Failure to allocate memory for a new extent will undo as:
+> > >              [0/16) 576460752303423487 (U,D,R)
+> > Yes, this is what I was expecting. So now extent status tree is
+> > inconsistent with the on-disk allocation info because the block 11 is
+> > already allocated on disk but recorded as unallocated in the extent status
+> > tree.
+> 
+> Yes! There is an inconsistency here, but do_writepages finds that the
+> writeback returns -ENOMEM and keeps retrying until it succeeds, at which
+> point the above inconsistency does not exist.
 
-- snapshot-origin: do nothing
-- snapshot: send REQ_OP_PROVISION to the COW device
-- snapshot-merge: send REQ_OP_PROVISION to the origin.
+Well, do_writepages() will not retry if wbc->sync_mode == WB_SYNC_NONE. So
+the inconsistency can stay for a long time.
 
-From the thinpool's perspective, REQ_OP_PROVISION reuses the
-provision_block() primitive to break sharing (there's a bug in the
-below code, as you pointed out: case 0 should also call
-provision_block() if the lookup result shows that this is a shared
-block).
+> > If the similar problem happened say when we punch a hole into a middle of a
+> > written extent and so block on disk got freed but extent status tree would
+> > still record it as allocated, user would be able to access freed block thus
+> > potentially exposing sensitive data.
+> 
+> ext4_punch_hole
+>   // remove extents in extents status tree
+>   ext4_es_remove_extent
+>   // remove extents tree on disk
+>   ext4_ext_remove_space
+> 
+> In this scenario, we always try to delete the extents in the in-memory
+> extents status tree first, and then delete the extents tree on disk. So
+> even if we fail in deleting extents in memory, there is no inconsistency,
+> am I missing something?
 
-So, I think the provision op would carry enough information to
-conditionally provision and copy the block. Are there other cases
-where UNSHARE_RANGE would be useful?
+No, you are right, this case is safe. Still I suspect inconsistencies with
+extent status tree can cause more problems and possibly stale data
+exposure.
 
-Best
-Sarthak
+> > >      -- if success insert block 11 to extent status tree
+> > >        [0/11) 576460752303423487 (U,D,R) + (Newly allocated)[11/1) 35328 (W)
+> > > + [12/4) 549196775151 (U,D,R)
+> > > 
+> > > U: UNWRITTEN
+> > > D: DELAYED
+> > > W: WRITTEN
+> > > R: REFERENCED
+> > > ```
+> > > 
+> > > When we fail to allocate a new extent, we don't map buffer and we don't do
+> > > io_submit, so why is the extent tree in memory inconsistent with the one
+> > > stored on disk? Am I missing something?
+> > > 
+> > > I would appreciate it if you could explain under what cases and what kind of
+> > > data corruption issues can be caused.
+> > See above.
+> > 
+> > > > And this should also fix the problem you've hit because in case of
+> > > > allocation failure we may just end up with removed extent from the extent
+> > > > status tree and thus we refetch info from the disk and find out blocks are
+> > > > already allocated.
+> > > Reloading extent tree from disk I don't quite understand here, how do we
+> > > handle reserved blocks? could you explain it in more detail?
+> > > 
+> > > Logically, I think it is still necessary to update i_reserved_data_blocks
+> > > only after a successful allocation. This is also done in
+> > > ext4_ext_map_blocks().
+> > I guess there is some misunderstanding here. Both with
+> > ext4_ext_map_blocks() and ext4_ind_map_blocks() we end up updating
+> > i_reserved_data_blocks only after the blocks are successfully allocated and
+> > inserted in the respective data structure but *before* updating extent
+> > status tree. If extent status tree operation fails, we currently get
+> > inconsistency between extent status tree and on-disk info in both cases
+> > AFAICS. Am I missing something?
+> 
+> Yes, our code is indeed designed to only update the number of reserved
+> blocks after the block allocation is complete. We have different
+> treatment for extent based file and non-extent based file in commit
+> 5f634d064c70 ("ext4: Fix quota accounting error with fallocate").
+> 
+> For extent based file, we update the number of reserved blocks before the
+> "got_allocated_blocks" tag after the blocks are successfully allocated in
+> ext4_ext_map_blocks().
+> 
+> For the non-extent based file we update the number of reserved blocks
+> after ext4_ind_map_blocks() is executed, which leads to the problem that
+> when we call ext4_ind_map_blocks() to create a block, it does not always
+> create a block.  For example, if the extents status tree we encountered
+> earlier does not match the extents tree on disk, this is of course a
+> problem in itself, but in terms of code logic, updating the number of
+> reserved blocks as ext4_ext_map_blocks() does can prevent us from trying
+> to create a block and not creating it, resulting in an incorrect number
+> of reserved blocks.
 
-> Brian
->
-> > Best
-> > Sarthak
-> >
-> >
-> > Sarthak
-> >
-> > > Brian
-> > >
-> > > > +             switch (r) {
-> > > > +             case 0:
-> > > > +                     begin++;
-> > > > +                     break;
-> > > > +             case -ENODATA:
-> > > > +                     bio_inc_remaining(bio);
-> > > > +                     provision_block(tc, bio, begin, cell);
-> > > > +                     begin++;
-> > > > +                     break;
-> > > > +             default:
-> > > > +                     DMERR_LIMIT(
-> > > > +                             "%s: dm_thin_find_block() failed: err=
-or =3D %d",
-> > > > +                             __func__, r);
-> > > > +                     cell_defer_no_holder(tc, cell);
-> > > > +                     bio_io_error(bio);
-> > > > +                     begin++;
-> > > > +                     break;
-> > > > +             }
-> > > > +     }
-> > > > +     bio_endio(bio);
-> > > > +     cell_defer_no_holder(tc, cell);
-> > > > +}
-> > > > +
-> > > > +static void process_provision_bio(struct thin_c *tc, struct bio *b=
-io)
-> > > > +{
-> > > > +     dm_block_t begin, end;
-> > > > +     struct dm_cell_key virt_key;
-> > > > +     struct dm_bio_prison_cell *virt_cell;
-> > > > +
-> > > > +     get_bio_block_range(tc, bio, &begin, &end);
-> > > > +     if (begin =3D=3D end) {
-> > > > +             bio_endio(bio);
-> > > > +             return;
-> > > > +     }
-> > > > +
-> > > > +     build_key(tc->td, VIRTUAL, begin, end, &virt_key);
-> > > > +     if (bio_detain(tc->pool, &virt_key, bio, &virt_cell))
-> > > > +             return;
-> > > > +
-> > > > +     process_provision_cell(tc, virt_cell);
-> > > > +}
-> > > > +
-> > > >  static void process_bio(struct thin_c *tc, struct bio *bio)
-> > > >  {
-> > > >       struct pool *pool =3D tc->pool;
-> > > > @@ -2200,6 +2276,8 @@ static void process_thin_deferred_bios(struct=
- thin_c *tc)
-> > > >
-> > > >               if (bio_op(bio) =3D=3D REQ_OP_DISCARD)
-> > > >                       pool->process_discard(tc, bio);
-> > > > +             else if (bio_op(bio) =3D=3D REQ_OP_PROVISION)
-> > > > +                     process_provision_bio(tc, bio);
-> > > >               else
-> > > >                       pool->process_bio(tc, bio);
-> > > >
-> > > > @@ -2716,7 +2794,8 @@ static int thin_bio_map(struct dm_target *ti,=
- struct bio *bio)
-> > > >               return DM_MAPIO_SUBMITTED;
-> > > >       }
-> > > >
-> > > > -     if (op_is_flush(bio->bi_opf) || bio_op(bio) =3D=3D REQ_OP_DIS=
-CARD) {
-> > > > +     if (op_is_flush(bio->bi_opf) || bio_op(bio) =3D=3D REQ_OP_DIS=
-CARD ||
-> > > > +         bio_op(bio) =3D=3D REQ_OP_PROVISION) {
-> > > >               thin_defer_bio_with_throttle(tc, bio);
-> > > >               return DM_MAPIO_SUBMITTED;
-> > > >       }
-> > > > @@ -3355,6 +3434,8 @@ static int pool_ctr(struct dm_target *ti, uns=
-igned argc, char **argv)
-> > > >       pt->low_water_blocks =3D low_water_blocks;
-> > > >       pt->adjusted_pf =3D pt->requested_pf =3D pf;
-> > > >       ti->num_flush_bios =3D 1;
-> > > > +     ti->num_provision_bios =3D 1;
-> > > > +     ti->provision_supported =3D true;
-> > > >
-> > > >       /*
-> > > >        * Only need to enable discards if the pool should pass
-> > > > @@ -4053,6 +4134,7 @@ static void pool_io_hints(struct dm_target *t=
-i, struct queue_limits *limits)
-> > > >               blk_limits_io_opt(limits, pool->sectors_per_block << =
-SECTOR_SHIFT);
-> > > >       }
-> > > >
-> > > > +
-> > > >       /*
-> > > >        * pt->adjusted_pf is a staging area for the actual features =
-to use.
-> > > >        * They get transferred to the live pool in bind_control_targ=
-et()
-> > > > @@ -4243,6 +4325,9 @@ static int thin_ctr(struct dm_target *ti, uns=
-igned argc, char **argv)
-> > > >               ti->num_discard_bios =3D 1;
-> > > >       }
-> > > >
-> > > > +     ti->num_provision_bios =3D 1;
-> > > > +     ti->provision_supported =3D true;
-> > > > +
-> > > >       mutex_unlock(&dm_thin_pool_table.mutex);
-> > > >
-> > > >       spin_lock_irq(&tc->pool->lock);
-> > > > @@ -4457,6 +4542,7 @@ static void thin_io_hints(struct dm_target *t=
-i, struct queue_limits *limits)
-> > > >
-> > > >       limits->discard_granularity =3D pool->sectors_per_block << SE=
-CTOR_SHIFT;
-> > > >       limits->max_discard_sectors =3D 2048 * 1024 * 16; /* 16G */
-> > > > +     limits->max_provision_sectors =3D 2048 * 1024 * 16; /* 16G */
-> > > >  }
-> > > >
-> > > >  static struct target_type thin_target =3D {
-> > > > diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> > > > index e1ea3a7bd9d9..4d19bae9da4a 100644
-> > > > --- a/drivers/md/dm.c
-> > > > +++ b/drivers/md/dm.c
-> > > > @@ -1587,6 +1587,7 @@ static bool is_abnormal_io(struct bio *bio)
-> > > >               case REQ_OP_DISCARD:
-> > > >               case REQ_OP_SECURE_ERASE:
-> > > >               case REQ_OP_WRITE_ZEROES:
-> > > > +             case REQ_OP_PROVISION:
-> > > >                       return true;
-> > > >               default:
-> > > >                       break;
-> > > > @@ -1611,6 +1612,9 @@ static blk_status_t __process_abnormal_io(str=
-uct clone_info *ci,
-> > > >       case REQ_OP_WRITE_ZEROES:
-> > > >               num_bios =3D ti->num_write_zeroes_bios;
-> > > >               break;
-> > > > +     case REQ_OP_PROVISION:
-> > > > +             num_bios =3D ti->num_provision_bios;
-> > > > +             break;
-> > > >       default:
-> > > >               break;
-> > > >       }
-> > > > diff --git a/include/linux/device-mapper.h b/include/linux/device-m=
-apper.h
-> > > > index 04c6acf7faaa..b4d97d5d75b8 100644
-> > > > --- a/include/linux/device-mapper.h
-> > > > +++ b/include/linux/device-mapper.h
-> > > > @@ -333,6 +333,12 @@ struct dm_target {
-> > > >        */
-> > > >       unsigned num_write_zeroes_bios;
-> > > >
-> > > > +     /*
-> > > > +      * The number of PROVISION bios that will be submitted to the=
- target.
-> > > > +      * The bio number can be accessed with dm_bio_get_target_bio_=
-nr.
-> > > > +      */
-> > > > +     unsigned num_provision_bios;
-> > > > +
-> > > >       /*
-> > > >        * The minimum number of extra bytes allocated in each io for=
- the
-> > > >        * target to use.
-> > > > @@ -357,6 +363,11 @@ struct dm_target {
-> > > >        */
-> > > >       bool discards_supported:1;
-> > > >
-> > > > +     /* Set if this target needs to receive provision requests reg=
-ardless of
-> > > > +      * whether or not its underlying devices have support.
-> > > > +      */
-> > > > +     bool provision_supported:1;
-> > > > +
-> > > >       /*
-> > > >        * Set if we need to limit the number of in-flight bios when =
-swapping.
-> > > >        */
-> > > > --
-> > > > 2.37.3
-> > > >
-> > >
-> >
->
+I see, thanks for explanation! Indeed it may be good to cleanup this code
+so that indirect block and extent based inodes are handled in the same way.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
