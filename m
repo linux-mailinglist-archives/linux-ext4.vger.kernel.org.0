@@ -2,32 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E566D6758
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 17:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929B16D675E
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Apr 2023 17:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbjDDPau (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Apr 2023 11:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S233249AbjDDPcV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Apr 2023 11:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjDDPat (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 11:30:49 -0400
+        with ESMTP id S229691AbjDDPcT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Apr 2023 11:32:19 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4B8449E;
-        Tue,  4 Apr 2023 08:30:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8F11985;
+        Tue,  4 Apr 2023 08:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oRUY6/nVUdkJWa+BgfeeaayCjIWt7sUTbaMHlXagjNw=; b=Fn5hZQrai6OxRnc53wDWJvsQUi
-        l0f2jY/0e+u5hzy8V4qA0uX6eNIA0HL+/ThjvZ+58OfHp5yJqwS4UwWtJa85+FoQv1YOF18PQ8y/e
-        fZlpCpeR10Vlao2xf/ZiIbKLawae3/lvFHmhVGCbU5EseY8BqD2Zq9XQmLqu1Rs3Ie8J+zOpNJhqg
-        WOPGvV+nuedhEDvyiMY4PKQZIb21ECVPvSGrC0nkv5nmqQuhLqlykdFWXGNzzFth3lMtIfRXD4Co3
-        i32ooWz4rlCAa8EN+liRSIfzaYutkEpt2RTf3KItD2VFGXXaziebwy1oggfRtL771dhH2RwYQSCtU
-        E2Ik6G2g==;
+        bh=H6mc1gZhtXSneS6nte5uW4UZFELa9ivi94Hze/v8bew=; b=kS4170334H5m+oxgCVnmmbfs8Z
+        HGcIrZO4ewhSv2x0uhcAurkfo8ppu67vASYNQq3Qd/M7iEqY5WYIWA/GGhfxTL0EqayVfGzm0ZgHC
+        RchX/7zGEAnuEBysywlPXrCE17YdeutDLtHd4/UKlCfF6zaadmNmMBQRlJl7JNc1aJGI1/8ZBFQSX
+        oTFeOYFfjZrVqlcF0ADAK6KzacZHHooO5I7DqGlmnK4NjCY3zQqecMMXo+G0O9qTZWVipvtosDIJI
+        LaE1ceqK0n3y/4ZeJwIN/yytH+VCppgyUpHfoyunWwsKECUUoQYnJ48JKxsRMHBOhpLOZ0mtdfMi1
+        q75JIVDw==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pjicG-0020iL-1q;
-        Tue, 04 Apr 2023 15:30:36 +0000
-Date:   Tue, 4 Apr 2023 08:30:36 -0700
+        id 1pjidr-0020pf-02;
+        Tue, 04 Apr 2023 15:32:15 +0000
+Date:   Tue, 4 Apr 2023 08:32:14 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Andrey Albershteyn <aalbersh@redhat.com>
 Cc:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
@@ -38,15 +38,15 @@ Cc:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
         linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com
-Subject: Re: [PATCH v2 05/23] fsverity: make fsverity_verify_folio() accept
- folio's offset and size
-Message-ID: <ZCxCnC2lM9N9qtCc@infradead.org>
+Subject: Re: [PATCH v2 08/23] iomap: hoist iomap_readpage_ctx from the
+ iomap_readahead/_folio
+Message-ID: <ZCxC/pQixOq03ltH@infradead.org>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-6-aalbersh@redhat.com>
+ <20230404145319.2057051-9-aalbersh@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404145319.2057051-6-aalbersh@redhat.com>
+In-Reply-To: <20230404145319.2057051-9-aalbersh@redhat.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
@@ -57,8 +57,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 04:53:01PM +0200, Andrey Albershteyn wrote:
-> Not the whole folio always need to be verified by fs-verity (e.g.
-> with 1k blocks). Use passed folio's offset and size.
+On Tue, Apr 04, 2023 at 04:53:04PM +0200, Andrey Albershteyn wrote:
+> Make filesystems create readpage context, similar as
+> iomap_writepage_ctx in write path. This will allow filesystem to
+> pass _ops to iomap for ioend configuration (->prepare_ioend) which
+> in turn would be used to set BIO end callout (bio->bi_end_io).
+> 
+> This will be utilized in further patches by fs-verity to verify
+> pages on BIO completion by XFS.
 
-Why can't those callers just call fsverity_verify_blocks directly?
+Hmm.  Can't we just have a version of the readpage helper that just
+gets the ops passed instead of creating all this boilerplate code?
+
+For writepage XFS embedds the context in it's own structure, so it's
+kindof needed, but I don't think we'll need that here.
