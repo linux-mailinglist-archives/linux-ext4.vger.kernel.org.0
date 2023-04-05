@@ -2,108 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B786D75F6
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 09:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E03B6D7743
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 10:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237168AbjDEH4w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 03:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
+        id S236955AbjDEIsQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 04:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237180AbjDEH4u (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 03:56:50 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2324C22
-        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 00:56:47 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id r11so138965395edd.5
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 00:56:47 -0700 (PDT)
+        with ESMTP id S237210AbjDEIsM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 04:48:12 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A8A3599;
+        Wed,  5 Apr 2023 01:48:11 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id v5so15878890ilj.4;
+        Wed, 05 Apr 2023 01:48:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680681406;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
-        b=TbfE/M3KLTLcH5vT2Fre6fZYOYPWvvtxQkGTov6z1yTYm3WWX0o+lTIhTOG+wcSwIr
-         Shh1zY364kogmQhRAc0fmFUnYMo7ZU5Ky8ffXUG3ryGAwkPV8ypCT8eTFfjq9CYDvF34
-         wd9tQF0WuIJQpr3lhmr30HlFr0l1LwFrvYdgr8mH0O6e9FfWr5OPxhkLBM/13q30F9ig
-         EG1EUr+OVaWTOJKmPFrxHNqGlS+65K8SsVkrarg61QTLcPElkQBRwd5OoyrukvetA/wf
-         Vqy9Mst7SvFcranOTqZhNf+dN08TZqf8qZtRsH7Kuac3IsmXwWAy0wOKyifHo22AsbGf
-         ub3A==
+        d=gmail.com; s=20210112; t=1680684491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+I6RLfy7p3pfnrp1t4tfB17I5n8zpBk+7c0bn0ShMwk=;
+        b=BG3AEdrJJ0ZcQ2QpGmViN9LyS+MPb/fqMGFAr5Grwyj3ovcJOmc1pTHjPyIL1XD/AX
+         G66whUC3DnyDBqcK2Y5sH8DubURH4ns2a1SXG6vHaK8G8mrsJ2yPvWQDnnXjSPB6MHPk
+         dS85xVYbu7J3mGbGFcBRUOldjIXBmnOJQ7sSy7unpS51TfqKTyNpDg5hciebMH7XKE6F
+         bGmEKTAOu78E+yhHOFbpua5J2R/mTscFRNH08vSnMh+pqnB9fut1gK36jF8cqzXE8MdK
+         u7okQX6g2pz7IK3zadkrbkPAMGL89G1tBfl/HtjhiGJlJIC42giDgHEvDrKOa8oXPEGM
+         m/IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680681406;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
-        b=jd862rBc4ZJ9It0Xfni5DoCsDaFSFM3Gm5QUD/pW4zf3DlgwpfgAjk2AALwMYMpxPC
-         YkgO436GyNH/nLgu1JWKZ2d6j4RCdo+ExB6c5pByT6s2YHVm9cCS4yHvOeMadBrXs1/R
-         dnvBPTRCEuDGeNDjsySRzBjhWYS8e2nvM8HLfFfi/AL5pkZ9K6rELOYQKzqvAnAM55oz
-         +SZLixc6FKY/STYd1ulepreRyPUhnnDJ2c8xxyMdNu7Zg5RgPEmBBI9pgM8LM363iwCu
-         OwR7yLhCLUrrJCKGKNPgAWth3gssmbR6UwPoUilZBPIoCReErkOT/KtZdzJhqVyPeJxC
-         ACCg==
-X-Gm-Message-State: AAQBX9cIvuqU43NBEpRRbLJHeyFFFExVxKpcOfMY6bRaoDRePSy0QwGa
-        lSdIufXH6zqGAO6SnS+IfcH5sKno8+4J1JZluYU=
-X-Google-Smtp-Source: AKy350aKLqDIJOBs2+w17/O65tIzNsWo0HsCJMoNyTEOl6/xftBTjTFN3K+wYTFKjUWLGLXPGVtupVTP2HNAQxlPhhQ=
-X-Received: by 2002:a17:906:f8db:b0:92b:ec37:e4b7 with SMTP id
- lh27-20020a170906f8db00b0092bec37e4b7mr1145683ejb.14.1680681406051; Wed, 05
- Apr 2023 00:56:46 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680684491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+I6RLfy7p3pfnrp1t4tfB17I5n8zpBk+7c0bn0ShMwk=;
+        b=nrlvPLqXIDwFGxpZE0TwA4UY6/xsFrS74uRx/EJgT8NXL2SRVnsQ3MipcJ5fyWjZ5l
+         4K5RhbOt6adFkUXAD54WWUudHfAoNki8sgcIMu9XMHNtHxDglkNeqfmwBVReXafMdYAL
+         syPn9kTdv3mRfL2RwrOe8gx3JIl01DKwomz7eIApKOI7odiskbvXX7UPkBtnCFUispvB
+         gm2C9kyRHGXY/1cImEX8qcJjVNSF0L5IhnVX6CiU/0cER50jIqiGmiv/NruElG05apLU
+         adX1PfuMeqYxfKUGUqkHRMKQtPknYXdpJhXOucNDBGbpGDhSIqXIVhWvjb68iyVGjenB
+         wIyg==
+X-Gm-Message-State: AAQBX9fGnipoNNmfoVRE1Wx8InSLV+XPIs/Goj6p4Gl3pJm4acfcqB1y
+        YB/JtgiAf3TyFfXdBnIQwSxy8/om58hF9iFu3CM=
+X-Google-Smtp-Source: AKy350bt+tihLu4R/cuRxtZMh9NKFLSUtLTfqU8EqI8rR6ILEh5Rmsp1q3KCTonEB2gR18n1tuSY7+NU35k6ABFa+Lk=
+X-Received: by 2002:a05:6e02:96c:b0:326:4af5:28b5 with SMTP id
+ q12-20020a056e02096c00b003264af528b5mr1448626ilt.3.1680684490954; Wed, 05 Apr
+ 2023 01:48:10 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7208:2202:b0:65:e547:3943 with HTTP; Wed, 5 Apr 2023
- 00:56:45 -0700 (PDT)
-Reply-To: tamimbinhamadalthani00@gmail.com
-From:   Tamim Mohammed Taher <cisskhadidiatou890@gmail.com>
-Date:   Wed, 5 Apr 2023 00:56:45 -0700
-Message-ID: <CAAYY=dY1_XALb_mD3qTfxhx_hk9X7aOuccJ_bL2QrungoJAyKA@mail.gmail.com>
-Subject: RE:Saudi Arabia-Inquiry about your products.!!
-To:     undisclosed-recipients:;
+References: <20230403135304.19858-1-wuchi.zero@gmail.com> <ZC0J6I1pYNZBB30y@infradead.org>
+In-Reply-To: <ZC0J6I1pYNZBB30y@infradead.org>
+From:   chi wu <wuchi.zero@gmail.com>
+Date:   Wed, 5 Apr 2023 16:47:59 +0800
+Message-ID: <CA+tQmHA_3_Oc-0AQ0a29DTwU4mkEqhOiAE6gXa4Ly4gZGpn5Vw@mail.gmail.com>
+Subject: Re: [PATCH] ext4: simplify 32bit calculation of lblk
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        ritesh.list@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.9 required=5.0 tests=DEAR_SOMETHING,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:529 listed in]
-        [list.dnswl.org]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [tamimbinhamadalthani00[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [cisskhadidiatou890[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [cisskhadidiatou890[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  1.7 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Sir/Madam,
+Christoph Hellwig <hch@infradead.org> =E4=BA=8E2023=E5=B9=B44=E6=9C=885=E6=
+=97=A5=E5=91=A8=E4=B8=89 13:40=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Apr 03, 2023 at 09:53:04PM +0800, wuchi wrote:
+> > -                     if (block > ext_block)
+> > -                             return ext_pblk + (block - ext_block);
+> > -                     else
+> > -                             return ext_pblk - (ext_block - block);
+> > +                     return ext_pblk + ((signed long long)block - (sig=
+ned long long)ext_block);
+>
+> And what exactly is the value add here, except for turning an easy
+> to parse statement into a complex expression using casts?
+>
+Yes=EF=BC=8Cit will be more complex. the original intention is to reduce th=
+e
+conditional branch.
 
-
-
-Can you supply your products to  the government of (Saudi Arabia). We
-buy in larger quantity if your company can supply please reply with
-your products detail for more information.
-
-Looking forward to hearing from you.
-
-Thanks and Regards
-
- Mr.Tamim Mohammed Taher
-
-Email:tamimbinhamadalthani00@gmail.com
+=3D=3D=3D=3D=3D=3D=3D
