@@ -2,136 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7006D75D9
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 09:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B786D75F6
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 09:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237043AbjDEHtq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 03:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
+        id S237168AbjDEH4w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 03:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237087AbjDEHtp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 03:49:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8E446AE;
-        Wed,  5 Apr 2023 00:49:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3663A63960;
-        Wed,  5 Apr 2023 07:49:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 895D0C433D2;
-        Wed,  5 Apr 2023 07:49:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680680979;
-        bh=Weq5xIt7NaRy390+BxKr0DPL+Sx0J9wKSXtMC/5JUh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5Flc0M5e8GB39z9f8BFJ5ebxS8y3KvMmKQItlraREhf8AkpnxMWHlz+JXp8p7uI1
-         Kljlt0scTB58bQpEmq4GK+eEA+W3BOPA5cN1xWCrA68FuXwrY3GmcIErMd7I6tygyc
-         V9JzsMXQMyO0n9SdIkQE39mGNJMhI4Juz/LKaq5zFFseVa5v/r1CJgL8buDMvRme/M
-         V60YaWT3OGRM2C3c4p9BXErpUiMxTPWmcEsEkzEZBNsBmiLmJeuYqKxc6IXyHEJcg/
-         oPvvLtbmc/+Gs5xXnYjOU/toIg6/1FGapaFmAgQB8BCmWBhC4ZrbJ8UgmFtFOJlHgF
-         qh4BFYcRworMg==
-Date:   Wed, 5 Apr 2023 09:49:27 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Zorro Lang <zlang@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
-        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
-        ebiggers@google.com, amir73il@gmail.com, djwong@kernel.org,
-        anand.jain@oracle.com
-Subject: Re: [PATCH 3/5] fstests/MAINTAINERS: add supported mailing list
-Message-ID: <20230405-bazillus-nanotechnologie-a8cf619d8454@brauner>
-References: <20230404171411.699655-1-zlang@kernel.org>
- <20230404171411.699655-4-zlang@kernel.org>
+        with ESMTP id S237180AbjDEH4u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 03:56:50 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2324C22
+        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 00:56:47 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id r11so138965395edd.5
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 00:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680681406;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
+        b=TbfE/M3KLTLcH5vT2Fre6fZYOYPWvvtxQkGTov6z1yTYm3WWX0o+lTIhTOG+wcSwIr
+         Shh1zY364kogmQhRAc0fmFUnYMo7ZU5Ky8ffXUG3ryGAwkPV8ypCT8eTFfjq9CYDvF34
+         wd9tQF0WuIJQpr3lhmr30HlFr0l1LwFrvYdgr8mH0O6e9FfWr5OPxhkLBM/13q30F9ig
+         EG1EUr+OVaWTOJKmPFrxHNqGlS+65K8SsVkrarg61QTLcPElkQBRwd5OoyrukvetA/wf
+         Vqy9Mst7SvFcranOTqZhNf+dN08TZqf8qZtRsH7Kuac3IsmXwWAy0wOKyifHo22AsbGf
+         ub3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680681406;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
+        b=jd862rBc4ZJ9It0Xfni5DoCsDaFSFM3Gm5QUD/pW4zf3DlgwpfgAjk2AALwMYMpxPC
+         YkgO436GyNH/nLgu1JWKZ2d6j4RCdo+ExB6c5pByT6s2YHVm9cCS4yHvOeMadBrXs1/R
+         dnvBPTRCEuDGeNDjsySRzBjhWYS8e2nvM8HLfFfi/AL5pkZ9K6rELOYQKzqvAnAM55oz
+         +SZLixc6FKY/STYd1ulepreRyPUhnnDJ2c8xxyMdNu7Zg5RgPEmBBI9pgM8LM363iwCu
+         OwR7yLhCLUrrJCKGKNPgAWth3gssmbR6UwPoUilZBPIoCReErkOT/KtZdzJhqVyPeJxC
+         ACCg==
+X-Gm-Message-State: AAQBX9cIvuqU43NBEpRRbLJHeyFFFExVxKpcOfMY6bRaoDRePSy0QwGa
+        lSdIufXH6zqGAO6SnS+IfcH5sKno8+4J1JZluYU=
+X-Google-Smtp-Source: AKy350aKLqDIJOBs2+w17/O65tIzNsWo0HsCJMoNyTEOl6/xftBTjTFN3K+wYTFKjUWLGLXPGVtupVTP2HNAQxlPhhQ=
+X-Received: by 2002:a17:906:f8db:b0:92b:ec37:e4b7 with SMTP id
+ lh27-20020a170906f8db00b0092bec37e4b7mr1145683ejb.14.1680681406051; Wed, 05
+ Apr 2023 00:56:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230404171411.699655-4-zlang@kernel.org>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Received: by 2002:a05:7208:2202:b0:65:e547:3943 with HTTP; Wed, 5 Apr 2023
+ 00:56:45 -0700 (PDT)
+Reply-To: tamimbinhamadalthani00@gmail.com
+From:   Tamim Mohammed Taher <cisskhadidiatou890@gmail.com>
+Date:   Wed, 5 Apr 2023 00:56:45 -0700
+Message-ID: <CAAYY=dY1_XALb_mD3qTfxhx_hk9X7aOuccJ_bL2QrungoJAyKA@mail.gmail.com>
+Subject: RE:Saudi Arabia-Inquiry about your products.!!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=DEAR_SOMETHING,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:529 listed in]
+        [list.dnswl.org]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [tamimbinhamadalthani00[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [cisskhadidiatou890[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [cisskhadidiatou890[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  1.7 DEAR_SOMETHING BODY: Contains 'Dear (something)'
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 01:14:09AM +0800, Zorro Lang wrote:
-> The fstests supports different kind of fs testing, better to cc
-> specific fs mailing list for specific fs testing, to get better
-> reviewing points. So record these mailing lists and files related
-> with them in MAINTAINERS file.
-> 
-> Signed-off-by: Zorro Lang <zlang@kernel.org>
-> ---
-> 
-> If someone mailing list doesn't want to be in cc list of related fstests
-> patch, please reply this email, I'll remove that line.
-> 
-> Or if I missed someone mailing list, please feel free to tell me.
-> 
-> Thanks,
-> Zorro
-> 
->  MAINTAINERS | 77 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 09b1a5a3..620368cb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -107,6 +107,83 @@ Maintainers List
->  	  should send patch to fstests@ at least. Other relevant mailing list
->  	  or reviewer or co-maintainer can be in cc list.
->  
-> +BTRFS
-> +L:	linux-btrfs@vger.kernel.org
-> +S:	Supported
-> +F:	tests/btrfs/
-> +F:	common/btrfs
-> +
-> +CEPH
-> +L:	ceph-devel@vger.kernel.org
-> +S:	Supported
-> +F:	tests/ceph/
-> +F:	common/ceph
-> +
-> +CIFS
-> +L:	linux-cifs@vger.kernel.org
-> +S:	Supported
-> +F:	tests/cifs
-> +
-> +EXT4
-> +L:	linux-ext4@vger.kernel.org
-> +S:	Supported
-> +F:	tests/ext4/
-> +F:	common/ext4
-> +
-> +F2FS
-> +L:	linux-f2fs-devel@lists.sourceforge.net
-> +S:	Supported
-> +F:	tests/f2fs/
-> +F:	common/f2fs
-> +
-> +FSVERITY
-> +L:	fsverity@lists.linux.dev
-> +S:	Supported
-> +F:	common/verity
-> +
-> +FSCRYPT
-> +L:      linux-fscrypt@vger.kernel.org
-> +S:	Supported
-> +F:	common/encrypt
-> +
-> +FS-IDMAPPED
-> +L:	linux-fsdevel@vger.kernel.org
-> +S:	Supported
-> +F:	src/vfs/
+Dear Sir/Madam,
 
-Same suggestion as earlier, make that section VFS as it covers generic
-functionality,
 
-Acked-by: Christian Brauner <brauner@kernel.org>
+
+Can you supply your products to  the government of (Saudi Arabia). We
+buy in larger quantity if your company can supply please reply with
+your products detail for more information.
+
+Looking forward to hearing from you.
+
+Thanks and Regards
+
+ Mr.Tamim Mohammed Taher
+
+Email:tamimbinhamadalthani00@gmail.com
