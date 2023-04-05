@@ -2,99 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF1F6D85C6
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 20:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9DF6D86BA
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 21:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjDESQE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 14:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S234629AbjDETTr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 15:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjDESQD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 14:16:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0432F659B;
-        Wed,  5 Apr 2023 11:16:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 52AA963D92;
-        Wed,  5 Apr 2023 18:16:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 710CAC433EF;
-        Wed,  5 Apr 2023 18:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680718561;
-        bh=wiJeaBlTTUnHN5dRjU986tMd+hpSmAJjFn5myvsg4zA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=REOOWtLgQ9JDh9SSF6xoyg94oSouuHFnpL2v3YnQ3T2oBYSI6IMS8Hy8imtRKtDy1
-         cU3K/Iy3e/I3Q2+TSdKRafqsRNXapecZukPc1WANLn9sTP01Li50nyZ7qlCS5TCVJ+
-         3cW7AZM1K/82Q6rN89XufLRWJRxkvNpgVxn/rDB2tRQwEAn32VY0qtyYqIT5Mhljtf
-         O5whuuDDjSKbQwdJKsF8Nl8Wr8dqY9vgtd1lUYNpjci7tFUD9wHH4/61yvdWJlTH+K
-         DtIew2Dd7HkelryBLbZ5MioiFh7yAV2qMaWKrH/687VXslb1Q2GI4zSjEhOMaWMwe0
-         NDlFE8RqYVveQ==
-Date:   Wed, 5 Apr 2023 18:16:00 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Andrey Albershteyn <aalbersh@redhat.com>, dchinner@redhat.com,
-        hch@infradead.org, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
- blocksize != PAGE_SIZE
-Message-ID: <ZC264FSkDQidOQ4N@gmail.com>
-References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-22-aalbersh@redhat.com>
- <20230404163602.GC109974@frogsfrogsfrogs>
- <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
- <20230405163847.GG303486@frogsfrogsfrogs>
+        with ESMTP id S234557AbjDETTc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 15:19:32 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B5F76A5;
+        Wed,  5 Apr 2023 12:19:28 -0700 (PDT)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 335JCoZr029433;
+        Wed, 5 Apr 2023 19:19:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=GwOm8iSIThbL0FbKFm8PRDGRSzotLgTDRpmZYgTp4SM=;
+ b=jPpYFcENpmjXkpb0YANEYZkz+q2pfKv03r8t/HKVMPycyhBzF6FVmmUQU9EzL91WBIDJ
+ Ij+ikplWUBtS5zNizBX3J4ua8Cr01Ypxx5MrpdmgrfHdYh5EiyFdLxp2/OTJWDhlJoOP
+ cg037EqsNHCDU/p2NbRmtJW3vn5Dy+lQ1uBAwTelY951LKK2PS+hLz1zEGiuvAfJRggC
+ G1aVjok18+MMx+Xhr85BALh308MK1fw4OMFljNcWmLeTlBxkyVa5sAYZ076CJ70B2RQC
+ vzlBkkTH8VXZlFwfzBNXPA7tdgjNt9gvPhNEI5iSb4Mj7ymJsUGXJbk/P/L6fqEow8Tx 8A== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ps9umrfqj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Apr 2023 19:19:19 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3352CteD023017;
+        Wed, 5 Apr 2023 19:19:17 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3ppc873jrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 Apr 2023 19:19:17 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 335JJFt612452472
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Apr 2023 19:19:15 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E09E20040;
+        Wed,  5 Apr 2023 19:19:15 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6517D20049;
+        Wed,  5 Apr 2023 19:19:13 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.12.224])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed,  5 Apr 2023 19:19:13 +0000 (GMT)
+Date:   Thu, 6 Apr 2023 00:49:10 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] Some fixes and cleanup to mballoc
+Message-ID: <ZC3Jm7lpXirelmI/@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20230321161220.418652-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230405163847.GG303486@frogsfrogsfrogs>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230321161220.418652-1-shikemeng@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: b0BMsYnMySU3NDe_AmYHgaOtXIqMNsuM
+X-Proofpoint-GUID: b0BMsYnMySU3NDe_AmYHgaOtXIqMNsuM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-05_13,2023-04-05_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ spamscore=0 bulkscore=0 mlxlogscore=896 mlxscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304050170
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 09:38:47AM -0700, Darrick J. Wong wrote:
-> > The merkle tree pages are dropped after verification. When page is
-> > dropped xfs_buf is marked as verified. If fs-verity wants to
-> > verify again it will get the same verified buffer. If buffer is
-> > evicted it won't have verified state.
-> > 
-> > So, with enough memory pressure buffers will be dropped and need to
-> > be reverified.
+On Wed, Mar 22, 2023 at 12:12:12AM +0800, Kemeng Shi wrote:
+> We use cluster unit and block unit for different structure members. For
+> example, in struct ext4_prealloc_space, pa_lstart and pa_pstart are in
+> block unit while pa_len and pa_free are in cluster unit; in struct
+> ext4_free_extent, fe_logical is in block unit while fe_start and fe_len
+> are in cluster unit. The first five patches fix wrong unit use in
+> mballoc.
+> The rest is random bugfix and cleanup to mballoc, More details can be
+> found in respective patches.
+> Besides, "kvm-xfstest smoke" passes all test.
+> Thanks!
 > 
-> Please excuse me if this was discussed and rejected long ago, but
-> perhaps fsverity should try to hang on to the merkle tree pages that
-> this function returns for as long as possible until reclaim comes for
-> them?
+> Kemeng Shi (8):
+>   ext4: fix wrong unit use in ext4_mb_normalize_request
+>   ext4: fix unit mismatch in ext4_mb_new_blocks_simple
+>   ext4: fix wrong unit use in ext4_mb_new_inode_pa
+>   ext4: fix wrong unit use in ext4_mb_find_by_goal
+>   ext4: treat stripe in block unit
+>   ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
+>   ext4: remove ext4_block_group and ext4_block_group_offset declaration
+>   ext4: try all groups in ext4_mb_new_blocks_simple
 > 
-> With the merkle tree page lifetimes extended, you then don't need to
-> attach the xfs_buf to page->private, nor does xfs have to extend the
-> buffer cache to stash XBF_VERITY_CHECKED.
+>  fs/ext4/ext4.h    |  4 ---
+>  fs/ext4/mballoc.c | 75 +++++++++++++++++++++++++++++++++++------------
+>  fs/ext4/super.c   | 13 ++++++++
+>  3 files changed, 70 insertions(+), 22 deletions(-)
+Hi Kemeng,
 
-Well, all the other filesystems that support fsverity (ext4, f2fs, and btrfs)
-just cache the Merkle tree pages in the inode's page cache.  It's an approach
-that I know some people aren't a fan of, but it's efficient and it works.
+Thanks for the patches, they mostly look good to me. I'm running some
+tests at my end as well and would provide my RVBs after that. Just
+adding a few comments to some of the patches in the meantime.
 
-We could certainly think about moving to a design where fs/verity/ asks the
-filesystem to just *read* a Merkle tree block, without adding it to a cache, and
-then fs/verity/ implements the caching itself.  That would require some large
-changes to each filesystem, though, unless we were to double-cache the Merkle
-tree blocks which would be inefficient.
-
-So it feels like continuing to have the filesystem (not fs/verity/) be
-responsible for the cache is the best way to allow XFS to do things a bit
-differently, without regressing the other filesystems.
-
-I'm interested in hearing any other proposals, though.
-
-- Eric
+Regards,
+Ojaswin
+> 
+> -- 
+> 2.30.0
+> 
