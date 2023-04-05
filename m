@@ -2,61 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA816D83AA
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 18:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96156D83DA
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 18:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjDEQ2Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 12:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
+        id S232447AbjDEQiv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 12:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjDEQ2Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 12:28:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77EE198D
-        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 09:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680712053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xpkEDS6jt39qufg3GMcbXZKRt5qOSbn/1OJhbiuzI9E=;
-        b=IofOlEqACMOcCzuQ8zDo5dyqBOLvXdb0QvuYAKZrtfen6rJemfyHcn0NzhYfrMe90AlLgw
-        sCXlDbXL5AfxkB8L5tN7WQZjNBjcTD4zvgK1uGeauIk2xCLMzXyltZzqAigdMU2MFWboC3
-        kBA0yYlZD3JoeCQK1YgJw9KbBIxHoOc=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-PYuCAmrPOhaocdASQc_MLQ-1; Wed, 05 Apr 2023 12:27:32 -0400
-X-MC-Unique: PYuCAmrPOhaocdASQc_MLQ-1
-Received: by mail-qt1-f199.google.com with SMTP id r22-20020ac85c96000000b003e638022bc9so12724854qta.5
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 09:27:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680712051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xpkEDS6jt39qufg3GMcbXZKRt5qOSbn/1OJhbiuzI9E=;
-        b=bLSLwlg552Y6reBVoD5GXiSJKG8YOOIG0/hWpGaOSdxQvWKnXCbhmJYel7Wi/26o0E
-         uzBhn/QKGmAZ34CiXf0eGKwGHMpiVRDwtJiqSXeADcAmJsFJPJH3qpVk6xRq0GX+m9oa
-         kvy5nFKG36BmdcqBYTVIpXsOF3NRkafTDTniPL3B/FyPZnKn3UVVaEhRkbFVMpoNacQU
-         NX6L0v4evXybMbOTvifZF1jMEYiOd5QBUJ531iGIZW4P9YypDAg6ctXlIYUANszNQBQ9
-         XVbKRKLPEKBGt4Ph4sVm4LCXyC4cTB9GjRirEnb+O28Dc4iyiTpeQRFzSYy3BJ4EOI21
-         ZfWQ==
-X-Gm-Message-State: AAQBX9enCw+rT9zPJ0+ModqQzv2DvrcLzROEwFoMRI0dQ5QQj9T/76aJ
-        2tNZoLeaALH90nKKtxRQfSr1Cxzi4tT01kTViuNQO5ug7Cg0PW+AR1fMoTkViEc/VpCFMEK9qoa
-        XiXwkfS+akm8qacCX5yFn
-X-Received: by 2002:a05:6214:1c8d:b0:5bb:eefc:1624 with SMTP id ib13-20020a0562141c8d00b005bbeefc1624mr9853060qvb.27.1680712051497;
-        Wed, 05 Apr 2023 09:27:31 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZZl4q26mcUoNHuCokraSI3hi88peqAYHPpgY7Wvk0Gvn/BxgeqpN4NaYegoUGQwHkcsJ0yow==
-X-Received: by 2002:a05:6214:1c8d:b0:5bb:eefc:1624 with SMTP id ib13-20020a0562141c8d00b005bbeefc1624mr9853021qvb.27.1680712051206;
-        Wed, 05 Apr 2023 09:27:31 -0700 (PDT)
-Received: from aalbersh.remote.csb ([109.183.6.197])
-        by smtp.gmail.com with ESMTPSA id r206-20020a3744d7000000b0074a0051fcd4sm4559684qka.88.2023.04.05.09.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 09:27:30 -0700 (PDT)
-Date:   Wed, 5 Apr 2023 18:27:26 +0200
-From:   Andrey Albershteyn <aalbersh@redhat.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
+        with ESMTP id S231741AbjDEQiv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 12:38:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5612AA8;
+        Wed,  5 Apr 2023 09:38:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D758B62357;
+        Wed,  5 Apr 2023 16:38:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D10AC433EF;
+        Wed,  5 Apr 2023 16:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680712728;
+        bh=bdwer0ckOV0VvNBNptviSJ4Aij6q7ab6EoIjpJEkU8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ojRVBOKtUGuMf5Xx6+fu11Y4x9zA1hxfzop7c1U7aQXy0Zo/c7ihZSEwjGJrezKH9
+         uPuuNm/oCDFW1l1HxFMLa6NsMeKCz5ImRAB+OugNcQlSFXRpYFnHhkKeme8Kc9ksMl
+         XqjYva7bS2OfsOhjs7ZzYd2RLH7ggh1p6f1nr6I2q70PUA4T7qDKH3K7omJkrvAYhB
+         W3kJlacbJJT6+DQNLLyAwg+QRqgf9019Zu1QLYweBb92QVlx4KBK+Rtn5+kz9IyfvL
+         wXSyP+UyTRwzO2d3TPwe/4gAvjJbgg1h+4ZxhdY9cQjprbHz/JhNd7HNx7fuAS5+fr
+         LcANAR4F5mkxg==
+Date:   Wed, 5 Apr 2023 09:38:47 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Andrey Albershteyn <aalbersh@redhat.com>
 Cc:     dchinner@redhat.com, ebiggers@kernel.org, hch@infradead.org,
         linux-xfs@vger.kernel.org, fsverity@lists.linux.dev,
         rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
@@ -64,91 +41,230 @@ Cc:     dchinner@redhat.com, ebiggers@kernel.org, hch@infradead.org,
         linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com
-Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
-Message-ID: <20230405162726.4d7bu3uz63w4cdkz@aalbersh.remote.csb>
+Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
+ blocksize != PAGE_SIZE
+Message-ID: <20230405163847.GG303486@frogsfrogsfrogs>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404163942.GD109974@frogsfrogsfrogs>
+ <20230404145319.2057051-22-aalbersh@redhat.com>
+ <20230404163602.GC109974@frogsfrogsfrogs>
+ <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404163942.GD109974@frogsfrogsfrogs>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Darrick,
-
-On Tue, Apr 04, 2023 at 09:39:42AM -0700, Darrick J. Wong wrote:
-> On Tue, Apr 04, 2023 at 04:52:56PM +0200, Andrey Albershteyn wrote:
-> > Hi all,
-> > 
-> > This is V2 of fs-verity support in XFS. In this series I did
-> > numerous changes from V1 which are described below.
-> > 
-> > This patchset introduces fs-verity [5] support for XFS. This
-> > implementation utilizes extended attributes to store fs-verity
-> > metadata. The Merkle tree blocks are stored in the remote extended
-> > attributes.
-> > 
-> > A few key points:
-> > - fs-verity metadata is stored in extended attributes
-> > - Direct path and DAX are disabled for inodes with fs-verity
-> > - Pages are verified in iomap's read IO path (offloaded to
-> >   workqueue)
-> > - New workqueue for verification processing
-> > - New ro-compat flag
-> > - Inodes with fs-verity have new on-disk diflag
-> > - xfs_attr_get() can return buffer with the attribute
-> > 
-> > The patchset is tested with xfstests -g auto on xfs_1k, xfs_4k,
-> > xfs_1k_quota, and xfs_4k_quota. Haven't found any major failures.
-> > 
-> > Patches [6/23] and [7/23] touch ext4, f2fs, btrfs, and patch [8/23]
-> > touches erofs, gfs2, and zonefs.
-> > 
-> > The patchset consist of four parts:
-> > - [1..4]: Patches from Parent Pointer patchset which add binary
-> >           xattr names with a few deps
-> > - [5..7]: Improvements to core fs-verity
-> > - [8..9]: Add read path verification to iomap
-> > - [10..23]: Integration of fs-verity to xfs
-> > 
-> > Changes from V1:
-> > - Added parent pointer patches for easier testing
-> > - Many issues and refactoring points fixed from the V1 review
-> > - Adjusted for recent changes in fs-verity core (folios, non-4k)
-> > - Dropped disabling of large folios
-> > - Completely new fsverity patches (fix, callout, log_blocksize)
-> > - Change approach to verification in iomap to the same one as in
-> >   write path. Callouts to fs instead of direct fs-verity use.
-> > - New XFS workqueue for post read folio verification
-> > - xfs_attr_get() can return underlying xfs_buf
-> > - xfs_bufs are marked with XBF_VERITY_CHECKED to track verified
-> >   blocks
-> > 
-> > kernel:
-> > [1]: https://github.com/alberand/linux/tree/xfs-verity-v2
-> > 
-> > xfsprogs:
-> > [2]: https://github.com/alberand/xfsprogs/tree/fsverity-v2
+On Wed, Apr 05, 2023 at 06:02:21PM +0200, Andrey Albershteyn wrote:
+> Hi Darrick,
 > 
-> Will there any means for xfs_repair to check the merkle tree contents?
-> Should it clear the ondisk inode flag if it decides to trash the xattr
-> structure, or is it ok to let the kernel deal with flag set and no
-> verity data?
+> On Tue, Apr 04, 2023 at 09:36:02AM -0700, Darrick J. Wong wrote:
+> > On Tue, Apr 04, 2023 at 04:53:17PM +0200, Andrey Albershteyn wrote:
+> > > In case of different Merkle tree block size fs-verity expects
+> > > ->read_merkle_tree_page() to return Merkle tree page filled with
+> > > Merkle tree blocks. The XFS stores each merkle tree block under
+> > > extended attribute. Those attributes are addressed by block offset
+> > > into Merkle tree.
+> > > 
+> > > This patch make ->read_merkle_tree_page() to fetch multiple merkle
+> > > tree blocks based on size ratio. Also the reference to each xfs_buf
+> > > is passed with page->private to ->drop_page().
+> > > 
+> > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > > ---
+> > >  fs/xfs/xfs_verity.c | 74 +++++++++++++++++++++++++++++++++++----------
+> > >  fs/xfs/xfs_verity.h |  8 +++++
+> > >  2 files changed, 66 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/fs/xfs/xfs_verity.c b/fs/xfs/xfs_verity.c
+> > > index a9874ff4efcd..ef0aff216f06 100644
+> > > --- a/fs/xfs/xfs_verity.c
+> > > +++ b/fs/xfs/xfs_verity.c
+> > > @@ -134,6 +134,10 @@ xfs_read_merkle_tree_page(
+> > >  	struct page		*page = NULL;
+> > >  	__be64			name = cpu_to_be64(index << PAGE_SHIFT);
+> > >  	uint32_t		bs = 1 << log_blocksize;
+> > > +	int			blocks_per_page =
+> > > +		(1 << (PAGE_SHIFT - log_blocksize));
+> > > +	int			n = 0;
+> > > +	int			offset = 0;
+> > >  	struct xfs_da_args	args = {
+> > >  		.dp		= ip,
+> > >  		.attr_filter	= XFS_ATTR_VERITY,
+> > > @@ -143,26 +147,59 @@ xfs_read_merkle_tree_page(
+> > >  		.valuelen	= bs,
+> > >  	};
+> > >  	int			error = 0;
+> > > +	bool			is_checked = true;
+> > > +	struct xfs_verity_buf_list	*buf_list;
+> > >  
+> > >  	page = alloc_page(GFP_KERNEL);
+> > >  	if (!page)
+> > >  		return ERR_PTR(-ENOMEM);
+> > >  
+> > > -	error = xfs_attr_get(&args);
+> > > -	if (error) {
+> > > -		kmem_free(args.value);
+> > > -		xfs_buf_rele(args.bp);
+> > > +	buf_list = kzalloc(sizeof(struct xfs_verity_buf_list), GFP_KERNEL);
+> > > +	if (!buf_list) {
+> > >  		put_page(page);
+> > > -		return ERR_PTR(-EFAULT);
+> > > +		return ERR_PTR(-ENOMEM);
+> > >  	}
+> > >  
+> > > -	if (args.bp->b_flags & XBF_VERITY_CHECKED)
+> > > +	/*
+> > > +	 * Fill the page with Merkle tree blocks. The blcoks_per_page is higher
+> > > +	 * than 1 when fs block size != PAGE_SIZE or Merkle tree block size !=
+> > > +	 * PAGE SIZE
+> > > +	 */
+> > > +	for (n = 0; n < blocks_per_page; n++) {
+> > 
+> > Ahah, ok, that's why we can't pass the xfs_buf pages up to fsverity.
+> > 
+> > > +		offset = bs * n;
+> > > +		name = cpu_to_be64(((index << PAGE_SHIFT) + offset));
+> > 
+> > Really this ought to be a typechecked helper...
+> > 
+> > struct xfs_fsverity_merkle_key {
+> > 	__be64	merkleoff;
+> 
+> Sure, thanks, will change this
+> 
+> > };
+> > 
+> > static inline void
+> > xfs_fsverity_merkle_key_to_disk(struct xfs_fsverity_merkle_key *k, loff_t pos)
+> > {
+> > 	k->merkeloff = cpu_to_be64(pos);
+> > }
+> > 
+> > 
+> > 
+> > > +		args.name = (const uint8_t *)&name;
+> > > +
+> > > +		error = xfs_attr_get(&args);
+> > > +		if (error) {
+> > > +			kmem_free(args.value);
+> > > +			/*
+> > > +			 * No more Merkle tree blocks (e.g. this was the last
+> > > +			 * block of the tree)
+> > > +			 */
+> > > +			if (error == -ENOATTR)
+> > > +				break;
+> > > +			xfs_buf_rele(args.bp);
+> > > +			put_page(page);
+> > > +			kmem_free(buf_list);
+> > > +			return ERR_PTR(-EFAULT);
+> > > +		}
+> > > +
+> > > +		buf_list->bufs[buf_list->buf_count++] = args.bp;
+> > > +
+> > > +		/* One of the buffers was dropped */
+> > > +		if (!(args.bp->b_flags & XBF_VERITY_CHECKED))
+> > > +			is_checked = false;
+> > 
+> > If there's enough memory pressure to cause the merkle tree pages to get
+> > evicted, what are the chances that the xfs_bufs survive the eviction?
+> 
+> The merkle tree pages are dropped after verification. When page is
+> dropped xfs_buf is marked as verified. If fs-verity wants to
+> verify again it will get the same verified buffer. If buffer is
+> evicted it won't have verified state.
+> 
+> So, with enough memory pressure buffers will be dropped and need to
+> be reverified.
 
-The fsverity-util can calculate merkle tree offline, so, it's
-possible for xfs_repair to do the same and compare, also it can
-check that all merkle tree blocks are there. The flag without tree
-is probably bad as all reading ops will fail and it won't be
-possible to regenerate the tree (enable also checks for flag).
+Please excuse me if this was discussed and rejected long ago, but
+perhaps fsverity should try to hang on to the merkle tree pages that
+this function returns for as long as possible until reclaim comes for
+them?
 
--- 
-- Andrey
+With the merkle tree page lifetimes extended, you then don't need to
+attach the xfs_buf to page->private, nor does xfs have to extend the
+buffer cache to stash XBF_VERITY_CHECKED.
 
+Also kinda wondering why you don't allocate the page, kmap it, and then
+pass that address into args->value to avoid the third memory allocation
+that gets done inside xfs_attr_get?
+
+--D
+
+> > 
+> > > +		memcpy(page_address(page) + offset, args.value, args.valuelen);
+> > > +		kmem_free(args.value);
+> > > +		args.value = NULL;
+> > > +	}
+> > > +
+> > > +	if (is_checked)
+> > >  		SetPageChecked(page);
+> > > +	page->private = (unsigned long)buf_list;
+> > >  
+> > > -	page->private = (unsigned long)args.bp;
+> > > -	memcpy(page_address(page), args.value, args.valuelen);
+> > > -
+> > > -	kmem_free(args.value);
+> > >  	return page;
+> > >  }
+> > >  
+> > > @@ -191,16 +228,21 @@ xfs_write_merkle_tree_block(
+> > >  
+> > >  static void
+> > >  xfs_drop_page(
+> > > -	struct page	*page)
+> > > +	struct page			*page)
+> > >  {
+> > > -	struct xfs_buf *buf = (struct xfs_buf *)page->private;
+> > > +	int				i = 0;
+> > > +	struct xfs_verity_buf_list	*buf_list =
+> > > +		(struct xfs_verity_buf_list *)page->private;
+> > >  
+> > > -	ASSERT(buf != NULL);
+> > > +	ASSERT(buf_list != NULL);
+> > >  
+> > > -	if (PageChecked(page))
+> > > -		buf->b_flags |= XBF_VERITY_CHECKED;
+> > > +	for (i = 0; i < buf_list->buf_count; i++) {
+> > > +		if (PageChecked(page))
+> > > +			buf_list->bufs[i]->b_flags |= XBF_VERITY_CHECKED;
+> > > +		xfs_buf_rele(buf_list->bufs[i]);
+> > > +	}
+> > >  
+> > > -	xfs_buf_rele(buf);
+> > > +	kmem_free(buf_list);
+> > >  	put_page(page);
+> > >  }
+> > >  
+> > > diff --git a/fs/xfs/xfs_verity.h b/fs/xfs/xfs_verity.h
+> > > index ae5d87ca32a8..433b2f4ae3bc 100644
+> > > --- a/fs/xfs/xfs_verity.h
+> > > +++ b/fs/xfs/xfs_verity.h
+> > > @@ -16,4 +16,12 @@ extern const struct fsverity_operations xfs_verity_ops;
+> > >  #define xfs_verity_ops NULL
+> > >  #endif	/* CONFIG_FS_VERITY */
+> > >  
+> > > +/* Minimal Merkle tree block size is 1024 */
+> > > +#define XFS_VERITY_MAX_MBLOCKS_PER_PAGE (1 << (PAGE_SHIFT - 10))
+> > > +
+> > > +struct xfs_verity_buf_list {
+> > > +	unsigned int	buf_count;
+> > > +	struct xfs_buf	*bufs[XFS_VERITY_MAX_MBLOCKS_PER_PAGE];
+> > 
+> > So... this is going to be a 520-byte allocation on arm64 with 64k pages?
+> > Even if the merkle tree block size is the same as the page size?  Ouch.
+> 
+> yeah, it also allocates a page and is dropped with the page, so,
+> I took it as an addition to already big chunk of memory. But I
+> probably will change it, viz. comment from Eric on this patch.
+> 
+> -- 
+> - Andrey
+> 
