@@ -2,123 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D9F6D7EA4
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 16:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FBD6D7F4D
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 16:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238444AbjDEOHD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 10:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        id S237646AbjDEOY7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 10:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238446AbjDEOGp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 10:06:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8208B6191
-        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 07:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680703335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=net1/YQpLyeedtAUAtKmhMoSFz+7An5MzKe0V2cpLas=;
-        b=dAv/8RSPRm0XAmckLG3K6jMkavO5t0G37YB10aL5ARzMOk++y/ZO7RoPjapV7lNNbnXft6
-        wdnu+nYubVrlAogVGaWwwTxbuo+iPHNPrh8HUiV4P3QNO6Bge+QaMss8//JuWM0ZPfsSfZ
-        JpbVb1fDH8IbVbgnn2rjU3XsGkRUIa0=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-459-MKw-rjIOMZSQU_AE-dYY9w-1; Wed, 05 Apr 2023 10:02:12 -0400
-X-MC-Unique: MKw-rjIOMZSQU_AE-dYY9w-1
-Received: by mail-pj1-f69.google.com with SMTP id b8-20020a17090a488800b0023d1bf65c7eso9632380pjh.3
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 07:02:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680703331;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=net1/YQpLyeedtAUAtKmhMoSFz+7An5MzKe0V2cpLas=;
-        b=PuNOeWYdP+2OPVCLHBqDFExqSWm0reGr8PjOWq7aI7hMgmCaGhVbDEpFGqX9BaP5Be
-         Fb/Yjq5dVQomugqkEmPBUeXNmsQtpKa6tagpE0x2B8KzFyNuBjRF9YWQ99NgfHCsq1wp
-         iFEEvr3Ynx84lTXFjPotaJ+0vQJIq6nUaTNwWCvYV17yGJ07Ds8+z1cI/KrfluJGZOjV
-         tq3G4XZ7g/PBBK8GZEVv3AdokmcpOgGrQvpA3Ir+gfb74av2ZipcOZXz5gakbLPoVYuc
-         VWHD2uulpM1yYaqU3E7DDeYDqbTARRxnVwI5wsQGUvubgLQoDDUuzlONoG/OEBpTtXl3
-         un/Q==
-X-Gm-Message-State: AAQBX9d1QYLyb2Vklf/n4Y1dr/S5YzMiI7XORdmJcz61GJ+DYaLLmexp
-        xk80gTKvXqLUGAEb4tNTPoNPIElX2HH6y+0ZoE8YHr2o+5GQzHbqw6DPHyHTOrqeDzgI5UFBkTv
-        j5PiLhxYMHKwDiC/IzYUCCA==
-X-Received: by 2002:a17:903:283:b0:1a1:cd69:d301 with SMTP id j3-20020a170903028300b001a1cd69d301mr6292228plr.68.1680703330929;
-        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Z3hrO2tDczikPPadND/siCWP3StMDF6ZwRfuQDU1LtW+SuQXatmasFWBRAsAV4qHbVdUEpFA==
-X-Received: by 2002:a17:903:283:b0:1a1:cd69:d301 with SMTP id j3-20020a170903028300b001a1cd69d301mr6292202plr.68.1680703330583;
-        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id b24-20020a630c18000000b005023496e339sm9037285pgl.63.2023.04.05.07.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
-Date:   Wed, 5 Apr 2023 22:02:02 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Zorro Lang <zlang@kernel.org>, fstests@vger.kernel.org,
-        brauner@kernel.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, djwong@kernel.org, amir73il@gmail.com,
-        linux-unionfs@vger.kernel.org, anand.jain@oracle.com,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        fdmanana@suse.com, jack@suse.com, linux-fsdevel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/5] fstests/MAINTAINERS: add supported mailing list
-Message-ID: <20230405140202.bdp3lzgross2cjbt@zlang-mailbox>
-References: <20230404171411.699655-1-zlang@kernel.org>
- <20230404171411.699655-4-zlang@kernel.org>
- <20230404221653.GC1893@sol.localdomain>
+        with ESMTP id S238474AbjDEOYw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 10:24:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270ED26B2;
+        Wed,  5 Apr 2023 07:24:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A40E1625AC;
+        Wed,  5 Apr 2023 14:24:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B622FC433EF;
+        Wed,  5 Apr 2023 14:24:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1680704685;
+        bh=eiBbg0MwdqCSRyYPdbIMvUwBVY7mO5kW4nAZe/cwBpM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2SIuXsCF84/UtNsZZtbFPgdUTP6vHW1ckAOTWhfLN5V+9+ZijnMbtMH0OgHvVetSI
+         k6UFaZTF/3U9n90SV6VKhx3RZc1YLh7O9xEO53hn4u6iCxmbPpuvJgP0LjhHBVQ0qx
+         1fAlF6DWaSE7F9xCuiaGIkZnBvQJRjw8DdvnAT7k=
+Date:   Wed, 5 Apr 2023 16:24:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 0/3] lib/string_helpers et al.: Change return value of
+ strreplace()
+Message-ID: <2023040523-unworthy-uncured-1eab@gregkh>
+References: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com>
+ <ZC1454AwRUNFTbIW@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404221653.GC1893@sol.localdomain>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZC1454AwRUNFTbIW@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 03:16:53PM -0700, Eric Biggers wrote:
-> Hi Zorro,
+On Wed, Apr 05, 2023 at 04:34:31PM +0300, Andy Shevchenko wrote:
+> On Thu, Mar 23, 2023 at 02:37:01PM +0200, Andy Shevchenko wrote:
+> > It's more convenient to have strreplace() to return the pointer to
+> >  the string itself. This will help users to make their code better.
+> > 
+> > The patch 1 kills the only user of the returned value of strreplace(),
+> > Patch 2 converts the return value of strreplace(). And patch 3 shows
+> > how it may be useful. That said, the series can be routed via fs tree,
+> > with or without the last patch.
 > 
-> On Wed, Apr 05, 2023 at 01:14:09AM +0800, Zorro Lang wrote:
-> > +FSVERITY
-> > +L:	fsverity@lists.linux.dev
-> > +S:	Supported
-> > +F:	common/verity
-> > +
-> > +FSCRYPT
-> > +L:      linux-fscrypt@vger.kernel.org
-> > +S:	Supported
-> > +F:	common/encrypt
-> 
-> Most of the encrypt and verity tests are in tests/generic/ and are in the
-> 'encrypt' or 'verity' test groups.
-> 
-> These file patterns only pick up the common files, not the actual tests.
-> 
-> Have you considered adding a way to specify maintainers for a test group?
-> Something like:
-> 
->     G:      encrypt
-> 
-> and
-> 
->     G:      verity
+> Since there are no comments, who can apply this (patches 1 and 2)?
+> Greg, are you fine with the kobject change?
 
-Good idea! Let's check if this patchset is acceptable by most of you,
-then I'll think about how to add this feature later.
+Sure, want me to take them all through my driver-core tree?
 
-Thanks,
-Zorro
+thanks,
 
-> 
-> - Eric
-> 
-
+greg k-h
