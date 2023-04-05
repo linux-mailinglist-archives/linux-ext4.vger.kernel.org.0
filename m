@@ -2,93 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EE96D7E25
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 15:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D9F6D7EA4
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjDENzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 09:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        id S238444AbjDEOHD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 10:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238092AbjDENza (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 09:55:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67E71734
-        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 06:55:24 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-278-9dLbTwq9NiGEBp4om-cqZw-1; Wed, 05 Apr 2023 14:55:21 +0100
-X-MC-Unique: 9dLbTwq9NiGEBp4om-cqZw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 5 Apr
- 2023 14:55:19 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 5 Apr 2023 14:55:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'chi wu' <wuchi.zero@gmail.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ojaswin@linux.ibm.com" <ojaswin@linux.ibm.com>,
-        "ritesh.list@gmail.com" <ritesh.list@gmail.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ext4: simplify 32bit calculation of lblk
-Thread-Topic: [PATCH] ext4: simplify 32bit calculation of lblk
-Thread-Index: AQHZZ5teJkhs7xpdHUusWw1uRGHlOq8ckyfAgAAGhICAACKd0A==
-Date:   Wed, 5 Apr 2023 13:55:19 +0000
-Message-ID: <1ee0b5d2914046f28616c0fc8beba237@AcuMS.aculab.com>
-References: <20230403135304.19858-1-wuchi.zero@gmail.com>
- <ZC0J6I1pYNZBB30y@infradead.org>
- <CA+tQmHA_3_Oc-0AQ0a29DTwU4mkEqhOiAE6gXa4Ly4gZGpn5Vw@mail.gmail.com>
- <d04ead6617314074b297c10458010d6b@AcuMS.aculab.com>
- <CA+tQmHAwRNxvH+BBA60BdSoVYxK+NzzNyP6TW2Y_gsaWAhu9iQ@mail.gmail.com>
-In-Reply-To: <CA+tQmHAwRNxvH+BBA60BdSoVYxK+NzzNyP6TW2Y_gsaWAhu9iQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S238446AbjDEOGp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 10:06:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8208B6191
+        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 07:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680703335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=net1/YQpLyeedtAUAtKmhMoSFz+7An5MzKe0V2cpLas=;
+        b=dAv/8RSPRm0XAmckLG3K6jMkavO5t0G37YB10aL5ARzMOk++y/ZO7RoPjapV7lNNbnXft6
+        wdnu+nYubVrlAogVGaWwwTxbuo+iPHNPrh8HUiV4P3QNO6Bge+QaMss8//JuWM0ZPfsSfZ
+        JpbVb1fDH8IbVbgnn2rjU3XsGkRUIa0=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-459-MKw-rjIOMZSQU_AE-dYY9w-1; Wed, 05 Apr 2023 10:02:12 -0400
+X-MC-Unique: MKw-rjIOMZSQU_AE-dYY9w-1
+Received: by mail-pj1-f69.google.com with SMTP id b8-20020a17090a488800b0023d1bf65c7eso9632380pjh.3
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 07:02:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680703331;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=net1/YQpLyeedtAUAtKmhMoSFz+7An5MzKe0V2cpLas=;
+        b=PuNOeWYdP+2OPVCLHBqDFExqSWm0reGr8PjOWq7aI7hMgmCaGhVbDEpFGqX9BaP5Be
+         Fb/Yjq5dVQomugqkEmPBUeXNmsQtpKa6tagpE0x2B8KzFyNuBjRF9YWQ99NgfHCsq1wp
+         iFEEvr3Ynx84lTXFjPotaJ+0vQJIq6nUaTNwWCvYV17yGJ07Ds8+z1cI/KrfluJGZOjV
+         tq3G4XZ7g/PBBK8GZEVv3AdokmcpOgGrQvpA3Ir+gfb74av2ZipcOZXz5gakbLPoVYuc
+         VWHD2uulpM1yYaqU3E7DDeYDqbTARRxnVwI5wsQGUvubgLQoDDUuzlONoG/OEBpTtXl3
+         un/Q==
+X-Gm-Message-State: AAQBX9d1QYLyb2Vklf/n4Y1dr/S5YzMiI7XORdmJcz61GJ+DYaLLmexp
+        xk80gTKvXqLUGAEb4tNTPoNPIElX2HH6y+0ZoE8YHr2o+5GQzHbqw6DPHyHTOrqeDzgI5UFBkTv
+        j5PiLhxYMHKwDiC/IzYUCCA==
+X-Received: by 2002:a17:903:283:b0:1a1:cd69:d301 with SMTP id j3-20020a170903028300b001a1cd69d301mr6292228plr.68.1680703330929;
+        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Z3hrO2tDczikPPadND/siCWP3StMDF6ZwRfuQDU1LtW+SuQXatmasFWBRAsAV4qHbVdUEpFA==
+X-Received: by 2002:a17:903:283:b0:1a1:cd69:d301 with SMTP id j3-20020a170903028300b001a1cd69d301mr6292202plr.68.1680703330583;
+        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id b24-20020a630c18000000b005023496e339sm9037285pgl.63.2023.04.05.07.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Apr 2023 07:02:10 -0700 (PDT)
+Date:   Wed, 5 Apr 2023 22:02:02 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Zorro Lang <zlang@kernel.org>, fstests@vger.kernel.org,
+        brauner@kernel.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, djwong@kernel.org, amir73il@gmail.com,
+        linux-unionfs@vger.kernel.org, anand.jain@oracle.com,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        fdmanana@suse.com, jack@suse.com, linux-fsdevel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/5] fstests/MAINTAINERS: add supported mailing list
+Message-ID: <20230405140202.bdp3lzgross2cjbt@zlang-mailbox>
+References: <20230404171411.699655-1-zlang@kernel.org>
+ <20230404171411.699655-4-zlang@kernel.org>
+ <20230404221653.GC1893@sol.localdomain>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=0.0 required=5.0 tests=RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230404221653.GC1893@sol.localdomain>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-RnJvbTogY2hpIHd1DQo+IFNlbnQ6IDA1IEFwcmlsIDIwMjMgMTM6NDgNCj4gDQo+IERhdmlkIExh
-aWdodCA8RGF2aWQuTGFpZ2h0QGFjdWxhYi5jb20+IOS6jjIwMjPlubQ05pyINeaXpeWRqOS4iSAx
-OTo0M+WGmemBk++8mg0KPiA+DQo+ID4gRnJvbTogY2hpIHd1DQo+ID4gPiBTZW50OiAwNSBBcHJp
-bCAyMDIzIDA5OjQ4DQo+ID4gPg0KPiA+ID4gQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBpbmZyYWRl
-YWQub3JnPiDkuo4yMDIz5bm0NOaciDXml6XlkajkuIkgMTM6NDDlhpnpgZPvvJoNCj4gPiA+ID4N
-Cj4gPiA+ID4gT24gTW9uLCBBcHIgMDMsIDIwMjMgYXQgMDk6NTM6MDRQTSArMDgwMCwgd3VjaGkg
-d3JvdGU6DQo+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIGlmIChibG9jayA+IGV4dF9i
-bG9jaykNCj4gPiA+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXh0
-X3BibGsgKyAoYmxvY2sgLSBleHRfYmxvY2spOw0KPiA+ID4gPiA+IC0gICAgICAgICAgICAgICAg
-ICAgICBlbHNlDQo+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJu
-IGV4dF9wYmxrIC0gKGV4dF9ibG9jayAtIGJsb2NrKTsNCj4gPiA+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgcmV0dXJuIGV4dF9wYmxrICsgKChzaWduZWQgbG9uZyBsb25nKWJsb2NrIC0gKHNp
-Z25lZCBsb25nDQo+IGxvbmcpZXh0X2Jsb2NrKTsNCj4gPiA+ID4NCj4gPiA+ID4gQW5kIHdoYXQg
-ZXhhY3RseSBpcyB0aGUgdmFsdWUgYWRkIGhlcmUsIGV4Y2VwdCBmb3IgdHVybmluZyBhbiBlYXN5
-DQo+ID4gPiA+IHRvIHBhcnNlIHN0YXRlbWVudCBpbnRvIGEgY29tcGxleCBleHByZXNzaW9uIHVz
-aW5nIGNhc3RzPw0KPiA+ID4gPg0KPiA+ID4gWWVz77yMaXQgd2lsbCBiZSBtb3JlIGNvbXBsZXgu
-IHRoZSBvcmlnaW5hbCBpbnRlbnRpb24gaXMgdG8gcmVkdWNlIHRoZQ0KPiA+ID4gY29uZGl0aW9u
-YWwgYnJhbmNoLg0KPiA+DQo+ID4gV2hhdCBpcyB3cm9uZyB3aXRoIGp1c3Q6DQo+ID4gICAgICAg
-ICByZXR1cm4gZXh0X3BibGsgKyBibG9jayAtIGV4dF9ibG9jazsNCj4gPiAoNjRiaXQgKyAzMmJp
-dCAtIDMyYml0KQ0KPiA+DQoNCj4gb2gsIEl0J3MgbXkgZmF1bHQuIEkgYW0gdHJhcHBlZCBpbiB0
-aGF0IGV4dF9wYmxrICsgYmxvY2sgbWF5IG92ZXJmbG93LA0KPiBidXQgaXQgaXMgb2sgaGVyZS4g
-dGhhbmtzLg0KDQpUaGF0IGRvZXNuJ3QgbWF0dGVyLCBpdCB3aWxsICd1bi1vdmVyZmxvdycgd2hl
-biBleHRfYmxvY2sgaXMgc3VidHJhY3RlZC4NCllvdSBkbyBuZWVkIHRoZSAnKycgdG8gaGFwcGVu
-IGJlZm9yZSB0aGUgJy0nLCBvayBiZWNhdXNlICsvLSBncm91cA0KbGVmdCB0byByaWdodCBpbiBD
-Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
-YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
-Tm86IDEzOTczODYgKFdhbGVzKQ0K
+On Tue, Apr 04, 2023 at 03:16:53PM -0700, Eric Biggers wrote:
+> Hi Zorro,
+> 
+> On Wed, Apr 05, 2023 at 01:14:09AM +0800, Zorro Lang wrote:
+> > +FSVERITY
+> > +L:	fsverity@lists.linux.dev
+> > +S:	Supported
+> > +F:	common/verity
+> > +
+> > +FSCRYPT
+> > +L:      linux-fscrypt@vger.kernel.org
+> > +S:	Supported
+> > +F:	common/encrypt
+> 
+> Most of the encrypt and verity tests are in tests/generic/ and are in the
+> 'encrypt' or 'verity' test groups.
+> 
+> These file patterns only pick up the common files, not the actual tests.
+> 
+> Have you considered adding a way to specify maintainers for a test group?
+> Something like:
+> 
+>     G:      encrypt
+> 
+> and
+> 
+>     G:      verity
+
+Good idea! Let's check if this patchset is acceptable by most of you,
+then I'll think about how to add this feature later.
+
+Thanks,
+Zorro
+
+> 
+> - Eric
+> 
 
