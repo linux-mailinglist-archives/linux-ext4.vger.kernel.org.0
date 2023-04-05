@@ -2,61 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0607E6D73D1
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 07:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4142D6D75C3
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 09:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbjDEFlE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 01:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S237134AbjDEHsF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 03:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236386AbjDEFlD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 01:41:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A494421F;
-        Tue,  4 Apr 2023 22:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tUw6fLkEufjZAV2DxCfgThpnp199F0064DabhqHL5gY=; b=CtwY0kfoOx7fpitUqNyr2agKf5
-        Cwc+0wCG3Oxocf/8h3JXDkzFPp5B0vdMeQwuolA/yIbAGfRHelbWKdHE4Rv3eDXhv5HPMRlvLZSwo
-        MGZmh6BIvUqNjIatQ+Eq4PULjw+uH3Rwlvm4Se76CfTDMBHlMjTKTwrLh7jW4u/OYbUY8g0DHq34H
-        /gyv+aBD8abMtGVudmOa5kyQrTlTF+4OH/VJkTOx167a26hE7ueNoimzIZGVJVfYlKSYJWxaQ1UcL
-        chWvg9htMHVrIE+BMGgs8ybczCztsE/FRZC17U0pmMIaB9Wl0OZAQvNtnX5T9xy7E3VdRbmcLs3xc
-        ANsBEzkg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pjvtA-003Pme-1h;
-        Wed, 05 Apr 2023 05:40:56 +0000
-Date:   Tue, 4 Apr 2023 22:40:56 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     wuchi <wuchi.zero@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        ritesh.list@gmail.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: simplify 32bit calculation of lblk
-Message-ID: <ZC0J6I1pYNZBB30y@infradead.org>
-References: <20230403135304.19858-1-wuchi.zero@gmail.com>
+        with ESMTP id S230163AbjDEHsE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 03:48:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBD010F1;
+        Wed,  5 Apr 2023 00:48:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7713E6359D;
+        Wed,  5 Apr 2023 07:48:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF390C433D2;
+        Wed,  5 Apr 2023 07:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680680882;
+        bh=iG+5hwZ+00F79HrZr+lwoC/xHcVnBc+M7O/KLljWetw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m1DKSbXsJkksJc50fMfe9E5d0vBrvfPBTXO+qnnm/ZTsLLxsc3tXPBZId8QVlQtiU
+         tWKlNvtJ2Q9dVvvTQaFHWMtwuARGM7dZZzXwR1ttFnc3yyiYR3q57p8NorQfAf9uMS
+         WsYimi1fhn1ocdkp7W7ZJLsA6QYxBXFg7FavFla8XWJ5S5YKn159fdD1V4pR8gIHND
+         qxBCxbTyh5rPT8Q+Juc3t5cHT4YE/gnWHSbjyB0IaJjhxN+JqgPh5ilGsz5wD3K0w/
+         xDKn7EIvgns7JH0LBxr6f6iI2aFLM9jWYK+if8Z7xiHJJyBx7qo9ajvgpuWUUL/rKD
+         j5n5m82ILoILw==
+Date:   Wed, 5 Apr 2023 09:47:55 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Zorro Lang <zlang@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
+        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
+        ebiggers@google.com, amir73il@gmail.com, djwong@kernel.org,
+        anand.jain@oracle.com
+Subject: Re: [PATCH 4/5] fstests/MAINTAINERS: add some specific reviewers
+Message-ID: <20230405-idolisieren-sperren-3c7042b9ed1f@brauner>
+References: <20230404171411.699655-1-zlang@kernel.org>
+ <20230404171411.699655-5-zlang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230403135304.19858-1-wuchi.zero@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230404171411.699655-5-zlang@kernel.org>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 03, 2023 at 09:53:04PM +0800, wuchi wrote:
-> -			if (block > ext_block)
-> -				return ext_pblk + (block - ext_block);
-> -			else
-> -				return ext_pblk - (ext_block - block);
-> +			return ext_pblk + ((signed long long)block - (signed long long)ext_block);
+On Wed, Apr 05, 2023 at 01:14:10AM +0800, Zorro Lang wrote:
+> Some people contribute to someone specific fs testing mostly, record
+> some of them as Reviewer.
+> 
+> Signed-off-by: Zorro Lang <zlang@kernel.org>
+> ---
+> 
+> If someone doesn't want to be in cc list of related fstests patch, please
+> reply this email, I'll remove that reviewer line.
+> 
+> Or if someone else (who contribute to fstests very much) would like to a
+> specific reviewer, nominate yourself to get a review.
+> 
+> Thanks,
+> Zorro
+> 
+>  MAINTAINERS | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 620368cb..0ad12a38 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -108,6 +108,7 @@ Maintainers List
+>  	  or reviewer or co-maintainer can be in cc list.
+>  
+>  BTRFS
+> +R:	Filipe Manana <fdmanana@suse.com>
+>  L:	linux-btrfs@vger.kernel.org
+>  S:	Supported
+>  F:	tests/btrfs/
+> @@ -137,16 +138,19 @@ F:	tests/f2fs/
+>  F:	common/f2fs
+>  
+>  FSVERITY
+> +R:	Eric Biggers <ebiggers@google.com>
+>  L:	fsverity@lists.linux.dev
+>  S:	Supported
+>  F:	common/verity
+>  
+>  FSCRYPT
+> +R:	Eric Biggers <ebiggers@google.com>
+>  L:      linux-fscrypt@vger.kernel.org
+>  S:	Supported
+>  F:	common/encrypt
+>  
+>  FS-IDMAPPED
 
-And what exactly is the value add here, except for turning an easy
-to parse statement into a complex expression using casts?
+I'd just make this VFS since src/vfs/ covers generic vfs functionality.
 
+But up to you,
+
+Acked-by: Christian Brauner <brauner@kernel.org>
+
+> +R:	Christian Brauner <brauner@kernel.org>
+>  L:	linux-fsdevel@vger.kernel.org
+>  S:	Supported
+>  F:	src/vfs/
+> @@ -163,6 +167,7 @@ S:	Supported
+>  F:	tests/ocfs2/
+>  
+>  OVERLAYFS
+> +R:	Amir Goldstein <amir73il@gmail.com>
+>  L:	linux-unionfs@vger.kernel.org
+>  S:	Supported
+>  F:	tests/overlay
+> @@ -174,6 +179,7 @@ S:	Supported
+>  F:	tests/udf/
+>  
+>  XFS
+> +R:	Darrick J. Wong <djwong@kernel.org>
+>  L:	linux-xfs@vger.kernel.org
+>  S:	Supported
+>  F:	common/dump
+> -- 
+> 2.39.2
+> 
