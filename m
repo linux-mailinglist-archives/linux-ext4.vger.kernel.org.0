@@ -2,78 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940176D79F3
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 12:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D746D7A96
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Apr 2023 13:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237767AbjDEKj7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 06:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        id S236967AbjDELCO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 07:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237644AbjDEKj6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 06:39:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101664ECD
-        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 03:39:13 -0700 (PDT)
+        with ESMTP id S237672AbjDELCN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 07:02:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC4E4C20
+        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 04:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680691153;
+        s=mimecast20190719; t=1680692486;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=sBkFB8fAWBN3smTHXDCk9Sdy8T63XJRLVaCuva4Dlh8=;
-        b=IZ+80HHyflA0PA7JbWhpmorV4w26vqCt95GTbtlvNBsGt1R1wNgXV+S9kHlYM/EbLUW1p9
-        gaCq4dIKPNr/PRlXUCsiQnZZM+ko1a6jwgAMCVBqJ6n9jT+5egVYiKZsJ53tz1GpGircO9
-        Lp7SmEsPz5jWvo51V5SivpQin+t8f0A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=BoHgQZFE6GmfSeys+DR2W7oxw4hgWtoFTpySQ2VkKFk=;
+        b=V0YFHs3q1dLyZp4PMwJNCCZ33lAFL3XbzLK2np25QTW7So8YIDuXIa+RO/8Dnu2ClfuhnK
+        ZPRWi7QRhYts68A5SRVeptxYKJ77Lv9cKPElSU901ixPibk7i2+Ak241hDyVxHeAUytT9c
+        dncUlvYXYDjomzIs6g84eq76rx7baj8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-353-Md1aMi4yMlCQwXL8Fg88xw-1; Wed, 05 Apr 2023 06:39:12 -0400
-X-MC-Unique: Md1aMi4yMlCQwXL8Fg88xw-1
-Received: by mail-qk1-f199.google.com with SMTP id a13-20020ae9e80d000000b0074a3e98f30dso4025984qkg.6
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 03:39:12 -0700 (PDT)
+ us-mta-220-TPejZr6HOS6G50D6FjGCrA-1; Wed, 05 Apr 2023 07:01:26 -0400
+X-MC-Unique: TPejZr6HOS6G50D6FjGCrA-1
+Received: by mail-qv1-f71.google.com with SMTP id y19-20020ad445b3000000b005a5123cb627so15999078qvu.20
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Apr 2023 04:01:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680691151;
+        d=1e100.net; s=20210112; t=1680692485;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sBkFB8fAWBN3smTHXDCk9Sdy8T63XJRLVaCuva4Dlh8=;
-        b=2USnzFzXJk9sIrjIrb9vKI3ESOPhBelq0KYJmS0wOyfL2SsjnEunM6VNl6ZZBGS38T
-         IkG/qJMp6dkhX435uX4xIkOkZkW4GJNbM4iPa03fGbqTdj13ye/+GD9p0dTKZT+3F2mO
-         gEIs4NfzKG2NlGSjt3BzNDrTiElcYtbAo+l6BRExCszQHrsAW40b2dWOvVvoffinE9s5
-         drxbTjSSmtPT+94IRum07/7PoukTz9PmNJytmYiDj3LJSOTa81YbvYuzteGjfM0YcKew
-         fJafEkobJrlYFIFcTxs3kjcLKB+IGUI0AYmScIN6zpAa+etGgdM0cFDqshEJobEkWF25
-         lkJw==
-X-Gm-Message-State: AAQBX9ehnSyyrXIsGbmruhHDVrX6aqJzfg1KpgWh9BuFXRL0D/Kq8luT
-        GMVoTVzJb3pftx5m3OeNwzJK6gTFm0SZ+3+4nxwhMj9z+b7UwbZKl8wRnXMSzdVSe0Tn/ck/g53
-        zzLT3qB9C++h2JJxp6jFq
-X-Received: by 2002:ac8:7e96:0:b0:3b6:323d:bcac with SMTP id w22-20020ac87e96000000b003b6323dbcacmr4150870qtj.32.1680691151323;
-        Wed, 05 Apr 2023 03:39:11 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aYAf0v49WL6o/QofipBP4L4y6flhFYcYqZzNpajsevFC+xcPnxT0A0hb6dINwVq/YpVvvMSw==
-X-Received: by 2002:ac8:7e96:0:b0:3b6:323d:bcac with SMTP id w22-20020ac87e96000000b003b6323dbcacmr4150840qtj.32.1680691150879;
-        Wed, 05 Apr 2023 03:39:10 -0700 (PDT)
+        bh=BoHgQZFE6GmfSeys+DR2W7oxw4hgWtoFTpySQ2VkKFk=;
+        b=X//VTtvZzqbjLTdKVr1OMAo3Y8XYuKDS+9dGzCc4vCXmRNXHiCrcR4ESIJnk/GI9j7
+         RpwFXm0BO57G1Wach50j8/2TeeoMNJLrJ15fh2RHmUfRWWzrrf4Ns1EXrCYabLw4DThc
+         gc7+krBxLkMxeNF3YfLODoMuVyYRZthZ79ikDXJeI3GPavJ4St4BKH0rQN+iW3NINedC
+         wWYsyWHlujy22XabazqWlGRYYWW2oayI4f4ES3zW9A5UNUWWUtoT0pBvqnGowdB7vPc7
+         vFXFZ667eR7RpBP4GjIW5Uq4+R89H7mnY3oK5amOrPoW0biYtQ+wiSsL0IV5vwwzp8yN
+         2zjw==
+X-Gm-Message-State: AAQBX9f1KQrx3uxSCSianoN8XhDLumqtetjMzze7gRIecWN99fz7cThS
+        5uk3qVw1l3MfEI5By0J2PNfqvrA8UWq1uiH3VGwpEBiz6P9s82TB+wKJz2tZ/val7T7M9Jy3GR8
+        ogRgzW+00Ajcl6+YE1urc
+X-Received: by 2002:a05:6214:4001:b0:5ca:f6dd:f3b6 with SMTP id kd1-20020a056214400100b005caf6ddf3b6mr8311044qvb.16.1680692485357;
+        Wed, 05 Apr 2023 04:01:25 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZN5rxyt4g78lpjs6te5NjsBmYN83L29u8HXb3VRNmLRZGiyzEv7hgqJmGPE20fJY6cuY/SPQ==
+X-Received: by 2002:a05:6214:4001:b0:5ca:f6dd:f3b6 with SMTP id kd1-20020a056214400100b005caf6ddf3b6mr8310617qvb.16.1680692482068;
+        Wed, 05 Apr 2023 04:01:22 -0700 (PDT)
 Received: from aalbersh.remote.csb ([109.183.6.197])
-        by smtp.gmail.com with ESMTPSA id r206-20020a3744d7000000b0074a0051fcd4sm4331706qka.88.2023.04.05.03.39.06
+        by smtp.gmail.com with ESMTPSA id om30-20020a0562143d9e00b005dd8b934576sm4136208qvb.14.2023.04.05.04.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 03:39:10 -0700 (PDT)
-Date:   Wed, 5 Apr 2023 12:39:04 +0200
+        Wed, 05 Apr 2023 04:01:21 -0700 (PDT)
+Date:   Wed, 5 Apr 2023 13:01:16 +0200
 From:   Andrey Albershteyn <aalbersh@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
-        hch@infradead.org, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-xfs@vger.kernel.org, fsverity@lists.linux.dev,
+        rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
+        chao@kernel.org, damien.lemoal@opensource.wdc.com, jth@kernel.org,
         linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com
-Subject: Re: [PATCH v2 06/23] fsverity: add drop_page() callout
-Message-ID: <20230405103904.2ugfxqmuuqjd7itz@aalbersh.remote.csb>
+Subject: Re: [PATCH v2 09/23] iomap: allow filesystem to implement read path
+ verification
+Message-ID: <20230405110116.ia5wv3qxbnpdciui@aalbersh.remote.csb>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-7-aalbersh@redhat.com>
- <20230404234019.GM3223426@dread.disaster.area>
+ <20230404145319.2057051-10-aalbersh@redhat.com>
+ <ZCxEHkWayQyGqnxL@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404234019.GM3223426@dread.disaster.area>
+In-Reply-To: <ZCxEHkWayQyGqnxL@infradead.org>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -84,83 +84,72 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Dave,
+Hi Christoph,
 
-On Wed, Apr 05, 2023 at 09:40:19AM +1000, Dave Chinner wrote:
-> On Tue, Apr 04, 2023 at 04:53:02PM +0200, Andrey Albershteyn wrote:
-> > Allow filesystem to make additional processing on verified pages
-> > instead of just dropping a reference. This will be used by XFS for
-> > internal buffer cache manipulation in further patches. The btrfs,
-> > ext4, and f2fs just drop the reference.
-> > 
-> > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
-> > ---
-> >  fs/btrfs/verity.c         | 12 ++++++++++++
-> >  fs/ext4/verity.c          |  6 ++++++
-> >  fs/f2fs/verity.c          |  6 ++++++
-> >  fs/verity/read_metadata.c |  4 ++--
-> >  fs/verity/verify.c        |  6 +++---
-> >  include/linux/fsverity.h  | 10 ++++++++++
-> >  6 files changed, 39 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-> > index c5ff16f9e9fa..4c2c09204bb4 100644
-> > --- a/fs/btrfs/verity.c
-> > +++ b/fs/btrfs/verity.c
-> > @@ -804,10 +804,22 @@ static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
-> >  			       pos, buf, size);
-> >  }
-> >  
-> > +/*
-> > + * fsverity op that releases the reference obtained by ->read_merkle_tree_page()
-> > + *
-> > + * @page:  reference to the page which can be released
-> > + *
-> > + */
-> > +static void btrfs_drop_page(struct page *page)
-> > +{
-> > +	put_page(page);
-> > +}
+On Tue, Apr 04, 2023 at 08:37:02AM -0700, Christoph Hellwig wrote:
+> >  	if (iomap_block_needs_zeroing(iter, pos)) {
+> >  		folio_zero_range(folio, poff, plen);
+> > +		if (iomap->flags & IOMAP_F_READ_VERITY) {
+> 
+> Wju do we need the new flag vs just testing that folio_ops and
+> folio_ops->verify_folio is non-NULL?
+
+Yes, it can be just test, haven't noticed that it's used only here,
+initially I used it in several places.
+
+> 
+> > -		ctx->bio = bio_alloc(iomap->bdev, bio_max_segs(nr_vecs),
+> > -				     REQ_OP_READ, gfp);
+> > +		ctx->bio = bio_alloc_bioset(iomap->bdev, bio_max_segs(nr_vecs),
+> > +				REQ_OP_READ, GFP_NOFS, &iomap_read_ioend_bioset);
+> 
+> All other callers don't really need the larger bioset, so I'd avoid
+> the unconditional allocation here, but more on that later.
+
+Ok, make sense.
+
+> 
+> > +		ioend = container_of(ctx->bio, struct iomap_read_ioend,
+> > +				read_inline_bio);
+> > +		ioend->io_inode = iter->inode;
+> > +		if (ctx->ops && ctx->ops->prepare_ioend)
+> > +			ctx->ops->prepare_ioend(ioend);
 > > +
-> >  const struct fsverity_operations btrfs_verityops = {
-> >  	.begin_enable_verity     = btrfs_begin_enable_verity,
-> >  	.end_enable_verity       = btrfs_end_enable_verity,
-> >  	.get_verity_descriptor   = btrfs_get_verity_descriptor,
-> >  	.read_merkle_tree_page   = btrfs_read_merkle_tree_page,
-> >  	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
-> > +	.drop_page		 = &btrfs_drop_page,
-> >  };
 > 
-> Ok, that's a generic put_page() call.
+> So what we're doing in writeback and direct I/O, is to:
 > 
-> ....
-> > diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-> > index f50e3b5b52c9..c2fc4c86af34 100644
-> > --- a/fs/verity/verify.c
-> > +++ b/fs/verity/verify.c
-> > @@ -210,7 +210,7 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
-> >  		if (is_hash_block_verified(vi, hpage, hblock_idx)) {
-> >  			memcpy_from_page(_want_hash, hpage, hoffset, hsize);
-> >  			want_hash = _want_hash;
-> > -			put_page(hpage);
-> > +			inode->i_sb->s_vop->drop_page(hpage);
-> >  			goto descend;
-> 
-> 			fsverity_drop_page(hpage);
-> 
-> static inline void
-> fsverity_drop_page(struct inode *inode, struct page *page)
-> {
-> 	if (inode->i_sb->s_vop->drop_page)
-> 		inode->i_sb->s_vop->drop_page(page);
-> 	else
-> 		put_page(page);
-> }
-> 
-> And then you don't need to add the functions to each of the
-> filesystems nor make an indirect call just to run put_page().
+>  a) have a submit_bio hook
+>  b) allow the file system to then hook the bi_end_io caller
+>  c) (only in direct O/O for now) allow the file system to provide
+>     a bio_set to allocate from
 
-Sure, this makes more sense, thank you!
+I see.
+
+> 
+> I wonder if that also makes sense and keep all the deferral in the
+> file system.  We'll need that for the btrfs iomap conversion anyway,
+> and it seems more flexible.  The ioend processing would then move into
+> XFS.
+> 
+
+Not sure what you mean here.
+
+> > @@ -156,6 +160,11 @@ struct iomap_folio_ops {
+> >  	 * locked by the iomap code.
+> >  	 */
+> >  	bool (*iomap_valid)(struct inode *inode, const struct iomap *iomap);
+> > +
+> > +	/*
+> > +	 * Verify folio when successfully read
+> > +	 */
+> > +	bool (*verify_folio)(struct folio *folio, loff_t pos, unsigned int len);
+> 
+> Why isn't this in iomap_readpage_ops?
+> 
+
+Yes, it can be. But it appears to me to be more relevant to
+_folio_ops, any particular reason to move it there? Don't mind
+moving it to iomap_readpage_ops.
 
 -- 
 - Andrey
