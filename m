@@ -2,75 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1339E6D8D16
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 03:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6D26D8DCC
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 04:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbjDFBzL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 21:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
+        id S234707AbjDFC6p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 22:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbjDFBzK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 21:55:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59A283CA;
-        Wed,  5 Apr 2023 18:54:36 -0700 (PDT)
+        with ESMTP id S234554AbjDFC6n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 22:58:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2285BA9;
+        Wed,  5 Apr 2023 19:58:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07C10618D7;
-        Thu,  6 Apr 2023 01:53:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65538C433EF;
-        Thu,  6 Apr 2023 01:53:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B800164174;
+        Thu,  6 Apr 2023 02:58:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D88EC433EF;
+        Thu,  6 Apr 2023 02:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680746022;
-        bh=RU0Q3vUCSoOriMTSmQ2CiAo6okbHQsDApEtyfqhB/os=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FbWqGQ0wbGurzrP9KVHM0SNw0YC9GyWApFTXwdNVcK2A0TiZtlGaba89nxCOMrOnv
-         LWjeD76eOESSoHb3bjdBWreXKq9o6hYFzR7svS/T2cmmEB82GOCY4PQ4xwOErbFzpU
-         hmcAghCKLKqbx4A0blihXUGzlq7+9VmymPLp1sU/9GKwTNgaMazWLz2aF2o38rqb3J
-         b3LRiP0wTjMiqcG9t360E1ofmIBaOFnuhJb3uzgevc579iZR/wnVuIvdPxErd0uHqj
-         plvf4gfX7jEtsbHb5zbnA4A6/Ie41UsiXOM4Khj5aTYqCMkOCJ9lIg3iiItz27lqAh
-         KTIvUAvOE5HOQ==
-Message-ID: <b0214d14-aa0e-f1df-4ff3-02304b710a6e@kernel.org>
-Date:   Thu, 6 Apr 2023 09:53:36 +0800
+        s=k20201202; t=1680749921;
+        bh=AwNKZCoYNd9/YP0f3fwLMwmGowD98qoCr8vn5oD6464=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=sh8jz2Dhf+RNZdqkp2D3by0mDvHPrh5wn5Z3yWg7pHjeZq7R3N3tBIhDQQ5P2Sv94
+         bqmPUw+vKrz4LIbZ8t8xF2pjN9CUeFYEp8Z3sXtmZuIqPd4pRPcFCOAJioO6bS6QKC
+         X2v24E+ZiOI7+vHikKrwFJRGTG88wZgUFOrgdjGT36ejgGYCXp+LZ7T+/cKxirhjvO
+         HBUGAC3/rVWNpHCNvQPHxO4ltUMT4b12OdRcIaoA4/s7XEZiodPeuoKAqi6QN/4Av+
+         Nf6scwmZOUKHGNwSvUmAihxgtk0aqkG62/ZCIyks/lANllGyAFFJOelhSr1DUUk/mA
+         iA8NpGwLilr9Q==
+Date:   Wed, 05 Apr 2023 19:58:40 -0700
+From:   Kees Cook <kees@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_0/3=5D_lib/string=5Fhelpers_et?= =?US-ASCII?Q?_al=2E=3A_Change_return_value_of_strreplace=28=29?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZC2H8ODMwoO5hzZG@smile.fi.intel.com>
+References: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com> <ZC1454AwRUNFTbIW@smile.fi.intel.com> <2023040523-unworthy-uncured-1eab@gregkh> <ZC2H8ODMwoO5hzZG@smile.fi.intel.com>
+Message-ID: <47D8878A-1108-4AC3-BF7F-507F90F6970A@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [f2fs-dev] [PATCH 3/5] fstests/MAINTAINERS: add supported mailing
- list
-Content-Language: en-US
-To:     Zorro Lang <zlang@kernel.org>, fstests@vger.kernel.org
-Cc:     brauner@kernel.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ebiggers@google.com, djwong@kernel.org,
-        amir73il@gmail.com, linux-unionfs@vger.kernel.org,
-        anand.jain@oracle.com, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, fdmanana@suse.com,
-        ocfs2-devel@oss.oracle.com, jack@suse.com,
-        linux-fsdevel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230404171411.699655-1-zlang@kernel.org>
- <20230404171411.699655-4-zlang@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230404171411.699655-4-zlang@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/4/5 1:14, Zorro Lang wrote:
-> +F2FS
-> +L:	linux-f2fs-devel@lists.sourceforge.net
-> +S:	Supported
-> +F:	tests/f2fs/
-> +F:	common/f2fs
+On April 5, 2023 7:38:40 AM PDT, Andy Shevchenko <andriy=2Eshevchenko@linux=
+=2Eintel=2Ecom> wrote:
+>On Wed, Apr 05, 2023 at 04:24:42PM +0200, Greg Kroah-Hartman wrote:
+>> On Wed, Apr 05, 2023 at 04:34:31PM +0300, Andy Shevchenko wrote:
+>> > On Thu, Mar 23, 2023 at 02:37:01PM +0200, Andy Shevchenko wrote:
+>> > > It's more convenient to have strreplace() to return the pointer to
+>> > >  the string itself=2E This will help users to make their code bette=
+r=2E
+>> > >=20
+>> > > The patch 1 kills the only user of the returned value of strreplace=
+(),
+>> > > Patch 2 converts the return value of strreplace()=2E And patch 3 sh=
+ows
+>> > > how it may be useful=2E That said, the series can be routed via fs =
+tree,
+>> > > with or without the last patch=2E
+>> >=20
+>> > Since there are no comments, who can apply this (patches 1 and 2)?
+>> > Greg, are you fine with the kobject change?
+>>=20
+>> Sure, want me to take them all through my driver-core tree?
+>
+>Fine by me! Dunno about others=2E Kees?
 
-Acked-by: Chao Yu <chao@kernel.org>
+Yeah, that's cool by me=2E :)
 
-Thanks,
+
+--=20
+Kees Cook
