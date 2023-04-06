@@ -2,42 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BCD6D9833
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 15:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE776D98DC
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 16:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235994AbjDFN3T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Apr 2023 09:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S236672AbjDFODW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Apr 2023 10:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238519AbjDFN3N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 09:29:13 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AB5659E;
-        Thu,  6 Apr 2023 06:29:11 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Psj2L4nyDzKwxp;
-        Thu,  6 Apr 2023 21:26:34 +0800 (CST)
+        with ESMTP id S230029AbjDFODV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 10:03:21 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF7749CE;
+        Thu,  6 Apr 2023 07:03:19 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Psjmj68qcznb9n;
+        Thu,  6 Apr 2023 21:59:49 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 6 Apr
- 2023 21:29:04 +0800
+ 2023 22:03:16 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v2 2/2] ext4: use __GFP_NOFAIL if allocating extents_status cannot fail
-Date:   Thu, 6 Apr 2023 21:28:34 +0800
-Message-ID: <20230406132834.1669710-3-libaokun1@huawei.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <tj@kernel.org>,
+        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>, <stable@vger.kernel.org>
+Subject: [RFC PATCH] writeback, cgroup: fix null-ptr-deref write in bdi_split_work_to_wbs
+Date:   Thu, 6 Apr 2023 22:02:47 +0800
+Message-ID: <20230406140247.1936541-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230406132834.1669710-1-libaokun1@huawei.com>
-References: <20230406132834.1669710-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
@@ -49,95 +49,125 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If extent status tree update fails, we have inconsistency between what is
-stored in the extent status tree and what is stored on disk. And that can
-cause even data corruption issues in some cases.
+KASAN report null-ptr-deref:
+==================================================================
+BUG: KASAN: null-ptr-deref in bdi_split_work_to_wbs+0x6ce/0x6e0
+Write of size 8 at addr 0000000000000000 by task syz-executor.3/3514
 
-In the extent status tree, we have extents which we can just drop without
-issues and extents we must not drop - this depends on the extent's status
-- currently ext4_es_is_delayed() extents must stay, others may be dropped.
+CPU: 3 PID: 3514 Comm: syz-executor.3 Not tainted 5.10.0-dirty #1
+Call Trace:
+ dump_stack+0xbe/0xfd
+ __kasan_report.cold+0x34/0x84
+ kasan_report+0x3a/0x50
+ check_memory_region+0xfd/0x1f0
+ bdi_split_work_to_wbs+0x6ce/0x6e0
+ __writeback_inodes_sb_nr+0x184/0x1f0
+ try_to_writeback_inodes_sb+0x7f/0xa0
+ ext4_nonda_switch+0x125/0x130
+ ext4_da_write_begin+0x126/0x6e0
+ generic_perform_write+0x199/0x3a0
+ ext4_buffered_write_iter+0x16d/0x2b0
+ ext4_file_write_iter+0xea/0x140
+ new_sync_write+0x2fa/0x430
+ vfs_write+0x4a1/0x570
+ ksys_write+0xf6/0x1f0
+ do_syscall_64+0x30/0x40
+ entry_SYSCALL_64_after_hwframe+0x61/0xc6
+RIP: 0033:0x45513d
+[...]
+==================================================================
 
-For extents that cannot be dropped we use __GFP_NOFAIL to allocate memory.
-A helper function is also added to help determine if the current extent can
-be dropped, although only ext4_es_is_delayed() extents cannot be dropped
-currently. In addition, with the above logic, the undo operation in
-__es_remove_extent that may cause inconsistency if the split extent fails
-is unnecessary, so we remove it as well.
+Above issue may happen as follows:
 
-Suggested-by: Jan Kara <jack@suse.cz>
+            cpu1                        cpu2
+----------------------------|----------------------------
+ext4_nonda_switch
+ try_to_writeback_inodes_sb
+  __writeback_inodes_sb_nr
+   bdi_split_work_to_wbs
+    kmalloc(sizeof(*work), GFP_ATOMIC)  ---> alloc mem failed
+                                inode_switch_wbs
+                                 inode_switch_wbs_work_fn
+                                  wb_put_many
+                                   percpu_ref_put_many
+                                    ref->data->release(ref)
+                                     cgwb_release
+                                      &wb->release_work
+                                       cgwb_release_workfn
+                                        percpu_ref_exit
+                                         ref->data = NULL
+                                         kfree(data)
+    wb_get(wb)
+     percpu_ref_get(&wb->refcnt)
+      percpu_ref_get_many(ref, 1)
+       atomic_long_add(nr, &ref->data->count) ---> ref->data = NULL
+        atomic64_add(i, v) ---> trigger null-ptr-deref
+
+bdi_split_work_to_wbs() traverses &bdi->wb_list to split work into all wbs.
+If the allocation of new work fails, the on-stack fallback will be used and
+the reference count of the current wb is increased afterwards. If cgroup
+writeback membership switches occur before getting the reference count and
+the current wb is released as old_wd, then calling wb_get() or wb_put()
+will trigger the null pointer dereference above.
+
+A similar problem is fixed in commit 7fc5854f8c6e ("writeback: synchronize
+sync(2) against cgroup writeback membership switches"), but the patch only
+adds locks to sync_inodes_sb() and not to the __writeback_inodes_sb_nr()
+function that also calls bdi_split_work_to_wbs() function. So avoid the
+above race by adding the same lock to __writeback_inodes_sb_nr() and
+expanding the range of wb_switch_rwsem held in inode_switch_wbs_work_fn().
+
+Fixes: b817525a4a80 ("writeback: bdi_writeback iteration must not skip dying ones")
+Cc: stable@vger.kernel.org
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
-V1->V2:
-	Add the patch 2 as suggested by Jan Kara.
+ fs/fs-writeback.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
- fs/ext4/extents_status.c | 36 +++++++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 7 deletions(-)
-
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index 7bc221038c6c..8eed17f35b11 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -448,12 +448,29 @@ static void ext4_es_list_del(struct inode *inode)
- 	spin_unlock(&sbi->s_es_lock);
- }
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 195dc23e0d83..52825aaf549b 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -506,13 +506,13 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
+ 	spin_unlock(&new_wb->list_lock);
+ 	spin_unlock(&old_wb->list_lock);
  
-+/*
-+ * Helper function to help determine if memory allocation for this
-+ * extent_status is allowed to fail.
-+ */
-+static inline bool ext4_es_alloc_should_nofail(struct extent_status *es)
-+{
-+	if (ext4_es_is_delayed(es))
-+		return true;
-+
-+	return false;
-+}
-+
- static struct extent_status *
- ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
--		     ext4_fsblk_t pblk)
-+		     ext4_fsblk_t pblk, int nofail)
- {
- 	struct extent_status *es;
--	es = kmem_cache_alloc(ext4_es_cachep, GFP_ATOMIC);
-+	gfp_t gfp_flags = GFP_ATOMIC;
-+
-+	if (nofail)
-+		gfp_flags |= __GFP_NOFAIL;
-+
-+	es = kmem_cache_alloc(ext4_es_cachep, gfp_flags);
- 	if (es == NULL)
- 		return NULL;
- 	es->es_lblk = lblk;
-@@ -792,9 +809,16 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
+-	up_read(&bdi->wb_switch_rwsem);
+-
+ 	if (nr_switched) {
+ 		wb_wakeup(new_wb);
+ 		wb_put_many(old_wb, nr_switched);
  	}
  
- 	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
--				  newes->es_pblk);
--	if (!es)
--		return -ENOMEM;
-+				  newes->es_pblk, 0);
-+	if (!es) {
-+		/* Use GFP_NOFAIL if the allocation cannot fail. */
-+		if (ext4_es_alloc_should_nofail(newes))
-+			es = ext4_es_alloc_extent(inode, newes->es_lblk,
-+					newes->es_len, newes->es_pblk, 1);
-+		else
-+			return -ENOMEM;
-+	}
++	up_read(&bdi->wb_switch_rwsem);
 +
- 	rb_link_node(&es->rb_node, parent, p);
- 	rb_insert_color(&es->rb_node, &tree->root);
+ 	for (inodep = isw->inodes; *inodep; inodep++)
+ 		iput(*inodep);
+ 	wb_put(new_wb);
+@@ -936,6 +936,11 @@ static long wb_split_bdi_pages(struct bdi_writeback *wb, long nr_pages)
+  * have dirty inodes.  If @base_work->nr_page isn't %LONG_MAX, it's
+  * distributed to the busy wbs according to each wb's proportion in the
+  * total active write bandwidth of @bdi.
++ *
++ * Called under &bdi->wb_switch_rwsem, otherwise bdi_split_work_to_wbs()
++ * may race against cgwb (cgroup writeback) membership switches, which may
++ * cause some inodes to fail to write back, or even trigger a null pointer
++ * dereference using a freed wb.
+  */
+ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+ 				  struct wb_writeback_work *base_work,
+@@ -2637,8 +2642,11 @@ static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
+ 		return;
+ 	WARN_ON(!rwsem_is_locked(&sb->s_umount));
  
-@@ -1349,8 +1373,6 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 						    ext4_es_status(&orig_es));
- 			err = __es_insert_extent(inode, &newes);
- 			if (err) {
--				es->es_lblk = orig_es.es_lblk;
--				es->es_len = orig_es.es_len;
- 				if ((err == -ENOMEM) &&
- 				    __es_shrink(EXT4_SB(inode->i_sb),
- 							128, EXT4_I(inode)))
++	/* protect against inode wb switch, see inode_switch_wbs_work_fn() */
++	bdi_down_write_wb_switch_rwsem(bdi);
+ 	bdi_split_work_to_wbs(sb->s_bdi, &work, skip_if_busy);
+ 	wb_wait_for_completion(&done);
++	bdi_up_write_wb_switch_rwsem(bdi);
+ }
+ 
+ /**
 -- 
 2.31.1
 
