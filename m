@@ -2,117 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B243D6D9967
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 16:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488996D9B5B
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 16:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239064AbjDFORf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Apr 2023 10:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        id S229803AbjDFO4k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Apr 2023 10:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237723AbjDFORe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 10:17:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1731180;
-        Thu,  6 Apr 2023 07:17:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4EE761F898;
-        Thu,  6 Apr 2023 14:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680790652;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
-        b=ZeJlivpALd8nO/1+mor0TCnnNBCMsJ16FUvMbjtBENF8lESP30O3UQN0FbK8ak1vh1Omwl
-        9TT+BNH6w2K4aPeYip1Ds2fvoITG3Q8Fm+KvriE04i9alnRCUvhm69FhfCLv5mocbumPb1
-        0G+YcC5Y0BrrKYEE3HWcPauZDd0rLVE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680790652;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
-        b=57+ei+nga6/9LWL0dAtibPJpgEe7tVSlAh13SWgoLWDg91xKuwog3XYPUrzIaZgUJ974ZK
-        mnJ0Dn3Ki8c7xoBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E50021351F;
-        Thu,  6 Apr 2023 14:17:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id auwvN3vULmQXJwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 06 Apr 2023 14:17:31 +0000
-Date:   Thu, 6 Apr 2023 16:17:29 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Zorro Lang <zlang@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
-        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
-        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
-        djwong@kernel.org, anand.jain@oracle.com
-Subject: Re: [PATCH 5/5] fstests/MAINTAINERS: add a co-maintainer for btrfs
- testing part
-Message-ID: <20230406141729.GP19619@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230404171411.699655-1-zlang@kernel.org>
- <20230404171411.699655-6-zlang@kernel.org>
+        with ESMTP id S229600AbjDFO4k (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 10:56:40 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD1E94
+        for <linux-ext4@vger.kernel.org>; Thu,  6 Apr 2023 07:56:38 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 336EuJB2018009
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 Apr 2023 10:56:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1680792981; bh=fp1zX/6xjLg+UUsh0qeMkDT0yUwpyagDDLySycM8opc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Sxu5BbaWX0Bgn43aP7SKFzoa9wbWdK/GPVF9QH+sb6HK+ULi5BJZUYCPM6i/3wnrA
+         1REwHstqK/peatGlEKcQOfvD49+gqQMwhuVQofpRkiWHwAoV1QH6UyZdw3obRuTRUG
+         t7NDRjJ53F7xYp286FlJN2xZBmER2Hv8RJF2i7C+Z8+UAhkI2x1jrMzU4hdH7AJTY7
+         pzA9XKKhmeBXFjN+au+p5m2UBmFGCis3Tg1iovrNiiMLD+wgTZQpSS0iukeGfcBa7m
+         YGmNbcZPZAWankVFKuBwlIZSSYnYnLDBwWQokLg7mQ/zdrB6ysKbc1Py7Goyz+6LBs
+         8NXHbsJDqECwA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2112F15C3ACE; Thu,  6 Apr 2023 10:56:19 -0400 (EDT)
+Date:   Thu, 6 Apr 2023 10:56:19 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/29] fs: Add FGP_WRITEBEGIN
+Message-ID: <20230406145619.GA162032@mit.edu>
+References: <20230324180129.1220691-2-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404171411.699655-6-zlang@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230324180129.1220691-2-willy@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_INVALID,DKIM_SIGNED,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 01:14:11AM +0800, Zorro Lang wrote:
-> Darrick J. Wong would like to nominate Anand Jain to help more on
-> btrfs testing part (tests/btrfs and common/btrfs). He would like to
-> be a co-maintainer of btrfs part, will help to review and test
-> fstests btrfs related patches, and I might merge from him if there's
-> big patchset. So CC him besides send to fstests@ list, when you have
-> a btrfs fstests patch.
+On Fri, Mar 24, 2023 at 06:01:01PM +0000, Matthew Wilcox wrote:
+> This particular combination of flags is used by most filesystems
+> in their ->write_begin method, although it does find use in a
+> few other places.  Before folios, it warranted its own function
+> (grab_cache_page_write_begin()), but I think that just having specialised
+> flags is enough.  It certainly helps the few places that have been
+> converted from grab_cache_page_write_begin() to __filemap_get_folio().
 > 
-> Signed-off-by: Zorro Lang <zlang@kernel.org>
-> ---
-> 
-> Please btrfs list help to review this change, if you agree (or no objection),
-> then I'll push this change.
-> 
-> A co-maintainer will do:
-> 1) Review patches are related with him.
-> 2) Merge and test patches in his local git repo, and give the patch an ACK.
-> 3) Maintainer will trust the ack from co-maintainer more (might merge directly).
-> 4) Maintainer might merge from co-maintainer when he has a big patchset wait for
->    merging.
-> 
-> Thanks,
-> Zorro
-> 
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0ad12a38..9fc6c6b5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -108,6 +108,7 @@ Maintainers List
->  	  or reviewer or co-maintainer can be in cc list.
->  
->  BTRFS
-> +M:	Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Acked-by: David Sterba <dsterba@suse.com>
+Hey Willy,
+
+Which commit/branch did you base this patch series on?  This commit
+conflict with Vishal Moola's e8dfc854eef2 ("ext4: convert
+mext_page_double_lock() to mext_folio_double_lock()") which landed in
+v6.3-rc1.
+
+I'm guessing what happened is that you based it on the ext4 dev branch
+that I used when I sent the pull request to Linus, before I moved the
+dev branch's origin to be on v6.3-rc3.  And since Vishal's patches
+went in via the mm tree, and not the ext4 tree, we have conflicts with
+the ext4 folio work done by some of Vishal's work in the last merge
+window.
+
+Sorry, I should have noticed this problem earlier (we had some painful
+merge conflicts due to the ext4 changes in the mm tree) so I should
+have realized this would continue to bite us this cycle.  :-/
+
+I hate to do this, but would you mind rebasing this on the current
+ext4 dev branch.  Thanks, and again, sorry for not catching this
+sooner.
+
+					- Ted
