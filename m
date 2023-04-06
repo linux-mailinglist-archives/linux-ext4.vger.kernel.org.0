@@ -2,172 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE776D98DC
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 16:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B243D6D9967
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 16:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236672AbjDFODW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Apr 2023 10:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S239064AbjDFORf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Apr 2023 10:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbjDFODV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 10:03:21 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF7749CE;
-        Thu,  6 Apr 2023 07:03:19 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Psjmj68qcznb9n;
-        Thu,  6 Apr 2023 21:59:49 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 6 Apr
- 2023 22:03:16 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <tj@kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>, <stable@vger.kernel.org>
-Subject: [RFC PATCH] writeback, cgroup: fix null-ptr-deref write in bdi_split_work_to_wbs
-Date:   Thu, 6 Apr 2023 22:02:47 +0800
-Message-ID: <20230406140247.1936541-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S237723AbjDFORe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 10:17:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1731180;
+        Thu,  6 Apr 2023 07:17:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4EE761F898;
+        Thu,  6 Apr 2023 14:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1680790652;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
+        b=ZeJlivpALd8nO/1+mor0TCnnNBCMsJ16FUvMbjtBENF8lESP30O3UQN0FbK8ak1vh1Omwl
+        9TT+BNH6w2K4aPeYip1Ds2fvoITG3Q8Fm+KvriE04i9alnRCUvhm69FhfCLv5mocbumPb1
+        0G+YcC5Y0BrrKYEE3HWcPauZDd0rLVE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1680790652;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
+        b=57+ei+nga6/9LWL0dAtibPJpgEe7tVSlAh13SWgoLWDg91xKuwog3XYPUrzIaZgUJ974ZK
+        mnJ0Dn3Ki8c7xoBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E50021351F;
+        Thu,  6 Apr 2023 14:17:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id auwvN3vULmQXJwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 06 Apr 2023 14:17:31 +0000
+Date:   Thu, 6 Apr 2023 16:17:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Zorro Lang <zlang@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
+        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
+        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
+        djwong@kernel.org, anand.jain@oracle.com
+Subject: Re: [PATCH 5/5] fstests/MAINTAINERS: add a co-maintainer for btrfs
+ testing part
+Message-ID: <20230406141729.GP19619@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230404171411.699655-1-zlang@kernel.org>
+ <20230404171411.699655-6-zlang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230404171411.699655-6-zlang@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-KASAN report null-ptr-deref:
-==================================================================
-BUG: KASAN: null-ptr-deref in bdi_split_work_to_wbs+0x6ce/0x6e0
-Write of size 8 at addr 0000000000000000 by task syz-executor.3/3514
+On Wed, Apr 05, 2023 at 01:14:11AM +0800, Zorro Lang wrote:
+> Darrick J. Wong would like to nominate Anand Jain to help more on
+> btrfs testing part (tests/btrfs and common/btrfs). He would like to
+> be a co-maintainer of btrfs part, will help to review and test
+> fstests btrfs related patches, and I might merge from him if there's
+> big patchset. So CC him besides send to fstests@ list, when you have
+> a btrfs fstests patch.
+> 
+> Signed-off-by: Zorro Lang <zlang@kernel.org>
+> ---
+> 
+> Please btrfs list help to review this change, if you agree (or no objection),
+> then I'll push this change.
+> 
+> A co-maintainer will do:
+> 1) Review patches are related with him.
+> 2) Merge and test patches in his local git repo, and give the patch an ACK.
+> 3) Maintainer will trust the ack from co-maintainer more (might merge directly).
+> 4) Maintainer might merge from co-maintainer when he has a big patchset wait for
+>    merging.
+> 
+> Thanks,
+> Zorro
+> 
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0ad12a38..9fc6c6b5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -108,6 +108,7 @@ Maintainers List
+>  	  or reviewer or co-maintainer can be in cc list.
+>  
+>  BTRFS
+> +M:	Anand Jain <anand.jain@oracle.com>
 
-CPU: 3 PID: 3514 Comm: syz-executor.3 Not tainted 5.10.0-dirty #1
-Call Trace:
- dump_stack+0xbe/0xfd
- __kasan_report.cold+0x34/0x84
- kasan_report+0x3a/0x50
- check_memory_region+0xfd/0x1f0
- bdi_split_work_to_wbs+0x6ce/0x6e0
- __writeback_inodes_sb_nr+0x184/0x1f0
- try_to_writeback_inodes_sb+0x7f/0xa0
- ext4_nonda_switch+0x125/0x130
- ext4_da_write_begin+0x126/0x6e0
- generic_perform_write+0x199/0x3a0
- ext4_buffered_write_iter+0x16d/0x2b0
- ext4_file_write_iter+0xea/0x140
- new_sync_write+0x2fa/0x430
- vfs_write+0x4a1/0x570
- ksys_write+0xf6/0x1f0
- do_syscall_64+0x30/0x40
- entry_SYSCALL_64_after_hwframe+0x61/0xc6
-RIP: 0033:0x45513d
-[...]
-==================================================================
-
-Above issue may happen as follows:
-
-            cpu1                        cpu2
-----------------------------|----------------------------
-ext4_nonda_switch
- try_to_writeback_inodes_sb
-  __writeback_inodes_sb_nr
-   bdi_split_work_to_wbs
-    kmalloc(sizeof(*work), GFP_ATOMIC)  ---> alloc mem failed
-                                inode_switch_wbs
-                                 inode_switch_wbs_work_fn
-                                  wb_put_many
-                                   percpu_ref_put_many
-                                    ref->data->release(ref)
-                                     cgwb_release
-                                      &wb->release_work
-                                       cgwb_release_workfn
-                                        percpu_ref_exit
-                                         ref->data = NULL
-                                         kfree(data)
-    wb_get(wb)
-     percpu_ref_get(&wb->refcnt)
-      percpu_ref_get_many(ref, 1)
-       atomic_long_add(nr, &ref->data->count) ---> ref->data = NULL
-        atomic64_add(i, v) ---> trigger null-ptr-deref
-
-bdi_split_work_to_wbs() traverses &bdi->wb_list to split work into all wbs.
-If the allocation of new work fails, the on-stack fallback will be used and
-the reference count of the current wb is increased afterwards. If cgroup
-writeback membership switches occur before getting the reference count and
-the current wb is released as old_wd, then calling wb_get() or wb_put()
-will trigger the null pointer dereference above.
-
-A similar problem is fixed in commit 7fc5854f8c6e ("writeback: synchronize
-sync(2) against cgroup writeback membership switches"), but the patch only
-adds locks to sync_inodes_sb() and not to the __writeback_inodes_sb_nr()
-function that also calls bdi_split_work_to_wbs() function. So avoid the
-above race by adding the same lock to __writeback_inodes_sb_nr() and
-expanding the range of wb_switch_rwsem held in inode_switch_wbs_work_fn().
-
-Fixes: b817525a4a80 ("writeback: bdi_writeback iteration must not skip dying ones")
-Cc: stable@vger.kernel.org
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/fs-writeback.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 195dc23e0d83..52825aaf549b 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -506,13 +506,13 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
- 	spin_unlock(&new_wb->list_lock);
- 	spin_unlock(&old_wb->list_lock);
- 
--	up_read(&bdi->wb_switch_rwsem);
--
- 	if (nr_switched) {
- 		wb_wakeup(new_wb);
- 		wb_put_many(old_wb, nr_switched);
- 	}
- 
-+	up_read(&bdi->wb_switch_rwsem);
-+
- 	for (inodep = isw->inodes; *inodep; inodep++)
- 		iput(*inodep);
- 	wb_put(new_wb);
-@@ -936,6 +936,11 @@ static long wb_split_bdi_pages(struct bdi_writeback *wb, long nr_pages)
-  * have dirty inodes.  If @base_work->nr_page isn't %LONG_MAX, it's
-  * distributed to the busy wbs according to each wb's proportion in the
-  * total active write bandwidth of @bdi.
-+ *
-+ * Called under &bdi->wb_switch_rwsem, otherwise bdi_split_work_to_wbs()
-+ * may race against cgwb (cgroup writeback) membership switches, which may
-+ * cause some inodes to fail to write back, or even trigger a null pointer
-+ * dereference using a freed wb.
-  */
- static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
- 				  struct wb_writeback_work *base_work,
-@@ -2637,8 +2642,11 @@ static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
- 		return;
- 	WARN_ON(!rwsem_is_locked(&sb->s_umount));
- 
-+	/* protect against inode wb switch, see inode_switch_wbs_work_fn() */
-+	bdi_down_write_wb_switch_rwsem(bdi);
- 	bdi_split_work_to_wbs(sb->s_bdi, &work, skip_if_busy);
- 	wb_wait_for_completion(&done);
-+	bdi_up_write_wb_switch_rwsem(bdi);
- }
- 
- /**
--- 
-2.31.1
-
+Acked-by: David Sterba <dsterba@suse.com>
