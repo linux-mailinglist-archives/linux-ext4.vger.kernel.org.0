@@ -2,46 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 942A76D8E03
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 05:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97926D8EC2
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 07:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbjDFDhb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 23:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
+        id S234846AbjDFFSr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Apr 2023 01:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbjDFDh2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 23:37:28 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01A7AA5;
-        Wed,  5 Apr 2023 20:37:27 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PsRt90MNrzSqlF;
-        Thu,  6 Apr 2023 11:33:37 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 6 Apr 2023 11:36:48 +0800
-Subject: Re: [PATCH] ubifs: remove unnecessary kobject_del()
-To:     Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.com>,
-        yangerkun <yangerkun@huawei.com>
-References: <20230405130747.66006-1-frank.li@vivo.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <828681d9-153f-2499-baa6-9a5e782be586@huawei.com>
-Date:   Thu, 6 Apr 2023 11:36:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        with ESMTP id S233007AbjDFFSq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Apr 2023 01:18:46 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F50B0
+        for <linux-ext4@vger.kernel.org>; Wed,  5 Apr 2023 22:18:44 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3365ISTw017297
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 Apr 2023 01:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1680758309; bh=bMh1mSJgCOHZluWx1RkIQocgEFB0N3X3uoQyct8sWjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=QjdoudQsfNHmhXGe2J+uKQzblHoUMUS4tQg1Xitwj/K4K05hLWUFxda+JiqGQw6p5
+         j+SBxqBcJUIo8StbfaKBlvygM/W9faMl/7+eURjfjzmWLfM5nrzchPfcILsWx7u1Bt
+         D0s9cq9PwI6TwWP0lIucdW5D1hTIqwIU1T/rxC1AnoA4JLLaLb7UwCSTxXEnCHEE1o
+         oXi4TxwAmb6GqVpvLc9eNO4wNrJhMctb8bC+QxU0ba0Q3HxfkCoAYUnDrcLOgWpGJF
+         JkcAIyGGiESF1gO4SonuidWw4EriVnQifRtL8M67qPe2+5qWQDU+2mQtOpBgWw5+2N
+         DGYoW3UcZbbdA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C0F2515C3ACE; Thu,  6 Apr 2023 01:18:27 -0400 (EDT)
+Date:   Thu, 6 Apr 2023 01:18:27 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 1/20] ext4: set goal start correctly in
+ ext4_mb_normalize_request
+Message-ID: <20230406051827.GA149620@mit.edu>
+References: <20230303172120.3800725-2-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
-In-Reply-To: <20230405130747.66006-1-frank.li@vivo.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230303172120.3800725-2-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_INVALID,DKIM_SIGNED,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,73 +52,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Yangtao
-> kobject_put() actually covers kobject removal automatically, which is
-> single stage removal. So it is safe to kill kobject_del() directly.
+On Sat, Mar 04, 2023 at 01:21:01AM +0800, Kemeng Shi wrote:
+> We need to set ac_g_ex to notify the goal start used in
+> ext4_mb_find_by_goal. Set ac_g_ex instead of ac_f_ex in
+> ext4_mb_normalize_request.
+> Besides we should assure goal start is in range [first_data_block,
+> blocks_count) as ext4_mb_initialize_context does.
 > 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > ---
->   fs/ubifs/sysfs.c | 1 -
->   1 file changed, 1 deletion(-)
+>  fs/ext4/mballoc.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
-> index 1c958148bb87..1ffdc3c9b340 100644
-> --- a/fs/ubifs/sysfs.c
-> +++ b/fs/ubifs/sysfs.c
-> @@ -130,7 +130,6 @@ int ubifs_sysfs_register(struct ubifs_info *c)
->   
->   void ubifs_sysfs_unregister(struct ubifs_info *c)
->   {
-> -	kobject_del(&c->kobj);
->   	kobject_put(&c->kobj);
->   	wait_for_completion(&c->kobj_unregister);
->   
-> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 5b2ae37a8b80..36cd545f5ab4 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3993,6 +3993,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  				struct ext4_allocation_request *ar)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+> +	struct ext4_super_block *es = sbi->s_es;
+>  	int bsbits, max;
+>  	ext4_lblk_t end;
+>  	loff_t size, start_off;
+> @@ -4188,18 +4189,20 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  	ac->ac_g_ex.fe_len = EXT4_NUM_B2C(sbi, size);
+>  
+>  	/* define goal start in order to merge */
+> -	if (ar->pright && (ar->lright == (start + size))) {
+> +	if (ar->pright && (ar->lright == (start + size)) &&
+> +	    ar->pright - size >= le32_to_cpu(es->s_first_data_block)) {
+>  		/* merge to the right */
 
-This patch looks harmless at the view of ubifs, kobject_cleanup() 
-finally invokes __kobject_del and releases parent just like 
-kobject_del() does. A difference is that the releasing sequence of 
-kobj's parent is put after releasing kobj.
+I had to ammend this commit to add this check:
 
-About the use case of kobject_del(), we may refer to other filesystems' 
-implementations, eg. ext4_put_super(). Firstly ext4_unregister_sysfs() 
-removes all sysfs interfaces, then jbd2_journal_destroy() destroys 
-sbi->s_journal, finally sbi->s_kobj is released. Here kobject_del() 
-stops user accessing sbi->s_journal by sysfs interface 
-journal_task£¬because sbi->s_journal will be released soon before 
-kobject_put().
+ 	/* define goal start in order to merge */
+ 	if (ar->pright && (ar->lright == (start + size)) &&
++	    ar->pright >= size &&
+ 	    ar->pright - size >= le32_to_cpu(es->s_first_data_block)) {
 
-I think we should still reserve the 'redundant' kobject_del(), removing 
-it won't bring any performance improvement.
+Without this check, it's possible for ar->pright - size to go negative
+(well, underflow since it's an unsigned value).  This will later
+trigger a BUG_ON, which was easily reproduced via:
 
-BTW, in ext4_put_super(), flush_stashed_error_work(which could access 
-sbi->s_kobj) is flushed after kobject removed. is it okay to replace 
-kobject_del(&sbi->s_kobj) with kobject_put(&sbi->s_kobj)?
+   kvm-xfstests -c ext4/ext3conv generic/231
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a22417d113ca..9e3744099d1e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1296,8 +1296,6 @@ static void ext4_put_super(struct super_block *sb)
-          * Now that we are completely done shutting down the
-          * superblock, we need to actually destroy the kobject.
-          */
--       kobject_put(&sbi->s_kobj);
--       wait_for_completion(&sbi->s_kobj_unregister);
-         if (sbi->s_chksum_driver)
-                 crypto_free_shash(sbi->s_chksum_driver);
-         kfree(sbi->s_blockgroup_lock);
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 12d6252e3e22..be92a09bb8a0 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -562,7 +562,8 @@ void ext4_unregister_sysfs(struct super_block *sb)
+Cheers,
 
-         if (sbi->s_proc)
-                 remove_proc_subtree(sb->s_id, ext4_proc_root);
--       kobject_del(&sbi->s_kobj);
-+       kobject_put(&sbi->s_kobj);
-+       wait_for_completion(&sbi->s_kobj_unregister);
-  }
-
-  int __init ext4_init_sysfs(void)
+							- Ted
