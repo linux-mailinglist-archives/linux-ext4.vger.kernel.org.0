@@ -2,88 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6D26D8DCC
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 04:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942A76D8E03
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Apr 2023 05:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbjDFC6p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Apr 2023 22:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
+        id S233501AbjDFDhb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Apr 2023 23:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjDFC6n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 22:58:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2285BA9;
-        Wed,  5 Apr 2023 19:58:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B800164174;
-        Thu,  6 Apr 2023 02:58:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D88EC433EF;
-        Thu,  6 Apr 2023 02:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680749921;
-        bh=AwNKZCoYNd9/YP0f3fwLMwmGowD98qoCr8vn5oD6464=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=sh8jz2Dhf+RNZdqkp2D3by0mDvHPrh5wn5Z3yWg7pHjeZq7R3N3tBIhDQQ5P2Sv94
-         bqmPUw+vKrz4LIbZ8t8xF2pjN9CUeFYEp8Z3sXtmZuIqPd4pRPcFCOAJioO6bS6QKC
-         X2v24E+ZiOI7+vHikKrwFJRGTG88wZgUFOrgdjGT36ejgGYCXp+LZ7T+/cKxirhjvO
-         HBUGAC3/rVWNpHCNvQPHxO4ltUMT4b12OdRcIaoA4/s7XEZiodPeuoKAqi6QN/4Av+
-         Nf6scwmZOUKHGNwSvUmAihxgtk0aqkG62/ZCIyks/lANllGyAFFJOelhSr1DUUk/mA
-         iA8NpGwLilr9Q==
-Date:   Wed, 05 Apr 2023 19:58:40 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_0/3=5D_lib/string=5Fhelpers_et?= =?US-ASCII?Q?_al=2E=3A_Change_return_value_of_strreplace=28=29?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZC2H8ODMwoO5hzZG@smile.fi.intel.com>
-References: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com> <ZC1454AwRUNFTbIW@smile.fi.intel.com> <2023040523-unworthy-uncured-1eab@gregkh> <ZC2H8ODMwoO5hzZG@smile.fi.intel.com>
-Message-ID: <47D8878A-1108-4AC3-BF7F-507F90F6970A@kernel.org>
+        with ESMTP id S233361AbjDFDh2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 5 Apr 2023 23:37:28 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01A7AA5;
+        Wed,  5 Apr 2023 20:37:27 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PsRt90MNrzSqlF;
+        Thu,  6 Apr 2023 11:33:37 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 6 Apr 2023 11:36:48 +0800
+Subject: Re: [PATCH] ubifs: remove unnecessary kobject_del()
+To:     Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.com>,
+        yangerkun <yangerkun@huawei.com>
+References: <20230405130747.66006-1-frank.li@vivo.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <828681d9-153f-2499-baa6-9a5e782be586@huawei.com>
+Date:   Thu, 6 Apr 2023 11:36:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230405130747.66006-1-frank.li@vivo.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On April 5, 2023 7:38:40 AM PDT, Andy Shevchenko <andriy=2Eshevchenko@linux=
-=2Eintel=2Ecom> wrote:
->On Wed, Apr 05, 2023 at 04:24:42PM +0200, Greg Kroah-Hartman wrote:
->> On Wed, Apr 05, 2023 at 04:34:31PM +0300, Andy Shevchenko wrote:
->> > On Thu, Mar 23, 2023 at 02:37:01PM +0200, Andy Shevchenko wrote:
->> > > It's more convenient to have strreplace() to return the pointer to
->> > >  the string itself=2E This will help users to make their code bette=
-r=2E
->> > >=20
->> > > The patch 1 kills the only user of the returned value of strreplace=
-(),
->> > > Patch 2 converts the return value of strreplace()=2E And patch 3 sh=
-ows
->> > > how it may be useful=2E That said, the series can be routed via fs =
-tree,
->> > > with or without the last patch=2E
->> >=20
->> > Since there are no comments, who can apply this (patches 1 and 2)?
->> > Greg, are you fine with the kobject change?
->>=20
->> Sure, want me to take them all through my driver-core tree?
->
->Fine by me! Dunno about others=2E Kees?
+Hi, Yangtao
+> kobject_put() actually covers kobject removal automatically, which is
+> single stage removal. So it is safe to kill kobject_del() directly.
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>   fs/ubifs/sysfs.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
+> index 1c958148bb87..1ffdc3c9b340 100644
+> --- a/fs/ubifs/sysfs.c
+> +++ b/fs/ubifs/sysfs.c
+> @@ -130,7 +130,6 @@ int ubifs_sysfs_register(struct ubifs_info *c)
+>   
+>   void ubifs_sysfs_unregister(struct ubifs_info *c)
+>   {
+> -	kobject_del(&c->kobj);
+>   	kobject_put(&c->kobj);
+>   	wait_for_completion(&c->kobj_unregister);
+>   
+> 
 
-Yeah, that's cool by me=2E :)
+This patch looks harmless at the view of ubifs, kobject_cleanup() 
+finally invokes __kobject_del and releases parent just like 
+kobject_del() does. A difference is that the releasing sequence of 
+kobj's parent is put after releasing kobj.
 
+About the use case of kobject_del(), we may refer to other filesystems' 
+implementations, eg. ext4_put_super(). Firstly ext4_unregister_sysfs() 
+removes all sysfs interfaces, then jbd2_journal_destroy() destroys 
+sbi->s_journal, finally sbi->s_kobj is released. Here kobject_del() 
+stops user accessing sbi->s_journal by sysfs interface 
+journal_task£¬because sbi->s_journal will be released soon before 
+kobject_put().
 
---=20
-Kees Cook
+I think we should still reserve the 'redundant' kobject_del(), removing 
+it won't bring any performance improvement.
+
+BTW, in ext4_put_super(), flush_stashed_error_work(which could access 
+sbi->s_kobj) is flushed after kobject removed. is it okay to replace 
+kobject_del(&sbi->s_kobj) with kobject_put(&sbi->s_kobj)?
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index a22417d113ca..9e3744099d1e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1296,8 +1296,6 @@ static void ext4_put_super(struct super_block *sb)
+          * Now that we are completely done shutting down the
+          * superblock, we need to actually destroy the kobject.
+          */
+-       kobject_put(&sbi->s_kobj);
+-       wait_for_completion(&sbi->s_kobj_unregister);
+         if (sbi->s_chksum_driver)
+                 crypto_free_shash(sbi->s_chksum_driver);
+         kfree(sbi->s_blockgroup_lock);
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 12d6252e3e22..be92a09bb8a0 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -562,7 +562,8 @@ void ext4_unregister_sysfs(struct super_block *sb)
+
+         if (sbi->s_proc)
+                 remove_proc_subtree(sb->s_id, ext4_proc_root);
+-       kobject_del(&sbi->s_kobj);
++       kobject_put(&sbi->s_kobj);
++       wait_for_completion(&sbi->s_kobj_unregister);
+  }
+
+  int __init ext4_init_sysfs(void)
