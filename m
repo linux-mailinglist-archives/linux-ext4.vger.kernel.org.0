@@ -2,112 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528426DB497
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Apr 2023 21:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDD86DB56A
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Apr 2023 22:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjDGT4s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Apr 2023 15:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        id S229697AbjDGUml (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Apr 2023 16:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbjDGT4r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Apr 2023 15:56:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA2EAD38;
-        Fri,  7 Apr 2023 12:56:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 584E565316;
-        Fri,  7 Apr 2023 19:56:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E35C433D2;
-        Fri,  7 Apr 2023 19:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680897397;
-        bh=/3ooAeWJ2heTTSe1+fowce2OJCbJkwMvCSSAiGy5dOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clCdqAdSzIuv2Nh0psGWcWmbbwrVRtKcUMCziwd5jIFOLppq8+hvEMy6JY4RJLPMp
-         x59uWAeV4ig4ih4U7jNLyVsnpfqrD7RpPe3yfp1MP72D2FoXdLnTk3xUAdXqNiTo76
-         7873hQHGayV2JBek9f5U/Qb89gRu184TbrlBQn0ysEteLtxdwRM5mb1J34RmFP0nuB
-         8OYIQ3NfXnHpi+fJ2/tbB2xh0PRWi+ynfmrw1NaYWHy7dBecQ4XC5MBSI2cP1pxqcR
-         lMdFOAY4ytF24DuMMy3hoLnO4nDVkkibtBGuHd2D5IXcvpFkh35CRNw0rf+xT87I1L
-         SBA+hcx/gQt+g==
-Date:   Fri, 7 Apr 2023 19:56:36 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrey Albershteyn <aalbersh@redhat.com>, dchinner@redhat.com,
-        hch@infradead.org, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
- blocksize != PAGE_SIZE
-Message-ID: <ZDB1dPVjon4Qthok@gmail.com>
-References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-22-aalbersh@redhat.com>
- <20230404163602.GC109974@frogsfrogsfrogs>
- <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
- <20230405163847.GG303486@frogsfrogsfrogs>
- <ZC264FSkDQidOQ4N@gmail.com>
- <20230405222646.GR3223426@dread.disaster.area>
- <ZC38DkQVPZBuZCZN@gmail.com>
- <20230405233753.GU3223426@dread.disaster.area>
- <20230406004434.GA879@sol.localdomain>
+        with ESMTP id S229586AbjDGUml (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Apr 2023 16:42:41 -0400
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18D01B5
+        for <linux-ext4@vger.kernel.org>; Fri,  7 Apr 2023 13:42:39 -0700 (PDT)
+Received: by mail-io1-f77.google.com with SMTP id c83-20020a6bb356000000b00758333e1ddfso26703423iof.14
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Apr 2023 13:42:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680900159; x=1683492159;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gQByD6ZheusKw4EUPL21I5e6W15h+91cn8nxJKCDnUQ=;
+        b=KRNHUau9zLQsRGGKUGeJZfT48FQc3t9+OxK2TTP9rLDsqEdtKj8KGLKLFVfkxsqzr6
+         4EGiSadU+VTwOusRusZck/EvS9ET3PgB/+asMripwuIhvIMFIz93MdKX49PfGWM2nwUF
+         OplmWNOi/Ee/HKj+yJpIChFpjxEd1YB0wszD1Y6kREogo8yFygF7mcz8+dyRmm9LAmrN
+         d9sYs24bmD5H7KhbxpEYu/fsE5mXWVazMrULFydAA97mNULcof1vTeyDKSQUeTY3aEOB
+         PTGLF6jHgYQd/SvCR3jEixK3NU23N2mfhLkuZUmRE7NcmalxkIKSzQhKuH18lG7p4xWc
+         quzQ==
+X-Gm-Message-State: AAQBX9eMyjiFBAvkKhXeStDvwg6SrVFK3ZpSYpREKFm4AgdAQs6smOPA
+        qvAGxTAF61ls8U6GCnRUd8sp8qn4WCk7i3YLVOqKK8y6Han2
+X-Google-Smtp-Source: AKy350ae+AUWLw4Mw5OZ5Dy4N02Ue1UkxOTTZAl5a+SgyBcLUo5wADk9Sfadd1r+b3mdAKf9kNhV0Mr44Q1jE5AaJugcyS1BFgHA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230406004434.GA879@sol.localdomain>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6602:1808:b0:752:fc52:a200 with SMTP id
+ t8-20020a056602180800b00752fc52a200mr1644029ioh.2.1680900159001; Fri, 07 Apr
+ 2023 13:42:39 -0700 (PDT)
+Date:   Fri, 07 Apr 2023 13:42:38 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e15c0905f8c5101b@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_multi_mount_protect
+From:   syzbot <syzbot+6b7df7d5506b32467149@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 05:44:36PM -0700, Eric Biggers wrote:
-> > Not vmalloc'ed, but vmapped. we allocate the pages individually, but
-> > then call vm_map_page() to present the higher level code with a
-> > single contiguous memory range if it is a multi-page buffer.
-> > 
-> > We do have the backing info held in the buffer, and that's what we
-> > use for IO. If fsverity needs a page based scatter/gather list
-> > for hardware offload, it could ask the filesystem to provide it
-> > for that given buffer...
-> > 
-> > > BTW, converting fs/verity/ from ahash to shash is an option; I've really never
-> > > been a fan of the scatterlist-based crypto APIs!  The disadvantage of doing
-> > > this, though, would be that it would remove support for all the hardware crypto
-> > > drivers.
-> > >
-> > > That *might* actually be okay, as that approach to crypto acceleration
-> > > has mostly fallen out of favor, in favor of CPU-based acceleration.  But I do
-> > > worry about e.g. someone coming out of the woodwork and saying they need to use
-> > > fsverity on a low-powered ARM board that has a crypto accelerator like CAAM, and
-> > > they MUST use their crypto accelerator to get acceptable performance.
-> > 
-> > True, but we are very unlikely to be using XFS on such small
-> > systems and I don't think we really care about XFS performance on
-> > android sized systems, either.
-> > 
-> 
-> FYI, I've sent an RFC patch that converts fs/verity/ from ahash to shash:
-> https://lore.kernel.org/r/20230406003714.94580-1-ebiggers@kernel.org
-> 
-> It would be great if we could do that.  But I need to get a better sense for
-> whether anyone will complain...
+Hello,
 
-FWIW, dm-verity went in the other direction.  It started with shash, and then in
-2017 it was switched to ahash by https://git.kernel.org/linus/d1ac3ff008fb9a48
-("dm verity: switch to using asynchronous hash crypto API").
+syzbot found the following issue on:
 
-I think that was part of my motivation for using ahash in fsverity from the
-beginning.
+HEAD commit:    f2afccfefe7b Merge tag 'net-6.3-rc6-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10094d79c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d3500b143c204867
+dashboard link: https://syzkaller.appspot.com/bug?extid=6b7df7d5506b32467149
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Still, it does seem that ahash is more trouble than it's worth these days...
+Unfortunately, I don't have any reproducer for this issue yet.
 
-- Eric
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a183ba13acb3/disk-f2afccfe.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ffdb9ee4cb62/vmlinux-f2afccfe.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8e8bbb25f0c1/bzImage-f2afccfe.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6b7df7d5506b32467149@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.3.0-rc5-syzkaller-00137-gf2afccfefe7b #0 Not tainted
+------------------------------------------------------
+syz-executor.3/27708 is trying to acquire lock:
+ffff888065700460 (sb_writers#4){.+.+}-{0:0}, at: ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:343
+
+but task is already holding lock:
+ffff8880657000e0 (&type->s_umount_key#31){++++}-{3:3}, at: vfs_fsconfig_locked fs/fsopen.c:253 [inline]
+ffff8880657000e0 (&type->s_umount_key#31){++++}-{3:3}, at: __do_sys_fsconfig+0xa30/0xc20 fs/fsopen.c:439
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&type->s_umount_key#31){++++}-{3:3}:
+       down_read+0x3d/0x50 kernel/locking/rwsem.c:1520
+       __do_sys_quotactl_fd+0x27e/0x3f0 fs/quota/quota.c:999
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (sb_writers#4){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3098 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+       validate_chain kernel/locking/lockdep.c:3832 [inline]
+       __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
+       lock_acquire kernel/locking/lockdep.c:5669 [inline]
+       lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1477 [inline]
+       sb_start_write include/linux/fs.h:1552 [inline]
+       write_mmp_block+0xc4/0x820 fs/ext4/mmp.c:50
+       ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:343
+       __ext4_remount fs/ext4/super.c:6543 [inline]
+       ext4_reconfigure+0x242b/0x2b60 fs/ext4/super.c:6642
+       reconfigure_super+0x40c/0xa30 fs/super.c:956
+       vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+       __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&type->s_umount_key#31);
+                               lock(sb_writers#4);
+                               lock(&type->s_umount_key#31);
+  lock(sb_writers#4);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.3/27708:
+ #0: ffff888078129070 (&fc->uapi_mutex){+.+.}-{3:3}, at: __do_sys_fsconfig+0x521/0xc20 fs/fsopen.c:437
+ #1: ffff8880657000e0 (&type->s_umount_key#31){++++}-{3:3}, at: vfs_fsconfig_locked fs/fsopen.c:253 [inline]
+ #1: ffff8880657000e0 (&type->s_umount_key#31){++++}-{3:3}, at: __do_sys_fsconfig+0xa30/0xc20 fs/fsopen.c:439
+
+stack backtrace:
+CPU: 0 PID: 27708 Comm: syz-executor.3 Not tainted 6.3.0-rc5-syzkaller-00137-gf2afccfefe7b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2178
+ check_prev_add kernel/locking/lockdep.c:3098 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+ validate_chain kernel/locking/lockdep.c:3832 [inline]
+ __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
+ lock_acquire kernel/locking/lockdep.c:5669 [inline]
+ lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1477 [inline]
+ sb_start_write include/linux/fs.h:1552 [inline]
+ write_mmp_block+0xc4/0x820 fs/ext4/mmp.c:50
+ ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:343
+ __ext4_remount fs/ext4/super.c:6543 [inline]
+ ext4_reconfigure+0x242b/0x2b60 fs/ext4/super.c:6642
+ reconfigure_super+0x40c/0xa30 fs/super.c:956
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4a4d08c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4a4dd13168 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffda RBX: 00007f4a4d1ac050 RCX: 00007f4a4d08c169
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000004
+RBP: 00007f4a4d0e7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc3d17db8f R14: 00007f4a4dd13300 R15: 0000000000022000
+ </TASK>
+EXT4-fs (loop3): re-mounted 00000000-0000-0000-0000-000000000000. Quota mode: writeback.
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
