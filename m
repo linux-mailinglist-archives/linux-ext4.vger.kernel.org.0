@@ -2,178 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F176DDD23
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 16:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0776E6DDD38
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 16:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbjDKOBl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 10:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
+        id S229609AbjDKOFZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 10:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjDKOBg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 10:01:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B0B4EDA;
-        Tue, 11 Apr 2023 07:01:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 47B646270A;
-        Tue, 11 Apr 2023 14:01:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA439C433EF;
-        Tue, 11 Apr 2023 14:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681221686;
-        bh=bh4S6Aaz0/IhrcgisyiKrZkqvR1FMBsHKNOalcM5KTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J96mmwfc22cFnqRer3iiimgMcd8ZJxl5kqeMIvCGmj7UZWOYW4QUV7XI/0NtwLjc2
-         TVdJj1huHkX4PJEVh7G/bZ0Rw9s6fvFHp1XqqACPyvRZkFcf2eEraW6V6Pg3hGFb58
-         EX4g6AMPpeRAUCJKhNQk7vIfOX8p6L7ztuzzRxUvQKeuZp12BUAXx4H/8ABaiHEJs8
-         LaVPyB0Jpl6n1icMA+f/7xlGzi/vnMNqYamEzZfK1qe+hG1kW3jYb9TInQsg5+b3Ih
-         MLK55Hf6ChOe49xqzdQE+EvhcgfmcpS9cbQ4B5bAXLKmoV8fwZReLOaqGtCaNAuXse
-         BDXMmpS3qqdoA==
-Date:   Tue, 11 Apr 2023 16:01:16 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     jack@suse.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com>,
-        syzbot <syzbot+aacb82fca60873422114@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [fs?] possible deadlock in quotactl_fd
-Message-ID: <20230411-skandal-global-379ddaf6e66a@brauner>
-References: <000000000000f1a9d205f909f327@google.com>
- <000000000000ee3a3005f909f30a@google.com>
- <20230411-sendung-apokalypse-05af1adb8889@brauner>
- <20230411105542.6dee4qf2tgt5scwx@quack3>
- <20230411-stich-tonart-8da033e58554@brauner>
+        with ESMTP id S229654AbjDKOFY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 10:05:24 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A287EE5B;
+        Tue, 11 Apr 2023 07:05:21 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PwnYq54W2zSrTf;
+        Tue, 11 Apr 2023 22:01:03 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 11 Apr 2023 22:04:58 +0800
+Message-ID: <6df9fd42-1b1b-746a-10aa-7bd64ec2ce76@huawei.com>
+Date:   Tue, 11 Apr 2023 22:04:58 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230411-stich-tonart-8da033e58554@brauner>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 2/2] ext4: use __GFP_NOFAIL if allocating
+ extents_status cannot fail
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20230406132834.1669710-1-libaokun1@huawei.com>
+ <20230406132834.1669710-3-libaokun1@huawei.com>
+ <20230411091957.wuwa7wii7pj35ua7@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230411091957.wuwa7wii7pj35ua7@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 03:40:25PM +0200, Christian Brauner wrote:
-> On Tue, Apr 11, 2023 at 12:55:42PM +0200, Jan Kara wrote:
-> > On Tue 11-04-23 12:11:52, Christian Brauner wrote:
-> > > On Mon, Apr 10, 2023 at 11:53:46PM -0700, syzbot wrote:
-> > > > Hello,
-> > > > 
-> > > > syzbot found the following issue on:
-> > > > 
-> > > > HEAD commit:    0d3eb744aed4 Merge tag 'urgent-rcu.2023.04.07a' of git://g..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11798e4bc80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c21559e740385326
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=cdcd444e4d3a256ada13
-> > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > > 
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > 
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/a02928003efa/disk-0d3eb744.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/7839447005a4/vmlinux-0d3eb744.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/d26ab3184148/bzImage-0d3eb744.xz
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com
-> > > > 
-> > > > ======================================================
-> > > > WARNING: possible circular locking dependency detected
-> > > > 6.3.0-rc6-syzkaller-00016-g0d3eb744aed4 #0 Not tainted
-> > > > ------------------------------------------------------
-> > > > syz-executor.3/11858 is trying to acquire lock:
-> > > > ffff88802a3bc0e0 (&type->s_umount_key#31){++++}-{3:3}, at: __do_sys_quotactl_fd+0x174/0x3f0 fs/quota/quota.c:997
-> > > > 
-> > > > but task is already holding lock:
-> > > > ffff88802a3bc460 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_quotactl_fd+0xd3/0x3f0 fs/quota/quota.c:990
-> > > > 
-> > > > which lock already depends on the new lock.
-> > > > 
-> > > > 
-> > > > the existing dependency chain (in reverse order) is:
-> > > > 
-> > > > -> #1 (sb_writers#4){.+.+}-{0:0}:
-> > > >        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-> > > >        __sb_start_write include/linux/fs.h:1477 [inline]
-> > > >        sb_start_write include/linux/fs.h:1552 [inline]
-> > > >        write_mmp_block+0xc4/0x820 fs/ext4/mmp.c:50
-> > > >        ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:343
-> > > >        __ext4_remount fs/ext4/super.c:6543 [inline]
-> > > >        ext4_reconfigure+0x242b/0x2b60 fs/ext4/super.c:6642
-> > > >        reconfigure_super+0x40c/0xa30 fs/super.c:956
-> > > >        vfs_fsconfig_locked fs/fsopen.c:254 [inline]
-> > > >        __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
-> > > >        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > > >        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> > > >        entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > > > 
-> > > > -> #0 (&type->s_umount_key#31){++++}-{3:3}:
-> > > >        check_prev_add kernel/locking/lockdep.c:3098 [inline]
-> > > >        check_prevs_add kernel/locking/lockdep.c:3217 [inline]
-> > > >        validate_chain kernel/locking/lockdep.c:3832 [inline]
-> > > >        __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
-> > > >        lock_acquire kernel/locking/lockdep.c:5669 [inline]
-> > > >        lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
-> > > >        down_write+0x92/0x200 kernel/locking/rwsem.c:1573
-> > > >        __do_sys_quotactl_fd+0x174/0x3f0 fs/quota/quota.c:997
-> > > >        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > > >        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> > > >        entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > > > 
-> > > > other info that might help us debug this:
-> > > > 
-> > > >  Possible unsafe locking scenario:
-> > > > 
-> > > >        CPU0                    CPU1
-> > > >        ----                    ----
-> > > >   lock(sb_writers#4);
-> > > >                                lock(&type->s_umount_key#31);
-> > > >                                lock(sb_writers#4);
-> > > >   lock(&type->s_umount_key#31);
-> > > > 
-> > > >  *** DEADLOCK ***
-> > > 
-> > > Hmkay, I understand how this happens, I think:
-> > > 
-> > > fsconfig(FSCONFIG_CMD_RECONFIGURE)                      quotactl_fd(Q_QUOTAON/Q_QUOTAOFF/Q_XQUOTAON/Q_XQUOTAOFF)
-> > > 							-> mnt_want_write(f.file->f_path.mnt);
-> > > -> down_write(&sb->s_umount);                              -> __sb_start_write(sb, SB_FREEZE_WRITE) 
-> > > -> reconfigure_super(fc);
-> > >    -> ext4_multi_mount_protect()
-> > >       -> __sb_start_write(sb, SB_FREEZE_WRITE)         -> down_write(&sb->s_umount);
-> > > -> up_write(&sb->s_umount);
-> > 
-> > Thanks for having a look!
-> > 
-> > > I have to step away from the computer now for a bit but naively it seem
-> > > that the locking order for quotactl_fd() should be the other way around.
-> > > 
-> > > But while I'm here, why does quotactl_fd() take mnt_want_write() but
-> > > quotactl() doesn't? It seems that if one needs to take it both need to
-> > > take it.
-> > 
-> > Couple of notes here:
-> > 
-> > 1) quotactl() handles the filesystem freezing by grabbing the s_umount
-> > semaphore, checking the superblock freeze state (it cannot change while
-> > s_umount is held) and proceeding if fs is not frozen. This logic is hidden
-> > in quotactl_block().
-> > 
-> > 2) The proper lock ordering is indeed freeze-protection -> s_umount because
-> > that is implicitely dictated by how filesystem freezing works. If you grab
-> 
-> Yep.
+On 2023/4/11 17:19, Jan Kara wrote:
+> On Thu 06-04-23 21:28:34, Baokun Li wrote:
+>> If extent status tree update fails, we have inconsistency between what is
+>> stored in the extent status tree and what is stored on disk. And that can
+>> cause even data corruption issues in some cases.
+>>
+>> In the extent status tree, we have extents which we can just drop without
+>> issues and extents we must not drop - this depends on the extent's status
+>> - currently ext4_es_is_delayed() extents must stay, others may be dropped.
+>>
+>> For extents that cannot be dropped we use __GFP_NOFAIL to allocate memory.
+>> A helper function is also added to help determine if the current extent can
+>> be dropped, although only ext4_es_is_delayed() extents cannot be dropped
+>> currently. In addition, with the above logic, the undo operation in
+>> __es_remove_extent that may cause inconsistency if the split extent fails
+>> is unnecessary, so we remove it as well.
+>>
+>> Suggested-by: Jan Kara <jack@suse.cz>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>> V1->V2:
+>> 	Add the patch 2 as suggested by Jan Kara.
+>>
+>>   fs/ext4/extents_status.c | 36 +++++++++++++++++++++++++++++-------
+>>   1 file changed, 29 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+>> index 7bc221038c6c..8eed17f35b11 100644
+>> --- a/fs/ext4/extents_status.c
+>> +++ b/fs/ext4/extents_status.c
+>> @@ -448,12 +448,29 @@ static void ext4_es_list_del(struct inode *inode)
+>>   	spin_unlock(&sbi->s_es_lock);
+>>   }
+>>   
+>> +/*
+>> + * Helper function to help determine if memory allocation for this
+>> + * extent_status is allowed to fail.
+>> + */
+>> +static inline bool ext4_es_alloc_should_nofail(struct extent_status *es)
+> I'd call this function ext4_es_must_keep() and also use it in
+> es_do_reclaim_extents() instead of ext4_es_is_delayed(). Do this as a
+> preparatory patch please.
 
-One final thought about this. quotactl() and quotactl_fd() could do the
-same thing though, right? quotactl() could just be made to use the same
-locking scheme as quotactl_fd(). Not saying it has to, but the code
-would probably be easier to understand/maintain if both would use the same.
+Totally agree! ext4_es_must_keep() is short and clear. It does make more 
+sense to
+replace ext4_es_is_delayed() in es_do_reclaim_extents() with the new 
+helper, I'll try
+to find out if there are any ext4_es_is_delayed() that need to be 
+replaced as well.
 
-Christian
+>> @@ -792,9 +809,16 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
+>>   	}
+>>   
+>>   	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
+>> -				  newes->es_pblk);
+>> -	if (!es)
+>> -		return -ENOMEM;
+>> +				  newes->es_pblk, 0);
+> I would just call this like:
+>
+> 	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
+> 				newes->es_pblk, ext4_es_must_keep(newes));
+>
+> to save the ifs below.
+
+Yes! It does get a little long-winded here.
+
+>
+>> +	if (!es) {
+>> +		/* Use GFP_NOFAIL if the allocation cannot fail. */
+>> +		if (ext4_es_alloc_should_nofail(newes))
+>> +			es = ext4_es_alloc_extent(inode, newes->es_lblk,
+>> +					newes->es_len, newes->es_pblk, 1);
+>> +		else
+>> +			return -ENOMEM;
+>> +	}
+>> +
+>>   	rb_link_node(&es->rb_node, parent, p);
+>>   	rb_insert_color(&es->rb_node, &tree->root);
+>>   
+>> @@ -1349,8 +1373,6 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   						    ext4_es_status(&orig_es));
+>>   			err = __es_insert_extent(inode, &newes);
+>>   			if (err) {
+>> -				es->es_lblk = orig_es.es_lblk;
+>> -				es->es_len = orig_es.es_len;
+>>   				if ((err == -ENOMEM) &&
+>>   				    __es_shrink(EXT4_SB(inode->i_sb),
+>>   							128, EXT4_I(inode)))
+> Also now __es_remove_extent() cannot fail (it will always remove what it
+> should, maybe more) so please just make it void function (as a separate
+> cleanup patch afterwards). Thanks!
+>
+> 								Honza
+Yes! Thank you very much for the review!
+I will send a patch V3 with the changes suggested by you.
+
+-- 
+With Best Regards,
+Baokun Li
+.
