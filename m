@@ -2,62 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0225B6DDF4C
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 17:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10C86DDF7E
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 17:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjDKPOT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 11:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
+        id S229737AbjDKPWR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 11:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjDKPNm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 11:13:42 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B49526C;
-        Tue, 11 Apr 2023 08:12:36 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id v9so13623453pjk.0;
-        Tue, 11 Apr 2023 08:12:36 -0700 (PDT)
+        with ESMTP id S229717AbjDKPWR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 11:22:17 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8355261;
+        Tue, 11 Apr 2023 08:21:41 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j8so6729705pjy.4;
+        Tue, 11 Apr 2023 08:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681225954; x=1683817954;
+        d=gmail.com; s=20210112; t=1681226490; x=1683818490;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=9o0AHkisQOv5tXi4eDVw+mqq4mAfpkhDRa5S3sXV+aI=;
-        b=C5n7WD7Tx+rIWnaesEt2bqaEUma73ExoLTIxbxrTjJQ63PMsQF26lv1ghrOl4kB3NU
-         SKmnroRrgJT8PLMeIiZURZp9zXzLuZNsNtn8K+gW7pen6QTbQT+5UJ6fIocEcuhuIaRx
-         02fKZonpTwpTp1CeFewx4AKaCw+cuM5kgVecYT/78Ug9N0hmqkh+Z3qM4i8L/d8mMLmm
-         lhUUvsauzPtBhlBDF9uAbky6gUEvmPUBVVlfzBZ1IcVRDgxLrEuIZ8paJCVXQ0zW1Ssr
-         JnMrewbgocXQpCeLrvNEoR/aIwqXXvgPKnFubepSi4ndDUwrXSM/D26GIIEf3okekO+g
-         svtQ==
+        bh=7lhq/v+qbsPhCdc8vPT1tzfkDyW/FEXRjLecDKzEEgU=;
+        b=GS17BeUpbmnej+XE4Fe6hg2h73OLk7WefDVYhpoIfFoAh7Lzl+FvhPf5or2SrdeVWp
+         DJ3EPczcKzSP9TNtU/TDHcybfek5yPeh/lUBa0lHLTvk13P/fbtw5HIgAkB21RHeMJ9j
+         Ewg2bMF1+LFjDhFdM5WFzJBazw7m09IaSZV1apKO6Y33zaZgxOm5sBa37n0Ywf2VPtXi
+         7MmERL/QE01gmcgu1fmfpLZGuahdN+btdS6f1mgKMr7dfvSWI7hjvwhI3IFiGFzp50eA
+         V67z5WB2tFEfeMaUVhHv7HDA8n5UBd8Qnj9TQ9Wnv3MNkSqTdoRggTjxG1u+/WUpGox5
+         WvIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681225954; x=1683817954;
+        d=1e100.net; s=20210112; t=1681226490; x=1683818490;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9o0AHkisQOv5tXi4eDVw+mqq4mAfpkhDRa5S3sXV+aI=;
-        b=qnVaW9n6fwuv0zFPkfqxBPbEjI8Q7JyuwYapmBq3y5vz/DZ3xO1tss7mzseLtvAr4S
-         m6coYRuRxeIknYCz5G/2NVWzUfogMwc9TXEyN7WfXagxrjJK5PdXNev6aD1fyqgc7/ol
-         rC9QMM4hOBbMHrlHjXqSS7P70Zy7sQkxWtEWwSA5lCzFuvVGxH3oh1LPB31GE4g+imjQ
-         /vNF3Z2Ka6W40Fysbz89JpUQKHYdYRiDqNpk31iQH1MQocpRRj7b4rOIf6Fc/7SpS9+6
-         nVrODru/VJorYZDOtiQWiAqvDBm+K9/70FvC/G3bEAxtIrzK4fevaKYgfOsnzN92b/N0
-         Fc5w==
-X-Gm-Message-State: AAQBX9ci2z+SXUxKevCqvVQUcyMFClPALnnvEf4UJGq465DleCxe+ddq
-        uv68E7rU0IM2RHqxwG0a868=
-X-Google-Smtp-Source: AKy350ZtODJN7e2H1oAUGzqGpa7+itB86r01WTnKUlsUTVsBRTPasEBrJqIolyQktsV41eO9T+7TmA==
-X-Received: by 2002:a17:902:fa8e:b0:1a6:4e86:6ca1 with SMTP id lc14-20020a170902fa8e00b001a64e866ca1mr2848132plb.9.1681225954165;
-        Tue, 11 Apr 2023 08:12:34 -0700 (PDT)
+        bh=7lhq/v+qbsPhCdc8vPT1tzfkDyW/FEXRjLecDKzEEgU=;
+        b=PivfDScD1LdmghxwltMRoelmSCefNlBiCzn1LToaGVWdF5nCCVsPkKdlcLie8Lb0Sg
+         2Xgp5LsBPSg1nCNy3bLdB+7PQQEJWLa+karUACDWpZmYadc6uSzdmNlRSPSPrntYburl
+         qifsjunIvkJGL57t1sjKUTsgeMSOpwIU8fdTUbvQZRYeEsf11Xe3F7qClFh2Jn5j22pP
+         z2PCdjmNLCaUIpjE8j6iVcygPZsl/iYx6qdAcBViZFFrb3Tsh7w6IddSMz8HegryXjtZ
+         6+N6nlJAjCiBrX/ud7Xmd1HXl7mwzBatYglwu+8ju5OS9+rcaVPLk9zcrLF1fzUwnu+G
+         /2CA==
+X-Gm-Message-State: AAQBX9crePuxPsZkvQ2c5wwdZWFXiSjyZn8XYMmPRbMQcbryg23qUzQt
+        q/CEK7UqodKzFHCS/t+fzp+M9luJT0o=
+X-Google-Smtp-Source: AKy350bpQbuo7Je/C80QZyADu/vZZK3hcRBcmHIOYoqaKCSCeKTZv1XQuv/La3HFGs9Z6axN0Lqflw==
+X-Received: by 2002:a17:902:d511:b0:1a1:b172:5428 with SMTP id b17-20020a170902d51100b001a1b1725428mr21686310plg.18.1681226490464;
+        Tue, 11 Apr 2023 08:21:30 -0700 (PDT)
 Received: from rh-tp ([2406:7400:63:7035:9095:349e:5f0b:ded0])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902d38400b001a651326089sm2109049pld.309.2023.04.11.08.12.31
+        by smtp.gmail.com with ESMTPSA id c16-20020a170902b69000b001a0742b0806sm9852218pls.108.2023.04.11.08.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 08:12:33 -0700 (PDT)
-Date:   Tue, 11 Apr 2023 20:42:28 +0530
-Message-Id: <87zg7ezc4j.fsf@doe.com>
+        Tue, 11 Apr 2023 08:21:30 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 20:51:24 +0530
+Message-Id: <87wn2izbpn.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
         "Darrick J . Wong" <djwong@kernel.org>,
         Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: [RFCv2 2/8] libfs: Add __generic_file_fsync_nolock implementation
-In-Reply-To: <ZDVTjX/ZtJZWkHyD@casper.infradead.org>
+Subject: Re: [RFCv2 5/8] ext2: Move direct-io to use iomap
+In-Reply-To: <ZDT0JFmwg/9ijdcv@infradead.org>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -68,38 +67,79 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+Christoph Hellwig <hch@infradead.org> writes:
 
-> On Mon, Apr 10, 2023 at 10:27:10PM -0700, Christoph Hellwig wrote:
->> On Tue, Apr 11, 2023 at 10:51:50AM +0530, Ritesh Harjani (IBM) wrote:
->> > +/**
->> > + * __generic_file_fsync_nolock - generic fsync implementation for simple
->> > + * filesystems with no inode lock
->>
->> No reallz need for the __ prefix in the name.
+> On Tue, Apr 11, 2023 at 10:51:53AM +0530, Ritesh Harjani (IBM) wrote:
+>> +extern void ext2_write_failed(struct address_space *mapping, loff_t to);
 >
-> It kind of makes sense though.
+> No need for the extern.
 >
-> generic_file_fsync does the flush
-> __generic_file_fsync doesn't do the flush
-> __generic_file_fsync_nolock doesn't do the flush and doesn't lock/unlock
 
-Yes.
+Sure will drop it.
+
+>> +	/* handle case for partial write and for fallback to buffered write */
+>> +	if (ret >= 0 && iov_iter_count(from)) {
+>> +		loff_t pos, endbyte;
+>> +		ssize_t status;
+>> +		int ret2;
+>> +
+>> +		iocb->ki_flags &= ~IOCB_DIRECT;
+>> +		pos = iocb->ki_pos;
+>> +		status = generic_perform_write(iocb, from);
+>> +		if (unlikely(status < 0)) {
+>> +			ret = status;
+>> +			goto out_unlock;
+>> +		}
+>> +
+>> +		iocb->ki_pos += status;
+>> +		ret += status;
+>> +		endbyte = pos + status - 1;
+>> +		ret2 = filemap_write_and_wait_range(inode->i_mapping, pos,
+>> +						    endbyte);
+>> +		if (!ret2)
+>> +			invalidate_mapping_pages(inode->i_mapping,
+>> +						 pos >> PAGE_SHIFT,
+>> +						 endbyte >> PAGE_SHIFT);
+>> +		if (ret > 0)
+>> +			generic_write_sync(iocb, ret);
+>> +	}
+>
+> Nit, but to me it would seem cleaner if all the fallback handling
+> was moved into a separate helper function.  Or in fact by not
+> using generic_file_write_iter even for buffered I/O and at doing
+> the pre-I/O checks and the final generic_write_sync in common code in
+> ext2 for direct and buffered I/O.
+>
+
+Make sense. However, since we are on the path to modify ext2 buffered-io
+code as well to move to iomap interface, I wouldn't bother too much as
+of now for this code as, all of this is going to go away anyways.
+
+
+>> +	/*
+>> +	 * For writes that could fill holes inside i_size on a
+>> +	 * DIO_SKIP_HOLES filesystem we forbid block creations: only
+>> +	 * overwrites are permitted.
+>> +	 */
+>> +	if ((flags & IOMAP_DIRECT) && (first_block << blkbits < i_size_read(inode)))
+>> +		create = 0;
+>
+> No need for braes around the < operation, but I think you might need
+> them around the shift.
+
+left-shift has a higher precedence. But let me make it more clear in
+next rev.
 
 >
->> > +extern int __generic_file_fsync_nolock(struct file *, loff_t, loff_t, int);
->>
->> No need for the extern.  And at least I personally prefer to spell out
->> the parameter names to make the prototype much more readable.
+> Also an overly long line here.
 >
-> Agreed, although I make an exception for the 'struct file *'.  Naming that
-> parameter adds no value, but a plain int is just obscene.
->
-> int __generic_file_fsync_nolock(struct file *, loff_t start, loff_t end,
-> 		bool datasync);
->
-> (yes, the other variants don't use a bool for datasync, but they should)
 
-Sure. Will make the change.
+Sure, will see to it.
+
+>> +	if ((flags & IOMAP_WRITE) && (offset + length > i_size_read(inode)))
+>
+> No need for the second set of inner braces here either.
+
+It's just avoids any confusion this way.
 
 -ritesh
