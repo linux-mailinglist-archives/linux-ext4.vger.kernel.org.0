@@ -2,79 +2,194 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F132E6DDAEA
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 14:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C046DDC58
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 15:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjDKMdY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 08:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S230025AbjDKNkb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 09:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjDKMdX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 08:33:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6952A2D6B;
-        Tue, 11 Apr 2023 05:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G1Acalzr88ZqqPHx98X1fWhGAgT2HLaxE6Li8jbXb70=; b=FlUh03J3Bp75ls7S0aE+bNLgK1
-        35UunEpUktNDfNJ+l6h7I2i8a2OQWOdmxIKBSDF+86J4CKMIjD9XZKSkqGk1uHAdr59iDuDVfHh1O
-        K4l55jpD7SOq5Z+HYQ9S2pxSwT/sXg2fgZf8mN5bCl1ZjjG/nwEV1hGwUoS+0u5NtzDKW7MRT7vw2
-        d6okRJoziYSGx+ICCPYRgK6S6LB0pjdhpBCqMak5I883N1qIdlxgJqYg9ZZC2SDDGAc+b29PUid/T
-        AYNXNlhHBg2k5S7XO/vtBMDJvb/VFpmjDzjffpdpgA8/xgqgxF5MsqmwuJz/h3UQQGMaw52k9ltyH
-        QcZyukyA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pmDBV-005tl6-F1; Tue, 11 Apr 2023 12:33:17 +0000
-Date:   Tue, 11 Apr 2023 13:33:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: [RFCv2 2/8] libfs: Add __generic_file_fsync_nolock implementation
-Message-ID: <ZDVTjX/ZtJZWkHyD@casper.infradead.org>
-References: <cover.1681188927.git.ritesh.list@gmail.com>
- <6fad2ec25bccbbb9b3effbd18c2d6d6965b9a33c.1681188927.git.ritesh.list@gmail.com>
- <ZDTvrmFR1/nXUqMl@infradead.org>
+        with ESMTP id S229854AbjDKNk2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 09:40:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A9F193;
+        Tue, 11 Apr 2023 06:40:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF96C62697;
+        Tue, 11 Apr 2023 13:40:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ECCAC433D2;
+        Tue, 11 Apr 2023 13:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681220425;
+        bh=SM+LW7qNdO+B8rDB+2YprziR2dW3y83RFqB+dq4C/Us=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bslgj2necammy2+qfFkERZ6Fhz65YMuBVdPL7y7XdW8TIy4wcs8f0Bw336x7EmwXi
+         /YkrkEG/6PO68q97yHBl03tE0mecBVDEnfAahipYNtLVuu+Y0jiap3TkhP01SYVmTU
+         o91/iiygAW2mMMRrFiB/woHKP+8TfiKs7IL3bxejsz8nIeWqxX7wjRCtr0ojhOXlSj
+         P2nxsM57C8KFxD/cWAaHzwydEltNCJQrdI+aYgIWwe+hsjzrGVl2hpMy1nqNKIJWXV
+         J7jhb0aYPJLwrkQGzfqeYCuLcN70U082EzpevZnq/5b2d9Ej51AYpZF7t/jUTpsQ0W
+         pMk8vhsjFLcbQ==
+Date:   Tue, 11 Apr 2023 15:40:19 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com>,
+        syzbot <syzbot+aacb82fca60873422114@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] [fs?] possible deadlock in quotactl_fd
+Message-ID: <20230411-stich-tonart-8da033e58554@brauner>
+References: <000000000000f1a9d205f909f327@google.com>
+ <000000000000ee3a3005f909f30a@google.com>
+ <20230411-sendung-apokalypse-05af1adb8889@brauner>
+ <20230411105542.6dee4qf2tgt5scwx@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZDTvrmFR1/nXUqMl@infradead.org>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230411105542.6dee4qf2tgt5scwx@quack3>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 10:27:10PM -0700, Christoph Hellwig wrote:
-> On Tue, Apr 11, 2023 at 10:51:50AM +0530, Ritesh Harjani (IBM) wrote:
-> > +/**
-> > + * __generic_file_fsync_nolock - generic fsync implementation for simple
-> > + * filesystems with no inode lock
+On Tue, Apr 11, 2023 at 12:55:42PM +0200, Jan Kara wrote:
+> On Tue 11-04-23 12:11:52, Christian Brauner wrote:
+> > On Mon, Apr 10, 2023 at 11:53:46PM -0700, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    0d3eb744aed4 Merge tag 'urgent-rcu.2023.04.07a' of git://g..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=11798e4bc80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c21559e740385326
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=cdcd444e4d3a256ada13
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > 
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > 
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/a02928003efa/disk-0d3eb744.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/7839447005a4/vmlinux-0d3eb744.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/d26ab3184148/bzImage-0d3eb744.xz
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com
+> > > 
+> > > ======================================================
+> > > WARNING: possible circular locking dependency detected
+> > > 6.3.0-rc6-syzkaller-00016-g0d3eb744aed4 #0 Not tainted
+> > > ------------------------------------------------------
+> > > syz-executor.3/11858 is trying to acquire lock:
+> > > ffff88802a3bc0e0 (&type->s_umount_key#31){++++}-{3:3}, at: __do_sys_quotactl_fd+0x174/0x3f0 fs/quota/quota.c:997
+> > > 
+> > > but task is already holding lock:
+> > > ffff88802a3bc460 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_quotactl_fd+0xd3/0x3f0 fs/quota/quota.c:990
+> > > 
+> > > which lock already depends on the new lock.
+> > > 
+> > > 
+> > > the existing dependency chain (in reverse order) is:
+> > > 
+> > > -> #1 (sb_writers#4){.+.+}-{0:0}:
+> > >        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+> > >        __sb_start_write include/linux/fs.h:1477 [inline]
+> > >        sb_start_write include/linux/fs.h:1552 [inline]
+> > >        write_mmp_block+0xc4/0x820 fs/ext4/mmp.c:50
+> > >        ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:343
+> > >        __ext4_remount fs/ext4/super.c:6543 [inline]
+> > >        ext4_reconfigure+0x242b/0x2b60 fs/ext4/super.c:6642
+> > >        reconfigure_super+0x40c/0xa30 fs/super.c:956
+> > >        vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+> > >        __do_sys_fsconfig+0xa3a/0xc20 fs/fsopen.c:439
+> > >        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> > >        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > 
+> > > -> #0 (&type->s_umount_key#31){++++}-{3:3}:
+> > >        check_prev_add kernel/locking/lockdep.c:3098 [inline]
+> > >        check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+> > >        validate_chain kernel/locking/lockdep.c:3832 [inline]
+> > >        __lock_acquire+0x2ec7/0x5d40 kernel/locking/lockdep.c:5056
+> > >        lock_acquire kernel/locking/lockdep.c:5669 [inline]
+> > >        lock_acquire+0x1af/0x520 kernel/locking/lockdep.c:5634
+> > >        down_write+0x92/0x200 kernel/locking/rwsem.c:1573
+> > >        __do_sys_quotactl_fd+0x174/0x3f0 fs/quota/quota.c:997
+> > >        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> > >        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > 
+> > > other info that might help us debug this:
+> > > 
+> > >  Possible unsafe locking scenario:
+> > > 
+> > >        CPU0                    CPU1
+> > >        ----                    ----
+> > >   lock(sb_writers#4);
+> > >                                lock(&type->s_umount_key#31);
+> > >                                lock(sb_writers#4);
+> > >   lock(&type->s_umount_key#31);
+> > > 
+> > >  *** DEADLOCK ***
+> > 
+> > Hmkay, I understand how this happens, I think:
+> > 
+> > fsconfig(FSCONFIG_CMD_RECONFIGURE)                      quotactl_fd(Q_QUOTAON/Q_QUOTAOFF/Q_XQUOTAON/Q_XQUOTAOFF)
+> > 							-> mnt_want_write(f.file->f_path.mnt);
+> > -> down_write(&sb->s_umount);                              -> __sb_start_write(sb, SB_FREEZE_WRITE) 
+> > -> reconfigure_super(fc);
+> >    -> ext4_multi_mount_protect()
+> >       -> __sb_start_write(sb, SB_FREEZE_WRITE)         -> down_write(&sb->s_umount);
+> > -> up_write(&sb->s_umount);
 > 
-> No reallz need for the __ prefix in the name.
-
-It kind of makes sense though.
-
-generic_file_fsync does the flush
-__generic_file_fsync doesn't do the flush
-__generic_file_fsync_nolock doesn't do the flush and doesn't lock/unlock
-
-> > +extern int __generic_file_fsync_nolock(struct file *, loff_t, loff_t, int);
+> Thanks for having a look!
 > 
-> No need for the extern.  And at least I personally prefer to spell out
-> the parameter names to make the prototype much more readable.
+> > I have to step away from the computer now for a bit but naively it seem
+> > that the locking order for quotactl_fd() should be the other way around.
+> > 
+> > But while I'm here, why does quotactl_fd() take mnt_want_write() but
+> > quotactl() doesn't? It seems that if one needs to take it both need to
+> > take it.
+> 
+> Couple of notes here:
+> 
+> 1) quotactl() handles the filesystem freezing by grabbing the s_umount
+> semaphore, checking the superblock freeze state (it cannot change while
+> s_umount is held) and proceeding if fs is not frozen. This logic is hidden
+> in quotactl_block().
+> 
+> 2) The proper lock ordering is indeed freeze-protection -> s_umount because
+> that is implicitely dictated by how filesystem freezing works. If you grab
 
-Agreed, although I make an exception for the 'struct file *'.  Naming that
-parameter adds no value, but a plain int is just obscene.
+Yep.
 
-int __generic_file_fsync_nolock(struct file *, loff_t start, loff_t end,
-		bool datasync);
+> s_umount and then try to grab freeze protection, you may effectively wait
+> for fs to get unfrozen which cannot happen while s_umount is held as
+> thaw_super() needs to grab it.
 
-(yes, the other variants don't use a bool for datasync, but they should)
+Yep.
+
+> 
+> 3) Hence this could be viewed as ext4 bug that it tries to grab freeze
+> protection from remount path. *But* reconfigure_super() actually has:
+> 
+> 	if (sb->s_writers.frozen != SB_UNFROZEN)
+> 		return -EBUSY;
+
+And user_get_super() grabs sb->s_umount which means it's not racy to
+check for SB_UNFROZEN. I missed that rushing out the door. :)
+
+> 
+> so even ext4 is in fact safe because the filesystem is guaranteed to not be
+> frozen during remount. But still we should probably tweak the ext4 code to
+> avoid this lockdep warning...
+
+Thanks for that!
+
+Christian
