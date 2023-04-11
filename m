@@ -2,161 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB486DD674
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE87D6DD7D4
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 12:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjDKJUC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 05:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
+        id S229578AbjDKKZe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 06:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjDKJUB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 05:20:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDFE1BD5;
-        Tue, 11 Apr 2023 02:19:59 -0700 (PDT)
+        with ESMTP id S229504AbjDKKZe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 06:25:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123B2A9;
+        Tue, 11 Apr 2023 03:25:33 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8BE601FDE9;
-        Tue, 11 Apr 2023 09:19:58 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B859E1FDDF;
+        Tue, 11 Apr 2023 10:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681204798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1681208731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9x2PP7g3qikWCl7Lm0S7Kg1LeW9kRdgJ7wxd8BEP+WA=;
-        b=ZkSyf6HWrFO7u2blhYjirwDKgUAzYkmGNXlK6Z3USIR2DZM5irMiI46wHDR1rKtcU7QX6y
-        CRW0glLXNXzEQ0+1iKvYTnI70Wiz7zNRxK9MzLDZjU7EqV2zwz11MHvAyTV8o+R6b3+7Gh
-        1kO/W3zR5kcAmbeSCXjre/Q3QAkqtU0=
+        bh=XE42yeO9Fwjo78eoc1CzQG0kqmd7Ls/r5eYFNrVSovI=;
+        b=DqTRuYYbfaBC/WVo4d/D2GAUzPwhztc+mOVIEWOesTdRqefHHJ6Xl7My6KmJPJ8TQyPJhi
+        NaTfR0yRXJK17DCo6rLQHYHOBKW6LJb2HCK4XJgZTq7uP1qjq/W/7JWJdShJmvYRNKRQCp
+        hvmb1aZWwPv1eVWDFUB3/WYpm99Oves=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681204798;
+        s=susede2_ed25519; t=1681208731;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9x2PP7g3qikWCl7Lm0S7Kg1LeW9kRdgJ7wxd8BEP+WA=;
-        b=4sSOGhLuEEzXG3CXu1wcYUV2XNdnB9SOHDdWBEo2nkpVHTj3ViuGiL0MUTHl2yF9M9Kw9S
-        j1C6lKqSmpWazwDg==
+        bh=XE42yeO9Fwjo78eoc1CzQG0kqmd7Ls/r5eYFNrVSovI=;
+        b=djAuxYikuJcRGa1C48u0m1G+T7fmGE3RsigGf37v5c58N+Z/l83ayB0S1bQFti3fUK76nQ
+        hrVeTit1UljDe9AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D1EE13519;
-        Tue, 11 Apr 2023 09:19:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 768AF13638;
+        Tue, 11 Apr 2023 10:25:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id amB/Hj4mNWTbJAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 11 Apr 2023 09:19:58 +0000
+        id L7DsHJs1NWQ5SQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 11 Apr 2023 10:25:31 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 03F76A0732; Tue, 11 Apr 2023 11:19:57 +0200 (CEST)
-Date:   Tue, 11 Apr 2023 11:19:57 +0200
+        id 5BBB1A0732; Tue, 11 Apr 2023 12:25:30 +0200 (CEST)
+Date:   Tue, 11 Apr 2023 12:25:30 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 2/2] ext4: use __GFP_NOFAIL if allocating
- extents_status cannot fail
-Message-ID: <20230411091957.wuwa7wii7pj35ua7@quack3>
-References: <20230406132834.1669710-1-libaokun1@huawei.com>
- <20230406132834.1669710-3-libaokun1@huawei.com>
+To:     Guoqing Cai <u202112087@hust.edu.cn>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        HUST OS Kernel Contribution 
+        <hust-os-kernel-patches@googlegroups.com>,
+        Dongliang Mu <dzm91@hust.edu.cn>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: jbd2: fix an incorrect warn log
+Message-ID: <20230411102530.qfgmxh33azztpxz5@quack3>
+References: <20230410172039.1752440-1-u202112087@hust.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230406132834.1669710-3-libaokun1@huawei.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230410172039.1752440-1-u202112087@hust.edu.cn>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 06-04-23 21:28:34, Baokun Li wrote:
-> If extent status tree update fails, we have inconsistency between what is
-> stored in the extent status tree and what is stored on disk. And that can
-> cause even data corruption issues in some cases.
+On Tue 11-04-23 01:20:38, Guoqing Cai wrote:
+> In jbd2_journal_load(), when journal_reset fails, it prints an incorrect
+> warn log.
 > 
-> In the extent status tree, we have extents which we can just drop without
-> issues and extents we must not drop - this depends on the extent's status
-> - currently ext4_es_is_delayed() extents must stay, others may be dropped.
+> Fix this by changing the goto statement to return statement.
 > 
-> For extents that cannot be dropped we use __GFP_NOFAIL to allocate memory.
-> A helper function is also added to help determine if the current extent can
-> be dropped, although only ext4_es_is_delayed() extents cannot be dropped
-> currently. In addition, with the above logic, the undo operation in
-> __es_remove_extent that may cause inconsistency if the split extent fails
-> is unnecessary, so we remove it as well.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> V1->V2:
-> 	Add the patch 2 as suggested by Jan Kara.
-> 
->  fs/ext4/extents_status.c | 36 +++++++++++++++++++++++++++++-------
->  1 file changed, 29 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index 7bc221038c6c..8eed17f35b11 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -448,12 +448,29 @@ static void ext4_es_list_del(struct inode *inode)
->  	spin_unlock(&sbi->s_es_lock);
->  }
+> Signed-off-by: Guoqing Cai <u202112087@hust.edu.cn>
+> Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+
+...
+
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index e80c781731f8..555f09ca1d99 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2082,8 +2082,10 @@ int jbd2_journal_load(journal_t *journal)
 >  
-> +/*
-> + * Helper function to help determine if memory allocation for this
-> + * extent_status is allowed to fail.
-> + */
-> +static inline bool ext4_es_alloc_should_nofail(struct extent_status *es)
-
-I'd call this function ext4_es_must_keep() and also use it in
-es_do_reclaim_extents() instead of ext4_es_is_delayed(). Do this as a
-preparatory patch please.
-
-> @@ -792,9 +809,16 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
->  	}
->  
->  	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
-> -				  newes->es_pblk);
-> -	if (!es)
-> -		return -ENOMEM;
-> +				  newes->es_pblk, 0);
-
-I would just call this like:
-
-	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
-				newes->es_pblk, ext4_es_must_keep(newes));
-
-to save the ifs below.
-
-> +	if (!es) {
-> +		/* Use GFP_NOFAIL if the allocation cannot fail. */
-> +		if (ext4_es_alloc_should_nofail(newes))
-> +			es = ext4_es_alloc_extent(inode, newes->es_lblk,
-> +					newes->es_len, newes->es_pblk, 1);
-> +		else
-> +			return -ENOMEM;
+>  	/* Let the recovery code check whether it needs to recover any
+>  	 * data from the journal. */
+> -	if (jbd2_journal_recover(journal))
+> -		goto recovery_error;
+> +	if (jbd2_journal_recover(journal)) {
+> +		printk(KERN_WARNING "JBD2: recovery failed\n");
+> +		return -EIO;
 > +	}
-> +
->  	rb_link_node(&es->rb_node, parent, p);
->  	rb_insert_color(&es->rb_node, &tree->root);
 >  
-> @@ -1349,8 +1373,6 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->  						    ext4_es_status(&orig_es));
->  			err = __es_insert_extent(inode, &newes);
->  			if (err) {
-> -				es->es_lblk = orig_es.es_lblk;
-> -				es->es_len = orig_es.es_len;
->  				if ((err == -ENOMEM) &&
->  				    __es_shrink(EXT4_SB(inode->i_sb),
->  							128, EXT4_I(inode)))
+>  	if (journal->j_failed_commit) {
+>  		printk(KERN_ERR "JBD2: journal transaction %u on %s "
+> @@ -2101,14 +2103,10 @@ int jbd2_journal_load(journal_t *journal)
+>  	 * reinitialise the dynamic contents of the superblock in memory
+>  	 * and reset them on disk. */
+>  	if (journal_reset(journal))
+> -		goto recovery_error;
+> +		return -EIO;
 
-Also now __es_remove_extent() cannot fail (it will always remove what it
-should, maybe more) so please just make it void function (as a separate
-cleanup patch afterwards). Thanks!
+So when you touch this code it would make more sense to actually return the
+error returned by journal_reset() - that is most definitely not going to be
+EIO but most likely ENOMEM.
 
 								Honza
 -- 
