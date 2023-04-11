@@ -2,56 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5FA6DD110
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 06:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB52C6DD159
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 07:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjDKEky convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 11 Apr 2023 00:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S229605AbjDKFCG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 01:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjDKEkx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 00:40:53 -0400
-X-Greylist: delayed 23768 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Apr 2023 21:40:51 PDT
-Received: from zimbra-dc.paul-scerri.ch (dc.paul-scerri.ch [62.220.130.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7041708;
-        Mon, 10 Apr 2023 21:40:51 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTP id 765715E2C87;
-        Mon, 10 Apr 2023 22:09:41 +0200 (CEST)
-Received: from zimbra-dc.paul-scerri.ch ([127.0.0.1])
-        by localhost (zimbra-dc.paul-scerri.ch [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4N1rggO2H8MZ; Mon, 10 Apr 2023 22:09:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTP id 801FA59387C;
-        Mon, 10 Apr 2023 21:56:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at zimbra-dc.paul-scerri.ch
-Received: from zimbra-dc.paul-scerri.ch ([127.0.0.1])
-        by localhost (zimbra-dc.paul-scerri.ch [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2p4mzTMSQK-s; Mon, 10 Apr 2023 21:56:56 +0200 (CEST)
-Received: from [185.169.4.108] (unknown [185.169.4.108])
-        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTPSA id 025FB5E2276;
-        Mon, 10 Apr 2023 21:34:30 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229692AbjDKFCF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 01:02:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F8E199F;
+        Mon, 10 Apr 2023 22:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KBhNfUOcD8iQz+TMuW2IJQH6CYVeRvhGPDElxngGpyE=; b=SuYCXB7pkcbxWbG1OHBZx7juNA
+        pku0+MY68aN+S95h6lBSIC3+WUupYPcZ/eHTEqYAFMoLUQnYO8MeMYSbBdMCyQylUcDHHLHcmIXd7
+        e5NqbRZSQB0gMOfbiVnUErygHRgsOtoOGaC/2EcI+J1zpIrNhA2wJV2TkXNBC4tU7LeHeSTqUrrZO
+        VIlNf2JBzbM+1SJ8Gb7TZBAgltRuPGZead5QKLPM2er7apLZLYmpxUY511LIx0AYMvAIJ3J+L1juU
+        k1OlPAFQtvgOTFojCSEo3+oOplG9rBmr5OVIw9zq4j1KxjAJOgfkDHNzOUYwe4/ft+nr670+zJOBn
+        JIilyNgg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pm68l-00GQYB-0D;
+        Tue, 11 Apr 2023 05:01:59 +0000
+Date:   Mon, 10 Apr 2023 22:01:59 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fsverity@lists.linux.dev, linux-crypto@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH] fsverity: use shash API instead of ahash API
+Message-ID: <ZDTpx15RX/64lbjY@infradead.org>
+References: <20230406003714.94580-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Re
-To:     Recipients <wiki@paul-scerri.ch>
-From:   "Maria-Elisabeth Schaeffler" <wiki@paul-scerri.ch>
-Date:   Mon, 10 Apr 2023 12:34:29 -0700
-Reply-To: mariaelisabeths457@gmail.com
-Message-Id: <20230410193432.025FB5E2276@zimbra-dc.paul-scerri.ch>
-X-Spam-Status: No, score=2.8 required=5.0 tests=FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230406003714.94580-1-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Your email account has been selected for a donation of €1,700,000. Please contact for more information.
+On Wed, Apr 05, 2023 at 05:37:14PM -0700, Eric Biggers wrote:
+> Therefore, let's convert fs/verity/ from ahash to shash.  This
+> simplifies the code, and it should also slightly improve performance for
+> everyone who wasn't actually using one of these ahash-only crypto
+> accelerators, i.e. almost everyone (or maybe even everyone)!
 
-Mrs Maria Elisabeth Schaeffler
-CEO SCHAEFFLER.
+This looks like a very nice cleanup to me.  So unless someone really
+uses async crypto offload heavily for fsverity and can come up with
+a convincing argument for that, I'm all for the change.
