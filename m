@@ -2,66 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5E16DDE07
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 16:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673846DDF22
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 17:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjDKOeh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 10:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        id S230420AbjDKPL7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 11:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjDKOeg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 10:34:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4069010EF;
-        Tue, 11 Apr 2023 07:34:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CEF9A61F8E;
-        Tue, 11 Apr 2023 14:34:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E95FC433EF;
-        Tue, 11 Apr 2023 14:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681223674;
-        bh=MY2Jh2ITaK90WSjyGrpw+XZfnUrc7i6nbRmq+ixgu40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IeN1E/1X0dvMq0QlS96yiT76N/NHakRk0ac4VX/XbHJN96waYJMzH48pIvAxyVl1d
-         susg/zQNz1gsMa5G9MKdOmBu19rVJ2tIn5wD7rDQ5HatAyDV3eNRTeORW2UXF1C2cX
-         mVWueDavvFSLGe15SW8YPyllXmIqsHDwRXWI4ZCHYTOqyeGdevy8EbfgztvVvPh28w
-         MyYhUrl8g/YuKNEray30HzKAgfK/NSn4LlxM9gVEDpxl8X1dSsbj4qolrZxePBfE03
-         Lm3da3rYvWU6uaithuRR9oswFKZjQ0f2kv/ScJ5qFPmgkZulhBsIZMvKbwgUM9XJKk
-         iA4ilPw5HjUUQ==
-Date:   Tue, 11 Apr 2023 07:34:33 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        with ESMTP id S230303AbjDKPLp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 11:11:45 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6DC5FF6;
+        Tue, 11 Apr 2023 08:11:21 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1a5126f2518so9416935ad.1;
+        Tue, 11 Apr 2023 08:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1681225875; x=1683817875;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cYdbMuKbz2AWVUScgphBvlBfR6VPMC0L/y0+Ihsi3Ws=;
+        b=Fz9yxGUtAqYWwZoV66Jroc9oyeqPRW7okN4pQyQHzPd//qxBXw5inRz7Hy3P6NAOvD
+         m6ViDBiuN1KQ4E9O7p0NsAKW/MSZMNi3svzg4+1icSwrwNjirCzj3qVdfqINyjS4gyMh
+         GOlJIODlDEEt6ECHHo5cM/dYxjkxA01I8M599pv1eGJmwAqYmetZrHOn8Ek/hGTJMs2B
+         zAz2YMkBDeh6I/3oWC9lQImohOQwbndZi30VxOcnTF7/j1HfImsD/fTMuNUPcSd/HFkV
+         dCxpwtmNBs/iR+8a3jaNxog1dEeUourlWa1FMXK3f9lJA0AwouDFuw5w5d0KePqeBrLX
+         ZgqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681225875; x=1683817875;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cYdbMuKbz2AWVUScgphBvlBfR6VPMC0L/y0+Ihsi3Ws=;
+        b=Oo4RcoKZz2KiFIl/loSby4sEu4ffhyYau6USE6qYj6O9xqff3O/N56w6wFrXeBoWm9
+         oZkQgQrn2m9xnNP5TvVubbEp3ZyHMoBio/IN3/TIab7S4LTN7XD+0Pnimu8z3DnGp/a5
+         lm01aavX0qpLLEojBa/C1ul5NLfW/RI11/jgZVaoZRbhwZCmthRmm3FNM5H8IQ2cz6fN
+         OZAZ2TB/JOWg7+qiUU4VFJjFV3OuTC+sGtGxlfYppnDmWLpYUObIvL5FDzfzhepzrj12
+         vMBwmcut1dfQLxxjRWqQjpwO2+GhdqWaqBtlSM/7QREiagkC0LvR04toxaQA9hcXoalb
+         n36w==
+X-Gm-Message-State: AAQBX9eq//7VGzmOGDZs7M4JIIh44nIUHRoEZr8qZgth4xChad0R6kBt
+        qAx6FA8jpaeG078zcEQm43puQQXnhjE=
+X-Google-Smtp-Source: AKy350Z5uHRbQ0byiW6hiy6//aERhKWCe2CUS8vdFslnFpiZr0PWNKRSp3YddYPUkkh4uPgRN4J1uQ==
+X-Received: by 2002:aa7:9adc:0:b0:625:e77b:93b2 with SMTP id x28-20020aa79adc000000b00625e77b93b2mr3497506pfp.5.1681225875463;
+        Tue, 11 Apr 2023 08:11:15 -0700 (PDT)
+Received: from rh-tp ([2406:7400:63:7035:9095:349e:5f0b:ded0])
+        by smtp.gmail.com with ESMTPSA id c4-20020aa781c4000000b0062d859a33d1sm9899007pfn.84.2023.04.11.08.11.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Apr 2023 08:11:15 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 20:41:05 +0530
+Message-Id: <8735561mk6.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         Jan Kara <jack@suse.cz>, Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Subject: Re: [RFCv2 8/8] ext2: Add direct-io trace points
-Message-ID: <20230411143433.GE360895@frogsfrogsfrogs>
-References: <cover.1681188927.git.ritesh.list@gmail.com>
- <f9825fab612761bee205046ce6e6e4caf25642ee.1681188927.git.ritesh.list@gmail.com>
- <ZDTyXr6EB+pEgS1G@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZDTyXr6EB+pEgS1G@infradead.org>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230411143433.GE360895@frogsfrogsfrogs>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 10:38:38PM -0700, Christoph Hellwig wrote:
-> On Tue, Apr 11, 2023 at 10:51:56AM +0530, Ritesh Harjani (IBM) wrote:
-> > This patch adds the trace point to ext2 direct-io apis
-> > in fs/ext2/file.c
-> 
-> Wouldn't it make more sense to add this to iomap instead?
+"Darrick J. Wong" <djwong@kernel.org> writes:
 
-Yes please. :)
+> On Mon, Apr 10, 2023 at 10:38:38PM -0700, Christoph Hellwig wrote:
+>> On Tue, Apr 11, 2023 at 10:51:56AM +0530, Ritesh Harjani (IBM) wrote:
+>> > This patch adds the trace point to ext2 direct-io apis
+>> > in fs/ext2/file.c
+>>
+>> Wouldn't it make more sense to add this to iomap instead?
+>
+> Yes please. :)
 
---D
+Sure. Let me also add a trace event for iomap DIO as well in the next revision.
+However I would like to keep ext2 dio trace point as is :)
+
+-ritesh
