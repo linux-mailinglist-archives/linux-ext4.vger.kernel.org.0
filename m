@@ -2,32 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0776E6DDD38
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 16:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA136DDD54
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 16:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjDKOFZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 10:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        id S229477AbjDKOLI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 10:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjDKOFY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 10:05:24 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A287EE5B;
-        Tue, 11 Apr 2023 07:05:21 -0700 (PDT)
+        with ESMTP id S230274AbjDKOLF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 10:11:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39094C1C;
+        Tue, 11 Apr 2023 07:10:52 -0700 (PDT)
 Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PwnYq54W2zSrTf;
-        Tue, 11 Apr 2023 22:01:03 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PwnlX3wbZzrZn5;
+        Tue, 11 Apr 2023 22:09:28 +0800 (CST)
 Received: from [10.174.177.174] (10.174.177.174) by
  dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 11 Apr 2023 22:04:58 +0800
-Message-ID: <6df9fd42-1b1b-746a-10aa-7bd64ec2ce76@huawei.com>
-Date:   Tue, 11 Apr 2023 22:04:58 +0800
+ 15.1.2507.23; Tue, 11 Apr 2023 22:10:50 +0800
+Message-ID: <c42cda34-9a4b-155a-6a62-32afbe8f86f8@huawei.com>
+Date:   Tue, 11 Apr 2023 22:10:50 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.1.2
-Subject: Re: [PATCH v2 2/2] ext4: use __GFP_NOFAIL if allocating
- extents_status cannot fail
+Subject: Re: [PATCH v2 1/2] ext4: only update i_reserved_data_blocks on
+ successful block allocation
 Content-Language: en-US
 To:     Jan Kara <jack@suse.cz>
 CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
@@ -36,14 +36,14 @@ CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
         <yangerkun@huawei.com>, <yukuai3@huawei.com>,
         Baokun Li <libaokun1@huawei.com>
 References: <20230406132834.1669710-1-libaokun1@huawei.com>
- <20230406132834.1669710-3-libaokun1@huawei.com>
- <20230411091957.wuwa7wii7pj35ua7@quack3>
+ <20230406132834.1669710-2-libaokun1@huawei.com>
+ <20230411090800.rrsvbab3tio7rs2m@quack3>
 From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230411091957.wuwa7wii7pj35ua7@quack3>
+In-Reply-To: <20230411090800.rrsvbab3tio7rs2m@quack3>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.5 required=5.0 tests=NICE_REPLY_A,
@@ -55,102 +55,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/4/11 17:19, Jan Kara wrote:
-> On Thu 06-04-23 21:28:34, Baokun Li wrote:
->> If extent status tree update fails, we have inconsistency between what is
->> stored in the extent status tree and what is stored on disk. And that can
->> cause even data corruption issues in some cases.
+On 2023/4/11 17:08, Jan Kara wrote:
+> On Thu 06-04-23 21:28:33, Baokun Li wrote:
+>> In our fault injection test, we create an ext4 file, migrate it to
+>> non-extent based file, then punch a hole and finally trigger a WARN_ON
+>> in the ext4_da_update_reserve_space():
 >>
->> In the extent status tree, we have extents which we can just drop without
->> issues and extents we must not drop - this depends on the extent's status
->> - currently ext4_es_is_delayed() extents must stay, others may be dropped.
+>> EXT4-fs warning (device sda): ext4_da_update_reserve_space:369:
+>> ino 14, used 11 with only 10 reserved data blocks
 >>
->> For extents that cannot be dropped we use __GFP_NOFAIL to allocate memory.
->> A helper function is also added to help determine if the current extent can
->> be dropped, although only ext4_es_is_delayed() extents cannot be dropped
->> currently. In addition, with the above logic, the undo operation in
->> __es_remove_extent that may cause inconsistency if the split extent fails
->> is unnecessary, so we remove it as well.
+>> When writing back a non-extent based file, if we enable delalloc, the
+>> number of reserved blocks will be subtracted from the number of blocks
+>> mapped by ext4_ind_map_blocks(), and the extent status tree will be
+>> updated. We update the extent status tree by first removing the old
+>> extent_status and then inserting the new extent_status. If the block range
+>> we remove happens to be in an extent, then we need to allocate another
+>> extent_status with ext4_es_alloc_extent().
 >>
->> Suggested-by: Jan Kara <jack@suse.cz>
+>>         use old    to remove   to add new
+>>      |----------|------------|------------|
+>>                old extent_status
+>>
+>> The problem is that the allocation of a new extent_status failed due to a
+>> fault injection, and __es_shrink() did not get free memory, resulting in
+>> a return of -ENOMEM. Then do_writepages() retries after receiving -ENOMEM,
+>> we map to the same extent again, and the number of reserved blocks is again
+>> subtracted from the number of blocks in that extent. Since the blocks in
+>> the same extent are subtracted twice, we end up triggering WARN_ON at
+>> ext4_da_update_reserve_space() because used > ei->i_reserved_data_blocks.
+>>
+>> For non-extent based file, we update the number of reserved blocks after
+>> ext4_ind_map_blocks() is executed, which causes a problem that when we call
+>> ext4_ind_map_blocks() to create a block, it doesn't always create a block,
+>> but we always reduce the number of reserved blocks. So we move the logic
+>> for updating reserved blocks to ext4_ind_map_blocks() to ensure that the
+>> number of reserved blocks is updated only after we do succeed in allocating
+>> some new blocks.
+>>
+>> Fixes: 5f634d064c70 ("ext4: Fix quota accounting error with fallocate")
 >> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->> V1->V2:
->> 	Add the patch 2 as suggested by Jan Kara.
->>
->>   fs/ext4/extents_status.c | 36 +++++++++++++++++++++++++++++-------
->>   1 file changed, 29 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
->> index 7bc221038c6c..8eed17f35b11 100644
->> --- a/fs/ext4/extents_status.c
->> +++ b/fs/ext4/extents_status.c
->> @@ -448,12 +448,29 @@ static void ext4_es_list_del(struct inode *inode)
->>   	spin_unlock(&sbi->s_es_lock);
->>   }
+> Looks good, just one nit below.
+>
+>> diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+>> index c68bebe7ff4b..9acab70ddf5e 100644
+>> --- a/fs/ext4/indirect.c
+>> +++ b/fs/ext4/indirect.c
+>> @@ -651,6 +651,14 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
 >>   
->> +/*
->> + * Helper function to help determine if memory allocation for this
->> + * extent_status is allowed to fail.
->> + */
->> +static inline bool ext4_es_alloc_should_nofail(struct extent_status *es)
-> I'd call this function ext4_es_must_keep() and also use it in
-> es_do_reclaim_extents() instead of ext4_es_is_delayed(). Do this as a
-> preparatory patch please.
-
-Totally agree! ext4_es_must_keep() is short and clear. It does make more 
-sense to
-replace ext4_es_is_delayed() in es_do_reclaim_extents() with the new 
-helper, I'll try
-to find out if there are any ext4_es_is_delayed() that need to be 
-replaced as well.
-
->> @@ -792,9 +809,16 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
->>   	}
->>   
->>   	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
->> -				  newes->es_pblk);
->> -	if (!es)
->> -		return -ENOMEM;
->> +				  newes->es_pblk, 0);
-> I would just call this like:
->
-> 	es = ext4_es_alloc_extent(inode, newes->es_lblk, newes->es_len,
-> 				newes->es_pblk, ext4_es_must_keep(newes));
->
-> to save the ifs below.
-
-Yes! It does get a little long-winded here.
-
->
->> +	if (!es) {
->> +		/* Use GFP_NOFAIL if the allocation cannot fail. */
->> +		if (ext4_es_alloc_should_nofail(newes))
->> +			es = ext4_es_alloc_extent(inode, newes->es_lblk,
->> +					newes->es_len, newes->es_pblk, 1);
->> +		else
->> +			return -ENOMEM;
->> +	}
+>>   	ext4_update_inode_fsync_trans(handle, inode, 1);
+>>   	count = ar.len;
 >> +
->>   	rb_link_node(&es->rb_node, parent, p);
->>   	rb_insert_color(&es->rb_node, &tree->root);
->>   
->> @@ -1349,8 +1373,6 @@ static int __es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
->>   						    ext4_es_status(&orig_es));
->>   			err = __es_insert_extent(inode, &newes);
->>   			if (err) {
->> -				es->es_lblk = orig_es.es_lblk;
->> -				es->es_len = orig_es.es_len;
->>   				if ((err == -ENOMEM) &&
->>   				    __es_shrink(EXT4_SB(inode->i_sb),
->>   							128, EXT4_I(inode)))
-> Also now __es_remove_extent() cannot fail (it will always remove what it
-> should, maybe more) so please just make it void function (as a separate
-> cleanup patch afterwards). Thanks!
+>> +	/*
+>> +	 * Update reserved blocks/metadata blocks after successful block
+>> +	 * allocation which had been deferred till now.
+>> +	 */
+>> +	if ((count > 0) && (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE))
+> You don't need the count > 0 condition here. It should be always true.
 >
 > 								Honza
-Yes! Thank you very much for the review!
-I will send a patch V3 with the changes suggested by you.
+>
+Indeed!
+
+Thanks a million!
+
+I will remove this condition in patch v3.
 
 -- 
 With Best Regards,
