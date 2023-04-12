@@ -2,64 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D61676DF83A
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 16:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06526DFCA8
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 19:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjDLOUR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 10:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        id S229514AbjDLRZg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 13:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjDLOUR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 10:20:17 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EDD44B9;
-        Wed, 12 Apr 2023 07:20:15 -0700 (PDT)
+        with ESMTP id S229477AbjDLRZf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 13:25:35 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DF32D59;
+        Wed, 12 Apr 2023 10:25:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681309215; x=1712845215;
+  t=1681320333; x=1712856333;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=dAApaBOmjnGI+B8dl1J1ZbNF3a5taTtRMYO+AejGQt4=;
-  b=E5MLwxlGPAX55SaE8DCCY9nWS+QxXVbys//547KZ8aeC9tEV6aZeVx1d
-   kLfBJd4PGYFFI6RpaVVNGma6LXdKIKcWlQesBnQypCh+iN/tz65gp6Nq+
-   tf2Kmx965jZJYS8o4yALpeT0nsZ6kpy0FYbBCI2nvuTmZITxr0jhOzDqC
-   csWinMzEaRcc2Y5tzM0ar8ibO1e5RGVlH/0VXoPeyFl/OzZ7aW0GUetho
-   vnjUqz2mbyHDP1twghZM9eKxq6Px6OBE9LFgfGuclwchm+shqlRImBsSs
-   KxkTKM6KzErghrQY3WbaVg24MOI+pMXvituPOD0hrmlD5itplnDT7Q6/+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="328019954"
+  bh=Fg6uGIM3FM+B+1guXhrCn+MxDSVjY3zwLFWXWk63VL8=;
+  b=eQP/ZMR1APpIs6Pq9ia47D6oxRFvizp3vOnBmtUiAIQinEP/o9QhH5jN
+   k/WwKOmtzg4AR5viSxV8koWKijVpveyMg1OliGrPMeVmQFHIvCcbn0J04
+   28/g9vFrgFLjSYMsbRUF3xmx9ebNuXjLziu3/p8NOkWzrPhNqfycU09dX
+   3MXQ7WufYFBFVCb6D9oKuCbX+MypJ0F7tSO4mqFEvMlDX9OXJsl/AtHgv
+   ceED+bcdTc2+2GWmjUscZJTkc41dKe2q/YfOR7nmf7a7LZCeQjKgaQrJg
+   xl03gabS83bLXzxKnVD9B9xeDUqUGXlLY3DnqKsyDke2M2NQQROdK7+Fg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="406794192"
 X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="328019954"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 07:20:15 -0700
+   d="scan'208";a="406794192"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 10:25:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="753544041"
+X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="719468741"
 X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="753544041"
+   d="scan'208";a="719468741"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Apr 2023 07:20:12 -0700
+  by orsmga008.jf.intel.com with ESMTP; 12 Apr 2023 10:25:20 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pmbKV-000XmB-19;
-        Wed, 12 Apr 2023 14:20:11 +0000
-Date:   Wed, 12 Apr 2023 22:19:13 +0800
+        id 1pmeDf-000XwN-0G;
+        Wed, 12 Apr 2023 17:25:19 +0000
+Date:   Thu, 13 Apr 2023 01:24:41 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, tytso@mit.edu,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, tytso@mit.edu,
         adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         yangerkun@huawei.com, yukuai3@huawei.com, libaokun1@huawei.com
 Subject: Re: [PATCH v3 6/8] ext4: make ext4_es_insert_delayed_block return
  void
-Message-ID: <202304122234.3Meeshf9-lkp@intel.com>
+Message-ID: <202304130044.d3iOG59z-lkp@intel.com>
 References: <20230412124126.2286716-7-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230412124126.2286716-7-libaokun1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,8 +81,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Baokun-Li/ext4-only-updat
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
 patch link:    https://lore.kernel.org/r/20230412124126.2286716-7-libaokun1%40huawei.com
 patch subject: [PATCH v3 6/8] ext4: make ext4_es_insert_delayed_block return void
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230412/202304122234.3Meeshf9-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.1.0
+config: x86_64-randconfig-a002-20230410 (https://download.01.org/0day-ci/archive/20230413/202304130044.d3iOG59z-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -91,19 +92,19 @@ reproduce (this is a W=1 build):
         git checkout 87f992eeab9cd894894e27c3c6ff322cbd473ebf
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash fs/ext4/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/ext4/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304122234.3Meeshf9-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202304130044.d3iOG59z-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   fs/ext4/inode.c: In function 'ext4_insert_delayed_block':
->> fs/ext4/inode.c:1640:14: warning: variable 'reserved' set but not used [-Wunused-but-set-variable]
-    1640 |         bool reserved = false;
-         |              ^~~~~~~~
+>> fs/ext4/inode.c:1640:7: warning: variable 'reserved' set but not used [-Wunused-but-set-variable]
+           bool reserved = false;
+                ^
+   1 warning generated.
 
 
 vim +/reserved +1640 fs/ext4/inode.c
