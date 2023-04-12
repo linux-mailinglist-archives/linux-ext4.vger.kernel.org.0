@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A2F6DF05A
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCC26DF058
 	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 11:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjDLJ0q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 05:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S231452AbjDLJ0p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 05:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjDLJ0Q (ORCPT
+        with ESMTP id S230113AbjDLJ0Q (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 05:26:16 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52157EE1;
-        Wed, 12 Apr 2023 02:26:13 -0700 (PDT)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23C9768F;
+        Wed, 12 Apr 2023 02:26:12 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PxHQ80vF6z4f435t;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PxHQ856qwz4f4byk;
         Wed, 12 Apr 2023 17:26:08 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgDHL7MpeTZkL5_1HA--.3769S10;
-        Wed, 12 Apr 2023 17:26:09 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgDHL7MpeTZkL5_1HA--.3769S11;
+        Wed, 12 Apr 2023 17:26:10 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         shikemeng@huaweicloud.com
-Subject: [PATCH v2 08/19] ext4: get block from bh before pass it to ext4_free_blocks_simple in ext4_free_blocks
-Date:   Thu, 13 Apr 2023 01:28:22 +0800
-Message-Id: <20230412172833.2317696-9-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 09/19] ext4: remove unsed parameter and unnecessary forward declaration of ext4_mb_new_blocks_simple
+Date:   Thu, 13 Apr 2023 01:28:23 +0800
+Message-Id: <20230412172833.2317696-10-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230412172833.2317696-1-shikemeng@huaweicloud.com>
 References: <20230412172833.2317696-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHL7MpeTZkL5_1HA--.3769S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7JF48Cr4UZw1DJw1xJFy8Grg_yoW8Jr17pw
-        srAFyrGr1kWwn2gF4fJw15JwsI9w48G3WUWFWfWw18Xry7X34Sy3WqyF15WF1UtrZav3ZF
-        qFn0grW5Cw4UuaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgDHL7MpeTZkL5_1HA--.3769S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr18try5CF1kGr4DCr17KFg_yoW7JFyxpa
+        nxCF1rGr1fWr1DuF47X34Sq3WS9w48Ar17GrWfG34rCrW7XryfCFsxKF1Fya4YyFZrXFnI
+        qF4YyrW3CF4UGa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
         0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
@@ -60,46 +60,178 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_free_blocks will retrieve block from bh if block parameter is zero.
-Retrieve block before ext4_free_blocks_simple to avoid potentially
-passing wrong block to ext4_free_blocks_simple.
+Two cleanups for ext4_mb_new_blocks_simple:
+Remove unsed parameter handle of ext4_mb_new_blocks_simple.
+Move ext4_mb_new_blocks_simple definition before ext4_mb_new_blocks to
+remove unnecessary forward declaration of ext4_mb_new_blocks_simple.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ fs/ext4/mballoc.c | 137 +++++++++++++++++++++++-----------------------
+ 1 file changed, 67 insertions(+), 70 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index b9a7b669b97d..ca11d0aa8a59 100644
+index ca11d0aa8a59..2bbfded78093 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -6117,12 +6117,6 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+@@ -5536,8 +5536,72 @@ static bool ext4_mb_discard_preallocations_should_retry(struct super_block *sb,
+ 	return ret;
+ }
  
- 	sbi = EXT4_SB(sb);
- 
--	if (sbi->s_mount_state & EXT4_FC_REPLAY) {
--		ext4_free_blocks_simple(inode, block, count);
--		return;
--	}
--
--	might_sleep();
- 	if (bh) {
- 		if (block)
- 			BUG_ON(block != bh->b_blocknr);
-@@ -6130,6 +6124,13 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 			block = bh->b_blocknr;
- 	}
- 
-+	if (sbi->s_mount_state & EXT4_FC_REPLAY) {
-+		ext4_free_blocks_simple(inode, block, count);
-+		return;
+-static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
+-				struct ext4_allocation_request *ar, int *errp);
++/*
++ * Simple allocator for Ext4 fast commit replay path. It searches for blocks
++ * linearly starting at the goal block and also excludes the blocks which
++ * are going to be in use after fast commit replay.
++ */
++static ext4_fsblk_t
++ext4_mb_new_blocks_simple(struct ext4_allocation_request *ar, int *errp)
++{
++	struct buffer_head *bitmap_bh;
++	struct super_block *sb = ar->inode->i_sb;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	ext4_group_t group, nr;
++	ext4_grpblk_t blkoff;
++	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
++	ext4_grpblk_t i = 0;
++	ext4_fsblk_t goal, block;
++	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
++
++	goal = ar->goal;
++	if (goal < le32_to_cpu(es->s_first_data_block) ||
++			goal >= ext4_blocks_count(es))
++		goal = le32_to_cpu(es->s_first_data_block);
++
++	ar->len = 0;
++	ext4_get_group_no_and_offset(sb, goal, &group, &blkoff);
++	for (nr = ext4_get_groups_count(sb); nr > 0; nr--) {
++		bitmap_bh = ext4_read_block_bitmap(sb, group);
++		if (IS_ERR(bitmap_bh)) {
++			*errp = PTR_ERR(bitmap_bh);
++			pr_warn("Failed to read block bitmap\n");
++			return 0;
++		}
++
++		while (1) {
++			i = mb_find_next_zero_bit(bitmap_bh->b_data, max,
++						blkoff);
++			if (i >= max)
++				break;
++			if (ext4_fc_replay_check_excluded(sb,
++				ext4_group_first_block_no(sb, group) +
++				EXT4_C2B(sbi, i))) {
++				blkoff = i + 1;
++			} else
++				break;
++		}
++		brelse(bitmap_bh);
++		if (i < max)
++			break;
++
++		if (++group >= ext4_get_groups_count(sb))
++			group = 0;
++
++		blkoff = 0;
 +	}
 +
-+	might_sleep();
++	if (i >= max) {
++		*errp = -ENOSPC;
++		return 0;
++	}
 +
- 	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
- 	    !ext4_inode_block_valid(inode, block, count)) {
- 		ext4_error(sb, "Freeing blocks not in datazone - "
++	block = ext4_group_first_block_no(sb, group) + EXT4_C2B(sbi, i);
++	ext4_mb_mark_bb(sb, block, 1, 1);
++	ar->len = 1;
++
++	return block;
++}
+ 
+ /*
+  * Main entry point into mballoc to allocate blocks
+@@ -5562,7 +5626,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+ 
+ 	trace_ext4_request_blocks(ar);
+ 	if (sbi->s_mount_state & EXT4_FC_REPLAY)
+-		return ext4_mb_new_blocks_simple(handle, ar, errp);
++		return ext4_mb_new_blocks_simple(ar, errp);
+ 
+ 	/* Allow to use superuser reservation for quota file */
+ 	if (ext4_is_quota_file(ar->inode))
+@@ -5786,73 +5850,6 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
+ 	spin_unlock(&sbi->s_md_lock);
+ }
+ 
+-/*
+- * Simple allocator for Ext4 fast commit replay path. It searches for blocks
+- * linearly starting at the goal block and also excludes the blocks which
+- * are going to be in use after fast commit replay.
+- */
+-static ext4_fsblk_t ext4_mb_new_blocks_simple(handle_t *handle,
+-				struct ext4_allocation_request *ar, int *errp)
+-{
+-	struct buffer_head *bitmap_bh;
+-	struct super_block *sb = ar->inode->i_sb;
+-	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	ext4_group_t group, nr;
+-	ext4_grpblk_t blkoff;
+-	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
+-	ext4_grpblk_t i = 0;
+-	ext4_fsblk_t goal, block;
+-	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+-
+-	goal = ar->goal;
+-	if (goal < le32_to_cpu(es->s_first_data_block) ||
+-			goal >= ext4_blocks_count(es))
+-		goal = le32_to_cpu(es->s_first_data_block);
+-
+-	ar->len = 0;
+-	ext4_get_group_no_and_offset(sb, goal, &group, &blkoff);
+-	for (nr = ext4_get_groups_count(sb); nr > 0; nr--) {
+-		bitmap_bh = ext4_read_block_bitmap(sb, group);
+-		if (IS_ERR(bitmap_bh)) {
+-			*errp = PTR_ERR(bitmap_bh);
+-			pr_warn("Failed to read block bitmap\n");
+-			return 0;
+-		}
+-
+-		while (1) {
+-			i = mb_find_next_zero_bit(bitmap_bh->b_data, max,
+-						blkoff);
+-			if (i >= max)
+-				break;
+-			if (ext4_fc_replay_check_excluded(sb,
+-				ext4_group_first_block_no(sb, group) +
+-				EXT4_C2B(sbi, i))) {
+-				blkoff = i + 1;
+-			} else
+-				break;
+-		}
+-		brelse(bitmap_bh);
+-		if (i < max)
+-			break;
+-
+-		if (++group >= ext4_get_groups_count(sb))
+-			group = 0;
+-
+-		blkoff = 0;
+-	}
+-
+-	if (i >= max) {
+-		*errp = -ENOSPC;
+-		return 0;
+-	}
+-
+-	block = ext4_group_first_block_no(sb, group) + EXT4_C2B(sbi, i);
+-	ext4_mb_mark_bb(sb, block, 1, 1);
+-	ar->len = 1;
+-
+-	return block;
+-}
+-
+ static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
+ 					unsigned long count)
+ {
 -- 
 2.30.0
 
