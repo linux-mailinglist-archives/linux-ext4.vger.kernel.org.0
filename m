@@ -2,106 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2856DF226
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 12:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4806DF3F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 13:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjDLKqU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 06:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S230294AbjDLLn0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 07:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjDLKqF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 06:46:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017626EBA
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Apr 2023 03:45:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E30321904;
-        Wed, 12 Apr 2023 10:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681296347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gV7aw4GNKVTfmkWJMPKS2hW4fsH8yzXTs9XZO+krCN8=;
-        b=J0RResVIYpOlCAGeHkGK1iMtpbFx46idG37PN77biFcRV+XUCNsnOs2P2XyYVkChU8Pt0F
-        AHNT0Dhpw1JNW63tGRUmt/6hqRZZnGthDVbgIN9PH9vwwh+K3YBW5h4qVLrOypHvgN9484
-        j6SWEyK2ANM8T3Zff0HQ3EmDG+PYn58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681296347;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gV7aw4GNKVTfmkWJMPKS2hW4fsH8yzXTs9XZO+krCN8=;
-        b=zuQoW9iT7uTZAXeUqb41dLCgZWnp5JeFNlmP0lSyQ3qq+QFxB2WMXCF2fiRPFhk0JVB3nX
-        5yglq1QUOo6bSyDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F939132C7;
-        Wed, 12 Apr 2023 10:45:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4Tz2ItuLNmTfIgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 12 Apr 2023 10:45:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 13D6CA0732; Wed, 12 Apr 2023 12:45:47 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 12:45:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     JunChao Sun <sunjunchao2870@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, yi.zhang@huawei.com,
-        jack@suse.cz, sunjunchao <sunjunchao@yanrongyun.com>
-Subject: Re: [PATCH] ext4: remove BUG_ON which will be triggered in race
- scenario
-Message-ID: <20230412104547.7uaqukrrhvxuy5xi@quack3>
-References: <20230412074737.5769-1-sunjunchao2870@gmail.com>
+        with ESMTP id S230032AbjDLLnW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 07:43:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6F11A2;
+        Wed, 12 Apr 2023 04:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4RDlPZj6huWQXf9wPO/8vbSDC05lQlt4BDA+orp3WvQ=; b=4rqqYiKp1rLMovByAJ2i1MjUMe
+        ibOx+uLL7mmqLmrkuiiqoy7wrqH7DJUq/X10wu1BgKRNFq2b0nLjl5zKMV5UG3CwhmpkF+qpdZzyW
+        QIn88UxNVdzA0d1DqkeyfMtPsctBaFrxH9+TsmY+diXuTi7kT7lANxEBbL0liHML+xQNxtBlOdNza
+        QZ1j5NHGmoya2Mz885ynLaM8GSxwfMTzR7squgmI+DnibVUtdQ1ia0HQ2QN0bCV5zPPMkGTy/lJow
+        xft6750JrQaam/4gZmKny5R0c1phSzxjJa8BpSHMS7iSbHL9zxlFb3aJm5bz72rv1sgQLjR5Vzin4
+        ZJSk5Srg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pmYsR-002vMZ-0A;
+        Wed, 12 Apr 2023 11:43:03 +0000
+Date:   Wed, 12 Apr 2023 04:43:03 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Subject: Re: [RFCv2 2/8] libfs: Add __generic_file_fsync_nolock implementation
+Message-ID: <ZDaZR+zHcpUyNOND@infradead.org>
+References: <cover.1681188927.git.ritesh.list@gmail.com>
+ <6fad2ec25bccbbb9b3effbd18c2d6d6965b9a33c.1681188927.git.ritesh.list@gmail.com>
+ <ZDTvrmFR1/nXUqMl@infradead.org>
+ <ZDVTjX/ZtJZWkHyD@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230412074737.5769-1-sunjunchao2870@gmail.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <ZDVTjX/ZtJZWkHyD@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 12-04-23 00:47:37, JunChao Sun wrote:
-> From: sunjunchao <sunjunchao@yanrongyun.com>
+On Tue, Apr 11, 2023 at 01:33:17PM +0100, Matthew Wilcox wrote:
+> On Mon, Apr 10, 2023 at 10:27:10PM -0700, Christoph Hellwig wrote:
+> > On Tue, Apr 11, 2023 at 10:51:50AM +0530, Ritesh Harjani (IBM) wrote:
+> > > +/**
+> > > + * __generic_file_fsync_nolock - generic fsync implementation for simple
+> > > + * filesystems with no inode lock
+> > 
+> > No reallz need for the __ prefix in the name.
 > 
-> There is a BUG_ON statement which will be triggered in the
-> following scenario, let's remove it.
+> It kind of makes sense though.
 > 
-> thread0                                         thread1
-> ext4_write_begin(inode0)
->     ->ext4_try_to_write_inline_data()
->         written some bits successfully
-> ext4_write_end(inode0)
->     ->ext4_write_inline_data_end()
->                                             ext4_write_begin(inode0)
->                                                 ->ext4_try_to_write_inline_data()
->                                                     ->ext4_convert_inline_data_to_extent()
->                                                         ->ext4_write_lock_xattr()
->                                                             ->ext4_destroy_inline_data_nolock()
->                                                                 ->ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
->                                                         ->ext4_write_unlock_xattr()
->         ->ext4_write_lock_xattr()
->         ->BUG_ON(!ext4_has_inline_data()) will be triggered
-> 
-> The problematic logic is that ext4_write_end() test ext4_has_inline_data()
-> without holding xattr_sem, and ext4_write_inline_data_end() test it again using
-> a BUG_ON() with holding xattr_sem.
+> generic_file_fsync does the flush
+> __generic_file_fsync doesn't do the flush
+> __generic_file_fsync_nolock doesn't do the flush and doesn't lock/unlock
 
-Were you able to actually hit this? Because inode->i_rwsem should be
-protecting us from races like this so I don't think the above described
-scenario can happen.
+Indeed.  Part of it is that the naming is a bit horrible.
+Maybe it should move to buffer.c and be called generic_buffer_fsync,
+or generic_block_fsync which still wouldn't be perfect but match the
+buffer.c naming scheme.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
+> > > +extern int __generic_file_fsync_nolock(struct file *, loff_t, loff_t, int);
+> > 
+> > No need for the extern.  And at least I personally prefer to spell out
+> > the parameter names to make the prototype much more readable.
+> 
+> Agreed, although I make an exception for the 'struct file *'.  Naming that
+> parameter adds no value, but a plain int is just obscene.
+> 
+> int __generic_file_fsync_nolock(struct file *, loff_t start, loff_t end,
+> 		bool datasync);
+
+While I agree that it's not needed for the file, leaving it out is a bit
+silly.
+
+> (yes, the other variants don't use a bool for datasync, but they should)
+
+.. including the ->fsync prototype to make it work ..
