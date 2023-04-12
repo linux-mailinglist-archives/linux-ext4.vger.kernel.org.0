@@ -2,134 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E426DF408
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 13:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A83E6DF5A6
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 14:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjDLLp3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 07:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S231701AbjDLMk4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 08:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjDLLp2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 07:45:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3AC9C;
-        Wed, 12 Apr 2023 04:45:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D9E251F890;
-        Wed, 12 Apr 2023 11:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681299925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mESrJnTzm2y58henCgzCU9PCm8C7jVKTEVEsRs//lzk=;
-        b=BbgVtPjM9egpg70/sSFltKsb64f/A8zX+kVtG3nQ8E54BE1yiZvlNZXgxwRrSqSMmbMlfI
-        TWnUkqjIEzZZAevly8G0KmNVqoThiIZYOQlbe3lcH6gSOLvAPThNlbHvu+S9UpJWA8Tibb
-        A7yrANkRutl8YwOBrmKevFghYRaUIec=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681299925;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mESrJnTzm2y58henCgzCU9PCm8C7jVKTEVEsRs//lzk=;
-        b=wGvKfFAI76TLGeAd12Lo2SRdD1zJV07HuOk2NWoe4dLqrP4CQAfZ/dkt/zKkWwb0Hpa4Gm
-        AmrQxOgYXNwLC6AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CDF3913498;
-        Wed, 12 Apr 2023 11:45:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SMM4MtWZNmQtQAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 12 Apr 2023 11:45:25 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 620DAA0732; Wed, 12 Apr 2023 13:45:25 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 13:45:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: [RFCv2 0/8] ext2: DIO to use iomap
-Message-ID: <20230412114525.m7rjvq3pr3aad2al@quack3>
-References: <cover.1681188927.git.ritesh.list@gmail.com>
+        with ESMTP id S229773AbjDLMkz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 08:40:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAD083DE;
+        Wed, 12 Apr 2023 05:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E0KHAAQwHuVG+JUkhMNXRzfAxWNr8pB44DMS1FIDYiU=; b=VL2Xq3mXsX5zJ0mUpgFdjyqzch
+        uwDtv5eusczS8yue8CmgTqmgQlhiERF1JwLtsis14nYKk+RIdUpZM47LPD2BFHt6UpXsa1xX7MUlq
+        QnekFKGKo9ViGfaiGcAq6s4YKopGqFR+iW722YWss5oQKb9l+u8zu789Ruzb9HbRx/zZzFsQ0umAx
+        slzq+P5/cNMhF2GmdH3M1qVbcfQCtTUpgUHQhqO9u68CXXozNoINOdCVMV5plzm+dz1gNP7jGrZvE
+        ZlrzIKFvEvvcxXN0E09iz3XsChVPky8ItYBLK1I+opyB93pWAQHQtWawRH5b332rI/xu7+YxbuakL
+        SS0C2vgQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pmZlw-003AdB-0z;
+        Wed, 12 Apr 2023 12:40:24 +0000
+Date:   Wed, 12 Apr 2023 05:40:24 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
+        dchinner@redhat.com, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
+        xiang@kernel.org, chao@kernel.org,
+        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
+Message-ID: <ZDamuPYV8khwDzRJ@infradead.org>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <ZDTt8jSdG72/UnXi@infradead.org>
+ <20230412023319.GA5105@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1681188927.git.ritesh.list@gmail.com>
+In-Reply-To: <20230412023319.GA5105@sol.localdomain>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ritesh!
+On Tue, Apr 11, 2023 at 07:33:19PM -0700, Eric Biggers wrote:
+> It seems it's really just the Merkle tree caching interface that is causing
+> problems, as it's currently too closely tied to the page cache?  That is just an
+> implementation detail that could be reworked along the lines of what is being
+> discussed.
 
-On Tue 11-04-23 10:51:48, Ritesh Harjani (IBM) wrote:
-> Please find the series which moves ext2 direct-io to use modern iomap interface.
-> 
-> Here are some more details -
-> 1. Patch-1: Fixes a kernel bug_on problem with ext2 dax code (found during code
->    review and testing).
-> 2. Patch-2: Adds a __generic_file_fsync_nolock implementation as we had
->    discussed.
-> 3. Patch-3 & Patch-4: Moves ext4 nojournal and ext2 to use _nolock method.
-> 4. Patch-5: This is the main patch which moves ext2 direct-io to use iomap.
->    (more details can be found in the patch)
-> 5. Patch-6: Kills IOMAP_DIO_NOSYNC flag as it is not in use by any filesystem.
-> 6. Patch-7: adds IOCB_STRINGS macro for use in trace events for better trace
->    output of iocb flags.
-> 7. Patch-8: Add ext2 trace point for DIO.
-> 
-> Testing:
-> =========
-> This passes ext2 "auto" group testing for fstests. There were no new failures
-> with this patches.
+Well, that and some of the XFS internal changes that seem a bit ugly.
 
-I went through the patches and I have no further comments besides what has
-been already said. So feel free to update patches based on other feedback,
-I'll do the last round of review and can queue the patches to my tree.
+But it's not only very much tied to the page cache, but also to
+page aligned data, which is really part of the problem.
 
-								Honza
+> But anyway, it is up to the XFS folks.  Keep in mind there is also the option of
+> doing what btrfs is doing, where it stores the Merkle tree separately from the
+> file data stream, but caches it past i_size in the page cache at runtime.
 
-> 
-> 
-> Ritesh Harjani (IBM) (8):
->   ext2/dax: Fix ext2_setsize when len is page aligned
->   libfs: Add __generic_file_fsync_nolock implementation
->   ext4: Use __generic_file_fsync_nolock implementation
->   ext2: Use __generic_file_fsync_nolock implementation
->   ext2: Move direct-io to use iomap
->   iomap: Remove IOMAP_DIO_NOSYNC unused dio flag
->   fs.h: Add IOCB_STRINGS for use in trace points
->   ext2: Add direct-io trace points
-> 
->  fs/ext2/Makefile      |   2 +-
->  fs/ext2/ext2.h        |   1 +
->  fs/ext2/file.c        | 127 +++++++++++++++++++++++++++++++++++++++++-
->  fs/ext2/inode.c       |  57 +++++++++++--------
->  fs/ext2/trace.c       |   5 ++
->  fs/ext2/trace.h       |  61 ++++++++++++++++++++
->  fs/ext4/fsync.c       |  31 +++++------
->  fs/iomap/direct-io.c  |   2 +-
->  fs/libfs.c            |  43 ++++++++++++++
->  include/linux/fs.h    |  15 +++++
->  include/linux/iomap.h |   6 --
->  11 files changed, 303 insertions(+), 47 deletions(-)
->  create mode 100644 fs/ext2/trace.c
->  create mode 100644 fs/ext2/trace.h
-> 
-> --
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+That seems to be the worst of both worlds.
+
+> I guess there is also the issue of encryption, which hasn't come up yet since
+> we're talking about fsverity support only.  The Merkle tree (including the
+> fsverity_descriptor) is supposed to be encrypted, just like the file contents
+> are.  Having it be stored after the file contents accomplishes that easily...
+> Of course, it doesn't have to be that way; a separate key could be derived, or
+> the Merkle tree blocks could be encrypted with the file contents key using
+> indices past i_size, without them physically being stored in the data stream.
+
+xattrs contents better be encrypted as well, fsverity or not.
