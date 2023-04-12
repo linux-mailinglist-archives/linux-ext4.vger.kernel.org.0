@@ -2,144 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10C86DDF7E
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Apr 2023 17:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35346DE974
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 04:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjDKPWR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Apr 2023 11:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S229551AbjDLCdY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Apr 2023 22:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjDKPWR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 11:22:17 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8355261;
-        Tue, 11 Apr 2023 08:21:41 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j8so6729705pjy.4;
-        Tue, 11 Apr 2023 08:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681226490; x=1683818490;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7lhq/v+qbsPhCdc8vPT1tzfkDyW/FEXRjLecDKzEEgU=;
-        b=GS17BeUpbmnej+XE4Fe6hg2h73OLk7WefDVYhpoIfFoAh7Lzl+FvhPf5or2SrdeVWp
-         DJ3EPczcKzSP9TNtU/TDHcybfek5yPeh/lUBa0lHLTvk13P/fbtw5HIgAkB21RHeMJ9j
-         Ewg2bMF1+LFjDhFdM5WFzJBazw7m09IaSZV1apKO6Y33zaZgxOm5sBa37n0Ywf2VPtXi
-         7MmERL/QE01gmcgu1fmfpLZGuahdN+btdS6f1mgKMr7dfvSWI7hjvwhI3IFiGFzp50eA
-         V67z5WB2tFEfeMaUVhHv7HDA8n5UBd8Qnj9TQ9Wnv3MNkSqTdoRggTjxG1u+/WUpGox5
-         WvIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681226490; x=1683818490;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7lhq/v+qbsPhCdc8vPT1tzfkDyW/FEXRjLecDKzEEgU=;
-        b=PivfDScD1LdmghxwltMRoelmSCefNlBiCzn1LToaGVWdF5nCCVsPkKdlcLie8Lb0Sg
-         2Xgp5LsBPSg1nCNy3bLdB+7PQQEJWLa+karUACDWpZmYadc6uSzdmNlRSPSPrntYburl
-         qifsjunIvkJGL57t1sjKUTsgeMSOpwIU8fdTUbvQZRYeEsf11Xe3F7qClFh2Jn5j22pP
-         z2PCdjmNLCaUIpjE8j6iVcygPZsl/iYx6qdAcBViZFFrb3Tsh7w6IddSMz8HegryXjtZ
-         6+N6nlJAjCiBrX/ud7Xmd1HXl7mwzBatYglwu+8ju5OS9+rcaVPLk9zcrLF1fzUwnu+G
-         /2CA==
-X-Gm-Message-State: AAQBX9crePuxPsZkvQ2c5wwdZWFXiSjyZn8XYMmPRbMQcbryg23qUzQt
-        q/CEK7UqodKzFHCS/t+fzp+M9luJT0o=
-X-Google-Smtp-Source: AKy350bpQbuo7Je/C80QZyADu/vZZK3hcRBcmHIOYoqaKCSCeKTZv1XQuv/La3HFGs9Z6axN0Lqflw==
-X-Received: by 2002:a17:902:d511:b0:1a1:b172:5428 with SMTP id b17-20020a170902d51100b001a1b1725428mr21686310plg.18.1681226490464;
-        Tue, 11 Apr 2023 08:21:30 -0700 (PDT)
-Received: from rh-tp ([2406:7400:63:7035:9095:349e:5f0b:ded0])
-        by smtp.gmail.com with ESMTPSA id c16-20020a170902b69000b001a0742b0806sm9852218pls.108.2023.04.11.08.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 08:21:30 -0700 (PDT)
-Date:   Tue, 11 Apr 2023 20:51:24 +0530
-Message-Id: <87wn2izbpn.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+        with ESMTP id S229469AbjDLCdX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Apr 2023 22:33:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C41172B;
+        Tue, 11 Apr 2023 19:33:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 257C561C99;
+        Wed, 12 Apr 2023 02:33:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F370C433D2;
+        Wed, 12 Apr 2023 02:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681266801;
+        bh=uWYRkl4H5QxQQyKZRkipfJYb8JT+WBT0+Wf0sQwa8R4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ICEWpWIHfCvZctrTa23zt5ow0V8NDHh2F1i00eVdXSsHwgqMLrkRT/XlEYlKmjHDc
+         19nDnI8fLxzFqlz2xC7lWzBe/z+FLZQp9I6XnZMJNnBuVmGr4gIcbNqsErYoKb0m7p
+         sxQgr5EWBTLQtP3m6ZbcVg4DVMLneqkbV0LUwwpej+ysbJ8GM6GOmxaIXmht+TVLM5
+         8AoJUx4LJxeAkTKLmK+QxNTrCOzWSGGlTQai0S4osbYt1lIObyZ+GefEjAWZe5ts/v
+         1DVrYg2TcXMS5rnXRentQX9hoIWFgOeiZNMnlongYGP1HyqIKramwdoHwdF+582obz
+         FYYaJGFJaqEvg==
+Date:   Tue, 11 Apr 2023 19:33:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: [RFCv2 5/8] ext2: Move direct-io to use iomap
-In-Reply-To: <ZDT0JFmwg/9ijdcv@infradead.org>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Cc:     Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
+        dchinner@redhat.com, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
+        xiang@kernel.org, chao@kernel.org,
+        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
+Message-ID: <20230412023319.GA5105@sol.localdomain>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <ZDTt8jSdG72/UnXi@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZDTt8jSdG72/UnXi@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> writes:
+On Mon, Apr 10, 2023 at 10:19:46PM -0700, Christoph Hellwig wrote:
+> Dave is going to hate me for this, but..
+> 
+> I've been looking over some of the interfaces here, and I'm starting
+> to very seriously questioning the design decisions of storing the
+> fsverity hashes in xattrs.
+> 
+> Yes, storing them beyond i_size in the file is a bit of a hack, but
+> it allows to reuse a lot of the existing infrastructure, and much
+> of fsverity is based around it.  So storing them in an xattrs causes
+> a lot of churn in the interface.  And the XFS side with special
+> casing xattr indices also seems not exactly nice.
 
-> On Tue, Apr 11, 2023 at 10:51:53AM +0530, Ritesh Harjani (IBM) wrote:
->> +extern void ext2_write_failed(struct address_space *mapping, loff_t to);
->
-> No need for the extern.
->
+It seems it's really just the Merkle tree caching interface that is causing
+problems, as it's currently too closely tied to the page cache?  That is just an
+implementation detail that could be reworked along the lines of what is being
+discussed.
 
-Sure will drop it.
+But anyway, it is up to the XFS folks.  Keep in mind there is also the option of
+doing what btrfs is doing, where it stores the Merkle tree separately from the
+file data stream, but caches it past i_size in the page cache at runtime.
 
->> +	/* handle case for partial write and for fallback to buffered write */
->> +	if (ret >= 0 && iov_iter_count(from)) {
->> +		loff_t pos, endbyte;
->> +		ssize_t status;
->> +		int ret2;
->> +
->> +		iocb->ki_flags &= ~IOCB_DIRECT;
->> +		pos = iocb->ki_pos;
->> +		status = generic_perform_write(iocb, from);
->> +		if (unlikely(status < 0)) {
->> +			ret = status;
->> +			goto out_unlock;
->> +		}
->> +
->> +		iocb->ki_pos += status;
->> +		ret += status;
->> +		endbyte = pos + status - 1;
->> +		ret2 = filemap_write_and_wait_range(inode->i_mapping, pos,
->> +						    endbyte);
->> +		if (!ret2)
->> +			invalidate_mapping_pages(inode->i_mapping,
->> +						 pos >> PAGE_SHIFT,
->> +						 endbyte >> PAGE_SHIFT);
->> +		if (ret > 0)
->> +			generic_write_sync(iocb, ret);
->> +	}
->
-> Nit, but to me it would seem cleaner if all the fallback handling
-> was moved into a separate helper function.  Or in fact by not
-> using generic_file_write_iter even for buffered I/O and at doing
-> the pre-I/O checks and the final generic_write_sync in common code in
-> ext2 for direct and buffered I/O.
->
+I guess there is also the issue of encryption, which hasn't come up yet since
+we're talking about fsverity support only.  The Merkle tree (including the
+fsverity_descriptor) is supposed to be encrypted, just like the file contents
+are.  Having it be stored after the file contents accomplishes that easily...
+Of course, it doesn't have to be that way; a separate key could be derived, or
+the Merkle tree blocks could be encrypted with the file contents key using
+indices past i_size, without them physically being stored in the data stream.
 
-Make sense. However, since we are on the path to modify ext2 buffered-io
-code as well to move to iomap interface, I wouldn't bother too much as
-of now for this code as, all of this is going to go away anyways.
-
-
->> +	/*
->> +	 * For writes that could fill holes inside i_size on a
->> +	 * DIO_SKIP_HOLES filesystem we forbid block creations: only
->> +	 * overwrites are permitted.
->> +	 */
->> +	if ((flags & IOMAP_DIRECT) && (first_block << blkbits < i_size_read(inode)))
->> +		create = 0;
->
-> No need for braes around the < operation, but I think you might need
-> them around the shift.
-
-left-shift has a higher precedence. But let me make it more clear in
-next rev.
-
->
-> Also an overly long line here.
->
-
-Sure, will see to it.
-
->> +	if ((flags & IOMAP_WRITE) && (offset + length > i_size_read(inode)))
->
-> No need for the second set of inner braces here either.
-
-It's just avoids any confusion this way.
-
--ritesh
+- Eric
