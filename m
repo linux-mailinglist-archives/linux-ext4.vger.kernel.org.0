@@ -2,176 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06526DFCA8
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 19:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36D46DF048
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 11:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjDLRZg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 13:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        id S230211AbjDLJ0X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 05:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjDLRZf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 13:25:35 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DF32D59;
-        Wed, 12 Apr 2023 10:25:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681320333; x=1712856333;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Fg6uGIM3FM+B+1guXhrCn+MxDSVjY3zwLFWXWk63VL8=;
-  b=eQP/ZMR1APpIs6Pq9ia47D6oxRFvizp3vOnBmtUiAIQinEP/o9QhH5jN
-   k/WwKOmtzg4AR5viSxV8koWKijVpveyMg1OliGrPMeVmQFHIvCcbn0J04
-   28/g9vFrgFLjSYMsbRUF3xmx9ebNuXjLziu3/p8NOkWzrPhNqfycU09dX
-   3MXQ7WufYFBFVCb6D9oKuCbX+MypJ0F7tSO4mqFEvMlDX9OXJsl/AtHgv
-   ceED+bcdTc2+2GWmjUscZJTkc41dKe2q/YfOR7nmf7a7LZCeQjKgaQrJg
-   xl03gabS83bLXzxKnVD9B9xeDUqUGXlLY3DnqKsyDke2M2NQQROdK7+Fg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="406794192"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="406794192"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 10:25:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="719468741"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="719468741"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 12 Apr 2023 10:25:20 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pmeDf-000XwN-0G;
-        Wed, 12 Apr 2023 17:25:19 +0000
-Date:   Thu, 13 Apr 2023 01:24:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH v3 6/8] ext4: make ext4_es_insert_delayed_block return
- void
-Message-ID: <202304130044.d3iOG59z-lkp@intel.com>
-References: <20230412124126.2286716-7-libaokun1@huawei.com>
+        with ESMTP id S230038AbjDLJ0N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 05:26:13 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA95E7D86;
+        Wed, 12 Apr 2023 02:26:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PxHQ53JP1z4f3nwX;
+        Wed, 12 Apr 2023 17:26:05 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgDHL7MpeTZkL5_1HA--.3769S2;
+        Wed, 12 Apr 2023 17:26:03 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shikemeng@huaweicloud.com
+Subject: [PATCH v2 00/19] Fixes, cleanups and unit test for mballoc
+Date:   Thu, 13 Apr 2023 01:28:14 +0800
+Message-Id: <20230412172833.2317696-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230412124126.2286716-7-libaokun1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHL7MpeTZkL5_1HA--.3769S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFy5XrWfJFyxtryfWrWrGrg_yoWruF18pr
+        s8Cr1rKw1fJr1DZFZxu3yaq3WfWw48Cr17JryfWry8ZFW3JryxZFs7Ka1rZa12yrZxZFnI
+        vFnIyrW8Gr10y37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRE
+        SoGDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Baokun,
+There are three parts in this patchset:
+Part1: Patch 1-7 is v2 of sent series
+v1->v2:
+1. collect reviewed-by from Ojaswin. Only "ext4: add
+EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated" needs futher
+review. See [1] for previous comments.
+2. drop "ext4: fix wrong unit use in ext4_mb_new_inode_pa" which is
+already done in [2].
 
-kernel test robot noticed the following build warnings:
+Part2: Patch 8-17 are more fixes and cleanups to mballoc
+Some patches in this part will be conflict with patches in part1, so
+append new patches in this series instead of creating a new one.
+Patch 8-11 are some random fixes and cleanups, see respective log
+message for detail.
+Patch 12-17 factor out codes to mark bit in group is used or free
+which will update on disk block bitmap and group descriptor. Several
+reasons to do this:
+1. pair behavior of alloc/free bits. For example,
+ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+2. remove repeat code to read from disk, update and write back to disk.
+3. reduce future unit test mocks to avoid real IO to update structure
+on disk.
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master v6.3-rc6 next-20230412]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Part3: Patch 18-19 add one unit test for mballoc
+Patch 18 add mocks to functions which will issue IO to disk.
+Patch 19 add unit test for ext4_mb_new_blocks_simple in mballoc.
+Details can be found in respective log message.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Baokun-Li/ext4-only-update-i_reserved_data_blocks-on-successful-block-allocation/20230412-204407
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/20230412124126.2286716-7-libaokun1%40huawei.com
-patch subject: [PATCH v3 6/8] ext4: make ext4_es_insert_delayed_block return void
-config: x86_64-randconfig-a002-20230410 (https://download.01.org/0day-ci/archive/20230413/202304130044.d3iOG59z-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/87f992eeab9cd894894e27c3c6ff322cbd473ebf
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Baokun-Li/ext4-only-update-i_reserved_data_blocks-on-successful-block-allocation/20230412-204407
-        git checkout 87f992eeab9cd894894e27c3c6ff322cbd473ebf
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/ext4/
+Before add more unit test, there are something should be discussed:
+1. How to test static function in mballoc.c
+Currently, include mballoc-test.c in mballoc.c to test static function
+in mballoc.c from mballoc-test.c.Not sure if there is any more elegant
+way to test static function without touch mballoc.c.
+2. How add mocks to function in mballoc.c which may issue IO to disk
+Currently, KUNIT_STATIC_STUB_REDIRECT is added to functions as suggested
+in kunit document [3]. However, this will trigger warnning "ISO C90
+forbids mixed declarations and code".
+3. How to simulate a block bitmap.
+Currently, a fake buffer_head with bitmap data is returned, then no
+futher change is needed.
+If we simulate a block bitmap with an array of data structure like:
+struct test_bitmap {
+       unsigned int	start;
+       unsigned int	len;
+}
+which is suggested by Theodore in [4], then we need to add mocks to
+function which expected bitmap from bitmap_bh->b_data, like
+mb_find_next_bit, mb_find_next_zero_bit and maybe more.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304130044.d3iOG59z-lkp@intel.com/
+Would like to hear any suggestion! Thanks!
 
-All warnings (new ones prefixed by >>):
+[1]
+https://lore.kernel.org/linux-ext4/ZC3MoWn2UO6p+Swp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+[2]
+https://lore.kernel.org/linux-ext4/9b35f3955a1d7b66bbd713eca1e63026e01f78c1.1679731817.git.ojaswin@linux.ibm.com
+[3]
+https://docs.kernel.org/dev-tools/kunit/api/functionredirection.html#c.KUNIT_STATIC_STUB_REDIRECT
+[4]
+https://lore.kernel.org/linux-ext4/20230317155047.GB3270589@mit.edu/
 
->> fs/ext4/inode.c:1640:7: warning: variable 'reserved' set but not used [-Wunused-but-set-variable]
-           bool reserved = false;
-                ^
-   1 warning generated.
+By the way, the "xfstest somke" passes. Please let me know if any more
+test is needed.
 
+Kemeng Shi (19):
+  ext4: fix wrong unit use in ext4_mb_normalize_request
+  ext4: fix unit mismatch in ext4_mb_new_blocks_simple
+  ext4: fix wrong unit use in ext4_mb_find_by_goal
+  ext4: treat stripe in block unit
+  ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
+  ext4: remove ext4_block_group and ext4_block_group_offset declaration
+  ext4: try all groups in ext4_mb_new_blocks_simple
+  ext4: get block from bh before pass it to ext4_free_blocks_simple
+    in ext4_free_blocks
+  ext4: remove unsed parameter and unnecessary forward declaration of
+    ext4_mb_new_blocks_simple
+  ext4: fix wrong unit use in ext4_mb_clear_bb
+  ext4: fix wrong unit use in ext4_mb_new_blocks
+  ext4: factor out codes to update block bitmap and group descriptor on
+    disk from ext4_mb_mark_bb
+  ext4: call ext4_mb_mark_group_bb in ext4_free_blocks_simple
+  ext4: extent ext4_mb_mark_group_bb to support allocation under journal
+  ext4: call ext4_mb_mark_group_bb in ext4_mb_mark_diskspace_used
+  ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
+  ext4: call ext4_mb_mark_group_bb in ext4_group_add_blocks
+  ext4: add some kunit stub for mballoc kunit test
+  ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
 
-vim +/reserved +1640 fs/ext4/inode.c
-
-df22291ff0fde0 Aneesh Kumar K.V 2008-09-08  1623  
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1624  /*
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1625   * ext4_insert_delayed_block - adds a delayed block to the extents status
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1626   *                             tree, incrementing the reserved cluster/block
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1627   *                             count or making a pending reservation
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1628   *                             where needed
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1629   *
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1630   * @inode - file containing the newly added block
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1631   * @lblk - logical block to be added
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1632   *
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1633   * Returns 0 on success, negative error code on failure.
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1634   */
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1635  static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1636  {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1637  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-87f992eeab9cd8 Baokun Li        2023-04-12  1638  	int ret = 0;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1639  	bool allocated = false;
-6fed83957f21ef Jeffle Xu        2021-08-23 @1640  	bool reserved = false;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1641  
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1642  	/*
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1643  	 * If the cluster containing lblk is shared with a delayed,
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1644  	 * written, or unwritten extent in a bigalloc file system, it's
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1645  	 * already been accounted for and does not need to be reserved.
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1646  	 * A pending reservation must be made for the cluster if it's
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1647  	 * shared with a written or unwritten extent and doesn't already
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1648  	 * have one.  Written and unwritten extents can be purged from the
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1649  	 * extents status tree if the system is under memory pressure, so
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1650  	 * it's necessary to examine the extent tree if a search of the
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1651  	 * extents status tree doesn't get a match.
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1652  	 */
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1653  	if (sbi->s_cluster_ratio == 1) {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1654  		ret = ext4_da_reserve_space(inode);
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1655  		if (ret != 0)   /* ENOSPC */
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1656  			goto errout;
-6fed83957f21ef Jeffle Xu        2021-08-23  1657  		reserved = true;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1658  	} else {   /* bigalloc */
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1659  		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1660  			if (!ext4_es_scan_clu(inode,
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1661  					      &ext4_es_is_mapped, lblk)) {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1662  				ret = ext4_clu_mapped(inode,
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1663  						      EXT4_B2C(sbi, lblk));
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1664  				if (ret < 0)
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1665  					goto errout;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1666  				if (ret == 0) {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1667  					ret = ext4_da_reserve_space(inode);
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1668  					if (ret != 0)   /* ENOSPC */
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1669  						goto errout;
-6fed83957f21ef Jeffle Xu        2021-08-23  1670  					reserved = true;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1671  				} else {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1672  					allocated = true;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1673  				}
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1674  			} else {
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1675  				allocated = true;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1676  			}
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1677  		}
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1678  	}
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1679  
-87f992eeab9cd8 Baokun Li        2023-04-12  1680  	ext4_es_insert_delayed_block(inode, lblk, allocated);
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1681  errout:
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1682  	return ret;
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1683  }
-0b02f4c0d6d9e2 Eric Whitney     2018-10-01  1684  
+ fs/ext4/balloc.c       |  13 +
+ fs/ext4/ext4.h         |   4 -
+ fs/ext4/mballoc-test.c | 319 +++++++++++++++++++
+ fs/ext4/mballoc.c      | 703 +++++++++++++++++++----------------------
+ fs/ext4/super.c        |  13 +
+ 5 files changed, 663 insertions(+), 389 deletions(-)
+ create mode 100644 fs/ext4/mballoc-test.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.30.0
+
