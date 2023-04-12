@@ -2,85 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A83E6DF5A6
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 14:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861516DF5B2
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Apr 2023 14:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjDLMk4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Apr 2023 08:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
+        id S229712AbjDLMmQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Apr 2023 08:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbjDLMkz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 08:40:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAD083DE;
-        Wed, 12 Apr 2023 05:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E0KHAAQwHuVG+JUkhMNXRzfAxWNr8pB44DMS1FIDYiU=; b=VL2Xq3mXsX5zJ0mUpgFdjyqzch
-        uwDtv5eusczS8yue8CmgTqmgQlhiERF1JwLtsis14nYKk+RIdUpZM47LPD2BFHt6UpXsa1xX7MUlq
-        QnekFKGKo9ViGfaiGcAq6s4YKopGqFR+iW722YWss5oQKb9l+u8zu789Ruzb9HbRx/zZzFsQ0umAx
-        slzq+P5/cNMhF2GmdH3M1qVbcfQCtTUpgUHQhqO9u68CXXozNoINOdCVMV5plzm+dz1gNP7jGrZvE
-        ZlrzIKFvEvvcxXN0E09iz3XsChVPky8ItYBLK1I+opyB93pWAQHQtWawRH5b332rI/xu7+YxbuakL
-        SS0C2vgQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pmZlw-003AdB-0z;
-        Wed, 12 Apr 2023 12:40:24 +0000
-Date:   Wed, 12 Apr 2023 05:40:24 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
-        dchinner@redhat.com, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
-Message-ID: <ZDamuPYV8khwDzRJ@infradead.org>
-References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <ZDTt8jSdG72/UnXi@infradead.org>
- <20230412023319.GA5105@sol.localdomain>
+        with ESMTP id S230019AbjDLMmN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Apr 2023 08:42:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074E86591;
+        Wed, 12 Apr 2023 05:42:05 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PxMkc3s6YzrSgk;
+        Wed, 12 Apr 2023 20:40:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Wed, 12 Apr
+ 2023 20:42:03 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH v3 0/8] ext4: fix WARNING in ext4_da_update_reserve_space
+Date:   Wed, 12 Apr 2023 20:41:18 +0800
+Message-ID: <20230412124126.2286716-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230412023319.GA5105@sol.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 07:33:19PM -0700, Eric Biggers wrote:
-> It seems it's really just the Merkle tree caching interface that is causing
-> problems, as it's currently too closely tied to the page cache?  That is just an
-> implementation detail that could be reworked along the lines of what is being
-> discussed.
+V1->V2:
+	Modify the patch 1 description and add the Fixes tag.
+	Add the patch 2 as suggested by Jan Kara.
+V2->V3:
+	Remove the redundant judgment of count in Patch [1].
+	Rename ext4_es_alloc_should_nofail to ext4_es_must_keep.
+	Split Patch [2].
+	Make some functions return void to simplify the code.
 
-Well, that and some of the XFS internal changes that seem a bit ugly.
+This patch set consists of three parts:
+1. Patch [1] fix WARNING in ext4_da_update_reserve_space.
+2. Patch [2][3] fix extent tree inconsistencies that may be caused
+   by memory allocation failures.
+3. Patch [4]-[8] is cleanup.
 
-But it's not only very much tied to the page cache, but also to
-page aligned data, which is really part of the problem.
+Baokun Li (8):
+  ext4: only update i_reserved_data_blocks on successful block
+    allocation
+  ext4: add a new helper to check if es must be kept
+  ext4: use __GFP_NOFAIL if allocating extents_status cannot fail
+  ext4: make __es_remove_extent return void
+  ext4: make ext4_es_remove_extent return void
+  ext4: make ext4_es_insert_delayed_block return void
+  ext4: make ext4_es_insert_extent return void
+  ext4: make ext4_zeroout_es return void
 
-> But anyway, it is up to the XFS folks.  Keep in mind there is also the option of
-> doing what btrfs is doing, where it stores the Merkle tree separately from the
-> file data stream, but caches it past i_size in the page cache at runtime.
+ fs/ext4/extents.c        |  49 ++++-----------
+ fs/ext4/extents_status.c | 127 +++++++++++++++++----------------------
+ fs/ext4/extents_status.h |  14 ++---
+ fs/ext4/indirect.c       |   8 +++
+ fs/ext4/inline.c         |  12 +---
+ fs/ext4/inode.c          |  46 +++-----------
+ 6 files changed, 96 insertions(+), 160 deletions(-)
 
-That seems to be the worst of both worlds.
+-- 
+2.31.1
 
-> I guess there is also the issue of encryption, which hasn't come up yet since
-> we're talking about fsverity support only.  The Merkle tree (including the
-> fsverity_descriptor) is supposed to be encrypted, just like the file contents
-> are.  Having it be stored after the file contents accomplishes that easily...
-> Of course, it doesn't have to be that way; a separate key could be derived, or
-> the Merkle tree blocks could be encrypted with the file contents key using
-> indices past i_size, without them physically being stored in the data stream.
-
-xattrs contents better be encrypted as well, fsverity or not.
