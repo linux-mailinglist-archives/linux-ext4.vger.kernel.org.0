@@ -2,142 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C5C6E0B32
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Apr 2023 12:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14246E0B3B
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Apr 2023 12:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjDMKOx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Apr 2023 06:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S230126AbjDMKQ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Apr 2023 06:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjDMKM3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Apr 2023 06:12:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D929750;
-        Thu, 13 Apr 2023 03:12:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 585052183F;
-        Thu, 13 Apr 2023 10:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681380722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hf55BhKINP1L+Xd3BxYZAkmZBMcD2m94S6WBz92mpIY=;
-        b=UIfw/TRhEbPKpHQsYQvxYyuOxsr68jxK5JLtJqz5eBjNtjnyaIZ94sUB5vEh+hltzgan64
-        FuU1jHF9DzYL/owjiSSO12TP7OpCn9ES7lNdnBw700UtT096fcoq+j1ZrCkiqtd9oSgXoq
-        DxYXN6yaT2DxWVO8nfv91MeRuEg3TOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681380722;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hf55BhKINP1L+Xd3BxYZAkmZBMcD2m94S6WBz92mpIY=;
-        b=1H90D2HdSCUPQAnZmtD5OifPVpItgik2eloaM60sMcy3xMIKBTqWQtueinX1bR/hz93qR+
-        28g9IoiiYLYnlTDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39B971390E;
-        Thu, 13 Apr 2023 10:12:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jXGMDXLVN2TyQwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 13 Apr 2023 10:12:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 932CAA0732; Thu, 13 Apr 2023 12:12:01 +0200 (CEST)
-Date:   Thu, 13 Apr 2023 12:12:01 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Guoqing Cai <u202112087@hust.edu.cn>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        HUST OS Kernel Contribution 
-        <hust-os-kernel-patches@googlegroups.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fs: jbd2: fix an incorrect warn log
-Message-ID: <20230413101201.gqtqhuecra3fk7x4@quack3>
-References: <20230413095740.2222066-1-u202112087@hust.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230413095740.2222066-1-u202112087@hust.edu.cn>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S230385AbjDMKQA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Apr 2023 06:16:00 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF0F7D85;
+        Thu, 13 Apr 2023 03:15:52 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso5942146pjc.1;
+        Thu, 13 Apr 2023 03:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681380951; x=1683972951;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S9iYcg2BPN3bHY7EYcbXcn+k5C7okniPPaLCAniOVXU=;
+        b=e8fEskhDmmTK0DJ1oBrL3ziEv37fDjpnueIiKcD006PA5pcbDfJNx3/xQAjKlXMT6f
+         hWdws7qjvAVan/WkRYoZSMICv86wrB5WRIbM/A0yclfIifGUxzYmXux8C7hqGTdvl64p
+         q/HEUcvqQNxhvof7vtYtkhP5Vot3Em542XsY65lExEZDAnYOaiFR5Bp6FKmKt3drhoJg
+         PGkoGWX7fjoTTXEIsSsluT/kDHiaImSA9gniNmoJjWvRVIWYxkNPvZTLM6siDCRDvsxx
+         9zumh6GjUnSt35fJp+IFgPPr5y5aAKl/Ho3rF5OugpYseyahkGiSDhztepqY7m1EWAuR
+         s9mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681380951; x=1683972951;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9iYcg2BPN3bHY7EYcbXcn+k5C7okniPPaLCAniOVXU=;
+        b=JMd1FTM42s8r8SqhEqd4vVRsOF5wzFuLLsMyJrsmywILB5ytE0w8c8CFRL+g0Zw5xQ
+         6X+neOEZ4luxr1l5shsW5czIb/Od3tcb1nGvx+cGBcs2RdtiI/Iij82faiHbl/kLjHbc
+         DVoTWoOnQRsDMnEGU4hK07nyydkfzq1kaRDyk1qcZ4KdfY9AH3SRKivsH9fz5gHtgvU2
+         i7b/HeJmgzikYfWpzRUR0TbL85BbSdqMw29ZAcTN32UivDSnBZqMX2Tao5BuFuWPEvra
+         GNMkWyPtgoO7S3w93/I8PMVvaCuTb6AuJvlRFTxoJtP8f8XXJ3pRZ9O0lADPHhbYYdxZ
+         sZYw==
+X-Gm-Message-State: AAQBX9dTxQbgCcOnW0Sp4AvwSczh2vMP9/0fImdRna56nkBJI9AWvJ/1
+        3+iSbCEi47tggJpcwprw1BY=
+X-Google-Smtp-Source: AKy350Y+zizGgwPqx0FfFitqrgGRpcFVhY0i4y6TpVjxjS+KXbFI/fFSbz1tTzryEbzmU1MsqdEIAQ==
+X-Received: by 2002:a17:90b:4d81:b0:246:5f9e:e4cf with SMTP id oj1-20020a17090b4d8100b002465f9ee4cfmr1389970pjb.43.1681380951441;
+        Thu, 13 Apr 2023 03:15:51 -0700 (PDT)
+Received: from rh-tp ([2406:7400:63:7035:9095:349e:5f0b:ded0])
+        by smtp.gmail.com with ESMTPSA id j10-20020a17090a588a00b00247126a9fb7sm1011835pji.37.2023.04.13.03.15.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Apr 2023 03:15:51 -0700 (PDT)
+Date:   Thu, 13 Apr 2023 15:45:37 +0530
+Message-Id: <87ile0yto6.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFCv3 06/10] fs.h: Add TRACE_IOCB_STRINGS for use in trace points
+In-Reply-To: <20230413-rauchen-gesalzen-f15b4be69248@brauner>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 13-04-23 17:57:39, Guoqing Cai wrote:
-> In jbd2_journal_load(), when journal_reset fails, it prints an incorrect
-> warn log.
-> 
-> Fix this by changing the goto statement to return statement.
-> 
-> Also, return actual error code from jbd2_journal_recover() and journal_reset().
-> 
-> Signed-off-by: Guoqing Cai <u202112087@hust.edu.cn>
+Christian Brauner <brauner@kernel.org> writes:
 
-Looks good. Feel free to add:
+Hi Christian
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks for your review!
 
-								Honza
+> On Thu, Apr 13, 2023 at 02:10:28PM +0530, Ritesh Harjani (IBM) wrote:
+>> Add TRACE_IOCB_STRINGS macro which can be used in the trace point patch to
+>> print different flag values with meaningful string output.
+>>
+>> Tested-by: Disha Goel <disgoel@linux.ibm.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> ---
+>
+> Fine, but fs.h is such a dumping ground already
 
-> ---
-> changelog:
-> - Add a warning log when journal_reset failed.
-> - Return the actual error code.
-> ---
->  fs/jbd2/journal.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index e80c781731f8..147733dd5cc3 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -2082,8 +2082,11 @@ int jbd2_journal_load(journal_t *journal)
->  
->  	/* Let the recovery code check whether it needs to recover any
->  	 * data from the journal. */
-> -	if (jbd2_journal_recover(journal))
-> -		goto recovery_error;
-> +	err = jbd2_journal_recover(journal);
-> +	if (err) {
-> +		pr_warn("JBD2: journal recovery failed\n");
-> +		return err;
-> +	}
->  
->  	if (journal->j_failed_commit) {
->  		printk(KERN_ERR "JBD2: journal transaction %u on %s "
-> @@ -2100,15 +2103,14 @@ int jbd2_journal_load(journal_t *journal)
->  	/* OK, we've finished with the dynamic journal bits:
->  	 * reinitialise the dynamic contents of the superblock in memory
->  	 * and reset them on disk. */
-> -	if (journal_reset(journal))
-> -		goto recovery_error;
-> +	err = journal_reset(journal);
-> +	if (err) {
-> +		pr_warn("JBD2: journal reset failed\n");
-> +		return err;
-> +	}
->  
->  	journal->j_flags |= JBD2_LOADED;
->  	return 0;
-> -
-> -recovery_error:
-> -	printk(KERN_WARNING "JBD2: recovery failed\n");
-> -	return -EIO;
->  }
->  
->  /**
-> -- 
-> 2.40.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Ok, 3205 lines in fs.h.
+
+> I hope we can split more stuff out of it going forward...
+
+Any first thoughts/suggestions like what?
+
+>>  include/linux/fs.h | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index 9ca3813f43e2..6903fc15987a 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -340,6 +340,20 @@ enum rw_hint {
+>>  /* can use bio alloc cache */
+>>  #define IOCB_ALLOC_CACHE	(1 << 21)
+>>
+>> +/* for use in trace events */
+>> +#define TRACE_IOCB_STRINGS \
+>> +	{ IOCB_HIPRI, "HIPRI"	}, \
+>> +	{ IOCB_DSYNC, "DSYNC"	}, \
+>> +	{ IOCB_SYNC, "SYNC"	}, \
+>> +	{ IOCB_NOWAIT, "NOWAIT" }, \
+>> +	{ IOCB_APPEND, "APPEND" }, \
+>> +	{ IOCB_EVENTFD, "EVENTD"}, \
+>
+> s/EVENTD/EVENTFD/
+
+Oops an oversight. Thanks for catching it.
+
+-ritesh
