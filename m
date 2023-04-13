@@ -2,239 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB14A6E102D
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Apr 2023 16:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEAC6E1174
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Apr 2023 17:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjDMOmg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Apr 2023 10:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
+        id S229994AbjDMPxC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Apr 2023 11:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjDMOmf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Apr 2023 10:42:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9D34C3C;
-        Thu, 13 Apr 2023 07:42:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CEDA463F2B;
-        Thu, 13 Apr 2023 14:42:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F932C433D2;
-        Thu, 13 Apr 2023 14:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681396953;
-        bh=CIG3609dFwAQvwvxEdGD0oZDB/oc+gaHoSMvtpFiB+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UTXz1aFrD/HsHugXVQVxvOlEGdF97Ba5phWJJudjIczGZ1vOhBY/06HkXksnL5rIJ
-         Oh0eWtA6qvzrnIg0o3xRhD2iob0eL/2DuMJ4ap+2hAFPE+afRDkn3n6FnCRnGvVzgq
-         hSr/oldye+hhZgfZcJPCXp44m5oYkql9bvH3o3vpKYjylfm1fYBptMW6sVV1jIxpdD
-         WOiMdGVaGhAmwejzfVvQ21HlsJz+orEKNnko5sb3Nxnc3d+UxupxtEAJyaQp4no67T
-         5gbrV2FZ4I4EZ7amVAEXFBFdPxpMShWhcQwJvKLS77GhEbFDqsvuIDiEjvM8MX9ukA
-         fe2epWg+EIwGA==
-Date:   Thu, 13 Apr 2023 07:42:32 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>
-Subject: Re: [RFCv3 10/10] iomap: Add trace points for DIO path
-Message-ID: <20230413144232.GD360877@frogsfrogsfrogs>
-References: <cover.1681365596.git.ritesh.list@gmail.com>
- <93ab8386c4620395c5e674a7930506895fc758ef.1681365596.git.ritesh.list@gmail.com>
+        with ESMTP id S231205AbjDMPwu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Apr 2023 11:52:50 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B765061BD
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Apr 2023 08:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681401169; x=1712937169;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IRIc9XNREzGrWx123Kp23+FgnzgQ8CP7fnAN6sQb6jc=;
+  b=YSikbtNf8o/gGwMUWXrAvQ7XZnqU4gKXcgCUThZArKorVRgLETCMXuy3
+   ttJfzuXVLHfcWhX/PVrBDl7bDzmthIIGAUBk+grH3tJ75bX/Zh1IUym6R
+   370165BRX0IWxbsshz8IhQ2STovGZ0iKIbtuctOz+h8norKpDYZVOhmsp
+   KCDfgkPj6gqh1lcHZi8Yp+oUL5lYI5xPtSSazx+XDI+Ik6tr9gwpcp9c2
+   7Pxk1dnpsT7BtKKV5PPHNCqGNw4B9xq9oSa0MeYKY18mTCp2IfWkgcXY4
+   b7eihJNTsG4U3q7DLbRQ1CIUnhGSSss9TA1zl/mG1X/QBq+Rzpr5oBYtg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="346037657"
+X-IronPort-AV: E=Sophos;i="5.99,194,1677571200"; 
+   d="scan'208";a="346037657"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2023 08:51:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="935640238"
+X-IronPort-AV: E=Sophos;i="5.99,194,1677571200"; 
+   d="scan'208";a="935640238"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Apr 2023 08:51:54 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pmzEn-000Ymr-1f;
+        Thu, 13 Apr 2023 15:51:53 +0000
+Date:   Thu, 13 Apr 2023 23:51:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ e9ebecf266c6657de5865a02a47c0d6b2460c526
+Message-ID: <643824f3.7ESp7kGRyul32/cX%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93ab8386c4620395c5e674a7930506895fc758ef.1681365596.git.ritesh.list@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 02:10:32PM +0530, Ritesh Harjani (IBM) wrote:
-> This patch adds trace point events for iomap DIO path.
-> 
-> <e.g. iomap dio trace>
->      xfs_io-8815  [000]   526.790418: iomap_dio_rw_begin:   dev 7:7 ino 0xc isize 0x0 pos 0x0 count 4096 flags DIRECT dio_flags DIO_FORCE_WAIT done_before 0 aio 0 ret 0
->      xfs_io-8815  [000]   526.790978: iomap_dio_complete:   dev 7:7 ino 0xc isize 0x1000 pos 0x1000 flags DIRECT aio 0 error 0 ret 4096
->      xfs_io-8815  [000]   526.790988: iomap_dio_rw_end:     dev 7:7 ino 0xc isize 0x1000 pos 0x1000 count 0 flags DIRECT dio_flags DIO_FORCE_WAIT done_before 0 aio 0 ret 4096
->         fsx-8827  [005]   526.939345: iomap_dio_rw_begin:   dev 7:7 ino 0xc isize 0x922f8 pos 0x4f000 count 61440 flags NOWAIT|DIRECT|ALLOC_CACHE dio_flags  done_before 0 aio 1 ret 0
->         fsx-8827  [005]   526.939459: iomap_dio_rw_end:     dev 7:7 ino 0xc isize 0x922f8 pos 0x4f000 count 0 flags NOWAIT|DIRECT|ALLOC_CACHE dio_flags  done_before 0 aio 1 ret -529
-> ksoftirqd/5-41    [005]   526.939564: iomap_dio_complete:   dev 7:7 ino 0xc isize 0x922f8 pos 0x5e000 flags NOWAIT|DIRECT|ALLOC_CACHE aio 1 error 0 ret 61440
-> 
-> Tested-by: Disha Goel <disgoel@linux.ibm.com>
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> ---
->  fs/iomap/direct-io.c |  3 ++
->  fs/iomap/trace.c     |  1 +
->  fs/iomap/trace.h     | 90 ++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 94 insertions(+)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 5871956ee880..bb7a6dfbc8b3 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -130,6 +130,7 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
->  	if (ret > 0)
->  		ret += dio->done_before;
->  
-> +	trace_iomap_dio_complete(iocb, dio->error, ret);
->  	kfree(dio);
->  
->  	return ret;
-> @@ -681,6 +682,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	struct iomap_dio *dio;
->  	ssize_t ret = 0;
->  
-> +	trace_iomap_dio_rw_begin(iocb, iter, dio_flags, done_before, ret);
->  	dio = __iomap_dio_rw(iocb, iter, ops, dops, dio_flags, private,
->  			     done_before);
->  	if (IS_ERR_OR_NULL(dio)) {
-> @@ -689,6 +691,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	}
->  	ret = iomap_dio_complete(dio);
->  out:
-> +	trace_iomap_dio_rw_end(iocb, iter, dio_flags, done_before, ret);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(iomap_dio_rw);
-> diff --git a/fs/iomap/trace.c b/fs/iomap/trace.c
-> index da217246b1a9..728d5443daf5 100644
-> --- a/fs/iomap/trace.c
-> +++ b/fs/iomap/trace.c
-> @@ -3,6 +3,7 @@
->   * Copyright (c) 2019 Christoph Hellwig
->   */
->  #include <linux/iomap.h>
-> +#include <linux/uio.h>
->  
->  /*
->   * We include this last to have the helpers above available for the trace
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index f6ea9540d082..dcb4dd4db5fb 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -183,6 +183,96 @@ TRACE_EVENT(iomap_iter,
->  		   (void *)__entry->caller)
->  );
->  
-> +#define TRACE_IOMAP_DIO_STRINGS \
-> +	{IOMAP_DIO_FORCE_WAIT, "DIO_FORCE_WAIT" }, \
-> +	{IOMAP_DIO_OVERWRITE_ONLY, "DIO_OVERWRITE_ONLY" }, \
-> +	{IOMAP_DIO_PARTIAL, "DIO_PARTIAL" }
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: e9ebecf266c6657de5865a02a47c0d6b2460c526  ext4: Use a folio in ext4_read_merkle_tree_page
 
-Can you make the strings line up too, please?
+elapsed time: 724m
 
-> +
-> +DECLARE_EVENT_CLASS(iomap_dio_class,
-> +	TP_PROTO(struct kiocb *iocb, struct iov_iter *iter,
-> +		 unsigned int dio_flags, u64 done_before, int ret),
+configs tested: 47
+configs skipped: 3
 
-We're passing in ssize_t values for @ret, shouldn't the types match?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +	TP_ARGS(iocb, iter, dio_flags, done_before, ret),
-> +	TP_STRUCT__entry(
-> +		__field(dev_t,	dev)
-> +		__field(ino_t,	ino)
-> +		__field(loff_t, isize)
-> +		__field(loff_t, pos)
-> +		__field(u64,	count)
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sparc                               defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                               rhel-8.3   gcc  
 
-What's the difference between "length" as used in the other tracepoints
-and "count" here?
-
-> +		__field(u64,	done_before)
-> +		__field(int,	ki_flags)
-> +		__field(unsigned int,	dio_flags)
-> +		__field(bool,	aio)
-> +		__field(int, ret)
-> +	),
-> +	TP_fast_assign(
-> +		__entry->dev = file_inode(iocb->ki_filp)->i_sb->s_dev;
-> +		__entry->ino = file_inode(iocb->ki_filp)->i_ino;
-> +		__entry->isize = file_inode(iocb->ki_filp)->i_size;
-> +		__entry->pos = iocb->ki_pos;
-> +		__entry->count = iov_iter_count(iter);
-> +		__entry->done_before = done_before;
-> +		__entry->dio_flags = dio_flags;
-> +		__entry->ki_flags = iocb->ki_flags;
-> +		__entry->aio = !is_sync_kiocb(iocb);
-> +		__entry->ret = ret;
-> +	),
-> +	TP_printk("dev %d:%d ino 0x%lx isize 0x%llx pos 0x%llx count %llu "
-
-count and done_before are lengths of file operations, in bytes, right?
-
-Everywhere else we use 0x%llx for that.
-
-> +		  "flags %s dio_flags %s done_before %llu aio %d ret %d",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		  __entry->ino,
-> +		  __entry->isize,
-> +		  __entry->pos,
-> +		  __entry->count,
-> +		  __print_flags(__entry->ki_flags, "|", TRACE_IOCB_STRINGS),
-> +		  __print_flags(__entry->dio_flags, "|", TRACE_IOMAP_DIO_STRINGS),
-> +		  __entry->done_before,
-> +		  __entry->aio,
-> +		  __entry->ret)
-> +)
-> +
-> +#define DEFINE_DIO_RW_EVENT(name)					\
-> +DEFINE_EVENT(iomap_dio_class, name,					\
-> +	TP_PROTO(struct kiocb *iocb, struct iov_iter *iter,		\
-> +		 unsigned int dio_flags, u64 done_before,		\
-> +		 int ret),						\
-> +	TP_ARGS(iocb, iter, dio_flags, done_before, ret))
-> +DEFINE_DIO_RW_EVENT(iomap_dio_rw_begin);
-> +DEFINE_DIO_RW_EVENT(iomap_dio_rw_end);
-> +
-> +TRACE_EVENT(iomap_dio_complete,
-> +	TP_PROTO(struct kiocb *iocb, int error, int ret),
-> +	TP_ARGS(iocb, error, ret),
-> +	TP_STRUCT__entry(
-> +		__field(dev_t,	dev)
-> +		__field(ino_t,	ino)
-> +		__field(loff_t, isize)
-> +		__field(loff_t, pos)
-> +		__field(int,	ki_flags)
-> +		__field(bool,	aio)
-> +		__field(int,	error)
-> +		__field(int,	ret)
-
-Same comment about @ret and ssize_t here.
-
---D
-
-> +	),
-> +	TP_fast_assign(
-> +		__entry->dev = file_inode(iocb->ki_filp)->i_sb->s_dev;
-> +		__entry->ino = file_inode(iocb->ki_filp)->i_ino;
-> +		__entry->isize = file_inode(iocb->ki_filp)->i_size;
-> +		__entry->pos = iocb->ki_pos;
-> +		__entry->ki_flags = iocb->ki_flags;
-> +		__entry->aio = !is_sync_kiocb(iocb);
-> +		__entry->error = error;
-> +		__entry->ret = ret;
-> +	),
-> +	TP_printk("dev %d:%d ino 0x%lx isize 0x%llx pos 0x%llx flags %s aio %d error %d ret %d",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		  __entry->ino,
-> +		  __entry->isize,
-> +		  __entry->pos,
-> +		  __print_flags(__entry->ki_flags, "|", TRACE_IOCB_STRINGS),
-> +		  __entry->aio,
-> +		  __entry->error,
-> +		  __entry->ret)
-> +);
-> +
->  #endif /* _IOMAP_TRACE_H */
->  
->  #undef TRACE_INCLUDE_PATH
-> -- 
-> 2.39.2
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
