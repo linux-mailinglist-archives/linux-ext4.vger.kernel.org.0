@@ -2,68 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AE56E241D
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Apr 2023 15:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2C06E23FD
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Apr 2023 15:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjDNNQ5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Apr 2023 09:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        id S229479AbjDNNGx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Apr 2023 09:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjDNNQ5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Apr 2023 09:16:57 -0400
-Received: from mail.posteburundi.bi (mail.posteburundi.bi [196.2.15.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8185F3A8D;
-        Fri, 14 Apr 2023 06:16:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.posteburundi.bi (Postfix) with ESMTP id 0410F21C3EA1;
-        Fri, 14 Apr 2023 14:57:47 +0200 (CAT)
-Received: from mail.posteburundi.bi ([127.0.0.1])
-        by localhost (mail.posteburundi.bi [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id l3mJ685kePPU; Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.posteburundi.bi (Postfix) with ESMTP id B1C4221C4653;
-        Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.posteburundi.bi B1C4221C4653
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteburundi.bi;
-        s=49734F3E-B0A3-11EC-9971-1E25BC38DE0A; t=1681477066;
-        bh=dfzNWNrtmGnDzpFfAqoHDukvC9bBVQxHlsvV6ZwOE+8=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=anzM3foL0am+x2h25cxcLLcvknrJHsSVxF9MKsUN9m1ZpGNN0pUCyU4QGkU1sw2AS
-         KTZbojrEixWZEd8Orkbq7bjo/0MvuzAp2kQ4nHiXs3//ZbjqJd/1EymqL2Iu72LI19
-         O+cd+3a7LNj/AgbXCq9jAQOW+N5ypEUCVaSvLuwDzCfCiYKCUTYw+vizc7F/sglJjv
-         icDchdVH32nyzWDFbLAuO6w03BqzzXB9clo+ngGYm65h4cxnlgjtIJRUgPdXtZ6zWl
-         KCAjCJhTlMocYdGjOlmOmzUPS8loo/nHa9q6+JD/JV9lhJL8OlaYH0QYAwnAM0yDHQ
-         7WtnKiGzL4U4g==
-X-Virus-Scanned: amavisd-new at posteburundi.bi
-Received: from mail.posteburundi.bi ([127.0.0.1])
-        by localhost (mail.posteburundi.bi [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TCfkmwAJqP-Z; Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
-Received: from [192.168.8.101] (unknown [41.85.163.110])
-        by mail.posteburundi.bi (Postfix) with ESMTPSA id 090AA21C3EA1;
-        Fri, 14 Apr 2023 14:57:38 +0200 (CAT)
-Content-Type: text/plain; charset="iso-8859-1"
+        with ESMTP id S229994AbjDNNGw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Apr 2023 09:06:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B6A269E;
+        Fri, 14 Apr 2023 06:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a7uVri7lJkNYdLXa9nTsHNwRFKHH3fmlJle0oiZUJUc=; b=QOZk1zGQh/c8rQTFozR3dgbCES
+        4H1pF/gCflNH8O5Xcq30nz0QZZ0O3g8IDItFc2bF24qc3HRJI21Eh+vYEjS1pB/rl8M6XrqPjtx9v
+        6YY2yoNXcSdsrPUfqx8uBWjNNHzX9cGU/LK2mczlGV1wKE1JK9x9gF/jFrPbVbWEXDVCE3aJlxNS6
+        QIV2rLiaLvSz6JVv63J2vhX58n+QcFbUw3gCVcs+616iWL+f5kdyooWwg6n9N8OwaWj/XMhamlUAj
+        rXw6G2gtRnHbOQLKH69zJRfcFFe536SqCzTA8mn1Inm4xVFo0kFgXvUtFqZ4isy2SyT5x15E0p07K
+        XAQLzLaQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pnJ8a-009dKj-39;
+        Fri, 14 Apr 2023 13:06:48 +0000
+Date:   Fri, 14 Apr 2023 06:06:48 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>
+Subject: Re: [RFCv3 10/10] iomap: Add trace points for DIO path
+Message-ID: <ZDlP6EiwKDE35ZG7@infradead.org>
+References: <ZDjs+/T/mf1nHUHI@infradead.org>
+ <877cuezykp.fsf@doe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Representative Needed
-To:     Recipients <info@posteburundi.bi>
-From:   Global Trader Company Ltd UK <info@posteburundi.bi>
-Date:   Fri, 14 Apr 2023 13:57:22 +0100
-Reply-To: potterroger68@gmail.com
-Message-Id: <20230414125739.090AA21C3EA1@mail.posteburundi.bi>
-X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877cuezykp.fsf@doe.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My name is , Mrs Rita Potter Rogers we need a Company Representative in you=
-r city location, you can work online or at home and get good payment, conta=
-ct us if interested on this Email: potterroger68@gmail.com
+On Fri, Apr 14, 2023 at 01:26:38PM +0530, Ritesh Harjani wrote:
+> How about this below change? Does this look good to you?
+> It should cover all error types and both entry and exit.
 
-
+I don't think it is very useful.  The complete tracepoint is the
+end of the I/O.  Having a separate end one doesn't make sense.
+That's why I suggested a queued one for the asynchronous case.
