@@ -2,95 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A046E23A1
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Apr 2023 14:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AE56E241D
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Apr 2023 15:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjDNMvw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Apr 2023 08:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        id S229534AbjDNNQ5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Apr 2023 09:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjDNMvv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Apr 2023 08:51:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656F54C22;
-        Fri, 14 Apr 2023 05:51:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 12A6921961;
-        Fri, 14 Apr 2023 12:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681476709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iWBlwHvWOD4JRJQREhWhtFsot85ORsl/tkKnRk+m6bM=;
-        b=BHziAQw+YXHl6adelbQWUX1U8WKCC5KnpNdZOnmPJBwxzXb6lyhLbC6n31Ywyh6hI/0wn+
-        Dd6nMb67APAKYo/Km+049SZ/xhDqFnvWnJLLK00M405pHiln8NlqpHtMvbh/yuZF+YhP5/
-        mgPtHBCO87e2jvY5LIRKB8z48B/ozaI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681476709;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iWBlwHvWOD4JRJQREhWhtFsot85ORsl/tkKnRk+m6bM=;
-        b=R6e8so7n8jrNI3PtwtasNoioQpQSSaT4qKqOkoNLqDwJY5t2IiVT2nVF2fr3Y80C+Yk4H6
-        eU0Zv/WklidAQmCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03658139FC;
-        Fri, 14 Apr 2023 12:51:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CtrRAGVMOWTHdAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 14 Apr 2023 12:51:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 84E78A0732; Fri, 14 Apr 2023 14:51:48 +0200 (CEST)
-Date:   Fri, 14 Apr 2023 14:51:48 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>
-Subject: Re: [RFCv3 02/10] libfs: Add __generic_file_fsync_nolock
- implementation
-Message-ID: <20230414125148.du7r6ljdyzckoysh@quack3>
-References: <cover.1681365596.git.ritesh.list@gmail.com>
- <e65768eb0fe145c803ba4afdc869a1757d51d758.1681365596.git.ritesh.list@gmail.com>
- <ZDjrvCbCwxN+mRUS@infradead.org>
+        with ESMTP id S229457AbjDNNQ5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Apr 2023 09:16:57 -0400
+Received: from mail.posteburundi.bi (mail.posteburundi.bi [196.2.15.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8185F3A8D;
+        Fri, 14 Apr 2023 06:16:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.posteburundi.bi (Postfix) with ESMTP id 0410F21C3EA1;
+        Fri, 14 Apr 2023 14:57:47 +0200 (CAT)
+Received: from mail.posteburundi.bi ([127.0.0.1])
+        by localhost (mail.posteburundi.bi [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id l3mJ685kePPU; Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.posteburundi.bi (Postfix) with ESMTP id B1C4221C4653;
+        Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.posteburundi.bi B1C4221C4653
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteburundi.bi;
+        s=49734F3E-B0A3-11EC-9971-1E25BC38DE0A; t=1681477066;
+        bh=dfzNWNrtmGnDzpFfAqoHDukvC9bBVQxHlsvV6ZwOE+8=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=anzM3foL0am+x2h25cxcLLcvknrJHsSVxF9MKsUN9m1ZpGNN0pUCyU4QGkU1sw2AS
+         KTZbojrEixWZEd8Orkbq7bjo/0MvuzAp2kQ4nHiXs3//ZbjqJd/1EymqL2Iu72LI19
+         O+cd+3a7LNj/AgbXCq9jAQOW+N5ypEUCVaSvLuwDzCfCiYKCUTYw+vizc7F/sglJjv
+         icDchdVH32nyzWDFbLAuO6w03BqzzXB9clo+ngGYm65h4cxnlgjtIJRUgPdXtZ6zWl
+         KCAjCJhTlMocYdGjOlmOmzUPS8loo/nHa9q6+JD/JV9lhJL8OlaYH0QYAwnAM0yDHQ
+         7WtnKiGzL4U4g==
+X-Virus-Scanned: amavisd-new at posteburundi.bi
+Received: from mail.posteburundi.bi ([127.0.0.1])
+        by localhost (mail.posteburundi.bi [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TCfkmwAJqP-Z; Fri, 14 Apr 2023 14:57:46 +0200 (CAT)
+Received: from [192.168.8.101] (unknown [41.85.163.110])
+        by mail.posteburundi.bi (Postfix) with ESMTPSA id 090AA21C3EA1;
+        Fri, 14 Apr 2023 14:57:38 +0200 (CAT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZDjrvCbCwxN+mRUS@infradead.org>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Representative Needed
+To:     Recipients <info@posteburundi.bi>
+From:   Global Trader Company Ltd UK <info@posteburundi.bi>
+Date:   Fri, 14 Apr 2023 13:57:22 +0100
+Reply-To: potterroger68@gmail.com
+Message-Id: <20230414125739.090AA21C3EA1@mail.posteburundi.bi>
+X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 13-04-23 22:59:24, Christoph Hellwig wrote:
-> Still no fan of the naming and placement here.  This is specific
-> to the fs/buffer.c infrastructure.
+My name is , Mrs Rita Potter Rogers we need a Company Representative in you=
+r city location, you can work online or at home and get good payment, conta=
+ct us if interested on this Email: potterroger68@gmail.com
 
-I'm fine with moving generic_file_fsync() & friends to fs/buffer.c and
-creating the new function there if it makes you happier. But I think
-function names should be consistent (hence the new function would be named
-__generic_file_fsync_nolock()). I agree the name is not ideal and would use
-cleanup (along with transitioning everybody to not take i_rwsem) but I
-don't want to complicate this series by touching 13+ callsites of
-generic_file_fsync() and __generic_file_fsync(). That's for a separate
-series.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
