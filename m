@@ -2,178 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CD46E315C
-	for <lists+linux-ext4@lfdr.de>; Sat, 15 Apr 2023 14:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C460B6E3189
+	for <lists+linux-ext4@lfdr.de>; Sat, 15 Apr 2023 15:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjDOMST (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 15 Apr 2023 08:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        id S229931AbjDONPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 15 Apr 2023 09:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjDOMSS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 15 Apr 2023 08:18:18 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0BF30C1;
-        Sat, 15 Apr 2023 05:18:17 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id y13so19278708vss.0;
-        Sat, 15 Apr 2023 05:18:17 -0700 (PDT)
+        with ESMTP id S229908AbjDONPy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 15 Apr 2023 09:15:54 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B036E4C32
+        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 06:15:52 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-63b5312bd34so441557b3a.0
+        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 06:15:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681561096; x=1684153096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KSJMPcUMeTzCmFG5vIa5QVDKVDZ9UTF4q/kaI+qDjNw=;
-        b=gkNz5oGp/vBggcE1Met2bHglt3dt9PWfnChfy2+ApEf7KqYRLf6TCNkijT1w8SjNYB
-         5At1uoRq0NkrSKX90YOG+OM4yLzbFfyzEObN9SD/vX0WeqL+IdjXlH5GcOrLcoqgSHLu
-         orYv54APwg920xDK87Cu6vWeGTGxfgvgFW2W6RX8SWHvfj1Enmrt6D3bbq2YxgPZwDbN
-         KyQ2+V0s3Us4s52E4oqzn19EYVlsbF3moMLTvRQHVvK2CB11+5Q0RpapfeXrV+eJKWkO
-         6zpi0bK8dJ4bdNBOOGpIaKLhhQG2chyh+zLPZxyCaxMmX8gIJpqFisRKGukQAKNflGEu
-         +hiA==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1681564552; x=1684156552;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FDoeyOkk6TLcbWPLicxk2nAcFd4vulVwN1Th/ORcIBE=;
+        b=Ozs96uUdlsV0iLwm5FkjhtfWxZXFvC4NsM6s3QV+/Uck/NrbDym76dousQcXck9W/Z
+         nPM0AOkUDstn5Y0BEiBbeZBzxlpCk6tnVCTUhZwYfHs7ZjXv1m1Yxg3nYguITdjZPm7L
+         HOKKUc06HE5z9DMxRN44fOtuAb2lvQwCtpmOI3aLIwjxlCnMGDewtG28ZOqJ91KjzQ9N
+         knF+H2RjY8Mf4eIymjkzgf5jLvlLVPqwer9pyGaYB0vuX8MIH9KMkJO12mDetxNZuXjk
+         qIrW3nveZIEtE6Up0JdLcmsSzN1KRANcURzkTRy0cEZ9bVO+6Jn6tfrb495kenJud+7Z
+         +zTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681561096; x=1684153096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KSJMPcUMeTzCmFG5vIa5QVDKVDZ9UTF4q/kaI+qDjNw=;
-        b=bkFZD8nk0RjKmqKgyYWlcEjPXpfaF+m9O/dnfzcbVKIVQh5mCGF0iPX5BhSlXqlmwB
-         VfcQVAZJiR8wq1pyk/f2lXTMC9VMEthDr73h5m3OGA+cvLAz8kx3HmHrqWoK0eyEF6ER
-         rwDPTwu+JFvSuVHk+dcDcLjE8OQnNmPYz2HryO4g6BaYFojDqI/Rccr/RP7TqSVEdECv
-         KxYm8JYnwvHSVyJwFsCwBAiLonq+Mu2aU/5xSON/S6oTdHFs5kYrzbZBTUK3XWt7oUpO
-         EM90Os7wuPaDC3jmw1DSPQ9deo2RDT5PnE8Uzd/oL/sNjjeynRGtCcoFDGZ1AhzOl82Z
-         ch5A==
-X-Gm-Message-State: AAQBX9eB/xllzbDaGBHgBKZBX1Veyf6LKRH4ezhUcu7ujxFByE8A62KJ
-        eppc97esHknHdRR1Ak655JvBiztTnQe3wB+RYUDliTjLM/4=
-X-Google-Smtp-Source: AKy350Zv/FpRe2kGL4keuqhS/Mwb6KH/4RHtGa+6+5n2BgBo6RIalKonvfwNksy6LSpTb+BCT+gqChysJTfXEP1hwq4=
-X-Received: by 2002:a67:d99e:0:b0:42e:63a5:c0d6 with SMTP id
- u30-20020a67d99e000000b0042e63a5c0d6mr244704vsj.0.1681561096226; Sat, 15 Apr
- 2023 05:18:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681564552; x=1684156552;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDoeyOkk6TLcbWPLicxk2nAcFd4vulVwN1Th/ORcIBE=;
+        b=We44LwFCJBeDMfznpYxWAohKlLl622pnnh9MUtJX7xxReArPfQqthml8x8AHna4MUB
+         cRYExbMm27VcCMewPF7SOGOPBhfj0rV1IU9ZVGOfcmjKPM+IF0PE3uRHsTZwrJd9LDSC
+         oD08rFLxcq8ZEt0yADZTMWK3YgqmWgcVensNSwFaPmD1yTvgJbku9ryzA/RtEfWjWuVA
+         CBtpgzE4cNuFaZay66rdpDCLSag0HPmiML6w+Y9CTLkyw221xKVHGcK2PSwnOKYfs9CL
+         kbztQvjPc8W2/H3U/mC+NrcEACpiw8rbuWjZDMQFSWpDBRWu13O6yVQmFYLiaQ96u79B
+         E+5A==
+X-Gm-Message-State: AAQBX9fzzs/qloZeZnwmv89q9MXl8ShO32M3yeXc8aqmmBn3+N9HCFYY
+        kkQzsad7fv/fpOhXdC5XA47XTg==
+X-Google-Smtp-Source: AKy350Y7yuybEO7Elj/aE+xeem9Ot8bNg6QT7Ni4yu0UNeS9Yxp/xv2tunXjAJR6POrQVtXXl+NBUw==
+X-Received: by 2002:a05:6a20:2448:b0:e3:6fdb:f6c6 with SMTP id t8-20020a056a20244800b000e36fdbf6c6mr7927795pzc.6.1681564551984;
+        Sat, 15 Apr 2023 06:15:51 -0700 (PDT)
+Received: from [192.168.4.201] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id a21-20020a1709027d9500b001a1cd6c5a88sm4661610plm.73.2023.04.15.06.15.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Apr 2023 06:15:51 -0700 (PDT)
+Message-ID: <cfeade24-81fc-ab73-1fd9-89f12a402486@kernel.dk>
+Date:   Sat, 15 Apr 2023 07:15:49 -0600
 MIME-Version: 1.0
-References: <Y/5ovz6HI2Z47jbk@magnolia>
-In-Reply-To: <Y/5ovz6HI2Z47jbk@magnolia>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 15 Apr 2023 15:18:05 +0300
-Message-ID: <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 1/2] fs: add FMODE_DIO_PARALLEL_WRITE flag
+Content-Language: en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Bernd Schubert <bschubert@ddn.com>, io-uring@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, dsingh@ddn.com
+References: <20230307172015.54911-2-axboe@kernel.dk>
+ <20230412134057.381941-1-bschubert@ddn.com>
+ <CAJfpegt_ZCVodOhQCzF9OqKnCr65mKax0Gu4OTN8M51zP+8TcA@mail.gmail.com>
+ <ZDjggMCGautPUDpW@infradead.org> <20230414153612.GB360881@frogsfrogsfrogs>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230414153612.GB360881@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 10:49=E2=80=AFPM Darrick J. Wong <djwong@kernel.org=
-> wrote:
->
-> Hello fsdevel people,
->
-> Five years ago[0], we started a conversation about cross-filesystem
-> userspace tooling for online fsck.  I think enough time has passed for
-> us to have another one, since a few things have happened since then:
->
-> 1. ext4 has gained the ability to send corruption reports to a userspace
->    monitoring program via fsnotify.  Thanks, Collabora!
->
-> 2. XFS now tracks successful scrubs and corruptions seen during runtime
->    and during scrubs.  Userspace can query this information.
->
-> 3. Directory parent pointers, which enable online repair of the
->    directory tree, is nearing completion.
->
-> 4. Dave and I are working on merging online repair of space metadata for
->    XFS.  Online repair of directory trees is feature complete, but we
->    still have one or two unresolved questions in the parent pointer
->    code.
->
-> 5. I've gotten a bit better[1] at writing systemd service descriptions
->    for scheduling and performing background online fsck.
->
-> Now that fsnotify_sb_error exists as a result of (1), I think we
-> should figure out how to plumb calls into the readahead and writeback
-> code so that IO failures can be reported to the fsnotify monitor.  I
-> suspect there may be a few difficulties here since fsnotify (iirc)
-> allocates memory and takes locks.
->
-> As a result of (2), XFS now retains quite a bit of incore state about
-> its own health.  The structure that fsnotify gives to userspace is very
-> generic (superblock, inode, errno, errno count).  How might XFS export
-> a greater amount of information via this interface?  We can provide
-> details at finer granularity -- for example, a specific data structure
-> under an allocation group or an inode, or specific quota records.
->
-> With (4) on the way, I can envision wanting a system service that would
-> watch for these fsnotify events, and transform the error reports into
-> targeted repair calls in the kernel.  This of course would be very
-> filesystem specific, but I would also like to hear from anyone pondering
-> other usecases for fsnotify filesystem error monitors.
->
-> Once (3) lands, XFS gains the ability to translate a block device IO
-> error to an inode number and file offset, and then the inode number to a
-> path.  In other words, your file breaks and now we can tell applications
-> which file it was so they can failover or redownload it or whatever.
-> Ric Wheeler mentioned this in 2018's session.
->
-> The final topic from that 2018 session concerned generic wrappers for
-> fsscrub.  I haven't pushed hard on that topic because XFS hasn't had
-> much to show for that.  Now that I'm better versed in systemd services,
-> I envision three ways to interact with online fsck:
->
-> - A CLI program that can be run by anyone.
->
-> - Background systemd services that fire up periodically.
->
-> - A dbus service that programs can bind to and request a fsck.
->
-> I still think there's an opportunity to standardize the naming to make
-> it easier to use a variety of filesystems.  I propose for the CLI:
->
-> /usr/sbin/fsscrub $mnt that calls /usr/sbin/fsscrub.$FSTYP $mnt
->
-> For systemd services, I propose "fsscrub@<escaped mountpoint>".  I
-> suspect we want a separate background service that itself runs
-> periodically and invokes the fsscrub@$mnt services.  xfsprogs already
-> has a xfs_scrub_all service that does that.  The services are nifty
-> because it's really easy to restrict privileges, implement resource
-> usage controls, and use private name/mountspaces to isolate the process
-> from the rest of the system.
->
-> dbus is a bit trickier, since there's no precedent at all.  I guess
-> we'd have to define an interface for filesystem "object".  Then we could
-> write a service that establishes a well-known bus name and maintains
-> object paths for each mounted filesystem.  Each of those objects would
-> export the filesystem interface, and that's how programs would call
-> online fsck as a service.
->
-> Ok, that's enough for a single session topic.  Thoughts? :)
+On 4/14/23 9:36?AM, Darrick J. Wong wrote:
+> On Thu, Apr 13, 2023 at 10:11:28PM -0700, Christoph Hellwig wrote:
+>> On Thu, Apr 13, 2023 at 09:40:29AM +0200, Miklos Szeredi wrote:
+>>> fuse_direct_write_iter():
+>>>
+>>> bool exclusive_lock =
+>>>     !(ff->open_flags & FOPEN_PARALLEL_DIRECT_WRITES) ||
+>>>     iocb->ki_flags & IOCB_APPEND ||
+>>>     fuse_direct_write_extending_i_size(iocb, from);
+>>>
+>>> If the write is size extending, then it will take the lock exclusive.
+>>> OTOH, I guess that it would be unusual for lots of  size extending
+>>> writes to be done in parallel.
+>>>
+>>> What would be the effect of giving the  FMODE_DIO_PARALLEL_WRITE hint
+>>> and then still serializing the writes?
+>>
+>> I have no idea how this flags work, but XFS also takes i_rwsem
+>> exclusively for appends, when the positions and size aren't aligned to
+>> the block size, and a few other cases.
+> 
+> IIUC uring wants to avoid the situation where someone sends 300 writes
+> to the same file, all of which end up in background workers, and all of
+> which then contend on exclusive i_rwsem.  Hence it has some hashing
+> scheme that executes io requests serially if they hash to the same value
+> (which iirc is the inode number?) to prevent resource waste.
+> 
+> This flag turns off that hashing behavior on the assumption that each of
+> those 300 writes won't serialize on the other 299 writes, hence it's ok
+> to start up 300 workers.
+> 
+> (apologies for precoffee garbled response)
 
-Darrick,
+Yep, that is pretty much it. If all writes to that inode are serialized
+by a lock on the fs side, then we'll get a lot of contention on that
+mutex. And since, originally, nothing supported async writes, everything
+would get punted to the io-wq workers. io_uring added per-inode hashing
+for this, so that any punt to io-wq of a write would get serialized.
 
-Quick question.
-You indicated that you would like to discuss the topics:
-Atomic file contents exchange
-Atomic directio writes
+IOW, it's an efficiency thing, not a correctness thing.
 
-Are those intended to be in a separate session from online fsck?
-Both in the same session?
+-- 
+Jens Axboe
 
-I know you posted patches for FIEXCHANGE_RANGE [1],
-but they were hiding inside a huge DELUGE and people
-were on New Years holidays, so nobody commented.
-
-Perhaps you should consider posting an uptodate
-topic suggestion to let people have an opportunity to
-start a discussion before LSFMM.
-
-Thanks,
-Amir.
-
-[1] https://lore.kernel.org/linux-fsdevel/167243843494.699466.5163281976943=
-635014.stgit@magnolia/
