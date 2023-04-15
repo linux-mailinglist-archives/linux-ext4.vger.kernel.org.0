@@ -2,96 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 320326E2EBF
-	for <lists+linux-ext4@lfdr.de>; Sat, 15 Apr 2023 05:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0146E2F7F
+	for <lists+linux-ext4@lfdr.de>; Sat, 15 Apr 2023 09:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjDODHf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Apr 2023 23:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S229614AbjDOHom (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 15 Apr 2023 03:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjDODHe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 14 Apr 2023 23:07:34 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2EB1AC
-        for <linux-ext4@vger.kernel.org>; Fri, 14 Apr 2023 20:07:32 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33F37Q6F005552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 23:07:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1681528048; bh=sud8ZK3HnbjNlbVlHr1MrzqDPhT3j/eoD5hu9STHv7E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Dc0tHp9ggFQe9jY2GoNYV2v2Qgr/BVL6IBPxRumal9L1lp3ipnUgPIMj+YXzRg2jL
-         yiO79Nd30Fbzl//LaIG4B4lh4ckFUK80srwBzWqPZMXFayYRH3eVhmSaCbX33V++Xn
-         F/4JkJW/ak7+W1JX50Y/h0i1jwx6OjvSC4vQuejhsxP579iklxKX8pyMjKT1skE4qY
-         IWQO99oGQgk0CJxicNAbqbfv7Lb+3r9YeP2RAsSz7TnXqhY/r1UIum8scY6CMvdG14
-         zyYG0MjYApCGd2Isc4TJJGn4sltaQDesR/iAFwxmpeCu+syCRWUjHzhkytT/jtUQZQ
-         unc9PdIG85UzQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D1CBA15C4935; Fri, 14 Apr 2023 23:07:26 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/13 v1] ext4: Make ext4_writepages() write all journalled data
-Date:   Fri, 14 Apr 2023 23:07:26 -0400
-Message-Id: <168152803794.512165.13094224758869262646.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230329125740.4127-1-jack@suse.cz>
-References: <20230329125740.4127-1-jack@suse.cz>
+        with ESMTP id S229543AbjDOHol (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 15 Apr 2023 03:44:41 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A516D7EF4;
+        Sat, 15 Apr 2023 00:44:39 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1208384a12.1;
+        Sat, 15 Apr 2023 00:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681544679; x=1684136679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nuhNVdlGPw6k76QHxAotfJZ5tPw3XtlEJ9YeMfVt5tQ=;
+        b=Ft8IzVOljPg6JRa/nReAk9YYNWOkSHj59UCrV55AanxgitiazgN9xztW0pCjV8BEcn
+         qb3WGBHE9YKoFgombHfjldFDJ8ETQiGheIYX8d7d202h5JYPdvNECTACfjd9mIkDzL5M
+         wYxn7f6uWrPG9qnzUXblT4VM0WGymgNoOVYsiPIupowyrgsEB3cWYvReWtJOhDJ3NXRF
+         mgVcSm1yQWX05y6gn3iZTH98r91cblRgeWSv46UXi68goX3NC8JKp6GDuUPAF244Wv69
+         yNhgcrWSlzQX93FGpLMZ157ecFzwwQ1Jkfx7xWz6MshhIoKtIMa5Owqp3vBRIKkuuT5Q
+         tTUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681544679; x=1684136679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nuhNVdlGPw6k76QHxAotfJZ5tPw3XtlEJ9YeMfVt5tQ=;
+        b=ZsuJpCMA0DjWiS3CCm/jkICKH8T8MiyCRoYyJpb2qApud1UGz8DKWkdloe7cyidhpP
+         nB34tNctvQ0mm2Mpbwxoa9/3Ek2R4Ly/8/emmiRbcNhkfTQoR3+u1QIy9LiYaUxYhwUN
+         L9WZpiQvdrfzdaLaZDvPQBUSKNeIKDLvyvufqZo9aAe+VOWwr2+Sygxacu5Wr2aemQpn
+         w4ShEL0qKnk9I1kMMZ61Nw91Byx1aUwNqkUpp8Kvfp1eOdLAplOYYtQ1vO//DDwR6mL9
+         oDAxgwhIFhPlOfD6Knzg4Sm6/4MwfF9+2imdPFP7nxywm5a28dkTZbzxyvE2IwCHGLNf
+         9Uvw==
+X-Gm-Message-State: AAQBX9ckeQVoRFlo9fDYdKRy7ZspizplES28C7aRFT/6FiolqAiTSLwm
+        fOoF+yl0vuPGFUAkm6TFJGxTjmD7gaU=
+X-Google-Smtp-Source: AKy350bfuBHeSEqThKdIvDCGjNpAqgRNs0wSR4gDCvCEKaK6F3bEddQJEsaezxYxgmHpbPA6KuRKBA==
+X-Received: by 2002:a05:6a00:21c2:b0:63b:2102:a1c9 with SMTP id t2-20020a056a0021c200b0063b2102a1c9mr11658637pfj.22.1681544678602;
+        Sat, 15 Apr 2023 00:44:38 -0700 (PDT)
+Received: from rh-tp.. ([2406:7400:63:2dd2:1827:1d70:2273:8ee0])
+        by smtp.gmail.com with ESMTPSA id e21-20020aa78255000000b0063b675f01a5sm2338789pfn.11.2023.04.15.00.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Apr 2023 00:44:38 -0700 (PDT)
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFCv4 0/9] ext2: DIO to use iomap
+Date:   Sat, 15 Apr 2023 13:14:21 +0530
+Message-Id: <cover.1681544352.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Please find the series which rewrites ext2 direct-io path to use modern
+iomap interface.
 
-On Wed, 29 Mar 2023 17:49:31 +0200, Jan Kara wrote:
-> These patches modify ext4 so that whenever inode with journalled data is
-> written back we make sure we writeout all the dirty data the inode has.
-> Previously this was not the case as pages with journalled data that were still
-> part of running (or committing) transaction appeared as clean to the writeback
-> code. As a result we can remove workarounds for inodes with journalled data
-> from multiple places.
-> 
-> [...]
+RFCv3 -> RFCV4:
+===============
+1. Renamed __generic_file_fsync_nolock() from libfs to generic_buffer_fsync() in
+   fs/buffer.c
+   (Review comment from Christoph)
+2. Fixed s/EVENTD/EVENTFD/ in TRACE_IOCB_STRINGS
+3. Fixed few data types for parameters in ext2 trace patch (size_t && ssize_t)
+4. Killed this patch "Minor refactor of iomap_dio_rw"
+5. Changed iomap tracepoint patch and fixed the data types (size_t && ssize_t)
+   (addressed review comments from Christoph)
 
-Applied, thanks!
+RFCv2 -> RFCv3:
+===============
+1. Addressed minor review comments related to extern, parameter naming in
+   function declaration, removing not required braces and shorting overly long
+   lines.
+2. Added Reviewed-by from various reviewers.
+3. Fixed a warning & couple of compilation errors in Patch-7 (ext2 trace points)
+   related to CFLAGS_trace & second related to unable to find function
+   definition for iov_iter_count(). (requires uio.h file)
+   CFLAGS_trace is required in Makefile so that it can find trace.h file from
+   tracepoint infrastructure.
+4. Changed naming of IOCB_STRINGS TO TRACE_IOCB_STRINGS.
+5. Shortened naming of tracepoint events for ext2 dio.
+6. Added iomap DIO tracepoint events.
+7. Disha tested this series internally against Power with "auto" group for 4k
+   and 64k blocksize configuration. Added her "Tested-by" tag in all DIO
+   related patches. No new failures were reported.
 
-[01/13] jdb2: Don't refuse invalidation of already invalidated buffers
-        commit: bd159398a2d2234de07d310132865706964aaaa7
-[02/13] ext4: Mark pages with journalled data dirty
-        commit: d84c9ebdac1e39bc7b036c0c829ee8c1956edabc
-[03/13] ext4: Keep pages with journalled data dirty
-        commit: 265e72efa99fcc0959f8d33d346a7e0f2e3fe201
-[04/13] ext4: Clear dirty bit from pages without data to write
-        commit: 5e1bdea6391d09fde424a1406a04e01b208a04d2
-[05/13] ext4: Commit transaction before writing back pages in data=journal mode
-        commit: 1f1a55f0bf069799edd5f21a99ac1e3b10ebafee
-[06/13] ext4: Drop special handling of journalled data from ext4_sync_file()
-        commit: e360c6ed727401ad1a3b5080f06d2ec3a4b75f5b
-[07/13] ext4: Drop special handling of journalled data from extent shifting operations
-        commit: c000dfec7e88cee660cbc594c9716ecc979dc1f1
-[08/13] ext4: Fix special handling of journalled data from extent zeroing
-        commit: 783ae448b7a21ca59ffe5bc261c17d9c3ebfe2ad
-[09/13] ext4: Drop special handling of journalled data from ext4_evict_inode()
-        commit: 56c2a0e3d90d3822fab157883957523e327bc9ae
-[10/13] ext4: Drop special handling of journalled data from ext4_quota_on()
-        commit: 7c375870fdc5f50a001f8265cd8744a78d2d43ab
-[11/13] ext4: Simplify handling of journalled data in ext4_bmap()
-        commit: 951cafa6b80e55b966047b0c9cc5564df8b92145
-[12/13] ext4: Update comment in mpage_prepare_extent_to_map()
-        commit: ab382539adcb43f52d984abf58d8e3459cd707a2
-[13/13] Revert "ext4: Fix warnings when freezing filesystem with journaled data"
-        commit: d0ab8368c175f7b5ef0851283a2ba362a9ab327a
+Thanks everyone for the review and test. The series is looking good to me now.
+It has now been tested on x86 and Power with different configurations.
+Please let me know if anything else is required on this.
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+v2: https://lore.kernel.org/all/ZDTybcM4kjYLSrGI@infradead.org/
+
+Ritesh Harjani (IBM) (9):
+  ext2/dax: Fix ext2_setsize when len is page aligned
+  fs/buffer.c: Add generic_buffer_fsync implementation
+  ext4: Use generic_buffer_fsync() implementation
+  ext2: Use generic_buffer_fsync() implementation
+  ext2: Move direct-io to use iomap
+  fs.h: Add TRACE_IOCB_STRINGS for use in trace points
+  ext2: Add direct-io trace points
+  iomap: Remove IOMAP_DIO_NOSYNC unused dio flag
+  iomap: Add couple of DIO tracepoints
+
+ fs/buffer.c                 |  43 ++++++++++++
+ fs/ext2/Makefile            |   5 +-
+ fs/ext2/ext2.h              |   1 +
+ fs/ext2/file.c              | 128 +++++++++++++++++++++++++++++++++++-
+ fs/ext2/inode.c             |  58 +++++++++-------
+ fs/ext2/trace.c             |   6 ++
+ fs/ext2/trace.h             |  94 ++++++++++++++++++++++++++
+ fs/ext4/fsync.c             |  32 ++++-----
+ fs/iomap/direct-io.c        |   7 +-
+ fs/iomap/trace.c            |   1 +
+ fs/iomap/trace.h            |  35 ++++++++++
+ include/linux/buffer_head.h |   2 +
+ include/linux/fs.h          |  14 ++++
+ include/linux/iomap.h       |   6 --
+ 14 files changed, 384 insertions(+), 48 deletions(-)
+ create mode 100644 fs/ext2/trace.c
+ create mode 100644 fs/ext2/trace.h
+
+--
+2.39.2
+
