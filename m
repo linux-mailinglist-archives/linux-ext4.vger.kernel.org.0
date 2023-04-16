@@ -2,124 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C460B6E3189
-	for <lists+linux-ext4@lfdr.de>; Sat, 15 Apr 2023 15:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7AE6E353C
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Apr 2023 07:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjDONPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 15 Apr 2023 09:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        id S229472AbjDPFrs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Apr 2023 01:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjDONPy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 15 Apr 2023 09:15:54 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B036E4C32
-        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 06:15:52 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-63b5312bd34so441557b3a.0
-        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 06:15:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1681564552; x=1684156552;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FDoeyOkk6TLcbWPLicxk2nAcFd4vulVwN1Th/ORcIBE=;
-        b=Ozs96uUdlsV0iLwm5FkjhtfWxZXFvC4NsM6s3QV+/Uck/NrbDym76dousQcXck9W/Z
-         nPM0AOkUDstn5Y0BEiBbeZBzxlpCk6tnVCTUhZwYfHs7ZjXv1m1Yxg3nYguITdjZPm7L
-         HOKKUc06HE5z9DMxRN44fOtuAb2lvQwCtpmOI3aLIwjxlCnMGDewtG28ZOqJ91KjzQ9N
-         knF+H2RjY8Mf4eIymjkzgf5jLvlLVPqwer9pyGaYB0vuX8MIH9KMkJO12mDetxNZuXjk
-         qIrW3nveZIEtE6Up0JdLcmsSzN1KRANcURzkTRy0cEZ9bVO+6Jn6tfrb495kenJud+7Z
-         +zTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681564552; x=1684156552;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FDoeyOkk6TLcbWPLicxk2nAcFd4vulVwN1Th/ORcIBE=;
-        b=We44LwFCJBeDMfznpYxWAohKlLl622pnnh9MUtJX7xxReArPfQqthml8x8AHna4MUB
-         cRYExbMm27VcCMewPF7SOGOPBhfj0rV1IU9ZVGOfcmjKPM+IF0PE3uRHsTZwrJd9LDSC
-         oD08rFLxcq8ZEt0yADZTMWK3YgqmWgcVensNSwFaPmD1yTvgJbku9ryzA/RtEfWjWuVA
-         CBtpgzE4cNuFaZay66rdpDCLSag0HPmiML6w+Y9CTLkyw221xKVHGcK2PSwnOKYfs9CL
-         kbztQvjPc8W2/H3U/mC+NrcEACpiw8rbuWjZDMQFSWpDBRWu13O6yVQmFYLiaQ96u79B
-         E+5A==
-X-Gm-Message-State: AAQBX9fzzs/qloZeZnwmv89q9MXl8ShO32M3yeXc8aqmmBn3+N9HCFYY
-        kkQzsad7fv/fpOhXdC5XA47XTg==
-X-Google-Smtp-Source: AKy350Y7yuybEO7Elj/aE+xeem9Ot8bNg6QT7Ni4yu0UNeS9Yxp/xv2tunXjAJR6POrQVtXXl+NBUw==
-X-Received: by 2002:a05:6a20:2448:b0:e3:6fdb:f6c6 with SMTP id t8-20020a056a20244800b000e36fdbf6c6mr7927795pzc.6.1681564551984;
-        Sat, 15 Apr 2023 06:15:51 -0700 (PDT)
-Received: from [192.168.4.201] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id a21-20020a1709027d9500b001a1cd6c5a88sm4661610plm.73.2023.04.15.06.15.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Apr 2023 06:15:51 -0700 (PDT)
-Message-ID: <cfeade24-81fc-ab73-1fd9-89f12a402486@kernel.dk>
-Date:   Sat, 15 Apr 2023 07:15:49 -0600
+        with ESMTP id S229593AbjDPFrr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Apr 2023 01:47:47 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A922D79
+        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 22:47:46 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B7B1A67373; Sun, 16 Apr 2023 07:47:42 +0200 (CEST)
+Date:   Sun, 16 Apr 2023 07:47:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     William McVicker <willmcvicker@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
+        linux-ext4@vger.kernel.org,
+        "Stephen E. Baker" <baker.stephen.e@gmail.com>,
+        adilger.kernel@dilger.ca
+Subject: Re: simplify ext4_sb_read_encoding regression
+Message-ID: <20230416054742.GA5427@lst.de>
+References: <YpLLTkje/QUYPP9z@mit.edu> <YpNk4bQlRKmgDw8E@mit.edu> <CAFDdnB0a3mfcoY7rg5N4dO13qMeSsV+PkA2YHeerEOFRv8484Q@mail.gmail.com> <YpQixl+ljcC1VHNU@mit.edu> <CAFDdnB1WxrqddeLJwjsqqgoij1q_QGa=SBs-i=j31W2QbksJ=Q@mail.gmail.com> <YpVeeKRH1bycP7P1@mit.edu> <YpVxYchs1wScNRDw@mit.edu> <CAFDdnB1KJVSXXzXKOc+T+g1Qewr11AS4f9tFJqSMLvfpiX-5Lg@mail.gmail.com> <YpjNf8WGfYh31F+2@mit.edu> <ZDnbW1qYmBLycefL@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 1/2] fs: add FMODE_DIO_PARALLEL_WRITE flag
-Content-Language: en-US
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Bernd Schubert <bschubert@ddn.com>, io-uring@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, dsingh@ddn.com
-References: <20230307172015.54911-2-axboe@kernel.dk>
- <20230412134057.381941-1-bschubert@ddn.com>
- <CAJfpegt_ZCVodOhQCzF9OqKnCr65mKax0Gu4OTN8M51zP+8TcA@mail.gmail.com>
- <ZDjggMCGautPUDpW@infradead.org> <20230414153612.GB360881@frogsfrogsfrogs>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230414153612.GB360881@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZDnbW1qYmBLycefL@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 4/14/23 9:36?AM, Darrick J. Wong wrote:
-> On Thu, Apr 13, 2023 at 10:11:28PM -0700, Christoph Hellwig wrote:
->> On Thu, Apr 13, 2023 at 09:40:29AM +0200, Miklos Szeredi wrote:
->>> fuse_direct_write_iter():
->>>
->>> bool exclusive_lock =
->>>     !(ff->open_flags & FOPEN_PARALLEL_DIRECT_WRITES) ||
->>>     iocb->ki_flags & IOCB_APPEND ||
->>>     fuse_direct_write_extending_i_size(iocb, from);
->>>
->>> If the write is size extending, then it will take the lock exclusive.
->>> OTOH, I guess that it would be unusual for lots of  size extending
->>> writes to be done in parallel.
->>>
->>> What would be the effect of giving the  FMODE_DIO_PARALLEL_WRITE hint
->>> and then still serializing the writes?
->>
->> I have no idea how this flags work, but XFS also takes i_rwsem
->> exclusively for appends, when the positions and size aren't aligned to
->> the block size, and a few other cases.
+On Fri, Apr 14, 2023 at 04:01:47PM -0700, William McVicker wrote:
+> I believe I figured out what is going on here since I am hitting a similar
+> issue with CONFIG_UNICODE. If you take a look at the .config from Stephen's
+> message, you'll see that he sets:
 > 
-> IIUC uring wants to avoid the situation where someone sends 300 writes
-> to the same file, all of which end up in background workers, and all of
-> which then contend on exclusive i_rwsem.  Hence it has some hashing
-> scheme that executes io requests serially if they hash to the same value
-> (which iirc is the inode number?) to prevent resource waste.
+>   CONFIG_TRIM_UNUSED_KSYMS=y
+>   CONFIG_UNUSED_KSYMS_WHITELIST=""
 > 
-> This flag turns off that hashing behavior on the assumption that each of
-> those 300 writes won't serialize on the other 299 writes, hence it's ok
-> to start up 300 workers.
+> When trimming is enabled, kbuild will strip all exported symbols that are not
+> listed in the whitelist. As a result, when utf8-core.c calls:
 > 
-> (apologies for precoffee garbled response)
+>   um->tables = symbol_request(utf8_data_table);
+> 
+> it will fail since `utf8_data_table` doesn't exist in the exported section of
+> the kernel symbol table. For me on Android, this leads to the userdata
+> partition failing to mount. To be clear, this happens when CONFIG_UNICODE=y.
+> 
+> One question I have is -- Why are we using symbol_request()/symbol_put() when
+> `utf8_data_table` is exported? Why can't we directly reference the
+> `utf8_data_table` symbol?
 
-Yep, that is pretty much it. If all writes to that inode are serialized
-by a lock on the fs side, then we'll get a lot of contention on that
-mutex. And since, originally, nothing supported async writes, everything
-would get punted to the io-wq workers. io_uring added per-inode hashing
-for this, so that any punt to io-wq of a write would get serialized.
+We could, but that would require to always include the huge utf8
+case folding tables into the kernel.
 
-IOW, it's an efficiency thing, not a correctness thing.
+The idea here is that there is no sane way to move the utf8 handling code
+into a module that only gets used some times, because common file systems
+like ext4 call into it.  But they only actually use the case folding for
+the very rare case of someone actually using the case insensitive file
+system feature, so we only load the module containing the table for that
+case.
 
--- 
-Jens Axboe
+> If we need to use symbol_request() when CONFIG_UNICODE=m, then can we apply the
+> below patch to fix this when CONFIG_UNICODE=y? I have verified this works for
+> me with CONFIG_UNICODE=y and CONFIG_TRIM_UNUSED_KSYMS=y.
 
+We could do that, but it seems a bit ugly.  What prevents symbol_request
+from working properly for this case in your setup?
