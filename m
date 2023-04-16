@@ -2,54 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C00246E3549
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Apr 2023 07:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141886E354B
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Apr 2023 07:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjDPF4b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Apr 2023 01:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        id S229711AbjDPF4y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Apr 2023 01:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjDPF4b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Apr 2023 01:56:31 -0400
+        with ESMTP id S229593AbjDPF4x (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Apr 2023 01:56:53 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9952D52
-        for <linux-ext4@vger.kernel.org>; Sat, 15 Apr 2023 22:56:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EACB2D52;
+        Sat, 15 Apr 2023 22:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NRUgc0+3mF8ocmKC/1ZSJa0r0TpeHHNJXlCwzUYF9GM=; b=4T4NUOjQyzryZsGwLao6txNw+c
-        DFS1Iw7YZaRAuP59pLece1uElls7tnZ0gaZeTTh5Dpii2yUS0w+IjiJijoU6XOkzngjcx8ivio+DZ
-        MwP6T9pdJPOLm67yBqKXGz8gho69vABitwbIcQ0wPC20m+dyFSs9OtIOE17xAvW0bIktqfzmGF8XY
-        kgQovXM6UFgTM5cviH8yEQJHTONi1ZrIgpgRpsVxf5LTd0539deKXz9abAzjc4E9d2S77eaGYeajG
-        45unRRtrv/POtJGyx7UrPxqiNnbh+RAu+VzvN1EJtJ0gIOiualt3Kq1A2gRMFlOk5jzCGNVAUIZIL
-        OOfe0R2g==;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=RG5jdO7pmWPXMlchXZwx5I9Pqj
+        R0TEOUMOW0sUDYcA+7vYYFLeyRnqWrB0/07qWC2n6YDbBwPMP96FDNr33vs9Bggg1ovEv3quEF8K+
+        kbnYCq3o6o0UjDDtQr0yAwPiwKCYnmqzvZuZeQTr+fFcjN2NLeVzPibuegdk0L2s4ZmJGya2zWO6V
+        m7Q62w15Gdi+/NJkzJnrke3ZF21ntqAaZaZ9zxkBYVFJYB9bUhsg8g5+GBm1MoKS3cU1rJupiKf11
+        CSSFfLdkpPM2sq6eLDORoiWmojDCRfLQ3m23qg5accgagqTXKG/KuNQodg8D9iznUEh0NW2TQeNwM
+        8AKtMCqQ==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pnvN9-00DC3F-0A;
-        Sun, 16 Apr 2023 05:56:23 +0000
-Date:   Sat, 15 Apr 2023 22:56:23 -0700
+        id 1pnvNc-00DC5k-0d;
+        Sun, 16 Apr 2023 05:56:52 +0000
+Date:   Sat, 15 Apr 2023 22:56:52 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     William McVicker <willmcvicker@google.com>,
-        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        "Stephen E. Baker" <baker.stephen.e@gmail.com>,
-        adilger.kernel@dilger.ca
-Subject: Re: simplify ext4_sb_read_encoding regression
-Message-ID: <ZDuOB8We29IAYR/4@infradead.org>
-References: <YpNk4bQlRKmgDw8E@mit.edu>
- <CAFDdnB0a3mfcoY7rg5N4dO13qMeSsV+PkA2YHeerEOFRv8484Q@mail.gmail.com>
- <YpQixl+ljcC1VHNU@mit.edu>
- <CAFDdnB1WxrqddeLJwjsqqgoij1q_QGa=SBs-i=j31W2QbksJ=Q@mail.gmail.com>
- <YpVeeKRH1bycP7P1@mit.edu>
- <YpVxYchs1wScNRDw@mit.edu>
- <CAFDdnB1KJVSXXzXKOc+T+g1Qewr11AS4f9tFJqSMLvfpiX-5Lg@mail.gmail.com>
- <YpjNf8WGfYh31F+2@mit.edu>
- <ZDnbW1qYmBLycefL@google.com>
- <20230416054742.GA5427@lst.de>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>
+Subject: Re: [RFCv4 2/9] fs/buffer.c: Add generic_buffer_fsync implementation
+Message-ID: <ZDuOJCR5dmX8n9gd@infradead.org>
+References: <cover.1681544352.git.ritesh.list@gmail.com>
+ <5969eb067ad38272a1bb0df516965301ff08a919.1681544352.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230416054742.GA5427@lst.de>
+In-Reply-To: <5969eb067ad38272a1bb0df516965301ff08a919.1681544352.git.ritesh.list@gmail.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -60,12 +53,6 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Apr 16, 2023 at 07:47:42AM +0200, Christoph Hellwig wrote:
-> We could do that, but it seems a bit ugly.  What prevents symbol_request
-> from working properly for this case in your setup?
+Looks good:
 
-To anwer to myself - I guess we need something else than a plain
-EXPORT_SYMBOL for everything that is used by
-symbol_request.  Which would be a nice cleanly anyway - exports for
-symbol_request aren't normal exports and should probably have a clear
-marker just to stand out anyway.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
