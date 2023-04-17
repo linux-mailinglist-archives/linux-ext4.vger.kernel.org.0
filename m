@@ -2,183 +2,265 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E596E4E84
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 18:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BC86E4F4A
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 19:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjDQQpy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Apr 2023 12:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S230300AbjDQRem (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Apr 2023 13:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjDQQpx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 12:45:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EA57AB9;
-        Mon, 17 Apr 2023 09:45:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1D3761F6E6;
-        Mon, 17 Apr 2023 16:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681749951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S230358AbjDQRef (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 13:34:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F81B902E
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 10:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681752826;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vSfgyeWUCMr1di6JSEW99BNSZWNgQbxTLcBjCnl+w6Y=;
-        b=VYOsc6N5bWK6WV6aefJ+2qjF6rndgboFJSBRQJlS5eLuXALOBoLDvsqkiL9QPYMkO8k95G
-        Z/wdct/Fpf7EYgqAvqPfY7ECmRkE7N+8TsVexkeQce7NNSJ08Mk4j9rIav2VdTITKMXuJG
-        J1gt9ReLRjeDXWVeDUzypIXO+1vN71c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681749951;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vSfgyeWUCMr1di6JSEW99BNSZWNgQbxTLcBjCnl+w6Y=;
-        b=4kMRYJxusszI+YtrhTVXbC9htzOPdSDBDFPsFpQCE3EycWqMRICmVxlGepUJ3sxFXUrU2o
-        UZtbzVAQEqH9D9Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 085E713319;
-        Mon, 17 Apr 2023 16:45:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id i56YAb93PWS/XgAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 17 Apr 2023 16:45:51 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 7CC1AA0735; Mon, 17 Apr 2023 18:45:50 +0200 (CEST)
-Date:   Mon, 17 Apr 2023 18:45:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCHv5 2/9] fs/buffer.c: Add generic_buffer_fsync
- implementation
-Message-ID: <20230417164550.yw6p4ddruutxqqax@quack3>
-References: <20230417110149.mhrksh4owqkfw5pa@quack3>
- <87o7nmivqm.fsf@doe.com>
+        bh=Jm85SSVaopQAxnU3x7Lrot1DU+GlbD9SOLxgFW9cj5k=;
+        b=c2moo9YH8STRbnVlFl98w9cL6GP0h32x+n9S85qFWy7vH6+Ly0u7o8Pd13sqc0xiMmjBbM
+        xgoYKl8aH1G4bxr8+Lvj3XvyKsrOI9wUnE40thast8q1Tbu/32Opq5l09MCFqINRAlGCPb
+        PLr7Y5n8hQVolJO78aiCSPi/USohEFk=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-99-fDxprojrOlmCwyMlV_ujQg-1; Mon, 17 Apr 2023 13:33:45 -0400
+X-MC-Unique: fDxprojrOlmCwyMlV_ujQg-1
+Received: by mail-qk1-f198.google.com with SMTP id t23-20020a374617000000b0074a4dba4b5aso18949662qka.16
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 10:33:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681752824; x=1684344824;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jm85SSVaopQAxnU3x7Lrot1DU+GlbD9SOLxgFW9cj5k=;
+        b=KJW3uDIcfvIRATPb7HoHaJSXtx4rXCBeg3W4RXHejihyy5xepP2fuaE3dyXlzU6fEN
+         d2VDHgyg5l7nynZpbCz3FG6MO9A6s8ssKJX33zPC5PHxjPmirYMmJcVaNNb2CtMA6L6Y
+         8RLwkwE0+Mr7gBPjw6DCBVzbDUzwVv2w9VzlsEXGXCiS2WHZtK323IW7vjmZEcPhjPRl
+         GeB3kYmn/27LixPpyxg4VtAC6UJYB9nhEQMUqVMGmRBy2OKYpoVS4JFb0mbd332QCbiQ
+         LNuifDilpSDXA7f0FSk5d6b011JQlSThfxBBbHaI7iH+TzaZvPdqv2NR6FCfyV8W0gjP
+         SBgg==
+X-Gm-Message-State: AAQBX9cRVVipvNkcCrbymvatYGng+02jIgqWVSv6Mw1iI4BlvSnU66gY
+        htz6ti6VHoJmheJooVuckfn+bscydTEDL46T3CS3umwAMU3LJPkLkzNT+zTy5/fucbflWraeSfn
+        ZoJjIcWKNYvhzZqH7ujySaA==
+X-Received: by 2002:a05:622a:1746:b0:3ec:e29f:6f4f with SMTP id l6-20020a05622a174600b003ece29f6f4fmr13735672qtk.33.1681752824519;
+        Mon, 17 Apr 2023 10:33:44 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZygDANXtkSDESQaT+/nlutXw5EifsNXMDbt5vvWnxrF6WrCl5NaVCG+oOnpCy/E82arPOA9Q==
+X-Received: by 2002:a05:622a:1746:b0:3ec:e29f:6f4f with SMTP id l6-20020a05622a174600b003ece29f6f4fmr13735633qtk.33.1681752824192;
+        Mon, 17 Apr 2023 10:33:44 -0700 (PDT)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id p24-20020a05620a22f800b0074a2467f541sm3337263qki.35.2023.04.17.10.33.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Apr 2023 10:33:43 -0700 (PDT)
+Date:   Mon, 17 Apr 2023 13:35:46 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        Daniil Lunev <dlunev@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v3 1/3] block: Introduce provisioning primitives
+Message-ID: <ZD2DcvyHdNmkdwr1@bfoster>
+References: <20221229071647.437095-1-sarthakkukreti@chromium.org>
+ <20230414000219.92640-1-sarthakkukreti@chromium.org>
+ <20230414000219.92640-2-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o7nmivqm.fsf@doe.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230414000219.92640-2-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 17-04-23 17:08:57, Ritesh Harjani wrote:
-> Jan Kara <jack@suse.cz> writes:
+On Thu, Apr 13, 2023 at 05:02:17PM -0700, Sarthak Kukreti wrote:
+> Introduce block request REQ_OP_PROVISION. The intent of this request
+> is to request underlying storage to preallocate disk space for the given
+> block range. Block devices that support this capability will export
+> a provision limit within their request queues.
 > 
-> > On Sun 16-04-23 15:38:37, Ritesh Harjani (IBM) wrote:
-> >> Some of the higher layers like iomap takes inode_lock() when calling
-> >> generic_write_sync().
-> >> Also writeback already happens from other paths without inode lock,
-> >> so it's difficult to say that we really need sync_mapping_buffers() to
-> >> take any inode locking here. Having said that, let's add
-> >> generic_buffer_fsync() implementation in buffer.c with no
-> >> inode_lock/unlock() for now so that filesystems like ext2 and
-> >> ext4's nojournal mode can use it.
-> >>
-> >> Ext4 when got converted to iomap for direct-io already copied it's own
-> >> variant of __generic_file_fsync() without lock. Hence let's add a helper
-> >> API and use it both in ext2 and ext4.
-> >>
-> >> Later we can review other filesystems as well to see if we can make
-> >> generic_buffer_fsync() which does not take any inode_lock() as the
-> >> default path.
-> >>
-> >> Tested-by: Disha Goel <disgoel@linux.ibm.com>
-> >> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> >> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> >
-> > There is a problem with generic_buffer_fsync() that it does not call
-> > blkdev_issue_flush() so the caller is responsible for doing that. That's
-> > necessary for ext2 & ext4 so fine for now. But historically this was the
-> > case with generic_file_fsync() as well and that led to many filesystem
-> > forgetting to flush caches from fsync(2).
+> This patch also adds the capability to call fallocate() in mode 0
+> on block devices, which will send REQ_OP_PROVISION to the block
+> device for the specified range,
 > 
-> Ok, thanks for the details.
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/blk-core.c          |  5 ++++
+>  block/blk-lib.c           | 53 +++++++++++++++++++++++++++++++++++++++
+>  block/blk-merge.c         | 18 +++++++++++++
+>  block/blk-settings.c      | 19 ++++++++++++++
+>  block/blk-sysfs.c         |  8 ++++++
+>  block/bounce.c            |  1 +
+>  block/fops.c              | 14 ++++++++---
+>  include/linux/bio.h       |  6 +++--
+>  include/linux/blk_types.h |  5 +++-
+>  include/linux/blkdev.h    | 16 ++++++++++++
+>  10 files changed, 138 insertions(+), 7 deletions(-)
 > 
-> > What is our transition plan for
-> > these filesystems that currently do the cache flush from
-> > generic_file_fsync()? Do we want to eventually keep generic_file_fsync()
-> > doing the cache flush and call generic_buffer_fsync() instead of
-> > __generic_buffer_fsync() from it?
+...
+> diff --git a/block/fops.c b/block/fops.c
+> index d2e6be4e3d1c..f82da2fb8af0 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+> @@ -625,7 +625,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  	int error;
+>  
+>  	/* Fail if we don't recognize the flags. */
+> -	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
+> +	if (mode != 0 && mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
+>  		return -EOPNOTSUPP;
+>  
+>  	/* Don't go off the end of the device. */
+> @@ -649,11 +649,17 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  	filemap_invalidate_lock(inode->i_mapping);
+>  
+>  	/* Invalidate the page cache, including dirty pages. */
+> -	error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> -	if (error)
+> -		goto fail;
+> +	if (mode != 0) {
+> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> +		if (error)
+> +			goto fail;
+> +	}
+>  
+>  	switch (mode) {
+> +	case 0:
+> +		error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
+> +					       len >> SECTOR_SHIFT, GFP_KERNEL);
+> +		break;
+
+I would think we'd want to support any combination of
+FALLOC_FL_KEEP_SIZE and FALLOC_FL_UNSHARE_RANGE..? All of the other
+commands support the former modifier, for one. It also looks like if
+somebody attempts to invoke with mode == FALLOC_FL_KEEP_SIZE, even with
+the current upstream code that would perform the bdev truncate before
+returning -EOPNOTSUPP. That seems like a bit of an unfortunate side
+effect to me.
+
+WRT to unshare, if the PROVISION request is always going to imply an
+unshare (which seems reasonable to me), there's probably no reason to
+-EOPNOTSUPP if a caller explicitly passes UNSHARE_RANGE.
+
+Brian
+
+>  	case FALLOC_FL_ZERO_RANGE:
+>  	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
+>  		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index d766be7152e1..9820b3b039f2 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -57,7 +57,8 @@ static inline bool bio_has_data(struct bio *bio)
+>  	    bio->bi_iter.bi_size &&
+>  	    bio_op(bio) != REQ_OP_DISCARD &&
+>  	    bio_op(bio) != REQ_OP_SECURE_ERASE &&
+> -	    bio_op(bio) != REQ_OP_WRITE_ZEROES)
+> +	    bio_op(bio) != REQ_OP_WRITE_ZEROES &&
+> +	    bio_op(bio) != REQ_OP_PROVISION)
+>  		return true;
+>  
+>  	return false;
+> @@ -67,7 +68,8 @@ static inline bool bio_no_advance_iter(const struct bio *bio)
+>  {
+>  	return bio_op(bio) == REQ_OP_DISCARD ||
+>  	       bio_op(bio) == REQ_OP_SECURE_ERASE ||
+> -	       bio_op(bio) == REQ_OP_WRITE_ZEROES;
+> +	       bio_op(bio) == REQ_OP_WRITE_ZEROES ||
+> +	       bio_op(bio) == REQ_OP_PROVISION;
+>  }
+>  
+>  static inline void *bio_data(struct bio *bio)
+> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> index 99be590f952f..27bdf88f541c 100644
+> --- a/include/linux/blk_types.h
+> +++ b/include/linux/blk_types.h
+> @@ -385,7 +385,10 @@ enum req_op {
+>  	REQ_OP_DRV_IN		= (__force blk_opf_t)34,
+>  	REQ_OP_DRV_OUT		= (__force blk_opf_t)35,
+>  
+> -	REQ_OP_LAST		= (__force blk_opf_t)36,
+> +	/* request device to provision block */
+> +	REQ_OP_PROVISION        = (__force blk_opf_t)37,
+> +
+> +	REQ_OP_LAST		= (__force blk_opf_t)38,
+>  };
+>  
+>  enum req_flag_bits {
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index 941304f17492..239e2f418b6e 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -303,6 +303,7 @@ struct queue_limits {
+>  	unsigned int		discard_granularity;
+>  	unsigned int		discard_alignment;
+>  	unsigned int		zone_write_granularity;
+> +	unsigned int		max_provision_sectors;
+>  
+>  	unsigned short		max_segments;
+>  	unsigned short		max_integrity_segments;
+> @@ -921,6 +922,8 @@ extern void blk_queue_max_discard_sectors(struct request_queue *q,
+>  		unsigned int max_discard_sectors);
+>  extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
+>  		unsigned int max_write_same_sectors);
+> +extern void blk_queue_max_provision_sectors(struct request_queue *q,
+> +		unsigned int max_provision_sectors);
+>  extern void blk_queue_logical_block_size(struct request_queue *, unsigned int);
+>  extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
+>  		unsigned int max_zone_append_sectors);
+> @@ -1060,6 +1063,9 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+>  int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sector,
+>  		sector_t nr_sects, gfp_t gfp);
+>  
+> +extern int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
+> +		sector_t nr_sects, gfp_t gfp_mask);
+> +
+>  #define BLKDEV_ZERO_NOUNMAP	(1 << 0)  /* do not free blocks */
+>  #define BLKDEV_ZERO_NOFALLBACK	(1 << 1)  /* don't write explicit zeroes */
+>  
+> @@ -1139,6 +1145,11 @@ static inline unsigned short queue_max_discard_segments(const struct request_que
+>  	return q->limits.max_discard_segments;
+>  }
+>  
+> +static inline unsigned short queue_max_provision_sectors(const struct request_queue *q)
+> +{
+> +	return q->limits.max_provision_sectors;
+> +}
+> +
+>  static inline unsigned int queue_max_segment_size(const struct request_queue *q)
+>  {
+>  	return q->limits.max_segment_size;
+> @@ -1281,6 +1292,11 @@ static inline bool bdev_nowait(struct block_device *bdev)
+>  	return test_bit(QUEUE_FLAG_NOWAIT, &bdev_get_queue(bdev)->queue_flags);
+>  }
+>  
+> +static inline unsigned int bdev_max_provision_sectors(struct block_device *bdev)
+> +{
+> +	return bdev_get_queue(bdev)->limits.max_provision_sectors;
+> +}
+> +
+>  static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
+>  {
+>  	return blk_queue_zoned_model(bdev_get_queue(bdev));
+> -- 
+> 2.40.0.634.g4ca3ef3211-goog
 > 
-> Frankly speaking, I was thinking we will come back to this question
-> maybe when we start working on those changes. At this point in time
-> I only looked at it from ext2 DIO changes perspective.
 
-Yes, we can return to this later. The only thing I wanted to kind of make
-sure is we don't have to rename the function again when adding support for
-other filesystems (although even that would not be a big issue given there
-are two callers).
-
-> But since you asked, here is what I think we could do -
-> 
-> Rename generic_file_fsync => generic_buffers_sync() to fs/buffers.c
-> Then
-> generic_buffers_sync() {
->     ret = generic_buffers_fsync()
->     if (!ret)
->        blkdev_issue_flush()
-> }
-> 
-> generic_buffers_fsync() is same as in this patch which does not have the
-> cache flush operation.
-> (will rename from generic_buffer_fsync() to generic_buffers_fsync())
-> 
-> Note: The naming is kept such that-
-> - sync means it will do fsync followed by cache flush.
-> - fsync means it will only do the file fsync
-
-Hum, I think the difference sync vs fsync is too subtle and non-obvious.
-I can see sensible pairs like:
-
-	__generic_buffers_fsync() - "__" indicates you should know what you
-				are doing when calling this
-	generic_buffers_fsync()
-
-or
-
-	generic_buffers_fsync()
-	generic_file_fsync() - difficult at this point as there's name
-			       clash
-
-or
-
-	generic_buffers_fsync_noflush()
-	generic_buffers_fsync() - obvious what the default "safe" choice
-				  is.
-
-or something like that.
-
-> As I understand - we would eventually like to kill the
-> inode_lock() variants of generic_file_fsync() and __generic_file_fsync()
-> after auditing other filesystem code, right?
-
-Yes.
-
-> Then for now what we need is generic_buffers_sync() function which does
-> not take an inode_lock() and also does cache flush which is required for ext2.
-> And generic_buffers_fsync() which does not do any cache flush operations
-> required by filesystem like ext4.
-> 
-> Does that sound good to you? Is the naming also proper?
-
-I agree with the plan, just the naming is hard :)
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
