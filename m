@@ -2,173 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297D26E3ECC
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 07:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974976E411E
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 09:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjDQFQd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Apr 2023 01:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
+        id S230042AbjDQHfJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Apr 2023 03:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbjDQFQd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 01:16:33 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E9610CE
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Apr 2023 22:16:31 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id f2so15793539pjs.3
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Apr 2023 22:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681708590; x=1684300590;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Da39940bUtCGNnrToOzigumDGUe6e9grd2Jnl74JVMA=;
-        b=eGVOA9KFHAna4kgZL0QkFT35SXThSAPQr/DY2IeKZ02DFDNCwTdTVa0W4czkhkTWGM
-         BXaq9pMLk+QrO4soZ9+orYhinUabeYAJo03QAwb7XFJ77SyGNnMMv8Mw3KAu2dS2FB1o
-         G1IzXY7QJQRBPSNjwhX2XPnT44fA3Ft056Sh7MTnjzorew2yJHCNeOK/m8VeB94v43EB
-         vLW4uCXfpKJ/7zMlXlfjyJ282zOhzuZNDYq8jSx/ybGBm8V6XsJ2pZl98BI76P8rR1tJ
-         EfjdaciDlyscGwhOpcrel7DRLisHmrfzUIGlHrItE7zjJYWtN9/YdLU+15KsCZqT//ME
-         5URg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681708590; x=1684300590;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Da39940bUtCGNnrToOzigumDGUe6e9grd2Jnl74JVMA=;
-        b=fcQhsWzcKSwUYHjqzH0kVwE0nlWsgdz+1l39YtQQm9M4m8LzrtCm9vHypf+U02E4dw
-         xSgHUhDhZGtW91gRDa/OlZPAU23Jf1eHCWyJAhb+lIf+kIGHHi3RGYTke2jRi8jCD2pY
-         NqxcjIgjviWww6ozO4sPj6HERUzfH+Z7xvJA9OupBZYMb9pYNBKIxOPugTieQnov1Pa/
-         F2jziI+tb5/WKJshbz7SP3A2VN9P3jHu1gLvCzll2fZgzzgOo6Hz1S+i6pMazm9hePUo
-         3j1tqnhwc67ECpJrU4Wqw48LPHmSTOmL5oUwzKWt4cXfZ4URAuHv45R/3NE6fDaLdVjb
-         Hl7w==
-X-Gm-Message-State: AAQBX9eE3rmTjE0x7z9VkPoFpjFT3EHAoZKk+hndh8wX1uFo8FraIMMp
-        lSTBhD+EwD6B4/A8Sl8MQyI=
-X-Google-Smtp-Source: AKy350bvNrZfXcEaShNUt1vWga1LU2RJN0FpIIziy+t0m4CpPe1g9A+G3L8GH8libuIdrGJGsO4yqQ==
-X-Received: by 2002:a05:6a21:7882:b0:ee:4c57:197 with SMTP id bf2-20020a056a21788200b000ee4c570197mr14643063pzc.18.1681708590489;
-        Sun, 16 Apr 2023 22:16:30 -0700 (PDT)
-Received: from rh-tp ([129.41.58.20])
-        by smtp.gmail.com with ESMTPSA id b7-20020a6567c7000000b005038291e5cbsm3021454pgs.35.2023.04.16.22.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Apr 2023 22:16:30 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 10:46:24 +0530
-Message-Id: <87ttxfhyvr.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        with ESMTP id S230468AbjDQHer (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 03:34:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B012359FA;
+        Mon, 17 Apr 2023 00:33:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D30351F381;
+        Mon, 17 Apr 2023 07:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1681716775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1axJXJTrCrdB9QZslQSPdRgRQtIBzg09tPZ/jwDGYD8=;
+        b=BQhQP/NiwLQ9VGUs/EI3MGuR40+QJo7BhDJ/ViTDuayUDtr1vC51NRBklIh+URgtO5O5CQ
+        rO023UDu/XRwZB1p4OHjqs756loDhkv2cuebSdLoOQX8J7ULkY+YXgSdBP/BQOe1WqNrPP
+        2DtVFNW+98vffHwjuwo13LWxGWVc2LI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1681716775;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1axJXJTrCrdB9QZslQSPdRgRQtIBzg09tPZ/jwDGYD8=;
+        b=6LoPigRWInhHVaw1fJVtkTSzfqk9Jg9DmuST6Zmt2yFvGm6nD0DqOdqHLbKj6V6hPfQY0m
+        WxP1xKQ47K3PktAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B51A11390E;
+        Mon, 17 Apr 2023 07:32:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CWU0LCf2PGTjIgAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 17 Apr 2023 07:32:55 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 3F241A0744; Mon, 17 Apr 2023 09:32:55 +0200 (CEST)
+Date:   Mon, 17 Apr 2023 09:32:55 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
         Ojaswin Mujoo <ojaswin@linux.ibm.com>,
         Disha Goel <disgoel@linux.ibm.com>
-Subject: Re: [RFCv1 3/4] ext4: Make mpage_journal_page_buffers use folio
-In-Reply-To: <87zg77ici3.fsf@doe.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [RFCv3 02/10] libfs: Add __generic_file_fsync_nolock
+ implementation
+Message-ID: <20230417073255.kzauk5qwu5bjcsmh@quack3>
+References: <20230414142053.gvekvcgxmkjfeht7@quack3>
+ <871qkmzgdl.fsf@doe.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871qkmzgdl.fsf@doe.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+On Fri 14-04-23 19:59:42, Ritesh Harjani wrote:
+> Jan Kara <jack@suse.cz> writes:
+> 
+> > On Fri 14-04-23 06:12:00, Christoph Hellwig wrote:
+> >> On Fri, Apr 14, 2023 at 02:51:48PM +0200, Jan Kara wrote:
+> >> > On Thu 13-04-23 22:59:24, Christoph Hellwig wrote:
+> >> > > Still no fan of the naming and placement here.  This is specific
+> >> > > to the fs/buffer.c infrastructure.
+> >> >
+> >> > I'm fine with moving generic_file_fsync() & friends to fs/buffer.c and
+> >> > creating the new function there if it makes you happier. But I think
+> >> > function names should be consistent (hence the new function would be named
+> >> > __generic_file_fsync_nolock()). I agree the name is not ideal and would use
+> >> > cleanup (along with transitioning everybody to not take i_rwsem) but I
+> >> > don't want to complicate this series by touching 13+ callsites of
+> >> > generic_file_fsync() and __generic_file_fsync(). That's for a separate
+> >> > series.
+> >>
+> >> I would not change the existing function.  Just do the right thing for
+> >> the new helper and slowly migrate over without complicating this series.
+> >
+> > OK, I can live with that temporary naming inconsistency I guess. So
+> > the function will be __buffer_file_fsync()?
+> 
+> This name was suggested before, so if that's ok I will go with this -
+> "generic_buffer_fsync()". It's definition will lie in fs/buffer.c and
+> it's declaration in include/linux/buffer_head.h
+> 
+> Is that ok?
 
-> Matthew Wilcox <willy@infradead.org> writes:
->
->> On Mon, Apr 17, 2023 at 12:01:52AM +0530, Ritesh Harjani (IBM) wrote:
->>> This patch converts mpage_journal_page_buffers() to use folio and also
->>> removes the PAGE_SIZE assumption.
->>
->> Bit of an oversight on my part.  I neglected to do this after Jan added
->> it.  Perils of parallel development ...
->>
->
-> Yes, these got left overs because of the parallel series.
->
->>> -static int ext4_journal_page_buffers(handle_t *handle, struct page *page,
->>> -				     int len)
->>> +static int ext4_journal_page_buffers(handle_t *handle, struct folio *folio,
->>> +				     size_t len)
->>
->> Should this be called ext4_journal_folio_buffers?
->
-> Sure. Will make the change. Otherwise this patch looks good to you?
-> I also had a query regarding setting "len = size - folio_pos(folio)" in this patch.
-> Details of which I had pasted in the cover letter. Let me copy-paste
-> it here from the cover letter. Could you please take a look at it?
->
->
-> <copy-paste>
-> Also had a query w.r.t your change [1]. I couldn't understand this change diff
-> from [1]. Given if we are making the conversion to folio, then shouldn't we do
-> len = size - folio_pos(pos), instead of len = size & ~PAGE_MASK
-> Could you please tell if the current change in [1] is kept deliberately?
-> At other places you did make len as size - folio_pos(pos) which removes the
-> PAGE_SIZE assumption.
->
-> -static int mpage_submit_page(struct mpage_da_data *mpd, struct page *page)
-> +static int mpage_submit_folio(struct mpage_da_data *mpd, struct folio *folio)
->  {
-> -	int len;
-> +	size_t len;
->
-> 	<...>
->
-> 	size = i_size_read(mpd->inode);
-> -	if (page->index == size >> PAGE_SHIFT &&
-> +	len = folio_size(folio);
-> +	if (folio_pos(folio) + len > size &&
->  	    !ext4_verity_in_progress(mpd->inode))
->  		len = size & ~PAGE_MASK;
-> -	else
-> -		len = PAGE_SIZE;
-> -	err = ext4_bio_write_page(&mpd->io_submit, page, len);
-> +	err = ext4_bio_write_page(&mpd->io_submit, &folio->page, len);
->  	if (!err)
->  		mpd->wbc->nr_to_write--;
->
-> [1]: https://lore.kernel.org/linux-ext4/20230324180129.1220691-7-willy@infradead.org/
+Yes, that is fine by me. And I suppose this variant will also issue the
+cache flush, won't it? But then we also need __generic_buffer_fsync()
+without issuing the cache flush for ext4 (we need to sync parent before
+issuing a cache flush) and FAT.
 
-Here is the complete function. Looking at it again, I think we should make
-len = size - folio_pos(folio) (at linenumber 26, like how it is done at
-other places in ext4-folio patches), because we now call
-ext4_bio_write_folio() instead of ext4_bio_write_page().
-
-Although I know it doesn't make a difference in the functionality today
-since folio_size(folio) today in case of ext4 is still PAGE_SIZE.
-
-Please let me know if this understanding is correct. If yes, then I can
-write a patch to make len = size - folio_pos(folio) at line 26.
-
-If not I will be happy to know more about what am I missing.
-
- 1 static int mpage_submit_folio(struct mpage_da_data *mpd, struct folio *folio)
- 2 {
- 3         size_t len;
- 4         loff_t size;
- 5         int err;
- 6
- 7         BUG_ON(folio->index != mpd->first_page);
- 8         folio_clear_dirty_for_io(folio);
- 9         /*
-10          * We have to be very careful here!  Nothing protects writeback path
-11          * against i_size changes and the page can be writeably mapped into
-12          * page tables. So an application can be growing i_size and writing
-13          * data through mmap while writeback runs. folio_clear_dirty_for_io()
-14          * write-protects our page in page tables and the page cannot get
-15          * written to again until we release folio lock. So only after
-16          * folio_clear_dirty_for_io() we are safe to sample i_size for
-17          * ext4_bio_write_folio() to zero-out tail of the written page. We rely
-18          * on the barrier provided by folio_test_clear_dirty() in
-19          * folio_clear_dirty_for_io() to make sure i_size is really sampled only
-20          * after page tables are updated.
-21          */
-22         size = i_size_read(mpd->inode);
-23         len = folio_size(folio);
-24         if (folio_pos(folio) + len > size &&
-25             !ext4_verity_in_progress(mpd->inode))
-26                 len = size & ~PAGE_MASK;
-27         err = ext4_bio_write_folio(&mpd->io_submit, folio, len);
-28         if (!err)
-29                 mpd->wbc->nr_to_write--;
-30
-31         return err;
-32 }
-
-Thanks a lot!!
--ritesh
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
