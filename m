@@ -2,230 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8246E469C
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 13:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3B06E4E17
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 18:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjDQLju (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Apr 2023 07:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S229483AbjDQQRL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Apr 2023 12:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjDQLjt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 07:39:49 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69054135;
-        Mon, 17 Apr 2023 04:39:04 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id p8so25354969plk.9;
-        Mon, 17 Apr 2023 04:39:04 -0700 (PDT)
+        with ESMTP id S229565AbjDQQRK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 12:17:10 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E5C6A4C
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 09:17:08 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2a7b08e84d4so14590821fa.3
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 09:17:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681731543; x=1684323543;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qmQEBjavqVB6HGdUDxStraiihBR6XFWfttzFMuRixqY=;
-        b=PM+pGdu2dlyz2aKkOavasFaOKBkOf1MRnEchlnScs/Q8r+jAFr8IKCLHWnRRoCdAzf
-         GhNcoe0hg5c739179YnfhHz0S8MpKDVf3YJEca/c3KAqMCtWHeAiKO+Ydfo30O+yJqJK
-         I2jLqyBFdxB/5ghPNoMGF6dIJ1VAi1D7qTymhAMl9Wm89+Ffc0VK8wRNqYJi4qvNGco8
-         s8FRCvHYmkTxHjpLiG2s93+Okgx4Vm6f/UMpV2ep/MDriexlMdmh9pmHT8mHcVXSvz7S
-         UrYYx6hJL7HYAd0xz10h/kFqof3n8gn6T5jxrOZcIz6x8vMk4DElR4hHOPXulW/yKKmW
-         UH8A==
+        d=google.com; s=20221208; t=1681748226; x=1684340226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VXGtyJiWtoor+2MwUYhcXkVZ+5EZ3EsF+B7ahIBNuno=;
+        b=y/JpPgtwiZRwEbBf5R0/ZsikXHM3t1Dh9Jsqc5nvo+UydBKIebKYaSJBw4nGDQprij
+         PETbcmsb+l+I20/hfyVGgdaAs+TVPCfhEqriws9VlDfcSpwXNdrZipY5ul/+ltmXxd/I
+         1vp/SG3NH58L7a6zk+VZu7gW5ywG311Ty9Hu+VtfNdTqGlav8tbdoXoKzbwcTUooFEti
+         XzMOb+WiDQPLuvsY08pDxdN9N4T4RnzOd/sen2najgLH+euun1i/7vyLpAPDE4I3rH0M
+         oU5+CQOAuUrSSK6Yh2VRddwVfmLmihy9AqQAw8IeBmlSoOaZTqvHpkVWe4ku4cSQu3Sl
+         LIsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681731543; x=1684323543;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qmQEBjavqVB6HGdUDxStraiihBR6XFWfttzFMuRixqY=;
-        b=Z45Oib1OIpyo9N0COVNnSeJQnVtJNvpCR53fRV+1uaxmRcvNLJ931csYjlBIeLv19J
-         cvzDbI2aOvOdsegF3JKTZL4CW59sGBx8shgxdEsb9x7CXNlLR+LgNQ0lfyRnDWUwoMJx
-         BU2iogX2ZXZk7Q6ibH5lFo9wAsj8i+izdWASAVHOBIx+rhZpWJQUXfvGWVNZc7da4hTy
-         kOuy5ktghToeZyMICI7Hl3Xje1XzYp8p4AOVNwDo8w898G2s3SMNMVSFJvIp56NljjPo
-         1+shMgjvKkJnJnXVgBu/gkFMWZdXUordOlUgnMDoU+PkLXL4O33JHsIZIDI2X4ydoNyh
-         DJ6Q==
-X-Gm-Message-State: AAQBX9defEKviKCRAGMSl0mW0BKAq89x2XpsAHbvPZRDYF2cOr0SCD6U
-        2FjNsGSFOyJFziM5P6I90GA=
-X-Google-Smtp-Source: AKy350aZc6SQjtZEdF6S0ETm/ZLwE+OtbFIYmquXJbg5UiyjlGi5PXzv/av7qflfQ5L5ecJ9qhm7XA==
-X-Received: by 2002:a17:902:d2c3:b0:1a6:ed6f:d6b7 with SMTP id n3-20020a170902d2c300b001a6ed6fd6b7mr1640074plc.5.1681731543451;
-        Mon, 17 Apr 2023 04:39:03 -0700 (PDT)
-Received: from rh-tp ([2406:7400:63:2dd2:1827:1d70:2273:8ee0])
-        by smtp.gmail.com with ESMTPSA id bb6-20020a170902bc8600b001a4ee93efa2sm5698926plb.137.2023.04.17.04.39.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 04:39:03 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 17:08:57 +0530
-Message-Id: <87o7nmivqm.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCHv5 2/9] fs/buffer.c: Add generic_buffer_fsync implementation
-In-Reply-To: <20230417110149.mhrksh4owqkfw5pa@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1681748226; x=1684340226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VXGtyJiWtoor+2MwUYhcXkVZ+5EZ3EsF+B7ahIBNuno=;
+        b=TtoQ3sNynWOMNTaQS4xQd18ycaQoU1ExeXCEb+84rZ3XXyl/TJqAHQ6PkYyxT2MFln
+         Fd/4N7rpq2p2VVX5NMBA9bUzBrbSqGVQvBBXkvRX7S0UtVsC97tl0DQnze/2ZLXxsi9z
+         B8K5PhlJkCxlegkJFd0e4JeZfTB2+AmiBe6vEpBS2mXiPmPeyxZtmp6/uTJACAYQs1AE
+         +Pgrt0tIsrIL237KUKhpW+a7PzaJCbOdQoxzODLPMtpZ0UKHmVvXzyHuIWsvPUdcB18u
+         Kcyr60ns1UjJ+IvWa5y+ZLiGjcAgDIPHMc5GKMq5nl7WVrQAKSYMfFponoCHe2xXhiQV
+         omVw==
+X-Gm-Message-State: AAQBX9fGrju8/HHTRcJwNvQcMzEOav9awc6ZFrLdeM10Fn3MPe3kQ9jR
+        b8toDFVbKiLdHv4nDPcrmQhsTZtMLxArRwcCejXRqQ==
+X-Google-Smtp-Source: AKy350Y23w3gx1mvBvKKUWP6MgosMbP+t6Bs+J+DFv8aF/EGEkIl5cRGukXuxmVc0QHyEKwShgkN2OU8GlSyD73oDLg=
+X-Received: by 2002:ac2:53b3:0:b0:4ea:2dce:fa0a with SMTP id
+ j19-20020ac253b3000000b004ea2dcefa0amr2282605lfh.10.1681748226362; Mon, 17
+ Apr 2023 09:17:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAFDdnB0a3mfcoY7rg5N4dO13qMeSsV+PkA2YHeerEOFRv8484Q@mail.gmail.com>
+ <YpQixl+ljcC1VHNU@mit.edu> <CAFDdnB1WxrqddeLJwjsqqgoij1q_QGa=SBs-i=j31W2QbksJ=Q@mail.gmail.com>
+ <YpVeeKRH1bycP7P1@mit.edu> <YpVxYchs1wScNRDw@mit.edu> <CAFDdnB1KJVSXXzXKOc+T+g1Qewr11AS4f9tFJqSMLvfpiX-5Lg@mail.gmail.com>
+ <YpjNf8WGfYh31F+2@mit.edu> <ZDnbW1qYmBLycefL@google.com> <20230416054742.GA5427@lst.de>
+ <ZDuOB8We29IAYR/4@infradead.org> <ZDy8Tcp9Z/GILVRI@mit.edu>
+In-Reply-To: <ZDy8Tcp9Z/GILVRI@mit.edu>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Mon, 17 Apr 2023 09:16:49 -0700
+Message-ID: <CABYd82ZX_HPrUONwNp+=A_zUa1m15PPnJcjO=BCsWZeVLVzf=Q@mail.gmail.com>
+Subject: Re: simplify ext4_sb_read_encoding regression
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-ext4@vger.kernel.org,
+        "Stephen E. Baker" <baker.stephen.e@gmail.com>,
+        adilger.kernel@dilger.ca
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jan Kara <jack@suse.cz> writes:
-
-> On Sun 16-04-23 15:38:37, Ritesh Harjani (IBM) wrote:
->> Some of the higher layers like iomap takes inode_lock() when calling
->> generic_write_sync().
->> Also writeback already happens from other paths without inode lock,
->> so it's difficult to say that we really need sync_mapping_buffers() to
->> take any inode locking here. Having said that, let's add
->> generic_buffer_fsync() implementation in buffer.c with no
->> inode_lock/unlock() for now so that filesystems like ext2 and
->> ext4's nojournal mode can use it.
->>
->> Ext4 when got converted to iomap for direct-io already copied it's own
->> variant of __generic_file_fsync() without lock. Hence let's add a helper
->> API and use it both in ext2 and ext4.
->>
->> Later we can review other filesystems as well to see if we can make
->> generic_buffer_fsync() which does not take any inode_lock() as the
->> default path.
->>
->> Tested-by: Disha Goel <disgoel@linux.ibm.com>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+On Sun, Apr 16, 2023 at 8:26=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
+:
 >
-> There is a problem with generic_buffer_fsync() that it does not call
-> blkdev_issue_flush() so the caller is responsible for doing that. That's
-> necessary for ext2 & ext4 so fine for now. But historically this was the
-> case with generic_file_fsync() as well and that led to many filesystem
-> forgetting to flush caches from fsync(2).
-
-Ok, thanks for the details.
-
-> What is our transition plan for
-> these filesystems that currently do the cache flush from
-> generic_file_fsync()? Do we want to eventually keep generic_file_fsync()
-> doing the cache flush and call generic_buffer_fsync() instead of
-> __generic_buffer_fsync() from it?
-
-Frankly speaking, I was thinking we will come back to this question
-maybe when we start working on those changes. At this point in time
-I only looked at it from ext2 DIO changes perspective.
-
-But since you asked, here is what I think we could do -
-
-Rename generic_file_fsync => generic_buffers_sync() to fs/buffers.c
-Then
-generic_buffers_sync() {
-    ret = generic_buffers_fsync()
-    if (!ret)
-       blkdev_issue_flush()
-}
-
-generic_buffers_fsync() is same as in this patch which does not have the
-cache flush operation.
-(will rename from generic_buffer_fsync() to generic_buffers_fsync())
-
-Note: The naming is kept such that-
-- sync means it will do fsync followed by cache flush.
-- fsync means it will only do the file fsync
-
-As I understand - we would eventually like to kill the
-inode_lock() variants of generic_file_fsync() and __generic_file_fsync()
-after auditing other filesystem code, right?
-
-Then for now what we need is generic_buffers_sync() function which does
-not take an inode_lock() and also does cache flush which is required for ext2.
-And generic_buffers_fsync() which does not do any cache flush operations
-required by filesystem like ext4.
-
-Does that sound good to you? Is the naming also proper?
-
-Is yes, then I can rename the below function to generic_buffers_fsync()
-and also create implementation of generic_buffers_sync().
-Then let ext2 and ext4 use them.
-
-
--ritesh
-
-
+> On Sat, Apr 15, 2023 at 10:56:23PM -0700, Christoph Hellwig wrote:
+> > On Sun, Apr 16, 2023 at 07:47:42AM +0200, Christoph Hellwig wrote:
+> > > We could do that, but it seems a bit ugly.  What prevents symbol_requ=
+est
+> > > from working properly for this case in your setup?
+> >
+> > To anwer to myself - I guess we need something else than a plain
+> > EXPORT_SYMBOL for everything that is used by
+> > symbol_request.  Which would be a nice cleanly anyway - exports for
+> > symbol_request aren't normal exports and should probably have a clear
+> > marker just to stand out anyway.
 >
-> 								Honza
+> Agreed, that's the best/cleanest long-term solution.
 >
->> ---
->>  fs/buffer.c                 | 43 +++++++++++++++++++++++++++++++++++++
->>  include/linux/buffer_head.h |  2 ++
->>  2 files changed, 45 insertions(+)
->>
->> diff --git a/fs/buffer.c b/fs/buffer.c
->> index 9e1e2add541e..df98f1966a71 100644
->> --- a/fs/buffer.c
->> +++ b/fs/buffer.c
->> @@ -593,6 +593,49 @@ int sync_mapping_buffers(struct address_space *mapping)
->>  }
->>  EXPORT_SYMBOL(sync_mapping_buffers);
->>
->> +/**
->> + * generic_buffer_fsync - generic buffer fsync implementation
->> + * for simple filesystems with no inode lock
->> + *
->> + * @file:	file to synchronize
->> + * @start:	start offset in bytes
->> + * @end:	end offset in bytes (inclusive)
->> + * @datasync:	only synchronize essential metadata if true
->> + *
->> + * This is a generic implementation of the fsync method for simple
->> + * filesystems which track all non-inode metadata in the buffers list
->> + * hanging off the address_space structure.
->> + */
->> +int generic_buffer_fsync(struct file *file, loff_t start, loff_t end,
->> +			 bool datasync)
->> +{
->> +	struct inode *inode = file->f_mapping->host;
->> +	int err;
->> +	int ret;
->> +
->> +	err = file_write_and_wait_range(file, start, end);
->> +	if (err)
->> +		return err;
->> +
->> +	ret = sync_mapping_buffers(inode->i_mapping);
->> +	if (!(inode->i_state & I_DIRTY_ALL))
->> +		goto out;
->> +	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
->> +		goto out;
->> +
->> +	err = sync_inode_metadata(inode, 1);
->> +	if (ret == 0)
->> +		ret = err;
->> +
->> +out:
->> +	/* check and advance again to catch errors after syncing out buffers */
->> +	err = file_check_and_advance_wb_err(file);
->> +	if (ret == 0)
->> +		ret = err;
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(generic_buffer_fsync);
->> +
->>  /*
->>   * Called when we've recently written block `bblock', and it is known that
->>   * `bblock' was for a buffer_boundary() buffer.  This means that the block at
->> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
->> index 8f14dca5fed7..3170d0792d52 100644
->> --- a/include/linux/buffer_head.h
->> +++ b/include/linux/buffer_head.h
->> @@ -211,6 +211,8 @@ int inode_has_buffers(struct inode *);
->>  void invalidate_inode_buffers(struct inode *);
->>  int remove_inode_buffers(struct inode *inode);
->>  int sync_mapping_buffers(struct address_space *mapping);
->> +int generic_buffer_fsync(struct file *file, loff_t start, loff_t end,
->> +			 bool datasync);
->>  void clean_bdev_aliases(struct block_device *bdev, sector_t block,
->>  			sector_t len);
->>  static inline void clean_bdev_bh_alias(struct buffer_head *bh)
->> --
->> 2.39.2
->>
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> The short-term hack that William could use in the interim would be to
+> simply configure CONFIG_UNUSED_KSYMS_WHITELIST to include
+> 'utf8_data_table', which will solve his immediate problem without
+> needing to maintain an out-of-tree patch in his kernel.
+>
+> Presumably, that's what the long-term solution would effectively do,
+> except it would be automated as opposed to requiring people who use
+> CONFIG_TRIM_UNUSED_KSYMS to have to do manually.  Note also that there
+> are only a half-dozen or so such symbols in the Linux kernel today, so
+> while we could and probably should automate it, it's not clear to me
+> the number of use cases where CONFIG_TRIM_UNUSED_KSYMS is going to be
+> relevant are very likely quite small.  (The only ones I can think of
+> are the Android Generic Kernel Image and for enterprise Linux
+> distributions.  And in both cases, I suspect those use cases will
+> probably have a very large list of symbol added to the allow list, so
+> adding those few extra symbols is probably going to be in the noise.
+>
+>                                                 - Ted
+
+Thanks for the responses! I was missing the part that utf8-core.c is always
+built into the kernel when CONFIG_UNICODE is enabled. So it makes sense
+to me why we need to use symbol_request() vs just EXPORT_SYMBOL. It
+should be fine for us to include this symbol in our symbol list.
+
+Thanks,
+Will
