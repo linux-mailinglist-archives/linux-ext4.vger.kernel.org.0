@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35FD6E3DD1
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 05:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A8C6E3DCD
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 05:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjDQDEV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Apr 2023 23:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S229725AbjDQDE1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Apr 2023 23:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjDQDEC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Apr 2023 23:04:02 -0400
+        with ESMTP id S229762AbjDQDED (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Apr 2023 23:04:03 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75EB2D45;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B393526BE;
         Sun, 16 Apr 2023 20:04:01 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q0Bhr1BrWz4f47kZ;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q0Bhr3g6Bz4f47kc;
         Mon, 17 Apr 2023 11:03:56 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP1 (Coremail) with SMTP id cCh0CgAXODIXtzxkfzJgHA--.17426S12;
+        by APP1 (Coremail) with SMTP id cCh0CgAXODIXtzxkfzJgHA--.17426S13;
         Mon, 17 Apr 2023 11:03:57 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         shikemeng@huaweicloud.com
-Subject: [PATCH v3 10/19] ext4: fix wrong unit use in ext4_mb_clear_bb
-Date:   Mon, 17 Apr 2023 19:06:08 +0800
-Message-Id: <20230417110617.2664129-11-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 11/19] ext4: fix wrong unit use in ext4_mb_new_blocks
+Date:   Mon, 17 Apr 2023 19:06:09 +0800
+Message-Id: <20230417110617.2664129-12-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230417110617.2664129-1-shikemeng@huaweicloud.com>
 References: <20230417110617.2664129-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgAXODIXtzxkfzJgHA--.17426S12
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1rAr4xZFWDGw1xWFyfJFb_yoW3Kwb_K3
-        WDArZ7GryrJwn7CFn3tw45tFZ0gr4FkFyUXF1fKF4xu3W5Wa97u34DJrW5Ar1xWFW3t3y3
-        C3ZYvryfCFWS9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: cCh0CgAXODIXtzxkfzJgHA--.17426S13
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF47ZFW7Cw18trW3WrWkXrb_yoW3Grg_GF
+        17ArW8Jr4rJwn5CF95JrW8t3WrKr18Ar1rXFW3tr45Za45XFZrCw1DJryrAr4DWa4aka9x
+        Z3s5WryxKr1S9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -62,29 +62,28 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Function ext4_issue_discard need count in cluster. Pass count_clusters
-instead of count to fix the mismatch.
+Function ext4_mb_new_blocks_simple needs count in cluster. Function
+ext4_mb_new_blocks accepts count in block. Convert count to cluster
+to fix the mismatch.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 774f969b39d8..4a345e3c1c78 100644
+index 4a345e3c1c78..6d4471fd3049 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -6222,8 +6222,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
- 		 * them with group lock_held
- 		 */
- 		if (test_opt(sb, DISCARD)) {
--			err = ext4_issue_discard(sb, block_group, bit, count,
--						 NULL);
-+			err = ext4_issue_discard(sb, block_group, bit,
-+						 count_clusters, NULL);
- 			if (err && err != -EOPNOTSUPP)
- 				ext4_msg(sb, KERN_WARNING, "discard request in"
- 					 " group:%u block:%d count:%lu failed"
+@@ -6315,7 +6315,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+ 	}
+ 
+ 	if (sbi->s_mount_state & EXT4_FC_REPLAY) {
+-		ext4_free_blocks_simple(inode, block, count);
++		ext4_free_blocks_simple(inode, block, EXT4_NUM_B2C(sbi, count));
+ 		return;
+ 	}
+ 
 -- 
 2.30.0
 
