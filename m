@@ -2,265 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BC86E4F4A
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Apr 2023 19:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D276E582C
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Apr 2023 06:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbjDQRem (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Apr 2023 13:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S229657AbjDREqq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Apr 2023 00:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjDQRef (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Apr 2023 13:34:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F81B902E
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 10:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681752826;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jm85SSVaopQAxnU3x7Lrot1DU+GlbD9SOLxgFW9cj5k=;
-        b=c2moo9YH8STRbnVlFl98w9cL6GP0h32x+n9S85qFWy7vH6+Ly0u7o8Pd13sqc0xiMmjBbM
-        xgoYKl8aH1G4bxr8+Lvj3XvyKsrOI9wUnE40thast8q1Tbu/32Opq5l09MCFqINRAlGCPb
-        PLr7Y5n8hQVolJO78aiCSPi/USohEFk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-99-fDxprojrOlmCwyMlV_ujQg-1; Mon, 17 Apr 2023 13:33:45 -0400
-X-MC-Unique: fDxprojrOlmCwyMlV_ujQg-1
-Received: by mail-qk1-f198.google.com with SMTP id t23-20020a374617000000b0074a4dba4b5aso18949662qka.16
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Apr 2023 10:33:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681752824; x=1684344824;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jm85SSVaopQAxnU3x7Lrot1DU+GlbD9SOLxgFW9cj5k=;
-        b=KJW3uDIcfvIRATPb7HoHaJSXtx4rXCBeg3W4RXHejihyy5xepP2fuaE3dyXlzU6fEN
-         d2VDHgyg5l7nynZpbCz3FG6MO9A6s8ssKJX33zPC5PHxjPmirYMmJcVaNNb2CtMA6L6Y
-         8RLwkwE0+Mr7gBPjw6DCBVzbDUzwVv2w9VzlsEXGXCiS2WHZtK323IW7vjmZEcPhjPRl
-         GeB3kYmn/27LixPpyxg4VtAC6UJYB9nhEQMUqVMGmRBy2OKYpoVS4JFb0mbd332QCbiQ
-         LNuifDilpSDXA7f0FSk5d6b011JQlSThfxBBbHaI7iH+TzaZvPdqv2NR6FCfyV8W0gjP
-         SBgg==
-X-Gm-Message-State: AAQBX9cRVVipvNkcCrbymvatYGng+02jIgqWVSv6Mw1iI4BlvSnU66gY
-        htz6ti6VHoJmheJooVuckfn+bscydTEDL46T3CS3umwAMU3LJPkLkzNT+zTy5/fucbflWraeSfn
-        ZoJjIcWKNYvhzZqH7ujySaA==
-X-Received: by 2002:a05:622a:1746:b0:3ec:e29f:6f4f with SMTP id l6-20020a05622a174600b003ece29f6f4fmr13735672qtk.33.1681752824519;
-        Mon, 17 Apr 2023 10:33:44 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZygDANXtkSDESQaT+/nlutXw5EifsNXMDbt5vvWnxrF6WrCl5NaVCG+oOnpCy/E82arPOA9Q==
-X-Received: by 2002:a05:622a:1746:b0:3ec:e29f:6f4f with SMTP id l6-20020a05622a174600b003ece29f6f4fmr13735633qtk.33.1681752824192;
-        Mon, 17 Apr 2023 10:33:44 -0700 (PDT)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id p24-20020a05620a22f800b0074a2467f541sm3337263qki.35.2023.04.17.10.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 10:33:43 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 13:35:46 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     sarthakkukreti@google.com, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v3 1/3] block: Introduce provisioning primitives
-Message-ID: <ZD2DcvyHdNmkdwr1@bfoster>
-References: <20221229071647.437095-1-sarthakkukreti@chromium.org>
- <20230414000219.92640-1-sarthakkukreti@chromium.org>
- <20230414000219.92640-2-sarthakkukreti@chromium.org>
+        with ESMTP id S229517AbjDREqp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Apr 2023 00:46:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD24272C;
+        Mon, 17 Apr 2023 21:46:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A401C62227;
+        Tue, 18 Apr 2023 04:46:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF5A4C433EF;
+        Tue, 18 Apr 2023 04:46:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681793202;
+        bh=NCtkKHv/36bYUk97UIcBuSh1o3C0lTseScm0jINFwBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UikzA5VyRf45JNOup1D9xUDtl98cZqrGKGWwBCNJm6vQszT6sU7eD89zGblKlQ+1x
+         hRRRq08+swRu3Z35wYCPCZ1d1vus23PL4Lpr8PbCMqCWy7dJVz5CWmeVOgpuakY2HA
+         tjWFuervtYaSpXz61I59Asgn1/BXxQNmclS+rllTkThcLQSv6/0Cp1PYjFQKyKhMX9
+         5qMw7D5zSIQfVtYQmEeTvgsejZ8qVx5vWNYyknNnP5nhTGdtNa6rgDJNnC150cacrr
+         pVeJpsgJANi6WduSM3omrW59nzhqxw1UcMY9e9F5U72UxQRmACxYcwPhK1Z5io1o3T
+         IJOX9ml32ClQA==
+Date:   Mon, 17 Apr 2023 21:46:41 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
+Message-ID: <20230418044641.GD360881@frogsfrogsfrogs>
+References: <Y/5ovz6HI2Z47jbk@magnolia>
+ <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230414000219.92640-2-sarthakkukreti@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 05:02:17PM -0700, Sarthak Kukreti wrote:
-> Introduce block request REQ_OP_PROVISION. The intent of this request
-> is to request underlying storage to preallocate disk space for the given
-> block range. Block devices that support this capability will export
-> a provision limit within their request queues.
+On Sat, Apr 15, 2023 at 03:18:05PM +0300, Amir Goldstein wrote:
+> On Tue, Feb 28, 2023 at 10:49 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > Hello fsdevel people,
+> >
+> > Five years ago[0], we started a conversation about cross-filesystem
+> > userspace tooling for online fsck.  I think enough time has passed for
+> > us to have another one, since a few things have happened since then:
+> >
+> > 1. ext4 has gained the ability to send corruption reports to a userspace
+> >    monitoring program via fsnotify.  Thanks, Collabora!
+> >
+> > 2. XFS now tracks successful scrubs and corruptions seen during runtime
+> >    and during scrubs.  Userspace can query this information.
+> >
+> > 3. Directory parent pointers, which enable online repair of the
+> >    directory tree, is nearing completion.
+> >
+> > 4. Dave and I are working on merging online repair of space metadata for
+> >    XFS.  Online repair of directory trees is feature complete, but we
+> >    still have one or two unresolved questions in the parent pointer
+> >    code.
+> >
+> > 5. I've gotten a bit better[1] at writing systemd service descriptions
+> >    for scheduling and performing background online fsck.
+> >
+> > Now that fsnotify_sb_error exists as a result of (1), I think we
+> > should figure out how to plumb calls into the readahead and writeback
+> > code so that IO failures can be reported to the fsnotify monitor.  I
+> > suspect there may be a few difficulties here since fsnotify (iirc)
+> > allocates memory and takes locks.
+> >
+> > As a result of (2), XFS now retains quite a bit of incore state about
+> > its own health.  The structure that fsnotify gives to userspace is very
+> > generic (superblock, inode, errno, errno count).  How might XFS export
+> > a greater amount of information via this interface?  We can provide
+> > details at finer granularity -- for example, a specific data structure
+> > under an allocation group or an inode, or specific quota records.
+> >
+> > With (4) on the way, I can envision wanting a system service that would
+> > watch for these fsnotify events, and transform the error reports into
+> > targeted repair calls in the kernel.  This of course would be very
+> > filesystem specific, but I would also like to hear from anyone pondering
+> > other usecases for fsnotify filesystem error monitors.
+> >
+> > Once (3) lands, XFS gains the ability to translate a block device IO
+> > error to an inode number and file offset, and then the inode number to a
+> > path.  In other words, your file breaks and now we can tell applications
+> > which file it was so they can failover or redownload it or whatever.
+> > Ric Wheeler mentioned this in 2018's session.
+> >
+> > The final topic from that 2018 session concerned generic wrappers for
+> > fsscrub.  I haven't pushed hard on that topic because XFS hasn't had
+> > much to show for that.  Now that I'm better versed in systemd services,
+> > I envision three ways to interact with online fsck:
+> >
+> > - A CLI program that can be run by anyone.
+> >
+> > - Background systemd services that fire up periodically.
+> >
+> > - A dbus service that programs can bind to and request a fsck.
+> >
+> > I still think there's an opportunity to standardize the naming to make
+> > it easier to use a variety of filesystems.  I propose for the CLI:
+> >
+> > /usr/sbin/fsscrub $mnt that calls /usr/sbin/fsscrub.$FSTYP $mnt
+> >
+> > For systemd services, I propose "fsscrub@<escaped mountpoint>".  I
+> > suspect we want a separate background service that itself runs
+> > periodically and invokes the fsscrub@$mnt services.  xfsprogs already
+> > has a xfs_scrub_all service that does that.  The services are nifty
+> > because it's really easy to restrict privileges, implement resource
+> > usage controls, and use private name/mountspaces to isolate the process
+> > from the rest of the system.
+> >
+> > dbus is a bit trickier, since there's no precedent at all.  I guess
+> > we'd have to define an interface for filesystem "object".  Then we could
+> > write a service that establishes a well-known bus name and maintains
+> > object paths for each mounted filesystem.  Each of those objects would
+> > export the filesystem interface, and that's how programs would call
+> > online fsck as a service.
+> >
+> > Ok, that's enough for a single session topic.  Thoughts? :)
 > 
-> This patch also adds the capability to call fallocate() in mode 0
-> on block devices, which will send REQ_OP_PROVISION to the block
-> device for the specified range,
+> Darrick,
 > 
-> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> ---
->  block/blk-core.c          |  5 ++++
->  block/blk-lib.c           | 53 +++++++++++++++++++++++++++++++++++++++
->  block/blk-merge.c         | 18 +++++++++++++
->  block/blk-settings.c      | 19 ++++++++++++++
->  block/blk-sysfs.c         |  8 ++++++
->  block/bounce.c            |  1 +
->  block/fops.c              | 14 ++++++++---
->  include/linux/bio.h       |  6 +++--
->  include/linux/blk_types.h |  5 +++-
->  include/linux/blkdev.h    | 16 ++++++++++++
->  10 files changed, 138 insertions(+), 7 deletions(-)
+> Quick question.
+> You indicated that you would like to discuss the topics:
+> Atomic file contents exchange
+> Atomic directio writes
+
+This one ^^^^^^^^ topic should still get its own session, ideally with
+Martin Petersen and John Garry running it.  A few cloud vendors'
+software defined storage stacks can support multi-lba atomic writes, and
+some database software could take advantage of that to reduce nested WAL
+overhead.
+
+> Are those intended to be in a separate session from online fsck?
+> Both in the same session?
 > 
-...
-> diff --git a/block/fops.c b/block/fops.c
-> index d2e6be4e3d1c..f82da2fb8af0 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -625,7 +625,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
->  	int error;
->  
->  	/* Fail if we don't recognize the flags. */
-> -	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
-> +	if (mode != 0 && mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
->  		return -EOPNOTSUPP;
->  
->  	/* Don't go off the end of the device. */
-> @@ -649,11 +649,17 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
->  	filemap_invalidate_lock(inode->i_mapping);
->  
->  	/* Invalidate the page cache, including dirty pages. */
-> -	error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> -	if (error)
-> -		goto fail;
-> +	if (mode != 0) {
-> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> +		if (error)
-> +			goto fail;
-> +	}
->  
->  	switch (mode) {
-> +	case 0:
-> +		error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
-> +					       len >> SECTOR_SHIFT, GFP_KERNEL);
-> +		break;
+> I know you posted patches for FIEXCHANGE_RANGE [1],
+> but they were hiding inside a huge DELUGE and people
+> were on New Years holidays, so nobody commented.
 
-I would think we'd want to support any combination of
-FALLOC_FL_KEEP_SIZE and FALLOC_FL_UNSHARE_RANGE..? All of the other
-commands support the former modifier, for one. It also looks like if
-somebody attempts to invoke with mode == FALLOC_FL_KEEP_SIZE, even with
-the current upstream code that would perform the bdev truncate before
-returning -EOPNOTSUPP. That seems like a bit of an unfortunate side
-effect to me.
+After 3 years of sparse review comments, I decided to withdraw
+FIEXCHANGE_RANGE from general consideration after realizing that very
+few filesystems actually have the infrastructure to support atomic file
+contents exchange, hence there's little to be gained from undertaking
+fsdevel bikeshedding.
 
-WRT to unshare, if the PROVISION request is always going to imply an
-unshare (which seems reasonable to me), there's probably no reason to
--EOPNOTSUPP if a caller explicitly passes UNSHARE_RANGE.
+> Perhaps you should consider posting an uptodate
+> topic suggestion to let people have an opportunity to
+> start a discussion before LSFMM.
 
-Brian
+TBH, most of my fs complaints these days are managerial problems (Are we
+spending too much time on LTS?  How on earth do we prioritize projects
+with all these drive by bots??  Why can't we support large engineering
+efforts better???) than technical.
 
->  	case FALLOC_FL_ZERO_RANGE:
->  	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
->  		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index d766be7152e1..9820b3b039f2 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -57,7 +57,8 @@ static inline bool bio_has_data(struct bio *bio)
->  	    bio->bi_iter.bi_size &&
->  	    bio_op(bio) != REQ_OP_DISCARD &&
->  	    bio_op(bio) != REQ_OP_SECURE_ERASE &&
-> -	    bio_op(bio) != REQ_OP_WRITE_ZEROES)
-> +	    bio_op(bio) != REQ_OP_WRITE_ZEROES &&
-> +	    bio_op(bio) != REQ_OP_PROVISION)
->  		return true;
->  
->  	return false;
-> @@ -67,7 +68,8 @@ static inline bool bio_no_advance_iter(const struct bio *bio)
->  {
->  	return bio_op(bio) == REQ_OP_DISCARD ||
->  	       bio_op(bio) == REQ_OP_SECURE_ERASE ||
-> -	       bio_op(bio) == REQ_OP_WRITE_ZEROES;
-> +	       bio_op(bio) == REQ_OP_WRITE_ZEROES ||
-> +	       bio_op(bio) == REQ_OP_PROVISION;
->  }
->  
->  static inline void *bio_data(struct bio *bio)
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> index 99be590f952f..27bdf88f541c 100644
-> --- a/include/linux/blk_types.h
-> +++ b/include/linux/blk_types.h
-> @@ -385,7 +385,10 @@ enum req_op {
->  	REQ_OP_DRV_IN		= (__force blk_opf_t)34,
->  	REQ_OP_DRV_OUT		= (__force blk_opf_t)35,
->  
-> -	REQ_OP_LAST		= (__force blk_opf_t)36,
-> +	/* request device to provision block */
-> +	REQ_OP_PROVISION        = (__force blk_opf_t)37,
-> +
-> +	REQ_OP_LAST		= (__force blk_opf_t)38,
->  };
->  
->  enum req_flag_bits {
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 941304f17492..239e2f418b6e 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -303,6 +303,7 @@ struct queue_limits {
->  	unsigned int		discard_granularity;
->  	unsigned int		discard_alignment;
->  	unsigned int		zone_write_granularity;
-> +	unsigned int		max_provision_sectors;
->  
->  	unsigned short		max_segments;
->  	unsigned short		max_integrity_segments;
-> @@ -921,6 +922,8 @@ extern void blk_queue_max_discard_sectors(struct request_queue *q,
->  		unsigned int max_discard_sectors);
->  extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
->  		unsigned int max_write_same_sectors);
-> +extern void blk_queue_max_provision_sectors(struct request_queue *q,
-> +		unsigned int max_provision_sectors);
->  extern void blk_queue_logical_block_size(struct request_queue *, unsigned int);
->  extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
->  		unsigned int max_zone_append_sectors);
-> @@ -1060,6 +1063,9 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
->  int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sector,
->  		sector_t nr_sects, gfp_t gfp);
->  
-> +extern int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
-> +		sector_t nr_sects, gfp_t gfp_mask);
-> +
->  #define BLKDEV_ZERO_NOUNMAP	(1 << 0)  /* do not free blocks */
->  #define BLKDEV_ZERO_NOFALLBACK	(1 << 1)  /* don't write explicit zeroes */
->  
-> @@ -1139,6 +1145,11 @@ static inline unsigned short queue_max_discard_segments(const struct request_que
->  	return q->limits.max_discard_segments;
->  }
->  
-> +static inline unsigned short queue_max_provision_sectors(const struct request_queue *q)
-> +{
-> +	return q->limits.max_provision_sectors;
-> +}
-> +
->  static inline unsigned int queue_max_segment_size(const struct request_queue *q)
->  {
->  	return q->limits.max_segment_size;
-> @@ -1281,6 +1292,11 @@ static inline bool bdev_nowait(struct block_device *bdev)
->  	return test_bit(QUEUE_FLAG_NOWAIT, &bdev_get_queue(bdev)->queue_flags);
->  }
->  
-> +static inline unsigned int bdev_max_provision_sectors(struct block_device *bdev)
-> +{
-> +	return bdev_get_queue(bdev)->limits.max_provision_sectors;
-> +}
-> +
->  static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
->  {
->  	return blk_queue_zoned_model(bdev_get_queue(bdev));
-> -- 
-> 2.40.0.634.g4ca3ef3211-goog
+(I /am/ willing to have a "Online fs metadata reconstruction: How does
+it work, and can I have some of what you're smoking?" BOF tho)
+
+--D
+
+> Thanks,
+> Amir.
 > 
-
+> [1] https://lore.kernel.org/linux-fsdevel/167243843494.699466.5163281976943635014.stgit@magnolia/
