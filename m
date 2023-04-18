@@ -2,125 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33116E59AB
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Apr 2023 08:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E1C6E5AB9
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Apr 2023 09:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjDRGur (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Apr 2023 02:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S231197AbjDRHqu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Apr 2023 03:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjDRGuq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Apr 2023 02:50:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEB1C9;
-        Mon, 17 Apr 2023 23:50:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0323D62465;
-        Tue, 18 Apr 2023 06:50:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29928C433EF;
-        Tue, 18 Apr 2023 06:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681800644;
-        bh=m0aoQNzOmb6TzmGaMXcg9PrpCa/tOrj2DkkReGTrODY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OYDrr4xiq+8nSUCv+wKkztoqXRBa/knMwzmG2ST2X+eNUT0HMJgrX80BpFtXs6vG8
-         MHHUXMdrBXEDU3/dW3e0SVHyZhUfjHn2M8UpRAMuainKwkxrsC6bQ3Ni88jx+XFwk0
-         dItRC892uFizxvAYlKkf0NUBnJjULlp91DLcB9z9qrswdv+twrSTidxith+4qCE8ih
-         fS0Zg29kuvw8UdEBwJNCgxRgrUyJBh6B4FLCT+I4J1+V4vGeI7I6lDJm9VFjoOeYdU
-         kBmB2f5Z5gc1cuDJpRScevR0IxpCl301NETVA3fA2aVaIjOA30ECF4X0KjNN6sH6qM
-         2LNgUPU23r5iQ==
-Date:   Mon, 17 Apr 2023 23:50:42 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 29/29] ext4: Use a folio in ext4_read_merkle_tree_page
-Message-ID: <20230418065042.GA121074@quark.localdomain>
-References: <20230324180129.1220691-1-willy@infradead.org>
- <20230324180129.1220691-30-willy@infradead.org>
+        with ESMTP id S230526AbjDRHqp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Apr 2023 03:46:45 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778F64C29;
+        Tue, 18 Apr 2023 00:46:44 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id v10so25275907vsf.6;
+        Tue, 18 Apr 2023 00:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681804003; x=1684396003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ncHlgBW8+huHnPie0F7ibuUGA9YonZ6zPvQILgCUzFo=;
+        b=PVe3z9LMwF1plhRq1djm3jKH3wBpqalEmUjxaKIeojp4jXCInAW/YLtEM82EYNjSv0
+         3XaHrxlpTVYslSLJgdHr4wehYafJoIN/2QGnio9j/4vRbtCTtXYYGK4Jq8dLFHy1Kdaf
+         ISRgocwdrHcWrrewxlZjtPJJZU31RRmTxqkK0D7uu90CkuYyo09U78FOJQd1l5j56I5o
+         oVMGJxL13GDAB9/q6KK/a9PBdZJj4Lrk/oZ3T8Ty0nl0PMJpoH2npCEEqn+xs6uvRagn
+         RUY2Xdlb5N0Z9ZnwO3bAyBrCtj8QRgRUnQiN/oibVelul4g0OGmigE463NVtj/pB1NDe
+         ncmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681804003; x=1684396003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ncHlgBW8+huHnPie0F7ibuUGA9YonZ6zPvQILgCUzFo=;
+        b=IPY4t9qwtf1jR23EsKJtcyePInOOpwFvIID9r1IzJh+jFjUuaFYlcIkNhsVmM1dKvn
+         PPIGGHX251smSvq+bVAiP4lgxDmjXFkQUxvfM2bpvI52YQNAKN/k5VHX0zWtdDxYOa66
+         0LbNFCSpuqriDGbSZFO0NJuZt0MQwZwQEH0ugQsEXNTwQ1HS9nwHmA+EfaMLt2Cps2Ra
+         a7sQENJSk/g/+6uCGDyWEMIcSTv+oQk/tAOqKyLMHCVPkxZCfNQ7ni6o53Z66dqSO7NL
+         1Ev4QG+fHsI5NcroWDZkgtBD+Ioa1DAT33lPMUnatPq41ez0yejgYv+T/5vqtUzev6Ye
+         DxEA==
+X-Gm-Message-State: AAQBX9ddEFgx22rCDOIqs3V9lY1Z88iofxj2aShnp5rekLMuqENiEvjI
+        8+gobtvLs9oCX16GS7OX2sHc8aUIQetWB7/HOIk=
+X-Google-Smtp-Source: AKy350aSHzHEEr+8K0Sr/CsAHaDwtlIUDJduCnBUdsumah8HkhAvyAgUVuUKlh2+nJPer3otBTvqywmiNHmp0poMRBw=
+X-Received: by 2002:a67:c102:0:b0:42f:f598:9f3b with SMTP id
+ d2-20020a67c102000000b0042ff5989f3bmr2356334vsj.0.1681804003394; Tue, 18 Apr
+ 2023 00:46:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230324180129.1220691-30-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <Y/5ovz6HI2Z47jbk@magnolia> <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
+ <20230418044641.GD360881@frogsfrogsfrogs>
+In-Reply-To: <20230418044641.GD360881@frogsfrogsfrogs>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 18 Apr 2023 10:46:32 +0300
+Message-ID: <CAOQ4uxgUOuR80jsAE2DkZhMPVNT_WwnsSX8-GSkZO4=k3VbCsw@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Matthew,
+On Tue, Apr 18, 2023 at 7:46=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
+ wrote:
+>
+> On Sat, Apr 15, 2023 at 03:18:05PM +0300, Amir Goldstein wrote:
+> > On Tue, Feb 28, 2023 at 10:49=E2=80=AFPM Darrick J. Wong <djwong@kernel=
+.org> wrote:
+...
+> > Darrick,
+> >
+> > Quick question.
+> > You indicated that you would like to discuss the topics:
+> > Atomic file contents exchange
+> > Atomic directio writes
+>
+> This one ^^^^^^^^ topic should still get its own session, ideally with
+> Martin Petersen and John Garry running it.  A few cloud vendors'
+> software defined storage stacks can support multi-lba atomic writes, and
+> some database software could take advantage of that to reduce nested WAL
+> overhead.
+>
 
-On Fri, Mar 24, 2023 at 06:01:29PM +0000, Matthew Wilcox (Oracle) wrote:
-> This is an implementation of fsverity_operations read_merkle_tree_page,
-> so it must still return the precise page asked for, but we can use the
-> folio API to reduce the number of conversions between folios & pages.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/ext4/verity.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> index afe847c967a4..3b01247066dd 100644
-> --- a/fs/ext4/verity.c
-> +++ b/fs/ext4/verity.c
-> @@ -361,21 +361,21 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
->  					       pgoff_t index,
->  					       unsigned long num_ra_pages)
->  {
-> -	struct page *page;
-> +	struct folio *folio;
->  
->  	index += ext4_verity_metadata_pos(inode) >> PAGE_SHIFT;
->  
-> -	page = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
-> -	if (!page || !PageUptodate(page)) {
-> +	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
-> +	if (!folio || !folio_test_uptodate(folio)) {
->  		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
->  
-> -		if (page)
-> -			put_page(page);
-> +		if (folio)
-> +			folio_put(folio);
->  		else if (num_ra_pages > 1)
->  			page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
-> -		page = read_mapping_page(inode->i_mapping, index, NULL);
-> +		folio = read_mapping_folio(inode->i_mapping, index, NULL);
->  	}
-> -	return page;
-> +	return folio_file_page(folio, index);
+CC Martin.
+If you want to lead this session, please schedule it.
 
-This is not working at all, since it dereferences ERR_PTR(-ENOENT).  I think it
-needs:
+> > Are those intended to be in a separate session from online fsck?
+> > Both in the same session?
+> >
+> > I know you posted patches for FIEXCHANGE_RANGE [1],
+> > but they were hiding inside a huge DELUGE and people
+> > were on New Years holidays, so nobody commented.
+>
+> After 3 years of sparse review comments, I decided to withdraw
+> FIEXCHANGE_RANGE from general consideration after realizing that very
+> few filesystems actually have the infrastructure to support atomic file
+> contents exchange, hence there's little to be gained from undertaking
+> fsdevel bikeshedding.
+>
+> > Perhaps you should consider posting an uptodate
+> > topic suggestion to let people have an opportunity to
+> > start a discussion before LSFMM.
+>
+> TBH, most of my fs complaints these days are managerial problems (Are we
+> spending too much time on LTS?  How on earth do we prioritize projects
+> with all these drive by bots??  Why can't we support large engineering
+> efforts better???) than technical.
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index 3b01247066dd..dbc655a6c443 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -366,15 +366,17 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
- 	index += ext4_verity_metadata_pos(inode) >> PAGE_SHIFT;
- 
- 	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
--	if (!folio || !folio_test_uptodate(folio)) {
-+	if (folio == ERR_PTR(-ENOENT) || !folio_test_uptodate(folio)) {
- 		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
- 
--		if (folio)
-+		if (!IS_ERR(folio))
- 			folio_put(folio);
- 		else if (num_ra_pages > 1)
- 			page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
- 		folio = read_mapping_folio(inode->i_mapping, index, NULL);
- 	}
-+	if (IS_ERR(folio))
-+		return ERR_CAST(folio);
- 	return folio_file_page(folio, index);
- }
- 
+I penciled one session for "FS stable backporting (and other LTS woes)".
+I made it a cross FS/IO session so we can have this session in the big room
+and you are welcome to pull this discussion to any direction you want.
+
+>
+> (I /am/ willing to have a "Online fs metadata reconstruction: How does
+> it work, and can I have some of what you're smoking?" BOF tho)
+>
+
+I penciled a session for this one already.
+Maybe it would be interesting for the crowd to hear some about
+"behind the scenes" - how hard it was and still is to pull off an
+engineering project of this scale - lessons learned, things that
+you might have done differently.
+
+Cheers,
+Amir.
