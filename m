@@ -2,70 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730376E7214
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 06:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134E96E7371
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 08:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjDSEHO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Apr 2023 00:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        id S231593AbjDSGq0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Apr 2023 02:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjDSEHN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 00:07:13 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A964F1AD;
-        Tue, 18 Apr 2023 21:07:10 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id p1so1328860vsi.6;
-        Tue, 18 Apr 2023 21:07:10 -0700 (PDT)
+        with ESMTP id S231200AbjDSGqZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 02:46:25 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD4B4C20
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 23:46:23 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2a8dc00ade2so9709421fa.0
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 23:46:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681877230; x=1684469230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=125xcY+7eR4AjSYyVNtbZyRb1u9zQjLjiffTEAmBdY8=;
-        b=WO7LdWq8ep/F0bdDJziedLPagmehZMSnYN5IEFDbnCZuhNU/XrITXA/kpBh8d3gltb
-         Ibnf3dlIuwmcANwRZHdcx+Xo0YVf8N+BE+B62H39U52UC/mh7w/mJzdYD81kjh6Q37/j
-         4KBnnTJ7pOsh9qOtsw2VscA3GPz/7W+qi7vcl+qrc5ayBT+13pJfxGYvlwOC5McY7VsO
-         LLy2PUFVsmteU08fBsAkGRHC+aNJCI0BG8LI5o5sc0/T993RCNaOPW1Iesi3Tw+XYslC
-         iM9n+JDWHmRGWCmkmExtLQGVmxKWiWdXTiMjkwCz51mXNc8Ex+F60toVczfvd8V/sU1t
-         8sxQ==
+        d=linaro.org; s=google; t=1681886782; x=1684478782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=REFDeFFHoGYAMs7mXmFQo05Mywd2wMBmW68DbUZdoEA=;
+        b=gVmp6A2LDZo9NDmz1uDoJ4drOkmrxw2o3UHLvKf/cgd0ceOIRpxRC1jEo97XCZ8g6C
+         DllOfslF1rujtNJPOLfMRy8vmP2+4leUWug3yUnAjEVZRxInlYg8un39MJp3Ze+PZ1Sm
+         o6R/5c09BOPOlRdNM+0+oi9ACbSjKVN5TKseizkDooAhBOnh6b9rm5aqx603dtnOd6HG
+         EB3OTImqLHOhihj81uuAhZxLZw++Onttm59nXp4b6WVNqYCm2JnvQwC4V5CSQNXI7wbV
+         R5Ja7g3HtZf3kmfcq5jBbZ/acPSssHZtuNw3M976JObSGr0Sh/G6vjuKDi+BKtZE84vN
+         Edsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681877230; x=1684469230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=125xcY+7eR4AjSYyVNtbZyRb1u9zQjLjiffTEAmBdY8=;
-        b=ZKFeJdhi4QuniVwWTNKeVfbTsrZiRIOmtjgVzlSU6AvHfe3zZR9UCfV5uuDeAA3tO1
-         1CgcepLiddY/mtLOeXhYZXK2By63xcr9D92GAyFd29AlnH27sx0BtlPyCoBmfNdz+jpi
-         XmQeiMjS0czSQ9aYXV+af6/l3F9+EkEYkKnCm6d1c0QcGh/TMH+IU6IpOKwdtsSGh0EK
-         pxVfaylJRQoeOR+2u3kwmFT6T8eCjZwL37YcGJoPsD82fx55sArgx/Q5hL8Svzvzo5nA
-         axCmYEKJWpHaAK7oDOiqtxXQ9ZiwPvt6+4k6+/Uf71jC1/pEOdk+/GfC31Jn3l9FFjkr
-         Johg==
-X-Gm-Message-State: AAQBX9cFlCBFGyu0D/iKzT24vAf1T+/zuleYRZ84XvdN25/42/s62nz+
-        vl4QQwWBvpIEJYZdP5lxoRCaqAJ8qqvYzajFasm/9Bsv
-X-Google-Smtp-Source: AKy350YeAUX+0YGPaOUyEdSVsnCfL5SffHM/pbbz6tMEwiNofOV64faz1c1ZOCBYDP+AZNs1QPc9Lal7SgL/vfrC9x8=
-X-Received: by 2002:a67:d99e:0:b0:42e:63a5:c0d6 with SMTP id
- u30-20020a67d99e000000b0042e63a5c0d6mr7277691vsj.0.1681877229723; Tue, 18 Apr
- 2023 21:07:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681886782; x=1684478782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=REFDeFFHoGYAMs7mXmFQo05Mywd2wMBmW68DbUZdoEA=;
+        b=YlWRcVSkHU2Ze99O07sAieB2NxLyMk4tWq2o9iouknrPL2EuEvG8i4c4xhHt4fhAnr
+         yvrsodcGSQ+bHrKYNWXeM5he5uWNwf93Lejf/mzIBhd1/aoleK6vb8FoyHhjhfNJFide
+         J/8BzJ6S0Z6zDwPoSDc1IH2UFiAIys1co0duuDJpWhj/BjdbBfgeMLWkBh9WfVeSKVZ+
+         3YGXbRfAtz0/sQTE1Mf1uBT0OEVxOSYLrR5zNWWWXx6ZLZGysH7xWlxHe5llXmR0EDJq
+         Cy3+oX9ge32WLHaVTRfY+J3jcDDiPA6YoTZKAXVBxI+6jwgq/D/wbzXoq6Rm2OKn4h4K
+         TJ5A==
+X-Gm-Message-State: AAQBX9cYaR7roURf2n8j5sKXrT4hIvx87bbjdO1cMaKxNdoDb2BhFJL3
+        ZrIi+dSGJGiBcC5Jfcm1VZljHT7UTP37yT8Xpw/fBg==
+X-Google-Smtp-Source: AKy350aD5eVr42g4rwqGrk2SydA231Wzv8flZqooGRthYtYxasSLbRiVZ17XIxAeRYYejoZ1eUVwPQ==
+X-Received: by 2002:ac2:46c3:0:b0:4dc:6ad4:5fe4 with SMTP id p3-20020ac246c3000000b004dc6ad45fe4mr3697959lfo.32.1681886782056;
+        Tue, 18 Apr 2023 23:46:22 -0700 (PDT)
+Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
+        by smtp.gmail.com with ESMTPSA id e24-20020ac25478000000b004edce1d338csm438208lfn.89.2023.04.18.23.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 23:46:19 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     stable@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com, Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH][for stable [4.14, 5.10] 0/3] ext4: fix use-after-free in ext4_xattr_set_entry
+Date:   Wed, 19 Apr 2023 06:46:07 +0000
+Message-ID: <20230419064610.1918038-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
 MIME-Version: 1.0
-References: <Y/5ovz6HI2Z47jbk@magnolia> <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
- <20230418044641.GD360881@frogsfrogsfrogs> <CAOQ4uxgUOuR80jsAE2DkZhMPVNT_WwnsSX8-GSkZO4=k3VbCsw@mail.gmail.com>
- <20230419021146.GE360889@frogsfrogsfrogs>
-In-Reply-To: <20230419021146.GE360889@frogsfrogsfrogs>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 19 Apr 2023 07:06:58 +0300
-Message-ID: <CAOQ4uxjmTBi9B=0mMKf6i8usLJ2GrAp88RhxFcQcGFK1LjQ_Lw@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,78 +69,24 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 5:11=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Tue, Apr 18, 2023 at 10:46:32AM +0300, Amir Goldstein wrote:
-> > On Tue, Apr 18, 2023 at 7:46=E2=80=AFAM Darrick J. Wong <djwong@kernel.=
-org> wrote:
-> > >
-> > > On Sat, Apr 15, 2023 at 03:18:05PM +0300, Amir Goldstein wrote:
-> > > > On Tue, Feb 28, 2023 at 10:49=E2=80=AFPM Darrick J. Wong <djwong@ke=
-rnel.org> wrote:
-> > ...
-> > > > Darrick,
-> > > >
-> > > > Quick question.
-> > > > You indicated that you would like to discuss the topics:
-> > > > Atomic file contents exchange
-> > > > Atomic directio writes
-> > >
-> > > This one ^^^^^^^^ topic should still get its own session, ideally wit=
-h
-> > > Martin Petersen and John Garry running it.  A few cloud vendors'
-> > > software defined storage stacks can support multi-lba atomic writes, =
-and
-> > > some database software could take advantage of that to reduce nested =
-WAL
-> > > overhead.
-> > >
-> >
-> > CC Martin.
-> > If you want to lead this session, please schedule it.
-> >
-> > > > Are those intended to be in a separate session from online fsck?
-> > > > Both in the same session?
-> > > >
-> > > > I know you posted patches for FIEXCHANGE_RANGE [1],
-> > > > but they were hiding inside a huge DELUGE and people
-> > > > were on New Years holidays, so nobody commented.
-> > >
-> > > After 3 years of sparse review comments, I decided to withdraw
-> > > FIEXCHANGE_RANGE from general consideration after realizing that very
-> > > few filesystems actually have the infrastructure to support atomic fi=
-le
-> > > contents exchange, hence there's little to be gained from undertaking
-> > > fsdevel bikeshedding.
-> > >
-> > > > Perhaps you should consider posting an uptodate
-> > > > topic suggestion to let people have an opportunity to
-> > > > start a discussion before LSFMM.
-> > >
-> > > TBH, most of my fs complaints these days are managerial problems (Are=
- we
-> > > spending too much time on LTS?  How on earth do we prioritize project=
-s
-> > > with all these drive by bots??  Why can't we support large engineerin=
-g
-> > > efforts better???) than technical.
-> >
-> > I penciled one session for "FS stable backporting (and other LTS woes)"=
-.
-> > I made it a cross FS/IO session so we can have this session in the big =
-room
-> > and you are welcome to pull this discussion to any direction you want.
->
-> Ok, thank you.  Hopefully we can get all the folks who do backports into
-> this one.  That might be a big ask for Chandan, depending on when you
-> schedule it.
->
-> (Unless it's schedule for 7pm :P)
->
+This is a good example that emphasizes that the order in which patches
+are queued to stable matters. More details in the revert commit.
+Tested and intended for 4.14, 4.19, 5.4, 5.10.
 
-Oh thanks for reminding me!
-I moved it to Wed 9am, so it is more convenient for Chandan.
+Baokun Li (1):
+  ext4: fix use-after-free in ext4_xattr_set_entry
 
-Thanks,
-Amir.
+Ritesh Harjani (1):
+  ext4: remove duplicate definition of ext4_xattr_ibody_inline_set()
+
+Tudor Ambarus (1):
+  Revert "ext4: fix use-after-free in ext4_xattr_set_entry"
+
+ fs/ext4/inline.c | 11 +++++------
+ fs/ext4/xattr.c  | 26 +-------------------------
+ fs/ext4/xattr.h  |  6 +++---
+ 3 files changed, 9 insertions(+), 34 deletions(-)
+
+-- 
+2.40.0.634.g4ca3ef3211-goog
+
