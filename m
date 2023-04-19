@@ -2,131 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F70B6E817F
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 20:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7974F6E85CD
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 01:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbjDSSwu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Apr 2023 14:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
+        id S231582AbjDSXV1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Apr 2023 19:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjDSSwt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 14:52:49 -0400
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0300844A9
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 11:52:48 -0700 (PDT)
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-32a8c155f24so616015ab.0
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 11:52:47 -0700 (PDT)
+        with ESMTP id S231950AbjDSXV0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 19:21:26 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B3E1FC3
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 16:21:22 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1a8097c1ccfso5783485ad.1
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 16:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1681946482; x=1684538482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4EzLlnke++OBfC+QU/8848E+9V2OKTR6syW6axwlV8=;
+        b=1rSGerHklr5JAXi27oI/uAKbIpnzmbhuAcqtkq9Ewpy+oxiEbVyn+NXg0Nte1Jz5gb
+         Jddew7juj8EN4LNPm7rX/98XzjawOZWNBXgYRDT4svPbR6SgKWYB3DBdvEC6M5GMrfwT
+         NVGwJGMv68WQml94zJmFq7eiIKhhHdqtvpReJGsxvaD7E+Q5v+/9MtrHrCKvxTmZ6EDY
+         BasRW6aVsh4KPRIad1iWbms6wcLJVor1YOWpS9y4GmXYAKYprdaeppUQ33xbvQC/eBjL
+         dLUjVVOrNBmfM3cIFzadvXJVlSI7PHUWmH/8OBSUCDMgpYod0Y/sBth54czPU5qQiJoJ
+         NrDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681930367; x=1684522367;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vZQm9ajXkGotCE4OxQ7g7sW/rOm7TAAFTPwqwxq0WKc=;
-        b=iSnIjj4CWiU/9P/JTMzAxe1rukSt99VcZux+RuiUHLv8apv1HzbvrzR6v8K1GFcF6O
-         41ufCeczzClcSwugvo/+gsLLIbznE1xEl6UPoIPnm5yaUaWz4vWgU39OUaelKn/2zZjb
-         JxmiyW+krIUHUEcPrrQVMCnOGvrpCi04SceBGYHNOHaQrAfFIKLz0hWgoiRioQW9pZtw
-         /WZyyRHwFp1nM5KUpqQJmyRgvjzscxrM9FimZlRpkoVtpyUT/EnyD+H2COCDU82BuLyz
-         pz1TA3/5yusUltO29kVsV7V/Ur26Ca+j/DoO1/cPjKg8hvd85g7JirCNOeKOLpvHGnxL
-         iLgw==
-X-Gm-Message-State: AAQBX9fvOiXcgSzCJm3jcTr2fVbDuKUZlHq6OE6Uje2xWefxnO9TaJIk
-        X2ZDtxm3a+RKuHFzCAN5L/tyqErcEs0OKjTO/1OEOeuADCd9
-X-Google-Smtp-Source: AKy350aloVDDl5G+HPKwo89i1D7agjSsVu6G7IrkD2bdBIsH+IvUhYRKiYoYh9s6nvo1ZrMxrK7m05j69InN0TR9Zv5spcF/Csse
+        d=1e100.net; s=20221208; t=1681946482; x=1684538482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O4EzLlnke++OBfC+QU/8848E+9V2OKTR6syW6axwlV8=;
+        b=FqgCy3NQi5l3p0DjTJcMU/ym8gsv4aNkOv8CRV2sgKN9EYjYxNRGsZ3w2T7Qqca1tF
+         G9Ht7k67m9EVW7af2wQKPc/O3RDj7bTpPwjvy28aiDKVJmE2i2deAKJYpz89IjEepqn5
+         YxH7s3foLWNZuvgsZoN58egSIqy4HDwHnIwNQxai+50jEPeAYbvnBWf/3iKq4ZVdgZnZ
+         2ms4EsAbWXJ5+wS7F7vKzAbvYg3Bh4HmwfQXODik/IbRiiv7swjF9MrAP/WPtW3DC3ze
+         vm0FApMh5IrLHaVeujm5u/ke7nvDXWNxMKtEsI5L6Rp1rMELjdSwrS9N4iBiag6JUZkv
+         otow==
+X-Gm-Message-State: AAQBX9cvAci1cZkvXhs3OvISuDTrNijTkLEB2AIZ+ExcIUPsuIKqZRQJ
+        RevR3xxTx4zTEuZ1Hv7KIyubsw==
+X-Google-Smtp-Source: AKy350Z4u0R970I4rdGzZzRQmNJeDe7b2z6B1qSAUlPIrkwDXPChvEc+qQO8pUmxrKDtn7iIylQMpQ==
+X-Received: by 2002:a17:902:b089:b0:19d:611:2815 with SMTP id p9-20020a170902b08900b0019d06112815mr6659257plr.42.1681946481873;
+        Wed, 19 Apr 2023 16:21:21 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-41-174.pa.nsw.optusnet.com.au. [49.180.41.174])
+        by smtp.gmail.com with ESMTPSA id ja13-20020a170902efcd00b0019682e27995sm6226725plb.223.2023.04.19.16.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Apr 2023 16:21:21 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ppH70-005RJM-QK; Thu, 20 Apr 2023 09:21:18 +1000
+Date:   Thu, 20 Apr 2023 09:21:18 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Mike Snitzer <snitzer@kernel.org>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniil Lunev <dlunev@google.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v4 1/4] block: Introduce provisioning primitives
+Message-ID: <20230419232118.GL447837@dread.disaster.area>
+References: <20230414000219.92640-1-sarthakkukreti@chromium.org>
+ <20230418221207.244685-1-sarthakkukreti@chromium.org>
+ <20230418221207.244685-2-sarthakkukreti@chromium.org>
+ <20230419153611.GE360885@frogsfrogsfrogs>
+ <ZEAUHnWqt9cIiJRb@redhat.com>
+ <20230419172602.GE360881@frogsfrogsfrogs>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d482:0:b0:328:7b75:a5fe with SMTP id
- p2-20020a92d482000000b003287b75a5femr391854ilg.5.1681930367357; Wed, 19 Apr
- 2023 11:52:47 -0700 (PDT)
-Date:   Wed, 19 Apr 2023 11:52:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000015760b05f9b4eee9@google.com>
-Subject: [syzbot] [ext4?] WARNING in ext4_iomap_overwrite_begin
-From:   syzbot <syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230419172602.GE360881@frogsfrogsfrogs>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Wed, Apr 19, 2023 at 10:26:02AM -0700, Darrick J. Wong wrote:
+> On Wed, Apr 19, 2023 at 12:17:34PM -0400, Mike Snitzer wrote:
+> > (And obviously needs fixing independent of this patchset)
+> > 
+> > Shouldn't mkfs first check that the underlying storage supports
+> > REQ_OP_PROVISION by verifying
+> > /sys/block/<dev>/queue/provision_max_bytes exists and is not 0?
+> > (Just saying, we need to add new features more defensively.. you just
+> > made the case based on this scenario's implications alone)
+> 
+> Not for fallocate -- for regular files, there's no way to check if the
+> filesystem actually supports the operation requested other than to try
+> it and see if it succeeds.  We probably should've defined a DRY_RUN flag
+> for that purpose back when it was introduced.
 
-syzbot found the following issue on:
+That ignores the fact that fallocate() was never intended to
+guarantee it will work in all contexts - it's an advisory interface
+at it's most basic level. If the call succeeds, then great, it does
+what is says on the box, but if it fails then it should have no
+visible effect on user data at all and the application still needs
+to perform whatever modification it needed done in some other way.
 
-HEAD commit:    7a934f4bd7d6 Merge tag 'riscv-for-linus-6.3-rc7' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d9b923c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=759d5e665e47a55
-dashboard link: https://syzkaller.appspot.com/bug?extid=08106c4b7d60702dbc14
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+IOWs, calling it one a block device without first checking if the
+block device supports that fallocate operation is exactly how it is
+supposed to be used. If the kernel can't handle this gracefully
+without corrupting data, then that's a kernel bug and not an
+application problem.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> For fallocate calls to block devices, yes, the program can check the
+> queue limits in sysfs if fstat says the supplied path is a block device,
+> but I don't know that most programs are that thorough.  The fallocate(1)
+> CLI program does not check.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ef1965f1c04f/disk-7a934f4b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1ac35470cc62/vmlinux-7a934f4b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b0021ea0d165/bzImage-7a934f4b.xz
+Right. fallocate() was intended to just do the right thing without
+the application having to jump thrown an unknown number of hoops to
+determine if fallocate() can be used or not in the context it is
+executing in.  The kernel implementation is supposed to abstract all that
+context-dependent behaviour away from the application; all the
+application has to do is implement the fallocate() fast path and a
+single generic "do the right thing the slow way" fallback when the
+fallocate() method it called is not supported...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 30014 at fs/ext4/inode.c:3574 ext4_iomap_overwrite_begin+0x7d/0xa0
-Modules linked in:
-CPU: 1 PID: 30014 Comm: syz-executor.1 Not tainted 6.3.0-rc6-syzkaller-00173-g7a934f4bd7d6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-RIP: 0010:ext4_iomap_overwrite_begin+0x7d/0xa0 fs/ext4/inode.c:3574
-Code: 2d 0f b7 1b bf 02 00 00 00 89 de e8 1d 15 52 ff 83 fb 02 75 10 e8 f3 11 52 ff 89 e8 5b 41 5c 41 5e 41 5f 5d c3 e8 e3 11 52 ff <0f> 0b eb ec 89 d9 80 e1 07 fe c1 38 c1 7c c8 48 89 df e8 3c d2 a7
-RSP: 0018:ffffc9000a4cf0b0 EFLAGS: 00010293
-RAX: ffffffff823864dd RBX: 0000000000000000 RCX: ffff88807d391d40
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000002
-RBP: 00000000ffffff8b R08: ffffffff823864c3 R09: ffffed100f18877a
-R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88803d4fd2f0
-R13: ffff88803d4fd2f0 R14: 0000000000010000 R15: 0000000000090000
-FS:  00007fe681b6e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2767115dc9 CR3: 000000002b556000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- iomap_iter+0x677/0xec0 fs/iomap/iter.c:91
- __iomap_dio_rw+0xd74/0x20d0 fs/iomap/direct-io.c:594
- iomap_dio_rw+0x46/0xa0 fs/iomap/direct-io.c:683
- ext4_dio_write_iter fs/ext4/file.c:597 [inline]
- ext4_file_write_iter+0x1509/0x1930 fs/ext4/file.c:708
- do_iter_write+0x6ea/0xc50 fs/read_write.c:861
- iter_file_splice_write+0x843/0xfe0 fs/splice.c:778
- do_splice_from fs/splice.c:856 [inline]
- direct_splice_actor+0xe7/0x1c0 fs/splice.c:1022
- splice_direct_to_actor+0x4c4/0xbd0 fs/splice.c:977
- do_splice_direct+0x283/0x3d0 fs/splice.c:1065
- do_sendfile+0x620/0xff0 fs/read_write.c:1255
- __do_sys_sendfile64 fs/read_write.c:1323 [inline]
- __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1309
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe680e8c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe681b6e168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007fe680fabf80 RCX: 00007fe680e8c169
-RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000005
-RBP: 00007fe680ee7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000008800000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc42fc2daf R14: 00007fe681b6e300 R15: 0000000000022000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
