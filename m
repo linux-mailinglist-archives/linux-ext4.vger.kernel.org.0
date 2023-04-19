@@ -2,73 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B31FD6E7379
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 08:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8B46E7B08
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 15:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbjDSGqq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Apr 2023 02:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
+        id S232708AbjDSNiL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Apr 2023 09:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjDSGqh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 02:46:37 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D3B7A99
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 23:46:34 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4ec9ccab8bbso2653295e87.2
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 23:46:34 -0700 (PDT)
+        with ESMTP id S233117AbjDSNiI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 09:38:08 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19FB16DD8;
+        Wed, 19 Apr 2023 06:37:41 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33JBcMsk025475;
+        Wed, 19 Apr 2023 13:37:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
+ to : cc : subject : date : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=dG4+B2ZIgmD/lEea+i+Z7fUXGEl+Ti+oi4LZJ6T+r78=;
+ b=yk0iS48+frB+vF2H4XnT/r27LeqAw1hthz7VfCM0KYkUsGfD+57YinT6eQQGywjgJz18
+ TSnl6POdsuZmBKI4kfYeQRfkXvZNRPWd8aU9Y0zELHA9p3t7SjRX76tOsPQuhKUs8G3q
+ lRBPBHcRWGFJC8ZgahfQ3n33RwdkGmBvoifM3bEL/080z7NJAq7e0ommK0XonPYy+foZ
+ np3W1GoFi5SmqANiR7otv2caP5bbXFdmASVQv2b4D439QdXOax2qPb28jGrU26g8PsWj
+ F4DDeE8BEZpX9d8tzucqltnKkUGaH4mE6wFULvpDyxI8Gj5QoU6UlinOytBUpgHmOayu eA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3pykyd0brv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Apr 2023 13:37:36 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 33JDPmVM037073;
+        Wed, 19 Apr 2023 13:37:36 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3pyjccyjx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Apr 2023 13:37:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YcDNZQkzb8Yfiu1orndhvERxkhyYsLYWUaS0LSoCGKXZMt+z58TfD4vypGJS0Xox2JoqpZDHA6p0BWbti9PqiPCq7kSYmrtxCweVzyFIllNJjFHQX6RYr2h1vE55ZsbU3kprSaIeZxeszk5Ayg8qMgplkZ2N6awMLI7ApzTaWG0Jx4POtZdnCtjXcWFMMsTVq3Bm5Tmz/Nj8CKBJ5CDo4Kv6j+53CrZq2QIWvPk3mkcOMQSpkiuCVUsNEyKtEXrWy+VyCGmgnY3nqE3EdQOs1JVO9nYZGUAn3bDZ9taPLtW0f4Tyu8nVyw3dQrhP+JXcs+busrW5stbSC0n4Y7Ku4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dG4+B2ZIgmD/lEea+i+Z7fUXGEl+Ti+oi4LZJ6T+r78=;
+ b=i0ZP+iJaEdhVOdrjCmknCwXGBWIu8SzTeDyp+MphEBrJ0dHwPXV5SckuJw0STSGAiao7y5uukxbWGXUf8DlxyNAhxjcRLmw7u5Re9wjrzTw08uIYiGbAnjvaJ+FpsTwAFf8RaTCpiQbzgigqIdBqp5kunvdElk1L14te6iLqLY7dBOgBi5wPtuncejQ8NGcqXik0hiI7w4D7JNy15UT+5/FMNq/UnoPG9h9Q/WDSzTwX09Tpukc39okuI9+daGIRk6Mzkyx+zWZq7R3cpm8Y5LCm5p7rOLdkaeSYhso8Z12Z1L0Ge4WQaPJHVTY1sf6PnKv7PHx1AJeMYICfrLjQEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681886792; x=1684478792;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mg3hFFEYg9rjeRRqNxH7dxRCsGy2Ei2NZXADrlDawGE=;
-        b=fSptfvGlYyYMLDAmKGHM6aYgYLR45w64zlDTLiWj5cOtwA68nYiGORAnlDvTtZk8wA
-         KnmBzyxYVcmYCWtpGHq7gyFsxms3fdKMT0nVHhP/ubB+QgGfGkQKG+9/XpSYTy1+cEUM
-         TkCM8w5L6hcFmoWS2Ub0ySKKLa/zEBih7kgknIrcNVKoYobXOu/O5xbr+GZESoOe83Ye
-         3HK+8TomCVCIhDTNhkh4MYMl8V1TyKU2ZRn4WPMh2V2x1+R3PG83ub5HhxMf6va9IRx7
-         z0fkyIIvFOpDnWeO8otaqNyvmSQqN2zGLQeJ4TkTVcIdfDFAdN2bUSn1vdy+y4XiORuR
-         ZH7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681886792; x=1684478792;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mg3hFFEYg9rjeRRqNxH7dxRCsGy2Ei2NZXADrlDawGE=;
-        b=U4nJiD6NPtlE0/BxZwkqFuDwQoDerZEkca5CF3QTVdvdvowlKUVmGEWIp1ilxf2Rqw
-         7kxUg7iwWMFEJ0lvLT0NPBOK0sArhJKg1LTz6QEZiWgK35vovRP40geS14SgDUm6zZYh
-         xHF3Y1CFuKjc++roRAomaHMvSOoVaYRXZqJKBVAEJIt8WYIvxDks04sbdcFQ2ffxWHSv
-         PJ9rcDsuAoiq9ocz7mXzmSMXK+O2ZeHeqIcccgC+leFQ1HUCG1rwUIwukLyuiebPI2N9
-         DgVmFveNV2pYiyJ9508s4Y4YJURgnrJyULcCujQ+1Gxizq5UgEtWDEPhEL8MZmVdc3ZU
-         2FbA==
-X-Gm-Message-State: AAQBX9dg3DTJpYjjoUxabVqjS4FsZzSyHmKs3eSGKyY/OJLmTf0AW2/p
-        pue6E7sGioqyNrt8NLDtpYu4YQ==
-X-Google-Smtp-Source: AKy350ZJ+8tqcc55x9d49dQOePwISnYLrozPMVqlrVMlCrrFdGR91J/i/F7qKRekszkAGVTNzwEgaQ==
-X-Received: by 2002:ac2:4578:0:b0:4ed:d5b0:7fd9 with SMTP id k24-20020ac24578000000b004edd5b07fd9mr851088lfm.19.1681886792672;
-        Tue, 18 Apr 2023 23:46:32 -0700 (PDT)
-Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
-        by smtp.gmail.com with ESMTPSA id e24-20020ac25478000000b004edce1d338csm438208lfn.89.2023.04.18.23.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 23:46:29 -0700 (PDT)
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     stable@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joneslee@google.com, Baokun Li <libaokun1@huawei.com>,
-        stable@kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Jan Kara <jack@suse.cz>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH][for stable [4.14, 5.10] 3/3] ext4: fix use-after-free in ext4_xattr_set_entry
-Date:   Wed, 19 Apr 2023 06:46:10 +0000
-Message-ID: <20230419064610.1918038-4-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-In-Reply-To: <20230419064610.1918038-1-tudor.ambarus@linaro.org>
-References: <20230419064610.1918038-1-tudor.ambarus@linaro.org>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dG4+B2ZIgmD/lEea+i+Z7fUXGEl+Ti+oi4LZJ6T+r78=;
+ b=Gy1ylAIwBJB1oHwzqcV9L6oQP64tipTXsK05drCHn5bqzN+a5jT5OOQmqYZr35lggzlfjaKmTr6FoZ78+jrksjC7mHeTfOUjhoZ7u/yyeJbdiHQDUokVQGTA0kxkZJbT1bhgLyRIQBQpjU7yExg5+yk6m5Ni/J71+Xy4yTiJ2IA=
+Received: from SA1PR10MB5867.namprd10.prod.outlook.com (2603:10b6:806:22b::9)
+ by PH0PR10MB6960.namprd10.prod.outlook.com (2603:10b6:510:26e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Wed, 19 Apr
+ 2023 13:37:34 +0000
+Received: from SA1PR10MB5867.namprd10.prod.outlook.com
+ ([fe80::1827:534d:7d96:20f1]) by SA1PR10MB5867.namprd10.prod.outlook.com
+ ([fe80::1827:534d:7d96:20f1%3]) with mapi id 15.20.6319.020; Wed, 19 Apr 2023
+ 13:37:34 +0000
+References: <Y/5ovz6HI2Z47jbk@magnolia>
+ <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
+ <20230418044641.GD360881@frogsfrogsfrogs>
+ <CAOQ4uxgUOuR80jsAE2DkZhMPVNT_WwnsSX8-GSkZO4=k3VbCsw@mail.gmail.com>
+ <20230419021146.GE360889@frogsfrogsfrogs>
+ <CAOQ4uxjmTBi9B=0mMKf6i8usLJ2GrAp88RhxFcQcGFK1LjQ_Lw@mail.gmail.com>
+User-agent: mu4e 1.8.10; emacs 27.1
+From:   Chandan Babu R <chandan.babu@oracle.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
+Date:   Wed, 19 Apr 2023 16:28:48 +0530
+In-reply-to: <CAOQ4uxjmTBi9B=0mMKf6i8usLJ2GrAp88RhxFcQcGFK1LjQ_Lw@mail.gmail.com>
+Message-ID: <875y9st2lk.fsf@debian-BULLSEYE-live-builder-AMD64>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TY2PR0101CA0041.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:8000::27) To SA1PR10MB5867.namprd10.prod.outlook.com
+ (2603:10b6:806:22b::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR10MB5867:EE_|PH0PR10MB6960:EE_
+X-MS-Office365-Filtering-Correlation-Id: 522f1918-b2ee-42bf-0326-08db40db3b37
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6OwmWpiaaCFM99I3dPmu5hvG+WJhCMdjAJAMdT4bsyKlVpU3m5Kkum1DEZgKoOjjKj2QeuinWmM7I+guAQgbJ13E4GIgM4RPfAeV0XdRlQESk0gYwczHkM9pIBiRfD3DsvCBaAk6XkypMQSthS8FDS0JgxRJTSGxttVqTeXAMB/Hx5gJ0DS/IdIYBDrAnOxeKlEQ8PliYU/1XgZ8GIj1uJ7hL3lkr54Ij2t8cQLB88sUwU/pjB/oXijyVBeLhruJCXaa35TE3Q5rUW1ECmRVD55PLcp+JPZ4ezdK1ghwHxPOa90bKNye5htLxLaihKKuGC9zBpj28xRUR7NU5wdXSngDkr+JrZOddU15rTZBeDPz5cQjlTozImq5I6zuevEFwA01XZfUeb11S+3zH77DdGPiL4PYs9WJtxGmHeRaWVoF0ufMCkSSFxmpM+rIcYjkIp/r7ndgS9mKNM4H3Lx8oZFTK25tllBZpfXYJ4Oo0vD/1+lI4YRSyVtvfTQyOEYhnHetqud/kLhQ6ESkSiX7qz1InWxjZ5eNQ6JyZE+HfSObPWnuIUmacT4JOtdVh0pA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR10MB5867.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(39860400002)(396003)(136003)(346002)(366004)(451199021)(66476007)(478600001)(6666004)(38100700002)(8936002)(66899021)(8676002)(316002)(41300700001)(6916009)(4326008)(66946007)(66556008)(54906003)(186003)(107886003)(2906002)(53546011)(6512007)(26005)(83380400001)(9686003)(6506007)(86362001)(33716001)(5660300002)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGowU250TXlHME8zVThmUkVQY1VKeWhDcFVYaEtLNnAyVVBFUElLUFZ4NzBR?=
+ =?utf-8?B?UnhYOFQzcVJkTTM5YWpJb21kSG9Td1QyVHVpY2FXYkNKMEhwVEdIRkcvOUJ5?=
+ =?utf-8?B?MStDejBNODc3U2E1S3k3dEhiUGdCcDkxR0diYjVNYWlabnM3TUcyVG42Rkox?=
+ =?utf-8?B?MVlxUEYxcjNlRG1WSXAvMEpDKzdFL1VaU1ZrUDM2NEI1VUZmTi9ZV3h5N3BX?=
+ =?utf-8?B?WjByT3ZkeGg3SU5sRENRNDgxdktucmV1aTNZQkdVdnVVSE9hQitubHlqZklD?=
+ =?utf-8?B?R0IyaFIwT2lHbDJrNXhQcGU5WlZVcEdUdXo3ZklCNzVXUTdsUnlVNFl0Ky9U?=
+ =?utf-8?B?RkxhWG5PWkl6emFLYWJBL29vNkw4NTloSTNMcXFrMGZ6cXBSaXBRREtzbGFP?=
+ =?utf-8?B?TDV4YkdydUdOS1ZQMWdIQldDQlVBc01mWE5lN1hBOG9QZ0dheDNmZHFFU2F4?=
+ =?utf-8?B?WG15NXJ6bnpjZEQ2ZCt4SGV3eEQ5Szh0dmVPOEI3N0d4WGNzSWZzWmlDbW1u?=
+ =?utf-8?B?NzRNc0hlRTlxWTdOb0VZU2NvTC8xbVg5RFd1OWc4OUdzc1pMVmp2Ky9TUUVt?=
+ =?utf-8?B?d3lSZjlzbENlM1FSdE00L1NxbVB6QWRPYlh1TnRHTEhaZXRVa0tVMXZKaDli?=
+ =?utf-8?B?eThFUURUZXVOQnJsUzdPUWRJUGNqSS9qY1hQTUVkMnBNN2FDMWxVamN1MHJX?=
+ =?utf-8?B?b3VRY3JiVVd3NlpQS2VrdTFNdzFIZVlNQ3VLUU16UGdBUDVYT1l1Y1hMYkNO?=
+ =?utf-8?B?NENqMVZNN3Z4MHNIMlg4K1dlR0lsTnZkb1FyUFkyNktzcjBYSTh1QkF2TmhL?=
+ =?utf-8?B?M3h2SzBQRERVOWRLMzMvbUcxaWhOMWFrK2Zmbjd5dmpYSjNGcFB0Z0llM1U5?=
+ =?utf-8?B?bkNSNFhXNXMzUjlwaGxzamJBZ21LbGsxUzIrWWNvakYwTVFmaUJ4SmEzc1d2?=
+ =?utf-8?B?SmJhWmdRL1RCSHdEb2JiQTdPOXBwTkhudGNJdHhQdUgwUVEvRk5wRDhQSUd1?=
+ =?utf-8?B?OEZnZDZUYmozVmIrdnlodjllZ1Q4ZGw2UkkvK0trd3FXREVQNTlzcW96TjYv?=
+ =?utf-8?B?aFUxTFZzaXFkb3Z1RE1kQjhxbGVuUkc4ZE1uNzV2cFFQaUtaVklzTUk5cEo1?=
+ =?utf-8?B?eHNHeGRxeEFONWxVVlYvYWNtc25DNVFJWE50U252TnlWWE5QMXdLMmZwUEFQ?=
+ =?utf-8?B?Mmo5ek5hR1pMbTg5TXlPbVhVOU5lMUtWSklEYmY0UTd0RkR1NXM1WmpMNEZj?=
+ =?utf-8?B?R1VETGp5aEpRWU1MZE04ZnRoM2J2bzZYZitpaEh5M2VDOE1Xc3JhNXh4YmlR?=
+ =?utf-8?B?ZUxIcjFpa3R0ZDlwcVZ4NE9uaHdzRWQvdms1SjBFTjVGZENrRnNWZFN1SWNl?=
+ =?utf-8?B?M1pmRDRlbGYzNXFwWDdFdlVQNDlqNTRMZzU5Vmh1S090RitBaGNySHBxSGJZ?=
+ =?utf-8?B?blV1L0RkZHcrelZMTy9kWGsreTdhRkdmNGdjTkxDQ091WWxFV0w3NytQVEFQ?=
+ =?utf-8?B?YXo2UkZOdGYyM2dpR3hOQlkrLzByd2xBVEVEc3IrNWJINVRwaU1Xcm5KTElE?=
+ =?utf-8?B?VURKejVuenMySlVXcjNGcVYyL2w3T3l6UGlxc2JHN1gwcnM5WXZQZjJtaHdP?=
+ =?utf-8?B?dDdaMm1TcnQvWFBqNG8xZkY5aGRzR1pDV2VGeVlmZ2lCa3Vma0lzU09vUXNz?=
+ =?utf-8?B?N0pTRWhhdFZPQldLVXk4eC8wbkY5OXlIT292dFd0eVlPR2hESWE0N3E3V0xr?=
+ =?utf-8?B?c0U0Rk1aTHh2cWVVeml1RC9Tcnczb3VlcW41ZW5xVGtpaHdpZS9yenVUYnp2?=
+ =?utf-8?B?L1A2UTZnRkl3aFdIN2kwREpHVEtZTG1semcrMzBTWEc3ZklzVlRyenRDODdU?=
+ =?utf-8?B?K1dtSWJJZGxFTzFEdGNqaTVNcFlObEdEL3BHQ3NWTkRNcG45cEtRRFVFM2Rj?=
+ =?utf-8?B?MjV0b1VjRmhZcTV6NXNCd1Fod2xQcDlRcGZPS0c3aVU2K0lQamVwTy93MGxC?=
+ =?utf-8?B?WU9HVEJtZkZkRGpIaGdoZ016K2NaSGQwc2tvOG1HUEpFL2VPaDlKaW5mZ0Ju?=
+ =?utf-8?B?b3I1eFc0RFFoaHZaV1lpNWtCTmo3eS9OQkMzUExYMzUzS3IxbWczd2dBTStx?=
+ =?utf-8?Q?/Sb/JE4fBIZNffljN7OFPFvZl?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: XUrhLtEBZwxNivtTBzg/JgTQt2aZUGY/6n1FwL3XFFP81z3NwXHhHke9QcwztYWJlITkR7aXtHWtOnnVzD6lqz+V6R97OC/WVZyOOhmeL8e9raGAoPZ87urcjxDOcPuFrdUAzQVEM580Fz6rYnhV5ErQnA/yAKdCxItAr/GgNhg3wKIvypNufQzEwxIVbd8dFxhmCVOy7oJwxDWtUJs7kIwtNt3oKaIk7+p5dJAwt0Ml46Z5wjTKCl9blcjyfJ3be8da4HTeCEeHkpZcmqz3zy4Gn9m11DMbPkiP5nJ0pS2SAjoe0CafDUXwzjeXhBIl39urMsa7v1BAKhBS1cSdmUrgMaBxe6gFTXz1CgnZ2lhCFPpXBS2H/sXvAGYH8WBHfI8t5byOh7jt2sQI1nPntH7XmBT0cl1nwLAKeDniOhiZftOOHTHnC9GkvJ0ueJYzhz7teGQ1oG0nIKZ2cTdCmaCj5hYTc1YWKL96l3CmZJQPe/y7KTomg29+fzOl/5hGCDROWbR9O61ENNQh57tXKF5lu6KKOUltDGJRhfoGnltG7QWYQCvxC9sLBrshFnGhORBmXRy8EWiJ5gG4kjwbXFGHphew1bLZzN+TruO+/UoD69N3dcNGYSpB92gSduwt+JXx6X1tkBXRvtcByTGf49eakkxe5oLJb4zNtvLfAg+bn1yCoB8evY6mD2teCMef3GRhvbj6Emr0NNXjRStX8FmnZjRjPxRlF6hcRnvDKwqN3bXK3p6wm/hbrYX3PRDF7QtCDHN/b+Jo0mTXs/AGRfX5mIIkTNEOISR7GoDnDsywUCeawyclXtGmNU489lLS7vsIRtBny09t95cDAEn05zzXsDruX3g4ZiJ9V3T3+mjmAXOFTbA9tInEO92ttm7MwZeXbyms9+2aouKimS6icQ==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 522f1918-b2ee-42bf-0326-08db40db3b37
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR10MB5867.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2023 13:37:34.0118
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3cz8i5tc73rr0D/MUrvzPl8e8nDkQxUwapKCfKhX5WuJiw+TE1zOLe+S1Bw0QQ5YgTqC6DDPuPy4RB8feYi/tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB6960
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-19_08,2023-04-18_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
+ definitions=main-2304190122
+X-Proofpoint-GUID: QdgmtpvnS264LVdqEwPhnHd7TmpjEouq
+X-Proofpoint-ORIG-GUID: QdgmtpvnS264LVdqEwPhnHd7TmpjEouq
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,126 +163,85 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Baokun Li <libaokun1@huawei.com>
+On Wed, Apr 19, 2023 at 07:06:58 AM +0300, Amir Goldstein wrote:
+> On Wed, Apr 19, 2023 at 5:11=E2=80=AFAM Darrick J. Wong <djwong@kernel.or=
+g> wrote:
+>>
+>> On Tue, Apr 18, 2023 at 10:46:32AM +0300, Amir Goldstein wrote:
+>> > On Tue, Apr 18, 2023 at 7:46=E2=80=AFAM Darrick J. Wong <djwong@kernel=
+.org> wrote:
+>> > >
+>> > > On Sat, Apr 15, 2023 at 03:18:05PM +0300, Amir Goldstein wrote:
+>> > > > On Tue, Feb 28, 2023 at 10:49=E2=80=AFPM Darrick J. Wong <djwong@k=
+ernel.org> wrote:
+>> > ...
+>> > > > Darrick,
+>> > > >
+>> > > > Quick question.
+>> > > > You indicated that you would like to discuss the topics:
+>> > > > Atomic file contents exchange
+>> > > > Atomic directio writes
+>> > >
+>> > > This one ^^^^^^^^ topic should still get its own session, ideally wi=
+th
+>> > > Martin Petersen and John Garry running it.  A few cloud vendors'
+>> > > software defined storage stacks can support multi-lba atomic writes,=
+ and
+>> > > some database software could take advantage of that to reduce nested=
+ WAL
+>> > > overhead.
+>> > >
+>> >
+>> > CC Martin.
+>> > If you want to lead this session, please schedule it.
+>> >
+>> > > > Are those intended to be in a separate session from online fsck?
+>> > > > Both in the same session?
+>> > > >
+>> > > > I know you posted patches for FIEXCHANGE_RANGE [1],
+>> > > > but they were hiding inside a huge DELUGE and people
+>> > > > were on New Years holidays, so nobody commented.
+>> > >
+>> > > After 3 years of sparse review comments, I decided to withdraw
+>> > > FIEXCHANGE_RANGE from general consideration after realizing that ver=
+y
+>> > > few filesystems actually have the infrastructure to support atomic f=
+ile
+>> > > contents exchange, hence there's little to be gained from undertakin=
+g
+>> > > fsdevel bikeshedding.
+>> > >
+>> > > > Perhaps you should consider posting an uptodate
+>> > > > topic suggestion to let people have an opportunity to
+>> > > > start a discussion before LSFMM.
+>> > >
+>> > > TBH, most of my fs complaints these days are managerial problems (Ar=
+e we
+>> > > spending too much time on LTS?  How on earth do we prioritize projec=
+ts
+>> > > with all these drive by bots??  Why can't we support large engineeri=
+ng
+>> > > efforts better???) than technical.
+>> >
+>> > I penciled one session for "FS stable backporting (and other LTS woes)=
+".
+>> > I made it a cross FS/IO session so we can have this session in the big=
+ room
+>> > and you are welcome to pull this discussion to any direction you want.
+>>
+>> Ok, thank you.  Hopefully we can get all the folks who do backports into
+>> this one.  That might be a big ask for Chandan, depending on when you
+>> schedule it.
+>>
+>> (Unless it's schedule for 7pm :P)
+>>
+>
+> Oh thanks for reminding me!
+> I moved it to Wed 9am, so it is more convenient for Chandan.
 
-[ Upstream commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3 ]
+This maps to 9:30 AM for me. Thanks for selecting a time which is convenien=
+t
+for me.
 
-Hulk Robot reported a issue:
-==================================================================
-BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x18ab/0x3500
-Write of size 4105 at addr ffff8881675ef5f4 by task syz-executor.0/7092
-
-CPU: 1 PID: 7092 Comm: syz-executor.0 Not tainted 4.19.90-dirty #17
-Call Trace:
-[...]
- memcpy+0x34/0x50 mm/kasan/kasan.c:303
- ext4_xattr_set_entry+0x18ab/0x3500 fs/ext4/xattr.c:1747
- ext4_xattr_ibody_inline_set+0x86/0x2a0 fs/ext4/xattr.c:2205
- ext4_xattr_set_handle+0x940/0x1300 fs/ext4/xattr.c:2386
- ext4_xattr_set+0x1da/0x300 fs/ext4/xattr.c:2498
- __vfs_setxattr+0x112/0x170 fs/xattr.c:149
- __vfs_setxattr_noperm+0x11b/0x2a0 fs/xattr.c:180
- __vfs_setxattr_locked+0x17b/0x250 fs/xattr.c:238
- vfs_setxattr+0xed/0x270 fs/xattr.c:255
- setxattr+0x235/0x330 fs/xattr.c:520
- path_setxattr+0x176/0x190 fs/xattr.c:539
- __do_sys_lsetxattr fs/xattr.c:561 [inline]
- __se_sys_lsetxattr fs/xattr.c:557 [inline]
- __x64_sys_lsetxattr+0xc2/0x160 fs/xattr.c:557
- do_syscall_64+0xdf/0x530 arch/x86/entry/common.c:298
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x459fe9
-RSP: 002b:00007fa5e54b4c08 EFLAGS: 00000246 ORIG_RAX: 00000000000000bd
-RAX: ffffffffffffffda RBX: 000000000051bf60 RCX: 0000000000459fe9
-RDX: 00000000200003c0 RSI: 0000000020000180 RDI: 0000000020000140
-RBP: 000000000051bf60 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000001009 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc73c93fc0 R14: 000000000051bf60 R15: 00007fa5e54b4d80
-[...]
-==================================================================
-
-Above issue may happen as follows:
--------------------------------------
-ext4_xattr_set
-  ext4_xattr_set_handle
-    ext4_xattr_ibody_find
-      >> s->end < s->base
-      >> no EXT4_STATE_XATTR
-      >> xattr_check_inode is not executed
-    ext4_xattr_ibody_set
-      ext4_xattr_set_entry
-       >> size_t min_offs = s->end - s->base
-       >> UAF in memcpy
-
-we can easily reproduce this problem with the following commands:
-    mkfs.ext4 -F /dev/sda
-    mount -o debug_want_extra_isize=128 /dev/sda /mnt
-    touch /mnt/file
-    setfattr -n user.cat -v `seq -s z 4096|tr -d '[:digit:]'` /mnt/file
-
-In ext4_xattr_ibody_find, we have the following assignment logic:
-  header = IHDR(inode, raw_inode)
-         = raw_inode + EXT4_GOOD_OLD_INODE_SIZE + i_extra_isize
-  is->s.base = IFIRST(header)
-             = header + sizeof(struct ext4_xattr_ibody_header)
-  is->s.end = raw_inode + s_inode_size
-
-In ext4_xattr_set_entry
-  min_offs = s->end - s->base
-           = s_inode_size - EXT4_GOOD_OLD_INODE_SIZE - i_extra_isize -
-	     sizeof(struct ext4_xattr_ibody_header)
-  last = s->first
-  free = min_offs - ((void *)last - s->base) - sizeof(__u32)
-       = s_inode_size - EXT4_GOOD_OLD_INODE_SIZE - i_extra_isize -
-         sizeof(struct ext4_xattr_ibody_header) - sizeof(__u32)
-
-In the calculation formula, all values except s_inode_size and
-i_extra_size are fixed values. When i_extra_size is the maximum value
-s_inode_size - EXT4_GOOD_OLD_INODE_SIZE, min_offs is -4 and free is -8.
-The value overflows. As a result, the preceding issue is triggered when
-memcpy is executed.
-
-Therefore, when finding xattr or setting xattr, check whether
-there is space for storing xattr in the inode to resolve this issue.
-
-Cc: stable@kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20220616021358.2504451-3-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- fs/ext4/xattr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 71e83e815258..28fa9a64dc4b 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2193,8 +2193,9 @@ int ext4_xattr_ibody_find(struct inode *inode, struct ext4_xattr_info *i,
- 	struct ext4_inode *raw_inode;
- 	int error;
- 
--	if (EXT4_I(inode)->i_extra_isize == 0)
-+	if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
- 		return 0;
-+
- 	raw_inode = ext4_raw_inode(&is->iloc);
- 	header = IHDR(inode, raw_inode);
- 	is->s.base = is->s.first = IFIRST(header);
-@@ -2222,8 +2223,9 @@ int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
- 	struct ext4_xattr_search *s = &is->s;
- 	int error;
- 
--	if (EXT4_I(inode)->i_extra_isize == 0)
-+	if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
- 		return -ENOSPC;
-+
- 	error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */);
- 	if (error)
- 		return error;
--- 
-2.40.0.634.g4ca3ef3211-goog
-
+--=20
+chandan
