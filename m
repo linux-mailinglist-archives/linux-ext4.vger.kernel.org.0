@@ -2,92 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D96B6E6F93
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 00:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2966E70BD
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 03:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbjDRWnx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Apr 2023 18:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S231578AbjDSB2b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Apr 2023 21:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbjDRWnv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Apr 2023 18:43:51 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7126F4EF4;
-        Tue, 18 Apr 2023 15:43:49 -0700 (PDT)
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1a6bc48aec8so11608935ad.2;
-        Tue, 18 Apr 2023 15:43:49 -0700 (PDT)
+        with ESMTP id S230523AbjDSB2a (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Apr 2023 21:28:30 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1062083F2
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 18:28:29 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-517f1d5645aso604679a12.0
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Apr 2023 18:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1681867708; x=1684459708;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fORvDtycGEYAP00Go8Gr75NbmrQRJi6legeNyHFvVc4=;
+        b=LrmAEIyGSJiRmmpboUhhQgqPcY35ao1RN/OmUVmJ2+dtZKoCNZbb8NLxueipM+G5cL
+         7Z8Nwal6Jz63ieQNUvv003Q/cAVuE98OeSDB3Ay0Doy0h7oKAWn5SO9oU40wJCf0tbCQ
+         BQ42zZnn0Cg/VQDTeWslhL7Wd8s61avskpFcinz3IKJk+gNlExkijnMyMDYHJlhUHd5M
+         8IVAzrRyL0O2Bazz7z+f5qoE6nxJXJFFSe3jLE/4Y/nctAfi6fljhWgSEFtC2xGzhK5C
+         mIW0MC0YJkbwEU94y4kb1t2bC6NCGfVeKEG9Yso2dAk27EpJOXvZk/aks8gm/9xAtK5z
+         hsig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681857829; x=1684449829;
+        d=1e100.net; s=20221208; t=1681867708; x=1684459708;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GRd1Pn/ei3QfwgTQ2bN6W/oJfrlsBAZasHc6v7hkSkA=;
-        b=LLwn6kx9J+JGtc7ToaBoLaY70lz6ZxTF4uM3G8B60kKnDWUubJudWPtIdlneFaveBf
-         uJtG0/Pbztx8/z37HrnXXju5D1vrngnYGidlq/XTV+2WgxqZWFawHRlCWHh1AgzjFHUe
-         JZR9phwdvmMRzfDAaTw/NLNbbYqRG3vJ3nizlgl0WH5YZuUs0wz/+8hKaFvldVRQoMso
-         /GT00PF8KDJPQgIKaT4zezpu9yCCMs8hMfBm2euWtzmRhkGFAd1KifVXggwhe+mlcfn3
-         usfqtlibiyrDUw4ZRR4ySgDKD+mPiobTQQjhBykFYryyr3/6hjH0gL5dA4jF1m/agjqI
-         Gz/A==
-X-Gm-Message-State: AAQBX9cZFFscto1vP+kARHPgCXlUvfOAVx/HpMuSkwpKunv3znfWM0n8
-        Luqpuawx5Nx9m3hL2uatUrg=
-X-Google-Smtp-Source: AKy350bwRPit77QBRyCkurpbLJcKpUzou5Ygm5yswkmtHRjJpN/wCGE3gl3bGCRqpWafsB3KLZ6hBA==
-X-Received: by 2002:a17:903:32c1:b0:1a1:b656:2149 with SMTP id i1-20020a17090332c100b001a1b6562149mr4070484plr.50.1681857828891;
-        Tue, 18 Apr 2023 15:43:48 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:5d9b:263d:206c:895a? ([2620:15c:211:201:5d9b:263d:206c:895a])
-        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001a64a335e42sm10127547pld.160.2023.04.18.15.43.47
+        bh=fORvDtycGEYAP00Go8Gr75NbmrQRJi6legeNyHFvVc4=;
+        b=JvSQT/jfS2KtGmCiKI/CEUkoyeey3KhgRz184mRSxlxMVaTw6NXF7ecIxGLvmgawM/
+         CcsI/+g66IGUwMOZW4rQ4SEpq5YIPnN3vQYWTcEkvZaUsPfZthVKaBNPAXtiKqfdpAFW
+         OPKafnPbxywlUX4GrAt9PlyyJK8AmO1vCGN4STNhRpHCFBKHSo+dSMzNqV06gGF1X7vV
+         DCtJ8tsPyedc2U3C27mogNNkpukrFW69HwUqXKnElmBCdwOk9veAWQ/Dw8iB+/PcnBpE
+         URiWB2m1UxlbDAUzaiJOfLJh+8HBIINGnhrkQh8sZbuSdgo91R5PZShbsWlmc+aMLBu4
+         3DPg==
+X-Gm-Message-State: AAQBX9fXM3JHFH2DCF6wHvL7e5KapB4fvTCyi9nJD+uoxkIS9NgnKvQS
+        lpwf9FhVUDRfSi+16F/evDghbQ==
+X-Google-Smtp-Source: AKy350ZW2i/ZFxByFt235VEJD3loFwfTTKFlgazg6SB7eTiGwpib5QWAwouBg+e5G+DCGghYaT9aug==
+X-Received: by 2002:a17:902:dad1:b0:1a1:956d:2281 with SMTP id q17-20020a170902dad100b001a1956d2281mr19890233plx.3.1681867708384;
+        Tue, 18 Apr 2023 18:28:28 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id x24-20020a1709027c1800b001a50ede5086sm10206660pll.51.2023.04.18.18.28.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Apr 2023 15:43:48 -0700 (PDT)
-Message-ID: <b74cc3d8-bfde-8375-3b19-24ea13eb1196@acm.org>
-Date:   Tue, 18 Apr 2023 15:43:46 -0700
+        Tue, 18 Apr 2023 18:28:28 -0700 (PDT)
+Message-ID: <b09e799e-9d9f-ae22-1f09-babd6521b11d@kernel.dk>
+Date:   Tue, 18 Apr 2023 19:28:26 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v4 1/4] block: Introduce provisioning primitives
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 1/2] fs: add FMODE_DIO_PARALLEL_WRITE flag
 Content-Language: en-US
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
+To:     Dave Chinner <david@fromorbit.com>,
+        Bernd Schubert <bschubert@ddn.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-References: <20230414000219.92640-1-sarthakkukreti@chromium.org>
- <20230418221207.244685-1-sarthakkukreti@chromium.org>
- <20230418221207.244685-2-sarthakkukreti@chromium.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230418221207.244685-2-sarthakkukreti@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Dharmendra Singh <dsingh@ddn.com>
+References: <20230307172015.54911-2-axboe@kernel.dk>
+ <20230412134057.381941-1-bschubert@ddn.com>
+ <CAJfpegt_ZCVodOhQCzF9OqKnCr65mKax0Gu4OTN8M51zP+8TcA@mail.gmail.com>
+ <ZDjggMCGautPUDpW@infradead.org> <20230414153612.GB360881@frogsfrogsfrogs>
+ <cfeade24-81fc-ab73-1fd9-89f12a402486@kernel.dk>
+ <CAJfpegvv-SPJRjWrR_+JY-H=xmYq0pnTfAtj-N8kG7AnQvWd=w@mail.gmail.com>
+ <e4855cfa-3683-f12c-e865-6e5c4d0e5602@ddn.com>
+ <20230418221300.GT3223426@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230418221300.GT3223426@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 4/18/23 15:12, Sarthak Kukreti wrote:
->   	/* Fail if we don't recognize the flags. */
-> -	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
-> +	if (mode != 0 && mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
->   		return -EOPNOTSUPP;
+On 4/18/23 4:13?PM, Dave Chinner wrote:
+>>> Without first attempting to answer those questions, I'd be reluctant
+>>> to add  FMODE_DIO_PARALLEL_WRITE to fuse.
+> 
+> I'd tag it with this anyway - for the majority of apps that are
+> doing concurrent DIO within EOF, shared locking is big win. If
+> there's a corner case that apps trigger that is slow, deal with them
+> when they are reported....
 
-Is this change necessary? Doesn't (mode & ~BLKDEV_FALLOC_FL_SUPPORTED) 
-!= 0 imply that mode != 0?
+Agree, the common/fast case will be fine, which is really the most
+important part.
 
-Thanks,
-
-Bart.
+-- 
+Jens Axboe
 
