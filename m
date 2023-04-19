@@ -2,65 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02456E804B
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 19:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F70B6E817F
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Apr 2023 20:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjDSR0G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Apr 2023 13:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S231160AbjDSSwu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Apr 2023 14:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjDSR0F (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 13:26:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDEA659B;
-        Wed, 19 Apr 2023 10:26:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 53B6A64122;
-        Wed, 19 Apr 2023 17:26:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD6ABC433EF;
-        Wed, 19 Apr 2023 17:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681925162;
-        bh=VFRws15p+q59RSTrU0VATjC0LQ6eFGIpuOjxTTSlgZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UycFIy4d7bCijEj9Km8Xjqeq9Y7EDL81kXO55cTmYZWaCoWU32Dc670Zrnc7oLZIE
-         zohoopB6vvjwHWAIgZi2HjslXGgNOIJNhWwyycPnyOYwJZEXyC3u+30gOvOxZSPYmz
-         UoBxqtx/hq9Yb4HYkTl/ePo7blbSjZczejMiqCwIcKJRmGoEgpFxw635kJIa5LL6cK
-         fj7fBUFeirx+lzm/NNEwcg+rYsJHgsDOwXoE9yDM1+xQ7Vq0YueKHyzojjw0y6iVIo
-         MzRSXQLJPb3cF4Xqo1ry0NuHAPTGe48TEIN9UMSK0LxFIaOB2wSFR2bO9Zr4jBxkZj
-         6EldBf3ubjw1Q==
-Date:   Wed, 19 Apr 2023 10:26:02 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Mike Snitzer <snitzer@kernel.org>
-Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Theodore Ts'o <tytso@mit.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Daniil Lunev <dlunev@google.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v4 1/4] block: Introduce provisioning primitives
-Message-ID: <20230419172602.GE360881@frogsfrogsfrogs>
-References: <20230414000219.92640-1-sarthakkukreti@chromium.org>
- <20230418221207.244685-1-sarthakkukreti@chromium.org>
- <20230418221207.244685-2-sarthakkukreti@chromium.org>
- <20230419153611.GE360885@frogsfrogsfrogs>
- <ZEAUHnWqt9cIiJRb@redhat.com>
+        with ESMTP id S229872AbjDSSwt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 14:52:49 -0400
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0300844A9
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 11:52:48 -0700 (PDT)
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-32a8c155f24so616015ab.0
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 11:52:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681930367; x=1684522367;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vZQm9ajXkGotCE4OxQ7g7sW/rOm7TAAFTPwqwxq0WKc=;
+        b=iSnIjj4CWiU/9P/JTMzAxe1rukSt99VcZux+RuiUHLv8apv1HzbvrzR6v8K1GFcF6O
+         41ufCeczzClcSwugvo/+gsLLIbznE1xEl6UPoIPnm5yaUaWz4vWgU39OUaelKn/2zZjb
+         JxmiyW+krIUHUEcPrrQVMCnOGvrpCi04SceBGYHNOHaQrAfFIKLz0hWgoiRioQW9pZtw
+         /WZyyRHwFp1nM5KUpqQJmyRgvjzscxrM9FimZlRpkoVtpyUT/EnyD+H2COCDU82BuLyz
+         pz1TA3/5yusUltO29kVsV7V/Ur26Ca+j/DoO1/cPjKg8hvd85g7JirCNOeKOLpvHGnxL
+         iLgw==
+X-Gm-Message-State: AAQBX9fvOiXcgSzCJm3jcTr2fVbDuKUZlHq6OE6Uje2xWefxnO9TaJIk
+        X2ZDtxm3a+RKuHFzCAN5L/tyqErcEs0OKjTO/1OEOeuADCd9
+X-Google-Smtp-Source: AKy350aloVDDl5G+HPKwo89i1D7agjSsVu6G7IrkD2bdBIsH+IvUhYRKiYoYh9s6nvo1ZrMxrK7m05j69InN0TR9Zv5spcF/Csse
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEAUHnWqt9cIiJRb@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a92:d482:0:b0:328:7b75:a5fe with SMTP id
+ p2-20020a92d482000000b003287b75a5femr391854ilg.5.1681930367357; Wed, 19 Apr
+ 2023 11:52:47 -0700 (PDT)
+Date:   Wed, 19 Apr 2023 11:52:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015760b05f9b4eee9@google.com>
+Subject: [syzbot] [ext4?] WARNING in ext4_iomap_overwrite_begin
+From:   syzbot <syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,180 +54,79 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 12:17:34PM -0400, Mike Snitzer wrote:
-> On Wed, Apr 19 2023 at 11:36P -0400,
-> Darrick J. Wong <djwong@kernel.org> wrote:
-> 
-> > On Tue, Apr 18, 2023 at 03:12:04PM -0700, Sarthak Kukreti wrote:
-> > > Introduce block request REQ_OP_PROVISION. The intent of this request
-> > > is to request underlying storage to preallocate disk space for the given
-> > > block range. Block devices that support this capability will export
-> > > a provision limit within their request queues.
-> > > 
-> > > This patch also adds the capability to call fallocate() in mode 0
-> > > on block devices, which will send REQ_OP_PROVISION to the block
-> > > device for the specified range,
-> > > 
-> > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > ---
-> > >  block/blk-core.c          |  5 ++++
-> > >  block/blk-lib.c           | 53 +++++++++++++++++++++++++++++++++++++++
-> > >  block/blk-merge.c         | 18 +++++++++++++
-> > >  block/blk-settings.c      | 19 ++++++++++++++
-> > >  block/blk-sysfs.c         |  8 ++++++
-> > >  block/bounce.c            |  1 +
-> > >  block/fops.c              | 25 +++++++++++++-----
-> > >  include/linux/bio.h       |  6 +++--
-> > >  include/linux/blk_types.h |  5 +++-
-> > >  include/linux/blkdev.h    | 16 ++++++++++++
-> > >  10 files changed, 147 insertions(+), 9 deletions(-)
-> > > 
-> > 
-> > <cut to the fallocate part; the block/ changes look fine to /me/ at
-> > first glance, but what do I know... ;)>
-> > 
-> > > diff --git a/block/fops.c b/block/fops.c
-> > > index d2e6be4e3d1c..e1775269654a 100644
-> > > --- a/block/fops.c
-> > > +++ b/block/fops.c
-> > > @@ -611,9 +611,13 @@ static ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> > >  	return ret;
-> > >  }
-> > >  
-> > > +#define	BLKDEV_FALLOC_FL_TRUNCATE				\
-> > 
-> > At first I thought from this name that you were defining a new truncate
-> > mode for fallocate, then I realized that this is mask for deciding if we
-> > /want/ to truncate the pagecache.
-> > 
-> > #define		BLKDEV_FALLOC_TRUNCATE_MASK ?
-> > 
-> > > +		(FALLOC_FL_PUNCH_HOLE |	FALLOC_FL_ZERO_RANGE |	\
-> > 
-> > Ok, so discarding and writing zeroes truncates the page cache, makes
-> > sense since we're "writing" directly to the block device.
-> > 
-> > > +		 FALLOC_FL_NO_HIDE_STALE)
-> > 
-> > Here things get tricky -- some of the FALLOC_FL mode bits are really an
-> > opcode and cannot be specified together, whereas others select optional
-> > behavior for certain opcodes.
-> > 
-> > IIRC, the mutually exclusive opcodes are:
-> > 
-> > 	PUNCH_HOLE
-> > 	ZERO_RANGE
-> > 	COLLAPSE_RANGE
-> > 	INSERT_RANGE
-> > 	(none of the above, for allocation)
-> > 
-> > and the "variants on a theme are":
-> > 
-> > 	KEEP_SIZE
-> > 	NO_HIDE_STALE
-> > 	UNSHARE_RANGE
-> > 
-> > not all of which are supported by all the opcodes.
-> > 
-> > Does it make sense to truncate the page cache if userspace passes in
-> > mode == NO_HIDE_STALE?  There's currently no defined meaning for this
-> > combination, but I think this means we'll truncate the pagecache before
-> > deciding if we're actually going to issue any commands.
-> > 
-> > I think that's just a bug in the existing code -- it should be
-> > validating that @mode is any of the supported combinations *before*
-> > truncating the pagecache.
-> > 
-> > Otherwise you could have a mkfs program that starts writing new fs
-> > metadata, decides to provision the storage (say for a logging region),
-> > doesn't realize it's running on an old kernel, and then oops the
-> > provision attempt fails but have we now shredded the pagecache and lost
-> > all the writes?
-> 
-> While that just caused me to have an "oh shit, that's crazy" (in a
-> scary way) belly laugh...
+Hello,
 
-I just tried this and:
+syzbot found the following issue on:
 
-# xfs_io -c 'pwrite -S 0x58 1m 1m' -c fsync -c 'pwrite -S 0x59 1m 4096' -c 'pread -v 1m 64' -c 'falloc 1m 4096' -c 'pread -v 1m 64' /dev/sda
-wrote 1048576/1048576 bytes at offset 1048576
-1 MiB, 256 ops; 0.0013 sec (723.589 MiB/sec and 185238.7844 ops/sec)
-wrote 4096/4096 bytes at offset 1048576
-4 KiB, 1 ops; 0.0000 sec (355.114 MiB/sec and 90909.0909 ops/sec)
-00100000:  59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59  YYYYYYYYYYYYYYYY
-00100010:  59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59  YYYYYYYYYYYYYYYY
-00100020:  59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59  YYYYYYYYYYYYYYYY
-00100030:  59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59  YYYYYYYYYYYYYYYY
-read 64/64 bytes at offset 1048576
-64.000000 bytes, 1 ops; 0.0000 sec (1.565 MiB/sec and 25641.0256 ops/sec)
-fallocate: Operation not supported
-00100000:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-00100010:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-00100020:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-00100030:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-read 64/64 bytes at offset 1048576
-64.000000 bytes, 1 ops; 0.0003 sec (176.554 KiB/sec and 2824.8588 ops/sec)
+HEAD commit:    7a934f4bd7d6 Merge tag 'riscv-for-linus-6.3-rc7' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d9b923c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=759d5e665e47a55
+dashboard link: https://syzkaller.appspot.com/bug?extid=08106c4b7d60702dbc14
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-(Write 1MB of Xs, flush it to disk, write 4k of Ys, confirm the Y's are
-in the page cache, fail to fallocate, reread and spot the Xs that we
-supposedly overwrote.)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-oops.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ef1965f1c04f/disk-7a934f4b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1ac35470cc62/vmlinux-7a934f4b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b0021ea0d165/bzImage-7a934f4b.xz
 
-> (And obviously needs fixing independent of this patchset)
-> 
-> Shouldn't mkfs first check that the underlying storage supports
-> REQ_OP_PROVISION by verifying
-> /sys/block/<dev>/queue/provision_max_bytes exists and is not 0?
-> (Just saying, we need to add new features more defensively.. you just
-> made the case based on this scenario's implications alone)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com
 
-Not for fallocate -- for regular files, there's no way to check if the
-filesystem actually supports the operation requested other than to try
-it and see if it succeeds.  We probably should've defined a DRY_RUN flag
-for that purpose back when it was introduced.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 30014 at fs/ext4/inode.c:3574 ext4_iomap_overwrite_begin+0x7d/0xa0
+Modules linked in:
+CPU: 1 PID: 30014 Comm: syz-executor.1 Not tainted 6.3.0-rc6-syzkaller-00173-g7a934f4bd7d6 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+RIP: 0010:ext4_iomap_overwrite_begin+0x7d/0xa0 fs/ext4/inode.c:3574
+Code: 2d 0f b7 1b bf 02 00 00 00 89 de e8 1d 15 52 ff 83 fb 02 75 10 e8 f3 11 52 ff 89 e8 5b 41 5c 41 5e 41 5f 5d c3 e8 e3 11 52 ff <0f> 0b eb ec 89 d9 80 e1 07 fe c1 38 c1 7c c8 48 89 df e8 3c d2 a7
+RSP: 0018:ffffc9000a4cf0b0 EFLAGS: 00010293
+RAX: ffffffff823864dd RBX: 0000000000000000 RCX: ffff88807d391d40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000002
+RBP: 00000000ffffff8b R08: ffffffff823864c3 R09: ffffed100f18877a
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88803d4fd2f0
+R13: ffff88803d4fd2f0 R14: 0000000000010000 R15: 0000000000090000
+FS:  00007fe681b6e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2767115dc9 CR3: 000000002b556000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ iomap_iter+0x677/0xec0 fs/iomap/iter.c:91
+ __iomap_dio_rw+0xd74/0x20d0 fs/iomap/direct-io.c:594
+ iomap_dio_rw+0x46/0xa0 fs/iomap/direct-io.c:683
+ ext4_dio_write_iter fs/ext4/file.c:597 [inline]
+ ext4_file_write_iter+0x1509/0x1930 fs/ext4/file.c:708
+ do_iter_write+0x6ea/0xc50 fs/read_write.c:861
+ iter_file_splice_write+0x843/0xfe0 fs/splice.c:778
+ do_splice_from fs/splice.c:856 [inline]
+ direct_splice_actor+0xe7/0x1c0 fs/splice.c:1022
+ splice_direct_to_actor+0x4c4/0xbd0 fs/splice.c:977
+ do_splice_direct+0x283/0x3d0 fs/splice.c:1065
+ do_sendfile+0x620/0xff0 fs/read_write.c:1255
+ __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1309
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fe680e8c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe681b6e168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fe680fabf80 RCX: 00007fe680e8c169
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000005
+RBP: 00007fe680ee7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000008800000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc42fc2daf R14: 00007fe681b6e300 R15: 0000000000022000
+ </TASK>
 
-For fallocate calls to block devices, yes, the program can check the
-queue limits in sysfs if fstat says the supplied path is a block device,
-but I don't know that most programs are that thorough.  The fallocate(1)
-CLI program does not check.
 
-Then I moved on to fs utilities:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-ext4: For discard, mke2fs calls BLKDISCARD if it detects a block device
-via fstat, and falloc(PUNCH|KEEP_SIZE) for anything else.  For zeroing,
-it only uses falloc(ZERO) or falloc(PUNCH|KEEP_SIZE) and does not try to
-use BLKZEROOUT.  It does not check sysfs queue limits at all.
-
-XFS: mkfs.xfs issues BLKDISCARD before writing anything to the device,
-so that's fine.  It uses falloc(ZERO) to erase the log, but since
-xfsprogs provides its own buffer cache and uses O_DIRECT, pagecache
-coherency problems aren't an issue.
-
-btrfs: mkfs.btrfs only issues BLKDISCARD, and only before it starts
-writing the new fs, so no problems there.
-
---D
-
-> Sarthak, please note I said "provision_max_bytes": all other ops
-> (e.g. DISCARD, WRITE_ZEROES, etc) have <op>_max_bytes exported through
-> sysfs, not <op>_max_sectors.  Please export provision_max_bytes, e.g.:
-> 
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 202aa78f933e..2e5ac7b1ffbd 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -605,12 +605,12 @@ QUEUE_RO_ENTRY(queue_io_min, "minimum_io_size");
->  QUEUE_RO_ENTRY(queue_io_opt, "optimal_io_size");
->  
->  QUEUE_RO_ENTRY(queue_max_discard_segments, "max_discard_segments");
-> -QUEUE_RO_ENTRY(queue_max_provision_sectors, "max_provision_sectors");
->  QUEUE_RO_ENTRY(queue_discard_granularity, "discard_granularity");
->  QUEUE_RO_ENTRY(queue_discard_max_hw, "discard_max_hw_bytes");
->  QUEUE_RW_ENTRY(queue_discard_max, "discard_max_bytes");
->  QUEUE_RO_ENTRY(queue_discard_zeroes_data, "discard_zeroes_data");
->  
-> +QUEUE_RO_ENTRY(queue_provision_max, "provision_max_bytes");
->  QUEUE_RO_ENTRY(queue_write_same_max, "write_same_max_bytes");
->  QUEUE_RO_ENTRY(queue_write_zeroes_max, "write_zeroes_max_bytes");
->  QUEUE_RO_ENTRY(queue_zone_append_max, "zone_append_max_bytes");
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
