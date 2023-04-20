@@ -2,63 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C254C6E976B
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 16:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BF86E978E
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 16:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbjDTOnh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Apr 2023 10:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
+        id S231917AbjDTOs0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Apr 2023 10:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbjDTOne (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 10:43:34 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D940EE;
-        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a66911f5faso10508715ad.0;
-        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
+        with ESMTP id S230510AbjDTOsZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 10:48:25 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792EB49E5;
+        Thu, 20 Apr 2023 07:48:24 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1a52667955dso13154135ad.1;
+        Thu, 20 Apr 2023 07:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682001802; x=1684593802;
+        d=gmail.com; s=20221208; t=1682002104; x=1684594104;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=da4Vpw9yIgdkrWpPKCWhoT5kkyCNSRmtF4QY0pbAdc8=;
-        b=X/u3bCgxYxbK4KjrPNgWqProfcLLOgrbgZHZSz09D3NZNc5UFZ/E8gG1Ae1H2xopFh
-         r1gywDsOrIHgcEkxylMFzKzTnZlz+wIBbJwvGonrtxaZzVDtpXsKsog53euDG/MCJX4s
-         caviq4Z1cwCZ3chPDad3cuO9+Wi+TW/PARKgc5bMo/ytPQCjFY4Cy3hkJJcrsHHZkeEq
-         UFgemr//fDEnSvkryX5E0YOTP3xMAanr4x044X0WZ3nWzURD4UYsPeqtXdyzlLqb7NIf
-         yFtjoXJH5MCoRWgnEBNlLTVud9i81DcmVaMTj9+s1QBqKIb+cMUK/pwF744q8XNqFu16
-         RswA==
+        bh=I+xtqkXSybN9uyBvYoyBXVWxoM9Vx/exjZFks1doCj4=;
+        b=X8c4h1+7m84l6C+cEW7A9LGiosHnoaoJXVoieQGq9u3XYWJdNBY+3eJC2pHNtDoHvY
+         jYdOMfQOzDflc3zSJ04hSEIDzIoTFLkIEUWiWtYMgZ7h/0aMk0oFsQX9IYWKAlg8MiK4
+         A3+E9emAgZmVVXTfIhwaeRFj2S16be6nEgtLhiIUaxPNRTX8aYTYWVz+4u2Eg79RYZ+t
+         9Zc8qdr4Prrs9EkwUm9D8dEQq//2MSdm2/hsEWqddtbkeIYd4hs0S32sqL3iBtZ+yKv2
+         aS/gfIkLYOqw9RpoqhOTmKR7Fw2i1kjcdwxdjRsR+LEyjTadvVWXsFcgNJTJlK8cV9ov
+         0DIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682001802; x=1684593802;
+        d=1e100.net; s=20221208; t=1682002104; x=1684594104;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=da4Vpw9yIgdkrWpPKCWhoT5kkyCNSRmtF4QY0pbAdc8=;
-        b=jP3qkIRTaX2lhw9emX+5mvyFEgAcvGvR1FiAPtZRgPl8Aro+Ng6sRjdfZlAKosvrA8
-         +eUdr0Eq91k63szqjE9UVxaimO5tYbhaVKUijK4tdZUU9sWO4BhH/YBTaTGlPJ5QxMdB
-         OI+ghKDSWJA4/4v1p4I91WCXQVp/hTqS98PH4WSch+RitWHnmV53G/qzAuUOC9XDVwo3
-         1zfeoRgxE8ijK7g6H/CDdKSIxzUE5HFSmj5YWS96402P8JoyZ0hQVP1w+rB4uQn/wlaK
-         CqsB0ltgmZ6c60XnLRDnd65ImOimK6SUhJhCHt2t8+W/TrfAPUb+vhqmNRtWH0LISNdD
-         ro9Q==
-X-Gm-Message-State: AAQBX9e4wzb2bSyAZaLRzWjxeVNpjlkhFnh3tN/tFpziWKddhAJmIhwZ
-        RZywogI5paVhWhfgiW+FeEk=
-X-Google-Smtp-Source: AKy350YohS9pVm7vdCF4ViO+giL6b6ueQHANA9z5bf0YMNWY2JrUwwZSZPfnNybusQpwMDuXOLdT1A==
-X-Received: by 2002:a17:902:64c2:b0:1a6:9671:253e with SMTP id y2-20020a17090264c200b001a69671253emr1703970pli.47.1682001802249;
-        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
+        bh=I+xtqkXSybN9uyBvYoyBXVWxoM9Vx/exjZFks1doCj4=;
+        b=AQpCiz6KsO0w5VDrliLF8QSy32gt7IijUqjH7CIU1RRfNJbmLTGc7IXl1Pi6fmX2c2
+         jlSTjHxfe/awr4zEeQOQlpm9Q2vmMe8TGx2CJ0m3l2AWee3jL+PAxsX6SpcL7bfBFJvL
+         ORbuypt3hRFhCESrkG2f/XzDCrj9e1GwP9TTjJtHrtoJbSRdY5Gxcu550mA4ZWbkg6Gc
+         iOmJdytaYIVMsON8VQOMugBgPbUqdqDbnolt5eYbOh7W5JRJRmABDYWhBgpi499YqNAb
+         gOS9EpYwQJnUpxMAUC+PPIt/Pzo4hl0cKcdKkVe3edkD/Y51ArRutfPVqa4HS/XV3epL
+         k1TA==
+X-Gm-Message-State: AAQBX9cE9SXKG3fEfHqH/2+OSx33iC0SV/iTAd0lvj1iohzLgXNQC3z9
+        12jOoQoPM1pvdRqtP3IIfD8=
+X-Google-Smtp-Source: AKy350aJEqRmtMVL3iDwpgKhHKa6yVMNDocylssZk6NOlz+tGRAu0fPhlKYYAlKEwPpq/nhGEMuwOg==
+X-Received: by 2002:a17:902:ebcb:b0:1a5:3319:12f7 with SMTP id p11-20020a170902ebcb00b001a5331912f7mr1997913plg.50.1682002103919;
+        Thu, 20 Apr 2023 07:48:23 -0700 (PDT)
 Received: from rh-tp ([2406:7400:63:2dd2:8818:e6e1:3a73:368c])
-        by smtp.gmail.com with ESMTPSA id a7-20020a1709027d8700b001a653a32173sm1276530plm.29.2023.04.20.07.43.19
+        by smtp.gmail.com with ESMTPSA id f1-20020a170902ff0100b001a5059861adsm1254408plj.224.2023.04.20.07.48.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 07:43:21 -0700 (PDT)
-Date:   Thu, 20 Apr 2023 20:12:56 +0530
-Message-Id: <87jzy6iphr.fsf@doe.com>
+        Thu, 20 Apr 2023 07:48:23 -0700 (PDT)
+Date:   Thu, 20 Apr 2023 20:18:17 +0530
+Message-Id: <87h6taip8u.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
+To:     Jan Kara <jack@suse.cz>
 Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
         "Darrick J . Wong" <djwong@kernel.org>,
         Ojaswin Mujoo <ojaswin@linux.ibm.com>,
         Disha Goel <disgoel@linux.ibm.com>,
         Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCHv5 2/9] fs/buffer.c: Add generic_buffer_fsync implementation
-In-Reply-To: <ZD4k3Sp7wDQu4wkU@infradead.org>
+Subject: Re: [PATCHv5 5/9] ext2: Move direct-io to use iomap
+In-Reply-To: <20230417112006.3bzzitsxy67jpviq@quack3>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,38 +69,61 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> writes:
+Jan Kara <jack@suse.cz> writes:
 
-> On Mon, Apr 17, 2023 at 06:45:50PM +0200, Jan Kara wrote:
->> Hum, I think the difference sync vs fsync is too subtle and non-obvious.
+> On Sun 16-04-23 15:38:40, Ritesh Harjani (IBM) wrote:
+>> This patch converts ext2 direct-io path to iomap interface.
+>> - This also takes care of DIO_SKIP_HOLES part in which we return -ENOTBLK
+>>   from ext2_iomap_begin(), in case if the write is done on a hole.
+>> - This fallbacks to buffered-io in case of DIO_SKIP_HOLES or in case of
+>>   a partial write or if any error is detected in ext2_iomap_end().
+>>   We try to return -ENOTBLK in such cases.
+>> - For any unaligned or extending DIO writes, we pass
+>>   IOMAP_DIO_FORCE_WAIT flag to ensure synchronous writes.
+>> - For extending writes we set IOMAP_F_DIRTY in ext2_iomap_begin because
+>>   otherwise with dsync writes on devices that support FUA, generic_write_sync
+>>   won't be called and we might miss inode metadata updates.
+>> - Since ext2 already now uses _nolock vartiant of sync write. Hence
+>>   there is no inode lock problem with iomap in this patch.
+>> - ext2_iomap_ops are now being shared by DIO, DAX & fiemap path
+>>
+>> Tested-by: Disha Goel <disgoel@linux.ibm.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 >
-> Agreed.
+> One comment below:
 >
->> I can see sensible pairs like:
->>
->> 	__generic_buffers_fsync() - "__" indicates you should know what you
->> 				are doing when calling this
->> 	generic_buffers_fsync()
->>
->> or
->>
->> 	generic_buffers_fsync()
->> 	generic_file_fsync() - difficult at this point as there's name
->> 			       clash
->>
->> or
->>
->> 	generic_buffers_fsync_noflush()
->> 	generic_buffers_fsync() - obvious what the default "safe" choice
->> 				  is.
->>
->> or something like that.
+>> @@ -844,6 +868,13 @@ static int
+>>  ext2_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+>>  		ssize_t written, unsigned flags, struct iomap *iomap)
+>>  {
+>> +	/*
+>> +	 * Switch to buffered-io in case of any error.
+>> +	 * Blocks allocated can be used by the buffered-io path.
+>> +	 */
+>> +	if ((flags & IOMAP_DIRECT) && (flags & IOMAP_WRITE) && written == 0)
+>> +		return -ENOTBLK;
+>> +
+>>  	if (iomap->type == IOMAP_MAPPED &&
+>>  	    written < length &&
+>>  	    (flags & IOMAP_WRITE))
 >
-> I'd prefer the last option as the most explicit one.
+> Is this really needed? What for?
+>
 
-Yes. I was going to use this one as this is more explicit.
+Sorry Jan, I got caught into something else so couldn't respond on this
+earlier. Thanks a lot for review.
 
-Thanks Jan & Christoph,
-I will spin a new revision soon with the suggested changes.
+I don't think this will be called for IOMAP_DIRECT for write case.
+I mostly see this code was already present for IOMAP_DAX path.
+It is to truncate the blocks in case if the iomap dax write failed to
+write but the blocks might have been allocated in ->iomap_begin
+function.
 
+Is there a specific query that you would like me to check and verify?
+I can check more by probing this path to see what happens when this gets
+called. But my understanding was it is used for truncating blocks as I
+mentioned above.
+
+Thanks
 -ritesh
