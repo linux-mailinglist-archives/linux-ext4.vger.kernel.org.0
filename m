@@ -2,101 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659846E996E
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 18:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C254C6E976B
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 16:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjDTQWZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Apr 2023 12:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
+        id S229980AbjDTOnh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Apr 2023 10:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbjDTQWW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 12:22:22 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D8C4EEB
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Apr 2023 09:22:13 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33KGLn4A022422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Apr 2023 12:21:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1682007713; bh=Pgoib2xJLamlh14Ws3Aj+acQ/+ZcnQAq6JGT3R0x8hE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=iV5w4qFe2rHE2zHGxyJL3EyEqolylwCFLa9jV9nG9k6/Q3O7AOYmQOUec87r0uB58
-         emoSOE/H29x72MCp4y3g6zLDtWMIEzAQ2Wc3BB1rslVE/9Un1rgpe8oh4pVL8w7ch+
-         zzjLEgrNXmrAFKW6FEY3qVAqwzkHWnqYnZhtF6Deuyo78WE4xm1OwGcVN5cvsElMa7
-         pxTdrX5z9e2MehHsLGsih5e/f74roACGbKohzbzd3XkaZxERSm/nrwfFJQxySJA4KQ
-         WGFk6/3jzEtLXrTyMDgQH2tc4A+t9zFBd9d8gCY8k0swOO2yRg4VPkqv1dhRQ9k/RB
-         W6wSMYQv9LR/w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E9B4E15C543F; Thu, 20 Apr 2023 09:47:12 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        lczerner@redhat.com, linux-ext4@vger.kernel.org,
-        Jason Yan <yanaijie@huawei.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH 0/8] some refactor of __ext4_fill_super(), part 2.
-Date:   Thu, 20 Apr 2023 09:47:11 -0400
-Message-Id: <168199842264.1078192.15929592065751634681.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230323140517.1070239-1-yanaijie@huawei.com>
-References: <20230323140517.1070239-1-yanaijie@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232235AbjDTOne (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 10:43:34 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D940EE;
+        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a66911f5faso10508715ad.0;
+        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682001802; x=1684593802;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=da4Vpw9yIgdkrWpPKCWhoT5kkyCNSRmtF4QY0pbAdc8=;
+        b=X/u3bCgxYxbK4KjrPNgWqProfcLLOgrbgZHZSz09D3NZNc5UFZ/E8gG1Ae1H2xopFh
+         r1gywDsOrIHgcEkxylMFzKzTnZlz+wIBbJwvGonrtxaZzVDtpXsKsog53euDG/MCJX4s
+         caviq4Z1cwCZ3chPDad3cuO9+Wi+TW/PARKgc5bMo/ytPQCjFY4Cy3hkJJcrsHHZkeEq
+         UFgemr//fDEnSvkryX5E0YOTP3xMAanr4x044X0WZ3nWzURD4UYsPeqtXdyzlLqb7NIf
+         yFtjoXJH5MCoRWgnEBNlLTVud9i81DcmVaMTj9+s1QBqKIb+cMUK/pwF744q8XNqFu16
+         RswA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682001802; x=1684593802;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=da4Vpw9yIgdkrWpPKCWhoT5kkyCNSRmtF4QY0pbAdc8=;
+        b=jP3qkIRTaX2lhw9emX+5mvyFEgAcvGvR1FiAPtZRgPl8Aro+Ng6sRjdfZlAKosvrA8
+         +eUdr0Eq91k63szqjE9UVxaimO5tYbhaVKUijK4tdZUU9sWO4BhH/YBTaTGlPJ5QxMdB
+         OI+ghKDSWJA4/4v1p4I91WCXQVp/hTqS98PH4WSch+RitWHnmV53G/qzAuUOC9XDVwo3
+         1zfeoRgxE8ijK7g6H/CDdKSIxzUE5HFSmj5YWS96402P8JoyZ0hQVP1w+rB4uQn/wlaK
+         CqsB0ltgmZ6c60XnLRDnd65ImOimK6SUhJhCHt2t8+W/TrfAPUb+vhqmNRtWH0LISNdD
+         ro9Q==
+X-Gm-Message-State: AAQBX9e4wzb2bSyAZaLRzWjxeVNpjlkhFnh3tN/tFpziWKddhAJmIhwZ
+        RZywogI5paVhWhfgiW+FeEk=
+X-Google-Smtp-Source: AKy350YohS9pVm7vdCF4ViO+giL6b6ueQHANA9z5bf0YMNWY2JrUwwZSZPfnNybusQpwMDuXOLdT1A==
+X-Received: by 2002:a17:902:64c2:b0:1a6:9671:253e with SMTP id y2-20020a17090264c200b001a69671253emr1703970pli.47.1682001802249;
+        Thu, 20 Apr 2023 07:43:22 -0700 (PDT)
+Received: from rh-tp ([2406:7400:63:2dd2:8818:e6e1:3a73:368c])
+        by smtp.gmail.com with ESMTPSA id a7-20020a1709027d8700b001a653a32173sm1276530plm.29.2023.04.20.07.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Apr 2023 07:43:21 -0700 (PDT)
+Date:   Thu, 20 Apr 2023 20:12:56 +0530
+Message-Id: <87jzy6iphr.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCHv5 2/9] fs/buffer.c: Add generic_buffer_fsync implementation
+In-Reply-To: <ZD4k3Sp7wDQu4wkU@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Christoph Hellwig <hch@infradead.org> writes:
 
-On Thu, 23 Mar 2023 22:05:09 +0800, Jason Yan wrote:
-> This is a continuous effort to make __ext4_fill_super() shorter and more
-> readable. The previous work is here[1]. I'm using my spare time to do this
-> work so it's a bit late after the previous series.
-> 
-> [1] http://patchwork.ozlabs.org/project/linux-ext4/cover/20220916141527.1012715-1-yanaijie@huawei.com/
-> 
-> Jason Yan (8):
->   ext4: factor out ext4_hash_info_init()
->   ext4: factor out ext4_percpu_param_init() and
->     ext4_percpu_param_destroy()
->   ext4: use ext4_group_desc_free() in ext4_put_super() to save some
->     duplicated code
->   ext4: factor out ext4_flex_groups_free()
->   ext4: rename two functions with 'check'
->   ext4: move s_reserved_gdt_blocks and addressable checking into
->     ext4_check_geometry()
->   ext4: factor out ext4_block_group_meta_init()
->   ext4: move dax and encrypt checking into
->     ext4_check_feature_compatibility()
-> 
-> [...]
+> On Mon, Apr 17, 2023 at 06:45:50PM +0200, Jan Kara wrote:
+>> Hum, I think the difference sync vs fsync is too subtle and non-obvious.
+>
+> Agreed.
+>
+>> I can see sensible pairs like:
+>>
+>> 	__generic_buffers_fsync() - "__" indicates you should know what you
+>> 				are doing when calling this
+>> 	generic_buffers_fsync()
+>>
+>> or
+>>
+>> 	generic_buffers_fsync()
+>> 	generic_file_fsync() - difficult at this point as there's name
+>> 			       clash
+>>
+>> or
+>>
+>> 	generic_buffers_fsync_noflush()
+>> 	generic_buffers_fsync() - obvious what the default "safe" choice
+>> 				  is.
+>>
+>> or something like that.
+>
+> I'd prefer the last option as the most explicit one.
 
-Applied, thanks!
+Yes. I was going to use this one as this is more explicit.
 
-[1/8] ext4: factor out ext4_hash_info_init()
-      commit: db9345d9e6f075e1ec26afadf744078ead935fec
-[2/8] ext4: factor out ext4_percpu_param_init() and ext4_percpu_param_destroy()
-      commit: 1f79467c8a6be64940a699de1bd43338a6dd9fdd
-[3/8] ext4: use ext4_group_desc_free() in ext4_put_super() to save some duplicated code
-      commit: 6ef684988816fdfa29ceff260c97d725a489a942
-[4/8] ext4: factor out ext4_flex_groups_free()
-      commit: dcbf87589d90e3bd5a5a4cf832517f22f3c55efb
-[5/8] ext4: rename two functions with 'check'
-      commit: 68e624398f7df3fd91d4a4cd148e722a18d76054
-[6/8] ext4: move s_reserved_gdt_blocks and addressable checking into ext4_check_geometry()
-      commit: 269e9226c29fbfe7f66a324d6d32d4a53bcffbbe
-[7/8] ext4: factor out ext4_block_group_meta_init()
-      commit: 107d2be90116a1731d2d81296100c0a4c454a89f
-[8/8] ext4: move dax and encrypt checking into ext4_check_feature_compatibility()
-      commit: 54902099b1d8b62bea7cfd949aa3acd9eae1c3db
+Thanks Jan & Christoph,
+I will spin a new revision soon with the suggested changes.
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+-ritesh
