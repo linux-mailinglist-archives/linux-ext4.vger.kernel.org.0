@@ -2,159 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B716E97C7
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102136E9964
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 18:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjDTO62 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Apr 2023 10:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S229829AbjDTQVL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Apr 2023 12:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjDTO60 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 10:58:26 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0344C18;
-        Thu, 20 Apr 2023 07:58:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 18CD5218E3;
-        Thu, 20 Apr 2023 14:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682002696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gDf4XujYppNB9yfIolnvmPiQWugPbK/UQC0PFMlPEMo=;
-        b=P7nvd52LsUKd9ZcwsE9cJ+xvHQ4YwoVQUa81fNln5PZLn/nky/9AyvmKo3lexVYilgS1TR
-        IfjDL1lo+lrSiB1pFH/VCVmgRB0+0BYlGYsbFI0JyO3X6dIn0mSKydcfHo6oyxoYkn6s2S
-        xsmWIrKHAW6ivloDcV8s20nZvvSKIoQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682002696;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gDf4XujYppNB9yfIolnvmPiQWugPbK/UQC0PFMlPEMo=;
-        b=/1w8GnyqqkATDhJDhJbLByPmULVmEotyijJ7ZUysGIHOIxs8vvh0JIjMW8AIrdykLdJt09
-        ns8QoKkQMzO35BDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 09D4D1333C;
-        Thu, 20 Apr 2023 14:58:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bxVaAghTQWTlSwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 20 Apr 2023 14:58:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9220EA0729; Thu, 20 Apr 2023 16:58:15 +0200 (CEST)
-Date:   Thu, 20 Apr 2023 16:58:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        with ESMTP id S232332AbjDTQVK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 12:21:10 -0400
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBCE3C27
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Apr 2023 09:20:30 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-74e17099772so79893885a.1
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Apr 2023 09:20:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682007629; x=1684599629;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mi8BRALKHs7eage0Q9/aKDKQbgLFo1rksVSh6HXojUM=;
+        b=cFwk6oUIl48nz7OhATGhE2H+elSngndPIFyjSSObnKFzetjWH4ce9tG0h9UkP0VZzG
+         rLxuxVuxXejJfjzLn0/wXTlRvp4tfRuDVbofK/LQ0eu8dnvqqvcPjoAUKUzrLJ+HI/ZE
+         +lLqIT9Q2tQ6x9pZpo62RZm5XinAGntOxW6iW1ia2TlVAvNVDiv060nPzzwubPCUbp+8
+         1vHolSYVJhSgTaHzOZGItDJaLDp4vR7v3sQHktclAG3pZmMPfJBY4uQVrAfDDjbaxwr2
+         rCZtFmVys+9rbWRqx+Hg1+PU645ngJAJPKnq12CXWnyqoP+nt0cxYITLabSumdPiqb8N
+         XWfA==
+X-Gm-Message-State: AAQBX9cAydo67hYjKFXm3FaVI2mjRRPg75YWNSd4qxf0GJrgq+cUubNJ
+        2SnQqHFOjDjqSMNxGwg1nqdE
+X-Google-Smtp-Source: AKy350ZdxFbx3P6KW7oGgzZkOdBts5SMHV3jmQ7iV4w8PdU+G+NU8GyRCb0ZtSnye0JdmMgLiXUHqw==
+X-Received: by 2002:a05:6214:1c4e:b0:5f0:23be:a301 with SMTP id if14-20020a0562141c4e00b005f023bea301mr2999579qvb.5.1682007629560;
+        Thu, 20 Apr 2023 09:20:29 -0700 (PDT)
+Received: from localhost ([37.19.196.135])
+        by smtp.gmail.com with ESMTPSA id b17-20020a05620a271100b0074e034915d4sm539562qkp.73.2023.04.20.09.20.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Apr 2023 09:20:28 -0700 (PDT)
+Date:   Thu, 20 Apr 2023 12:20:27 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [RFC 04/11] ext4: Convert mballoc cr (criteria) to enum
-Message-ID: <20230420145815.rs4amtveq4v3qz6p@quack3>
-References: <cover.1674822311.git.ojaswin@linux.ibm.com>
- <9670431b31aa62e83509fa2802aad364910ee52e.1674822311.git.ojaswin@linux.ibm.com>
- <20230309121122.vzfswandgqqm4yk5@quack3>
- <ZBRAZsvbcSBNJ+Pl@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20230323105537.rrecw5xqqzmw567d@quack3>
- <ZB8IB14yLaoY4+19@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <ZEDcjKUG3OjK9hg9@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniil Lunev <dlunev@google.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v5-fix 1/5] block: Don't invalidate pagecache for invalid
+ falloc modes
+Message-ID: <ZEFmS9h81Wwlv9+/@redhat.com>
+References: <20230420004850.297045-2-sarthakkukreti@chromium.org>
+ <20230420014734.302304-1-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEDcjKUG3OjK9hg9@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230420014734.302304-1-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 20-04-23 12:02:44, Ojaswin Mujoo wrote:
-> On Sat, Mar 25, 2023 at 08:12:36PM +0530, Ojaswin Mujoo wrote:
-> > On Thu, Mar 23, 2023 at 11:55:37AM +0100, Jan Kara wrote:
-> > > On Fri 17-03-23 15:56:46, Ojaswin Mujoo wrote:
-> > > > On Thu, Mar 09, 2023 at 01:11:22PM +0100, Jan Kara wrote:
-> > > > > Also when going for symbolic allocator scan names maybe we could actually
-> > > > > make names sensible instead of CR[0-4]? Perhaps like CR_ORDER2_ALIGNED,
-> > > > > CR_BEST_LENGHT_FAST, CR_BEST_LENGTH_ALL, CR_ANY_FREE. And probably we could
-> > > > > deal with ordered comparisons like in:
-> > > > I like this idea, it should make the code a bit more easier to
-> > > > understand. However just wondering if I should do it as a part of this
-> > > > series or a separate patch since we'll be touching code all around and 
-> > > > I don't want to confuse people with the noise :) 
-> > > 
-> > > I guess a mechanical rename should not be really confusing. It just has to
-> > > be a separate patch.
-> > Alright, got it.
-> > > 
-> > > > > 
-> > > > >                 if (cr < 2 &&
-> > > > >                     (!sbi->s_log_groups_per_flex ||
-> > > > >                      ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &
-> > > > >                     !(ext4_has_group_desc_csum(sb) &&
-> > > > >                       (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))))
-> > > > >                         return 0;
-> > > > > 
-> > > > > to declare CR_FAST_SCAN = 2, or something like that. What do you think?
-> > > > About this, wont it be better to just use something like
-> > > > 
-> > > > cr < CR_BEST_LENGTH_ALL 
-> > > > 
-> > > > instead of defining a new CR_FAST_SCAN = 2.
-> > > 
-> > > Yeah, that works as well.
-> > > 
-> > > > The only concern is that if we add a new "fast" CR (say between
-> > > > CR_BEST_LENGTH_FAST and CR_BEST_LENGTH_ALL) then we'll need to make
-> > > > sure we also update CR_FAST_SCAN to 3 which is easy to miss.
-> > > 
-> > > Well, you have that problem with any naming scheme (and even with numbers).
-> > > So as long as names are all defined together, there's reasonable chance
-> > > you'll remember to verify the limits still hold :)
-> > haha that's true. Anyways, I'll try a few things and see what looks
-> > good. Thanks for the suggestions.
-> Hey Jan,
-> 
-> So I was playing around with this and I prepare a patch to convert CR
-> numbers to symbolic names and it looks good as far as things like these
-> are concerned:
-> 
->   if (cr < CR_POWER2_ALIGNED)
-> 		...
-> 
-> However there's one problem that this numeric naming scheme is used in
-> several places like struct member names, function names, traces and
-> comments. The issue is that replacing it everywhere is making some of
-> the names very long for example:
-> 
-> 	atomic_read(&sbi->s_bal_cr0_bad_suggestions));
-> 
-> becomes:
-> 
-> 	atomic_read(&sbi->s_bal_cr_power2_aligned_bad_suggestions));
-> 
-> And this is kind of making the code look messy at a lot of places. So
-> right now there are a few options we can consider:
-> 
-> 1. Use symbolic names everywhere at the cost of readability
+On Wed, Apr 19 2023 at  9:47P -0400,
+Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 
-Can we maybe go with 1b) being: Use symbolic names in variables / members /
-...  but shortened? Like s_bal_p2aligned_bad_suggestions? Not sure how many
-things are like this but from a quick looks it seems we need to come up
-with a sensible shortcut only for cr0 and cr1?
+> Only call truncate_bdev_range() if the fallocate mode is
+> supported. This fixes a bug where data in the pagecache
+> could be invalidated if the fallocate() was called on the
+> block device with an invalid mode.
+> 
+> Fixes: 25f4c41415e5 ("block: implement (some of) fallocate for block devices")
 
-								Honza
+You should add:
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cc: stable@vger.kernel.org
+Reported-by: Darrick J. Wong <djwong@kernel.org>
+
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/fops.c | 37 ++++++++++++++++++++++++-------------
+>  1 file changed, 24 insertions(+), 13 deletions(-)
+> 
+> diff --git a/block/fops.c b/block/fops.c
+> index d2e6be4e3d1c..d359254c645d 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+> @@ -648,26 +648,37 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  
+>  	filemap_invalidate_lock(inode->i_mapping);
+>  
+> -	/* Invalidate the page cache, including dirty pages. */
+> -	error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> -	if (error)
+> -		goto fail;
+> -
+
+You remove the only user of the 'fail' label.  But I think it'd be
+cleaner to keep using it below (reduces indentation churn too).
+
+> +	/*
+> +	 * Invalidate the page cache, including dirty pages, for valid
+> +	 * de-allocate mode calls to fallocate().
+> +	 */
+>  	switch (mode) {
+>  	case FALLOC_FL_ZERO_RANGE:
+>  	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
+> -		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
+> -					     len >> SECTOR_SHIFT, GFP_KERNEL,
+> -					     BLKDEV_ZERO_NOUNMAP);
+> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> +		if (!error)
+> +			error = blkdev_issue_zeroout(bdev,
+> +						     start >> SECTOR_SHIFT,
+> +						     len >> SECTOR_SHIFT,
+> +						     GFP_KERNEL,
+> +						     BLKDEV_ZERO_NOUNMAP);
+>  		break;
+
+
+So:
+
+		error = truncate_bdev_range(bdev, file->f_mode, start, end);
+		if (error)
+		        goto fail;
+		...
+
+
+>  	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE:
+> -		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
+> -					     len >> SECTOR_SHIFT, GFP_KERNEL,
+> -					     BLKDEV_ZERO_NOFALLBACK);
+> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> +		if (!error)
+> +			error = blkdev_issue_zeroout(bdev,
+> +						     start >> SECTOR_SHIFT,
+> +						     len >> SECTOR_SHIFT,
+> +						     GFP_KERNEL,
+> +						     BLKDEV_ZERO_NOFALLBACK);
+>  		break;
+
+Same.
+
+>  	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE | FALLOC_FL_NO_HIDE_STALE:
+> -		error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+> -					     len >> SECTOR_SHIFT, GFP_KERNEL);
+> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
+> +		if (!error)
+> +			error = blkdev_issue_discard(bdev,
+> +						     start >> SECTOR_SHIFT,
+> +						     len >> SECTOR_SHIFT,
+> +						     GFP_KERNEL);
+>  		break;
+
+Same.
