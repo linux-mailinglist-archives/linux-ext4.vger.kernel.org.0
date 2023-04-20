@@ -2,60 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2486E8919
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 06:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72146E891E
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 06:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbjDTE23 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Apr 2023 00:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S231137AbjDTEcS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Apr 2023 00:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbjDTE23 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 00:28:29 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F6E40CB
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 21:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681964908; x=1713500908;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MBT5RwV/K42xVLd1Ia+mPa+8KWZrdGYlMSBi9i6BqsQ=;
-  b=UlvtZEahhshFcvIoo/9EaOrQblCNS8UTirq/lAuwZErnsDyZgwxKwoc8
-   5Rcd6eMlS48KO7ThVXWsg3Dq8FyimIwmZPdrbUdx8ATg1Z2iJ6TGeSh0P
-   kxcpypU1XwQu+wpkh0F5vyUpzgHPZGHnTlGSz4AN1PzGj614uLyE7/tJN
-   MSyA3KF0uER1t1J6/oe+xqEa+iyaKi42CC68ksFexcrSxzYcB8vKcTo5L
-   DzoFTdRBt1dmHSE2xqdT8cgBSU4tJ6kWwUXTWEwbp/Kd5gETgwprDH1oY
-   gzZklkbnP9kBeKJZ0vtEBNh7QDN7p/b4qU5WY0uhImmsA7/iwjnEjjY7D
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="431906251"
-X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
-   d="scan'208";a="431906251"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 21:28:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="685205535"
-X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
-   d="scan'208";a="685205535"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 19 Apr 2023 21:28:26 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ppLuD-000fTG-2G;
-        Thu, 20 Apr 2023 04:28:25 +0000
-Date:   Thu, 20 Apr 2023 12:28:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 54902099b1d8b62bea7cfd949aa3acd9eae1c3db
-Message-ID: <6440bf65.4OidGXlfKExROtQo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229812AbjDTEcR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 00:32:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFF42D5D;
+        Wed, 19 Apr 2023 21:32:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 97A0863A98;
+        Thu, 20 Apr 2023 04:32:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41ACC433D2;
+        Thu, 20 Apr 2023 04:32:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681965135;
+        bh=8R4HtSqQRUTLjicHkQSSY5ou4pZTTzXkvITRZgFV+E8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oGlKghtiWpyeSX4KBX/U2YWmljw6ggohuKe1v9sEgvAwJQcAxkxZ+jYm1mwkBe0d8
+         EAj8Jd8w7XE/6YQqbSpPlNlN6j5cWF24HQOT7QgoFAc+LwxdhrxVqG3jD4heisGLin
+         qf2RqZ1oYpiAh6A7bXTK88jnpUomVU9RsxctxA0ckZxxwBE0kWvlCfEa8LoJFmedxo
+         RyJ2fi3eAbQTF4juuLDu3QgD7DjCEWWc+Ld24qreO3Cof3Xe7rIaM/cMD+Q5pDXWPQ
+         7UpZuUVK76dRPGwwRdwmfNxae+NKDXGb2VDtC2JhVOgt1uQkCuYPc3c2OH/KbzsOqw
+         uDJ9jTwmpcpMA==
+Date:   Wed, 19 Apr 2023 21:32:14 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Chandan Babu R <chandan.babu@oracle.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] online repair of filesystems: what next?
+Message-ID: <20230420043214.GF360881@frogsfrogsfrogs>
+References: <Y/5ovz6HI2Z47jbk@magnolia>
+ <CAOQ4uxj6mNbGQBSpg-KpSiDa2UugBFXki4HhM4DPvXeAQMnRWg@mail.gmail.com>
+ <20230418044641.GD360881@frogsfrogsfrogs>
+ <CAOQ4uxgUOuR80jsAE2DkZhMPVNT_WwnsSX8-GSkZO4=k3VbCsw@mail.gmail.com>
+ <20230419021146.GE360889@frogsfrogsfrogs>
+ <CAOQ4uxjmTBi9B=0mMKf6i8usLJ2GrAp88RhxFcQcGFK1LjQ_Lw@mail.gmail.com>
+ <875y9st2lk.fsf@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <875y9st2lk.fsf@debian-BULLSEYE-live-builder-AMD64>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,66 +64,82 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 54902099b1d8b62bea7cfd949aa3acd9eae1c3db  ext4: move dax and encrypt checking into ext4_check_feature_compatibility()
+On Wed, Apr 19, 2023 at 04:28:48PM +0530, Chandan Babu R wrote:
+> On Wed, Apr 19, 2023 at 07:06:58 AM +0300, Amir Goldstein wrote:
+> > On Wed, Apr 19, 2023 at 5:11 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> >>
+> >> On Tue, Apr 18, 2023 at 10:46:32AM +0300, Amir Goldstein wrote:
+> >> > On Tue, Apr 18, 2023 at 7:46 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> >> > >
+> >> > > On Sat, Apr 15, 2023 at 03:18:05PM +0300, Amir Goldstein wrote:
+> >> > > > On Tue, Feb 28, 2023 at 10:49 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >> > ...
+> >> > > > Darrick,
+> >> > > >
+> >> > > > Quick question.
+> >> > > > You indicated that you would like to discuss the topics:
+> >> > > > Atomic file contents exchange
+> >> > > > Atomic directio writes
+> >> > >
+> >> > > This one ^^^^^^^^ topic should still get its own session, ideally with
+> >> > > Martin Petersen and John Garry running it.  A few cloud vendors'
+> >> > > software defined storage stacks can support multi-lba atomic writes, and
+> >> > > some database software could take advantage of that to reduce nested WAL
+> >> > > overhead.
+> >> > >
+> >> >
+> >> > CC Martin.
+> >> > If you want to lead this session, please schedule it.
+> >> >
+> >> > > > Are those intended to be in a separate session from online fsck?
+> >> > > > Both in the same session?
+> >> > > >
+> >> > > > I know you posted patches for FIEXCHANGE_RANGE [1],
+> >> > > > but they were hiding inside a huge DELUGE and people
+> >> > > > were on New Years holidays, so nobody commented.
+> >> > >
+> >> > > After 3 years of sparse review comments, I decided to withdraw
+> >> > > FIEXCHANGE_RANGE from general consideration after realizing that very
+> >> > > few filesystems actually have the infrastructure to support atomic file
+> >> > > contents exchange, hence there's little to be gained from undertaking
+> >> > > fsdevel bikeshedding.
+> >> > >
+> >> > > > Perhaps you should consider posting an uptodate
+> >> > > > topic suggestion to let people have an opportunity to
+> >> > > > start a discussion before LSFMM.
+> >> > >
+> >> > > TBH, most of my fs complaints these days are managerial problems (Are we
+> >> > > spending too much time on LTS?  How on earth do we prioritize projects
+> >> > > with all these drive by bots??  Why can't we support large engineering
+> >> > > efforts better???) than technical.
+> >> >
+> >> > I penciled one session for "FS stable backporting (and other LTS woes)".
+> >> > I made it a cross FS/IO session so we can have this session in the big room
+> >> > and you are welcome to pull this discussion to any direction you want.
+> >>
+> >> Ok, thank you.  Hopefully we can get all the folks who do backports into
+> >> this one.  That might be a big ask for Chandan, depending on when you
+> >> schedule it.
+> >>
+> >> (Unless it's schedule for 7pm :P)
+> >>
+> >
+> > Oh thanks for reminding me!
+> > I moved it to Wed 9am, so it is more convenient for Chandan.
+> 
+> This maps to 9:30 AM for me. Thanks for selecting a time which is convenient
+> for me.
 
-elapsed time: 728m
+Er... doesn't 9:30am for Chandan map to 9:00*pm* the previous evening
+for those of us in Vancouver?
 
-configs tested: 47
-configs skipped: 3
+(Or I guess 9:30pm for Chandan if we actually are having a morning
+session?)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Chandan: I'll ask Shirley to cancel our staff meeting so you don't have
+a crazy(er) meeting schedule during LSF.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sparc                               defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                               rhel-8.3   gcc  
+--D
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+> -- 
+> chandan
