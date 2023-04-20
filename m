@@ -2,77 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FD06E879C
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 03:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2486E8919
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Apr 2023 06:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbjDTBs6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Apr 2023 21:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
+        id S232234AbjDTE23 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Apr 2023 00:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjDTBs5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Apr 2023 21:48:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD12122
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 18:48:55 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-506b2a08877so479814a12.2
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 18:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1681955333; x=1684547333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=//w2KpKliRFtK58d1EJmwfMo5BWc/3hlHccBcm4S1F0=;
-        b=T4aYEuMlSEdNozgrlSVeBk9a8VTbE/hdg0lImsnFKDRnHtBGYo9rd9UsL8V3TmnHa/
-         tg31i41rPZhwfEzQB1YmXPWmX2NVZPYMqNbc50NAL8Gqx375htrV2VxNRfmtA3wABGEL
-         ZVkM5EYlmpXAZqANasp8MWa7JSR0u9cUcpkaw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681955333; x=1684547333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=//w2KpKliRFtK58d1EJmwfMo5BWc/3hlHccBcm4S1F0=;
-        b=I/AChyAjg/D63OXK2QzZSimrQP424c2a6BZruEwGvM4dlg7bURD27BlDixTeeTVGtz
-         0GHNEndehKRFZsVcM7u68YnanABzADgPDmg4e8T6usLBMULOvVa4UPPQx+hoX8rQUXbf
-         pjlvmwo3Vi68Aqfel5fzArQ384b1wD4yF7/3l05RifO0p6DCo7KrzTmjCa60aB1cuF1n
-         AgptDbPTYfykGm90wTa4AHl8XZcn/y4IiRxHoEit6DmuNlpR5X6OzpnuXum3XH7M+Rtd
-         EiOEJqo3mHIcm6wC35DtwYizo8XSEKyrVCIf4EBgDoaVYxzfzrWR1lbOALwIxn0TboMq
-         LYCQ==
-X-Gm-Message-State: AAQBX9dj5tluy6KJGKZG6JrJ3SmC93pXTtIFQGhKX3NXyGzzTxAgfg2z
-        cwU4+5Bzyv/KlSsXjCCRNZtEZRk1wh8DXwelFGZyGA==
-X-Google-Smtp-Source: AKy350Z2wHZXrdLmCljCXZmXuQtTIZ6kMfErfzcZVLiPXa6Vv3hJOhOQDnwXcad0AaOBHDbgGBaLGi1H8St8LWJSs6w=
-X-Received: by 2002:aa7:d60a:0:b0:506:833c:abcf with SMTP id
- c10-20020aa7d60a000000b00506833cabcfmr7313519edr.42.1681955333496; Wed, 19
- Apr 2023 18:48:53 -0700 (PDT)
+        with ESMTP id S231458AbjDTE23 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Apr 2023 00:28:29 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F6E40CB
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Apr 2023 21:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681964908; x=1713500908;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MBT5RwV/K42xVLd1Ia+mPa+8KWZrdGYlMSBi9i6BqsQ=;
+  b=UlvtZEahhshFcvIoo/9EaOrQblCNS8UTirq/lAuwZErnsDyZgwxKwoc8
+   5Rcd6eMlS48KO7ThVXWsg3Dq8FyimIwmZPdrbUdx8ATg1Z2iJ6TGeSh0P
+   kxcpypU1XwQu+wpkh0F5vyUpzgHPZGHnTlGSz4AN1PzGj614uLyE7/tJN
+   MSyA3KF0uER1t1J6/oe+xqEa+iyaKi42CC68ksFexcrSxzYcB8vKcTo5L
+   DzoFTdRBt1dmHSE2xqdT8cgBSU4tJ6kWwUXTWEwbp/Kd5gETgwprDH1oY
+   gzZklkbnP9kBeKJZ0vtEBNh7QDN7p/b4qU5WY0uhImmsA7/iwjnEjjY7D
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="431906251"
+X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
+   d="scan'208";a="431906251"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 21:28:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="685205535"
+X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
+   d="scan'208";a="685205535"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 19 Apr 2023 21:28:26 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ppLuD-000fTG-2G;
+        Thu, 20 Apr 2023 04:28:25 +0000
+Date:   Thu, 20 Apr 2023 12:28:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 54902099b1d8b62bea7cfd949aa3acd9eae1c3db
+Message-ID: <6440bf65.4OidGXlfKExROtQo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20230414000219.92640-1-sarthakkukreti@chromium.org>
- <20230420004850.297045-1-sarthakkukreti@chromium.org> <20230420004850.297045-2-sarthakkukreti@chromium.org>
- <20230420012243.GO360895@frogsfrogsfrogs>
-In-Reply-To: <20230420012243.GO360895@frogsfrogsfrogs>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Wed, 19 Apr 2023 18:48:42 -0700
-Message-ID: <CAG9=OMMqm6AsdxbGBJJs7DRH-AUtQj8ocC+UJmvVTMMKdVQDnw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/5] block: Don't invalidate pagecache for invalid
- falloc modes
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        Daniil Lunev <dlunev@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,88 +63,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sorry I tried to be too concise :) Updated with a fixed up patch!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 54902099b1d8b62bea7cfd949aa3acd9eae1c3db  ext4: move dax and encrypt checking into ext4_check_feature_compatibility()
 
-Best
-Sarhtak
+elapsed time: 728m
 
-On Wed, Apr 19, 2023 at 6:22=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Wed, Apr 19, 2023 at 05:48:46PM -0700, Sarthak Kukreti wrote:
-> > Only call truncate_bdev_range() if the fallocate mode is
-> > supported. This fixes a bug where data in the pagecache
-> > could be invalidated if the fallocate() was called on the
-> > block device with an invalid mode.
-> >
-> > Fixes: 25f4c41415e5 ("block: implement (some of) fallocate for block de=
-vices")
-> > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > ---
-> >  block/fops.c | 18 ++++++++++--------
-> >  1 file changed, 10 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/block/fops.c b/block/fops.c
-> > index d2e6be4e3d1c..2fd7e8b9ab48 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -648,25 +648,27 @@ static long blkdev_fallocate(struct file *file, i=
-nt mode, loff_t start,
-> >
-> >       filemap_invalidate_lock(inode->i_mapping);
-> >
-> > -     /* Invalidate the page cache, including dirty pages. */
-> > -     error =3D truncate_bdev_range(bdev, file->f_mode, start, end);
-> > -     if (error)
-> > -             goto fail;
-> > -
-> > +     /*
-> > +      * Invalidate the page cache, including dirty pages, for valid
-> > +      * de-allocate mode calls to fallocate().
-> > +      */
-> >       switch (mode) {
-> >       case FALLOC_FL_ZERO_RANGE:
-> >       case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
-> > -             error =3D blkdev_issue_zeroout(bdev, start >> SECTOR_SHIF=
-T,
-> > +             error =3D truncate_bdev_range(bdev, file->f_mode, start, =
-end) ||
-> > +                     blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
->
-> I'm pretty sure we're supposed to preserve the error codes returned by
-> both functions.
->
->         error =3D truncate_bdev_range(...);
->         if (!error)
->                 error =3D blkdev_issue_zeroout(...);
->
-> --D
->
-> >                                            len >> SECTOR_SHIFT, GFP_KER=
-NEL,
-> >                                            BLKDEV_ZERO_NOUNMAP);
-> >               break;
-> >       case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE:
-> > -             error =3D blkdev_issue_zeroout(bdev, start >> SECTOR_SHIF=
-T,
-> > +             error =3D truncate_bdev_range(bdev, file->f_mode, start, =
-end) ||
-> > +                     blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
-> >                                            len >> SECTOR_SHIFT, GFP_KER=
-NEL,
-> >                                            BLKDEV_ZERO_NOFALLBACK);
-> >               break;
-> >       case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE | FALLOC_FL_NO_HI=
-DE_STALE:
-> > -             error =3D blkdev_issue_discard(bdev, start >> SECTOR_SHIF=
-T,
-> > +             error =3D truncate_bdev_range(bdev, file->f_mode, start, =
-end) ||
-> > +                     blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
-> >                                            len >> SECTOR_SHIFT, GFP_KER=
-NEL);
-> >               break;
-> >       default:
-> > --
-> > 2.40.0.634.g4ca3ef3211-goog
-> >
+configs tested: 47
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sparc                               defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
