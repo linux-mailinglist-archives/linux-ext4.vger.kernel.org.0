@@ -2,118 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BC06EA747
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 11:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA30D6EA776
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 11:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjDUJkV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Apr 2023 05:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        id S231916AbjDUJrB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Apr 2023 05:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjDUJjx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 05:39:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415CFA26F;
-        Fri, 21 Apr 2023 02:39:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DA7A01FDDB;
-        Fri, 21 Apr 2023 09:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682069980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L0oBb1WNVgVgeV0jfAXu74YAFlW458tbcChtpKQa26M=;
-        b=LWZCQTLRCJx4X1ax9ZfhS6a7i+Pz4rJop3gwvYzXuQEgdw3zZeZWxdqhbC3GD7htJ3vpbz
-        0eOwqNC6kaD38FdbOAmqZph5OWpzOCn4MlZDqXiG6wOwuVN1X8tZD5vOrySFxXvsKYLUrm
-        a8bT9JSZFBWaeFl4+wi42Hqv9nR2gks=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682069980;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L0oBb1WNVgVgeV0jfAXu74YAFlW458tbcChtpKQa26M=;
-        b=Hcv2e7x44qtUBNerqbUy5jqGRASuIibWTV1k7O7Wyx5GRo6nozPIG9EXBHbLpecYPcAv2E
-        qT83uBu7qX8GsJDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C695D13456;
-        Fri, 21 Apr 2023 09:39:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DeB6MNxZQmRuVAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 21 Apr 2023 09:39:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2DB21A0729; Fri, 21 Apr 2023 11:39:40 +0200 (CEST)
-Date:   Fri, 21 Apr 2023 11:39:40 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix to report fstrim.minlen back to userspace
-Message-ID: <20230421093940.k2crghkblpx2fqlv@quack3>
-References: <20230406150410.3853001-1-chao@kernel.org>
+        with ESMTP id S231769AbjDUJrA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 05:47:00 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F540A268;
+        Fri, 21 Apr 2023 02:46:30 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-63b51fd2972so1713199b3a.3;
+        Fri, 21 Apr 2023 02:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682070389; x=1684662389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xb1I4jqgfui9BU7UH5cPLKSUiRB5/jMDgVPekQInLI4=;
+        b=db0ysnwjEL4MMTtuibm5DFQ7dBX457xUNSV2a2CTDNmdEssxO5CUHguDlGbhx4Ie6R
+         ikMXJfmW9JFQW4s742Zh9gfXu4nImNBLUBUA7Om9Yd8f3gj2zpKTzrUM2s4ntNF3OZOv
+         tnSX6myTBrrdJxaGx7SnFH8owCZ2mjWkKVqbkkgbS0FM7/Kbrug/LvVEZf2iohqI6LC8
+         fJWz6F4pM+47HjTaH1t4/EkZAVY99bmLwq6j3lmWrt37+ZjWZHulZ4raagrliAB5G4uj
+         efwYDIy72w2arBsi6Rh7tz8CZgYg/nxnRlIFb3OmX5oigbHljO9QTokuOiP75j096ofr
+         xMtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682070389; x=1684662389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xb1I4jqgfui9BU7UH5cPLKSUiRB5/jMDgVPekQInLI4=;
+        b=cm8s/Im5rlVL9Sf6nN0c7AlPfZKLRmzr+HNfAQ8zlN6HqXhhL6K7+MPSYGTd2dKB2M
+         /mDvmXmn62TBBSvfI5QLR0puJ0TRjJx7Z+G+Egh5tmCtc96CRzVvPvWMO9cMAqfRJPxG
+         dpWX35+c7N/w2lqHXEVcuE0ZbC7LgtztbFj5sQHxSC7YR+Dq5Rslvzr6YLE+bEfeI8PN
+         c6qRjAP5YN7KgGAlg+eA/vOMNT4qhGmQEk3nDlYubLctvl+vg0slzI0im/HpHomhcpA8
+         ePeFTEwcq9FvcRASUN6pmL+W1onA38sI7RN55BSPBOOm62e/P2idaipvYWrq5xNsuqfJ
+         LxYg==
+X-Gm-Message-State: AAQBX9d2fD6qONB77pyfuMdR9TX6zYF6Ba6ml3F3X+GRIcQO63ByjQs2
+        oF+LVgFYdTMn9XimBEw1oZ/s/9n1D04=
+X-Google-Smtp-Source: AKy350YQoSo/hf7Z51wCoQMUt9ReY/Sp8MdgIZuMVqCzwbxnbtQNyJ07O/bvHYgvxFhhP8MX3D0/RQ==
+X-Received: by 2002:a05:6a20:258c:b0:ef:f558:b76 with SMTP id k12-20020a056a20258c00b000eff5580b76mr7545426pzd.5.1682070388978;
+        Fri, 21 Apr 2023 02:46:28 -0700 (PDT)
+Received: from rh-tp.. ([2406:7400:63:2dd2:8818:e6e1:3a73:368c])
+        by smtp.gmail.com with ESMTPSA id w35-20020a631623000000b0051f15c575fesm2295376pgl.87.2023.04.21.02.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 02:46:28 -0700 (PDT)
+From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCHv6 0/9] ext2: DIO to use iomap
+Date:   Fri, 21 Apr 2023 15:16:10 +0530
+Message-Id: <cover.1682069716.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230406150410.3853001-1-chao@kernel.org>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 06-04-23 23:04:10, Chao Yu wrote:
-> Quoted from manual of fstrim(8):
-> 
-> "-m, --minimum minimum-size
-> 	..., if it's smaller than the device's minimum, and report that
-> (fstrim_range.minlen) back to userspace."
-> 
-> So this patch tries to report adjusted fstrim_range.minlen back to
-> userspace via FITRIM interface, if the value is smaller than device's
-> minimum discard granularity.
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
+Hello All,
 
-Looks good to me. Feel free to add:
+Please find the series which rewrites ext2 direct-io path to use modern
+iomap interface.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+PATCHv5 -> PATCHv6:
+===================
+1. Patch-2 Added generic_buffers_fsync_noflush() & generic_buffers_fsync() functions.
+2. Patch-3 & Patch-4 to use above functions in ext4 & ext2.
+3. Added Reviewed-by from Christoph on Patch-9 (iomap: Add DIO tracepoints)
 
-								Honza
+RFCv4 -> PATCHv5:
+=================
+1. Added trace_iomap_dio_rw_begin tracepoint in __iomap_dio_rw()
+2. Added Reviewed-by tags from Christoph
 
-> ---
-> v2:
-> - fix the wrong calculation of range->minlen.
->  fs/ext4/mballoc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d8b9d6a83d1e..4af51a16fc64 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6491,6 +6491,10 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
->  				discard_granularity >> sb->s_blocksize_bits);
->  		if (minlen > EXT4_CLUSTERS_PER_GROUP(sb))
->  			goto out;
-> +
-> +		/* Report adjusted minlen back to userspace */
-> +		range->minlen = EXT4_C2B(EXT4_SB(sb), minlen) <<
-> +						sb->s_blocksize_bits;
->  	}
->  	if (end >= max_blks - 1) {
->  		end = max_blks - 1;
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+RFCv3 -> RFCV4:
+===============
+1. Renamed __generic_file_fsync_nolock() from libfs to generic_buffer_fsync() in
+   fs/buffer.c
+   (Review comment from Christoph)
+2. Fixed s/EVENTD/EVENTFD/ in TRACE_IOCB_STRINGS
+3. Fixed few data types for parameters in ext2 trace patch (size_t && ssize_t)
+4. Killed this patch "Minor refactor of iomap_dio_rw"
+5. Changed iomap tracepoint patch and fixed the data types (size_t && ssize_t)
+   (addressed review comments from Christoph)
+
+RFCv2 -> RFCv3:
+===============
+1. Addressed minor review comments related to extern, parameter naming in
+   function declaration, removing not required braces and shorting overly long
+   lines.
+2. Added Reviewed-by from various reviewers.
+3. Fixed a warning & couple of compilation errors in Patch-7 (ext2 trace points)
+   related to CFLAGS_trace & second related to unable to find function
+   definition for iov_iter_count(). (requires uio.h file)
+   CFLAGS_trace is required in Makefile so that it can find trace.h file from
+   tracepoint infrastructure.
+4. Changed naming of IOCB_STRINGS TO TRACE_IOCB_STRINGS.
+5. Shortened naming of tracepoint events for ext2 dio.
+6. Added iomap DIO tracepoint events.
+7. Disha tested this series internally against Power with "auto" group for 4k
+   and 64k blocksize configuration. Added her "Tested-by" tag in all DIO
+   related patches. No new failures were reported.
+
+Thanks everyone for the review and test. The series is looking good to me now.
+It has been tested on x86 and Power with different configurations.
+Please let me know if anything else is required on this.
+
+v2: https://lore.kernel.org/all/ZDTybcM4kjYLSrGI@infradead.org/
+
+Ritesh Harjani (IBM) (9):
+  ext2/dax: Fix ext2_setsize when len is page aligned
+  fs/buffer.c: Add generic_buffers_fsync*() implementation
+  ext4: Use generic_buffers_fsync_noflush() implementation
+  ext2: Use generic_buffers_fsync() implementation
+  ext2: Move direct-io to use iomap
+  fs.h: Add TRACE_IOCB_STRINGS for use in trace points
+  ext2: Add direct-io trace points
+  iomap: Remove IOMAP_DIO_NOSYNC unused dio flag
+  iomap: Add DIO tracepoints
+
+ fs/buffer.c                 |  70 ++++++++++++++++++++
+ fs/ext2/Makefile            |   5 +-
+ fs/ext2/ext2.h              |   1 +
+ fs/ext2/file.c              | 126 +++++++++++++++++++++++++++++++++++-
+ fs/ext2/inode.c             |  58 ++++++++++-------
+ fs/ext2/trace.c             |   6 ++
+ fs/ext2/trace.h             |  94 +++++++++++++++++++++++++++
+ fs/ext4/fsync.c             |  33 +++++-----
+ fs/iomap/direct-io.c        |   9 ++-
+ fs/iomap/trace.c            |   1 +
+ fs/iomap/trace.h            |  78 ++++++++++++++++++++++
+ include/linux/buffer_head.h |   4 ++
+ include/linux/fs.h          |  14 ++++
+ include/linux/iomap.h       |   6 --
+ 14 files changed, 456 insertions(+), 49 deletions(-)
+ create mode 100644 fs/ext2/trace.c
+ create mode 100644 fs/ext2/trace.h
+
+--
+2.39.2
+
