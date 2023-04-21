@@ -2,60 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DA96EA9C1
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 13:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E78E6EA9F0
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 14:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbjDUL5S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Apr 2023 07:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
+        id S229884AbjDUMGE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Apr 2023 08:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbjDUL5R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 07:57:17 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2566F4695
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 04:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682078235; x=1713614235;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ds6HLHyIpLHRGv/TLCxycqult/WTgSF7zmZC8lRm3qI=;
-  b=B5WoI+6Wipj1K0HC9vUkCs1T2RsllZOqyjbGJ4rv4LVsE/GYtgE6yRqh
-   R9hscGBQx0MvT6RdB1cAaRzbk+Cn5rULYORAnrT0ts/YVsiiGTpFX1aFF
-   pmQXNumf11UfBgssfqGDe4g9Wl6yWOBOzqASyhfdrS8qrLIJSxGq6AS1m
-   MvMmxR1uiqNn8rY00VX0PepP3Rb0Fgr7Hqq4MLiR9D3/zpn9I0YmciVUU
-   MLKU11aLzxsiH67mOghv/m6pQ66Fa9GggmiXLSXxyECY+6NDYYAInbnLZ
-   uQIPr29r6HGXMB1Viv9VplOQIn3osJfqe8zW4I5+u4jqcUbbJ4WMTdE41
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="345994763"
-X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
-   d="scan'208";a="345994763"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2023 04:57:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="938458199"
-X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
-   d="scan'208";a="938458199"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2023 04:57:13 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pppO4-000gZ7-2I;
-        Fri, 21 Apr 2023 11:57:12 +0000
-Date:   Fri, 21 Apr 2023 19:56:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 519fe1bae7e20fc4e7f179d50b6102b49980e85d
-Message-ID: <644279f5.rhp+GFBI8d7Z/nGx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        with ESMTP id S229751AbjDUMGD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 08:06:03 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADE849E1;
+        Fri, 21 Apr 2023 05:06:03 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1a5197f00e9so18529535ad.1;
+        Fri, 21 Apr 2023 05:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682078762; x=1684670762;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZY76Pb6VbO97poVQbCL5nK5VULYA5G+gSgygdES392g=;
+        b=Lg1JnyDRjFXNM29Kyd1u7QWwm3G4a+ahGN+lbOKhuI09wc9yPu2DJ2m+OSCOPfj1c5
+         9L5HqMRxL0E3UsDkrqNhv3Fk12+GXItAzaDFfp7ovy3cE5ZAg/8PDsYjZQhoHsnrW6Ly
+         N+aF6Omay8hHMk8bgz/GsekESA6ca0cZgXi6cf8KdUFkcM9i+FDjbQK+jjeZn8IsLD8X
+         mffSh332gvEaEYEVaDEbQxcqRyK/jIhSWeK4rrLaox31512x67yT1dGuRlCMHc4cpMhf
+         3xuYPY+uBLm1+OsInxyT7RNwnTPB4UFPim2m4GPJzPHQ9FUjKDUOdaeWH9FRiq1YgflC
+         qKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682078762; x=1684670762;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZY76Pb6VbO97poVQbCL5nK5VULYA5G+gSgygdES392g=;
+        b=ESJz5jOEHm9WfyNXSpbHV1TR0srrzvQb5KcPjXZLgaNFVymrM0/y70mXpgRP/lRs/r
+         oE6U38znVGfUw7Iqt3CdvwE2BAgXSaEm+xuznFnj6y5Bqb/19uNBJqoUy73UsjfI6rJC
+         p15UcMbxPaAvZ2Fe89zkExynkv2WIXh1bHfvtypWhON5sNenTpOctO0vAqpAif3XcNBM
+         fdLRnhtKFUWOOmgRghaOihhM5diQTDlKJHdpSBsklVqYtfLNVhNpnt0SZYGiXe8CG8DP
+         lFXyydrws3ajt4snUJmM8skfmQJZLNKzF3iBHf/055F2B17ELnGiTtrJg78VMI8JKH3n
+         WS1w==
+X-Gm-Message-State: AAQBX9fRnLEKSIT6dvPH7ZK7l+O9tVPWUUYzQmCfsE14Q0AdHPIoDlRz
+        Z0nhIlXVSKSTYZFY0wrOp9V+wp5CRlE=
+X-Google-Smtp-Source: AKy350a0wrCpPqTwWS1Xn2kiu6qYe0sqO1p6QyH3x++TMuz9c5SSHM1Gmr3i6zo62IlTI0X2rBkqRg==
+X-Received: by 2002:a17:902:868f:b0:19e:72c5:34df with SMTP id g15-20020a170902868f00b0019e72c534dfmr4954118plo.52.1682078762390;
+        Fri, 21 Apr 2023 05:06:02 -0700 (PDT)
+Received: from rh-tp ([2406:7400:63:2dd2:8818:e6e1:3a73:368c])
+        by smtp.gmail.com with ESMTPSA id jg10-20020a17090326ca00b001a66e6bb66esm2670701plb.162.2023.04.21.05.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 05:06:01 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 17:35:47 +0530
+Message-Id: <87edodigo4.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>, Ted Tso <tytso@mit.edu>
+Subject: Re: [PATCHv6 0/9] ext2: DIO to use iomap
+In-Reply-To: <20230421112324.mxrrja2hynshu4b6@quack3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,66 +68,55 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 519fe1bae7e20fc4e7f179d50b6102b49980e85d  ext4: Add a uapi header for ext4 userspace APIs
+Jan Kara <jack@suse.cz> writes:
 
-elapsed time: 1323m
+> Hello Ritesh,
+>
+> On Fri 21-04-23 15:16:10, Ritesh Harjani (IBM) wrote:
+>> Hello All,
+>>
+>> Please find the series which rewrites ext2 direct-io path to use modern
+>> iomap interface.
+>
+> The patches now all look good to me. I'd like to discuss a bit how to merge
 
-configs tested: 47
-configs skipped: 3
+Thanks Jan,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sparc                               defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                               rhel-8.3   gcc  
+> them. The series has an ext4 cleanup (patch 3) and three iomap patches
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Also Patch-3 is on top of ext4 journalled data patch series of yours,
+otheriwse we might see a minor merge conflict.
+
+https://lore.kernel.org/all/20230329154950.19720-6-jack@suse.cz/
+
+> (patches 6, 8 and 9). Darrick, do you want to take the iomap patches through
+> your tree?
+>
+> The only dependency is that patch 7 for ext2 is dependent on definitions
+> from patch 6
+
+That's right. Patch 6 defines TRACE_IOCB_STRINGS definition which both
+ext2 and iomap tracepoints depend upon.
+
+> so I'd have to pull your branch into my tree. Or I can take
+> all the iomap patches through my tree but for that it would be nice to have
+> Darrick's acks.
+>
+> I can take the ext4 patch through my tree unless Ted objects.
+
+Sure, we might have to merge with Ted's ext4 tree as well to avoid the
+merge conflict I mentioned above.
+
+>
+> I guess I won't rush this for the coming merge window (unless Linus decides
+> to do rc8) but once we settle on the merge strategy I'll push out some
+
+Ok.
+
+> branch on which we can base further ext2 iomap conversion work.
+>
+
+Sure, will this branch also gets reflected in linux-next for wider testing?
+
+-ritesh
