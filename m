@@ -2,51 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AF96EB21B
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 21:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3F66EB5C8
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Apr 2023 01:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbjDUTHs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Apr 2023 15:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S233609AbjDUXqY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Apr 2023 19:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbjDUTHq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 15:07:46 -0400
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AAC10D3
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 12:07:43 -0700 (PDT)
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-32959198653so37993935ab.3
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 12:07:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682104063; x=1684696063;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C8fSKQFPH5kS6exwTF04tijLARI26+Y3UxxpPHRzKuo=;
-        b=Yima6g6ciPcc/T7rkSgFFHbOf1Sb8fO8mv7Wxal2MlaWyYhMNVi3AHc9IlG2wCRxWr
-         FpN5MIt1YdfcHFqSv4PlzYY1q2XIBrVGG6VwlbjrAgdgkUUX4qdlQ1s6T6EFSNnGwapC
-         tHhZijXMSjnDgm2Xud/sIKWFjeykxElxe5sO3+eFX+oNissgIQRtyHwukEseTQRl9L5p
-         viIXwKQ0M5sR2ncAUUIEn8I5ThZHauI+zzqr01h0sEnZZy2qQGq8qkdG9YODj5KpqRog
-         QQavslJK/8Wt94QdpjFdRKKdwhAsuvS3We+C4wYuEEmpLGaTCDq3Z3lMh5wTXyFJWSMh
-         XC6w==
-X-Gm-Message-State: AAQBX9cq/M4fOq5oTZ4DSviCpn1h9ZRoDc7sHFDnqlsF/f9/lWoOLKvg
-        5CGVZSmdxXkBPBwaW6SFsyfsJb2YKXCH+L9K4VeiuFpoHaaf
-X-Google-Smtp-Source: AKy350bZfOZP7c87py9gvehAPKMTfhK10b753NDTTeN9IJTAEEx8JH8/J5FFIhC6fgpbRpzqRAok5h7TwBipEPiiRw8YFZtA9+ri
-MIME-Version: 1.0
-X-Received: by 2002:a92:db42:0:b0:32b:3816:772a with SMTP id
- w2-20020a92db42000000b0032b3816772amr3393249ilq.6.1682104063154; Fri, 21 Apr
- 2023 12:07:43 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 12:07:43 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000028e2b905f9dd5f51@google.com>
-Subject: [syzbot] [ext4?] WARNING: bad unlock balance in unlock_two_nondirectories
-From:   syzbot <syzbot+6c73bd34311ee489dbf5@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+        with ESMTP id S233520AbjDUXqX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 19:46:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20531BD4
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 16:46:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 67C47653D0
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 23:46:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BAB4FC433D2
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Apr 2023 23:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682120781;
+        bh=Wfq0x1uivVIypuU8Mgw3qVNR66qNQs447WR07v3ar0s=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=or3SQWh0/699MRR1IynKb4W4igC5kz8f1+IsmG3/Db/1pBYts4gYcuqOLJh2lf5xP
+         WZiFMgeYk98QkeiDQN6NpGNqDOuMizYB/qV33TMuBR524k5jqE5S9kHk5VHcg6mSGs
+         R7gbciKZXQUG+QP113Pk0KQzWnkupXQnZVfBG38Onf6HcSPHjpRVbLfyZCM//n0q0h
+         9+s59BOrZg420qkSuFVxwV/xJJUbKfHpA242HaoFgrPCV1Vy1E8IGAbLfwtzQuMvMy
+         0NlRsJBAiZsZ06reWI99LdpaqdgFEOnNALGjZhyouR9IgTk/BRQTIKC/hN3k1+jjlz
+         ogTz1CddqPxxQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 97A72C43141; Fri, 21 Apr 2023 23:46:21 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216322] Freezing of tasks failed after 60.004 seconds (1 tasks
+ refusing to freeze... task:fstrim  ext4_trim_fs - Dell XPS 13 9310
+Date:   Fri, 21 Apr 2023 23:46:20 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: todd.e.brandt@intel.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: attachments.created
+Message-ID: <bug-216322-13602-67uRYgG2GA@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216322-13602@https.bugzilla.kernel.org/>
+References: <bug-216322-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,117 +71,15 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216322
 
-syzbot found the following issue on:
+--- Comment #12 from Todd Brandt (todd.e.brandt@intel.com) ---
+Created attachment 304174
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D304174&action=3Dedit
+issue.def
 
-HEAD commit:    cb0856346a60 Merge tag 'mm-hotfixes-stable-2023-04-19-16-3..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=160d85b8280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11869c60f54496a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c73bd34311ee489dbf5
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+--=20
+You may reply to this email to add a comment.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/03697c95ad2e/disk-cb085634.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9e699bef459f/vmlinux-cb085634.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1be3bc4b60fd/bzImage-cb085634.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6c73bd34311ee489dbf5@syzkaller.appspotmail.com
-
-=====================================
-WARNING: bad unlock balance detected!
-6.3.0-rc7-syzkaller-00089-gcb0856346a60 #0 Not tainted
--------------------------------------
-syz-executor.3/10999 is trying to release lock (&type->i_mutex_dir_key) at:
-[<ffffffff81ea121d>] inode_unlock include/linux/fs.h:763 [inline]
-[<ffffffff81ea121d>] unlock_two_nondirectories+0xbd/0x100 fs/inode.c:1138
-but there are no more locks to release!
-
-other info that might help us debug this:
-1 lock held by syz-executor.3/10999:
- #0: ffff88803ff8a460 (sb_writers#4){.+.+}-{0:0}, at: __ext4_ioctl+0x10c9/0x4b00 fs/ext4/ioctl.c:1415
-
-stack backtrace:
-CPU: 1 PID: 10999 Comm: syz-executor.3 Not tainted 6.3.0-rc7-syzkaller-00089-gcb0856346a60 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- __lock_release kernel/locking/lockdep.c:5346 [inline]
- lock_release+0x4f1/0x670 kernel/locking/lockdep.c:5689
- up_write+0x2a/0x520 kernel/locking/rwsem.c:1625
- inode_unlock include/linux/fs.h:763 [inline]
- unlock_two_nondirectories+0xbd/0x100 fs/inode.c:1138
- swap_inode_boot_loader fs/ext4/ioctl.c:510 [inline]
- __ext4_ioctl+0x31d3/0x4b00 fs/ext4/ioctl.c:1418
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9dc1a8c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9dc2726168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f9dc1babf80 RCX: 00007f9dc1a8c169
-RDX: 0000000000000000 RSI: 0000000000006611 RDI: 0000000000000004
-RBP: 00007f9dc1ae7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd35fd2d0f R14: 00007f9dc2726300 R15: 0000000000022000
- </TASK>
-------------[ cut here ]------------
-DEBUG_RWSEMS_WARN_ON((rwsem_owner(sem) != current) && !rwsem_test_oflags(sem, RWSEM_NONSPINNABLE)): count = 0x0, magic = 0xffff88803e77a1a8, owner = 0x0, curr 0xffff8880842f0000, list empty
-WARNING: CPU: 1 PID: 10999 at kernel/locking/rwsem.c:1369 __up_write kernel/locking/rwsem.c:1369 [inline]
-WARNING: CPU: 1 PID: 10999 at kernel/locking/rwsem.c:1369 up_write+0x425/0x520 kernel/locking/rwsem.c:1626
-Modules linked in:
-CPU: 1 PID: 10999 Comm: syz-executor.3 Not tainted 6.3.0-rc7-syzkaller-00089-gcb0856346a60 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
-RIP: 0010:up_write+0x425/0x520 kernel/locking/rwsem.c:1626
-Code: 3c 02 00 0f 85 da 00 00 00 48 8b 55 00 4d 89 f1 53 4d 89 f8 4c 89 e9 48 c7 c6 a0 52 4c 8a 48 c7 c7 40 51 4c 8a e8 bb 22 e8 ff <0f> 0b 59 e9 dd fc ff ff 48 89 df e8 9b ca 70 00 e9 1a fc ff ff 48
-RSP: 0018:ffffc900167afbd8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff8a4c5080 RCX: ffffc9000b5fa000
-RDX: 0000000000040000 RSI: ffffffff814b6247 RDI: 0000000000000001
-RBP: ffff88803e77a1a8 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 57525f4755424544 R12: ffff88803e77a1b0
-R13: ffff88803e77a1a8 R14: ffff8880842f0000 R15: 0000000000000000
-FS:  00007f9dc2726700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c02174f2f8 CR3: 000000002b502000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- inode_unlock include/linux/fs.h:763 [inline]
- unlock_two_nondirectories+0xbd/0x100 fs/inode.c:1138
- swap_inode_boot_loader fs/ext4/ioctl.c:510 [inline]
- __ext4_ioctl+0x31d3/0x4b00 fs/ext4/ioctl.c:1418
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9dc1a8c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9dc2726168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f9dc1babf80 RCX: 00007f9dc1a8c169
-RDX: 0000000000000000 RSI: 0000000000006611 RDI: 0000000000000004
-RBP: 00007f9dc1ae7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd35fd2d0f R14: 00007f9dc2726300 R15: 0000000000022000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+You are receiving this mail because:
+You are watching the assignee of the bug.=
