@@ -2,50 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0666EAE32
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 17:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6FF6EAE57
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Apr 2023 17:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjDUPlB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Apr 2023 11:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S231808AbjDUP4L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Apr 2023 11:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjDUPlB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 11:41:01 -0400
+        with ESMTP id S229821AbjDUP4K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Apr 2023 11:56:10 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F457DA3;
-        Fri, 21 Apr 2023 08:41:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FA493F4;
+        Fri, 21 Apr 2023 08:56:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A09C60C88;
-        Fri, 21 Apr 2023 15:40:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED272C433D2;
-        Fri, 21 Apr 2023 15:40:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 241CC617B5;
+        Fri, 21 Apr 2023 15:56:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80B47C433D2;
+        Fri, 21 Apr 2023 15:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682091659;
-        bh=4/sDp6eyor4bV4ynZZFhULxaNjmg8NJb+WkzTVe+POQ=;
+        s=k20201202; t=1682092568;
+        bh=25t9JqK40yjvR8X6NIOYYvTj1/0mVvqPVROoptFqbdg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHHOA8yLRE3+ZM7gyBhvhTW6E78kM4pYGIGvT7L8xXb+gDTPUMy/aUrL2EbBlZKcr
-         dQYkJWoPmaxAbZtyNaTxNN3BVavaewdqOA8aV5rSe3K+XbsZT8GvHDecnTkb4R67FD
-         EqT5xHHeDOg7gjgp4ljxGNEEKXnfE3i2AD9nXU62uaTnffLYEw0Y5S7j+CnmQA4X7p
-         47ceQlORgbL0dXLl438L8va8bmcact25vptceEWLRiZ7OwfaMiKEzhHIRG9SyQToWH
-         mvlCZkCoNXwvZidhtiZNQNDFMmIRCCEjqZpkbgM5td7avW51ScffIrCnS95ZaKYg4I
-         mvPJBdIM7xkCw==
-Date:   Fri, 21 Apr 2023 08:40:58 -0700
+        b=EDpEPkJ9GCSXa6Y/Ytr3oMPrEVMt19wNvSIMgSva04q0zqQUc4bI3lTIEEK4aCdoD
+         sjrBjbQKOEkNQtcBh17ZWiw/YcpGYlZznRT21slAa6rKcP/O6SPXsMpFMyjtuSzS4p
+         T3a5/kO4yVxVOamchKhzqq2pBdpi2vU8gNG0zxIPSNbsZV7Pt65SjU6YYb/kOqFKQ9
+         ymYeh+hAdnyejQBMA8+FWXMWUtMSYS/Q7qBNx6tUdQsx7L8eDttNZq5stU7nCk6Vpq
+         Ez5D+IV6MUxTHgXKfa2Re7u9Awbq9CdbhHkqADRET0URfrkQrWYpi10yPRN5kBbZ6q
+         tm49wKtN9zIqA==
+Date:   Fri, 21 Apr 2023 08:56:07 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
         Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>, Ted Tso <tytso@mit.edu>
-Subject: Re: [PATCHv6 0/9] ext2: DIO to use iomap
-Message-ID: <20230421154058.GH360881@frogsfrogsfrogs>
-References: <20230421112324.mxrrja2hynshu4b6@quack3>
- <87edodigo4.fsf@doe.com>
+        Disha Goel <disgoel@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCHv6 6/9] fs.h: Add TRACE_IOCB_STRINGS for use in trace
+ points
+Message-ID: <20230421155607.GI360881@frogsfrogsfrogs>
+References: <cover.1682069716.git.ritesh.list@gmail.com>
+ <12576fb7b6a9720cc1d5659e95beea948c27907b.1682069716.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87edodigo4.fsf@doe.com>
+In-Reply-To: <12576fb7b6a9720cc1d5659e95beea948c27907b.1682069716.git.ritesh.list@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,63 +58,48 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 05:35:47PM +0530, Ritesh Harjani wrote:
-> Jan Kara <jack@suse.cz> writes:
+On Fri, Apr 21, 2023 at 03:16:16PM +0530, Ritesh Harjani (IBM) wrote:
+> Add TRACE_IOCB_STRINGS macro which can be used in the trace point patch to
+> print different flag values with meaningful string output.
 > 
-> > Hello Ritesh,
-> >
-> > On Fri 21-04-23 15:16:10, Ritesh Harjani (IBM) wrote:
-> >> Hello All,
-> >>
-> >> Please find the series which rewrites ext2 direct-io path to use modern
-> >> iomap interface.
-> >
-> > The patches now all look good to me. I'd like to discuss a bit how to merge
-> 
-> Thanks Jan,
-> 
-> 
-> > them. The series has an ext4 cleanup (patch 3) and three iomap patches
-> 
-> Also Patch-3 is on top of ext4 journalled data patch series of yours,
-> otheriwse we might see a minor merge conflict.
-> 
-> https://lore.kernel.org/all/20230329154950.19720-6-jack@suse.cz/
-> 
-> > (patches 6, 8 and 9). Darrick, do you want to take the iomap patches through
-> > your tree?
+> Tested-by: Disha Goel <disgoel@linux.ibm.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Hmm.  I could do that for 6.4 since the first one should be trivially
-verifiable and so far Linus hasn't objected to patches that add
-tracepoints being thrown into for-next right at the start of the merge
-window.
+Looks good, will fix the indentation problems on commit.
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
 --D
 
-> > The only dependency is that patch 7 for ext2 is dependent on definitions
-> > from patch 6
+> ---
+>  include/linux/fs.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> That's right. Patch 6 defines TRACE_IOCB_STRINGS definition which both
-> ext2 and iomap tracepoints depend upon.
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c85916e9f7db..bdc1f7ed2aba 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -340,6 +340,20 @@ enum rw_hint {
+>  /* can use bio alloc cache */
+>  #define IOCB_ALLOC_CACHE	(1 << 21)
+>  
+> +/* for use in trace events */
+> +#define TRACE_IOCB_STRINGS \
+> +	{ IOCB_HIPRI, "HIPRI"	}, \
+> +	{ IOCB_DSYNC, "DSYNC"	}, \
+> +	{ IOCB_SYNC, "SYNC"	}, \
+> +	{ IOCB_NOWAIT, "NOWAIT" }, \
+> +	{ IOCB_APPEND, "APPEND" }, \
+> +	{ IOCB_EVENTFD, "EVENTFD"}, \
+> +	{ IOCB_DIRECT, "DIRECT" }, \
+> +	{ IOCB_WRITE, "WRITE"	}, \
+> +	{ IOCB_WAITQ, "WAITQ"	}, \
+> +	{ IOCB_NOIO, "NOIO"	}, \
+> +	{ IOCB_ALLOC_CACHE, "ALLOC_CACHE" }
+> +
+>  struct kiocb {
+>  	struct file		*ki_filp;
+>  	loff_t			ki_pos;
+> -- 
+> 2.39.2
 > 
-> > so I'd have to pull your branch into my tree. Or I can take
-> > all the iomap patches through my tree but for that it would be nice to have
-> > Darrick's acks.
-> >
-> > I can take the ext4 patch through my tree unless Ted objects.
-> 
-> Sure, we might have to merge with Ted's ext4 tree as well to avoid the
-> merge conflict I mentioned above.
-> 
-> >
-> > I guess I won't rush this for the coming merge window (unless Linus decides
-> > to do rc8) but once we settle on the merge strategy I'll push out some
-> 
-> Ok.
-> 
-> > branch on which we can base further ext2 iomap conversion work.
-> >
-> 
-> Sure, will this branch also gets reflected in linux-next for wider testing?
-> 
-> -ritesh
