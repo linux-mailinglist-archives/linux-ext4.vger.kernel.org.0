@@ -2,202 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5136EBA47
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Apr 2023 18:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C316EBA48
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Apr 2023 18:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjDVQRp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 22 Apr 2023 12:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        id S229567AbjDVQRw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 22 Apr 2023 12:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDVQRo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Apr 2023 12:17:44 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923D619AD;
-        Sat, 22 Apr 2023 09:17:43 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1a677dffb37so28014945ad.2;
-        Sat, 22 Apr 2023 09:17:43 -0700 (PDT)
+        with ESMTP id S229595AbjDVQRr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Apr 2023 12:17:47 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908C01FDF;
+        Sat, 22 Apr 2023 09:17:45 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-24704a7bf34so2730367a91.1;
+        Sat, 22 Apr 2023 09:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682180262; x=1684772262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=J1YAcRCbPbk39pfjICicc0ZHE/bFqeSlRI1/k/iUstU=;
-        b=FYUj/rSenV8vZq/OuGDkGSvzaLgEyaV0sEKsEUa3b8esEpfSffEwDrLeyGMEEPi7k1
-         OCrTHuNxgubZWrmNzTdoYFixGNyYjhTDB2ZlY2GHne3NgbKr7enQq6s4jsJS/u3ylG14
-         G89hLtoba4y8hEuiWJekSgAlUVLNB9lMkbagpegBD7aBZ8rBz0KUNa35abPrOvoWd/Qg
-         SI9Ps4yg2joCsVdJmjYJ/q0Tpt96PGbm2ipIezEWmUvNyYkH4U/YUOauhn3Oz5Tuispp
-         dhrMJMJRDDnfFC2z8rsnf8ymsTPS4PFizqmlESXH0T7TPoG4lWNo2VhviSCX783TaUqY
-         /scw==
+        d=gmail.com; s=20221208; t=1682180264; x=1684772264;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i09eqEFp0fkOjuwtq7rmcXArU9WDRyTijzFdoLMRfcA=;
+        b=MngscLLq+1OTxCWbrpxQLEtvLW3jOcopho5c7Y0Y3ho4NpUHJUY0ldYzdRQBr9CyYc
+         SCsDN4Ag+d6USmfUbs+WPaQoNOHHUwhWKyLw6NuemvYauMw2t9BfCA8b4QM3m68itsEj
+         elfu09uGB5UfL1AZeLpjkTWEeXsL6ndaBtLXvPrPRWCclO5/tjGV5dIyjStU1tCdRhX2
+         V1QIybeFogvCzhtBx5MHnv0oysZtj9x1wELVF6O5tbZOh/sLeDdHsxZ86f1s2goCQbqx
+         QuPBsw0sS7HJ4ni0vIeWs95bit1QgTChZ/1vGAsrGERbwtHJCNC6GKI1RjIWsjdK2xJd
+         18Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682180262; x=1684772262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J1YAcRCbPbk39pfjICicc0ZHE/bFqeSlRI1/k/iUstU=;
-        b=DyCFmj8PCkMRz5xdeAqjfOuMfixKleGzt6CbrYQd7COX1HikmuBLOnut5bQ1WMxiiv
-         YEKAOZe6WcF2GLqQhoazdr+0nz14zGcEz7EuiTlQNyWWjF3n6gwDIfGpCeENyZHjRJwN
-         CbK+HOBeliWnRafpUuRTq6enlQDj+3MP+tn5vsaTace65v/LoVOQSmyA5NtEPuhKJdbC
-         2iUpCScF+iBQuyjYp/scbfLEEvrzJcg6DZoatGvHgn0XmeYLkckMmuTSdcblHBWue04J
-         pGgOI9QqAPhlyJiKsYJi1zs7JzhOfsoR/cp3iXDVUTM3aWNczneaa/YJak7SOaTj0gFm
-         aRgg==
-X-Gm-Message-State: AAQBX9cJZrDPJXCsciFzBAUWg/6v3CbacK4jLyTrwgyEhW/75zy7ojFC
-        ABv7N4+ALtjV/+5+HtoRVbVCEz8Aho0=
-X-Google-Smtp-Source: AKy350YrtjP8ui83Stv7m5JWeskGvQdDF+yEX1bgrmrYf8JV6qEe6+wDgXBDhFIRJU9HmpAffLs5fg==
-X-Received: by 2002:a17:903:22ca:b0:1a1:595a:8e3b with SMTP id y10-20020a17090322ca00b001a1595a8e3bmr11398626plg.34.1682180262435;
-        Sat, 22 Apr 2023 09:17:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682180264; x=1684772264;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i09eqEFp0fkOjuwtq7rmcXArU9WDRyTijzFdoLMRfcA=;
+        b=Y2lbhVsZrL8dKdHrRa15oFiN5tB0I5CxrtbXXRA495nbQW4v+R3CaPOBG14NUyMGw9
+         dA37TdKjlTmQhRGDoAJMSmCdwmqe6fJmNXcko6etpbbFlX4OAHNjk6RPpBQSta/4DIfH
+         ucP9lqPH/3UO1FCoZgD5tUuAFA2j/ABfxvuLGMtcFkA+npJlmnMP00RfGMOJAaK71YBa
+         X+KJ0Thy8/MZ7TTxcXNBDV2UVhCacrZE2ZVBulsyZTtjYRJqw1OOEACmDWI695lu1gxL
+         nTrhQCYTfhVedGqL7A/IqiLlKayn9hgcf52ddSA6TmK/Bm2mKv5ELGMa3PFT+XSoiHPm
+         z+mQ==
+X-Gm-Message-State: AAQBX9f12d8zpcSztYbzBcy3ByCtWgEYsGztSK1v8UfPUQAQ8JyrlE5a
+        RaGavruSrniwhXCACy2BMPMBnAzV3+E=
+X-Google-Smtp-Source: AKy350YS8fSCXgGgRDftGYZ1TjdSkGixkexa5Q6eGuH18Dl/nlGD4sbF+2B0KENDToREPNEMQGuxsQ==
+X-Received: by 2002:a17:90a:c687:b0:247:54c7:1bdd with SMTP id n7-20020a17090ac68700b0024754c71bddmr8723418pjt.22.1682180264435;
+        Sat, 22 Apr 2023 09:17:44 -0700 (PDT)
 Received: from rh-tp.ibmuc.com ([2406:7400:63:2dd2:8818:e6e1:3a73:368c])
-        by smtp.gmail.com with ESMTPSA id w15-20020a170902d70f00b001a6c58e95d7sm4204688ply.269.2023.04.22.09.17.40
+        by smtp.gmail.com with ESMTPSA id w15-20020a170902d70f00b001a6c58e95d7sm4204688ply.269.2023.04.22.09.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Apr 2023 09:17:41 -0700 (PDT)
+        Sat, 22 Apr 2023 09:17:44 -0700 (PDT)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
         "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFC 1/2] ext4/060: Regression test against dioread_nolock mount option inconsistency
-Date:   Sat, 22 Apr 2023 21:47:33 +0530
-Message-Id: <aa8a633b016114b94d10dd0f9f0b7a355aeb1d62.1682179372.git.ritesh.list@gmail.com>
+Subject: [RFC 2/2] ext4/061: Regression test of jbd2 journal_task race against unmount
+Date:   Sat, 22 Apr 2023 21:47:34 +0530
+Message-Id: <75819a20d2337c154e360c60ec53b7e519ebb97a.1682179372.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <aa8a633b016114b94d10dd0f9f0b7a355aeb1d62.1682179372.git.ritesh.list@gmail.com>
+References: <aa8a633b016114b94d10dd0f9f0b7a355aeb1d62.1682179372.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-During ext4_writepages, ext4 queries dioread_nolock mount option twice
-and if someone remount the filesystem in between with ^dioread_nolock,
-then this can cause an inconsistency causing WARN_ON() to be triggered.
+This test adds a testcase to catch race condition against
+reading of journal_task and parallel unmount.
+This patch in kernel fixes this [1]
 
-This fix describes the problem in more detail -
+    ext4_put_super()                cat /sys/fs/ext4/loop2/journal_task
+            |                               ext4_attr_show();
+    ext4_jbd2_journal_destroy();                    |
+            |                                journal_task_show()
+            |                                       |
+            |                               task_pid_vnr(NULL);
+    sbi->s_journal = NULL;
 
-https://lore.kernel.org/linux-ext4/20230328090534.662l7yxj2e425j7w@quack3/T/#md19c34646e8b4a816498532c298a66ecf2ae77d4
-
-This test reproduces below warning for me w/o the fix.
-
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 26 at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0xfb/0x140
-Modules linked in:
-CPU: 2 PID: 26 Comm: ksoftirqd/2 Not tainted 6.3.0-rc6-xfstests-00044-ga5c68786f1b1 #23
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-RIP: 0010:ext4_put_io_end_defer+0xfb/0x140
-Code: 5d 41 5e 41 5f e9 a5 73 d0 00 5b 48 89 ef 5d 41 5c 41 5d 41 5e 41 5f e9 d3 fa ff ff 49 83 be a8 03 00 00 00 0f 84 7b ff fd
+RIP: 0010:__task_pid_nr_ns+0x4d/0xe0
 <...>
 Call Trace:
  <TASK>
- blk_update_request+0x116/0x4c0
- ? finish_task_switch.isra.0+0xfb/0x320
- blk_mq_end_request+0x1e/0x40
- blk_complete_reqs+0x40/0x50
- __do_softirq+0xd8/0x3e1
- ? smpboot_thread_fn+0x30/0x280
- run_ksoftirqd+0x3a/0x60
- smpboot_thread_fn+0x1d8/0x280
- ? __pfx_smpboot_thread_fn+0x10/0x10
- kthread+0xf6/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x2c/0x50
- </TASK>
+ ext4_attr_show+0x1bd/0x3e0
+ sysfs_kf_seq_show+0x8e/0x110
+ seq_read_iter+0x11b/0x4d0
+ vfs_read+0x216/0x2e0
+ ksys_read+0x69/0xf0
+ do_syscall_64+0x3f/0x90
+ entry_SYSCALL_64_after_hwframe+0x72/0xdc
 [
+
+[1]: https://lore.kernel.org/all/20200318061301.4320-1-riteshh@linux.ibm.com/
+Commit: ext4: Unregister sysfs path before destroying jbd2 journal
 
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- tests/ext4/060     | 88 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/060.out |  2 ++
- 2 files changed, 90 insertions(+)
- create mode 100755 tests/ext4/060
- create mode 100644 tests/ext4/060.out
+ tests/ext4/061     | 82 ++++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/061.out |  2 ++
+ 2 files changed, 84 insertions(+)
+ create mode 100755 tests/ext4/061
+ create mode 100644 tests/ext4/061.out
 
-diff --git a/tests/ext4/060 b/tests/ext4/060
+diff --git a/tests/ext4/061 b/tests/ext4/061
 new file mode 100755
-index 00000000..d9fe1a99
+index 00000000..88bf138a
 --- /dev/null
-+++ b/tests/ext4/060
-@@ -0,0 +1,88 @@
++++ b/tests/ext4/061
+@@ -0,0 +1,82 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
 +#
-+# FS QA Test 060
++# FS QA Test 061
 +#
-+# This is to test a ext4 regression against inconsistent values of
-+# dioread_nolock mount option while in ext4_writepages path.
-+# See - https://lore.kernel.org/linux-ext4/20230328090534.662l7yxj2e425j7w@quack3/T/#md19c34646e8b4a816498532c298a66ecf2ae77d4
++# Regression test for https://lore.kernel.org/all/20200318061301.4320-1-riteshh@linux.ibm.com/
++# ext4: Unregister sysfs path before destroying jbd2 journal
 +#
++
 +. ./common/preamble
 +_begin_fstest auto quick
 +
-+PID1=""
-+PIDS=""
++pid_mloop=""
++pids_jloop=""
 +trap "_cleanup; exit \$status" 0 1 2 3 15
 +# Override the default cleanup function.
-+ _cleanup()
++_cleanup()
 +{
 +	{
-+		kill -SIGKILL $PID1 $PIDS
-+		wait $PID1 $PIDS
++		kill -SIGKILL $pid_mloop $pids_jloop
++		wait $pid_mloop $pids_jloop
 +	} > /dev/null 2>&1
-+
 +	cd /
 +	rm -r -f $tmp.*
 +}
 +
 +# Import common functions.
-+ . ./common/filter
++. ./common/filter
 +
 +# real QA test starts here
 +
 +# Modify as appropriate.
 +_supported_fs ext4
++_fixed_by_kernel_commit 5e47868fb94b63c \
++	"ext4: unregister sysfs path before destroying jbd2 journal"
 +_require_scratch
++_require_fs_sysfs journal_task
 +
 +_scratch_mkfs_ext4 >> $seqres.full 2>&1
-+_scratch_mount
-+_scratch_remount "dioread_nolock" >> $seqres.full 2>&1
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	_notrun "dioread_nolock mount option not supported"
-+fi
++# mount filesystem
++_scratch_mount >> $seqres.full 2>&1
++scratch_dev=$(_short_dev $SCRATCH_DEV)
 +
-+testfile=$SCRATCH_MNT/testfile
-+
-+function run_buff_io_loop()
++function mount_loop()
 +{
-+	# add buffered io case here
 +	while [ 1 ]; do
-+		xfs_io -fc "truncate 0" -c "pwrite 0 200M" -c "fsync" "$testfile.$1" > /dev/null 2>&1
-+		sleep 2;
++		_scratch_unmount >> $seqres.full 2>&1
++		sleep 1;
++		_scratch_mount >> $seqres.full 2>&1
++		sleep 1;
 +	done
 +}
 +
-+function run_remount_loop()
++function read_journal_task_loop()
 +{
-+	# add remount loop case here
 +	while [ 1 ]; do
-+		_scratch_remount "dioread_nolock" >> $seqres.full 2>&1
-+		sleep 1
-+		_scratch_remount "dioread_lock" >> $seqres.full 2>&1
-+		sleep 1
++		cat /sys/fs/ext4/$scratch_dev/journal_task > /dev/null 2>&1
++		sleep 1;
 +	done
 +}
 +
-+run_remount_loop &
-+PID1=$!
++mount_loop &
++pid_mloop=$!
 +
-+for i in $(seq 1 20); do
-+	run_buff_io_loop $i &
-+	PID=$!
-+	PIDS="${PIDS} ${PID}"
++for i in $(seq 1 100); do
++	read_journal_task_loop &
++	pid=$!
++	pids_jloop="${pids_jloop} ${pid}"
 +done
 +
-+sleep 10
-+
++sleep 20
 +{
-+	kill -SIGKILL $PID1 $PIDS
-+	wait $PID1 $PIDS
++	kill -SIGKILL $pid_mloop $pids_jloop
++	wait $pid_mloop $pids_jloop
 +} > /dev/null 2>&1
 +
 +echo "Silence is golden"
@@ -205,13 +195,13 @@ index 00000000..d9fe1a99
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/ext4/060.out b/tests/ext4/060.out
+diff --git a/tests/ext4/061.out b/tests/ext4/061.out
 new file mode 100644
-index 00000000..8ffce4de
+index 00000000..273be9e0
 --- /dev/null
-+++ b/tests/ext4/060.out
++++ b/tests/ext4/061.out
 @@ -0,0 +1,2 @@
-+QA output created by 060
++QA output created by 061
 +Silence is golden
 --
 2.39.2
