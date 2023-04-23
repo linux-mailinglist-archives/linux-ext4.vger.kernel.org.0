@@ -2,95 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96B66EBC70
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Apr 2023 04:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CCD6EBDF4
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Apr 2023 10:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbjDWCdU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 22 Apr 2023 22:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+        id S229614AbjDWIZj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 Apr 2023 04:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjDWCdT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Apr 2023 22:33:19 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524B81717;
-        Sat, 22 Apr 2023 19:33:18 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id B65063200495;
-        Sat, 22 Apr 2023 22:33:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sat, 22 Apr 2023 22:33:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        joshtriplett.org; h=cc:content-type:content-type:date:date:from
-        :from:in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1682217195; x=
-        1682303595; bh=bzjFJF8i4h0k780+vILhhBwCTdIlS1yLGzDitiHYXY4=; b=n
-        kd15zKmtYPGCOgPPJBrlr+u6Dfwb2bFjPemJPXaYf/2e23sy/CbClrtD1q2T5E84
-        NKQmpACPRl5apF2bCdLIL930DNZgbrP08IbUTV3sUKs2gUu6RxzU/U63MOg5y5qp
-        5msX0Q9XBl+Q+6wfIqNNQoq/akxua8mueB6I24SThtevrYEKaT4Fob7kCt8/9ufm
-        01+OpF+RaNCjjjNI35WCa/doKK+9iDf5aiQIt5ZwaYTAPpD6jm939EsYm6+X1OSG
-        U82qCbnw6OWOY2P3EdzLhbXnVEVgWzqNwQaa19Tk2bkHi+FA3KErKiOvOKkiTgr4
-        5a4pmoljof/UBLLdqvupA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1682217195; x=1682303595; bh=bzjFJF8i4h0k7
-        80+vILhhBwCTdIlS1yLGzDitiHYXY4=; b=BCdVtL5ZnM+KVQMnOty6a5n63PHR8
-        MquQr1mmCzIMCOkUNTRnoo31NZbUy1xOGr0UloU0wao5b2RMPwvPKbkhO8Xu5b+n
-        4bNxvESBQiv2+fNZYslTgKGZ4EM+dwB08aZuOZRqN+/Xx7bvNdbDTagk731kuTkX
-        +sBt0wlOqGXAOEVYx+VzgS0TsUDWpakEw9TCAZY7uwGStCmIBKNB4/adn2zObmGU
-        oYLW0VAtOLjbrMev6/d5jhiWeOxBZEFo2cpDYvniYEajZRveyEtGRCu+uDtI2XSb
-        nZof1ML6GsM2PlyE1ly4UygbzbzopyL9nlMM0NytRLPNL18UppGA1rbPQ==
-X-ME-Sender: <xms:65hEZFcz089UFGntcLnW3HweD8WYqhPR1R7hSHFEqRXdV-HtNCuDZA>
-    <xme:65hEZDMiN0sRTeZCPazFKPNu3PZ6rKtiOj0ysysjIliTLSpw4k67VT3o3UBcJTkzC
-    4V9IJN3atC87jMAM2c>
-X-ME-Received: <xmr:65hEZOi5l0foAikeBDYGrx-KvCyu0VrN-zgx4YIoHkH3cv6ktemgYgMG1kV936R2F0mqYg-MZ6FtKu14TEh03Fy1RA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedtjedgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomheplfhoshhhucfvrhhiphhlvghtthcuoehjohhshhesjhhoshhh
-    thhrihhplhgvthhtrdhorhhgqeenucggtffrrghtthgvrhhnpeegtdfgfeeghfevgeelgf
-    efieegudeuheekkedtueeutefgheffveegueeiteehteenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjohhshhesjhhoshhhthhrihhplhgvth
-    htrdhorhhg
-X-ME-Proxy: <xmx:65hEZO8DZKOsKAD6Xt5n_LtzmX0XnaNjVg4EqEl0QSvqhN7xYlGmMQ>
-    <xmx:65hEZBsrtovArJey3oEqtAbJ2mVw2WAVbghlXZBFNTfBMnWG4_dJ6Q>
-    <xmx:65hEZNE4Fc8A0Ku4sztLJxyB-a9hDuuCcDxuHZxra6kKjU88uQL_yw>
-    <xmx:65hEZK5g8-PvX-sXc24H8iBtKkPLrCP6ha0nb6fr3dhYETh4YJgBkg>
-Feedback-ID: i83e94755:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 22 Apr 2023 22:33:12 -0400 (EDT)
-Date:   Sun, 23 Apr 2023 11:33:08 +0900
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: Add a uapi header for ext4 userspace APIs
-Message-ID: <ZESY5NAN8+7ubDLk@localhost>
-References: <680175260970d977d16b5cc7e7606483ec99eb63.1680402881.git.josh@joshtriplett.org>
+        with ESMTP id S229453AbjDWIZi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Apr 2023 04:25:38 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A191993
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 01:25:37 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-2f58125b957so3014083f8f.3
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 01:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682238335; x=1684830335;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YyqKx1Yy3Bow0alfoaVl/iTsTrPMSG3w1cokbbjpDec=;
+        b=Je7QWYitkVexae+v7QbllGm3yEPsO/HJS8VmbrIhyTuHt4KNNi7CDQGQ7v/l8+bCK7
+         CxkTRoA+XvibebMOlIjCa8ZHnuRhkyl0Hz2i8Ui8fmzg/tG0WfX1eyi7lkJ71FqRawdR
+         iD6ckTTVtGmUVasW0AGu74uaVn9Z2COXcd+RkuJKBcBA0aqozUF4ioCNOfRd8duqByQ/
+         9YRv9NfOev6ZHbOFDCeuw9NcxOL8hM9OQMY7Izku66sgCLTlxkKUn1fzLo27vELRLGTV
+         Xv+N18++99AYlz6Y3rS11+9lRhm9RbVJn0qSIPLs8sgw1fQwN3nKcJPsItEuBqB+Uztx
+         4EMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682238335; x=1684830335;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YyqKx1Yy3Bow0alfoaVl/iTsTrPMSG3w1cokbbjpDec=;
+        b=GebwNfnziMKncXFDZoyOsWTdQu0vU+t27Gkur4EcD3YOTIb4vMScGqVtb7TISrkH43
+         zs0O1g2BxyHYaPpw6aBIH4MUmTq8f4eC6jrtZALCthvbpaD66+jnDTskkpabBT0v/VOg
+         WnK/smTBJSWYY9BV4hT9TMUwjWT/lNQOwqVJOMdQp3u3Bneur1whbPA5Lvv886ydGg1W
+         /1F+0DVoOlqBOtyLZcTXC4axOysLMuloOfQzG0RLvVeSNB3aYYlMG83vMqG7SMFxqzYZ
+         u4F49wIc9fo5oFDvtN8Pm2nVNBhdbB0qYFzhKTv6HE5ZTNYh6ofTZ+XzdUmkhiDeoB/P
+         Kwfw==
+X-Gm-Message-State: AAQBX9cztKeck8ncdb7dO/fB3tw5k71rztOqs2XegCJJ8QCfnzj5tTI7
+        ya8DUQqJ8/k/B8mRQBDrv61PEKkpf8RaRg==
+X-Google-Smtp-Source: AKy350Y9jfixMuwori89UE27HUa4Z6VsptOq+LESRH75xRTiB/zGpqE4W9EpnGAwu2AHyBII97O/Cg==
+X-Received: by 2002:a5d:5381:0:b0:304:794c:1534 with SMTP id d1-20020a5d5381000000b00304794c1534mr478393wrv.4.1682238335549;
+        Sun, 23 Apr 2023 01:25:35 -0700 (PDT)
+Received: from localhost.localdomain ([213.177.197.108])
+        by smtp.gmail.com with ESMTPSA id i40-20020a05600c4b2800b003ee6aa4e6a9sm12389153wmp.5.2023.04.23.01.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Apr 2023 01:25:35 -0700 (PDT)
+From:   =?UTF-8?q?Oscar=20Megia=20L=C3=B3pez?= <megia.oscar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     =?UTF-8?q?Oscar=20Megia=20L=C3=B3pez?= <megia.oscar@gmail.com>
+Subject: [PATCH 0/1] I want to add percent to output used/maximum files and blocks
+Date:   Sun, 23 Apr 2023 10:23:48 +0200
+Message-Id: <20230423082349.53474-1-megia.oscar@gmail.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <680175260970d977d16b5cc7e7606483ec99eb63.1680402881.git.josh@joshtriplett.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Apr 02, 2023 at 11:37:52AM +0900, Josh Triplett wrote:
-> Create a uapi header include/uapi/linux/ext4.h, move the ioctls and
-> associated data structures to the uapi header, and include it from
-> fs/ext4/ext4.h.
-> 
-> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-> ---
+I think this is good information because
+numbers alone are not enough for people.
 
-Following up on this: would it be possible to get this in the 6.4 ext4
-pull request? It'd be really helpful to have this UAPI header available,
-for the benefit of tools that generate bindings to ioctls.
+I check that the denominator is zero for safety,
+may never be zero, but I prefer to check.
+
+Same for copying in char pointers. I prefer to use snprintf,
+than sprintf or strcpy, because this way it won't never
+overrun the pointer size.
+
+My experience says that there is to check all possibilities,
+even if I think that never will happen (error free).
+
+Oscar Megia López (1):
+  e2fsck: Add percent to files and blocks feature
+
+ e2fsck/unix.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
+
+
+base-commit: 25ad8a431331b4d1d444a70b6079456cc612ac40
+-- 
+2.40.0
+
