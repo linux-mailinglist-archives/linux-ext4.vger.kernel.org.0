@@ -2,268 +2,234 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847426EC0DC
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Apr 2023 17:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491D36EC106
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Apr 2023 18:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjDWPrB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 Apr 2023 11:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S229641AbjDWQVe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 Apr 2023 12:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjDWPrA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Apr 2023 11:47:00 -0400
+        with ESMTP id S229493AbjDWQVd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Apr 2023 12:21:33 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADB510E9
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 08:46:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF72E79
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 09:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682264772;
+        s=mimecast20190719; t=1682266845;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Hx3fghTYGBZimQO6IIzO49njc8vKHoIusnUoZfEyLS0=;
-        b=EOntqM2PCRu9jUUMSiy0rjT7mI1mCxdtnkr45piRBQy+0zfx8a3lC4unrUh+44zHtJ9k8j
-        7SAbe1fr4kyFRzkk9RwU96UppDvF4EgQV7909za4DChbuzLkY67k1Ono9keM0SGfEHe3A6
-        mif3ItLrD6BzLFnTMSwrEEov0yyx1Os=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=wB5eqSaCz8VBK1VuTRwVWDZpYEGkTWsBMz/FZi+lDX4=;
+        b=eAVnMKj6bp5RUKeKbP7SDm+sAVYfzuJnhBkqbET4aQnuUvAz7BEBNP0NMED2GImE07Qdqc
+        6hkeJyIyuZ0EzuhYbdcFUPAUtGDGypW9KLiARFn6YrSEnHX9DqtSyumLC1fgcIshtJEB+v
+        t5cS9FrxzfAEhldWU0sRP7rx8/FZWkI=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-119-_77_6hdlMZG7gxftjMK42w-1; Sun, 23 Apr 2023 11:46:10 -0400
-X-MC-Unique: _77_6hdlMZG7gxftjMK42w-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1a69ae5e220so41824185ad.2
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 08:46:10 -0700 (PDT)
+ us-mta-633-v2uCJsIXOQqud0fth-7qKg-1; Sun, 23 Apr 2023 12:20:43 -0400
+X-MC-Unique: v2uCJsIXOQqud0fth-7qKg-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1a6a747efb9so39115115ad.2
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Apr 2023 09:20:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682264769; x=1684856769;
+        d=1e100.net; s=20221208; t=1682266842; x=1684858842;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hx3fghTYGBZimQO6IIzO49njc8vKHoIusnUoZfEyLS0=;
-        b=BRoBz34QCIXB5Bw0IQeCltJKpU1QjGGJZdvuVZHlIWTCrjZOXZttByF8bxAI1x0To2
-         KM7naLi29KwzLNxJokqBevy9NLYAIBvMtP1gWFRggIzKGFnmnUut5GzlnrXLPrN0MP3w
-         7ber88vCOZ2ui595ScMKjPkUnPCKTz1AI4eEA2jwDiF7XMxvwgElqph1MKanEuHOi040
-         N+MUNFZGx8IpZnuZg7WaE1A0NqToEzgWrzGH3LIRm8o1NwiO/ZnrEDq2705WdwqR8ViG
-         mggOKFCPRZkI4ChLvFOK8ztVvFvTS63yW0Mv+PUNo8slUrJFALI2UfzKoHqFyhVVKEuy
-         3hpA==
-X-Gm-Message-State: AAQBX9f0Y8elMYGWkFuVEGki7a2M8fAbn20zPAvThHh9aBXtOmXhfS/Q
-        qrbq3GgrS94WYjnuMJmVLwGVUNL+5PzwOw98SbZaKoXYRI2+3LpLkgtf2yEyUrGNiMwRY2gmKN5
-        54SX8jNYsGrqWiHC7lpK4yA==
-X-Received: by 2002:a17:902:ecc8:b0:1a6:ce48:5700 with SMTP id a8-20020a170902ecc800b001a6ce485700mr15001038plh.33.1682264769580;
-        Sun, 23 Apr 2023 08:46:09 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bPwExPEQlD2dz+F/WRia7qyUBLr8vhI8zdsI0wUMPl30o5NUjguQ10EhpzyK09GNkXitH3PA==
-X-Received: by 2002:a17:902:ecc8:b0:1a6:ce48:5700 with SMTP id a8-20020a170902ecc800b001a6ce485700mr15001018plh.33.1682264769211;
-        Sun, 23 Apr 2023 08:46:09 -0700 (PDT)
+        bh=wB5eqSaCz8VBK1VuTRwVWDZpYEGkTWsBMz/FZi+lDX4=;
+        b=bu64WJKwvRqXCqRZ5aqI3P3sBzaxjLxIdSceU1t66fchODucJ3tBwOaaa2mMBVmFaI
+         8sXqUyFsZDI8a3uco1BsLdRjm8OhigHRWYqf7AenVT+0R8MsPExp1eAXMy3XkpZ37xiB
+         mRiqT0vXWh8bmmutl4bp/5FpXESQ5YEqEDEkrZ2l1nezrTTAdXxVPdm/CGePfTuG6Im2
+         Y/O0SyzymTTnNSUlieL1MWQhWwNbRFdOM8rm+qMs4J/aWYEeNdcE6GdQQKGSkBgqo3b0
+         ndX1cVeRMlBKh8v6B3/dTDSNRqbf+A3zofBbIMpEfeCz9/67wpVRZHuLGt0MYlENu+9Q
+         015A==
+X-Gm-Message-State: AAQBX9eMSem2W9HPBkJUmlwxQAyTr3+v/bVZgfBA7mxsH5MFh8yLlmTs
+        QhAXUpk3EjdSLdsgytiTU9cZ7YfcbfRJg43fxmusGtgjtJYgO2HA0DHk2//gwgEAO+lOzjCajuh
+        GuFEmNN8qBwKb6cmfg1/aOcagp8kPmLiyY+s=
+X-Received: by 2002:a17:902:d590:b0:1a5:2540:729 with SMTP id k16-20020a170902d59000b001a525400729mr11574769plh.56.1682266842394;
+        Sun, 23 Apr 2023 09:20:42 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YvD04fFalAuMCpC7d06OQh/mR+x7jjXbdhUX8TgXjgGA8lQoAGom89fcCKMAhlmfl6I0zzcw==
+X-Received: by 2002:a17:902:d590:b0:1a5:2540:729 with SMTP id k16-20020a170902d59000b001a525400729mr11574757plh.56.1682266842092;
+        Sun, 23 Apr 2023 09:20:42 -0700 (PDT)
 Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id jg11-20020a17090326cb00b001a664e49ebasm4851081plb.304.2023.04.23.08.46.07
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001a686578b44sm5263085pld.110.2023.04.23.09.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 08:46:08 -0700 (PDT)
-Date:   Sun, 23 Apr 2023 23:46:04 +0800
+        Sun, 23 Apr 2023 09:20:41 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 00:20:37 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
         Baokun Li <libaokun1@huawei.com>
-Subject: Re: [RFC 1/2] ext4/060: Regression test against dioread_nolock mount
- option inconsistency
-Message-ID: <20230423154604.p65lfge3ari3jgeu@zlang-mailbox>
+Subject: Re: [RFC 2/2] ext4/061: Regression test of jbd2 journal_task race
+ against unmount
+Message-ID: <20230423162037.6kpvxqsnomvtxsmn@zlang-mailbox>
 References: <aa8a633b016114b94d10dd0f9f0b7a355aeb1d62.1682179372.git.ritesh.list@gmail.com>
+ <75819a20d2337c154e360c60ec53b7e519ebb97a.1682179372.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa8a633b016114b94d10dd0f9f0b7a355aeb1d62.1682179372.git.ritesh.list@gmail.com>
+In-Reply-To: <75819a20d2337c154e360c60ec53b7e519ebb97a.1682179372.git.ritesh.list@gmail.com>
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Apr 22, 2023 at 09:47:33PM +0530, Ritesh Harjani (IBM) wrote:
-> During ext4_writepages, ext4 queries dioread_nolock mount option twice
-> and if someone remount the filesystem in between with ^dioread_nolock,
-> then this can cause an inconsistency causing WARN_ON() to be triggered.
+On Sat, Apr 22, 2023 at 09:47:34PM +0530, Ritesh Harjani (IBM) wrote:
+> This test adds a testcase to catch race condition against
+> reading of journal_task and parallel unmount.
+> This patch in kernel fixes this [1]
 > 
-> This fix describes the problem in more detail -
+>     ext4_put_super()                cat /sys/fs/ext4/loop2/journal_task
+>             |                               ext4_attr_show();
+>     ext4_jbd2_journal_destroy();                    |
+>             |                                journal_task_show()
+>             |                                       |
+>             |                               task_pid_vnr(NULL);
+>     sbi->s_journal = NULL;
 > 
-> https://lore.kernel.org/linux-ext4/20230328090534.662l7yxj2e425j7w@quack3/T/#md19c34646e8b4a816498532c298a66ecf2ae77d4
-> 
-> This test reproduces below warning for me w/o the fix.
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 2 PID: 26 at fs/ext4/page-io.c:231 ext4_put_io_end_defer+0xfb/0x140
-> Modules linked in:
-> CPU: 2 PID: 26 Comm: ksoftirqd/2 Not tainted 6.3.0-rc6-xfstests-00044-ga5c68786f1b1 #23
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:ext4_put_io_end_defer+0xfb/0x140
-> Code: 5d 41 5e 41 5f e9 a5 73 d0 00 5b 48 89 ef 5d 41 5c 41 5d 41 5e 41 5f e9 d3 fa ff ff 49 83 be a8 03 00 00 00 0f 84 7b ff fd
+> RIP: 0010:__task_pid_nr_ns+0x4d/0xe0
 > <...>
 > Call Trace:
 >  <TASK>
->  blk_update_request+0x116/0x4c0
->  ? finish_task_switch.isra.0+0xfb/0x320
->  blk_mq_end_request+0x1e/0x40
->  blk_complete_reqs+0x40/0x50
->  __do_softirq+0xd8/0x3e1
->  ? smpboot_thread_fn+0x30/0x280
->  run_ksoftirqd+0x3a/0x60
->  smpboot_thread_fn+0x1d8/0x280
->  ? __pfx_smpboot_thread_fn+0x10/0x10
->  kthread+0xf6/0x120
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork+0x2c/0x50
->  </TASK>
+>  ext4_attr_show+0x1bd/0x3e0
+>  sysfs_kf_seq_show+0x8e/0x110
+>  seq_read_iter+0x11b/0x4d0
+>  vfs_read+0x216/0x2e0
+>  ksys_read+0x69/0xf0
+>  do_syscall_64+0x3f/0x90
+>  entry_SYSCALL_64_after_hwframe+0x72/0xdc
 > [
+> 
+> [1]: https://lore.kernel.org/all/20200318061301.4320-1-riteshh@linux.ibm.com/
+> Commit: ext4: Unregister sysfs path before destroying jbd2 journal
 > 
 > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > ---
->  tests/ext4/060     | 88 ++++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/060.out |  2 ++
->  2 files changed, 90 insertions(+)
->  create mode 100755 tests/ext4/060
->  create mode 100644 tests/ext4/060.out
+>  tests/ext4/061     | 82 ++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/ext4/061.out |  2 ++
+>  2 files changed, 84 insertions(+)
+>  create mode 100755 tests/ext4/061
+>  create mode 100644 tests/ext4/061.out
 > 
-> diff --git a/tests/ext4/060 b/tests/ext4/060
+> diff --git a/tests/ext4/061 b/tests/ext4/061
 > new file mode 100755
-> index 00000000..d9fe1a99
+> index 00000000..88bf138a
 > --- /dev/null
-> +++ b/tests/ext4/060
-> @@ -0,0 +1,88 @@
+> +++ b/tests/ext4/061
+> @@ -0,0 +1,82 @@
 > +#! /bin/bash
 > +# SPDX-License-Identifier: GPL-2.0
 > +# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
 > +#
-> +# FS QA Test 060
+> +# FS QA Test 061
 > +#
-> +# This is to test a ext4 regression against inconsistent values of
+> +# Regression test for https://lore.kernel.org/all/20200318061301.4320-1-riteshh@linux.ibm.com/
+> +# ext4: Unregister sysfs path before destroying jbd2 journal
 
-Great, a new regression test case!
-
-> +# dioread_nolock mount option while in ext4_writepages path.
-> +# See - https://lore.kernel.org/linux-ext4/20230328090534.662l7yxj2e425j7w@quack3/T/#md19c34646e8b4a816498532c298a66ecf2ae77d4
-
-You can use the commit id and subject to replace the link.
+The link isn't needed, if you points out the commit id and subject.
 
 > +#
+> +
 > +. ./common/preamble
 > +_begin_fstest auto quick
-
-also add mount/remount tag?
-
 > +
-> +PID1=""
-> +PIDS=""
+> +pid_mloop=""
+> +pids_jloop=""
 > +trap "_cleanup; exit \$status" 0 1 2 3 15
 > +# Override the default cleanup function.
-> + _cleanup()
+> +_cleanup()
 > +{
 > +	{
-> +		kill -SIGKILL $PID1 $PIDS
-> +		wait $PID1 $PIDS
+> +		kill -SIGKILL $pid_mloop $pids_jloop
+> +		wait $pid_mloop $pids_jloop
 > +	} > /dev/null 2>&1
 
-I think the curly braces "{ }" is not necessary. Refer to generic/390 to deal
-with the background processes.
+[ -n "$pids_jloop" ] && kill -9 $pids_jloop
+[ -n "$pid_mloop" ] && kill -9 $pid_mloop
+wait
 
-[ -n "$PIDS" ] && kill -9 $PIDS
-wait $PIDS
-
-> +
 > +	cd /
 > +	rm -r -f $tmp.*
 > +}
 > +
 > +# Import common functions.
-> + . ./common/filter
+> +. ./common/filter
 > +
 > +# real QA test starts here
 > +
 > +# Modify as appropriate.
-
-Remove this comment.
-
 > +_supported_fs ext4
-
-_fixed_by_kernel_commit ?
-
+> +_fixed_by_kernel_commit 5e47868fb94b63c \
+> +	"ext4: unregister sysfs path before destroying jbd2 journal"
 > +_require_scratch
+> +_require_fs_sysfs journal_task
 > +
 > +_scratch_mkfs_ext4 >> $seqres.full 2>&1
-> +_scratch_mount
-> +_scratch_remount "dioread_nolock" >> $seqres.full 2>&1
-> +ret=$?
+> +# mount filesystem
+> +_scratch_mount >> $seqres.full 2>&1
+> +scratch_dev=$(_short_dev $SCRATCH_DEV)
 
-If the "$ret" is only used once as below...
+The $scratch_dev is only used in read_journal_task_loop() ...
 
-> +if [ $ret -ne 0 ]; then
-
-... then we can use "$?" directly.
-
-> +	_notrun "dioread_nolock mount option not supported"
-
-When ext4 start to support dioread_nolock/dioread_lock ?
-
-If it's old enough, we don't need to check this option. Or we can have a new
-helper (e.g. require_scratch_ext4_mount_option()). You can refer to
-_require_scratch_ext4_feature(), or maybe we can change it to support mount
-option test.
-
-> +fi
 > +
-> +testfile=$SCRATCH_MNT/testfile
-> +
-> +function run_buff_io_loop()
+> +function mount_loop()
 > +{
-> +	# add buffered io case here
 > +	while [ 1 ]; do
-> +		xfs_io -fc "truncate 0" -c "pwrite 0 200M" -c "fsync" "$testfile.$1" > /dev/null 2>&1
+> +		_scratch_unmount >> $seqres.full 2>&1
+> +		sleep 1;
+> +		_scratch_mount >> $seqres.full 2>&1
 
-I only find the $testfile is used at here once, if so you can make it as
-a local variable of this function.
+Do you hope to fail the test directly if the mount fails? Or you hope
+to use _try_scratch_mount ?
 
-> +		sleep 2;
+> +		sleep 1;
 > +	done
 > +}
 > +
-> +function run_remount_loop()
+> +function read_journal_task_loop()
 > +{
-> +	# add remount loop case here
 > +	while [ 1 ]; do
-> +		_scratch_remount "dioread_nolock" >> $seqres.full 2>&1
-> +		sleep 1
-> +		_scratch_remount "dioread_lock" >> $seqres.full 2>&1
-> +		sleep 1
+> +		cat /sys/fs/ext4/$scratch_dev/journal_task > /dev/null 2>&1
+
+... so I think you can write this line as:
+
+cat /sys/fs/ext4/$(_short_dev $SCRATCH_DEV)/journal_task ...
+
+
+BTW, I'm wondering if you need to check the journal_task is supported?
+
+> +		sleep 1;
 > +	done
 > +}
 > +
-> +run_remount_loop &
-> +PID1=$!
+> +mount_loop &
+> +pid_mloop=$!
+> +
+> +for i in $(seq 1 100); do
+> +	read_journal_task_loop &
+> +	pid=$!
+> +	pids_jloop="${pids_jloop} ${pid}"
 
-If you don't need to kill these processes in a specific order, I think
-you can:
-
-PIDS=$!
-
-> +for i in $(seq 1 20); do
-> +	run_buff_io_loop $i &
-> +	PID=$!
-> +	PIDS="${PIDS} ${PID}"
-
-PIDS="$PIDS $!"
+pids_jloop="${pids_jloop} $!"
 
 > +done
 > +
-> +sleep 10
+> +sleep 20
 
-$((10 * TIME_FACTOR)) ?
+20 * TIME_FACTOR ?
 
-> +
 > +{
-> +	kill -SIGKILL $PID1 $PIDS
-> +	wait $PID1 $PIDS
+> +	kill -SIGKILL $pid_mloop $pids_jloop
+> +	wait $pid_mloop $pids_jloop
 > +} > /dev/null 2>&1
 
-kill -9 $$PIDS
-wait $PIDS
-unset PIDS
+kill -9 $pid_mloop $pids_jloop
+wait $pid_mloop $pids_jloop
+unset pid_mloop pids_jloop
 
 > +
 > +echo "Silence is golden"
@@ -271,13 +237,13 @@ unset PIDS
 > +# success, all done
 > +status=0
 > +exit
-> diff --git a/tests/ext4/060.out b/tests/ext4/060.out
+> diff --git a/tests/ext4/061.out b/tests/ext4/061.out
 > new file mode 100644
-> index 00000000..8ffce4de
+> index 00000000..273be9e0
 > --- /dev/null
-> +++ b/tests/ext4/060.out
+> +++ b/tests/ext4/061.out
 > @@ -0,0 +1,2 @@
-> +QA output created by 060
+> +QA output created by 061
 > +Silence is golden
 > --
 > 2.39.2
