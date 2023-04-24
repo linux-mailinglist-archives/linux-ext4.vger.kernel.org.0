@@ -2,139 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 261226ED46A
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 20:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE336ED4E5
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 20:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjDXScf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Apr 2023 14:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        id S232354AbjDXS4F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Apr 2023 14:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjDXSce (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 14:32:34 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A297FFA;
-        Mon, 24 Apr 2023 11:32:33 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-94f32588c13so679634166b.2;
-        Mon, 24 Apr 2023 11:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682361152; x=1684953152;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9j7T0oh2jPBNqIhnL5Zd7ZvIl+BIHbhG56f1IEtAnsk=;
-        b=en79UB4wt62yJCnBGb6twRBbCxYLox2y5I6QJ/26Exf8YCoPS+UJxVXjSPGhXeMw+5
-         PCOyiBJeFMZb0xc3LljzcK469KyXcIZVSZ6TwsAq2sKK43LLvD+J860OvE/4qEASN9xX
-         r/Zso7tM1vb8JPyVXTbOo9LsI/s+N43OXGGYrHSq1vAmUPhIVHIzhqiZTCpaWdlyJess
-         gxlpZTDlMaj9Pw/uCNrIdR9sZRl/BBrshqRy9r7v5rxctn5YexeJS9A+97aTpT86tsTI
-         Ix6n1yiWGzXyAURdojPl8ycDOrJ7w3HsoO3HD7inQf8ZjoF51r4SNKg2A5XejOE6NYi6
-         rOCg==
+        with ESMTP id S232493AbjDXSz7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 14:55:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509D0900C
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 11:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682362511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cC2m6cj4by0ic+ocHcPEbRFoxwEEiKQQoS0Ge1Avf1U=;
+        b=JMK2mwKmD1wcRlKtYqYl0AzWNCF8UMQLJEacoyPNSuZpjBUwEh5SFvj8HTp5yfvJo2j+Uh
+        mGAs6WZ8OTEw0e2g2QDsO4q/0+a2jIeH4PRQHRSZ0ypP7t+fjGU33hQ8Xa7U6GfzQHAYpt
+        nuMz++cKZxB5wGac/vbNBZWSjCJfOOU=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507--NQnPkvZPX2vEdoaQQsVWQ-1; Mon, 24 Apr 2023 14:55:09 -0400
+X-MC-Unique: -NQnPkvZPX2vEdoaQQsVWQ-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2473f8329f7so4730876a91.1
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 11:55:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682361152; x=1684953152;
+        d=1e100.net; s=20221208; t=1682362508; x=1684954508;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9j7T0oh2jPBNqIhnL5Zd7ZvIl+BIHbhG56f1IEtAnsk=;
-        b=IMqwCCc15J/4MaDMpsDv/rLxBCs6lipn5Kzksx+BQeKrFTA97MzqQAICQl99dVT7dK
-         E+pNB/HAavOARmnBwKop9mfX1tnvpsnBCpZCcPalsiWi8m7dJSjbG8A7z1wSSTKI87cn
-         nXleIjUK8UiwlltiqQX7DMz+idH16cajxAv4qQ58AZY9QiTrYniICttG4t8bm2ZH69oc
-         M/7+hS6gksGbCS+okjpzUaPhVM3aT4adVcATwloVJ/vdC42yJLf5tCGbSodr+QUojuU9
-         pTsWW/7cfovSYzZtym6f7Yuu8oWPPIg/QZi7oRHWl9C+xpZNo2T76sb6zmN3IQFJU6rQ
-         zL/g==
-X-Gm-Message-State: AAQBX9dUuWPoUSj1+NYzVAAUt3dP0iUzzQQvFuWOokF/6AzvjNhVO0Lu
-        cM8WK84W6nNWpiviEOvgV66fjccUVqA6DObf+a9mP/kw
-X-Google-Smtp-Source: AKy350ZFCjsGX+dkjKKCmINnLibMTKt32R4FmrvVFWLj1lc0yi/LWbG9mFrKkNky/b82XZMceMaE36nPPWlXCD6MxC4=
-X-Received: by 2002:a05:6402:5152:b0:502:2494:b8fc with SMTP id
- n18-20020a056402515200b005022494b8fcmr11096669edd.7.1682361151900; Mon, 24
- Apr 2023 11:32:31 -0700 (PDT)
+        bh=cC2m6cj4by0ic+ocHcPEbRFoxwEEiKQQoS0Ge1Avf1U=;
+        b=KO+u+J2yMtuI6eGzhRedqqCwa4izv8yuun6eGSmrGl4mZnI4I33hYmqCIkah0B14wF
+         +KWuQu26vLWGrBGSlvQKQhOMpd9eNv/h6Hprk8VWShMEPX+FgLzvdh8ZvIAP9y9d+11+
+         XCmoAYYTAHTpuWlzxLTZC6U7Ld59ety9IsxsSoAuVN7FX9UuIgO/d3cckHJcEZKrfJrM
+         Z1pz/uEC88nbSFxGJcxsqDLv9GE8XREguGsp2JTZ4jqngveOGmf/0RlpbQe4bl+h29Ur
+         BF4qzXsdVaRqVjvNYfpVLMmJ7WiADlHP7cHucN63uW5aqL29KQAwMCF3gHy5W5EPfhgB
+         qwTQ==
+X-Gm-Message-State: AAQBX9cjApA5fuzzpD2yVa6zWdkvfdZ2BG7aX+LIwDxxiogfmy2ykf7u
+        BCmqNB9cUNYfxfjrx6VqxJCFmNq9sYS+5DFvUUPpti0UvZ+Qto6nD+jaLqW4wv+z4u6oUFuiIlG
+        yM4cBzGj9UJkPlsjyUqnB/EC3G18Ejywp+jUZ5A==
+X-Received: by 2002:a17:90b:3a8d:b0:23e:f855:79ed with SMTP id om13-20020a17090b3a8d00b0023ef85579edmr14646835pjb.28.1682362508597;
+        Mon, 24 Apr 2023 11:55:08 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bw6UUmfa7x2kgzI/S3M36kQcMIx/LORGs9afdrTUJulizrDq8UK+lWvA5A9k5nXONeKEERR5M4Fbn0vBOkkLM=
+X-Received: by 2002:a17:90b:3a8d:b0:23e:f855:79ed with SMTP id
+ om13-20020a17090b3a8d00b0023ef85579edmr14646811pjb.28.1682362508271; Mon, 24
+ Apr 2023 11:55:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230421014750.2315938-1-goldstein.w.n@gmail.com> <20230424162413.hiimozuw44fhht4a@quack3>
-In-Reply-To: <20230424162413.hiimozuw44fhht4a@quack3>
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Date:   Mon, 24 Apr 2023 13:32:20 -0500
-Message-ID: <CAFUsyf+VXZxy98BRwpZ_ikABHDmmC5xMCWnbRzQQoxfs8SZ54g@mail.gmail.com>
-Subject: Re: [PATCH v1] ext4: move `ext4_count_free` to ext4.h so it can be
- easily inlined
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org
+References: <20230424054926.26927-1-hch@lst.de> <20230424054926.26927-6-hch@lst.de>
+In-Reply-To: <20230424054926.26927-6-hch@lst.de>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 24 Apr 2023 20:54:56 +0200
+Message-ID: <CAHc6FU7tuLJk1JEHdmK7VmEuvuG2sMg1=D9qYJAuhn2ES4NFAA@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH 05/17] filemap: update ki_pos in generic_perform_write
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-nfs@vger.kernel.org, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, ceph-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 11:24=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 20-04-23 20:47:49, Noah Goldstein wrote:
-> > `ext4_count_free` is a one-line helper that is clearly better off
-> > being inlined. This saves a handful instructions in `vmlinux` on x86.
-> >
-> > Instruction estimates use `wc -l` on `objdump`
-> > Before: 8539271
-> > After : 8539248
-> >
-> > So saves roughly 20 instructions
-> >
-> > Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
->
-> Looks fine. Feel free to add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
->
-Done, thank you.
+On Mon, Apr 24, 2023 at 8:22=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
+e:
+> All callers of generic_perform_write need to updated ki_pos, move it into
+> common code.
 
->                                                                 Honza
+We've actually got a similar situation with
+iomap_file_buffered_write() and its callers. Would it make sense to
+fix that up as well?
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/ceph/file.c | 2 --
+>  fs/ext4/file.c | 9 +++------
+>  fs/f2fs/file.c | 1 -
+>  fs/nfs/file.c  | 1 -
+>  mm/filemap.c   | 8 ++++----
+>  5 files changed, 7 insertions(+), 14 deletions(-)
 >
-> > ---
-> >  fs/ext4/bitmap.c | 5 -----
-> >  fs/ext4/ext4.h   | 6 +++++-
-> >  2 files changed, 5 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
-> > index f63e028c638c..c3cd2b878bbd 100644
-> > --- a/fs/ext4/bitmap.c
-> > +++ b/fs/ext4/bitmap.c
-> > @@ -11,11 +11,6 @@
-> >  #include <linux/buffer_head.h>
-> >  #include "ext4.h"
-> >
-> > -unsigned int ext4_count_free(char *bitmap, unsigned int numchars)
-> > -{
-> > -     return numchars * BITS_PER_BYTE - memweight(bitmap, numchars);
-> > -}
-> > -
-> >  int ext4_inode_bitmap_csum_verify(struct super_block *sb, ext4_group_t=
- group,
-> >                                 struct ext4_group_desc *gdp,
-> >                                 struct buffer_head *bh, int sz)
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 08b29c289da4..6e1d3c175a70 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -2675,7 +2675,11 @@ struct mmpd_data {
-> >  # define NORET_AND   noreturn,
-> >
-> >  /* bitmap.c */
-> > -extern unsigned int ext4_count_free(char *bitmap, unsigned numchars);
-> > +static inline unsigned int ext4_count_free(char *bitmap, unsigned int =
-numchars)
-> > +{
-> > +     return numchars * BITS_PER_BYTE - memweight(bitmap, numchars);
-> > +}
-> > +
-> >  void ext4_inode_bitmap_csum_set(struct super_block *sb, ext4_group_t g=
-roup,
-> >                               struct ext4_group_desc *gdp,
-> >                               struct buffer_head *bh, int sz);
-> > --
-> > 2.34.1
-> >
+> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+> index f4d8bf7dec88a8..feeb9882ef635a 100644
+> --- a/fs/ceph/file.c
+> +++ b/fs/ceph/file.c
+> @@ -1894,8 +1894,6 @@ static ssize_t ceph_write_iter(struct kiocb *iocb, =
+struct iov_iter *from)
+>                  * can not run at the same time
+>                  */
+>                 written =3D generic_perform_write(iocb, from);
+> -               if (likely(written >=3D 0))
+> -                       iocb->ki_pos =3D pos + written;
+>                 ceph_end_io_write(inode);
+>         }
+>
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 0b8b4499e5ca18..1026acaf1235a0 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -291,12 +291,9 @@ static ssize_t ext4_buffered_write_iter(struct kiocb=
+ *iocb,
+>
+>  out:
+>         inode_unlock(inode);
+> -       if (likely(ret > 0)) {
+> -               iocb->ki_pos +=3D ret;
+> -               ret =3D generic_write_sync(iocb, ret);
+> -       }
+> -
+> -       return ret;
+> +       if (unlikely(ret <=3D 0))
+> +               return ret;
+> +       return generic_write_sync(iocb, ret);
+>  }
+>
+>  static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t o=
+ffset,
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index f4ab23efcf85f8..5a9ae054b6da7d 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -4511,7 +4511,6 @@ static ssize_t f2fs_buffered_write_iter(struct kioc=
+b *iocb,
+>         current->backing_dev_info =3D NULL;
+>
+>         if (ret > 0) {
+> -               iocb->ki_pos +=3D ret;
+>                 f2fs_update_iostat(F2FS_I_SB(inode), inode,
+>                                                 APP_BUFFERED_IO, ret);
+>         }
+> diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+> index 893625eacab9fa..abdae2b29369be 100644
+> --- a/fs/nfs/file.c
+> +++ b/fs/nfs/file.c
+> @@ -666,7 +666,6 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov=
+_iter *from)
+>                 goto out;
+>
+>         written =3D result;
+> -       iocb->ki_pos +=3D written;
+>         nfs_add_stats(inode, NFSIOS_NORMALWRITTENBYTES, written);
+>
+>         if (mntflags & NFS_MOUNT_WRITE_EAGER) {
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 2723104cc06a12..0110bde3708b3f 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3960,7 +3960,10 @@ ssize_t generic_perform_write(struct kiocb *iocb, =
+struct iov_iter *i)
+>                 balance_dirty_pages_ratelimited(mapping);
+>         } while (iov_iter_count(i));
+>
+> -       return written ? written : status;
+> +       if (!written)
+> +               return status;
+> +       iocb->ki_pos +=3D written;
+
+Could be turned into:
+iocb->ki_pos =3D pos;
+
+> +       return written;
+>  }
+>  EXPORT_SYMBOL(generic_perform_write);
+>
+> @@ -4039,7 +4042,6 @@ ssize_t __generic_file_write_iter(struct kiocb *ioc=
+b, struct iov_iter *from)
+>                 endbyte =3D pos + status - 1;
+>                 err =3D filemap_write_and_wait_range(mapping, pos, endbyt=
+e);
+>                 if (err =3D=3D 0) {
+> -                       iocb->ki_pos =3D endbyte + 1;
+>                         written +=3D status;
+>                         invalidate_mapping_pages(mapping,
+>                                                  pos >> PAGE_SHIFT,
+> @@ -4052,8 +4054,6 @@ ssize_t __generic_file_write_iter(struct kiocb *ioc=
+b, struct iov_iter *from)
+>                 }
+>         } else {
+>                 written =3D generic_perform_write(iocb, from);
+> -               if (likely(written > 0))
+> -                       iocb->ki_pos +=3D written;
+>         }
+>  out:
+>         current->backing_dev_info =3D NULL;
 > --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> 2.39.2
+>
+
+Thanks,
+Andreas
+
