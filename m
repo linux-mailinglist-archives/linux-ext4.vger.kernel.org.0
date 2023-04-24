@@ -2,52 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8BB6EC423
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 05:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B531F6EC537
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 07:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjDXDp0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 Apr 2023 23:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
+        id S230513AbjDXFtt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Apr 2023 01:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjDXDpZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Apr 2023 23:45:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609EC123;
-        Sun, 23 Apr 2023 20:45:24 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Q4WC04rGHznf7m;
-        Mon, 24 Apr 2023 11:41:32 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 24 Apr 2023 11:45:22 +0800
-Message-ID: <ffed2428-7016-1431-eaea-14ac28541988@huawei.com>
-Date:   Mon, 24 Apr 2023 11:45:22 +0800
+        with ESMTP id S230430AbjDXFtn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 01:49:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D5119B3;
+        Sun, 23 Apr 2023 22:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=rxuwauPRwLemTJXwY3VrKMRJhs+GgwhnyBD4s7nm7AY=; b=3MpQEmnJ4id5J1jZ4YFohK5H8q
+        bs7ciFKUIE9sA5F//wk8TThxaPzhLwI6FsUH1vKzNkmpHyq88uhXgF7wTEHMLlqIzGShUjm1tpoQ/
+        V9Tji0dQSyZQM/K5ekDNoH5faw93KpoQQtAuWkTbvGbcl7apn0KwIYdsbsU9S2n8QH5hFEZJO4yZ5
+        yp8GdzGRgc1AHk7t7DD60UmLFSqOCfsXJza1GpGtauNVHkVJvJiQUeDviaHbb72Zouz31uRXC/4XE
+        B+bfmZC/bCU0vqPNw8dnGTB4G0skWpel5LUkS6Ua52Z/N1nKMNRb49n9vt5etsldL20AA2wC69Vmq
+        TVA2auLw==;
+Received: from [2001:4bb8:189:a74f:e8a5:5f73:6d2:23b8] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pqp4s-00FOtV-2G;
+        Mon, 24 Apr 2023 05:49:31 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: RFC: allow building a kernel without buffer_heads
+Date:   Mon, 24 Apr 2023 07:49:09 +0200
+Message-Id: <20230424054926.26927-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-From:   Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH v3 3/8] ext4: use __GFP_NOFAIL if allocating
- extents_status cannot fail
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20230412124126.2286716-1-libaokun1@huawei.com>
- <20230412124126.2286716-4-libaokun1@huawei.com>
- <20230413103004.a4hjlxgpfqnhcgtg@quack3>
-Content-Language: en-US
-In-Reply-To: <20230413103004.a4hjlxgpfqnhcgtg@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,61 +57,31 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/4/13 18:30, Jan Kara wrote:
-> On Wed 12-04-23 20:41:21, Baokun Li wrote:
->> If extent status tree update fails, we have inconsistency between what is
->> stored in the extent status tree and what is stored on disk. And that can
->> cause even data corruption issues in some cases.
->>
->> For extents that cannot be dropped we use __GFP_NOFAIL to allocate memory.
->> And with the above logic, the undo operation in __es_remove_extent that
->> may cause inconsistency if the split extent fails is unnecessary, so we
->> remove it as well.
->>
->> Suggested-by: Jan Kara<jack@suse.cz>
->> Signed-off-by: Baokun Li<libaokun1@huawei.com>
-> When I was looking through this patch, I've realized there's a problem with
-> my plan :-|. See below...
->
->>   static struct extent_status *
->>   ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
->> -		     ext4_fsblk_t pblk)
->> +		     ext4_fsblk_t pblk, int nofail)
->>   {
->>   	struct extent_status *es;
->> -	es = kmem_cache_alloc(ext4_es_cachep, GFP_ATOMIC);
->> +	gfp_t gfp_flags = GFP_ATOMIC;
->> +
->> +	if (nofail)
->> +		gfp_flags |= __GFP_NOFAIL;
->> +
->> +	es = kmem_cache_alloc(ext4_es_cachep, gfp_flags);
->>   	if (es == NULL)
->>   		return NULL;
-> I have remembered that the combination of GFP_ATOMIC and GFP_NOFAIL is
-> discouraged because the kernel has no sane way of refilling reserves for
-> atomic allocations when in atomic context. So this combination can result
-> in lockups.
+Hi all,
 
-Indeed. GFP_NOFAIL is only applicable to sleepable allocations,
+after all the talk about removing buffer_heads, here is a series that
+shows how to build a kernel without buffer_heads.  And how unrealistic
+it is to remove the entirely.
 
-GFP_ATOMIC will ignore it. I didn't notice that.
+Most of the series refactors some common code to make implementing direct
+I/O easier without use of the ->direct_IO method and the helpers based
+around it.  It then switches buffered writes (but not writeback) for
+block devices to use iomap unconditionally, but still using buffer_heads.
 
-> So what I think we'll have to do is that we'll just have to return error
-> from __es_insert_extent() and __es_remove_extent() and in the callers we
-> drop the i_es_lock, allocate needed status entries (one or two depending on
-> the desired operation) with GFP_KERNEL | GFP_NOFAIL, get the lock again and
-> pass the preallocated entries into __es_insert_extent /
-> __es_remove_extent(). It's a bit ugly but we can at least remove those
-> __es_shrink() calls which are not pretty either.
->
-> 								Honza
+The final patch then adds a CONFIG_BUFFER_HEAD selected by all file
+systems that need it (which is most block based file systems), makes the
+buffer_head support in iomap optional, and adds an alternative
+implementation of the block device address_operations using iomap.
 
-Yes, there's really no better way, thank you very much for your review!
-I've sent a patch for v4 as you suggested.
-Thanks again!
+With this you can build a kernel with block device support, but without
+buffer_heads.  This kernel supports xfs and btrfs as full blown block
+based filesystems, and a bunch of read-only ones like cramfs, erofs and
+squashfs.  Note that the md software raid drivers is also disabled as it
+has some (rather questionable) buffer_head usage in the unconditionally
+built bitmap code.
 
--- 
-With Best Regards,
-Baokun Li
-.
+The series is based on Linux 6.3 and will need some rebasing before it
+can be fed to the maintainers incrementally.  All but the last patch
+definitively seem useful for me.  The last one I think is just to avoid
+introducing new buffer_head dependencies, even if I suspect the real
+life usefulness of a !CONFIG_BUFFER_HEAD kernel might be rather limited.
