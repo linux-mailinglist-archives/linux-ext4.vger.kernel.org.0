@@ -2,211 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE336ED4E5
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 20:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DDE6ED544
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 21:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbjDXS4F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Apr 2023 14:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S231993AbjDXTWj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Apr 2023 15:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjDXSz7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 14:55:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509D0900C
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 11:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682362511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cC2m6cj4by0ic+ocHcPEbRFoxwEEiKQQoS0Ge1Avf1U=;
-        b=JMK2mwKmD1wcRlKtYqYl0AzWNCF8UMQLJEacoyPNSuZpjBUwEh5SFvj8HTp5yfvJo2j+Uh
-        mGAs6WZ8OTEw0e2g2QDsO4q/0+a2jIeH4PRQHRSZ0ypP7t+fjGU33hQ8Xa7U6GfzQHAYpt
-        nuMz++cKZxB5wGac/vbNBZWSjCJfOOU=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-507--NQnPkvZPX2vEdoaQQsVWQ-1; Mon, 24 Apr 2023 14:55:09 -0400
-X-MC-Unique: -NQnPkvZPX2vEdoaQQsVWQ-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2473f8329f7so4730876a91.1
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 11:55:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682362508; x=1684954508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cC2m6cj4by0ic+ocHcPEbRFoxwEEiKQQoS0Ge1Avf1U=;
-        b=KO+u+J2yMtuI6eGzhRedqqCwa4izv8yuun6eGSmrGl4mZnI4I33hYmqCIkah0B14wF
-         +KWuQu26vLWGrBGSlvQKQhOMpd9eNv/h6Hprk8VWShMEPX+FgLzvdh8ZvIAP9y9d+11+
-         XCmoAYYTAHTpuWlzxLTZC6U7Ld59ety9IsxsSoAuVN7FX9UuIgO/d3cckHJcEZKrfJrM
-         Z1pz/uEC88nbSFxGJcxsqDLv9GE8XREguGsp2JTZ4jqngveOGmf/0RlpbQe4bl+h29Ur
-         BF4qzXsdVaRqVjvNYfpVLMmJ7WiADlHP7cHucN63uW5aqL29KQAwMCF3gHy5W5EPfhgB
-         qwTQ==
-X-Gm-Message-State: AAQBX9cjApA5fuzzpD2yVa6zWdkvfdZ2BG7aX+LIwDxxiogfmy2ykf7u
-        BCmqNB9cUNYfxfjrx6VqxJCFmNq9sYS+5DFvUUPpti0UvZ+Qto6nD+jaLqW4wv+z4u6oUFuiIlG
-        yM4cBzGj9UJkPlsjyUqnB/EC3G18Ejywp+jUZ5A==
-X-Received: by 2002:a17:90b:3a8d:b0:23e:f855:79ed with SMTP id om13-20020a17090b3a8d00b0023ef85579edmr14646835pjb.28.1682362508597;
-        Mon, 24 Apr 2023 11:55:08 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bw6UUmfa7x2kgzI/S3M36kQcMIx/LORGs9afdrTUJulizrDq8UK+lWvA5A9k5nXONeKEERR5M4Fbn0vBOkkLM=
-X-Received: by 2002:a17:90b:3a8d:b0:23e:f855:79ed with SMTP id
- om13-20020a17090b3a8d00b0023ef85579edmr14646811pjb.28.1682362508271; Mon, 24
- Apr 2023 11:55:08 -0700 (PDT)
+        with ESMTP id S231967AbjDXTWi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 15:22:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06C5D1;
+        Mon, 24 Apr 2023 12:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=nrJOvD5ki07BgC1+m6zA5u3PXXHEIqqCNZygV4WG4uU=; b=jnaw2GVRUGJ3XgLDcnTm28/EGW
+        I2c3SbIfk7aZCwr+R62bxYgluHATBsXpKHRc3Kd6eZ7X7q4C2PFIRnKN2s2rlLjl0PYv4/SHsIN/P
+        Rj2zV9EqLlkLs/pB1Tdm+dvzQqZ3dxlb0SloO08wS4cUh9bmguHSZK/++Sq79+k4zzVbiIuZ6QX0S
+        G/8MCyWL3hZerN11vkKzieKj7slIpAxQGdYJVp+7U764B2QvlYl7+o1DeyOxzKUG+7D0WMFdPQDdQ
+        HSq8SrEJKQQidA3dpPqgpftvseREm3IU//74IrRNpeEcmqw1SOz1YOqefNqU0PC23jpEwwctyAAtq
+        26XseFOA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pr1lf-00H3HP-0y;
+        Mon, 24 Apr 2023 19:22:31 +0000
+Message-ID: <5f30b56e-b46b-1d3f-75fb-7f30ff6ca3e9@infradead.org>
+Date:   Mon, 24 Apr 2023 12:22:30 -0700
 MIME-Version: 1.0
-References: <20230424054926.26927-1-hch@lst.de> <20230424054926.26927-6-hch@lst.de>
-In-Reply-To: <20230424054926.26927-6-hch@lst.de>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 24 Apr 2023 20:54:56 +0200
-Message-ID: <CAHc6FU7tuLJk1JEHdmK7VmEuvuG2sMg1=D9qYJAuhn2ES4NFAA@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH 05/17] filemap: update ki_pos in generic_perform_write
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-nfs@vger.kernel.org, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 02/17] fs: remove the special !CONFIG_BLOCK def_blk_fops
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, ceph-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230424054926.26927-1-hch@lst.de>
+ <20230424054926.26927-3-hch@lst.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230424054926.26927-3-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 8:22=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
-e:
-> All callers of generic_perform_write need to updated ki_pos, move it into
-> common code.
+Hi,
 
-We've actually got a similar situation with
-iomap_file_buffered_write() and its callers. Would it make sense to
-fix that up as well?
-
+On 4/23/23 22:49, Christoph Hellwig wrote:
+> def_blk_fops always returns -ENODEV, which dosn't match the return value
+> of a non-existing block device with CONFIG_BLOCK, which is -ENXIO.
+> Just remove the extra implementation and fall back to the default
+> no_open_fops that always returns -ENXIO.
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  fs/ceph/file.c | 2 --
->  fs/ext4/file.c | 9 +++------
->  fs/f2fs/file.c | 1 -
->  fs/nfs/file.c  | 1 -
->  mm/filemap.c   | 8 ++++----
->  5 files changed, 7 insertions(+), 14 deletions(-)
->
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index f4d8bf7dec88a8..feeb9882ef635a 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -1894,8 +1894,6 @@ static ssize_t ceph_write_iter(struct kiocb *iocb, =
-struct iov_iter *from)
->                  * can not run at the same time
->                  */
->                 written =3D generic_perform_write(iocb, from);
-> -               if (likely(written >=3D 0))
-> -                       iocb->ki_pos =3D pos + written;
->                 ceph_end_io_write(inode);
->         }
->
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 0b8b4499e5ca18..1026acaf1235a0 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -291,12 +291,9 @@ static ssize_t ext4_buffered_write_iter(struct kiocb=
- *iocb,
->
->  out:
->         inode_unlock(inode);
-> -       if (likely(ret > 0)) {
-> -               iocb->ki_pos +=3D ret;
-> -               ret =3D generic_write_sync(iocb, ret);
-> -       }
+>  fs/Makefile   | 10 ++--------
+>  fs/inode.c    |  3 ++-
+>  fs/no-block.c | 19 -------------------
+>  3 files changed, 4 insertions(+), 28 deletions(-)
+>  delete mode 100644 fs/no-block.c
+> 
+> diff --git a/fs/Makefile b/fs/Makefile
+> index 05f89b5c962f88..da21e7d0a1cf37 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -18,14 +18,8 @@ obj-y :=	open.o read_write.o file_table.o super.o \
+>  		fs_types.o fs_context.o fs_parser.o fsopen.o init.o \
+>  		kernel_read_file.o mnt_idmapping.o remap_range.o
+>  
+> -ifeq ($(CONFIG_BLOCK),y)
+> -obj-y +=	buffer.o mpage.o
+> -else
+> -obj-y +=	no-block.o
+> -endif
 > -
-> -       return ret;
-> +       if (unlikely(ret <=3D 0))
-> +               return ret;
-> +       return generic_write_sync(iocb, ret);
->  }
->
->  static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t o=
-ffset,
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index f4ab23efcf85f8..5a9ae054b6da7d 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -4511,7 +4511,6 @@ static ssize_t f2fs_buffered_write_iter(struct kioc=
-b *iocb,
->         current->backing_dev_info =3D NULL;
->
->         if (ret > 0) {
-> -               iocb->ki_pos +=3D ret;
->                 f2fs_update_iostat(F2FS_I_SB(inode), inode,
->                                                 APP_BUFFERED_IO, ret);
->         }
-> diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-> index 893625eacab9fa..abdae2b29369be 100644
-> --- a/fs/nfs/file.c
-> +++ b/fs/nfs/file.c
-> @@ -666,7 +666,6 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov=
-_iter *from)
->                 goto out;
->
->         written =3D result;
-> -       iocb->ki_pos +=3D written;
->         nfs_add_stats(inode, NFSIOS_NORMALWRITTENBYTES, written);
->
->         if (mntflags & NFS_MOUNT_WRITE_EAGER) {
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 2723104cc06a12..0110bde3708b3f 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3960,7 +3960,10 @@ ssize_t generic_perform_write(struct kiocb *iocb, =
-struct iov_iter *i)
->                 balance_dirty_pages_ratelimited(mapping);
->         } while (iov_iter_count(i));
->
-> -       return written ? written : status;
-> +       if (!written)
-> +               return status;
-> +       iocb->ki_pos +=3D written;
+> -obj-$(CONFIG_PROC_FS) += proc_namespace.o
+> -
+> +obj-$(CONFIG_BLOCK)		+= buffer.o mpage.o
+> +obj-$(CONFIG_PROC_FS)		+= proc_namespace.o
+>  obj-$(CONFIG_LEGACY_DIRECT_IO)	+= direct-io.o
+>  obj-y				+= notify/
+>  obj-$(CONFIG_EPOLL)		+= eventpoll.o
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 4558dc2f135573..d43f07f146eb73 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2265,7 +2265,8 @@ void init_special_inode(struct inode *inode, umode_t mode, dev_t rdev)
+>  		inode->i_fop = &def_chr_fops;
+>  		inode->i_rdev = rdev;
+>  	} else if (S_ISBLK(mode)) {
+> -		inode->i_fop = &def_blk_fops;
+> +		if (IS_ENABLED(CONFIG_BLOCK))
+> +			inode->i_fop = &def_blk_fops;
 
-Could be turned into:
-iocb->ki_pos =3D pos;
+It looks like def_blk_fops is being removed (commit message and patch
+fragment below), but here (above line) it is being used.
 
-> +       return written;
->  }
->  EXPORT_SYMBOL(generic_perform_write);
->
-> @@ -4039,7 +4042,6 @@ ssize_t __generic_file_write_iter(struct kiocb *ioc=
-b, struct iov_iter *from)
->                 endbyte =3D pos + status - 1;
->                 err =3D filemap_write_and_wait_range(mapping, pos, endbyt=
-e);
->                 if (err =3D=3D 0) {
-> -                       iocb->ki_pos =3D endbyte + 1;
->                         written +=3D status;
->                         invalidate_mapping_pages(mapping,
->                                                  pos >> PAGE_SHIFT,
-> @@ -4052,8 +4054,6 @@ ssize_t __generic_file_write_iter(struct kiocb *ioc=
-b, struct iov_iter *from)
->                 }
->         } else {
->                 written =3D generic_perform_write(iocb, from);
-> -               if (likely(written > 0))
-> -                       iocb->ki_pos +=3D written;
->         }
->  out:
->         current->backing_dev_info =3D NULL;
-> --
-> 2.39.2
->
+Am I just confused?
 
-Thanks,
-Andreas
+>  		inode->i_rdev = rdev;
+>  	} else if (S_ISFIFO(mode))
+>  		inode->i_fop = &pipefifo_fops;
+> diff --git a/fs/no-block.c b/fs/no-block.c
+> deleted file mode 100644
+> index 481c0f0ab4bd2c..00000000000000
+> --- a/fs/no-block.c
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> -/* no-block.c: implementation of routines required for non-BLOCK configuration
+> - *
+> - * Copyright (C) 2006 Red Hat, Inc. All Rights Reserved.
+> - * Written by David Howells (dhowells@redhat.com)
+> - */
+> -
+> -#include <linux/kernel.h>
+> -#include <linux/fs.h>
+> -
+> -static int no_blkdev_open(struct inode * inode, struct file * filp)
+> -{
+> -	return -ENODEV;
+> -}
+> -
+> -const struct file_operations def_blk_fops = {
+> -	.open		= no_blkdev_open,
+> -	.llseek		= noop_llseek,
+> -};
 
+-- 
+~Randy
