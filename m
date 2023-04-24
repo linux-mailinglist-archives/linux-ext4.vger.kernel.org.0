@@ -2,217 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8466EC797
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 10:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D7B6EC7D4
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 10:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjDXIG5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Apr 2023 04:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        id S231418AbjDXIZ1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Apr 2023 04:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbjDXIG4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 04:06:56 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F7010E7;
-        Mon, 24 Apr 2023 01:06:52 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Q4d53291Qz4f3jHn;
-        Mon, 24 Apr 2023 16:06:47 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP1 (Coremail) with SMTP id cCh0CgC3Iy6COEZkIzs8Hg--.48872S2;
-        Mon, 24 Apr 2023 16:06:47 +0800 (CST)
-Subject: Re: [PATCH v3 00/19] Fixes, cleanups and unit test for mballoc
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230417110617.2664129-1-shikemeng@huaweicloud.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <70123070-4901-1e00-298f-80ea2df18096@huaweicloud.com>
-Date:   Mon, 24 Apr 2023 16:06:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S231225AbjDXIZY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 04:25:24 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58D310F3
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 01:25:15 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4efd5e4d302so4117e87.0
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 01:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682324713; x=1684916713;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=j18LTPw/0ZiwBV/EQmierqo28H2NNyEAjpLUZMbxn80=;
+        b=CesUfe+p8d0dkEmrufChgURYmQzPVsRKB6Z1zq/0m7jQFerLN1vm3sKO5u2K/rl8sJ
+         753Xb1kwNpqsBLPPmYoA5D+gusVtmDUbYgFOfDLoue7QdZQWNHon9ozJTA5RjVwFMkRL
+         AnIoCuhdETOi2d3M+DoGmCRI0qslU+tTb1mfNS7drK8UaW9VeLrCnkq4Fqi2j5alos/A
+         IZikzBkRNKNvM0btTwz4vgI7z6JQ0rR5oqbZStxatygVFvg2zG7l8lGwK2GYsyt17272
+         RWCij0rqF2sPbmgGniN/jpu8ahpeTEhNwAAwPrUPETEnOkOGoHjSz5eh3iai5awtX9jQ
+         I5Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682324713; x=1684916713;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j18LTPw/0ZiwBV/EQmierqo28H2NNyEAjpLUZMbxn80=;
+        b=lGijNKKW0h6t8fwEuuCi0Zh+Ao6d88meUxE2NcMawJJ/z/FAH0SRDhD/lBizzfhE5p
+         DCDd18dJaQAUFrnLjXjVuKMxk3P46Jmd16bOm7KZevARJSJ7CcXhEllBPJLkcc6L95tM
+         /NFTUgBkKr6TbTiHdr6TvdG9EBeKHwXuf/w+gatZU59QdXS1NJMDcWTdsDd79OqXGGh1
+         +MkrsmkI4D/XxrMSTrBIPWpsrMyTRdK3mV7tIKtowRyemirPpuzF/RHbldfvOin/YYSp
+         GSmdpAuRKETf8N5+EFZOpdR3lFiPDkfgoy/nxc8tvFOmdC1JuVTPhkV/7heaLbQnt9oS
+         lMVg==
+X-Gm-Message-State: AAQBX9d7LQDLznXmmYlm+VIX24X3VniPue+FZhBVutfTOdL40bafxPl1
+        gDcBBzm3wBoL5RWNm6hlrtxp9AXbyw8G0s3MTYbf9w==
+X-Google-Smtp-Source: AKy350a4MUjUHwoBfxED2Pw4cqUKPKubA2JMVCH1vFSwww8z8PN8W5VV4psZGKlLDpTHBQR/gqh8epDpYPGCETmVnoc=
+X-Received: by 2002:a05:6512:239b:b0:4ea:e5e2:c893 with SMTP id
+ c27-20020a056512239b00b004eae5e2c893mr151496lfv.1.1682324713337; Mon, 24 Apr
+ 2023 01:25:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230417110617.2664129-1-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: cCh0CgC3Iy6COEZkIzs8Hg--.48872S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrykJFykXr1kCrWUKw4fuFg_yoWxtFW7pr
-        sFkrn8Kr1xJr1qya93C3y3W3WxCw48A3W7GrySg348uFy3Jr92yFn7KayY9asrGr4DZFya
-        vF1UCFWrCF4v9a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000b9915d05f9d98bdd@google.com> <CACT4Y+a3J0Z2PThebH6UaUWchKLWec8qApuv1ezYGKjf67Xctg@mail.gmail.com>
+ <ZEKko6U2MxfkXgs5@casper.infradead.org> <13d484d3-d573-cd82-fff0-a35e27b8451e@oracle.com>
+ <20230424-frucht-beneiden-83a8083a973b@brauner>
+In-Reply-To: <20230424-frucht-beneiden-83a8083a973b@brauner>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 24 Apr 2023 10:25:00 +0200
+Message-ID: <CACT4Y+b+4pFtZQxXZLVF8e0OKcEEYgLo+5ExAg_iKZFVERcXrw@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] [mm?] KCSAN: data-race in strscpy / strscpy (3)
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        syzbot <syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, tytso@mit.edu,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Friendly ping...
+On Mon, 24 Apr 2023 at 09:59, Christian Brauner <brauner@kernel.org> wrote:
+>
+> On Fri, Apr 21, 2023 at 12:40:45PM -0500, Mike Christie wrote:
+> > cc'ing Christian, because I might have fixed this with a patch in
+> > his tree.
+> >
+> > On 4/21/23 9:58 AM, Matthew Wilcox wrote:
+> > > I'm not sure how it is that bpf is able to see the task before comm is
+> > > initialised; that seems to be the real race here, that comm is not set
+> > > before the kthread is a schedulable entity?  Adding the scheduler people.
+> > >
+> > >>> ==================================================================
+> > >>> BUG: KCSAN: data-race in strscpy / strscpy
+> > >>>
+> > >>> write to 0xffff88812ed8b730 of 8 bytes by task 16157 on cpu 1:
+> > >>>  strscpy+0xa9/0x170 lib/string.c:165
+> > >>>  strscpy_pad+0x27/0x80 lib/string_helpers.c:835
+> > >>>  __set_task_comm+0x46/0x140 fs/exec.c:1232
+> > >>>  set_task_comm include/linux/sched.h:1984 [inline]
+> > >>>  __kthread_create_on_node+0x2b2/0x320 kernel/kthread.c:474
+> > >>>  kthread_create_on_node+0x8a/0xb0 kernel/kthread.c:512
+> > >>>  ext4_run_lazyinit_thread fs/ext4/super.c:3848 [inline]
+> > >>>  ext4_register_li_request+0x407/0x650 fs/ext4/super.c:3983
+> > >>>  __ext4_fill_super fs/ext4/super.c:5480 [inline]
+> > >>>  ext4_fill_super+0x3f4a/0x43f0 fs/ext4/super.c:5637
+> > >>>  get_tree_bdev+0x2b1/0x3a0 fs/super.c:1303
+> > >>>  ext4_get_tree+0x1c/0x20 fs/ext4/super.c:5668
+> > >>>  vfs_get_tree+0x51/0x190 fs/super.c:1510
+> > >>>  do_new_mount+0x200/0x650 fs/namespace.c:3042
+> > >>>  path_mount+0x498/0xb40 fs/namespace.c:3372
+> > >>>  do_mount fs/namespace.c:3385 [inline]
+> > >>>  __do_sys_mount fs/namespace.c:3594 [inline]
+> > >>>  __se_sys_mount+0x27f/0x2d0 fs/namespace.c:3571
+> > >>>  __x64_sys_mount+0x67/0x80 fs/namespace.c:3571
+> > >>>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >>>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+> > >>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >>>
+> > >>> read to 0xffff88812ed8b733 of 1 bytes by task 16161 on cpu 0:
+> > >>>  strscpy+0xde/0x170 lib/string.c:174
+> > >>>  ____bpf_get_current_comm kernel/bpf/helpers.c:260 [inline]
+> > >>>  bpf_get_current_comm+0x45/0x70 kernel/bpf/helpers.c:252
+> > >>>  ___bpf_prog_run+0x281/0x3050 kernel/bpf/core.c:1822
+> > >>>  __bpf_prog_run32+0x74/0xa0 kernel/bpf/core.c:2043
+> > >>>  bpf_dispatcher_nop_func include/linux/bpf.h:1124 [inline]
+> > >>>  __bpf_prog_run include/linux/filter.h:601 [inline]
+> > >>>  bpf_prog_run include/linux/filter.h:608 [inline]
+> > >>>  __bpf_trace_run kernel/trace/bpf_trace.c:2263 [inline]
+> > >>>  bpf_trace_run4+0x9f/0x140 kernel/trace/bpf_trace.c:2304
+> > >>>  __traceiter_sched_switch+0x3a/0x50 include/trace/events/sched.h:222
+> > >>>  trace_sched_switch include/trace/events/sched.h:222 [inline]
+> > >>>  __schedule+0x7e7/0x8e0 kernel/sched/core.c:6622
+> > >>>  schedule+0x51/0x80 kernel/sched/core.c:6701
+> > >>>  schedule_preempt_disabled+0x10/0x20 kernel/sched/core.c:6760
+> > >>>  kthread+0x11c/0x1e0 kernel/kthread.c:369
+> > >>>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+> > >>>
+> >
+> >
+> > I didn't see the beginning of this thread and I think the part of the
+> > sysbot report that lists the patches/trees being used got cut off so
+> > I'm not 100% sure what's in the kernel.
+> >
+> > In Linus's current tree we do set_task_comm in __kthread_create_on_node
+> > after waiting on the kthread_create_info completion which is completed by
+> > threadd(). At this time, kthread() has already done the complete() on the
+> > kthread_create_info completion and started to run the threadfn function and
+> > that could be running. So we can hit the race that way.
+> >
+> >
+> > In linux next, from
+> > https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=kernel.user_worker
+> > we have:
+> >
+> > commit cf587db2ee0261c74d04f61f39783db88a0b65e4
+> > Author: Mike Christie <michael.christie@oracle.com>
+> > Date:   Fri Mar 10 16:03:23 2023 -0600
+> >
+> >     kernel: Allow a kernel thread's name to be set in copy_process
+> >
+> > and so now copy_process() sets the name before the taskfn is started, so we
+> > shouldn't hit any races like above.
+>
+> Yeah, that looks like it should fix it.
+>
+> Afaict, this has no reproducer so there's no point in letting syzbot
+> test on this. I've sent the pull request for the kernel user worker
+> series on Friday. So I guess we'll see whether it's reproducible on
+> v6.4-rc1.
 
-on 4/17/2023 7:05 PM, Kemeng Shi wrote:
-> v2->v3:
-> 1. Make patches on new branch head and fix conflic on "ext4: add
-> EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated"
-> 2. Fix build warnings on "ext4: add some kunit stub for mballoc kunit
-> test" and "ext4: add first unit test for ext4_mb_new_blocks_simple in
-> mballoc"
-> 
-> There are three parts in this patchset:
-> Part1: Patch 1-7 is v2 of sent series
-> v1->v2:
-> 1. collect reviewed-by from Ojaswin. Only "ext4: add
-> EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated" needs futher
-> review. See [1] for previous comments.
-> 2. drop "ext4: fix wrong unit use in ext4_mb_new_inode_pa" which is
-> already done in [2].
-> 
-> Part2: Patch 8-17 are more fixes and cleanups to mballoc
-> Some patches in this part will be conflict with patches in part1, so
-> append new patches in this series instead of creating a new one.
-> Patch 8-11 are some random fixes and cleanups, see respective log
-> message for detail.
-> Patch 12-17 factor out codes to mark bit in group is used or free
-> which will update on disk block bitmap and group descriptor. Several
-> reasons to do this:
-> 1. pair behavior of alloc/free bits. For example,
-> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
-> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
-> 2. remove repeat code to read from disk, update and write back to disk.
-> 3. reduce future unit test mocks to avoid real IO to update structure
-> on disk.
-> 
-> Part3: Patch 18-19 add one unit test for mballoc
-> Patch 18 add mocks to functions which will issue IO to disk.
-> Patch 19 add unit test for ext4_mb_new_blocks_simple in mballoc.
-> Details can be found in respective log message.
-> 
-> Before add more unit tests, there are something should be discussed:
-> 1. How to test static function in mballoc.c
-> Currently, include mballoc-test.c in mballoc.c to test static function
-> in mballoc.c from mballoc-test.c which is one way suggested in [3].
-> Not sure if there is any more elegant way to test static function without
-> touch mballoc.c.
-> 2. How to add mocks to function in mballoc.c which may issue IO to disk
-> Currently, KUNIT_STATIC_STUB_REDIRECT is added to functions as suggested
-> in kunit document [4].
-> 3. How to simulate a block bitmap.
-> Currently, a fake buffer_head with bitmap data is returned, then no
-> futher change is needed.
-> If we simulate a block bitmap with an array of data structure like:
-> struct test_bitmap {
->        unsigned int	start;
->        unsigned int	len;
-> }
-> which is suggested by Theodore in [5], then we need to add mocks to
-> function which expected bitmap from bitmap_bh->b_data, like
-> mb_find_next_bit, mb_find_next_zero_bit and maybe more.
-> 
-> Would like to hear any suggestion! Thanks!
-> 
-> [1]
-> https://lore.kernel.org/linux-ext4/ZC3MoWn2UO6p+Swp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
-> [2]
-> https://lore.kernel.org/linux-ext4/9b35f3955a1d7b66bbd713eca1e63026e01f78c1.1679731817.git.ojaswin@linux.ibm.com
-> [3]
-> https://docs.kernel.org/dev-tools/kunit/usage.html#testing-static-functions
-> [4]
-> https://docs.kernel.org/dev-tools/kunit/api/functionredirection.html#c.KUNIT_STATIC_STUB_REDIRECT
-> [5]
-> https://lore.kernel.org/linux-ext4/20230317155047.GB3270589@mit.edu/
-> 
-> By the way, the "xfstest somke" passes. Please let me know if any more
-> test is needed.
-> Unit test result is as followings:
-> # ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig --raw_output
-> [18:44:39] Configuring KUnit Kernel ...
-> [18:44:39] Building KUnit Kernel ...
-> Populating config with:
-> $ make ARCH=um O=.kunit olddefconfig
-> Building with:
-> $ make ARCH=um O=.kunit --jobs=88
-> [18:44:47] Starting KUnit Kernel (1/1)...
-> KTAP version 1
-> 1..2
->     KTAP version 1
->     # Subtest: ext4_mballoc_test
->     1..1
->     ok 1 test_new_blocks_simple
-> ok 1 ext4_mballoc_test
->     KTAP version 1
->     # Subtest: ext4_inode_test
->     1..1
->         KTAP version 1
->         # Subtest: inode_test_xtimestamp_decoding
->         ok 1 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
->         ok 2 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
->         ok 3 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
->         ok 4 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
->         ok 5 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
->         ok 6 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
->         ok 7 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
->         ok 8 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
->         ok 9 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
->         ok 10 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
->         ok 11 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
->         ok 12 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
->         ok 13 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
->         ok 14 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
->         ok 15 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
->         ok 16 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
->     # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
->     ok 1 inode_test_xtimestamp_decoding
-> # Totals: pass:16 fail:0 skip:0 total:16
-> ok 2 ext4_inode_test
-> [18:44:48] Elapsed time: 8.602s total, 0.001s configuring, 8.483s building, 0.072s running
-> 
-> 
-> Kemeng Shi (19):
->   ext4: fix wrong unit use in ext4_mb_normalize_request
->   ext4: fix unit mismatch in ext4_mb_new_blocks_simple
->   ext4: fix wrong unit use in ext4_mb_find_by_goal
->   ext4: treat stripe in block unit
->   ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
->   ext4: remove ext4_block_group and ext4_block_group_offset declaration
->   ext4: try all groups in ext4_mb_new_blocks_simple
->   ext4: get block from bh before pass it to ext4_free_blocks_simple in
->     ext4_free_blocks
->   ext4: remove unsed parameter and unnecessary forward declaration of
->     ext4_mb_new_blocks_simple
->   ext4: fix wrong unit use in ext4_mb_clear_bb
->   ext4: fix wrong unit use in ext4_mb_new_blocks
->   ext4: factor out codes to update block bitmap and group descriptor on
->     disk from ext4_mb_mark_bb
->   ext4: call ext4_mb_mark_group_bb in ext4_free_blocks_simple
->   ext4: extent ext4_mb_mark_group_bb to support allocation under journal
->   ext4: call ext4_mb_mark_group_bb in ext4_mb_mark_diskspace_used
->   ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
->   ext4: call ext4_mb_mark_group_bb in ext4_group_add_blocks
->   ext4: add some kunit stub for mballoc kunit test
->   ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
-> 
->  fs/ext4/balloc.c       |  16 +
->  fs/ext4/ext4.h         |   4 -
->  fs/ext4/mballoc-test.c | 323 +++++++++++++++++++
->  fs/ext4/mballoc.c      | 704 +++++++++++++++++++----------------------
->  fs/ext4/super.c        |  13 +
->  5 files changed, 671 insertions(+), 389 deletions(-)
->  create mode 100644 fs/ext4/mballoc-test.c
-> 
+To see if it still happens to tell syzbot about the fix, then it will
+remind if it still happens with the fix or not. Otherwise everybody
+will forget about this tomorrow ;)
 
--- 
-Best wishes
-Kemeng Shi
+#syz fix: kernel: Allow a kernel thread's name to be set in copy_process
 
+Btw, a similar race will still be possible b/c it's possible to change
+the name at any point by writing to /proc/self/task/[tid]/comm. But I
+am not sure how provably dangerous it will be and there is a different
+attitude towards fixing races proactively for different kernel
+subsystems, so we will probably not report it.
