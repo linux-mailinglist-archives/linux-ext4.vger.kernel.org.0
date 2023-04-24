@@ -2,183 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D7B6EC7D4
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 10:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741CF6EC8EB
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Apr 2023 11:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjDXIZ1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Apr 2023 04:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S229476AbjDXJcr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Apr 2023 05:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjDXIZY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 04:25:24 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58D310F3
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 01:25:15 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4efd5e4d302so4117e87.0
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 01:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682324713; x=1684916713;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=j18LTPw/0ZiwBV/EQmierqo28H2NNyEAjpLUZMbxn80=;
-        b=CesUfe+p8d0dkEmrufChgURYmQzPVsRKB6Z1zq/0m7jQFerLN1vm3sKO5u2K/rl8sJ
-         753Xb1kwNpqsBLPPmYoA5D+gusVtmDUbYgFOfDLoue7QdZQWNHon9ozJTA5RjVwFMkRL
-         AnIoCuhdETOi2d3M+DoGmCRI0qslU+tTb1mfNS7drK8UaW9VeLrCnkq4Fqi2j5alos/A
-         IZikzBkRNKNvM0btTwz4vgI7z6JQ0rR5oqbZStxatygVFvg2zG7l8lGwK2GYsyt17272
-         RWCij0rqF2sPbmgGniN/jpu8ahpeTEhNwAAwPrUPETEnOkOGoHjSz5eh3iai5awtX9jQ
-         I5Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682324713; x=1684916713;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j18LTPw/0ZiwBV/EQmierqo28H2NNyEAjpLUZMbxn80=;
-        b=lGijNKKW0h6t8fwEuuCi0Zh+Ao6d88meUxE2NcMawJJ/z/FAH0SRDhD/lBizzfhE5p
-         DCDd18dJaQAUFrnLjXjVuKMxk3P46Jmd16bOm7KZevARJSJ7CcXhEllBPJLkcc6L95tM
-         /NFTUgBkKr6TbTiHdr6TvdG9EBeKHwXuf/w+gatZU59QdXS1NJMDcWTdsDd79OqXGGh1
-         +MkrsmkI4D/XxrMSTrBIPWpsrMyTRdK3mV7tIKtowRyemirPpuzF/RHbldfvOin/YYSp
-         GSmdpAuRKETf8N5+EFZOpdR3lFiPDkfgoy/nxc8tvFOmdC1JuVTPhkV/7heaLbQnt9oS
-         lMVg==
-X-Gm-Message-State: AAQBX9d7LQDLznXmmYlm+VIX24X3VniPue+FZhBVutfTOdL40bafxPl1
-        gDcBBzm3wBoL5RWNm6hlrtxp9AXbyw8G0s3MTYbf9w==
-X-Google-Smtp-Source: AKy350a4MUjUHwoBfxED2Pw4cqUKPKubA2JMVCH1vFSwww8z8PN8W5VV4psZGKlLDpTHBQR/gqh8epDpYPGCETmVnoc=
-X-Received: by 2002:a05:6512:239b:b0:4ea:e5e2:c893 with SMTP id
- c27-20020a056512239b00b004eae5e2c893mr151496lfv.1.1682324713337; Mon, 24 Apr
- 2023 01:25:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000b9915d05f9d98bdd@google.com> <CACT4Y+a3J0Z2PThebH6UaUWchKLWec8qApuv1ezYGKjf67Xctg@mail.gmail.com>
- <ZEKko6U2MxfkXgs5@casper.infradead.org> <13d484d3-d573-cd82-fff0-a35e27b8451e@oracle.com>
- <20230424-frucht-beneiden-83a8083a973b@brauner>
-In-Reply-To: <20230424-frucht-beneiden-83a8083a973b@brauner>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 24 Apr 2023 10:25:00 +0200
-Message-ID: <CACT4Y+b+4pFtZQxXZLVF8e0OKcEEYgLo+5ExAg_iKZFVERcXrw@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] [mm?] KCSAN: data-race in strscpy / strscpy (3)
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Mike Christie <michael.christie@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        syzbot <syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com, tytso@mit.edu,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
+        with ESMTP id S229565AbjDXJcq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Apr 2023 05:32:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07953E7C
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 02:32:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95CAD61F4F
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 09:32:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EE1F9C433D2
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Apr 2023 09:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682328762;
+        bh=AVMa9eSL3xozAALa7Sz/fXXH3grLmPAfjQutaxlwoSY=;
+        h=From:To:Subject:Date:From;
+        b=U6q37NC9DEAL3JywvLtCPlZr+RIJFdInPL4mH4fQVIEjg4vTx0wJwk+rEGIbaRgx2
+         EeRP2vcaOBL0KynDV5qZftuj9NDM+acD48wOF78GDfBfzVBmcZmSPr7vQ+GP74pXYR
+         vpeHqwtExF5p4Oe13npmVDoS67O7K9S7i/SaR/BRgxFizob7ZJ4QvAjP/oG4NuCdS0
+         X5Oy1gVQmonVpELQmkFlTEFv0854B06j5Oe7cMIasYDOLGi9UedljYQnKLoDYvVv98
+         Bc5RBbKpFEOGVWou79ry73T7PZdtR6qkero3P4SrN6wOYqiF72LCZPEBcKw82zW15j
+         fsdP5Y85zJzOw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id C6BBAC43143; Mon, 24 Apr 2023 09:32:41 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217363] New: jbd2: Data missing when reusing bh which is ready
+ to be submitted in checkpoint
+Date:   Mon, 24 Apr 2023 09:32:41 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: chengzhihao1@huawei.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression
+Message-ID: <bug-217363-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 24 Apr 2023 at 09:59, Christian Brauner <brauner@kernel.org> wrote:
->
-> On Fri, Apr 21, 2023 at 12:40:45PM -0500, Mike Christie wrote:
-> > cc'ing Christian, because I might have fixed this with a patch in
-> > his tree.
-> >
-> > On 4/21/23 9:58 AM, Matthew Wilcox wrote:
-> > > I'm not sure how it is that bpf is able to see the task before comm is
-> > > initialised; that seems to be the real race here, that comm is not set
-> > > before the kthread is a schedulable entity?  Adding the scheduler people.
-> > >
-> > >>> ==================================================================
-> > >>> BUG: KCSAN: data-race in strscpy / strscpy
-> > >>>
-> > >>> write to 0xffff88812ed8b730 of 8 bytes by task 16157 on cpu 1:
-> > >>>  strscpy+0xa9/0x170 lib/string.c:165
-> > >>>  strscpy_pad+0x27/0x80 lib/string_helpers.c:835
-> > >>>  __set_task_comm+0x46/0x140 fs/exec.c:1232
-> > >>>  set_task_comm include/linux/sched.h:1984 [inline]
-> > >>>  __kthread_create_on_node+0x2b2/0x320 kernel/kthread.c:474
-> > >>>  kthread_create_on_node+0x8a/0xb0 kernel/kthread.c:512
-> > >>>  ext4_run_lazyinit_thread fs/ext4/super.c:3848 [inline]
-> > >>>  ext4_register_li_request+0x407/0x650 fs/ext4/super.c:3983
-> > >>>  __ext4_fill_super fs/ext4/super.c:5480 [inline]
-> > >>>  ext4_fill_super+0x3f4a/0x43f0 fs/ext4/super.c:5637
-> > >>>  get_tree_bdev+0x2b1/0x3a0 fs/super.c:1303
-> > >>>  ext4_get_tree+0x1c/0x20 fs/ext4/super.c:5668
-> > >>>  vfs_get_tree+0x51/0x190 fs/super.c:1510
-> > >>>  do_new_mount+0x200/0x650 fs/namespace.c:3042
-> > >>>  path_mount+0x498/0xb40 fs/namespace.c:3372
-> > >>>  do_mount fs/namespace.c:3385 [inline]
-> > >>>  __do_sys_mount fs/namespace.c:3594 [inline]
-> > >>>  __se_sys_mount+0x27f/0x2d0 fs/namespace.c:3571
-> > >>>  __x64_sys_mount+0x67/0x80 fs/namespace.c:3571
-> > >>>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >>>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-> > >>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > >>>
-> > >>> read to 0xffff88812ed8b733 of 1 bytes by task 16161 on cpu 0:
-> > >>>  strscpy+0xde/0x170 lib/string.c:174
-> > >>>  ____bpf_get_current_comm kernel/bpf/helpers.c:260 [inline]
-> > >>>  bpf_get_current_comm+0x45/0x70 kernel/bpf/helpers.c:252
-> > >>>  ___bpf_prog_run+0x281/0x3050 kernel/bpf/core.c:1822
-> > >>>  __bpf_prog_run32+0x74/0xa0 kernel/bpf/core.c:2043
-> > >>>  bpf_dispatcher_nop_func include/linux/bpf.h:1124 [inline]
-> > >>>  __bpf_prog_run include/linux/filter.h:601 [inline]
-> > >>>  bpf_prog_run include/linux/filter.h:608 [inline]
-> > >>>  __bpf_trace_run kernel/trace/bpf_trace.c:2263 [inline]
-> > >>>  bpf_trace_run4+0x9f/0x140 kernel/trace/bpf_trace.c:2304
-> > >>>  __traceiter_sched_switch+0x3a/0x50 include/trace/events/sched.h:222
-> > >>>  trace_sched_switch include/trace/events/sched.h:222 [inline]
-> > >>>  __schedule+0x7e7/0x8e0 kernel/sched/core.c:6622
-> > >>>  schedule+0x51/0x80 kernel/sched/core.c:6701
-> > >>>  schedule_preempt_disabled+0x10/0x20 kernel/sched/core.c:6760
-> > >>>  kthread+0x11c/0x1e0 kernel/kthread.c:369
-> > >>>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-> > >>>
-> >
-> >
-> > I didn't see the beginning of this thread and I think the part of the
-> > sysbot report that lists the patches/trees being used got cut off so
-> > I'm not 100% sure what's in the kernel.
-> >
-> > In Linus's current tree we do set_task_comm in __kthread_create_on_node
-> > after waiting on the kthread_create_info completion which is completed by
-> > threadd(). At this time, kthread() has already done the complete() on the
-> > kthread_create_info completion and started to run the threadfn function and
-> > that could be running. So we can hit the race that way.
-> >
-> >
-> > In linux next, from
-> > https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=kernel.user_worker
-> > we have:
-> >
-> > commit cf587db2ee0261c74d04f61f39783db88a0b65e4
-> > Author: Mike Christie <michael.christie@oracle.com>
-> > Date:   Fri Mar 10 16:03:23 2023 -0600
-> >
-> >     kernel: Allow a kernel thread's name to be set in copy_process
-> >
-> > and so now copy_process() sets the name before the taskfn is started, so we
-> > shouldn't hit any races like above.
->
-> Yeah, that looks like it should fix it.
->
-> Afaict, this has no reproducer so there's no point in letting syzbot
-> test on this. I've sent the pull request for the kernel user worker
-> series on Friday. So I guess we'll see whether it's reproducible on
-> v6.4-rc1.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217363
 
-To see if it still happens to tell syzbot about the fix, then it will
-remind if it still happens with the fix or not. Otherwise everybody
-will forget about this tomorrow ;)
+            Bug ID: 217363
+           Summary: jbd2: Data missing when reusing bh which is ready to
+                    be submitted in checkpoint
+           Product: File System
+           Version: 2.5
+          Hardware: All
+                OS: Linux
+            Status: NEW
+          Severity: normal
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: chengzhihao1@huawei.com
+        Regression: No
 
-#syz fix: kernel: Allow a kernel thread's name to be set in copy_process
+CONFIG_EXT4_FS=3Dy
+CONFIG_JBD2=3Dy
 
-Btw, a similar race will still be possible b/c it's possible to change
-the name at any point by writing to /proc/self/task/[tid]/comm. But I
-am not sure how provably dangerous it will be and there is a different
-attitude towards fixing races proactively for different kernel
-subsystems, so we will probably not report it.
+-smp 4
+
+1. Apply diff and compile kernel
+2. ./test.sh
+[   76.050388] jbd2_journal_commit_transaction ---
+[   76.051528] jbd2_journal_commit_transaction =3D=3D=3D=3D
+[   76.179116] umount(3642): commit ffff88817a547500
+[   76.300237] ext4 filesystem being mounted at /root/temp supports timesta=
+mps
+until 2038 (0x7fffffff)
+[   76.315293] assign g_bh, trace dir 2 buffer, add a(1036)
+[   76.349959] jbd2_journal_commit_transaction ---
+[   76.350915] insert ffff888173aa3340 into trans ffff888173aa4100
+[   76.352158] mark buffer dirty
+[   76.352829] jbd2_journal_commit_transaction =3D=3D=3D=3D
+[   76.377202] chmod(3649): commit ffff888173aa4100
+[   76.378019] checkpoint: bh dirty bit should be cleared before flush
+[   76.379045] commit ffff888173aa4100 done
+[   76.379708] Do access to bh
+[   78.415834] commit ffff888173aa4100 done
+[   78.512334] Kernel panic - not syncing: DONE
+[   78.513351] CPU: 0 PID: 3649 Comm: chmod Not tainted
+6.3.0-00012-g8eab99f47c2b-dirty #1188
+[   78.515079] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproje4
+[   78.517776] Call Trace:
+[   78.518305]  <TASK>
+[   78.518790]  dump_stack_lvl+0x7f/0xb0
+[   78.519580]  dump_stack+0x18/0x30
+[   78.520292]  panic+0x4e6/0x520
+[   78.520965]  jbd2_log_do_checkpoint+0x818/0x840
+[   78.521935]  __jbd2_log_wait_for_space+0x187/0x3c0
+[   78.522949]  add_transaction_credits+0x3fc/0x4d0
+[   78.523697]  ? add_timer+0x1ca/0x350
+[   78.524020]  start_this_handle+0x156/0x970
+[   78.524389]  ? kmem_cache_alloc+0x4db/0xac0
+[   78.524862]  jbd2__journal_start+0x130/0x300
+[   78.525288]  __ext4_journal_start_sb+0x2aa/0x300
+[   78.525715]  ext4_dirty_inode+0x41/0xa0
+[   78.526073]  __mark_inode_dirty+0x93/0x6b0
+[   78.526472]  ext4_setattr+0x16d/0x10b0
+[   78.526832]  ? path_lookupat.isra.0+0xca/0x200
+[   78.527248]  notify_change+0x44f/0x760
+[   78.527604]  ? __call_rcu_common.constprop.0+0x116/0xa80
+[   78.528089]  ? chmod_common+0x11f/0x210
+[   78.528444]  chmod_common+0x11f/0x210
+[   78.528791]  ? kmemleak_free+0x47/0xa0
+[   78.529145]  ? putname+0x79/0xa0
+[   78.529456]  do_fchmodat+0x6e/0xf0
+[   78.529788]  __x64_sys_fchmodat+0x22/0x30
+[   78.530159]  do_syscall_64+0x39/0x80
+[   78.530497]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[   78.530970] RIP: 0033:0x7fc88a6ffdb9
+[   78.531304] Code: ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f7 =
+c1
+ff fe ff ff 75 38 80 e5 01 75 4b 48 63 ff 89 d2 b0
+[   78.532967] RSP: 002b:00007fffb4c6e0e8 EFLAGS: 00000246 ORIG_RAX:
+000000000000010c
+[   78.533671] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
+00007fc88a6ffdb9
+[   78.534323] RDX: 00000000000001ed RSI: 000055555b1d30f0 RDI:
+ffffffffffffff9c
+[   78.534984] RBP: 000055555b1d3060 R08: 0000000000000000 R09:
+0000000000000000
+[   78.535648] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000555559a0a734
+[   78.536302] R13: 000055555b1d30f0 R14: 000055555b1d4320 R15:
+0000000000008000
+[   78.536974]  </TASK>
+[   78.537345] Kernel Offset: disabled
+[   78.537681] ---[ end Kernel panic - not syncing: DONE ]---
+
+3. reboot
+4. fsck.ext4 -fa /dev/sda
+[root@localhost ~]# fsck.ext4  -fa /dev/sda
+/dev/sda: recovering journal
+/dev/sda: Entry 'a' in / (2) references inode 1036 found in group 0's unused
+inodes area.
+FIXED.
+/dev/sda: Entry 'a' in / (2) has an incorrect filetype (was 1, should be 0).
+
+
+/dev/sda: UNEXPECTED INCONSISTENCY; RUN fsck MANUALLY.
+        (i.e., without -a or -p options)
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
