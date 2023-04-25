@@ -2,43 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 416856EDDF5
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Apr 2023 10:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A846EE06D
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Apr 2023 12:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjDYI2J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Apr 2023 04:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        id S233755AbjDYKfJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Apr 2023 06:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbjDYI2I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Apr 2023 04:28:08 -0400
-X-Greylist: delayed 3248 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Apr 2023 01:28:07 PDT
-Received: from mail.camacfoy.pl (mail.camacfoy.pl [195.231.80.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2703755BA
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Apr 2023 01:28:07 -0700 (PDT)
-Received: by mail.camacfoy.pl (Postfix, from userid 1001)
-        id 239EBA4360; Tue, 25 Apr 2023 08:31:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=camacfoy.pl; s=mail;
-        t=1682407955; bh=0DnDcjJl846YrSvLcp0W7cMkWp4Lfhp/OZAq4oBoaY8=;
-        h=Date:From:To:Subject:From;
-        b=L3EVgfscmMC2D61/Uc7NKk6d7IKaFv82nlq616O/0rMZMkQnYZjVP3llCDxy9YPwK
-         u2s2CPMY5fzZqHH2YC83PNcT7f/NOmkNI8h1K1jFizpN0V9NoUvkaN5O1qOqOEvNW8
-         UJwl5y1fU6jAiiXNd1Ep3FY4/CWr0PpI6NyIGeAg+9CtR3hXTRcOPfA06/lfULQ57J
-         g5V4jkO8CKUcaIkvtB5gC1Xj/tVo+pKqpKu8STurkjK32SyMAZKcjyy2x+i5APVVs3
-         mK7uO9cFoUEdYIEfbhpAoqqpJsQCGQ+k4DQtcut7h0aqYxbGzcN5nun2h7BAKI4vXJ
-         1oQ9KdFxI48Mw==
-Received: by mail.camacfoy.pl for <linux-ext4@vger.kernel.org>; Tue, 25 Apr 2023 07:30:57 GMT
-Message-ID: <20230425074502-0.1.83.bz67.0.p78sdildw7@camacfoy.pl>
-Date:   Tue, 25 Apr 2023 07:30:57 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@camacfoy.pl>
-To:     <linux-ext4@vger.kernel.org>
-Subject: biznesowy angielski 
-X-Mailer: mail.camacfoy.pl
+        with ESMTP id S233622AbjDYKfG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Apr 2023 06:35:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3F04EF4;
+        Tue, 25 Apr 2023 03:35:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F017C1FDA3;
+        Tue, 25 Apr 2023 10:35:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1682418901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=EngxOr74LmD+EbDulAtSDHNKsS4yfnnsS8WxkABG620=;
+        b=hkX4+cXab6GUL3+As3qcBu7lHvRzJAsrhiF996u6c63ZA5vEAX+Kx+615wL0iaXM0KqFd/
+        tkwRTGnUyViwrKB65duNZx/CKbtnUYMH0zk5Kv+KsGzjtQsGT3qGbQYx0NPos0hyKnOxUP
+        rehRSB41KQ9TECr0b0OQwfsv9ewPu8Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1682418901;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=EngxOr74LmD+EbDulAtSDHNKsS4yfnnsS8WxkABG620=;
+        b=lV4JD/4m0ZIcxP9Cp10olRava0PsnYDz+YCj6wflrsuav5DneVTAPfiCtodLxiE6GCWLPj
+        yKV7rPfPOf6sZFCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0EA4138E3;
+        Tue, 25 Apr 2023 10:35:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id c+LeNtWsR2SGLQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 25 Apr 2023 10:35:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 69228A0729; Tue, 25 Apr 2023 12:35:01 +0200 (CEST)
+Date:   Tue, 25 Apr 2023 12:35:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext2, reiserfs, udf, and quota cleanups and fixes for
+ 6.4-rc1
+Message-ID: <20230425103501.ib4qoy4j5a3mzf2c@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,29 +66,62 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+  Hello Linus,
 
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
+  could you please pull from
 
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fs_for_v6.4-rc1
 
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
+To get a couple of small fixes and cleanups for ext2, udf, reiserfs, and
+quota. The biggest change in this pull is making CONFIG_PRINT_QUOTA_WARNING
+depend on BROKEN with an outlook for removing it completely in an year or
+so.
 
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
+Top of the tree is 36d532d713db. The full shortlog is:
 
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?
+Colin Ian King (1):
+      ext2: remove redundant assignment to pointer end
 
+Jan Kara (3):
+      ext2: Correct maximum ext2 filesystem block size
+      ext2: Check block size validity during mount
+      quota: Use register_sysctl_init() for registering fs_dqstats_table
 
-Pozdrawiam
-Krzysztof Maj
+Luis Chamberlain (1):
+      quota: simplify two-level sysctl registration for fs_dqstats_table
+
+Matthew Wilcox (Oracle) (1):
+      udf: Use folios in udf_adinicb_writepage()
+
+Tom Rix (2):
+      reiserfs: remove unused sched_count variable
+      reiserfs: remove unused iter variable
+
+Yangtao Li (5):
+      udf: use wrapper i_blocksize() in udf_discard_prealloc()
+      quota: fixup *_write_file_info() to return proper error code
+      quota: make dquot_set_dqinfo return errors from ->write_info
+      quota: update Kconfig comment
+      quota: mark PRINT_QUOTA_WARNING as BROKEN
+
+The diffstat is
+
+ fs/ext2/ext2.h        |  3 ++-
+ fs/ext2/super.c       |  7 +++++++
+ fs/ext2/xattr.c       |  1 -
+ fs/quota/Kconfig      |  4 ++--
+ fs/quota/dquot.c      | 24 ++----------------------
+ fs/quota/quota_v1.c   |  2 +-
+ fs/quota/quota_v2.c   |  2 +-
+ fs/reiserfs/journal.c |  2 --
+ fs/reiserfs/stree.c   |  2 --
+ fs/udf/inode.c        | 10 +++++-----
+ fs/udf/truncate.c     |  4 ++--
+ 11 files changed, 22 insertions(+), 39 deletions(-)
+
+							Thanks
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
