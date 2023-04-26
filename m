@@ -2,91 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4D86EFDD0
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 01:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBF56EFDEA
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 01:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbjDZXHY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Apr 2023 19:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
+        id S239024AbjDZXMw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Apr 2023 19:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbjDZXHX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 19:07:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AFC1BD3;
-        Wed, 26 Apr 2023 16:07:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 87A4E63997;
-        Wed, 26 Apr 2023 23:07:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D2946C4339B;
-        Wed, 26 Apr 2023 23:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682550440;
-        bh=EzrAzHGqX33HLlqpfsl59P+BWciRL4LLNL4FJ5YxYiw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=huemn0yp2XzRUtzI1j/YWNYRt1QKV1SVDVfajDMru9/LkNbnuOgXFP3lMOAewzkEw
-         SFF3oLTNxd72taeJdoC8laOtlFG8z9pxPaFk08isrDw/5LQ+gUxIpqOwd2IOZSFHNw
-         4HYKoKLprsc12RNLmO3wSw8omR8cHmCcDPa7+6xfQmB55f1oTV8EE1H27j6Pls93PV
-         Vp8gC4W2lzsIGyOAAPyzt57VCNGwzu0LHwHQBJ7Pg0/TaE/8XeLwZP00zH/DE2R/VR
-         NQgC/FuN1OP8CVZJl+9K/8e1+I0LNNqhbulyDD+LaQvunkEVwhC25NS9T0BTLO3FNI
-         B6MP2MQraMVWA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AB86DE5FFC8;
-        Wed, 26 Apr 2023 23:07:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S236034AbjDZXMv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 19:12:51 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3989E30DA
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 16:12:45 -0700 (PDT)
+Received: from letrec.thunk.org ([76.150.80.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33QNC4rL018996
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Apr 2023 19:12:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1682550727; bh=a28AE7O4X83WWFRQ6/mRv8wwHivs9drRMGuAgV2hNZk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=kY28SrgCLZILV53+lsfg5h5l4QnFMhzMkUbS0hwj0iZDGfLlswNTyZ2M31mmjDvJw
+         ifLN2AaAgKQKDA43ZILHlq2+tJl/xEC/dGageHbtWrvOC8KfQvO+IxJngJPeudtbD+
+         Hx86xFyGSUkznglbZHZWlImznZY2MWZ2L2PZ2gxLUMsnOb/h0Wm0c5JacwJcwM8yE9
+         YZRpbkgG6hL56MW2lj0/xLKMntGZ74EvoK0mNviWl6fPbfpJ40lteUNViJ+bp41OA5
+         hmTCRvNC32iQoOIpTENMRjv9qooe7XZIzYMDmh5dG43++p8qTwj3zryE1WoDQs3uUe
+         +nX8+YLtZSWaA==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id CC6718C01FA; Wed, 26 Apr 2023 19:12:03 -0400 (EDT)
+Date:   Wed, 26 Apr 2023 19:12:03 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Dan Carpenter <error27@gmail.com>
+Subject: Re: [GIT PULL] ext4 changes for the 6.4 merge window
+Message-ID: <ZEmvw4x+M+4kgENG@mit.edu>
+References: <20230425041838.GA150312@mit.edu>
+ <CAHk-=wiP0983VQYvhgJQgvk-VOwSfwNQUiy5RLr_ipz8tbaK4Q@mail.gmail.com>
+ <ZEl3QmF1PYXKaBTz@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH v2 0/8] acl: remove generic posix acl handlers
- from all xattr handlers
-From:   patchwork-bot+f2fs@kernel.org
-Message-Id: <168255044069.16014.2458183090274454828.git-patchwork-notify@kernel.org>
-Date:   Wed, 26 Apr 2023 23:07:20 +0000
-References: <20230125-fs-acl-remove-generic-xattr-handlers-v2-0-214cfb88bb56@kernel.org>
-In-Reply-To: <20230125-fs-acl-remove-generic-xattr-handlers-v2-0-214cfb88bb56@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, hch@lst.de,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
-        linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        sforshee@kernel.org
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZEl3QmF1PYXKaBTz@casper.infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello:
-
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Christian Brauner (Microsoft) <brauner@kernel.org>:
-
-On Mon, 30 Jan 2023 17:41:56 +0100 you wrote:
-> Hey everyone,
+On Wed, Apr 26, 2023 at 08:10:58PM +0100, Matthew Wilcox wrote:
 > 
-> after we finished the introduction of the new posix acl api last cycle
-> we still left the generic POSIX ACL xattr handlers around in the
-> filesystems xattr handler registered at sb->s_xattr for two reasons.
-> First, because a few filesystems rely on the ->list() method of the
-> generic POSIX ACL xattr handlers in their ->listxattr() inode operation.
-> Second, during inode initalization in inode_init_always() the registered
-> xattr handlers in sb->s_xattr are used to raise IOP_XATTR in
-> inode->i_opflags.
+> This feels like something smatch could catch.  Adding Dan.
 > 
-> [...]
+> Unfortunately, I don't know that we have any buildbots that run smatch,
+> and most developers don't, so it'll always be an after-the-fact patch
+> to fix it rather than "anybody using W=1" or "anybody using C=1" will
+> catch it before it gets anywhere near a maintainer.
 
-Here is the summary with links:
-  - [f2fs-dev,v2,6/8] fs: simplify ->listxattr() implementation
-    https://git.kernel.org/jaegeuk/f2fs/c/a5488f29835c
+Well, if we can ask Mark Brown to run smatch on linux-next, we can
+catch most of these things quickly; in fact, this would have been
+*only* caught on linux-next, since in this case, we got caught out by
+a change in a function signature happening in one tree, and a new use
+of that function in another tree.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Is this something that we could teach sparse to catch?
 
-
+   		       	  	      	     	- Ted
