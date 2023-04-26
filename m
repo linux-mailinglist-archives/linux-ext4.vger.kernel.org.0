@@ -2,179 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15F86EF531
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Apr 2023 15:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6B66EF8E7
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Apr 2023 19:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240750AbjDZNLO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Apr 2023 09:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S231704AbjDZRD7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Apr 2023 13:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241094AbjDZNLM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 09:11:12 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329A65B8A
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 06:11:09 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q5zlB2wJpz4f50wC
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 21:11:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP2 (Coremail) with SMTP id Syh0CgDHuujRIklkvd9jIA--.13149S4;
-        Wed, 26 Apr 2023 21:11:03 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com,
-        chengzhihao1@huawei.com
-Subject: [PATCH] jbd2: recheck chechpointing non-dirty buffer
-Date:   Wed, 26 Apr 2023 21:10:41 +0800
-Message-Id: <20230426131041.1004383-1-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229822AbjDZRD6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 13:03:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFFE76B7
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 10:03:57 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-953343581a4so1121013966b.3
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 10:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1682528635; x=1685120635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rojE/Cf5Vc/Os78fxzdIb/ZWKVxlH85NFon6s3+eQhg=;
+        b=S5KwTyJbCrYSpRgabEwuFA9OPMgLGr3CoGSMLx3UJiaoG2llzimB8Na4uKpzikb5dN
+         lA4MX5tUTY8epkXLYywHGwvQr9jl5GYMn+WEKJSqFejCBbhejce4rUWv7ekF/5wBxznp
+         HPKFT+B9iQy9OetVh8YE6V4kpo/qxT9I5bef0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682528635; x=1685120635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rojE/Cf5Vc/Os78fxzdIb/ZWKVxlH85NFon6s3+eQhg=;
+        b=kb4rck8px2j2YDfy0cRpFVS+3zc5cm4aIjXErRzkpY4pchxT6TCejAeZih1vizAXZ/
+         bmmfxRik3rxqzgKjVb9z+S4qaB7kPBslohHn+6RjtkR6eQhtvj5zBhCTrWXRruavhGJC
+         tp0I3XNgaC39myfDH2tjgK254HoI3tAZj3T7yAvPZxytFv5CqmQnMf43O5CXtIwutYyj
+         fpyUSIpF6PtXATJR7+HClGnUwbxhA6/mN1YrBkv0/18aNlqeMinJhv0v8RpQ52BhRYBE
+         SgiTWdKHQRhMSeYpZqsui4sVuDOopVBUjcHbCQESKr0SoaTM6Z/r2Q7NN3igPTypQjYi
+         rrrw==
+X-Gm-Message-State: AAQBX9cAvLME3pEV9aRVCT61mWVV12/3b9o2cx4ws6PMIbWjqlP7r5Ga
+        rjVYvYKVRYXv2vCNiXdOk+1jmmF7SiotPkobH/GqKw==
+X-Google-Smtp-Source: AKy350YLDXrEacIp3O8iuxQVHpSdV9Z5K5xACdw/ymE8CD1IDLhcAzdgyoSLS6vTlcOGXhprUdJ81w==
+X-Received: by 2002:a17:907:874b:b0:94f:2a13:4df8 with SMTP id qo11-20020a170907874b00b0094f2a134df8mr17752277ejc.36.1682528635274;
+        Wed, 26 Apr 2023 10:03:55 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id re4-20020a170906d8c400b0094a82a236cbsm8352467ejb.129.2023.04.26.10.03.54
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Apr 2023 10:03:54 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-953343581a4so1121007366b.3
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 10:03:54 -0700 (PDT)
+X-Received: by 2002:a17:907:7e9c:b0:957:28b2:560a with SMTP id
+ qb28-20020a1709077e9c00b0095728b2560amr18417571ejc.46.1682528634167; Wed, 26
+ Apr 2023 10:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHuujRIklkvd9jIA--.13149S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFy3WF1xtw1UWw4fGFW3Wrg_yoWrWw4rpr
-        Wakw1YqrWvgFy7urnaqF4UZ3yYqF4kZry7Gry3G3ZxAa1UtwsagFy8Kr9FkF1jkrn3Wa4f
-        Xr1UCas3Wa1jya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUym14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-        14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230425041838.GA150312@mit.edu>
+In-Reply-To: <20230425041838.GA150312@mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 26 Apr 2023 10:03:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiP0983VQYvhgJQgvk-VOwSfwNQUiy5RLr_ipz8tbaK4Q@mail.gmail.com>
+Message-ID: <CAHk-=wiP0983VQYvhgJQgvk-VOwSfwNQUiy5RLr_ipz8tbaK4Q@mail.gmail.com>
+Subject: Re: [GIT PULL] ext4 changes for the 6.4 merge window
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Mon, Apr 24, 2023 at 9:18=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
+:
+>
+> Please note that after merging the mm and ext4 trees you will need to
+> apply the patch found here[1].
+>
+> [1] https://lore.kernel.org/r/20230419120923.3152939-1-willy@infradead.or=
+g
+>
+> This is due to a patch in the mm tree, "mm: return an ERR_PTR from
+> __filemap_get_folio" changing that function to returning an ERR_PTR
+> instead of returning NULL on an error.
 
-There is a long-standing metadata corruption issue that happens from
-time to time, but it's very difficult to reproduce and analyse, benefit
-from the JBD2_CYCLE_RECORD option, we found out that the problem is the
-checkpointing process miss to write out some buffers which are raced by
-another do_get_write_access(). Looks below for detail.
+Side note, itr would be wonderful if we could mark the places that
+return an error pointer as returning "nonnull", and catch things like
+this automatically at build time where people compare an error pointer
+to NULL.
 
-jbd2_log_do_checkpoint() //transaction X
- //buffer A is dirty and not belones to any transaction
- __buffer_relink_io() //move it to the IO list
- __flush_batch()
-  write_dirty_buffer()
-                             do_get_write_access()
-                             clear_buffer_dirty
-                             __jbd2_journal_file_buffer()
-                             //add buffer A to a new transaction Y
-   lock_buffer(bh)
-   //doesn't write out
- __jbd2_journal_remove_checkpoint()
- //finish checkpoint except buffer A
- //filesystem corrupt if the new transaction Y isn't fully write out.
+Howeder, it sadly turns out that compilers have gotten this completely wron=
+g.
 
-The fix is subtle because we can't trust the chechpointing buffers and
-transactions once we release the j_list_lock, they could be written back
-and checkpointed by some others, or they could have been added to a new
-transaction. So we have to re-add them on the checkpoint list and
-recheck their status if they are clean and don't need to write out.
+gcc apparently completely screwed things up, and "nonnull" is not a
+warning aid, it's a "you can remove tests against NULL silently".
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/jbd2/checkpoint.c | 52 +++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 49 insertions(+), 3 deletions(-)
+And clang does seem to have taken the same approach with
+"returns_nonnull", which is really really sad, considering that
+apparently they got it right for "_Nonnull" for function arguments
+(where it's documented to cause a warning if you pass in a NULL
+argument, rather than cause the compiler to generate sh*t buggy code)
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 51bd38da21cd..1aca860eb0f6 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -77,8 +77,31 @@ static inline void __buffer_relink_io(struct journal_head *jh)
- 		jh->b_cpnext->b_cpprev = jh;
- 	}
- 	transaction->t_checkpoint_io_list = jh;
-+	transaction->t_chp_stats.cs_written++;
- }
- 
-+/*
-+ * Move a buffer from the checkpoint io list back to the checkpoint list
-+ *
-+ * Called with j_list_lock held
-+ */
-+static inline void __buffer_relink_cp(struct journal_head *jh)
-+{
-+	transaction_t *transaction = jh->b_cp_transaction;
-+
-+	__buffer_unlink(jh);
-+
-+	if (!transaction->t_checkpoint_list) {
-+		jh->b_cpnext = jh->b_cpprev = jh;
-+	} else {
-+		jh->b_cpnext = transaction->t_checkpoint_list;
-+		jh->b_cpprev = transaction->t_checkpoint_list->b_cpprev;
-+		jh->b_cpprev->b_cpnext = jh;
-+		jh->b_cpnext->b_cpprev = jh;
-+	}
-+	transaction->t_checkpoint_list = jh;
-+	transaction->t_chp_stats.cs_written--;
-+}
- /*
-  * Check a checkpoint buffer could be release or not.
-  *
-@@ -175,8 +198,31 @@ __flush_batch(journal_t *journal, int *batch_count)
- 	struct blk_plug plug;
- 
- 	blk_start_plug(&plug);
--	for (i = 0; i < *batch_count; i++)
--		write_dirty_buffer(journal->j_chkpt_bhs[i], REQ_SYNC);
-+	for (i = 0; i < *batch_count; i++) {
-+		struct buffer_head *bh = journal->j_chkpt_bhs[i];
-+		struct journal_head *jh = bh2jh(bh);
-+
-+		lock_buffer(bh);
-+		/*
-+		 * This buffer isn't dirty, it could be getten write access
-+		 * again by a new transaction, re-add it on the checkpoint
-+		 * list if it still needs to be checkpointed, and wait
-+		 * until that transaction finished to write out.
-+		 */
-+		if (!test_clear_buffer_dirty(bh)) {
-+			unlock_buffer(bh);
-+			spin_lock(&journal->j_list_lock);
-+			if (jh->b_cp_transaction)
-+				__buffer_relink_cp(jh);
-+			spin_unlock(&journal->j_list_lock);
-+			jbd2_journal_put_journal_head(jh);
-+			continue;
-+		}
-+		jbd2_journal_put_journal_head(jh);
-+		bh->b_end_io = end_buffer_write_sync;
-+		get_bh(bh);
-+		submit_bh(REQ_OP_WRITE | REQ_SYNC, bh);
-+	}
- 	blk_finish_plug(&plug);
- 
- 	for (i = 0; i < *batch_count; i++) {
-@@ -303,9 +349,9 @@ int jbd2_log_do_checkpoint(journal_t *journal)
- 		BUFFER_TRACE(bh, "queue");
- 		get_bh(bh);
- 		J_ASSERT_BH(bh, !buffer_jwrite(bh));
-+		jbd2_journal_grab_journal_head(bh);
- 		journal->j_chkpt_bhs[batch_count++] = bh;
- 		__buffer_relink_io(jh);
--		transaction->t_chp_stats.cs_written++;
- 		if ((batch_count == JBD2_NR_BATCH) ||
- 		    need_resched() ||
- 		    spin_needbreak(&journal->j_list_lock))
--- 
-2.31.1
+Compiler people who think that "undefined behavior is a good way to
+implement optimizations" are a menace, and should be shunned. They are
+paste-eaters of the worst kind.
 
+Is there any chance that somebody could hit compiler people with a big
+clue-bat, and say "undefined behavior is not a feature, it's a bug",
+and try to make them grow up?
+
+Adding some clang people to the participants, since they at least seem
+to have *almost* gotten it right.
+
+            Linus
