@@ -2,157 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB686EFD27
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 00:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFE86EFDD2
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 01:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjDZWcC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Apr 2023 18:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S236193AbjDZXHZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Apr 2023 19:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjDZWcB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 18:32:01 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E478C3585
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 15:31:59 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-506c04dd879so13374322a12.3
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 15:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1682548318; x=1685140318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SVW5WV/KqwfqyBwNIu5H8m6OJfcQGZ/T7DvmWxmWHzc=;
-        b=SK5WhvdhD+pFQAgeMnn+cxG4NVGIZi8UCWzoAoYEwd6MfKAHL4hGv9hryJHO6lbFKN
-         3cNxiSH2NXz4vM4JDhm5QzJ8OtcUhZ8mZnUNXxzsxaOZmI40cIb6uVQ2OP4uhSsgnZ/5
-         EkWDO8usQILfZAod62VsNHOEm6mbdk3qQCioM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682548318; x=1685140318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SVW5WV/KqwfqyBwNIu5H8m6OJfcQGZ/T7DvmWxmWHzc=;
-        b=gvl47FZ2arWxnArpFD0n9UnFz2x9qtAuY/MuNj7T2mt/8W0livfzXYZqvA8J/ZdAAO
-         mMjArUlLKuDWgAT0fdY+hHnBuB2rli1b2XXfRWU4uM7JO6rC66Wu1lx5cPaGan4l+RIF
-         2CeSl5ss+S6zP2R0RpLWo0p9RIiPEFHxI+M8hoBILrrZDN9N+IZ1COtCFofTWsWFuRxK
-         DICcPlZAADuh2s0bXKax7a4X/m4+C7Wj9/ehdOPiW/Xc14/ygw78wv055r7VT1KOf1AN
-         v2lQtFVzFrg28VzqxlemsgglJzOeeY7I+/jigZw2QSpX6tzstpA6kb+mWUno1pA2enqN
-         xSfA==
-X-Gm-Message-State: AAQBX9dmvmfCpdAZFca5FMvBzuSGRBtaR9yN1fSFbcz1VXPg/niseIkD
-        O2ktr6LCPo5+8bVdY1jQ16LcIdAnYIwCp63EShtklA==
-X-Google-Smtp-Source: AKy350Z4aYM8Tdalk1/1RAFyFDO8T1v+CJWkm4J5U0ZlqcE0Y8EwTZ/K0H4ZOyEB3iWZiXJbxh1Jyg==
-X-Received: by 2002:a05:6402:110b:b0:4be:b39b:ea8f with SMTP id u11-20020a056402110b00b004beb39bea8fmr18329493edv.2.1682548318234;
-        Wed, 26 Apr 2023 15:31:58 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id g24-20020a50ee18000000b0050690bc07a3sm7083068eds.18.2023.04.26.15.31.57
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Apr 2023 15:31:57 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-94f6c285d22so1451694266b.2
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 15:31:57 -0700 (PDT)
-X-Received: by 2002:a17:906:224d:b0:94f:3eca:ab05 with SMTP id
- 13-20020a170906224d00b0094f3ecaab05mr21379641ejr.59.1682548317009; Wed, 26
- Apr 2023 15:31:57 -0700 (PDT)
+        with ESMTP id S233809AbjDZXHX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 19:07:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059BE2694;
+        Wed, 26 Apr 2023 16:07:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B97363998;
+        Wed, 26 Apr 2023 23:07:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DA025C4339C;
+        Wed, 26 Apr 2023 23:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682550440;
+        bh=71/XsA8gAmo1yutYZ1cS0twFrW61Rssu2AmOx0Z5eqs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LCsCJGnd35MidYfxnMlF2ceb389n1B9U+KnzrgVKwgz5bAx1JzOufQeZ/SGRGVkkX
+         AkwL7o7IUXB84i3Vrp+2dYvTEB2raGyt1bPfIePkPzimyVl0QF0nykjXoFPdK/iGyF
+         xmS+0hcVEEqQ/mzOQIEuWBo+aNi0OdLZoD2sU5j7TMMHl0xiWsv3YDVAgdm/lv4bBl
+         2hkD0FnZL1h9SA7ETWRkHuT5vigtQxRgpaiySgxZcycuzc9OCObp4SvRjW6CqNYxGL
+         A85Yr6YutIEXIGmgBh1OeDzgtzNYHzp8kT1wAHqE0jDNsJNShVauqRfHNLAzt5GYDW
+         hhMvyD5bq6lZw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B47F5E270D8;
+        Wed, 26 Apr 2023 23:07:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230425041838.GA150312@mit.edu> <CAHk-=wiP0983VQYvhgJQgvk-VOwSfwNQUiy5RLr_ipz8tbaK4Q@mail.gmail.com>
- <CAKwvOdmXgThxzBaaL_Lt+gpc7yT1T-e7YgM8vU=c7sUita6aaw@mail.gmail.com>
- <CAHk-=wjXDzU1j-cCB28Pxt-=NV5VTbnLimY3HG4uF0HPP7us_Q@mail.gmail.com>
- <CAKwvOdm3gkAufWcWBqDMQNRXVqJjooFQ4Bi5YPHndWFCPScG+g@mail.gmail.com>
- <CAHk-=wib1T7HzHOhZBATast=nKPT+hkRRqgaFT9osahB08zNRg@mail.gmail.com> <CAKwvOdn3Unm94UCiXygWTM_KyhATNsy68b_CFbqBDFXshd+34Q@mail.gmail.com>
-In-Reply-To: <CAKwvOdn3Unm94UCiXygWTM_KyhATNsy68b_CFbqBDFXshd+34Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 26 Apr 2023 15:31:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi_=4EXm_FMYETDo-aETdWPBvJ0_bv+GaOMz2bu8UoWxA@mail.gmail.com>
-Message-ID: <CAHk-=wi_=4EXm_FMYETDo-aETdWPBvJ0_bv+GaOMz2bu8UoWxA@mail.gmail.com>
-Subject: Re: [GIT PULL] ext4 changes for the 6.4 merge window
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH v3 00/10] acl: drop posix acl handlers from xattr
+ handlers
+From:   patchwork-bot+f2fs@kernel.org
+Message-Id: <168255044073.16014.8337870090900748986.git-patchwork-notify@kernel.org>
+Date:   Wed, 26 Apr 2023 23:07:20 +0000
+References: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
+In-Reply-To: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, hch@lst.de,
+        linux-unionfs@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+        linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        sforshee@kernel.org
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 3:08=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Is this what you had in mind?
-> ```
-> void * _Nonnull foo (void)
-> ...
-> void bar (void) {
->     if (foo() =3D=3D NULL) // maybe should warn that foo() returns _Nonnu=
-ll?
->         bar();
-> ...
-> linus.c:8:15: warning: comparison of _Nonnull function call 'foo'
-> equal to a null pointer is always false
+Hello:
 
-Yes.
+This patch was applied to jaegeuk/f2fs.git (dev)
+by Christian Brauner (Microsoft) <brauner@kernel.org>:
 
-HOWEVER.
+On Wed, 01 Feb 2023 14:14:51 +0100 you wrote:
+> Hey everyone,
+> 
+> After we finished the introduction of the new posix acl api last cycle
+> we still left the generic POSIX ACL xattr handlers around in the
+> filesystems xattr handlers for two reasons:
+> 
+> (1) Because a few filesystems rely on the ->list() method of the generic
+>     POSIX ACL xattr handlers in their ->listxattr() inode operation.
+> (2) POSIX ACLs are only available if IOP_XATTR is raised. The IOP_XATTR
+>     flag is raised in inode_init_always() based on whether the
+>     sb->s_xattr pointer is non-NULL. IOW, the registered xattr handlers
+>     of the filesystem are used to raise IOP_XATTR.
+>     If we were to remove the generic POSIX ACL xattr handlers from all
+>     filesystems we would risk regressing filesystems that only implement
+>     POSIX ACL support and no other xattrs (nfs3 comes to mind).
+> 
+> [...]
 
-I suspect you will find that it gets complicated for more indirect
-uses, and that may be why people have punted on this.
+Here is the summary with links:
+  - [f2fs-dev,v3,05/10] fs: simplify ->listxattr() implementation
+    https://git.kernel.org/jaegeuk/f2fs/c/a5488f29835c
 
-For example, let's say that you instead have
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-   void *bar(void) { return foo(); }
 
-and 'bar()' gets inlined.
-
-The obvious reaction to that is "ok, clearly the result is still
-_Nonnull, and should warn if it is tested.
-
-But that obvious reaction is actually completely wrong, because it may
-be that the real code looks something like
-
-   void *bar(void) {
-#if CONFIG_XYZ
-    if (somecondition) return NULL;
-#endif
-    return foo(); }
-
-and the caller really *should* check for NULL - it's just that the
-compiler never saw that case.
-
-So only testing the direct return value of a function should warn.
-
-And even that "direct return value" is not trivial. What happens if
-you have something like this:
-
-   void bar(void) { do_something(foo()); }
-
-and "do_something()" ends up being inlined - and checks for its
-argument for being NULL? Again, that "test against NULL" may well be
-absolutely required in that context - because *other* call-sites will
-pass in pointers that might be NULL.
-
-Now, I don't know how clang works internally, but I suspect based just
-on the size of your patch that your patch would get all of this
-horribly wrong.
-
-So doing a naked
-
-    void *ptr =3D foo();
-    if (!ptr) ...
-
-should warn.
-
-But doing the exact same thing, except the test for NULL came in some
-other context that just got inlined, cannot warn.
-
-I _suspect_ that the reason clang does what it does is that this is
-just very complicated to do well.
-
-It sounds easy to a human, but ...
-
-          Linus
