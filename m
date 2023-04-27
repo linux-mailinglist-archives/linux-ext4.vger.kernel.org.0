@@ -2,182 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34426F04FD
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 13:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9556F05E8
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 14:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243752AbjD0L2J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Apr 2023 07:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39854 "EHLO
+        id S243722AbjD0Mga convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 27 Apr 2023 08:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243732AbjD0L2I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Apr 2023 07:28:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3ECF3ABC
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Apr 2023 04:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682594843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GvY4p7P7cJsg0/C+DT6cOBtihMGDlSNrlTaMona+HC4=;
-        b=NRxpLZJFUadTKBbcn9lYHlbABDRQi9ZPef0oHMQybtCTewrHegyoFqKg8CBqtlWKGipcyg
-        CO00sXEsMwKYoTEP44ntB/STRdh0+czncL1l7ctMwRiq7RZX/3yNeR62oiecChjwnT68HG
-        fMd1diWatqlhiAWEhkJSeLqBMru04mw=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-471-i-P2r6DfNfq2gp1vlaW-_Q-1; Thu, 27 Apr 2023 07:27:17 -0400
-X-MC-Unique: i-P2r6DfNfq2gp1vlaW-_Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 169CA1C04190;
-        Thu, 27 Apr 2023 11:27:17 +0000 (UTC)
-Received: from ovpn-8-26.pek2.redhat.com (ovpn-8-26.pek2.redhat.com [10.72.8.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6303F1121315;
-        Thu, 27 Apr 2023 11:27:08 +0000 (UTC)
-Date:   Thu, 27 Apr 2023 19:27:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-block@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>,
-        yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com
-Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
-Message-ID: <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
-References: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
- <ZEny7Izr8iOc/23B@casper.infradead.org>
- <ZEn/KB0fZj8S1NTK@ovpn-8-24.pek2.redhat.com>
- <dbb8d8a7-3a80-34cc-5033-18d25e545ed1@huawei.com>
- <ZEpH+GEj33aUGoAD@ovpn-8-26.pek2.redhat.com>
- <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
+        with ESMTP id S243688AbjD0Mg1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Apr 2023 08:36:27 -0400
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6594C0E;
+        Thu, 27 Apr 2023 05:36:25 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-b9963a72fbfso8800571276.3;
+        Thu, 27 Apr 2023 05:36:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682598985; x=1685190985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8GfYLDzqUDcm88RwTWgB+qyxg4iuuLuJ42jmjtTcG+g=;
+        b=HKSIjV+NnMDL7T4u3p1+zIjoiw8GE7xdcF3kn5zYCkLxHSgsOzUr58r5/tQgBdEfxj
+         HuFfRm9/HHqJe3RlNybtnigOBfiyYnNBITzbDWU0vOhPhjtvtHkQ8l/0b+ax0d9hbzYc
+         P6KQphO9sIWttqa3SdXhvELofDsyX2ywjfQ72fSTEj/KBooV/NjiTvEG7sUvOGLyNO1t
+         XGhmwt02RTiUF0QxfMFG9H677/iMBCZ6+e7BfUXqObEO3iBL1AHMJLeVUPSo7Sj/BG0i
+         yvqCJT6WmgeosOwngGIdMFh1MLwkSfGM/V1cTxd+Pk2tOKCrkEZmFsQRpG5sJGDWyAvC
+         j7uw==
+X-Gm-Message-State: AC+VfDyVHVUcaOicEuStJaCt9eQ/tlLtDpGtd5H8ynIgB87ncDcLy6FZ
+        /qGQDpGeHcY74vctiy9n8LfX7CvFhbZ30w==
+X-Google-Smtp-Source: ACHHUZ4hIzd3twPacpqPWfBBzVeaQdN4BvBLV6ot6WcGzEhUb9DY/zumwU+rsRt5/hdF63EWTS7XDA==
+X-Received: by 2002:a25:6d83:0:b0:b92:5d7b:2c15 with SMTP id i125-20020a256d83000000b00b925d7b2c15mr718020ybc.25.1682598984843;
+        Thu, 27 Apr 2023 05:36:24 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id z188-20020a8165c5000000b00545a08184bbsm4732949ywb.75.2023.04.27.05.36.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Apr 2023 05:36:24 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-54f8e823e47so95971627b3.2;
+        Thu, 27 Apr 2023 05:36:24 -0700 (PDT)
+X-Received: by 2002:a0d:d44f:0:b0:54f:dafd:a369 with SMTP id
+ w76-20020a0dd44f000000b0054fdafda369mr1011695ywd.51.1682598983950; Thu, 27
+ Apr 2023 05:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230420-ext4-unused-variables-super-c-v1-1-138b6db6c21c@kernel.org>
+In-Reply-To: <20230420-ext4-unused-variables-super-c-v1-1-138b6db6c21c@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 27 Apr 2023 14:36:10 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU0V=b1FLiT4UbNVTa42+5hFx3WJQD6gETwNYioSaSoag@mail.gmail.com>
+Message-ID: <CAMuHMdU0V=b1FLiT4UbNVTa42+5hFx3WJQD6gETwNYioSaSoag@mail.gmail.com>
+Subject: Re: [PATCH] ext4: Fix unused iterator variable warnings
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, yanaijie@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 07:19:35PM +0800, Baokun Li wrote:
-> On 2023/4/27 18:01, Ming Lei wrote:
-> > On Thu, Apr 27, 2023 at 02:36:51PM +0800, Baokun Li wrote:
-> > > On 2023/4/27 12:50, Ming Lei wrote:
-> > > > Hello Matthew,
-> > > > 
-> > > > On Thu, Apr 27, 2023 at 04:58:36AM +0100, Matthew Wilcox wrote:
-> > > > > On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
-> > > > > > Hello Guys,
-> > > > > > 
-> > > > > > I got one report in which buffered write IO hangs in balance_dirty_pages,
-> > > > > > after one nvme block device is unplugged physically, then umount can't
-> > > > > > succeed.
-> > > > > That's a feature, not a bug ... the dd should continue indefinitely?
-> > > > Can you explain what the feature is? And not see such 'issue' or 'feature'
-> > > > on xfs.
-> > > > 
-> > > > The device has been gone, so IMO it is reasonable to see FS buffered write IO
-> > > > failed. Actually dmesg has shown that 'EXT4-fs (nvme0n1): Remounting
-> > > > filesystem read-only'. Seems these things may confuse user.
-> > > 
-> > > The reason for this difference is that ext4 and xfs handle errors
-> > > differently.
-> > > 
-> > > ext4 remounts the filesystem as read-only or even just continues, vfs_write
-> > > does not check for these.
-> > vfs_write may not find anything wrong, but ext4 remount could see that
-> > disk is gone, which might happen during or after remount, however.
-> > 
-> > > xfs shuts down the filesystem, so it returns a failure at
-> > > xfs_file_write_iter when it finds an error.
-> > > 
-> > > 
-> > > ``` ext4
-> > > ksys_write
-> > >   vfs_write
-> > >    ext4_file_write_iter
-> > >     ext4_buffered_write_iter
-> > >      ext4_write_checks
-> > >       file_modified
-> > >        file_modified_flags
-> > >         __file_update_time
-> > >          inode_update_time
-> > >           generic_update_time
-> > >            __mark_inode_dirty
-> > >             ext4_dirty_inode ---> 2. void func, No propagating errors out
-> > >              __ext4_journal_start_sb
-> > >               ext4_journal_check_start ---> 1. Error found, remount-ro
-> > >      generic_perform_write ---> 3. No error sensed, continue
-> > >       balance_dirty_pages_ratelimited
-> > >        balance_dirty_pages_ratelimited_flags
-> > >         balance_dirty_pages
-> > >          // 4. Sleeping waiting for dirty pages to be freed
-> > >          __set_current_state(TASK_KILLABLE)
-> > >          io_schedule_timeout(pause);
-> > > ```
-> > > 
-> > > ``` xfs
-> > > ksys_write
-> > >   vfs_write
-> > >    xfs_file_write_iter
-> > >     if (xfs_is_shutdown(ip->i_mount))
-> > >       return -EIO;    ---> dd fail
-> > > ```
-> > Thanks for the info which is really helpful for me to understand the
-> > problem.
-> > 
-> > > > > balance_dirty_pages() is sleeping in KILLABLE state, so kill -9 of
-> > > > > the dd process should succeed.
-> > > > Yeah, dd can be killed, however it may be any application(s), :-)
-> > > > 
-> > > > Fortunately it won't cause trouble during reboot/power off, given
-> > > > userspace will be killed at that time.
-> > > > 
-> > > > 
-> > > > 
-> > > > Thanks,
-> > > > Ming
-> > > > 
-> > > Don't worry about that, we always set the current thread to TASK_KILLABLE
-> > > 
-> > > while waiting in balance_dirty_pages().
-> > I have another concern, if 'dd' isn't killed, dirty pages won't be cleaned, and
-> > these (big amount)memory becomes not usable, and typical scenario could be USB HDD
-> > unplugged.
-> > 
-> > 
-> > thanks,
-> > Ming
-> Yes, it is unreasonable to continue writing data with the previously opened
-> fd after
-> the file system becomes read-only, resulting in dirty page accumulation.
-> 
-> I provided a patch in another reply.
-> Could you help test if it can solve your problem?
-> If it can indeed solve your problem, I will officially send it to the email
-> list.
+On Thu, Apr 20, 2023 at 6:56â€¯PM Nathan Chancellor <nathan@kernel.org> wrote:
+> When CONFIG_QUOTA is disabled, there are warnings around unused iterator
+> variables:
+>
+>   fs/ext4/super.c: In function 'ext4_put_super':
+>   fs/ext4/super.c:1262:13: error: unused variable 'i' [-Werror=unused-variable]
+>    1262 |         int i, err;
+>         |             ^
+>   fs/ext4/super.c: In function '__ext4_fill_super':
+>   fs/ext4/super.c:5200:22: error: unused variable 'i' [-Werror=unused-variable]
+>    5200 |         unsigned int i;
+>         |                      ^
+>   cc1: all warnings being treated as errors
+>
+> The kernel has updated to gnu11, allowing the variables to be declared
+> within the for loop. Do so to clear up the warnings.
+>
+> Fixes: dcbf87589d90 ("ext4: factor out ext4_flex_groups_free()")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-OK, I will test it tomorrow.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-But I am afraid if it can avoid the issue completely because the
-old write task hang in balance_dirty_pages() may still write/dirty pages
-if it is one very big size write IO.
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
 
-Thanks,
-Ming
+> @@ -1311,7 +1311,7 @@ static void ext4_put_super(struct super_block *sb)
+>         ext4_flex_groups_free(sbi);
+>         ext4_percpu_param_destroy(sbi);
+>  #ifdef CONFIG_QUOTA
+> -       for (i = 0; i < EXT4_MAXQUOTAS; i++)
+> +       for (int i = 0; i < EXT4_MAXQUOTAS; i++)
 
+int
+
+>                 kfree(get_qf_name(sb, sbi, i));
+>  #endif
+>
+
+> @@ -5628,7 +5627,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  #endif
+>
+>  #ifdef CONFIG_QUOTA
+> -       for (i = 0; i < EXT4_MAXQUOTAS; i++)
+> +       for (unsigned int i = 0; i < EXT4_MAXQUOTAS; i++)
+
+unsigned int
+
+>                 kfree(get_qf_name(sb, sbi, i));
+>  #endif
+>         fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
+
+I do see an opportunity to make this more consistent.
+get_qf_name() takes an int for the last parameter, but that should probably
+become unsigned int?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
