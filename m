@@ -2,33 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1926F0002
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 05:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A75A6F003D
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Apr 2023 06:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240499AbjD0D6q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Apr 2023 23:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S242693AbjD0Evw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Apr 2023 00:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236396AbjD0D6p (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Apr 2023 23:58:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773122683;
-        Wed, 26 Apr 2023 20:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M9m5Rfw4WyAfUq3Lq1g416KW1zPboz2ufjX48+QsLeI=; b=J8SOQNMg1f4YwpmOHxDfwyMDe2
-        uCczSn4NUbhU2J7R2M++JwLipvI/DwKTROiGWvgj5+wccGzlcivAzjznESt1zi/KkJBHA+3BKnLn3
-        3xw/yIEQVX4prPqRJQmQEX+B9Q+g3ojHId0plFCGM1tLRlAdvxQQudukYzQ/ivDReG47IKSPp50s2
-        OEaLRGRwPVaWZhIHGR6MOHMZhZKXxZMsew+Utbq2Z67zJ79mYL9rnlEsHKnLF7wuvqn6Sszmjyszy
-        pPjv7SskZUADaBdJyDtGsw7NnyWrD2Alzije2BK/gWFSr+Up44U+yhyZBWVEUtFxxjWucVZLwrkTa
-        TbyJVy1A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1prsmC-0038hU-Ar; Thu, 27 Apr 2023 03:58:36 +0000
-Date:   Thu, 27 Apr 2023 04:58:36 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ming Lei <ming.lei@redhat.com>
+        with ESMTP id S242671AbjD0Evv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Apr 2023 00:51:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115683A90
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Apr 2023 21:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682571064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2s/RO9FptogVncj3HgpgSA6ipdhLtPAA7dorEW4s5iM=;
+        b=UjKK7EFOYFo4v7Eir1NqiptQvM4dLtsxR2ypzDw+CG+ijq9grJbkdRCvtS2Ck4ldBG0vk4
+        lZjGkYKt6Urlf6W+LsR8jZd8FFpHKvWTDvDJNEqoQ0YVtggpjQw+mHegbHCySF0zFbfhBG
+        HqJnM2GI4ScpI9hJb0l2wicappn/sWI=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-255-07epsV5EOGqN665UvC9buQ-1; Thu, 27 Apr 2023 00:51:00 -0400
+X-MC-Unique: 07epsV5EOGqN665UvC9buQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 237DF2812940;
+        Thu, 27 Apr 2023 04:51:00 +0000 (UTC)
+Received: from ovpn-8-24.pek2.redhat.com (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 569C1C15BA0;
+        Thu, 27 Apr 2023 04:50:52 +0000 (UTC)
+Date:   Thu, 27 Apr 2023 12:50:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-block@vger.kernel.org,
@@ -36,33 +46,57 @@ Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         Dave Chinner <dchinner@redhat.com>,
         Eric Sandeen <sandeen@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>
+        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>,
+        ming.lei@redhat.com
 Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
-Message-ID: <ZEny7Izr8iOc/23B@casper.infradead.org>
+Message-ID: <ZEn/KB0fZj8S1NTK@ovpn-8-24.pek2.redhat.com>
 References: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
+ <ZEny7Izr8iOc/23B@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZEny7Izr8iOc/23B@casper.infradead.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
-> Hello Guys,
+Hello Matthew,
+
+On Thu, Apr 27, 2023 at 04:58:36AM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
+> > Hello Guys,
+> > 
+> > I got one report in which buffered write IO hangs in balance_dirty_pages,
+> > after one nvme block device is unplugged physically, then umount can't
+> > succeed.
 > 
-> I got one report in which buffered write IO hangs in balance_dirty_pages,
-> after one nvme block device is unplugged physically, then umount can't
-> succeed.
+> That's a feature, not a bug ... the dd should continue indefinitely?
 
-That's a feature, not a bug ... the dd should continue indefinitely?
+Can you explain what the feature is? And not see such 'issue' or 'feature'
+on xfs.
 
-balance_dirty_pages() is sleeping in KILLABLE state, so kill -9 of
-the dd process should succeed.
+The device has been gone, so IMO it is reasonable to see FS buffered write IO
+failed. Actually dmesg has shown that 'EXT4-fs (nvme0n1): Remounting
+filesystem read-only'. Seems these things may confuse user.
+
+> 
+> balance_dirty_pages() is sleeping in KILLABLE state, so kill -9 of
+> the dd process should succeed.
+
+Yeah, dd can be killed, however it may be any application(s), :-)
+
+Fortunately it won't cause trouble during reboot/power off, given
+userspace will be killed at that time.
+
+
+
+Thanks,
+Ming
 
