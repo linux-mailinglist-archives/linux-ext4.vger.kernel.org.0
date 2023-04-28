@@ -2,100 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA506F171A
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 14:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474D36F19AF
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 15:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345948AbjD1MCu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Apr 2023 08:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
+        id S1346298AbjD1Ne2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Apr 2023 09:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjD1MCt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 08:02:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AE12D65;
-        Fri, 28 Apr 2023 05:02:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 95DB81FFAB;
-        Fri, 28 Apr 2023 12:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682683366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w8NFlTAM7TMs+bI3PGeFwmGIdf3UYmFP4iw0BWjYPus=;
-        b=ufke+yp0gU03U5C/6+qSlRTGcCaURICp5bV7htT39jbDyXMz41dtUR8yU13nyNANhIikND
-        2+OBhL+YB9+pBf1erb6HjUflja/lWEkomJtZ09S4sNEwAtA//jJCfGFcggXQARheA77LxK
-        UC/ihit39OixmEABehSjBeDKPmtQuHo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682683366;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w8NFlTAM7TMs+bI3PGeFwmGIdf3UYmFP4iw0BWjYPus=;
-        b=JrE+vEggpbe9rm9jHmFdb5GfdjznB6+IB5sOVJBxzUus01kk3I5j/YaL3v4QM1kNDXi81z
-        HERSFZQRotZjRkDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87F371390E;
-        Fri, 28 Apr 2023 12:02:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XC8qIea1S2TcbAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 28 Apr 2023 12:02:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0DDE0A0729; Fri, 28 Apr 2023 14:02:46 +0200 (CEST)
-Date:   Fri, 28 Apr 2023 14:02:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jan Kara <jack@suse.cz>, stable@vger.kernel.org,
-        Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: Pick commit 2729cfdcfa ("ext4: use ext4_journal_start/stop for
- fast commit transactions")
-Message-ID: <20230428120246.hzx6lhkvmfdspy75@quack3>
-References: <20230427162459.qb3tnh3be6ofibzz@quack3>
- <2023042804-feed-radiantly-2a07@gregkh>
+        with ESMTP id S1346108AbjD1Ne1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 09:34:27 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49892116;
+        Fri, 28 Apr 2023 06:34:26 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-64115e652eeso12522337b3a.0;
+        Fri, 28 Apr 2023 06:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682688866; x=1685280866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dLtrKfbx8wA+iw7edCvDg/yUO74cXbRU6n2TMZ/9ubk=;
+        b=HMDMPs0w4XFvOHY5G0UoIq7nfpYh6JvYCo3DilMI5O/zQzJutW9YStZFx7VtmPEw/v
+         U1gHNNh3VBxQtFcF2ftbxDuUA0d9eqcqYGNwUKAYzWrwL5yA/Y/kqhqw0Sr9OqN0ABFU
+         epJf63sFr44aGZqjU0P1vW18Ui27FBMAkGf4YZNRfnF65j/zpWa97EVsJHYOLlwNGuJ9
+         x4GEaFzuHpp8IcAt5usrh4kSVrsFA7aF94eGStxMgRFUxGB2Qr5g1CnqyoCFRRCIJRdW
+         9ebAEi9eQGA1IKXcPahYtZ3W+ED08P1hkVso6E4iXy187lN9wIHYXaeOtIUi7Ri5fYhR
+         i2eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682688866; x=1685280866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dLtrKfbx8wA+iw7edCvDg/yUO74cXbRU6n2TMZ/9ubk=;
+        b=DSE2DEEfXNY9Xtr7rGIahqO4+OxUkhJEmK/uTbcavxax70uZ0DZWrXOzJbpAwh8OQP
+         xAEeyUXxL2U9W/jQqeQyQXe7gmzgCPxacEuuR8xK+3/zEBW3rse3Uu6Pzma2f92F9EJl
+         QY0cq68mFV4WAT4lXMWnEu27c4gY2lwVtOzYI78dlK8mXJ07T9R5TX6Wqk57ElspY6GH
+         XIS2YyI/YEjNe/ilkbZtSda6OJnUDoGJg7pa4jecgDttbr3m/im+McpwIsG7amssMOpo
+         808Ams2vON9V//Qia4kBvWKVcqRhYDk8BNUK5hXAJQX9b47OKUFXGO+FCF01cBCOIMse
+         5Sjw==
+X-Gm-Message-State: AC+VfDxtN0IbPRHTqlFrplszAGfA7UEYxPv/G73H2wAhVTwfoRuqOAQ3
+        6aDRDt2M9hV2e23EkSvL+65YcofmUhc7oQ==
+X-Google-Smtp-Source: ACHHUZ6HL9vXoS8kn/zyNrcZ4cMeZHd5P5pbWzlb7B4dTHMNL/UYT5psy31LbHB2AhIk0JAnOu6xNQ==
+X-Received: by 2002:a17:902:f14d:b0:19e:b2ed:6fff with SMTP id d13-20020a170902f14d00b0019eb2ed6fffmr8442814plb.31.1682688866083;
+        Fri, 28 Apr 2023 06:34:26 -0700 (PDT)
+Received: from ubuntu2204.. ([125.118.5.31])
+        by smtp.gmail.com with ESMTPSA id a15-20020a1709027d8f00b001a6527f6ad7sm13352893plm.85.2023.04.28.06.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Apr 2023 06:34:25 -0700 (PDT)
+From:   Wu Jianyue <wujianyue000@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wu Jianyue <wujianyue000@gmail.com>
+Subject: [PATCH] ext4: Put inode_operations in inode.c
+Date:   Fri, 28 Apr 2023 21:34:20 +0800
+Message-Id: <20230428133420.6959-1-wujianyue000@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023042804-feed-radiantly-2a07@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 28-04-23 09:32:34, Greg KH wrote:
-> On Thu, Apr 27, 2023 at 06:24:59PM +0200, Jan Kara wrote:
-> > Hello,
-> > 
-> > recently I've debugged a deadlock issue in ext4 fast commit feature in our
-> > openSUSE Leap kernel. Checking with upstream I've found out the issue was
-> > accidentally fixed by commit 2729cfdcfa1c ("ext4: use
-> > ext4_journal_start/stop for fast commit transactions"). Can you please pick
-> > up this commit into the stable tree? The problem has been there since fast
-> > commit began to exist (in 5.10-rc1) so 5.10 and 5.15 stable trees need the
-> > fix. Thanks!
-> 
-> This commit does not apply to those branches, so how was it tested?
+inode_operations is more suitable to put in inode.c,
+instead of file.c, so moved to inode.c.
 
-Hum, I've picked up the patch to our 5.14-based distro kernel and it
-applied (and passed testing) without issues so I was hoping 5.15 and 5.10
-would work as well. Apparently I was wrong. Sorry for the trouble.
+Because struct inode_operations's functions are already
+included in header file, so no need to change header files.
 
-> Can you send us backported, and tested, versions of this commit so that
-> we can apply them?
+Signed-off-by: Wu Jianyue <wujianyue000@gmail.com>
+---
+ fs/ext4/file.c  | 11 -----------
+ fs/ext4/inode.c | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 11 deletions(-)
 
-Yeah, I'll look into applying the patch directly to stable branches.
-
-								Honza
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 0b8b4499e5ca..a64184c74e4e 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -961,14 +961,3 @@ const struct file_operations ext4_file_operations = {
+ 	.fallocate	= ext4_fallocate,
+ };
+ 
+-const struct inode_operations ext4_file_inode_operations = {
+-	.setattr	= ext4_setattr,
+-	.getattr	= ext4_file_getattr,
+-	.listxattr	= ext4_listxattr,
+-	.get_inode_acl	= ext4_get_acl,
+-	.set_acl	= ext4_set_acl,
+-	.fiemap		= ext4_fiemap,
+-	.fileattr_get	= ext4_fileattr_get,
+-	.fileattr_set	= ext4_fileattr_set,
+-};
+-
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 8dbd352e3986..db08dd51b6b3 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -6147,3 +6147,15 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 	ext4_journal_stop(handle);
+ 	goto out;
+ }
++
++const struct inode_operations ext4_file_inode_operations = {
++	.setattr	= ext4_setattr,
++	.getattr	= ext4_file_getattr,
++	.listxattr	= ext4_listxattr,
++	.get_inode_acl	= ext4_get_acl,
++	.set_acl	= ext4_set_acl,
++	.fiemap		= ext4_fiemap,
++	.fileattr_get	= ext4_fileattr_get,
++	.fileattr_set	= ext4_fileattr_set,
++};
++
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
