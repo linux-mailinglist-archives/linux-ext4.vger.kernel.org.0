@@ -2,100 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFD46F1B12
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 17:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA1E6F1DC2
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 19:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjD1PG5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Apr 2023 11:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
+        id S1346225AbjD1R7a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Apr 2023 13:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjD1PG4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 11:06:56 -0400
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155612717
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 08:06:52 -0700 (PDT)
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-32a7770f504so154280175ab.2
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 08:06:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682694411; x=1685286411;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v/xD78dMXFtD77NIODcCN7yIVszjk8tbaP5FKYvJrfU=;
-        b=CEE2wKFmmzTC3FsDumTU3ZkD9++Hz+T/v/KtoTSnM8HooeROf37qNoVv+q+BTQpvQY
-         Cv3vQpxTa63DiFpQgwS91ljLdl1J3ypAJTDgO4QcJku0xAFEHVD2n1J7SsTLA67EacjT
-         kCWiObGORERhEoTTf5BaNsol0hIYVEyQdJQv10YhvjXFBQSgCJWi/Pn9TtjVhPvV/p6a
-         pFowd4sw0/VWWypHdC1MqaHqIDST+Gq3Ol0MLmVyRJu3LqRo1WbXVKSI6rNozF6GUzzU
-         HxPqD1xce71FNcYqEwi12VLmrnOaVJPkBjZvEYrVuvQf+m6Fd8C+Y4wrCFXRHgW1eUYf
-         8xow==
-X-Gm-Message-State: AC+VfDzj8GqOEbz9uq5JShnJTyyBS5aHi3tIPjQULDh8sxZQ3SqYTrP6
-        poQ/pGKK74BvjtiDL4ITZUwnb7Do+TiILIpVTAmH3ADgilrT
-X-Google-Smtp-Source: ACHHUZ7cadSF6zDEseaZLvjt5+aY90sLk7ce1A6nPHRNs2rfDdhDgLvGRew1H1zHhXrOjNcXVtscOZoDptIIhZefqatd2XAeqk3v
+        with ESMTP id S229587AbjD1R73 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 13:59:29 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA393C1E
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 10:59:28 -0700 (PDT)
+Received: from letrec.thunk.org ([76.150.80.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33SHxKI7031286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Apr 2023 13:59:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1682704764; bh=DR6/LsFVUoBJktPLFzfP5w67UsHg1xwlACx5/UCmsFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=NEvxaevxNpIMZOa24NVqVc4pM1Ot5kTyA6WzDW+/U60fLNPAYLinz2jKC01rJirq2
+         HAK0HuEkbdX9nKrONsSL1GK1I7lLenznIa0NeHlqZPtnMdcGHxGjpot75Rr/UESPVb
+         9lIVdsnrLjc52U048U7cAh6vMXG/a1ujTdC/Spn759KrDSKsztPIbH63pJ7toj6Bqz
+         vBsbYGsw2yDuSz/gaRRxz2C/cMScLHGZvnGNQ4B5ZJBbC9L+E5OSExNmI5Hy9rbBpe
+         cZLkFMTlTGEP4noiZt4ekSzY9wHjR8P8tke7atZGLS1wkAuWdk10spOBuAi4nAr/L1
+         d37VHgzVZ8RuA==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 5E7E88C01E0; Fri, 28 Apr 2023 13:59:20 -0400 (EDT)
+Date:   Fri, 28 Apr 2023 13:59:20 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Wu Jianyue <wujianyue000@gmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Put inode_operations in inode.c
+Message-ID: <ZEwJeMUM3bxTLx4q@mit.edu>
+References: <20230428133420.6959-1-wujianyue000@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ddc9:0:b0:315:8f6c:50a6 with SMTP id
- d9-20020a92ddc9000000b003158f6c50a6mr3519209ilr.1.1682694411424; Fri, 28 Apr
- 2023 08:06:51 -0700 (PDT)
-Date:   Fri, 28 Apr 2023 08:06:51 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a89a6a05fa66d226@google.com>
-Subject: [syzbot] Monthly ext4 report (Apr 2023)
-From:   syzbot <syzbot+list6dfc6ea307bfacecbbe0@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230428133420.6959-1-wujianyue000@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello ext4 maintainers/developers,
+On Fri, Apr 28, 2023 at 09:34:20PM +0800, Wu Jianyue wrote:
+> inode_operations is more suitable to put in inode.c,
+> instead of file.c, so moved to inode.c.
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+The inode operations structure for directories is in fs/ext4/namei.c;
+the inode operations for symlinks is in fs/ext4/symlink.c.  Exactly
+where the structure definition is somewhat arbitrary; should it be
+where the majority of the functions are defined?  Should it be
+associated with the file where operations for that inode type are
+located?  Should it be in the file where the structure is used (which
+is actually in two files; fs/ext4/namei.c and fs/ext4/inode.c)?
 
-During the period, 6 new issues were detected and 0 were fixed.
-In total, 72 issues are still open and 82 have been fixed so far.
+Moving it is just churn and makes things less consistent, so I don't
+think it's worth it to take this patch, sorry.
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  83130   Yes   possible deadlock in jbd2_journal_lock_updates
-                   https://syzkaller.appspot.com/bug?extid=79e6bbabf3ce17357969
-<2>  7208    Yes   WARNING in ext4_dirty_folio
-                   https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
-<3>  5604    Yes   possible deadlock in dquot_commit (2)
-                   https://syzkaller.appspot.com/bug?extid=70ff52e51b7e7714db8a
-<4>  773     Yes   INFO: task hung in __sync_dirty_buffer
-                   https://syzkaller.appspot.com/bug?extid=91dccab7c64e2850a4e5
-<5>  476     No    possible deadlock in ext4_map_blocks
-                   https://syzkaller.appspot.com/bug?extid=6de5025c31d33047d2a4
-<6>  361     No    possible deadlock in ext4_multi_mount_protect
-                   https://syzkaller.appspot.com/bug?extid=6b7df7d5506b32467149
-<7>  203     Yes   kernel BUG in ext4_get_group_info
-                   https://syzkaller.appspot.com/bug?extid=e2efa3efc15a1c9e95c3
-<8>  93      Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<9>  29      Yes   KASAN: slab-out-of-bounds Read in ext4_enable_quotas
-                   https://syzkaller.appspot.com/bug?extid=ea70429cd5cf47ba8937
-<10> 22      Yes   WARNING in ext4_xattr_block_set (2)
-                   https://syzkaller.appspot.com/bug?extid=6385d7d3065524c5ca6d
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+      	   	       	    	 	- Ted
