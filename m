@@ -2,133 +2,197 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAF96F0F07
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 01:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED4E6F1015
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 03:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbjD0Xe6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Apr 2023 19:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S229985AbjD1BmO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Apr 2023 21:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjD0Xe5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Apr 2023 19:34:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D3D2D55
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Apr 2023 16:33:44 -0700 (PDT)
+        with ESMTP id S229818AbjD1BmO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Apr 2023 21:42:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486AB1708
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Apr 2023 18:41:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682638412;
+        s=mimecast20190719; t=1682646093;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8j1mufvIgrEof2rz1gioQYw01o/93612V76WfPJiQ9s=;
-        b=FojXuSDQZ41z3gKKATqVRliiJxP8kQf2GpGF6ZKdad6fa4+BLM3VVq0eaTL3n/Rrm5UlaG
-        y+1IZQ0ljG457FGUdZl1ytKp2f64IS9ex71ujB2NlgtynwRsbtdv/uNqMKT3bJw7S4x1ji
-        zeXcqcQ/VShM7wSonY6o4wfuvbBJXKw=
+        bh=DAggdfiCq2i+jGMt/hx+W9dG2SinJfHBtiVgLfXz2w8=;
+        b=T6zvQBbkcAApoP0CFATrNewbzvWTVo2+bSM89NGazNHqbIp//PwkT80I1ezHSgKfKzOmcf
+        B/b7HsjWm8iX2dfo6+74/0AueOgWLXPZywSjygFnsy/Q/L2L0ZhoUDc/gM8AJRY3UB5WAD
+        gMaPOVQQo+s4KBOwMATdn0DYqxiFYJs=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-522-OJLfBfwhM7m20J7kGJ2TRQ-1; Thu, 27 Apr 2023 19:33:28 -0400
-X-MC-Unique: OJLfBfwhM7m20J7kGJ2TRQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+ us-mta-115-X7zBevW-NnOvO2-CBXNroA-1; Thu, 27 Apr 2023 21:41:29 -0400
+X-MC-Unique: X7zBevW-NnOvO2-CBXNroA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3E5FE1C068C6;
-        Thu, 27 Apr 2023 23:33:28 +0000 (UTC)
-Received: from rh (vpn2-52-17.bne.redhat.com [10.64.52.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5C0581121314;
-        Thu, 27 Apr 2023 23:33:27 +0000 (UTC)
-Received: from localhost ([::1] helo=rh)
-        by rh with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <dchinner@redhat.com>)
-        id 1psB75-0001eO-2u;
-        Fri, 28 Apr 2023 09:33:23 +1000
-Date:   Fri, 28 Apr 2023 09:33:20 +1000
-From:   Dave Chinner <dchinner@redhat.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A9C6529A9D40;
+        Fri, 28 Apr 2023 01:41:28 +0000 (UTC)
+Received: from ovpn-8-24.pek2.redhat.com (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CBB96492C3E;
+        Fri, 28 Apr 2023 01:41:20 +0000 (UTC)
+Date:   Fri, 28 Apr 2023 09:41:15 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-block@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Dave Chinner <dchinner@redhat.com>,
         Eric Sandeen <sandeen@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>
+        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>,
+        yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com
 Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
-Message-ID: <ZEsGQFN4Pd12r+Nt@rh>
+Message-ID: <ZEskO8md8FjFqQhv@ovpn-8-24.pek2.redhat.com>
 References: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
+ <ZEny7Izr8iOc/23B@casper.infradead.org>
+ <ZEn/KB0fZj8S1NTK@ovpn-8-24.pek2.redhat.com>
+ <dbb8d8a7-3a80-34cc-5033-18d25e545ed1@huawei.com>
+ <ZEpH+GEj33aUGoAD@ovpn-8-26.pek2.redhat.com>
+ <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
+ <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
-> Hello Guys,
+On Thu, Apr 27, 2023 at 07:27:04PM +0800, Ming Lei wrote:
+> On Thu, Apr 27, 2023 at 07:19:35PM +0800, Baokun Li wrote:
+> > On 2023/4/27 18:01, Ming Lei wrote:
+> > > On Thu, Apr 27, 2023 at 02:36:51PM +0800, Baokun Li wrote:
+> > > > On 2023/4/27 12:50, Ming Lei wrote:
+> > > > > Hello Matthew,
+> > > > > 
+> > > > > On Thu, Apr 27, 2023 at 04:58:36AM +0100, Matthew Wilcox wrote:
+> > > > > > On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
+> > > > > > > Hello Guys,
+> > > > > > > 
+> > > > > > > I got one report in which buffered write IO hangs in balance_dirty_pages,
+> > > > > > > after one nvme block device is unplugged physically, then umount can't
+> > > > > > > succeed.
+> > > > > > That's a feature, not a bug ... the dd should continue indefinitely?
+> > > > > Can you explain what the feature is? And not see such 'issue' or 'feature'
+> > > > > on xfs.
+> > > > > 
+> > > > > The device has been gone, so IMO it is reasonable to see FS buffered write IO
+> > > > > failed. Actually dmesg has shown that 'EXT4-fs (nvme0n1): Remounting
+> > > > > filesystem read-only'. Seems these things may confuse user.
+> > > > 
+> > > > The reason for this difference is that ext4 and xfs handle errors
+> > > > differently.
+> > > > 
+> > > > ext4 remounts the filesystem as read-only or even just continues, vfs_write
+> > > > does not check for these.
+> > > vfs_write may not find anything wrong, but ext4 remount could see that
+> > > disk is gone, which might happen during or after remount, however.
+> > > 
+> > > > xfs shuts down the filesystem, so it returns a failure at
+> > > > xfs_file_write_iter when it finds an error.
+> > > > 
+> > > > 
+> > > > ``` ext4
+> > > > ksys_write
+> > > >   vfs_write
+> > > >    ext4_file_write_iter
+> > > >     ext4_buffered_write_iter
+> > > >      ext4_write_checks
+> > > >       file_modified
+> > > >        file_modified_flags
+> > > >         __file_update_time
+> > > >          inode_update_time
+> > > >           generic_update_time
+> > > >            __mark_inode_dirty
+> > > >             ext4_dirty_inode ---> 2. void func, No propagating errors out
+> > > >              __ext4_journal_start_sb
+> > > >               ext4_journal_check_start ---> 1. Error found, remount-ro
+> > > >      generic_perform_write ---> 3. No error sensed, continue
+> > > >       balance_dirty_pages_ratelimited
+> > > >        balance_dirty_pages_ratelimited_flags
+> > > >         balance_dirty_pages
+> > > >          // 4. Sleeping waiting for dirty pages to be freed
+> > > >          __set_current_state(TASK_KILLABLE)
+> > > >          io_schedule_timeout(pause);
+> > > > ```
+> > > > 
+> > > > ``` xfs
+> > > > ksys_write
+> > > >   vfs_write
+> > > >    xfs_file_write_iter
+> > > >     if (xfs_is_shutdown(ip->i_mount))
+> > > >       return -EIO;    ---> dd fail
+> > > > ```
+> > > Thanks for the info which is really helpful for me to understand the
+> > > problem.
+> > > 
+> > > > > > balance_dirty_pages() is sleeping in KILLABLE state, so kill -9 of
+> > > > > > the dd process should succeed.
+> > > > > Yeah, dd can be killed, however it may be any application(s), :-)
+> > > > > 
+> > > > > Fortunately it won't cause trouble during reboot/power off, given
+> > > > > userspace will be killed at that time.
+> > > > > 
+> > > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > Ming
+> > > > > 
+> > > > Don't worry about that, we always set the current thread to TASK_KILLABLE
+> > > > 
+> > > > while waiting in balance_dirty_pages().
+> > > I have another concern, if 'dd' isn't killed, dirty pages won't be cleaned, and
+> > > these (big amount)memory becomes not usable, and typical scenario could be USB HDD
+> > > unplugged.
+> > > 
+> > > 
+> > > thanks,
+> > > Ming
+> > Yes, it is unreasonable to continue writing data with the previously opened
+> > fd after
+> > the file system becomes read-only, resulting in dirty page accumulation.
+> > 
+> > I provided a patch in another reply.
+> > Could you help test if it can solve your problem?
+> > If it can indeed solve your problem, I will officially send it to the email
+> > list.
 > 
-> I got one report in which buffered write IO hangs in balance_dirty_pages,
-> after one nvme block device is unplugged physically, then umount can't
-> succeed.
+> OK, I will test it tomorrow.
 
-The bug here is that the device unplug code has not told the
-filesystem that it's gone away permanently.
+Your patch can avoid dd hang when bs is 512 at default, but if bs is
+increased to 1G and more 'dd' tasks are started, the dd hang issue
+still can be observed.
 
-This is the same problem we've been having for the past 15 years -
-when block device goes away permanently it leaves the filesystem and
-everything else dependent on the block device completely unaware
-that they are unable to function anymore. IOWs, the block
-device remove path is relying on -unreliable side effects- of
-filesystem IO error handling to produce what we'd call "correct
-behaviour".
+The reason should be the next paragraph I posted.
 
-The block device needs to be shutting down the filesystem when it
-has some sort of fatal, unrecoverable error like this (e.g. hot
-unplug). We have the XFS_IOC_GOINGDOWN ioctl for telling the
-filesystem it can't function anymore. This ioctl
-(_IOR('X',125,__u32)) has also been replicated into ext4, f2fs and
-CIFS and it gets exercised heavily by fstests. Hence this isn't XFS
-specific functionality, nor is it untested functionality.
+Another thing is that if remount read-only makes sense on one dead
+disk? Yeah, block layer doesn't export such interface for querying
+if bdev is dead. However, I think it is reasonable to export such
+interface if FS needs that.
 
-The ioctl should be lifted to the VFS as FS_IOC_SHUTDOWN and a
-super_operations method added to trigger a filesystem shutdown.
-That way the block device removal code could simply call
-sb->s_ops->shutdown(sb, REASON) if it exists rather than
-sync_filesystem(sb) if there's a superblock associated with the
-block device. Then all these 
+> 
+> But I am afraid if it can avoid the issue completely because the
+> old write task hang in balance_dirty_pages() may still write/dirty pages
+> if it is one very big size write IO.
 
-This way we won't have to spend another two decades of people
-complaining about how applications and filesystems hang when they
-pull the storage device out from under them and the filesystem
-didn't do something that made it notice before the system hung....
 
-> So far only observed on ext4 FS, not see it on XFS.
-
-Pure dumb luck - a journal IO failed on XFS (probably during the
-sync_filesystem() call) and that shut the filesystem down.
-
-> I guess it isn't
-> related with disk type, and not tried such test on other type of disks yet,
-> but will do.
-
-It can happen on any block device based storage that gets pulled
-from under any filesystem without warning.
-
-> Seems like dirty pages aren't cleaned after ext4 bio is failed in this
-> situation?
-
-Yes, because the filesystem wasn't shut down on device removal to
-tell it that it's allowed to toss away dirty pages as they cannot be
-cleaned via the IO path....
-
--Dave.
--- 
-Dave Chinner
-dchinner@redhat.com
+thanks,
+Ming
 
