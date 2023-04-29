@@ -2,186 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA936F257E
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 19:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5621C6F26A1
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 23:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjD2Rgi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 29 Apr 2023 13:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        id S229900AbjD2VsD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 29 Apr 2023 17:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjD2Rgh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Apr 2023 13:36:37 -0400
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4991BC8
-        for <linux-ext4@vger.kernel.org>; Sat, 29 Apr 2023 10:36:36 -0700 (PDT)
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-32a8c155f24so13637615ab.0
-        for <linux-ext4@vger.kernel.org>; Sat, 29 Apr 2023 10:36:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682789796; x=1685381796;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xwzvF6SYS9Tx8bMji/qzNUXlj5HTA1UyRbsI+z+pCvk=;
-        b=kzt8sJXyT2McH4JKTnko0+70gYpDSsHge55LKdsXF8jhMvtzd3jvhbOPlmDnjGaRGA
-         qS1W++WN4Qrg27oaS1T2LlRghgw1C2A1j9Ggo1OUw/XIie2xBCwkyelOI5amzHYwhD5Y
-         fG+yye4YoqTadsxvOSowCnmE7xtOtHvpI/87+WHsYtgWxilxPKFoS08ACQTBAcykMUnA
-         Z4ePOoHCn7hmV9DZ5fkwNnRLhH+6aYh/8gHyodDRm1+cfPyVcfrKWhVLCeivtnhCwv5w
-         vXDLNr8hKVa9eUP1O+XUh22TRa1BnOofw6qHr3MV/coUIi8a4QLCM0+fKtWRgsZVGQb3
-         qI6g==
-X-Gm-Message-State: AC+VfDzbBNA8NQGKZnEzmP3OwGcBUZMeXSadJnTUTfUFOcPyvdzBzcJB
-        MW/yIUtlcYuB1Bc3EqK3zdaIuU8LORvzZ/jF6hy+N+V1C4eE
-X-Google-Smtp-Source: ACHHUZ7GYYTDdJKrqiS+DQdzc0hrvTs/MfBwJ4MKstsUTl4THiXhP3OrF24eRdsGiFD5RhRvzaWg+iPKS6/Y3yNFeh5opO7GTMKg
+        with ESMTP id S229532AbjD2VsD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Apr 2023 17:48:03 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A56E10F3
+        for <linux-ext4@vger.kernel.org>; Sat, 29 Apr 2023 14:47:59 -0700 (PDT)
+Received: from letrec.thunk.org ([76.150.80.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33TLlpKl007769
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Apr 2023 17:47:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1682804874; bh=RZSICHIOVIFONjKPxLv76+f0uM89N9ti2s6UBs/bvm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=STtP53cLvJNh4ApeYEjd725vdiJ3VIX5DjlytFnATXjOaTLM9byLP2/RdAnSOwTvx
+         7EmmHECJJ8HnxkoIWw0ACynatfXt8KBG8tTOhgfsuFIDhFPMiZMWNadeand8mK6DaN
+         Qs1UnUJhIJPReK6yYdAXlR86dC9XUimrf907Z6OE//ssnAA6NJOeCBVHjfPvBD+dIo
+         22jcYux9OXPyDRoNETcVmIIGXnTiVAZu4PJEZzQDbh/ANfyFgIuylEixPflbcOQRNU
+         beWOd2X1THC2Z4iXFF8+UyjsvA3/ie4rbQaCeBu630h1KlToDtD6VrYRx8XckUIACU
+         4LAqbGXz1RofQ==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id 195E68C022E; Sat, 29 Apr 2023 17:47:51 -0400 (EDT)
+Date:   Sat, 29 Apr 2023 17:47:51 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     syzbot <syzbot+ecab51a4a5b9f26eeaa1@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [syzbot] WARNING in ext4_dirty_folio
+Message-ID: <ZE2QhyNzgMo8KFVS@mit.edu>
+References: <0000000000003fb2e905db20ac96@google.com>
+ <00000000000031695705e0ee1d58@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c90e:0:b0:329:4c5e:15d8 with SMTP id
- t14-20020a92c90e000000b003294c5e15d8mr4891717ilp.2.1682789796011; Sat, 29 Apr
- 2023 10:36:36 -0700 (PDT)
-Date:   Sat, 29 Apr 2023 10:36:35 -0700
-In-Reply-To: <000000000000ee3a3005f909f30a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005e6fc05fa7d0881@google.com>
-Subject: Re: [syzbot] [ext4?] [fat?] possible deadlock in sys_quotactl_fd
-From:   syzbot <syzbot+aacb82fca60873422114@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, brauner@kernel.org, jack@suse.com,
-        jack@suse.cz, linkinjeon@kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000031695705e0ee1d58@google.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+#syz set subsystems: mm
 
-HEAD commit:    14f8db1c0f9a Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=115bdcf8280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a837a8ba7e88bb45
-dashboard link: https://syzkaller.appspot.com/bug?extid=aacb82fca60873422114
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1405a2b4280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bd276fc80000
+On Wed, Jun 08, 2022 at 04:36:20AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    cf67838c4422 selftests net: fix bpf build error
+> git tree:       net
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=123c2173f00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fc5a30a131480a80
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1342d5abf00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ecafebf00000
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ad6ce516eed3/disk-14f8db1c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1f38c2cc7667/vmlinux-14f8db1c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d795115eee39/Image-14f8db1c.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b9312932adf4/mount_0.gz
+The root cause of this failure is a fundamental bug / design flaw in
+get_user_pages and related functions, which file system developers
+have been complaining about for literally **years**.  See the recent
+discussion at [1] and going back earlier to 2018[2][3] and 2019[4].
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aacb82fca60873422114@syzkaller.appspotmail.com
+[1] https://lore.kernel.org/all/6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com/
+[2] https://lwn.net/Articles/753027/
+[3] https://lwn.net/Articles/774411/
+[4] https://lwn.net/Articles/784574/
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.3.0-rc7-syzkaller-g14f8db1c0f9a #0 Not tainted
-------------------------------------------------------
-syz-executor396/5961 is trying to acquire lock:
-ffff0000d9e5c0e0 (&type->s_umount_key#29){++++}-{3:3}, at: __do_sys_quotactl_fd fs/quota/quota.c:999 [inline]
-ffff0000d9e5c0e0 (&type->s_umount_key#29){++++}-{3:3}, at: __se_sys_quotactl_fd fs/quota/quota.c:972 [inline]
-ffff0000d9e5c0e0 (&type->s_umount_key#29){++++}-{3:3}, at: __arm64_sys_quotactl_fd+0x30c/0x4a4 fs/quota/quota.c:972
+I'm going to reassign this to the mm subsystem, since there's not much
+we can do on the file system end.  The WARNING is considered a good
+thing because users can see silent data corruption/loss if they use
+process_vm_writev() or RDMA to write to memory backed by a file.  And
+while most users at large hyperscale scientific compute farms probably
+won't be paying attention to the system logs, at least we've done
+something to warn them.
 
-but task is already holding lock:
-ffff0000d9e5c460 (sb_writers#3){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:394
+Fortunately data corruption is rare (but when it happens it could
+really screw with your results!), but if they are doing some large
+scale simulation to evaluate the safety of nuclear weapons (for
+example), it would be nice if they got at least some hint.
 
-which lock already depends on the new lock.
+There is a potential solution discussed at [1], but there is push back
+since it could break users by disallowing the thing that might cause
+data corruption.  Why breaking user applications is bad, turning a
+possible silent data corruption to a very visible, hard failure is
+arguably a good thing....
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (sb_writers#3){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1477 [inline]
-       sb_start_write include/linux/fs.h:1552 [inline]
-       write_mmp_block+0xe4/0xb70 fs/ext4/mmp.c:50
-       ext4_multi_mount_protect+0x2f8/0x8c8 fs/ext4/mmp.c:343
-       __ext4_remount fs/ext4/super.c:6543 [inline]
-       ext4_reconfigure+0x2180/0x2928 fs/ext4/super.c:6642
-       reconfigure_super+0x328/0x738 fs/super.c:956
-       do_remount fs/namespace.c:2704 [inline]
-       path_mount+0xc0c/0xe04 fs/namespace.c:3364
-       do_mount fs/namespace.c:3385 [inline]
-       __do_sys_mount fs/namespace.c:3594 [inline]
-       __se_sys_mount fs/namespace.c:3571 [inline]
-       __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3571
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
-       el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
-       el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-
--> #0 (&type->s_umount_key#29){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3098 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
-       validate_chain kernel/locking/lockdep.c:3832 [inline]
-       __lock_acquire+0x3338/0x764c kernel/locking/lockdep.c:5056
-       lock_acquire+0x238/0x718 kernel/locking/lockdep.c:5669
-       down_read+0x50/0x6c kernel/locking/rwsem.c:1520
-       __do_sys_quotactl_fd fs/quota/quota.c:999 [inline]
-       __se_sys_quotactl_fd fs/quota/quota.c:972 [inline]
-       __arm64_sys_quotactl_fd+0x30c/0x4a4 fs/quota/quota.c:972
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
-       el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
-       el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(sb_writers#3);
-                               lock(&type->s_umount_key#29);
-                               lock(sb_writers#3);
-  lock(&type->s_umount_key#29);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor396/5961:
- #0: ffff0000d9e5c460 (sb_writers#3){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:394
-
-stack backtrace:
-CPU: 0 PID: 5961 Comm: syz-executor396 Not tainted 6.3.0-rc7-syzkaller-g14f8db1c0f9a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2056
- check_noncircular+0x2cc/0x378 kernel/locking/lockdep.c:2178
- check_prev_add kernel/locking/lockdep.c:3098 [inline]
- check_prevs_add kernel/locking/lockdep.c:3217 [inline]
- validate_chain kernel/locking/lockdep.c:3832 [inline]
- __lock_acquire+0x3338/0x764c kernel/locking/lockdep.c:5056
- lock_acquire+0x238/0x718 kernel/locking/lockdep.c:5669
- down_read+0x50/0x6c kernel/locking/rwsem.c:1520
- __do_sys_quotactl_fd fs/quota/quota.c:999 [inline]
- __se_sys_quotactl_fd fs/quota/quota.c:972 [inline]
- __arm64_sys_quotactl_fd+0x30c/0x4a4 fs/quota/quota.c:972
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
- el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+						- Ted
