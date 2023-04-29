@@ -2,74 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C155F6F2304
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 07:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0E66F2414
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 12:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjD2FL5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 29 Apr 2023 01:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S230521AbjD2KEE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 29 Apr 2023 06:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjD2FL4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Apr 2023 01:11:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926962701
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 22:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682745067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2hAEIix55mQqheQ/XmVIMx3hso9fuBFFY9y7DgUUBM8=;
-        b=Gk5p/caH9ff9TE4ldNADOIydHSmjf5IS2Jw14goLgpt/RVsm9KhEmG5GKcME0trRSDj4BM
-        YdqYmgfo2d3Of2unhMir5EVA4Bx+CKAeC4pm291iQ7wu/Qq6j4Tk2zzjNFTQeM4jFhqqK8
-        5snjqAqEf+G7XsFqj4jne+JToGMDNtw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-352-R6yLz9NvNsCULUVy6I_V-g-1; Sat, 29 Apr 2023 01:11:04 -0400
-X-MC-Unique: R6yLz9NvNsCULUVy6I_V-g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6741F85A5B1;
-        Sat, 29 Apr 2023 05:11:02 +0000 (UTC)
-Received: from ovpn-8-24.pek2.redhat.com (ovpn-8-18.pek2.redhat.com [10.72.8.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B6EE5400F4D;
-        Sat, 29 Apr 2023 05:10:54 +0000 (UTC)
-Date:   Sat, 29 Apr 2023 13:10:49 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Baokun Li <libaokun1@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-block@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Zhang Yi <yi.zhang@redhat.com>,
-        yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com
-Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
-Message-ID: <ZEym2Yf1Ud1p+L3R@ovpn-8-24.pek2.redhat.com>
-References: <ZEn/KB0fZj8S1NTK@ovpn-8-24.pek2.redhat.com>
- <dbb8d8a7-3a80-34cc-5033-18d25e545ed1@huawei.com>
- <ZEpH+GEj33aUGoAD@ovpn-8-26.pek2.redhat.com>
- <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
- <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
- <ZEskO8md8FjFqQhv@ovpn-8-24.pek2.redhat.com>
- <fb127775-bbe4-eb50-4b9d-45a8e0e26ae7@huawei.com>
- <ZEtd6qZOgRxYnNq9@mit.edu>
- <ZEyL/sjVeW88XpIn@ovpn-8-24.pek2.redhat.com>
- <20230429044038.GA7561@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230429044038.GA7561@lst.de>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S230458AbjD2KEC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Apr 2023 06:04:02 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9A2199F
+        for <linux-ext4@vger.kernel.org>; Sat, 29 Apr 2023 03:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682762641; x=1714298641;
+  h=date:from:to:cc:subject:message-id;
+  bh=h9KhkNwZLECoOjXp+y/VLzOnhXWze6SUzHq2NARv0h0=;
+  b=L8DvYUscbm+LSgsCNITLwhueAZG9UH41n70QZVcfhzgZbIBe2cUp3FJT
+   TlKtwXVVW331JHXXaC2YghEVX2SYbyVl5rvSHLHVO0LH1nO3VvvHMF758
+   OBL1CHNq3fbiKv+b4AiErXa+4mHx3kJrlwbVTCPpwNTGOjE6KwUKWmi8b
+   lKFlAQqfLewdLpXT/jBlPhyWcD1Pc8HJQt88MP17gvpMzJgMLOMpZf6hb
+   oCStExqvEoIXuG7VZ/ARSspOJD4oNc9wZS5EmlH1588aDWYWheoPHX+qw
+   Thy43yjmEk9HV5R2dLkmNfGM3IFu+4UgNNyasDS96LxH4P0bsraVw07hG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10694"; a="328266569"
+X-IronPort-AV: E=Sophos;i="5.99,237,1677571200"; 
+   d="scan'208";a="328266569"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2023 03:04:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10694"; a="727881044"
+X-IronPort-AV: E=Sophos;i="5.99,237,1677571200"; 
+   d="scan'208";a="727881044"
+Received: from lkp-server01.sh.intel.com (HELO 5bad9d2b7fcb) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 29 Apr 2023 03:03:59 -0700
+Received: from kbuild by 5bad9d2b7fcb with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pshQs-000134-2j;
+        Sat, 29 Apr 2023 10:03:58 +0000
+Date:   Sat, 29 Apr 2023 18:03:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ d4fab7b28e2f5d74790d47a8d298da0abfb5132f
+Message-ID: <20230429100313.67IoB%lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,40 +59,117 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Apr 29, 2023 at 06:40:38AM +0200, Christoph Hellwig wrote:
-> On Sat, Apr 29, 2023 at 11:16:14AM +0800, Ming Lei wrote:
-> > OK, looks both Dave and you have same suggestion, and IMO, it isn't hard to
-> > add one interface for notifying FS, and it can be either one s_ops->shutdown()
-> > or shutdown_filesystem(struct super_block *sb).
-> 
-> It's not that simple.  You need to be able to do that for any device used
-> by a file system, not just s_bdev.  This means it needs go into ops
-> passed by the bdev owner, which is also needed to propagate this through
-> stackable devices.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: d4fab7b28e2f5d74790d47a8d298da0abfb5132f  ext4: clean up error handling in __ext4_fill_super()
 
-Not sure if it is needed for non s_bdev , because FS is over stackable device
-directly. Stackable device has its own logic for handling underlying disks dead
-or deleted, then decide if its own disk needs to be deleted, such as, it is
-fine for raid1 to work from user viewpoint if one underlying disk is deleted.
+elapsed time: 1007m
 
-> 
-> I have some work on that, but the way how blkdev_get is called in the
-> generic mount helpers is a such a mess that I've not been happy with
-> the result yet.  Let me see if spending extra time with it will allow
-> me to come up with something that doesn't suck.
-> 
-> > But the main job should be how this interface is implemented in FS/VFS side,
-> > so it looks one more FS job, and block layer can call shutdown_filesystem()
-> > from del_gendisk() simply.
-> 
-> This needs to be called from blk_mark_disk_dead for drivers using that,
-> and from del_gendisk only if GD_DEAD isn't set yet.
+configs tested: 98
+configs skipped: 8
 
-OK, looks you mean the API needs to be called before GD_DEAD is set,
-but I am wondering if it makes a difference, given device is already
-dead.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r002-20230428   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230428   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230428   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r002-20230428   clang
+arm64                randconfig-r031-20230428   clang
+csky                                defconfig   gcc  
+hexagon      buildonly-randconfig-r004-20230428   clang
+hexagon              randconfig-r041-20230428   clang
+hexagon              randconfig-r045-20230428   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r006-20230428   gcc  
+ia64                 randconfig-r012-20230428   gcc  
+ia64                 randconfig-r015-20230428   gcc  
+ia64                 randconfig-r025-20230428   gcc  
+ia64                 randconfig-r033-20230428   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r011-20230428   gcc  
+loongarch            randconfig-r024-20230428   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r003-20230428   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r001-20230428   gcc  
+m68k                 randconfig-r023-20230428   gcc  
+microblaze           randconfig-r021-20230428   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r005-20230428   gcc  
+nios2        buildonly-randconfig-r001-20230428   gcc  
+nios2        buildonly-randconfig-r006-20230428   gcc  
+nios2                               defconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r003-20230428   gcc  
+parisc               randconfig-r014-20230428   gcc  
+parisc               randconfig-r036-20230428   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r032-20230428   clang
+riscv                randconfig-r042-20230428   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230428   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r026-20230428   gcc  
+sparc                               defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64                        randconfig-a011   gcc  
+x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a013   gcc  
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
+x86_64                        randconfig-a016   clang
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r005-20230428   gcc  
+xtensa               randconfig-r013-20230428   gcc  
 
-Thanks,
-Ming
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
