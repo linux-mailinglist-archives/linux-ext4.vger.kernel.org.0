@@ -2,157 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AFD6F2009
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Apr 2023 23:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AB36F2184
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 02:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjD1VTL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Apr 2023 17:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S1347130AbjD2AMI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Apr 2023 20:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345675AbjD1VTK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 17:19:10 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A1C1FF7
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 14:19:08 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-94a342f7c4cso52334866b.0
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 14:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1682716747; x=1685308747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=61ueAZnI+VUsri6o/4rA392h46Og1UAC3oGSqW4xW/E=;
-        b=GqN4m+5oDpAvN0PtaOsqULNsTSUSenPjy/O2JJIWrG1stZeQNQLkuJbbnUkn6/ef6I
-         fEQ+TmDjjQCjzlCG0CSfMC8MPnUfzacTyvSvop4gjuciyB+S3hpEXPGGC6n1hQjbcW+J
-         xMTIp/zt/bGRAk76AZSamtjwgm1xlqCNi+7AU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682716747; x=1685308747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=61ueAZnI+VUsri6o/4rA392h46Og1UAC3oGSqW4xW/E=;
-        b=ixmz7JEHcvHGkb+C/rZrweoRprcy517b8WNqNmmZsutYnouF3wfF6us42vY+9naNwO
-         8+/OiVcT4thhyJv/wctZvrkWQzdiSfNlSC84fFpDMTEFEPd+yq8mgVVrytcWEm5PAfCB
-         PVMmgr8ZNsCWMifqAd+uPXrUEvhy2oXdUvcSivMsmljba2xHRYZ/dNeiKI99548xyzOM
-         3N9rjSbVogYwPYF9/T0g8Z/GeZJXHuS5srwMgE2V2aRyAb4o4VOJ82r8bOXtklWEy7ZT
-         jdt8+bRNMpvLTStpdl0NiRcaCrxuzVFEm2lczbo3JEsFhY5gDDkuCIhGxZhEGSpAmC3G
-         0hWQ==
-X-Gm-Message-State: AC+VfDyFcEVKoBTli/P7xDlvcTiV+6QLJ1ssMveQ9WtIYcfgUZjldEjE
-        ALT8357q0L04B9nY2gW7+bYGN0ew/t7awaVE3QLXJQ==
-X-Google-Smtp-Source: ACHHUZ7xbrQnb9Wma17PZRuulQFhMcINfd6OM0bjh4UPXQ1GlG4IE8LACj8hJTN/bW/XMjteeARK2g==
-X-Received: by 2002:a17:907:7245:b0:94f:36a0:da45 with SMTP id ds5-20020a170907724500b0094f36a0da45mr5889661ejc.29.1682716746915;
-        Fri, 28 Apr 2023 14:19:06 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id ox6-20020a170907100600b008f89953b761sm11699089ejb.3.2023.04.28.14.19.06
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 14:19:06 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5067736607fso318124a12.0
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 14:19:06 -0700 (PDT)
-X-Received: by 2002:a05:6402:114c:b0:508:4808:b62b with SMTP id
- g12-20020a056402114c00b005084808b62bmr180566edw.22.1682716745923; Fri, 28 Apr
- 2023 14:19:05 -0700 (PDT)
+        with ESMTP id S229579AbjD2AMH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 20:12:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E782422C;
+        Fri, 28 Apr 2023 17:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SFptb4bxgIj4illZMUP0+LEQ5YHjcoe6ZdfH4QgLaE8=; b=DcPVwA/0w7w3ihDlMcami/XEWr
+        na4uR2ZaEMVCEbed/HJorphO6NziasFTaQ/zYpNdLymwt359fTb4MF19qW/HlRtwr3sGpvxYpY3vn
+        FNwF1Ud9N8hZiOmwnL8ihw9/GZF/Co33LwX7BxutpUaUuWy0QKSQNgpxztYInRxUVY4TwkdaivSsm
+        TObjCzU3FiAg0zpoZslTlxk6Bulg0bgzssnJYmH3uGhGo83sh5uG/oGFSYkWww1qp7KHrBMglzvOu
+        k9jRJfica0AfFGfpyfWeLMxApO8wY0Rp63A9R8CMDIuPAT0l/bpU0AL36zhkgs8xPCwcjTboLwdlp
+        AfI1a4iw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1psYBx-00BykC-2P;
+        Sat, 29 Apr 2023 00:11:57 +0000
+Date:   Fri, 28 Apr 2023 17:11:57 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Daniel Gomez <da.gomez@samsung.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Miklos Szeredi <miklos@szeredi.hu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/17] fs: add CONFIG_BUFFER_HEAD
+Message-ID: <ZExgzbBCbdC1y9Wk@bombadil.infradead.org>
+References: <20230424054926.26927-1-hch@lst.de>
+ <20230424054926.26927-18-hch@lst.de>
 MIME-Version: 1.0
-References: <20230425041838.GA150312@mit.edu> <CAHk-=wiP0983VQYvhgJQgvk-VOwSfwNQUiy5RLr_ipz8tbaK4Q@mail.gmail.com>
- <CAKwvOdmXgThxzBaaL_Lt+gpc7yT1T-e7YgM8vU=c7sUita6aaw@mail.gmail.com>
- <CAHk-=wjXDzU1j-cCB28Pxt-=NV5VTbnLimY3HG4uF0HPP7us_Q@mail.gmail.com>
- <CAKwvOdm3gkAufWcWBqDMQNRXVqJjooFQ4Bi5YPHndWFCPScG+g@mail.gmail.com>
- <CAHk-=wib1T7HzHOhZBATast=nKPT+hkRRqgaFT9osahB08zNRg@mail.gmail.com>
- <CAKwvOdn3Unm94UCiXygWTM_KyhATNsy68b_CFbqBDFXshd+34Q@mail.gmail.com>
- <CAHk-=wi_=4EXm_FMYETDo-aETdWPBvJ0_bv+GaOMz2bu8UoWxA@mail.gmail.com> <CAKwvOd=mgAMuMODXTapt8JRqEFLS1j-hfssZE0YjJNjPhH=H5A@mail.gmail.com>
-In-Reply-To: <CAKwvOd=mgAMuMODXTapt8JRqEFLS1j-hfssZE0YjJNjPhH=H5A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 Apr 2023 14:18:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjwMaS5=J7UgEPuoP_=01O9Ti62JVF-c=a6v3g2YAwzKQ@mail.gmail.com>
-Message-ID: <CAHk-=wjwMaS5=J7UgEPuoP_=01O9Ti62JVF-c=a6v3g2YAwzKQ@mail.gmail.com>
-Subject: Re: [GIT PULL] ext4 changes for the 6.4 merge window
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230424054926.26927-18-hch@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 2:03=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> >
-> >    void *bar(void) {
-> > #if CONFIG_XYZ
-> >     if (somecondition) return NULL;
-> > #endif
-> >     return foo(); }
-> >
-> > and the caller really *should* check for NULL - it's just that the
-> > compiler never saw that case.
->
-> I think having a return value be conditionally _Nonnull is "garbage
-> in; garbage out."
+On Mon, Apr 24, 2023 at 07:49:26AM +0200, Christoph Hellwig wrote:
+> +const struct address_space_operations def_blk_aops = {
+> +	.dirty_folio	= filemap_dirty_folio,
+> +	.release_folio		= iomap_release_folio,
+> +	.invalidate_folio	= iomap_invalidate_folio,
+> +	.read_folio		= blkdev_read_folio,
+> +	.readahead		= blkdev_readahead,
+> +	.writepages		= blkdev_writepages,
+> +	.is_partially_uptodate  = iomap_is_partially_uptodate,
+> +	.error_remove_page	= generic_error_remove_page,
+> +	.migrate_folio		= filemap_migrate_folio,
+> +};
+> +#endif /* CONFIG_BUFFER_HEAD */
 
-No, no, you misunderstand.
+We've tested this with bs > ps (LBS) devices and it would seem it crashes,
+as Pankaj notes perhaps due to lack of higher order folio support yet
+on this path, for the block cache. The same crash happens with NVMe
+(using out-of-tree nvme_core.debug_large_lbas boot parameter to enable NVMe
+LBS) or brd with LBS. To enable NVMe LBS or brd with LBS you need
+out of tree patches though of course, so I've stashed these into
+a branch, large-block-20230426 [0] so to help folks who may want
+to experiment further.
 
-"foo()" is the one that is unconditionally _Nonnull. It never returns NULL.
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=large-block-20230426
 
-But *bar()* is not. There's no _Nonnull about 'bar()'. Never was, never wil=
-l be.
+[   11.245248] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[   11.254581] #PF: supervisor read access in kernel mode
+[   11.257387] #PF: error_code(0x0000) - not-present page
+[   11.260921] PGD 0 P4D 0
+[   11.262600] Oops: 0000 [#1] PREEMPT SMP PTI
+[   11.264993] CPU: 7 PID: 198 Comm: (udev-worker) Not tainted 6.3.0-large-block-20230426 #2
+[   11.269385] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-debian-1.16.0-5 04/01/2014
+[   11.275054] RIP: 0010:iomap_page_create.isra.0+0xc/0xd0
+[   11.277924] Code: 41 5e 41 5f c3 cc cc cc cc 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 41 54 55 48 89 f5 53 <48> 8b 06 48 c1 e8 0d 89 c6 83 e6 01 0f 84 a1 00 00 00 4c 8b 65 28
+[   11.287293] RSP: 0018:ffffb0f0805ef9d8 EFLAGS: 00010293
+[   11.289964] RAX: ffff9de3c1fa8388 RBX: ffffb0f0805efa78 RCX: 000000037ffe0000
+[   11.293212] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000000000d
+[   11.296485] RBP: 0000000000000000 R08: 0000000000021000 R09: ffffffff9c733b20
+[   11.299724] R10: 0000000000000001 R11: 000000000000c000 R12: 0000000000000000
+[   11.302974] R13: ffffffff9be96260 R14: ffffb0f0805efa58 R15: 0000000000000000
+[   11.306206] FS:  00007f03ea8368c0(0000) GS:ffff9de43bdc0000(0000) knlGS:0000000000000000
+[   11.309949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   11.312464] CR2: 0000000000000000 CR3: 0000000117ec6006 CR4: 0000000000770ee0
+[   11.315442] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   11.318310] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   11.321010] PKRU: 55555554
+[   11.322212] Call Trace:
+[   11.323224]  <TASK>
+[   11.324146]  iomap_readpage_iter+0x96/0x300
+[   11.325694]  iomap_readahead+0x174/0x2d0
+[   11.327129]  read_pages+0x69/0x1f0
+[   11.328389]  ? folio_add_lru+0x7e/0xe0
+[   11.329751]  page_cache_ra_unbounded+0x187/0x1d0
+[   11.331301]  force_page_cache_ra+0x94/0xb0
+[   11.332681]  filemap_get_pages+0x10e/0x650
+[   11.334073]  ? _raw_spin_lock+0x13/0x40
+[   11.335287]  filemap_read+0xbf/0x340
+[   11.336430]  ? aa_file_perm+0x117/0x4b0
+[   11.337646]  ? generic_fillattr+0x45/0xf0
+[   11.338887]  ? _copy_to_user+0x22/0x30
+[   11.340026]  ? cp_new_stat+0x150/0x180
+[   11.341166]  blkdev_read_iter+0x5e/0x140
+[   11.342357]  vfs_read+0x1f0/0x2c0
+[   11.343354]  ksys_read+0x63/0xe0
+[   11.344331]  do_syscall_64+0x37/0x90
+[   11.345411]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[   11.346760] RIP: 0033:0x7f03eaf3903d
 
-We are *not* looking to statically mark everything that never returns
-NULL as _Nonnull. Only some core helper functions.
+(gdb) l *(iomap_readpage_iter+0x96)
+0xffffffff814021b6 is in iomap_readpage_iter (fs/iomap/buffered-io.c:280).
+275             if (iomap->type == IOMAP_INLINE)
+276                     return iomap_read_inline_data(iter, folio);
+277
+278             /* zero post-eof blocks as the page may be mapped */
+279             iop = iomap_page_create(iter->inode, folio, iter->flags);
+280             iomap_adjust_read_range(iter->inode, folio, &pos, length, &poff, &plen);
+281             if (plen == 0)
+282                     goto done;
+283
+284             if (iomap_block_needs_zeroing(iter, pos)) {
+(gdb) l *(iomap_page_create+0xc)
+0xffffffff81400cdc is in iomap_page_create (./arch/x86/include/asm/bitops.h:207).
+202     }
+203
+204     static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
+205     {
+206             return ((1UL << (nr & (BITS_PER_LONG-1))) &
+207                     (addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
+208     }
+209
+210     static __always_inline bool constant_test_bit_acquire(long nr, const volatile unsigned long *addr)
+211     {
 
-If "bar()" is a complicated function that can under some circumstances
-return NULL, then it's clearly not _Nonnull.
+To reproduce one would want a system with only say XFS as the root
+image. I've enabled this on kdevops through "pure-iomap" option:
 
-It does not matter one whit that maybe in some simplified config,
-bar() might never return NULL. That simply does *not* make it
-_Nonnull.
+https://github.com/linux-kdevops/kdevops/blob/master/docs/lbs.md
 
-But my point is that for a *compiler*, this is not actually easy at all.
-
-Because a compiler might inline 'bar()' entirely (it's a trivial
-function that only calls 'foo()', after all, so it *should* be
-inlined.
-
-But now that 'bar()' has been inlined into some other call-site, that
-*other* call site will have a test for "is the result NULL?"
-
-And that other call site *should* have that test. Because it didn't
-call "foo()", it called "bar()".
-
-But with the inlining, the compiler will likely see just the call to
-foo(), and I suspect your patch would make it then complain about how
-the result is tested for NULL.
-
-So it would need to have that special logic of "only warn if the test
-is at the same level".
-
-> Thinking more about this, I really think _Nonnull should behave like a
-> qualifier (const, restrict, volatile). So the above example would be:
->
-> void * _Nonnull ptr =3D foo();
-> if (!ptr) // warning: tautology
-
-That would solve the problem, yes. But I suspect it would be very
-inconvenient for users.
-
-In particular, it would have made it totally pointless for the issue
-at hand: finding *existing* users of  __filemap_get_folio() (that used
-to return NULL for errors), and finding the cases where the NULL check
-still exists now that it's no longer the right thign to do.
-
-So I think it would largely defeat the use-case. It would only warn
-for cases that have already been annotated.
-
-So to be useful, I think it would have to be a "does automagically the
-right thing" kind of feature.
-
-                 Linus
+  Luis
