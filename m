@@ -2,106 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656266F21F3
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 03:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5636F22A1
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Apr 2023 05:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347236AbjD2BUn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Apr 2023 21:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S1346751AbjD2DRU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Apr 2023 23:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347049AbjD2BUm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 21:20:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5754F3584;
-        Fri, 28 Apr 2023 18:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BaIEj2paZYE/uU2XkcW2I8y0R+043vPSdJ9uniAsh0U=; b=Fu1HC8bUG02gPzRUECQ6ysoDOs
-        TKxxmHyyETr+yycfGwhDUSeMV9sMGtard9Y9x6iKaNQrEjTizdLrKfJqajF9FFqYC0FcARAJBzYa7
-        QmDsQyBNdOb1YuUCNd0jOstr5EUUo+rkNCx68RH6ucdm2kUyF+oMxXeeKPlKwzVpW0Vs2hPKvplhl
-        zBtm35j8R0bVRMTrCVHq8C/RgnPDcuECqaH7jXz7zqz1yCjsGcZrjUCYWzP4bIZvk1TGoHdLj7G7Z
-        Cb6pFJcswSczJFWlK1VT+VeMjZesZ6hXXpaiKMKi4EFId/Pr54k+/0BaupArt2vjbPiYkfYlfTNsz
-        jgLrdWuA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1psZG6-0059h2-19; Sat, 29 Apr 2023 01:20:18 +0000
-Date:   Sat, 29 Apr 2023 02:20:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Daniel Gomez <da.gomez@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
+        with ESMTP id S230180AbjD2DRT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Apr 2023 23:17:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEC830EE
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Apr 2023 20:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682738191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y8HvWUV5hy/kWDmDmtLLm7pt+PnVWNujp0CYMU9jQ6c=;
+        b=MS0zLInpe1In0pld9X3eeeD2wFg/dJWChCRDo/NTgas0RRnLpyTtw9s4POCTi21d0cTF4n
+        kPbm6/s7A6+RbNmt149WuET8diJ1ci9quE3WIQhqSLawawbc6d38R2Jg/duG3Qz7MEWOiD
+        3yTN9a110AIDz/fx7c0tRmMK8UYieF4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-571-ssp8t18XOjSZ-rjNIW5Xcw-1; Fri, 28 Apr 2023 23:16:28 -0400
+X-MC-Unique: ssp8t18XOjSZ-rjNIW5Xcw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C78AC811E7E;
+        Sat, 29 Apr 2023 03:16:27 +0000 (UTC)
+Received: from ovpn-8-24.pek2.redhat.com (ovpn-8-18.pek2.redhat.com [10.72.8.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05C6D40F177;
+        Sat, 29 Apr 2023 03:16:19 +0000 (UTC)
+Date:   Sat, 29 Apr 2023 11:16:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Baokun Li <libaokun1@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-block@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/17] fs: add CONFIG_BUFFER_HEAD
-Message-ID: <ZExw0eW52lYj2R1m@casper.infradead.org>
-References: <20230424054926.26927-1-hch@lst.de>
- <20230424054926.26927-18-hch@lst.de>
- <ZExgzbBCbdC1y9Wk@bombadil.infradead.org>
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>,
+        yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com
+Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
+Message-ID: <ZEyL/sjVeW88XpIn@ovpn-8-24.pek2.redhat.com>
+References: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
+ <ZEny7Izr8iOc/23B@casper.infradead.org>
+ <ZEn/KB0fZj8S1NTK@ovpn-8-24.pek2.redhat.com>
+ <dbb8d8a7-3a80-34cc-5033-18d25e545ed1@huawei.com>
+ <ZEpH+GEj33aUGoAD@ovpn-8-26.pek2.redhat.com>
+ <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
+ <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
+ <ZEskO8md8FjFqQhv@ovpn-8-24.pek2.redhat.com>
+ <fb127775-bbe4-eb50-4b9d-45a8e0e26ae7@huawei.com>
+ <ZEtd6qZOgRxYnNq9@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZExgzbBCbdC1y9Wk@bombadil.infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZEtd6qZOgRxYnNq9@mit.edu>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 05:11:57PM -0700, Luis Chamberlain wrote:
-> [   11.245248] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> [   11.254581] #PF: supervisor read access in kernel mode
-> [   11.257387] #PF: error_code(0x0000) - not-present page
-> [   11.260921] PGD 0 P4D 0
-> [   11.262600] Oops: 0000 [#1] PREEMPT SMP PTI
-> [   11.264993] CPU: 7 PID: 198 Comm: (udev-worker) Not tainted 6.3.0-large-block-20230426 #2
-> [   11.269385] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-debian-1.16.0-5 04/01/2014
-> [   11.275054] RIP: 0010:iomap_page_create.isra.0+0xc/0xd0
-> [   11.277924] Code: 41 5e 41 5f c3 cc cc cc cc 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 41 54 55 48 89 f5 53 <48> 8b 06 48 c1 e8 0d 89 c6 83 e6 01 0f 84 a1 00 00 00 4c 8b 65 28
-> [   11.287293] RSP: 0018:ffffb0f0805ef9d8 EFLAGS: 00010293
-> [   11.289964] RAX: ffff9de3c1fa8388 RBX: ffffb0f0805efa78 RCX: 000000037ffe0000
-> [   11.293212] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000000000d
-> [   11.296485] RBP: 0000000000000000 R08: 0000000000021000 R09: ffffffff9c733b20
-> [   11.299724] R10: 0000000000000001 R11: 000000000000c000 R12: 0000000000000000
-> [   11.302974] R13: ffffffff9be96260 R14: ffffb0f0805efa58 R15: 0000000000000000
+On Fri, Apr 28, 2023 at 01:47:22AM -0400, Theodore Ts'o wrote:
+> On Fri, Apr 28, 2023 at 11:47:26AM +0800, Baokun Li wrote:
+> > Ext4 just detects I/O Error and remounts it as read-only, it doesn't know
+> > if the current disk is dead or not.
+> > 
+> > I asked Yu Kuai and he said that disk_live() can be used to determine
+> > whether
+> > a disk has been removed based on the status of the inode corresponding to
+> > the block device, but this is generally not done in file systems.
+> 
+> What really needs to happen is that del_gendisk() needs to inform file
+> systems that the disk is gone, so that the file system can shutdown
+> the file system and tear everything down.
 
-RSI is argument 2, which is folio.
+OK, looks both Dave and you have same suggestion, and IMO, it isn't hard to
+add one interface for notifying FS, and it can be either one s_ops->shutdown()
+or shutdown_filesystem(struct super_block *sb).
 
-Code starting with the faulting instruction
-===========================================
-   0:	48 8b 06             	mov    (%rsi),%rax
-   3:	48 c1 e8 0d          	shr    $0xd,%rax
+But the main job should be how this interface is implemented in FS/VFS side,
+so it looks one more FS job, and block layer can call shutdown_filesystem()
+from del_gendisk() simply.
 
-Looks to me like a NULL folio was passed into iomap_page_create().
+> 
+> disk_live() is relatively new; it was added in August 2021.  Back in
 
-> [   11.306206] FS:  00007f03ea8368c0(0000) GS:ffff9de43bdc0000(0000) knlGS:0000000000000000
-> [   11.309949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   11.312464] CR2: 0000000000000000 CR3: 0000000117ec6006 CR4: 0000000000770ee0
-> [   11.315442] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   11.318310] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   11.321010] PKRU: 55555554
-> [   11.322212] Call Trace:
-> [   11.323224]  <TASK>
-> [   11.324146]  iomap_readpage_iter+0x96/0x300
-> [   11.325694]  iomap_readahead+0x174/0x2d0
-> [   11.327129]  read_pages+0x69/0x1f0
-> [   11.329751]  page_cache_ra_unbounded+0x187/0x1d0
+IO failure plus checking disk_live() could be one way for handling the
+failure, but this kind of interface isn't friendly.
 
-... that shouldn't be possible.  read_pages() allocates pages, puts them
-in the page cache and tells the filesystem to fill them in.
+> 2015, I had added the following in fs/ext4/super.c:
+> 
+> /*
+>  * The del_gendisk() function uninitializes the disk-specific data
+>  * structures, including the bdi structure, without telling anyone
+>  * else.  Once this happens, any attempt to call mark_buffer_dirty()
+>  * (for example, by ext4_commit_super), will cause a kernel OOPS.
+>  * This is a kludge to prevent these oops until we can put in a proper
+>  * hook in del_gendisk() to inform the VFS and file system layers.
+>  */
+> static int block_device_ejected(struct super_block *sb)
+> {
+> 	struct inode *bd_inode = sb->s_bdev->bd_inode;
+> 	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
+> 
+> 	return bdi->dev == NULL;
+> }
+> 
+> As the comment states, it's rather awkward to have the file system
+> check to see if the block device is dead in various places; the real
 
-In your patches, did you call mapping_set_large_folios() anywhere?
+I can understand the awkward, :-(
+
+bdi_unregister() is called in del_gendisk(), since bdi_register() has
+to be called in add_disk() where major/minor is figured out.
+
+> problem is that the block device shouldn't just *vanish*, with the
+
+That looks not realistic, removable disk can be gone any time, and device
+driver error handler often deletes disk as the last straw, and it shouldn't
+be hard to observe such error.
+
+Also it is not realistic to wait until all openers closes the bdev, given
+it may wait forever.
+
+> block device structures egetting partially de-initialized, without the
+> block layer being polite enough to let the file system know.
+
+Block device & gendisk instance won't be gone if the bdev is opened, and
+I guess it is just few fields deinitialized, such as bdi->dev, bdi could be
+the only one used by FS code. 
+
+> 
+> > Those dirty pages that are already there are piling up and can't be
+> > written back, which I think is a real problem. Can the block layer
+> > clear those dirty pages when it detects that the disk is deleted?
+> 
+> Well, the dirty pages belong to the file system, and so it needs to be
+> up to the file system to clear out the dirty pages.  But I'll also
+> what the right thing to do when a disk gets removed is not necessarily
+> obvious.
+
+Yeah, clearing dirty pages doesn't belong to block layer.
+
+> 
+> For example, suppose some process has a file mmap'ed into its address
+> space, and that file is on the disk which the user has rudely yanked
+> out from their laptop; what is the right thing to do?  Do we kill the
+> process?  Do we let the process write to the mmap'ed region, and
+> silently let the modified data go *poof* when the process exits?  What
+> if there is an executable file on the removable disk, and there are
+> one or more processes running that executable when the device
+> disappears?  Do we kill the process?  Do we let the process run unti
+> it tries to access a page which hasn't been paged in and then kill the
+> process?
+> 
+> We should design a proper solution for What Should Happen when a
+> removable disk gets removed unceremoniously without unmounting the
+> file system first.  It's not just a matter of making some tests go
+> green....
+
+Agree, the trouble is actually in how FS to handle the disk removal.
+
+
+Thanks,
+Ming
 
