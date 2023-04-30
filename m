@@ -2,166 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3E16F298F
-	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 18:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500C56F2A18
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 19:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbjD3Qyn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 30 Apr 2023 12:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
+        id S229784AbjD3R6C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 30 Apr 2023 13:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjD3Qym (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 12:54:42 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F761723
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 09:54:40 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1aaf792c210so231435ad.0
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 09:54:40 -0700 (PDT)
+        with ESMTP id S229596AbjD3R6B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 13:58:01 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Apr 2023 10:57:59 PDT
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CC41992
+        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 10:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1682873680; x=1685465680;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GNG8RUsR9FUAqdTwLBaZpI6pJsBbKdyT1Msigj0pj48=;
-        b=aZzu9BHxz1JrW/wmyl5h1y7qfhzXiZzls/8ZLLTnRy2Bcc9GY7pB8JERJcXpvDvzIm
-         DmyP/ApSYwYBMRNlSoDqaf2meQi+mhuDSJyzqJ1HZAIbMJdQrbuJug7xJ48V8PRVLTux
-         lkEOFl4vqL9ltrwSKr5tfnhOQTLx5I8fQJwoxo1TowkXREvcEhpO0kAB8LecFKqsqy3l
-         l1r6+A/oVgkKm0prxdAAmN8OTMhk1lCiJmuPm074K5sCeXcByqx56ISI6kTRlbm9tdo/
-         GJSkhBkUU2jYyKiXA4j3revMfKYKDFI/m157NGEi042fWQOPBUGR/3ZxVBz/fi+74RHU
-         tn1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682873680; x=1685465680;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GNG8RUsR9FUAqdTwLBaZpI6pJsBbKdyT1Msigj0pj48=;
-        b=NMWppgUvay7JY0tzIMayzWLuic1nbcgixbwa4TCVwncEHBHsW6XFmbEyZ8hQHQlgfa
-         bzV2WfFCoYOv1RCic+uuip+b+lHvzS5zeUpgKD8uE4/TDnbtlP/eIbrYvp9XihoH5H3s
-         tpLuDtBZEi8pwfZcaO6hxjxvskjSJ4AV4kfaFCdbPrLvMy00b+bL8GVjM6u/ry/+hGq4
-         YOxZgyjt6kpeAO2cnrKk0lgwARhWaIIf8up7moRJ6eQXsPFQkB4LxgAYPm+GnV9jB8J0
-         fZxl4QeV7jhUtbhdRINdVphZGsruiPxV2ueZrzsXxCAEMd6uhW46ar4yKVv8Qky2l3VS
-         fzIQ==
-X-Gm-Message-State: AC+VfDyvLVF4xrd+UfbwpEy2ty8XrIB3O+hr33HZQoNXSJhzC6n4FCze
-        2yZDdZwfHd9w4hMPm3Ruy3rQyw==
-X-Google-Smtp-Source: ACHHUZ4nZSYEgXjT0MGD1P7m/BExrB7PV9aa0CpbB1RuqZ+/EsvVQs2Pv48ukoN985SXcfoWWygwtQ==
-X-Received: by 2002:a17:902:ea10:b0:1a9:1b4:9fdd with SMTP id s16-20020a170902ea1000b001a901b49fddmr10815448plg.2.1682873679998;
-        Sun, 30 Apr 2023 09:54:39 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id jw11-20020a170903278b00b0019a593e45f1sm16472780plb.261.2023.04.30.09.54.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Apr 2023 09:54:39 -0700 (PDT)
-Message-ID: <123c391a-2569-6afd-2461-4e5b2ca298f3@kernel.dk>
-Date:   Sun, 30 Apr 2023 10:54:38 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=4Mqtu1t9eePALD3efCrUxAu5RMuT1favQiL1IkZSMjM=;
+  b=cJYGMwV99Hes8LvxWP2JPujgfsZA+zY0YhjgJRHdAo+XRipr0TjgKtgO
+   rj51jRgtROjwpk3bd0UAtPAIpTAwPKhkhoAizykQOlhamD3/zbRPdQjKb
+   HB8YcgzVr+dWEZ8Q2AdB+lG9eBVpSD+756zCk5LqABZtsXzS0en2KAsah
+   Q=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="5.99,239,1677538800"; 
+   d="scan'208";a="54742619"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2023 19:56:55 +0200
+Date:   Sun, 30 Apr 2023 19:56:54 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] ext4: silence complaint if CONFIG_QUOTA isn't set
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+cc:     linux-ext4@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        lkp@intel.com
+Subject: [tytso-ext4:test 112/113] fs/ext4/mballoc.c:2598:6-9: duplicated
+ argument to && or || (fwd)
+Message-ID: <alpine.DEB.2.22.394.2304301956001.3000@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Compiling the kernel ext4 spews a warning that 'i' is unused in two
-spots:
+There is a double test of grp on line 2598.
 
-axboe@m1max ~/gi/linux-block (master)> make fs/ext4/super.o                    0.027s
-  CALL    scripts/checksyscalls.sh
-  CC      fs/ext4/super.o
-fs/ext4/super.c: In function ?ext4_put_super?:
-fs/ext4/super.c:1262:13: warning: unused variable ?i? [-Wunused-variable]
-  1262 |         int i, err;
-       |             ^
-fs/ext4/super.c: In function ?__ext4_fill_super?:
-fs/ext4/super.c:5200:22: warning: unused variable ?i? [-Wunused-variable]
-  5200 |         unsigned int i;
-       |                      ^
+julia
 
-Put the quota freeing code into a helper so we can stub it out for
-!CONFIG_QUOTA.
+---------- Forwarded message ----------
+Date: Mon, 1 May 2023 01:53:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: oe-kbuild@lists.linux.dev
+Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
+Subject: [tytso-ext4:test 112/113] fs/ext4/mballoc.c:2598:6-9: duplicated
+    argument to && or ||
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
+BCC: lkp@intel.com
+CC: oe-kbuild-all@lists.linux.dev
+CC: linux-ext4@vger.kernel.org
+TO: "Theodore Ts'o" <tytso@mit.edu>
 
-This appears new, but I didn't check what commit potentially broke
-this...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
+head:   493cc71f24795ab9afc311649f5d2c23f652fb1e
+commit: b9d6ed27a28439d79a90058587b2e3eeb2fcab73 [112/113] ext4: DO NOT MERGE: allow ext4_get_group_info() to fail
+:::::: branch date: 22 hours ago
+:::::: commit date: 25 hours ago
+config: i386-randconfig-c021 (https://download.01.org/0day-ci/archive/20230501/202305010128.IfRIXw8H-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
 
- fs/ext4/super.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Julia Lawall <julia.lawall@inria.fr>
+| Link: https://lore.kernel.org/r/202305010128.IfRIXw8H-lkp@intel.com/
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index d03bf0ecf505..5d85d7377d84 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1254,12 +1254,23 @@ static void ext4_flex_groups_free(struct ext4_sb_info *sbi)
- 	rcu_read_unlock();
- }
- 
-+static void ext4_free_quotas(struct super_block *sb,
-+			     struct ext4_sb_info *sbi)
-+{
-+#ifdef CONFIG_QUOTA
-+	unsigned int i;
-+
-+	for (i = 0; i < EXT4_MAXQUOTAS; i++)
-+		kfree(get_qf_name(sb, sbi, i));
-+#endif
-+}
-+
- static void ext4_put_super(struct super_block *sb)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	int aborted = 0;
--	int i, err;
-+	int err;
- 
- 	/*
- 	 * Unregister sysfs before destroying jbd2 journal.
-@@ -1310,10 +1321,7 @@ static void ext4_put_super(struct super_block *sb)
- 	ext4_group_desc_free(sbi);
- 	ext4_flex_groups_free(sbi);
- 	ext4_percpu_param_destroy(sbi);
--#ifdef CONFIG_QUOTA
--	for (i = 0; i < EXT4_MAXQUOTAS; i++)
--		kfree(get_qf_name(sb, sbi, i));
--#endif
-+	ext4_free_quotas(sb, sbi);
- 
- 	/* Debugging code just in case the in-memory inode orphan list
- 	 * isn't empty.  The on-disk one can be non-empty if we've
-@@ -5197,7 +5205,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	ext4_fsblk_t logical_sb_block;
- 	struct inode *root;
- 	int ret = -ENOMEM;
--	unsigned int i;
- 	int needs_recovery;
- 	int err = 0;
- 	ext4_group_t first_not_zeroed;
-@@ -5627,10 +5634,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	utf8_unload(sb->s_encoding);
- #endif
- 
--#ifdef CONFIG_QUOTA
--	for (i = 0; i < EXT4_MAXQUOTAS; i++)
--		kfree(get_qf_name(sb, sbi, i));
--#endif
-+	ext4_free_quotas(sb, sbi);
- 	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
- 	/* ext4_blkdev_remove() calls kill_bdev(), release bh before it. */
- 	brelse(sbi->s_sbh);
--- 
-2.39.2
+cocci warnings: (new ones prefixed by >>)
+>> fs/ext4/mballoc.c:2598:6-9: duplicated argument to && or ||
+
+vim +2598 fs/ext4/mballoc.c
+
+cfd73237722135 Alex Zhuravlev 2020-04-21  2572
+cfd73237722135 Alex Zhuravlev 2020-04-21  2573  /*
+cfd73237722135 Alex Zhuravlev 2020-04-21  2574   * Prefetching reads the block bitmap into the buffer cache; but we
+cfd73237722135 Alex Zhuravlev 2020-04-21  2575   * need to make sure that the buddy bitmap in the page cache has been
+cfd73237722135 Alex Zhuravlev 2020-04-21  2576   * initialized.  Note that ext4_mb_init_group() will block if the I/O
+cfd73237722135 Alex Zhuravlev 2020-04-21  2577   * is not yet completed, or indeed if it was not initiated by
+cfd73237722135 Alex Zhuravlev 2020-04-21  2578   * ext4_mb_prefetch did not start the I/O.
+cfd73237722135 Alex Zhuravlev 2020-04-21  2579   *
+cfd73237722135 Alex Zhuravlev 2020-04-21  2580   * TODO: We should actually kick off the buddy bitmap setup in a work
+cfd73237722135 Alex Zhuravlev 2020-04-21  2581   * queue when the buffer I/O is completed, so that we don't block
+cfd73237722135 Alex Zhuravlev 2020-04-21  2582   * waiting for the block allocation bitmap read to finish when
+cfd73237722135 Alex Zhuravlev 2020-04-21  2583   * ext4_mb_prefetch_fini is called from ext4_mb_regular_allocator().
+cfd73237722135 Alex Zhuravlev 2020-04-21  2584   */
+3d392b2676bf31 Theodore Ts'o  2020-07-17  2585  void ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
+cfd73237722135 Alex Zhuravlev 2020-04-21  2586  			   unsigned int nr)
+cfd73237722135 Alex Zhuravlev 2020-04-21  2587  {
+22fab984025313 Kemeng Shi     2023-03-04  2588  	struct ext4_group_desc *gdp;
+22fab984025313 Kemeng Shi     2023-03-04  2589  	struct ext4_group_info *grp;
+cfd73237722135 Alex Zhuravlev 2020-04-21  2590
+22fab984025313 Kemeng Shi     2023-03-04  2591  	while (nr-- > 0) {
+cfd73237722135 Alex Zhuravlev 2020-04-21  2592  		if (!group)
+cfd73237722135 Alex Zhuravlev 2020-04-21  2593  			group = ext4_get_groups_count(sb);
+cfd73237722135 Alex Zhuravlev 2020-04-21  2594  		group--;
+22fab984025313 Kemeng Shi     2023-03-04  2595  		gdp = ext4_get_group_desc(sb, group, NULL);
+cfd73237722135 Alex Zhuravlev 2020-04-21  2596  		grp = ext4_get_group_info(sb, group);
+cfd73237722135 Alex Zhuravlev 2020-04-21  2597
+b9d6ed27a28439 Theodore Ts'o  2023-04-29 @2598  		if (grp && grp && EXT4_MB_GRP_NEED_INIT(grp) &&
+cfd73237722135 Alex Zhuravlev 2020-04-21  2599  		    ext4_free_group_clusters(sb, gdp) > 0 &&
+cfd73237722135 Alex Zhuravlev 2020-04-21  2600  		    !(ext4_has_group_desc_csum(sb) &&
+cfd73237722135 Alex Zhuravlev 2020-04-21  2601  		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)))) {
+cfd73237722135 Alex Zhuravlev 2020-04-21  2602  			if (ext4_mb_init_group(sb, group, GFP_NOFS))
+cfd73237722135 Alex Zhuravlev 2020-04-21  2603  				break;
+cfd73237722135 Alex Zhuravlev 2020-04-21  2604  		}
+cfd73237722135 Alex Zhuravlev 2020-04-21  2605  	}
+cfd73237722135 Alex Zhuravlev 2020-04-21  2606  }
+cfd73237722135 Alex Zhuravlev 2020-04-21  2607
 
 -- 
-Jens Axboe
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
