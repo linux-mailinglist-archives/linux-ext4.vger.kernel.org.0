@@ -2,52 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B656F2986
-	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 18:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3E16F298F
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 18:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbjD3Qob (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 30 Apr 2023 12:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34724 "EHLO
+        id S230134AbjD3Qyn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 30 Apr 2023 12:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjD3Qoa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 12:44:30 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F5B170A
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 09:44:28 -0700 (PDT)
-Received: from letrec.thunk.org ([76.150.80.181])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33UGiFwF030379
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 30 Apr 2023 12:44:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1682873058; bh=kjFfB0mIP3X+i0mTn18RwHwQZScw1wf5xXbUVXbjOr0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=YuUZ8zzX+TwdnSmsuk8s1btBU6K4j+5yLydEO1UzbBKePxnWj44zyOBsD7Gand6rN
-         XyHWlZU/ToN/X8AWhlQ+g1UUIN8UQu5uSWml6yk5jZgSpPu62OVUgnmONLbexwqQdo
-         M2WtmG9ZGmgPBTLBXAhHX+RLEmH4zF7RXb32KbaKId5HMSZJu/1aD7Ktf6w/azsNJG
-         CSU1rA3NgGx42bfK2BXCp4Sa7XxNK1jKceDH+DHX1vTzSXO7/LGqCW6EJUBRGqHqxB
-         y1zkoPAcJ427F6O7kdcYK+YoBYtuj1QNi6aJ/KTRSbwpRY8FDQ6bdsruA3GW2eP3j0
-         uUAN1xUtpDbHw==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 537D58C023E; Sun, 30 Apr 2023 12:44:15 -0400 (EDT)
-Date:   Sun, 30 Apr 2023 12:44:15 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        syzbot+aacb82fca60873422114@syzkaller.appspotmail.com,
-        syzbot+6b7df7d5506b32467149@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] ext4: Fix lockdep warning when enabling MMP
-Message-ID: <ZE6a310qzNzd40l5@mit.edu>
-References: <20230411121019.21940-1-jack@suse.cz>
- <ZE6YeCaQa01nAWYT@mit.edu>
+        with ESMTP id S229725AbjD3Qym (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 12:54:42 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F761723
+        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 09:54:40 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1aaf792c210so231435ad.0
+        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 09:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1682873680; x=1685465680;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GNG8RUsR9FUAqdTwLBaZpI6pJsBbKdyT1Msigj0pj48=;
+        b=aZzu9BHxz1JrW/wmyl5h1y7qfhzXiZzls/8ZLLTnRy2Bcc9GY7pB8JERJcXpvDvzIm
+         DmyP/ApSYwYBMRNlSoDqaf2meQi+mhuDSJyzqJ1HZAIbMJdQrbuJug7xJ48V8PRVLTux
+         lkEOFl4vqL9ltrwSKr5tfnhOQTLx5I8fQJwoxo1TowkXREvcEhpO0kAB8LecFKqsqy3l
+         l1r6+A/oVgkKm0prxdAAmN8OTMhk1lCiJmuPm074K5sCeXcByqx56ISI6kTRlbm9tdo/
+         GJSkhBkUU2jYyKiXA4j3revMfKYKDFI/m157NGEi042fWQOPBUGR/3ZxVBz/fi+74RHU
+         tn1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682873680; x=1685465680;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GNG8RUsR9FUAqdTwLBaZpI6pJsBbKdyT1Msigj0pj48=;
+        b=NMWppgUvay7JY0tzIMayzWLuic1nbcgixbwa4TCVwncEHBHsW6XFmbEyZ8hQHQlgfa
+         bzV2WfFCoYOv1RCic+uuip+b+lHvzS5zeUpgKD8uE4/TDnbtlP/eIbrYvp9XihoH5H3s
+         tpLuDtBZEi8pwfZcaO6hxjxvskjSJ4AV4kfaFCdbPrLvMy00b+bL8GVjM6u/ry/+hGq4
+         YOxZgyjt6kpeAO2cnrKk0lgwARhWaIIf8up7moRJ6eQXsPFQkB4LxgAYPm+GnV9jB8J0
+         fZxl4QeV7jhUtbhdRINdVphZGsruiPxV2ueZrzsXxCAEMd6uhW46ar4yKVv8Qky2l3VS
+         fzIQ==
+X-Gm-Message-State: AC+VfDyvLVF4xrd+UfbwpEy2ty8XrIB3O+hr33HZQoNXSJhzC6n4FCze
+        2yZDdZwfHd9w4hMPm3Ruy3rQyw==
+X-Google-Smtp-Source: ACHHUZ4nZSYEgXjT0MGD1P7m/BExrB7PV9aa0CpbB1RuqZ+/EsvVQs2Pv48ukoN985SXcfoWWygwtQ==
+X-Received: by 2002:a17:902:ea10:b0:1a9:1b4:9fdd with SMTP id s16-20020a170902ea1000b001a901b49fddmr10815448plg.2.1682873679998;
+        Sun, 30 Apr 2023 09:54:39 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id jw11-20020a170903278b00b0019a593e45f1sm16472780plb.261.2023.04.30.09.54.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Apr 2023 09:54:39 -0700 (PDT)
+Message-ID: <123c391a-2569-6afd-2461-4e5b2ca298f3@kernel.dk>
+Date:   Sun, 30 Apr 2023 10:54:38 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZE6YeCaQa01nAWYT@mit.edu>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] ext4: silence complaint if CONFIG_QUOTA isn't set
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,37 +71,97 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Apr 30, 2023 at 12:34:00PM -0400, Theodore Ts'o wrote:
-> On Tue, Apr 11, 2023 at 02:10:19PM +0200, Jan Kara wrote:
-> > When we enable MMP in ext4_multi_mount_protect() during mount or
-> > remount, we end up calling sb_start_write() from write_mmp_block(). This
-> > triggers lockdep warning because freeze protection ranks above s_umount
-> > semaphore we are holding during mount / remount. The problem is harmless
-> > because we are guaranteed the filesystem is not frozen during mount /
-> > remount but still let's fix the warning by not grabbing freeze
-> > protection from ext4_multi_mount_protect().
-> > 
-> > Reported-by: syzbot+aacb82fca60873422114@syzkaller.appspotmail.com
-> 
-> I believe this is the wrong Reported-by.  The correct one looks like
-> it should be: ...
+Compiling the kernel ext4 spews a warning that 'i' is unused in two
+spots:
 
-By the way, I noticed because I was browsing the syzbot dashboard for
-the ext4 subsystem, and the Syzbot page for "possible deadlock in
-sys_quotactl_fd"[1], I saw a discussion link to lore for the patch
-"[PATCH] ext4: Fix lockdep warning when enabling MMP", and said,
-"Hmm.... that looks wrong."  :-)
+axboe@m1max ~/gi/linux-block (master)> make fs/ext4/super.o                    0.027s
+  CALL    scripts/checksyscalls.sh
+  CC      fs/ext4/super.o
+fs/ext4/super.c: In function ?ext4_put_super?:
+fs/ext4/super.c:1262:13: warning: unused variable ?i? [-Wunused-variable]
+  1262 |         int i, err;
+       |             ^
+fs/ext4/super.c: In function ?__ext4_fill_super?:
+fs/ext4/super.c:5200:22: warning: unused variable ?i? [-Wunused-variable]
+  5200 |         unsigned int i;
+       |                      ^
 
-[1] https://syzkaller.appspot.com/bug?id=1680b22e0e5eb9245a6faff10221ed76b8c5eb81
+Put the quota freeing code into a helper so we can stub it out for
+!CONFIG_QUOTA.
 
-Anyway, thanks to the Syzbot team for adding Disscusion links to the
-Syzbot pages.  It makes it a lot easier to find discussions related to
-a particular issue.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
 
-Note: you can also manually add a thread to the discussions section by
-simply adding a CC to the Reported-by link for the particular issue (for
-example, "Cc: syzbot+aacb82fca60873422114@syzkaller.appspotmail.com").
+This appears new, but I didn't check what commit potentially broke
+this...
 
-Cheers,
+ fs/ext4/super.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-						- Ted
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d03bf0ecf505..5d85d7377d84 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1254,12 +1254,23 @@ static void ext4_flex_groups_free(struct ext4_sb_info *sbi)
+ 	rcu_read_unlock();
+ }
+ 
++static void ext4_free_quotas(struct super_block *sb,
++			     struct ext4_sb_info *sbi)
++{
++#ifdef CONFIG_QUOTA
++	unsigned int i;
++
++	for (i = 0; i < EXT4_MAXQUOTAS; i++)
++		kfree(get_qf_name(sb, sbi, i));
++#endif
++}
++
+ static void ext4_put_super(struct super_block *sb)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_super_block *es = sbi->s_es;
+ 	int aborted = 0;
+-	int i, err;
++	int err;
+ 
+ 	/*
+ 	 * Unregister sysfs before destroying jbd2 journal.
+@@ -1310,10 +1321,7 @@ static void ext4_put_super(struct super_block *sb)
+ 	ext4_group_desc_free(sbi);
+ 	ext4_flex_groups_free(sbi);
+ 	ext4_percpu_param_destroy(sbi);
+-#ifdef CONFIG_QUOTA
+-	for (i = 0; i < EXT4_MAXQUOTAS; i++)
+-		kfree(get_qf_name(sb, sbi, i));
+-#endif
++	ext4_free_quotas(sb, sbi);
+ 
+ 	/* Debugging code just in case the in-memory inode orphan list
+ 	 * isn't empty.  The on-disk one can be non-empty if we've
+@@ -5197,7 +5205,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	ext4_fsblk_t logical_sb_block;
+ 	struct inode *root;
+ 	int ret = -ENOMEM;
+-	unsigned int i;
+ 	int needs_recovery;
+ 	int err = 0;
+ 	ext4_group_t first_not_zeroed;
+@@ -5627,10 +5634,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	utf8_unload(sb->s_encoding);
+ #endif
+ 
+-#ifdef CONFIG_QUOTA
+-	for (i = 0; i < EXT4_MAXQUOTAS; i++)
+-		kfree(get_qf_name(sb, sbi, i));
+-#endif
++	ext4_free_quotas(sb, sbi);
+ 	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
+ 	/* ext4_blkdev_remove() calls kill_bdev(), release bh before it. */
+ 	brelse(sbi->s_sbh);
+-- 
+2.39.2
+
+-- 
+Jens Axboe
+
