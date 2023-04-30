@@ -2,126 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500C56F2A18
-	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 19:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C666F2A1C
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Apr 2023 19:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjD3R6C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 30 Apr 2023 13:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S231166AbjD3R7k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 30 Apr 2023 13:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjD3R6B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 13:58:01 -0400
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Apr 2023 10:57:59 PDT
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CC41992
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 10:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=4Mqtu1t9eePALD3efCrUxAu5RMuT1favQiL1IkZSMjM=;
-  b=cJYGMwV99Hes8LvxWP2JPujgfsZA+zY0YhjgJRHdAo+XRipr0TjgKtgO
-   rj51jRgtROjwpk3bd0UAtPAIpTAwPKhkhoAizykQOlhamD3/zbRPdQjKb
-   HB8YcgzVr+dWEZ8Q2AdB+lG9eBVpSD+756zCk5LqABZtsXzS0en2KAsah
-   Q=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="5.99,239,1677538800"; 
-   d="scan'208";a="54742619"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2023 19:56:55 +0200
-Date:   Sun, 30 Apr 2023 19:56:54 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Theodore Ts'o <tytso@mit.edu>
-cc:     linux-ext4@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-        lkp@intel.com
-Subject: [tytso-ext4:test 112/113] fs/ext4/mballoc.c:2598:6-9: duplicated
- argument to && or || (fwd)
-Message-ID: <alpine.DEB.2.22.394.2304301956001.3000@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        with ESMTP id S229596AbjD3R7h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Apr 2023 13:59:37 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B681992
+        for <linux-ext4@vger.kernel.org>; Sun, 30 Apr 2023 10:59:36 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33UHx88U016290
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 30 Apr 2023 13:59:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1682877551; bh=Cfo6Mtxwx/YQNd6YUF27EOglHQTP1AmdHtP9GnLOOJ4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=nN08k/BXDa+DS88AQwRyryJAIJiF88ubrp1BDzvjNbm+d8R7m4nmdHwSALh/fGCLT
+         OUgf/8l5tB3xTZCbh6tPmZBFITHEmUO93JUlMKe6j4v0syXNppbHgg7kJE3nbzWNDl
+         Qa63ELp+POI7ksQyV6W1bGDXjlCO/O2HhFX9tkFmrbjtssklFqqU7KlQaYYUT8F+F4
+         PiAVeXaWqDzWN4edQ4Wh1ik3mUWSrSWjH9giFL1o41yTiLlDnmIUzcjxweDzihSDFG
+         uBoIkskpNaQhoqPgMnTFQ8ad5pXHDfuuiZRWVXSFap9izDKlulRepVJK2/o8vgnzB+
+         70Au+gov1ikjw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 855AA15C02E2; Sun, 30 Apr 2023 13:59:08 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     adilger.kernel@dilger.ca, jack@suse.com, tudor.ambarus@linaro.org,
+        Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v2] ext4: Fix i_disksize exceeding i_size problem in paritally written case
+Date:   Sun, 30 Apr 2023 13:59:05 -0400
+Message-Id: <168287753833.584010.2522737520636014795.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230321013721.89818-1-chengzhihao1@huawei.com>
+References: <20230321013721.89818-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There is a double test of grp on line 2598.
 
-julia
+On Tue, 21 Mar 2023 09:37:21 +0800, Zhihao Cheng wrote:
+> Following process makes i_disksize exceed i_size:
+> 
+> generic_perform_write
+>  copied = iov_iter_copy_from_user_atomic(len) // copied < len
+>  ext4_da_write_end
+>  | ext4_update_i_disksize
+>  |  new_i_size = pos + copied;
+>  |  WRITE_ONCE(EXT4_I(inode)->i_disksize, newsize) // update i_disksize
+>  | generic_write_end
+>  |  copied = block_write_end(copied, len) // copied = 0
+>  |   if (unlikely(copied < len))
+>  |    if (!PageUptodate(page))
+>  |     copied = 0;
+>  |  if (pos + copied > inode->i_size) // return false
+>  if (unlikely(copied == 0))
+>   goto again;
+>  if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
+>   status = -EFAULT;
+>   break;
+>  }
+> 
+> [...]
 
----------- Forwarded message ----------
-Date: Mon, 1 May 2023 01:53:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: oe-kbuild@lists.linux.dev
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
-Subject: [tytso-ext4:test 112/113] fs/ext4/mballoc.c:2598:6-9: duplicated
-    argument to && or ||
+Applied, thanks!
 
-BCC: lkp@intel.com
-CC: oe-kbuild-all@lists.linux.dev
-CC: linux-ext4@vger.kernel.org
-TO: "Theodore Ts'o" <tytso@mit.edu>
+[1/1] ext4: Fix i_disksize exceeding i_size problem in paritally written case
+      commit: 1dedde690303c05ef732b7c5c8356fdf60a4ade3
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
-head:   493cc71f24795ab9afc311649f5d2c23f652fb1e
-commit: b9d6ed27a28439d79a90058587b2e3eeb2fcab73 [112/113] ext4: DO NOT MERGE: allow ext4_get_group_info() to fail
-:::::: branch date: 22 hours ago
-:::::: commit date: 25 hours ago
-config: i386-randconfig-c021 (https://download.01.org/0day-ci/archive/20230501/202305010128.IfRIXw8H-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Julia Lawall <julia.lawall@inria.fr>
-| Link: https://lore.kernel.org/r/202305010128.IfRIXw8H-lkp@intel.com/
-
-cocci warnings: (new ones prefixed by >>)
->> fs/ext4/mballoc.c:2598:6-9: duplicated argument to && or ||
-
-vim +2598 fs/ext4/mballoc.c
-
-cfd73237722135 Alex Zhuravlev 2020-04-21  2572
-cfd73237722135 Alex Zhuravlev 2020-04-21  2573  /*
-cfd73237722135 Alex Zhuravlev 2020-04-21  2574   * Prefetching reads the block bitmap into the buffer cache; but we
-cfd73237722135 Alex Zhuravlev 2020-04-21  2575   * need to make sure that the buddy bitmap in the page cache has been
-cfd73237722135 Alex Zhuravlev 2020-04-21  2576   * initialized.  Note that ext4_mb_init_group() will block if the I/O
-cfd73237722135 Alex Zhuravlev 2020-04-21  2577   * is not yet completed, or indeed if it was not initiated by
-cfd73237722135 Alex Zhuravlev 2020-04-21  2578   * ext4_mb_prefetch did not start the I/O.
-cfd73237722135 Alex Zhuravlev 2020-04-21  2579   *
-cfd73237722135 Alex Zhuravlev 2020-04-21  2580   * TODO: We should actually kick off the buddy bitmap setup in a work
-cfd73237722135 Alex Zhuravlev 2020-04-21  2581   * queue when the buffer I/O is completed, so that we don't block
-cfd73237722135 Alex Zhuravlev 2020-04-21  2582   * waiting for the block allocation bitmap read to finish when
-cfd73237722135 Alex Zhuravlev 2020-04-21  2583   * ext4_mb_prefetch_fini is called from ext4_mb_regular_allocator().
-cfd73237722135 Alex Zhuravlev 2020-04-21  2584   */
-3d392b2676bf31 Theodore Ts'o  2020-07-17  2585  void ext4_mb_prefetch_fini(struct super_block *sb, ext4_group_t group,
-cfd73237722135 Alex Zhuravlev 2020-04-21  2586  			   unsigned int nr)
-cfd73237722135 Alex Zhuravlev 2020-04-21  2587  {
-22fab984025313 Kemeng Shi     2023-03-04  2588  	struct ext4_group_desc *gdp;
-22fab984025313 Kemeng Shi     2023-03-04  2589  	struct ext4_group_info *grp;
-cfd73237722135 Alex Zhuravlev 2020-04-21  2590
-22fab984025313 Kemeng Shi     2023-03-04  2591  	while (nr-- > 0) {
-cfd73237722135 Alex Zhuravlev 2020-04-21  2592  		if (!group)
-cfd73237722135 Alex Zhuravlev 2020-04-21  2593  			group = ext4_get_groups_count(sb);
-cfd73237722135 Alex Zhuravlev 2020-04-21  2594  		group--;
-22fab984025313 Kemeng Shi     2023-03-04  2595  		gdp = ext4_get_group_desc(sb, group, NULL);
-cfd73237722135 Alex Zhuravlev 2020-04-21  2596  		grp = ext4_get_group_info(sb, group);
-cfd73237722135 Alex Zhuravlev 2020-04-21  2597
-b9d6ed27a28439 Theodore Ts'o  2023-04-29 @2598  		if (grp && grp && EXT4_MB_GRP_NEED_INIT(grp) &&
-cfd73237722135 Alex Zhuravlev 2020-04-21  2599  		    ext4_free_group_clusters(sb, gdp) > 0 &&
-cfd73237722135 Alex Zhuravlev 2020-04-21  2600  		    !(ext4_has_group_desc_csum(sb) &&
-cfd73237722135 Alex Zhuravlev 2020-04-21  2601  		      (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)))) {
-cfd73237722135 Alex Zhuravlev 2020-04-21  2602  			if (ext4_mb_init_group(sb, group, GFP_NOFS))
-cfd73237722135 Alex Zhuravlev 2020-04-21  2603  				break;
-cfd73237722135 Alex Zhuravlev 2020-04-21  2604  		}
-cfd73237722135 Alex Zhuravlev 2020-04-21  2605  	}
-cfd73237722135 Alex Zhuravlev 2020-04-21  2606  }
-cfd73237722135 Alex Zhuravlev 2020-04-21  2607
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Theodore Ts'o <tytso@mit.edu>
