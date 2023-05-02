@@ -2,116 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EDE6F3B70
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 02:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159AA6F3B8F
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 02:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbjEBAjg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 May 2023 20:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S232233AbjEBA6b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 May 2023 20:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232966AbjEBAjf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 May 2023 20:39:35 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AFA30D6
-        for <linux-ext4@vger.kernel.org>; Mon,  1 May 2023 17:39:34 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1aae46e62e9so16891625ad.2
-        for <linux-ext4@vger.kernel.org>; Mon, 01 May 2023 17:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1682987974; x=1685579974;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PwZqPVfdD98RGGdgHpZ/AzPHiqQjK6f8LQEk0yK0Zco=;
-        b=rXB2JJkiTu4hICfIG4uv6uiV1xCmwftlY++WfORFpcseumSePfSrV6GkobqFSHMGwv
-         8/tpLOL92wN+ea7V0SyV5Ii94EIkMav2jlegjcBELANssj3Pipph2H4zlGaxwGf7Hdeq
-         68cNQbVzn0FzlED8v4yh64p+FSuSyIxT+qzvBELLjIN931Fbf3YldkX/kcuaTCqrlRrI
-         SSoU2QOTcLaRumrJXi/l1SXAZtQe5kqbWQlBpfLchglrMzK07fHyGMlJZ6ynuT4ogAaq
-         ki07HzmGoiWXrYJ24DoIkzdTa3STAn9BxEXosx7z/sC79gcMuK5PvmPM3PgbLd2lIIs5
-         RQgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682987974; x=1685579974;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PwZqPVfdD98RGGdgHpZ/AzPHiqQjK6f8LQEk0yK0Zco=;
-        b=gH10LLaU9+fwOQ2q5mYc0N9UKNcOgTZFOrkLhnUbtOzd7Oj3do0OuiSw1qS0GkuCoM
-         S/eDPS1y45MNBCL9ba/4OzW4dwTrBMiQHTIxzxTzSVkTkqUDaf/JwDrKR91bEdXFSToH
-         9ujdCV84qXjtqFxtW0rOyTQ0IrqEtE+baqWE8LpinMGRBzQObD7b2rqzXbASseabRoH2
-         MXVVdf5Drg51lxucf2oakXIL9yfX96y33Kua7XojFfRpzpYoSae971QFYc5K5omFg2bP
-         8h9xFgtQcTB5r4sI83h209CCsGbZ2I1ujBVORF8oBhJDPn94JkrFX0+lLjvU9eW7xPwg
-         TxNg==
-X-Gm-Message-State: AC+VfDxNJ47eVdzjl2cOECMLg7+2jBy+fsIIMSjT+teD8aWxekT+WGxS
-        TVuLqGZEh6K58ulyM4VKY+pDrg==
-X-Google-Smtp-Source: ACHHUZ5rNxN5VmHZ5p3Ayr0pXCHpUS5ZR8fFEU6KCZl5Ev01KAbw9hBMo2NXzR3u23sSG+cU9T+h5Q==
-X-Received: by 2002:a17:902:f78a:b0:1a9:b62f:9338 with SMTP id q10-20020a170902f78a00b001a9b62f9338mr14109356pln.45.1682987974087;
-        Mon, 01 May 2023 17:39:34 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
-        by smtp.gmail.com with ESMTPSA id j2-20020a17090adc8200b0024dfb08da87sm2614399pjv.33.2023.05.01.17.39.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 17:39:33 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1pte3F-00AG9K-Tc; Tue, 02 May 2023 10:39:29 +1000
-Date:   Tue, 2 May 2023 10:39:29 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-ext4@vger.kernel.org, ltp@lists.linux.it,
-        Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [jlayton:ctime] [ext4]  ff9aaf58e8: ltp.statx06.fail
-Message-ID: <20230502003929.GG2155823@dread.disaster.area>
-References: <202305012130.cc1e2351-oliver.sang@intel.com>
- <0dc1a9d7f2b99d2bfdcabb7adc51d7c0b0c81457.camel@kernel.org>
+        with ESMTP id S231610AbjEBA6a (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 May 2023 20:58:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4009F30EA
+        for <linux-ext4@vger.kernel.org>; Mon,  1 May 2023 17:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682989069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ee9kbmLrY2Y7aS+ZkEL+0QK6onncfphaK4NZ0iubdi0=;
+        b=MaKaBDNEY02UzHg5aOcbeyKbjoeNNZeFR/TWFqdZsArTx0MOT4fsNgv5nxx2hxswTn0Nax
+        y1wuic1tnDPEKUHCv3SzIDgBh4EYdTe/cjA5nt5dKuQMGSiR6S4YibecorEGEvJqB9Nl0V
+        rDcULQFLghZUAzotcxPF1jUq6GbwA3Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-547-s2Q55i0OMv6b0B-q6gLVuQ-1; Mon, 01 May 2023 20:57:46 -0400
+X-MC-Unique: s2Q55i0OMv6b0B-q6gLVuQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 58E6E101A531;
+        Tue,  2 May 2023 00:57:45 +0000 (UTC)
+Received: from ovpn-8-16.pek2.redhat.com (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9082400F4D;
+        Tue,  2 May 2023 00:57:37 +0000 (UTC)
+Date:   Tue, 2 May 2023 08:57:32 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Baokun Li <libaokun1@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-block@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Zhang Yi <yi.zhang@redhat.com>,
+        yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com
+Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
+Message-ID: <ZFBf/CXN2ktVYL/N@ovpn-8-16.pek2.redhat.com>
+References: <ZEpH+GEj33aUGoAD@ovpn-8-26.pek2.redhat.com>
+ <663b10eb-4b61-c445-c07c-90c99f629c74@huawei.com>
+ <ZEpcCOCNDhdMHQyY@ovpn-8-26.pek2.redhat.com>
+ <ZEskO8md8FjFqQhv@ovpn-8-24.pek2.redhat.com>
+ <fb127775-bbe4-eb50-4b9d-45a8e0e26ae7@huawei.com>
+ <ZEtd6qZOgRxYnNq9@mit.edu>
+ <ZEyL/sjVeW88XpIn@ovpn-8-24.pek2.redhat.com>
+ <20230429044038.GA7561@lst.de>
+ <ZEym2Yf1Ud1p+L3R@ovpn-8-24.pek2.redhat.com>
+ <20230501044744.GA20056@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0dc1a9d7f2b99d2bfdcabb7adc51d7c0b0c81457.camel@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230501044744.GA20056@lst.de>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 01, 2023 at 12:05:17PM -0400, Jeff Layton wrote:
-> On Mon, 2023-05-01 at 22:09 +0800, kernel test robot wrote:
-> The test does this:
+On Mon, May 01, 2023 at 06:47:44AM +0200, Christoph Hellwig wrote:
+> On Sat, Apr 29, 2023 at 01:10:49PM +0800, Ming Lei wrote:
+> > Not sure if it is needed for non s_bdev
 > 
->         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
->         clock_wait_tick();
->         tc->operation();
->         clock_wait_tick();
->         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
-> 
-> ...and with that, I usually end up with before/after_times that are 1ns
-> apart, since my machine is reporting a 1ns granularity.
-> 
-> The first problem is that the coarse grained timestamps represent the
-> lower bound of what time could end up in the inode. With multigrain
-> ctimes, we can end up grabbing a fine-grained timestamp to store in the
-> inode that will be later than either coarse grained time that was
-> fetched.
-> 
-> That's easy enough to fix -- grab a coarse time for "before" and a fine-
-> grained time for "after".
-> 
-> The clock_getres function though returns that it has a 1ns granularity
-> (since it does). With multigrain ctimes, we no longer have that at the
-> filesystem level. It's a 2ns granularity now (as we need the lowest bit
-> for the flag).
+> So you don't want to work this at all for btrfs?  Or the XFS log device,
+> or ..
 
-Why are you even using the low bit for this? Nanosecond resolution
-only uses 30 bits, leaving the upper two bits of a 32 bit tv_nsec
-field available for internal status bits. As long as we mask out the
-internal bits when reading the VFS timestamp tv_nsec field, then
-we don't need to change the timestamp resolution, right?
+Basically FS can provide one generic API of shutdown_filesystem() which
+shutdown FS generically, meantime calls each fs's ->shutdown() for
+dealing with fs specific shutdown.
 
-Cheers,
+If there isn't superblock attached for one bdev, can you explain a bit what
+filesystem code can do? Same with block layer bdev.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+The current bio->bi_status together disk_live()(maybe bdev_live() is
+needed) should be enough for FS code to handle non s_bdev.
+
+> 
+> > , because FS is over stackable device
+> > directly. Stackable device has its own logic for handling underlying disks dead
+> > or deleted, then decide if its own disk needs to be deleted, such as, it is
+> > fine for raid1 to work from user viewpoint if one underlying disk is deleted.
+> 
+> We still need to propagate the even that device has been removed upwards.
+> Right now some file systems (especially XFS) are good at just propagating
+> it from an I/O error.  And explicity call would be much better.
+
+It depends on the above question about how FS code handle non s_bdev
+deletion/dead.
+
+
+Thanks,
+Ming
+
