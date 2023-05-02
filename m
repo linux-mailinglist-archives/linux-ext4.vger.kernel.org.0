@@ -2,105 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BB6F406B
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 11:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486616F40C8
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 12:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjEBJvn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 May 2023 05:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
+        id S231964AbjEBKM3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 May 2023 06:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233620AbjEBJv3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 May 2023 05:51:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EF95254
-        for <linux-ext4@vger.kernel.org>; Tue,  2 May 2023 02:51:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229601AbjEBKM3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 May 2023 06:12:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E446A1BFF;
+        Tue,  2 May 2023 03:12:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C556421B75;
-        Tue,  2 May 2023 09:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683021084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ZoIt/z6j3Q+wBI0TkFA8ifBld+pE1kZesndHav6sDI=;
-        b=gWqAjFW3fN0cXMwEZ/rpuTVYcVOr5ObjCFGF+bffXSWO8LHq2Ie3uqe6XhvrEuYEtntA+P
-        AuJW0/7oeX998XCdiKmPs1vbR73uL+WqJ02VrVZum7oeisyFpiHX9DHu1gLta30eeFVYlH
-        jmu9510Zt2ZbiDhgr/RKUOY5ijLhpTg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683021084;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ZoIt/z6j3Q+wBI0TkFA8ifBld+pE1kZesndHav6sDI=;
-        b=1oc6NpX7Zw7ERXk2MH3IwXUdXaR40qv/5sA0lLMsPtpgbecdjm3P40LWIBnRxKAKO2XBXi
-        0YQDb29lLj+1dxAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B9A9E139C3;
-        Tue,  2 May 2023 09:51:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iiNJLRzdUGRRYgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 02 May 2023 09:51:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 40866A0735; Tue,  2 May 2023 11:51:24 +0200 (CEST)
-Date:   Tue, 2 May 2023 11:51:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F8F8622AF;
+        Tue,  2 May 2023 10:12:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B07C433EF;
+        Tue,  2 May 2023 10:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683022346;
+        bh=aM94D7DjS72A/xp1gAzDQwrhIU7LM7u1+sqKjvi5MHk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=eLxA1yXf39CWFW9N6n3/xRGGcd/EQyeBUrgZcgthpSDgueB/Td+pzErg6LRLJG6cW
+         0XUhgGKXEz++uqaciP6qgrDZL6x0NYjUnLRlt54TgRjEB5fQyqAZ1WQ9cnPCwy3Nx1
+         oLdsYIDvkvI7DCVgxSg0bk9sBTVIZ8Qe2BBQfVRDFx34ENNLVWiaAV7QgRW2rb3vuE
+         6h9uZqfoQEZYcLyeiSDjlJ14aQea/M7XJx+8Zgks4fxnXglZlaCL5iLF6CeI/HQc6G
+         8To9CcfpiGx4cU1jkv1qPoIuDw7X7ZpK9DRH8BdBYs2o7gP8ESDOk2SIQYdxfVRX/X
+         FudCgXb+t2LJw==
+Message-ID: <500fc91b75ef67263825cf3410a8a66c7bc0fd85.camel@kernel.org>
+Subject: Re: [jlayton:ctime] [ext4]  ff9aaf58e8: ltp.statx06.fail
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-ext4@vger.kernel.org, ltp@lists.linux.it,
         Christian Brauner <brauner@kernel.org>,
-        syzbot+aacb82fca60873422114@syzkaller.appspotmail.com,
-        syzbot+6b7df7d5506b32467149@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: Fix lockdep warning when enabling MMP
-Message-ID: <20230502095124.gzjjnmfquciimucf@quack3>
-References: <20230411121019.21940-1-jack@suse.cz>
- <ZE6YeCaQa01nAWYT@mit.edu>
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Tue, 02 May 2023 06:12:24 -0400
+In-Reply-To: <20230502003929.GG2155823@dread.disaster.area>
+References: <202305012130.cc1e2351-oliver.sang@intel.com>
+         <0dc1a9d7f2b99d2bfdcabb7adc51d7c0b0c81457.camel@kernel.org>
+         <20230502003929.GG2155823@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZE6YeCaQa01nAWYT@mit.edu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 30-04-23 12:34:00, Theodore Ts'o wrote:
-> On Tue, Apr 11, 2023 at 02:10:19PM +0200, Jan Kara wrote:
-> > When we enable MMP in ext4_multi_mount_protect() during mount or
-> > remount, we end up calling sb_start_write() from write_mmp_block(). This
-> > triggers lockdep warning because freeze protection ranks above s_umount
-> > semaphore we are holding during mount / remount. The problem is harmless
-> > because we are guaranteed the filesystem is not frozen during mount /
-> > remount but still let's fix the warning by not grabbing freeze
-> > protection from ext4_multi_mount_protect().
-> > 
-> > Reported-by: syzbot+aacb82fca60873422114@syzkaller.appspotmail.com
-> 
-> I believe this is the wrong Reported-by.  The correct one looks like
-> it should be:
-> 
-> Reported-by: syzbot+6b7df7d5506b32467149@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?id=ab7e5b6f400b7778d46f01841422e5718fb81843
+On Tue, 2023-05-02 at 10:39 +1000, Dave Chinner wrote:
+> On Mon, May 01, 2023 at 12:05:17PM -0400, Jeff Layton wrote:
+> > On Mon, 2023-05-01 at 22:09 +0800, kernel test robot wrote:
+> > The test does this:
+> >=20
+> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
+> >         clock_wait_tick();
+> >         tc->operation();
+> >         clock_wait_tick();
+> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
+> >=20
+> > ...and with that, I usually end up with before/after_times that are 1ns
+> > apart, since my machine is reporting a 1ns granularity.
+> >=20
+> > The first problem is that the coarse grained timestamps represent the
+> > lower bound of what time could end up in the inode. With multigrain
+> > ctimes, we can end up grabbing a fine-grained timestamp to store in the
+> > inode that will be later than either coarse grained time that was
+> > fetched.
+> >=20
+> > That's easy enough to fix -- grab a coarse time for "before" and a fine=
+-
+> > grained time for "after".
+> >=20
+> > The clock_getres function though returns that it has a 1ns granularity
+> > (since it does). With multigrain ctimes, we no longer have that at the
+> > filesystem level. It's a 2ns granularity now (as we need the lowest bit
+> > for the flag).
+>=20
+> Why are you even using the low bit for this? Nanosecond resolution
+> only uses 30 bits, leaving the upper two bits of a 32 bit tv_nsec
+> field available for internal status bits. As long as we mask out the
+> internal bits when reading the VFS timestamp tv_nsec field, then
+> we don't need to change the timestamp resolution, right?
+>=20
 
-Well, one of the reports of this problem has also the ID I have referenced
-(https://syzkaller.appspot.com/bug?extid=6b7df7d5506b32467149).  There are
-apparently multiple ones...
+Yeah, that should work. Let me give that a shot on the next pass.
 
-> It's also helpful to add a Link line to the Syzkaller dashboard to
-> make it easier to find the relevant Syzbot report.
-
-Right, I'll do that next time. Thanks for the idea.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+--=20
+Jeff Layton <jlayton@kernel.org>
