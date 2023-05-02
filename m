@@ -2,101 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486616F40C8
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 12:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A9E6F43FE
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 May 2023 14:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbjEBKM3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 May 2023 06:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S233721AbjEBMlk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 May 2023 08:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjEBKM3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 May 2023 06:12:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E446A1BFF;
-        Tue,  2 May 2023 03:12:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F8F8622AF;
-        Tue,  2 May 2023 10:12:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B07C433EF;
-        Tue,  2 May 2023 10:12:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683022346;
-        bh=aM94D7DjS72A/xp1gAzDQwrhIU7LM7u1+sqKjvi5MHk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eLxA1yXf39CWFW9N6n3/xRGGcd/EQyeBUrgZcgthpSDgueB/Td+pzErg6LRLJG6cW
-         0XUhgGKXEz++uqaciP6qgrDZL6x0NYjUnLRlt54TgRjEB5fQyqAZ1WQ9cnPCwy3Nx1
-         oLdsYIDvkvI7DCVgxSg0bk9sBTVIZ8Qe2BBQfVRDFx34ENNLVWiaAV7QgRW2rb3vuE
-         6h9uZqfoQEZYcLyeiSDjlJ14aQea/M7XJx+8Zgks4fxnXglZlaCL5iLF6CeI/HQc6G
-         8To9CcfpiGx4cU1jkv1qPoIuDw7X7ZpK9DRH8BdBYs2o7gP8ESDOk2SIQYdxfVRX/X
-         FudCgXb+t2LJw==
-Message-ID: <500fc91b75ef67263825cf3410a8a66c7bc0fd85.camel@kernel.org>
-Subject: Re: [jlayton:ctime] [ext4]  ff9aaf58e8: ltp.statx06.fail
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-ext4@vger.kernel.org, ltp@lists.linux.it,
-        Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Tue, 02 May 2023 06:12:24 -0400
-In-Reply-To: <20230502003929.GG2155823@dread.disaster.area>
-References: <202305012130.cc1e2351-oliver.sang@intel.com>
-         <0dc1a9d7f2b99d2bfdcabb7adc51d7c0b0c81457.camel@kernel.org>
-         <20230502003929.GG2155823@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
+        with ESMTP id S229533AbjEBMli (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 May 2023 08:41:38 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1152F59D8
+        for <linux-ext4@vger.kernel.org>; Tue,  2 May 2023 05:41:36 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 342AKnmc022302
+        for <linux-ext4@vger.kernel.org>; Tue, 2 May 2023 12:41:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=rZMKKsu16mHqDmBwDEXPax0+msUVKwadkrTOsSG3wGs=;
+ b=w9VCY9C0oxf/Q//PCEsPo/ykDWHMszzJj68XsDiKHX1nz7VJvI23m7ZAISM5GxzrY2zJ
+ 8EYkNat+5/40scbxTKTGVAz5spcqj9OzqAO4XJeZHkfMwJ0cyxYedjeH+6F9XNV1Dgin
+ JcPA77zCsNuJ0OqKOvofpzzVgc1GLqDblC9B+TFhUCW7ndl0zNu46G72NqTQq45GSi4f
+ jtCuZ4LRcO59tp4E5MMfxPAZjcNEjyreP4kGHDJXv6bSGf7EcN2zmVoA4PXPY1B4o1Ez
+ 1i2L26I5ybj463RDV4e6QD5j/xy/JrJiR99Z4hF+wbN92a8gpO50r6E+c7cNlUwwEXzg rg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3q8sne4m9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-ext4@vger.kernel.org>; Tue, 02 May 2023 12:41:36 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 342CKitO027489
+        for <linux-ext4@vger.kernel.org>; Tue, 2 May 2023 12:41:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3q8spbxm1y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-ext4@vger.kernel.org>; Tue, 02 May 2023 12:41:35 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 342CfY89005686
+        for <linux-ext4@vger.kernel.org>; Tue, 2 May 2023 12:41:34 GMT
+Received: from sridara-s.osdevelopmeniad.oraclevcn.com (sridara-s.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.75])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3q8spbxm1j-1;
+        Tue, 02 May 2023 12:41:34 +0000
+From:   Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com,
+        srivathsa.d.dara@oracle.com
+Subject: [PATCH] debugfs/htree.c: In do_dx_hash() read hash_seed, hash_version directly from superblock
+Date:   Tue,  2 May 2023 12:41:04 +0000
+Message-Id: <20230502124103.428884-1-srivathsa.d.dara@oracle.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-02_07,2023-04-27_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
+ definitions=main-2305020109
+X-Proofpoint-GUID: YngWMG-wB3ZNOMwmHNt7j8B6qw42lAMt
+X-Proofpoint-ORIG-GUID: YngWMG-wB3ZNOMwmHNt7j8B6qw42lAMt
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-05-02 at 10:39 +1000, Dave Chinner wrote:
-> On Mon, May 01, 2023 at 12:05:17PM -0400, Jeff Layton wrote:
-> > On Mon, 2023-05-01 at 22:09 +0800, kernel test robot wrote:
-> > The test does this:
-> >=20
-> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
-> >         clock_wait_tick();
-> >         tc->operation();
-> >         clock_wait_tick();
-> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
-> >=20
-> > ...and with that, I usually end up with before/after_times that are 1ns
-> > apart, since my machine is reporting a 1ns granularity.
-> >=20
-> > The first problem is that the coarse grained timestamps represent the
-> > lower bound of what time could end up in the inode. With multigrain
-> > ctimes, we can end up grabbing a fine-grained timestamp to store in the
-> > inode that will be later than either coarse grained time that was
-> > fetched.
-> >=20
-> > That's easy enough to fix -- grab a coarse time for "before" and a fine=
--
-> > grained time for "after".
-> >=20
-> > The clock_getres function though returns that it has a 1ns granularity
-> > (since it does). With multigrain ctimes, we no longer have that at the
-> > filesystem level. It's a 2ns granularity now (as we need the lowest bit
-> > for the flag).
->=20
-> Why are you even using the low bit for this? Nanosecond resolution
-> only uses 30 bits, leaving the upper two bits of a 32 bit tv_nsec
-> field available for internal status bits. As long as we mask out the
-> internal bits when reading the VFS timestamp tv_nsec field, then
-> we don't need to change the timestamp resolution, right?
->=20
+debugfs hash command computes the hash for the given filename. It takes
+hash_seed and hash_version (i.e hash algorithm) as arguments. User has
+to refer to the superblock to get these values used by the filesystem.
+If the arguments are not given then debugfs computes hash assuming both
+hash_seed and hash_version are zeros. In most of the cases this assumption
+will be different from the actual hash_seed and hash_version used by the
+filesystem. In general user will be in need of hash computed from
+hash_seed and hash_version of the filesystem. So, instead of assuming
+hash_seed and hash_version as zero when the arguments are not provided,
+read these directly from the superblock to simplify the task of user.
 
-Yeah, that should work. Let me give that a shot on the next pass.
+Example:
+Before:-
+debugfs:  hash -s 524e5394-e2a3-43fa-b192-79720b1fe3e1 -h half_md4 file1
+Hash of file1 is 0x4a8d8c94 (minor 0x17a37f43)
 
-Thanks,
---=20
-Jeff Layton <jlayton@kernel.org>
+After improvement:-
+debugfs:  hash file1
+Hash of file1 is 0x4a8d8c94 (minor 0x17a37f43)
+
+Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+---
+ debugfs/htree.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/debugfs/htree.c b/debugfs/htree.c
+index 7fae7f11..2d881c74 100644
+--- a/debugfs/htree.c
++++ b/debugfs/htree.c
+@@ -316,7 +316,12 @@ void do_dx_hash(int argc, char *argv[], int sci_idx EXT2FS_ATTR((unused)),
+ 	int		hash_flags = 0;
+ 	const struct ext2fs_nls_table *encoding = NULL;
+ 
+-	hash_seed[0] = hash_seed[1] = hash_seed[2] = hash_seed[3] = 0;
++	hash_seed[0] = current_fs->super->s_hash_seed[0];
++	hash_seed[1] = current_fs->super->s_hash_seed[1];
++	hash_seed[2] = current_fs->super->s_hash_seed[2];
++	hash_seed[3] = current_fs->super->s_hash_seed[3];
++
++	hash_version = current_fs->super->s_def_hash_version;
+ 
+ 	reset_getopt();
+ 	while ((c = getopt(argc, argv, "h:s:ce:")) != EOF) {
+-- 
+2.31.1
+
