@@ -2,71 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1776F585E
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 May 2023 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B676F59B0
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 May 2023 16:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjECM5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 May 2023 08:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S230063AbjECOUn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 May 2023 10:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjECM5W (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 May 2023 08:57:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB7440C4;
-        Wed,  3 May 2023 05:57:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229995AbjECOUm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 May 2023 10:20:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A0D59F7;
+        Wed,  3 May 2023 07:20:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CE7CB20370;
-        Wed,  3 May 2023 12:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683118639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ywZW4KA66YanRzZlOjPAJk9IhT4ZoYG26yXIiVdKhUs=;
-        b=jaMiw9i0/oM07slayRClD4SiGt05oIekEDsRTk+Exb6AP+DJj3q9vH8tDAIvtNXkibi6x7
-        vqFAQBfUq+0GuXNhsdd6/rThgNpC9EOYFJIVFF3NbI28IlcvmEsJw1YxX7rVebp1exLy09
-        lq9Xns5VGbZzUPhmpYlPPANDiweYXjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683118639;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ywZW4KA66YanRzZlOjPAJk9IhT4ZoYG26yXIiVdKhUs=;
-        b=jJ8uQ1l+jXx2CXw0zEB0+FvZkm2FVb3PETBvR4ySEXg3vABWR6w4u53RNhD5mbpLbVUMcU
-        TVyho9hI9j0jDzDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C09C713584;
-        Wed,  3 May 2023 12:57:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WRAZLy9aUmRlDwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 03 May 2023 12:57:19 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4CE6DA0744; Wed,  3 May 2023 14:57:19 +0200 (CEST)
-Date:   Wed, 3 May 2023 14:57:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v4 02/12] ext4: add a new helper to check if es must be
- kept
-Message-ID: <20230503125719.yu3cyfeg4ighaomd@quack3>
-References: <20230424033846.4732-1-libaokun1@huawei.com>
- <20230424033846.4732-3-libaokun1@huawei.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B4FA62DDC;
+        Wed,  3 May 2023 14:20:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D86C433D2;
+        Wed,  3 May 2023 14:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683123640;
+        bh=B/byiGRb2kElHzhLs8i3vMpx6Eq2eV1GQaupQ5p6W14=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Hf1xqOynP8r+xdYeg5iDsOp1QXAPWNX+EeWOtmAT0vfdre7GtfqfDnvWfMT4VbgTi
+         W4k2ThDGKEe03SK+/E281k29evFeM8QWXvxynMvFg4W/6FHrB2qh8/yTd3cu6w9cZ5
+         iodu4EhjBC75RZXcxSk1a5179MjmEzeJHrMcII/Hk16buPuReZjkQ1sQRwGTD5oX1P
+         mOawJte++byKiiGdeBj3mChUv555myDwv6MXgoatDm5O/zabgVu2jTJvDrijdS4VBB
+         ofZX6rr7heInptz16aMXa0ad2VkgaW4h6f5kkV70L1QPjCPmuGDju5mFCp2uaq99Uq
+         9hwrCzOKpwCzw==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Neil Brown <neilb@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: [PATCH v3 0/6] fs: implement multigrain timestamps
+Date:   Wed,  3 May 2023 10:20:31 -0400
+Message-Id: <20230503142037.153531-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230424033846.4732-3-libaokun1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,111 +66,95 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 24-04-23 11:38:36, Baokun Li wrote:
-> In the extent status tree, we have extents which we can just drop without
-> issues and extents we must not drop - this depends on the extent's status
-> - currently ext4_es_is_delayed() extents must stay, others may be dropped.
-> 
-> A helper function is added to help determine if the current extent can
-> be dropped, although only ext4_es_is_delayed() extents cannot be dropped
-> currently.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Major changes in v3:
+- move flag to use bit 31 instead of 0 since the upper bits in the
+  tv_nsec field aren't used for timestamps. This means we don't need to
+  set s_time_gran to a value higher than 1.
 
-Looks good. Feel free to add:
+- use an fstype flag instead of a superblock flag
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+...plus a lot of smaller cleanups and documentation.
 
-								Honza
+The basic idea with multigrain timestamps is to keep track of when an
+inode's mtime or ctime has been queried and to force a fine-grained
+timestamp the next time the mtime or ctime is updated.
 
-> ---
->  fs/ext4/extents_status.c | 34 +++++++++++++++++++++-------------
->  1 file changed, 21 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index 7bc221038c6c..573723b23d19 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -448,6 +448,19 @@ static void ext4_es_list_del(struct inode *inode)
->  	spin_unlock(&sbi->s_es_lock);
->  }
->  
-> +/*
-> + * Returns true if we cannot fail to allocate memory for this extent_status
-> + * entry and cannot reclaim it until its status changes.
-> + */
-> +static inline bool ext4_es_must_keep(struct extent_status *es)
-> +{
-> +	/* fiemap, bigalloc, and seek_data/hole need to use it. */
-> +	if (ext4_es_is_delayed(es))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static struct extent_status *
->  ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
->  		     ext4_fsblk_t pblk)
-> @@ -460,10 +473,8 @@ ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
->  	es->es_len = len;
->  	es->es_pblk = pblk;
->  
-> -	/*
-> -	 * We don't count delayed extent because we never try to reclaim them
-> -	 */
-> -	if (!ext4_es_is_delayed(es)) {
-> +	/* We never try to reclaim a must kept extent, so we don't count it. */
-> +	if (!ext4_es_must_keep(es)) {
->  		if (!EXT4_I(inode)->i_es_shk_nr++)
->  			ext4_es_list_add(inode);
->  		percpu_counter_inc(&EXT4_SB(inode->i_sb)->
-> @@ -481,8 +492,8 @@ static void ext4_es_free_extent(struct inode *inode, struct extent_status *es)
->  	EXT4_I(inode)->i_es_all_nr--;
->  	percpu_counter_dec(&EXT4_SB(inode->i_sb)->s_es_stats.es_stats_all_cnt);
->  
-> -	/* Decrease the shrink counter when this es is not delayed */
-> -	if (!ext4_es_is_delayed(es)) {
-> +	/* Decrease the shrink counter when we can reclaim the extent. */
-> +	if (!ext4_es_must_keep(es)) {
->  		BUG_ON(EXT4_I(inode)->i_es_shk_nr == 0);
->  		if (!--EXT4_I(inode)->i_es_shk_nr)
->  			ext4_es_list_del(inode);
-> @@ -853,7 +864,7 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->  	if (err == -ENOMEM && __es_shrink(EXT4_SB(inode->i_sb),
->  					  128, EXT4_I(inode)))
->  		goto retry;
-> -	if (err == -ENOMEM && !ext4_es_is_delayed(&newes))
-> +	if (err == -ENOMEM && !ext4_es_must_keep(&newes))
->  		err = 0;
->  
->  	if (sbi->s_cluster_ratio > 1 && test_opt(inode->i_sb, DELALLOC) &&
-> @@ -1706,11 +1717,8 @@ static int es_do_reclaim_extents(struct ext4_inode_info *ei, ext4_lblk_t end,
->  
->  		(*nr_to_scan)--;
->  		node = rb_next(&es->rb_node);
-> -		/*
-> -		 * We can't reclaim delayed extent from status tree because
-> -		 * fiemap, bigallic, and seek_data/hole need to use it.
-> -		 */
-> -		if (ext4_es_is_delayed(es))
-> +
-> +		if (ext4_es_must_keep(es))
->  			goto next;
->  		if (ext4_es_is_referenced(es)) {
->  			ext4_es_clear_referenced(es);
-> @@ -1774,7 +1782,7 @@ void ext4_clear_inode_es(struct inode *inode)
->  	while (node) {
->  		es = rb_entry(node, struct extent_status, rb_node);
->  		node = rb_next(node);
-> -		if (!ext4_es_is_delayed(es)) {
-> +		if (!ext4_es_must_keep(es)) {
->  			rb_erase(&es->rb_node, &tree->root);
->  			ext4_es_free_extent(inode, es);
->  		}
-> -- 
-> 2.31.1
-> 
+This is a follow-up of the patches I posted last week [1]. The main
+change in this set is that it no longer uses the lowest-order bit in the
+tv_nsec field, and instead uses one of the higher-order bits (#31,
+specifically) since they are otherwise unused. This change makes things
+much simpler, and we no longer need to twiddle s_time_gran for it.
+
+Note that with these changes, the statx06 LTP test will intermittently
+fail on most filesystems, usually with errors like this:
+
+    statx06.c:138: TFAIL: Birth time > after_time
+    statx06.c:138: TFAIL: Modified time > after_time
+
+The test does this:
+
+        SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
+        clock_wait_tick();
+        tc->operation();
+        clock_wait_tick();
+        SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
+
+Converting the second SAFE_CLOCK_GETTIME to use CLOCK_REALTIME instead
+gets things working again.
+
+For now, I've only converted/tested a few filesystems, focusing on the
+most popular ones exported via NFS.  If this approach looks acceptable
+though, I'll plan to convert more filesystems to it.
+
+Another thing we could consider is enabling this unilaterally
+kernel-wide. I decided not to do that for now, but it's something we
+could consider for lately.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20230424151104.175456-1-jlayton@kernel.org/
+
+Jeff Layton (6):
+  fs: add infrastructure for multigrain inode i_m/ctime
+  overlayfs: allow it handle multigrain timestamps
+  shmem: convert to multigrain timestamps
+  xfs: convert to multigrain timestamps
+  ext4: convert to multigrain timestamps
+  btrfs: convert to multigrain timestamps
+
+ fs/btrfs/delayed-inode.c        |  2 +-
+ fs/btrfs/file.c                 | 10 +++---
+ fs/btrfs/inode.c                | 25 +++++++-------
+ fs/btrfs/ioctl.c                |  6 ++--
+ fs/btrfs/reflink.c              |  2 +-
+ fs/btrfs/super.c                |  5 +--
+ fs/btrfs/transaction.c          |  2 +-
+ fs/btrfs/tree-log.c             |  2 +-
+ fs/btrfs/volumes.c              |  2 +-
+ fs/btrfs/xattr.c                |  4 +--
+ fs/ext4/acl.c                   |  2 +-
+ fs/ext4/extents.c               | 10 +++---
+ fs/ext4/ialloc.c                |  2 +-
+ fs/ext4/inline.c                |  4 +--
+ fs/ext4/inode.c                 | 24 ++++++++++---
+ fs/ext4/ioctl.c                 |  8 ++---
+ fs/ext4/namei.c                 | 20 +++++------
+ fs/ext4/super.c                 |  4 +--
+ fs/ext4/xattr.c                 |  2 +-
+ fs/inode.c                      | 52 ++++++++++++++++++++++++++--
+ fs/overlayfs/file.c             |  7 ++--
+ fs/overlayfs/util.c             |  2 +-
+ fs/stat.c                       | 32 +++++++++++++++++
+ fs/xfs/libxfs/xfs_inode_buf.c   |  2 +-
+ fs/xfs/libxfs/xfs_trans_inode.c |  2 +-
+ fs/xfs/xfs_acl.c                |  2 +-
+ fs/xfs/xfs_bmap_util.c          |  2 +-
+ fs/xfs/xfs_inode.c              |  2 +-
+ fs/xfs/xfs_inode_item.c         |  2 +-
+ fs/xfs/xfs_iops.c               | 15 ++++++--
+ fs/xfs/xfs_super.c              |  2 +-
+ include/linux/fs.h              | 61 ++++++++++++++++++++++++++++++++-
+ mm/shmem.c                      | 25 +++++++-------
+ 33 files changed, 255 insertions(+), 89 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.1
+
