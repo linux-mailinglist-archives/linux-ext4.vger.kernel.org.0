@@ -2,128 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461906F5639
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 May 2023 12:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1776F585E
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 May 2023 14:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjECKbj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 3 May 2023 06:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        id S229675AbjECM5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 May 2023 08:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjECKbf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 May 2023 06:31:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF934EC9;
-        Wed,  3 May 2023 03:31:30 -0700 (PDT)
-Received: from zn.tnic (p5de8e8ea.dip0.t-ipconnect.de [93.232.232.234])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229983AbjECM5W (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 May 2023 08:57:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB7440C4;
+        Wed,  3 May 2023 05:57:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3CF251EC0691;
-        Wed,  3 May 2023 12:31:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1683109889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Y99VkdVeSo9ELb0eveqnrxLTnOl5aHHav/scgPvIOtM=;
-        b=ouXeturJBz5ifBkVBBhldgieqd8FYUQCI77ZvbbfE9SLgn89VNIIgLYv0fO/Yk86K3AgNy
-        Pxq6jm6FAYD5LkAXSgiatQwdsjHQtG5vWjtHqTSXYwVT3EsaesKguGSma2544s5DCf0Ch9
-        3rjcgLcDMCJ4RjZtdRS316g+z8+zLh0=
-Date:   Wed, 3 May 2023 12:31:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     syzbot <syzbot+401145a9a237779feb26@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@suse.de>, stable <stable@vger.kernel.org>,
-        almaz.alexandrovich@paragon-software.com, clm@fb.com,
-        djwong@kernel.org, dsterba@suse.com, hch@infradead.org,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        willy@infradead.org
-Subject: Re: [syzbot] [xfs?] BUG: unable to handle kernel paging request in
- clear_user_rep_good
-Message-ID: <20230503103128.GAZFI4AEyPcP4bCemf@fat_crate.local>
-References: <000000000000de34bd05f3c6fe19@google.com>
- <0000000000001ec6ce05fa9a4bf7@google.com>
- <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CE7CB20370;
+        Wed,  3 May 2023 12:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1683118639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ywZW4KA66YanRzZlOjPAJk9IhT4ZoYG26yXIiVdKhUs=;
+        b=jaMiw9i0/oM07slayRClD4SiGt05oIekEDsRTk+Exb6AP+DJj3q9vH8tDAIvtNXkibi6x7
+        vqFAQBfUq+0GuXNhsdd6/rThgNpC9EOYFJIVFF3NbI28IlcvmEsJw1YxX7rVebp1exLy09
+        lq9Xns5VGbZzUPhmpYlPPANDiweYXjA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1683118639;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ywZW4KA66YanRzZlOjPAJk9IhT4ZoYG26yXIiVdKhUs=;
+        b=jJ8uQ1l+jXx2CXw0zEB0+FvZkm2FVb3PETBvR4ySEXg3vABWR6w4u53RNhD5mbpLbVUMcU
+        TVyho9hI9j0jDzDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C09C713584;
+        Wed,  3 May 2023 12:57:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WRAZLy9aUmRlDwAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 03 May 2023 12:57:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4CE6DA0744; Wed,  3 May 2023 14:57:19 +0200 (CEST)
+Date:   Wed, 3 May 2023 14:57:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v4 02/12] ext4: add a new helper to check if es must be
+ kept
+Message-ID: <20230503125719.yu3cyfeg4ighaomd@quack3>
+References: <20230424033846.4732-1-libaokun1@huawei.com>
+ <20230424033846.4732-3-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230424033846.4732-3-libaokun1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 01, 2023 at 11:49:55AM -0700, Linus Torvalds wrote:
-> The bug goes back to commit 0db7058e8e23 ("x86/clear_user: Make it
-> faster") from about a year ago, which made it into v6.1.
+On Mon 24-04-23 11:38:36, Baokun Li wrote:
+> In the extent status tree, we have extents which we can just drop without
+> issues and extents we must not drop - this depends on the extent's status
+> - currently ext4_es_is_delayed() extents must stay, others may be dropped.
+> 
+> A helper function is added to help determine if the current extent can
+> be dropped, although only ext4_es_is_delayed() extents cannot be dropped
+> currently.
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Gah, sorry about that. :-\
+Looks good. Feel free to add:
 
-> It only affects old hardware that doesn't have the ERMS capability
-> flag, which *probably* means that it's mostly only triggerable in
-> virtualization (since pretty much any CPU from the last decade has
-> ERMS, afaik).
-> 
-> Borislav - opinions? This needs fixing for v6.1..v6.3, and the options are:
-> 
->  (1) just fix up the exception entry. I think this is literally this
-> one-liner, but somebody should double-check me. I did *not* actually
-> test this:
-> 
->     --- a/arch/x86/lib/clear_page_64.S
->     +++ b/arch/x86/lib/clear_page_64.S
->     @@ -142,8 +142,8 @@ SYM_FUNC_START(clear_user_rep_good)
->             and $7, %edx
->             jz .Lrep_good_exit
-> 
->     -.Lrep_good_bytes:
->             mov %edx, %ecx
->     +.Lrep_good_bytes:
->             rep stosb
-> 
->      .Lrep_good_exit:
-> 
->    because the only use of '.Lrep_good_bytes' is that exception table entry.
-> 
->  (2) backport just that one commit for clear_user
-> 
->      In this case we should probably do commit e046fe5a36a9 ("x86: set
-> FSRS automatically on AMD CPUs that have FSRM") too, since that commit
-> changes the decision to use 'rep stosb' to check FSRS.
-> 
->  (3) backport the entire series of commits:
-> 
->         git log --oneline v6.3..034ff37d3407
-> 
-> Or we could even revert that commit 0db7058e8e23, but it seems silly
-> to revert when we have so many ways to fix it, including a one-line
-> code movement.
-> 
-> Borislav / stable people? Opinions?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-So right now I feel like (3) would be the right thing to do. Because
-then stable and upstream will be on the same "level" wrt user-accessing
-primitives. And it's not like your series depend on anything from
-mainline (that I know of) so backporting them should be relatively easy.
+								Honza
 
-But (1) is definitely a lot easier for stable people modulo the fact
-that it won't be an upstream commit but a special stable-only fix.
-
-So yeah, in that order.
-
-I guess I'd let stable people decide here what they wanna do.
-
-Thx.
-
+> ---
+>  fs/ext4/extents_status.c | 34 +++++++++++++++++++++-------------
+>  1 file changed, 21 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> index 7bc221038c6c..573723b23d19 100644
+> --- a/fs/ext4/extents_status.c
+> +++ b/fs/ext4/extents_status.c
+> @@ -448,6 +448,19 @@ static void ext4_es_list_del(struct inode *inode)
+>  	spin_unlock(&sbi->s_es_lock);
+>  }
+>  
+> +/*
+> + * Returns true if we cannot fail to allocate memory for this extent_status
+> + * entry and cannot reclaim it until its status changes.
+> + */
+> +static inline bool ext4_es_must_keep(struct extent_status *es)
+> +{
+> +	/* fiemap, bigalloc, and seek_data/hole need to use it. */
+> +	if (ext4_es_is_delayed(es))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static struct extent_status *
+>  ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
+>  		     ext4_fsblk_t pblk)
+> @@ -460,10 +473,8 @@ ext4_es_alloc_extent(struct inode *inode, ext4_lblk_t lblk, ext4_lblk_t len,
+>  	es->es_len = len;
+>  	es->es_pblk = pblk;
+>  
+> -	/*
+> -	 * We don't count delayed extent because we never try to reclaim them
+> -	 */
+> -	if (!ext4_es_is_delayed(es)) {
+> +	/* We never try to reclaim a must kept extent, so we don't count it. */
+> +	if (!ext4_es_must_keep(es)) {
+>  		if (!EXT4_I(inode)->i_es_shk_nr++)
+>  			ext4_es_list_add(inode);
+>  		percpu_counter_inc(&EXT4_SB(inode->i_sb)->
+> @@ -481,8 +492,8 @@ static void ext4_es_free_extent(struct inode *inode, struct extent_status *es)
+>  	EXT4_I(inode)->i_es_all_nr--;
+>  	percpu_counter_dec(&EXT4_SB(inode->i_sb)->s_es_stats.es_stats_all_cnt);
+>  
+> -	/* Decrease the shrink counter when this es is not delayed */
+> -	if (!ext4_es_is_delayed(es)) {
+> +	/* Decrease the shrink counter when we can reclaim the extent. */
+> +	if (!ext4_es_must_keep(es)) {
+>  		BUG_ON(EXT4_I(inode)->i_es_shk_nr == 0);
+>  		if (!--EXT4_I(inode)->i_es_shk_nr)
+>  			ext4_es_list_del(inode);
+> @@ -853,7 +864,7 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+>  	if (err == -ENOMEM && __es_shrink(EXT4_SB(inode->i_sb),
+>  					  128, EXT4_I(inode)))
+>  		goto retry;
+> -	if (err == -ENOMEM && !ext4_es_is_delayed(&newes))
+> +	if (err == -ENOMEM && !ext4_es_must_keep(&newes))
+>  		err = 0;
+>  
+>  	if (sbi->s_cluster_ratio > 1 && test_opt(inode->i_sb, DELALLOC) &&
+> @@ -1706,11 +1717,8 @@ static int es_do_reclaim_extents(struct ext4_inode_info *ei, ext4_lblk_t end,
+>  
+>  		(*nr_to_scan)--;
+>  		node = rb_next(&es->rb_node);
+> -		/*
+> -		 * We can't reclaim delayed extent from status tree because
+> -		 * fiemap, bigallic, and seek_data/hole need to use it.
+> -		 */
+> -		if (ext4_es_is_delayed(es))
+> +
+> +		if (ext4_es_must_keep(es))
+>  			goto next;
+>  		if (ext4_es_is_referenced(es)) {
+>  			ext4_es_clear_referenced(es);
+> @@ -1774,7 +1782,7 @@ void ext4_clear_inode_es(struct inode *inode)
+>  	while (node) {
+>  		es = rb_entry(node, struct extent_status, rb_node);
+>  		node = rb_next(node);
+> -		if (!ext4_es_is_delayed(es)) {
+> +		if (!ext4_es_must_keep(es)) {
+>  			rb_erase(&es->rb_node, &tree->root);
+>  			ext4_es_free_extent(inode, es);
+>  		}
+> -- 
+> 2.31.1
+> 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
