@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835B96F74A0
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 May 2023 21:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345C36F74CD
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 May 2023 21:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbjEDTwO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 May 2023 15:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S231372AbjEDTxb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 May 2023 15:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbjEDTud (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 15:50:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E90B14348;
-        Thu,  4 May 2023 12:46:53 -0700 (PDT)
+        with ESMTP id S231432AbjEDTwh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 15:52:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0B6A253;
+        Thu,  4 May 2023 12:47:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7738637BD;
-        Thu,  4 May 2023 19:46:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77967C433A4;
-        Thu,  4 May 2023 19:46:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCC746375D;
+        Thu,  4 May 2023 19:47:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A317C433D2;
+        Thu,  4 May 2023 19:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683229604;
-        bh=uSuoodPlvrw0FhXkwxiXvWD5EvuhdjzFAJdzq1s+Wto=;
+        s=k20201202; t=1683229640;
+        bh=eN30j7Nt7wOHG/lm/YXEEE6Kvwbjdek7lPeddr842/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=blpfv7vjvYsfxBY9Fc7TYeeHc4AHzdTR71D5d10exD/sXKIpt1eaaOD/ZnGtZ2Rxo
-         E0Sm83IOmZFKyofNwxuKgrsrlbutOpeanBcpcrlEbs8T0BwOU5JlGMqriCGYrNXu7l
-         A8+FQfxhh9UucB/mqdC/XTPn02g/pC896m668T4i+nE3HN7xGoQ8b56977mNMmoDid
-         39vRL0foVy4spb8uMKzzElBSB1Z/bshBOAf1KyEjQg/TU7+v0mzI4UmHo2PCoGzP4N
-         r6u3rgjf6PgaaWzRGjkbQprbcz92CpwhR+JfnawyUGN5nBLXDlZ6//owp5+WWDd+/U
-         O4ShLknCZf0Mg==
+        b=dsrHiQ7xlCQYH5IWArGwG0j3tR74n/le+nkYmkUDeg/ahN+T9A7Hka2bxmHXlY1ZW
+         Fbhx8BgvaNLXtBklD0BW3EmZpxBuA1Ju0Ksn8R7neY7HTzDO3yt5prIU7b44MMG4Gj
+         glljfVVqC0SSfFmmSItVziWGkz6pi2+438PTQFtrSNz1MSInRSvgEbJjTvy5LdNdzg
+         1CbghShZsTWv1rdAx/PDvFr2PuVnDRhO+AwsQMEH4jDTl1L6Lxo8w77ta9IPiQL1qW
+         JL9Pux5FXvPts380WITmy6jly4IK3F6sYjYkXztsiWftVCm5xZ1Nw+lE8EYGuJQGWk
+         0vVWMuNUf/LtA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot+4fec412f59eba8c01b77@syzkaller.appspotmail.com,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/49] ext2: Check block size validity during mount
-Date:   Thu,  4 May 2023 15:45:43 -0400
-Message-Id: <20230504194626.3807438-6-sashal@kernel.org>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 19/49] ext4: set goal start correctly in ext4_mb_normalize_request
+Date:   Thu,  4 May 2023 15:45:56 -0400
+Message-Id: <20230504194626.3807438-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230504194626.3807438-1-sashal@kernel.org>
 References: <20230504194626.3807438-1-sashal@kernel.org>
@@ -47,8 +47,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,52 +57,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
 
-[ Upstream commit 62aeb94433fcec80241754b70d0d1836d5926b0a ]
+[ Upstream commit b07ffe6927c75d99af534d685282ea188d9f71a6 ]
 
-Check that log of block size stored in the superblock has sensible
-value. Otherwise the shift computing the block size can overflow leading
-to undefined behavior.
+We need to set ac_g_ex to notify the goal start used in
+ext4_mb_find_by_goal. Set ac_g_ex instead of ac_f_ex in
+ext4_mb_normalize_request.
+Besides we should assure goal start is in range [first_data_block,
+blocks_count) as ext4_mb_initialize_context does.
 
-Reported-by: syzbot+4fec412f59eba8c01b77@syzkaller.appspotmail.com
-Signed-off-by: Jan Kara <jack@suse.cz>
+[ Added a check to make sure size is less than ar->pright; otherwise
+  we could end up passing an underflowed value of ar->pright - size to
+  ext4_get_group_no_and_offset(), which will trigger a BUG_ON later on.
+  - TYT ]
+
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Link: https://lore.kernel.org/r/20230303172120.3800725-2-shikemeng@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/ext2.h  | 1 +
- fs/ext2/super.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+ fs/ext4/mballoc.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index 28de11a22e5f6..dc5dcb78bc27f 100644
---- a/fs/ext2/ext2.h
-+++ b/fs/ext2/ext2.h
-@@ -180,6 +180,7 @@ static inline struct ext2_sb_info *EXT2_SB(struct super_block *sb)
- #define EXT2_MIN_BLOCK_SIZE		1024
- #define	EXT2_MAX_BLOCK_SIZE		4096
- #define EXT2_MIN_BLOCK_LOG_SIZE		  10
-+#define EXT2_MAX_BLOCK_LOG_SIZE		  16
- #define EXT2_BLOCK_SIZE(s)		((s)->s_blocksize)
- #define	EXT2_ADDR_PER_BLOCK(s)		(EXT2_BLOCK_SIZE(s) / sizeof (__u32))
- #define EXT2_BLOCK_SIZE_BITS(s)		((s)->s_blocksize_bits)
-diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-index 03f2af98b1b48..3feea4b31fa7e 100644
---- a/fs/ext2/super.c
-+++ b/fs/ext2/super.c
-@@ -945,6 +945,13 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 		goto failed_mount;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9dad93059945b..6c2d52b6e42c7 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3993,6 +3993,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 				struct ext4_allocation_request *ar)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
++	struct ext4_super_block *es = sbi->s_es;
+ 	int bsbits, max;
+ 	ext4_lblk_t end;
+ 	loff_t size, start_off;
+@@ -4188,18 +4189,21 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 	ac->ac_g_ex.fe_len = EXT4_NUM_B2C(sbi, size);
+ 
+ 	/* define goal start in order to merge */
+-	if (ar->pright && (ar->lright == (start + size))) {
++	if (ar->pright && (ar->lright == (start + size)) &&
++	    ar->pright >= size &&
++	    ar->pright - size >= le32_to_cpu(es->s_first_data_block)) {
+ 		/* merge to the right */
+ 		ext4_get_group_no_and_offset(ac->ac_sb, ar->pright - size,
+-						&ac->ac_f_ex.fe_group,
+-						&ac->ac_f_ex.fe_start);
++						&ac->ac_g_ex.fe_group,
++						&ac->ac_g_ex.fe_start);
+ 		ac->ac_flags |= EXT4_MB_HINT_TRY_GOAL;
+ 	}
+-	if (ar->pleft && (ar->lleft + 1 == start)) {
++	if (ar->pleft && (ar->lleft + 1 == start) &&
++	    ar->pleft + 1 < ext4_blocks_count(es)) {
+ 		/* merge to the left */
+ 		ext4_get_group_no_and_offset(ac->ac_sb, ar->pleft + 1,
+-						&ac->ac_f_ex.fe_group,
+-						&ac->ac_f_ex.fe_start);
++						&ac->ac_g_ex.fe_group,
++						&ac->ac_g_ex.fe_start);
+ 		ac->ac_flags |= EXT4_MB_HINT_TRY_GOAL;
  	}
  
-+	if (le32_to_cpu(es->s_log_block_size) >
-+	    (EXT2_MAX_BLOCK_LOG_SIZE - BLOCK_SIZE_BITS)) {
-+		ext2_msg(sb, KERN_ERR,
-+			 "Invalid log block size: %u",
-+			 le32_to_cpu(es->s_log_block_size));
-+		goto failed_mount;
-+	}
- 	blocksize = BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
- 
- 	if (test_opt(sb, DAX)) {
 -- 
 2.39.2
 
