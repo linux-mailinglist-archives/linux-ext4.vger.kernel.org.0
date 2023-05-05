@@ -2,112 +2,215 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17B46F870A
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 May 2023 18:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE3C6F8B8F
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 May 2023 23:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbjEEQvA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 May 2023 12:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
+        id S233669AbjEEVtA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 May 2023 17:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjEEQu7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 May 2023 12:50:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAA113843;
-        Fri,  5 May 2023 09:50:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8F41C228C4;
-        Fri,  5 May 2023 16:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683305457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zPT0GNbrLPn2WOzHVENqDErkuUZ+X4IxxxJ3W2ZkErM=;
-        b=cSVFEnb94dbwMgOTFX4MBhewNl2CKXGBZKtc/sXNdVmwvJNCkCHjoy6dW+dnR3UOjS8ys4
-        pbe0EcJpkahfcEdoudxVWOr8eVvpf4eexIcQ7LpCjF8Cp7Gk+6A0BNc+h7IP11qsLs10FM
-        jjs7yAS+YBOuUHQNfNM2qyv+RKmFi8Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683305457;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zPT0GNbrLPn2WOzHVENqDErkuUZ+X4IxxxJ3W2ZkErM=;
-        b=L5BgV2ruVzmdMQT02Xefv5VEnPbF3ZweHV39ppuRF1TjxykM4KSpUKRg4rMduaU8CKGpys
-        0P0FjWt+cJauaPDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B81913513;
-        Fri,  5 May 2023 16:50:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XQEZHvEzVWSCNAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 05 May 2023 16:50:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 034F3A0729; Fri,  5 May 2023 18:50:56 +0200 (CEST)
-Date:   Fri, 5 May 2023 18:50:56 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com,
-        syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: check iomap type only if ext4_iomap_begin() does
- not fail
-Message-ID: <20230505165056.7yjsh5nlaf4blvh5@quack3>
-References: <20230505132429.714648-1-libaokun1@huawei.com>
+        with ESMTP id S232718AbjEEVs5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 May 2023 17:48:57 -0400
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637D7DF
+        for <linux-ext4@vger.kernel.org>; Fri,  5 May 2023 14:48:49 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-331632be774so114729005ab.0
+        for <linux-ext4@vger.kernel.org>; Fri, 05 May 2023 14:48:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683323328; x=1685915328;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E7jMC4Y/MwtJxVB+XvqmNFutBQ5y0DuObCQpShWAyDA=;
+        b=AzNjkKg5AKlpppZG0sHqA5SzFuH0iKx114+D46z9KisO+qmDY1KbOJgNFayIpI7bbT
+         HxBbMZ5ArVw3TuSzVN3YWu8wp05PBitaNvUtcb18/3aAEE7hqq4xmh3u7mNciWtxxj4+
+         mw++SdzdFiGqFwU0qjF5BHDsSAX0r1YiXVaP3f5YEr/F9IUYFq9vsyoMA1ecHEqDbKg7
+         6g8B3IVWTYWWSDhMtUiuiC3S+G7ZGPxxvvxgpGY4ye++oi1bBS0oTo/iSxk+CuIneWRM
+         DSHgozbO5n+Mt1UnQ95rqNRr9OyqCyK582xIADOTtrR9J5OcUS+iAXJMjGEAALswkQNk
+         olsg==
+X-Gm-Message-State: AC+VfDzsNdnyMqW3hZi3lNgdo5yqPcQJZI5dvST6uibb/36NyoHZDDF/
+        6epFwCbcdsXY6hyRWwc5dc4TKaoPMeY1+3LKuc8Qcl0sLnF0
+X-Google-Smtp-Source: ACHHUZ7h14GTayDuTiT+XMTh6z11amG7pXwUsJRviZHTEdjTameaV5/XU2zTTT1SV3oExcG3icb7qrbArROQKHALD+LoIRDmIrp6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230505132429.714648-1-libaokun1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a92:7c04:0:b0:32b:fc:52b1 with SMTP id x4-20020a927c04000000b0032b00fc52b1mr2179768ilc.0.1683323328678;
+ Fri, 05 May 2023 14:48:48 -0700 (PDT)
+Date:   Fri, 05 May 2023 14:48:48 -0700
+In-Reply-To: <000000000000f6540d05f30bb23f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c53dd05faf94183@google.com>
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_xattr_set_handle (3)
+From:   syzbot <syzbot+edce54daffee36421b4c@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, dvyukov@google.com, jack@suse.cz,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 05-05-23 21:24:29, Baokun Li wrote:
-> When ext4_iomap_overwrite_begin() calls ext4_iomap_begin() map blocks may
-> fail for some reason (e.g. memory allocation failure, bare disk write), and
-> later because "iomap->type ! = IOMAP_MAPPED" triggers WARN_ON(). When ext4
-> iomap_begin() returns an error, it is normal that the type of iomap->type
-> may not match the expectation. Therefore, we only determine if iomap->type
-> is as expected when ext4_iomap_begin() is executed successfully.
-> 
-> Reported-by: syzbot+08106c4b7d60702dbc14@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/all/00000000000015760b05f9b4eee9@google.com
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+syzbot has found a reproducer for the following issue on:
 
-Makes sense. Feel free to add:
+HEAD commit:    14f8db1c0f9a Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1663f338280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a837a8ba7e88bb45
+dashboard link: https://syzkaller.appspot.com/bug?extid=edce54daffee36421b4c
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17595ed4280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e85322280000
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ad6ce516eed3/disk-14f8db1c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1f38c2cc7667/vmlinux-14f8db1c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d795115eee39/Image-14f8db1c.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/092c100a5922/mount_0.gz
 
-								Honza
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+edce54daffee36421b4c@syzkaller.appspotmail.com
 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 0d5ba922e411..19c884abe52b 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3375,7 +3375,7 @@ static int ext4_iomap_overwrite_begin(struct inode *inode, loff_t offset,
->  	 */
->  	flags &= ~IOMAP_WRITE;
->  	ret = ext4_iomap_begin(inode, offset, length, flags, iomap, srcmap);
-> -	WARN_ON_ONCE(iomap->type != IOMAP_MAPPED);
-> +	WARN_ON_ONCE(!ret && iomap->type != IOMAP_MAPPED);
->  	return ret;
->  }
->  
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+loop0: detected capacity change from 0 to 512
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: writeback.
+======================================================
+WARNING: possible circular locking dependency detected
+6.3.0-rc7-syzkaller-g14f8db1c0f9a #0 Not tainted
+------------------------------------------------------
+syz-executor392/5925 is trying to acquire lock:
+ffff0000e0dbb2f0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ffff0000e0dbb2f0 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x1e0/0x12d8 fs/ext4/xattr.c:2373
+
+but task is already holding lock:
+ffff0000e0dbb628 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:758 [inline]
+ffff0000e0dbb628 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: vfs_setxattr+0x17c/0x344 fs/xattr.c:323
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}:
+       down_write+0x50/0xc0 kernel/locking/rwsem.c:1573
+       inode_lock include/linux/fs.h:758 [inline]
+       ext4_xattr_inode_create fs/ext4/xattr.c:1525 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1608 [inline]
+       ext4_xattr_set_entry+0x2394/0x2c3c fs/ext4/xattr.c:1737
+       ext4_xattr_block_set+0x8e0/0x2cc4 fs/ext4/xattr.c:2043
+       ext4_xattr_set_handle+0xb2c/0x12d8 fs/ext4/xattr.c:2458
+       ext4_xattr_set+0x1e0/0x354 fs/ext4/xattr.c:2560
+       ext4_xattr_trusted_set+0x4c/0x64 fs/ext4/xattr_trusted.c:38
+       __vfs_setxattr+0x3d8/0x400 fs/xattr.c:203
+       __vfs_setxattr_noperm+0x110/0x528 fs/xattr.c:237
+       __vfs_setxattr_locked+0x1ec/0x218 fs/xattr.c:298
+       vfs_setxattr+0x1a8/0x344 fs/xattr.c:324
+       do_setxattr fs/xattr.c:609 [inline]
+       setxattr+0x208/0x29c fs/xattr.c:632
+       path_setxattr+0x17c/0x258 fs/xattr.c:651
+       __do_sys_setxattr fs/xattr.c:667 [inline]
+       __se_sys_setxattr fs/xattr.c:663 [inline]
+       __arm64_sys_setxattr+0xbc/0xd8 fs/xattr.c:663
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
+       el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+-> #0 (&ei->xattr_sem){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3098 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+       validate_chain kernel/locking/lockdep.c:3832 [inline]
+       __lock_acquire+0x3338/0x764c kernel/locking/lockdep.c:5056
+       lock_acquire+0x238/0x718 kernel/locking/lockdep.c:5669
+       down_write+0x50/0xc0 kernel/locking/rwsem.c:1573
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_xattr_set_handle+0x1e0/0x12d8 fs/ext4/xattr.c:2373
+       ext4_xattr_set+0x1e0/0x354 fs/ext4/xattr.c:2560
+       ext4_xattr_trusted_set+0x4c/0x64 fs/ext4/xattr_trusted.c:38
+       __vfs_setxattr+0x3d8/0x400 fs/xattr.c:203
+       __vfs_setxattr_noperm+0x110/0x528 fs/xattr.c:237
+       __vfs_setxattr_locked+0x1ec/0x218 fs/xattr.c:298
+       vfs_setxattr+0x1a8/0x344 fs/xattr.c:324
+       do_setxattr fs/xattr.c:609 [inline]
+       setxattr+0x208/0x29c fs/xattr.c:632
+       path_setxattr+0x17c/0x258 fs/xattr.c:651
+       __do_sys_setxattr fs/xattr.c:667 [inline]
+       __se_sys_setxattr fs/xattr.c:663 [inline]
+       __arm64_sys_setxattr+0xbc/0xd8 fs/xattr.c:663
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
+       el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ea_inode->i_rwsem#8/1);
+                               lock(&ei->xattr_sem);
+                               lock(&ea_inode->i_rwsem#8/1);
+  lock(&ei->xattr_sem);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor392/5925:
+ #0: ffff0000d80e6460 (sb_writers#3){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:394
+ #1: ffff0000e0dbb628 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:758 [inline]
+ #1: ffff0000e0dbb628 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: vfs_setxattr+0x17c/0x344 fs/xattr.c:323
+
+stack backtrace:
+CPU: 1 PID: 5925 Comm: syz-executor392 Not tainted 6.3.0-rc7-syzkaller-g14f8db1c0f9a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2056
+ check_noncircular+0x2cc/0x378 kernel/locking/lockdep.c:2178
+ check_prev_add kernel/locking/lockdep.c:3098 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3217 [inline]
+ validate_chain kernel/locking/lockdep.c:3832 [inline]
+ __lock_acquire+0x3338/0x764c kernel/locking/lockdep.c:5056
+ lock_acquire+0x238/0x718 kernel/locking/lockdep.c:5669
+ down_write+0x50/0xc0 kernel/locking/rwsem.c:1573
+ ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ ext4_xattr_set_handle+0x1e0/0x12d8 fs/ext4/xattr.c:2373
+ ext4_xattr_set+0x1e0/0x354 fs/ext4/xattr.c:2560
+ ext4_xattr_trusted_set+0x4c/0x64 fs/ext4/xattr_trusted.c:38
+ __vfs_setxattr+0x3d8/0x400 fs/xattr.c:203
+ __vfs_setxattr_noperm+0x110/0x528 fs/xattr.c:237
+ __vfs_setxattr_locked+0x1ec/0x218 fs/xattr.c:298
+ vfs_setxattr+0x1a8/0x344 fs/xattr.c:324
+ do_setxattr fs/xattr.c:609 [inline]
+ setxattr+0x208/0x29c fs/xattr.c:632
+ path_setxattr+0x17c/0x258 fs/xattr.c:651
+ __do_sys_setxattr fs/xattr.c:667 [inline]
+ __se_sys_setxattr fs/xattr.c:663 [inline]
+ __arm64_sys_setxattr+0xbc/0xd8 fs/xattr.c:663
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+ el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
+ el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
