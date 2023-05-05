@@ -2,285 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F816F79FA
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 May 2023 02:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F9B6F7ACB
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 May 2023 04:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjEEAKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 May 2023 20:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
+        id S229514AbjEECHf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 May 2023 22:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjEEAKr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 20:10:47 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE76B1329F
-        for <linux-ext4@vger.kernel.org>; Thu,  4 May 2023 17:10:44 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5191796a483so785826a12.0
-        for <linux-ext4@vger.kernel.org>; Thu, 04 May 2023 17:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1683245444; x=1685837444;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D8O5/MWGnrN/HKZ6iCIcOlLCZpNsEHpNrNhu83CyTnE=;
-        b=Ji0/fNIKPzOGoEPnZErf7BsAxIz54Y4D47kCHJLPzmtZqvf8AfVu6fE0O/57tqhlG/
-         BpsA3MHBhVH04xTSyCanoshSHk1Vd4eNpQPqZ/dPBlYV80MsDo1PwwLuHQMWvtxYzbSK
-         TlBXBBXG0XjNR1NRTD7KzZbuYQZKvHufoe8GFNm9kDK/OfDYSYEu1V3okXJUjLyfPQn+
-         r7jmPxFU8Pm/PKD+2KI/i00U4MK9EE1TFifAJOvJBUHAarimzoFLLS4tiDYL2OzvfWfk
-         SsW75ymP/FxB9G2PZ/zKz0oltBaflFNieleClDbHQZLFVQwcH2hYizVOZdP35Ispkxkr
-         JqsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683245444; x=1685837444;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D8O5/MWGnrN/HKZ6iCIcOlLCZpNsEHpNrNhu83CyTnE=;
-        b=AUYlkKjefGlneZq2nQHSjW7izJy8cSQhaDe4q+vWlO/EEYTZfCX7mAXIMOn0Xclkag
-         uKVS4nuInQO4GZxZygIFIl7pa8TzytX5NWwNEUi0YsH/WQakjfjWN3ZXHm/aA1WrX57u
-         t/LsupCDyx/KhDYmdYXmVoRdjAgJXsq770geNRPT+WLfCV/tiYr2wHaEbCjCVCYYFDz+
-         0p7XAuNbGuFUmAcTXrHugfhn4ZY8BgMRicY7XUU+SUSJGY4SB27AejzOOc9jvfF+BOd3
-         I6EY5lVQwxmY5My/EBExJE+wd4xlg5xH6n+UU4NVSRJqO8fCzGj9DtW9NLRJ+ZCostKL
-         cvjg==
-X-Gm-Message-State: AC+VfDx2sRqK6ym1fm7W1frQ9F2EiO8LqdtdpjiXE/qb3MOvi4E8Nqkj
-        IOJHsXDmyGkRNrD6SXX9EEx17A==
-X-Google-Smtp-Source: ACHHUZ7z+JA9nzv+3mJ3KYYHotTw7V86SXzf1wg9+Gu98bWmRaKAr2pIwEoeGjWXhWiIrAH+cIxkxg==
-X-Received: by 2002:a17:902:f691:b0:1ac:2cc6:296d with SMTP id l17-20020a170902f69100b001ac2cc6296dmr4284993plg.34.1683245444236;
-        Thu, 04 May 2023 17:10:44 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
-        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b001a19f3a661esm147731plg.138.2023.05.04.17.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 May 2023 17:10:43 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1puj20-00BROo-FR; Fri, 05 May 2023 10:10:40 +1000
-Date:   Fri, 5 May 2023 10:10:40 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Neil Brown <neilb@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
+        with ESMTP id S229446AbjEECHe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 22:07:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB1230EE
+        for <linux-ext4@vger.kernel.org>; Thu,  4 May 2023 19:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683252406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1lZHH9cJOkUnL6+SkM6O5cU5HIeggOc99mIe6aElrU=;
+        b=EqYJuGvVpvFIvPUj5Z8M09XAei+4J57uwNCfCEIC7uoiFXXsJEI5BEU/Q0jvC7DbTZZPWx
+        E75llk23qenckFApUs5hgRNltFHKzcI7izWx8fK9okFsY9on9z0TGJEDqwse0ikPuaMiU9
+        Wl7juIA1L2VisRoAdC+wdVrQ4BZtsnI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-130-vimcqaoUNs6Ig5aKRDdcoA-1; Thu, 04 May 2023 22:06:41 -0400
+X-MC-Unique: vimcqaoUNs6Ig5aKRDdcoA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F118A85A5B1;
+        Fri,  5 May 2023 02:06:40 +0000 (UTC)
+Received: from ovpn-8-16.pek2.redhat.com (ovpn-8-20.pek2.redhat.com [10.72.8.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C782B2026D16;
+        Fri,  5 May 2023 02:06:33 +0000 (UTC)
+Date:   Fri, 5 May 2023 10:06:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v3 1/6] fs: add infrastructure for multigrain inode
- i_m/ctime
-Message-ID: <20230505001040.GL3223426@dread.disaster.area>
-References: <20230503142037.153531-1-jlayton@kernel.org>
- <20230503142037.153531-2-jlayton@kernel.org>
+        linux-block@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@redhat.com>,
+        ming.lei@redhat.com
+Subject: Re: [ext4 io hang] buffered write io hang in balance_dirty_pages
+Message-ID: <ZFRkpKrhKDgi/lmf@ovpn-8-16.pek2.redhat.com>
+References: <ZEnb7KuOWmu5P+V9@ovpn-8-24.pek2.redhat.com>
+ <ZFPWeOg5xJ7CbCD0@kbusch-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230503142037.153531-2-jlayton@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZFPWeOg5xJ7CbCD0@kbusch-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 03, 2023 at 10:20:32AM -0400, Jeff Layton wrote:
-> The VFS always uses coarse-grained timestamp updates for filling out the
-> ctime and mtime after a change. This has the benefit of allowing
-> filesystems to optimize away a lot metadata updates, down to around 1
-> per jiffy, even when a file is under heavy writes.
+On Thu, May 04, 2023 at 09:59:52AM -0600, Keith Busch wrote:
+> On Thu, Apr 27, 2023 at 10:20:28AM +0800, Ming Lei wrote:
+> > Hello Guys,
+> > 
+> > I got one report in which buffered write IO hangs in balance_dirty_pages,
+> > after one nvme block device is unplugged physically, then umount can't
+> > succeed.
+> > 
+> > Turns out it is one long-term issue, and it can be triggered at least
+> > since v5.14 until the latest v6.3.
+> > 
+> > And the issue can be reproduced reliably in KVM guest:
+> > 
+> > 1) run the following script inside guest:
+> > 
+> > mkfs.ext4 -F /dev/nvme0n1
+> > mount /dev/nvme0n1 /mnt
+> > dd if=/dev/zero of=/mnt/z.img&
+> > sleep 10
+> > echo 1 > /sys/block/nvme0n1/device/device/remove
+> > 
+> > 2) dd hang is observed and /dev/nvme0n1 is gone actually
 > 
-> Unfortunately, this has always been an issue when we're exporting via
-> NFSv3, which relies on timestamps to validate caches. Even with NFSv4, a
-> lot of exported filesystems don't properly support a change attribute
-> and are subject to the same problems with timestamp granularity. Other
-> applications have similar issues (e.g backup applications).
+> Sorry to jump in so late.
 > 
-> Switching to always using fine-grained timestamps would improve the
-> situation, but that becomes rather expensive, as the underlying
-> filesystem will have to log a lot more metadata updates.
+> For an ungraceful nvme removal, like a surpirse hot unplug, the driver
+> sets the capacity to 0 and that effectively ends all dirty page writers
+> that could stall forward progress on the removal. And that 0 capacity
+> should also cause 'dd' to exit.
+
+Actually nvme device has been gone, and the hang just happens in
+balance_dirty_pages() from generic_perform_write().
+
+The issue should be triggered on all kinds of disks which can be hot-unplug,
+and it can be duplicated on both ublk and nvme easily.
+
 > 
-> What we need is a way to only use fine-grained timestamps when they are
-> being actively queried.
-> 
-> The kernel always stores normalized ctime values, so only the first 30
-> bits of the tv_nsec field are ever used. Whenever the mtime changes, the
-> ctime must also change.
-> 
-> Use the 31st bit of the tv_nsec field to indicate that something has
-> queried the inode for the i_mtime or i_ctime. When this flag is set, on
-> the next timestamp update, the kernel can fetch a fine-grained timestamp
-> instead of the usual coarse-grained one.
-> 
-> This patch adds the infrastructure this scheme. Filesytems can opt
-> into it by setting the FS_MULTIGRAIN_TS flag in the fstype.
-> 
-> Later patches will convert individual filesystems over to use it.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/inode.c         | 52 ++++++++++++++++++++++++++++++++++++---
->  fs/stat.c          | 32 ++++++++++++++++++++++++
->  include/linux/fs.h | 61 +++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 141 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 4558dc2f1355..7f6189961d6a 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2030,6 +2030,7 @@ EXPORT_SYMBOL(file_remove_privs);
->  static int inode_needs_update_time(struct inode *inode, struct timespec64 *now)
->  {
->  	int sync_it = 0;
-> +	struct timespec64 ctime;
->  
->  	/* First try to exhaust all avenues to not sync */
->  	if (IS_NOCMTIME(inode))
-> @@ -2038,7 +2039,8 @@ static int inode_needs_update_time(struct inode *inode, struct timespec64 *now)
->  	if (!timespec64_equal(&inode->i_mtime, now))
->  		sync_it = S_MTIME;
->  
-> -	if (!timespec64_equal(&inode->i_ctime, now))
-> +	ctime = ctime_peek(inode);
-> +	if (!timespec64_equal(&ctime, now))
->  		sync_it |= S_CTIME;
->  
->  	if (IS_I_VERSION(inode) && inode_iversion_need_inc(inode))
-> @@ -2062,6 +2064,50 @@ static int __file_update_time(struct file *file, struct timespec64 *now,
->  	return ret;
->  }
->  
-> +/**
-> + * current_ctime - Return FS time (possibly fine-grained)
-> + * @inode: inode.
-> + *
-> + * Return the current time truncated to the time granularity supported by
-> + * the fs, as suitable for a ctime/mtime change.
-> + *
-> + * For a multigrain timestamp, if the ctime is flagged as having been
-> + * QUERIED, get a fine-grained timestamp.
-> + */
-> +struct timespec64 current_ctime(struct inode *inode)
-> +{
-> +	bool multigrain = is_multigrain_ts(inode);
-> +	struct timespec64 now;
-> +	long nsec = 0;
-> +
-> +	if (multigrain) {
-> +		atomic_long_t *pnsec = (atomic_long_t *)&inode->i_ctime.tv_nsec;
-> +
-> +		nsec = atomic_long_fetch_andnot(I_CTIME_QUERIED, pnsec);
-> +	}
-> +
-> +	if (nsec & I_CTIME_QUERIED) {
-> +		ktime_get_real_ts64(&now);
-> +	} else {
-> +		ktime_get_coarse_real_ts64(&now);
-> +
-> +		if (multigrain) {
-> +			/*
-> +			 * If we've recently fetched a fine-grained timestamp
-> +			 * then the coarse-grained one may be earlier than the
-> +			 * existing one. Just keep the existing ctime if so.
-> +			 */
-> +			struct timespec64 ctime = ctime_peek(inode);
-> +
-> +			if (timespec64_compare(&ctime, &now) > 0)
-> +				now = ctime;
-> +		}
-> +	}
-> +
-> +	return timestamp_truncate(now, inode);
-> +}
-> +EXPORT_SYMBOL(current_ctime);
+> But this is not an ungraceful removal, so we're not getting that forced
+> behavior. Could we use the same capacity trick here after flushing any
+> outstanding dirty pages?
 
-I can't help but think this is easier to read/follow when structured
-to separate multigrain vs coarse logic completely like so:
+set_capacity(0) has been called in del_gendisk() after fsync_bdev() &
+__invalidate_device(), but I understand FS code just try best to flush dirty
+pages. And when the bdev is gone, these un-flushed dirty pages need cleanup,
+otherwise they can't be used any more.
 
-struct timespec64 current_ctime(struct inode *inode)
-{
-	struct timespec64 now, ctime;
-	long nsec;
 
-	if (!is_multigrain_ts(inode)) {
-		ktime_get_coarse_real_ts64(&now);
-		goto out_truncate;
-	}
+Thanks,
+Ming
 
-	nsec = atomic_long_fetch_andnot(I_CTIME_QUERIED,
-			(atomic_long_t *)&inode->i_ctime.tv_nsec);
-
-	if (nsec & I_CTIME_QUERIED) {
-		ktime_get_real_ts64(&now);
-		goto out_truncate;
-	}
-
-	/*
-	 * If we've recently fetched a fine-grained timestamp then
-	 * the coarse-grained one may be earlier than the existing
-	 * one. Just keep the existing ctime if so.
-	 */
-	ktime_get_coarse_real_ts64(&now);
-	ctime = ctime_peek(inode);
-	if (timespec64_compare(&ctime, &now) > 0)
-		now = ctime;
-
-out_truncate:
-	return timestamp_truncate(now, inode);
-}
-
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 7c238da22ef0..11a7e277f53e 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -26,6 +26,38 @@
->  #include "internal.h"
->  #include "mount.h"
->  
-> +/**
-> + * generic_fill_multigrain_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
-> + * @request_mask: STATX_* values requested
-> + * @inode: inode from which to grab the c/mtime
-> + * @stat: where to store the resulting values
-> + *
-> + * Given @inode, grab the ctime and mtime out if it and store the result
-> + * in @stat. When fetching the value, flag it as queried so the next write
-> + * will use a fine-grained timestamp.
-> + */
-> +void generic_fill_multigrain_cmtime(u32 request_mask,struct inode *inode,
-> +					struct kstat *stat)
-> +{
-> +	atomic_long_t *pnsec = (atomic_long_t *)&inode->i_ctime.tv_nsec;
-> +
-> +	/* If neither time was requested, then just don't report it */
-> +	if (!(request_mask & (STATX_CTIME|STATX_MTIME))) {
-> +		stat->result_mask &= ~(STATX_CTIME|STATX_MTIME);
-> +		return;
-> +	}
-> +
-> +	stat->mtime = inode->i_mtime;
-> +	stat->ctime.tv_sec = inode->i_ctime.tv_sec;
-> +	/*
-> +	 * Atomically set the QUERIED flag and fetch the new value with
-> +	 * the flag masked off.
-> +	 */
-> +	stat->ctime.tv_nsec = atomic_long_fetch_or(I_CTIME_QUERIED, pnsec) &
-> +					~I_CTIME_QUERIED;
-> +}
-> +EXPORT_SYMBOL(generic_fill_multigrain_cmtime);
-
-Hmmm - why not just have a generic_fill_cmtime() function that hides
-multigrain behaviour from all the statx callers?
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
