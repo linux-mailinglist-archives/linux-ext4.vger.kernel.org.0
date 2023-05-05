@@ -2,181 +2,285 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF766F76A2
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 May 2023 22:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F816F79FA
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 May 2023 02:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbjEDUJq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 May 2023 16:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S229449AbjEEAKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 May 2023 20:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbjEDUJU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 16:09:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D931A105;
-        Thu,  4 May 2023 12:54:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 15E706386D;
-        Thu,  4 May 2023 19:52:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86039C4339B;
-        Thu,  4 May 2023 19:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683229952;
-        bh=xYrx8c4EG0HeFGp5LDwwZL0KcMzUPrcmpGA1rkAKKRs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aQEheBUHZx6uNsCmTQOMv5BXwKVXPcJ67JhQss53BH37RqhEsvWXhGxIuuUl9V+jS
-         Gem2CXwi3CM3bqcXzLHNKuDXaEy6dPeLIoYnB/5EPutDAA259Fa8aP8DzevB0ZZSAY
-         DmASkcPuPVwi0mQDITf1S+JLHJt4ksgTDm7+xDD4gSST/HoaN9EUInmW+KmwgmJ8jw
-         LuGZp5BzclcZGKkfY7dECLeCgoacsBQhH+5VDVgEAmrV+VIuyOY6mKm8P/lY7PaK5D
-         XAUesDeLP1nEnAfXduMO6TfIebtgHxxN7gKlSG2Lbj6bRMj20z+W8ImPEjm1HAMTaz
-         6eebeg+pXKwDw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 10/13] ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()
-Date:   Thu,  4 May 2023 15:52:02 -0400
-Message-Id: <20230504195207.3809116-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230504195207.3809116-1-sashal@kernel.org>
-References: <20230504195207.3809116-1-sashal@kernel.org>
+        with ESMTP id S229746AbjEEAKr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 May 2023 20:10:47 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE76B1329F
+        for <linux-ext4@vger.kernel.org>; Thu,  4 May 2023 17:10:44 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5191796a483so785826a12.0
+        for <linux-ext4@vger.kernel.org>; Thu, 04 May 2023 17:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1683245444; x=1685837444;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D8O5/MWGnrN/HKZ6iCIcOlLCZpNsEHpNrNhu83CyTnE=;
+        b=Ji0/fNIKPzOGoEPnZErf7BsAxIz54Y4D47kCHJLPzmtZqvf8AfVu6fE0O/57tqhlG/
+         BpsA3MHBhVH04xTSyCanoshSHk1Vd4eNpQPqZ/dPBlYV80MsDo1PwwLuHQMWvtxYzbSK
+         TlBXBBXG0XjNR1NRTD7KzZbuYQZKvHufoe8GFNm9kDK/OfDYSYEu1V3okXJUjLyfPQn+
+         r7jmPxFU8Pm/PKD+2KI/i00U4MK9EE1TFifAJOvJBUHAarimzoFLLS4tiDYL2OzvfWfk
+         SsW75ymP/FxB9G2PZ/zKz0oltBaflFNieleClDbHQZLFVQwcH2hYizVOZdP35Ispkxkr
+         JqsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683245444; x=1685837444;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D8O5/MWGnrN/HKZ6iCIcOlLCZpNsEHpNrNhu83CyTnE=;
+        b=AUYlkKjefGlneZq2nQHSjW7izJy8cSQhaDe4q+vWlO/EEYTZfCX7mAXIMOn0Xclkag
+         uKVS4nuInQO4GZxZygIFIl7pa8TzytX5NWwNEUi0YsH/WQakjfjWN3ZXHm/aA1WrX57u
+         t/LsupCDyx/KhDYmdYXmVoRdjAgJXsq770geNRPT+WLfCV/tiYr2wHaEbCjCVCYYFDz+
+         0p7XAuNbGuFUmAcTXrHugfhn4ZY8BgMRicY7XUU+SUSJGY4SB27AejzOOc9jvfF+BOd3
+         I6EY5lVQwxmY5My/EBExJE+wd4xlg5xH6n+UU4NVSRJqO8fCzGj9DtW9NLRJ+ZCostKL
+         cvjg==
+X-Gm-Message-State: AC+VfDx2sRqK6ym1fm7W1frQ9F2EiO8LqdtdpjiXE/qb3MOvi4E8Nqkj
+        IOJHsXDmyGkRNrD6SXX9EEx17A==
+X-Google-Smtp-Source: ACHHUZ7z+JA9nzv+3mJ3KYYHotTw7V86SXzf1wg9+Gu98bWmRaKAr2pIwEoeGjWXhWiIrAH+cIxkxg==
+X-Received: by 2002:a17:902:f691:b0:1ac:2cc6:296d with SMTP id l17-20020a170902f69100b001ac2cc6296dmr4284993plg.34.1683245444236;
+        Thu, 04 May 2023 17:10:44 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
+        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b001a19f3a661esm147731plg.138.2023.05.04.17.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 May 2023 17:10:43 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1puj20-00BROo-FR; Fri, 05 May 2023 10:10:40 +1000
+Date:   Fri, 5 May 2023 10:10:40 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Neil Brown <neilb@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] fs: add infrastructure for multigrain inode
+ i_m/ctime
+Message-ID: <20230505001040.GL3223426@dread.disaster.area>
+References: <20230503142037.153531-1-jlayton@kernel.org>
+ <20230503142037.153531-2-jlayton@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230503142037.153531-2-jlayton@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+On Wed, May 03, 2023 at 10:20:32AM -0400, Jeff Layton wrote:
+> The VFS always uses coarse-grained timestamp updates for filling out the
+> ctime and mtime after a change. This has the benefit of allowing
+> filesystems to optimize away a lot metadata updates, down to around 1
+> per jiffy, even when a file is under heavy writes.
+> 
+> Unfortunately, this has always been an issue when we're exporting via
+> NFSv3, which relies on timestamps to validate caches. Even with NFSv4, a
+> lot of exported filesystems don't properly support a change attribute
+> and are subject to the same problems with timestamp granularity. Other
+> applications have similar issues (e.g backup applications).
+> 
+> Switching to always using fine-grained timestamps would improve the
+> situation, but that becomes rather expensive, as the underlying
+> filesystem will have to log a lot more metadata updates.
+> 
+> What we need is a way to only use fine-grained timestamps when they are
+> being actively queried.
+> 
+> The kernel always stores normalized ctime values, so only the first 30
+> bits of the tv_nsec field are ever used. Whenever the mtime changes, the
+> ctime must also change.
+> 
+> Use the 31st bit of the tv_nsec field to indicate that something has
+> queried the inode for the i_mtime or i_ctime. When this flag is set, on
+> the next timestamp update, the kernel can fetch a fine-grained timestamp
+> instead of the usual coarse-grained one.
+> 
+> This patch adds the infrastructure this scheme. Filesytems can opt
+> into it by setting the FS_MULTIGRAIN_TS flag in the fstype.
+> 
+> Later patches will convert individual filesystems over to use it.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/inode.c         | 52 ++++++++++++++++++++++++++++++++++++---
+>  fs/stat.c          | 32 ++++++++++++++++++++++++
+>  include/linux/fs.h | 61 +++++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 141 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 4558dc2f1355..7f6189961d6a 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2030,6 +2030,7 @@ EXPORT_SYMBOL(file_remove_privs);
+>  static int inode_needs_update_time(struct inode *inode, struct timespec64 *now)
+>  {
+>  	int sync_it = 0;
+> +	struct timespec64 ctime;
+>  
+>  	/* First try to exhaust all avenues to not sync */
+>  	if (IS_NOCMTIME(inode))
+> @@ -2038,7 +2039,8 @@ static int inode_needs_update_time(struct inode *inode, struct timespec64 *now)
+>  	if (!timespec64_equal(&inode->i_mtime, now))
+>  		sync_it = S_MTIME;
+>  
+> -	if (!timespec64_equal(&inode->i_ctime, now))
+> +	ctime = ctime_peek(inode);
+> +	if (!timespec64_equal(&ctime, now))
+>  		sync_it |= S_CTIME;
+>  
+>  	if (IS_I_VERSION(inode) && inode_iversion_need_inc(inode))
+> @@ -2062,6 +2064,50 @@ static int __file_update_time(struct file *file, struct timespec64 *now,
+>  	return ret;
+>  }
+>  
+> +/**
+> + * current_ctime - Return FS time (possibly fine-grained)
+> + * @inode: inode.
+> + *
+> + * Return the current time truncated to the time granularity supported by
+> + * the fs, as suitable for a ctime/mtime change.
+> + *
+> + * For a multigrain timestamp, if the ctime is flagged as having been
+> + * QUERIED, get a fine-grained timestamp.
+> + */
+> +struct timespec64 current_ctime(struct inode *inode)
+> +{
+> +	bool multigrain = is_multigrain_ts(inode);
+> +	struct timespec64 now;
+> +	long nsec = 0;
+> +
+> +	if (multigrain) {
+> +		atomic_long_t *pnsec = (atomic_long_t *)&inode->i_ctime.tv_nsec;
+> +
+> +		nsec = atomic_long_fetch_andnot(I_CTIME_QUERIED, pnsec);
+> +	}
+> +
+> +	if (nsec & I_CTIME_QUERIED) {
+> +		ktime_get_real_ts64(&now);
+> +	} else {
+> +		ktime_get_coarse_real_ts64(&now);
+> +
+> +		if (multigrain) {
+> +			/*
+> +			 * If we've recently fetched a fine-grained timestamp
+> +			 * then the coarse-grained one may be earlier than the
+> +			 * existing one. Just keep the existing ctime if so.
+> +			 */
+> +			struct timespec64 ctime = ctime_peek(inode);
+> +
+> +			if (timespec64_compare(&ctime, &now) > 0)
+> +				now = ctime;
+> +		}
+> +	}
+> +
+> +	return timestamp_truncate(now, inode);
+> +}
+> +EXPORT_SYMBOL(current_ctime);
 
-[ Upstream commit 93cdf49f6eca5e23f6546b8f28457b2e6a6961d9 ]
+I can't help but think this is easier to read/follow when structured
+to separate multigrain vs coarse logic completely like so:
 
-When the length of best extent found is less than the length of goal extent
-we need to make sure that the best extent atleast covers the start of the
-original request. This is done by adjusting the ac_b_ex.fe_logical (logical
-start) of the extent.
+struct timespec64 current_ctime(struct inode *inode)
+{
+	struct timespec64 now, ctime;
+	long nsec;
 
-While doing so, the current logic sometimes results in the best extent's
-logical range overflowing the goal extent. Since this best extent is later
-added to the inode preallocation list, we have a possibility of introducing
-overlapping preallocations. This is discussed in detail here [1].
+	if (!is_multigrain_ts(inode)) {
+		ktime_get_coarse_real_ts64(&now);
+		goto out_truncate;
+	}
 
-As per Jan's suggestion, to fix this, replace the existing logic with the
-below logic for adjusting best extent as it keeps fragmentation in check
-while ensuring logical range of best extent doesn't overflow out of goal
-extent:
+	nsec = atomic_long_fetch_andnot(I_CTIME_QUERIED,
+			(atomic_long_t *)&inode->i_ctime.tv_nsec);
 
-1. Check if best extent can be kept at end of goal range and still cover
-   original start.
-2. Else, check if best extent can be kept at start of goal range and still
-   cover original start.
-3. Else, keep the best extent at start of original request.
+	if (nsec & I_CTIME_QUERIED) {
+		ktime_get_real_ts64(&now);
+		goto out_truncate;
+	}
 
-Also, add a few extra BUG_ONs that might help catch errors faster.
+	/*
+	 * If we've recently fetched a fine-grained timestamp then
+	 * the coarse-grained one may be earlier than the existing
+	 * one. Just keep the existing ctime if so.
+	 */
+	ktime_get_coarse_real_ts64(&now);
+	ctime = ctime_peek(inode);
+	if (timespec64_compare(&ctime, &now) > 0)
+		now = ctime;
 
-[1] https://lore.kernel.org/r/Y+OGkVvzPN0RMv0O@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com
+out_truncate:
+	return timestamp_truncate(now, inode);
+}
 
-Suggested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/f96aca6d415b36d1f90db86c1a8cd7e2e9d7ab0e.1679731817.git.ojaswin@linux.ibm.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/mballoc.c | 49 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 18 deletions(-)
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 7c238da22ef0..11a7e277f53e 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -26,6 +26,38 @@
+>  #include "internal.h"
+>  #include "mount.h"
+>  
+> +/**
+> + * generic_fill_multigrain_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
+> + * @request_mask: STATX_* values requested
+> + * @inode: inode from which to grab the c/mtime
+> + * @stat: where to store the resulting values
+> + *
+> + * Given @inode, grab the ctime and mtime out if it and store the result
+> + * in @stat. When fetching the value, flag it as queried so the next write
+> + * will use a fine-grained timestamp.
+> + */
+> +void generic_fill_multigrain_cmtime(u32 request_mask,struct inode *inode,
+> +					struct kstat *stat)
+> +{
+> +	atomic_long_t *pnsec = (atomic_long_t *)&inode->i_ctime.tv_nsec;
+> +
+> +	/* If neither time was requested, then just don't report it */
+> +	if (!(request_mask & (STATX_CTIME|STATX_MTIME))) {
+> +		stat->result_mask &= ~(STATX_CTIME|STATX_MTIME);
+> +		return;
+> +	}
+> +
+> +	stat->mtime = inode->i_mtime;
+> +	stat->ctime.tv_sec = inode->i_ctime.tv_sec;
+> +	/*
+> +	 * Atomically set the QUERIED flag and fetch the new value with
+> +	 * the flag masked off.
+> +	 */
+> +	stat->ctime.tv_nsec = atomic_long_fetch_or(I_CTIME_QUERIED, pnsec) &
+> +					~I_CTIME_QUERIED;
+> +}
+> +EXPORT_SYMBOL(generic_fill_multigrain_cmtime);
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 60f202e63eebd..374862666128b 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3403,6 +3403,7 @@ static void ext4_mb_use_inode_pa(struct ext4_allocation_context *ac,
- 	BUG_ON(start < pa->pa_pstart);
- 	BUG_ON(end > pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len));
- 	BUG_ON(pa->pa_free < len);
-+	BUG_ON(ac->ac_b_ex.fe_len <= 0);
- 	pa->pa_free -= len;
- 
- 	mb_debug(1, "use %llu/%u from inode pa %p\n", start, len, pa);
-@@ -3707,10 +3708,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		return -ENOMEM;
- 
- 	if (ac->ac_b_ex.fe_len < ac->ac_g_ex.fe_len) {
--		int winl;
--		int wins;
--		int win;
--		int offs;
-+		int new_bex_start;
-+		int new_bex_end;
- 
- 		/* we can't allocate as much as normalizer wants.
- 		 * so, found space must get proper lstart
-@@ -3718,26 +3717,40 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		BUG_ON(ac->ac_g_ex.fe_logical > ac->ac_o_ex.fe_logical);
- 		BUG_ON(ac->ac_g_ex.fe_len < ac->ac_o_ex.fe_len);
- 
--		/* we're limited by original request in that
--		 * logical block must be covered any way
--		 * winl is window we can move our chunk within */
--		winl = ac->ac_o_ex.fe_logical - ac->ac_g_ex.fe_logical;
-+		/*
-+		 * Use the below logic for adjusting best extent as it keeps
-+		 * fragmentation in check while ensuring logical range of best
-+		 * extent doesn't overflow out of goal extent:
-+		 *
-+		 * 1. Check if best ex can be kept at end of goal and still
-+		 *    cover original start
-+		 * 2. Else, check if best ex can be kept at start of goal and
-+		 *    still cover original start
-+		 * 3. Else, keep the best ex at start of original request.
-+		 */
-+		new_bex_end = ac->ac_g_ex.fe_logical +
-+			EXT4_C2B(sbi, ac->ac_g_ex.fe_len);
-+		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-+		if (ac->ac_o_ex.fe_logical >= new_bex_start)
-+			goto adjust_bex;
- 
--		/* also, we should cover whole original request */
--		wins = EXT4_C2B(sbi, ac->ac_b_ex.fe_len - ac->ac_o_ex.fe_len);
-+		new_bex_start = ac->ac_g_ex.fe_logical;
-+		new_bex_end =
-+			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-+		if (ac->ac_o_ex.fe_logical < new_bex_end)
-+			goto adjust_bex;
- 
--		/* the smallest one defines real window */
--		win = min(winl, wins);
-+		new_bex_start = ac->ac_o_ex.fe_logical;
-+		new_bex_end =
-+			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
- 
--		offs = ac->ac_o_ex.fe_logical %
--			EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
--		if (offs && offs < win)
--			win = offs;
-+adjust_bex:
-+		ac->ac_b_ex.fe_logical = new_bex_start;
- 
--		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical -
--			EXT4_NUM_B2C(sbi, win);
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
- 		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-+		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
-+				      EXT4_C2B(sbi, ac->ac_g_ex.fe_len)));
- 	}
- 
- 	/* preallocation can change ac_b_ex, thus we store actually
+Hmmm - why not just have a generic_fill_cmtime() function that hides
+multigrain behaviour from all the statx callers?
+
+Cheers,
+
+Dave.
 -- 
-2.39.2
-
+Dave Chinner
+david@fromorbit.com
