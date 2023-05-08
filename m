@@ -2,85 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DE26FB857
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 May 2023 22:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F8A6FB930
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 May 2023 23:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbjEHUf2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 8 May 2023 16:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S229491AbjEHVNg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 8 May 2023 17:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjEHUf1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 May 2023 16:35:27 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C0E9D
-        for <linux-ext4@vger.kernel.org>; Mon,  8 May 2023 13:35:25 -0700 (PDT)
-Received: from letrec.thunk.org (vancouverconventioncentre.com [72.28.92.216] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 348KZHbO020025
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 8 May 2023 16:35:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1683578119; bh=NcleiIM/pIJcJl2FICwVL7dtxLix3rEheNFsBQzEAy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=CBtPeJy0p2DMMgqcApaiqKEy9+W8LX0g6oV3lv40IAPm0qdLOj/y5vce3UA9VX22k
-         Pw3SfSaqokHSyO0X6mAAXfzSNR5a3El+U78a/s0lkf4Jw7C0ngKs/6ElId+75Asr+I
-         OmqwGJYI0DXZLJIK99CSQvCabarO8fY72G0FkBu+io2VhK+fAJymrH6iFOh5v4Teq5
-         g0l7XQPfWFDmI9iDd6n01p2P4pPveEBiKPwgQOxk6kexPNuNpmrUEXC/5W2NhLlMdk
-         fwecHlznJ1dJfNE7zwKR52h007BJHf9qKtMA5OP2Dpf2HxOnkwCoeAXn06zAFWQsY5
-         AR8NwzbNtmEzQ==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id D7F858C03B2; Mon,  8 May 2023 16:35:15 -0400 (EDT)
-Date:   Mon, 8 May 2023 16:35:15 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/2] ext4: remove a BUG_ON in ext4_mb_release_group_pa()
-Message-ID: <ZFldA72PlRBDOrRD@mit.edu>
-References: <20230430154311.579720-1-tytso@mit.edu>
- <20230430154311.579720-3-tytso@mit.edu>
- <20230507182833.ma7fugevh7imz2tj@quack3>
+        with ESMTP id S229486AbjEHVNf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 8 May 2023 17:13:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE6B2D6D;
+        Mon,  8 May 2023 14:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XOfR5eYqFEKI2MRwh9rMh2Y6eXpYj1Cs8OGL6W+hOOw=; b=Bm/xNlf3ZvZys8QuPJvX+zIHtq
+        nF7j97jCosW8FystIsyTQ2INw9EuyYHCOMjd0w0y4cHC1w4p2Q3eld5ffdWccgKcxN25CqvmXcyX3
+        GXBRoOWKV86rvccyT20Y5M6fzHNguYjaRRogHBoWLr+LYfy7LIMoVtZJS4/WNjFvYM0hEurjjH6PK
+        nD0FQ3QV0HxQZFkq2DxuuAKw2xcxd1+wohoCZQAwpbkRjjDc3nURzC5YjHSF31vV1/2g9Fr4+UdbK
+        zKkg9wTCiPdjauQBSjjV07j+E7LFLkFeqGdXcxq3tm0G350ZAg+UA8e6jm0VrDbAhZAjiS8uyiH7S
+        B6LBVoqA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pw8Ah-00EVH7-AR; Mon, 08 May 2023 21:13:27 +0000
+Date:   Mon, 8 May 2023 22:13:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH] ext4: remove superfluous check that pointer is not NULL
+Message-ID: <ZFll93wsEUZIV/aI@casper.infradead.org>
+References: <20230508151337.79304-1-tudor.ambarus@linaro.org>
+ <ZFkf/oJnCLZSWgYr@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230507182833.ma7fugevh7imz2tj@quack3>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,MAY_BE_FORGED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZFkf/oJnCLZSWgYr@mit.edu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, May 07, 2023 at 08:28:33PM +0200, Jan Kara wrote:
-> OK, looks good to me. But frankly there are many other interesting ways how
-> bogus group numbers output when this happens can return is fun stuff - e.g.
-> ext4_group_first_block_no() is going to return invalid blocks etc. So it
-> feels a bit like endless whack-a-mole game. Anyway I agree the series seem
-> to fix a big chunk of these sites so feel free to add:
+On Mon, May 08, 2023 at 12:14:54PM -0400, Theodore Ts'o wrote:
+> On Mon, May 08, 2023 at 03:13:37PM +0000, Tudor Ambarus wrote:
+> > If @buffer is NULL, no operation is performed for kvfree(buffer),
+> > remove superfluous check.
+> > 
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> 
+> I was looking at this just a few weeks ago, and I couldn't find any
+> actual *documentation* that it was safe to call vfree(NIILL) or
+> kvfree(NULL).  The problem is there are a lot of architecture-specific
+> functions, and unlike with kfree() there is no top-level "if (ptr ==
+> NULL) return;" in the top-level vfree() and kvfree().
 
-The main thing I'm trying to avoid is a kernel crash or possible
-out-of-bounds read or write, which could lead to a security
-vulnerability.  If a a bad block number being returned by. say,
-ext4_group_first_block_no() "only" results in an I/O error when or
-(further) corruption of the block device, that's not a problem as far
-as I'm concerned.  After all, if a malicious root access has
-read/write access to the block device, they can corrupt the file
-system *anyway*.
+There doesn't need to be in kvfree().  is_vmalloc_addr() returns 'false'
+for NULL, so it calls kfree(), which as you note has an explicit check
+for ZERO_OR_NULL_PTR().  is_vmalloc_addr() also returns false for the
+ZERO pointer, fwiw.
 
-I wasn't able to find cases where a crazy return value from
-ext4_group_first_block_no() which would cause a BUG or a buffer
-overrun.  If we (or syzbot) finds a case where this could happen, we
-could copy s_es->s_first_data_block to sbi->s_first_data_block and
-then validate it during the file system mount.
+I agree that this should be explicitly documented as allowed, since it's
+not reasonable to expect users to dig through these functions to verify
+that such a change is safe.
 
-I also did a quick spot check what nastiness could be caused by
-real-time frobbing of s_blocks_count s_inodes_count and couldn't find
-anything there either.  So it looks like s_first_data_block is the one
-which is the most problematic.
-
-Cheers,
-
-						- Ted
