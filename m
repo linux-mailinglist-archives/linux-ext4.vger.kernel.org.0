@@ -2,170 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4BF6FD849
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 09:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9946FDAB4
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 11:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235768AbjEJHeN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 May 2023 03:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
+        id S236322AbjEJJ1F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 May 2023 05:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjEJHdu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 03:33:50 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1289286B8
-        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 00:33:16 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-763da06540aso964125739f.3
-        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 00:33:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683703879; x=1686295879;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C4a8KkWz9dRbpQYxxpyag0gphM+cBkqC1Ynk92aCjLc=;
-        b=jTELsg0R1Ql3c6jt19iS9DFl9nwn477UOqveA01uYnEH9Cc4LyRlvfJRbG7OYMD8jf
-         h6FBz3hsuMVyx7G0XWjG7O9kIBoLgqL7ZRMfkccCMt+Tcy7pDjz+u+wpeBmNQEhK8XAh
-         m58JyWiw/TswHXzqubLB5Oy2tf6AyIwSfxbvPEU7DF4K1C2gB0ni2E9wcaow14OnnbQA
-         Xvvxpn1NmkTxxz7hJluclql97zXUdC6GmV8Y3Ze7QJcEg1oK2SnmQPQT4PWwVVgBIrLL
-         Iq2MhGFoos8/jfShcAT5o0PbIAMmfcyTjMMOaEz/rjI8GjzkkN0+kQ4rRVpUNLseG9mz
-         QACQ==
-X-Gm-Message-State: AC+VfDy8bke+wwRqHmizKq2wAEDaZQOZ5SlDMglga6fJFtdjwheM0ot3
-        6f108n6B6+jAggg69Tf2+LW/TsFGXA8URlug7T/rBwBMP9sU
-X-Google-Smtp-Source: ACHHUZ4WQqffs93R8HeMOCc4Zmn/P+d7xYLncyiFDdkPWJ5HeuWPIkK6smLQTRaifp3h9yVSsEiOQRy3oXIVbSiC9h2+kMGuOsDj
+        with ESMTP id S229529AbjEJJ1E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 05:27:04 -0400
+X-Greylist: delayed 88200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 May 2023 02:27:03 PDT
+Received: from mail.rawlinsfis.com (mail.rawlinsfis.com [89.40.118.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F67F269E
+        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 02:27:03 -0700 (PDT)
+Received: by mail.rawlinsfis.com (Postfix, from userid 1001)
+        id A746D8242C; Tue,  9 May 2023 08:41:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rawlinsfis.com;
+        s=mail; t=1683618065;
+        bh=lDo1OjfzzJ3sOfR9tSDg5RMmT4aDyBP45hIVJCLtIrE=;
+        h=Date:From:To:Subject:From;
+        b=ErvXCUq5uMNMzdUbQb/adFa4zJNa/7/iDaziWhliJvus8TMiOAW5/dO9ja7VUylRh
+         P324j9bEnr/GtQxTon49s26ReySJ1AFzMdOuNl4zPe2Wmyrl6GJUmcxjGDl/+Dmdjo
+         IiZjDOOIQGBoOMwHsaGpO1jjukEAwvKhJ54iaMIPVa73ceDLlK3LROJNNtM2YCCB8t
+         k7WF20kItkHCOYRTR5oRnqWbn2CrHNgdG9fNakeWJ5SiRGFsQisYDRhehH3sNCLHzR
+         eIWDwJ2aTvl147tOZ3XxKaF5REOuJKjcMcUQstz3pMqyw6waDm/I8I+hR/rIUoNba3
+         SvsQ3PvWdjDiA==
+Received: by mail.rawlinsfis.com for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 07:40:52 GMT
+Message-ID: <20230509074500-0.1.3e.5p6t.0.69vl9ddg3a@rawlinsfis.com>
+Date:   Tue,  9 May 2023 07:40:52 GMT
+From:   "Damian Hordych" <damian.hordych@rawlinsfis.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: =?UTF-8?Q?Pompy_ciep=C5=82a_-_nowe_warunki_?=
+X-Mailer: mail.rawlinsfis.com
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a703:0:b0:766:3ffc:b5de with SMTP id
- b3-20020a5ea703000000b007663ffcb5demr8021731iod.3.1683703879174; Wed, 10 May
- 2023 00:31:19 -0700 (PDT)
-Date:   Wed, 10 May 2023 00:31:19 -0700
-In-Reply-To: <000000000000f1a9d205f909f327@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a018e405fb51db75@google.com>
-Subject: Re: [syzbot] [ext4?] possible deadlock in quotactl_fd
-From:   syzbot <syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, brauner@kernel.org, jack@suse.com,
-        jack@suse.cz, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Dzie=C5=84 dobry,
 
-HEAD commit:    1dc3731daf1f Merge tag 'for-6.4-rc1-tag' of git://git.kern..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ef9566280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8bc832f563d8bf38
-dashboard link: https://syzkaller.appspot.com/bug?extid=cdcd444e4d3a256ada13
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cc2a92280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dc5fa6280000
+w ramach nowej edycji programu Czyste Powietrze dla klient=C3=B3w indywid=
+ualnych mog=C4=85 otrzyma=C4=87 Pa=C5=84stwo do 135 tys. z=C5=82 wsparcia=
+ na zakup pompy ciep=C5=82a.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c41d6364878c/disk-1dc3731d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ed2d9614f1c1/vmlinux-1dc3731d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/903dc319e88d/bzImage-1dc3731d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/46ea6ec4210f/mount_0.gz
+Pr=C3=B3cz wy=C5=BCszego dofinansowania program zak=C5=82ada m.in. podwy=C5=
+=BCszenie prog=C3=B3w dochodowych oraz mo=C5=BCliwo=C5=9B=C4=87 z=C5=82o=C5=
+=BCenia kolejnego wniosku o dofinansowanie dla tych, kt=C3=B3rzy ju=C5=BC=
+ wcze=C5=9Bniej skorzystali z Programu.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com
+Jako firma specjalizuj=C4=85ca si=C4=99 w dostawie, monta=C5=BCu i serwis=
+ie pomp ciep=C5=82a pomo=C5=BCemy Pa=C5=84stwu w uzyskaniu dofinansowania=
+ wraz z kompleksow=C4=85 realizacj=C4=85 ca=C5=82ego projektu.
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.4.0-rc1-syzkaller-00011-g1dc3731daf1f #0 Not tainted
-------------------------------------------------------
-syz-executor197/5038 is trying to acquire lock:
-ffff88802b6260e0 (&type->s_umount_key#32){++++}-{3:3}, at: __do_sys_quotactl_fd+0x27e/0x3f0 fs/quota/quota.c:999
+S=C4=85 Pa=C5=84stwo zainteresowani?
 
-but task is already holding lock:
-ffff88802b626460 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_quotactl_fd+0xd3/0x3f0 fs/quota/quota.c:990
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (sb_writers#4){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1494 [inline]
-       sb_start_write include/linux/fs.h:1569 [inline]
-       write_mmp_block+0xc4/0x820 fs/ext4/mmp.c:50
-       ext4_multi_mount_protect+0x50d/0xac0 fs/ext4/mmp.c:347
-       __ext4_remount fs/ext4/super.c:6578 [inline]
-       ext4_reconfigure+0x242b/0x2b60 fs/ext4/super.c:6677
-       reconfigure_super+0x40c/0xa30 fs/super.c:956
-       vfs_fsconfig_locked fs/fsopen.c:254 [inline]
-       __do_sys_fsconfig+0xa5e/0xc50 fs/fsopen.c:439
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&type->s_umount_key#32){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3108 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3227 [inline]
-       validate_chain kernel/locking/lockdep.c:3842 [inline]
-       __lock_acquire+0x2f21/0x5df0 kernel/locking/lockdep.c:5074
-       lock_acquire kernel/locking/lockdep.c:5691 [inline]
-       lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
-       down_read+0x3d/0x50 kernel/locking/rwsem.c:1520
-       __do_sys_quotactl_fd+0x27e/0x3f0 fs/quota/quota.c:999
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(sb_writers#4);
-                               lock(&type->s_umount_key#32);
-                               lock(sb_writers#4);
-  rlock(&type->s_umount_key#32);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor197/5038:
- #0: ffff88802b626460 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_quotactl_fd+0xd3/0x3f0 fs/quota/quota.c:990
-
-stack backtrace:
-CPU: 1 PID: 5038 Comm: syz-executor197 Not tainted 6.4.0-rc1-syzkaller-00011-g1dc3731daf1f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2188
- check_prev_add kernel/locking/lockdep.c:3108 [inline]
- check_prevs_add kernel/locking/lockdep.c:3227 [inline]
- validate_chain kernel/locking/lockdep.c:3842 [inline]
- __lock_acquire+0x2f21/0x5df0 kernel/locking/lockdep.c:5074
- lock_acquire kernel/locking/lockdep.c:5691 [inline]
- lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
- down_read+0x3d/0x50 kernel/locking/rwsem.c:1520
- __do_sys_quotactl_fd+0x27e/0x3f0 fs/quota/quota.c:999
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fc4ee1d7359
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc4ee1832f8 EFLAGS: 00000246 ORIG_RAX: 00000000000001bb
-RAX: ffffffffffffffda RBX: 00007fc4ee25b7a0 RCX: 00007fc4ee1d7359
-RDX: 00000000ffffffff RSI: ffffffff80000802 RDI: 0000000000000003
-RBP: 00007fc4ee22858c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 7272655f61746164
-R13: 6974797a616c6f6e R14: 0030656c69662f2e R15: 00007fc4ee25b7a8
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Pozdrawiam
+Damian Hordych
