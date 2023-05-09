@@ -2,50 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86E36FCDE6
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 May 2023 20:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25C76FCE09
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 May 2023 20:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbjEISh1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 9 May 2023 14:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S234743AbjEISyF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 9 May 2023 14:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjEISh1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 May 2023 14:37:27 -0400
+        with ESMTP id S229549AbjEISyE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 9 May 2023 14:54:04 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D330FB
-        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 11:37:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1B83C15
+        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 11:53:59 -0700 (PDT)
 Received: from letrec.thunk.org (vancouverconventioncentre.com [72.28.92.215] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 349IaooI014738
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 349Irg9g026634
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 9 May 2023 14:36:51 -0400
+        Tue, 9 May 2023 14:53:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1683657413; bh=1j6ji9UCx2/3txxUx40NTRJzfKr+ZjDdH02fnGV2SzA=;
+        t=1683658426; bh=KZxEablCgEx3gfZJr0RJObjL9zAKTAvOj4M64WHGy50=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=F75nBwgCQWasmfxBM5M79VeXUwaU57kxXHJ7gi4jqK29koQwBvtapxqhhsX7PfyIW
-         ajNTm0tbE2F6edZOGP8euCw7cH91Fmy5G5W+L6UFwKbi2nGQJguqew4OjRrwUILUi+
-         9e1Bj9673MElmer/qV5L4MZZn6tgEMNV3zPLWnIXMIpZPix5eIHjKlps60edgxERPT
-         V4dGm9yJt9sja/VNoG2GGCKWjLLYhI4yCz3yl8JrKTdYIyfusOGF0Wq5hKDv/vrJ3S
-         /WSxaFUjOEEPM23w22Tq7REKBi+pghLsonNF12NxAoexEhNW4Nf4NEdVMghTjPI4EI
-         HrNEdqwz+IeXQ==
+        b=T0Ymu5peezw+ttc+oZOtm7QdJfWjzldInNAKBP4QuKy7qNWUaBdSywgqWIwiPk6Xw
+         fwaWO6w3M13oXTClaJXn8lxIi5AfNQ1vkJ0zcPd5+qh9hRpJyTM44xq/hRD4+9OAGP
+         LNQO+0cSPK9re2Tg0Tb2L4h075MUiHsgoKFv3di7rvnDBckTAUP8KPipUzZN5Uoy0/
+         f11TpWDjH465j49mXYPUJAK6I4Mr1lSv83FNpcyQVEhRRq7UZBK4LgqGF7rXQhxVvJ
+         gSbxYXVgdGZ13lDlRHAL4dx1YLAtf0rm23+93KXsf4qM7FM2pY1oXU5ASGCS4KynMi
+         GA4a2O8xR4liw==
 Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 719818C03CB; Tue,  9 May 2023 14:36:49 -0400 (EDT)
-Date:   Tue, 9 May 2023 14:36:49 -0400
+        id 2E99D8C03CB; Tue,  9 May 2023 14:53:41 -0400 (EDT)
+Date:   Tue, 9 May 2023 14:53:41 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     youling257 <youling257@gmail.com>, jack@suse.cz, hch@infradead.org,
-        hch@lst.de, linux-ext4@vger.kernel.org, ritesh.list@gmail.com,
-        keescook@chromium.org
-Subject: Re: [PATCH v4 12/13] ext4: Stop providing .writepage hook
-Message-ID: <ZFqSwegsnsqi3vAu@mit.edu>
-References: <20221207112722.22220-12-jack@suse.cz>
- <20230508175108.6986-1-youling257@gmail.com>
- <20230509050227.GA1180@quark.localdomain>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joneslee@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH] ext4: remove superfluous check that pointer is not NULL
+Message-ID: <ZFqWtcmRwxhyem4p@mit.edu>
+References: <20230508151337.79304-1-tudor.ambarus@linaro.org>
+ <ZFkf/oJnCLZSWgYr@mit.edu>
+ <ZFll93wsEUZIV/aI@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509050227.GA1180@quark.localdomain>
+In-Reply-To: <ZFll93wsEUZIV/aI@casper.infradead.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,MAY_BE_FORGED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -55,38 +55,33 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 08, 2023 at 10:02:27PM -0700, Eric Biggers wrote:
-> On Tue, May 09, 2023 at 01:51:08AM +0800, youling257 wrote:
-> > I using linux mainline kernel on android. https://github.com/youling257/android-mainline/commits/6.4  https://github.com/youling257/android-mainline/commits/6.3
-> > "ext4: Stop providing .writepage hook" cause some android app unable to read storage/emulated/0 files, i need to say android esdfs file system storage/emulated is ext4 data/media bind mount.
-> > I want to ask, why android storage/emulated need .writepage hook?
+On Mon, May 08, 2023 at 10:13:27PM +0100, Matthew Wilcox wrote:
+> > 
+> > I was looking at this just a few weeks ago, and I couldn't find any
+> > actual *documentation* that it was safe to call vfree(NIILL) or
+> > kvfree(NULL).  The problem is there are a lot of architecture-specific
+> > functions, and unlike with kfree() there is no top-level "if (ptr ==
+> > NULL) return;" in the top-level vfree() and kvfree().
 > 
-> "esdfs" doesn't exist upstream, so linux-ext4 can't provide support for it.
+> There doesn't need to be in kvfree().  is_vmalloc_addr() returns 'false'
+> for NULL, so it calls kfree(), which as you note has an explicit check
+> for ZERO_OR_NULL_PTR().  is_vmalloc_addr() also returns false for the
+> ZERO pointer, fwiw.
 > 
-> Also, it doesn't exist in the Android Common Kernels either, so the Android team
-> cannot help you either.
+> I agree that this should be explicitly documented as allowed, since it's
+> not reasonable to expect users to dig through these functions to verify
+> that such a change is safe.
 
-The problem with esdfs is that it's based on the old stackable file
-system paradigm which is filled with races and is inherently
-unreliable (just for fun, try running fsstress on the upper and lower
-file systems of a stackable file system simultaneously, and watch the
-kernel crash and burn).  For that reason, some number of us have been
-working for a while to eliminate the need for stacking file systems,
-such as sdcardfs. esdfs, etc. from the Android kernel.
+I seem to recall at one point looking at kvfree_rcu (at least the one
+argument variant), and I *thought* it would unconditionally allocate
+memory so it could be put on a linked list to be freed after an RCU
+grace period had elapsed.  But I tried tracing through the huge
+numbers of cpp macros and other layers of #ifdef's and other
+abstractions, and in my conference-induced sleep depreviation, it
+caused my head to spin, and I gave up trying to trace it down so I had
+100% confidence.
 
-The other thing I would add is that upstream has been working[1] on
-getting rid of writepage function.  So out-of-tree file systems are
-going to need to adapt --- or die.
-
-[1] https://lore.kernel.org/all/20221202102644.770505-1-hch@lst.de/
-
-It looks like esdfs is coming from the Chromium kernel?  The latest
-Chromium kernel I can find is 5.15 based, and it has esdfs in it.  I'm
-sad to see that esdfs hasn't been removed from the Chromium kernel
-yet, and replaced with something more stable and reliable, but maybe
-we can find someone who is more familiar with the Chromium kernel to
-comment.
-
-Cheers,
+So if someone could document *all* of the k[v]free_* variants whether
+it is safe/optimal to pass NULL to them, that would be great, thanks.
 
 						- Ted
