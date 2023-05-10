@@ -2,96 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADEA6FE461
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 21:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6856FE686
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 23:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbjEJTEL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 May 2023 15:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S236088AbjEJV7w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 May 2023 17:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236215AbjEJTEH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 15:04:07 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C0959E9
-        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 12:03:41 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-33164ec77ccso385065ab.0
-        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 12:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683745420; x=1686337420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QbhNMNTbdw0qSNr0k4GpjBRX50qyOAXsQymwFeq14SQ=;
-        b=ALKj+cgF6QebrDIyAnmVX9FjK0szrVsXsON/2iAcGk0STw53FR1dwLN7acc5qq5JEP
-         zTfJzSZx4XigbhJsQJzq55FJCy3hUPonwmhltIzQu6RXKjP/S+DHm6Xmv11fyYjSCtg6
-         Y05NP1Q8h+wTJIgIQdP2sMwFzQAv/gbnNSRDF5OKxvpUQ/g8+9RvWr5zGpPqNZmcY+t0
-         tXG65o7WNuwLUWNV0DeN2rOJmlhmAPIHZQphqhRRzGwGZRPr+TRKgK4/4UHLf+ndm49i
-         ZdHFOY0JrGWBMXytzvLWAqnvwblCdIXDo2Gv9iFRNu5uarqlfLODc62jEfzAm8iztL2O
-         3HLw==
+        with ESMTP id S233919AbjEJV7v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 17:59:51 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8638F1735
+        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 14:59:49 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-76984376366so1141512339f.3
+        for <linux-ext4@vger.kernel.org>; Wed, 10 May 2023 14:59:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683745420; x=1686337420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QbhNMNTbdw0qSNr0k4GpjBRX50qyOAXsQymwFeq14SQ=;
-        b=W0OQC8YZ2vs5hX1GRIsrlwzujWtK1AYO64+ccI2gOM7ph+pNonj2oETAHu0WQW8fmk
-         0mKptu3vrhq33PVNhY1B1zYasYkevda+v6QDt0S/4v6BWxHtlrvUEqVRnkYBU8Mkk0BX
-         z8hUQtSIWyLfSFkl2P7IBw6LwhMRii98NRtM2mqLS83M5610F7LBRfxH5eye9qlv5AIn
-         i1CNDnNqoWhCmtUv5LwzvGnyuMFF2qTQS+vN9H1Ac3uMPDtp1lQLzHDjdnhIFOFU/EeK
-         7rWse+y4i1spNotqAcvkTChywVRU0Y3uN0P5Dl8/t57+1VWbMx5NecY5HpG3XrR01zuI
-         H3eQ==
-X-Gm-Message-State: AC+VfDxB8i5v6yv1PMdjiQzpDLF4cdI6lmnVD1xzf48NUXqnZjyAjUwL
-        8agoiRIk+mA06HwMsYKWxkjbe71jEc6MdV9FoAkg44NuqFPsg5R8EEE=
-X-Google-Smtp-Source: ACHHUZ6veQGLSpr6GGUnXWOfjv15A2Rk/hJDrJPU/i7J6ttYheTKI1yAN0to5XpAHpU2QEXKoI2EPyA9y24FdQDEIy4=
-X-Received: by 2002:a05:6e02:1d03:b0:331:2623:c5f4 with SMTP id
- i3-20020a056e021d0300b003312623c5f4mr24618ila.1.1683745420690; Wed, 10 May
- 2023 12:03:40 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683755989; x=1686347989;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xjllICd3LQIMP/gta6LsmZizuNSUq+Z9Txu8r2Eu7/c=;
+        b=Da7eYDbkDUDHP9K6S9ORxfP8bY9/fR3oKXgKRgMBcU2HMxzHQRNOXylbSvX3naejrr
+         YpChccC1QfCWiwXCb9u4L9VPZ3KJIDEXbcqlBwwuVarOtifg+6mtRepLN16B6JJs4txd
+         tawCtoyAU/8WGFmh5Lo47jiwwmB0n5F1lWV6M5fSgKCKKMULdL4AL602Lazxjpkg61y5
+         hW97K2FZKsTi1F8Vw4SDeW48G2vRnfIgpRssjJvU13Wv7QdMz29+Zgm356EbfcW4xNOf
+         uklbsfa8lRhqUbZdRU9aGPBFN5VzXYjpPGGSafFa40JXE7Zm6wdLor2sAdud3JR2Zzq5
+         gEUA==
+X-Gm-Message-State: AC+VfDzHzIHiGKmPkZNpG+xTqb+Z5WoE1h3u5eYx1b6A2NDKVkfpSIXo
+        ew/3qRHDLpf1WZyZTnZdzmcGYNvmJg8bk6P21r5/xT7GRyWD
+X-Google-Smtp-Source: ACHHUZ4Tlf9yInWtJSWzOY5LQEm1B9HNNpfKXMRdZpzR3mazFAPq/l3UdS4ttb0lSmmO33WpYrmE//7sGJJMm/9hDRi5aZatLYI0
 MIME-Version: 1.0
-References: <ZFvpefM2MgrdJ7v4@mit.edu> <000000000000bd687205fb5b7714@google.com>
-In-Reply-To: <000000000000bd687205fb5b7714@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 10 May 2023 21:03:29 +0200
-Message-ID: <CANp29Y6kwK_BAjtOrc0_3NhOzU1RaA2dH2ctwE3uRHg-S56P0g@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] BUG: sleeping function called from invalid
- context in alloc_buffer_head
-To:     syzbot <syzbot+3c6cac1550288f8e7060@syzkaller.appspotmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+X-Received: by 2002:a02:b054:0:b0:40f:ae69:a144 with SMTP id
+ q20-20020a02b054000000b0040fae69a144mr4093051jah.5.1683755988887; Wed, 10 May
+ 2023 14:59:48 -0700 (PDT)
+Date:   Wed, 10 May 2023 14:59:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009b5b5705fb5dfda0@google.com>
+Subject: [syzbot] [ext4?] WARNING in __ext4fs_dirhash
+From:   syzbot <syzbot+344aaa8697ebd232bfc8@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-#syz set subsystems: mm
+Hello,
 
-On Wed, May 10, 2023 at 8:59=E2=80=AFPM syzbot
-<syzbot+3c6cac1550288f8e7060@syzkaller.appspotmail.com> wrote:
->
-> > #syz set: subsystems mm
->
-> The specified label "mm" is unknown.
-> Please use one of the supported labels.
->
-> The following labels are suported:
-> missing-backport, no-reminders, prio: {low, normal, high}, subsystems: {.=
-. see below ..}
-> The list of subsystems: https://syzkaller.appspot.com/upstream/subsystems=
-?all=3Dtrue
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/000000000000bd687205fb5b7714%40google.com.
+syzbot found the following issue on:
+
+HEAD commit:    578215f3e21c Add linux-next specific files for 20230510
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a11e34280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb5a64fc61c29c5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=344aaa8697ebd232bfc8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/61ae2512b5cb/disk-578215f3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e16190a5b183/vmlinux-578215f3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/04000a0b9ddf/bzImage-578215f3.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+344aaa8697ebd232bfc8@syzkaller.appspotmail.com
+
+EXT4-fs warning (device loop1): __ext4fs_dirhash:281: invalid/unsupported hash tree version 135
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 16903 at fs/ext4/hash.c:284 __ext4fs_dirhash+0xa34/0xb40 fs/ext4/hash.c:281
+Modules linked in:
+CPU: 1 PID: 16903 Comm: syz-executor.1 Not tainted 6.4.0-rc1-next-20230510-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
+RIP: 0010:__ext4fs_dirhash+0xa34/0xb40 fs/ext4/hash.c:284
+Code: 00 0f 85 16 01 00 00 48 8b 04 24 41 89 d8 48 c7 c1 60 d2 62 8a ba 19 01 00 00 48 c7 c6 80 d3 62 8a 48 8b 78 28 e8 9c 7a 12 00 <0f> 0b 41 bc ea ff ff ff e9 2a fd ff ff e8 aa 94 5a ff 8b 9c 24 88
+RSP: 0018:ffffc9000438f768 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000087 RCX: ffffc90016a21000
+RDX: 0000000000040000 RSI: ffffffff823bfd38 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 000000005948191c
+R13: 0000000000000001 R14: dffffc0000000000 R15: ffff88802825c0c4
+FS:  00007f06285fe700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffaa49ad988 CR3: 000000007b715000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4fs_dirhash+0x13e/0x2e0 fs/ext4/hash.c:323
+ htree_dirblock_to_tree+0x81e/0xc90 fs/ext4/namei.c:1122
+ ext4_htree_fill_tree+0x327/0xc40 fs/ext4/namei.c:1217
+ ext4_dx_readdir fs/ext4/dir.c:597 [inline]
+ ext4_readdir+0x1d18/0x35f0 fs/ext4/dir.c:142
+ iterate_dir+0x56e/0x6f0 fs/readdir.c:65
+ __do_sys_getdents64 fs/readdir.c:369 [inline]
+ __se_sys_getdents64 fs/readdir.c:354 [inline]
+ __x64_sys_getdents64+0x13e/0x2c0 fs/readdir.c:354
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0629a8c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f06285fe168 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 00007f0629bac050 RCX: 00007f0629a8c169
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000008
+RBP: 00007f0629ae7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc126daaaf R14: 00007f06285fe300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
