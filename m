@@ -2,152 +2,185 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF3C6FD613
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 07:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5D26FD614
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 07:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjEJFR5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 May 2023 01:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
+        id S230423AbjEJFTD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 May 2023 01:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjEJFR4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 01:17:56 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60A02716
-        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 22:17:54 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2ac806f4fccso75035591fa.1
-        for <linux-ext4@vger.kernel.org>; Tue, 09 May 2023 22:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683695873; x=1686287873;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bSG97c8cf2Q65sK/zKuA4WwoLjjCzG/0Dw7s28saAoE=;
-        b=WOgNNQsQo35gm0Oji/uoxL3pYWUD1K+GFfozhyK25EJA+XQoxsPSy7YSxbJadXtT36
-         yPdcZpAtVFSBups8dzVvKdQaxgaL+gUY+Ndv9cmQDzE3ZkoTX6tslmGCyXQ37Iyv/Dt+
-         44on+tM086cJJtysu7/jOUaIAV1NmODtfa8quAqBaSjEkSYp+8WQBrKmQrlj63B+bvFR
-         FiYQrzicLRauVdllfF5CrBV83pIeI26JNxwmRoMS2dq8YEJfcvzUqP7DbqOhZQcpM3tC
-         3ijwZH2Oz9Cd9np9KXyten3OxV20UEvkD46gFjm2hoI1o2KHYkdqy0K3JXZSWBH/XCLM
-         lnmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683695873; x=1686287873;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bSG97c8cf2Q65sK/zKuA4WwoLjjCzG/0Dw7s28saAoE=;
-        b=eZwcsAvV9lgtuIg85n+sMN4mwj4jo9J/KbtD7GV1x1WYjh7chhxtEpwKFowB8DZXBx
-         G+hHQ3L3J8MpGjun0BwOzQaitVg/7uIN7xezR6f8Lyp4AJH4WF0f2qMp5oGZUpMPC+xu
-         Rgk1JnIu+szH9YTgRaJ3DEsQkTMIic/sXwcDcgwkbmw1OlNgB2ijn1O6FgC3YNPhPoj3
-         5gFDS0Kxm20b7CqaaJ7/v8tjQH37KnPNcYp4j97RvOJhYaO3JghBxlAdJ7KPnQIynoGF
-         /eliBjMpvJtH8Pao2K7nPvcJpjHr4+YFJ2oI4+wILXEMXzZRrHnv6ESdK+x1DtpY+ebx
-         icQw==
-X-Gm-Message-State: AC+VfDwEUfS1YyXg5qSPqiXsE0sNG/Djl03nYTbLTdJuopag7c01kM/S
-        2oWPp0YoMT7u+qY49SMheO82ceZOF6z+v+KXnRU=
-X-Google-Smtp-Source: ACHHUZ4EWpb2DG1Q3kPs/+jbokxKgd07xZXRyzGO/uki1hKC6daarRKQhw5w5Ct8z2CIeFUiubg+GfgJbOXjL0wLnuQ=
-X-Received: by 2002:a2e:9c47:0:b0:2ad:aac1:c4e with SMTP id
- t7-20020a2e9c47000000b002adaac10c4emr983960ljj.41.1683695872741; Tue, 09 May
- 2023 22:17:52 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6504:1179:b0:224:262d:c651 with HTTP; Tue, 9 May 2023
- 22:17:51 -0700 (PDT)
-In-Reply-To: <ZFqSwegsnsqi3vAu@mit.edu>
-References: <20221207112722.22220-12-jack@suse.cz> <20230508175108.6986-1-youling257@gmail.com>
- <20230509050227.GA1180@quark.localdomain> <ZFqSwegsnsqi3vAu@mit.edu>
-From:   youling 257 <youling257@gmail.com>
-Date:   Wed, 10 May 2023 13:17:51 +0800
-Message-ID: <CAOzgRdbkno+k1_vFfH9XVPcWxG7YCQRUWC2sX6kMSE3_gLODfA@mail.gmail.com>
-Subject: Re: [PATCH v4 12/13] ext4: Stop providing .writepage hook
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Eric Biggers <ebiggers@kernel.org>, jack@suse.cz,
-        hch@infradead.org, hch@lst.de, linux-ext4@vger.kernel.org,
-        ritesh.list@gmail.com, keescook@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229595AbjEJFTC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 01:19:02 -0400
+Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C1F2683
+        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 22:19:00 -0700 (PDT)
+Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
+        by cmsmtp with ESMTP
+        id wUGqpqcG36NwhwcE8p6ZB2; Wed, 10 May 2023 05:19:00 +0000
+Received: from centos7.adilger.int ([70.77.221.9])
+        by cmsmtp with ESMTP
+        id wcE7pOqEuyAOewcE7pauLm; Wed, 10 May 2023 05:19:00 +0000
+X-Authority-Analysis: v=2.4 cv=e5oV9Il/ c=1 sm=1 tr=0 ts=645b2944
+ a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=RPJ6JBhKAAAA:8
+ a=Zv9RFgW65yl-G-HOgCIA:9 a=fa_un-3J20JGBB2Tu-mn:22
+From:   Andreas Dilger <adilger@dilger.ca>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH] ext2fs: don't retry discard/zeroout repeatedly
+Date:   Tue,  9 May 2023 23:18:49 -0600
+Message-Id: <1683695929-26972-1-git-send-email-adilger@dilger.ca>
+X-Mailer: git-send-email 1.8.3.1
+X-CMAE-Envelope: MS4xfE4W9GitLCGOpQgrlezNlX5AVtU1mSii4Ge89hIpgSTI4JLQwbKA4w52rQHxbSUJEekrxQLk0rH9IAfRwSfIhaGyo2O1x9bHyMJTJJwz1pcgyeBJNI4Z
+ pff6jsNz3aAz2E6fCVYz0qp19xLXCpAKURS/5dG+TVE5SrmaeB01/Oke7Tqrb2++5QqEKKsLVf5dS31XYk0S/RK7zPYLQ+KsGiFxIuSVMpULyeQMsKcT6+CN
+ UX2DAOOXP4U2xc0IySTWUQ==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It isn't android storage emulated esdfs or sdcardfs problem, i test
-mount bind /data/media on /storage/emulated, can reproduce my problem.
-Let me say clear my problem, "ext4: Stop providing .writepage hook"
-cause android gallery app unable read pictures thumbnails.
+Call safe_getenv(UNIX_IO_NOZEROOUT) once when the device is
+opened and set CHANNEL_FLAG_NOZEROOUT if present instead of
+getting uid/euid/getenv every time unix_zeroout() is called.
 
-I test linux kernel 6.3 Revert "ext4: Stop providing .writepage hook",
-android gallery can read pictures thumbnails,
+For unix_discard() and unix_zeroout() don't continue to call
+them if the block device doesn't support these operations.
 
-this is mount bind /data/media on /storage/emulated
-/dev/nvme0n1p1 on /storage/emulated type ext4 (rw,seclabel,noatime)
-/dev/nvme0n1p1 on /mnt/runtime/default/emulated type ext4 (rw,seclabel,noatime)
-/dev/nvme0n1p1 on /mnt/runtime/read/emulated type ext4 (rw,seclabel,noatime)
-/dev/nvme0n1p1 on /mnt/runtime/write/emulated type ext4 (rw,seclabel,noatime)
-/dev/nvme0n1p1 on /mnt/runtime/full/emulated type ext4 (rw,seclabel,noatime)
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+---
+ lib/ext2fs/ext2_io.h |  4 +++-
+ lib/ext2fs/unix_io.c | 43 ++++++++++++++++++++++++++-----------------
+ 2 files changed, 29 insertions(+), 18 deletions(-)
 
-this is esdfs,
-/data/media on /mnt/runtime/default/emulated type esdfs
-(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:1015:771:771,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
-/data/media on /storage/emulated type esdfs
-(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:1015:771:771,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
-/data/media on /mnt/runtime/read/emulated type esdfs
-(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:750:750,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
-/data/media on /mnt/runtime/write/emulated type esdfs
-(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:770:770,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
-/data/media on /mnt/runtime/full/emulated type esdfs
-(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:770:770,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
+diff --git a/lib/ext2fs/ext2_io.h b/lib/ext2fs/ext2_io.h
+index 679184e393f1..27eaaf1be354 100644
+--- a/lib/ext2fs/ext2_io.h
++++ b/lib/ext2fs/ext2_io.h
+@@ -34,6 +34,8 @@ typedef struct struct_io_stats *io_stats;
+ #define CHANNEL_FLAGS_DISCARD_ZEROES	0x02
+ #define CHANNEL_FLAGS_BLOCK_DEVICE	0x04
+ #define CHANNEL_FLAGS_THREADS		0x08
++#define CHANNEL_FLAGS_NODISCARD		0x10
++#define CHANNEL_FLAGS_NOZEROOUT		0x20
+ 
+ #define io_channel_discard_zeroes_data(i) (i->flags & CHANNEL_FLAGS_DISCARD_ZEROES)
+ 
+@@ -57,7 +59,7 @@ struct struct_io_channel {
+ 				       int actual_bytes_written,
+ 				       errcode_t error);
+ 	int		refcount;
+-	int		flags;
++	unsigned int	flags;
+ 	long		reserved[14];
+ 	void		*private_data;
+ 	void		*app_data;
+diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+index 3171c7368feb..33c5d568656c 100644
+--- a/lib/ext2fs/unix_io.c
++++ b/lib/ext2fs/unix_io.c
+@@ -761,6 +761,9 @@ static errcode_t unix_open_channel(const char *name, int fd,
+ 	io->refcount = 1;
+ 	io->flags = 0;
+ 
++	if (safe_getenv("UNIX_IO_NOZEROOUT"))
++		io->flags |= CHANNEL_FLAGS_NOZEROOUT;
++
+ 	memset(data, 0, sizeof(struct unix_private_data));
+ 	data->magic = EXT2_ET_MAGIC_UNIX_IO_CHANNEL;
+ 	data->io_stats.num_fields = 2;
+@@ -783,20 +786,19 @@ static errcode_t unix_open_channel(const char *name, int fd,
+ 	 * zero.
+ 	 */
+ 	if (ext2fs_fstat(data->dev, &st) == 0) {
+-		if (ext2fsP_is_disk_device(st.st_mode))
+-			io->flags |= CHANNEL_FLAGS_BLOCK_DEVICE;
+-		else
+-			io->flags |= CHANNEL_FLAGS_DISCARD_ZEROES;
+-	}
+-
++		if (ext2fsP_is_disk_device(st.st_mode)) {
+ #ifdef BLKDISCARDZEROES
+-	{
+-		int zeroes = 0;
+-		if (ioctl(data->dev, BLKDISCARDZEROES, &zeroes) == 0 &&
+-		    zeroes)
++			int zeroes = 0;
++
++			if (ioctl(data->dev, BLKDISCARDZEROES, &zeroes) == 0 &&
++			    zeroes)
++				io->flags |= CHANNEL_FLAGS_DISCARD_ZEROES;
++#endif
++			io->flags |= CHANNEL_FLAGS_BLOCK_DEVICE;
++		} else {
+ 			io->flags |= CHANNEL_FLAGS_DISCARD_ZEROES;
++		}
+ 	}
+-#endif
+ 
+ #if defined(__CYGWIN__)
+ 	/*
+@@ -1344,12 +1346,15 @@ static errcode_t unix_discard(io_channel channel, unsigned long long block,
+ 			      unsigned long long count)
+ {
+ 	struct unix_private_data *data;
+-	int		ret;
++	int		ret = EOPNOTSUPP;
+ 
+ 	EXT2_CHECK_MAGIC(channel, EXT2_ET_MAGIC_IO_CHANNEL);
+ 	data = (struct unix_private_data *) channel->private_data;
+ 	EXT2_CHECK_MAGIC(data, EXT2_ET_MAGIC_UNIX_IO_CHANNEL);
+ 
++	if (channel->flags & CHANNEL_FLAGS_NODISCARD)
++		goto unimplemented;
++
+ 	if (channel->flags & CHANNEL_FLAGS_BLOCK_DEVICE) {
+ #ifdef BLKDISCARD
+ 		__u64 range[2];
+@@ -1376,8 +1381,10 @@ static errcode_t unix_discard(io_channel channel, unsigned long long block,
+ #endif
+ 	}
+ 	if (ret < 0) {
+-		if (errno == EOPNOTSUPP)
++		if (errno == EOPNOTSUPP) {
++			channel->flags |= CHANNEL_FLAGS_NODISCARD;
+ 			goto unimplemented;
++		}
+ 		return errno;
+ 	}
+ 	return 0;
+@@ -1425,9 +1432,6 @@ static errcode_t unix_zeroout(io_channel channel, unsigned long long block,
+ 	data = (struct unix_private_data *) channel->private_data;
+ 	EXT2_CHECK_MAGIC(data, EXT2_ET_MAGIC_UNIX_IO_CHANNEL);
+ 
+-	if (safe_getenv("UNIX_IO_NOZEROOUT"))
+-		goto unimplemented;
+-
+ 	if (!(channel->flags & CHANNEL_FLAGS_BLOCK_DEVICE)) {
+ 		/* Regular file, try to use truncate/punch/zero. */
+ 		struct stat statbuf;
+@@ -1450,13 +1454,18 @@ static errcode_t unix_zeroout(io_channel channel, unsigned long long block,
+ 		}
+ 	}
+ 
++	if (channel->flags & CHANNEL_FLAGS_NOZEROOUT)
++		goto unimplemented;
++
+ 	ret = __unix_zeroout(data->dev,
+ 			(off_t)(block) * channel->block_size + data->offset,
+ 			(off_t)(count) * channel->block_size);
+ err:
+ 	if (ret < 0) {
+-		if (errno == EOPNOTSUPP)
++		if (errno == EOPNOTSUPP) {
++			channel->flags |= CHANNEL_FLAGS_NOZEROOUT;
+ 			goto unimplemented;
++		}
+ 		return errno;
+ 	}
+ 	return 0;
+-- 
+1.8.3.1
 
-if i do mount bind data/media on storage/emulated, take a screenshot,
-will create /data/media/0/Pictures/Screenshots/Screenshot_20230510-130020.png
-file,
-chmod -R 0777 /data/media/0/Pictures/Screenshots,
-on linux 6.3 Revert "ext4: Stop providing .writepage hook", android
-gallery app can read
-/storage/emulated/0/Pictures/Screenshots/Screenshot_20230510-130020.png
-thumbnail,
-linux 6.4 removed .writepage hook, android gallery unable read thumbnail.
-
-
-2023-05-10 2:36 GMT+08:00, Theodore Ts'o <tytso@mit.edu>:
-> On Mon, May 08, 2023 at 10:02:27PM -0700, Eric Biggers wrote:
->> On Tue, May 09, 2023 at 01:51:08AM +0800, youling257 wrote:
->> > I using linux mainline kernel on android.
->> > https://github.com/youling257/android-mainline/commits/6.4
->> > https://github.com/youling257/android-mainline/commits/6.3
->> > "ext4: Stop providing .writepage hook" cause some android app unable to
->> > read storage/emulated/0 files, i need to say android esdfs file system
->> > storage/emulated is ext4 data/media bind mount.
->> > I want to ask, why android storage/emulated need .writepage hook?
->>
->> "esdfs" doesn't exist upstream, so linux-ext4 can't provide support for
->> it.
->>
->> Also, it doesn't exist in the Android Common Kernels either, so the
->> Android team
->> cannot help you either.
->
-> The problem with esdfs is that it's based on the old stackable file
-> system paradigm which is filled with races and is inherently
-> unreliable (just for fun, try running fsstress on the upper and lower
-> file systems of a stackable file system simultaneously, and watch the
-> kernel crash and burn).  For that reason, some number of us have been
-> working for a while to eliminate the need for stacking file systems,
-> such as sdcardfs. esdfs, etc. from the Android kernel.
->
-> The other thing I would add is that upstream has been working[1] on
-> getting rid of writepage function.  So out-of-tree file systems are
-> going to need to adapt --- or die.
->
-> [1] https://lore.kernel.org/all/20221202102644.770505-1-hch@lst.de/
->
-> It looks like esdfs is coming from the Chromium kernel?  The latest
-> Chromium kernel I can find is 5.15 based, and it has esdfs in it.  I'm
-> sad to see that esdfs hasn't been removed from the Chromium kernel
-> yet, and replaced with something more stable and reliable, but maybe
-> we can find someone who is more familiar with the Chromium kernel to
-> comment.
->
-> Cheers,
->
-> 						- Ted
->
