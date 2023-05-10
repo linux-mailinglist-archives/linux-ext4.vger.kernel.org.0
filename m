@@ -2,194 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C206FD5A7
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 06:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF3C6FD613
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 May 2023 07:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjEJE7i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 10 May 2023 00:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
+        id S229902AbjEJFR5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 10 May 2023 01:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235430AbjEJE7h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 00:59:37 -0400
-X-Greylist: delayed 91 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 May 2023 21:59:34 PDT
-Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8AA120
-        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 21:59:34 -0700 (PDT)
-Received: from shw-obgw-4003a.ext.cloudfilter.net ([10.228.9.183])
-        by cmsmtp with ESMTP
-        id wQ9ppqHaP6Nwhwbtrp6XnV; Wed, 10 May 2023 04:58:03 +0000
-Received: from centos7.adilger.int ([70.77.221.9])
-        by cmsmtp with ESMTP
-        id wbtqpn8Qacyvuwbtqp377c; Wed, 10 May 2023 04:58:03 +0000
-X-Authority-Analysis: v=2.4 cv=VbHkgXl9 c=1 sm=1 tr=0 ts=645b245b
- a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=RPJ6JBhKAAAA:8
- a=HIemJr-ISWl06myyT58A:9 a=fa_un-3J20JGBB2Tu-mn:22
-From:   Andreas Dilger <adilger@dilger.ca>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH RESEND] build: split version and release in configure
-Date:   Tue,  9 May 2023 22:57:57 -0600
-Message-Id: <1683694677-9366-1-git-send-email-adilger@dilger.ca>
-X-Mailer: git-send-email 1.8.3.1
-X-CMAE-Envelope: MS4xfKHG9DlWRST8IY6/s1DKwvh5qfiTD6LM1g9aS0Sk9UZJij8dyQT+RSDrXynD5n4lclHMewfR3yF0Km95W1oaV3CqCPs8eBqlW45MC1KQ98cuQP17v21W
- 5T6PCqqyza+BE7TONmzQbnqfcEJPx64jSBJkKEEIC6PJ24Eox7n0o2u1oXO04Bg9Z0AbawyMWtFqW1vQPGOZLXn3TwJGe690st2ymn9sYKHdQD6T4H4hpTuh
- ImS3tU50BOEPN2Sj/Bth6Q==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229595AbjEJFR4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 10 May 2023 01:17:56 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60A02716
+        for <linux-ext4@vger.kernel.org>; Tue,  9 May 2023 22:17:54 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2ac806f4fccso75035591fa.1
+        for <linux-ext4@vger.kernel.org>; Tue, 09 May 2023 22:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683695873; x=1686287873;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bSG97c8cf2Q65sK/zKuA4WwoLjjCzG/0Dw7s28saAoE=;
+        b=WOgNNQsQo35gm0Oji/uoxL3pYWUD1K+GFfozhyK25EJA+XQoxsPSy7YSxbJadXtT36
+         yPdcZpAtVFSBups8dzVvKdQaxgaL+gUY+Ndv9cmQDzE3ZkoTX6tslmGCyXQ37Iyv/Dt+
+         44on+tM086cJJtysu7/jOUaIAV1NmODtfa8quAqBaSjEkSYp+8WQBrKmQrlj63B+bvFR
+         FiYQrzicLRauVdllfF5CrBV83pIeI26JNxwmRoMS2dq8YEJfcvzUqP7DbqOhZQcpM3tC
+         3ijwZH2Oz9Cd9np9KXyten3OxV20UEvkD46gFjm2hoI1o2KHYkdqy0K3JXZSWBH/XCLM
+         lnmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683695873; x=1686287873;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bSG97c8cf2Q65sK/zKuA4WwoLjjCzG/0Dw7s28saAoE=;
+        b=eZwcsAvV9lgtuIg85n+sMN4mwj4jo9J/KbtD7GV1x1WYjh7chhxtEpwKFowB8DZXBx
+         G+hHQ3L3J8MpGjun0BwOzQaitVg/7uIN7xezR6f8Lyp4AJH4WF0f2qMp5oGZUpMPC+xu
+         Rgk1JnIu+szH9YTgRaJ3DEsQkTMIic/sXwcDcgwkbmw1OlNgB2ijn1O6FgC3YNPhPoj3
+         5gFDS0Kxm20b7CqaaJ7/v8tjQH37KnPNcYp4j97RvOJhYaO3JghBxlAdJ7KPnQIynoGF
+         /eliBjMpvJtH8Pao2K7nPvcJpjHr4+YFJ2oI4+wILXEMXzZRrHnv6ESdK+x1DtpY+ebx
+         icQw==
+X-Gm-Message-State: AC+VfDwEUfS1YyXg5qSPqiXsE0sNG/Djl03nYTbLTdJuopag7c01kM/S
+        2oWPp0YoMT7u+qY49SMheO82ceZOF6z+v+KXnRU=
+X-Google-Smtp-Source: ACHHUZ4EWpb2DG1Q3kPs/+jbokxKgd07xZXRyzGO/uki1hKC6daarRKQhw5w5Ct8z2CIeFUiubg+GfgJbOXjL0wLnuQ=
+X-Received: by 2002:a2e:9c47:0:b0:2ad:aac1:c4e with SMTP id
+ t7-20020a2e9c47000000b002adaac10c4emr983960ljj.41.1683695872741; Tue, 09 May
+ 2023 22:17:52 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6504:1179:b0:224:262d:c651 with HTTP; Tue, 9 May 2023
+ 22:17:51 -0700 (PDT)
+In-Reply-To: <ZFqSwegsnsqi3vAu@mit.edu>
+References: <20221207112722.22220-12-jack@suse.cz> <20230508175108.6986-1-youling257@gmail.com>
+ <20230509050227.GA1180@quark.localdomain> <ZFqSwegsnsqi3vAu@mit.edu>
+From:   youling 257 <youling257@gmail.com>
+Date:   Wed, 10 May 2023 13:17:51 +0800
+Message-ID: <CAOzgRdbkno+k1_vFfH9XVPcWxG7YCQRUWC2sX6kMSE3_gLODfA@mail.gmail.com>
+Subject: Re: [PATCH v4 12/13] ext4: Stop providing .writepage hook
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Eric Biggers <ebiggers@kernel.org>, jack@suse.cz,
+        hch@infradead.org, hch@lst.de, linux-ext4@vger.kernel.org,
+        ritesh.list@gmail.com, keescook@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Update configure.ac to separate Version from Release if there is
-a '-' in version.h::E2FSPROGS_VERSION (e.g. "1.46.6-rc1").
-Otherwise, the '-' in the version can make RPM building unhappy.
+It isn't android storage emulated esdfs or sdcardfs problem, i test
+mount bind /data/media on /storage/emulated, can reproduce my problem.
+Let me say clear my problem, "ext4: Stop providing .writepage hook"
+cause android gallery app unable read pictures thumbnails.
 
-Simplify the generation of E2FSPROGS_VERESION, E2FSPROGS_DATE and
-E2FSPROGS_DAY to avoid multiple grep/awk/sed/tr stages.
+I test linux kernel 6.3 Revert "ext4: Stop providing .writepage hook",
+android gallery can read pictures thumbnails,
 
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
----
- configure           | 17 +++++++++--------
- configure.ac        | 18 ++++++++++--------
- util/gen-tarball.in |  7 ++++---
- 3 files changed, 23 insertions(+), 19 deletions(-)
+this is mount bind /data/media on /storage/emulated
+/dev/nvme0n1p1 on /storage/emulated type ext4 (rw,seclabel,noatime)
+/dev/nvme0n1p1 on /mnt/runtime/default/emulated type ext4 (rw,seclabel,noatime)
+/dev/nvme0n1p1 on /mnt/runtime/read/emulated type ext4 (rw,seclabel,noatime)
+/dev/nvme0n1p1 on /mnt/runtime/write/emulated type ext4 (rw,seclabel,noatime)
+/dev/nvme0n1p1 on /mnt/runtime/full/emulated type ext4 (rw,seclabel,noatime)
 
-diff --git a/configure b/configure
-index b0e8d1bf8f87..9d616937a38a 100755
---- a/configure
-+++ b/configure
-@@ -824,6 +824,7 @@ build_cpu
- build
- E2FSPROGS_DATE
- E2FSPROGS_PKGVER
-+E2FSPROGS_PKGREL
- E2FSPROGS_VERSION
- E2FSPROGS_DAY
- E2FSPROGS_MONTH
-@@ -4583,11 +4584,9 @@ fi
- MCONFIG=./MCONFIG
- 
- BINARY_TYPE=bin
--E2FSPROGS_VERSION=`grep E2FSPROGS_VERSION ${srcdir}/version.h  \
--	| awk '{print $3}' | tr \" " " | awk '{print $1}'`
--E2FSPROGS_DATE=`grep E2FSPROGS_DATE ${srcdir}/version.h | awk '{print $3}' \
--	| tr \" " " | awk '{print $1}'`
--E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{print $1}' | sed -e '/^[1-9]$/s/^/0/')
-+E2FSPROGS_VERSION=`awk -F\" '/E2FSPROGS_VERS/ { print $2 }' ${srcdir}/version.h`
-+E2FSPROGS_DATE=`awk -F\" '/E2FSPROGS_DATE/ { print $2 }' ${srcdir}/version.h`
-+E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{ printf "%02d", $1 }')
- MONTH=`echo $E2FSPROGS_DATE | awk -F- '{print $2}'`
- YEAR=`echo $E2FSPROGS_DATE | awk -F- '{print $3}'`
- 
-@@ -4616,17 +4615,19 @@ Dec)	MONTH_NUM=12; E2FSPROGS_MONTH="December" ;;
- printf "%s\n" "$as_me: WARNING: Unknown month $MONTH??" >&2;} ;;
- esac
- 
--base_ver=`echo $E2FSPROGS_VERSION | \
--	       sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
-+base_ver=`echo $E2FSPROGS_VERSION | sed -e 's/pre-//' -e 's/-.*//'`
-+base_rel=`echo $E2FSPROGS_VERSION | awk -F- '{ print $2 }'`
- 
- date_spec=${E2FSPROGS_YEAR}.${MONTH_NUM}.${E2FSPROGS_DAY}
- 
- case $E2FSPROGS_VERSION in
- *-WIP|pre-*)
--	E2FSPROGS_PKGVER="$base_ver~WIP.$date_spec"
-+	E2FSPROGS_PKGVER="$base_ver"
-+	E2FSPROGS_PKGREL="WIP.$date_spec"
- 	;;
- *)
- 	E2FSPROGS_PKGVER="$base_ver"
-+	E2FSPROGS_PKGREL="$base_rel"
- 	;;
- esac
- 
-diff --git a/configure.ac b/configure.ac
-index 017a96ffe290..5b4dd7940372 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -11,11 +11,9 @@ BINARY_TYPE=bin
- dnl
- dnl This is to figure out the version number and the date....
- dnl
--E2FSPROGS_VERSION=`grep E2FSPROGS_VERSION ${srcdir}/version.h  \
--	| awk '{print $3}' | tr \" " " | awk '{print $1}'`
--E2FSPROGS_DATE=`grep E2FSPROGS_DATE ${srcdir}/version.h | awk '{print $3}' \
--	| tr \" " " | awk '{print $1}'`
--E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{print $1}' | sed -e '/^[[1-9]]$/s/^/0/')
-+E2FSPROGS_VERSION=`awk -F\" '/E2FSPROGS_VERS/ { print $2 }' ${srcdir}/version.h`
-+E2FSPROGS_DATE=`awk -F\" '/E2FSPROGS_DATE/ { print $2 }' ${srcdir}/version.h`
-+E2FSPROGS_DAY=$(echo $E2FSPROGS_DATE | awk -F- '{ printf "%02d", $1 }')
- MONTH=`echo $E2FSPROGS_DATE | awk -F- '{print $2}'`
- YEAR=`echo $E2FSPROGS_DATE | awk -F- '{print $3}'`
- 
-@@ -43,27 +41,31 @@ Dec)	MONTH_NUM=12; E2FSPROGS_MONTH="December" ;;
- *)	AC_MSG_WARN([Unknown month $MONTH??]) ;;
- esac
- 
--base_ver=`echo $E2FSPROGS_VERSION | \
--	       sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
-+base_ver=`echo $E2FSPROGS_VERSION | sed -e 's/pre-//' -e 's/-.*//'`
-+base_rel=`echo $E2FSPROGS_VERSION | awk -F- '{ print $2 }'`
- 
- date_spec=${E2FSPROGS_YEAR}.${MONTH_NUM}.${E2FSPROGS_DAY}
- 
- case $E2FSPROGS_VERSION in
- *-WIP|pre-*)
--	E2FSPROGS_PKGVER="$base_ver~WIP.$date_spec"
-+	E2FSPROGS_PKGVER="$base_ver"
-+	E2FSPROGS_PKGREL="WIP.$date_spec"
- 	;;
- *)
- 	E2FSPROGS_PKGVER="$base_ver"
-+	E2FSPROGS_PKGREL="$base_rel"
- 	;;
- esac
- 
- unset DATE MONTH YEAR base_ver pre_vers date_spec
- AC_MSG_RESULT([Generating configuration file for e2fsprogs version $E2FSPROGS_VERSION])
-+AC_MSG_RESULT([Package version ${E2FSPROGS_PKGVER} release ${E2FSPROGS_PKGREL}])
- AC_MSG_RESULT([Release date is ${E2FSPROGS_MONTH}, ${E2FSPROGS_YEAR}])
- AC_SUBST(E2FSPROGS_YEAR)
- AC_SUBST(E2FSPROGS_MONTH)
- AC_SUBST(E2FSPROGS_DAY)
- AC_SUBST(E2FSPROGS_VERSION)
-+AC_SUBST(E2FSPROGS_PKGREL)
- AC_SUBST(E2FSPROGS_PKGVER)
- AC_SUBST(E2FSPROGS_DATE)
- dnl
-diff --git a/util/gen-tarball.in b/util/gen-tarball.in
-index 997bd935f730..650d3b5930ae 100644
---- a/util/gen-tarball.in
-+++ b/util/gen-tarball.in
-@@ -5,7 +5,8 @@
- srcdir=@srcdir@
- top_srcdir=@top_srcdir@
- top_dir=`cd $top_srcdir; pwd`
--base_ver=`echo @E2FSPROGS_VERSION@ | sed -e 's/-WIP//' -e 's/pre-//' -e 's/-PLUS//'`
-+base_ver=`echo @E2FSPROGS_PKGVER@`
-+base_rel=`echo @E2FSPROGS_PKGREL@`
- base_e2fsprogs=`basename $top_dir`
- exclude=/tmp/exclude$$
- GZIP=gzip
-@@ -16,12 +17,12 @@ GZIP=gzip
- # using a non-standard directory name for WIP releases.  dpkg-source
- # complains, but life goes on.
- #
--deb_pkgver=`echo @E2FSPROGS_PKGVER@ | sed -e 's/~/-/g'`
-+deb_pkgver="$base_ver${base_rel:+-$base_rel}"
-     
- case $1 in
-     debian|ubuntu)
- 	SRCROOT="e2fsprogs-$deb_pkgver"
--	tarout="e2fsprogs_@E2FSPROGS_PKGVER@.orig.tar.gz"
-+	tarout="e2fsprogs_$deb_pkgver.orig.tar.gz"
- 	;;
-    all|*)
- 	SRCROOT="e2fsprogs-$base_ver"
--- 
-1.8.3.1
+this is esdfs,
+/data/media on /mnt/runtime/default/emulated type esdfs
+(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:1015:771:771,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
+/data/media on /storage/emulated type esdfs
+(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:1015:771:771,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
+/data/media on /mnt/runtime/read/emulated type esdfs
+(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:750:750,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
+/data/media on /mnt/runtime/write/emulated type esdfs
+(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:770:770,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
+/data/media on /mnt/runtime/full/emulated type esdfs
+(rw,nosuid,nodev,noexec,noatime,lower=1023:1023:664:775,upper=0:9997:770:770,derive=multi,noconfine,derive_gid,default_normal,unshared_obb)
 
+if i do mount bind data/media on storage/emulated, take a screenshot,
+will create /data/media/0/Pictures/Screenshots/Screenshot_20230510-130020.png
+file,
+chmod -R 0777 /data/media/0/Pictures/Screenshots,
+on linux 6.3 Revert "ext4: Stop providing .writepage hook", android
+gallery app can read
+/storage/emulated/0/Pictures/Screenshots/Screenshot_20230510-130020.png
+thumbnail,
+linux 6.4 removed .writepage hook, android gallery unable read thumbnail.
+
+
+2023-05-10 2:36 GMT+08:00, Theodore Ts'o <tytso@mit.edu>:
+> On Mon, May 08, 2023 at 10:02:27PM -0700, Eric Biggers wrote:
+>> On Tue, May 09, 2023 at 01:51:08AM +0800, youling257 wrote:
+>> > I using linux mainline kernel on android.
+>> > https://github.com/youling257/android-mainline/commits/6.4
+>> > https://github.com/youling257/android-mainline/commits/6.3
+>> > "ext4: Stop providing .writepage hook" cause some android app unable to
+>> > read storage/emulated/0 files, i need to say android esdfs file system
+>> > storage/emulated is ext4 data/media bind mount.
+>> > I want to ask, why android storage/emulated need .writepage hook?
+>>
+>> "esdfs" doesn't exist upstream, so linux-ext4 can't provide support for
+>> it.
+>>
+>> Also, it doesn't exist in the Android Common Kernels either, so the
+>> Android team
+>> cannot help you either.
+>
+> The problem with esdfs is that it's based on the old stackable file
+> system paradigm which is filled with races and is inherently
+> unreliable (just for fun, try running fsstress on the upper and lower
+> file systems of a stackable file system simultaneously, and watch the
+> kernel crash and burn).  For that reason, some number of us have been
+> working for a while to eliminate the need for stacking file systems,
+> such as sdcardfs. esdfs, etc. from the Android kernel.
+>
+> The other thing I would add is that upstream has been working[1] on
+> getting rid of writepage function.  So out-of-tree file systems are
+> going to need to adapt --- or die.
+>
+> [1] https://lore.kernel.org/all/20221202102644.770505-1-hch@lst.de/
+>
+> It looks like esdfs is coming from the Chromium kernel?  The latest
+> Chromium kernel I can find is 5.15 based, and it has esdfs in it.  I'm
+> sad to see that esdfs hasn't been removed from the Chromium kernel
+> yet, and replaced with something more stable and reliable, but maybe
+> we can find someone who is more familiar with the Chromium kernel to
+> comment.
+>
+> Cheers,
+>
+> 						- Ted
+>
