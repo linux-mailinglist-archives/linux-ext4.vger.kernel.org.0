@@ -2,69 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C362700DE8
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 May 2023 19:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5EC700ED1
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 May 2023 20:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbjELRdb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 May 2023 13:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
+        id S238747AbjELSak (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 May 2023 14:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236972AbjELRda (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 May 2023 13:33:30 -0400
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5746D195
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 10:32:43 -0700 (PDT)
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-61b5b4df8baso80712166d6.1
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 10:32:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683912762; x=1686504762;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6V0M3WHsM/CbP7GPo2jgrowLKKxSm62sS3psQx8zXQg=;
-        b=BuKcSkNjcfhg9/tAF1guqCpTrsnyVNKL7JJIEbVD3OusNUaY5gOgoqaTIcasl+gKs0
-         XMAVjxBEELpMaRtOFUHD+LoLHFjb0ULofB3X6cbN8ryl08rlK1IDzJkfeg9h815wOJCo
-         v00mWym0wOAN9mbSQv/olqBz4kInbr6tu6vxF1koB0hzN9GD8IV9DWMVxQg/23ertHSN
-         St7sQcYw8QrpbbQuXznYRsj/Nfodq1/svIQvKWfyj8vtJV9HyqtIVck5as06k6WzdLBS
-         pbvX3kqCWeyNYw+BdMFNRcS2xauTHUr2Uu3xbOrt7f4nJbdi6nDdCGLruuZTncnxFhq0
-         6Wcw==
-X-Gm-Message-State: AC+VfDzPoVoRHCAnvWxxWysvWON1EcNAinF14uA2W/c0yqGyjDkBo1MK
-        7tgICAfMZwckqWgr33RELPed
-X-Google-Smtp-Source: ACHHUZ5jRqBe5V3qEMe4Dw+z/UN5rDNtGltRsfG7pSdt3oaD03wHbynKxPl194sOY+kaYveH3Enm2A==
-X-Received: by 2002:ad4:5ae5:0:b0:621:1b1d:7dde with SMTP id c5-20020ad45ae5000000b006211b1d7ddemr38554895qvh.8.1683912762375;
-        Fri, 12 May 2023 10:32:42 -0700 (PDT)
-Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id h10-20020a0cf20a000000b0061b5c45f970sm3137246qvk.74.2023.05.12.10.32.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 10:32:41 -0700 (PDT)
-Date:   Fri, 12 May 2023 13:32:40 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
+        with ESMTP id S238860AbjELSad (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 May 2023 14:30:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD2D59E4;
+        Fri, 12 May 2023 11:29:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33B2D657E4;
+        Fri, 12 May 2023 18:28:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88631C433EF;
+        Fri, 12 May 2023 18:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683916111;
+        bh=oFn6kTrQB5X+BdUNZ09gyWmaepLu3LinttkMwo7NC9M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bGKKspqhQTtaA0BwgEBc4s+CHOK2W8+I60ncCpAoA0oP3wi0GmY5bouKvT19n0Yql
+         Usf/OHDj8qnBNO6gXE8kRv49KORT6rNQRbdQf49Nsl08CqX6bBr3yCIWFADOKfIMVm
+         Ju0aV3wESe6qeWkXZLPGZWnKiojw5JgNy706asoDezBT1P+vR0C60vyZrPJqeo8zki
+         f7PegWFlrjV4ACTWr528Nxz2AHjx/UDBnCKW44lMDqWA70aA8EBv3X1M7T2+JR2f9d
+         TNN1JJYDr2QWBOwot1i+cgaBLLmbHpAwgbDMmp+uxhmYfgDD8KvlaM9YPI2hcu0J7p
+         korFm5yaF5dig==
+Date:   Fri, 12 May 2023 11:28:31 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
 Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Theodore Ts'o <tytso@mit.edu>,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
         Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
         Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
         Brian Foster <bfoster@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v6 4/5] dm-thin: Add REQ_OP_PROVISION support
-Message-ID: <ZF54OH8hZTTko4c3@redhat.com>
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>
+Subject: Re: [PATCH v6 0/5] Introduce block provisioning primitives
+Message-ID: <20230512182831.GC858791@frogsfrogsfrogs>
 References: <20230420004850.297045-1-sarthakkukreti@chromium.org>
  <20230506062909.74601-1-sarthakkukreti@chromium.org>
- <20230506062909.74601-5-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230506062909.74601-5-sarthakkukreti@chromium.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <20230506062909.74601-1-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,69 +65,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, May 06 2023 at  2:29P -0400,
-Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
-
-> dm-thinpool uses the provision request to provision
-> blocks for a dm-thin device. dm-thinpool currently does not
-> pass through REQ_OP_PROVISION to underlying devices.
+On Fri, May 05, 2023 at 11:29:04PM -0700, Sarthak Kukreti wrote:
+> Hi,
 > 
-> For shared blocks, provision requests will break sharing and copy the
-> contents of the entire block. Additionally, if 'skip_block_zeroing'
-> is not set, dm-thin will opt to zero out the entire range as a part
-> of provisioning.
+> This patch series covers iteration 6 of adding support for block
+> provisioning requests.
+
+I didn't even notice there was a v6.  Could you start a fresh thread
+when you bump the revision count, please?
+
+--D
+
+> Changes from v5:
+> - Remove explicit supports_provision from dm devices.
+> - Move provision sectors io hint to pool_io_hint. Other devices
+>   will derive the provisioning limits from the stack.
+> - Remove artifact from v4 to omit cell_defer_no_holder for
+>   REQ_OP_PROVISION.
+> - Fix blkdev_fallocate() called with invalid fallocate
+>   modes to propagate errors correctly.
 > 
-> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> ---
->  drivers/md/dm-thin.c | 70 +++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 66 insertions(+), 4 deletions(-)
+> Sarthak Kukreti (5):
+>   block: Don't invalidate pagecache for invalid falloc modes
+>   block: Introduce provisioning primitives
+>   dm: Add block provisioning support
+>   dm-thin: Add REQ_OP_PROVISION support
+>   loop: Add support for provision requests
 > 
-> diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-> index 2b13c949bd72..3f94f53ac956 100644
-> --- a/drivers/md/dm-thin.c
-> +++ b/drivers/md/dm-thin.c
-...
-> @@ -4114,6 +4171,8 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
->  	 * The pool uses the same discard limits as the underlying data
->  	 * device.  DM core has already set this up.
->  	 */
-> +
-> +	limits->max_provision_sectors = pool->sectors_per_block;
-
-Just noticed that setting limits->max_provision_sectors needs to move
-above pool_io_hints code that sets up discards -- otherwise the early
-return from if (!pt->adjusted_pf.discard_enabled) will cause setting
-max_provision_sectors to be skipped.
-
-Here is a roll up of the fixes that need to be folded into this patch:
-
-diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-index 3f94f53ac956..90c8e36cb327 100644
---- a/drivers/md/dm-thin.c
-+++ b/drivers/md/dm-thin.c
-@@ -4151,6 +4151,8 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 		blk_limits_io_opt(limits, pool->sectors_per_block << SECTOR_SHIFT);
- 	}
- 
-+	limits->max_provision_sectors = pool->sectors_per_block;
-+
- 	/*
- 	 * pt->adjusted_pf is a staging area for the actual features to use.
- 	 * They get transferred to the live pool in bind_control_target()
-@@ -4171,8 +4173,6 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 	 * The pool uses the same discard limits as the underlying data
- 	 * device.  DM core has already set this up.
- 	 */
--
--	limits->max_provision_sectors = pool->sectors_per_block;
- }
- 
- static struct target_type pool_target = {
-@@ -4349,6 +4349,7 @@ static int thin_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 
- 	ti->num_provision_bios = 1;
- 	ti->provision_supported = true;
-+	ti->max_provision_granularity = true;
- 
- 	mutex_unlock(&dm_thin_pool_table.mutex);
- 
+>  block/blk-core.c              |  5 +++
+>  block/blk-lib.c               | 53 ++++++++++++++++++++++++++
+>  block/blk-merge.c             | 18 +++++++++
+>  block/blk-settings.c          | 19 ++++++++++
+>  block/blk-sysfs.c             |  9 +++++
+>  block/bounce.c                |  1 +
+>  block/fops.c                  | 31 +++++++++++++---
+>  drivers/block/loop.c          | 42 +++++++++++++++++++++
+>  drivers/md/dm-crypt.c         |  4 +-
+>  drivers/md/dm-linear.c        |  1 +
+>  drivers/md/dm-snap.c          |  7 ++++
+>  drivers/md/dm-table.c         | 23 ++++++++++++
+>  drivers/md/dm-thin.c          | 70 +++++++++++++++++++++++++++++++++--
+>  drivers/md/dm.c               |  6 +++
+>  include/linux/bio.h           |  6 ++-
+>  include/linux/blk_types.h     |  5 ++-
+>  include/linux/blkdev.h        | 16 ++++++++
+>  include/linux/device-mapper.h | 17 +++++++++
+>  18 files changed, 319 insertions(+), 14 deletions(-)
+> 
+> -- 
+> 2.40.1.521.gf1e218fcd8-goog
+> 
