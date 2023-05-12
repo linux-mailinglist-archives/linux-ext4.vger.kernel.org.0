@@ -2,139 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458B8700A6B
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 May 2023 16:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4620700CCA
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 May 2023 18:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241039AbjELOfY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 May 2023 10:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
+        id S229752AbjELQS2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 May 2023 12:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241231AbjELOfW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 May 2023 10:35:22 -0400
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5251A1162D
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 07:34:34 -0700 (PDT)
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-3f392d64f17so49982181cf.2
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 07:34:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683902073; x=1686494073;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NI8PblGX09aXcegfRrsRbp5Rk8EB7aSb1Q3zVJjhig=;
-        b=dfwQ5OSIwlIuMtLiC+SyLCf4xPAS120YT0PcTOUnIy/8d/d6vC2zbAsjpv2a8h8t8f
-         ElfaUIJpB8MWE6vc2xiZBrtp3jijohtda6HOHFSRBVtY0lfpcblSybXuZ1pU865eiJ14
-         7bCthBOEM1kFO0w7IAc/H5/ANRE1D+LW27vXjZg/fbk9xPT5Ae/64et/6Ve82Odo11tj
-         jSgYWDMifYgr2Mc2j52gZDtE26sN2Yk3qzs516udHV8qKaADYnmHLOAa88FP4C8fzNlL
-         fyEAdFtV6dwjq/gcOlWZzjjd8zoRfaviuBoOQwJgopSBmert2Ln60OdPpKb5bofzwZNI
-         6FIA==
-X-Gm-Message-State: AC+VfDxfyIONdaT6IYxAfwiPp1JyFtIGeq8Q+jvVvC7THaxjFFDLZzL/
-        iojSLj+W/CBkdvQoTXhid3yi
-X-Google-Smtp-Source: ACHHUZ4M++aZz9x/idwKRxoZtFqzxE+KBfxysydbhwDNajJOH3TAbWPaBDcqWbbuEGec9dZSQIGwHA==
-X-Received: by 2002:ac8:5787:0:b0:3f3:91bd:a46d with SMTP id v7-20020ac85787000000b003f391bda46dmr24764787qta.8.1683902073426;
-        Fri, 12 May 2023 07:34:33 -0700 (PDT)
-Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id f8-20020ae9ea08000000b0074d3233487dsm5387535qkg.114.2023.05.12.07.34.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 07:34:32 -0700 (PDT)
-Date:   Fri, 12 May 2023 10:34:31 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Brian Foster <bfoster@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v6 4/5] dm-thin: Add REQ_OP_PROVISION support
-Message-ID: <ZF5Od6GY4rsq82qM@redhat.com>
-References: <20230420004850.297045-1-sarthakkukreti@chromium.org>
- <20230506062909.74601-1-sarthakkukreti@chromium.org>
- <20230506062909.74601-5-sarthakkukreti@chromium.org>
- <ZFp7ykxGFUbPG1ON@redhat.com>
- <CAG9=OMOMrFcy6UdL8-3wZGwOr1nqLm1bpvL+G1g2dvBhJWU2Kw@mail.gmail.com>
+        with ESMTP id S229921AbjELQS1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 May 2023 12:18:27 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2BD423A
+        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 09:18:25 -0700 (PDT)
+Received: from letrec.thunk.org (vancouverconventioncentre.com [72.28.92.215] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34CGIIad003669
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 May 2023 12:18:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1683908301; bh=GpnkiRtW7rXjGbeS39dZH0ye9mqW84HZwGVqjHiXw3Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=l0z69CSyw8a2Ti+sq7f4p9t4/YRD/GlJVNxaCRNyqR1x/FkhwGqKlicBIQR+Xk+RH
+         X5Cao+Ye7fl61Vp3FllUw2EgyJeQSq+DqmDBgdss3QcWmoynuCiQZLIyrPI9twpF2Y
+         0bfabnOZ5IPjzVyh5wRHw2mwKsbftv+UC82Spb6Z1qoRFgJXynsNpQZMZfrU3HkGo3
+         LSrnIrF/xAbNXyVM+lp/TJzrjerzkMQKfcLqMIEtViLn054eVgAH06l02EWOGkHpZO
+         Uu8m6DVCPzAprSuAVgFsFrhc7Tm6PkBuVfztlLHb5BWQqNWbuh87VC6Pz1z6AhTRNA
+         VPbI6gR9UM0aA==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id AF0A18C0439; Fri, 12 May 2023 12:18:17 -0400 (EDT)
+Date:   Fri, 12 May 2023 12:18:17 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     syzbot <syzbot+344aaa8697ebd232bfc8@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] WARNING in __ext4fs_dirhash
+Message-ID: <ZF5mydRaxa8qe6RQ@mit.edu>
+References: <0000000000009b5b5705fb5dfda0@google.com>
+ <0000000000001f3bf005fb64ea0a@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMOMrFcy6UdL8-3wZGwOr1nqLm1bpvL+G1g2dvBhJWU2Kw@mail.gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <0000000000001f3bf005fb64ea0a@google.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 11 2023 at  4:03P -0400,
-Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
+On Wed, May 10, 2023 at 11:15:26PM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit 08dd966cfd2bef467acd1835ae10c32356037bc3
+> Author: Theodore Ts'o <tytso@mit.edu>
+> Date:   Sat May 6 15:59:13 2023 +0000
+> 
+>     ext4: improve error handling from ext4_dirhash()
+>
 
-> On Tue, May 9, 2023 at 9:58 AM Mike Snitzer <snitzer@kernel.org> wrote:
-> >
-> > On Sat, May 06 2023 at  2:29P -0400,
-> > Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
-> >
-> > > dm-thinpool uses the provision request to provision
-> > > blocks for a dm-thin device. dm-thinpool currently does not
-> > > pass through REQ_OP_PROVISION to underlying devices.
-> > >
-> > > For shared blocks, provision requests will break sharing and copy the
-> > > contents of the entire block. Additionally, if 'skip_block_zeroing'
-> > > is not set, dm-thin will opt to zero out the entire range as a part
-> > > of provisioning.
-> > >
-> > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > ---
-> > >  drivers/md/dm-thin.c | 70 +++++++++++++++++++++++++++++++++++++++++---
-> > >  1 file changed, 66 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-> > > index 2b13c949bd72..3f94f53ac956 100644
-> > > --- a/drivers/md/dm-thin.c
-> > > +++ b/drivers/md/dm-thin.c
-> > > @@ -4288,6 +4347,9 @@ static int thin_ctr(struct dm_target *ti, unsigned int argc, char **argv)
-> > >               ti->max_discard_granularity = true;
-> > >       }
-> > >
-> > > +     ti->num_provision_bios = 1;
-> > > +     ti->provision_supported = true;
-> > > +
-> >
-> > We need this in thin_ctr: ti->max_provision_granularity = true;
-> >
-> > More needed in the thin target than thin-pool; otherwise provision bio
-> > issued to thin devices won't be split appropriately.  But I do think
-> > its fine to set in both thin_ctr and pool_ctr.
-> >
-> > Otherwise, looks good.
-> >
-> Thanks! I'll add it to the next iteration (in addition to any other
-> feedback that's added to v6).
+n.b.  This was due to a debugging WARN_ON left behind in the patch.
+It's since been removed in ext4 dev tree and the updated commit is in
+linux-next.
 
-OK. I'll begin basing dm-thinp's WRITE_ZEROES support ontop of this
-series.
- 
-> Given that this series covers multiple subsystems, would there be a
-> preferred way of queueing this for merge?
-
-I think it'd be OK for Jens to pick this series up and I'll rebase
-my corresponding DM tree once he does.
-
-In addition to Jens; Brian, Darrick and/or others: any chance you
-could review the block core changes in this series to ensure you're
-cool with them?
-
-Would be nice to get Sarthak review feedback so that hopefully his v7
-can be the final revision.
-
-Thanks,
-Mike
+						- Ted
