@@ -2,46 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD28070146D
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 07:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0BD70146B
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 06:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjEME7y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 May 2023 00:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S230086AbjEME7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 May 2023 00:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbjEME7w (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 00:59:52 -0400
+        with ESMTP id S229545AbjEME7n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 00:59:43 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB99448C
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 21:59:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4719449C
+        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 21:59:41 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34D4xXOj020076
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34D4xX58020075
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 13 May 2023 00:59:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1683953975; bh=dP8cUmedl4/qxac+pn4Gmr1fHv5/w3A4ypuxRSa09v4=;
+        t=1683953975; bh=QIvOIcqpjxYGgMhk21e537adDmqHT5Ejg+fwI5KC/q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Ign/OTlDg/eOdNLiiIPrHOozMbyf+JexbhrBBVMi+z78LIqDoKtDedOhethKYD5Fp
-         yV5PsAlUVaEEgyJ/fO17Y9Is9LnjIIQ7CNWPU3FsOputshM/fCs7b7fIMSEw8TzHtG
-         CWD4ZtdoW4sRVt1ZnS2lz1kIf2C7uVmoorgMJTLNyYe3uUmcIp8bg06M86BhMy3K4M
-         6jU5gifWdBV4W0V9/s/rgKrF9HtVxl9Z9YixRuH9JqRvmDPhUQRF4hvMPwhx6leJ1/
-         jhjy3DPc1BVlU1+9mmJ6uB+78eTrIFn4p1tisjdRFd/pH/BC0avLc9OtVyFFx3q+Sg
-         pOyeK4ZRemitQ==
+        b=PbJPQ6ikyC0PryHYsl1TmUqHffgBfXNIq8XXi+Lvw1DpHmKWj0KZIbl8Hi5mJL6y3
+         Xnx93gBpVOZcBN/v6phddN7nWYsYXQayRMaIdbORs3um5jzcinLmBpws+MmL3SS+gx
+         3NV5nzjvnSDRPwth9fYEdoWesTpVJGqmhtzIstyci4mgOvM9cWvesxG6JmNN1k7tuT
+         aH8Xw3LjOx2/yR4geDSjYFlIqYtKWppE4WDBwnhpXFCpZpppVRay9rFpAsyCJHeLdi
+         zMpygDDZUHdP69C3lQh05/kSBk0UnAkhnH+N3Qf7eX8tpXW3o6cgBavdmO6gVokO23
+         g7pmN1ScJ+Y4w==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 744A815C02E7; Sat, 13 May 2023 00:59:33 -0400 (EDT)
+        id 75BE915C02E8; Sat, 13 May 2023 00:59:33 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Jan Kara <jack@suse.cz>
 Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        syzbot+aacb82fca60873422114@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: Fix lockdep warning when enabling MMP
-Date:   Sat, 13 May 2023 00:59:28 -0400
-Message-Id: <168395396128.1443054.13940837195861107555.b4-ty@mit.edu>
+        syzbot+4a03518df1e31b537066@syzkaller.appspotmail.com,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v2] ext4: Fix data races when using cached status extents
+Date:   Sat, 13 May 2023 00:59:29 -0400
+Message-Id: <168395396129.1443054.18017236499948982224.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230411121019.21940-1-jack@suse.cz>
-References: <20230411121019.21940-1-jack@suse.cz>
+In-Reply-To: <20230504125524.10802-1-jack@suse.cz>
+References: <20230504125524.10802-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,21 +55,20 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Tue, 11 Apr 2023 14:10:19 +0200, Jan Kara wrote:
-> When we enable MMP in ext4_multi_mount_protect() during mount or
-> remount, we end up calling sb_start_write() from write_mmp_block(). This
-> triggers lockdep warning because freeze protection ranks above s_umount
-> semaphore we are holding during mount / remount. The problem is harmless
-> because we are guaranteed the filesystem is not frozen during mount /
-> remount but still let's fix the warning by not grabbing freeze
-> protection from ext4_multi_mount_protect().
+On Thu, 04 May 2023 14:55:24 +0200, Jan Kara wrote:
+> When using cached extent stored in extent status tree in tree->cache_es
+> another process holding ei->i_es_lock for reading can be racing with us
+> setting new value of tree->cache_es. If the compiler would decide to
+> refetch tree->cache_es at an unfortunate moment, it could result in a
+> bogus in_range() check. Fix the possible race by using READ_ONCE() when
+> using tree->cache_es only under ei->i_es_lock for reading.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Fix lockdep warning when enabling MMP
-      commit: 949f95ff39bf188e594e7ecd8e29b82eb108f5bf
+[1/1] ext4: Fix data races when using cached status extents
+      commit: 185e33d15ebf4a9d779fa78249b6cc95a071967e
 
 Best regards,
 -- 
