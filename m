@@ -2,101 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D3A701246
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 00:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CF270146C
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 06:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239560AbjELWum (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 May 2023 18:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
+        id S229545AbjEME7t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 May 2023 00:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjELWul (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 May 2023 18:50:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1C54C15
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 15:50:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FB4965906
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 22:50:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AE3C433D2;
-        Fri, 12 May 2023 22:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683931839;
-        bh=nXYRhFPTfZeYNs3shFM/TPqJk2ZET0Jeuh1G/3FIVDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zkFK6bOv2/fia1w1M7KO2n26AaBxgPCQdKToKDcywbLLvml6RIPfh+zQBKnTSHVx5
-         vo+dXOuAF8eTyEoA843TAtTHTCtAEA7C0fyA8bzCevNQ44KbUrCvgqpVTzTVfmb0gc
-         iYFpUt136fo/f0mK3kYdDvfmdRXEGRWUX3P+ZFWE=
-Date:   Sat, 13 May 2023 07:50:34 +0900
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Marcus Hoffmann <marcus.hoffmann@othermo.de>
-Cc:     tytso@mit.edu, famzah@icdsoft.com, jack@suse.cz,
-        linux-ext4@vger.kernel.org
-Subject: Re: kernel BUG at fs/ext4/inode.c:1914 - page_buffers()
-Message-ID: <2023051300-deploy-cable-9087@gregkh>
-References: <20230315185711.GB3024297@mit.edu>
- <578c0eb1-5271-b5fe-afa2-e2c1107b8968@othermo.de>
- <2023051249-finalize-sneak-2864@gregkh>
- <114216cf-6dfe-71b3-0ffe-3883296bc144@othermo.de>
+        with ESMTP id S229750AbjEME7n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 00:59:43 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567F2448C
+        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 21:59:41 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34D4xXx7020074
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 13 May 2023 00:59:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1683953975; bh=JgT6MXwFkpkZalz3HTYTVOmzQyxjoNMOhgEf0DOUK5M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ImHvIF6iApVntoqxiF9FuKrgoxp6E8aGg7AegX18ART/lq20U272DteD6+Ju/Jlpt
+         Uy1tlkhlsKJw4vahAA5/ApOx14iiHByu0pDfJ0abwjAgRutpdxo8BihNZZ/yKqj2c6
+         vnBVdKK24k2OeSroGm9e7lLubcI5hmjyZtzok1tTIZ9iMfC5PKx84fqgq+4guGhtit
+         u/J9+YTYHfNyw7xuLJQTaPWUsfQq37opFlC67eh0TJdz+td3Gp9R1bFNSr2UMKssia
+         Q7yMKIJCdLC3J2klvWLO3oOkN7fRgrzJc3Iq2KDkruObvBqHgpkQdowPWDEzJP8wsA
+         3p8yZIoLkfv/A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 72E3B15C02E6; Sat, 13 May 2023 00:59:33 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        syzbot+6898da502aef574c5f8a@syzkaller.appspotmail.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: Avoid deadlock in fs reclaim with page writeback
+Date:   Sat, 13 May 2023 00:59:27 -0400
+Message-Id: <168395396132.1443054.4355645347214924381.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230504124723.20205-1-jack@suse.cz>
+References: <20230504124723.20205-1-jack@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <114216cf-6dfe-71b3-0ffe-3883296bc144@othermo.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 12, 2023 at 04:24:30PM +0200, Marcus Hoffmann wrote:
-> On 12.05.23 14:19, Greg KH wrote:
-> > On Thu, May 11, 2023 at 11:21:27AM +0200, Marcus Hoffmann wrote:
-> > > Hi,
-> > > 
-> > > > On Wed, Mar 15, 2023 at 18:57, Theodore Ts'o wrote:
-> > > > 
-> > > > Yeah, sorry, I didn't see it since it was in an attachment as opposed
-> > > > to with an explicit [PATCH] subject line.
-> > > > 
-> > > > And at this point, the data=journal writeback patches have landed in
-> > > > the ext4/dev tree, and while we could try to see if we could land this
-> > > > before the next merge window, I'm worried about merge or semantic
-> > > > conflicts of having both patches in a tree at one time.
-> > > > 
-> > > > I guess we could send it to Linus, let it get backported into stable,
-> > > > and then revert it during the merge window, ahead of applying the
-> > > > data=journal cleanup patch series.  But that seems a bit ugly.  Or we
-> > > > could ask for an exception from the stable kernel folks, after I do a
-> > > > full set of xfstests runs on it.  (Of course, I don't think anyone has
-> > > > been able to create a reliable reproducer, so all we can do is to test
-> > > > for regression failures.)
-> > > > 
-> > > > Jan, Greg, what do you think?
-> > > 
-> > > We've noticed this appearing for us as well now (on 5.15 with
-> > > data=journaled) and I wanted to ask what the status here is. Did any fix
-> > > here make it into a stable kernel yet? If not, I suppose I can still
-> > > apply the patch posted above as a quick-fix until this (or another
-> > > solution) makes it into the stable tree?
-> > 
-> > Any reason you can't just move to 6.1.y instead?  What prevents that?
-> > 
+
+On Thu, 04 May 2023 14:47:23 +0200, Jan Kara wrote:
+> Ext4 has a filesystem wide lock protecting ext4_writepages() calls to
+> avoid races with switching of journalled data flag or inode format. This
+> lock can however cause a deadlock like:
 > 
-> We will move to 6.1.y soon-ish (we are downstream from the rpi kernel tree)
-> Is this problem fixed there though? I couldn't really find anything
-> related to that in the tree?
+> CPU0                            CPU1
+> 
+> ext4_writepages()
+>   percpu_down_read(sbi->s_writepages_rwsem);
+>                                 ext4_change_inode_journal_flag()
+>                                   percpu_down_write(sbi->s_writepages_rwsem);
+>                                     - blocks, all readers block from now on
+>   ext4_do_writepages()
+>     ext4_init_io_end()
+>       kmem_cache_zalloc(io_end_cachep, GFP_KERNEL)
+>         fs_reclaim frees dentry...
+>           dentry_unlink_inode()
+>             iput() - last ref =>
+>               iput_final() - inode dirty =>
+>                 write_inode_now()...
+>                   ext4_writepages() tries to acquire sbi->s_writepages_rwsem
+>                     and blocks forever
+> 
+> [...]
 
-Test it and see!
+Applied, thanks!
 
-And if you are downstream from the RPI kernel tree, my sympathies,
-that's a tough place to be given the speed of it updating (i.e. not at
-all...)
+[1/1] ext4: Avoid deadlock in fs reclaim with page writeback
+      commit: 568e5b263e8bf81ffb575686f980bd18fdb7428f
 
-good luck!
-
-greg k-h
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
