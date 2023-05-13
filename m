@@ -2,49 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119D370146E
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 07:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE5F701473
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 May 2023 07:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjEMFAA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 May 2023 01:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
+        id S231713AbjEMFAM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 May 2023 01:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjEME77 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 00:59:59 -0400
+        with ESMTP id S231556AbjEMFAJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 01:00:09 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EE6449C
-        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 21:59:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17104688
+        for <linux-ext4@vger.kernel.org>; Fri, 12 May 2023 22:00:07 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34D4xXMN020069
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34D4xZBQ020108
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 13 May 2023 00:59:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1683953978; bh=3UF/1DnInyocxZM2Vh6D5JHHfv4cfZnxi/yjCxfn/Bc=;
+        t=1683953977; bh=J0BI15LWmJguBj209XLOr4oJY3Q2JqWyE1IH+vKfv1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Ldfp2qko/NV70VU6vG9GoKjyaykEJI/nVquoqhAbalOZ+N1TdOyREX4p7vIKXDkNX
-         Dyy+YrV39w4yxufDOgLU5E4ZWx0ig6VonBXqbGpaTpb0yoAcEXPR14yRIUbxFIV2dN
-         eyAniXx6bmglWK/o0QDX08EcyvxqCXMmILanzAnthm2C2CM32dSjEu6KdJjoKgFIaJ
-         2eS0b0P72T/e7S2MBG3A/0KV+OaZUT5+dJmZXx+NPer6L3I0XrBUoFej8nn1lsWw78
-         Oz4V4inlLUP8qcj1VOY57G9EBd+bmMoYJE1Lj9Vzs19bzPdY6KWxF5Eg22LEWuWOYE
-         AYYqyEQ5ejHZg==
+        b=Y6jhKZRSVBhKMNhFbWy3YpI6Xb/yV3gJMniVhFLJ47GuZDMrT/ATq0Y7jtrtC2L2E
+         NBXNIz6y+6edp6qcl6Y7gugQVLRQhO9Wu4gY+x6LLNMqigQUaaqTgd2SoouarQRgcm
+         NgMnAT+/f9v5PZlkOyKjEzdbvNOQASNxmosgV1ad9ypxmFbyO3/DehLn5rETpMtZVx
+         BBI0ff3eXf9pep07cItifY1qmE1tEJTyK2ty1Nu/aUKu7qnPqFwmRXuWrhG4o0l9J1
+         c/8s+y76keD1HtJa9jbHehm+EcHbNnQod56PNMHtUPoN/b5bO4vWxgC4ycUgDkch4b
+         Rgvhs0Y+dVyBA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 79C3E15C02EB; Sat, 13 May 2023 00:59:33 -0400 (EDT)
+        id 7B7EF15C02EC; Sat, 13 May 2023 00:59:33 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     jack@suze.cz, Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        cmm@us.ibm.com, aneesh.kumar@linux.vnet.ibm.com, mathur@us.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joneslee@google.com,
-        syzbot+fc51227e7100c9294894@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Avoid a potential slab-out-of-bounds in ext4_group_desc_csum
-Date:   Sat, 13 May 2023 00:59:31 -0400
-Message-Id: <168395396131.1443054.15103750805283144831.b4-ty@mit.edu>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        Ye Bin <yebin@huaweicloud.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        jack@suse.cz, Ye Bin <yebin10@huawei.com>,
+        syzbot+68223fe9f6c95ad43bed@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: fix WARNING in mb_find_extent
+Date:   Sat, 13 May 2023 00:59:32 -0400
+Message-Id: <168395396128.1443054.5349687848062640716.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230504121525.3275886-1-tudor.ambarus@linaro.org>
-References: <20230504121525.3275886-1-tudor.ambarus@linaro.org>
+In-Reply-To: <20230116020015.1506120-1-yebin@huaweicloud.com>
+References: <20230116020015.1506120-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,62 +56,71 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Thu, 04 May 2023 12:15:25 +0000, Tudor Ambarus wrote:
-> When modifying the block device while it is mounted by the filesystem,
-> syzbot reported the following:
+On Mon, 16 Jan 2023 10:00:15 +0800, Ye Bin wrote:
+> Syzbot found the following issue:
 > 
-> BUG: KASAN: slab-out-of-bounds in crc16+0x206/0x280 lib/crc16.c:58
-> Read of size 1 at addr ffff888075f5c0a8 by task syz-executor.2/15586
-> 
-> CPU: 1 PID: 15586 Comm: syz-executor.2 Not tainted 6.2.0-rc5-syzkaller-00205-gc96618275234 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+> EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
+> EXT4-fs (loop0): orphan cleanup on readonly fs
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5067 at fs/ext4/mballoc.c:1869 mb_find_extent+0x8a1/0xe30
+> Modules linked in:
+> CPU: 1 PID: 5067 Comm: syz-executor307 Not tainted 6.2.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> RIP: 0010:mb_find_extent+0x8a1/0xe30 fs/ext4/mballoc.c:1869
+> RSP: 0018:ffffc90003c9e098 EFLAGS: 00010293
+> RAX: ffffffff82405731 RBX: 0000000000000041 RCX: ffff8880783457c0
+> RDX: 0000000000000000 RSI: 0000000000000041 RDI: 0000000000000040
+> RBP: 0000000000000040 R08: ffffffff82405723 R09: ffffed10053c9402
+> R10: ffffed10053c9402 R11: 1ffff110053c9401 R12: 0000000000000000
+> R13: ffffc90003c9e538 R14: dffffc0000000000 R15: ffffc90003c9e2cc
+> FS:  0000555556665300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056312f6796f8 CR3: 0000000022437000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > Call Trace:
 >  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1b1/0x290 lib/dump_stack.c:106
->  print_address_description+0x74/0x340 mm/kasan/report.c:306
->  print_report+0x107/0x1f0 mm/kasan/report.c:417
->  kasan_report+0xcd/0x100 mm/kasan/report.c:517
->  crc16+0x206/0x280 lib/crc16.c:58
->  ext4_group_desc_csum+0x81b/0xb20 fs/ext4/super.c:3187
->  ext4_group_desc_csum_set+0x195/0x230 fs/ext4/super.c:3210
->  ext4_mb_clear_bb fs/ext4/mballoc.c:6027 [inline]
->  ext4_free_blocks+0x191a/0x2810 fs/ext4/mballoc.c:6173
->  ext4_remove_blocks fs/ext4/extents.c:2527 [inline]
->  ext4_ext_rm_leaf fs/ext4/extents.c:2710 [inline]
->  ext4_ext_remove_space+0x24ef/0x46a0 fs/ext4/extents.c:2958
->  ext4_ext_truncate+0x177/0x220 fs/ext4/extents.c:4416
->  ext4_truncate+0xa6a/0xea0 fs/ext4/inode.c:4342
->  ext4_setattr+0x10c8/0x1930 fs/ext4/inode.c:5622
->  notify_change+0xe50/0x1100 fs/attr.c:482
->  do_truncate+0x200/0x2f0 fs/open.c:65
->  handle_truncate fs/namei.c:3216 [inline]
->  do_open fs/namei.c:3561 [inline]
->  path_openat+0x272b/0x2dd0 fs/namei.c:3714
->  do_filp_open+0x264/0x4f0 fs/namei.c:3741
->  do_sys_openat2+0x124/0x4e0 fs/open.c:1310
->  do_sys_open fs/open.c:1326 [inline]
->  __do_sys_creat fs/open.c:1402 [inline]
->  __se_sys_creat fs/open.c:1396 [inline]
->  __x64_sys_creat+0x11f/0x160 fs/open.c:1396
+>  ext4_mb_complex_scan_group+0x353/0x1100 fs/ext4/mballoc.c:2307
+>  ext4_mb_regular_allocator+0x1533/0x3860 fs/ext4/mballoc.c:2735
+>  ext4_mb_new_blocks+0xddf/0x3db0 fs/ext4/mballoc.c:5605
+>  ext4_ext_map_blocks+0x1868/0x6880 fs/ext4/extents.c:4286
+>  ext4_map_blocks+0xa49/0x1cc0 fs/ext4/inode.c:651
+>  ext4_getblk+0x1b9/0x770 fs/ext4/inode.c:864
+>  ext4_bread+0x2a/0x170 fs/ext4/inode.c:920
+>  ext4_quota_write+0x225/0x570 fs/ext4/super.c:7105
+>  write_blk fs/quota/quota_tree.c:64 [inline]
+>  get_free_dqblk+0x34a/0x6d0 fs/quota/quota_tree.c:130
+>  do_insert_tree+0x26b/0x1aa0 fs/quota/quota_tree.c:340
+>  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>  do_insert_tree+0x722/0x1aa0 fs/quota/quota_tree.c:375
+>  dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+>  qtree_write_dquot+0x3b6/0x530 fs/quota/quota_tree.c:420
+>  v2_write_dquot+0x11b/0x190 fs/quota/quota_v2.c:358
+>  dquot_acquire+0x348/0x670 fs/quota/dquot.c:444
+>  ext4_acquire_dquot+0x2dc/0x400 fs/ext4/super.c:6740
+>  dqget+0x999/0xdc0 fs/quota/dquot.c:914
+>  __dquot_initialize+0x3d0/0xcf0 fs/quota/dquot.c:1492
+>  ext4_process_orphan+0x57/0x2d0 fs/ext4/orphan.c:329
+>  ext4_orphan_cleanup+0xb60/0x1340 fs/ext4/orphan.c:474
+>  __ext4_fill_super fs/ext4/super.c:5516 [inline]
+>  ext4_fill_super+0x81cd/0x8700 fs/ext4/super.c:5644
+>  get_tree_bdev+0x400/0x620 fs/super.c:1282
+>  vfs_get_tree+0x88/0x270 fs/super.c:1489
+>  do_new_mount+0x289/0xad0 fs/namespace.c:3145
+>  do_mount fs/namespace.c:3488 [inline]
+>  __do_sys_mount fs/namespace.c:3697 [inline]
+>  __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
 >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
 >  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
 >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f72f8a8c0c9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f72f97e3168 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-> RAX: ffffffffffffffda RBX: 00007f72f8bac050 RCX: 00007f72f8a8c0c9
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000280
-> RBP: 00007f72f8ae7ae9 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffd165348bf R14: 00007f72f97e3300 R15: 0000000000022000
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Avoid a potential slab-out-of-bounds in ext4_group_desc_csum
-      commit: 707548336a9a5b1745074265c4d4d2cf2b4b0f43
+[1/1] ext4: fix WARNING in mb_find_extent
+      commit: fa08a7b61dff8a4df11ff1e84abfc214b487caf7
 
 Best regards,
 -- 
