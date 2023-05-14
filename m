@@ -2,106 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B29E701AF5
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 May 2023 02:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22172701AF9
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 May 2023 02:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjENA3f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 13 May 2023 20:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
+        id S232271AbjENAw3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 13 May 2023 20:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjENA3d (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 20:29:33 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E572019BC
-        for <linux-ext4@vger.kernel.org>; Sat, 13 May 2023 17:29:31 -0700 (PDT)
-Received: from letrec.thunk.org ([172.102.11.162])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34E0TOFT001902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 May 2023 20:29:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1684024167; bh=qkec5ADxFO71hl1xH4tF5OmYZz7x8P8jo+KIik1Vq3s=;
-        h=Date:From:To:Cc:Subject;
-        b=Ja79xs+Vw/ltOlz0FkAjV+CvXlOwLW2OAtmIuRXgfNVN0/Yoila+YwhZfzvCk3q+C
-         lxkr7Cv2xtu9B1yPSIEVL7S42cRTGTEOSey0h6iiO40T9Zurt+c1kFDy0hewY1csEw
-         EUHm2D75+I6CylSs2Vqek9I+KP7Y0PPb3KrvLBKpO/fCMiYyS24pF9u8xIutfOv8sN
-         TmKVS2f1w3clMWUI9bXl8xlfdpaeZ7Zzy97IKyEnvGtO1+U3WITV9yg9p2oL6OPXSz
-         8Dvw/+WFieiLXj2KyM7oNxwWCxbl6BGgkRqQzi8S9tLZ4PVqMdO6/LMijp6ZU6mZ+u
-         hzfKk7Em1cm4g==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id C36928C0479; Sat, 13 May 2023 20:28:41 -0400 (EDT)
-Date:   Sat, 13 May 2023 20:28:41 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for v6.4-rc2
-Message-ID: <ZGArOUgijBkG1y3G@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229506AbjENAw2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 May 2023 20:52:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B771FC8;
+        Sat, 13 May 2023 17:52:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C3A560C38;
+        Sun, 14 May 2023 00:52:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F3E43C433EF;
+        Sun, 14 May 2023 00:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684025547;
+        bh=dijVKjC72BzWSow4JfwNZCLkQ1FsUCju1wGT4bXy1Is=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PVRpeN8CXaprPCyrZYJk8nUN9p1+kz4lMptDvcD56C0HBAZhUZHEJuNa5UlDDAk1a
+         AA09EE+qQUwV/0WLFITPBku6a2pTvCjua3yrGSzKdYMDfZYV7XzbiWfp34rbXsbKMm
+         1EvmdNRqD18LAw4AbeZU1+jJ7RdjnMq/JEEqZJt4UpqHyjluxRUHJKRITC6aC1yg5K
+         mrQ9fTnptIcRG/RPlzdEtm88mFqGI4yY/GDLaigXKpzYqJIx5gZ54N7/CU38ZCq9/A
+         TrDUBTGOAVl3tKzKyMBNaj3hi5lSXFsWXdVJLDoljcae7/h0tbaJM1TyQbbj+iFwyN
+         /QK+bWMBGuqDg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E1A4AE450BA;
+        Sun, 14 May 2023 00:52:26 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 fixes for v6.4-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZGArOUgijBkG1y3G@mit.edu>
+References: <ZGArOUgijBkG1y3G@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZGArOUgijBkG1y3G@mit.edu>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 2a534e1d0d1591e951f9ece2fb460b2ff92edabd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: bb7c241fae6228e89c0286ffd6f249b3b0dea225
+Message-Id: <168402554691.23680.9531950014318802685.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 May 2023 00:52:26 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit ac9a78681b921877518763ba0e89202254349d1b:
+The pull request you sent on Sat, 13 May 2023 20:28:41 -0400:
 
-  Linux 6.4-rc1 (2023-05-07 13:34:35 -0700)
+> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/bb7c241fae6228e89c0286ffd6f249b3b0dea225
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Thank you!
 
-for you to fetch changes up to 2a534e1d0d1591e951f9ece2fb460b2ff92edabd:
-
-  ext4: bail out of ext4_xattr_ibody_get() fails for any reason (2023-05-13 18:05:05 -0400)
-
-----------------------------------------------------------------
-Some ext4 bug fixes (mostly to address Syzbot reports) for v6.4-rc2.
-
-----------------------------------------------------------------
-Baokun Li (1):
-      ext4: check iomap type only if ext4_iomap_begin() does not fail
-
-Jan Kara (3):
-      ext4: fix lockdep warning when enabling MMP
-      ext4: avoid deadlock in fs reclaim with page writeback
-      ext4: fix data races when using cached status extents
-
-Theodore Ts'o (10):
-      ext4: allow ext4_get_group_info() to fail
-      ext4: remove a BUG_ON in ext4_mb_release_group_pa()
-      ext4: fix invalid free tracking in ext4_xattr_move_to_block()
-      ext4: don't clear SB_RDONLY when remounting r/w until quota is re-enabled
-      ext4: improve error handling from ext4_dirhash()
-      ext4: improve error recovery code paths in __ext4_remount()
-      ext4: fix deadlock when converting an inline directory in nojournal mode
-      ext4: add indication of ro vs r/w mounts in the mount message
-      ext4: add bounds checking in get_max_inline_xattr_value_size()
-      ext4: bail out of ext4_xattr_ibody_get() fails for any reason
-
-Tudor Ambarus (1):
-      ext4: avoid a potential slab-out-of-bounds in ext4_group_desc_csum
-
-Ye Bin (1):
-      ext4: fix WARNING in mb_find_extent
-
- fs/ext4/balloc.c         | 43 ++++++++++++++++++++++++++++++++++++++++-
- fs/ext4/ext4.h           | 39 ++++++++++++++++++++++++-------------
- fs/ext4/extents_status.c | 30 +++++++++++++----------------
- fs/ext4/hash.c           |  6 +++++-
- fs/ext4/ialloc.c         | 12 ++++++++----
- fs/ext4/inline.c         | 17 ++++++++++++++---
- fs/ext4/inode.c          | 20 ++++++++++---------
- fs/ext4/mballoc.c        | 70 +++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
- fs/ext4/migrate.c        | 11 ++++++-----
- fs/ext4/mmp.c            | 30 ++++++++++++++++++++---------
- fs/ext4/namei.c          | 53 ++++++++++++++++++++++++++++++++++----------------
- fs/ext4/super.c          | 37 +++++++++++++++++++++++------------
- fs/ext4/xattr.c          |  5 +++--
- 13 files changed, 269 insertions(+), 104 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
