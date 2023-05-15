@@ -2,57 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDDA703FD5
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 May 2023 23:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F3C704018
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 May 2023 23:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243697AbjEOVb4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 May 2023 17:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S245364AbjEOVzX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 May 2023 17:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243866AbjEOVbz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 May 2023 17:31:55 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68BAE72F
-        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:31:52 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50bc3a2d333so20049644a12.0
-        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:31:52 -0700 (PDT)
+        with ESMTP id S242402AbjEOVzW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 May 2023 17:55:22 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3311A277
+        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:55:17 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9661047f8b8so2065301266b.0
+        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1684186311; x=1686778311;
+        d=chromium.org; s=google; t=1684187716; x=1686779716;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0+97QIKHZALmFiK8g1VXhuSr7RLu+60+zvsYBuHgbGg=;
-        b=RJ43ZLZaLLvaXaU48DAqFaUazi1XdW+GzxWfHJT5XeDgDpzKHeu5MNWZny6MxbA0OA
-         oPe6ekVWSZF8FhY1pcd7Q9kmUBnfHNdPl772Rvmn/QhYD4qom8AgDkG5qtlBg2wx9KCf
-         JWeHWlZSGtpQ2QpjfAEvfhPCxAhtSoUUURhOM=
+        bh=MBufFDPCgb8FzjQLH8nY1KMCUfOc5xDHFgBLnp3EL70=;
+        b=ULrctO43Pao4De+rNpLZXSKMgCwdoSmaAzqAZbXtO4HwOkwBcZjzSJ0AjyQQnujE/0
+         cj8scQpJ6mh7xFwrQRMi36tpIY1J87rDw4kapB6wgFjd/NZAyW86G9COEuRjOP7aW+VV
+         dyNV8LR0UBTa/hhyGyoZGWpxwK1dbGidfvG10=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684186311; x=1686778311;
+        d=1e100.net; s=20221208; t=1684187716; x=1686779716;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0+97QIKHZALmFiK8g1VXhuSr7RLu+60+zvsYBuHgbGg=;
-        b=WKbG7jV+odNrms51StdH0kQ5witRzY1SV1N1NWlMbOL6xb5hIX4EBvrobXFD5DLism
-         Evlm9YH99OV6ehUVe1XSbiHe2L7SFyZf0ZN8vj0jKuc8UwbGpp039aKe5QCtiRYmTcmP
-         5sfuvhVVvkmMafX3V4UXozCzmO3Ipd3dxd3ijcn/kQm5aVxvHD2FNFfdpkR+evs9gRUT
-         drzZNBXUX/DuFU81dEvnBnAHocCCe+OjZvLEt4IMpnuY+rYQiP0g91rcuN2MUSkTkze4
-         ylj1Bek/1h9UdYK3KqIjCXdJm8UGMpsV7GMolICx7X8eGK5x9nV/Z1b1BNk0Pma9yrw4
-         +MbA==
-X-Gm-Message-State: AC+VfDygvPQJy0Qja+nPh4ZHLcNeBnM5XXy8b5arAiv8JE4bH6wZ+qxh
-        u+i9LrLvQks7HqWvuv1XZnubM2CzC6k+/hyY1J28kQ==
-X-Google-Smtp-Source: ACHHUZ7Hc5oE5ND/9/QiL+Zn8CNn3DUPNRrptIElw6wI0GM9IDTcdOqoMTas5ig/h8ZcZwS+0kIdU23YGzZrwmE+F1M=
-X-Received: by 2002:a17:907:728e:b0:96a:e7cc:b8b1 with SMTP id
- dt14-20020a170907728e00b0096ae7ccb8b1mr8614530ejc.56.1684186311425; Mon, 15
- May 2023 14:31:51 -0700 (PDT)
+        bh=MBufFDPCgb8FzjQLH8nY1KMCUfOc5xDHFgBLnp3EL70=;
+        b=T4Ohvhfp4nefgsPBIpat4MMU5HY2ddZ6dhPmhQ5khjgDRqlIo+OVDx73yjqSZHvmKk
+         XY8mHmldNIg0T6Vc2wLUU6pRFtGE3uv0VHqfikFZX910UgMUCjj/TgYhKIQ9Cc/WYcfY
+         K3cBtxi3j3TDinJqEFUciLtg9P4PL89IvaHfnRvACLDosXe97sJh2IdTWjUpfCpeyObe
+         S6i4kT5+JkxOnMO/un8he5oZ3sBeqzi2sJDtWduBYvgUZKcY54b3h4SfuKqqKt0ErYl+
+         DSRX2jdkqwpcylUvHtsCrY4J70BKwLaEOHuiO1P2tdb7bF88olHfNFfhNhXVabNDxToZ
+         BexQ==
+X-Gm-Message-State: AC+VfDxKBS/g/lvhh2B2X7FexFCCjLY9aPeLk32DLVtFwYHSkm+exhoE
+        zvoceXfNlkO5mshOWye/uYBLHaFJXWbuCshR8HpeEw==
+X-Google-Smtp-Source: ACHHUZ463PeFDmXcfMVew3EXs0kR201Z/7XoYxMODWyV+My+VRnmSJ8zQgzHBJ/GhsgwhmuCIrNB6QdfsiuJTHf3bk0=
+X-Received: by 2002:a17:907:9482:b0:968:4d51:800b with SMTP id
+ dm2-20020a170907948200b009684d51800bmr25417043ejc.1.1684187716125; Mon, 15
+ May 2023 14:55:16 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230420004850.297045-1-sarthakkukreti@chromium.org>
- <20230506062909.74601-1-sarthakkukreti@chromium.org> <20230506062909.74601-6-sarthakkukreti@chromium.org>
- <ZGIoKi7d5bKcMWw4@bfoster>
-In-Reply-To: <ZGIoKi7d5bKcMWw4@bfoster>
+ <20230506062909.74601-1-sarthakkukreti@chromium.org> <20230506062909.74601-3-sarthakkukreti@chromium.org>
+ <20230512183729.GE858791@frogsfrogsfrogs>
+In-Reply-To: <20230512183729.GE858791@frogsfrogsfrogs>
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Mon, 15 May 2023 14:31:40 -0700
-Message-ID: <CAG9=OMMPphcFMeyge_5pa=-j=fNtDBQTK2bQaDwFWhTs3_pJjw@mail.gmail.com>
-Subject: Re: [PATCH v6 5/5] loop: Add support for provision requests
-To:     Brian Foster <bfoster@redhat.com>
+Date:   Mon, 15 May 2023 14:55:05 -0700
+Message-ID: <CAG9=OMPpNOrkwN07bdPS61Rg+osu72Ge_RLZJoPLRsAEAqNhFA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/5] block: Introduce provisioning primitives
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -62,15 +62,15 @@ Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         Alasdair Kergon <agk@redhat.com>,
         Mike Snitzer <snitzer@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
         "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
+        Bart Van Assche <bvanassche@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,138 +78,441 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 15, 2023 at 5:37=E2=80=AFAM Brian Foster <bfoster@redhat.com> w=
-rote:
+On Fri, May 12, 2023 at 11:37=E2=80=AFAM Darrick J. Wong <djwong@kernel.org=
+> wrote:
 >
-> On Fri, May 05, 2023 at 11:29:09PM -0700, Sarthak Kukreti wrote:
-> > Add support for provision requests to loopback devices.
-> > Loop devices will configure provision support based on
-> > whether the underlying block device/file can support
-> > the provision request and upon receiving a provision bio,
-> > will map it to the backing device/storage. For loop devices
-> > over files, a REQ_OP_PROVISION request will translate to
-> > an fallocate mode 0 call on the backing file.
+> On Fri, May 05, 2023 at 11:29:06PM -0700, Sarthak Kukreti wrote:
+> > Introduce block request REQ_OP_PROVISION. The intent of this request
+> > is to request underlying storage to preallocate disk space for the give=
+n
+> > block range. Block devices that support this capability will export
+> > a provision limit within their request queues.
+> >
+> > This patch also adds the capability to call fallocate() in mode 0
+> > on block devices, which will send REQ_OP_PROVISION to the block
+> > device for the specified range,
 > >
 > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 > > ---
-> >  drivers/block/loop.c | 42 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 42 insertions(+)
+> >  block/blk-core.c          |  5 ++++
+> >  block/blk-lib.c           | 53 +++++++++++++++++++++++++++++++++++++++
+> >  block/blk-merge.c         | 18 +++++++++++++
+> >  block/blk-settings.c      | 19 ++++++++++++++
+> >  block/blk-sysfs.c         |  9 +++++++
+> >  block/bounce.c            |  1 +
+> >  block/fops.c              | 10 +++++++-
+> >  include/linux/bio.h       |  6 +++--
+> >  include/linux/blk_types.h |  5 +++-
+> >  include/linux/blkdev.h    | 16 ++++++++++++
+> >  10 files changed, 138 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> > index bc31bb7072a2..13c4b4f8b9c1 100644
-> > --- a/drivers/block/loop.c
-> > +++ b/drivers/block/loop.c
-> > @@ -327,6 +327,24 @@ static int lo_fallocate(struct loop_device *lo, st=
-ruct request *rq, loff_t pos,
+> > diff --git a/block/blk-core.c b/block/blk-core.c
+> > index 42926e6cb83c..4a2342ba3a8b 100644
+> > --- a/block/blk-core.c
+> > +++ b/block/blk-core.c
+> > @@ -123,6 +123,7 @@ static const char *const blk_op_name[] =3D {
+> >       REQ_OP_NAME(WRITE_ZEROES),
+> >       REQ_OP_NAME(DRV_IN),
+> >       REQ_OP_NAME(DRV_OUT),
+> > +     REQ_OP_NAME(PROVISION)
+> >  };
+> >  #undef REQ_OP_NAME
+> >
+> > @@ -798,6 +799,10 @@ void submit_bio_noacct(struct bio *bio)
+> >               if (!q->limits.max_write_zeroes_sectors)
+> >                       goto not_supported;
+> >               break;
+> > +     case REQ_OP_PROVISION:
+> > +             if (!q->limits.max_provision_sectors)
+> > +                     goto not_supported;
+> > +             break;
+> >       default:
+> >               break;
+> >       }
+> > diff --git a/block/blk-lib.c b/block/blk-lib.c
+> > index e59c3069e835..647b6451660b 100644
+> > --- a/block/blk-lib.c
+> > +++ b/block/blk-lib.c
+> > @@ -343,3 +343,56 @@ int blkdev_issue_secure_erase(struct block_device =
+*bdev, sector_t sector,
 > >       return ret;
 > >  }
-> >
-> > +static int lo_req_provision(struct loop_device *lo, struct request *rq=
-, loff_t pos)
+> >  EXPORT_SYMBOL(blkdev_issue_secure_erase);
+> > +
+> > +/**
+> > + * blkdev_issue_provision - provision a block range
+> > + * @bdev:    blockdev to write
+> > + * @sector:  start sector
+> > + * @nr_sects:        number of sectors to provision
+> > + * @gfp_mask:        memory allocation flags (for bio_alloc)
+> > + *
+> > + * Description:
+> > + *  Issues a provision request to the block device for the range of se=
+ctors.
+> > + *  For thinly provisioned block devices, this acts as a signal for th=
+e
+> > + *  underlying storage pool to allocate space for this block range.
+> > + */
+> > +int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
+> > +             sector_t nr_sects, gfp_t gfp)
 > > +{
-> > +     struct file *file =3D lo->lo_backing_file;
-> > +     struct request_queue *q =3D lo->lo_queue;
-> > +     int ret;
+> > +     sector_t bs_mask =3D (bdev_logical_block_size(bdev) >> 9) - 1;
+> > +     unsigned int max_sectors =3D bdev_max_provision_sectors(bdev);
+> > +     struct bio *bio =3D NULL;
+> > +     struct blk_plug plug;
+> > +     int ret =3D 0;
 > > +
-> > +     if (!q->limits.max_provision_sectors) {
-> > +             ret =3D -EOPNOTSUPP;
-> > +             goto out;
-> > +     }
+> > +     if (max_sectors =3D=3D 0)
+> > +             return -EOPNOTSUPP;
+> > +     if ((sector | nr_sects) & bs_mask)
+> > +             return -EINVAL;
+> > +     if (bdev_read_only(bdev))
+> > +             return -EPERM;
 > > +
-> > +     ret =3D file->f_op->fallocate(file, 0, pos, blk_rq_bytes(rq));
-> > +     if (unlikely(ret && ret !=3D -EINVAL && ret !=3D -EOPNOTSUPP))
-> > +             ret =3D -EIO;
-> > + out:
-> > +     return ret;
-> > +}
+> > +     blk_start_plug(&plug);
+> > +     for (;;) {
+> > +             unsigned int req_sects =3D min_t(sector_t, nr_sects, max_=
+sectors);
 > > +
-> >  static int lo_req_flush(struct loop_device *lo, struct request *rq)
-> >  {
-> >       int ret =3D vfs_fsync(lo->lo_backing_file, 0);
-> > @@ -488,6 +506,8 @@ static int do_req_filebacked(struct loop_device *lo=
-, struct request *rq)
-> >                               FALLOC_FL_PUNCH_HOLE);
-> >       case REQ_OP_DISCARD:
-> >               return lo_fallocate(lo, rq, pos, FALLOC_FL_PUNCH_HOLE);
-> > +     case REQ_OP_PROVISION:
-> > +             return lo_req_provision(lo, rq, pos);
+> > +             bio =3D blk_next_bio(bio, bdev, 0, REQ_OP_PROVISION, gfp)=
+;
+> > +             bio->bi_iter.bi_sector =3D sector;
+> > +             bio->bi_iter.bi_size =3D req_sects << SECTOR_SHIFT;
+> > +
+> > +             sector +=3D req_sects;
+> > +             nr_sects -=3D req_sects;
+> > +             if (!nr_sects) {
+> > +                     ret =3D submit_bio_wait(bio);
+> > +                     if (ret =3D=3D -EOPNOTSUPP)
+> > +                             ret =3D 0;
 >
-> Hi Sarthak,
+> Why do we convert EOPNOTSUPP to success here?  If the device suddenly
+> forgets how to provision space, wouldn't we want to pass that up to the
+> caller?
 >
-> The only thing that stands out to me is the separate lo_req_provision()
-> helper here. It seems it might be a little cleaner to extend and reuse
-> lo_req_fallocate()..? But that's not something I feel strongly about, so
-> this all looks pretty good to me either way, FWIW.
+> (I'm not sure when this would happen -- perhaps the bdev has the general
+> provisioning capability but not for the specific range requested?)
 >
-Fair point, I think that should shorten the patch (and for
-correctness, we'd want to add FALLOC_FL_KEEP_SIZE for REQ_OP_PROVISION
-too). I'll fix this up in v7.
+Ah good catch, I initially wired it up to be less noisy in the kernel
+logs but left it behind accidentally. The error should definitely be
+passed through: one case where this can happen is if the device-mapper
+table comprises several underlying targets but only a few of them
+support provision. I'll fix this in v7.
 
 Best
 Sarthak
 
-> Brian
+> The rest of the patch looks ok to me.
 >
-> >       case REQ_OP_WRITE:
-> >               if (cmd->use_aio)
-> >                       return lo_rw_aio(lo, cmd, pos, ITER_SOURCE);
-> > @@ -754,6 +774,25 @@ static void loop_sysfs_exit(struct loop_device *lo=
-)
-> >                                  &loop_attribute_group);
+> --D
+>
+> > +                     bio_put(bio);
+> > +                     break;
+> > +             }
+> > +             cond_resched();
+> > +     }
+> > +     blk_finish_plug(&plug);
+> > +
+> > +     return ret;
+> > +}
+> > +EXPORT_SYMBOL(blkdev_issue_provision);
+> > diff --git a/block/blk-merge.c b/block/blk-merge.c
+> > index 6460abdb2426..a3ffebb97a1d 100644
+> > --- a/block/blk-merge.c
+> > +++ b/block/blk-merge.c
+> > @@ -158,6 +158,21 @@ static struct bio *bio_split_write_zeroes(struct b=
+io *bio,
+> >       return bio_split(bio, lim->max_write_zeroes_sectors, GFP_NOIO, bs=
+);
 > >  }
 > >
-> > +static void loop_config_provision(struct loop_device *lo)
+> > +static struct bio *bio_split_provision(struct bio *bio,
+> > +                                     const struct queue_limits *lim,
+> > +                                     unsigned int *nsegs, struct bio_s=
+et *bs)
 > > +{
-> > +     struct file *file =3D lo->lo_backing_file;
-> > +     struct inode *inode =3D file->f_mapping->host;
+> > +     *nsegs =3D 0;
 > > +
-> > +     /*
-> > +      * If the backing device is a block device, mirror its provisioni=
-ng
-> > +      * capability.
-> > +      */
-> > +     if (S_ISBLK(inode->i_mode)) {
-> > +             blk_queue_max_provision_sectors(lo->lo_queue,
-> > +                     bdev_max_provision_sectors(I_BDEV(inode)));
-> > +     } else if (file->f_op->fallocate) {
-> > +             blk_queue_max_provision_sectors(lo->lo_queue, UINT_MAX >>=
- 9);
-> > +     } else {
-> > +             blk_queue_max_provision_sectors(lo->lo_queue, 0);
-> > +     }
+> > +     if (!lim->max_provision_sectors)
+> > +             return NULL;
+> > +
+> > +     if (bio_sectors(bio) <=3D lim->max_provision_sectors)
+> > +             return NULL;
+> > +
+> > +     return bio_split(bio, lim->max_provision_sectors, GFP_NOIO, bs);
 > > +}
 > > +
-> >  static void loop_config_discard(struct loop_device *lo)
+> >  /*
+> >   * Return the maximum number of sectors from the start of a bio that m=
+ay be
+> >   * submitted as a single request to a block device. If enough sectors =
+remain,
+> > @@ -366,6 +381,9 @@ struct bio *__bio_split_to_limits(struct bio *bio,
+> >       case REQ_OP_WRITE_ZEROES:
+> >               split =3D bio_split_write_zeroes(bio, lim, nr_segs, bs);
+> >               break;
+> > +     case REQ_OP_PROVISION:
+> > +             split =3D bio_split_provision(bio, lim, nr_segs, bs);
+> > +             break;
+> >       default:
+> >               split =3D bio_split_rw(bio, lim, nr_segs, bs,
+> >                               get_max_io_size(bio, lim) << SECTOR_SHIFT=
+);
+> > diff --git a/block/blk-settings.c b/block/blk-settings.c
+> > index 896b4654ab00..d303e6614c36 100644
+> > --- a/block/blk-settings.c
+> > +++ b/block/blk-settings.c
+> > @@ -59,6 +59,7 @@ void blk_set_default_limits(struct queue_limits *lim)
+> >       lim->zoned =3D BLK_ZONED_NONE;
+> >       lim->zone_write_granularity =3D 0;
+> >       lim->dma_alignment =3D 511;
+> > +     lim->max_provision_sectors =3D 0;
+> >  }
+> >
+> >  /**
+> > @@ -82,6 +83,7 @@ void blk_set_stacking_limits(struct queue_limits *lim=
+)
+> >       lim->max_dev_sectors =3D UINT_MAX;
+> >       lim->max_write_zeroes_sectors =3D UINT_MAX;
+> >       lim->max_zone_append_sectors =3D UINT_MAX;
+> > +     lim->max_provision_sectors =3D UINT_MAX;
+> >  }
+> >  EXPORT_SYMBOL(blk_set_stacking_limits);
+> >
+> > @@ -208,6 +210,20 @@ void blk_queue_max_write_zeroes_sectors(struct req=
+uest_queue *q,
+> >  }
+> >  EXPORT_SYMBOL(blk_queue_max_write_zeroes_sectors);
+> >
+> > +/**
+> > + * blk_queue_max_provision_sectors - set max sectors for a single prov=
+ision
+> > + *
+> > + * @q:  the request queue for the device
+> > + * @max_provision_sectors: maximum number of sectors to provision per =
+command
+> > + **/
+> > +
+> > +void blk_queue_max_provision_sectors(struct request_queue *q,
+> > +             unsigned int max_provision_sectors)
+> > +{
+> > +     q->limits.max_provision_sectors =3D max_provision_sectors;
+> > +}
+> > +EXPORT_SYMBOL(blk_queue_max_provision_sectors);
+> > +
+> >  /**
+> >   * blk_queue_max_zone_append_sectors - set max sectors for a single zo=
+ne append
+> >   * @q:  the request queue for the device
+> > @@ -578,6 +594,9 @@ int blk_stack_limits(struct queue_limits *t, struct=
+ queue_limits *b,
+> >       t->max_segment_size =3D min_not_zero(t->max_segment_size,
+> >                                          b->max_segment_size);
+> >
+> > +     t->max_provision_sectors =3D min_not_zero(t->max_provision_sector=
+s,
+> > +                                             b->max_provision_sectors)=
+;
+> > +
+> >       t->misaligned |=3D b->misaligned;
+> >
+> >       alignment =3D queue_limit_alignment_offset(b, start);
+> > diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> > index f1fce1c7fa44..0a3165211c66 100644
+> > --- a/block/blk-sysfs.c
+> > +++ b/block/blk-sysfs.c
+> > @@ -213,6 +213,13 @@ static ssize_t queue_discard_zeroes_data_show(stru=
+ct request_queue *q, char *pag
+> >       return queue_var_show(0, page);
+> >  }
+> >
+> > +static ssize_t queue_provision_max_show(struct request_queue *q,
+> > +             char *page)
+> > +{
+> > +     return sprintf(page, "%llu\n",
+> > +             (unsigned long long)q->limits.max_provision_sectors << 9)=
+;
+> > +}
+> > +
+> >  static ssize_t queue_write_same_max_show(struct request_queue *q, char=
+ *page)
 > >  {
-> >       struct file *file =3D lo->lo_backing_file;
-> > @@ -1092,6 +1131,7 @@ static int loop_configure(struct loop_device *lo,=
- fmode_t mode,
-> >       blk_queue_io_min(lo->lo_queue, bsize);
+> >       return queue_var_show(0, page);
+> > @@ -604,6 +611,7 @@ QUEUE_RO_ENTRY(queue_discard_max_hw, "discard_max_h=
+w_bytes");
+> >  QUEUE_RW_ENTRY(queue_discard_max, "discard_max_bytes");
+> >  QUEUE_RO_ENTRY(queue_discard_zeroes_data, "discard_zeroes_data");
 > >
-> >       loop_config_discard(lo);
-> > +     loop_config_provision(lo);
-> >       loop_update_rotational(lo);
-> >       loop_update_dio(lo);
-> >       loop_sysfs_init(lo);
-> > @@ -1304,6 +1344,7 @@ loop_set_status(struct loop_device *lo, const str=
-uct loop_info64 *info)
-> >       }
-> >
-> >       loop_config_discard(lo);
-> > +     loop_config_provision(lo);
-> >
-> >       /* update dio if lo_offset or transfer is changed */
-> >       __loop_update_dio(lo, lo->use_dio);
-> > @@ -1830,6 +1871,7 @@ static blk_status_t loop_queue_rq(struct blk_mq_h=
-w_ctx *hctx,
-> >       case REQ_OP_FLUSH:
+> > +QUEUE_RO_ENTRY(queue_provision_max, "provision_max_bytes");
+> >  QUEUE_RO_ENTRY(queue_write_same_max, "write_same_max_bytes");
+> >  QUEUE_RO_ENTRY(queue_write_zeroes_max, "write_zeroes_max_bytes");
+> >  QUEUE_RO_ENTRY(queue_zone_append_max, "zone_append_max_bytes");
+> > @@ -661,6 +669,7 @@ static struct attribute *queue_attrs[] =3D {
+> >       &queue_discard_max_entry.attr,
+> >       &queue_discard_max_hw_entry.attr,
+> >       &queue_discard_zeroes_data_entry.attr,
+> > +     &queue_provision_max_entry.attr,
+> >       &queue_write_same_max_entry.attr,
+> >       &queue_write_zeroes_max_entry.attr,
+> >       &queue_zone_append_max_entry.attr,
+> > diff --git a/block/bounce.c b/block/bounce.c
+> > index 7cfcb242f9a1..ab9d8723ae64 100644
+> > --- a/block/bounce.c
+> > +++ b/block/bounce.c
+> > @@ -176,6 +176,7 @@ static struct bio *bounce_clone_bio(struct bio *bio=
+_src)
 > >       case REQ_OP_DISCARD:
+> >       case REQ_OP_SECURE_ERASE:
 > >       case REQ_OP_WRITE_ZEROES:
 > > +     case REQ_OP_PROVISION:
-> >               cmd->use_aio =3D false;
 > >               break;
 > >       default:
+> >               bio_for_each_segment(bv, bio_src, iter)
+> > diff --git a/block/fops.c b/block/fops.c
+> > index 4c70fdc546e7..be2e41f160bf 100644
+> > --- a/block/fops.c
+> > +++ b/block/fops.c
+> > @@ -613,7 +613,8 @@ static ssize_t blkdev_read_iter(struct kiocb *iocb,=
+ struct iov_iter *to)
+> >
+> >  #define      BLKDEV_FALLOC_FL_SUPPORTED                               =
+       \
+> >               (FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |           \
+> > -              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE)
+> > +              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE |       \
+> > +              FALLOC_FL_UNSHARE_RANGE)
+> >
+> >  static long blkdev_fallocate(struct file *file, int mode, loff_t start=
+,
+> >                            loff_t len)
+> > @@ -653,6 +654,13 @@ static long blkdev_fallocate(struct file *file, in=
+t mode, loff_t start,
+> >        * de-allocate mode calls to fallocate().
+> >        */
+> >       switch (mode) {
+> > +     case 0:
+> > +     case FALLOC_FL_UNSHARE_RANGE:
+> > +     case FALLOC_FL_KEEP_SIZE:
+> > +     case FALLOC_FL_UNSHARE_RANGE | FALLOC_FL_KEEP_SIZE:
+> > +             error =3D blkdev_issue_provision(bdev, start >> SECTOR_SH=
+IFT,
+> > +                                            len >> SECTOR_SHIFT, GFP_K=
+ERNEL);
+> > +             break;
+> >       case FALLOC_FL_ZERO_RANGE:
+> >       case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
+> >               error =3D truncate_bdev_range(bdev, file->f_mode, start, =
+end);
+> > diff --git a/include/linux/bio.h b/include/linux/bio.h
+> > index d766be7152e1..9820b3b039f2 100644
+> > --- a/include/linux/bio.h
+> > +++ b/include/linux/bio.h
+> > @@ -57,7 +57,8 @@ static inline bool bio_has_data(struct bio *bio)
+> >           bio->bi_iter.bi_size &&
+> >           bio_op(bio) !=3D REQ_OP_DISCARD &&
+> >           bio_op(bio) !=3D REQ_OP_SECURE_ERASE &&
+> > -         bio_op(bio) !=3D REQ_OP_WRITE_ZEROES)
+> > +         bio_op(bio) !=3D REQ_OP_WRITE_ZEROES &&
+> > +         bio_op(bio) !=3D REQ_OP_PROVISION)
+> >               return true;
+> >
+> >       return false;
+> > @@ -67,7 +68,8 @@ static inline bool bio_no_advance_iter(const struct b=
+io *bio)
+> >  {
+> >       return bio_op(bio) =3D=3D REQ_OP_DISCARD ||
+> >              bio_op(bio) =3D=3D REQ_OP_SECURE_ERASE ||
+> > -            bio_op(bio) =3D=3D REQ_OP_WRITE_ZEROES;
+> > +            bio_op(bio) =3D=3D REQ_OP_WRITE_ZEROES ||
+> > +            bio_op(bio) =3D=3D REQ_OP_PROVISION;
+> >  }
+> >
+> >  static inline void *bio_data(struct bio *bio)
+> > diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> > index 99be590f952f..27bdf88f541c 100644
+> > --- a/include/linux/blk_types.h
+> > +++ b/include/linux/blk_types.h
+> > @@ -385,7 +385,10 @@ enum req_op {
+> >       REQ_OP_DRV_IN           =3D (__force blk_opf_t)34,
+> >       REQ_OP_DRV_OUT          =3D (__force blk_opf_t)35,
+> >
+> > -     REQ_OP_LAST             =3D (__force blk_opf_t)36,
+> > +     /* request device to provision block */
+> > +     REQ_OP_PROVISION        =3D (__force blk_opf_t)37,
+> > +
+> > +     REQ_OP_LAST             =3D (__force blk_opf_t)38,
+> >  };
+> >
+> >  enum req_flag_bits {
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index 941304f17492..239e2f418b6e 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -303,6 +303,7 @@ struct queue_limits {
+> >       unsigned int            discard_granularity;
+> >       unsigned int            discard_alignment;
+> >       unsigned int            zone_write_granularity;
+> > +     unsigned int            max_provision_sectors;
+> >
+> >       unsigned short          max_segments;
+> >       unsigned short          max_integrity_segments;
+> > @@ -921,6 +922,8 @@ extern void blk_queue_max_discard_sectors(struct re=
+quest_queue *q,
+> >               unsigned int max_discard_sectors);
+> >  extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q=
+,
+> >               unsigned int max_write_same_sectors);
+> > +extern void blk_queue_max_provision_sectors(struct request_queue *q,
+> > +             unsigned int max_provision_sectors);
+> >  extern void blk_queue_logical_block_size(struct request_queue *, unsig=
+ned int);
+> >  extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
+> >               unsigned int max_zone_append_sectors);
+> > @@ -1060,6 +1063,9 @@ int __blkdev_issue_discard(struct block_device *b=
+dev, sector_t sector,
+> >  int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sect=
+or,
+> >               sector_t nr_sects, gfp_t gfp);
+> >
+> > +extern int blkdev_issue_provision(struct block_device *bdev, sector_t =
+sector,
+> > +             sector_t nr_sects, gfp_t gfp_mask);
+> > +
+> >  #define BLKDEV_ZERO_NOUNMAP  (1 << 0)  /* do not free blocks */
+> >  #define BLKDEV_ZERO_NOFALLBACK       (1 << 1)  /* don't write explicit=
+ zeroes */
+> >
+> > @@ -1139,6 +1145,11 @@ static inline unsigned short queue_max_discard_s=
+egments(const struct request_que
+> >       return q->limits.max_discard_segments;
+> >  }
+> >
+> > +static inline unsigned short queue_max_provision_sectors(const struct =
+request_queue *q)
+> > +{
+> > +     return q->limits.max_provision_sectors;
+> > +}
+> > +
+> >  static inline unsigned int queue_max_segment_size(const struct request=
+_queue *q)
+> >  {
+> >       return q->limits.max_segment_size;
+> > @@ -1281,6 +1292,11 @@ static inline bool bdev_nowait(struct block_devi=
+ce *bdev)
+> >       return test_bit(QUEUE_FLAG_NOWAIT, &bdev_get_queue(bdev)->queue_f=
+lags);
+> >  }
+> >
+> > +static inline unsigned int bdev_max_provision_sectors(struct block_dev=
+ice *bdev)
+> > +{
+> > +     return bdev_get_queue(bdev)->limits.max_provision_sectors;
+> > +}
+> > +
+> >  static inline enum blk_zoned_model bdev_zoned_model(struct block_devic=
+e *bdev)
+> >  {
+> >       return blk_queue_zoned_model(bdev_get_queue(bdev));
 > > --
 > > 2.40.1.521.gf1e218fcd8-goog
 > >
->
