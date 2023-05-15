@@ -2,110 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8B5701F84
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 May 2023 22:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F87020DE
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 May 2023 02:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbjENUkd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 14 May 2023 16:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        id S230284AbjEOAxl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 14 May 2023 20:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjENUkc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 14 May 2023 16:40:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332EAE48
-        for <linux-ext4@vger.kernel.org>; Sun, 14 May 2023 13:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684096784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=chiG9B17KaDQNtNXqn0GHLZ1gAQxyO0beu2VdkhRIDA=;
-        b=dV5HUMfSElj/h5P+mBpIpLqfqlLv82ZChkzUN1yx1gveLYyuTNbRfaG85heEEwi1rVK13C
-        oxU14kZanBHzimO9tV3CbIHxZuhEdHX749aaVk9y+Rh/DbKCkCQV0XXW/sk/kVXGC9e/25
-        /Cnt7XeuTzcrkufOvC2aDNL20lVV/3w=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-299-LvjFDhI9OZKUgUMmiTgiUw-1; Sun, 14 May 2023 16:39:42 -0400
-X-MC-Unique: LvjFDhI9OZKUgUMmiTgiUw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f33f8ffa37so40967635e9.2
-        for <linux-ext4@vger.kernel.org>; Sun, 14 May 2023 13:39:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684096781; x=1686688781;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=chiG9B17KaDQNtNXqn0GHLZ1gAQxyO0beu2VdkhRIDA=;
-        b=cs2K4idcIhhgWpiNGsBSo8caKMz1v0f+0J7/JN426TxvZboSLvRuBIPOApqjHGiSdI
-         C22LL+3pwc8gcVDScL7IU3EnfEjmBSCXYWSkPAOJ8uaeZ52HgRpcJO/pPmLdleqLBv/W
-         fH0lmwZwaZabJRJWS6+ZN+fMTs+GuC1iA9UWPUlWt84NcDoxfUzhWPVczT1mq2584jrr
-         VIGao0IkSeCFjIZqQQ6gI4jZS+8B+aMAC+E+GNYFYNbI6DSlXxKXT5nxXG9ll5efy9PO
-         /sIIsfwNzuLie4XyHOpsCktjCpsctX2/t3Kgr7vMSPMVffnbRjJN30smj3OtPtRHirmS
-         owMA==
-X-Gm-Message-State: AC+VfDz+kolksnnhKwL74ImmQB3lEfFyUU4ZhrY2WiPrwxUYh/P/X2Ou
-        Q7ySJxD8sYw87hzvk2oae3qdWnR3T36Dm/qNWC9QTVnvF+hMVV315ASQP85h/3ACpwo+UO9XVod
-        VPpy48K6BGRScJemOl2s7/w==
-X-Received: by 2002:adf:dd06:0:b0:306:368d:8a1c with SMTP id a6-20020adfdd06000000b00306368d8a1cmr21091453wrm.45.1684096781706;
-        Sun, 14 May 2023 13:39:41 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5nN09h+Mnu8pLXs6TXZixhNLbNU43uh6S3TNFEVms1rYMbEDlOVaa7UVK4S4Nr+3W/+Sl3pg==
-X-Received: by 2002:adf:dd06:0:b0:306:368d:8a1c with SMTP id a6-20020adfdd06000000b00306368d8a1cmr21091439wrm.45.1684096781330;
-        Sun, 14 May 2023 13:39:41 -0700 (PDT)
-Received: from redhat.com ([2.52.146.3])
-        by smtp.gmail.com with ESMTPSA id g14-20020adff3ce000000b00300aee6c9cesm30425379wrp.20.2023.05.14.13.39.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 May 2023 13:39:40 -0700 (PDT)
-Date:   Sun, 14 May 2023 16:39:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     syzbot <syzbot+cbb68193bdb95af4340a@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, elic@nvidia.com, jasowang@redhat.com,
+        with ESMTP id S229898AbjEOAxk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 14 May 2023 20:53:40 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D146610DF
+        for <linux-ext4@vger.kernel.org>; Sun, 14 May 2023 17:53:36 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34F0rLMG007147
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 May 2023 20:53:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1684112005; bh=L6HHq6ZAyzeutQBofPRqcZwswoC2oa4/hxe5wJgAjtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=ZKVIe9ThChkwC/r2+RUBtTEIbeCj0gFVK0HKldu7DKaAH6K0twQPg/nqnH+XHxgfQ
+         TVq/kPMeTicYV4z1Dz24CjatyeY/tIeL/Gu2qh6lshg8nlwf6ADYGj9Ey9MiGQAFLU
+         0EWk/GZGcbDNAvkfI6JPGlKIrWx20oVGIoXBXYCWpW3Wx6tgKVjVfuxQubwn/6iCdh
+         GtCIbyCKiiczJ3IibP0dQH/mHhQHY+GIYL9WSch92OV5Wx1oGqLrYLMC1jvcFeXoin
+         GObVZ3UpdNgUrjQyWsNvzF7vpAl63C5dUiXhxN6YaCa+XheOD5wEWjc6S8ubVRNEmd
+         S3zKVYcPojd3w==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CE9E915C04AC; Sun, 14 May 2023 20:53:21 -0400 (EDT)
+Date:   Sun, 14 May 2023 20:53:21 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     syzbot <syzbot+cbb68193bdb95af4340a@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, elic@nvidia.com, jasowang@redhat.com,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, parav@nvidia.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+        syzkaller-bugs@googlegroups.com
 Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_setattr
-Message-ID: <20230514163907-mutt-send-email-mst@kernel.org>
+Message-ID: <20230515005321.GB1903212@mit.edu>
 References: <000000000000a74de505f2349eb1@google.com>
  <000000000000a9377e05fbac4945@google.com>
+ <20230514163907-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000a9377e05fbac4945@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230514163907-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, May 14, 2023 at 12:24:32PM -0700, syzbot wrote:
-> syzbot has bisected this issue to:
+On Sun, May 14, 2023 at 04:39:36PM -0400, Michael S. Tsirkin wrote:
+> On Sun, May 14, 2023 at 12:24:32PM -0700, syzbot wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit a3c06ae158dd6fa8336157c31d9234689d068d02
+> > Author: Parav Pandit <parav@nvidia.com>
+> > Date:   Tue Jan 5 10:32:03 2021 +0000
+> > 
+> >     vdpa_sim_net: Add support for user supported devices
+> > 
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 > 
-> commit a3c06ae158dd6fa8336157c31d9234689d068d02
-> Author: Parav Pandit <parav@nvidia.com>
-> Date:   Tue Jan 5 10:32:03 2021 +0000
-> 
->     vdpa_sim_net: Add support for user supported devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e372c6280000
-> start commit:   e922ba281a8d Add linux-next specific files for 20230512
-> git tree:       linux-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15e372c6280000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11e372c6280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=17a4c2d44484b62f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cbb68193bdb95af4340a
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172a21c6280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b67fc6280000
-> 
-> Reported-by: syzbot+cbb68193bdb95af4340a@syzkaller.appspotmail.com
-> Fixes: a3c06ae158dd ("vdpa_sim_net: Add support for user supported devices")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> I don't see how this can be related, I don't think the test setup uses
+> vdpa sim at all.
 
-I don't see how this can be related, I don't think the test setup uses
-vdpa sim at all.
+Yeah, it's totally bogus.  You can see it by looking at the bisection
+log[1].
 
--- 
-MST
+[1] https://syzkaller.appspot.com/text?tag=Log&x=16e372c6280000
 
+The initial bisection logs make it clear that it is *trivially* easy
+to reproduce, and that the failure signature is:
+
+crashed: possible deadlock in {ext4_xattr_set_handle,ext4_setattr,ext4_xattr_set_handle}
+
+However, somewhere in the bisection, we start seeing this:
+
+run #0: boot failed: WARNING in kvm_wait
+run #1: boot failed: WARNING in kvm_wait
+run #2: OK
+run #3: OK
+run #4: OK
+run #5: OK
+run #6: OK
+run #7: OK
+run #8: OK
+run #9: OK
+
+This is a completely different failure signature, and the "WARNING in
+kvm_wait" should be ignored, and this should be considered a "git
+bisect good".  However, the syzkaller bisection doesn't understand
+this, and so it gets sent down the primrose path.  :-(
+
+Unfortunately, there isn't a good way to tell the syzkaller bisection,
+"go home, your drunk", and to tell it to try again, perhaps with a
+human-supplied discriminator of what should be considered a valid
+failure signature.
+
+In the ideal world, a human should be able to give it a setup set of
+bisection "good" and "bad" commits, along with a regexp for what a
+failure should look like, and perhaps with a hint of how many tries it
+should use before assuming that a bisection result is "good", and to
+teach it to assume that the bisection has "bad" after seeing a single
+failure signature.
+
+If the above is too much to ask, in the slightly-less-ideal world,
+there would be a way to give "#syz test" a count argument, so we could
+have syzkaller try N times, for when we need to do a manual bisection
+using "#syz test"....
+
+						- Ted
