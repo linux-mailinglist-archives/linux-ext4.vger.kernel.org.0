@@ -2,517 +2,251 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F3C704018
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 May 2023 23:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FE7704334
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 May 2023 04:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245364AbjEOVzX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 May 2023 17:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S229448AbjEPCCy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 15 May 2023 22:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242402AbjEOVzW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 May 2023 17:55:22 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3311A277
-        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:55:17 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9661047f8b8so2065301266b.0
-        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 14:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1684187716; x=1686779716;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MBufFDPCgb8FzjQLH8nY1KMCUfOc5xDHFgBLnp3EL70=;
-        b=ULrctO43Pao4De+rNpLZXSKMgCwdoSmaAzqAZbXtO4HwOkwBcZjzSJ0AjyQQnujE/0
-         cj8scQpJ6mh7xFwrQRMi36tpIY1J87rDw4kapB6wgFjd/NZAyW86G9COEuRjOP7aW+VV
-         dyNV8LR0UBTa/hhyGyoZGWpxwK1dbGidfvG10=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684187716; x=1686779716;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MBufFDPCgb8FzjQLH8nY1KMCUfOc5xDHFgBLnp3EL70=;
-        b=T4Ohvhfp4nefgsPBIpat4MMU5HY2ddZ6dhPmhQ5khjgDRqlIo+OVDx73yjqSZHvmKk
-         XY8mHmldNIg0T6Vc2wLUU6pRFtGE3uv0VHqfikFZX910UgMUCjj/TgYhKIQ9Cc/WYcfY
-         K3cBtxi3j3TDinJqEFUciLtg9P4PL89IvaHfnRvACLDosXe97sJh2IdTWjUpfCpeyObe
-         S6i4kT5+JkxOnMO/un8he5oZ3sBeqzi2sJDtWduBYvgUZKcY54b3h4SfuKqqKt0ErYl+
-         DSRX2jdkqwpcylUvHtsCrY4J70BKwLaEOHuiO1P2tdb7bF88olHfNFfhNhXVabNDxToZ
-         BexQ==
-X-Gm-Message-State: AC+VfDxKBS/g/lvhh2B2X7FexFCCjLY9aPeLk32DLVtFwYHSkm+exhoE
-        zvoceXfNlkO5mshOWye/uYBLHaFJXWbuCshR8HpeEw==
-X-Google-Smtp-Source: ACHHUZ463PeFDmXcfMVew3EXs0kR201Z/7XoYxMODWyV+My+VRnmSJ8zQgzHBJ/GhsgwhmuCIrNB6QdfsiuJTHf3bk0=
-X-Received: by 2002:a17:907:9482:b0:968:4d51:800b with SMTP id
- dm2-20020a170907948200b009684d51800bmr25417043ejc.1.1684187716125; Mon, 15
- May 2023 14:55:16 -0700 (PDT)
+        with ESMTP id S229774AbjEPCCw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 May 2023 22:02:52 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A21A2D4F
+        for <linux-ext4@vger.kernel.org>; Mon, 15 May 2023 19:02:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QKzyq3vdYz4f3pBY
+        for <linux-ext4@vger.kernel.org>; Tue, 16 May 2023 10:02:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.170])
+        by APP2 (Coremail) with SMTP id Syh0CgAHrusy5GJkLBS5JQ--.48186S4;
+        Tue, 16 May 2023 10:02:44 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com,
+        chengzhihao1@huawei.com
+Subject: [PATCH v3 1/3] jbd2: recheck chechpointing non-dirty buffer
+Date:   Tue, 16 May 2023 10:02:24 +0800
+Message-Id: <20230516020226.2813588-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20230420004850.297045-1-sarthakkukreti@chromium.org>
- <20230506062909.74601-1-sarthakkukreti@chromium.org> <20230506062909.74601-3-sarthakkukreti@chromium.org>
- <20230512183729.GE858791@frogsfrogsfrogs>
-In-Reply-To: <20230512183729.GE858791@frogsfrogsfrogs>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Mon, 15 May 2023 14:55:05 -0700
-Message-ID: <CAG9=OMPpNOrkwN07bdPS61Rg+osu72Ge_RLZJoPLRsAEAqNhFA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/5] block: Introduce provisioning primitives
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgAHrusy5GJkLBS5JQ--.48186S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4UAw4ktF15Zw43Jw47urg_yoWxJFWfpr
+        ya9wnIqr4kGr1UZr1IqF4UArW0qF4kZrWUGry5KFn3Aa1jywsIgryFkryIkFyjk3s3Wa1Y
+        qF1UCr9xuF4jya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 12, 2023 at 11:37=E2=80=AFAM Darrick J. Wong <djwong@kernel.org=
-> wrote:
->
-> On Fri, May 05, 2023 at 11:29:06PM -0700, Sarthak Kukreti wrote:
-> > Introduce block request REQ_OP_PROVISION. The intent of this request
-> > is to request underlying storage to preallocate disk space for the give=
-n
-> > block range. Block devices that support this capability will export
-> > a provision limit within their request queues.
-> >
-> > This patch also adds the capability to call fallocate() in mode 0
-> > on block devices, which will send REQ_OP_PROVISION to the block
-> > device for the specified range,
-> >
-> > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > ---
-> >  block/blk-core.c          |  5 ++++
-> >  block/blk-lib.c           | 53 +++++++++++++++++++++++++++++++++++++++
-> >  block/blk-merge.c         | 18 +++++++++++++
-> >  block/blk-settings.c      | 19 ++++++++++++++
-> >  block/blk-sysfs.c         |  9 +++++++
-> >  block/bounce.c            |  1 +
-> >  block/fops.c              | 10 +++++++-
-> >  include/linux/bio.h       |  6 +++--
-> >  include/linux/blk_types.h |  5 +++-
-> >  include/linux/blkdev.h    | 16 ++++++++++++
-> >  10 files changed, 138 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/block/blk-core.c b/block/blk-core.c
-> > index 42926e6cb83c..4a2342ba3a8b 100644
-> > --- a/block/blk-core.c
-> > +++ b/block/blk-core.c
-> > @@ -123,6 +123,7 @@ static const char *const blk_op_name[] =3D {
-> >       REQ_OP_NAME(WRITE_ZEROES),
-> >       REQ_OP_NAME(DRV_IN),
-> >       REQ_OP_NAME(DRV_OUT),
-> > +     REQ_OP_NAME(PROVISION)
-> >  };
-> >  #undef REQ_OP_NAME
-> >
-> > @@ -798,6 +799,10 @@ void submit_bio_noacct(struct bio *bio)
-> >               if (!q->limits.max_write_zeroes_sectors)
-> >                       goto not_supported;
-> >               break;
-> > +     case REQ_OP_PROVISION:
-> > +             if (!q->limits.max_provision_sectors)
-> > +                     goto not_supported;
-> > +             break;
-> >       default:
-> >               break;
-> >       }
-> > diff --git a/block/blk-lib.c b/block/blk-lib.c
-> > index e59c3069e835..647b6451660b 100644
-> > --- a/block/blk-lib.c
-> > +++ b/block/blk-lib.c
-> > @@ -343,3 +343,56 @@ int blkdev_issue_secure_erase(struct block_device =
-*bdev, sector_t sector,
-> >       return ret;
-> >  }
-> >  EXPORT_SYMBOL(blkdev_issue_secure_erase);
-> > +
-> > +/**
-> > + * blkdev_issue_provision - provision a block range
-> > + * @bdev:    blockdev to write
-> > + * @sector:  start sector
-> > + * @nr_sects:        number of sectors to provision
-> > + * @gfp_mask:        memory allocation flags (for bio_alloc)
-> > + *
-> > + * Description:
-> > + *  Issues a provision request to the block device for the range of se=
-ctors.
-> > + *  For thinly provisioned block devices, this acts as a signal for th=
-e
-> > + *  underlying storage pool to allocate space for this block range.
-> > + */
-> > +int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
-> > +             sector_t nr_sects, gfp_t gfp)
-> > +{
-> > +     sector_t bs_mask =3D (bdev_logical_block_size(bdev) >> 9) - 1;
-> > +     unsigned int max_sectors =3D bdev_max_provision_sectors(bdev);
-> > +     struct bio *bio =3D NULL;
-> > +     struct blk_plug plug;
-> > +     int ret =3D 0;
-> > +
-> > +     if (max_sectors =3D=3D 0)
-> > +             return -EOPNOTSUPP;
-> > +     if ((sector | nr_sects) & bs_mask)
-> > +             return -EINVAL;
-> > +     if (bdev_read_only(bdev))
-> > +             return -EPERM;
-> > +
-> > +     blk_start_plug(&plug);
-> > +     for (;;) {
-> > +             unsigned int req_sects =3D min_t(sector_t, nr_sects, max_=
-sectors);
-> > +
-> > +             bio =3D blk_next_bio(bio, bdev, 0, REQ_OP_PROVISION, gfp)=
-;
-> > +             bio->bi_iter.bi_sector =3D sector;
-> > +             bio->bi_iter.bi_size =3D req_sects << SECTOR_SHIFT;
-> > +
-> > +             sector +=3D req_sects;
-> > +             nr_sects -=3D req_sects;
-> > +             if (!nr_sects) {
-> > +                     ret =3D submit_bio_wait(bio);
-> > +                     if (ret =3D=3D -EOPNOTSUPP)
-> > +                             ret =3D 0;
->
-> Why do we convert EOPNOTSUPP to success here?  If the device suddenly
-> forgets how to provision space, wouldn't we want to pass that up to the
-> caller?
->
-> (I'm not sure when this would happen -- perhaps the bdev has the general
-> provisioning capability but not for the specific range requested?)
->
-Ah good catch, I initially wired it up to be less noisy in the kernel
-logs but left it behind accidentally. The error should definitely be
-passed through: one case where this can happen is if the device-mapper
-table comprises several underlying targets but only a few of them
-support provision. I'll fix this in v7.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Best
-Sarthak
+There is a long-standing metadata corruption issue that happens from
+time to time, but it's very difficult to reproduce and analyse, benefit
+from the JBD2_CYCLE_RECORD option, we found out that the problem is the
+checkpointing process miss to write out some buffers which are raced by
+another do_get_write_access(). Looks below for detail.
 
-> The rest of the patch looks ok to me.
->
-> --D
->
-> > +                     bio_put(bio);
-> > +                     break;
-> > +             }
-> > +             cond_resched();
-> > +     }
-> > +     blk_finish_plug(&plug);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL(blkdev_issue_provision);
-> > diff --git a/block/blk-merge.c b/block/blk-merge.c
-> > index 6460abdb2426..a3ffebb97a1d 100644
-> > --- a/block/blk-merge.c
-> > +++ b/block/blk-merge.c
-> > @@ -158,6 +158,21 @@ static struct bio *bio_split_write_zeroes(struct b=
-io *bio,
-> >       return bio_split(bio, lim->max_write_zeroes_sectors, GFP_NOIO, bs=
-);
-> >  }
-> >
-> > +static struct bio *bio_split_provision(struct bio *bio,
-> > +                                     const struct queue_limits *lim,
-> > +                                     unsigned int *nsegs, struct bio_s=
-et *bs)
-> > +{
-> > +     *nsegs =3D 0;
-> > +
-> > +     if (!lim->max_provision_sectors)
-> > +             return NULL;
-> > +
-> > +     if (bio_sectors(bio) <=3D lim->max_provision_sectors)
-> > +             return NULL;
-> > +
-> > +     return bio_split(bio, lim->max_provision_sectors, GFP_NOIO, bs);
-> > +}
-> > +
-> >  /*
-> >   * Return the maximum number of sectors from the start of a bio that m=
-ay be
-> >   * submitted as a single request to a block device. If enough sectors =
-remain,
-> > @@ -366,6 +381,9 @@ struct bio *__bio_split_to_limits(struct bio *bio,
-> >       case REQ_OP_WRITE_ZEROES:
-> >               split =3D bio_split_write_zeroes(bio, lim, nr_segs, bs);
-> >               break;
-> > +     case REQ_OP_PROVISION:
-> > +             split =3D bio_split_provision(bio, lim, nr_segs, bs);
-> > +             break;
-> >       default:
-> >               split =3D bio_split_rw(bio, lim, nr_segs, bs,
-> >                               get_max_io_size(bio, lim) << SECTOR_SHIFT=
-);
-> > diff --git a/block/blk-settings.c b/block/blk-settings.c
-> > index 896b4654ab00..d303e6614c36 100644
-> > --- a/block/blk-settings.c
-> > +++ b/block/blk-settings.c
-> > @@ -59,6 +59,7 @@ void blk_set_default_limits(struct queue_limits *lim)
-> >       lim->zoned =3D BLK_ZONED_NONE;
-> >       lim->zone_write_granularity =3D 0;
-> >       lim->dma_alignment =3D 511;
-> > +     lim->max_provision_sectors =3D 0;
-> >  }
-> >
-> >  /**
-> > @@ -82,6 +83,7 @@ void blk_set_stacking_limits(struct queue_limits *lim=
-)
-> >       lim->max_dev_sectors =3D UINT_MAX;
-> >       lim->max_write_zeroes_sectors =3D UINT_MAX;
-> >       lim->max_zone_append_sectors =3D UINT_MAX;
-> > +     lim->max_provision_sectors =3D UINT_MAX;
-> >  }
-> >  EXPORT_SYMBOL(blk_set_stacking_limits);
-> >
-> > @@ -208,6 +210,20 @@ void blk_queue_max_write_zeroes_sectors(struct req=
-uest_queue *q,
-> >  }
-> >  EXPORT_SYMBOL(blk_queue_max_write_zeroes_sectors);
-> >
-> > +/**
-> > + * blk_queue_max_provision_sectors - set max sectors for a single prov=
-ision
-> > + *
-> > + * @q:  the request queue for the device
-> > + * @max_provision_sectors: maximum number of sectors to provision per =
-command
-> > + **/
-> > +
-> > +void blk_queue_max_provision_sectors(struct request_queue *q,
-> > +             unsigned int max_provision_sectors)
-> > +{
-> > +     q->limits.max_provision_sectors =3D max_provision_sectors;
-> > +}
-> > +EXPORT_SYMBOL(blk_queue_max_provision_sectors);
-> > +
-> >  /**
-> >   * blk_queue_max_zone_append_sectors - set max sectors for a single zo=
-ne append
-> >   * @q:  the request queue for the device
-> > @@ -578,6 +594,9 @@ int blk_stack_limits(struct queue_limits *t, struct=
- queue_limits *b,
-> >       t->max_segment_size =3D min_not_zero(t->max_segment_size,
-> >                                          b->max_segment_size);
-> >
-> > +     t->max_provision_sectors =3D min_not_zero(t->max_provision_sector=
-s,
-> > +                                             b->max_provision_sectors)=
-;
-> > +
-> >       t->misaligned |=3D b->misaligned;
-> >
-> >       alignment =3D queue_limit_alignment_offset(b, start);
-> > diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> > index f1fce1c7fa44..0a3165211c66 100644
-> > --- a/block/blk-sysfs.c
-> > +++ b/block/blk-sysfs.c
-> > @@ -213,6 +213,13 @@ static ssize_t queue_discard_zeroes_data_show(stru=
-ct request_queue *q, char *pag
-> >       return queue_var_show(0, page);
-> >  }
-> >
-> > +static ssize_t queue_provision_max_show(struct request_queue *q,
-> > +             char *page)
-> > +{
-> > +     return sprintf(page, "%llu\n",
-> > +             (unsigned long long)q->limits.max_provision_sectors << 9)=
-;
-> > +}
-> > +
-> >  static ssize_t queue_write_same_max_show(struct request_queue *q, char=
- *page)
-> >  {
-> >       return queue_var_show(0, page);
-> > @@ -604,6 +611,7 @@ QUEUE_RO_ENTRY(queue_discard_max_hw, "discard_max_h=
-w_bytes");
-> >  QUEUE_RW_ENTRY(queue_discard_max, "discard_max_bytes");
-> >  QUEUE_RO_ENTRY(queue_discard_zeroes_data, "discard_zeroes_data");
-> >
-> > +QUEUE_RO_ENTRY(queue_provision_max, "provision_max_bytes");
-> >  QUEUE_RO_ENTRY(queue_write_same_max, "write_same_max_bytes");
-> >  QUEUE_RO_ENTRY(queue_write_zeroes_max, "write_zeroes_max_bytes");
-> >  QUEUE_RO_ENTRY(queue_zone_append_max, "zone_append_max_bytes");
-> > @@ -661,6 +669,7 @@ static struct attribute *queue_attrs[] =3D {
-> >       &queue_discard_max_entry.attr,
-> >       &queue_discard_max_hw_entry.attr,
-> >       &queue_discard_zeroes_data_entry.attr,
-> > +     &queue_provision_max_entry.attr,
-> >       &queue_write_same_max_entry.attr,
-> >       &queue_write_zeroes_max_entry.attr,
-> >       &queue_zone_append_max_entry.attr,
-> > diff --git a/block/bounce.c b/block/bounce.c
-> > index 7cfcb242f9a1..ab9d8723ae64 100644
-> > --- a/block/bounce.c
-> > +++ b/block/bounce.c
-> > @@ -176,6 +176,7 @@ static struct bio *bounce_clone_bio(struct bio *bio=
-_src)
-> >       case REQ_OP_DISCARD:
-> >       case REQ_OP_SECURE_ERASE:
-> >       case REQ_OP_WRITE_ZEROES:
-> > +     case REQ_OP_PROVISION:
-> >               break;
-> >       default:
-> >               bio_for_each_segment(bv, bio_src, iter)
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 4c70fdc546e7..be2e41f160bf 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -613,7 +613,8 @@ static ssize_t blkdev_read_iter(struct kiocb *iocb,=
- struct iov_iter *to)
-> >
-> >  #define      BLKDEV_FALLOC_FL_SUPPORTED                               =
-       \
-> >               (FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |           \
-> > -              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE)
-> > +              FALLOC_FL_ZERO_RANGE | FALLOC_FL_NO_HIDE_STALE |       \
-> > +              FALLOC_FL_UNSHARE_RANGE)
-> >
-> >  static long blkdev_fallocate(struct file *file, int mode, loff_t start=
-,
-> >                            loff_t len)
-> > @@ -653,6 +654,13 @@ static long blkdev_fallocate(struct file *file, in=
-t mode, loff_t start,
-> >        * de-allocate mode calls to fallocate().
-> >        */
-> >       switch (mode) {
-> > +     case 0:
-> > +     case FALLOC_FL_UNSHARE_RANGE:
-> > +     case FALLOC_FL_KEEP_SIZE:
-> > +     case FALLOC_FL_UNSHARE_RANGE | FALLOC_FL_KEEP_SIZE:
-> > +             error =3D blkdev_issue_provision(bdev, start >> SECTOR_SH=
-IFT,
-> > +                                            len >> SECTOR_SHIFT, GFP_K=
-ERNEL);
-> > +             break;
-> >       case FALLOC_FL_ZERO_RANGE:
-> >       case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
-> >               error =3D truncate_bdev_range(bdev, file->f_mode, start, =
-end);
-> > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > index d766be7152e1..9820b3b039f2 100644
-> > --- a/include/linux/bio.h
-> > +++ b/include/linux/bio.h
-> > @@ -57,7 +57,8 @@ static inline bool bio_has_data(struct bio *bio)
-> >           bio->bi_iter.bi_size &&
-> >           bio_op(bio) !=3D REQ_OP_DISCARD &&
-> >           bio_op(bio) !=3D REQ_OP_SECURE_ERASE &&
-> > -         bio_op(bio) !=3D REQ_OP_WRITE_ZEROES)
-> > +         bio_op(bio) !=3D REQ_OP_WRITE_ZEROES &&
-> > +         bio_op(bio) !=3D REQ_OP_PROVISION)
-> >               return true;
-> >
-> >       return false;
-> > @@ -67,7 +68,8 @@ static inline bool bio_no_advance_iter(const struct b=
-io *bio)
-> >  {
-> >       return bio_op(bio) =3D=3D REQ_OP_DISCARD ||
-> >              bio_op(bio) =3D=3D REQ_OP_SECURE_ERASE ||
-> > -            bio_op(bio) =3D=3D REQ_OP_WRITE_ZEROES;
-> > +            bio_op(bio) =3D=3D REQ_OP_WRITE_ZEROES ||
-> > +            bio_op(bio) =3D=3D REQ_OP_PROVISION;
-> >  }
-> >
-> >  static inline void *bio_data(struct bio *bio)
-> > diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> > index 99be590f952f..27bdf88f541c 100644
-> > --- a/include/linux/blk_types.h
-> > +++ b/include/linux/blk_types.h
-> > @@ -385,7 +385,10 @@ enum req_op {
-> >       REQ_OP_DRV_IN           =3D (__force blk_opf_t)34,
-> >       REQ_OP_DRV_OUT          =3D (__force blk_opf_t)35,
-> >
-> > -     REQ_OP_LAST             =3D (__force blk_opf_t)36,
-> > +     /* request device to provision block */
-> > +     REQ_OP_PROVISION        =3D (__force blk_opf_t)37,
-> > +
-> > +     REQ_OP_LAST             =3D (__force blk_opf_t)38,
-> >  };
-> >
-> >  enum req_flag_bits {
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index 941304f17492..239e2f418b6e 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -303,6 +303,7 @@ struct queue_limits {
-> >       unsigned int            discard_granularity;
-> >       unsigned int            discard_alignment;
-> >       unsigned int            zone_write_granularity;
-> > +     unsigned int            max_provision_sectors;
-> >
-> >       unsigned short          max_segments;
-> >       unsigned short          max_integrity_segments;
-> > @@ -921,6 +922,8 @@ extern void blk_queue_max_discard_sectors(struct re=
-quest_queue *q,
-> >               unsigned int max_discard_sectors);
-> >  extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q=
-,
-> >               unsigned int max_write_same_sectors);
-> > +extern void blk_queue_max_provision_sectors(struct request_queue *q,
-> > +             unsigned int max_provision_sectors);
-> >  extern void blk_queue_logical_block_size(struct request_queue *, unsig=
-ned int);
-> >  extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
-> >               unsigned int max_zone_append_sectors);
-> > @@ -1060,6 +1063,9 @@ int __blkdev_issue_discard(struct block_device *b=
-dev, sector_t sector,
-> >  int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sect=
-or,
-> >               sector_t nr_sects, gfp_t gfp);
-> >
-> > +extern int blkdev_issue_provision(struct block_device *bdev, sector_t =
-sector,
-> > +             sector_t nr_sects, gfp_t gfp_mask);
-> > +
-> >  #define BLKDEV_ZERO_NOUNMAP  (1 << 0)  /* do not free blocks */
-> >  #define BLKDEV_ZERO_NOFALLBACK       (1 << 1)  /* don't write explicit=
- zeroes */
-> >
-> > @@ -1139,6 +1145,11 @@ static inline unsigned short queue_max_discard_s=
-egments(const struct request_que
-> >       return q->limits.max_discard_segments;
-> >  }
-> >
-> > +static inline unsigned short queue_max_provision_sectors(const struct =
-request_queue *q)
-> > +{
-> > +     return q->limits.max_provision_sectors;
-> > +}
-> > +
-> >  static inline unsigned int queue_max_segment_size(const struct request=
-_queue *q)
-> >  {
-> >       return q->limits.max_segment_size;
-> > @@ -1281,6 +1292,11 @@ static inline bool bdev_nowait(struct block_devi=
-ce *bdev)
-> >       return test_bit(QUEUE_FLAG_NOWAIT, &bdev_get_queue(bdev)->queue_f=
-lags);
-> >  }
-> >
-> > +static inline unsigned int bdev_max_provision_sectors(struct block_dev=
-ice *bdev)
-> > +{
-> > +     return bdev_get_queue(bdev)->limits.max_provision_sectors;
-> > +}
-> > +
-> >  static inline enum blk_zoned_model bdev_zoned_model(struct block_devic=
-e *bdev)
-> >  {
-> >       return blk_queue_zoned_model(bdev_get_queue(bdev));
-> > --
-> > 2.40.1.521.gf1e218fcd8-goog
-> >
+jbd2_log_do_checkpoint() //transaction X
+ //buffer A is dirty and not belones to any transaction
+ __buffer_relink_io() //move it to the IO list
+ __flush_batch()
+  write_dirty_buffer()
+                             do_get_write_access()
+                             clear_buffer_dirty
+                             __jbd2_journal_file_buffer()
+                             //add buffer A to a new transaction Y
+   lock_buffer(bh)
+   //doesn't write out
+ __jbd2_journal_remove_checkpoint()
+ //finish checkpoint except buffer A
+ //filesystem corrupt if the new transaction Y isn't fully write out.
+
+Due to the t_checkpoint_list walking loop in jbd2_log_do_checkpoint()
+have already handles waiting for buffers under IO and re-added new
+transaction to complete commit, and it also removing cleaned buffers,
+this makes sure the list will eventually get empty. So it's fine to
+leave buffers on the t_checkpoint_list while flushing out and completely
+stop using the t_checkpoint_io_list.
+
+Cc: stable@vger.kernel.org
+Suggested-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+v2->v3:
+ - Fix a NULL pointer issue caused by an !T_FINISHED checkpoint
+   transaction with empty checkpoint list.
+v1->v2:
+ - Leave flushing checkpointing buffers on the t_checkpoint_list and
+   stop using t_checkpoint_io_list.
+
+ fs/jbd2/checkpoint.c | 102 ++++++++++++-------------------------------
+ 1 file changed, 29 insertions(+), 73 deletions(-)
+
+diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+index 51bd38da21cd..25e3c20eb19f 100644
+--- a/fs/jbd2/checkpoint.c
++++ b/fs/jbd2/checkpoint.c
+@@ -57,28 +57,6 @@ static inline void __buffer_unlink(struct journal_head *jh)
+ 	}
+ }
+ 
+-/*
+- * Move a buffer from the checkpoint list to the checkpoint io list
+- *
+- * Called with j_list_lock held
+- */
+-static inline void __buffer_relink_io(struct journal_head *jh)
+-{
+-	transaction_t *transaction = jh->b_cp_transaction;
+-
+-	__buffer_unlink_first(jh);
+-
+-	if (!transaction->t_checkpoint_io_list) {
+-		jh->b_cpnext = jh->b_cpprev = jh;
+-	} else {
+-		jh->b_cpnext = transaction->t_checkpoint_io_list;
+-		jh->b_cpprev = transaction->t_checkpoint_io_list->b_cpprev;
+-		jh->b_cpprev->b_cpnext = jh;
+-		jh->b_cpnext->b_cpprev = jh;
+-	}
+-	transaction->t_checkpoint_io_list = jh;
+-}
+-
+ /*
+  * Check a checkpoint buffer could be release or not.
+  *
+@@ -183,6 +161,7 @@ __flush_batch(journal_t *journal, int *batch_count)
+ 		struct buffer_head *bh = journal->j_chkpt_bhs[i];
+ 		BUFFER_TRACE(bh, "brelse");
+ 		__brelse(bh);
++		journal->j_chkpt_bhs[i] = NULL;
+ 	}
+ 	*batch_count = 0;
+ }
+@@ -242,6 +221,11 @@ int jbd2_log_do_checkpoint(journal_t *journal)
+ 		jh = transaction->t_checkpoint_list;
+ 		bh = jh2bh(jh);
+ 
++		/*
++		 * The buffer may be writing back, or flushing out in the
++		 * last couple of cycles, or re-adding into a new transaction,
++		 * need to check it again until it's unlocked.
++		 */
+ 		if (buffer_locked(bh)) {
+ 			get_bh(bh);
+ 			spin_unlock(&journal->j_list_lock);
+@@ -287,28 +271,32 @@ int jbd2_log_do_checkpoint(journal_t *journal)
+ 		}
+ 		if (!buffer_dirty(bh)) {
+ 			BUFFER_TRACE(bh, "remove from checkpoint");
+-			if (__jbd2_journal_remove_checkpoint(jh))
+-				/* The transaction was released; we're done */
++			/*
++			 * If the transaction was released or the checkpoint
++			 * list was empty, we're done.
++			 */
++			if (__jbd2_journal_remove_checkpoint(jh) ||
++			    !transaction->t_checkpoint_list)
+ 				goto out;
+-			continue;
++		} else {
++			/*
++			 * We are about to write the buffer, it could be
++			 * raced by some other transaction shrink or buffer
++			 * re-log logic once we release the j_list_lock,
++			 * leave it on the checkpoint list and check status
++			 * again to make sure it's clean.
++			 */
++			BUFFER_TRACE(bh, "queue");
++			get_bh(bh);
++			J_ASSERT_BH(bh, !buffer_jwrite(bh));
++			journal->j_chkpt_bhs[batch_count++] = bh;
++			transaction->t_chp_stats.cs_written++;
++			transaction->t_checkpoint_list = jh->b_cpnext;
+ 		}
+-		/*
+-		 * Important: we are about to write the buffer, and
+-		 * possibly block, while still holding the journal
+-		 * lock.  We cannot afford to let the transaction
+-		 * logic start messing around with this buffer before
+-		 * we write it to disk, as that would break
+-		 * recoverability.
+-		 */
+-		BUFFER_TRACE(bh, "queue");
+-		get_bh(bh);
+-		J_ASSERT_BH(bh, !buffer_jwrite(bh));
+-		journal->j_chkpt_bhs[batch_count++] = bh;
+-		__buffer_relink_io(jh);
+-		transaction->t_chp_stats.cs_written++;
++
+ 		if ((batch_count == JBD2_NR_BATCH) ||
+-		    need_resched() ||
+-		    spin_needbreak(&journal->j_list_lock))
++		    need_resched() || spin_needbreak(&journal->j_list_lock) ||
++		    jh2bh(transaction->t_checkpoint_list) == journal->j_chkpt_bhs[0])
+ 			goto unlock_and_flush;
+ 	}
+ 
+@@ -322,38 +310,6 @@ int jbd2_log_do_checkpoint(journal_t *journal)
+ 			goto restart;
+ 	}
+ 
+-	/*
+-	 * Now we issued all of the transaction's buffers, let's deal
+-	 * with the buffers that are out for I/O.
+-	 */
+-restart2:
+-	/* Did somebody clean up the transaction in the meanwhile? */
+-	if (journal->j_checkpoint_transactions != transaction ||
+-	    transaction->t_tid != this_tid)
+-		goto out;
+-
+-	while (transaction->t_checkpoint_io_list) {
+-		jh = transaction->t_checkpoint_io_list;
+-		bh = jh2bh(jh);
+-		if (buffer_locked(bh)) {
+-			get_bh(bh);
+-			spin_unlock(&journal->j_list_lock);
+-			wait_on_buffer(bh);
+-			/* the journal_head may have gone by now */
+-			BUFFER_TRACE(bh, "brelse");
+-			__brelse(bh);
+-			spin_lock(&journal->j_list_lock);
+-			goto restart2;
+-		}
+-
+-		/*
+-		 * Now in whatever state the buffer currently is, we
+-		 * know that it has been written out and so we can
+-		 * drop it from the list
+-		 */
+-		if (__jbd2_journal_remove_checkpoint(jh))
+-			break;
+-	}
+ out:
+ 	spin_unlock(&journal->j_list_lock);
+ 	result = jbd2_cleanup_journal_tail(journal);
+-- 
+2.31.1
+
