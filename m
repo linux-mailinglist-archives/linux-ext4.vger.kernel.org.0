@@ -2,49 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81BB708BA1
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 00:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087C5708BAB
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 00:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbjERWdu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 18 May 2023 18:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S231145AbjERWeH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 18 May 2023 18:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbjERWdt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 May 2023 18:33:49 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD555E6B
-        for <linux-ext4@vger.kernel.org>; Thu, 18 May 2023 15:33:46 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ae52ce3205so17748545ad.3
-        for <linux-ext4@vger.kernel.org>; Thu, 18 May 2023 15:33:46 -0700 (PDT)
+        with ESMTP id S229605AbjERWeA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 18 May 2023 18:34:00 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CAE10D2
+        for <linux-ext4@vger.kernel.org>; Thu, 18 May 2023 15:33:53 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2275756a12.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 May 2023 15:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1684449226; x=1687041226;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPcvilHxRv5tEGKC3PHnSqwH0oZyyl+v+Zg8TUGpbJw=;
-        b=eLivEVS3iKurVg9hrVHfytK1IGa2bJfL0gEwTz9neJ/E/Tbjm2ePYOr1r8ikGFkSZk
-         YMULVD+goAY9Bam6P9se2p9H7xW/8TTt55lrGMtIFtvsxBL3q0fKXHHnLsj2bNeXzOGm
-         9fEFpzBwz5R7mn7DZBMeI0YdaH0QyvfQI1m8k=
+        d=chromium.org; s=google; t=1684449233; x=1687041233;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=53DvRMWPmvqpZEh7bhBmmthp7JIKrTPR0tF/ow6Evi8=;
+        b=XrJEv8xVtxY89NI5Ntuf0LOI+b4Nx1Kr8BmMTPSnZecgX7NNjFHZac3KR54OYRBMiH
+         kNGM5K36cynsBwZ0sCfC5uwtxRboPfqHwnso9NQTpWDHvQGMFsGd4R88qZvKJjvErFIw
+         6UScGIYmSn0LceKda7yWHQ/jMK7A7nF+B10E0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684449226; x=1687041226;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WPcvilHxRv5tEGKC3PHnSqwH0oZyyl+v+Zg8TUGpbJw=;
-        b=BE/Madj/5Y+slJnzythek9tkAMI4Qbsr/3SNf4SpcWHfSU54CKDZMqCWv06xcXWmd0
-         qRQh9zyoGFjczCibo0L4K+CuYPXtvvnJnhnaurJ/cfnI/iw/lOJ5c89+x7bIGuimG+Ej
-         sA2CwQMk5mSlKFqFVBU1wBKONhCVnVZegUqChvZqqWKJcoGDwI/+XUHXJ2IhyfRufvgH
-         /RNanASKJ/1C6xFNgITgTXYn+JejIsATXf7yB568e3sUj5m68dFoZbUX0QO04BjKDzfz
-         4KocFcbEprCxnE39D9HU+EmJWSD+oZPTsjWk7AQiLvPvPmkJrHZiYMPPA9ucenbEzvB8
-         +fyA==
-X-Gm-Message-State: AC+VfDxKrCWcB+7IoBarscFOUbH8OzPa3MU+jp6UtiKZt9baoQNfZ2GI
-        Fsk+0pDS1lbOOeCE3lMhpLj1Qw==
-X-Google-Smtp-Source: ACHHUZ7srcWgRWNjK1oBR93TOXpdFS6fhRHeem/s6f029tvJAmcsLM8dRi+XaWwzfkjepb180UvfcA==
-X-Received: by 2002:a17:902:9b94:b0:1ae:153f:4cb with SMTP id y20-20020a1709029b9400b001ae153f04cbmr560712plp.49.1684449226192;
-        Thu, 18 May 2023 15:33:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684449233; x=1687041233;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=53DvRMWPmvqpZEh7bhBmmthp7JIKrTPR0tF/ow6Evi8=;
+        b=fDNF1VFxvLzpv6q7QSLAs/Pdr6d4zvhU3PaeyM9OQtaDHbRzkfLzVHm/yfK5LM9RQa
+         YNMtBvbJnMMFkDu2fh+X4tfWzmYFpn+VvHS581PQsGn95u8WWBpSk1xNnOUzp7Ko844L
+         86EiW3Gl39Oo6Iat1GmUOI6UxpS+IMpQ1Ai56LxhktsO9D0TeEzmMBOzi+P9GB/Lh8qH
+         4Nhl9aLRH24YcZTDJDlpEe6/PX0TZiAukPL+Sm8zojYseFHfYOVAebt5qDmtb4S239mS
+         /0orXfFLge2tUAhbtKi9JxL2LjZ87avum1SseE3MvleUnv4vtEq+YmD5eDXgUUiuLIJB
+         ur6A==
+X-Gm-Message-State: AC+VfDyVnlH0/aOcTsB+mI9L5erJm8Y8ha0Y4CtXbjA053gdKQR/J/ss
+        DiPKQRBkwL/DlOMsYWluFfADyQ==
+X-Google-Smtp-Source: ACHHUZ65R8Fbu4K326Zp3Eap82ir7Xy3Cqihm8qDqoy/CWU1eLDIaCKa9mLY98fAoT9Yt20Im9TYWg==
+X-Received: by 2002:a17:902:e541:b0:1a6:6f3f:bc3 with SMTP id n1-20020a170902e54100b001a66f3f0bc3mr596683plf.57.1684449232977;
+        Thu, 18 May 2023 15:33:52 -0700 (PDT)
 Received: from sarthakkukreti-glaptop.corp.google.com ([100.107.238.113])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902b10400b001aafb802efbsm1996502plr.12.2023.05.18.15.33.44
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902b10400b001aafb802efbsm1996502plr.12.2023.05.18.15.33.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 May 2023 15:33:45 -0700 (PDT)
+        Thu, 18 May 2023 15:33:52 -0700 (PDT)
 From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
 To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -60,11 +61,13 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: [PATCH v7 0/5] Introduce provisioning primitives
-Date:   Thu, 18 May 2023 15:33:21 -0700
-Message-ID: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+        "Darrick J. Wong" <djwong@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH v7 1/5] block: Don't invalidate pagecache for invalid falloc modes
+Date:   Thu, 18 May 2023 15:33:22 -0700
+Message-ID: <20230518223326.18744-2-sarthakkukreti@chromium.org>
 X-Mailer: git-send-email 2.40.1.698.g37aff9b760-goog
+In-Reply-To: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -77,48 +80,64 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Only call truncate_bdev_range() if the fallocate mode is
+supported. This fixes a bug where data in the pagecache
+could be invalidated if the fallocate() was called on the
+block device with an invalid mode.
 
-This is version 7 of the patch series to introduce block-level provisioning primitives [1]. The current series is rebased on: (2d1bcbc6cd70 Merge tag 'probes-fixes-v6.4-rc1'...).
+Fixes: 25f4c41415e5 ("block: implement (some of) fallocate for block devices")
+Cc: stable@vger.kernel.org
+Reported-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+---
+ block/fops.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-Changelog:
-
-v7:
-- Fold up lo_req_provision() into lo_req_fallocate().
-- Propagate error on failure to provision from the blkdev_issue_provision().
-- Set 'max_provision_granularity' in thin_ctr.
-- Fix positioning of 'max_provision_sectors' in pool_ctr.
-- Add provision bios into process_prepared_mapping() to prevent the bio from being reissued to the underlying thinpool.
-
-[1] https://lore.kernel.org/lkml/20220915164826.1396245-1-sarthakkukreti@google.com/
-
-Sarthak Kukreti (5):
-  block: Don't invalidate pagecache for invalid falloc modes
-  block: Introduce provisioning primitives
-  dm: Add block provisioning support
-  dm-thin: Add REQ_OP_PROVISION support
-  loop: Add support for provision requests
-
- block/blk-core.c              |  5 +++
- block/blk-lib.c               | 51 ++++++++++++++++++++++++
- block/blk-merge.c             | 18 +++++++++
- block/blk-settings.c          | 19 +++++++++
- block/blk-sysfs.c             |  9 +++++
- block/bounce.c                |  1 +
- block/fops.c                  | 31 ++++++++++++---
- drivers/block/loop.c          | 34 ++++++++++++++--
- drivers/md/dm-crypt.c         |  4 +-
- drivers/md/dm-linear.c        |  1 +
- drivers/md/dm-snap.c          |  7 ++++
- drivers/md/dm-table.c         | 23 +++++++++++
- drivers/md/dm-thin.c          | 74 +++++++++++++++++++++++++++++++++--
- drivers/md/dm.c               |  6 +++
- include/linux/bio.h           |  6 ++-
- include/linux/blk_types.h     |  5 ++-
- include/linux/blkdev.h        | 16 ++++++++
- include/linux/device-mapper.h | 17 ++++++++
- 18 files changed, 310 insertions(+), 17 deletions(-)
-
+diff --git a/block/fops.c b/block/fops.c
+index d2e6be4e3d1c..4c70fdc546e7 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -648,24 +648,35 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 
+ 	filemap_invalidate_lock(inode->i_mapping);
+ 
+-	/* Invalidate the page cache, including dirty pages. */
+-	error = truncate_bdev_range(bdev, file->f_mode, start, end);
+-	if (error)
+-		goto fail;
+-
++	/*
++	 * Invalidate the page cache, including dirty pages, for valid
++	 * de-allocate mode calls to fallocate().
++	 */
+ 	switch (mode) {
+ 	case FALLOC_FL_ZERO_RANGE:
+ 	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
++		error = truncate_bdev_range(bdev, file->f_mode, start, end);
++		if (error)
++			goto fail;
++
+ 		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
+ 					     len >> SECTOR_SHIFT, GFP_KERNEL,
+ 					     BLKDEV_ZERO_NOUNMAP);
+ 		break;
+ 	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE:
++		error = truncate_bdev_range(bdev, file->f_mode, start, end);
++		if (error)
++			goto fail;
++
+ 		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
+ 					     len >> SECTOR_SHIFT, GFP_KERNEL,
+ 					     BLKDEV_ZERO_NOFALLBACK);
+ 		break;
+ 	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE | FALLOC_FL_NO_HIDE_STALE:
++		error = truncate_bdev_range(bdev, file->f_mode, start, end);
++		if (error)
++			goto fail;
++
+ 		error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+ 					     len >> SECTOR_SHIFT, GFP_KERNEL);
+ 		break;
 -- 
 2.40.1.698.g37aff9b760-goog
 
