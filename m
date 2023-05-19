@@ -2,137 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F4B709B0E
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1228A709B41
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 17:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjESPRb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 May 2023 11:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S232321AbjESPYA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 May 2023 11:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjESPRa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 11:17:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D000CF;
-        Fri, 19 May 2023 08:17:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDD9C61D3F;
-        Fri, 19 May 2023 15:17:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 510EBC433D2;
-        Fri, 19 May 2023 15:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684509448;
-        bh=47KTQ+HxzwYC6TsbUYOQ6aOmK4jjWb0xI6ebbOh8XlY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eBoUzUHnDSgsYrzw4so+d/v46+i/P/j4IUxwDsjTYBdtazJ9gFSlAlsy35dOA5dAB
-         98fZ0hSNCK8E3Ff/VyQXKQQ3x9hFwiD2w4hM2rYENyWeXPhVkugepOyzLnDFBB8/4H
-         51nzDK1yxzVdxXU3YJHR5VQXEaPxtVRp5EvpcQmfKDCue9AB+ShL0CvP1iDdSpglh6
-         MWmF7J8rXBCAZpQQkpn7BgBq+HJMv7Fp//dscLwf5L6VeL4ftPDmRESHT3py5aPQBA
-         83lsfrl7iLOXfgQUZ201RO+WG5WlYpLgr3CrPJjOST6Yxp0lgO7nkcDAd11UtSuqfi
-         qklM9iSrUgaOQ==
-Date:   Fri, 19 May 2023 08:17:27 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+        with ESMTP id S232326AbjESPX5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 11:23:57 -0400
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C789313E
+        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 08:23:14 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-3f38711680dso16970641cf.1
+        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 08:23:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684509794; x=1687101794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KQivtLqNJRG8EpR/lUW7uy3izlo40t0jANCAkNQxEPE=;
+        b=ZzfPSfcw/gsxvthY0Treoth/Uwz7DxHjHI3oPcNVGUiz4ULsHr02p0WYPgE07V6IL+
+         esX4gPetJ4AxOe6txqjcwiF9gL1C8RAbnqKkeOEuQuSjVSKE8c6v28vlt0D44CFC1U4Z
+         n0omc7EYS4IquI75rLsTZh1t+E/9/ErZVGPrnRo7pGVq+tQBZWeWMK3JyQxf6jfVcf71
+         DRPcEFquiPo2wMHkiZl21UR+IU/uug+rDfUhAVr7+P4deQXWO2cgTZCkehnIxZc7Ki+5
+         6OCTnn7i4dvE9pVPI8aBxuUEbAqb4RMYYPD0SX1/N92HjZq6x2i240nleUwqBdfpOpwI
+         2xFg==
+X-Gm-Message-State: AC+VfDz2N/qii9j+C/pd8wAaLLO5WnUCGX2h34oPQZSTYfd60BlhPxU7
+        A4YhtCip3KxZJA4SeOxIiZpC
+X-Google-Smtp-Source: ACHHUZ5KZDF2WuE+iLnjFEJ4qmC2nD5mUZp17EvZzOJDdFPHVvmlXVoj6ey88vsNHzWaS5Y6xHhQeQ==
+X-Received: by 2002:a05:622a:192:b0:3f5:92b:eff9 with SMTP id s18-20020a05622a019200b003f5092beff9mr3992630qtw.46.1684509793876;
+        Fri, 19 May 2023 08:23:13 -0700 (PDT)
+Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
+        by smtp.gmail.com with ESMTPSA id b28-20020a05620a127c00b0075941df3365sm1164925qkl.52.2023.05.19.08.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 May 2023 08:23:13 -0700 (PDT)
+Date:   Fri, 19 May 2023 11:23:12 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        Joe Thornber <ejt@redhat.com>
 Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
         Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
         Bart Van Assche <bvanassche@google.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v7 1/5] block: Don't invalidate pagecache for invalid
- falloc modes
-Message-ID: <20230519151727.GD11642@frogsfrogsfrogs>
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 4/5] dm-thin: Add REQ_OP_PROVISION support
+Message-ID: <ZGeUYESOQsZkOQ1Q@redhat.com>
 References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <20230518223326.18744-2-sarthakkukreti@chromium.org>
+ <20230518223326.18744-5-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230518223326.18744-2-sarthakkukreti@chromium.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230518223326.18744-5-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 18, 2023 at 03:33:22PM -0700, Sarthak Kukreti wrote:
-> Only call truncate_bdev_range() if the fallocate mode is
-> supported. This fixes a bug where data in the pagecache
-> could be invalidated if the fallocate() was called on the
-> block device with an invalid mode.
+On Thu, May 18 2023 at  6:33P -0400,
+Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
+
+> dm-thinpool uses the provision request to provision
+> blocks for a dm-thin device. dm-thinpool currently does not
+> pass through REQ_OP_PROVISION to underlying devices.
 > 
-> Fixes: 25f4c41415e5 ("block: implement (some of) fallocate for block devices")
-> Cc: stable@vger.kernel.org
-> Reported-by: Darrick J. Wong <djwong@kernel.org>
+> For shared blocks, provision requests will break sharing and copy the
+> contents of the entire block. Additionally, if 'skip_block_zeroing'
+> is not set, dm-thin will opt to zero out the entire range as a part
+> of provisioning.
+> 
 > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-
-Thanks for fixing this,
-
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
 > ---
->  block/fops.c | 21 ++++++++++++++++-----
->  1 file changed, 16 insertions(+), 5 deletions(-)
+>  drivers/md/dm-thin.c | 74 +++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 70 insertions(+), 4 deletions(-)
 > 
-> diff --git a/block/fops.c b/block/fops.c
-> index d2e6be4e3d1c..4c70fdc546e7 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -648,24 +648,35 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+> diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
+> index 2b13c949bd72..f1b68b558cf0 100644
+> --- a/drivers/md/dm-thin.c
+> +++ b/drivers/md/dm-thin.c
+> @@ -1245,8 +1247,8 @@ static int io_overlaps_block(struct pool *pool, struct bio *bio)
 >  
->  	filemap_invalidate_lock(inode->i_mapping);
+>  static int io_overwrites_block(struct pool *pool, struct bio *bio)
+>  {
+> -	return (bio_data_dir(bio) == WRITE) &&
+> -		io_overlaps_block(pool, bio);
+> +	return (bio_data_dir(bio) == WRITE) && io_overlaps_block(pool, bio) &&
+> +	       bio_op(bio) != REQ_OP_PROVISION;
+>  }
 >  
-> -	/* Invalidate the page cache, including dirty pages. */
-> -	error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> -	if (error)
-> -		goto fail;
-> -
-> +	/*
-> +	 * Invalidate the page cache, including dirty pages, for valid
-> +	 * de-allocate mode calls to fallocate().
-> +	 */
->  	switch (mode) {
->  	case FALLOC_FL_ZERO_RANGE:
->  	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
-> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> +		if (error)
-> +			goto fail;
+>  static void save_and_set_endio(struct bio *bio, bio_end_io_t **save,
+> @@ -1394,6 +1396,9 @@ static void schedule_zero(struct thin_c *tc, dm_block_t virt_block,
+>  	m->data_block = data_block;
+>  	m->cell = cell;
+>  
+> +	if (bio && bio_op(bio) == REQ_OP_PROVISION)
+> +		m->bio = bio;
 > +
->  		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
->  					     len >> SECTOR_SHIFT, GFP_KERNEL,
->  					     BLKDEV_ZERO_NOUNMAP);
->  		break;
->  	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE:
-> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> +		if (error)
-> +			goto fail;
-> +
->  		error = blkdev_issue_zeroout(bdev, start >> SECTOR_SHIFT,
->  					     len >> SECTOR_SHIFT, GFP_KERNEL,
->  					     BLKDEV_ZERO_NOFALLBACK);
->  		break;
->  	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE | FALLOC_FL_NO_HIDE_STALE:
-> +		error = truncate_bdev_range(bdev, file->f_mode, start, end);
-> +		if (error)
-> +			goto fail;
-> +
->  		error = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
->  					     len >> SECTOR_SHIFT, GFP_KERNEL);
->  		break;
-> -- 
-> 2.40.1.698.g37aff9b760-goog
-> 
+>  	/*
+>  	 * If the whole block of data is being overwritten or we are not
+>  	 * zeroing pre-existing data, we can issue the bio immediately.
+
+This doesn't seem like the best way to address avoiding passdown of
+provision bios (relying on process_prepared_mapping's implementation
+that happens to do the right thing if m->bio set).  Doing so cascades
+into relying on complete_overwrite_bio() happening to _not_ actually
+being specific to "overwrite" bios.
+
+I don't have a better suggestion yet but will look closer.  Just think
+this needs to be formalized a bit more rather than it happening to
+"just work".
+
+Cc'ing Joe to see what he thinks too.  This is something we can clean
+up with a follow-on patch though, so not a show-stopper for this
+series.
+
+Mike
