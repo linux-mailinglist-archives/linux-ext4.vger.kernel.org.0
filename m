@@ -2,362 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3434709B6A
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 17:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3865870A326
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 01:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjESPgT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 May 2023 11:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S230266AbjESXHy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 May 2023 19:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjESPgS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 11:36:18 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A504D19F;
-        Fri, 19 May 2023 08:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684510576; x=1716046576;
-  h=date:from:to:cc:subject:message-id;
-  bh=wp0CdaCiW7lepUrAk8H3BgfyExL/v+FCGa6ZdMYSprg=;
-  b=ftvAzPxdDrBtAufpcGLL/wl5nXrWtskv5BCApIcldzHedCza+4HR0Fsv
-   op3zWQGD42XHjRs7ZsPtBKRMO5QDM+fmHlBQeqwNrRzj47a4SZjIvrDTl
-   hACCDftGmMmhHAsqZp8wUeLGsP64GMS8wzOWG/e5+ft+Ho47KBfVh4R1S
-   duFc5GT2p1f/HhGxOd8LThSJDPkToshlK6/WK9LHfySb+bPm8rRop7oM+
-   ndhlNG5svYNo44XTe/Pa1g2WIEA+fvCThok1+o9e8MLuXqhAgVGs/nc1p
-   e5Nlt2x5yQdkN0VTvfs4KAkx7RLmWa36UtwQgA8QWwKqfnDl1E30wC1A6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10715"; a="336995497"
-X-IronPort-AV: E=Sophos;i="6.00,177,1681196400"; 
-   d="scan'208";a="336995497"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2023 08:36:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10715"; a="814776549"
-X-IronPort-AV: E=Sophos;i="6.00,177,1681196400"; 
-   d="scan'208";a="814776549"
-Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 19 May 2023 08:36:13 -0700
-Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q029M-000AuI-2J;
-        Fri, 19 May 2023 15:36:12 +0000
-Date:   Fri, 19 May 2023 23:35:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        amd-gfx@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-xfs@vger.kernel.org, netdev@vger.kernel.org
-Subject: [linux-next:master] BUILD SUCCESS WITH WARNING
- dbd91ef4e91c1ce3a24429f5fb3876b7a0306733
-Message-ID: <20230519153548.XTWhe%lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229528AbjESXHx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 19:07:53 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B05134
+        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 16:07:50 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-64d293746e0so2315248b3a.2
+        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 16:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1684537670; x=1687129670;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vej0HUXiqshmcvqs7VBZTGkCXU+JddJuVreKpbmYuhw=;
+        b=M7M+fUzZKYFhCed62ckEM75i49Kzi0Sy+mNCDiHsZpcNM/HQImrznTrkS4Wi9NL1Qt
+         OpBue7B/lTyS4Ky8m0UYNNuyU32olEvqU9kMDgIsurTQS74yymOzmc8h+RSkAmjSqxOP
+         woaJGiEwnE03YgfMS1q3jv3TV55P4eda89l5rEF9YibVhRMXrAoasmZaFgYrpCbUd+oE
+         XkNqBx9FFYqUpTZUSUyJJeWE0IiZORfli0QtnpbJ5rpT7PGgf7LZiQ+NCEMRM7WFfN1T
+         vkwBHodfbKEBqQNapAiloS/SU1gESn6ZDbM8KRw093WyP1wcSNUWGyK7A0I+ybuXSTVQ
+         2JuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684537670; x=1687129670;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vej0HUXiqshmcvqs7VBZTGkCXU+JddJuVreKpbmYuhw=;
+        b=GCIIyWF5US6ZRSLFAc1K+vtqSDl1KNp2OZX/rGLp/LagP/P0dAFa7Mj3Itn3tIvLqX
+         4mCumhV63/K2awT3tv7syarOWF1eMPWWkp18xlnYbwvu/2UQclxotCW0sB6sK2q1jXsz
+         E1R0xAdAVukJ0TvulHVE9WostGO91KKfhuR0QCF80dp/XKinUNnmh4eADQ5xVNVMSkO0
+         o3LPPRuggFKEfmUjPRTTDgwKU7dS+Xtr2c4LOH2g0pauKY+4ImKADBjSBLS+2FZMrJ+s
+         4FKhs88S5h18w2P/EWRcf0fbIOL85k8TGW6G/vyP3hQabrAlIMFDfJLj08ojnFfb82pG
+         RL5w==
+X-Gm-Message-State: AC+VfDxEMMoZBcg+DExkfOL1s7R0XqigbND0T7rTSztnscmDtk8VxMdx
+        52NusqMkvx1GB9mvzn5Eag1gCw==
+X-Google-Smtp-Source: ACHHUZ44Ml1ojpiPU8i/+mCvFac8UKDWss2kgW+R+G0QKFHgCdmutJq5p5DRKhkFYnyqqBTN1Dtx1w==
+X-Received: by 2002:a05:6a00:1896:b0:63b:854c:e0f6 with SMTP id x22-20020a056a00189600b0063b854ce0f6mr5344668pfh.21.1684537670148;
+        Fri, 19 May 2023 16:07:50 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
+        by smtp.gmail.com with ESMTPSA id i6-20020aa78d86000000b006414289ab69sm204704pfr.52.2023.05.19.16.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 May 2023 16:07:49 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q09CM-001WVR-2G;
+        Sat, 20 May 2023 09:07:46 +1000
+Date:   Sat, 20 May 2023 09:07:46 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <ZGb2Xi6O3i2pLam8@infradead.org>
+ <ZGeKm+jcBxzkMXQs@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZGeKm+jcBxzkMXQs@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: INFO setup_repo_specs: /db/releases/20230519164737/lkp-src/repo/*/linux-next
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: dbd91ef4e91c1ce3a24429f5fb3876b7a0306733  Add linux-next specific files for 20230519
+On Fri, May 19, 2023 at 10:41:31AM -0400, Mike Snitzer wrote:
+> On Fri, May 19 2023 at 12:09P -0400,
+> Christoph Hellwig <hch@infradead.org> wrote:
+> 
+> > FYI, I really don't think this primitive is a good idea.  In the
+> > concept of non-overwritable storage (NAND, SMR drives) the entire
+> > concept of a one-shoot 'provisioning' that will guarantee later writes
+> > are always possible is simply bogus.
+> 
+> Valid point for sure, such storage shouldn't advertise support (and
+> will return -EOPNOTSUPP).
+> 
+> But the primitive still has utility for other classes of storage.
 
-Warning reports:
+Yet the thing people are wanting to us filesystem developers to use
+this with is thinly provisioned storage that has snapshot
+capability. That, by definition, is non-overwritable storage. These
+are the use cases people are asking filesystes to gracefully handle
+and report errors when the sparse backing store runs out of space.
 
-https://lore.kernel.org/oe-kbuild-all/202304220118.NYuW8ip0-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202305132244.DwzBUcUd-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202305182345.LTMlWG84-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202305190358.IEfJNraU-lkp@intel.com
+e.g. journal writes after a snapshot is taken on a busy filesystem
+are always an overwrite and this requires more space in the storage
+device for the write to succeed. ENOSPC from the backing device for
+journal IO is a -fatal error-. Hence if REQ_PROVISION doesn't
+guarantee space for overwrites after snapshots, then it's not
+actually useful for solving the real world use cases we actually
+need device-level provisioning to solve.
 
-Warning: (recently discovered and may have been fixed)
+It is not viable for filesystems to have to reprovision space for
+in-place metadata overwrites after every snapshot - the filesystem
+may not even know a snapshot has been taken! And it's not feasible
+for filesystems to provision on demand before they modify metadata
+because we don't know what metadata is going to need to be modified
+before we start modifying metadata in transactions. If we get ENOSPC
+from provisioning in the middle of a dirty transcation, it's all
+over just the same as if we get ENOSPC during metadata writeback...
 
-drivers/base/regmap/regcache-maple.c:113:23: warning: 'lower_index' is used uninitialized [-Wuninitialized]
-drivers/base/regmap/regcache-maple.c:113:36: warning: 'lower_last' is used uninitialized [-Wuninitialized]
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:6396:21: warning: variable 'count' set but not used [-Wunused-but-set-variable]
-drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c:499:13: warning: variable 'j' set but not used [-Wunused-but-set-variable]
-drivers/net/arcnet/com20020.c:74:7: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+Hence what filesystems actually need is device provisioned space to
+be -always over-writable- without ENOSPC occurring.  Ideally, if we
+provision a range of the block device, the block device *must*
+guarantee all future writes to that LBA range succeeds. That
+guarantee needs to stand until we discard or unmap the LBA range,
+and for however many writes we do to that LBA range.
 
-Unverified Warning (likely false positive, please contact us if interested):
+e.g. If the device takes a snapshot, it needs to reprovision the
+potential COW ranges that overlap with the provisioned LBA range at
+snapshot time. e.g. by re-reserving the space from the backing pool
+for the provisioned space so if a COW occurs there is space
+guaranteed for it to succeed.  If there isn't space in the backing
+pool for the reprovisioning, then whatever operation that triggers
+the COW behaviour should fail with ENOSPC before doing anything
+else....
 
-fs/ext4/verity.c:316 ext4_get_verity_descriptor_location() error: uninitialized symbol 'desc_size_disk'.
-fs/xfs/scrub/fscounters.c:459 xchk_fscounters() warn: ignoring unreachable code.
-kernel/events/uprobes.c:478 uprobe_write_opcode() warn: passing zero to 'PTR_ERR'
+Software devices like dm-thin/snapshot should really only need to
+keep a persistent map of the provisioned space and refresh space
+reservations for used space within that map whenever something that
+triggers COW behaviour occurs. i.e. a snapshot needs to reset the
+provisioned ranges back to "all ranges are freshly provisioned"
+before the snapshot is started. If that space is not available in
+the backing pool, then the snapshot attempt gets ENOSPC....
 
-Warning ids grouped by kconfigs:
+That means filesystems only need to provision space for journals and
+fixed metadata at mkfs time, and they only need issue a
+REQ_PROVISION bio when they first allocate over-write in place
+metadata. We already have online discard and/or fstrim for releasing
+provisioned space via discards.
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- alpha-randconfig-r036-20230517
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- arc-allyesconfig
-|   |-- drivers-base-regmap-regcache-maple.c:warning:lower_index-is-used-uninitialized
-|   |-- drivers-base-regmap-regcache-maple.c:warning:lower_last-is-used-uninitialized
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- arc-vdk_hs38_defconfig
-|   |-- drivers-base-regmap-regcache-maple.c:warning:lower_index-is-used-uninitialized
-|   `-- drivers-base-regmap-regcache-maple.c:warning:lower_last-is-used-uninitialized
-|-- arm-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- arm64-randconfig-r015-20230517
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- i386-randconfig-m021
-|   |-- kernel-events-uprobes.c-uprobe_write_opcode()-warn:passing-zero-to-PTR_ERR
-|   `-- lib-stackdepot.c-stack_print()-warn:unsigned-stack-size-is-never-less-than-zero.
-|-- i386-randconfig-s001
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- i386-randconfig-s002
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- i386-randconfig-s003
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- ia64-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- ia64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- loongarch-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- loongarch-defconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- loongarch-randconfig-r034-20230517
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- microblaze-buildonly-randconfig-r002-20230517
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- microblaze-randconfig-s053-20230517
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- mips-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- mips-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- openrisc-randconfig-s051-20230517
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- parisc-randconfig-m041-20230519
-|   |-- fs-ext4-verity.c-ext4_get_verity_descriptor_location()-error:uninitialized-symbol-desc_size_disk-.
-|   |-- fs-xfs-scrub-fscounters.c-xchk_fscounters()-warn:ignoring-unreachable-code.
-|   `-- lib-stackdepot.c-stack_print()-warn:unsigned-stack-size-is-never-less-than-zero.
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- powerpc-randconfig-c034-20230517
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- riscv-randconfig-s031-20230517
-|   |-- mm-kfence-core.c:sparse:sparse:cast-to-restricted-__le64
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- s390-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- sparc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- sparc64-buildonly-randconfig-r004-20230517
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- x86_64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-|-- x86_64-randconfig-m001
-|   |-- kernel-events-uprobes.c-uprobe_write_opcode()-warn:passing-zero-to-PTR_ERR
-|   `-- lib-stackdepot.c-stack_print()-warn:unsigned-stack-size-is-never-less-than-zero.
-|-- x86_64-randconfig-s021
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- x86_64-randconfig-s022
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-|-- x86_64-randconfig-s023
-|   |-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_get-was-not-declared.-Should-it-be-static
-|   `-- mm-page_owner.c:sparse:sparse:symbol-page_owner_threshold_set-was-not-declared.-Should-it-be-static
-`-- xtensa-randconfig-r001-20230517
-    |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:warning:variable-count-set-but-not-used
-    `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:warning:variable-j-set-but-not-used
-clang_recent_errors
-`-- riscv-randconfig-r032-20230517
-    `-- drivers-net-arcnet-com20020.c:warning:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior
+This will require some mods to filesystems like ext4 and XFS to
+issue REQ_PROVISION and fail gracefully during metadata allocation.
+However, doing so means that we can actually harden filesystems
+against sparse block device ENOSPC errors by ensuring they will
+never occur in critical filesystem structures....
 
-elapsed time: 724m
-
-configs tested: 142
-configs skipped: 6
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r033-20230517   gcc  
-alpha                randconfig-r036-20230517   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arc                  randconfig-r043-20230517   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r005-20230517   clang
-arm                                 defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                         lpc32xx_defconfig   clang
-arm                        mvebu_v7_defconfig   gcc  
-arm                         nhk8815_defconfig   gcc  
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r046-20230517   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r015-20230517   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r022-20230517   clang
-hexagon              randconfig-r035-20230517   clang
-hexagon              randconfig-r041-20230517   clang
-hexagon              randconfig-r045-20230517   clang
-i386                             allyesconfig   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64                             allyesconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                        generic_defconfig   gcc  
-ia64                          tiger_defconfig   gcc  
-loongarch                        alldefconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r034-20230517   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r014-20230517   gcc  
-m68k                 randconfig-r023-20230517   gcc  
-microblaze   buildonly-randconfig-r002-20230517   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  cavium_octeon_defconfig   clang
-mips                           gcw0_defconfig   gcc  
-mips                       lemote2f_defconfig   clang
-mips                     loongson1b_defconfig   gcc  
-mips                     loongson1c_defconfig   clang
-mips                     loongson2k_defconfig   clang
-mips                  maltasmvp_eva_defconfig   gcc  
-mips                        qi_lb60_defconfig   clang
-mips                 randconfig-r025-20230517   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r002-20230517   gcc  
-openrisc             randconfig-r026-20230517   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r011-20230517   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                      katmai_defconfig   clang
-powerpc                     ksi8560_defconfig   clang
-powerpc                      pcm030_defconfig   gcc  
-powerpc                      pmac32_defconfig   clang
-powerpc                    sam440ep_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r003-20230517   clang
-riscv                randconfig-r005-20230517   clang
-riscv                randconfig-r032-20230517   clang
-riscv                randconfig-r042-20230517   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r004-20230517   clang
-s390                 randconfig-r031-20230517   clang
-s390                 randconfig-r044-20230517   gcc  
-sh                               allmodconfig   gcc  
-sh                           se7721_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r016-20230517   gcc  
-sparc                randconfig-r024-20230517   gcc  
-sparc64      buildonly-randconfig-r004-20230517   gcc  
-sparc64              randconfig-r012-20230517   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                        randconfig-x051   gcc  
-x86_64                        randconfig-x052   clang
-x86_64                        randconfig-x053   gcc  
-x86_64                        randconfig-x054   clang
-x86_64                        randconfig-x055   gcc  
-x86_64                        randconfig-x056   clang
-x86_64                        randconfig-x061   gcc  
-x86_64                        randconfig-x062   clang
-x86_64                        randconfig-x063   gcc  
-x86_64                        randconfig-x064   clang
-x86_64                        randconfig-x065   gcc  
-x86_64                        randconfig-x066   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r003-20230517   gcc  
-xtensa               randconfig-r001-20230517   gcc  
-xtensa               randconfig-r021-20230517   gcc  
-
+-Dave.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Dave Chinner
+david@fromorbit.com
