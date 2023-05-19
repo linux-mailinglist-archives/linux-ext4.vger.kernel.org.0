@@ -2,72 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 871C770903C
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 09:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40E1709094
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 May 2023 09:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjESHOr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 May 2023 03:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        id S230448AbjESHmM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 19 May 2023 03:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjESHOq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 03:14:46 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13A910DF
-        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 00:14:38 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-19a13476ffeso2142393fac.0
-        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 00:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684480477; x=1687072477;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5az4Eu1VAlmeyQAupzgPEaWF28fGzbAd46Z1OgJ9gm4=;
-        b=EYwk5mS0TJd4RY0ZFwDNf9jVP4Iw9lnCuY0WkDE1Eqg5E5chrNNvFoOxgYxImnOLgO
-         P4aE3V3EVZFK7CyXlpqn0oWQVjrtYJDACjFbIA6r4h04yt3Jy+Lq3tCAHx/IgHnEO2/g
-         1vRQbEsSRC4eujS+O3Zy/VhhYY6zT67K/3JxqopICMYz9QI93lEMqJn6SMqbLlnP3Uyf
-         ojC/t/a4JpmlAK3QL7sqZAERAasve4XtyV+B1ZOqTpI/okL57Zys+Q440fH9R3WQpk4g
-         HDwSrK3aorBXevbbK0ct1oFguuXW12ghb55v8qEMXtz7SukOtQiUp4RisvrlX8FhgizA
-         k7Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684480477; x=1687072477;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5az4Eu1VAlmeyQAupzgPEaWF28fGzbAd46Z1OgJ9gm4=;
-        b=ICOJ68OhINyXaxHaH87P9DP9h3EaSEfdECvlJe588DdvaezPbuH3B9MoxxmVktRraR
-         t5Sfx+auw5zybTd057qFUYx/R2BL40rEB+VhmD18SvdgedENMSKE241cARflsG3uNtoL
-         FkmQdPbIWfPAMR9lZyX/UCLZezcohBVjw60rzf1fzJYnXoC2jmnO3TYWpjOv/llQ85za
-         b4/r0ourEFWlsGfK333fgh9H+kOsXoyEdg7pWU22UttqJjRWFMl1XXZSLGzPmmHnXZi6
-         6JrPo1NSNEorAF+aNnsonKlm35ZDiDyxnf1yF6VcZmnFN/unCC1RDza/A6zDV5IFzKAf
-         tTTw==
-X-Gm-Message-State: AC+VfDzB9XyyHASdWVAJ0j2jfRI4NZyEwzI+NRqF/Dpgt/hE6NUX3jXP
-        m16eqzJoL2jhj7PFkTmY/9N5PrZOiwfmflSUQ9Z8ZA3rnFcJxQ==
-X-Google-Smtp-Source: ACHHUZ5X4vaCdhQIDMvNZFm7tSpBPuX7djTyX5k5Ha2wP5HIPHVFbekdhVMGTvBXKw+XapkC2U/E4LB28YkpnhkPLhw=
-X-Received: by 2002:a05:6870:a704:b0:187:93d0:985d with SMTP id
- g4-20020a056870a70400b0018793d0985dmr606132oam.35.1684480477671; Fri, 19 May
- 2023 00:14:37 -0700 (PDT)
+        with ESMTP id S230398AbjESHmL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 03:42:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7363710E0
+        for <linux-ext4@vger.kernel.org>; Fri, 19 May 2023 00:41:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1684482083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ChgLSgSgCciGGEj2txPdAcXunor0ElTQJtr+fuEaFtA=;
+        b=Z7N+/28QuH4ugBzdz/HWW6uPoGjQpwY6rqa39rhP3J2Y0hG5I2HTWwRT/L/jzk8sOIwLWO
+        PQV3CxOcSgPgcnl3pc22sPACSoJST6EdV+NyOBEZHcHesi+F6siVcwDemMrbbuVq6yb91n
+        g9yU9+rhx4xcFpGU3s03l3LNu0bQ87k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-673-2UnIjJkHPT6ZoSIApCo6vg-1; Fri, 19 May 2023 03:41:20 -0400
+X-MC-Unique: 2UnIjJkHPT6ZoSIApCo6vg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3C96E101A58B;
+        Fri, 19 May 2023 07:41:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D833E2166B27;
+        Fri, 19 May 2023 07:41:16 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Jeff Layton <jlayton@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: [PATCH v20 05/32] splice: Make splice from a DAX file use direct_splice_read()
+Date:   Fri, 19 May 2023 08:40:20 +0100
+Message-Id: <20230519074047.1739879-6-dhowells@redhat.com>
+In-Reply-To: <20230519074047.1739879-1-dhowells@redhat.com>
+References: <20230519074047.1739879-1-dhowells@redhat.com>
 MIME-Version: 1.0
-From:   Oscar Megia <megia.oscar@gmail.com>
-Date:   Fri, 19 May 2023 09:14:01 +0200
-Message-ID: <CABoTn5ShbQng+JSkvUDO8Dfd6LxZvD5Zhk-y+3vByqqfaQMhLw@mail.gmail.com>
-Subject: I know you are busy, but have you found time to look at my patch?
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Make a read splice from a DAX file go directly to direct_splice_read() to
+do the reading as filemap_splice_read() is unlikely to find any pagecache
+to splice.
 
-My patch was: e2fsck: Add percent to files and blocks feature.
+I think this affects only erofs, Ext2, Ext4, fuse and XFS.
 
-Do I need to change something or is it not accepted?
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Christoph Hellwig <hch@lst.de>
+cc: Al Viro <viro@zeniv.linux.org.uk>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: linux-erofs@lists.ozlabs.org
+cc: linux-ext4@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-xfs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-block@vger.kernel.org
+cc: linux-mm@kvack.org
+---
+ fs/splice.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Regards
-Oscar Megia L=C3=B3pez
+diff --git a/fs/splice.c b/fs/splice.c
+index 1e0b7c7038b5..7b818b5b18d4 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -421,6 +421,11 @@ ssize_t generic_file_splice_read(struct file *in, loff_t *ppos,
+ 	struct kiocb kiocb;
+ 	int ret;
+ 
++#ifdef CONFIG_FS_DAX
++	if (IS_DAX(in->f_mapping->host))
++		return direct_splice_read(in, ppos, pipe, len, flags);
++#endif
++
+ 	iov_iter_pipe(&to, ITER_DEST, pipe, len);
+ 	init_sync_kiocb(&kiocb, in);
+ 	kiocb.ki_pos = *ppos;
+
