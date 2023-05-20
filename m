@@ -2,53 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58F270A429
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 03:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2E270A524
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 06:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjETBGn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 May 2023 21:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
+        id S230193AbjETELp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 20 May 2023 00:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjETBGm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 19 May 2023 21:06:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC824FA;
-        Fri, 19 May 2023 18:06:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36450657F0;
-        Sat, 20 May 2023 01:06:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C8FDC433D2;
-        Sat, 20 May 2023 01:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684544800;
-        bh=rso2Q4gXYI0YTNN43fHXcTzoQQl/M7xpKFkpD2wxPj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NNIfKVKtYxOIsdU47u7w7tgGz1iKChFiTXI2RIwnMkRQjANq9mdQLXt7OK4GT4o7D
-         RawRgAAazHT/HR+6IglKZd7ET8bvUT+CRKp3OxkyVSlNuS6E+l8Y2nEJ/rHaEOa7x6
-         N9lty5LoG/5xMiu0PafMA1k3HupB1p57Hbluht/iwQGEdyeIDoAPXQCqedY9dCqsmK
-         DR61cdNk+wOSUwGQpCER/oSvB5e6ESMrSNGrrQgVIYsL8qbWfK7Wywp7tOpl4u34RE
-         uAONlNNVnNEwtxnikgu1GJaiubsYDSsWIhxmb6YlJmnRXCaSr89npzMCSqQI1564iD
-         l9n6l46KkDN5w==
-Date:   Fri, 19 May 2023 18:06:38 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: Re: [PATCH 6/5] ext4: Call fsverity_verify_folio()
-Message-ID: <20230520010638.GA836@sol.localdomain>
-References: <cover.1684122756.git.ritesh.list@gmail.com>
- <20230516192713.1070469-1-willy@infradead.org>
+        with ESMTP id S230114AbjETELn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 00:11:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE6EE46;
+        Fri, 19 May 2023 21:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=BpM3vCav2LNkqTheri33lK/GJ+
+        RMLI+guMl5TqFBr+GYTJZZ8Wlne4ono1feA/e+SxxFzC4otggobZOmtUqlSZ0n2LMCjIlCDxVMvPe
+        ycnrQZKp+RYQbWeC1lv64tGEnyN+vUGQMmapenZ5e04x2Tncognia3j7ZbViDpwxSNG2RxOSWPSZG
+        DLHAlwhF1urkEgYqqNPGC+py/Qb5kn6+ZJqFdw9gDjLNCMxnLMBQ6FJaXMGVOAYF0hslD0g/dNCRW
+        j4BtlnbP5jZWGsYU4fQBVPGbXxsKCWoFOlKlkf60lZTjYK8K0RwkFwoXTzmBQSWpDSZWM0dN9pUvV
+        4e1xVYaw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1q0DwK-000dPa-27;
+        Sat, 20 May 2023 04:11:32 +0000
+Date:   Fri, 19 May 2023 21:11:32 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Jeff Layton <jlayton@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v21 08/30] splice: Make splice from a DAX file use
+ copy_splice_read()
+Message-ID: <ZGhIdB5ORIVzjWDs@infradead.org>
+References: <20230520000049.2226926-1-dhowells@redhat.com>
+ <20230520000049.2226926-9-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230516192713.1070469-1-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230520000049.2226926-9-dhowells@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,34 +64,6 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 16, 2023 at 08:27:13PM +0100, Matthew Wilcox (Oracle) wrote:
-> Now that fsverity supports working on entire folios, call
-> fsverity_verify_folio() instead of fsverity_verify_page()
-> 
-> Reported-by: Eric Biggers <ebiggers@kernel.org>
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/ext4/readpage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-> index 6f46823fba61..3e7d160f543f 100644
-> --- a/fs/ext4/readpage.c
-> +++ b/fs/ext4/readpage.c
-> @@ -334,7 +334,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  					  folio_size(folio));
->  			if (first_hole == 0) {
->  				if (ext4_need_verity(inode, folio->index) &&
-> -				    !fsverity_verify_page(&folio->page))
-> +				    !fsverity_verify_folio(folio))
->  					goto set_error_page;
->  				folio_mark_uptodate(folio);
->  				folio_unlock(folio);
-> -- 
+Looks good:
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-(Though I must mention that doing weird things like "PATCH 6/5" makes life hard
-for scripts that operate on patch series...)
-
-- Eric
+Reviewed-by: Christoph Hellwig <hch@lst.de>
