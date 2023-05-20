@@ -2,64 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A7770A689
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 11:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DDE70A6CC
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 11:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjETJCO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 20 May 2023 05:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        id S230489AbjETJli (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 20 May 2023 05:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjETJCM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 05:02:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8828510A;
-        Sat, 20 May 2023 02:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ROreG6kiJHA2gDeVQnQ0pl8EyThSYR4NrNrObaLNkZo=; b=Libx7jSdGZ1yT/+90Pr5nn5tPz
-        3p/rS2poLYavfOHw9sceEoZ4jk351v9PEiQKKkDexGqeC0iG7jPdlPISLRaA1weC4tqtAlkNNOjwV
-        cftsjyXliWrqKtqzUflc0PTqANZCbz2JDrBJnQz4LFIL7htsGtwIMJMiMVAQIv6mTFqiEEqWYf2R6
-        IOXzsmP2u2XQLRlo61Rd9aarKFAjHtb711mqbOGthUvI5NeXjLaj3NCX+vbF1ALHFqg+jIvBJwM6S
-        OAqzeMnsRKZOmS5KTJkXQ0MJt+c0WpZpbna26j/YewRlYIA9orFYD00/eGI2AvUcuOtK4UOLKMiQa
-        nyQyuprQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q0ITD-0014R0-1T;
-        Sat, 20 May 2023 09:01:47 +0000
-Date:   Sat, 20 May 2023 02:01:47 -0700
-From:   Christoph Hellwig <hch@infradead.org>
+        with ESMTP id S229577AbjETJlg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 05:41:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F000D1BD;
+        Sat, 20 May 2023 02:41:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8802960B6B;
+        Sat, 20 May 2023 09:41:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90607C433EF;
+        Sat, 20 May 2023 09:41:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684575694;
+        bh=Qi34Xt1y6x93U61QykhNqil2JS5d/WED6AUV/H0U3cU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RCKu+qWLljLQMkOKKE7+IBqPv71gQvySDl07esuV8mxzFnjBimDFbJ+MeTXiImdwi
+         LAo1oAYsycIi6Ngjivs8aWf09Cb9lAvSPT8V2b4vnr52AhA3wOa/eQDFYZZeo1f4LA
+         1dZwCOGQ7U8tRHWFm0WzUOBEiB2QJO1tfY0b2INLx6s4X3yorcUT+1egxyQYM79jmL
+         VEwcuw7Dj4wzdbpCiR3/dZ5jcuQr/CBLIo4+1Q6Z325lA4XAokTZBbKp7ZzDfVTlP3
+         rPhjhxF3vQ/ENd4VZF5WlXEzG14C074CDwifY9/pZY9VpqGP7shdUgTnByBELcVTt2
+         V26DafIYZg3Tg==
+Date:   Sat, 20 May 2023 11:41:27 +0200
+From:   Christian Brauner <brauner@kernel.org>
 To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
         Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
         Jeff Layton <jlayton@kernel.org>,
         David Hildenbrand <david@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Logan Gunthorpe <logang@deltatee.com>,
         Hillf Danton <hdanton@sina.com>,
-        Christian Brauner <brauner@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christoph Hellwig <hch@lst.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v21 18/30] ext4: Provide a splice-read stub
-Message-ID: <ZGiMewK8CW7DB4sl@infradead.org>
-References: <ZGhIpbrgQaPRPC3c@infradead.org>
- <20230520000049.2226926-1-dhowells@redhat.com>
- <20230520000049.2226926-19-dhowells@redhat.com>
- <2233565.1684567304@warthog.procyon.org.uk>
+        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v21 08/30] splice: Make splice from a DAX file use
+ copy_splice_read()
+Message-ID: <20230520-gepocht-akzeptabel-b117346c55b6@brauner>
+References: <20230520000049.2226926-1-dhowells@redhat.com>
+ <20230520000049.2226926-9-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2233565.1684567304@warthog.procyon.org.uk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <20230520000049.2226926-9-dhowells@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,11 +66,24 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, May 20, 2023 at 08:21:44AM +0100, David Howells wrote:
-> Christoph Hellwig <hch@infradead.org> wrote:
+On Sat, May 20, 2023 at 01:00:27AM +0100, David Howells wrote:
+> Make a read splice from a DAX file go directly to copy_splice_read() to do
+> the reading as filemap_splice_read() is unlikely to find any pagecache to
+> splice.
 > 
-> > Not sure I'd call this a stub, but then again I'm not a native speaker.
+> I think this affects only erofs, Ext2, Ext4, fuse and XFS.
 > 
-> "Wrapper"?
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Christoph Hellwig <hch@lst.de>
+> cc: Al Viro <viro@zeniv.linux.org.uk>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: linux-erofs@lists.ozlabs.org
+> cc: linux-ext4@vger.kernel.org
+> cc: linux-xfs@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-block@vger.kernel.org
+> cc: linux-mm@kvack.org
+> ---
 
-That's what I'd call it, yes.
+Fwiw, O_DIRECT and DAX could've just been folded into one patch imho.
+Reviewed-by: Christian Brauner <brauner@kernel.org>
