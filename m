@@ -2,68 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B370AAEC
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 May 2023 22:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999DF70ABC2
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 May 2023 02:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjETUbP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 20 May 2023 16:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
+        id S229684AbjEUA1c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 20 May 2023 20:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjETUbN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 16:31:13 -0400
+        with ESMTP id S229669AbjEUA1b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 20:27:31 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F137E6
-        for <linux-ext4@vger.kernel.org>; Sat, 20 May 2023 13:31:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FE4121
+        for <linux-ext4@vger.kernel.org>; Sat, 20 May 2023 17:27:30 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34KKTnXh032322
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34L0QXY5025308
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 May 2023 16:29:50 -0400
+        Sat, 20 May 2023 20:26:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1684614596; bh=1h/e+2hm6DeCsGYVAMP6/xEixaSRaLI3wM1T7nyiDSw=;
+        t=1684628801; bh=9eqcIzS90vnBQyM2ULk0Xad6DIwhxJd9pXvwxDT5agA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=c4aXHWtesHJvc1Y/IoNuJgl2d6nRMfZyTKgMWeVzXeks/rA3eV6DJXQjHa5lVtyO3
-         7NyDuu4d0P2HhEigP7/aBLpCV7ww9BIBMpuLbsV9If0AbdFLokfjtphJykMOZa4/8B
-         tatHhK7B69KeHjieDBBQa7MvBjFQK3Tphvv0bojDwxIKxjALWGGJWF7CgKRyVWH+dT
-         cEH3LHv0qCm81FhLRqpbysBHNBcU9KF1W6bDqUDIQ9y+evDPvPZzz8WRRkjEWRBPgG
-         HvcnsbWGM+qbr/UwnmaO5am8I6ZM96YbAncrWPxbJOMdpBXxFCKhqOmlDg6TDeZYIq
-         yamHcc76/mvjA==
+        b=A7s9yjjs1TBgqn+gjf9Hj7xacMo4w4aYV4pZ4boAwBJMKMvQWe+RMxIaZ5voydTo9
+         fzuTP9lDyOjxHdCtB5SC3OFBwx9XCJ9hGZrF99bBo8YVUDZWxn0sBQ2JpVM+dJFMnX
+         cnu27yYekG/5ZGpiTVtRgYH40kySbm4j1uBx5FoupvHx0eqEWSK3UnVlERqM4DJJq3
+         QcJWADWsI+eON5HwrDf7uUa3hXhp/maoPNGhjV17IvT3oCrs8BdIcsj06okrcGNFMq
+         8ePkbEFz+t3D2MhcKaiZGmk9Ff9skg/gyyQxbAqpXlQkwLTgcdgcMGniG7jyULMiNM
+         ZQmCn3Cjb/Btg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C0B9915C02EE; Sat, 20 May 2023 16:29:49 -0400 (EDT)
-Date:   Sat, 20 May 2023 16:29:49 -0400
+        id 9EFD915C02EE; Sat, 20 May 2023 20:26:33 -0400 (EDT)
+Date:   Sat, 20 May 2023 20:26:33 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Jeff Layton <jlayton@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Hillf Danton <hdanton@sina.com>,
         Christian Brauner <brauner@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Neil Brown <neilb@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Hellwig <hch@lst.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tom Talpey <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org
-Subject: Re: [PATCH v4 8/9] ext4: convert to multigrain timestamps
-Message-ID: <20230520202949.GA203758@mit.edu>
-References: <20230518114742.128950-1-jlayton@kernel.org>
- <20230518114742.128950-9-jlayton@kernel.org>
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v21 18/30] ext4: Provide a splice-read stub
+Message-ID: <20230521002633.GA207046@mit.edu>
+References: <ZGhIpbrgQaPRPC3c@infradead.org>
+ <20230520000049.2226926-1-dhowells@redhat.com>
+ <20230520000049.2226926-19-dhowells@redhat.com>
+ <2233565.1684567304@warthog.procyon.org.uk>
+ <ZGiMewK8CW7DB4sl@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230518114742.128950-9-jlayton@kernel.org>
+In-Reply-To: <ZGiMewK8CW7DB4sl@infradead.org>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
@@ -74,4 +70,20 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Sat, May 20, 2023 at 02:01:47AM -0700, Christoph Hellwig wrote:
+> On Sat, May 20, 2023 at 08:21:44AM +0100, David Howells wrote:
+> > Christoph Hellwig <hch@infradead.org> wrote:
+> > 
+> > > Not sure I'd call this a stub, but then again I'm not a native speaker.
+> > 
+> > "Wrapper"?
+> 
+> That's what I'd call it, yes.
+
+Agreed, "wrapper" is a better term.
+
+Other than that,
+
 Acked-by: Theodore Ts'o <tytso@mit.edu>
+
+
