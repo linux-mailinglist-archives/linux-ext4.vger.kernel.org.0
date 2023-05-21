@@ -2,72 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A365870ABC5
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 May 2023 02:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153EE70AE62
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 May 2023 16:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjEUA3K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 20 May 2023 20:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
+        id S229957AbjEUO4u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 21 May 2023 10:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjEUA3J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 20 May 2023 20:29:09 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7D4121
-        for <linux-ext4@vger.kernel.org>; Sat, 20 May 2023 17:29:08 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34L0SRVZ026415
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 May 2023 20:28:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1684628911; bh=3U2jQyV+om6cEvowDzLHU8bBjtTNByfdH+e84cJttjQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=oMMqD/ZUppgCgzKDvbbwVAi5CEoovEfF1QtZ0mMBKR4RhXidI3B7fc+NW3u/9nKyc
-         LsQi19iJKHdVv0GmPowknFWlPn3BB27TwXP13cbb8op9sxdbezrXTtDoP0ZdAbz0BE
-         ZvyOAOVBRXH4mAhrpeCpv7rLzbYliRhgbSAItfajtlSjs4Nq9Dj9fES2JT7BSn8LM+
-         irK4TekIClw7dLE/9zsnl+F7IjdK6A/BnHZgbgWHlOTPbYuLEtl5RRB/esBBW9F82E
-         5k16hXvFnB1AWJrjYnz2FM/QeLmDTL4agwbJWTjVLQR3bEQyJRAn00rb7NHMMsZP+w
-         O9VIZ6uLT9EQg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C696C15C02EE; Sat, 20 May 2023 20:28:27 -0400 (EDT)
-Date:   Sat, 20 May 2023 20:28:27 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Jeff Layton <jlayton@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+        with ESMTP id S229935AbjEUOze (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 May 2023 10:55:34 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D61B3;
+        Sun, 21 May 2023 07:55:32 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vj5ET5O_1684680925;
+Received: from 30.15.209.15(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vj5ET5O_1684680925)
+          by smtp.aliyun-inc.com;
+          Sun, 21 May 2023 22:55:27 +0800
+Message-ID: <d4ed0a75-f71c-ef42-7845-c1fa78b36fa7@linux.alibaba.com>
+Date:   Sun, 21 May 2023 22:55:25 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
 Subject: Re: [PATCH v21 08/30] splice: Make splice from a DAX file use
  copy_splice_read()
-Message-ID: <20230521002827.GB207046@mit.edu>
+To:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-block@vger.kernel.org,
+        Hillf Danton <hdanton@sina.com>, Jan Kara <jack@suse.cz>,
+        linux-xfs@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Christoph Hellwig <hch@lst.de>
 References: <20230520000049.2226926-1-dhowells@redhat.com>
  <20230520000049.2226926-9-dhowells@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
 In-Reply-To: <20230520000049.2226926-9-dhowells@redhat.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, May 20, 2023 at 01:00:27AM +0100, David Howells wrote:
+
+
+On 2023/5/20 17:00, David Howells wrote:
 > Make a read splice from a DAX file go directly to copy_splice_read() to do
 > the reading as filemap_splice_read() is unlikely to find any pagecache to
 > splice.
@@ -80,5 +71,13 @@ On Sat, May 20, 2023 at 01:00:27AM +0100, David Howells wrote:
 > cc: Jens Axboe <axboe@kernel.dk>
 > cc: linux-erofs@lists.ozlabs.org
 > cc: linux-ext4@vger.kernel.org
+> cc: linux-xfs@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-block@vger.kernel.org
+> cc: linux-mm@kvack.org
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+Thanks,
+Gao Xiang
+
