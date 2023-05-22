@@ -2,52 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CB370CA5B
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 22:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D15D70CD87
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 00:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbjEVUHz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 May 2023 16:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S233669AbjEVWKH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 May 2023 18:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjEVUHy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 16:07:54 -0400
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75A297
-        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 13:07:52 -0700 (PDT)
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-766655c2cc7so252620439f.3
-        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 13:07:52 -0700 (PDT)
+        with ESMTP id S232747AbjEVWKG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 18:10:06 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F48E9
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 15:10:04 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1afa6afcf4fso19962335ad.0
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 15:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1684793404; x=1687385404;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zhk/FFw49fszGKvEVhYvbvMP+dTpGvDn5zl+3/9L1Dc=;
+        b=fblWw9UzbFxiy0IdFHcyiEwVDIdKvIAKrQRPskBGENxPURLIOwwaK7n1zvySgU7WzL
+         VU8Vfr1s05BDJeWnx6GvlwtigLtu+eqhdhxMauzwVoEmiW/RcmEFcKMqrypOtXnRwUeV
+         Vx8ZBImfDyJb1VIqxhV1vDoDsK4UvJ1KJ+MUQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684786072; x=1687378072;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VaXnjSH38I+oMnQShq1OgL1MwuU4LJkpqrVRB5TxzhE=;
-        b=Eti1H5pZvxtLhRswpacN5KriByHqQ4aJ6A4gez6ihTDHbcoT7byqrnAOQJJKIeoYcl
-         yGoEwC6pOKhnQbvcDc3f/26aNULuxCAqQLnvYvIPOaRWkGnBBEMHqITI0wINDvGW1iSv
-         pr9+bkap7scz6wobvgibbfW37xpBIfGdpnfoy9TYk36Z5XlSYDkuuph1D5+5XICA1Nz0
-         RlQ6jpokLlTo3fCmO8qPi0ZRWxOiLy7pLrYNQtLDXDEE55lb9AbKRlXnTeL4vLrRA0/t
-         P7F+GCwaNxt2MF6gb9TlmQv9MjKw0fG2qnJ7JWpN4Ke9Q9TVfIswDbzEsF0s2g2O2RJY
-         jngQ==
-X-Gm-Message-State: AC+VfDwNGzrtsPHBAWwZU2XeNCm2dJvV+hqTwuGMhazEJoMGhzhROgGa
-        9lvU7ogJMPPN9fQkUvi+LZo/Le5S5q2N0LGSBybaE91NT21v
-X-Google-Smtp-Source: ACHHUZ7hbKBftR8z/o8AdDyqmMjTxvZeU5fbRcrzjU9UEADrsaoUMs6DzOE1YQyUgmOG1pR7NBNuaMhjbs/lT4hprSjqIV99wU2b
+        d=1e100.net; s=20221208; t=1684793404; x=1687385404;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zhk/FFw49fszGKvEVhYvbvMP+dTpGvDn5zl+3/9L1Dc=;
+        b=Y1jXbj7Zjg9EJU8docexVf2vIVZsEJ38LRRVqUgJDV+QD5e7oa5KZwYNXP8Hor4sur
+         M2btqGQraSiylVuf8zGwhhFbOgPOVBsdxTERaj5Ed166+pj9OZyB6P5KP9X/9HtNS8Z4
+         bp113DEKehj/Gnwn9Rh0L9IgqS+YQ7LPlsLu+r23Y94n1ZVYWg8BDU2BN/6TBskZWiHI
+         zxghcG4VDuk6j2bbxdjMbZaz9jh7sirskBRDR2U2roQsLuOmO1VORoTny0lU+cxuT5W3
+         EPndWVZKNG2AngNHWocJSt9nb0RzyVPbH/vq99q/javC0z8/OOjNDZs4npIy5Y6pRAG3
+         tO7Q==
+X-Gm-Message-State: AC+VfDy33xQiT+jn3yBQkyDAxtjAQXWzz+AzIr6CoWlx9IseFmbSy9Aa
+        U5sy/a6diQjAHy3j8dke5WdyWw==
+X-Google-Smtp-Source: ACHHUZ5WRtvEBtYahpKG6aPeTI5eHL+V7B6L6O9jAUq/08MWwaaWRvizWzszQGPZBbFKrv/0tLK8Kg==
+X-Received: by 2002:a17:902:ea0f:b0:1ad:c736:2090 with SMTP id s15-20020a170902ea0f00b001adc7362090mr14394226plg.3.1684793403998;
+        Mon, 22 May 2023 15:10:03 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:7ecd:bb34:d662:f45a])
+        by smtp.gmail.com with UTF8SMTPSA id v4-20020a170902b7c400b001ab2b4105ddsm5308998plz.60.2023.05.22.15.10.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 May 2023 15:10:03 -0700 (PDT)
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>
+Subject: [PATCH v7 5/5] loop: Add support for provision requests
+Date:   Mon, 22 May 2023 15:09:55 -0700
+Message-ID: <20230522221000.603769-1-sarthakkukreti@chromium.org>
+X-Mailer: git-send-email 2.40.1.698.g37aff9b760-goog
+In-Reply-To: <20230522163710.GA11607@frogsfrogsfrogs>
+References: <20230522163710.GA11607@frogsfrogsfrogs>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2158:b0:774:8142:9931 with SMTP id
- y24-20020a056602215800b0077481429931mr43990ioy.1.1684786071921; Mon, 22 May
- 2023 13:07:51 -0700 (PDT)
-Date:   Mon, 22 May 2023 13:07:51 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056edfa05fc4dd3ba@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data
-From:   syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,81 +82,183 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, May 22, 2023 at 9:37 AM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> If someone calls fallocate(UNSHARE_RANGE) on a loop bdev, shouldn't
+> there be a way to pass that through to the fallocate call to the backing
+> file?
+>
+> --D
+>
 
-HEAD commit:    44c026a73be8 Linux 6.4-rc3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1028b7a1280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f389ffdf4e9ba3f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162a1a8e280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12eb0691280000
+Yeah, I think we could add a REQ_UNSHARE bit (similar to REQ_NOUNMAP) to pass down the intent to the backing file (and possibly beyond...).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8c94fba58ffe/disk-44c026a7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fc04d8a50461/vmlinux-44c026a7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4d861756bf1a/bzImage-44c026a7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f43e36084b2b/mount_0.gz
+I took a stab at implementing it as a follow up patch so that there's less review churn on the current series. If it looks good, I can add it to the end of the series (or incorporate this into the existing block and loop patches):
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com
+From: Sarthak Kukreti <sarthakkukreti@chromium.org>
+Date: Mon, 22 May 2023 14:18:15 -0700
+Subject: [PATCH] block: Pass unshare intent via REQ_OP_PROVISION
 
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inline.c:235!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5070 Comm: syz-executor189 Not tainted 6.4.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
-RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:235
-Code: 5f e9 80 76 59 ff e8 7b 76 59 ff 45 8d 64 2c c4 41 bd 3c 00 00 00 41 29 ed e9 e8 fe ff ff e8 63 76 59 ff 0f 0b e8 5c 76 59 ff <0f> 0b e8 25 40 ac ff e9 fe fd ff ff 4c 89 ff e8 18 40 ac ff e9 99
-RSP: 0018:ffffc90003e7f950 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88807497c8b0 RCX: 0000000000000000
-RDX: ffff888020bb1dc0 RSI: ffffffff822acc74 RDI: 0000000000000006
-RBP: 0000000000000054 R08: 0000000000000006 R09: 0000000000000060
-R10: 0000000000000054 R11: 0000000000000000 R12: 000000000000000c
-R13: 0000000000000060 R14: ffffc90003e7f9e8 R15: ffff88807497ce6a
-FS:  00007f4e59eb8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4e59e71000 CR3: 000000002bdc2000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- ext4_write_inline_data_end+0x2b3/0xd20 fs/ext4/inline.c:775
- ext4_da_write_end+0x3d0/0xad0 fs/ext4/inode.c:2985
- generic_perform_write+0x316/0x570 mm/filemap.c:3934
- ext4_buffered_write_iter+0x15b/0x460 fs/ext4/file.c:289
- ext4_file_write_iter+0xbe0/0x1740 fs/ext4/file.c:710
- call_write_iter include/linux/fs.h:1868 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x945/0xd50 fs/read_write.c:584
- ksys_write+0x12b/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4e62256399
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4e59eb82f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000003a RCX: 00007f4e62256399
-RDX: 000000000000000c RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 00007f4e622d37a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f4e622d37a0
-R13: 00007f4e622a08f8 R14: 0000000020001200 R15: 0030656c69662f2e
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_write_inline_data+0x344/0x3e0 fs/ext4/inline.c:235
-Code: 5f e9 80 76 59 ff e8 7b 76 59 ff 45 8d 64 2c c4 41 bd 3c 00 00 00 41 29 ed e9 e8 fe ff ff e8 63 76 59 ff 0f 0b e8 5c 76 59 ff <0f> 0b e8 25 40 ac ff e9 fe fd ff ff 4c 89 ff e8 18 40 ac ff e9 99
-RSP: 0018:ffffc90003e7f950 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88807497c8b0 RCX: 0000000000000000
-RDX: ffff888020bb1dc0 RSI: ffffffff822acc74 RDI: 0000000000000006
-RBP: 0000000000000054 R08: 0000000000000006 R09: 0000000000000060
-R10: 0000000000000054 R11: 0000000000000000 R12: 000000000000000c
-R13: 0000000000000060 R14: ffffc90003e7f9e8 R15: ffff88807497ce6a
-FS:  00007f4e59eb8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555a6837b238 CR3: 000000002bdc2000 CR4: 0000000000350ee0
+Allow REQ_OP_PROVISION to pass in an extra REQ_UNSHARE bit to
+annotate unshare requests to underlying layers. Layers that support
+FALLOC_FL_UNSHARE will be able to use this as an indicator of which
+fallocate() mode to use.
 
-
+Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ block/blk-lib.c           |  6 +++++-
+ block/fops.c              |  6 +++++-
+ drivers/block/loop.c      | 35 +++++++++++++++++++++++++++++------
+ include/linux/blk_types.h |  3 +++
+ include/linux/blkdev.h    |  3 ++-
+ 5 files changed, 44 insertions(+), 9 deletions(-)
+
+diff --git a/block/blk-lib.c b/block/blk-lib.c
+index 3cff5fb654f5..bea6f5a700b3 100644
+--- a/block/blk-lib.c
++++ b/block/blk-lib.c
+@@ -350,6 +350,7 @@ EXPORT_SYMBOL(blkdev_issue_secure_erase);
+  * @sector:	start sector
+  * @nr_sects:	number of sectors to provision
+  * @gfp_mask:	memory allocation flags (for bio_alloc)
++ * @flags:	controls detailed behavior
+  *
+  * Description:
+  *  Issues a provision request to the block device for the range of sectors.
+@@ -357,7 +358,7 @@ EXPORT_SYMBOL(blkdev_issue_secure_erase);
+  *  underlying storage pool to allocate space for this block range.
+  */
+ int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
+-		sector_t nr_sects, gfp_t gfp)
++		sector_t nr_sects, gfp_t gfp, unsigned flags)
+ {
+ 	sector_t bs_mask = (bdev_logical_block_size(bdev) >> 9) - 1;
+ 	unsigned int max_sectors = bdev_max_provision_sectors(bdev);
+@@ -380,6 +381,9 @@ int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
+ 		bio->bi_iter.bi_sector = sector;
+ 		bio->bi_iter.bi_size = req_sects << SECTOR_SHIFT;
+ 
++		if (flags & BLKDEV_UNSHARE_RANGE)
++			bio->bi_opf |= REQ_UNSHARE;
++
+ 		sector += req_sects;
+ 		nr_sects -= req_sects;
+ 		if (!nr_sects) {
+diff --git a/block/fops.c b/block/fops.c
+index be2e41f160bf..6848756f0557 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -659,7 +659,11 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 	case FALLOC_FL_KEEP_SIZE:
+ 	case FALLOC_FL_UNSHARE_RANGE | FALLOC_FL_KEEP_SIZE:
+ 		error = blkdev_issue_provision(bdev, start >> SECTOR_SHIFT,
+-					       len >> SECTOR_SHIFT, GFP_KERNEL);
++					       len >> SECTOR_SHIFT, GFP_KERNEL,
++					       (mode &
++						FALLOC_FL_UNSHARE_RANGE) ?
++						       BLKDEV_UNSHARE_RANGE :
++						       0);
+ 		break;
+ 	case FALLOC_FL_ZERO_RANGE:
+ 	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 7fe1a6629754..c844b145d666 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -306,6 +306,30 @@ static int lo_read_simple(struct loop_device *lo, struct request *rq,
+ 	return 0;
+ }
+ 
++static bool validate_fallocate_mode(struct loop_device *lo, int mode)
++{
++	bool ret = true;
++
++	switch (mode) {
++	case FALLOC_FL_PUNCH_HOLE:
++	case FALLOC_FL_ZERO_RANGE:
++		if (!bdev_max_discard_sectors(lo->lo_device))
++			ret = false;
++		break;
++	case 0:
++	case FALLOC_FL_UNSHARE_RANGE:
++		if (!bdev_max_provision_sectors(lo->lo_device))
++			ret = false;
++		break;
++
++	default:
++		ret = false;
++	}
++
++	return ret;
++}
++
++
+ static int lo_fallocate(struct loop_device *lo, struct request *rq, loff_t pos,
+ 			int mode)
+ {
+@@ -316,11 +340,7 @@ static int lo_fallocate(struct loop_device *lo, struct request *rq, loff_t pos,
+ 	struct file *file = lo->lo_backing_file;
+ 	int ret;
+ 
+-	if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE) &&
+-	    !bdev_max_discard_sectors(lo->lo_device))
+-		return -EOPNOTSUPP;
+-
+-	if (mode == 0 && !bdev_max_provision_sectors(lo->lo_device))
++	if (!validate_fallocate_mode(lo, mode))
+ 		return -EOPNOTSUPP;
+ 
+ 	mode |= FALLOC_FL_KEEP_SIZE;
+@@ -493,7 +513,10 @@ static int do_req_filebacked(struct loop_device *lo, struct request *rq)
+ 	case REQ_OP_DISCARD:
+ 		return lo_fallocate(lo, rq, pos, FALLOC_FL_PUNCH_HOLE);
+ 	case REQ_OP_PROVISION:
+-		return lo_fallocate(lo, rq, pos, 0);
++		return lo_fallocate(lo, rq, pos,
++				    (rq->cmd_flags & REQ_UNSHARE) ?
++					    FALLOC_FL_UNSHARE_RANGE :
++					    0);
+ 	case REQ_OP_WRITE:
+ 		if (cmd->use_aio)
+ 			return lo_rw_aio(lo, cmd, pos, ITER_SOURCE);
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index b7bb0226fdee..1a536fd897cb 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -423,6 +423,8 @@ enum req_flag_bits {
+ 	 */
+ 	/* for REQ_OP_WRITE_ZEROES: */
+ 	__REQ_NOUNMAP,		/* do not free blocks when zeroing */
++	/* for REQ_OP_PROVISION: */
++	__REQ_UNSHARE,		/* unshare blocks */
+ 
+ 	__REQ_NR_BITS,		/* stops here */
+ };
+@@ -451,6 +453,7 @@ enum req_flag_bits {
+ #define REQ_FS_PRIVATE	(__force blk_opf_t)(1ULL << __REQ_FS_PRIVATE)
+ 
+ #define REQ_NOUNMAP	(__force blk_opf_t)(1ULL << __REQ_NOUNMAP)
++#define REQ_UNSHARE	(__force blk_opf_t)(1ULL << __REQ_UNSHARE)
+ 
+ #define REQ_FAILFAST_MASK \
+ 	(REQ_FAILFAST_DEV | REQ_FAILFAST_TRANSPORT | REQ_FAILFAST_DRIVER)
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 462ce586d46f..60c09b0d3fc9 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1049,10 +1049,11 @@ int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sector,
+ 		sector_t nr_sects, gfp_t gfp);
+ 
+ extern int blkdev_issue_provision(struct block_device *bdev, sector_t sector,
+-		sector_t nr_sects, gfp_t gfp_mask);
++		sector_t nr_sects, gfp_t gfp_mask, unsigned int flags);
+ 
+ #define BLKDEV_ZERO_NOUNMAP	(1 << 0)  /* do not free blocks */
+ #define BLKDEV_ZERO_NOFALLBACK	(1 << 1)  /* don't write explicit zeroes */
++#define BLKDEV_UNSHARE_RANGE	(1 << 2)  /* unshare range on provision */
+ 
+ extern int __blkdev_issue_zeroout(struct block_device *bdev, sector_t sector,
+ 		sector_t nr_sects, gfp_t gfp_mask, struct bio **biop,
+-- 
+2.39.2
+
