@@ -2,41 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECCE70B99C
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 12:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CD670BB2F
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 13:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjEVKJD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 May 2023 06:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
+        id S233060AbjEVLJi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 May 2023 07:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjEVKJC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 06:09:02 -0400
+        with ESMTP id S231138AbjEVLJS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 07:09:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D684B7;
-        Mon, 22 May 2023 03:09:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FE62119;
+        Mon, 22 May 2023 04:04:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DEEDB612D2;
-        Mon, 22 May 2023 10:09:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48ACC433D2;
-        Mon, 22 May 2023 10:08:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9CC766187D;
+        Mon, 22 May 2023 10:53:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40EACC43442;
+        Mon, 22 May 2023 10:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684750140;
-        bh=f+TjsaX3pc2xNfuoY7ZIrIhtkHD0EV4+3vT4AgxlZoo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Vz/OwO68P0z5L3CcTBKeen8IVLpqKCsL+EO842KBN7gCjHaFesa6sRXd394htdAOI
-         su2yqXMixtZrxma9KHqZWvVD26OZ2NfXlRfgmioOr7mq6JHgxeeZvoA4HPlH/pXvJf
-         n81Mfy3yxMrTd1nmLHBxHz1RQB2JW9G5/mjdewZYsgLEYn/0Q0Mq9ZW7kjcttSO6UF
-         1zA/dUD2Bi9qa/wHnRmHW9IMbfpTIsElnwjHROeunSLM2e2bqJyGqOSTljtq9puP4r
-         m9LJtebKI9H7nCfLs43DOVOxPvFnr5zfO3fRtm1V6Jb3vQOLwCpRbbf3SnQxMfOzBU
-         bE97FQJ+17UOg==
-Message-ID: <cde7bc1874e2d69860ecdb87d4e21c762f355aea.camel@kernel.org>
-Subject: Re: [PATCH v4 9/9] btrfs: convert to multigrain timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     dsterba@suse.cz
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
+        s=k20201202; t=1684752801;
+        bh=lxoFdlwyXreWklHMGhjnnVDqvf5QqMirVF69DEG4jMg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ct274itzCgUdbCBjIi3u/ZuZmET312SHUcSUBK2Lkv3upiqkMWaP9Qq0zgj+4HbPE
+         fvQijfSZwweDPv0LNSALl1fiE6LtH9LiviXLFaVxf77cyoWoeww2S21gQEAXUCj1pZ
+         VtyTeHrbIDNp69dBMo1dR+0Ni43MBESSIkh/MqIyj1hmT6MGiQOS0nwtQs58ujg/5A
+         s0i1BLJvJx9Epkd0Bi76KBwOmg+bJ19wLhSSeInBoVPgAHkrzWsB7AW5OfWhKeciyi
+         I4UKgE8UBOtfjfmH6OCgbl9+JCvxaCZi+6x6BRI8QYqHd30puM0p91YwBa55dH0yHg
+         S8ZcqLivMgRwA==
+Date:   Mon, 22 May 2023 12:53:05 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dsterba@suse.cz, Alexander Viro <viro@zeniv.linux.org.uk>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -58,15 +56,16 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-mm@kvack.org, linux-nfs@vger.kernel.org,
         linux-cifs@vger.kernel.org
-Date:   Mon, 22 May 2023 06:08:56 -0400
-In-Reply-To: <20230522095601.GH32559@twin.jikos.cz>
+Subject: Re: [PATCH v4 9/9] btrfs: convert to multigrain timestamps
+Message-ID: <20230522-bannen-urkunden-9759d84aece5@brauner>
 References: <20230518114742.128950-1-jlayton@kernel.org>
-         <20230518114742.128950-10-jlayton@kernel.org>
-         <20230522095601.GH32559@twin.jikos.cz>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
+ <20230518114742.128950-10-jlayton@kernel.org>
+ <20230522095601.GH32559@twin.jikos.cz>
+ <cde7bc1874e2d69860ecdb87d4e21c762f355aea.camel@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cde7bc1874e2d69860ecdb87d4e21c762f355aea.camel@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -77,22 +76,23 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2023-05-22 at 11:56 +0200, David Sterba wrote:
-> On Thu, May 18, 2023 at 07:47:42AM -0400, Jeff Layton wrote:
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Acked-by: David Sterba <dsterba@suse.com>
->=20
-> Please add a brief description to the changelog too, there's a similar
-> text in the patches adding the infrastructure. Something like "Allow to
-> optimize lot of metadata updates by encoding the status in the cmtime.
-> The fine grained time is needed for NFS."
+On Mon, May 22, 2023 at 06:08:56AM -0400, Jeff Layton wrote:
+> On Mon, 2023-05-22 at 11:56 +0200, David Sterba wrote:
+> > On Thu, May 18, 2023 at 07:47:42AM -0400, Jeff Layton wrote:
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > Acked-by: David Sterba <dsterba@suse.com>
+> > 
+> > Please add a brief description to the changelog too, there's a similar
+> > text in the patches adding the infrastructure. Something like "Allow to
+> > optimize lot of metadata updates by encoding the status in the cmtime.
+> > The fine grained time is needed for NFS."
+> 
+> Sure thing.
+> 
+> Christian, do you want to just alter the changelog with David's
+> suggestion, or would you rather I resend the series?
 
-Sure thing.
-
-Christian, do you want to just alter the changelog with David's
-suggestion, or would you rather I resend the series?
-
-Thanks,
---=20
-Jeff Layton <jlayton@kernel.org>
+Nah, don't bother resending I'll just add it to the fs specific patches.
+I'll end up updating the patch trailers anyway when individual
+maintainers add new Acks.
