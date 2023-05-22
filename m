@@ -2,219 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257A270B329
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 04:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E5F70B804
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 10:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjEVCXl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 21 May 2023 22:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
+        id S232442AbjEVIuY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 May 2023 04:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjEVCXk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 21 May 2023 22:23:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4C8E0
-        for <linux-ext4@vger.kernel.org>; Sun, 21 May 2023 19:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684722174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6gCnSvHg5O9ml4/OuYzbyOxwskor4dFbbIHvczRVaEk=;
-        b=RobspGm3+bSGNagOU7fC7pFLucpKSzZAnFz7yRVjVRFbdYz+fu/xH6EnpDkcv5TiOtF7KC
-        7lOHk0a4i21LnzBFfuVoH8pSvG3MihCn0DE478+I+GNGDVIOCFhleUU6JEwLKj49IVcpYP
-        05cX7dEXR0sRnndr/aaQQLcMDjw8kQQ=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-19-eD9mhH7xNXuR9aTyzhVb1w-1; Sun, 21 May 2023 22:22:52 -0400
-X-MC-Unique: eD9mhH7xNXuR9aTyzhVb1w-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-53488b6a929so1563989a12.0
-        for <linux-ext4@vger.kernel.org>; Sun, 21 May 2023 19:22:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684722171; x=1687314171;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6gCnSvHg5O9ml4/OuYzbyOxwskor4dFbbIHvczRVaEk=;
-        b=lEhBzohZwmCnccVDDxOMrE0J0GwbsdwYubzM6e4C9rXrXImLRovgZ+uDVVVIG0abg3
-         v3inedUXuNyxPkEQIvbBk5LWWyVUImjZo9ac8W4BY3UpQbmARCiAhHtruryZcgWMW8bZ
-         7YGGhZ3ay2Q5m2364TcPW/jU2Fo9xrt5/Gy7GEEO75kETUk+9ocfPN7dcbIaPg9lJpGo
-         ZUGZFaI9IySkXc0EG1f5iDc7BJtfYK8jWAskxIajYno6kHdQ4pgcazVxuJ5hQgK7Dbbq
-         xsfFkBc89kuBHs7tlQlYQvANi0wMI854I6GfWZyxhsvv0yQ6DIpafNCo65OmzdL17QxM
-         pR8w==
-X-Gm-Message-State: AC+VfDxzCzvLB+ZA9ciPu0zIO/vGXKR9p3NaPGB1bgQNv6PKVdP9pR31
-        exKU6qZrf1ryvdTArpUeKFxKAQGCtcA9RCSqD4Jy3eiqPuHy6UfoguCvKv1/Q1EAQaQCWkeaj2l
-        dfDz5wv/hLqpmEsJjpPyAQA==
-X-Received: by 2002:a05:6a20:428a:b0:10b:e54f:1c00 with SMTP id o10-20020a056a20428a00b0010be54f1c00mr597202pzj.57.1684722171613;
-        Sun, 21 May 2023 19:22:51 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6YIe9VLQS6yzKMQ0WkmEEqdfd17sZ9Y4FgV9G2cXXtS6sfNqDs6Fii9g74G57D4O2vtAJBpQ==
-X-Received: by 2002:a05:6a20:428a:b0:10b:e54f:1c00 with SMTP id o10-20020a056a20428a00b0010be54f1c00mr597169pzj.57.1684722171305;
-        Sun, 21 May 2023 19:22:51 -0700 (PDT)
-Received: from [10.72.12.68] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d22-20020a631d16000000b0050be8e0b94csm3281962pgd.90.2023.05.21.19.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 May 2023 19:22:50 -0700 (PDT)
-Message-ID: <25ae2aff-daab-eaa3-19dd-aa5e56c9b6f1@redhat.com>
-Date:   Mon, 22 May 2023 10:22:39 +0800
+        with ESMTP id S232444AbjEVIuW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 04:50:22 -0400
+X-Greylist: delayed 2281 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 May 2023 01:50:20 PDT
+Received: from mail.simsborovin.com (mail.simsborovin.com [89.40.118.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DF2C2
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 01:50:20 -0700 (PDT)
+Received: by mail.simsborovin.com (Postfix, from userid 1001)
+        id 509AB833CA; Mon, 22 May 2023 09:11:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=simsborovin.com;
+        s=mail; t=1684743126;
+        bh=so3xiFooQ9N0D/cd/+ivPaO6nnHsd9cY/G2xa/w5Tfg=;
+        h=Date:From:To:Subject:From;
+        b=oSYrbvH6Elb7L4m0pJaEq2xiyYr8QSEA5RIdcP8dtXKmobqozxywUk8OELFIqULK+
+         b/bJ59hr30fvGbAwj4zChqCSuIJQ6dU3nGlf08MzW8vnjEqpAvxmprnG0x7zfdqkE9
+         iCRrwNcRkBbQj1uBpZg3vQFqzTHFZMORGt+AjnT0fg3r6q1QK2ESIgjttfynR8u0/7
+         4uoWafpCPZcbcLRDIHVTtfRbtyjtQ/gyXwfTcIJ70Ekz9biVBjeByltiksDD5vpgF0
+         mPblfIdxKm38IkqOK3dOjbsa3B37K8GT6aqw1mdnWrYZaaIfiUKXNiFk23xiqZ0JDH
+         zs3PuPYOlML5Q==
+Received: by mail.simsborovin.com for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 08:10:59 GMT
+Message-ID: <20230522074501-0.1.3m.gnmi.0.xmvikbh6km@simsborovin.com>
+Date:   Mon, 22 May 2023 08:10:59 GMT
+From:   "Konrad Trojanowski" <konrad.trojanowski@simsborovin.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: W sprawie samochodu
+X-Mailer: mail.simsborovin.com
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 03/13] filemap: assign current->backing_dev_info in
- generic_perform_write
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ilya Dryomov <idryomov@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "open list:F2FS FILE SYSTEM" <linux-f2fs-devel@lists.sourceforge.net>,
-        cluster-devel@redhat.com, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org
-References: <20230519093521.133226-1-hch@lst.de>
- <20230519093521.133226-4-hch@lst.de>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20230519093521.133226-4-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Dzie=C5=84 dobry,
 
-On 5/19/23 17:35, Christoph Hellwig wrote:
-> Move the assignment to current->backing_dev_info from the callers into
-> generic_perform_write to reduce boiler plate code and reduce the scope
-> to just around the page dirtying loop.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   fs/ceph/file.c | 4 ----
->   fs/ext4/file.c | 3 ---
->   fs/f2fs/file.c | 2 --
->   fs/nfs/file.c  | 5 +----
->   mm/filemap.c   | 2 ++
->   5 files changed, 3 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index feeb9882ef635a..767f4dfe7def64 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -1791,9 +1791,6 @@ static ssize_t ceph_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   	else
->   		ceph_start_io_write(inode);
->   
-> -	/* We can write back this queue in page reclaim */
-> -	current->backing_dev_info = inode_to_bdi(inode);
-> -
->   	if (iocb->ki_flags & IOCB_APPEND) {
->   		err = ceph_do_getattr(inode, CEPH_STAT_CAP_SIZE, false);
->   		if (err < 0)
-> @@ -1938,7 +1935,6 @@ static ssize_t ceph_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   		ceph_end_io_write(inode);
->   out_unlocked:
->   	ceph_free_cap_flush(prealloc_cf);
-> -	current->backing_dev_info = NULL;
->   	return written ? written : err;
->   }
->   
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 50824831d31def..3cb83a3e2e4a2a 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -29,7 +29,6 @@
->   #include <linux/pagevec.h>
->   #include <linux/uio.h>
->   #include <linux/mman.h>
-> -#include <linux/backing-dev.h>
->   #include "ext4.h"
->   #include "ext4_jbd2.h"
->   #include "xattr.h"
-> @@ -285,9 +284,7 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
->   	if (ret <= 0)
->   		goto out;
->   
-> -	current->backing_dev_info = inode_to_bdi(inode);
->   	ret = generic_perform_write(iocb, from);
-> -	current->backing_dev_info = NULL;
->   
->   out:
->   	inode_unlock(inode);
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 9e3855e43a7a63..7134fe8bd008cb 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -4517,9 +4517,7 @@ static ssize_t f2fs_buffered_write_iter(struct kiocb *iocb,
->   	if (iocb->ki_flags & IOCB_NOWAIT)
->   		return -EOPNOTSUPP;
->   
-> -	current->backing_dev_info = inode_to_bdi(inode);
->   	ret = generic_perform_write(iocb, from);
-> -	current->backing_dev_info = NULL;
->   
->   	if (ret > 0) {
->   		f2fs_update_iostat(F2FS_I_SB(inode), inode,
-> diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-> index 3cc87ae8473356..e8bb4c48a3210a 100644
-> --- a/fs/nfs/file.c
-> +++ b/fs/nfs/file.c
-> @@ -648,11 +648,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
->   	since = filemap_sample_wb_err(file->f_mapping);
->   	nfs_start_io_write(inode);
->   	result = generic_write_checks(iocb, from);
-> -	if (result > 0) {
-> -		current->backing_dev_info = inode_to_bdi(inode);
-> +	if (result > 0)
->   		result = generic_perform_write(iocb, from);
-> -		current->backing_dev_info = NULL;
-> -	}
->   	nfs_end_io_write(inode);
->   	if (result <= 0)
->   		goto out;
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 4d0ec2fa1c7070..bf693ad1da1ece 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3892,6 +3892,7 @@ ssize_t generic_perform_write(struct kiocb *iocb, struct iov_iter *i)
->   	long status = 0;
->   	ssize_t written = 0;
->   
-> +	current->backing_dev_info = inode_to_bdi(mapping->host);
->   	do {
->   		struct page *page;
->   		unsigned long offset;	/* Offset into pagecache page */
-> @@ -3956,6 +3957,7 @@ ssize_t generic_perform_write(struct kiocb *iocb, struct iov_iter *i)
->   
->   		balance_dirty_pages_ratelimited(mapping);
->   	} while (iov_iter_count(i));
-> +	current->backing_dev_info = NULL;
->   
->   	if (!written)
->   		return status;
+chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
+, je=C5=9Bli chodzi o system monitoringu GPS.
 
-LGTM.
+Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
+e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
+a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
 
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
+Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
+dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
+szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
+mne znaczenie.
 
-Thanks
-
-- Xiubo
+Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
+b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
 
 
+Pozdrawiam
+Konrad Trojanowski
