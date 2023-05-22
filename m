@@ -2,114 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA6970C501
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 20:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F4170C52D
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 20:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjEVSPd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 May 2023 14:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
+        id S233620AbjEVS2t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 May 2023 14:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjEVSPd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 14:15:33 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D78E0
-        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:15:31 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-75b0df7b225so75105285a.1
-        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684779330; x=1687371330;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+8YMN7GS0/Sa3jrWJNg5D8Y/9968Xsswf2R2G4U+G7c=;
-        b=PDDvpkWXgxLCvzOfmfvTSrXoZ1IGlOIHUQOSNsOCEpIQwsxjwhOXdzpjgGoYAo4qjj
-         SdHiyJW8I6OJosHevURgB5aU4Apf7vKiXM95RYbl3V1iATUks0nDF28ts/+KeeWc2uh+
-         I9M2FDBTieIEpY0cDok8SpAPhgFEWfJXKnHE+vCT0d3IZAt+wASlwugTTcbBTEb9JJY6
-         UQ774TGw3LRiQaKDuYf8Q2Mxgzg/vZvxakGfHXnAatg/nLR/639HbCl0ckHymK8LXohr
-         4PTfnLqtoPZSaYAGuRQjmFw2BAImb2pzGatBAmPNkTfdWnBW/ZAyf4SDK/KxqMLZuNFH
-         wuOg==
+        with ESMTP id S229559AbjEVS2s (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 14:28:48 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEBDB7
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:28:00 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-75b1219506fso72584385a.1
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:28:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684779330; x=1687371330;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+8YMN7GS0/Sa3jrWJNg5D8Y/9968Xsswf2R2G4U+G7c=;
-        b=hhQqS5AiiqFMqiU9GA4u8nHVYBtRun9w7KHdtNr0tznoLquZ1Z6GBzrqkWJN41piSH
-         a0DUggJo1sR/vs21HuOVe+7Zn6irPPpjnoAZ5sOIYQ2tEJLRxWA7eHW2G3PHY9arDZp9
-         C7dsCCn2vRO8vyCqJx22CGi2nfQma/C9wRkw/+hnDVDGhewT8mDP9+VEVrQ+ZaDTJybx
-         xSxHbvUHUqghwHD+1QalgkDJS4rIOE+nteVlUlxWlhEhqaxKbg0lyrIvcx+N1SzSJHV8
-         JW4EPX3WpB6lk5/D2X+g3rHleqScneLzQB2M0a3x2zufXJII2siiQ959d6jEoH65Dowe
-         1B7w==
-X-Gm-Message-State: AC+VfDzQeVDXPhFfSel33wgsJSPErgUdhd1aBle020CtFQztaz5HSrr/
-        5NxlPyd7AIdrNH5Z+bRzytPYoD9u8Vs=
-X-Google-Smtp-Source: ACHHUZ7r5059cL5YUJF1KUVCrypS47Yw2rociM4+VtFSnqNhcBa13aTTpXnQ8qilVhsvC47PcOTvjA==
-X-Received: by 2002:a05:620a:2b2f:b0:75b:23a0:d9ed with SMTP id do47-20020a05620a2b2f00b0075b23a0d9edmr1737660qkb.67.1684779330261;
-        Mon, 22 May 2023 11:15:30 -0700 (PDT)
-Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id t4-20020a05620a004400b007593d311c02sm1893604qkt.27.2023.05.22.11.15.29
+        d=1e100.net; s=20221208; t=1684780080; x=1687372080;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p7GzxNEPB5RrqIL7H106LwNVqNBV2sg10P6y5N7WaSk=;
+        b=MxWmmZup1Ovmw0wsYB7xiSdA9F8hZ8SHctEgDPhTfLeGNwjjOH8UQRQeZTJGcKdznb
+         hZQVTO864Fmyu5WtMEOBcOIpjwYkxWwu5tInrFWhxOeyW+GfyMt0pL8aLskp1ghiW44z
+         L45+RCuIsXHatxBcmky/RCg+wVrupZDm9yV1wQh8+gGN0TNP4cpjKc65N+JGrzYtVMv3
+         abb7R0Sln1t6OTZXq6M0NoSXthqcJ99lyshXPUZv0tQ/BUVJXcv8YSpYru8JI5qOpfED
+         11Ny1gwWIxXZqJZuVZ09hxcUe/FB6h7fnXtjGyq57dOdTVhXzSCIlppADV/7o+PYNOAW
+         Nocw==
+X-Gm-Message-State: AC+VfDyb82H9kOuHA8iDYxLcYXd3bYOp2I692S5mtq3Ck9jGHkH1k6y/
+        5tg4mhHXD5WfjCZjT2JZMqIp
+X-Google-Smtp-Source: ACHHUZ5cNHDfNJtYuuNT8G4J5JsInsTlSg1wDbr/+6XLCC/c6hq9pMKzuHMG58VXqxmVmQvtSAcUtw==
+X-Received: by 2002:a05:6214:f22:b0:625:833e:8825 with SMTP id iw2-20020a0562140f2200b00625833e8825mr5440304qvb.4.1684780079641;
+        Mon, 22 May 2023 11:27:59 -0700 (PDT)
+Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
+        by smtp.gmail.com with ESMTPSA id u12-20020a0ced2c000000b0061b5c45f970sm2137700qvq.74.2023.05.22.11.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 May 2023 11:15:29 -0700 (PDT)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: correct inline offset when handling xattrs in inode body
-Date:   Mon, 22 May 2023 14:15:20 -0400
-Message-Id: <20230522181520.1570360-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 22 May 2023 11:27:59 -0700 (PDT)
+Date:   Mon, 22 May 2023 14:27:57 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>, Joe Thornber <ejt@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZGu0LaQfREvOQO4h@redhat.com>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <ZGb2Xi6O3i2pLam8@infradead.org>
+ <ZGeKm+jcBxzkMXQs@redhat.com>
+ <ZGgBQhsbU9b0RiT1@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When run on a file system where the inline_data feature has been
-enabled, xfstests generic/269, generic/270, and generic/476 cause ext4
-to emit error messages indicating that inline directory entries are
-corrupted.  This occurs because the inline offset used to locate
-inline directory entries in the inode body is not updated when an
-xattr in that shared region is deleted and the region is shifted in
-memory to recover the space it occupied.  If the deleted xattr precedes
-the system.data attribute, which points to the inline directory entries,
-that attribute will be moved further up in the region.  The inline
-offset continues to point to whatever is located in system.data's former
-location, with unfortunate effects when used to access directory entries
-or (presumably) inline data in the inode body.
+On Fri, May 19 2023 at  7:07P -0400,
+Dave Chinner <david@fromorbit.com> wrote:
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/xattr.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> On Fri, May 19, 2023 at 10:41:31AM -0400, Mike Snitzer wrote:
+> > On Fri, May 19 2023 at 12:09P -0400,
+> > Christoph Hellwig <hch@infradead.org> wrote:
+> > 
+> > > FYI, I really don't think this primitive is a good idea.  In the
+> > > concept of non-overwritable storage (NAND, SMR drives) the entire
+> > > concept of a one-shoot 'provisioning' that will guarantee later writes
+> > > are always possible is simply bogus.
+> > 
+> > Valid point for sure, such storage shouldn't advertise support (and
+> > will return -EOPNOTSUPP).
+> > 
+> > But the primitive still has utility for other classes of storage.
+> 
+> Yet the thing people are wanting to us filesystem developers to use
+> this with is thinly provisioned storage that has snapshot
+> capability. That, by definition, is non-overwritable storage. These
+> are the use cases people are asking filesystes to gracefully handle
+> and report errors when the sparse backing store runs out of space.
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index dfc2e223bd10..e1c7b65d8d52 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1799,6 +1799,20 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 		memmove(here, (void *)here + size,
- 			(void *)last - (void *)here + sizeof(__u32));
- 		memset(last, 0, size);
-+
-+		/*
-+		 * Update i_inline_off - moved ibody region might contain
-+		 * system.data attribute.  Handling a failure here won't
-+		 * cause other complications for setting an xattr.
-+		 */
-+		if (!is_block && ext4_has_inline_data(inode)) {
-+			ret = ext4_find_inline_data_nolock(inode);
-+			if (ret) {
-+				ext4_warning_inode(inode,
-+					"unable to update i_inline_off");
-+				goto out;
-+			}
-+		}
- 	} else if (s->not_found) {
- 		/* Insert new name. */
- 		size_t size = EXT4_XATTR_LEN(name_len);
--- 
-2.30.2
+DM thinp falls into this category but as you detailed it can be made
+to work reliably. To carry that forward we need to first establish
+the REQ_PROVISION primitive (with this series).
 
+Follow-on associated dm-thinp enhancements can then serve as reference
+for how to take advantage of XFS's ability to operate reliably of
+thinly provisioned storage.
+ 
+> e.g. journal writes after a snapshot is taken on a busy filesystem
+> are always an overwrite and this requires more space in the storage
+> device for the write to succeed. ENOSPC from the backing device for
+> journal IO is a -fatal error-. Hence if REQ_PROVISION doesn't
+> guarantee space for overwrites after snapshots, then it's not
+> actually useful for solving the real world use cases we actually
+> need device-level provisioning to solve.
+> 
+> It is not viable for filesystems to have to reprovision space for
+> in-place metadata overwrites after every snapshot - the filesystem
+> may not even know a snapshot has been taken! And it's not feasible
+> for filesystems to provision on demand before they modify metadata
+> because we don't know what metadata is going to need to be modified
+> before we start modifying metadata in transactions. If we get ENOSPC
+> from provisioning in the middle of a dirty transcation, it's all
+> over just the same as if we get ENOSPC during metadata writeback...
+> 
+> Hence what filesystems actually need is device provisioned space to
+> be -always over-writable- without ENOSPC occurring.  Ideally, if we
+> provision a range of the block device, the block device *must*
+> guarantee all future writes to that LBA range succeeds. That
+> guarantee needs to stand until we discard or unmap the LBA range,
+> and for however many writes we do to that LBA range.
+> 
+> e.g. If the device takes a snapshot, it needs to reprovision the
+> potential COW ranges that overlap with the provisioned LBA range at
+> snapshot time. e.g. by re-reserving the space from the backing pool
+> for the provisioned space so if a COW occurs there is space
+> guaranteed for it to succeed.  If there isn't space in the backing
+> pool for the reprovisioning, then whatever operation that triggers
+> the COW behaviour should fail with ENOSPC before doing anything
+> else....
+
+Happy to implement this in dm-thinp.  Each thin block will need a bit
+to say if the block must be REQ_PROVISION'd at time of snapshot (and
+the resulting block will need the same bit set).
+
+Walking all blocks of a thin device and triggering REQ_PROVISION for
+each will obviously make thin snapshot creation take more time.
+
+I think this approach is better than having a dedicated bitmap hooked
+off each thin device's metadata (with bitmap being copied and walked
+at the time of snapshot). But we'll see... I'll get with Joe to
+discuss further.
+
+> Software devices like dm-thin/snapshot should really only need to
+> keep a persistent map of the provisioned space and refresh space
+> reservations for used space within that map whenever something that
+> triggers COW behaviour occurs. i.e. a snapshot needs to reset the
+> provisioned ranges back to "all ranges are freshly provisioned"
+> before the snapshot is started. If that space is not available in
+> the backing pool, then the snapshot attempt gets ENOSPC....
+> 
+> That means filesystems only need to provision space for journals and
+> fixed metadata at mkfs time, and they only need issue a
+> REQ_PROVISION bio when they first allocate over-write in place
+> metadata. We already have online discard and/or fstrim for releasing
+> provisioned space via discards.
+> 
+> This will require some mods to filesystems like ext4 and XFS to
+> issue REQ_PROVISION and fail gracefully during metadata allocation.
+> However, doing so means that we can actually harden filesystems
+> against sparse block device ENOSPC errors by ensuring they will
+> never occur in critical filesystem structures....
+
+Yes, let's finally _do_ this! ;)
+
+Mike
