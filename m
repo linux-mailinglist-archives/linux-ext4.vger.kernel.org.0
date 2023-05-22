@@ -2,183 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0445770C392
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 18:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA6970C501
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 May 2023 20:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjEVQhP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 May 2023 12:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S230480AbjEVSPd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 May 2023 14:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjEVQhO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 12:37:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD78BF;
-        Mon, 22 May 2023 09:37:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E09F61B6C;
-        Mon, 22 May 2023 16:37:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD5BFC433EF;
-        Mon, 22 May 2023 16:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684773430;
-        bh=2He6U7qRXsvcUhtzbRqViBFgVaT+dg2a2JQ7qWLAX9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VZXeWVIh07NmnTCmgVxAUdNEN/GFI7px1Szk/0gj+mTlwADll5GDq8yMtIGHk/2/v
-         5/+XsBtb4u/VtVnJCxv2Sz6CQpBonzMUKJNOvIBr4pzz33dCTT7DITwfmBrI3x/7ow
-         wneGx6y9vdwA1JWQdHS2EFKj8jFdUnvBvenc3AXYljvXlM0gnZsSatAQ4vddWrPcq1
-         ipIFtaHJQwicwfbn2dQwYqVu2ptWjeA3D01NbL1SID8nnUDpR0Vp6Ix4LyV+8cq4Xd
-         RIhoQfcwi+TmdEyL1rA6Rkr3+y8L8gZJEQ7KuNfIkwe4F2GP5K8mdm0jBcUkdLgBnK
-         xOXyAXGzdSmmw==
-Date:   Mon, 22 May 2023 09:37:10 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [dm-devel] [PATCH v7 5/5] loop: Add support for provision
- requests
-Message-ID: <20230522163710.GA11607@frogsfrogsfrogs>
-References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <20230518223326.18744-6-sarthakkukreti@chromium.org>
+        with ESMTP id S229723AbjEVSPd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 May 2023 14:15:33 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D78E0
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:15:31 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-75b0df7b225so75105285a.1
+        for <linux-ext4@vger.kernel.org>; Mon, 22 May 2023 11:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684779330; x=1687371330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8YMN7GS0/Sa3jrWJNg5D8Y/9968Xsswf2R2G4U+G7c=;
+        b=PDDvpkWXgxLCvzOfmfvTSrXoZ1IGlOIHUQOSNsOCEpIQwsxjwhOXdzpjgGoYAo4qjj
+         SdHiyJW8I6OJosHevURgB5aU4Apf7vKiXM95RYbl3V1iATUks0nDF28ts/+KeeWc2uh+
+         I9M2FDBTieIEpY0cDok8SpAPhgFEWfJXKnHE+vCT0d3IZAt+wASlwugTTcbBTEb9JJY6
+         UQ774TGw3LRiQaKDuYf8Q2Mxgzg/vZvxakGfHXnAatg/nLR/639HbCl0ckHymK8LXohr
+         4PTfnLqtoPZSaYAGuRQjmFw2BAImb2pzGatBAmPNkTfdWnBW/ZAyf4SDK/KxqMLZuNFH
+         wuOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684779330; x=1687371330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+8YMN7GS0/Sa3jrWJNg5D8Y/9968Xsswf2R2G4U+G7c=;
+        b=hhQqS5AiiqFMqiU9GA4u8nHVYBtRun9w7KHdtNr0tznoLquZ1Z6GBzrqkWJN41piSH
+         a0DUggJo1sR/vs21HuOVe+7Zn6irPPpjnoAZ5sOIYQ2tEJLRxWA7eHW2G3PHY9arDZp9
+         C7dsCCn2vRO8vyCqJx22CGi2nfQma/C9wRkw/+hnDVDGhewT8mDP9+VEVrQ+ZaDTJybx
+         xSxHbvUHUqghwHD+1QalgkDJS4rIOE+nteVlUlxWlhEhqaxKbg0lyrIvcx+N1SzSJHV8
+         JW4EPX3WpB6lk5/D2X+g3rHleqScneLzQB2M0a3x2zufXJII2siiQ959d6jEoH65Dowe
+         1B7w==
+X-Gm-Message-State: AC+VfDzQeVDXPhFfSel33wgsJSPErgUdhd1aBle020CtFQztaz5HSrr/
+        5NxlPyd7AIdrNH5Z+bRzytPYoD9u8Vs=
+X-Google-Smtp-Source: ACHHUZ7r5059cL5YUJF1KUVCrypS47Yw2rociM4+VtFSnqNhcBa13aTTpXnQ8qilVhsvC47PcOTvjA==
+X-Received: by 2002:a05:620a:2b2f:b0:75b:23a0:d9ed with SMTP id do47-20020a05620a2b2f00b0075b23a0d9edmr1737660qkb.67.1684779330261;
+        Mon, 22 May 2023 11:15:30 -0700 (PDT)
+Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id t4-20020a05620a004400b007593d311c02sm1893604qkt.27.2023.05.22.11.15.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 May 2023 11:15:29 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] ext4: correct inline offset when handling xattrs in inode body
+Date:   Mon, 22 May 2023 14:15:20 -0400
+Message-Id: <20230522181520.1570360-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230518223326.18744-6-sarthakkukreti@chromium.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 18, 2023 at 03:33:26PM -0700, Sarthak Kukreti wrote:
-> Add support for provision requests to loopback devices.
-> Loop devices will configure provision support based on
-> whether the underlying block device/file can support
-> the provision request and upon receiving a provision bio,
-> will map it to the backing device/storage. For loop devices
-> over files, a REQ_OP_PROVISION request will translate to
-> an fallocate mode 0 call on the backing file.
-> 
-> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> ---
->  drivers/block/loop.c | 34 +++++++++++++++++++++++++++++++---
->  1 file changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index bc31bb7072a2..7fe1a6629754 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -311,16 +311,20 @@ static int lo_fallocate(struct loop_device *lo, struct request *rq, loff_t pos,
->  {
->  	/*
->  	 * We use fallocate to manipulate the space mappings used by the image
-> -	 * a.k.a. discard/zerorange.
-> +	 * a.k.a. discard/provision/zerorange.
->  	 */
->  	struct file *file = lo->lo_backing_file;
->  	int ret;
->  
-> -	mode |= FALLOC_FL_KEEP_SIZE;
-> +	if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE) &&
-> +	    !bdev_max_discard_sectors(lo->lo_device))
-> +		return -EOPNOTSUPP;
->  
-> -	if (!bdev_max_discard_sectors(lo->lo_device))
-> +	if (mode == 0 && !bdev_max_provision_sectors(lo->lo_device))
->  		return -EOPNOTSUPP;
->  
-> +	mode |= FALLOC_FL_KEEP_SIZE;
-> +
->  	ret = file->f_op->fallocate(file, mode, pos, blk_rq_bytes(rq));
->  	if (unlikely(ret && ret != -EINVAL && ret != -EOPNOTSUPP))
->  		return -EIO;
-> @@ -488,6 +492,8 @@ static int do_req_filebacked(struct loop_device *lo, struct request *rq)
->  				FALLOC_FL_PUNCH_HOLE);
->  	case REQ_OP_DISCARD:
->  		return lo_fallocate(lo, rq, pos, FALLOC_FL_PUNCH_HOLE);
-> +	case REQ_OP_PROVISION:
-> +		return lo_fallocate(lo, rq, pos, 0);
+When run on a file system where the inline_data feature has been
+enabled, xfstests generic/269, generic/270, and generic/476 cause ext4
+to emit error messages indicating that inline directory entries are
+corrupted.  This occurs because the inline offset used to locate
+inline directory entries in the inode body is not updated when an
+xattr in that shared region is deleted and the region is shifted in
+memory to recover the space it occupied.  If the deleted xattr precedes
+the system.data attribute, which points to the inline directory entries,
+that attribute will be moved further up in the region.  The inline
+offset continues to point to whatever is located in system.data's former
+location, with unfortunate effects when used to access directory entries
+or (presumably) inline data in the inode body.
 
-If someone calls fallocate(UNSHARE_RANGE) on a loop bdev, shouldn't
-there be a way to pass that through to the fallocate call to the backing
-file?
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+---
+ fs/ext4/xattr.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---D
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index dfc2e223bd10..e1c7b65d8d52 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -1799,6 +1799,20 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
+ 		memmove(here, (void *)here + size,
+ 			(void *)last - (void *)here + sizeof(__u32));
+ 		memset(last, 0, size);
++
++		/*
++		 * Update i_inline_off - moved ibody region might contain
++		 * system.data attribute.  Handling a failure here won't
++		 * cause other complications for setting an xattr.
++		 */
++		if (!is_block && ext4_has_inline_data(inode)) {
++			ret = ext4_find_inline_data_nolock(inode);
++			if (ret) {
++				ext4_warning_inode(inode,
++					"unable to update i_inline_off");
++				goto out;
++			}
++		}
+ 	} else if (s->not_found) {
+ 		/* Insert new name. */
+ 		size_t size = EXT4_XATTR_LEN(name_len);
+-- 
+2.30.2
 
->  	case REQ_OP_WRITE:
->  		if (cmd->use_aio)
->  			return lo_rw_aio(lo, cmd, pos, ITER_SOURCE);
-> @@ -754,6 +760,25 @@ static void loop_sysfs_exit(struct loop_device *lo)
->  				   &loop_attribute_group);
->  }
->  
-> +static void loop_config_provision(struct loop_device *lo)
-> +{
-> +	struct file *file = lo->lo_backing_file;
-> +	struct inode *inode = file->f_mapping->host;
-> +
-> +	/*
-> +	 * If the backing device is a block device, mirror its provisioning
-> +	 * capability.
-> +	 */
-> +	if (S_ISBLK(inode->i_mode)) {
-> +		blk_queue_max_provision_sectors(lo->lo_queue,
-> +			bdev_max_provision_sectors(I_BDEV(inode)));
-> +	} else if (file->f_op->fallocate) {
-> +		blk_queue_max_provision_sectors(lo->lo_queue, UINT_MAX >> 9);
-> +	} else {
-> +		blk_queue_max_provision_sectors(lo->lo_queue, 0);
-> +	}
-> +}
-> +
->  static void loop_config_discard(struct loop_device *lo)
->  {
->  	struct file *file = lo->lo_backing_file;
-> @@ -1092,6 +1117,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->  	blk_queue_io_min(lo->lo_queue, bsize);
->  
->  	loop_config_discard(lo);
-> +	loop_config_provision(lo);
->  	loop_update_rotational(lo);
->  	loop_update_dio(lo);
->  	loop_sysfs_init(lo);
-> @@ -1304,6 +1330,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
->  	}
->  
->  	loop_config_discard(lo);
-> +	loop_config_provision(lo);
->  
->  	/* update dio if lo_offset or transfer is changed */
->  	__loop_update_dio(lo, lo->use_dio);
-> @@ -1830,6 +1857,7 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
->  	case REQ_OP_FLUSH:
->  	case REQ_OP_DISCARD:
->  	case REQ_OP_WRITE_ZEROES:
-> +	case REQ_OP_PROVISION:
->  		cmd->use_aio = false;
->  		break;
->  	default:
-> -- 
-> 2.40.1.698.g37aff9b760-goog
-> 
-> --
-> dm-devel mailing list
-> dm-devel@redhat.com
-> https://listman.redhat.com/mailman/listinfo/dm-devel
-> 
