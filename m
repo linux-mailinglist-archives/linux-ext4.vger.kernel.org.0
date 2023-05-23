@@ -2,62 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FEC70DA19
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 12:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC77C70DAAA
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 12:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236458AbjEWKR1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 May 2023 06:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
+        id S236254AbjEWKiX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 May 2023 06:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235984AbjEWKR0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 06:17:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4D894;
-        Tue, 23 May 2023 03:17:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S233019AbjEWKiX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 06:38:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A03FD;
+        Tue, 23 May 2023 03:38:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DBA97204B2;
-        Tue, 23 May 2023 10:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684837043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pJearGp7XvoKQH8r+JXuFUaSaDT86GZEmHPZFyporzw=;
-        b=yJZJT1OgORi5RtyIixB/rOLuR+h4YOf/eNgFYXfGwJwrUNG0IuaqlOt1xJwUh2rdfYfa3z
-        TRq3yl9IzwjdiXabcxYBb7c/VkGt/gWrkXIOV6zWQqw/TlF8q9NzxPsA6vuoHaKhRfDVsx
-        7dDUe7LfbfgHwItCuI47Lu50P+j1AYg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684837043;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pJearGp7XvoKQH8r+JXuFUaSaDT86GZEmHPZFyporzw=;
-        b=smBRmOb08zACD6WGFlZMUpHyGypof+tbliDQZkhMAqleKrtZ7ouMKaKN/V4ftcEBe+q1Hl
-        HJ7kYRewaUgDqADg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C61E113588;
-        Tue, 23 May 2023 10:17:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EVhVMLOSbGQlbAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 23 May 2023 10:17:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4F79CA075D; Tue, 23 May 2023 12:17:23 +0200 (CEST)
-Date:   Tue, 23 May 2023 12:17:23 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C49D62ECC;
+        Tue, 23 May 2023 10:38:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494EBC433D2;
+        Tue, 23 May 2023 10:38:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684838300;
+        bh=iccCfOHrskC0H4R3YMclbxF6J/FZ+5JAYqkJc7wrxX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HkbPfWqjMihgGRsu8YoEmd77NAWKV8nH70aM7Bd21uX6286VtZDB6cVtmOaHHtFNu
+         4wBSvOCc5KAfCQKZZn6M5T4YYMKfdDE72HkPYwwfVhRxchw2y158osOL/GlsyxPK/u
+         Ij5K+u9pT1Lu/cwQf0Qyz2NMGOaPoHgufrvXrbSADcKafQJwkoAcIwy5zwnbsjg2Ph
+         /M0cBnzrV4NeVcQ2Dsaybc2KXIlzl1N4g8doRumHeW0rV5iZ/kE5eH+sa7phuDUg5q
+         Rhd1WMuZim5ovKWxHDwCf+3M5e81vP4rq2OLmfOyhQSgOHqbq/Fb8iBomvshVEMBtr
+         pvWYXXjvWfxFA==
+Date:   Tue, 23 May 2023 12:38:10 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Dave Chinner <david@fromorbit.com>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Amir Goldstein <amir73il@gmail.com>,
         David Howells <dhowells@redhat.com>,
         Neil Brown <neilb@suse.de>,
@@ -76,17 +59,17 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-cifs@vger.kernel.org
 Subject: Re: [PATCH v4 2/9] fs: add infrastructure for multigrain inode
  i_m/ctime
-Message-ID: <20230523101723.xmy7mylbczhki6aa@quack3>
+Message-ID: <20230523-bekochen-makaber-6edbaa685390@brauner>
 References: <20230518114742.128950-1-jlayton@kernel.org>
  <20230518114742.128950-3-jlayton@kernel.org>
  <20230523100240.mgeu4y46friv7hau@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20230523100240.mgeu4y46friv7hau@quack3>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,7 +77,7 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 23-05-23 12:02:40, Jan Kara wrote:
+On Tue, May 23, 2023 at 12:02:40PM +0200, Jan Kara wrote:
 > On Thu 18-05-23 07:47:35, Jeff Layton wrote:
 > > The VFS always uses coarse-grained timestamp updates for filling out the
 > > ctime and mtime after a change. This has the benefit of allowing
@@ -158,25 +141,99 @@ On Tue 23-05-23 12:02:40, Jan Kara wrote:
 > be just done with Coccinelle and a few manual fixups. So IMHO it is worth
 > the more robust result.
 
-Also as I'm thinking about it your current scheme is slightly racy. Suppose
-the filesystem does:
+Yeah, these are all good points.
 
-CPU1					CPU2
+> 
+> Some more nits below.
+> 
+> > +/**
+> > + * current_mg_time - Return FS time (possibly fine-grained)
+> > + * @inode: inode.
+> > + *
+> > + * Return the current time truncated to the time granularity supported by
+> > + * the fs, as suitable for a ctime/mtime change. If the ctime is flagged
+> > + * as having been QUERIED, get a fine-grained timestamp.
+> > + */
+> 
+> The comment should also mention that QUERIED flag is cleared from the ctime.
+> 
+> > +static struct timespec64 current_mg_time(struct inode *inode)
+> > +{
+> > +	struct timespec64 now;
+> > +	atomic_long_t *pnsec = (atomic_long_t *)&inode->i_ctime.tv_nsec;
+> > +	long nsec = atomic_long_fetch_andnot(I_CTIME_QUERIED, pnsec);
+> > +
+> > +	if (nsec & I_CTIME_QUERIED) {
+> > +		ktime_get_real_ts64(&now);
+> > +	} else {
+> > +		struct timespec64 ctime;
+> > +
+> > +		ktime_get_coarse_real_ts64(&now);
+> > +
+> > +		/*
+> > +		 * If we've recently fetched a fine-grained timestamp
+> > +		 * then the coarse-grained one may still be earlier than the
+> > +		 * existing one. Just keep the existing ctime if so.
+> > +		 */
+> > +		ctime = ctime_peek(inode);
+> > +		if (timespec64_compare(&ctime, &now) > 0)
+> > +			now = ctime;
+> > +	}
+> > +
+> > +	return now;
+> > +}
+> > +
+> 
+> ...
+> 
+> > +/**
+> > + * ctime_nsec_peek - peek at (but don't query) the ctime tv_nsec field
+> > + * @inode: inode to fetch the ctime from
+> > + *
+> > + * Grab the current ctime tv_nsec field from the inode, mask off the
+> > + * I_CTIME_QUERIED flag and return it. This is mostly intended for use by
+> > + * internal consumers of the ctime that aren't concerned with ensuring a
+> > + * fine-grained update on the next change (e.g. when preparing to store
+> > + * the value in the backing store for later retrieval).
+> > + *
+> > + * This is safe to call regardless of whether the underlying filesystem
+> > + * is using multigrain timestamps.
+> > + */
+> > +static inline long ctime_nsec_peek(const struct inode *inode)
+> > +{
+> > +	return inode->i_ctime.tv_nsec &~ I_CTIME_QUERIED;
+> 
+> This is somewhat unusual spacing. I'd use:
+> 
+> 	inode->i_ctime.tv_nsec & ~I_CTIME_QUERIED
+> 
+> > +}
+> > +
+> > +/**
+> > + * ctime_peek - peek at (but don't query) the ctime
+> > + * @inode: inode to fetch the ctime from
+> > + *
+> > + * Grab the current ctime from the inode, sans I_CTIME_QUERIED flag. For
+> > + * use by internal consumers that don't require a fine-grained update on
+> > + * the next change.
+> > + *
+> > + * This is safe to call regardless of whether the underlying filesystem
+> > + * is using multigrain timestamps.
+> > + */
+> > +static inline struct timespec64 ctime_peek(const struct inode *inode)
+> > +{
+> > +	struct timespec64 ctime;
+> > +
+> > +	ctime.tv_sec = inode->i_ctime.tv_sec;
+> > +	ctime.tv_nsec = ctime_nsec_peek(inode);
+> > +
+> > +	return ctime;
+> > +}
+> 
+> Given this is in a header that gets included in a lot of places, maybe we
+> should call it like inode_ctime_peek() or inode_ctime_get() to reduce
+> chances of a name clash?
 
-					statx()
-inode->i_ctime = current_time()
-  current_mg_time()
-    nsec = atomic_long_fetch_andnot(QUERIED, &inode->i_ctime.tv_nsec)
-					  nsec = atomic_long_fetch_or(QUERIED, &inode->i_ctime.tv_nsec)
-    if (nsec & QUERIED) - not set
-      ktime_get_coarse_real_ts64(&now)
-    return timestamp_truncate(now, inode);
-- QUERIED flag in the inode->i_ctime gets overwritten by the assignment
-  => we need not update ctime due to granularity although it was queried
-
-One more reason to use explicit function to update inode->i_ctime ;)
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I think I mentioned this in an earlier comment. Independent of this
+series, it would be kinda nice if we could start moving stuff out of
+fs.h so we end up with a finer grained split of fs.h.
