@@ -2,230 +2,204 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D6870DB4D
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 13:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1234D70DBF7
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 14:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbjEWLPH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 May 2023 07:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
+        id S236530AbjEWMHJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 May 2023 08:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjEWLPG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 07:15:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164D3119;
-        Tue, 23 May 2023 04:15:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DA5063144;
-        Tue, 23 May 2023 11:15:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86034C433EF;
-        Tue, 23 May 2023 11:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684840503;
-        bh=t7q3eN4BhkELHpTr8DtxIodckxoWL2ElEdGhZ8MHRXA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=kkOoNXpsxbLfCboBMvGQ0TZ495A4EkCqbOAhscv082uZWwcELAtlQYSschubrdr7e
-         s41Z0KfV1nRirJQ+AXcuUlwXITW7dG+QbnBqsROCo7fnGawbuOSiV1H/jac4LP62Px
-         DgTNYFrlEMVh15PHU0jwip1npMemwKtmdPYAnnIQUUIw09adZ4/j4VXr9V1mp039FO
-         8zxW1TPfGEf3AnApU6fmuw7BVmsLam15SH3gzqm4qmy+oakOHWJck/MpVclOMnuvBR
-         A+fjefks4366G9TneC0ktxH2ISCrf7eEdYApxB2Uw2EdkseBJW/MvR3OvEYUKuZ2ix
-         9aYZU2cyS5TdA==
-Message-ID: <c350ae1b689ef325561ba3443ff841c4d22e5791.camel@kernel.org>
-Subject: Re: [PATCH v4 2/9] fs: add infrastructure for multigrain inode
- i_m/ctime
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Neil Brown <neilb@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tom Talpey <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org
-Date:   Tue, 23 May 2023 07:15:00 -0400
-In-Reply-To: <20230523-undicht-antihelden-b1a98aa769be@brauner>
-References: <20230518114742.128950-1-jlayton@kernel.org>
-         <20230518114742.128950-3-jlayton@kernel.org>
-         <20230523100240.mgeu4y46friv7hau@quack3>
-         <20230523101723.xmy7mylbczhki6aa@quack3>
-         <ef75ac7c96f309b8f080a717f260247f69988d4a.camel@kernel.org>
-         <20230523-undicht-antihelden-b1a98aa769be@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
+        with ESMTP id S229889AbjEWMHI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 08:07:08 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C252D109
+        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 05:07:06 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-510db954476so1252649a12.0
+        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 05:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684843618; x=1687435618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vSSbEcfCTwTKkInK85giu7l+r0E6Z5EtUIfFTQ3q+a0=;
+        b=EkCxoj4wVejkTapIHSKQMSIDWaHbnjzHgGU3UBHUZ9IWEP+KBAm5YqdZFxvfDjh+Lr
+         YotZzM0Vk1smpMoGPJ0Ky9+Ho6w1ikVX59EAtb0X91IkAC7YCOpXyDlbSo2EDd2J1wUw
+         OCsKE6LIxnvWnubx2iV0tbVjOmtgXw2XijdMWjyM6zc98xETw4vl6FKIWsUKYov3nbw6
+         VTKRsuGOpsjCpnRJwKzabW0coXn8ZbW0YHC24Dq0h+J3k9TG+T9H+G5vtWoxASv/IBvJ
+         +NWLG9SuZHx6YDTYTnmci39Rp/kadcGv4wijpTUk5wrK+fsxsRHq+yiT5PiJFGRj+eRM
+         xi3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684843618; x=1687435618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vSSbEcfCTwTKkInK85giu7l+r0E6Z5EtUIfFTQ3q+a0=;
+        b=R8IKRQp2w4bE6UI90sUp4RnKMO7iTGzIWxhIlZdJZ4h2iK2rwrTTNf88tee/w8sn1M
+         /Zx4JSAaFmoIt2BA0TTrilFbwebkFz9E3EVsQVmG4EwJMUHBYjbDB0/jNfVB9zxIK9Tb
+         f021RPNfQRDo1/d9RSdwhGCrXMr61glal7Q7VECYtoQjqQZf3pszHwAvpesOcFHmSpbo
+         o0mlFWyzTOyQS0sWvxjxgSTAo7x17AcegtcQHY7J0iutUEqQlmXPHkflz6U9k/Qu0HSf
+         hPyYJziMeeL8zIztH0dZmLy9CYMRDZ2eeyDO8X4fAYdNHglP1Jp3knq74ZcWTuHjeOZx
+         uZNA==
+X-Gm-Message-State: AC+VfDy5gS7sgrwz5oTJJLoHiCKSGk3ru1ybQXfLy0yuoDvNTPyXcLUb
+        WaVE4Sc0x8D0LSIH0XBPwbyiu+0wAJQspU/7+hM=
+X-Google-Smtp-Source: ACHHUZ6N60auvTxN9bTXf0SUi61DdpLup+oKWMlxMrb8aZtLGPv3bbl5oBvknD0N+vDgKlHzlYWScrJrHW0IpDLne3s=
+X-Received: by 2002:a17:907:1693:b0:96f:9962:be19 with SMTP id
+ hc19-20020a170907169300b0096f9962be19mr11877722ejc.31.1684843617844; Tue, 23
+ May 2023 05:06:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230510001409.14522-1-sunjunchao2870@gmail.com>
+In-Reply-To: <20230510001409.14522-1-sunjunchao2870@gmail.com>
+From:   JunChao Sun <sunjunchao2870@gmail.com>
+Date:   Tue, 23 May 2023 20:06:44 +0800
+Message-ID: <CAHB1NahwmPEm8dT=27y8rQ0ZBBe6HC7jwM4F0XchJhKTZLhkqQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Replace value of xattrs in place
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-05-23 at 13:01 +0200, Christian Brauner wrote:
-> On Tue, May 23, 2023 at 06:56:11AM -0400, Jeff Layton wrote:
-> > On Tue, 2023-05-23 at 12:17 +0200, Jan Kara wrote:
-> > > On Tue 23-05-23 12:02:40, Jan Kara wrote:
-> > > > On Thu 18-05-23 07:47:35, Jeff Layton wrote:
-> > > > > The VFS always uses coarse-grained timestamp updates for filling =
-out the
-> > > > > ctime and mtime after a change. This has the benefit of allowing
-> > > > > filesystems to optimize away a lot metadata updates, down to arou=
-nd 1
-> > > > > per jiffy, even when a file is under heavy writes.
-> > > > >=20
-> > > > > Unfortunately, this has always been an issue when we're exporting=
- via
-> > > > > NFSv3, which relies on timestamps to validate caches. Even with N=
-FSv4, a
-> > > > > lot of exported filesystems don't properly support a change attri=
-bute
-> > > > > and are subject to the same problems with timestamp granularity. =
-Other
-> > > > > applications have similar issues (e.g backup applications).
-> > > > >=20
-> > > > > Switching to always using fine-grained timestamps would improve t=
-he
-> > > > > situation, but that becomes rather expensive, as the underlying
-> > > > > filesystem will have to log a lot more metadata updates.
-> > > > >=20
-> > > > > What we need is a way to only use fine-grained timestamps when th=
-ey are
-> > > > > being actively queried.
-> > > > >=20
-> > > > > The kernel always stores normalized ctime values, so only the fir=
-st 30
-> > > > > bits of the tv_nsec field are ever used. Whenever the mtime chang=
-es, the
-> > > > > ctime must also change.
-> > > > >=20
-> > > > > Use the 31st bit of the ctime tv_nsec field to indicate that some=
-thing
-> > > > > has queried the inode for the i_mtime or i_ctime. When this flag =
-is set,
-> > > > > on the next timestamp update, the kernel can fetch a fine-grained
-> > > > > timestamp instead of the usual coarse-grained one.
-> > > > >=20
-> > > > > This patch adds the infrastructure this scheme. Filesytems can op=
-t
-> > > > > into it by setting the FS_MULTIGRAIN_TS flag in the fstype.
-> > > > >=20
-> > > > > Later patches will convert individual filesystems over to use it.
-> > > > >=20
-> > > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > >=20
-> > > > So there are two things I dislike about this series because I think=
- they
-> > > > are fragile:
-> > > >=20
-> > > > 1) If we have a filesystem supporting multigrain ts and someone
-> > > > accidentally directly uses the value of inode->i_ctime, he can get =
-bogus
-> > > > value (with QUERIED flag). This mistake is very easy to do. So I th=
-ink we
-> > > > should rename i_ctime to something like __i_ctime and always use ac=
-cessor
-> > > > function for it.
-> > > >=20
-> > > > 2) As I already commented in a previous version of the series, the =
-scheme
-> > > > with just one flag for both ctime and mtime and flag getting cleare=
-d in
-> > > > current_time() relies on the fact that filesystems always do an equ=
-ivalent
-> > > > of:
-> > > >=20
-> > > > 	inode->i_mtime =3D inode->i_ctime =3D current_time();
-> > > >=20
-> > > > Otherwise we can do coarse grained update where we should have done=
- a fine
-> > > > grained one. Filesystems often update timestamps like this but not
-> > > > universally. Grepping shows some instances where only inode->i_mtim=
-e is set
-> > > > from current_time() e.g. in autofs or bfs. Again a mistake that is =
-rather
-> > > > easy to make and results in subtle issues. I think this would be al=
-so
-> > > > nicely solved by renaming i_ctime to __i_ctime and using a function=
- to set
-> > > > ctime. Mtime could then be updated with inode->i_mtime =3D ctime_pe=
-ek().
-> > > >=20
-> > > > I understand this is quite some churn but a very mechanical one tha=
-t could
-> > > > be just done with Coccinelle and a few manual fixups. So IMHO it is=
- worth
-> > > > the more robust result.
-> > >=20
-> > > Also as I'm thinking about it your current scheme is slightly racy. S=
-uppose
-> > > the filesystem does:
-> > >=20
-> > > CPU1					CPU2
-> > >=20
-> > > 					statx()
-> > > inode->i_ctime =3D current_time()
-> > >   current_mg_time()
-> > >     nsec =3D atomic_long_fetch_andnot(QUERIED, &inode->i_ctime.tv_nse=
-c)
-> > > 					  nsec =3D atomic_long_fetch_or(QUERIED, &inode->i_ctime.tv_nsec=
-)
-> > >     if (nsec & QUERIED) - not set
-> > >       ktime_get_coarse_real_ts64(&now)
-> > >     return timestamp_truncate(now, inode);
-> > > - QUERIED flag in the inode->i_ctime gets overwritten by the assignme=
-nt
-> > >   =3D> we need not update ctime due to granularity although it was qu=
-eried
-> > >=20
-> > > One more reason to use explicit function to update inode->i_ctime ;)
-> >=20
-> > When we store the new time in the i_ctime field, the flag gets cleared
-> > because at that point we're storing a new (unseen) time.
-> >=20
-> > However, you're correct: if the i_ctime in your above example starts at
-> > the same value that is currently being returned by
-> > ktime_get_coarse_real_ts64, then we'll lose the flag set in statx.
-> >=20
-> > I think the right fix there would be to not update the ctime at all if
-> > it's a coarse grained time, and the value wouldn't have an apparent
-> > change to an observer. That would leave the flag intact.
-> >=20
-> > That does mean we'd need to move to a function that does clock fetch an=
-d
-> > assigns it to i_ctime in one go (like you suggest). Something like:
-> >=20
-> >     inode_update_ctime(inode);
-> >=20
-> > How we do that with atomic operations over two values (the tv_sec and
-> > tv_nsec) is a bit tricky. I'll have to think about it.
-> >=20
-> > Christian, given Jan's concerns do you want to drop this series for now
-> > and let me respin it?
->=20
-> I deliberately put it into a vfs.unstable.* branch. I would leave it
-> there until you send a new one then drop it. If we get lucky the bots
-> that run on -next will have time to report potential perf issues while
-> it's not currently causing conflicts.
+Friendly ping...
+Could anyone review this patch?
 
-Sounds good to me. Thanks!
---=20
-Jeff Layton <jlayton@kernel.org>
+JunChao Sun <sunjunchao2870@gmail.com> =E4=BA=8E2023=E5=B9=B45=E6=9C=8810=
+=E6=97=A5=E5=91=A8=E4=B8=89 08:14=E5=86=99=E9=81=93=EF=BC=9A
+>
+> When replacing the value of an xattr found in an ea_inode, currently
+> ext4 will evict the ea_inode that stores the old value, recreate an
+> ea_inode, and then write the new value into the new ea_inode.
+> This can be optimized by writing the new value into the old
+> ea_inode directly.
+>
+> The logic for replacing value of xattrs without this patch
+> is as follows:
+> ext4_xattr_set_entry()
+>     ->ext4_xattr_inode_iget(&old_ea_inode)
+>     ->ext4_xattr_inode_lookup_create(&new_ea_inode)
+>     ->ext4_xattr_inode_dec_ref(old_ea_inode)
+>     ->iput(old_ea_inode)
+>         ->ext4_destroy_inode()
+>         ->ext4_evict_inode()
+>         ->ext4_free_inode()
+>     ->iput(new_ea_inode)
+>
+> The logic with this patch is:
+> ext4_xattr_set_entry()
+>     ->ext4_xattr_inode_iget(&old_ea_inode)
+>     ->ext4_xattr_inode_write(old_ea_inode, new_value)
+>     ->iput(old_ea_inode)
+>
+> This patch reduces the time it takes to replace xattrs in the ext4.
+> Without this patch, replacing the value of an xattr two million times tak=
+es
+> about 45 seconds on Intel(R) Xeon(R) CPU E5-2620 v3 platform.
+> With this patch, the same operation takes only 6 seconds.
+>
+>   [root@client01 sjc]# ./mount.sh
+>   /dev/sdb1 contains a ext4 file system
+>       last mounted on /mnt/ext4 on Mon May  8 17:05:38 2023
+>   [root@client01 sjc]# touch /mnt/ext4/file1
+>   [root@client01 sjc]# gcc test.c
+>   [root@client01 sjc]# time ./a.out
+>
+>   real    0m45.248s
+>   user    0m0.513s
+>   sys 0m39.231s
+>
+>   [root@client01 sjc]# ./mount.sh
+>   /dev/sdb1 contains a ext4 file system
+>       last mounted on /mnt/ext4 on Mon May  8 17:08:20 2023
+>   [root@client01 sjc]# touch /mnt/ext4/file1
+>   [root@client01 sjc]# time ./a.out
+>
+>   real    0m5.977s
+>   user    0m0.316s
+>   sys 0m5.659s
+>
+> The test.c and mount.sh are in [1].
+> This patch passed the tests with xfstests using 'check -g quick'.
+>
+> [1] https://gist.github.com/sjc2870/c923d7fa627d10ab65d6c305afb02cdb
+>
+> Signed-off-by: JunChao Sun <sunjunchao2870@gmail.com>
+> ---
+>
+> Changes in v2:
+>   - Fix a problem when ref of an ea_inode not equal to 1
+>   - Link to v1: https://lore.kernel.org/linux-ext4/20230509011042.11781-1=
+-sunjunchao2870@gmail.com/
+>
+>  fs/ext4/xattr.c | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index d57408cbe903..8f03958bfcc6 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1713,6 +1713,42 @@ static int ext4_xattr_set_entry(struct ext4_xattr_=
+info *i,
+>                 }
+>         }
+>
+> +       if (!s->not_found && i->value && here->e_value_inum && i->in_inod=
+e) {
+> +               /* Replace xattr value in ea_inode in place */
+> +               int size_diff =3D i->value_len - le32_to_cpu(here->e_valu=
+e_size);
+> +
+> +               ret =3D ext4_xattr_inode_iget(inode,
+> +                                               le32_to_cpu(here->e_value=
+_inum),
+> +                                               le32_to_cpu(here->e_hash)=
+,
+> +                                               &old_ea_inode);
+> +               if (ret) {
+> +                       old_ea_inode =3D NULL;
+> +                       goto out;
+> +               }
+> +               if (ext4_xattr_inode_get_ref(old_ea_inode) =3D=3D 1) {
+> +                       if (size_diff > 0)
+> +                               ret =3D ext4_xattr_inode_alloc_quota(inod=
+e, size_diff);
+> +                       else if (size_diff < 0)
+> +                               ext4_xattr_inode_free_quota(inode, NULL, =
+-size_diff);
+> +                       if (ret)
+> +                               goto out;
+> +
+> +                       ret =3D ext4_xattr_inode_write(handle, old_ea_ino=
+de, i->value, i->value_len);
+> +                       if (ret) {
+> +                               if (size_diff > 0)
+> +                                       ext4_xattr_inode_free_quota(inode=
+, NULL, size_diff);
+> +                               else if (size_diff < 0)
+> +                                       ret =3D ext4_xattr_inode_alloc_qu=
+ota(inode, -size_diff);
+> +                               goto out;
+> +                       }
+> +                       here->e_value_size =3D cpu_to_le32(i->value_len);
+> +                       new_ea_inode =3D old_ea_inode;
+> +                       old_ea_inode =3D NULL;
+> +                       goto update_hash;
+> +               } else
+> +                       iput(old_ea_inode);
+> +       }
+> +
+>         /*
+>          * Getting access to old and new ea inodes is subject to failures=
+.
+>          * Finish that work before doing any modifications to the xattr d=
+ata.
+> --
+> 1.8.3.1
+>
