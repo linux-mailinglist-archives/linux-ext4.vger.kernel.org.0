@@ -2,241 +2,299 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAAE70E06F
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 17:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D76470E0F1
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 May 2023 17:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237314AbjEWP1h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 May 2023 11:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        id S235630AbjEWPuY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 May 2023 11:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237062AbjEWP1g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 11:27:36 -0400
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9A1130
-        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 08:26:22 -0700 (PDT)
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-75b0b2d0341so232529985a.3
-        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 08:26:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684855582; x=1687447582;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hOwa5nFzWuC8J25Geuotxcv/8rIn3BuiCtasU8soHSk=;
-        b=lUNPZzsn337wXZUCjqWQmCOtQQDA9bqm8jDVW2PmUv3GwberqPq8SBvRPobNG+OseT
-         V2euGl3BMYdPEDT47YVz6zViehkOCw6Q5MlFKWvLDaPO/6nBxlRKolPmN4EH1MfbLzum
-         oSjr7S1tt2JgVjoSbZbXwpMXTG+GaX2/OBttwAfk2QBj/Z7LxQzr7OBGkjjwCwzq4juF
-         xH6tPs06ubllz5UPh0jMv7VLsBb9OSWytXdx97I3uHoOs2O8BCP8Wl4AjUdmNFLNouY6
-         9OBv9bOLw7DdjbrLnDZ4kfMhp/HA11s/I51uf3pMtzNcWFhzYYWOhTrGO3VqbfCXTxs6
-         hNaQ==
-X-Gm-Message-State: AC+VfDzvOde4DcSAjQy6NDA5Y8paUaBUL3cBkkBtSv+zPoFEXoFGPCa/
-        tzEm37bMOXtgWwPzpic81Zyt
-X-Google-Smtp-Source: ACHHUZ5DQUCXLPe0l5Sv6bRXDTH5MsYFi8eMw3CVk9o8lrYyCzhm/UIR8A5Md2PyHqNG7iks9yZx5g==
-X-Received: by 2002:a37:a843:0:b0:75b:23a1:440 with SMTP id r64-20020a37a843000000b0075b23a10440mr4366557qke.6.1684855580214;
-        Tue, 23 May 2023 08:26:20 -0700 (PDT)
-Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id i6-20020a37c206000000b0075b04cad776sm2079156qkm.20.2023.05.23.08.26.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 08:26:19 -0700 (PDT)
-Date:   Tue, 23 May 2023 11:26:18 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Joe Thornber <ejt@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZGzbGg35SqMrWfpr@redhat.com>
-References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <ZGb2Xi6O3i2pLam8@infradead.org>
- <ZGeKm+jcBxzkMXQs@redhat.com>
- <ZGgBQhsbU9b0RiT1@dread.disaster.area>
- <ZGu0LaQfREvOQO4h@redhat.com>
- <ZGzIJlCE2pcqQRFJ@bfoster>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZGzIJlCE2pcqQRFJ@bfoster>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        with ESMTP id S231433AbjEWPuX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 11:50:23 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307B1DD
+        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 08:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684857022; x=1716393022;
+  h=date:from:to:cc:subject:message-id;
+  bh=J3G5Svl4mbLYEuLhOBmIomsZXhczH8rQ8M4NYXw+gL0=;
+  b=dkWRxhto40IT8HA0PIl43oVgTE9AftScucFkbwdm8CQ1OAqr705S1ssZ
+   DmLAZ2oOoOsOikWZxiqYSODRKMCm0BuJXA/gVJ1UoPvnfsO2OKy0aHLwe
+   NlAhbkwuPEw8fcGgeeh8AIR4LAPN9ACyFCXUXQ3TQnOXR9A1zngFxmQIb
+   B84qdciGBxrwFbWHnG5zyHn8+PLHbOyjo5n2LMBbrTNT5Z4wwkvmVIkdH
+   XaBW+Ca8EbUZJwBTKZWa4Dc74pvjTc5aGcH4GntREwRLguMX54lLgcKqC
+   usI+U2Q/nYSOfQtIRAjCFfdFR2CMOwaQ2M7nruej/L6Zb8zTvi45JdP/j
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10719"; a="356508956"
+X-IronPort-AV: E=Sophos;i="6.00,186,1681196400"; 
+   d="scan'208";a="356508956"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2023 08:50:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10719"; a="950595241"
+X-IronPort-AV: E=Sophos;i="6.00,186,1681196400"; 
+   d="scan'208";a="950595241"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 23 May 2023 08:50:20 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q1UHD-000DtF-1p;
+        Tue, 23 May 2023 15:50:19 +0000
+Date:   Tue, 23 May 2023 23:49:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:test] BUILD SUCCESS
+ 5f0839acb99f87e162cee1bfb8a9e964f2bfd7e6
+Message-ID: <20230523154920.SferQ%lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 23 2023 at 10:05P -0400,
-Brian Foster <bfoster@redhat.com> wrote:
+tree/branch: INFO setup_repo_specs: /db/releases/20230523172912/lkp-src/repo/*/tytso-ext4
+https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
+branch HEAD: 5f0839acb99f87e162cee1bfb8a9e964f2bfd7e6  ext4: set lockdep subclass for the ea_inode in ext4_xattr_inode_cache_find()
 
-> On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
-> > On Fri, May 19 2023 at  7:07P -0400,
-> > Dave Chinner <david@fromorbit.com> wrote:
-> > 
-...
-> > > e.g. If the device takes a snapshot, it needs to reprovision the
-> > > potential COW ranges that overlap with the provisioned LBA range at
-> > > snapshot time. e.g. by re-reserving the space from the backing pool
-> > > for the provisioned space so if a COW occurs there is space
-> > > guaranteed for it to succeed.  If there isn't space in the backing
-> > > pool for the reprovisioning, then whatever operation that triggers
-> > > the COW behaviour should fail with ENOSPC before doing anything
-> > > else....
-> > 
-> > Happy to implement this in dm-thinp.  Each thin block will need a bit
-> > to say if the block must be REQ_PROVISION'd at time of snapshot (and
-> > the resulting block will need the same bit set).
-> > 
-> > Walking all blocks of a thin device and triggering REQ_PROVISION for
-> > each will obviously make thin snapshot creation take more time.
-> > 
-> > I think this approach is better than having a dedicated bitmap hooked
-> > off each thin device's metadata (with bitmap being copied and walked
-> > at the time of snapshot). But we'll see... I'll get with Joe to
-> > discuss further.
-> > 
-> 
-> Hi Mike,
-> 
-> If you recall our most recent discussions on this topic, I was thinking
-> about the prospect of reserving the entire volume at mount time as an
-> initial solution to this problem. When looking through some of the old
-> reservation bits we prototyped years ago, it occurred to me that we have
-> enough mechanism to actually prototype this.
-> 
-> So FYI, I have some hacky prototype code that essentially has the
-> filesystem at mount time tell dm it's using the volume and expects all
-> further writes to succeed. dm-thin acquires reservation for the entire
-> range of the volume for which writes would require block allocation
-> (i.e., holes and shared dm blocks) or otherwise warns that the fs cannot
-> be "safely" mounted.
-> 
-> The reservation pool associates with the thin volume (not the
-> filesystem), so if a snapshot is requested from dm, the snapshot request
-> locates the snapshot origin and if it's currently active, increases the
-> reservation pool to account for outstanding blocks that are about to
-> become shared, or otherwise fails the snapshot with -ENOSPC. (I suspect
-> discard needs similar treatment, but I hadn't got to that yet.). If the
-> fs is not active, there is nothing to protect and so the snapshot
-> proceeds as normal.
-> 
-> This seems to work on my simple, initial tests for protecting actively
-> mounted filesystems from dm-thin -ENOSPC. This definitely needs a sanity
-> check from dm-thin folks, however, because I don't know enough about the
-> broader subsystem to reason about whether it's sufficiently correct. I
-> just managed to beat the older prototype code into submission to get it
-> to do what I wanted on simple experiments.
+elapsed time: 722m
 
-Feel free to share what you have.
+configs tested: 222
+configs skipped: 14
 
-But my initial gut on the approach is: why even use thin provisioning
-at all if you're just going to reserve the entire logical address
-space of each thin device?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Thoughts on something like this? I think the main advantage is that it
-> significantly reduces the requirements on the fs to track individual
-> allocations. It's basically an on/off switch from the fs perspective,
-> doesn't require any explicit provisioning whatsoever (though it can be
-> done to improve things in the future) and in fact could probably be tied
-> to thin volume activation to be made completely filesystem agnostic.
-> Another advantage is that it requires no on-disk changes, no breaking
-> COWs up front during snapshots, etc.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r002-20230522   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r012-20230521   gcc  
+alpha                randconfig-r022-20230521   gcc  
+alpha                randconfig-r023-20230523   gcc  
+alpha                randconfig-r024-20230521   gcc  
+alpha                randconfig-r025-20230521   gcc  
+alpha                randconfig-r026-20230522   gcc  
+alpha                randconfig-r033-20230522   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r004-20230521   gcc  
+arc          buildonly-randconfig-r005-20230522   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230521   gcc  
+arc                  randconfig-r015-20230521   gcc  
+arc                  randconfig-r016-20230522   gcc  
+arc                  randconfig-r023-20230521   gcc  
+arc                  randconfig-r023-20230522   gcc  
+arc                  randconfig-r024-20230523   gcc  
+arc                  randconfig-r034-20230522   gcc  
+arc                  randconfig-r035-20230521   gcc  
+arc                  randconfig-r036-20230521   gcc  
+arc                  randconfig-r043-20230521   gcc  
+arc                  randconfig-r043-20230522   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm          buildonly-randconfig-r003-20230522   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r013-20230522   gcc  
+arm                  randconfig-r046-20230521   clang
+arm                  randconfig-r046-20230522   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r001-20230522   gcc  
+arm64        buildonly-randconfig-r002-20230521   clang
+arm64                               defconfig   gcc  
+arm64                randconfig-r005-20230521   clang
+arm64                randconfig-r005-20230522   gcc  
+csky         buildonly-randconfig-r003-20230521   gcc  
+csky         buildonly-randconfig-r006-20230522   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r011-20230522   gcc  
+csky                 randconfig-r014-20230521   gcc  
+csky                 randconfig-r015-20230521   gcc  
+hexagon              randconfig-r013-20230521   clang
+hexagon              randconfig-r021-20230522   clang
+hexagon              randconfig-r026-20230522   clang
+hexagon              randconfig-r032-20230522   clang
+hexagon              randconfig-r035-20230521   clang
+hexagon              randconfig-r041-20230521   clang
+hexagon              randconfig-r041-20230522   clang
+hexagon              randconfig-r045-20230521   clang
+hexagon              randconfig-r045-20230522   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230522   gcc  
+i386                 randconfig-a002-20230522   gcc  
+i386                 randconfig-a003-20230522   gcc  
+i386                 randconfig-a004-20230522   gcc  
+i386                 randconfig-a005-20230522   gcc  
+i386                 randconfig-a006-20230522   gcc  
+i386                 randconfig-i051-20230523   clang
+i386                 randconfig-i052-20230523   clang
+i386                 randconfig-i053-20230523   clang
+i386                 randconfig-i054-20230523   clang
+i386                 randconfig-i055-20230523   clang
+i386                 randconfig-i056-20230523   clang
+i386                 randconfig-i061-20230523   clang
+i386                 randconfig-i062-20230523   clang
+i386                 randconfig-i063-20230523   clang
+i386                 randconfig-i064-20230523   clang
+i386                 randconfig-i065-20230523   clang
+i386                 randconfig-i066-20230523   clang
+i386                 randconfig-r001-20230522   gcc  
+i386                 randconfig-r004-20230522   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                        generic_defconfig   gcc  
+ia64                 randconfig-r003-20230522   gcc  
+ia64                 randconfig-r015-20230522   gcc  
+ia64                 randconfig-r022-20230523   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r003-20230521   gcc  
+loongarch    buildonly-randconfig-r006-20230521   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230521   gcc  
+loongarch            randconfig-r024-20230522   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r003-20230522   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5407c3_defconfig   gcc  
+m68k                 randconfig-r013-20230522   gcc  
+microblaze           randconfig-r004-20230522   gcc  
+microblaze           randconfig-r012-20230522   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips         buildonly-randconfig-r002-20230522   clang
+mips         buildonly-randconfig-r006-20230521   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                 randconfig-r001-20230521   gcc  
+mips                 randconfig-r006-20230521   gcc  
+mips                 randconfig-r011-20230522   gcc  
+mips                 randconfig-r022-20230522   gcc  
+mips                 randconfig-r033-20230522   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r004-20230521   gcc  
+nios2                randconfig-r005-20230521   gcc  
+nios2                randconfig-r031-20230521   gcc  
+nios2                randconfig-r031-20230522   gcc  
+openrisc     buildonly-randconfig-r001-20230522   gcc  
+openrisc     buildonly-randconfig-r004-20230522   gcc  
+openrisc     buildonly-randconfig-r005-20230521   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+openrisc             randconfig-r031-20230522   gcc  
+openrisc             randconfig-r034-20230521   gcc  
+openrisc             randconfig-r035-20230522   gcc  
+openrisc             randconfig-r036-20230521   gcc  
+openrisc             randconfig-r036-20230522   gcc  
+parisc       buildonly-randconfig-r004-20230521   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r002-20230521   gcc  
+parisc               randconfig-r014-20230522   gcc  
+parisc               randconfig-r022-20230521   gcc  
+parisc               randconfig-r023-20230521   gcc  
+parisc               randconfig-r023-20230522   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc      buildonly-randconfig-r001-20230521   gcc  
+powerpc              randconfig-r006-20230522   gcc  
+powerpc              randconfig-r011-20230521   gcc  
+powerpc              randconfig-r021-20230521   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r024-20230521   gcc  
+riscv                randconfig-r042-20230521   gcc  
+riscv                randconfig-r042-20230522   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r025-20230521   gcc  
+s390                 randconfig-r026-20230521   gcc  
+s390                 randconfig-r044-20230521   gcc  
+s390                 randconfig-r044-20230522   clang
+sh                               allmodconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                            hp6xx_defconfig   gcc  
+sh                   randconfig-r002-20230522   gcc  
+sh                   randconfig-r006-20230521   gcc  
+sh                   randconfig-r015-20230522   gcc  
+sh                   randconfig-r034-20230521   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sparc        buildonly-randconfig-r005-20230522   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r014-20230521   gcc  
+sparc                randconfig-r014-20230522   gcc  
+sparc                randconfig-r025-20230522   gcc  
+sparc64              randconfig-r001-20230522   gcc  
+sparc64              randconfig-r011-20230521   gcc  
+sparc64              randconfig-r016-20230521   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230522   gcc  
+x86_64               randconfig-a002-20230522   gcc  
+x86_64               randconfig-a003-20230522   gcc  
+x86_64               randconfig-a004-20230522   gcc  
+x86_64               randconfig-a005-20230522   gcc  
+x86_64               randconfig-a006-20230522   gcc  
+x86_64               randconfig-a011-20230522   clang
+x86_64               randconfig-a012-20230522   clang
+x86_64               randconfig-a013-20230522   clang
+x86_64               randconfig-a014-20230522   clang
+x86_64               randconfig-a015-20230522   clang
+x86_64               randconfig-a016-20230522   clang
+x86_64               randconfig-x051-20230522   clang
+x86_64               randconfig-x052-20230522   clang
+x86_64               randconfig-x053-20230522   clang
+x86_64               randconfig-x054-20230522   clang
+x86_64               randconfig-x055-20230522   clang
+x86_64               randconfig-x056-20230522   clang
+x86_64               randconfig-x061-20230522   clang
+x86_64               randconfig-x062-20230522   clang
+x86_64               randconfig-x063-20230522   clang
+x86_64               randconfig-x064-20230522   clang
+x86_64               randconfig-x065-20230522   clang
+x86_64               randconfig-x066-20230522   clang
+x86_64               randconfig-x071-20230522   gcc  
+x86_64               randconfig-x072-20230522   gcc  
+x86_64               randconfig-x073-20230522   gcc  
+x86_64               randconfig-x074-20230522   gcc  
+x86_64               randconfig-x075-20230522   gcc  
+x86_64               randconfig-x076-20230522   gcc  
+x86_64               randconfig-x081-20230522   gcc  
+x86_64               randconfig-x082-20230522   gcc  
+x86_64               randconfig-x083-20230522   gcc  
+x86_64               randconfig-x084-20230522   gcc  
+x86_64               randconfig-x085-20230522   gcc  
+x86_64               randconfig-x086-20230522   gcc  
+x86_64               randconfig-x091-20230523   gcc  
+x86_64               randconfig-x092-20230523   gcc  
+x86_64               randconfig-x093-20230523   gcc  
+x86_64               randconfig-x094-20230523   gcc  
+x86_64               randconfig-x095-20230523   gcc  
+x86_64               randconfig-x096-20230523   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r001-20230521   gcc  
+xtensa               randconfig-r002-20230522   gcc  
+xtensa               randconfig-r003-20230522   gcc  
+xtensa               randconfig-r021-20230521   gcc  
+xtensa               randconfig-r025-20230523   gcc  
+xtensa               randconfig-r026-20230521   gcc  
+xtensa               randconfig-r026-20230523   gcc  
 
-I'm just really unclear on the details without seeing it.
-
-You shared a roll-up of the code we did from years ago so I can kind
-of imagine the nature of the changes.  I'm concerned about snapshots,
-and the implicit need to compound the reservation for each snapshot.
-
-> The disadvantages are that it's space inefficient wrt to thin pool free
-> space, but IIUC this is essentially what userspace management layers
-> (such as Stratis) are doing today, they just put restrictions up front
-> at volume configuration/creation time instead of at runtime. There also
-> needs to be some kind of interface between the fs and dm. I suppose we
-> could co-opt provision and discard primitives with a "reservation"
-> modifier flag to get around that in a simple way, but that sounds
-> potentially ugly. TBH, the more I think about this the more I think it
-> makes sense to reserve on volume activation (with some caveats to allow
-> a read-only mode, explicit bypass, etc.) and then let the
-> cross-subsystem interface be dictated by granularity improvements...
-
-It just feels imprecise to the point of being both excessive and
-nebulous.
-
-thin devices, and snapshots of them, can be active without associated
-filesystem mounts being active.  It just takes a single origin volume
-to be mounted, with a snapshot active, to force thin blocks' sharing
-to be broken.
-
-> ... since I also happen to think there is a potentially interesting
-> development path to make this sort of reserve pool configurable in terms
-> of size and active/inactive state, which would allow the fs to use an
-> emergency pool scheme for managing metadata provisioning and not have to
-> track and provision individual metadata buffers at all (dealing with
-> user data is much easier to provision explicitly). So the space
-> inefficiency thing is potentially just a tradeoff for simplicity, and
-> filesystems that want more granularity for better behavior could achieve
-> that with more work. Filesystems that don't would be free to rely on the
-> simple/basic mechanism provided by dm-thin and still have basic -ENOSPC
-> protection with very minimal changes.
-> 
-> That's getting too far into the weeds on the future bits, though. This
-> is essentially 99% a dm-thin approach, so I'm mainly curious if there's
-> sufficient interest in this sort of "reserve mode" approach to try and
-> clean it up further and have dm guys look at it, or if you guys see any
-> obvious issues in what it does that makes it potentially problematic, or
-> if you would just prefer to go down the path described above...
-
-The model that Dave detailed, which builds on REQ_PROVISION and is
-sticky (by provisioning same blocks for snapshot) seems more useful to
-me because it is quite precise.  That said, it doesn't account for
-hard requirements that _all_ blocks will always succeed.  I'm really
-not sure we need to go to your extreme (even though stratis
-has.. difference is they did so as a crude means to an end because the
-existing filesystem code can easily get caught out by -ENOSPC at
-exactly the wrong time).
-
-Mike
-
-
-> > > Software devices like dm-thin/snapshot should really only need to
-> > > keep a persistent map of the provisioned space and refresh space
-> > > reservations for used space within that map whenever something that
-> > > triggers COW behaviour occurs. i.e. a snapshot needs to reset the
-> > > provisioned ranges back to "all ranges are freshly provisioned"
-> > > before the snapshot is started. If that space is not available in
-> > > the backing pool, then the snapshot attempt gets ENOSPC....
-> > > 
-> > > That means filesystems only need to provision space for journals and
-> > > fixed metadata at mkfs time, and they only need issue a
-> > > REQ_PROVISION bio when they first allocate over-write in place
-> > > metadata. We already have online discard and/or fstrim for releasing
-> > > provisioned space via discards.
-> > > 
-> > > This will require some mods to filesystems like ext4 and XFS to
-> > > issue REQ_PROVISION and fail gracefully during metadata allocation.
-> > > However, doing so means that we can actually harden filesystems
-> > > against sparse block device ENOSPC errors by ensuring they will
-> > > never occur in critical filesystem structures....
-> > 
-> > Yes, let's finally _do_ this! ;)
-> > 
-> > Mike
-> > 
-> 
-> --
-> dm-devel mailing list
-> dm-devel@redhat.com
-> https://listman.redhat.com/mailman/listinfo/dm-devel
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
