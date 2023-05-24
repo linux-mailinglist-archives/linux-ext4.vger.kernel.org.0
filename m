@@ -2,228 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF9370FEF0
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 22:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970D77100A4
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 00:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbjEXUDf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 May 2023 16:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
+        id S230423AbjEXWMc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 May 2023 18:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjEXUDf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 16:03:35 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2DBFC
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 13:02:52 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-75b2a2bf757so9791085a.2
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 13:02:52 -0700 (PDT)
+        with ESMTP id S229826AbjEXWMa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 18:12:30 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6729135
+        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 15:12:29 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-75affb4d0f9so17965985a.2
+        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 15:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684966349; x=1687558349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1l/0qie4req/UQOwYfmZHsuT9joQERFp9mtBgi/+Sw=;
+        b=kzGFFuKKMv1z86PsXNNkYryChfRTphcbuWNHNVkz3R6lAcch1+7gBETZMR9o38Tuee
+         sD2G6QJlCAHU5qiKQKniZ3nw5RIMowXPiP1Ng2lF7KriLKBJppYjfY95uecdT2BQqSyG
+         +BpWFAowI7S0RQ+d8x3ks1ijVBoLWdcZBJNlq2AkzCrqAsvGMGa9d0Pm31Wjcs3jekzp
+         xO15/I72IuK3EWOJV3IsxTuu0X8+mpKvj+7YbtSFlfdkPENT/MH1WBxco6D2e54h6lIJ
+         02SDfJ/HLu8CbMU7xVpEv1DkZTVKFz87NTLLvUlO1vo6YmPKChswf5S8q4LzI8pd3Sq4
+         LvEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684958571; x=1687550571;
+        d=1e100.net; s=20221208; t=1684966349; x=1687558349;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wc0lEJ6PvCd/xSxo1AL44vYdysUGzpOXm110SXEKBVE=;
-        b=EHKJUL2CV/G9/M3ehynyCRLOQFhPuuRFai6dwMQRs7kqwD33EqJAvtcsl/WNYz1Ss6
-         +4eHpcGE8qqV7qn9kaTq68aVSFBdp90DGmBo6KvBtrdb8B5loWsztEoXKhkmuJBDpWam
-         U8FI9/Nd+9BeFyoVC/52Ld1BSTOX+ARBsojl0ZLoQxkbTO2Jp5BLmoVHk6+iuWvixm7H
-         AM/FHpxPs+tp91BPvtbbnpGkrvq1JRn6QDyFuJftkjeqDLPAFiQnPLTDuDc6kUVICH7N
-         XqyZVHCML+M0BDv6kLB6Umb1G3jSLbmYB0bidr8hf3iP0RL1fDdCH+9vykLN7E8uq7DL
-         VJOw==
-X-Gm-Message-State: AC+VfDxN5+vvylZoeO2gRK0Mg2We/04c0b2XPYd5qtvVG5vDQOMW7VxE
-        qkazto7tYVVXMNnWZq+QHxoL
-X-Google-Smtp-Source: ACHHUZ5Edu25T8oAO0AIn9AjhlUZ+gCHN9Nh8NKCZqGZXLB9J8KM/t5ZexjNCLqFmWACVt0TS1EBUg==
-X-Received: by 2002:ae9:d60e:0:b0:75b:23a1:3671 with SMTP id r14-20020ae9d60e000000b0075b23a13671mr9242472qkk.50.1684958571318;
-        Wed, 24 May 2023 13:02:51 -0700 (PDT)
-Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id v20-20020a05620a123400b0074d60b697a6sm3496740qkj.12.2023.05.24.13.02.50
+        bh=b1l/0qie4req/UQOwYfmZHsuT9joQERFp9mtBgi/+Sw=;
+        b=N2nVX6dFroXbH9t2ZEDEzKhfNrA8ChJzMf/K4+M9Fjk8q6aJ7XmjO+1OGBHvZ9GGy4
+         5fyc/+SRvo2LjhYIzYsXyz/KQhlee9rkuNlZlTtzTZbvqG6nAZ8uTanV230MYhJDwyE3
+         2rdszdT1KN0sIDom041Ot1JNgARrHJqcnwzRa/torq4wh6C+PhSAcCJUVrNROsFm29qB
+         L3kbC97wWoczGxHma8zvNGSNG6NA4b+EpWrjE0fVPtKNwK/i6D1JZd7wkUttCknn6C8q
+         9HIm2a3L99v9gseFZcXS/C/7WZntwmFBkL9Pbgga96xHCrCFtbe4Nb7hsaSTP25a0yoI
+         s9ig==
+X-Gm-Message-State: AC+VfDwUSkeo5dAkp0Ma52tc1x3MZ5LyzV30BGDU2bz7c/Hye4Kt3ThR
+        K25RGQ63INvbxOFDyEZCuUU=
+X-Google-Smtp-Source: ACHHUZ4LQl+sMom57SWJGat+dzZZHusXYWow4q9mi5ixXb7ZlaxbQEy8LL0FryAMBB6fCDIPDIoN5Q==
+X-Received: by 2002:a05:620a:3d89:b0:75b:23a0:e7b8 with SMTP id ts9-20020a05620a3d8900b0075b23a0e7b8mr7648120qkn.25.1684966348958;
+        Wed, 24 May 2023 15:12:28 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id u13-20020ae9c00d000000b0075783f6c2b4sm3550775qkk.128.2023.05.24.15.12.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 May 2023 13:02:50 -0700 (PDT)
-Date:   Wed, 24 May 2023 16:02:49 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        linux-kernel@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZG5taYoXDRymo/e9@redhat.com>
-References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <ZGb2Xi6O3i2pLam8@infradead.org>
- <ZGeKm+jcBxzkMXQs@redhat.com>
- <ZGgBQhsbU9b0RiT1@dread.disaster.area>
- <ZGu0LaQfREvOQO4h@redhat.com>
- <ZGzIJlCE2pcqQRFJ@bfoster>
- <ZGzbGg35SqMrWfpr@redhat.com>
- <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+        Wed, 24 May 2023 15:12:28 -0700 (PDT)
+Date:   Wed, 24 May 2023 18:12:26 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Eric Whitney <enwlinux@gmail.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+Subject: Re: [PATCH] ext4: Fix fsync for non-directories
+Message-ID: <ZG6Lyq4iq/HnBvPu@debian-BULLSEYE-live-builder-AMD64>
+References: <20230524104453.8734-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZG1dAtHmbQ53aOhA@dread.disaster.area>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230524104453.8734-1-jack@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 23 2023 at  8:40P -0400,
-Dave Chinner <david@fromorbit.com> wrote:
-
-> On Tue, May 23, 2023 at 11:26:18AM -0400, Mike Snitzer wrote:
-> > On Tue, May 23 2023 at 10:05P -0400, Brian Foster <bfoster@redhat.com> wrote:
-> > > On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
-> > > ... since I also happen to think there is a potentially interesting
-> > > development path to make this sort of reserve pool configurable in terms
-> > > of size and active/inactive state, which would allow the fs to use an
-> > > emergency pool scheme for managing metadata provisioning and not have to
-> > > track and provision individual metadata buffers at all (dealing with
-> > > user data is much easier to provision explicitly). So the space
-> > > inefficiency thing is potentially just a tradeoff for simplicity, and
-> > > filesystems that want more granularity for better behavior could achieve
-> > > that with more work. Filesystems that don't would be free to rely on the
-> > > simple/basic mechanism provided by dm-thin and still have basic -ENOSPC
-> > > protection with very minimal changes.
-> > > 
-> > > That's getting too far into the weeds on the future bits, though. This
-> > > is essentially 99% a dm-thin approach, so I'm mainly curious if there's
-> > > sufficient interest in this sort of "reserve mode" approach to try and
-> > > clean it up further and have dm guys look at it, or if you guys see any
-> > > obvious issues in what it does that makes it potentially problematic, or
-> > > if you would just prefer to go down the path described above...
-> > 
-> > The model that Dave detailed, which builds on REQ_PROVISION and is
-> > sticky (by provisioning same blocks for snapshot) seems more useful to
-> > me because it is quite precise.  That said, it doesn't account for
-> > hard requirements that _all_ blocks will always succeed.
+* Jan Kara <jack@suse.cz>:
+> Commit e360c6ed7274 ("ext4: Drop special handling of journalled data
+> from ext4_sync_file()") simplified ext4_sync_file() by dropping special
+> handling of journalled data mode as it was not needed anymore. However
+> that branch was also used for directories and symlinks and since the
+> fastcommit code does not track metadata changes to non-regular files, the
+> change has caused e.g. fsync(2) on directories to not commit transaction
+> as it should. Fix the problem by adding handling for non-regular files.
 > 
-> Hmmm. Maybe I'm misunderstanding the "reserve pool" context here,
-> but I don't think we'd ever need a hard guarantee from the block
-> device that every write bio issued from the filesystem will succeed
-> without ENOSPC.
+> Fixes: e360c6ed7274 ("ext4: Drop special handling of journalled data from ext4_sync_file()")
+> Reported-by: Eric Whitney <enwlinux@gmail.com>
+> Link: https://lore.kernel.org/all/ZFqO3xVnmhL7zv1x@debian-BULLSEYE-live-builder-AMD64
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/fsync.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> If the block device can provide a guarantee that a provisioned LBA
-> range is always writable, then everything else is a filesystem level
-> optimisation problem and we don't have to involve the block device
-> in any way. All we need is a flag we can ready out of the bdev at
-> mount time to determine if the filesystem should be operating with
-> LBA provisioning enabled...
-> 
-> e.g. If we need to "pre-provision" a chunk of the LBA space for
-> filesystem metadata, we can do that ahead of time and track the
-> pre-provisioned range(s) in the filesystem itself.
-> 
-> In XFS, That could be as simple as having small chunks of each AG
-> reserved to metadata (e.g. start with the first 100MB) and limiting
-> all metadata allocation free space searches to that specific block
-> range. When we run low on that space, we pre-provision another 100MB
-> chunk and then allocate all metadata out of that new range. If we
-> start getting ENOSPC to pre-provisioning, then we reduce the size of
-> the regions and log low space warnings to userspace. If we can't
-> pre-provision any space at all and we've completely run out, we
-> simply declare ENOSPC for all incoming operations that require
-> metadata allocation until pre-provisioning succeeds again.
-
-This is basically saying the same thing but:
-
-It could be that the LBA space is fragmented and so falling back to
-the smallest region size (that matches the thinp block size) would be
-the last resort?  Then if/when thinp cannot even service allocating a
-new free thin block, dm-thinp will transition to out-of-data-space
-mode.
-
-> This is built entirely on the premise that once proactive backing
-> device provisioning fails, the backing device is at ENOSPC and we
-> have to wait for that situation to go away before allowing new data
-> to be ingested. Hence the block device really doesn't need to know
-> anything about what the filesystem is doing and vice versa - The
-> block dev just says "yes" or "no" and the filesystem handles
-> everything else.
-
-Yes.
-
-> It's worth noting that XFS already has a coarse-grained
-> implementation of preferred regions for metadata storage. It will
-> currently not use those metadata-preferred regions for user data
-> unless all the remaining user data space is full.  Hence I'm pretty
-> sure that a pre-provisioning enhancment like this can be done
-> entirely in-memory without requiring any new on-disk state to be
-> added.
-> 
-> Sure, if we crash and remount, then we might chose a different LBA
-> region for pre-provisioning. But that's not really a huge deal as we
-> could also run an internal background post-mount fstrim operation to
-> remove any unused pre-provisioning that was left over from when the
-> system went down.
-
-This would be the FITRIM with extension you mention below?  Which is a
-filesystem interface detail? So dm-thinp would _not_ need to have new
-state that tracks "provisioned but unused" block?  Nor would the block
-layer need an extra discard flag for a new class of "provisioned"
-blocks.
-
-If XFS tracked this "provisioned but unused" state, dm-thinp could
-just discard the block like its told.  Would be nice to avoid dm-thinp
-needing to track "provisioned but unused".
-
-That said, dm-thinp does still need to know if a block was provisioned
-(given our previous designed discussion, to allow proper guarantees
-from this interface at snapshot time) so that XFS and other
-filesystems don't need to re-provision areas they already
-pre-provisioned.
-
-However, it may be that if thinp did track "provisioned but unused"
-it'd be useful to allow snapshots to share provisioned blocks that
-were never used.  Meaning, we could then avoid "breaking sharing" at
-snapshot-time for "provisioned but unused" blocks.  But allowing this
-"optimization" undercuts the gaurantee that XFS needs for thinp
-storage that allows snapshots... SO, I think I answered my own
-question: thinp doesnt need to track "provisioned but unused" blocks
-but we must always ensure snapshots inherit provisoned blocks ;)
-
-> Further, managing shared pool exhaustion doesn't require a
-> reservation pool in the backing device and for the filesystems to
-> request space from it. Filesystems already have their own reserve
-> pools via pre-provisioning. If we want the filesystems to be able to
-> release that space back to the shared pool (e.g. because the shared
-> backing pool is critically short on space) then all we need is an
-> extension to FITRIM to tell the filesystem to also release internal
-> pre-provisioned reserves.
-
-So by default FITRIM will _not_ discard provisioned blocks.  Only if
-a flag is used will it result in discarding provisioned blocks.
-
-My dwelling on this is just double-checking that the 
- 
-> Then the backing pool admin (person or automated daemon!) can simply
-> issue a trim on all the filesystems in the pool and spce will be
-> returned. Then filesystems will ask for new pre-provisioned space
-> when they next need to ingest modifications, and the backing pool
-> can manage the new pre-provisioning space requests directly....
+> diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+> index f65fdb27ce14..2a143209aa0c 100644
+> --- a/fs/ext4/fsync.c
+> +++ b/fs/ext4/fsync.c
+> @@ -108,6 +108,13 @@ static int ext4_fsync_journal(struct inode *inode, bool datasync,
+>  	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+>  	tid_t commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
+>  
+> +	/*
+> +	 * Fastcommit does not really support fsync on directories or other
+> +	 * special files. Force a full commit.
+> +	 */
+> +	if (!S_ISREG(inode->i_mode))
+> +		return ext4_force_commit(inode->i_sb);
+> +
+>  	if (journal->j_flags & JBD2_BARRIER &&
+>  	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
+>  		*needs_barrier = true;
+> -- 
+> 2.35.3
 >
-> Hence I think if we get the basic REQ_PROVISION overwrite-in-place
-> guarantees defined and implemented as previously outlined, then we
-> don't need any special coordination between the fs and block devices
-> to avoid fatal ENOSPC issues with sparse and/or snapshot capable
-> block devices...
-> 
-> As a bonus, if we can implement the guarantees in dm-thin/-snapshot
-> and have a filesystem make use of it, then we also have a reference
-> implementation to point at device vendors and standards
-> associations....
 
-Yeap.
+Hi Jan:
 
-Thanks,
-Mike
+100/100 trials of both the original test regressions - generic/065 and
+generic/535 - passed when I used kvm-xfstests to run them on a 6.4-rc3 kernel
+modified with this patch.  A complete run of the adv test case also passed
+without new regressions.
+
+So,
+Tested-by: Eric Whitney <enwlinux@gmail.com>
+
+Thanks!
+Eric
+
