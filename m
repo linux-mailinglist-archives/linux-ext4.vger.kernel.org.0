@@ -2,64 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF92170F470
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 12:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E79A70F475
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 12:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbjEXKno (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 May 2023 06:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S230006AbjEXKpB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 May 2023 06:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjEXKnn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 06:43:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7928B97
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 03:43:42 -0700 (PDT)
+        with ESMTP id S229735AbjEXKpA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 06:45:00 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A961598
+        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 03:44:59 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 150581F45F;
-        Wed, 24 May 2023 10:43:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6862E22216;
+        Wed, 24 May 2023 10:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684925021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mKvI0wb6sY7CJdNT3kqwZKJ0y1/boUVF9aZoUrdJ5fA=;
-        b=gOA7312ZpSlRd5B/10vRQ7o3/DRExgUHJXXtEodfso3kNKteR37evChuwE1RLRb6Qrbu42
-        pZleY9SjoJ1Czx96F8QK+hpl7x/xoPTCTa+ikrRNsjR+zIU9lZE+ejWmWRRRuagJoYRTmA
-        SYqJ7TvGIzRt7kGOkIm2VCsuNRj0k/k=
+        t=1684925098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oF66gYTB+QJSrVWI5RQG+Ao4fzWor/HhKUumZiTVkUY=;
+        b=Zu0r1soRm7McpET6O/13sBoq40nW4Z7NDdCwU0Ibk2pTdtPbLcvHy0lPgI2uO1O29FDvPM
+        4xMJckKmR9SeDCyxSB5jrUf2Ta8fiOfUALe62iQm9XLNNRjH2puYSI+GmBXFPBWCmZ3fXD
+        GTnXJRddJeZZ/ColGbOQIpWG+VqQXCM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684925021;
+        s=susede2_ed25519; t=1684925098;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mKvI0wb6sY7CJdNT3kqwZKJ0y1/boUVF9aZoUrdJ5fA=;
-        b=+A1WTHmCRqjO4WxChHBKs5kwFQOwcOGpWKW8farhkFs0iX/S0z0hgZ371tBEhQNzIOCeWD
-        rZhBgCSNDPc4pLDg==
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oF66gYTB+QJSrVWI5RQG+Ao4fzWor/HhKUumZiTVkUY=;
+        b=k8+S6YJ/ZW7iDI3an2ZpZ5uWLlxXnDyBm2WxrOM1gdNTZQnLrxdYARkQMHQ3pGALLX/3aG
+        kR5uwxvpyvWh9ZDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06C9A133E6;
-        Wed, 24 May 2023 10:43:41 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5B34A133E6;
+        Wed, 24 May 2023 10:44:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id t4GkAV3qbWSdKwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 24 May 2023 10:43:41 +0000
+        id 6M89FqrqbWQ/LAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 24 May 2023 10:44:58 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 93CD3A075C; Wed, 24 May 2023 12:43:40 +0200 (CEST)
-Date:   Wed, 24 May 2023 12:43:40 +0200
+        id E101CA075C; Wed, 24 May 2023 12:44:57 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     jack@suse.cz, linux-ext4@vger.kernel.org
-Subject: Re: 6.4-rc1 xfstests-bld adv regressions
-Message-ID: <20230524104340.5ypioctla3s676gm@quack3>
-References: <ZFqO3xVnmhL7zv1x@debian-BULLSEYE-live-builder-AMD64>
- <20230509190930.wyblxwohejmd43fw@quack3>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Eric Whitney <enwlinux@gmail.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Fix fsync for non-directories
+Date:   Wed, 24 May 2023 12:44:53 +0200
+Message-Id: <20230524104453.8734-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230509190930.wyblxwohejmd43fw@quack3>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1552; i=jack@suse.cz; h=from:subject; bh=CnRcWpd6OnMHLy8/NZ55lHLQg3F2ybI4ioyT51lJNHc=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkbeqfFO1A3LPH9Paeik1Y+6+DlD10KnitiqDCrLSz 9ePz32iJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZG3qnwAKCRCcnaoHP2RA2Tn0B/ 93Mb+xkVoQjg2Ytljh2wgyrXZEvFWIaMcAL3Sg5W55KkcPSXFEN7OOc2l0kjnDiBy3DheRqu8iQ/7p g9zlvM9N0uWjuHwcnkTYlWh2GkLqm981gmg4dNHIT1H0mvrtk3BUDHtJY2vQsXj1w+8MJlp9tsB7kB GTChfaRfoZBkpHbZg0Gx3okbnLW4f/ijxDDXf4RaSSlDSglJP+AFGxHC4nVOLb6oBv1iTKqRYrE3yl pur7K3MTOLlBmBb9aLtmUVK/bCTGpc33jsvpDz9tNfZmSCa32OGKqdVjeoAqke4lpeQISeIyFcvYhy fquiGizVbTbUbbgkcnD9Q3197UMAXk
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -70,57 +69,40 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+Commit e360c6ed7274 ("ext4: Drop special handling of journalled data
+from ext4_sync_file()") simplified ext4_sync_file() by dropping special
+handling of journalled data mode as it was not needed anymore. However
+that branch was also used for directories and symlinks and since the
+fastcommit code does not track metadata changes to non-regular files, the
+change has caused e.g. fsync(2) on directories to not commit transaction
+as it should. Fix the problem by adding handling for non-regular files.
 
-Due to conferences this took a bit long. I'm sorry for that.
+Fixes: e360c6ed7274 ("ext4: Drop special handling of journalled data from ext4_sync_file()")
+Reported-by: Eric Whitney <enwlinux@gmail.com>
+Link: https://lore.kernel.org/all/ZFqO3xVnmhL7zv1x@debian-BULLSEYE-live-builder-AMD64
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/fsync.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On Tue 09-05-23 21:09:30, Jan Kara wrote:
-> On Tue 09-05-23 14:20:15, Eric Whitney wrote:
-> > I'm seeing two test regressions on 6.4-rc1 while running the adv test case
-> > with kvm-xfstests.  Both tests fail with 100% reliability in 100 trial runs,
-> > and the failures appear to depend solely upon the fast commit mount option.
-> > 
-> > The first is generic/065, where the relevant info from 065.full is:
-> > 
-> > _check_generic_filesystem: filesystem on /dev/vdc is inconsistent
-> > *** fsck.ext4 output ***
-> > fsck from util-linux 2.36.1
-> > e2fsck 1.47.0 (5-Feb-2023)
-> > Pass 1: Checking inodes, blocks, and sizes
-> > Pass 2: Checking directory structure
-> > Pass 3: Checking directory connectivity
-> > Pass 4: Checking reference counts
-> > Pass 5: Checking group summary information
-> > Directories count wrong for group #16 (4294967293, counted=0).
-> > 
-> > 
-> > The second is generic/535, where the test output is:
-> > 
-> >      QA output created by 535
-> >      Silence is golden
-> >     +Before: 755
-> >     +After : 777
-> > 
-> > Both test failures bisect to:  e360c6ed7274 ("ext4: Drop special handling of
-> > journalled data from ext4_sync_file()").  Reverting this patch eliminates the
-> > test failures.  So, I thought I'd bring these to your attention.
-> 
-> Thanks for report! Yeah, when doing commit e360c6ed7274 I forgot about
-> directories which can be also fsynced and which need special treatment. I
-> have to think a bit what's the best way to fix this.
-
-After digging a bit in the code I understand now what has confused me. The
-thing is that fastcommit does not track metadata changes on directories but
-neither does it mark the filesystem as ineligible when they happen. So
-ext4_fc_commit() implicitely relies on the fact that it never gets called
-in any other case than fsync(2) on a regular file.
-
-I believe we should improve fastcommit code to better handle directories
-or at least not have these implicit assumptions but for now the easiest fix
-is to return back the explicit full commit for non-regular files. I'll send
-a patch.
-
-								Honza
+diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+index f65fdb27ce14..2a143209aa0c 100644
+--- a/fs/ext4/fsync.c
++++ b/fs/ext4/fsync.c
+@@ -108,6 +108,13 @@ static int ext4_fsync_journal(struct inode *inode, bool datasync,
+ 	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+ 	tid_t commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
+ 
++	/*
++	 * Fastcommit does not really support fsync on directories or other
++	 * special files. Force a full commit.
++	 */
++	if (!S_ISREG(inode->i_mode))
++		return ext4_force_commit(inode->i_sb);
++
+ 	if (journal->j_flags & JBD2_BARRIER &&
+ 	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
+ 		*needs_barrier = true;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.35.3
+
