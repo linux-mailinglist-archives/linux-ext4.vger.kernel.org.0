@@ -2,79 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C96570E912
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 00:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A4370EA61
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 02:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbjEWW1W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 May 2023 18:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
+        id S233196AbjEXAkq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 May 2023 20:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238185AbjEWW1U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 18:27:20 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC1DDA
-        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 15:27:18 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-64d44b198baso55270b3a.0
-        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 15:27:18 -0700 (PDT)
+        with ESMTP id S238875AbjEXAko (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 May 2023 20:40:44 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7C918F
+        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 17:40:39 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ae4c5e12edso2415995ad.3
+        for <linux-ext4@vger.kernel.org>; Tue, 23 May 2023 17:40:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1684880837; x=1687472837;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1684888838; x=1687480838;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+Mu9QUDJUPxCQ+nxaGfODHItInO1Mx21+1cY8P0+ko=;
-        b=myd4lDfvuaaTHVDxIZueGM+k5E70olrh5Bi4kawJ2EqxlzdG3jx2hNsJKzBv1ExQrZ
-         aZIqungadEPCy/hk+arz6SCHAhumLQ2exHtv9ezxiuWyl92MWzYKy8HK8quRSz97EAMo
-         8HDOmtAd6fKra/CsSjrI/dK+pfZCIsI+1uCq1qHYsi0xHo3WYArXZwYWudExTIr6Fj27
-         3dDJ033Vg+M4TLAaJI5DgBCEbpaEmjNrP7x2LDAEYwxTkMPe/qI246iat844prVielH/
-         N1rZ8XOfFOa41MmZaZKsz9PVPHf7hGTl1NypGa83NrTRXoIwS26AGhLJnHwQKKez3ITY
-         DvPQ==
+        bh=g/2lRTEp2+vzgxmK+Q6yLfn+3h/GnU4pORxpfbfgDDM=;
+        b=M4T7nRITXVRVPWSECm2MZuuj/39O1pG79+CPgDMcoHpAPTk+nOrKUXBdS6mwdfi5Zy
+         FpAFL7qejpiCfMukxvsLKx6y/MjDBg7KGigJn7D1Mp/b0gXWv/AnUaZ6XaAHzCJvU65a
+         Uz7gtkK1VyQVWplU3E6PU+qtoIlkbJSsvvKBoEwoPqWGq2MmcqjCLXtejR6B8YgA6oVX
+         I7oPKtZ3Hd269QUFiPe2hy4vLjp7a6b6/fQnQ/TVgnc1f3mvMOF8Ow5EOfsXLPuioK0d
+         lBlM8miHZXaPtDEN5JO68p7bRmLmb2VauZvwGjqHA5CnuxZlHvDL0MrvpCz/mg09ErDP
+         0cQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684880837; x=1687472837;
+        d=1e100.net; s=20221208; t=1684888838; x=1687480838;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o+Mu9QUDJUPxCQ+nxaGfODHItInO1Mx21+1cY8P0+ko=;
-        b=QVE/b3zPxhPJANJffuqJdsW626YJt1iPPEtxQfFjZE/b0kKY21dGXKMjqVLK7wbq9j
-         MUoKckeVwjrAie+nmtvCVHWZK6b/XNo/CjArTjJyuCmP0omL0YL+G64dR3mpM9qmqmYY
-         dIuXOKQ50+XlTXU7IYtmJs5smgpk584Zp/5jwEOJ3XF4yydmUMXWBOng2LR+kOoGmZ/8
-         45av68J0uDbQEJ/8skVI/AkHcXcmXq6d2CRXxTmbRib5/lgo0pMCpRJRDpyAUBW+MMcT
-         vSZeYAJ6cDq2IkJXqmCJE/6Y6t/FtmD+JIIvus08PQEDpQK3IxciW2ZPA3P6hwGdvRq5
-         H5gg==
-X-Gm-Message-State: AC+VfDyWSguWz+l6LJ9J8RSmUNimm74jocc0OHjY6XEPXtTcuVhOFGb3
-        ez49ONT/ZHRI8NDqRNdD0k4V0A==
-X-Google-Smtp-Source: ACHHUZ5+wDLkzWl5hqADeJv/K/pEdU5ftVoYvaXjN5yUsSSnEKzwjNvqAoa0WrZdkbq9aiPARCtcUw==
-X-Received: by 2002:a05:6a20:3c8d:b0:10c:d5dd:c223 with SMTP id b13-20020a056a203c8d00b0010cd5ddc223mr1532145pzj.15.1684880837655;
-        Tue, 23 May 2023 15:27:17 -0700 (PDT)
+        bh=g/2lRTEp2+vzgxmK+Q6yLfn+3h/GnU4pORxpfbfgDDM=;
+        b=Bhqcezd+3Cg+w8Bct9V7T+Jn1g+z4kqCKeOd8yjdLXu1bHBuNglBJH3VqNlERQBVkz
+         euRwZVdecu693qlIyoBI0WKv1lhm0nKDAzMlQoR+oZO3y4Mrsaj4+tSTHwhuNijyXOyy
+         2Q/mV/dONEbFM2hCQdNmsv2e2MSB99Sh5cpUOT3ONse2SMwqinMPZo9kZ+ekkq5rxQIc
+         YgEk03C/ITH2pxbPENBzA6xNPRmAcBRW8UPZDRvsbqcqfiz06F1/hWQMdoMlXFrYBE4Z
+         dnVZ64AcbYZaPr9YIk2CpeoM+caUyXCyz5wmmmMIiGqT1slB/7VIHLbJh0nr0CpYEPP/
+         N9YA==
+X-Gm-Message-State: AC+VfDwsa4DKbqsS+bNP2+qCZHft/auZPCILMcuuwQ+hjQiFb6QAP3VE
+        az3gajatq6Shz4j1n22eAYaIpA==
+X-Google-Smtp-Source: ACHHUZ4ELvS95kgltWKKI0sQaRwhfv49xLXoR0zfldqDVRDWfmH/jNA6qFVcem5euAQDD7dhRn3rkg==
+X-Received: by 2002:a17:903:32c7:b0:1ae:513a:9439 with SMTP id i7-20020a17090332c700b001ae513a9439mr20480732plr.23.1684888838637;
+        Tue, 23 May 2023 17:40:38 -0700 (PDT)
 Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
-        by smtp.gmail.com with ESMTPSA id d11-20020a63fd0b000000b005308b255502sm6443395pgh.68.2023.05.23.15.27.16
+        by smtp.gmail.com with ESMTPSA id u12-20020a17090282cc00b001a212a93295sm7370900plz.189.2023.05.23.17.40.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 15:27:16 -0700 (PDT)
+        Tue, 23 May 2023 17:40:37 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.96)
         (envelope-from <david@fromorbit.com>)
-        id 1q1aTJ-0036Bu-2Z;
-        Wed, 24 May 2023 08:27:13 +1000
-Date:   Wed, 24 May 2023 08:27:13 +1000
+        id 1q1cYM-0038PM-19;
+        Wed, 24 May 2023 10:40:34 +1000
+Date:   Wed, 24 May 2023 10:40:34 +1000
 From:   Dave Chinner <david@fromorbit.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Brian Foster <bfoster@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 16/17] block: use iomap for writes to block devices
-Message-ID: <ZG09wR4WOI8zDxJK@dread.disaster.area>
-References: <20230424054926.26927-1-hch@lst.de>
- <20230424054926.26927-17-hch@lst.de>
- <b96b397e-2f5e-7910-3bb3-7405d0e293a7@suse.de>
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Joe Thornber <ejt@redhat.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <ZGb2Xi6O3i2pLam8@infradead.org>
+ <ZGeKm+jcBxzkMXQs@redhat.com>
+ <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+ <ZGu0LaQfREvOQO4h@redhat.com>
+ <ZGzIJlCE2pcqQRFJ@bfoster>
+ <ZGzbGg35SqMrWfpr@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b96b397e-2f5e-7910-3bb3-7405d0e293a7@suse.de>
+In-Reply-To: <ZGzbGg35SqMrWfpr@redhat.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
@@ -85,102 +92,107 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 19, 2023 at 04:22:01PM +0200, Hannes Reinecke wrote:
-> On 4/24/23 07:49, Christoph Hellwig wrote:
-> > Use iomap in buffer_head compat mode to write to block devices.
+On Tue, May 23, 2023 at 11:26:18AM -0400, Mike Snitzer wrote:
+> On Tue, May 23 2023 at 10:05P -0400, Brian Foster <bfoster@redhat.com> wrote:
+> > On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
+> > ... since I also happen to think there is a potentially interesting
+> > development path to make this sort of reserve pool configurable in terms
+> > of size and active/inactive state, which would allow the fs to use an
+> > emergency pool scheme for managing metadata provisioning and not have to
+> > track and provision individual metadata buffers at all (dealing with
+> > user data is much easier to provision explicitly). So the space
+> > inefficiency thing is potentially just a tradeoff for simplicity, and
+> > filesystems that want more granularity for better behavior could achieve
+> > that with more work. Filesystems that don't would be free to rely on the
+> > simple/basic mechanism provided by dm-thin and still have basic -ENOSPC
+> > protection with very minimal changes.
 > > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >   block/Kconfig |  1 +
-> >   block/fops.c  | 33 +++++++++++++++++++++++++++++----
-> >   2 files changed, 30 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/block/Kconfig b/block/Kconfig
-> > index 941b2dca70db73..672b08f0096ab4 100644
-> > --- a/block/Kconfig
-> > +++ b/block/Kconfig
-> > @@ -5,6 +5,7 @@
-> >   menuconfig BLOCK
-> >          bool "Enable the block layer" if EXPERT
-> >          default y
-> > +       select IOMAP
-> >          select SBITMAP
-> >          help
-> >   	 Provide block layer support for the kernel.
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 318247832a7bcf..7910636f8df33b 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -15,6 +15,7 @@
-> >   #include <linux/falloc.h>
-> >   #include <linux/suspend.h>
-> >   #include <linux/fs.h>
-> > +#include <linux/iomap.h>
-> >   #include <linux/module.h>
-> >   #include "blk.h"
-> > @@ -386,6 +387,27 @@ static ssize_t blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
-> >   	return __blkdev_direct_IO(iocb, iter, bio_max_segs(nr_pages));
-> >   }
-> > +static int blkdev_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> > +		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
-> > +{
-> > +	struct block_device *bdev = I_BDEV(inode);
-> > +	loff_t isize = i_size_read(inode);
-> > +
-> > +	iomap->bdev = bdev;
-> > +	iomap->offset = ALIGN_DOWN(offset, bdev_logical_block_size(bdev));
-> > +	if (WARN_ON_ONCE(iomap->offset >= isize))
-> > +		return -EIO;
+> > That's getting too far into the weeds on the future bits, though. This
+> > is essentially 99% a dm-thin approach, so I'm mainly curious if there's
+> > sufficient interest in this sort of "reserve mode" approach to try and
+> > clean it up further and have dm guys look at it, or if you guys see any
+> > obvious issues in what it does that makes it potentially problematic, or
+> > if you would just prefer to go down the path described above...
 > 
-> I'm hitting this during booting:
-> [    5.016324]  <TASK>
-> [    5.030256]  iomap_iter+0x11a/0x350
-> [    5.030264]  iomap_readahead+0x1eb/0x2c0
-> [    5.030272]  read_pages+0x5d/0x220
-> [    5.030279]  page_cache_ra_unbounded+0x131/0x180
-> [    5.030284]  filemap_get_pages+0xff/0x5a0
+> The model that Dave detailed, which builds on REQ_PROVISION and is
+> sticky (by provisioning same blocks for snapshot) seems more useful to
+> me because it is quite precise.  That said, it doesn't account for
+> hard requirements that _all_ blocks will always succeed.
 
-Why is filemap_get_pages() using unbounded readahead? Surely
-readahead should be limited to reading within EOF....
+Hmmm. Maybe I'm misunderstanding the "reserve pool" context here,
+but I don't think we'd ever need a hard guarantee from the block
+device that every write bio issued from the filesystem will succeed
+without ENOSPC.
 
-> [    5.030292]  filemap_read+0xca/0x320
-> [    5.030296]  ? aa_file_perm+0x126/0x500
-> [    5.040216]  ? touch_atime+0xc8/0x150
-> [    5.040224]  blkdev_read_iter+0xb0/0x150
-> [    5.040228]  vfs_read+0x226/0x2d0
-> [    5.040234]  ksys_read+0xa5/0xe0
-> [    5.040238]  do_syscall_64+0x5b/0x80
-> 
-> Maybe we should consider this patch:
-> 
-> diff --git a/block/fops.c b/block/fops.c
-> index 524b8a828aad..d202fb663f25 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -386,10 +386,13 @@ static int blkdev_iomap_begin(struct inode *inode,
-> loff_t offset, loff_t length,
-> 
->         iomap->bdev = bdev;
->         iomap->offset = ALIGN_DOWN(offset, bdev_logical_block_size(bdev));
-> -       if (WARN_ON_ONCE(iomap->offset >= isize))
-> -               return -EIO;
-> -       iomap->type = IOMAP_MAPPED;
-> -       iomap->addr = iomap->offset;
-> +       if (WARN_ON_ONCE(iomap->offset >= isize)) {
-> +               iomap->type = IOMAP_HOLE;
-> +               iomap->addr = IOMAP_NULL_ADDR;
-> +       } else {
-> +               iomap->type = IOMAP_MAPPED;
-> +               iomap->addr = iomap->offset;
-> +       }
+If the block device can provide a guarantee that a provisioned LBA
+range is always writable, then everything else is a filesystem level
+optimisation problem and we don't have to involve the block device
+in any way. All we need is a flag we can ready out of the bdev at
+mount time to determine if the filesystem should be operating with
+LBA provisioning enabled...
 
-I think Christoph's code is correct. IMO, any attempt to read beyond
-the end of the device should throw out a warning and return an
-error, not silently return zeros.
+e.g. If we need to "pre-provision" a chunk of the LBA space for
+filesystem metadata, we can do that ahead of time and track the
+pre-provisioned range(s) in the filesystem itself.
 
-If readahead is trying to read beyond the end of the device, then it
-really seems to me like the problem here is readahead, not the iomap
-code detecting the OOB read request....
+In XFS, That could be as simple as having small chunks of each AG
+reserved to metadata (e.g. start with the first 100MB) and limiting
+all metadata allocation free space searches to that specific block
+range. When we run low on that space, we pre-provision another 100MB
+chunk and then allocate all metadata out of that new range. If we
+start getting ENOSPC to pre-provisioning, then we reduce the size of
+the regions and log low space warnings to userspace. If we can't
+pre-provision any space at all and we've completely run out, we
+simply declare ENOSPC for all incoming operations that require
+metadata allocation until pre-provisioning succeeds again.
+
+This is built entirely on the premise that once proactive backing
+device provisioning fails, the backing device is at ENOSPC and we
+have to wait for that situation to go away before allowing new data
+to be ingested. Hence the block device really doesn't need to know
+anything about what the filesystem is doing and vice versa - The
+block dev just says "yes" or "no" and the filesystem handles
+everything else.
+
+It's worth noting that XFS already has a coarse-grained
+implementation of preferred regions for metadata storage. It will
+currently not use those metadata-preferred regions for user data
+unless all the remaining user data space is full.  Hence I'm pretty
+sure that a pre-provisioning enhancment like this can be done
+entirely in-memory without requiring any new on-disk state to be
+added.
+
+Sure, if we crash and remount, then we might chose a different LBA
+region for pre-provisioning. But that's not really a huge deal as we
+could also run an internal background post-mount fstrim operation to
+remove any unused pre-provisioning that was left over from when the
+system went down.
+
+Further, managing shared pool exhaustion doesn't require a
+reservation pool in the backing device and for the filesystems to
+request space from it. Filesystems already have their own reserve
+pools via pre-provisioning. If we want the filesystems to be able to
+release that space back to the shared pool (e.g. because the shared
+backing pool is critically short on space) then all we need is an
+extension to FITRIM to tell the filesystem to also release internal
+pre-provisioned reserves.
+
+Then the backing pool admin (person or automated daemon!) can simply
+issue a trim on all the filesystems in the pool and spce will be
+returned. Then filesystems will ask for new pre-provisioned space
+when they next need to ingest modifications, and the backing pool
+can manage the new pre-provisioning space requests directly....
+
+Hence I think if we get the basic REQ_PROVISION overwrite-in-place
+guarantees defined and implemented as previously outlined, then we
+don't need any special coordination between the fs and block devices
+to avoid fatal ENOSPC issues with sparse and/or snapshot capable
+block devices...
+
+As a bonus, if we can implement the guarantees in dm-thin/-snapshot
+and have a filesystem make use of it, then we also have a reference
+implementation to point at device vendors and standards
+associations....
 
 Cheers,
 
