@@ -2,235 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5062E70FBCF
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 18:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B292170FE46
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 May 2023 21:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbjEXQjz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 May 2023 12:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
+        id S233961AbjEXTKm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 May 2023 15:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbjEXQjs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 12:39:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B31E123
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 09:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684946340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hIRDFYHmrI2ea9PgJ9cG2BzagPncv2WifE6ykqY/z1c=;
-        b=JYylOJb+NzvsPb3go+eofLvRUsLwcMr6QMlGTwp3VirHN/L/4sKl9a9qYhnmC/cR4+GW3d
-        WgZ+rzV2h5FhAmPtIqtdJOvefiLDq8bJMcp/9FetIiZ55k+xnl16pB8pwk1zJnzq32Gafw
-        R3IUsKP3/2ZQEZff8cdkFFfF9WrdBBE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-340-xzRpk-0tO_KHiwOu91YXIQ-1; Wed, 24 May 2023 12:38:59 -0400
-X-MC-Unique: xzRpk-0tO_KHiwOu91YXIQ-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1ae721230a1so4235115ad.1
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 09:38:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684946338; x=1687538338;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hIRDFYHmrI2ea9PgJ9cG2BzagPncv2WifE6ykqY/z1c=;
-        b=P00mKE93u+7RYX81cOJ7mhY+e1uUXaoXPaIJXBBRWw9I+E2xkHPNevwy6gRHr9YrEs
-         acIH6+dYaOYPfPFKInZ9AJqzEe254dxnPUDNsUuoK9B45QrLCoMl2J3HYsU/7jSGKD0k
-         5rAgguL+B3LzYYqh7o+LzO6fJR98gaOljm63VTiMa/Hcq9rHzJE+41bZSQNajERJ+ARk
-         K2XvY6S2SoAtVilin+JHbrVbW9rA0Dcr3Q4p3kwygyKSkZUZDYBJYtBMCMoF02czpncf
-         MVSzBo0A34k2jN49YSiMVv/PVwiRc0mm6znm58kG4UpRwyOQOkOdsZKgWlnN7BFZYPYB
-         UT8g==
-X-Gm-Message-State: AC+VfDz92vEfGADKo8K70uFa7kT9vVqiIktlDBvyj7b+fy3uFOxo58xJ
-        0DQnJPB/Ec64JZBBB1p5Hp8oYtqluSTrdjIfQ/umqcInEUNCVwvXe3CROGTMcmi6wuWYvL9rxAg
-        AFy3USzH2WdugZujEcjT18lo1nh0kHQ36Ez+GTg==
-X-Received: by 2002:a17:903:428a:b0:1ac:4a41:d38d with SMTP id ju10-20020a170903428a00b001ac4a41d38dmr15831012plb.51.1684946337865;
-        Wed, 24 May 2023 09:38:57 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7QhwNbEG7dVnvKUcvcrF5VXTCpluYFQoMIGO7odXS8eF4N7acYVvSWWvlkVR9tfx1GsK6DpUi0zEDdnwhFY7c=
-X-Received: by 2002:a17:903:428a:b0:1ac:4a41:d38d with SMTP id
- ju10-20020a170903428a00b001ac4a41d38dmr15830993plb.51.1684946337555; Wed, 24
- May 2023 09:38:57 -0700 (PDT)
+        with ESMTP id S229848AbjEXTKh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 15:10:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B963112B;
+        Wed, 24 May 2023 12:10:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C274636F7;
+        Wed, 24 May 2023 19:10:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99225C433EF;
+        Wed, 24 May 2023 19:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684955435;
+        bh=fTe90SBB1Dp6tpx8x5Iius6PN2gYrB9jIEHyvHJNqnY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RrA80m0BkDIuSGz9TeGt0G8cK5qIMKRWR7+N9PsOjAOCcC+h6M22Xc/ie1ExjQCPu
+         J3ZDIcsMp3QfV2x1NYt2T/ADxnpZiy/gzpQQ4aBGeCoiGlbXuwIA+cL+sOq5NzrMg+
+         1HDwbBinE8Meqoc7Dj3uj/Fr0U2b6xcsf128zLhwgF1JLWC08kPZZ88BpqLCcabKIg
+         6jPuoatYoY0COiDCXMky7FXgfIhgHNvxYWcVH4ZjDW2wmrhQYfBFle1OIkeVfCT4w7
+         g+8ZbqhPME3lwXAUf/zOngoorulwA57DTM35XWRJ4gU9LzprNVo0J+/vjK7c1s908t
+         AYsbHD2TbxbBQ==
+Date:   Wed, 24 May 2023 12:10:34 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        'David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: Locking for RENAME_EXCHANGE
+Message-ID: <20230524191034.GI11620@frogsfrogsfrogs>
+References: <20230524163504.lugqgz2ibe5vdom2@quack3>
 MIME-Version: 1.0
-References: <20230216150701.3654894-1-dhowells@redhat.com> <CALF+zO=w2Gyz6JtzEoFgTVjH67-_CuTaK7e+2yoHEwXZ8bPx_A@mail.gmail.com>
-In-Reply-To: <CALF+zO=w2Gyz6JtzEoFgTVjH67-_CuTaK7e+2yoHEwXZ8bPx_A@mail.gmail.com>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Wed, 24 May 2023 12:38:21 -0400
-Message-ID: <CALF+zO=Y8dMsJ79RYp1e7n9B5_0=segpqW9_tetBqPhFiQcZxA@mail.gmail.com>
-Subject: Re: [Linux-cachefs] [PATCH v6 0/2] mm, netfs, fscache: Stop read
- optimisation when folio removed from pagecache
-To:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230524163504.lugqgz2ibe5vdom2@quack3>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 16, 2023 at 3:29=E2=80=AFPM David Wysochanski <dwysocha@redhat.=
-com> wrote:
->
-> On Thu, Feb 16, 2023 at 10:07=E2=80=AFAM David Howells <dhowells@redhat.c=
-om> wrote:
-> >
-> > Hi Willy,
-> >
-> > Is this okay by you?  You said you wanted to look at the remaining uses=
- of
-> > page_has_private(), of which there are then three after these patches, =
-not
-> > counting folio_has_private():
-> >
-> >         arch/s390/kernel/uv.c:          if (page_has_private(page))
-> >         mm/khugepaged.c:                    1 + page_mapcount(page) + p=
-age_has_private(page)) {
-> >         mm/migrate_device.c:            extra +=3D 1 + page_has_private=
-(page);
-> >
-> > --
-> > I've split the folio_has_private()/filemap_release_folio() call pair
-> > merging into its own patch, separate from the actual bugfix and pulled =
-out
-> > the folio_needs_release() function into mm/internal.h and made
-> > filemap_release_folio() use it.  I've also got rid of the bit clearance=
-s
-> > from the network filesystem evict_inode functions as they doesn't seem =
-to
-> > be necessary.
-> >
-> > Note that the last vestiges of try_to_release_page() got swept away, so=
- I
-> > rebased and dealt with that.  One comment remained, which is removed by=
- the
-> > first patch.
-> >
-> > David
-> >
-> > Changes:
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> > ver #6)
-> >  - Drop the third patch which removes a duplicate check in vmscan().
-> >
-> > ver #5)
-> >  - Rebased on linus/master.  try_to_release_page() has now been entirel=
-y
-> >    replaced by filemap_release_folio(), barring one comment.
-> >  - Cleaned up some pairs in ext4.
-> >
-> > ver #4)
-> >  - Split has_private/release call pairs into own patch.
-> >  - Moved folio_needs_release() to mm/internal.h and removed open-coded
-> >    version from filemap_release_folio().
-> >  - Don't need to clear AS_RELEASE_ALWAYS in ->evict_inode().
-> >  - Added experimental patch to reduce shrink_folio_list().
-> >
-> > ver #3)
-> >  - Fixed mapping_clear_release_always() to use clear_bit() not set_bit(=
-).
-> >  - Moved a '&&' to the correct line.
-> >
-> > ver #2)
-> >  - Rewrote entirely according to Willy's suggestion[1].
-> >
-> > Link: https://lore.kernel.org/r/Yk9V/03wgdYi65Lb@casper.infradead.org/ =
-[1]
-> > Link: https://lore.kernel.org/r/164928630577.457102.8519251179327601178=
-.stgit@warthog.procyon.org.uk/ # v1
-> > Link: https://lore.kernel.org/r/166844174069.1124521.108905063609741699=
-94.stgit@warthog.procyon.org.uk/ # v2
-> > Link: https://lore.kernel.org/r/166869495238.3720468.487815140908514676=
-4.stgit@warthog.procyon.org.uk/ # v3
-> > Link: https://lore.kernel.org/r/1459152.1669208550@warthog.procyon.org.=
-uk/ # v3 also
-> > Link: https://lore.kernel.org/r/166924370539.1772793.137306983607718213=
-17.stgit@warthog.procyon.org.uk/ # v4
-> > Link: https://lore.kernel.org/r/167172131368.2334525.856980892568773193=
-7.stgit@warthog.procyon.org.uk/ # v5
-> > ---
-> > %(shortlog)s
-> > %(diffstat)s
-> >
-> > David Howells (2):
-> >   mm: Merge folio_has_private()/filemap_release_folio() call pairs
-> >   mm, netfs, fscache: Stop read optimisation when folio removed from
-> >     pagecache
-> >
-> >  fs/9p/cache.c           |  2 ++
-> >  fs/afs/internal.h       |  2 ++
-> >  fs/cachefiles/namei.c   |  2 ++
-> >  fs/ceph/cache.c         |  2 ++
-> >  fs/cifs/fscache.c       |  2 ++
-> >  fs/ext4/move_extent.c   | 12 ++++--------
-> >  fs/splice.c             |  3 +--
-> >  include/linux/pagemap.h | 16 ++++++++++++++++
-> >  mm/filemap.c            |  2 ++
-> >  mm/huge_memory.c        |  3 +--
-> >  mm/internal.h           | 11 +++++++++++
-> >  mm/khugepaged.c         |  3 +--
-> >  mm/memory-failure.c     |  8 +++-----
-> >  mm/migrate.c            |  3 +--
-> >  mm/truncate.c           |  6 ++----
-> >  mm/vmscan.c             |  8 ++++----
-> >  16 files changed, 56 insertions(+), 29 deletions(-)
-> >
-> > --
-> > Linux-cachefs mailing list
-> > Linux-cachefs@redhat.com
-> > https://listman.redhat.com/mailman/listinfo/linux-cachefs
-> >
->
-> Willy, and David,
->
-> Can this series move forward?
-> This just got mentioned again [1] after Chris tested the NFS netfs
-> patches that were merged in 6.4-rc1
->
-> [1] https://lore.kernel.org/linux-nfs/CAAmbk-f_U8CPcTQM866L572uUHdK4p5iWK=
-nUQs4r8fkW=3D6RW9g@mail.gmail.com/
+On Wed, May 24, 2023 at 06:35:04PM +0200, Jan Kara wrote:
+> Hello!
+> 
+> This is again about the problem with directory renames I've already
+> reported in [1]. To quickly sum it up some filesystems (so far we know at
+> least about xfs, ext4, udf, reiserfs) need to lock the directory when it is
+> being renamed into another directory. This is because we need to update the
+> parent pointer in the directory in that case and if that races with other
+> operation on the directory, bad things can happen.
+> 
+> So far we've done the locking in the filesystem code but recently Darrick
+> pointed out [2] that we've missed the RENAME_EXCHANGE case in our ext4 fix.
+> That one is particularly nasty because RENAME_EXCHANGE can arbitrarily mix
+> regular files and directories. Couple nasty arising cases:
+> 
+> 1) We need to additionally lock two exchanged directories. Suppose a
+> situation like:
+> 
+> mkdir P; mkdir P/A; mkdir P/B; touch P/B/F
+> 
+> CPU1						CPU2
+> renameat2("P/A", "P/B", RENAME_EXCHANGE);	renameat2("P/B/F", "P/A", 0);
+> 
+> Both operations need to lock A and B directories which are unrelated in the
+> tree. This means we must establish stable lock ordering on directory locks
+> even for the case when they are not in ancestor relationship.
+> 
+> 2) We may need to lock a directory and a non-directory and they can be in
+> parent-child relationship when hardlinks are involved:
+> 
+> mkdir A; mkdir B; touch A/F; ln A/F B/F
+> renameat2("A/F", "B");
+> 
+> And this is really nasty because we don't have a way to find out whether
+> "A/F" and "B" are in any relationship - in particular whether B happens to
+> be another parent of A/F or not.
+> 
+> What I've decided to do is to make sure we always lock directory first in
+> this mixed case and that *should* avoid all the deadlocks but I'm spelling
+> this out here just in case people can think of some even more wicked case
+> before I'll send patches.
 
-Sorry about the timing on the original email as I forgot it lined up
-with LSF/MM.
+I can think of a few things:
 
-FYI, I tested with 6.4-rc1 plus these two patches, then I added the NFS
-hunk needed (see below).  All my tests pass now[1], and it makes sense
-from all the ftraces I've seen on test runs that fail (cachefiles_prep_read
-trace event would show "DOWN no-data" even after data was written
-previously).
+Not taking i_rwsem when updating the dotdot entry as part of moving
+child directories means that readdir can race with a dotdot update to a
+shortformat XFS directory.  That currently doesn't get too ugly because
+we reserve a full 8 bytes for the shortform dotdot entry's inode (which
+means we are not at risk of changing the format).  As Dave has
+previously noted, xfs synchronizes on the ILOCK for metadata updates.
 
-This small NFS hunk needs added to patch #2 in this series:
+This also makes online directory fsck harder because any time we have to
+cycle the directory's ILOCK means we have to revalidate the directory
+contents afterwards or hook the directory update code so that we can
+learn about changes that happened while the ILOCK was dropped.
 
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index 8c35d88a84b1..d4a20748b14f 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -180,6 +180,10 @@ void nfs_fscache_init_inode(struct inode *inode)
-                                               &auxdata,      /* aux_data *=
-/
-                                               sizeof(auxdata),
-                                               i_size_read(inode));
-+
-+       if (netfs_inode(inode)->cache)
-+               mapping_set_release_always(inode->i_mapping);
-+
- }
+(I'm sure the rest of you are thinking "that's some crazy xfs thing").
 
- /*
+Things get weirder with the new xfs parent pointers feature -- rename
+doesn't take i_rwsem of the children, which means that the only
+synchronization point is with the ILOCK held.  Parent pointers are
+stored in a special xattr namespace.  This makes me nervous about
+collisions with a getxattr call, since those can be done with or without
+i_rwsem held at all.  I think the ILOCK saves us in this case, since
+I've been testing it for a few months now without any corruption
+problems.
 
-[1] https://lore.kernel.org/linux-nfs/CALF+zOn_qX4tcT2ucq4jD3G-1ERqZkL6Cw7h=
-x75OnQF0ivqSeA@mail.gmail.com/
+Obviously, online fsck of parent pointers has to employ the same
+revalidate/hook to deal with ILOCK cycling.  But again, that's "some
+crazy xfs thing".
 
+I wouldn't mind the VFS taking i_rwsem on the children to simplify
+online fsck, but I've got a reasonable enough workaround.
+
+--D
+
+> Also I wanted to ask (Miklos in particular as RENAME_EXCHANGE author): Why
+> do we lock non-directories in RENAME_EXCHANGE case? If we didn't have to do
+> that things would be somewhat simpler...
+> 
+> 								Honza
+> 
+> [1] https://lore.kernel.org/all/20230117123735.un7wbamlbdihninm@quack3
+> [2] https://lore.kernel.org/all/20230517045836.GA11594@frogsfrogsfrogs
+> 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
