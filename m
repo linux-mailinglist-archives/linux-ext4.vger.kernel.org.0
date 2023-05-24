@@ -2,68 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 970D77100A4
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 00:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCD57100E9
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 00:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjEXWMc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 May 2023 18:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44712 "EHLO
+        id S236131AbjEXWZh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 24 May 2023 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjEXWMa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 18:12:30 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6729135
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 15:12:29 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-75affb4d0f9so17965985a.2
-        for <linux-ext4@vger.kernel.org>; Wed, 24 May 2023 15:12:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684966349; x=1687558349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1l/0qie4req/UQOwYfmZHsuT9joQERFp9mtBgi/+Sw=;
-        b=kzGFFuKKMv1z86PsXNNkYryChfRTphcbuWNHNVkz3R6lAcch1+7gBETZMR9o38Tuee
-         sD2G6QJlCAHU5qiKQKniZ3nw5RIMowXPiP1Ng2lF7KriLKBJppYjfY95uecdT2BQqSyG
-         +BpWFAowI7S0RQ+d8x3ks1ijVBoLWdcZBJNlq2AkzCrqAsvGMGa9d0Pm31Wjcs3jekzp
-         xO15/I72IuK3EWOJV3IsxTuu0X8+mpKvj+7YbtSFlfdkPENT/MH1WBxco6D2e54h6lIJ
-         02SDfJ/HLu8CbMU7xVpEv1DkZTVKFz87NTLLvUlO1vo6YmPKChswf5S8q4LzI8pd3Sq4
-         LvEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684966349; x=1687558349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1l/0qie4req/UQOwYfmZHsuT9joQERFp9mtBgi/+Sw=;
-        b=N2nVX6dFroXbH9t2ZEDEzKhfNrA8ChJzMf/K4+M9Fjk8q6aJ7XmjO+1OGBHvZ9GGy4
-         5fyc/+SRvo2LjhYIzYsXyz/KQhlee9rkuNlZlTtzTZbvqG6nAZ8uTanV230MYhJDwyE3
-         2rdszdT1KN0sIDom041Ot1JNgARrHJqcnwzRa/torq4wh6C+PhSAcCJUVrNROsFm29qB
-         L3kbC97wWoczGxHma8zvNGSNG6NA4b+EpWrjE0fVPtKNwK/i6D1JZd7wkUttCknn6C8q
-         9HIm2a3L99v9gseFZcXS/C/7WZntwmFBkL9Pbgga96xHCrCFtbe4Nb7hsaSTP25a0yoI
-         s9ig==
-X-Gm-Message-State: AC+VfDwUSkeo5dAkp0Ma52tc1x3MZ5LyzV30BGDU2bz7c/Hye4Kt3ThR
-        K25RGQ63INvbxOFDyEZCuUU=
-X-Google-Smtp-Source: ACHHUZ4LQl+sMom57SWJGat+dzZZHusXYWow4q9mi5ixXb7ZlaxbQEy8LL0FryAMBB6fCDIPDIoN5Q==
-X-Received: by 2002:a05:620a:3d89:b0:75b:23a0:e7b8 with SMTP id ts9-20020a05620a3d8900b0075b23a0e7b8mr7648120qkn.25.1684966348958;
-        Wed, 24 May 2023 15:12:28 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id u13-20020ae9c00d000000b0075783f6c2b4sm3550775qkk.128.2023.05.24.15.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 May 2023 15:12:28 -0700 (PDT)
-Date:   Wed, 24 May 2023 18:12:26 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Eric Whitney <enwlinux@gmail.com>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Subject: Re: [PATCH] ext4: Fix fsync for non-directories
-Message-ID: <ZG6Lyq4iq/HnBvPu@debian-BULLSEYE-live-builder-AMD64>
-References: <20230524104453.8734-1-jack@suse.cz>
+        with ESMTP id S237549AbjEXWZe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 18:25:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFBB99;
+        Wed, 24 May 2023 15:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6a4TWuzTGi7+tMMLrCXx2xS2HLm+fpIBXBWX9SQFhJc=; b=Olg5NsAiR4MXUKxEfN0JWQ26G+
+        48QUUb0p3dP2AO5RET1yB+OlmxpPgfW/OAuL8L3TmcLxGehBJ8zrOmr2kBjQvXnIDe74EGIXQUw5V
+        jrolzbG8yKU05ZkW5mpKw/LmaGIzjIW2osv7EnQcuMT1PVUpROY1wInr2AXsx/P1CtXqq68pLnhwc
+        o//oJNGyzcS02XIm8oZ0EkYqFxmeJvu+ZYfriDV2Rx6DKfxLwq6Z2WZASZL/SOiLmZyzD7t1ZY8rR
+        AcKIKrMHyGez7UPTrzHiDlh7DZpdMV2McGOt3pus8tAT+JlDrTHSf6mbJJPR2Ulm/XYS7au9Vkv2O
+        3mANUUxw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1q1wsv-00EnXL-1n;
+        Wed, 24 May 2023 22:23:09 +0000
+Date:   Wed, 24 May 2023 15:23:09 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Daniel Gomez <da.gomez@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Miklos Szeredi <miklos@szeredi.hu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/17] block: open code __generic_file_write_iter for
+ blkdev writes
+Message-ID: <ZG6OTWckNlz+P+mo@bombadil.infradead.org>
+References: <20230424054926.26927-1-hch@lst.de>
+ <20230424054926.26927-15-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230524104453.8734-1-jack@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20230424054926.26927-15-hch@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,55 +63,100 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Jan Kara <jack@suse.cz>:
-> Commit e360c6ed7274 ("ext4: Drop special handling of journalled data
-> from ext4_sync_file()") simplified ext4_sync_file() by dropping special
-> handling of journalled data mode as it was not needed anymore. However
-> that branch was also used for directories and symlinks and since the
-> fastcommit code does not track metadata changes to non-regular files, the
-> change has caused e.g. fsync(2) on directories to not commit transaction
-> as it should. Fix the problem by adding handling for non-regular files.
+On Mon, Apr 24, 2023 at 07:49:23AM +0200, Christoph Hellwig wrote:
+> Open code __generic_file_write_iter to remove the indirect call into
+> ->direct_IO and to prepare using the iomap based write code.
 > 
-> Fixes: e360c6ed7274 ("ext4: Drop special handling of journalled data from ext4_sync_file()")
-> Reported-by: Eric Whitney <enwlinux@gmail.com>
-> Link: https://lore.kernel.org/all/ZFqO3xVnmhL7zv1x@debian-BULLSEYE-live-builder-AMD64
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  fs/ext4/fsync.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  block/fops.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 44 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
-> index f65fdb27ce14..2a143209aa0c 100644
-> --- a/fs/ext4/fsync.c
-> +++ b/fs/ext4/fsync.c
-> @@ -108,6 +108,13 @@ static int ext4_fsync_journal(struct inode *inode, bool datasync,
->  	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
->  	tid_t commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
+> diff --git a/block/fops.c b/block/fops.c
+> index b670aa7c5bb745..fd510b6142bd57 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+> @@ -508,6 +508,29 @@ static int blkdev_close(struct inode *inode, struct file *filp)
+>  	return 0;
+>  }
 >  
-> +	/*
-> +	 * Fastcommit does not really support fsync on directories or other
-> +	 * special files. Force a full commit.
-> +	 */
-> +	if (!S_ISREG(inode->i_mode))
-> +		return ext4_force_commit(inode->i_sb);
+> +static ssize_t
+> +blkdev_direct_write(struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +	size_t count = iov_iter_count(from);
+> +	ssize_t written;
 > +
->  	if (journal->j_flags & JBD2_BARRIER &&
->  	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
->  		*needs_barrier = true;
-> -- 
-> 2.35.3
->
+> +	written = kiocb_invalidate_pages(iocb, count);
+> +	if (written) {
+> +		if (written == -EBUSY)
+> +			return 0;
+> +		return written;
+> +	}
+> +
+> +	written = blkdev_direct_IO(iocb, from);
+> +	if (written > 0) {
+> +		kiocb_invalidate_post_write(iocb, count);
+> +		iocb->ki_pos += written;
+> +	}
 
-Hi Jan:
+Written can be negative here after blkdev_direct_IO()
 
-100/100 trials of both the original test regressions - generic/065 and
-generic/535 - passed when I used kvm-xfstests to run them on a 6.4-rc3 kernel
-modified with this patch.  A complete run of the adv test case also passed
-without new regressions.
+> +	if (written != -EIOCBQUEUED)
+> +		iov_iter_revert(from, count - written - iov_iter_count(from));
 
-So,
-Tested-by: Eric Whitney <enwlinux@gmail.com>
+And we'll then use it here on iov_iter_revert() and this can crash on
+with some values. For example this can crash on a 4k write attempt
+on a 32k drive when experimenting wit large block sizes.
 
-Thanks!
-Eric
+kernel BUG at lib/iov_iter.c:999!
+invalid opcode: 0000 [#1] PREEMPT SMP PTI
+CPU: 4 PID: 949 Comm: fio Not tainted 6.3.0-large-block-20230426-dirty#28
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+1.16.0-debian-1.16.0-5        04/01/2014
++RIP: 0010:iov_iter_revert.part.0+0x16e/0x170
+Code: f9 40 a2 63 af 74 07 03 56 08 89 d8 29 d0 89 45 08 44 89 6d 20
+<etc>
+RSP: 0018:ffffaa52006cfc60 EFLAGS: 00010246
+RAX: 0000000000000016 RBX: 0000000000000016 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffffaa52006cfd08
+RBP: ffffaa52006cfd08 R08: 0000000000000000 R09: ffffaa52006cfb40
+R10: 0000000000000003 R11: ffffffffafcc21e8 R12: 0000000000004000
+R13: 0000000000003fea R14: ffff9de3d7565e00 R15: ffff9de3c1f68600
+FS:  00007f8bfe726c40(0000) GS:ffff9de43bd00000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8bf5eadd68 CR3: 0000000102c76001 CR4: 0000000000770ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+blkdev_direct_write+0xf0/0x160
+blkdev_write_iter+0x11b/0x230
+io_write+0x10c/0x420
+? kmem_cache_alloc_bulk+0x2a1/0x410
+? fget+0x79/0xb0
+io_issue_sqe+0x60/0x3b0
+? io_prep_rw+0x5a/0x190
+io_submit_sqes+0x1e6/0x640
+__do_sys_io_uring_enter+0x54c/0xb90
+? handle_mm_fault+0x9a/0x340
+? preempt_count_add+0x47/0xa0
+? up_read+0x37/0x70
+? do_user_addr_fault+0x27c/0x780
+do_syscall_64+0x37/0x90
+entry_SYSCALL_64_after_hw
 
+Although I fixed it with an early check on this routine
+with:
+
+if (count < bdev_logical_block_size(bdev))
+	return -EINVAL; 
+
+I think this can just be fixed by also using the alignment
+check earier here:
+
+if (blkdev_dio_unaligned(bdev, pos, iter))                               
+	return -EINVAL;  
+
+  Luis
