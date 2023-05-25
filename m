@@ -2,83 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0277711055
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 18:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66967110BE
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 18:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241895AbjEYQDr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 May 2023 12:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S239255AbjEYQS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 May 2023 12:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241222AbjEYQDq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 12:03:46 -0400
+        with ESMTP id S239472AbjEYQSV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 12:18:21 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEAC19A
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:02:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE38195
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:17:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685030573;
+        s=mimecast20190719; t=1685031441;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WiRt50oXKhasmrzR2kh6FHaULiNwoG0spSQORGoTHTA=;
-        b=AmdPm0GVc2ScJcy5NpFbB+p1e9mZQ6eAdRv8tf0CtKxWPILivh683GbnyFdHlp4I/O9Vob
-        LOFNi5Jh8YSahTb83IuTGOwkFjJAQEwlZ8QzNfIp/pJh6S/V1KfkHMLb1Zv39UweGktiZ2
-        X0IMjLQBRt/ZZvZT5iXLosOHbuoDnEY=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=kfI1228BT1lPSNTcQiaLIPB09CDTdUJPSFhJvqJ8/wQ=;
+        b=JNkpmefctDNOnvRA5YOh4HnIfp0GBx1u1r7kdvTBtWeBmlshJTXJ7+RpbeFoS1lQ0qG8RL
+        SqITuiAlD7HPA9SH0qw/kxHI+x/2x6NNlSLxA5pOFIHx9dwc5hk3KNvXXHvqHre/eWw/ZW
+        HyMnuvr/+RIOzRwrDXsN36O0j2K6WVA=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-491-W5EXPPCkMnOZ8uJ5e0muaw-1; Thu, 25 May 2023 12:02:51 -0400
-X-MC-Unique: W5EXPPCkMnOZ8uJ5e0muaw-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1ae6b280bacso9998965ad.0
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:02:50 -0700 (PDT)
+ us-mta-115-afnfUt13MVGFU2qhORVa-Q-1; Thu, 25 May 2023 12:17:20 -0400
+X-MC-Unique: afnfUt13MVGFU2qhORVa-Q-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-75b2c4b3e02so108465885a.1
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:17:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685030570; x=1687622570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WiRt50oXKhasmrzR2kh6FHaULiNwoG0spSQORGoTHTA=;
-        b=KtiZBcNUg6qOMbDTuX4fS7Iv+coTcaLj0SgJp8pt78zu8cd6qKaPPXFKn56FnbkHzK
-         mAxTns74SnYn+9QLh3jBLHry7Qi0Ms6RvyBUdDNpn2ulMWsyeiFxtCDdbbAtEz5t2Rx+
-         mpBGEp0Mofb2mHe+8ZILnMjWuiaaA4gwmKv6txyO+TFynIoou7Tkc2CjYPySuKPFjisH
-         U6e89Bl4Drpd2pf/91RGPRwSxOgLOWE4+nUlpPJF4NtRqKEUtcuSncdKBaAAbAVIzcQU
-         bx9ueA4I6ghbrxvGuEb3KGr7SK1Wo7JbpllwGgb72I5q6wendA56GzaxZJxibAtBx5o3
-         iG0A==
-X-Gm-Message-State: AC+VfDwYaFFgcv02xMTdc707OJAi/hRvjBvsYi/wWCU2o+scUkx+3Q+f
-        bJ9Ne/sM4YphPYkwQNV0CrWgn/6dQF0jfbxdfUtr0Kx/L2EYtiIaHWs+5fKFgPcsdyegaohwSmH
-        rPFKddB1GLWZClqFEEp3NWYDBn7WKJFbO72yDYA==
-X-Received: by 2002:a17:902:f54c:b0:1af:f64c:f363 with SMTP id h12-20020a170902f54c00b001aff64cf363mr3052077plf.15.1685030569937;
-        Thu, 25 May 2023 09:02:49 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6IxaSUVZPKltFK7HOITIsIRGnmd5NzIdTwh6dJNU2vgkdbKhe1zl+1aodXLLyyl7kcWSFpgVAL2XCU4JAoynY=
-X-Received: by 2002:a17:902:f54c:b0:1af:f64c:f363 with SMTP id
- h12-20020a170902f54c00b001aff64cf363mr3052030plf.15.1685030569588; Thu, 25
- May 2023 09:02:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230524063810.1595778-1-hch@lst.de> <20230524063810.1595778-8-hch@lst.de>
-In-Reply-To: <20230524063810.1595778-8-hch@lst.de>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 25 May 2023 18:02:37 +0200
-Message-ID: <CAHc6FU6akk6yg1YGpgq-XqMv7soOLA4_Jg17T1M+NKn1PRmJkg@mail.gmail.com>
-Subject: Re: [PATCH 07/11] iomap: update ki_pos in iomap_file_buffered_write
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <chao@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
+        d=1e100.net; s=20221208; t=1685031439; x=1687623439;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kfI1228BT1lPSNTcQiaLIPB09CDTdUJPSFhJvqJ8/wQ=;
+        b=HbfDmuEAj5/UI6VHgUJQyTJxRUqK0W6YDuRl6a9iHuZDZvGGUsF/zBV1JeTtW7LLJF
+         vNVCTBCCK5IXXTkc50fBKdrzo8U5qPxUE0GTJdlG6PHRHtssxTFxdl0dfqbkWqBZexdu
+         BWZJlrMyzTLDnObXNY64UpCZ2mELP9r9j+xcRFfoKGsdLTqBSrGjEy+5Q+LwljR/rNrn
+         2jbO1a7s78gSQDnXWUIQhlPnudA55xaKdA7MuDuSmaEToSvkQA9n/KK8HR/j/a2RDA/j
+         Q0prhhBCuFgqKcRyLKU0cIB87lUiGUOga/weKStolPJNW/TYtNi2NVl7ATSngMIg6mVm
+         SCwA==
+X-Gm-Message-State: AC+VfDxOGLmRmF/5cLFiTGtAzIdDkL0ENJiBIn2EE2W8v4+Ydmo13phw
+        sCgZOIn7/nnuRsl7rFm1VD/Sq02/aqdBrSGX5wqjMBgj0YL44JqoLY7HFzWBIG1o3oCpu9fxQa4
+        NX5l6nfW7Z2VBkxNKVS4sgA==
+X-Received: by 2002:a05:620a:2b9c:b0:75b:23a1:d8ce with SMTP id dz28-20020a05620a2b9c00b0075b23a1d8cemr2966404qkb.18.1685031438332;
+        Thu, 25 May 2023 09:17:18 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5URREXOgS18lIhJSr4njOTwBiUKlVD8Ep70/xv62Y6p9tMFNK+fvipBkeNUIxnJhB8w+F/gA==
+X-Received: by 2002:a05:620a:2b9c:b0:75b:23a1:d8ce with SMTP id dz28-20020a05620a2b9c00b0075b23a1d8cemr2966378qkb.18.1685031437846;
+        Thu, 25 May 2023 09:17:17 -0700 (PDT)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05620a124400b0075b1c6f9628sm494265qkl.71.2023.05.25.09.17.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 May 2023 09:17:17 -0700 (PDT)
+Date:   Thu, 25 May 2023 12:19:47 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Joe Thornber <ejt@redhat.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZG+KoxDMeyogq4J0@bfoster>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <ZGb2Xi6O3i2pLam8@infradead.org>
+ <ZGeKm+jcBxzkMXQs@redhat.com>
+ <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+ <ZGu0LaQfREvOQO4h@redhat.com>
+ <ZGzIJlCE2pcqQRFJ@bfoster>
+ <ZGzbGg35SqMrWfpr@redhat.com>
+ <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZG1dAtHmbQ53aOhA@dread.disaster.area>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -89,103 +95,321 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 24, 2023 at 8:54=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
-e:
-> All callers of iomap_file_buffered_write need to updated ki_pos, move it
-> into common code.
+On Wed, May 24, 2023 at 10:40:34AM +1000, Dave Chinner wrote:
+> On Tue, May 23, 2023 at 11:26:18AM -0400, Mike Snitzer wrote:
+> > On Tue, May 23 2023 at 10:05P -0400, Brian Foster <bfoster@redhat.com> wrote:
+> > > On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
+> > > ... since I also happen to think there is a potentially interesting
+> > > development path to make this sort of reserve pool configurable in terms
+> > > of size and active/inactive state, which would allow the fs to use an
+> > > emergency pool scheme for managing metadata provisioning and not have to
+> > > track and provision individual metadata buffers at all (dealing with
+> > > user data is much easier to provision explicitly). So the space
+> > > inefficiency thing is potentially just a tradeoff for simplicity, and
+> > > filesystems that want more granularity for better behavior could achieve
+> > > that with more work. Filesystems that don't would be free to rely on the
+> > > simple/basic mechanism provided by dm-thin and still have basic -ENOSPC
+> > > protection with very minimal changes.
+> > > 
+> > > That's getting too far into the weeds on the future bits, though. This
+> > > is essentially 99% a dm-thin approach, so I'm mainly curious if there's
+> > > sufficient interest in this sort of "reserve mode" approach to try and
+> > > clean it up further and have dm guys look at it, or if you guys see any
+> > > obvious issues in what it does that makes it potentially problematic, or
+> > > if you would just prefer to go down the path described above...
+> > 
+> > The model that Dave detailed, which builds on REQ_PROVISION and is
+> > sticky (by provisioning same blocks for snapshot) seems more useful to
+> > me because it is quite precise.  That said, it doesn't account for
+> > hard requirements that _all_ blocks will always succeed.
+> 
+> Hmmm. Maybe I'm misunderstanding the "reserve pool" context here,
+> but I don't think we'd ever need a hard guarantee from the block
+> device that every write bio issued from the filesystem will succeed
+> without ENOSPC.
+> 
 
-Thanks for this set of cleanups, especially for the patch killing
-current->backing_dev_info.
+The bigger picture goal that I didn't get into in my previous mail is
+the "full device" reservation model is intended to be a simple, crude
+reference implementation that can be enabled for any arbitrary thin
+volume consumer (filesystem or application). The idea is to build that
+on a simple enough reservation mechanism that any such consumer could
+override it based on its own operational model. The goal is to guarantee
+that a particular filesystem never receives -ENOSPC from dm-thin on
+writes, but the first phase of implementing that is to simply guarantee
+every block is writeable.
 
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+As a specific filesystem is able to more explicitly provision its own
+allocations in a way that it can guarantee to return -ENOSPC from
+dm-thin up front (rather than at write bio time), it can reduce the need
+for the amount of reservation required, ultimately to zero if that
+filesystem provides the ability to pre-provision all of its writes to
+storage in some way or another.
 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Damien Le Moal <dlemoal@kernel.org>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  fs/gfs2/file.c         | 4 +---
->  fs/iomap/buffered-io.c | 9 ++++++---
->  fs/xfs/xfs_file.c      | 2 --
->  fs/zonefs/file.c       | 4 +---
->  4 files changed, 8 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> index 904a0d6ac1a1a9..c6a7555d5ad8bb 100644
-> --- a/fs/gfs2/file.c
-> +++ b/fs/gfs2/file.c
-> @@ -1044,10 +1044,8 @@ static ssize_t gfs2_file_buffered_write(struct kio=
-cb *iocb,
->         pagefault_disable();
->         ret =3D iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
->         pagefault_enable();
-> -       if (ret > 0) {
-> -               iocb->ki_pos +=3D ret;
-> +       if (ret > 0)
->                 written +=3D ret;
-> -       }
->
->         if (inode =3D=3D sdp->sd_rindex)
->                 gfs2_glock_dq_uninit(statfs_gh);
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 063133ec77f49e..550525a525c45c 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -864,16 +864,19 @@ iomap_file_buffered_write(struct kiocb *iocb, struc=
-t iov_iter *i,
->                 .len            =3D iov_iter_count(i),
->                 .flags          =3D IOMAP_WRITE,
->         };
-> -       int ret;
-> +       ssize_t ret;
->
->         if (iocb->ki_flags & IOCB_NOWAIT)
->                 iter.flags |=3D IOMAP_NOWAIT;
->
->         while ((ret =3D iomap_iter(&iter, ops)) > 0)
->                 iter.processed =3D iomap_write_iter(&iter, i);
-> -       if (iter.pos =3D=3D iocb->ki_pos)
-> +
-> +       if (unlikely(ret < 0))
->                 return ret;
-> -       return iter.pos - iocb->ki_pos;
-> +       ret =3D iter.pos - iocb->ki_pos;
-> +       iocb->ki_pos +=3D ret;
-> +       return ret;
->  }
->  EXPORT_SYMBOL_GPL(iomap_file_buffered_write);
->
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 431c3fd0e2b598..d57443db633637 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -720,8 +720,6 @@ xfs_file_buffered_write(
->         trace_xfs_file_buffered_write(iocb, from);
->         ret =3D iomap_file_buffered_write(iocb, from,
->                         &xfs_buffered_write_iomap_ops);
-> -       if (likely(ret >=3D 0))
-> -               iocb->ki_pos +=3D ret;
->
->         /*
->          * If we hit a space limit, try to free up some lingering preallo=
-cated
-> diff --git a/fs/zonefs/file.c b/fs/zonefs/file.c
-> index 132f01d3461f14..e212d0636f848e 100644
-> --- a/fs/zonefs/file.c
-> +++ b/fs/zonefs/file.c
-> @@ -643,9 +643,7 @@ static ssize_t zonefs_file_buffered_write(struct kioc=
-b *iocb,
->                 goto inode_unlock;
->
->         ret =3D iomap_file_buffered_write(iocb, from, &zonefs_write_iomap=
-_ops);
-> -       if (ret > 0)
-> -               iocb->ki_pos +=3D ret;
-> -       else if (ret =3D=3D -EIO)
-> +       if (ret =3D=3D -EIO)
->                 zonefs_io_error(inode, true);
->
->  inode_unlock:
-> --
-> 2.39.2
->
+I think for filesystems with complex metadata management like XFS, it's
+not very realistic to expect explicit 1-1 provisioning for all metadata
+changes on a per-transaction basis in the same way that can (fairly
+easily) be done for data, which means a pool mechanism is probably still
+needed for the metadata class of writes. Therefore, my expectation for
+something like XFS is that it grows the ability to explicitly provision
+data writes up front (we solved this part years ago), and then uses a
+much smaller pool of reservation for the purpose of dealing with
+metadata.
+
+I think what you describe below around preprovisioned perag metadata
+ranges is interesting because it _very closely_ maps conceptually to
+what I envisioned the evolution of the reserve pool scheme to end up
+looking like, but just implemented rather differently to use
+reservations instead of specific LBA ranges.
+
+Let me try to connect the dots and identify the differences/tradeoffs...
+
+> If the block device can provide a guarantee that a provisioned LBA
+> range is always writable, then everything else is a filesystem level
+> optimisation problem and we don't have to involve the block device
+> in any way. All we need is a flag we can ready out of the bdev at
+> mount time to determine if the filesystem should be operating with
+> LBA provisioning enabled...
+> 
+> e.g. If we need to "pre-provision" a chunk of the LBA space for
+> filesystem metadata, we can do that ahead of time and track the
+> pre-provisioned range(s) in the filesystem itself.
+> 
+> In XFS, That could be as simple as having small chunks of each AG
+> reserved to metadata (e.g. start with the first 100MB) and limiting
+> all metadata allocation free space searches to that specific block
+> range. When we run low on that space, we pre-provision another 100MB
+> chunk and then allocate all metadata out of that new range. If we
+> start getting ENOSPC to pre-provisioning, then we reduce the size of
+> the regions and log low space warnings to userspace. If we can't
+> pre-provision any space at all and we've completely run out, we
+> simply declare ENOSPC for all incoming operations that require
+> metadata allocation until pre-provisioning succeeds again.
+> 
+
+The more interesting aspect of this is not so much how space is
+provisioned and allocated, but how the filesystem is going to consume
+that space in a way that guarantees -ENOSPC is provided up front before
+userspace is allowed to make modifications. You didn't really touch on
+that here, so I'm going to assume we'd have something like a perag
+counter of how many free blocks currently live in preprovisioned ranges,
+and then an fs-wide total somewhere so a transaction has the ability to
+consume these blocks at trans reservation time, the fs knows when to
+preprovision more space (or go into -ENOSPC mode), etc.
+
+Some accounting of that nature is necessary here in order to prevent the
+filesystem from ever writing to unprovisioned space. So what I was
+envisioning is rather than explicitly preprovision a physical range of
+each AG and tracking all that, just reserve that number of arbitrarily
+located blocks from dm for each AG.
+
+The initial perag reservations can be populated at mount time,
+replenished as needed in a very similar way as what you describe, and
+100% released back to the thin pool at unmount time. On top of that,
+there's no need to track physical preprovisioned ranges at all. Not just
+for allocation purposes, but also to avoid things like having to protect
+background trims from preprovisioned ranges of free space dedicated for
+metadata, etc. 
+
+> This is built entirely on the premise that once proactive backing
+> device provisioning fails, the backing device is at ENOSPC and we
+> have to wait for that situation to go away before allowing new data
+> to be ingested. Hence the block device really doesn't need to know
+> anything about what the filesystem is doing and vice versa - The
+> block dev just says "yes" or "no" and the filesystem handles
+> everything else.
+> 
+
+Yup, everything you describe about going into a simulated -ENOSPC mode
+would work exactly the same. The primary difference is that the internal
+provisioned space accounting in the filesystem is backed by dynamic
+reservation in dm, rather than physically provisioned LBA ranges.
+
+> It's worth noting that XFS already has a coarse-grained
+> implementation of preferred regions for metadata storage. It will
+> currently not use those metadata-preferred regions for user data
+> unless all the remaining user data space is full.  Hence I'm pretty
+> sure that a pre-provisioning enhancment like this can be done
+> entirely in-memory without requiring any new on-disk state to be
+> added.
+> 
+> Sure, if we crash and remount, then we might chose a different LBA
+> region for pre-provisioning. But that's not really a huge deal as we
+> could also run an internal background post-mount fstrim operation to
+> remove any unused pre-provisioning that was left over from when the
+> system went down.
+> 
+
+None of this is really needed..
+
+> Further, managing shared pool exhaustion doesn't require a
+> reservation pool in the backing device and for the filesystems to
+> request space from it. Filesystems already have their own reserve
+> pools via pre-provisioning. If we want the filesystems to be able to
+> release that space back to the shared pool (e.g. because the shared
+> backing pool is critically short on space) then all we need is an
+> extension to FITRIM to tell the filesystem to also release internal
+> pre-provisioned reserves.
+> 
+> Then the backing pool admin (person or automated daemon!) can simply
+> issue a trim on all the filesystems in the pool and spce will be
+> returned. Then filesystems will ask for new pre-provisioned space
+> when they next need to ingest modifications, and the backing pool
+> can manage the new pre-provisioning space requests directly....
+> 
+
+This is written as to imply that the reservation pool is some big
+complex thing, which makes me think there is some
+confusion/miscommunication. It's basically just an in memory counter of
+space that is allocated out of a shared thin pool and is held in a
+specific thin volume while it is currently in use. The counter on the
+volume is managed indirectly by filesystem requests and/or direct
+operations on the volume (like dm snapshots).
+
+Sure, you could replace the counter and reservation interface with
+explicitly provisioned/trimmed LBA ranges that the fs can manage to
+provide -ENOSPC guarantees, but then the fs has to do those various
+things you've mentioned:
+
+- Provision those ranges in the fs and change allocation behavior
+  accordingly.
+- Do the background post-crash fitrim preprovision clean up thing.
+- Distinguish between trims that are intended to return preprovisioned
+  space vs. those that come from userspace.
+- Have some daemon or whatever (?) responsible for communicating the
+  need for trims in the fs to return space back to the pool.
+
+Then this still depends on changing how dm thin snapshots work and needs
+a way to deal with delayed allocation to actually guarantee -ENOSPC
+protection..?
+
+> Hence I think if we get the basic REQ_PROVISION overwrite-in-place
+> guarantees defined and implemented as previously outlined, then we
+> don't need any special coordination between the fs and block devices
+> to avoid fatal ENOSPC issues with sparse and/or snapshot capable
+> block devices...
+> 
+
+This all sounds like a good amount of coordination and unnecessary
+complexity to me. What I was thinking as a next phase (i.e. after
+initial phase full device reservation) approach for a filesystem like
+XFS would be something like this.
+
+- Support a mount option for a configurable size metadata reservation
+  pool (with sane/conservative default).
+- The pool is populated at mount time, else the fs goes right into
+  simulated -ENOSPC mode.
+- Thin pool reservation consumption is controlled by a flag on write
+  bios that is managed by the fs (flag polarity TBD).
+- All fs data writes are explicitly reserved up front in the write path.
+  Delalloc maps to explicit reservation, overwrites are easy and just
+  involve an explicit provision.
+- Metadata writes are not reserved or provisioned at all. They allocate
+  out of the thin pool on write (if needed), just as they do today. On
+  an -ENOSPC metadata write error, the fs goes into simulated -ENOSPC mode
+  and allows outstanding metadata writes to now use the bio flag to
+  consume emergency reservation.
+
+So this means that metadata -ENOSPC protection is only as reliable as
+the size of the specified pool. This is by design, so the filesystem
+still does not have to track provisioning, allocation or overwrites of
+its own metadata usage. Users with metadata heavy workloads or who
+happen to be sensitive to -ENOSPC errors can be more aggressive with
+pool size, while other users might be able to get away with a smaller
+pool. Users who are super paranoid and want perfection can continue to
+reserve the entire device and pay for the extra storage.
+
+Users who are not sure can test their workload in an appropriate
+environment, collect some data/metrics on maximum outstanding dirty
+metadata, and then use that as a baseline/minimum pool size for reliable
+behavior going forward. This is also where something like Stratis can
+come in to generate this sort of information, make recommendations or
+implement heuristics (based on things like fs size, amount of RAM, for
+e.g.) to provide sane defaults based on use case. I.e., this is
+initially exposed as a userspace/tuning issue instead of a
+filesystem/dm-thin hard guarantee.
+
+Finally, if you really want to get to that last step of maximally
+efficient and safe provisioning in the fs, implement a
+'thinreserve=adaptive' mode in the fs that alters the acquisition and
+consumption of dm-thin reserved blocks to be adaptive in nature and
+promises to do it's own usage throttling against outstanding
+reservation. I think this is the mode that most closely resembles your
+preprovisioned range mechanism.
+
+For example, adaptive mode could add the logic/complexity where you do
+the per-ag provision thing (just using reservation instead of physical
+ranges), change the transaction path to attempt to increase the
+reservation pool or go into -ENOSPC mode, and flag all writes to be
+satisfied from the reserve pool (because you've done the
+provision/reservation up front).
+
+At this point the "reserve pool" concept is very different and pretty
+much managed entirely by the filesystem. It's just a counter of the set
+of blocks the fs is anticipating to write to in the near term, but it's
+built on the same underlying reservation mechanism used differently by
+other filesystems. So something like ext4 could elide the need for an
+adaptive mode, implement the moderate data/metadata pool mechanism and
+rely on userspace tools or qualified administrators to do the sizing
+correctly, while simultaneously using the same underlying mechanism that
+XFS is using for finer grained provisioning.
+
+> As a bonus, if we can implement the guarantees in dm-thin/-snapshot
+> and have a filesystem make use of it, then we also have a reference
+> implementation to point at device vendors and standards
+> associations....
+> 
+
+I think that's a ways ahead yet.. :P
+
+Thoughts on any of the above? Does that describe enough of the big
+picture? (Mike, I hope this at least addresses the whole "why even do
+this?" question). I am deliberately trying to work through a progression
+that starts simple and generic but actually 100% solves the problem
+(even if in a dumb way), then iterates to something that addresses the
+biggest drawback with the reference implementation with minimal changes
+required to individual filesystems (i.e. metadata pool sizing), and
+finally ends up allowing any particular filesystem to refine from there
+to achieve maximal efficiency based on its own cost/benefit analysis.
+
+Another way to look at it is... step 1 is to implement the
+'thinreserve=full' mount option, which can be trivially implemented by
+any filesystem with a couple function calls. Step two is to implement
+'thinsreserve=N' support, which consists of a standard iomap
+provisioning implementation for data and a bio tagging/error handling
+approach that is still pretty simple for most filesystems to implement.
+Finally, 'thinreserve=adaptive' is the filesystems best effort to
+guarantee -ENOSPC safety with maximal space efficiency.
+
+One general tradeoff with using reservations vs. preprovisioning is the
+the latter can just use the provision/trim primitives to alloc/free LBA
+ranges. My thought on that is those primitives could possibly be
+modified to do the same sort of things with reservation as for physical
+allocations. That seems fairly easy to do with bio op flags/modifiers,
+though one thing I'm not sure about is how to submit a provision bio to
+request a certain amount location agnostic blocks. I'd have to
+investigate that more.
+
+So in summary, I can sort of see how this problem could be solved with
+this combination of physically preprovisioned ranges and changes to
+dm-thin snapshot behavior and whatnot (I'm still missing how this is
+supposed to handle delalloc, mostly), but I think that involves more
+complexity and customization work than is really necessary. Either way,
+this is a distinctly different approach to what I was thinking of
+morphing the prototype bits into. So to me the relevant question is does
+something like the progression that is outlined above for a block
+reservation approach seem a reasonable path to ultimately be able to
+accomplish the same sort of results in the fs? If so, then I'm happy to
+try and push things in that direction to at least try to prove it out.
+If not, then I'm also happy to just leave it alone.. ;)
+
+Brian
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
 
