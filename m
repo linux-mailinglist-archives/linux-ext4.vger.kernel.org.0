@@ -2,414 +2,349 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B66967110BE
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 18:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008E5711A4E
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 May 2023 00:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbjEYQS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 May 2023 12:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        id S230465AbjEYWrj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 May 2023 18:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239472AbjEYQSV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 12:18:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE38195
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685031441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kfI1228BT1lPSNTcQiaLIPB09CDTdUJPSFhJvqJ8/wQ=;
-        b=JNkpmefctDNOnvRA5YOh4HnIfp0GBx1u1r7kdvTBtWeBmlshJTXJ7+RpbeFoS1lQ0qG8RL
-        SqITuiAlD7HPA9SH0qw/kxHI+x/2x6NNlSLxA5pOFIHx9dwc5hk3KNvXXHvqHre/eWw/ZW
-        HyMnuvr/+RIOzRwrDXsN36O0j2K6WVA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-115-afnfUt13MVGFU2qhORVa-Q-1; Thu, 25 May 2023 12:17:20 -0400
-X-MC-Unique: afnfUt13MVGFU2qhORVa-Q-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-75b2c4b3e02so108465885a.1
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 09:17:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685031439; x=1687623439;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        with ESMTP id S241661AbjEYWri (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 18:47:38 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1FEE7
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 15:47:33 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-96fb1642b09so8969466b.0
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 15:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1685054852; x=1687646852;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kfI1228BT1lPSNTcQiaLIPB09CDTdUJPSFhJvqJ8/wQ=;
-        b=HbfDmuEAj5/UI6VHgUJQyTJxRUqK0W6YDuRl6a9iHuZDZvGGUsF/zBV1JeTtW7LLJF
-         vNVCTBCCK5IXXTkc50fBKdrzo8U5qPxUE0GTJdlG6PHRHtssxTFxdl0dfqbkWqBZexdu
-         BWZJlrMyzTLDnObXNY64UpCZ2mELP9r9j+xcRFfoKGsdLTqBSrGjEy+5Q+LwljR/rNrn
-         2jbO1a7s78gSQDnXWUIQhlPnudA55xaKdA7MuDuSmaEToSvkQA9n/KK8HR/j/a2RDA/j
-         Q0prhhBCuFgqKcRyLKU0cIB87lUiGUOga/weKStolPJNW/TYtNi2NVl7ATSngMIg6mVm
-         SCwA==
-X-Gm-Message-State: AC+VfDxOGLmRmF/5cLFiTGtAzIdDkL0ENJiBIn2EE2W8v4+Ydmo13phw
-        sCgZOIn7/nnuRsl7rFm1VD/Sq02/aqdBrSGX5wqjMBgj0YL44JqoLY7HFzWBIG1o3oCpu9fxQa4
-        NX5l6nfW7Z2VBkxNKVS4sgA==
-X-Received: by 2002:a05:620a:2b9c:b0:75b:23a1:d8ce with SMTP id dz28-20020a05620a2b9c00b0075b23a1d8cemr2966404qkb.18.1685031438332;
-        Thu, 25 May 2023 09:17:18 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5URREXOgS18lIhJSr4njOTwBiUKlVD8Ep70/xv62Y6p9tMFNK+fvipBkeNUIxnJhB8w+F/gA==
-X-Received: by 2002:a05:620a:2b9c:b0:75b:23a1:d8ce with SMTP id dz28-20020a05620a2b9c00b0075b23a1d8cemr2966378qkb.18.1685031437846;
-        Thu, 25 May 2023 09:17:17 -0700 (PDT)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id a4-20020a05620a124400b0075b1c6f9628sm494265qkl.71.2023.05.25.09.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 09:17:17 -0700 (PDT)
-Date:   Thu, 25 May 2023 12:19:47 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Joe Thornber <ejt@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZG+KoxDMeyogq4J0@bfoster>
-References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <ZGb2Xi6O3i2pLam8@infradead.org>
- <ZGeKm+jcBxzkMXQs@redhat.com>
- <ZGgBQhsbU9b0RiT1@dread.disaster.area>
- <ZGu0LaQfREvOQO4h@redhat.com>
- <ZGzIJlCE2pcqQRFJ@bfoster>
- <ZGzbGg35SqMrWfpr@redhat.com>
- <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+        bh=j6D4P/JK41Ddrow0l0zlRwdkdCpiqpcZbO2AfcEMcPI=;
+        b=jEO/FLLakl+6KJpbcfREe6f1tZlqkXsM8SahgWW/TInIaJTeaZgPoaC1GbzKYgiz9K
+         rGe2pvgx5CdD1yyu8RAMKnt99J9CxzY70P8z/YJJVASB9LMZQ4FR8NAS3V93U/I0RBfC
+         SbSFxR5gomaDVFhvveBM9o+xKmRwq7fhT3Bj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685054852; x=1687646852;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j6D4P/JK41Ddrow0l0zlRwdkdCpiqpcZbO2AfcEMcPI=;
+        b=UEbbSHIKViQot7hVEywCjcixVGEzjv+hjfsjgAUY2WRHyIoYe/89rLYPI0ejZqgHbJ
+         6qkOaOIEMmxcycaoY7J3q+I1NqVWZ/71VnTI+pdbRtdyMsFCfgS6+znMNK4PTc7GUKU2
+         pBKXnEz9jpxVgBvuDr/qC3d8CvvwUO1ga/majPrd779ZdkK2KZVSc+4lA6Ho4jNyP9hr
+         kdF8UmimYgZNRVrgksduUJKTOFNR+jqEWCbWQzadCqdQdYZrAs9iffTvk8YDOS2Eqaxc
+         VanMzNojOMcKvXQWa4OQi2Ngcuyd+CQ0Z4RCTDFR8/MmqD+QdDBaJqyVAGCE9wGZe+dr
+         1dsg==
+X-Gm-Message-State: AC+VfDxXYtbY0UjGV7OZwVT2FnQtLXK+Pr9VQPjawfPp0WRir4TQZhoU
+        PY1hhUKu8AJJSg/r/w6M2f8PI0fPoUBiTRV/uF2hPg==
+X-Google-Smtp-Source: ACHHUZ71HRrOp6MfK+Cw+RJmShDtRB759VvBHCr7evJoSbuNfS+tOKqG+kM7n2MPzvM2d3iPlRupOezJxtTg4j5CL2g=
+X-Received: by 2002:a17:907:724f:b0:96f:2b3f:61 with SMTP id
+ ds15-20020a170907724f00b0096f2b3f0061mr301197ejc.7.1685054852142; Thu, 25 May
+ 2023 15:47:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <ZGb2Xi6O3i2pLam8@infradead.org> <ZGeKm+jcBxzkMXQs@redhat.com>
+ <ZGgBQhsbU9b0RiT1@dread.disaster.area> <ZGu0LaQfREvOQO4h@redhat.com>
+ <ZGzIJlCE2pcqQRFJ@bfoster> <ZGzbGg35SqMrWfpr@redhat.com> <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+ <ZG5taYoXDRymo/e9@redhat.com> <ZG9JD+4Zu36lnm4F@dread.disaster.area> <ZG+GKwFC7M3FfAO5@redhat.com>
+In-Reply-To: <ZG+GKwFC7M3FfAO5@redhat.com>
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+Date:   Thu, 25 May 2023 15:47:21 -0700
+Message-ID: <CAG9=OMNhCNFhTcktxSMYbc5WXkSZ-vVVPtb4ak6B3Z2-kEVX0Q@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Joe Thornber <ejt@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 24, 2023 at 10:40:34AM +1000, Dave Chinner wrote:
-> On Tue, May 23, 2023 at 11:26:18AM -0400, Mike Snitzer wrote:
-> > On Tue, May 23 2023 at 10:05P -0400, Brian Foster <bfoster@redhat.com> wrote:
-> > > On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
-> > > ... since I also happen to think there is a potentially interesting
-> > > development path to make this sort of reserve pool configurable in terms
-> > > of size and active/inactive state, which would allow the fs to use an
-> > > emergency pool scheme for managing metadata provisioning and not have to
-> > > track and provision individual metadata buffers at all (dealing with
-> > > user data is much easier to provision explicitly). So the space
-> > > inefficiency thing is potentially just a tradeoff for simplicity, and
-> > > filesystems that want more granularity for better behavior could achieve
-> > > that with more work. Filesystems that don't would be free to rely on the
-> > > simple/basic mechanism provided by dm-thin and still have basic -ENOSPC
-> > > protection with very minimal changes.
-> > > 
-> > > That's getting too far into the weeds on the future bits, though. This
-> > > is essentially 99% a dm-thin approach, so I'm mainly curious if there's
-> > > sufficient interest in this sort of "reserve mode" approach to try and
-> > > clean it up further and have dm guys look at it, or if you guys see any
-> > > obvious issues in what it does that makes it potentially problematic, or
-> > > if you would just prefer to go down the path described above...
-> > 
-> > The model that Dave detailed, which builds on REQ_PROVISION and is
-> > sticky (by provisioning same blocks for snapshot) seems more useful to
-> > me because it is quite precise.  That said, it doesn't account for
-> > hard requirements that _all_ blocks will always succeed.
-> 
-> Hmmm. Maybe I'm misunderstanding the "reserve pool" context here,
-> but I don't think we'd ever need a hard guarantee from the block
-> device that every write bio issued from the filesystem will succeed
-> without ENOSPC.
-> 
+On Thu, May 25, 2023 at 9:00=E2=80=AFAM Mike Snitzer <snitzer@kernel.org> w=
+rote:
+>
+> On Thu, May 25 2023 at  7:39P -0400,
+> Dave Chinner <david@fromorbit.com> wrote:
+>
+> > On Wed, May 24, 2023 at 04:02:49PM -0400, Mike Snitzer wrote:
+> > > On Tue, May 23 2023 at  8:40P -0400,
+> > > Dave Chinner <david@fromorbit.com> wrote:
+> > >
+> > > > On Tue, May 23, 2023 at 11:26:18AM -0400, Mike Snitzer wrote:
+> > > > > On Tue, May 23 2023 at 10:05P -0400, Brian Foster <bfoster@redhat=
+.com> wrote:
+> > > > > > On Mon, May 22, 2023 at 02:27:57PM -0400, Mike Snitzer wrote:
+> > > > > > ... since I also happen to think there is a potentially interes=
+ting
+> > > > > > development path to make this sort of reserve pool configurable=
+ in terms
+> > > > > > of size and active/inactive state, which would allow the fs to =
+use an
+> > > > > > emergency pool scheme for managing metadata provisioning and no=
+t have to
+> > > > > > track and provision individual metadata buffers at all (dealing=
+ with
+> > > > > > user data is much easier to provision explicitly). So the space
+> > > > > > inefficiency thing is potentially just a tradeoff for simplicit=
+y, and
+> > > > > > filesystems that want more granularity for better behavior coul=
+d achieve
+> > > > > > that with more work. Filesystems that don't would be free to re=
+ly on the
+> > > > > > simple/basic mechanism provided by dm-thin and still have basic=
+ -ENOSPC
+> > > > > > protection with very minimal changes.
+> > > > > >
+> > > > > > That's getting too far into the weeds on the future bits, thoug=
+h. This
+> > > > > > is essentially 99% a dm-thin approach, so I'm mainly curious if=
+ there's
+> > > > > > sufficient interest in this sort of "reserve mode" approach to =
+try and
+> > > > > > clean it up further and have dm guys look at it, or if you guys=
+ see any
+> > > > > > obvious issues in what it does that makes it potentially proble=
+matic, or
+> > > > > > if you would just prefer to go down the path described above...
+> > > > >
+> > > > > The model that Dave detailed, which builds on REQ_PROVISION and i=
+s
+> > > > > sticky (by provisioning same blocks for snapshot) seems more usef=
+ul to
+> > > > > me because it is quite precise.  That said, it doesn't account fo=
+r
+> > > > > hard requirements that _all_ blocks will always succeed.
+> > > >
+> > > > Hmmm. Maybe I'm misunderstanding the "reserve pool" context here,
+> > > > but I don't think we'd ever need a hard guarantee from the block
+> > > > device that every write bio issued from the filesystem will succeed
+> > > > without ENOSPC.
+> > > >
+> > > > If the block device can provide a guarantee that a provisioned LBA
+> > > > range is always writable, then everything else is a filesystem leve=
+l
+> > > > optimisation problem and we don't have to involve the block device
+> > > > in any way. All we need is a flag we can ready out of the bdev at
+> > > > mount time to determine if the filesystem should be operating with
+> > > > LBA provisioning enabled...
+> > > >
+> > > > e.g. If we need to "pre-provision" a chunk of the LBA space for
+> > > > filesystem metadata, we can do that ahead of time and track the
+> > > > pre-provisioned range(s) in the filesystem itself.
+> > > >
+> > > > In XFS, That could be as simple as having small chunks of each AG
+> > > > reserved to metadata (e.g. start with the first 100MB) and limiting
+> > > > all metadata allocation free space searches to that specific block
+> > > > range. When we run low on that space, we pre-provision another 100M=
+B
+> > > > chunk and then allocate all metadata out of that new range. If we
+> > > > start getting ENOSPC to pre-provisioning, then we reduce the size o=
+f
+> > > > the regions and log low space warnings to userspace. If we can't
+> > > > pre-provision any space at all and we've completely run out, we
+> > > > simply declare ENOSPC for all incoming operations that require
+> > > > metadata allocation until pre-provisioning succeeds again.
+> > >
+> > > This is basically saying the same thing but:
+> > >
+> > > It could be that the LBA space is fragmented and so falling back to
+> > > the smallest region size (that matches the thinp block size) would be
+> > > the last resort?  Then if/when thinp cannot even service allocating a
+> > > new free thin block, dm-thinp will transition to out-of-data-space
+> > > mode.
+> >
+> > Yes, something of that sort, though we'd probably give up if we
+> > can't get at least megabyte scale reservations - a single
+> > modification in XFS can modify many structures and require
+> > allocation of a lot of new metadata, so the fileystem cut-off would
+> > for metadata provisioning failure would be much larger than the
+> > dm-thinp region size....
+> >
+> > > > This is built entirely on the premise that once proactive backing
+> > > > device provisioning fails, the backing device is at ENOSPC and we
+> > > > have to wait for that situation to go away before allowing new data
+> > > > to be ingested. Hence the block device really doesn't need to know
+> > > > anything about what the filesystem is doing and vice versa - The
+> > > > block dev just says "yes" or "no" and the filesystem handles
+> > > > everything else.
+> > >
+> > > Yes.
+> > >
+> > > > It's worth noting that XFS already has a coarse-grained
+> > > > implementation of preferred regions for metadata storage. It will
+> > > > currently not use those metadata-preferred regions for user data
+> > > > unless all the remaining user data space is full.  Hence I'm pretty
+> > > > sure that a pre-provisioning enhancment like this can be done
+> > > > entirely in-memory without requiring any new on-disk state to be
+> > > > added.
+> > > >
+> > > > Sure, if we crash and remount, then we might chose a different LBA
+> > > > region for pre-provisioning. But that's not really a huge deal as w=
+e
+> > > > could also run an internal background post-mount fstrim operation t=
+o
+> > > > remove any unused pre-provisioning that was left over from when the
+> > > > system went down.
+> > >
+> > > This would be the FITRIM with extension you mention below? Which is a
+> > > filesystem interface detail?
+> >
+> > No. We might reuse some of the internal infrastructure we use to
+> > implement FITRIM, but that's about it. It's just something kinda
+> > like FITRIM but with different constraints determined by the
+> > filesystem rather than the user...
+> >
+> > As it is, I'm not sure we'd even need it - a preiodic userspace
+> > FITRIM would acheive the same result, so leaked provisioned spaces
+> > would get cleaned up eventually without the filesystem having to do
+> > anything specific...
+> >
+> > > So dm-thinp would _not_ need to have new
+> > > state that tracks "provisioned but unused" block?
+> >
+> > No idea - that's your domain. :)
+> >
+> > dm-snapshot, for certain, will need to track provisioned regions
+> > because it has to guarantee that overwrites to provisioned space in
+> > the origin device will always succeed. Hence it needs to know how
+> > much space breaking sharing in provisioned regions after a snapshot
+> > has been taken with be required...
+>
+> dm-thinp offers its own much more scalable snapshot support (doesn't
+> use old dm-snapshot N-way copyout target).
+>
+> dm-snapshot isn't going to be modified to support this level of
+> hardening (dm-snapshot is basically in "maintenance only" now).
+>
+> But I understand your meaning: what you said is 100% applicable to
+> dm-thinp's snapshot implementation and needs to be accounted for in
+> thinp's metadata (inherent 'provisioned' flag).
+>
+A bit orthogonal: would dm-thinp need to differentiate between
+user-triggered provision requests (eg. from fallocate()) vs
+fs-triggered requests? I would lean towards user provisioned areas not
+getting dedup'd on snapshot creation, but that would entail tracking
+the state of the original request and possibly a provision request
+flag (REQ_PROVISION_DEDUP_ON_SNAPSHOT) or an inverse flag
+(REQ_PROVISION_NODEDUP). Possibly too convoluted...
 
-The bigger picture goal that I didn't get into in my previous mail is
-the "full device" reservation model is intended to be a simple, crude
-reference implementation that can be enabled for any arbitrary thin
-volume consumer (filesystem or application). The idea is to build that
-on a simple enough reservation mechanism that any such consumer could
-override it based on its own operational model. The goal is to guarantee
-that a particular filesystem never receives -ENOSPC from dm-thin on
-writes, but the first phase of implementing that is to simply guarantee
-every block is writeable.
+> > > Nor would the block
+> > > layer need an extra discard flag for a new class of "provisioned"
+> > > blocks.
+> >
+> > Right, I don't see that the discard operations need to care whether
+> > the underlying storage is provisioned. dm-thinp and dm-snapshot can
+> > treat REQ_OP_DISCARD as "this range is not longer in use" and do
+> > whatever they want with them.
+> >
+> > > If XFS tracked this "provisioned but unused" state, dm-thinp could
+> > > just discard the block like its told.  Would be nice to avoid dm-thin=
+p
+> > > needing to track "provisioned but unused".
+> > >
+> > > That said, dm-thinp does still need to know if a block was provisione=
+d
+> > > (given our previous designed discussion, to allow proper guarantees
+> > > from this interface at snapshot time) so that XFS and other
+> > > filesystems don't need to re-provision areas they already
+> > > pre-provisioned.
+> >
+> > Right.
+> >
+> > I've simply assumed that dm-thinp would need to track entire
+> > provisioned regions - used or unused - so it knows which writes to
+> > empty or shared regions have a reservation to allow allocation to
+> > succeed when the backing pool is otherwise empty.....
+> >
+> > > However, it may be that if thinp did track "provisioned but unused"
+> > > it'd be useful to allow snapshots to share provisioned blocks that
+> > > were never used.  Meaning, we could then avoid "breaking sharing" at
+> > > snapshot-time for "provisioned but unused" blocks.  But allowing this
+> > > "optimization" undercuts the gaurantee that XFS needs for thinp
+> > > storage that allows snapshots... SO, I think I answered my own
+> > > question: thinp doesnt need to track "provisioned but unused" blocks
+> > > but we must always ensure snapshots inherit provisoned blocks ;)
+> >
+> > Sounds like a potential optimisation, but I haven't thought through
+> > a potential snapshot device implementation that far to comment
+> > sanely. I stopped once I got to the point where accounting tricks
+> > count be used to guarantee space is available for breaking sharing
+> > of used provisioned space after a snapshot was taken....
+> >
+> > > > Further, managing shared pool exhaustion doesn't require a
+> > > > reservation pool in the backing device and for the filesystems to
+> > > > request space from it. Filesystems already have their own reserve
+> > > > pools via pre-provisioning. If we want the filesystems to be able t=
+o
+> > > > release that space back to the shared pool (e.g. because the shared
+> > > > backing pool is critically short on space) then all we need is an
+> > > > extension to FITRIM to tell the filesystem to also release internal
+> > > > pre-provisioned reserves.
+> > >
+> > > So by default FITRIM will _not_ discard provisioned blocks.  Only if
+> > > a flag is used will it result in discarding provisioned blocks.
+> >
+> > No. FITRIM results in discard of any unused free space in the
+> > filesystem that matches the criteria set by the user. We don't care
+> > if free space was once provisioned used space - we'll issue a
+> > discard for the range regardless. The "special" FITRIM extension I
+> > mentioned is to get filesystem metadata provisioning released;
+> > that's completely separate to user data provisioning through
+> > fallocate() which FITRIM will always discard if it has been freed...
+> >
+> > IOWs, normal behaviour will be that a FITRIM ends up discarding a
+> > mix of unprovisioned and provisioned space. Nobody will be able to
+> > predict what mix the device is going to get at any point in time.
+> > Also, if we turn on online discard, the block device is going to get
+> > a constant stream of discard operations that will also be a mix of
+> > provisioned and unprovisioned space that is not longer in use by the
+> > filesystem.
+> >
+> > I suspect that you need to stop trying to double guess what
+> > operations the filesystem will use provisioning for, what it will
+> > send discards for and when it will send discards for them.. Just
+> > assume the device will receive a constant stream of both
+> > REQ_PROVISION and REQ_OP_DISCARD (for both provisioned and
+> > unprovisioned regions) operations whenver the filesystem is active
+> > on a thinp device.....
+>
+> Yeah, I was getting tripped up in the weeds a bit.  It's pretty
+> straight-forward (and like I said at the start of our subthread here:
+> this follow-on work, to inherit provisioned flag, can build on this
+> REQ_PROVISION patchset).
+>
+> All said, I've now gotten this sub-thread on Joe Thornber's radar and
+> we've started discussing. We'll be discussing with more focus
+> tomorrow.
+>
+From the perspective of this patch series, I'll wait for more feedback
+before sending out v8 (which would be the above patches and the
+follow-on patch to pass through FALLOC_FL_UNSHARE_RANGE [1]).
 
-As a specific filesystem is able to more explicitly provision its own
-allocations in a way that it can guarantee to return -ENOSPC from
-dm-thin up front (rather than at write bio time), it can reduce the need
-for the amount of reservation required, ultimately to zero if that
-filesystem provides the ability to pre-provision all of its writes to
-storage in some way or another.
+[1] https://listman.redhat.com/archives/dm-devel/2023-May/054188.html
 
-I think for filesystems with complex metadata management like XFS, it's
-not very realistic to expect explicit 1-1 provisioning for all metadata
-changes on a per-transaction basis in the same way that can (fairly
-easily) be done for data, which means a pool mechanism is probably still
-needed for the metadata class of writes. Therefore, my expectation for
-something like XFS is that it grows the ability to explicitly provision
-data writes up front (we solved this part years ago), and then uses a
-much smaller pool of reservation for the purpose of dealing with
-metadata.
+Thanks!
+Sarthak
 
-I think what you describe below around preprovisioned perag metadata
-ranges is interesting because it _very closely_ maps conceptually to
-what I envisioned the evolution of the reserve pool scheme to end up
-looking like, but just implemented rather differently to use
-reservations instead of specific LBA ranges.
-
-Let me try to connect the dots and identify the differences/tradeoffs...
-
-> If the block device can provide a guarantee that a provisioned LBA
-> range is always writable, then everything else is a filesystem level
-> optimisation problem and we don't have to involve the block device
-> in any way. All we need is a flag we can ready out of the bdev at
-> mount time to determine if the filesystem should be operating with
-> LBA provisioning enabled...
-> 
-> e.g. If we need to "pre-provision" a chunk of the LBA space for
-> filesystem metadata, we can do that ahead of time and track the
-> pre-provisioned range(s) in the filesystem itself.
-> 
-> In XFS, That could be as simple as having small chunks of each AG
-> reserved to metadata (e.g. start with the first 100MB) and limiting
-> all metadata allocation free space searches to that specific block
-> range. When we run low on that space, we pre-provision another 100MB
-> chunk and then allocate all metadata out of that new range. If we
-> start getting ENOSPC to pre-provisioning, then we reduce the size of
-> the regions and log low space warnings to userspace. If we can't
-> pre-provision any space at all and we've completely run out, we
-> simply declare ENOSPC for all incoming operations that require
-> metadata allocation until pre-provisioning succeeds again.
-> 
-
-The more interesting aspect of this is not so much how space is
-provisioned and allocated, but how the filesystem is going to consume
-that space in a way that guarantees -ENOSPC is provided up front before
-userspace is allowed to make modifications. You didn't really touch on
-that here, so I'm going to assume we'd have something like a perag
-counter of how many free blocks currently live in preprovisioned ranges,
-and then an fs-wide total somewhere so a transaction has the ability to
-consume these blocks at trans reservation time, the fs knows when to
-preprovision more space (or go into -ENOSPC mode), etc.
-
-Some accounting of that nature is necessary here in order to prevent the
-filesystem from ever writing to unprovisioned space. So what I was
-envisioning is rather than explicitly preprovision a physical range of
-each AG and tracking all that, just reserve that number of arbitrarily
-located blocks from dm for each AG.
-
-The initial perag reservations can be populated at mount time,
-replenished as needed in a very similar way as what you describe, and
-100% released back to the thin pool at unmount time. On top of that,
-there's no need to track physical preprovisioned ranges at all. Not just
-for allocation purposes, but also to avoid things like having to protect
-background trims from preprovisioned ranges of free space dedicated for
-metadata, etc. 
-
-> This is built entirely on the premise that once proactive backing
-> device provisioning fails, the backing device is at ENOSPC and we
-> have to wait for that situation to go away before allowing new data
-> to be ingested. Hence the block device really doesn't need to know
-> anything about what the filesystem is doing and vice versa - The
-> block dev just says "yes" or "no" and the filesystem handles
-> everything else.
-> 
-
-Yup, everything you describe about going into a simulated -ENOSPC mode
-would work exactly the same. The primary difference is that the internal
-provisioned space accounting in the filesystem is backed by dynamic
-reservation in dm, rather than physically provisioned LBA ranges.
-
-> It's worth noting that XFS already has a coarse-grained
-> implementation of preferred regions for metadata storage. It will
-> currently not use those metadata-preferred regions for user data
-> unless all the remaining user data space is full.  Hence I'm pretty
-> sure that a pre-provisioning enhancment like this can be done
-> entirely in-memory without requiring any new on-disk state to be
-> added.
-> 
-> Sure, if we crash and remount, then we might chose a different LBA
-> region for pre-provisioning. But that's not really a huge deal as we
-> could also run an internal background post-mount fstrim operation to
-> remove any unused pre-provisioning that was left over from when the
-> system went down.
-> 
-
-None of this is really needed..
-
-> Further, managing shared pool exhaustion doesn't require a
-> reservation pool in the backing device and for the filesystems to
-> request space from it. Filesystems already have their own reserve
-> pools via pre-provisioning. If we want the filesystems to be able to
-> release that space back to the shared pool (e.g. because the shared
-> backing pool is critically short on space) then all we need is an
-> extension to FITRIM to tell the filesystem to also release internal
-> pre-provisioned reserves.
-> 
-> Then the backing pool admin (person or automated daemon!) can simply
-> issue a trim on all the filesystems in the pool and spce will be
-> returned. Then filesystems will ask for new pre-provisioned space
-> when they next need to ingest modifications, and the backing pool
-> can manage the new pre-provisioning space requests directly....
-> 
-
-This is written as to imply that the reservation pool is some big
-complex thing, which makes me think there is some
-confusion/miscommunication. It's basically just an in memory counter of
-space that is allocated out of a shared thin pool and is held in a
-specific thin volume while it is currently in use. The counter on the
-volume is managed indirectly by filesystem requests and/or direct
-operations on the volume (like dm snapshots).
-
-Sure, you could replace the counter and reservation interface with
-explicitly provisioned/trimmed LBA ranges that the fs can manage to
-provide -ENOSPC guarantees, but then the fs has to do those various
-things you've mentioned:
-
-- Provision those ranges in the fs and change allocation behavior
-  accordingly.
-- Do the background post-crash fitrim preprovision clean up thing.
-- Distinguish between trims that are intended to return preprovisioned
-  space vs. those that come from userspace.
-- Have some daemon or whatever (?) responsible for communicating the
-  need for trims in the fs to return space back to the pool.
-
-Then this still depends on changing how dm thin snapshots work and needs
-a way to deal with delayed allocation to actually guarantee -ENOSPC
-protection..?
-
-> Hence I think if we get the basic REQ_PROVISION overwrite-in-place
-> guarantees defined and implemented as previously outlined, then we
-> don't need any special coordination between the fs and block devices
-> to avoid fatal ENOSPC issues with sparse and/or snapshot capable
-> block devices...
-> 
-
-This all sounds like a good amount of coordination and unnecessary
-complexity to me. What I was thinking as a next phase (i.e. after
-initial phase full device reservation) approach for a filesystem like
-XFS would be something like this.
-
-- Support a mount option for a configurable size metadata reservation
-  pool (with sane/conservative default).
-- The pool is populated at mount time, else the fs goes right into
-  simulated -ENOSPC mode.
-- Thin pool reservation consumption is controlled by a flag on write
-  bios that is managed by the fs (flag polarity TBD).
-- All fs data writes are explicitly reserved up front in the write path.
-  Delalloc maps to explicit reservation, overwrites are easy and just
-  involve an explicit provision.
-- Metadata writes are not reserved or provisioned at all. They allocate
-  out of the thin pool on write (if needed), just as they do today. On
-  an -ENOSPC metadata write error, the fs goes into simulated -ENOSPC mode
-  and allows outstanding metadata writes to now use the bio flag to
-  consume emergency reservation.
-
-So this means that metadata -ENOSPC protection is only as reliable as
-the size of the specified pool. This is by design, so the filesystem
-still does not have to track provisioning, allocation or overwrites of
-its own metadata usage. Users with metadata heavy workloads or who
-happen to be sensitive to -ENOSPC errors can be more aggressive with
-pool size, while other users might be able to get away with a smaller
-pool. Users who are super paranoid and want perfection can continue to
-reserve the entire device and pay for the extra storage.
-
-Users who are not sure can test their workload in an appropriate
-environment, collect some data/metrics on maximum outstanding dirty
-metadata, and then use that as a baseline/minimum pool size for reliable
-behavior going forward. This is also where something like Stratis can
-come in to generate this sort of information, make recommendations or
-implement heuristics (based on things like fs size, amount of RAM, for
-e.g.) to provide sane defaults based on use case. I.e., this is
-initially exposed as a userspace/tuning issue instead of a
-filesystem/dm-thin hard guarantee.
-
-Finally, if you really want to get to that last step of maximally
-efficient and safe provisioning in the fs, implement a
-'thinreserve=adaptive' mode in the fs that alters the acquisition and
-consumption of dm-thin reserved blocks to be adaptive in nature and
-promises to do it's own usage throttling against outstanding
-reservation. I think this is the mode that most closely resembles your
-preprovisioned range mechanism.
-
-For example, adaptive mode could add the logic/complexity where you do
-the per-ag provision thing (just using reservation instead of physical
-ranges), change the transaction path to attempt to increase the
-reservation pool or go into -ENOSPC mode, and flag all writes to be
-satisfied from the reserve pool (because you've done the
-provision/reservation up front).
-
-At this point the "reserve pool" concept is very different and pretty
-much managed entirely by the filesystem. It's just a counter of the set
-of blocks the fs is anticipating to write to in the near term, but it's
-built on the same underlying reservation mechanism used differently by
-other filesystems. So something like ext4 could elide the need for an
-adaptive mode, implement the moderate data/metadata pool mechanism and
-rely on userspace tools or qualified administrators to do the sizing
-correctly, while simultaneously using the same underlying mechanism that
-XFS is using for finer grained provisioning.
-
-> As a bonus, if we can implement the guarantees in dm-thin/-snapshot
-> and have a filesystem make use of it, then we also have a reference
-> implementation to point at device vendors and standards
-> associations....
-> 
-
-I think that's a ways ahead yet.. :P
-
-Thoughts on any of the above? Does that describe enough of the big
-picture? (Mike, I hope this at least addresses the whole "why even do
-this?" question). I am deliberately trying to work through a progression
-that starts simple and generic but actually 100% solves the problem
-(even if in a dumb way), then iterates to something that addresses the
-biggest drawback with the reference implementation with minimal changes
-required to individual filesystems (i.e. metadata pool sizing), and
-finally ends up allowing any particular filesystem to refine from there
-to achieve maximal efficiency based on its own cost/benefit analysis.
-
-Another way to look at it is... step 1 is to implement the
-'thinreserve=full' mount option, which can be trivially implemented by
-any filesystem with a couple function calls. Step two is to implement
-'thinsreserve=N' support, which consists of a standard iomap
-provisioning implementation for data and a bio tagging/error handling
-approach that is still pretty simple for most filesystems to implement.
-Finally, 'thinreserve=adaptive' is the filesystems best effort to
-guarantee -ENOSPC safety with maximal space efficiency.
-
-One general tradeoff with using reservations vs. preprovisioning is the
-the latter can just use the provision/trim primitives to alloc/free LBA
-ranges. My thought on that is those primitives could possibly be
-modified to do the same sort of things with reservation as for physical
-allocations. That seems fairly easy to do with bio op flags/modifiers,
-though one thing I'm not sure about is how to submit a provision bio to
-request a certain amount location agnostic blocks. I'd have to
-investigate that more.
-
-So in summary, I can sort of see how this problem could be solved with
-this combination of physically preprovisioned ranges and changes to
-dm-thin snapshot behavior and whatnot (I'm still missing how this is
-supposed to handle delalloc, mostly), but I think that involves more
-complexity and customization work than is really necessary. Either way,
-this is a distinctly different approach to what I was thinking of
-morphing the prototype bits into. So to me the relevant question is does
-something like the progression that is outlined above for a block
-reservation approach seem a reasonable path to ultimately be able to
-accomplish the same sort of results in the fs? If so, then I'm happy to
-try and push things in that direction to at least try to prove it out.
-If not, then I'm also happy to just leave it alone.. ;)
-
-Brian
-
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
-
+> Mike
