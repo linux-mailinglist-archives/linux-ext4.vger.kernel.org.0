@@ -2,161 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCD57100E9
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 00:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC30710923
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 May 2023 11:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbjEXWZh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 24 May 2023 18:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S233589AbjEYJo5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 May 2023 05:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237549AbjEXWZe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 24 May 2023 18:25:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFBB99;
-        Wed, 24 May 2023 15:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6a4TWuzTGi7+tMMLrCXx2xS2HLm+fpIBXBWX9SQFhJc=; b=Olg5NsAiR4MXUKxEfN0JWQ26G+
-        48QUUb0p3dP2AO5RET1yB+OlmxpPgfW/OAuL8L3TmcLxGehBJ8zrOmr2kBjQvXnIDe74EGIXQUw5V
-        jrolzbG8yKU05ZkW5mpKw/LmaGIzjIW2osv7EnQcuMT1PVUpROY1wInr2AXsx/P1CtXqq68pLnhwc
-        o//oJNGyzcS02XIm8oZ0EkYqFxmeJvu+ZYfriDV2Rx6DKfxLwq6Z2WZASZL/SOiLmZyzD7t1ZY8rR
-        AcKIKrMHyGez7UPTrzHiDlh7DZpdMV2McGOt3pus8tAT+JlDrTHSf6mbJJPR2Ulm/XYS7au9Vkv2O
-        3mANUUxw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1wsv-00EnXL-1n;
-        Wed, 24 May 2023 22:23:09 +0000
-Date:   Wed, 24 May 2023 15:23:09 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>,
-        Daniel Gomez <da.gomez@samsung.com>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Miklos Szeredi <miklos@szeredi.hu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/17] block: open code __generic_file_write_iter for
- blkdev writes
-Message-ID: <ZG6OTWckNlz+P+mo@bombadil.infradead.org>
-References: <20230424054926.26927-1-hch@lst.de>
- <20230424054926.26927-15-hch@lst.de>
+        with ESMTP id S233558AbjEYJoq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 05:44:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07145A9;
+        Thu, 25 May 2023 02:44:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 718451FDC2;
+        Thu, 25 May 2023 09:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1685007882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p5KDT5n7B93Vi9xs1xIjnqiETEkQKRSr647A/1d/+S4=;
+        b=qiJeZaxCmaCdG74Skn1lpuA6uFRaLGsNJHxg0eldi3Y2EpQNfYmllo9h9HCULHAETWghYX
+        357bUematuJ7lIKzFL/69ANbP87eT3gX9rxFOtQZQhWJJYAv0cZjPVNX1ntpD8yX3OGeY+
+        jXKtvH5nCV4ZxyTwyjlGtkQk8mUFAbw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1685007882;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p5KDT5n7B93Vi9xs1xIjnqiETEkQKRSr647A/1d/+S4=;
+        b=zNCa3NEXa5yV+ot1qtkCNy+wRqMbXs+HPIuoqh3YrRzBfoVpGcdCVwdB5n7tnulR+XxqLa
+        eztLvHoz8/AuJNCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6013C134B2;
+        Thu, 25 May 2023 09:44:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KrBtFwoub2QYZAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 25 May 2023 09:44:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EEDE2A075C; Thu, 25 May 2023 11:44:41 +0200 (CEST)
+Date:   Thu, 25 May 2023 11:44:41 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        'David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: Locking for RENAME_EXCHANGE
+Message-ID: <20230525094441.wozlaigewzqemdm2@quack3>
+References: <20230524163504.lugqgz2ibe5vdom2@quack3>
+ <CAJfpegu8W9R9G8n+4n3U5Ba_bKpM1o_5_2dfTOoeGDAOFcyF1g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230424054926.26927-15-hch@lst.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAJfpegu8W9R9G8n+4n3U5Ba_bKpM1o_5_2dfTOoeGDAOFcyF1g@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 07:49:23AM +0200, Christoph Hellwig wrote:
-> Open code __generic_file_write_iter to remove the indirect call into
-> ->direct_IO and to prepare using the iomap based write code.
+On Wed 24-05-23 21:33:07, Miklos Szeredi wrote:
+> On Wed, 24 May 2023 at 18:35, Jan Kara <jack@suse.cz> wrote:
+> >
+> > Hello!
+> >
+> > This is again about the problem with directory renames I've already
+> > reported in [1]. To quickly sum it up some filesystems (so far we know at
+> > least about xfs, ext4, udf, reiserfs) need to lock the directory when it is
+> > being renamed into another directory. This is because we need to update the
+> > parent pointer in the directory in that case and if that races with other
+> > operation on the directory, bad things can happen.
+> >
+> > So far we've done the locking in the filesystem code but recently Darrick
+> > pointed out [2] that we've missed the RENAME_EXCHANGE case in our ext4 fix.
+> > That one is particularly nasty because RENAME_EXCHANGE can arbitrarily mix
+> > regular files and directories. Couple nasty arising cases:
+> >
+> > 1) We need to additionally lock two exchanged directories. Suppose a
+> > situation like:
+> >
+> > mkdir P; mkdir P/A; mkdir P/B; touch P/B/F
+> >
+> > CPU1                                            CPU2
+> > renameat2("P/A", "P/B", RENAME_EXCHANGE);       renameat2("P/B/F", "P/A", 0);
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/fops.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 44 insertions(+), 2 deletions(-)
+> Not sure I get it.
 > 
-> diff --git a/block/fops.c b/block/fops.c
-> index b670aa7c5bb745..fd510b6142bd57 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -508,6 +508,29 @@ static int blkdev_close(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +static ssize_t
-> +blkdev_direct_write(struct kiocb *iocb, struct iov_iter *from)
-> +{
-> +	size_t count = iov_iter_count(from);
-> +	ssize_t written;
-> +
-> +	written = kiocb_invalidate_pages(iocb, count);
-> +	if (written) {
-> +		if (written == -EBUSY)
-> +			return 0;
-> +		return written;
-> +	}
-> +
-> +	written = blkdev_direct_IO(iocb, from);
-> +	if (written > 0) {
-> +		kiocb_invalidate_post_write(iocb, count);
-> +		iocb->ki_pos += written;
-> +	}
+> CPU1 locks P then A then B
+> CPU2 locks P then B then A
+> 
+> Both start with P and after that ordering between A and B doesn't
+> matter as long as the topology stays the same, which is guaranteed.
+> 
+> Or did you mean renameat2("P/B/F", "P/A/F", 0);?
+> 
+> This indeed looks deadlocky.
 
-Written can be negative here after blkdev_direct_IO()
+Right, that is what I meant. Sorry for confusion.
 
-> +	if (written != -EIOCBQUEUED)
-> +		iov_iter_revert(from, count - written - iov_iter_count(from));
+> > Both operations need to lock A and B directories which are unrelated in the
+> > tree. This means we must establish stable lock ordering on directory locks
+> > even for the case when they are not in ancestor relationship.
+> >
+> > 2) We may need to lock a directory and a non-directory and they can be in
+> > parent-child relationship when hardlinks are involved:
+> >
+> > mkdir A; mkdir B; touch A/F; ln A/F B/F
+> > renameat2("A/F", "B");
+> >
+> > And this is really nasty because we don't have a way to find out whether
+> > "A/F" and "B" are in any relationship - in particular whether B happens to
+> > be another parent of A/F or not.
+> >
+> > What I've decided to do is to make sure we always lock directory first in
+> > this mixed case and that *should* avoid all the deadlocks but I'm spelling
+> > this out here just in case people can think of some even more wicked case
+> > before I'll send patches.
+> 
+> Locking directories first has always been the case, described in
+> detail in Documentation/filesystems/directory-locking.rst
+> 
+> > Also I wanted to ask (Miklos in particular as RENAME_EXCHANGE author): Why
+> > do we lock non-directories in RENAME_EXCHANGE case? If we didn't have to do
+> > that things would be somewhat simpler...
+> 
+> I can't say I remember anything, but digging into
+> lock_two_nondirectories() this comes up quickly:
+> 
+>   6cedba8962f4 ("vfs: take i_mutex on renamed file")
+> 
+> So apparently NFS is relying on i_mutex to prevent delegations from
+> being broken without its knowledge.  Might be that is't NFS only, and
+> then the RENAME_EXCHANGE case doesn't need it (NFS doesn't support
+> RENAME_EXCHANGE), but I can't say for sure.
+> 
+> Also Al seems to have had some thoughts on this in d42b386834ee
+> ("update D/f/directory-locking")
 
-And we'll then use it here on iov_iter_revert() and this can crash on
-with some values. For example this can crash on a 4k write attempt
-on a 32k drive when experimenting wit large block sizes.
+Thanks for the references. I've now updated the document
+Documentation/filesystems/directory-locking.rst and I'm now more convinced
+the scheme is correct. It is also kind of neat there are less special cases
+:).
 
-kernel BUG at lib/iov_iter.c:999!
-invalid opcode: 0000 [#1] PREEMPT SMP PTI
-CPU: 4 PID: 949 Comm: fio Not tainted 6.3.0-large-block-20230426-dirty#28
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-1.16.0-debian-1.16.0-5        04/01/2014
-+RIP: 0010:iov_iter_revert.part.0+0x16e/0x170
-Code: f9 40 a2 63 af 74 07 03 56 08 89 d8 29 d0 89 45 08 44 89 6d 20
-<etc>
-RSP: 0018:ffffaa52006cfc60 EFLAGS: 00010246
-RAX: 0000000000000016 RBX: 0000000000000016 RCX: 0000000000000000
-RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffffaa52006cfd08
-RBP: ffffaa52006cfd08 R08: 0000000000000000 R09: ffffaa52006cfb40
-R10: 0000000000000003 R11: ffffffffafcc21e8 R12: 0000000000004000
-R13: 0000000000003fea R14: ffff9de3d7565e00 R15: ffff9de3c1f68600
-FS:  00007f8bfe726c40(0000) GS:ffff9de43bd00000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8bf5eadd68 CR3: 0000000102c76001 CR4: 0000000000770ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <TASK>
-blkdev_direct_write+0xf0/0x160
-blkdev_write_iter+0x11b/0x230
-io_write+0x10c/0x420
-? kmem_cache_alloc_bulk+0x2a1/0x410
-? fget+0x79/0xb0
-io_issue_sqe+0x60/0x3b0
-? io_prep_rw+0x5a/0x190
-io_submit_sqes+0x1e6/0x640
-__do_sys_io_uring_enter+0x54c/0xb90
-? handle_mm_fault+0x9a/0x340
-? preempt_count_add+0x47/0xa0
-? up_read+0x37/0x70
-? do_user_addr_fault+0x27c/0x780
-do_syscall_64+0x37/0x90
-entry_SYSCALL_64_after_hw
-
-Although I fixed it with an early check on this routine
-with:
-
-if (count < bdev_logical_block_size(bdev))
-	return -EINVAL; 
-
-I think this can just be fixed by also using the alignment
-check earier here:
-
-if (blkdev_dio_unaligned(bdev, pos, iter))                               
-	return -EINVAL;  
-
-  Luis
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
