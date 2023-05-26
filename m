@@ -2,94 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39266711CBE
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 May 2023 03:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5216D711CE9
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 May 2023 03:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241882AbjEZBgQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 25 May 2023 21:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
+        id S234890AbjEZBnL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 May 2023 21:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241630AbjEZBgQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 21:36:16 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470D0199
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 18:36:13 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-64d2c865e4eso350489b3a.0
-        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 18:36:13 -0700 (PDT)
+        with ESMTP id S230140AbjEZBnK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 May 2023 21:43:10 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4651D189
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 18:43:09 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5144a9c11c7so194108a12.2
+        for <linux-ext4@vger.kernel.org>; Thu, 25 May 2023 18:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1685064973; x=1687656973;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bR3UToISzSLbX8ZQkHUE42zju/u1Pd13Qxkfw1ihU0s=;
-        b=xBykKLfgpBaSvfRX3A2+FxT1KMrbnM15im+s6pEISEci1JWoy+6UGBvACHOKnzsNQr
-         afk90Xh/M4D33/CZyC3EusZmqc1ApG7JjLCpW6aX3SWhZt9ZYbyqO7WMBxqRgMWFTHtq
-         HSdOCN6vwq8iD2sZuRhSnYIqjspgSjnwj/JJkdgbMcgZZCUfDvhe0451GrKyYqY5eIvT
-         gbFjo76t5wzNhvbQD1+eZ6JBj+DjthvcCoZA0AU3MkAccbMC5I/5OCQHLQBwb95rcN0F
-         aZC1+itQVaJaNWNgoirfbLXH3K81rFtIImWJ/54lSzn69rMSJfSeM4eOwdpVzh8fi8GZ
-         2dwg==
+        d=gmail.com; s=20221208; t=1685065389; x=1687657389;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JRZbi24sFJrRNj/lxW5h09BrGpwEFi7DTff/g3KQP4A=;
+        b=N604WPr/aHBaWp4DEU4/UrNp5yaIIwFdEH5X1uDaQHhPd1W/MwlZvDLQm2HIgRnDaA
+         1IyxD7Ne9IVZuQh57xfySRyVI1F7FNIQECp9xNqUqA7yBlvraFtTWTi1SRfBHOypQys3
+         sEIRE1wSQd/HMtaPCSP4fMrqiOwk2R1VNOnqRiTCX77lLUEzutvM3z36C9D1E8GlksCh
+         tNwFd5hCQ0DWqchA/+7AHOllix2H1A7EIxuRgjGYv6EbJNCr43CYmWTYYiXV0Ddi0JSy
+         +f/J789H/X5Jr8Rt8b8w11lNqeSCCQyc1WgasK8Ee2AorGtsh0yFvR5YUKLzY2yR6Itr
+         Ud1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685064973; x=1687656973;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bR3UToISzSLbX8ZQkHUE42zju/u1Pd13Qxkfw1ihU0s=;
-        b=k2f7CurLRc3ZLVZOuMM7sHFBQm4A0YZWme0M0xFbj/tUF3huzdCYrFEHNHW3AVYla4
-         TTtBeFckyRM9yEWve1/Syel1LELAhCenlRaZ2rXaJpT8jNjk6iMY43mDFCNL0h4seqds
-         URBXdUNRP6wbjdRBoKJuNde6uBYk8JMeUiGdEDQAfuOZuMswgh/QYYTUi9aFeDR7sgWl
-         l4XZgk/1URJBeRM9yzcpU1VXhPXtbgAg0Fdp6yNYYGc4GnUh8B7A7sstG4Lv8WlxcWDP
-         e0W9l65EOlzbcL4DpmRh4PtUqog0hsYA44Pw2YF1CjG2WRQ/DSRKSuDyOFcz9latP2ar
-         9Rsg==
-X-Gm-Message-State: AC+VfDw2t8ToljLn07kon8745AFvF3hlcCy/SGBAtbbNvGKDVoY1EiU9
-        WWYssJ/yUfEPdwOExErEQKkzlg==
-X-Google-Smtp-Source: ACHHUZ6sPdmuQonaj/olpSGroUfK3OoVqwjZ0hrzZiUIv4Qa66jySy12bySeqpIr9yyQSaUMpmfRQA==
-X-Received: by 2002:a05:6a00:124a:b0:643:96bc:b292 with SMTP id u10-20020a056a00124a00b0064396bcb292mr1061741pfi.5.1685064972718;
-        Thu, 25 May 2023 18:36:12 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
-        by smtp.gmail.com with ESMTPSA id g9-20020a62e309000000b0063efe2f3ecdsm1679539pfh.204.2023.05.25.18.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 18:36:11 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1q2MNF-003wt9-15;
-        Fri, 26 May 2023 11:36:09 +1000
-Date:   Fri, 26 May 2023 11:36:09 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     Mike Snitzer <snitzer@kernel.org>, Joe Thornber <ejt@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZHANCbnHuhnwCrGz@dread.disaster.area>
-References: <ZGeKm+jcBxzkMXQs@redhat.com>
- <ZGgBQhsbU9b0RiT1@dread.disaster.area>
- <ZGu0LaQfREvOQO4h@redhat.com>
- <ZGzIJlCE2pcqQRFJ@bfoster>
- <ZGzbGg35SqMrWfpr@redhat.com>
- <ZG1dAtHmbQ53aOhA@dread.disaster.area>
- <ZG5taYoXDRymo/e9@redhat.com>
- <ZG9JD+4Zu36lnm4F@dread.disaster.area>
- <ZG+GKwFC7M3FfAO5@redhat.com>
- <CAG9=OMNhCNFhTcktxSMYbc5WXkSZ-vVVPtb4ak6B3Z2-kEVX0Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMNhCNFhTcktxSMYbc5WXkSZ-vVVPtb4ak6B3Z2-kEVX0Q@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1685065389; x=1687657389;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JRZbi24sFJrRNj/lxW5h09BrGpwEFi7DTff/g3KQP4A=;
+        b=LhimoJURpUGUke9uV2lf2fga4B0cxs/KXYO7FqXCemZpWkN0EbN94xsnzkPVoC51eK
+         nqabdqWbaeC4tpUZX0UYTpcJpPUwx0SsKc9KxW/15iOjxmc7+OxFdAP9dGkdlBfWvOLp
+         7Gd3ts2crQUqvjuIS3RIT6JBcBSTnfyvCz4hwsHYuewBFczyDq/3RDqsEKkujgftspcU
+         CUPAHfUHoRg1lmb3IegFqXr7CYMj1pJ4hp3KUJYVHXDSaEYan1XZL6a6E8hX7Qgjr/Vq
+         BDE+v3g8eVWfg2RAN7DuLz9KZjEFXCw1oVpSgrzDjAV7IODOsjwxsDSyt1SGRE8MfIOg
+         uVlg==
+X-Gm-Message-State: AC+VfDyTjdHHQntVzU9PzlSkbgEQO5p8ZXdGOdv9S5IOSqveWXYvF4Ml
+        58PM4sxGmiAw2eFCRJWePOuuLtirrAM=
+X-Google-Smtp-Source: ACHHUZ452nd/wbzA2APadW647ehgu76OGZU+jKL2vjKSaX9+wzdnVSfVj3y/eDMzW1hXznMU4LIZ5Q==
+X-Received: by 2002:a05:6a20:7d97:b0:100:607:b986 with SMTP id v23-20020a056a207d9700b001000607b986mr100807pzj.56.1685065388646;
+        Thu, 25 May 2023 18:43:08 -0700 (PDT)
+Received: from localhost ([101.224.163.9])
+        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b0064d2d0ff8d5sm1699619pfo.163.2023.05.25.18.43.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 25 May 2023 18:43:08 -0700 (PDT)
+From:   JunChao Sun <sunjunchao2870@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org, tahsin@google.com,
+        JunChao Sun <sunjunchao2870@gmail.com>
+Subject: [RESEND PATCH v2] ext4: Replace the value of xattrs in place
+Date:   Thu, 25 May 2023 18:43:04 -0700
+Message-Id: <20230526014304.4294-1-sunjunchao2870@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,108 +66,118 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 25, 2023 at 03:47:21PM -0700, Sarthak Kukreti wrote:
-> On Thu, May 25, 2023 at 9:00 AM Mike Snitzer <snitzer@kernel.org> wrote:
-> > On Thu, May 25 2023 at  7:39P -0400,
-> > Dave Chinner <david@fromorbit.com> wrote:
-> > > On Wed, May 24, 2023 at 04:02:49PM -0400, Mike Snitzer wrote:
-> > > > On Tue, May 23 2023 at  8:40P -0400,
-> > > > Dave Chinner <david@fromorbit.com> wrote:
-> > > > > It's worth noting that XFS already has a coarse-grained
-> > > > > implementation of preferred regions for metadata storage. It will
-> > > > > currently not use those metadata-preferred regions for user data
-> > > > > unless all the remaining user data space is full.  Hence I'm pretty
-> > > > > sure that a pre-provisioning enhancment like this can be done
-> > > > > entirely in-memory without requiring any new on-disk state to be
-> > > > > added.
-> > > > >
-> > > > > Sure, if we crash and remount, then we might chose a different LBA
-> > > > > region for pre-provisioning. But that's not really a huge deal as we
-> > > > > could also run an internal background post-mount fstrim operation to
-> > > > > remove any unused pre-provisioning that was left over from when the
-> > > > > system went down.
-> > > >
-> > > > This would be the FITRIM with extension you mention below? Which is a
-> > > > filesystem interface detail?
-> > >
-> > > No. We might reuse some of the internal infrastructure we use to
-> > > implement FITRIM, but that's about it. It's just something kinda
-> > > like FITRIM but with different constraints determined by the
-> > > filesystem rather than the user...
-> > >
-> > > As it is, I'm not sure we'd even need it - a preiodic userspace
-> > > FITRIM would acheive the same result, so leaked provisioned spaces
-> > > would get cleaned up eventually without the filesystem having to do
-> > > anything specific...
-> > >
-> > > > So dm-thinp would _not_ need to have new
-> > > > state that tracks "provisioned but unused" block?
-> > >
-> > > No idea - that's your domain. :)
-> > >
-> > > dm-snapshot, for certain, will need to track provisioned regions
-> > > because it has to guarantee that overwrites to provisioned space in
-> > > the origin device will always succeed. Hence it needs to know how
-> > > much space breaking sharing in provisioned regions after a snapshot
-> > > has been taken with be required...
-> >
-> > dm-thinp offers its own much more scalable snapshot support (doesn't
-> > use old dm-snapshot N-way copyout target).
-> >
-> > dm-snapshot isn't going to be modified to support this level of
-> > hardening (dm-snapshot is basically in "maintenance only" now).
+When replacing the value of an xattr found in an ea_inode, currently
+ext4 will evict the ea_inode that stores the old value, recreate an
+ea_inode, and then write the new value into the new ea_inode.
+This can be optimized by writing the new value into the old
+ea_inode directly.
 
-Ah, of course. Sorry for the confusion, I was kinda using
-dm-snapshot as shorthand for "dm-thinp + snapshots".
+The logic for replacing value of xattrs without this patch
+is as follows:
+ext4_xattr_set_entry()
+    ->ext4_xattr_inode_iget(&old_ea_inode)
+    ->ext4_xattr_inode_lookup_create(&new_ea_inode)
+    ->ext4_xattr_inode_dec_ref(old_ea_inode)
+    ->iput(old_ea_inode)
+        ->ext4_destroy_inode()
+        ->ext4_evict_inode()
+        ->ext4_free_inode()
+    ->iput(new_ea_inode)
 
-> > But I understand your meaning: what you said is 100% applicable to
-> > dm-thinp's snapshot implementation and needs to be accounted for in
-> > thinp's metadata (inherent 'provisioned' flag).
+The logic with this patch is:
+ext4_xattr_set_entry()
+    ->ext4_xattr_inode_iget(&old_ea_inode)
+    ->ext4_xattr_inode_write(old_ea_inode, new_value)
+    ->iput(old_ea_inode)
 
-*nod*
+This patch reduces the time it takes to replace xattrs in the ext4.
+Without this patch, replacing the value of an xattr two million times takes
+about 45 seconds on Intel(R) Xeon(R) CPU E5-2620 v3 platform.
+With this patch, the same operation takes only 6 seconds.
 
-> A bit orthogonal: would dm-thinp need to differentiate between
-> user-triggered provision requests (eg. from fallocate()) vs
-> fs-triggered requests?
+  [root@client01 sjc]# ./mount.sh
+  /dev/sdb1 contains a ext4 file system
+      last mounted on /mnt/ext4 on Mon May  8 17:05:38 2023
+  [root@client01 sjc]# touch /mnt/ext4/file1
+  [root@client01 sjc]# gcc test.c
+  [root@client01 sjc]# time ./a.out
 
-Why?  How is the guarantee the block device has to provide to
-provisioned areas different for user vs filesystem internal
-provisioned space?
+  real    0m45.248s
+  user    0m0.513s
+  sys 0m39.231s
 
-> I would lean towards user provisioned areas not
-> getting dedup'd on snapshot creation,
+  [root@client01 sjc]# ./mount.sh
+  /dev/sdb1 contains a ext4 file system
+      last mounted on /mnt/ext4 on Mon May  8 17:08:20 2023
+  [root@client01 sjc]# touch /mnt/ext4/file1
+  [root@client01 sjc]# time ./a.out
 
-<twitch>
+  real    0m5.977s
+  user    0m0.316s
+  sys 0m5.659s
 
-Snapshotting is a clone operation, not a dedupe operation.
+The test.c and mount.sh are in [1].
+This patch passed the tests with xfstests using 'check -g quick'.
 
-Yes, the end result of both is that you have a block shared between
-multiple indexes that needs COW on the next overwrite, but the two
-operations that get to that point are very different...
+[1] https://gist.github.com/sjc2870/c923d7fa627d10ab65d6c305afb02cdb
 
-</pedantic mode disegaged>
+Signed-off-by: JunChao Sun <sunjunchao2870@gmail.com>
+---
 
-> but that would entail tracking
-> the state of the original request and possibly a provision request
-> flag (REQ_PROVISION_DEDUP_ON_SNAPSHOT) or an inverse flag
-> (REQ_PROVISION_NODEDUP). Possibly too convoluted...
+Changes in v2:
+  - Fix a problem when ref of an ea_inode not equal to 1
+  - Link to v1: https://lore.kernel.org/linux-ext4/20230509011042.11781-1-sunjunchao2870@gmail.com/
 
-Let's not try to add everyone's favourite pony to this interface
-before we've even got it off the ground.
+ fs/ext4/xattr.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-It's the simple precision of the API, the lack of cross-layer
-communication requirements and the ability to implement and optimise
-the independent layers independently that makes this a very
-appealing solution.
-
-We need to start with getting the simple stuff working and prove the
-concept. Then once we can observe the behaviour of a working system
-we can start working on optimising individual layers for efficiency
-and performance....
-
-Cheers,
-
-Dave.
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index d57408cbe903..8f03958bfcc6 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -1713,6 +1713,42 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
+ 		}
+ 	}
+ 
++	if (!s->not_found && i->value && here->e_value_inum && i->in_inode) {
++		/* Replace xattr value in ea_inode in place */
++		int size_diff = i->value_len - le32_to_cpu(here->e_value_size);
++
++		ret = ext4_xattr_inode_iget(inode,
++						le32_to_cpu(here->e_value_inum),
++						le32_to_cpu(here->e_hash),
++						&old_ea_inode);
++		if (ret) {
++			old_ea_inode = NULL;
++			goto out;
++		}
++		if (ext4_xattr_inode_get_ref(old_ea_inode) == 1) {
++			if (size_diff > 0)
++				ret = ext4_xattr_inode_alloc_quota(inode, size_diff);
++			else if (size_diff < 0)
++				ext4_xattr_inode_free_quota(inode, NULL, -size_diff);
++			if (ret)
++				goto out;
++
++			ret = ext4_xattr_inode_write(handle, old_ea_inode, i->value, i->value_len);
++			if (ret) {
++				if (size_diff > 0)
++					ext4_xattr_inode_free_quota(inode, NULL, size_diff);
++				else if (size_diff < 0)
++					ret = ext4_xattr_inode_alloc_quota(inode, -size_diff);
++				goto out;
++			}
++			here->e_value_size = cpu_to_le32(i->value_len);
++			new_ea_inode = old_ea_inode;
++			old_ea_inode = NULL;
++			goto update_hash;
++		} else
++			iput(old_ea_inode);
++	}
++
+ 	/*
+ 	 * Getting access to old and new ea inodes is subject to failures.
+ 	 * Finish that work before doing any modifications to the xattr data.
 -- 
-Dave Chinner
-david@fromorbit.com
+1.8.3.1
+
