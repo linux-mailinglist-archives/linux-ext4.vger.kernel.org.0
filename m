@@ -2,134 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CD0712A13
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 May 2023 17:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A86713096
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 May 2023 01:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237533AbjEZP6W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 May 2023 11:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        id S242226AbjEZXqa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 May 2023 19:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244268AbjEZP6Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 May 2023 11:58:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B08D13D;
-        Fri, 26 May 2023 08:58:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED4F36511C;
-        Fri, 26 May 2023 15:58:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD836C433EF;
-        Fri, 26 May 2023 15:58:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685116694;
-        bh=gvQZFNx4XS2KmvTv6kEkw3b4TW68Vp+DGN0cJs/f/d8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZpiPTT6Uyl0UVGrEUkODKtD5emNa+RiT889sfyclqfClYRPune8owX39t7hr3NpaE
-         kJZmfjMmntqPmr4K9SjBOBd+ISOzqbxZrrU7Mbv7g6sObkv5tHecx+IWkjqedSJ+PK
-         RYQJddgIw9UFpjyS64nY7D05HRNUnBVVp/oWmWTQQbSm76bSNCDbbvDdadff0+mjhz
-         10ZxD7u/xVbrGeP9ZxAlxTiGrj84qTqtCGzxh9n75kOQkr5H69s5PKNk2mq1uew7DQ
-         ff6NeUgcpd9HEwEq+zG0blr+9kgQAKqTynM4RfSeixhg1O+u0juyH0g+d9DjQWGzXs
-         Zno018bMTs6+w==
-Date:   Fri, 26 May 2023 17:58:08 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] fs: Fix directory corruption when moving directories
-Message-ID: <20230526-schrebergarten-vortag-9cd89694517e@brauner>
-References: <20230525100654.15069-1-jack@suse.cz>
+        with ESMTP id S230179AbjEZXqK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 May 2023 19:46:10 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855E6171B
+        for <linux-ext4@vger.kernel.org>; Fri, 26 May 2023 16:45:38 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-64d2ca9ef0cso1092761b3a.1
+        for <linux-ext4@vger.kernel.org>; Fri, 26 May 2023 16:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1685144706; x=1687736706;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CWzxmQ8QxCg8O8dff9yLq2U6+xkvzRDR890XcXfK3mg=;
+        b=qNuMbPXmTsHLzrS9s68EhswAAzoxtilaQGWKnCRgcVZwgN8OI10caCromsS5yYFv2R
+         H+874/2Gj6go+XQifmTf5kewkn7i7zvKifQzI3km3f265IqOyDa5gd9FHfoFuAjSyJKf
+         yp3Cu3MsWTcnXTi9viqZ4k5krjQN5vXKA82k2fOXEqn8d2vffoDkxV23GTnBw+SHldDg
+         BKOE/PD8nm9+R387W92lR63+tYy0KUg7uB0gL32cR+2Vdg9xe1KAHkV5Hxgrp36Ol5Dq
+         mPB6awaqPs/XRgHujtk3dzFuZEXXJDEl3MYeGn/kMUMu3PuoffhICO1ogYG8CxUAsQyb
+         9Idg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685144706; x=1687736706;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CWzxmQ8QxCg8O8dff9yLq2U6+xkvzRDR890XcXfK3mg=;
+        b=jeYwWermsqCZqkUxipmD2QK47eZNnwxhOOT6Plw52rfXqTDz0+KlaMzDn4Jr8GhcQ9
+         mdIBfKfJXN+Gp2r5zIEVFbti+oczF4qbzb6WgqVNgzmTb/N+UDo3c8gAdqdYvq5FhOIB
+         LQt6zxfFKhWVrIB7ZKu5KKKJrL6IkNsN/ida79Bhx7y6X5NO/sfppvCqK6Xa8TPlDich
+         6oDofVfDzfmZo7d/lXcyUE+LclsZvqYyDfg2axiU8BOU4kqjDo5m1jRxhw9QTmfF7z54
+         1VMRjajwB25frywRSQYMEBruAWowaeEB853PpMZoDlYM66fAFgSBv6FpORfTquDX1V1+
+         qIgQ==
+X-Gm-Message-State: AC+VfDyyfjHoycgpc9YjSqWPMK6BJ5s7xp32IzvWzowcq39Wwv9LANry
+        OdMIzTdKGoZEoV/hxbi5SbTc5w==
+X-Google-Smtp-Source: ACHHUZ4K3iebgteK6vCXrRpRxz8VUX6r/9jfq7BcWqxhVfO6CgyxLnisMFr2+io1W37C8mIwj9ZXTw==
+X-Received: by 2002:a05:6a00:2d88:b0:64c:ecf7:f49a with SMTP id fb8-20020a056a002d8800b0064cecf7f49amr5438139pfb.21.1685144706285;
+        Fri, 26 May 2023 16:45:06 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
+        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b0064f46570bb7sm3100448pff.167.2023.05.26.16.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 May 2023 16:45:05 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q2h7G-004Jsa-2r;
+        Sat, 27 May 2023 09:45:02 +1000
+Date:   Sat, 27 May 2023 09:45:02 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Joe Thornber <thornber@redhat.com>
+Cc:     Brian Foster <bfoster@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Joe Thornber <ejt@redhat.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZHFEfngPyUOqlthr@dread.disaster.area>
+References: <ZGb2Xi6O3i2pLam8@infradead.org>
+ <ZGeKm+jcBxzkMXQs@redhat.com>
+ <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+ <ZGu0LaQfREvOQO4h@redhat.com>
+ <ZGzIJlCE2pcqQRFJ@bfoster>
+ <ZGzbGg35SqMrWfpr@redhat.com>
+ <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+ <ZG+KoxDMeyogq4J0@bfoster>
+ <ZHB954zGG1ag0E/t@dread.disaster.area>
+ <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230525100654.15069-1-jack@suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 25, 2023 at 12:16:06PM +0200, Jan Kara wrote:
-> Hello,
+On Fri, May 26, 2023 at 12:04:02PM +0100, Joe Thornber wrote:
+> Here's my take:
 > 
-> this patch set fixes a problem with cross directory renames originally reported
-> in [1]. To quickly sum it up some filesystems (so far we know at least about
-> ext4, udf, f2fs, ocfs2, likely also reiserfs, gfs2 and others) need to lock the
-> directory when it is being renamed into another directory. This is because we
-> need to update the parent pointer in the directory in that case and if that
-> races with other operation on the directory (in particular a conversion from
-> one directory format into another), bad things can happen.
+> I don't see why the filesystem cares if thinp is doing a reservation or
+> provisioning under the hood.  All that matters is that a future write
+> to that region will be honoured (barring device failure etc.).
 > 
-> So far we've done the locking in the filesystem code but recently Darrick
-> pointed out [2] that we've missed the RENAME_EXCHANGE case in our ext4 fix.
-> That one is particularly nasty because RENAME_EXCHANGE can arbitrarily mix
-> regular files and directories and proper lock ordering is not achievable in the
-> filesystems alone.
+> I agree that the reservation/force mapped status needs to be inherited
+> by snapshots.
 > 
-> This patch set adds locking into vfs_rename() so that not only parent
-> directories but also moved inodes (regardless whether they are directories or
-> not) are locked when calling into the filesystem.
+> 
+> One of the few strengths of thinp is the performance of taking a snapshot.
+> Most snapshots created are never activated.  Many other snapshots are
+> only alive for a brief period, and used read-only.  eg, blk-archive
+> (https://github.com/jthornber/blk-archive) uses snapshots to do very
+> fast incremental backups.  As such I'm strongly against any scheme that
+> requires provisioning as part of the snapshot operation.
+> 
+> Hank and I are in the middle of the range tree work which requires a
+> metadata
+> change.  So now is a convenient time to piggyback other metadata changes to
+> support reservations.
+> 
+> 
+> Given the above this is what I suggest:
+> 
+> 1) We have an api (ioctl, bio flag, whatever) that lets you
+> reserve/guarantee a region:
+> 
+>   int reserve_region(dev, sector_t begin, sector_t end);
 
-This locking is trauma inducing.
+A C-based interface is not sufficient because the layer that must do
+provsioning is not guaranteed to be directly under the filesystem.
+We must be able to propagate the request down to the layers that
+need to provision storage, and that includes hardware devices.
 
-So I was staring at this for a long time and the thing that bothered me
-big time was that I couldn't easily figure out how we ended up with the
-locking scheme that we have. So I went digging. Corrections and
-additions very welcome...
+e.g. dm-thin would have to issue REQ_PROVISION on the LBA ranges it
+allocates in it's backing device to guarantee that the provisioned
+LBA range it allocates is also fully provisioned by the storage
+below it....
 
-Before 914a6e0ea12 ("Import 2.3.51pre1") locking for rename was based on
-s_vfs_rename_sem and i_sem. For both within- and across-directory
-renames s_vfs_rename_sem was acquired and the i_sem on the parent
-directories was acquired but the target wasn't locked.
+>   This api should be used minimally, eg, critical FS metadata only.
 
-Then 914a6e0ea12 ("Import 2.3.51pre1") introduced an additional i_zombie
-semaphore to protect against create, link, mknod, mkdir, unlink, and
-rmdir on the target. So i_zombie had to be acquired during
-vfs_rename_dir() on both parent and the victim but only if the source
-was a directory. Back then RENAME_EXCHANGE didn't exist so if source was
-a directory then target if it existed must've been a directory as well.
+Keep in mind that "critical FS metadata" in this context is any
+metadata which could cause the filesystem to hang or enter a global
+error state if an unexpected ENOSPC error occurs during a metadata
+write IO.
 
-The original reasoning behind only locking the target if the source was
-a directory was based on some filesystems not being able to deal with
-opened but unlinked directories.
+Which, in pretty much every journalling filesystem, equates to all
+metadata in the filesystem. For a typical root filesystem, that
+might be a in the range of a 1-200MB (depending on journal size).
+For larger filesytems with lots of files in them, it will be in the
+range of GBs of space.
 
-The i_zombie finally died in 1b3d7c93c6d ("[PATCH] (2.5.4) death of
-->i_zombie") and a new locking scheme was introduced. The
-s_vfs_rename_sem was now only used for across-directory renames. Instead
-of having i_zombie and i_sem only i_sem was left. Now, both
-vfs_rename_dir(/* if renaming directory */) and vfs_rename_other()
-grabbed i_sem on both parents and on the target. So now the target was
-always explicitly protected against a concurrent unlink or rmdir
-as that would be done as part of the rename operation and that race
-would just been awkward to allow afaict. Probably always was.
+Plan for having to support tens of GBs of provisioned space in
+filesystems, not tens of MBs....
 
-The locking of source however is a different story. This was introduced
-in 6cedba8962f4 ("vfs: take i_mutex on renamed file") to prevent new
-delegations from being acquired during rename, link, or unlink. So now
-both source and target were locked. The target seemingly because it
-would be unlinked in the filesystem's rename method and the source to
-prevent new delegations from being acquired. So, since leases can only
-be taken on regular files vfs_setlease()/generic_setlease() directories
-were never considered for locking. So the lock never had to be acquired
-for source directories.
+[snip]
 
-So in any case, under the assumption that the broad strokes are correct
-there seems to be no inherent reason why locking source and target if
-they're directories couldn't be done if the ordering is well-defined.
-Which is what originally made me hesitate. IOW, given my current
-knowledge this seems ok.
+> Now this is a lot of work.  As well as the kernel changes we'll need to
+> update the userland tools: thin_check, thin_ls, thin_metadata_unpack,
+> thin_rmap, thin_delta, thin_metadata_pack, thin_repair, thin_trim,
+> thin_dump, thin_metadata_size, thin_restore.  Are we confident that we
+> have buy in from the FS teams that this will be widely adopted?  Are users
+> asking for this?  I really don't want to do 6 months of work for nothing.
 
-Frankly, if we end up unconditionally locking source and target we're in
-a better place from a pure maintainability perspective as far as I'm
-concerned. Even if we end up taking the lock pointlessly for e.g., NFS
-with RENAME_EXCHANGE. The last thing we need is more conditions on when
-things are locked and why.
+I think there's a 2-3 solid days of coding to fully implement
+REQ_PROVISION support in XFS, including userspace tool support.
+Maybe a couple of weeks more to flush the bugs out before it's
+largely ready to go.
 
-/me goes off into the weekend
+So if there's buy in from the block layer and DM people for
+REQ_PROVISION as described, then I'll definitely have XFS support
+ready for you to test whenever dm-thinp is ready to go.
+
+I can't speak for other filesystems, I suspect the only one we care
+about is ext4.  btrfs and f2fs don't need dm-thinp and there aren't
+any other filesystems that are used in production on top of
+dm-thinp, so I think only XFS and ext4 matter at this point in time.
+
+I suspect that ext4 would be fairly easy to add support for as well.
+ext4 has a lot more fixed-place metadata than XFS has so much more
+of it's metadata is covered by mkfs-time provisioning. Limiting
+dynamic metadata to specific fully provisioned block groups and
+provisioning new block groups for metadata when they are near full
+would be equivalent to how I plan to provision metadata space in
+XFS. Hence the implementation for ext4 looks to be broadly similar
+in scope and complexity as XFS....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
