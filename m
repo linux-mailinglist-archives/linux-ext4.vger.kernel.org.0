@@ -2,191 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A86713096
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 May 2023 01:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846EF71325D
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 May 2023 05:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242226AbjEZXqa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 May 2023 19:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        id S231250AbjE0D6m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 May 2023 23:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbjEZXqK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 May 2023 19:46:10 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855E6171B
-        for <linux-ext4@vger.kernel.org>; Fri, 26 May 2023 16:45:38 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-64d2ca9ef0cso1092761b3a.1
-        for <linux-ext4@vger.kernel.org>; Fri, 26 May 2023 16:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1685144706; x=1687736706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CWzxmQ8QxCg8O8dff9yLq2U6+xkvzRDR890XcXfK3mg=;
-        b=qNuMbPXmTsHLzrS9s68EhswAAzoxtilaQGWKnCRgcVZwgN8OI10caCromsS5yYFv2R
-         H+874/2Gj6go+XQifmTf5kewkn7i7zvKifQzI3km3f265IqOyDa5gd9FHfoFuAjSyJKf
-         yp3Cu3MsWTcnXTi9viqZ4k5krjQN5vXKA82k2fOXEqn8d2vffoDkxV23GTnBw+SHldDg
-         BKOE/PD8nm9+R387W92lR63+tYy0KUg7uB0gL32cR+2Vdg9xe1KAHkV5Hxgrp36Ol5Dq
-         mPB6awaqPs/XRgHujtk3dzFuZEXXJDEl3MYeGn/kMUMu3PuoffhICO1ogYG8CxUAsQyb
-         9Idg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685144706; x=1687736706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CWzxmQ8QxCg8O8dff9yLq2U6+xkvzRDR890XcXfK3mg=;
-        b=jeYwWermsqCZqkUxipmD2QK47eZNnwxhOOT6Plw52rfXqTDz0+KlaMzDn4Jr8GhcQ9
-         mdIBfKfJXN+Gp2r5zIEVFbti+oczF4qbzb6WgqVNgzmTb/N+UDo3c8gAdqdYvq5FhOIB
-         LQt6zxfFKhWVrIB7ZKu5KKKJrL6IkNsN/ida79Bhx7y6X5NO/sfppvCqK6Xa8TPlDich
-         6oDofVfDzfmZo7d/lXcyUE+LclsZvqYyDfg2axiU8BOU4kqjDo5m1jRxhw9QTmfF7z54
-         1VMRjajwB25frywRSQYMEBruAWowaeEB853PpMZoDlYM66fAFgSBv6FpORfTquDX1V1+
-         qIgQ==
-X-Gm-Message-State: AC+VfDyyfjHoycgpc9YjSqWPMK6BJ5s7xp32IzvWzowcq39Wwv9LANry
-        OdMIzTdKGoZEoV/hxbi5SbTc5w==
-X-Google-Smtp-Source: ACHHUZ4K3iebgteK6vCXrRpRxz8VUX6r/9jfq7BcWqxhVfO6CgyxLnisMFr2+io1W37C8mIwj9ZXTw==
-X-Received: by 2002:a05:6a00:2d88:b0:64c:ecf7:f49a with SMTP id fb8-20020a056a002d8800b0064cecf7f49amr5438139pfb.21.1685144706285;
-        Fri, 26 May 2023 16:45:06 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
-        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b0064f46570bb7sm3100448pff.167.2023.05.26.16.45.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 May 2023 16:45:05 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1q2h7G-004Jsa-2r;
-        Sat, 27 May 2023 09:45:02 +1000
-Date:   Sat, 27 May 2023 09:45:02 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Joe Thornber <thornber@redhat.com>
-Cc:     Brian Foster <bfoster@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Joe Thornber <ejt@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZHFEfngPyUOqlthr@dread.disaster.area>
-References: <ZGb2Xi6O3i2pLam8@infradead.org>
- <ZGeKm+jcBxzkMXQs@redhat.com>
- <ZGgBQhsbU9b0RiT1@dread.disaster.area>
- <ZGu0LaQfREvOQO4h@redhat.com>
- <ZGzIJlCE2pcqQRFJ@bfoster>
- <ZGzbGg35SqMrWfpr@redhat.com>
- <ZG1dAtHmbQ53aOhA@dread.disaster.area>
- <ZG+KoxDMeyogq4J0@bfoster>
- <ZHB954zGG1ag0E/t@dread.disaster.area>
- <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
+        with ESMTP id S237894AbjE0D6S (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 May 2023 23:58:18 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD532E4D
+        for <linux-ext4@vger.kernel.org>; Fri, 26 May 2023 20:57:48 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34R3vcxE032032
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 May 2023 23:57:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1685159859; bh=Drf/qZYK6+21wQ/l/zM59ct4VdC06QU9OmnuReEJONk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=G/vK9A6bzrvQC+rDdOSs5qTP56sHZo1V/9OwLbPbbsdCTbAWVEjrCmF9odbltOScx
+         3YNgUueG/a6vB2nT6iJpgVmqSRo1gIPM4LF78Xn3mtx/iIowT08K/eiR/Lh+xDbmV4
+         IHlOacA5vXvYexAvGKnGVJbe4uI2FORVnNcJ2+dLzaKRtO4IbqGWcQei1/oqACg1CN
+         tub6IDsDKTIQ53OtrB/OcID0KJoBGdIjntXQcdGbQWI6xbiRNXM0pf/cD/7iABDBS1
+         pPTy9AgtXePyN5LvyIFluE9Y5ZqmH5w+Mc0pY5qSP+QtFEP7lbWcKqf8aMElDaW7BJ
+         2ZiHX34ju2Mng==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CBCEE15C02DC; Fri, 26 May 2023 23:57:37 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH] ext4: enable the lazy init thread when remounting read/write
+Date:   Fri, 26 May 2023 23:57:29 -0400
+Message-Id: <20230527035729.1001605-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <ZGPDX3pMMa3yg4yg@debian-BULLSEYE-live-builder-AMD64>
+References: <ZGPDX3pMMa3yg4yg@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 26, 2023 at 12:04:02PM +0100, Joe Thornber wrote:
-> Here's my take:
-> 
-> I don't see why the filesystem cares if thinp is doing a reservation or
-> provisioning under the hood.  All that matters is that a future write
-> to that region will be honoured (barring device failure etc.).
-> 
-> I agree that the reservation/force mapped status needs to be inherited
-> by snapshots.
-> 
-> 
-> One of the few strengths of thinp is the performance of taking a snapshot.
-> Most snapshots created are never activated.  Many other snapshots are
-> only alive for a brief period, and used read-only.  eg, blk-archive
-> (https://github.com/jthornber/blk-archive) uses snapshots to do very
-> fast incremental backups.  As such I'm strongly against any scheme that
-> requires provisioning as part of the snapshot operation.
-> 
-> Hank and I are in the middle of the range tree work which requires a
-> metadata
-> change.  So now is a convenient time to piggyback other metadata changes to
-> support reservations.
-> 
-> 
-> Given the above this is what I suggest:
-> 
-> 1) We have an api (ioctl, bio flag, whatever) that lets you
-> reserve/guarantee a region:
-> 
->   int reserve_region(dev, sector_t begin, sector_t end);
+In commit a44be64bbecb ("ext4: don't clear SB_RDONLY when remounting
+r/w until quota is re-enabled") we defer clearing tyhe SB_RDONLY flag
+in struct super.  However, we didn't defer when we checked sb_rdonly()
+to determine the lazy itable init thread should be enabled, with the
+next result that the lazy inode table initialization would not be
+properly started.  This can cause generic/231 to fail in ext4's
+nojournal mode.
 
-A C-based interface is not sufficient because the layer that must do
-provsioning is not guaranteed to be directly under the filesystem.
-We must be able to propagate the request down to the layers that
-need to provision storage, and that includes hardware devices.
+Fix this by moving when we decide to start or stop the lazy itable
+init thread to after we clear the SB_RDONLY flag when we are
+remounting the file system read/write.
 
-e.g. dm-thin would have to issue REQ_PROVISION on the LBA ranges it
-allocates in it's backing device to guarantee that the provisioned
-LBA range it allocates is also fully provisioned by the storage
-below it....
+Fixes a44be64bbecb ("ext4: don't clear SB_RDONLY when remounting r/w until...")
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/super.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
->   This api should be used minimally, eg, critical FS metadata only.
-
-Keep in mind that "critical FS metadata" in this context is any
-metadata which could cause the filesystem to hang or enter a global
-error state if an unexpected ENOSPC error occurs during a metadata
-write IO.
-
-Which, in pretty much every journalling filesystem, equates to all
-metadata in the filesystem. For a typical root filesystem, that
-might be a in the range of a 1-200MB (depending on journal size).
-For larger filesytems with lots of files in them, it will be in the
-range of GBs of space.
-
-Plan for having to support tens of GBs of provisioned space in
-filesystems, not tens of MBs....
-
-[snip]
-
-> Now this is a lot of work.  As well as the kernel changes we'll need to
-> update the userland tools: thin_check, thin_ls, thin_metadata_unpack,
-> thin_rmap, thin_delta, thin_metadata_pack, thin_repair, thin_trim,
-> thin_dump, thin_metadata_size, thin_restore.  Are we confident that we
-> have buy in from the FS teams that this will be widely adopted?  Are users
-> asking for this?  I really don't want to do 6 months of work for nothing.
-
-I think there's a 2-3 solid days of coding to fully implement
-REQ_PROVISION support in XFS, including userspace tool support.
-Maybe a couple of weeks more to flush the bugs out before it's
-largely ready to go.
-
-So if there's buy in from the block layer and DM people for
-REQ_PROVISION as described, then I'll definitely have XFS support
-ready for you to test whenever dm-thinp is ready to go.
-
-I can't speak for other filesystems, I suspect the only one we care
-about is ext4.  btrfs and f2fs don't need dm-thinp and there aren't
-any other filesystems that are used in production on top of
-dm-thinp, so I think only XFS and ext4 matter at this point in time.
-
-I suspect that ext4 would be fairly easy to add support for as well.
-ext4 has a lot more fixed-place metadata than XFS has so much more
-of it's metadata is covered by mkfs-time provisioning. Limiting
-dynamic metadata to specific fully provisioned block groups and
-provisioning new block groups for metadata when they are near full
-would be equivalent to how I plan to provision metadata space in
-XFS. Hence the implementation for ext4 looks to be broadly similar
-in scope and complexity as XFS....
-
--Dave.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 9680fe753e59..56a5d1c469fc 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6588,18 +6588,6 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+ 		}
+ 	}
+ 
+-	/*
+-	 * Reinitialize lazy itable initialization thread based on
+-	 * current settings
+-	 */
+-	if (sb_rdonly(sb) || !test_opt(sb, INIT_INODE_TABLE))
+-		ext4_unregister_li_request(sb);
+-	else {
+-		ext4_group_t first_not_zeroed;
+-		first_not_zeroed = ext4_has_uninit_itable(sb);
+-		ext4_register_li_request(sb, first_not_zeroed);
+-	}
+-
+ 	/*
+ 	 * Handle creation of system zone data early because it can fail.
+ 	 * Releasing of existing data is done when we are sure remount will
+@@ -6637,6 +6625,18 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+ 	if (enable_rw)
+ 		sb->s_flags &= ~SB_RDONLY;
+ 
++	/*
++	 * Reinitialize lazy itable initialization thread based on
++	 * current settings
++	 */
++	if (sb_rdonly(sb) || !test_opt(sb, INIT_INODE_TABLE))
++		ext4_unregister_li_request(sb);
++	else {
++		ext4_group_t first_not_zeroed;
++		first_not_zeroed = ext4_has_uninit_itable(sb);
++		ext4_register_li_request(sb, first_not_zeroed);
++	}
++
+ 	if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
+ 		ext4_stop_mmpd(sbi);
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.31.0
+
