@@ -2,190 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B3371627C
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 May 2023 15:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7E97162F5
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 May 2023 16:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjE3Nqt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 May 2023 09:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S232591AbjE3OD1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 May 2023 10:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbjE3Nqr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 May 2023 09:46:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595B21BF;
-        Tue, 30 May 2023 06:46:27 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QVtvW3FL5zTkfb;
-        Tue, 30 May 2023 21:45:43 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 30 May
- 2023 21:45:51 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <jun.nie@linaro.org>, <ebiggers@kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>,
-        <syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] ext4: fix race condition between buffer write and page_mkwrite
-Date:   Tue, 30 May 2023 21:44:05 +0800
-Message-ID: <20230530134405.322194-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S232813AbjE3OD0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 May 2023 10:03:26 -0400
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CAFEC
+        for <linux-ext4@vger.kernel.org>; Tue, 30 May 2023 07:02:42 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6260e8a1424so17803926d6.2
+        for <linux-ext4@vger.kernel.org>; Tue, 30 May 2023 07:02:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685455361; x=1688047361;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SLXZZ4okt0cYFY/QNAJJGFsPl/H71jdcBcEpr3wA2kw=;
+        b=SplauMDMCTkWtCOfsAagIAWNl1g1D1gwEGHOlcSoKaGbcfzEoxcHBhk93K9HAev6He
+         /6inMy2RB28N6euFUtJOopD/0qE9VL/ZAmhJkAHjLrGTnaoWWq3s5ZmfKvXlXAvXABzW
+         L9YvIrehXwVLk3BLSzM9RTnq5fwjdufQ9SorGzEVglUnU+Q7e8FkfpXF63n7f7UcbX1a
+         vzdMlRrNutatkobSdnH6uP/6P7IaMaKEYHPSVwUQNkqgTzheczqnIa3m7UVBgPL8svGa
+         mafe82H0aXdUCD0HFNpgIKquLH4cLQVE8zIHyidiUvG3D35w69wbHZh77pVKa0CduIW6
+         QDBA==
+X-Gm-Message-State: AC+VfDw8IeXGvx++X2sRB247OhoGpD8KVtoQ1361CeTzEUVwNfcxkIT8
+        S/vUZzYI6nv1UNEgUNOkFY22
+X-Google-Smtp-Source: ACHHUZ7c+L67lbfSXpLgK/LYE2fkMm11TxLSTkagmUtFWm5173a2X+RzwOCM3DIH+r9HCG6yNT7q6w==
+X-Received: by 2002:a05:6214:40a:b0:626:299b:68ee with SMTP id z10-20020a056214040a00b00626299b68eemr2306743qvx.55.1685455361523;
+        Tue, 30 May 2023 07:02:41 -0700 (PDT)
+Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
+        by smtp.gmail.com with ESMTPSA id jh18-20020a0562141fd200b0062382e1e228sm4619878qvb.49.2023.05.30.07.02.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 May 2023 07:02:40 -0700 (PDT)
+Date:   Tue, 30 May 2023 10:02:39 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Joe Thornber <thornber@redhat.com>
+Cc:     Dave Chinner <david@fromorbit.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZHYB/6l5Wi+xwkbQ@redhat.com>
+References: <ZGgBQhsbU9b0RiT1@dread.disaster.area>
+ <ZGu0LaQfREvOQO4h@redhat.com>
+ <ZGzIJlCE2pcqQRFJ@bfoster>
+ <ZGzbGg35SqMrWfpr@redhat.com>
+ <ZG1dAtHmbQ53aOhA@dread.disaster.area>
+ <ZG+KoxDMeyogq4J0@bfoster>
+ <ZHB954zGG1ag0E/t@dread.disaster.area>
+ <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
+ <ZHFEfngPyUOqlthr@dread.disaster.area>
+ <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Syzbot reported a BUG_ON:
-==================================================================
-EXT4-fs (loop0): mounted filesystem without journal. Quota mode: none.
-EXT4-fs error (device loop0): ext4_mb_generate_buddy:1098: group 0, block
-     bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
-------------[ cut here ]------------
-kernel BUG at fs/ext4/ext4_jbd2.c:53!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 494 Comm: syz-executor.0 6.1.0-rc7-syzkaller-ga4412fdd49dc #0
-RIP: 0010:__ext4_journal_stop+0x1b3/0x1c0
- [...]
-Call Trace:
- ext4_write_inline_data_end+0xa39/0xdf0
- ext4_da_write_end+0x1e2/0x950
- generic_perform_write+0x401/0x5f0
- ext4_buffered_write_iter+0x35f/0x640
- ext4_file_write_iter+0x198/0x1cd0
- vfs_write+0x8b5/0xef0
- [...]
-==================================================================
+On Tue, May 30 2023 at  3:27P -0400,
+Joe Thornber <thornber@redhat.com> wrote:
 
-The above BUG_ON is triggered by the following race:
+> On Sat, May 27, 2023 at 12:45 AM Dave Chinner <david@fromorbit.com> wrote:
+> 
+> > On Fri, May 26, 2023 at 12:04:02PM +0100, Joe Thornber wrote:
+> >
+> > > 1) We have an api (ioctl, bio flag, whatever) that lets you
+> > > reserve/guarantee a region:
+> > >
+> > >   int reserve_region(dev, sector_t begin, sector_t end);
+> >
+> > A C-based interface is not sufficient because the layer that must do
+> > provsioning is not guaranteed to be directly under the filesystem.
+> > We must be able to propagate the request down to the layers that
+> > need to provision storage, and that includes hardware devices.
+> >
+> > e.g. dm-thin would have to issue REQ_PROVISION on the LBA ranges it
+> > allocates in it's backing device to guarantee that the provisioned
+> > LBA range it allocates is also fully provisioned by the storage
+> > below it....
+> >
+> 
+> Fine, bio flag it is.
+> 
+> 
+> >
+> > >   This api should be used minimally, eg, critical FS metadata only.
+> >
+> >
+> >
+> > Plan for having to support tens of GBs of provisioned space in
+> > filesystems, not tens of MBs....
+> >
+> 
+> Also fine.
+> 
+> 
+> I think there's a 2-3 solid days of coding to fully implement
+> > REQ_PROVISION support in XFS, including userspace tool support.
+> > Maybe a couple of weeks more to flush the bugs out before it's
+> > largely ready to go.
+> >
+> > So if there's buy in from the block layer and DM people for
+> > REQ_PROVISION as described, then I'll definitely have XFS support
+> > ready for you to test whenever dm-thinp is ready to go.
+> >
+> 
+> Great, this is what I wanted to hear.  I guess we need an ack from the
+> block guys and then I'll get started.
 
-           cpu1                    cpu2
-________________________|________________________
-ksys_write
- vfs_write
-  new_sync_write
-   ext4_file_write_iter
-    ext4_buffered_write_iter
-     generic_perform_write
-      ext4_da_write_begin
-                          do_fault
-                           do_page_mkwrite
-                            ext4_page_mkwrite
-                             ext4_convert_inline_data
-                              ext4_convert_inline_data_nolock
-                               ext4_destroy_inline_data_nolock
-                                //clear EXT4_STATE_MAY_INLINE_DATA
-                               ext4_map_blocks --> return error
-       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-       ext4_block_write_begin
-                               ext4_restore_inline_data
-                                // set EXT4_STATE_MAY_INLINE_DATA
-      ext4_da_write_end
-       ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-       ext4_write_inline_data_end
-        handle=NULL
-        ext4_journal_stop(handle)
-         __ext4_journal_stop
-          ext4_put_nojournal(handle)
-           ref_cnt = (unsigned long)handle
-           BUG_ON(ref_cnt == 0)  ---> BUG_ON
+The block portion is where this discussion started (in the context of
+this thread's patchset, now at v7).
 
-The root cause of this problem is that the ext4_convert_inline_data() in
-ext4_page_mkwrite() does not grab i_rwsem, so it may race with
-ext4_buffered_write_iter() and cause the write_begin() and write_end()
-functions to be inconsistent and trigger BUG_ON.
+During our discussion I think there were 2 gaps identified with this
+patchset:
 
-To solve the above issue, we can not add inode_lock directly to
-ext4_page_mkwrite(), which would not only cause performance degradation but
-also ABBA deadlock (see Link). Hence we move ext4_convert_inline_data() to
-ext4_file_mmap(), and only when inline_data is enabled and mmap a writeable
-file in shared mode, we hold the lock to convert, which avoids the above
-problems.
+1) provisioning should be opt-in, and we need a clear flag that upper
+   layers look for to know if REQ_PROVISION available
+   - we do get this with the max_provision_sectors = 0 default, is
+     checking queue_limits (via queue_max_provision_sectors)
+     sufficient for upper layers like xfs?
 
-Link: https://lore.kernel.org/r/20230530102804.6t7np7om6tczscuo@quack3/
-Reported-by: Jun Nie <jun.nie@linaro.org>
-Closes: https://lore.kernel.org/lkml/63903521.5040307@huawei.com/t/
-Reported-by: syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?id=899b37f20ce4072bcdfecfe1647b39602e956e36
-Fixes: 7b4cc9787fe3 ("ext4: evict inline data when writing to memory map")
-CC: stable@vger.kernel.org # 4.12+
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/file.c  | 24 +++++++++++++++++++++++-
- fs/ext4/inode.c |  4 ----
- 2 files changed, 23 insertions(+), 5 deletions(-)
+2) DM thinp needs REQ_PROVISION passdown support
+   - also dm_table_supports_provision() needs to be stricter by
+     requiring _all_ underlying devices support provisioning?
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index d101b3b0c7da..9df82d72eb90 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -795,7 +795,8 @@ static const struct vm_operations_struct ext4_file_vm_ops = {
- static int ext4_file_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct inode *inode = file->f_mapping->host;
--	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-+	struct super_block *sb = inode->i_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct dax_device *dax_dev = sbi->s_daxdev;
- 
- 	if (unlikely(ext4_forced_shutdown(sbi)))
-@@ -808,6 +809,27 @@ static int ext4_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!daxdev_mapping_supported(vma, dax_dev))
- 		return -EOPNOTSUPP;
- 
-+	/*
-+	 * Writing via mmap has no logic to handle inline data, so we
-+	 * need to call ext4_convert_inline_data() to convert the inode
-+	 * to normal format before doing so, otherwise a BUG_ON will be
-+	 * triggered in ext4_writepages() due to the
-+	 * EXT4_STATE_MAY_INLINE_DATA flag. Moreover, we need to grab
-+	 * i_rwsem during conversion, since clearing and setting the
-+	 * inline data flag may race with ext4_buffered_write_iter()
-+	 * to trigger a BUG_ON.
-+	 */
-+	if (ext4_has_feature_inline_data(sb) &&
-+	    vma->vm_flags & VM_SHARED && vma->vm_flags & VM_MAYWRITE) {
-+		int err;
-+
-+		inode_lock(inode);
-+		err = ext4_convert_inline_data(inode);
-+		inode_unlock(inode);
-+		if (err)
-+			return err;
-+	}
-+
- 	file_accessed(file);
- 	if (IS_DAX(file_inode(file))) {
- 		vma->vm_ops = &ext4_dax_vm_ops;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index ce5f21b6c2b3..31844c4ec9fe 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -6043,10 +6043,6 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- 
- 	filemap_invalidate_lock_shared(mapping);
- 
--	err = ext4_convert_inline_data(inode);
--	if (err)
--		goto out_ret;
--
- 	/*
- 	 * On data journalling we skip straight to the transaction handle:
- 	 * there's no delalloc; page truncated will be checked later; the
--- 
-2.31.1
+Bonus dm-thinp work: add ranged REQ_PROVISION support to reduce number
+of calls (and bios) block core needs to pass to dm thinp.
 
+Also Joe, for you proposed dm-thinp design where you distinquish
+between "provision" and "reserve": Would it make sense for REQ_META
+(e.g. all XFS metadata) with REQ_PROVISION to be treated as an
+LBA-specific hard request?  Whereas REQ_PROVISION on its own provides
+more freedom to just reserve the length of blocks? (e.g. for XFS
+delalloc where LBA range is unknown, but dm-thinp can be asked to
+reserve space to accomodate it).
+
+Mike
