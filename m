@@ -2,245 +2,369 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723D8715BC5
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 May 2023 12:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2001715DE0
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 May 2023 13:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbjE3K3N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 May 2023 06:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        id S231968AbjE3LwG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 May 2023 07:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbjE3K2x (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 May 2023 06:28:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DEFE69;
-        Tue, 30 May 2023 03:28:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8643721ACD;
-        Tue, 30 May 2023 10:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685442484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+x2IkDtCWeps6XnoKexZWXM5FP9EpYPyN0Tuo7BL9P0=;
-        b=CcCY40eG8VGyQ/nYOdkizdjZQw6fznI3DfFVQgnETMO71M02DEm6lz35daXcK6YYRPOtzF
-        zP98vGAYyme0KTLPzcvw2OcW+H1gcc2/MWqdj2US0QGLRZpkV3ChgNulARPbpjeU/Ib+bN
-        lkxrVgLOc2uTh3gLMFV5TWQLM515224=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685442484;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+x2IkDtCWeps6XnoKexZWXM5FP9EpYPyN0Tuo7BL9P0=;
-        b=tE1gcxCW4KA33Sxw5X8ZBmk7HVG74JiclJdmyARvDLLRmH8zMk1uWt7a7/WNH7+eVYMPnY
-        2t107ywWCHsIjIBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 73C3913478;
-        Tue, 30 May 2023 10:28:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id L0A4HLTPdWQGWAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 30 May 2023 10:28:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0ACB7A0754; Tue, 30 May 2023 12:28:04 +0200 (CEST)
-Date:   Tue, 30 May 2023 12:28:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, jun.nie@linaro.org,
-        ebiggers@kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-        yukuai3@huawei.com,
-        syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix race condition between buffer write and
- page_mkwrite
-Message-ID: <20230530102804.6t7np7om6tczscuo@quack3>
-References: <20230529080148.3810143-1-libaokun1@huawei.com>
- <20230529144435.bj65ltbww5jbh2uc@quack3>
- <7f6ab488-9eef-fb94-b007-839eb1c1f487@huawei.com>
- <20230530074225.ly6vnolykqu5teos@quack3>
- <78f61c71-be47-cd4d-36c8-161c7a86c9c0@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <78f61c71-be47-cd4d-36c8-161c7a86c9c0@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232010AbjE3LwE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 May 2023 07:52:04 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4F3116
+        for <linux-ext4@vger.kernel.org>; Tue, 30 May 2023 04:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685447522; x=1716983522;
+  h=date:from:to:cc:subject:message-id;
+  bh=d9NTjO0S3rxreo0cGCoi8gYqS+YBBq28abLFg72fPls=;
+  b=bHv9nSM2Tw4lFHwXnl83a+513AmGHR1S4TKE+Ml9WFE+gnRzhUJLcC1B
+   S+nCD/6dvGzbhHecxQHne+eDb8McPeCDKpDNkhS3+1WQKZB+YgGYCC0q2
+   hnbDWAtadRhdZG8DHp25rgbTXSC1T7hLnFKBxW3zNSwPq/Xno1wLVJsaS
+   oSirBSDp80UPbpURkEk/rYSMi/hNnUse3Qc3vDId+K1lEuH9Tuq6K3u/v
+   I8B4LawPHXUJHBT605/vJs+x++jBi69O4D2/fo56FAQJium3ni4qIy9zV
+   uItgDJee1h9dmfwdVhGLrgaUJ8YlMxLu7jwTC2UkEvq1KEp+V9bq4f6sX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="420651355"
+X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
+   d="scan'208";a="420651355"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2023 04:52:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="1036563442"
+X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
+   d="scan'208";a="1036563442"
+Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 30 May 2023 04:52:00 -0700
+Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q3xtQ-0000Hs-18;
+        Tue, 30 May 2023 11:52:00 +0000
+Date:   Tue, 30 May 2023 19:51:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 781c858c35c821f7055ccca73d27b6d1c77798b3
+Message-ID: <20230530115153.-E_IL%lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 30-05-23 17:39:16, Baokun Li wrote:
-> On 2023/5/30 15:42, Jan Kara wrote:
-> > On Tue 30-05-23 10:00:44, Baokun Li wrote:
-> > > On 2023/5/29 22:44, Jan Kara wrote:
-> > > > On Mon 29-05-23 16:01:48, Baokun Li wrote:
-> > > > > Syzbot reported a BUG_ON:
-> > > > > ==================================================================
-> > > > > EXT4-fs (loop0): mounted filesystem without journal. Quota mode: none.
-> > > > > EXT4-fs error (device loop0): ext4_mb_generate_buddy:1098: group 0, block
-> > > > >        bitmap and bg descriptor inconsistent: 25 vs 150994969 free clusters
-> > > > > ------------[ cut here ]------------
-> > > > > kernel BUG at fs/ext4/ext4_jbd2.c:53!
-> > > > > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > > > > CPU: 1 PID: 494 Comm: syz-executor.0 6.1.0-rc7-syzkaller-ga4412fdd49dc #0
-> > > > > RIP: 0010:__ext4_journal_stop+0x1b3/0x1c0
-> > > > >    [...]
-> > > > > Call Trace:
-> > > > >    ext4_write_inline_data_end+0xa39/0xdf0
-> > > > >    ext4_da_write_end+0x1e2/0x950
-> > > > >    generic_perform_write+0x401/0x5f0
-> > > > >    ext4_buffered_write_iter+0x35f/0x640
-> > > > >    ext4_file_write_iter+0x198/0x1cd0
-> > > > >    vfs_write+0x8b5/0xef0
-> > > > >    [...]
-> > > > > ==================================================================
-> > > > > 
-> > > > > The above BUG_ON is triggered by the following race:
-> > > > > 
-> > > > >              cpu1                    cpu2
-> > > > > ________________________|________________________
-> > > > > ksys_write
-> > > > >    vfs_write
-> > > > >     new_sync_write
-> > > > >      ext4_file_write_iter
-> > > > >       ext4_buffered_write_iter
-> > > > >        generic_perform_write
-> > > > >         ext4_da_write_begin
-> > > > >                             do_fault
-> > > > >                              do_page_mkwrite
-> > > > >                               ext4_page_mkwrite
-> > > > >                                ext4_convert_inline_data
-> > > > >                                 ext4_convert_inline_data_nolock
-> > > > >                                  ext4_destroy_inline_data_nolock
-> > > > >                                   //clear EXT4_STATE_MAY_INLINE_DATA
-> > > > >                                  ext4_map_blocks --> return error
-> > > > >          ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-> > > > >          ext4_block_write_begin
-> > > > >                                  ext4_restore_inline_data
-> > > > >                                   // set EXT4_STATE_MAY_INLINE_DATA
-> > > > >         ext4_da_write_end
-> > > > >          ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)
-> > > > >          ext4_write_inline_data_end
-> > > > >           handle=NULL
-> > > > >           ext4_journal_stop(handle)
-> > > > >            __ext4_journal_stop
-> > > > >             ext4_put_nojournal(handle)
-> > > > >              ref_cnt = (unsigned long)handle
-> > > > >              BUG_ON(ref_cnt == 0)  ---> BUG_ON
-> > > > > 
-> > > > > The root cause of this problem is that the ext4_convert_inline_data() in
-> > > > > ext4_page_mkwrite() does not grab i_rwsem, so it may race with
-> > > > > ext4_buffered_write_iter() and cause the write_begin() and write_end()
-> > > > > functions to be inconsistent and trigger BUG_ON.
-> > > > > 
-> > > > > To solve the above issue, we cannot add inode_lock directly to
-> > > > > ext4_page_mkwrite(), because this function is a hot path and frequent calls
-> > > > > to inode_lock will cause performance degradation for multi-threaded reads
-> > > > > and writes. Hence, we move ext4_convert_inline_data() to ext4_file_mmap(),
-> > > > > and only when inline_data is enabled and mmap a file in shared write mode,
-> > > > > we hold the lock to convert, which can reduce the impact on performance.
-> > > > > 
-> > > > > Reported-by: Jun Nie <jun.nie@linaro.org>
-> > > > > Closes: https://lore.kernel.org/lkml/63903521.5040307@huawei.com/t/
-> > > > > Reported-by: syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com
-> > > > > Closes: https://syzkaller.appspot.com/bug?id=899b37f20ce4072bcdfecfe1647b39602e956e36
-> > > > > Fixes: 7b4cc9787fe3 ("ext4: evict inline data when writing to memory map")
-> > > > > CC: stable@vger.kernel.org # 4.12+
-> > > > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > > > Thanks for the patch! The problem with i_rwsem in ext4_page_mkwrite() is
-> > > > not so much about performance as about lock ordering. In
-> > > > ext4_page_mkwrite() we are called with mmap_sem held and so we cannot
-> > > > acquire i_rwsem because it ranks about it.
-> > > Thank you for your review!
-> > > 
-> > > I'm sorry I didn't make myself clear here.
-> > > 
-> > > Yes, we can't get i_rwsem after holding mmap_sem at any time, otherwise
-> > > ABBA deadlock may occur. The "add inode_lock directly" in my patch
-> > > description actually looks like this:
-> > > ```
-> > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > > index b98d2d58b900..c9318dc2a613 100644
-> > > --- a/fs/ext4/inode.c
-> > > +++ b/fs/ext4/inode.c
-> > > @@ -6025,12 +6025,14 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
-> > >          sb_start_pagefault(inode->i_sb);
-> > >          file_update_time(vma->vm_file);
-> > > 
-> > > -       filemap_invalidate_lock_shared(mapping);
-> > > -
-> > > +       inode_lock(inode);
-> > >          err = ext4_convert_inline_data(inode);
-> > > +       inode_unlock(inode);
-> > >          if (err)
-> > >                  goto out_ret;
-> > > 
-> > > +       filemap_invalidate_lock_shared(mapping);
-> > > +
-> > >          /*
-> > >           * On data journalling we skip straight to the transaction handle:
-> > >           * there's no delalloc; page truncated will be checked later; the
-> > > ```
-> > Yes, but even this could deadlock. The ABBA deadlock I'm speaking about
-> > would not be created with mapping->invalidate_lock but rather with
-> > task->mm->mmap_lock which is acquired at the beginning of page fault in the
-> > arch code.
-> 
-> Thanks for the explanation!
-> 
-> I thought the mmap_sem said was "&EXT4_I(inode)->i_mmap_sem".
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 781c858c35c821f7055ccca73d27b6d1c77798b3  ext4: enable the lazy init thread when remounting read/write
 
-We don't have that one anymore :). But yes, there are too many mmap locks so
-I should have been more precise from the start. I'm sorry for the
-confusion.
+elapsed time: 1945m
 
-> But here are some more questions:
-> 
-> 1) In the arch code page fault is handled by mmap_read_lock(mm) to get the
->    shared lock, why would this lead to ABBA deadlock?
-> 
-> 2) Why would page fault be triggered in the write process?
-> 
-> Could you explain it in more detail?
+configs tested: 293
+configs skipped: 11
 
-OK, let me draw here the exact deadlock graph:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-CPU0				CPU1			CPU2
-write(2)			page fault		mmap(2)
-				  do_user_addr_fault()
-				    mmap_read_lock()      ...
-				    ...                   vm_mmap_pgoff()
-							    mmap_write_lock_killable(mm)
-							      - blocks on CPU1
-								holding the lock
-  ext4_buffered_write_iter()
-    inode_lock(inode);
-    ...
-    generic_perform_write(iocb, from);
-      fault_in_iov_iter_readable(i, bytes)
-        - hits pagefault
-	do_user_addr_fault()
-	  mmap_read_lock()
-	    - blocks on CPU2 as writer queued first
-				    ext4_page_mkwrite()
-				      - would deadlock here if we
-				        try to take inode lock
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r002-20230529   gcc  
+alpha        buildonly-randconfig-r005-20230529   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r011-20230529   gcc  
+alpha                randconfig-r026-20230530   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r003-20230529   gcc  
+arc                                 defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                  randconfig-r003-20230529   gcc  
+arc                  randconfig-r005-20230529   gcc  
+arc                  randconfig-r016-20230529   gcc  
+arc                  randconfig-r024-20230529   gcc  
+arc                  randconfig-r031-20230530   gcc  
+arc                  randconfig-r035-20230529   gcc  
+arc                  randconfig-r043-20230529   gcc  
+arc                  randconfig-r043-20230530   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm                          moxart_defconfig   clang
+arm                  randconfig-r032-20230529   gcc  
+arm                  randconfig-r046-20230529   clang
+arm                           sama5_defconfig   gcc  
+arm                        spear6xx_defconfig   gcc  
+arm                           sunxi_defconfig   gcc  
+arm                           tegra_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r005-20230529   clang
+arm64                               defconfig   gcc  
+arm64                randconfig-r003-20230529   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r032-20230530   gcc  
+hexagon      buildonly-randconfig-r006-20230530   clang
+hexagon              randconfig-r041-20230529   clang
+hexagon              randconfig-r045-20230529   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230529   clang
+i386                 randconfig-i001-20230530   clang
+i386                 randconfig-i002-20230529   clang
+i386                 randconfig-i002-20230530   clang
+i386                 randconfig-i003-20230529   clang
+i386                 randconfig-i003-20230530   clang
+i386                 randconfig-i004-20230529   clang
+i386                 randconfig-i004-20230530   clang
+i386                 randconfig-i005-20230529   clang
+i386                 randconfig-i005-20230530   clang
+i386                 randconfig-i006-20230529   clang
+i386                 randconfig-i006-20230530   clang
+i386                 randconfig-i011-20230529   gcc  
+i386                 randconfig-i011-20230530   gcc  
+i386                 randconfig-i012-20230529   gcc  
+i386                 randconfig-i012-20230530   gcc  
+i386                 randconfig-i013-20230529   gcc  
+i386                 randconfig-i013-20230530   gcc  
+i386                 randconfig-i014-20230529   gcc  
+i386                 randconfig-i014-20230530   gcc  
+i386                 randconfig-i015-20230529   gcc  
+i386                 randconfig-i016-20230529   gcc  
+i386                 randconfig-i051-20230529   clang
+i386                 randconfig-i051-20230530   clang
+i386                 randconfig-i052-20230529   clang
+i386                 randconfig-i052-20230530   clang
+i386                 randconfig-i053-20230529   clang
+i386                 randconfig-i053-20230530   clang
+i386                 randconfig-i054-20230529   clang
+i386                 randconfig-i054-20230530   clang
+i386                 randconfig-i055-20230529   clang
+i386                 randconfig-i055-20230530   clang
+i386                 randconfig-i056-20230529   clang
+i386                 randconfig-i056-20230530   clang
+i386                 randconfig-i061-20230529   clang
+i386                 randconfig-i061-20230530   clang
+i386                 randconfig-i062-20230529   clang
+i386                 randconfig-i062-20230530   clang
+i386                 randconfig-i063-20230529   clang
+i386                 randconfig-i063-20230530   clang
+i386                 randconfig-i064-20230529   clang
+i386                 randconfig-i064-20230530   clang
+i386                 randconfig-i065-20230529   clang
+i386                 randconfig-i065-20230530   clang
+i386                 randconfig-i066-20230529   clang
+i386                 randconfig-i066-20230530   clang
+i386                 randconfig-i071-20230529   gcc  
+i386                 randconfig-i072-20230529   gcc  
+i386                 randconfig-i072-20230530   gcc  
+i386                 randconfig-i073-20230529   gcc  
+i386                 randconfig-i074-20230529   gcc  
+i386                 randconfig-i074-20230530   gcc  
+i386                 randconfig-i075-20230529   gcc  
+i386                 randconfig-i075-20230530   gcc  
+i386                 randconfig-i076-20230529   gcc  
+i386                 randconfig-i076-20230530   gcc  
+i386                 randconfig-i081-20230529   gcc  
+i386                 randconfig-i082-20230529   gcc  
+i386                 randconfig-i082-20230530   gcc  
+i386                 randconfig-i083-20230529   gcc  
+i386                 randconfig-i083-20230530   gcc  
+i386                 randconfig-i084-20230529   gcc  
+i386                 randconfig-i084-20230530   gcc  
+i386                 randconfig-i085-20230529   gcc  
+i386                 randconfig-i085-20230530   gcc  
+i386                 randconfig-i086-20230529   gcc  
+i386                 randconfig-i091-20230529   clang
+i386                 randconfig-i091-20230530   clang
+i386                 randconfig-i092-20230529   clang
+i386                 randconfig-i092-20230530   clang
+i386                 randconfig-i093-20230529   clang
+i386                 randconfig-i093-20230530   clang
+i386                 randconfig-i094-20230529   clang
+i386                 randconfig-i094-20230530   clang
+i386                 randconfig-i095-20230529   clang
+i386                 randconfig-i095-20230530   clang
+i386                 randconfig-i096-20230529   clang
+i386                 randconfig-i096-20230530   clang
+i386                 randconfig-r002-20230529   clang
+i386                 randconfig-r024-20230530   gcc  
+i386                 randconfig-r026-20230529   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r013-20230529   gcc  
+loongarch            randconfig-r031-20230529   gcc  
+loongarch            randconfig-r033-20230529   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230529   gcc  
+m68k                 randconfig-r013-20230529   gcc  
+m68k                 randconfig-r035-20230530   gcc  
+microblaze   buildonly-randconfig-r004-20230529   gcc  
+microblaze           randconfig-r012-20230530   gcc  
+microblaze           randconfig-r023-20230530   gcc  
+microblaze           randconfig-r033-20230530   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+mips                 randconfig-r001-20230529   gcc  
+mips                          rb532_defconfig   gcc  
+nios2        buildonly-randconfig-r001-20230529   gcc  
+nios2        buildonly-randconfig-r003-20230529   gcc  
+nios2        buildonly-randconfig-r004-20230529   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r011-20230530   gcc  
+nios2                randconfig-r012-20230529   gcc  
+nios2                randconfig-r016-20230529   gcc  
+openrisc             randconfig-r004-20230529   gcc  
+openrisc             randconfig-r021-20230529   gcc  
+openrisc             randconfig-r036-20230529   gcc  
+openrisc             randconfig-r036-20230530   gcc  
+parisc       buildonly-randconfig-r002-20230529   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
+parisc               randconfig-r004-20230529   gcc  
+parisc               randconfig-r012-20230529   gcc  
+parisc               randconfig-r015-20230529   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      makalu_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+powerpc              randconfig-r005-20230529   clang
+powerpc              randconfig-r022-20230529   gcc  
+powerpc                    socrates_defconfig   clang
+powerpc                  storcenter_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230529   gcc  
+riscv                randconfig-r042-20230530   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r013-20230530   gcc  
+s390                 randconfig-r014-20230530   gcc  
+s390                 randconfig-r022-20230529   gcc  
+s390                 randconfig-r023-20230529   gcc  
+s390                 randconfig-r044-20230529   gcc  
+s390                 randconfig-r044-20230530   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r006-20230529   gcc  
+sh                   randconfig-r022-20230530   gcc  
+sh                   randconfig-r025-20230529   gcc  
+sh                   randconfig-r035-20230530   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r016-20230530   gcc  
+sparc                randconfig-r025-20230529   gcc  
+sparc                randconfig-r026-20230529   gcc  
+sparc64              randconfig-r006-20230529   gcc  
+sparc64              randconfig-r014-20230529   gcc  
+sparc64              randconfig-r032-20230530   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           alldefconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230530   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230529   clang
+x86_64               randconfig-a002-20230529   clang
+x86_64               randconfig-a003-20230529   clang
+x86_64               randconfig-a004-20230529   clang
+x86_64               randconfig-a005-20230529   clang
+x86_64               randconfig-a006-20230529   clang
+x86_64               randconfig-a011-20230529   gcc  
+x86_64               randconfig-a011-20230530   gcc  
+x86_64               randconfig-a012-20230529   gcc  
+x86_64               randconfig-a012-20230530   gcc  
+x86_64               randconfig-a013-20230529   gcc  
+x86_64               randconfig-a013-20230530   gcc  
+x86_64               randconfig-a014-20230529   gcc  
+x86_64               randconfig-a014-20230530   gcc  
+x86_64               randconfig-a015-20230529   gcc  
+x86_64               randconfig-a015-20230530   gcc  
+x86_64               randconfig-a016-20230529   gcc  
+x86_64               randconfig-a016-20230530   gcc  
+x86_64               randconfig-x051-20230529   gcc  
+x86_64               randconfig-x051-20230530   gcc  
+x86_64               randconfig-x052-20230529   gcc  
+x86_64               randconfig-x052-20230530   gcc  
+x86_64               randconfig-x053-20230529   gcc  
+x86_64               randconfig-x053-20230530   gcc  
+x86_64               randconfig-x054-20230529   gcc  
+x86_64               randconfig-x054-20230530   gcc  
+x86_64               randconfig-x055-20230529   gcc  
+x86_64               randconfig-x055-20230530   gcc  
+x86_64               randconfig-x056-20230529   gcc  
+x86_64               randconfig-x056-20230530   gcc  
+x86_64               randconfig-x061-20230529   gcc  
+x86_64               randconfig-x061-20230530   gcc  
+x86_64               randconfig-x062-20230529   gcc  
+x86_64               randconfig-x062-20230530   gcc  
+x86_64               randconfig-x063-20230529   gcc  
+x86_64               randconfig-x063-20230530   gcc  
+x86_64               randconfig-x064-20230529   gcc  
+x86_64               randconfig-x064-20230530   gcc  
+x86_64               randconfig-x065-20230529   gcc  
+x86_64               randconfig-x065-20230530   gcc  
+x86_64               randconfig-x066-20230529   gcc  
+x86_64               randconfig-x066-20230530   gcc  
+x86_64               randconfig-x071-20230529   clang
+x86_64               randconfig-x071-20230530   clang
+x86_64               randconfig-x072-20230529   clang
+x86_64               randconfig-x072-20230530   clang
+x86_64               randconfig-x073-20230529   clang
+x86_64               randconfig-x073-20230530   clang
+x86_64               randconfig-x074-20230529   clang
+x86_64               randconfig-x074-20230530   clang
+x86_64               randconfig-x075-20230529   clang
+x86_64               randconfig-x075-20230530   clang
+x86_64               randconfig-x076-20230529   clang
+x86_64               randconfig-x076-20230530   clang
+x86_64               randconfig-x081-20230529   clang
+x86_64               randconfig-x081-20230530   clang
+x86_64               randconfig-x082-20230529   clang
+x86_64               randconfig-x082-20230530   clang
+x86_64               randconfig-x083-20230529   clang
+x86_64               randconfig-x083-20230530   clang
+x86_64               randconfig-x084-20230529   clang
+x86_64               randconfig-x084-20230530   clang
+x86_64               randconfig-x085-20230529   clang
+x86_64               randconfig-x085-20230530   clang
+x86_64               randconfig-x086-20230529   clang
+x86_64               randconfig-x086-20230530   clang
+x86_64               randconfig-x091-20230529   gcc  
+x86_64               randconfig-x091-20230530   gcc  
+x86_64               randconfig-x092-20230529   gcc  
+x86_64               randconfig-x092-20230530   gcc  
+x86_64               randconfig-x093-20230529   gcc  
+x86_64               randconfig-x093-20230530   gcc  
+x86_64               randconfig-x094-20230529   gcc  
+x86_64               randconfig-x094-20230530   gcc  
+x86_64               randconfig-x095-20230529   gcc  
+x86_64               randconfig-x095-20230530   gcc  
+x86_64               randconfig-x096-20230529   gcc  
+x86_64               randconfig-x096-20230530   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-kvm   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                           rhel-8.3-syz   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r006-20230529   gcc  
+xtensa               randconfig-r011-20230529   gcc  
+xtensa               randconfig-r014-20230529   gcc  
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
