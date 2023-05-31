@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ECE717B6E
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 May 2023 11:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D453717B8A
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 May 2023 11:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbjEaJLr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 May 2023 05:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S235353AbjEaJPo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 May 2023 05:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235372AbjEaJLq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 May 2023 05:11:46 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B231B5
-        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 02:11:26 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51496f57e59so5333746a12.2
-        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 02:11:26 -0700 (PDT)
+        with ESMTP id S235178AbjEaJPl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 May 2023 05:15:41 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A5911F
+        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 02:15:39 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-514924ca903so6363052a12.2
+        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 02:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1685524285; x=1688116285;
+        d=szeredi.hu; s=google; t=1685524538; x=1688116538;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISkp7pEP+0sRQxyl+Kb79Eh0f1S6sp18TmXfWBaAyu4=;
-        b=dJOv9q/YK0iEqQ5zNLLe/oNHi3RAcMruLF/Ly97IM4UKyWQ6BU0vbwmy5XObs9rKiq
-         L78AyjiMCnhu3YMlQcCsm1FY9ZM34qzmrdOcgBgszstMUHq1IAxUroiCHjwKUuIt+D8H
-         mBFmnCmCovFiFJD1nOdBlhjqUIi/4hrYsHPew=
+        bh=T/bYqGFJ4VOGoB5+32Mcq8JR70Vd1T1ITCSeV7/3ifk=;
+        b=UZJgvu6uIJY01EjK7iQN8XWB6pp1lB8CKfw+N0J9F6PgtqlKRqH1SLE+0gJUsS//CY
+         frv0e589K6FPUxK3WlywVEVU5EIXgi5CrlyDlCnTpxW2lWKTjmwY/duejSbBA4/xINGF
+         cl9p3WvJMPfMA2wH+RIqqUtbNfejKb30vQfU0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685524285; x=1688116285;
+        d=1e100.net; s=20221208; t=1685524538; x=1688116538;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ISkp7pEP+0sRQxyl+Kb79Eh0f1S6sp18TmXfWBaAyu4=;
-        b=EqcgSp1HBkKFX37+U7IIygrXBObyw4N3cM+KyqnZG1JrufCW0P2BZ8kiINnVFaTGdi
-         jPZEH664cstw2yLjLKFN1iPVUPstDWzVOvHqXcimODyodygDZIcX9mk+RQ3y8ipP8Zsw
-         bh0cp5Np+ngPZbzOWjWBD/hi0wHEIJTIHe4eRL4MQagcDuUy3vMsBMiZdjxZOEiSHyMv
-         K1gA7SraZ9sdL4uVBu1Y0HYFj/wdwsqic7e8YZ8BmDajvyR1S5F9OGpsuYxbXsmBXALL
-         Qvrs9eltB4Cx5GIzi8fO+Fp87pff+Td9DogRIAKf/JLiirBgGCp4MoI6hXDrvEuii2fn
-         NbcA==
-X-Gm-Message-State: AC+VfDx4Fp1orDif4bJWlCI8PLF7s0W16sy/fCfWh9BUhMbuBQZDbDOt
-        z8w+6Q7tC/ELY24Y0AKtHfYl6tOtlzFiCKP7SRyvXg==
-X-Google-Smtp-Source: ACHHUZ7qS7TmWM4+gPdkrDhL0bqZjnQfi2Xy2fkSny6o4W3m4Wn8XiF4R2Jdbdnsml8nAyt9sFK0bEVdcGYNFEZCdMs=
-X-Received: by 2002:a17:907:7f23:b0:969:9fd0:7ce7 with SMTP id
- qf35-20020a1709077f2300b009699fd07ce7mr5700403ejc.11.1685524285339; Wed, 31
- May 2023 02:11:25 -0700 (PDT)
+        bh=T/bYqGFJ4VOGoB5+32Mcq8JR70Vd1T1ITCSeV7/3ifk=;
+        b=G1UYRdfqoBRO8/lpo/srLuEGFAD9I5OS677VUPTVHbKu8vb5LZeD0TmUa6dwdD4TOv
+         WK2F2BOoNM8SbSdVyLrJBNIM6zMIxxNTBQkGy6ZQyZ6QAeISYqNm/rtBi/2sYYC4ibMl
+         2aRsKZz+M4Tyfp8kkIA9e3WaW4eN+FW/GsYwGZXiuknen3cfIkstIW2/LG951IkCo/vH
+         9hQcywoLqEP3b/BDN2yFXRT2xA4KR99yZrsvzRZvy6ostGAqfyww+N1tR3qzihtQGA6e
+         yy6iRVHUd6rgoen2/8G9R6o9CPNOk1BxOykZihOAWonnY+xZbHBRyoRRKgjaNfdczCz1
+         C/XQ==
+X-Gm-Message-State: AC+VfDz3UtFFqmlkReUzcSrobx/4AkdxREFMNLMkQnfzTg0ZLvWJNq/4
+        M1oGCA+20NbAAdn1zCRN7FG9ARiaMYn81JuFvBKETg==
+X-Google-Smtp-Source: ACHHUZ4+FWciM8qyJY0wuGopESAGDBSeuypok3sj/I3YbiV8yhFjyVDeVyjcnaAR9QRVCUk4jCbe3rFAcVDPPt68Cvo=
+X-Received: by 2002:a17:906:9756:b0:967:21:5887 with SMTP id
+ o22-20020a170906975600b0096700215887mr4163471ejy.40.1685524538465; Wed, 31
+ May 2023 02:15:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230531075026.480237-1-hch@lst.de> <20230531075026.480237-11-hch@lst.de>
-In-Reply-To: <20230531075026.480237-11-hch@lst.de>
+References: <20230531075026.480237-1-hch@lst.de> <20230531075026.480237-10-hch@lst.de>
+In-Reply-To: <20230531075026.480237-10-hch@lst.de>
 From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 31 May 2023 11:11:13 +0200
-Message-ID: <CAJfpegth2z06pAH5K5vxRsy1PqygBD=ShiQxoYGqjmJPvk1-aQ@mail.gmail.com>
-Subject: Re: [PATCH 10/12] fuse: update ki_pos in fuse_perform_write
+Date:   Wed, 31 May 2023 11:15:27 +0200
+Message-ID: <CAJfpegtPM_=3uGdxxkb9xP8LVg5P0Lm-w4TNLYhw+MqcNi8c1g@mail.gmail.com>
+Subject: Re: [PATCH 09/12] fs: factor out a direct_write_fallback helper
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
         Xiubo Li <xiubli@redhat.com>,
@@ -79,86 +79,11 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 31 May 2023 at 09:51, Christoph Hellwig <hch@lst.de> wrote:
+On Wed, 31 May 2023 at 09:50, Christoph Hellwig <hch@lst.de> wrote:
 >
-> Both callers of fuse_perform_write need to updated ki_pos, move it into
-> common code.
+> Add a helper dealing with handling the syncing of a buffered write fallback
+> for direct I/O.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> ---
->  fs/fuse/file.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 97d435874b14aa..e60e48bf392d49 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1329,7 +1329,10 @@ static ssize_t fuse_perform_write(struct kiocb *iocb,
->         fuse_write_update_attr(inode, pos, res);
->         clear_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
->
-> -       return res > 0 ? res : err;
-> +       if (!res)
-> +               return err;
-> +       iocb->ki_pos += res;
-> +       return res;
->  }
->
->  static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> @@ -1341,7 +1344,6 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
->         struct inode *inode = mapping->host;
->         ssize_t err;
->         struct fuse_conn *fc = get_fuse_conn(inode);
-> -       loff_t endbyte = 0;
->
->         if (fc->writeback_cache) {
->                 /* Update size (EOF optimization) and mode (SUID clearing) */
-> @@ -1375,19 +1377,20 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
->                 goto out;
->
->         if (iocb->ki_flags & IOCB_DIRECT) {
-> -               loff_t pos = iocb->ki_pos;
-> +               loff_t pos, endbyte;
-> +
->                 written = generic_file_direct_write(iocb, from);
->                 if (written < 0 || !iov_iter_count(from))
->                         goto out;
->
-> -               pos += written;
-> -
-> -               written_buffered = fuse_perform_write(iocb, mapping, from, pos);
-> +               written_buffered = fuse_perform_write(iocb, mapping, from,
-> +                                                     iocb->ki_pos);
->                 if (written_buffered < 0) {
->                         err = written_buffered;
->                         goto out;
->                 }
-> -               endbyte = pos + written_buffered - 1;
-> +               pos = iocb->ki_pos - written_buffered;
-> +               endbyte = iocb->ki_pos - 1;
->
->                 err = filemap_write_and_wait_range(file->f_mapping, pos,
->                                                    endbyte);
-> @@ -1399,17 +1402,11 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
->                                          endbyte >> PAGE_SHIFT);
->
->                 written += written_buffered;
-> -               iocb->ki_pos = pos + written_buffered;
->         } else {
->                 written = fuse_perform_write(iocb, mapping, from, iocb->ki_pos);
-> -               if (written >= 0)
-> -                       iocb->ki_pos += written;
->         }
->  out:
->         inode_unlock(inode);
-> -       if (written > 0)
-> -               written = generic_write_sync(iocb, written);
 
-Why remove generic_write_sync()?  Definitely doesn't belong in this
-patch even if there's a good reason.
-
-Sorry, didn't notice this in the last round.
-
-Thanks,
-Miklos
+Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
