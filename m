@@ -2,83 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816AB7189CA
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 May 2023 21:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614CB718B5D
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 May 2023 22:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjEaTFk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 May 2023 15:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
+        id S229934AbjEaUle (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 May 2023 16:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjEaTFj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 May 2023 15:05:39 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C98A3
-        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 12:05:33 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-119-27.bstnma.fios.verizon.net [173.48.119.27])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34VJ54nT004112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 May 2023 15:05:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1685559905; bh=5zpB2N6cg8tOIYlbrjI1WVqsVhEWOyVTXTLbcT3DTGw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=TNsQ3RreFHJKkxPt7s8MqnBcrRmNnV8mNnkuxITayfQM19cOv4Zk5seSo6l+7kCFI
-         mOTyryhrFChBdbo5Rx4lnyVZhL8P9EaCDBrOkFBgGtgs1qIXeX97ToKtkm1Nn2mzb1
-         GXXs2gSPzEfBiOvx4htvrVDjzdRbR4Oj+DE5vzMhd3UMzL2OtXgjLiBqXtknacLIsh
-         BGTA1Q+2lsIezZwESRC3JJ8y4HZWHsfMjwy0bIow/KmEq/yNIjwNA+G0svHQbkvew2
-         8WaUD8Sz/zBez6+EDYBZ8SLOhRoHu4jXisP71UOCOvmf4JoASzqWe/s9tmqGwajc8+
-         9wQ6F+lL1yevg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4F1C715C02EE; Wed, 31 May 2023 15:05:04 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH 0/3] e2fsprogs: test cross-compiling for Android
-Date:   Wed, 31 May 2023 15:05:02 -0400
-Message-Id: <168555980407.847504.14002335940863098331.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230322032945.31779-1-ebiggers@kernel.org>
-References: <20230322032945.31779-1-ebiggers@kernel.org>
+        with ESMTP id S229615AbjEaUlc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 May 2023 16:41:32 -0400
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB6D12C
+        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 13:40:46 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6261890b4d7so1658006d6.1
+        for <linux-ext4@vger.kernel.org>; Wed, 31 May 2023 13:40:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685565646; x=1688157646;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H2MHMFRCtTpRq4HekvDMncZqof6fHitP/tkQ4Bwp4iw=;
+        b=fKD5ZVY7i6a0iCmyQh1lC0zIsIKDfx+5a9diwxps3pvkpUo7nfUWaloWYv9Eoz+v8S
+         ObaG6t+vMJ7vNICjfMZBENZr+YQYH7S1H5naGGhLSlEvaex8WgBY7sQAW7t7uGX3Z3Gq
+         PEV/02BKP/gVeIxxNnH0+FV4/p86V8USfvNH7kU31st5lqHTmDMsy8hbGgecpSsJ0s5F
+         EbhXJe+keusaF24fAdn+FPK5+tohbzlp1qH5ztvdyHavIdqJf3dyao6dp5qhqPn2Eati
+         AAS9bleRLmq7/UPgksQzgEN3ZYcxOgo9Y2HhEdOM92/ai7MY8TrVoh9ASqQMpGFKTK74
+         R4Mw==
+X-Gm-Message-State: AC+VfDxJtQMsUxfBI9VFDwAeCfue5AwHdYm/WOCnbmkAlCkVqf4ByWbO
+        FfcIOXT1mQuU9APZYkdwQ5iO
+X-Google-Smtp-Source: ACHHUZ5kdx7S499hJRV8/H2S3RWG6Tr6vcGeL7BQ9XuPUWxOMtGzpZSxerK1wVcQWCuUeme2JGtCZA==
+X-Received: by 2002:a05:6214:d85:b0:616:5f27:b96a with SMTP id e5-20020a0562140d8500b006165f27b96amr7207768qve.27.1685565645712;
+        Wed, 31 May 2023 13:40:45 -0700 (PDT)
+Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
+        by smtp.gmail.com with ESMTPSA id s12-20020a05621412cc00b005fe4a301350sm6354991qvv.48.2023.05.31.13.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 May 2023 13:40:45 -0700 (PDT)
+Date:   Wed, 31 May 2023 16:40:44 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 1/5] block: Don't invalidate pagecache for invalid
+ falloc modes
+Message-ID: <ZHewzOfOdXu+kN75@redhat.com>
+References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
+ <20230518223326.18744-2-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230518223326.18744-2-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, May 18 2023 at  6:33P -0400,
+Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 
-On Tue, 21 Mar 2023 20:29:42 -0700, Eric Biggers wrote:
-> This series adds jobs to .github/workflows/ci.yml that cross-compile
-> e2fsprogs for Android.  To make that possible, it also fixes a couple
-> warnings and an error that show up when building e2fsprogs for Android
-> using the autotools-based build system.
+> Only call truncate_bdev_range() if the fallocate mode is
+> supported. This fixes a bug where data in the pagecache
+> could be invalidated if the fallocate() was called on the
+> block device with an invalid mode.
 > 
-> This applies to the latest 'maint' branch.  I've tested that the updated
-> GitHub Actions workflow passes
-> (https://github.com/ebiggers/e2fsprogs/actions/runs/4486115058).
-> 
-> [...]
+> Fixes: 25f4c41415e5 ("block: implement (some of) fallocate for block devices")
+> Cc: stable@vger.kernel.org
+> Reported-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 
-Applied, thanks!
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 
-Note: I needed to apply 74571d9430da ("libsupport: fix function
-prototype for quota_write_inode()") to address a mingw64 compiler
-warning.
+Jens, this one is independent of the rest of the patchset and should
+be ready to go upstream whenever you are able.
 
-[1/3] e2fsck: avoid -Wtautological-constant-out-of-range-compare warnings
-      commit: c8ae60988c1240a7305dd6fe1dabda30da74ffc5
-[2/3] e2freefrag: don't use linux/fsmap.h when fsmap_sizeof() is missing
-      commit: 5598a968f3ee2ba5a8a6b988343905a2831f963c
-[3/3] ci.yml: test cross-compiling for Android
-      commit: 018ddcb29239fbd0a16a54e00613954e2d88b2b6
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
-					- 
+Thanks,
+Mike
