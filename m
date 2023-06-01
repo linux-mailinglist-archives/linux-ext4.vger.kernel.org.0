@@ -2,140 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA604719A54
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jun 2023 12:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E40719E96
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Jun 2023 15:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjFAK6k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Jun 2023 06:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        id S232140AbjFANpH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Jun 2023 09:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233126AbjFAK6f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jun 2023 06:58:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF9412C;
-        Thu,  1 Jun 2023 03:58:32 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FFBE1FD99;
-        Thu,  1 Jun 2023 10:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685617111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MzXOzo95g617qUk7Z949h4EoD3WLK3t1qcqqyGoLxTU=;
-        b=JnxZsTeRlkpGAeNVzMjBvMt7Um93iLPpsI45FFwBn30paVGGbNnEWH9M38MdENSm/kGngr
-        DioDvnCcG1CcHf7FQaY8W0HEFG7aKNjvivi3Ap/HmVOb0RlNIIEAtXneeUIB3XUbbBvMbk
-        zXCS+ZxYtK5OM8dZmOv8TRYohjVDer8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685617111;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MzXOzo95g617qUk7Z949h4EoD3WLK3t1qcqqyGoLxTU=;
-        b=12MljAV3Jn4lWXoFOIkKiAO7uA5l6sXWVPVfp8DSkd5pTHVzE2MnGWF2CEZjuth948cp5s
-        BtU9qfzM+5cVWrBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 122FA13A34;
-        Thu,  1 Jun 2023 10:58:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mmNoBNd5eGSCWAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 01 Jun 2023 10:58:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2CDDBA0764; Thu,  1 Jun 2023 12:58:30 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        "Darrick J. Wong" <djwong@kernel.org>, Ted Tso <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>
-Subject: [PATCH v2 6/6] fs: Restrict lock_two_nondirectories() to non-directory inodes
-Date:   Thu,  1 Jun 2023 12:58:26 +0200
-Message-Id: <20230601105830.13168-6-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230601104525.27897-1-jack@suse.cz>
-References: <20230601104525.27897-1-jack@suse.cz>
+        with ESMTP id S233948AbjFANpF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Jun 2023 09:45:05 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C4318F
+        for <linux-ext4@vger.kernel.org>; Thu,  1 Jun 2023 06:45:00 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QX6hJ3dVYz18LXB;
+        Thu,  1 Jun 2023 21:40:16 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 1 Jun 2023 21:44:55 +0800
+Subject: Re: [PATCH 4/5] jbd2: Fix wrongly judgement for buffer head removing
+ while doing checkpoint
+To:     Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <yi.zhang@huawei.com>,
+        <yukuai3@huawei.com>
+References: <20230531115100.2779605-1-yi.zhang@huaweicloud.com>
+ <20230531115100.2779605-5-yi.zhang@huaweicloud.com>
+ <20230601094156.m4b7rxntmaxc5zy7@quack3>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <d73ecd71-cb4f-921f-2284-d756c68e084c@huawei.com>
+Date:   Thu, 1 Jun 2023 21:44:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2200; i=jack@suse.cz; h=from:subject; bh=yzjONH0NaYO0JExUsRNFVNqF61b/6Z8qTkqJfHdGKlg=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkeHnRAOKwOpYmoYaDVDZoAJJC7iZvp0hWjbPFBMUr e9B2zauJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZHh50QAKCRCcnaoHP2RA2ZLRB/ 9A5mErZNr1GSw4bvqyRiHpBJmYLCWR4lihVK9MrTDZk08vVOCpc8BAsxg5oODQk0iMm3VyWYYLKWrR tZpGfLNVVN9J+mp08tZRHTqzVmO2Vg1q/2eiHEQkWYSPHnJHAmAPXsS2XuUUkxDmK5B+rPgf+hKsFQ 5qg5tUZAuaUsZGy1zMAqXObFZSzjefBZrc251g++8ukB03T/LNLAVwtjvKgGmesBoq8BJdO93TYFlB INP8z2ollQ8Oqi7hSsJH2uhrQleqLb+y1+OfV/Ocf+LM4vBCuWoJGtGua+7Rg5bpG/kpJEXZmghiEY 6HGqXDo1+FmRvBPkx7nJT/lFffiE8I
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+In-Reply-To: <20230601094156.m4b7rxntmaxc5zy7@quack3>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently lock_two_nondirectories() is skipping any passed directories.
-After vfs_rename() uses lock_two_inodes(), all the remaining four users
-of this function pass only regular files to it. So drop the somewhat
-unusual "skip directory" logic and instead warn if anybody passes
-directory to it. This also allows us to use lock_two_inodes() in
-lock_two_nondirectories() to concentrate the lock ordering logic in less
-places.
+ÔÚ 2023/6/1 17:41, Jan Kara Ð´µÀ:
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/inode.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Hi, Jan
+> On Wed 31-05-23 19:50:59, Zhang Yi wrote:
+>> From: Zhihao Cheng <chengzhihao1@huawei.com>
+>>
+>> Following process,
+>>
+>> jbd2_journal_commit_transaction
+>> // there are several dirty buffer heads in transaction->t_checkpoint_list
+>>            P1                   wb_workfn
+>> jbd2_log_do_checkpoint
+>>   if (buffer_locked(bh)) // false
+>>                              __block_write_full_page
+>>                               trylock_buffer(bh)
+>>                               test_clear_buffer_dirty(bh)
+>>   if (!buffer_dirty(bh))
+>>    __jbd2_journal_remove_checkpoint(jh)
+>>     if (buffer_write_io_error(bh)) // false
+>>                               >> bh IO error occurs <<
+>>   jbd2_cleanup_journal_tail
+>>    __jbd2_update_log_tail
+>>     jbd2_write_superblock
+>>     // The bh won't be replayed in next mount.
+>> , which could corrupt the ext4 image, fetch a reproducer in [Link].
+>>
+>> Since writeback process clears buffer dirty after locking buffer head,
+>> we can fix it by checking buffer dirty firstly and then checking buffer
+>> locked, the buffer head can be removed if it is neither dirty nor locked.
+>>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217490
+>> Fixes: 470decc613ab ("[PATCH] jbd2: initial copy of files from jbd")
+>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> OK, the analysis is correct but I'm afraid the fix won't be that easy.  The
+> reordering of tests you did below doesn't really help because CPU or the
+> compiler are free to order the loads (and stores) in whatever way they
+> wish. You'd have to use memory barriers when reading and modifying bh flags
+> (although the modification side is implicitely handled by the bitlock
+> code) to make this work reliably. But that is IMHO too subtle for this
+> code.
+> 
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 4000ab08bbc0..e8d10fd18378 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1148,7 +1148,7 @@ void lock_two_inodes(struct inode *inode1, struct inode *inode2,
- /**
-  * lock_two_nondirectories - take two i_mutexes on non-directory objects
-  *
-- * Lock any non-NULL argument that is not a directory.
-+ * Lock any non-NULL argument. Passed objects must not be directories.
-  * Zero, one or two objects may be locked by this function.
-  *
-  * @inode1: first inode to lock
-@@ -1156,13 +1156,9 @@ void lock_two_inodes(struct inode *inode1, struct inode *inode2,
-  */
- void lock_two_nondirectories(struct inode *inode1, struct inode *inode2)
- {
--	if (inode1 > inode2)
--		swap(inode1, inode2);
--
--	if (inode1 && !S_ISDIR(inode1->i_mode))
--		inode_lock(inode1);
--	if (inode2 && !S_ISDIR(inode2->i_mode) && inode2 != inode1)
--		inode_lock_nested(inode2, I_MUTEX_NONDIR2);
-+	WARN_ON_ONCE(S_ISDIR(inode1->i_mode));
-+	WARN_ON_ONCE(S_ISDIR(inode2->i_mode));
-+	lock_two_inodes(inode1, inode2, I_MUTEX_NORMAL, I_MUTEX_NONDIR2);
- }
- EXPORT_SYMBOL(lock_two_nondirectories);
- 
-@@ -1173,9 +1169,11 @@ EXPORT_SYMBOL(lock_two_nondirectories);
-  */
- void unlock_two_nondirectories(struct inode *inode1, struct inode *inode2)
- {
--	if (inode1 && !S_ISDIR(inode1->i_mode))
-+	WARN_ON_ONCE(S_ISDIR(inode1->i_mode));
-+	WARN_ON_ONCE(S_ISDIR(inode2->i_mode));
-+	if (inode1)
- 		inode_unlock(inode1);
--	if (inode2 && !S_ISDIR(inode2->i_mode) && inode2 != inode1)
-+	if (inode2 && inode2 != inode1)
- 		inode_unlock(inode2);
- }
- EXPORT_SYMBOL(unlock_two_nondirectories);
--- 
-2.35.3
+Do you mean there might be a sequence like following:
+
+jbd2_log_do_checkpoint
+  if (buffer_dirty(bh))
+  else if (buffer_locked(bh))
+  else
+    __jbd2_journal_remove_checkpoint(jh)
+
+CPU re-arranges the order of getting buffer state.
+reg_1 = buffer_locked(bh)  // false
+                            lock_buffer(bh)
+                            clear_buffer(bh)
+reg_2 = buffer_dirty(bh)   // false
+
+Then, jbd2_log_do_checkpoint() could become:
+if (reg_2)
+else if (reg_1)
+else
+   __jbd2_journal_remove_checkpoint(jh)  // enter !
+
+Am I understanding right?
+
+> What we should be doing to avoid these races is to lock the bh. So
+> something like:
+> 
+> 	if (jh->b_transaction != NULL) {
+> 		do stuff
+> 	}
+> 	if (!trylock_buffer(bh)) {
+> 		buffer_locked() branch
+> 	}
+> 	... Now we have the buffer locked and can safely check for dirtyness
+> 
+> And we need to do a similar treatment for journal_clean_one_cp_list() and
+> journal_shrink_one_cp_list().
+> 
+> BTW, I think we could merge journal_clean_one_cp_list() and
+> journal_shrink_one_cp_list() into a single common function. I think we can
+> drop the nr_to_scan argument and just always cleanup the whole checkpoint
+> list and return the number of freed buffers. That way we have one less
+> function to deal with checkpoint list cleaning.
+> 
+> Thinking about it some more maybe we can have a function like:
+> 
+> int jbd2_try_remove_checkpoint(struct journal_head *jh)
+> {
+> 	struct buffer_head *bh = jh2bh(jh);
+> 
+> 	if (!trylock_buffer(bh) || buffer_dirty(bh))
+> 		return -EBUSY;
+> 	/*
+> 	 * Buffer is clean and the IO has finished (we hold the buffer lock) so
+> 	 * the checkpoint is done. We can safely remove the buffer from this
+> 	 * transaction.
+> 	 */
+> 	unlock_buffer(bh);
+> 	return __jbd2_journal_remove_checkpoint(jh);
+> }
+> 
+> and that can be used with a bit of care in the checkpointing functions as
+> well as in jbd2_journal_forget(), __journal_try_to_free_buffer(),
+> journal_unmap_buffer().
+> 
+> 								Honza
+> 
 
