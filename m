@@ -2,108 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 032C27205C0
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jun 2023 17:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EFE7207DE
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jun 2023 18:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjFBPTA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jun 2023 11:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        id S236232AbjFBQpx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jun 2023 12:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235527AbjFBPTA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 11:19:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78B818C
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 08:18:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5375860AB7
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 15:18:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A795DC433EF;
-        Fri,  2 Jun 2023 15:18:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685719138;
-        bh=N8KKtm67jhbNPdeIzSdK7pFIuxNbBcAgHr17j/eAbxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NiF9gmt7opm1WpmNSmLocX0uIkdhvlQNPsD0cuwGoMuoVJYkHhbWYECuuS5fhccbB
-         cYS5ahMkxI4EVKxi4gHwOWHGmSeemD66gheUUjVusz0JXx2m/h4G33azOMVe+6oYLV
-         jQLGOll7KFOp5ldes55bT1Fld+CsEhNpFjCY2fmSFdZT77G/JAME7Tb8Tn3qp0kMOi
-         yHP06QM4NVZT3PbGQKJcxuunSNJLAdQllUHI+6gcSLyvWaKpzY786T3oo5I3/8Z3Rc
-         gu25k7WtymbLjTM5HLcAH7zogxIc5ScSHQ09UG7rfe/9tMhZD1qyF0SY36h7T2/SwV
-         gU36Qz0GNfz+A==
-Date:   Fri, 2 Jun 2023 08:18:58 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org, linfeilong@huawei.com,
-        louhongxiang@huawei.com
-Subject: Re: [PATCH] e2fsck: restore sb->s_state before journal recover
-Message-ID: <20230602151858.GA16844@frogsfrogsfrogs>
-References: <20230602082759.4062633-1-zhanchengbin1@huawei.com>
+        with ESMTP id S236717AbjFBQpx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 12:45:53 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459F7E2
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 09:45:51 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-119-27.bstnma.fios.verizon.net [173.48.119.27])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 352GjMfp008777
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 2 Jun 2023 12:45:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1685724324; bh=fQX3HEZV3KIskpFARmPelBT88Aj1ZdbBSbJ5xbiBv/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=UcR0PExUqSSgpGNR5fBjNDAbhuXYHLDvQrDCJiet2+f73mOXSbzNwuMip4+Nu5MJt
+         XFRb7FVgPUH5DVaXYC5lISiYdoy1bBhBFmjDDMP9+eMmm8BX7y+0RCsoB9bCgOu99e
+         zj1KlthqmQg9lIQZyN3pGo6Pt2p5XQebD0uxMOKwS8XCnSJegUw8K2UVyFpod+3dKT
+         t1E/gNnErXCke1dc3862gYAQWzf0IIBUacIrWnUQlS532xxdfHEptSfob2mn/PDWxi
+         yIG1gJeaPKQhvkTZ3yV6povDLlxnqHwc1vW6f15Zb6sqXC7EVCiwgOHX1Gl+8Dajsg
+         KN0AeE+zWk0Vw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 112B415C02EE; Fri,  2 Jun 2023 12:45:22 -0400 (EDT)
+Date:   Fri, 2 Jun 2023 12:45:22 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-ext4@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v2 01/12] Revert "ext4: remove ac->ac_found >
+ sbi->s_mb_min_to_scan dead check in ext4_mb_check_limits"
+Message-ID: <20230602164522.GD1069561@mit.edu>
+References: <cover.1685449706.git.ojaswin@linux.ibm.com>
+ <ddcae9658e46880dfec2fb0aa61d01fb3353d202.1685449706.git.ojaswin@linux.ibm.com>
+ <CA+icZUXDFbxRvx8-pvEwsZAu+-28bX4VDTj6ZTPtvn4gWqGnCg@mail.gmail.com>
+ <ZHcMCGO5zW/P8LHh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <29895f4d-9492-4572-d6f3-30d028cdcbe3@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230602082759.4062633-1-zhanchengbin1@huawei.com>
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <29895f4d-9492-4572-d6f3-30d028cdcbe3@leemhuis.info>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 02, 2023 at 04:27:59PM +0800, zhanchengbin wrote:
-> ext4_handle_error
->     EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
->     if remount-ro
->         ext4_commit_super(sb);
-> As you can see, when the filesystem error in the kernel, the last sb commit
-> not record the journal, So sb->s_state will be overwritten by journal recover.
-> In some cases , modifying metadata and superblock data are placed in two
-> transactions, if the previous transaction is already in the journal, and
-> ext4_handle_error occurs when updating sb, the filesystem is still error even
-> if the journal is recovered(I know that this situation should not occur in
-> theory, but I encountered this error when testing quota. Therefore, I think
-> we cannot fully rely on the kernel).
-> So when the filesystem is error before the journal recover, keep the error
-> state and perform deep check later.
+On Fri, Jun 02, 2023 at 03:45:52PM +0200, Thorsten Leemhuis wrote:
+> > 
+> > Since this patch fixes a regression I think it should ideally go in
+> > Linux 6.4
 > 
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> ---
->  e2fsck/journal.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Ted can speak up for himself, but maybe this might speed things up:
 > 
-> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-> index c7868d89..6f49321d 100644
-> --- a/e2fsck/journal.c
-> +++ b/e2fsck/journal.c
-> @@ -1683,6 +1683,7 @@ errcode_t e2fsck_run_ext3_journal(e2fsck_t ctx)
->  	errcode_t	retval, recover_retval;
->  	io_stats	stats = 0;
->  	unsigned long long kbytes_written = 0;
-> +	__u16 state = ctx->fs->super->s_state;
->  
->  	printf(_("%s: recovering journal\n"), ctx->device_name);
->  	if (ctx->options & E2F_OPT_READONLY) {
-> @@ -1722,6 +1723,9 @@ errcode_t e2fsck_run_ext3_journal(e2fsck_t ctx)
->  	ctx->fs->flags |= EXT2_FLAG_MASTER_SB_ONLY;
->  	ctx->fs->super->s_kbytes_written += kbytes_written;
->  
-> +	if (EXT2_ERROR_FS | state)
+> A lot of maintainers in a case like this want fixes (like this)
+> submitted separately from other changes (like the rest of this series).
 
-Isn't this  ^^^^^^^^^^^^^^^^^^^^^ expression always nonzero?
+While it's nice to do that in the future (since I would have noticed
+this earlier, it could have gone into my regression fixes push to
+Linus last week), in this particular case I've already noted this
+particular issue, and per the discussion in the last weekly ext4 video
+conference chat, I will be reordering the pashes so I can send a
+secondary regression fix to Linus very shortly.
 
-> +		ctx->fs->super->s_state = state | EXT2_ERROR_FS;
+Thanks,
 
-/me doesn't understand this bit logic at all.
-
---D
-
-> +
->  	/* Set the superblock flags */
->  	e2fsck_clear_recover(ctx, recover_retval != 0);
->  
-> -- 
-> 2.31.1
-> 
+						- Ted
