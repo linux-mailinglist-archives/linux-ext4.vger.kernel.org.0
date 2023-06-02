@@ -2,107 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E47647203A9
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jun 2023 15:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032C27205C0
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jun 2023 17:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbjFBNp7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jun 2023 09:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S232897AbjFBPTA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jun 2023 11:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbjFBNp6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 09:45:58 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42962137;
-        Fri,  2 Jun 2023 06:45:55 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1q556H-0006wj-8Q; Fri, 02 Jun 2023 15:45:53 +0200
-Message-ID: <29895f4d-9492-4572-d6f3-30d028cdcbe3@leemhuis.info>
-Date:   Fri, 2 Jun 2023 15:45:52 +0200
+        with ESMTP id S235527AbjFBPTA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 11:19:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78B818C
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 08:18:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5375860AB7
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 15:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A795DC433EF;
+        Fri,  2 Jun 2023 15:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685719138;
+        bh=N8KKtm67jhbNPdeIzSdK7pFIuxNbBcAgHr17j/eAbxE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NiF9gmt7opm1WpmNSmLocX0uIkdhvlQNPsD0cuwGoMuoVJYkHhbWYECuuS5fhccbB
+         cYS5ahMkxI4EVKxi4gHwOWHGmSeemD66gheUUjVusz0JXx2m/h4G33azOMVe+6oYLV
+         jQLGOll7KFOp5ldes55bT1Fld+CsEhNpFjCY2fmSFdZT77G/JAME7Tb8Tn3qp0kMOi
+         yHP06QM4NVZT3PbGQKJcxuunSNJLAdQllUHI+6gcSLyvWaKpzY786T3oo5I3/8Z3Rc
+         gu25k7WtymbLjTM5HLcAH7zogxIc5ScSHQ09UG7rfe/9tMhZD1qyF0SY36h7T2/SwV
+         gU36Qz0GNfz+A==
+Date:   Fri, 2 Jun 2023 08:18:58 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org, linfeilong@huawei.com,
+        louhongxiang@huawei.com
+Subject: Re: [PATCH] e2fsck: restore sb->s_state before journal recover
+Message-ID: <20230602151858.GA16844@frogsfrogsfrogs>
+References: <20230602082759.4062633-1-zhanchengbin1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v2 01/12] Revert "ext4: remove ac->ac_found >
- sbi->s_mb_min_to_scan dead check in ext4_mb_check_limits"
-Content-Language: en-US, de-DE
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-References: <cover.1685449706.git.ojaswin@linux.ibm.com>
- <ddcae9658e46880dfec2fb0aa61d01fb3353d202.1685449706.git.ojaswin@linux.ibm.com>
- <CA+icZUXDFbxRvx8-pvEwsZAu+-28bX4VDTj6ZTPtvn4gWqGnCg@mail.gmail.com>
- <ZHcMCGO5zW/P8LHh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <ZHcMCGO5zW/P8LHh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1685713555;50cb9482;
-X-HE-SMSGID: 1q556H-0006wj-8Q
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230602082759.4062633-1-zhanchengbin1@huawei.com>
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 31.05.23 10:57, Ojaswin Mujoo wrote:
-> On Tue, May 30, 2023 at 06:28:22PM +0200, Sedat Dilek wrote:
->> On Tue, May 30, 2023 at 3:25 PM Ojaswin Mujoo <ojaswin@linux.ibm.com> wrote:
->>>
->>> This reverts commit 32c0869370194ae5ac9f9f501953ef693040f6a1.
->>>
->>> The reverted commit was intended to remove a dead check however it was observed
->>> that this check was actually being used to exit early instead of looping
->>> sbi->s_mb_max_to_scan times when we are able to find a free extent bigger than
->>> the goal extent. Due to this, a my performance tests (fsmark, parallel file
->>> writes in a highly fragmented FS) were seeing a 2x-3x regression.
->>>
->>> Example, the default value of the following variables is:
->>>
->>> sbi->s_mb_max_to_scan = 200
->>> sbi->s_mb_min_to_scan = 10
->>>
->>> In ext4_mb_check_limits() if we find an extent smaller than goal, then we return
->>> early and try again. This loop will go on until we have processed
->>> sbi->s_mb_max_to_scan(=200) number of free extents at which point we exit and
->>> just use whatever we have even if it is smaller than goal extent.
->>>
->>> Now, the regression comes when we find an extent bigger than goal. Earlier, in
->>> this case we would loop only sbi->s_mb_min_to_scan(=10) times and then just use
->>> the bigger extent. However with commit 32c08693 that check was removed and hence
->>> we would loop sbi->s_mb_max_to_scan(=200) times even though we have a big enough
->>> free extent to satisfy the request. The only time we would exit early would be
->>> when the free extent is *exactly* the size of our goal, which is pretty uncommon
->>> occurrence and so we would almost always end up looping 200 times.
->>>
->>> Hence, revert the commit by adding the check back to fix the regression. Also
->>> add a comment to outline this policy.
->>
->> I applied this single patch of your series v2 on top of Linux v6.4-rc4.
->>
->> So, if this is a regression I ask myself if this is material for Linux 6.4?
->>
->> Can you comment on this, please?
+On Fri, Jun 02, 2023 at 04:27:59PM +0800, zhanchengbin wrote:
+> ext4_handle_error
+>     EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+>     if remount-ro
+>         ext4_commit_super(sb);
+> As you can see, when the filesystem error in the kernel, the last sb commit
+> not record the journal, So sb->s_state will be overwritten by journal recover.
+> In some cases , modifying metadata and superblock data are placed in two
+> transactions, if the previous transaction is already in the journal, and
+> ext4_handle_error occurs when updating sb, the filesystem is still error even
+> if the journal is recovered(I know that this situation should not occur in
+> theory, but I encountered this error when testing quota. Therefore, I think
+> we cannot fully rely on the kernel).
+> So when the filesystem is error before the journal recover, keep the error
+> state and perform deep check later.
 > 
-> Since this patch fixes a regression I think it should ideally go in
-> Linux 6.4
+> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> ---
+>  e2fsck/journal.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+> index c7868d89..6f49321d 100644
+> --- a/e2fsck/journal.c
+> +++ b/e2fsck/journal.c
+> @@ -1683,6 +1683,7 @@ errcode_t e2fsck_run_ext3_journal(e2fsck_t ctx)
+>  	errcode_t	retval, recover_retval;
+>  	io_stats	stats = 0;
+>  	unsigned long long kbytes_written = 0;
+> +	__u16 state = ctx->fs->super->s_state;
+>  
+>  	printf(_("%s: recovering journal\n"), ctx->device_name);
+>  	if (ctx->options & E2F_OPT_READONLY) {
+> @@ -1722,6 +1723,9 @@ errcode_t e2fsck_run_ext3_journal(e2fsck_t ctx)
+>  	ctx->fs->flags |= EXT2_FLAG_MASTER_SB_ONLY;
+>  	ctx->fs->super->s_kbytes_written += kbytes_written;
+>  
+> +	if (EXT2_ERROR_FS | state)
 
-Ted can speak up for himself, but maybe this might speed things up:
+Isn't this  ^^^^^^^^^^^^^^^^^^^^^ expression always nonzero?
 
-A lot of maintainers in a case like this want fixes (like this)
-submitted separately from other changes (like the rest of this series).
+> +		ctx->fs->super->s_state = state | EXT2_ERROR_FS;
 
-/me hopes this will help and not confuse anything
+/me doesn't understand this bit logic at all.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+--D
+
+> +
+>  	/* Set the superblock flags */
+>  	e2fsck_clear_recover(ctx, recover_retval != 0);
+>  
+> -- 
+> 2.31.1
+> 
