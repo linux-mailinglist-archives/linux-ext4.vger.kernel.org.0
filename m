@@ -2,61 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 922AE720B42
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Jun 2023 23:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78352720CB0
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jun 2023 02:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbjFBVxK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Jun 2023 17:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
+        id S236938AbjFCAwY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Jun 2023 20:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbjFBVxJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 17:53:09 -0400
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257ED1A5
-        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 14:52:03 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-3f8177f9a7bso23818811cf.2
-        for <linux-ext4@vger.kernel.org>; Fri, 02 Jun 2023 14:52:03 -0700 (PDT)
+        with ESMTP id S236927AbjFCAwX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Jun 2023 20:52:23 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A9FE51
+        for <linux-ext4@vger.kernel.org>; Fri,  2 Jun 2023 17:52:20 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-33c1e7743b7so11847375ab.1
+        for <linux-ext4@vger.kernel.org>; Fri, 02 Jun 2023 17:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1685753540; x=1688345540;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=47yKag1HPVe1tlg/ueV2EmabxwqalA0eGEjj+7JE1uc=;
+        b=UWIvN/qvXfrWqOcG4gb6e/SydmD4XyYL0b/3cLXe1b9WDm329KgaO9cKycjRwD473K
+         5TCOPQ/yMBhVqGwhNuU7qPsLBldyyFhIutUweZTyGlDXuPLfeV4ghxFgVoVMaznaJQqL
+         lso2N/YgqQcS9WlXHd0+ykyR+ZNQ4k4Tnd4MLYPidVNLRQPJoOkakl0onc1j45sA3wL4
+         OtVhA8x2Mh5PRgihy8gl+v/XxfHMWX0aOgW/R1aK1HFXbY4CqVcJFxRSMQxSzI0rGq+P
+         xomIjZ7uHiOrIMIyetSUiwCh+tuhcZGtJwu5tFtMYT0gq/oKTpAfK3FSlbqpzuV0E7P7
+         oLkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685742651; x=1688334651;
+        d=1e100.net; s=20221208; t=1685753540; x=1688345540;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UTRky113EniM0nT/xznU7UrijnGVH8CEk6F86K/tnEo=;
-        b=OsGnHUA9C+NGEV+gn4rvFSA6m2iWzp//5wA5eg3bGcMwkEi4Uy4Du4fIJUV6eiT3qA
-         3JN3VRjEm1Vni9IYUbeMwQRTe+DYibmA1E293563pj1wagSvi0a2XUSA4yp7aXLeQw7N
-         CtdQC2nX+0g2tSp8zBcfWqcs2nMM4Ksup28NtOs8zlZqNQd+KxAniu3N2n/BELgEc97M
-         l3+hnyFfmpjoKYySRqKyIceILJbMERKuflGbsDnYjG7cKMgt27xYuUvUHuBxX7lwL2ry
-         d1/wKOvRhG/UfLhlOHulBp/qzgDY71iCBm0Cwb0K8HG5Kghp7QMQIq2HVJ0AT1693rU7
-         Kzug==
-X-Gm-Message-State: AC+VfDz2JzAuGAKsR7Hu32fMvMmzkV4krDBTxHH7Qoj9QR7AYzUcOAPX
-        39ccD0ba1R9JYMu9uo1iQipk
-X-Google-Smtp-Source: ACHHUZ7EYtrupkurG9n+8SFwQbMMRsCnns2grd76F2kWxvjetuxx5d1DqIPs4GPppwGqt5TFKDjmsg==
-X-Received: by 2002:ac8:5e11:0:b0:3f6:b017:6289 with SMTP id h17-20020ac85e11000000b003f6b0176289mr16977166qtx.10.1685742651495;
-        Fri, 02 Jun 2023 14:50:51 -0700 (PDT)
-Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id i2-20020ac813c2000000b003f6f83de87esm1236527qtj.92.2023.06.02.14.50.50
+        bh=47yKag1HPVe1tlg/ueV2EmabxwqalA0eGEjj+7JE1uc=;
+        b=h0G53BgDgeBsW8lW4ACf+0XXNtSPr4wuZ5EBXdUOU0+zgF6pmqmIXUys19lj/eoQ9s
+         DAzJ0f3meSJhByL/RnDq8qJ0uTCT5nLxWzoY27YCNJiKqNQsaJw9OlGmMDioAqnD83OZ
+         InVWjvy8gr/FBN836ezxHS/eSl61nrVadXZtQvamSuM0OIcOJyKEg/jd/IdLeGphA06V
+         0GqijmnD3ae9dLDUVxGXyit7uRbN2vsCr7urUwWWc1CiHV8u+Q8lbgqrwAaM37aKmxoV
+         hqnBlRt9xNBPMuLETs19v5P7I5auW9nmVzx40GNdJmrNLa0d9h7x+5C7rB4KHOTJMMWq
+         kEgQ==
+X-Gm-Message-State: AC+VfDzGScvg3U1EMcl+AzbX93kdlWXDPZJDHZrFXqnTfk1At3icFja9
+        WJEsDNcObAnwwwO5wdJ8dA7vZw==
+X-Google-Smtp-Source: ACHHUZ7rYnVeBADFLLMphNs56bdK1ktmP0TPdfjl/WkThM+AmFAZAPwTara48yQiFHumZBSIA05t5w==
+X-Received: by 2002:a05:6e02:810:b0:338:c685:83d1 with SMTP id u16-20020a056e02081000b00338c68583d1mr10978918ilm.10.1685753539952;
+        Fri, 02 Jun 2023 17:52:19 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-188.pa.nsw.optusnet.com.au. [49.179.0.188])
+        by smtp.gmail.com with ESMTPSA id u6-20020a634706000000b0053b8a4f9465sm1788619pga.45.2023.06.02.17.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 14:50:50 -0700 (PDT)
-Date:   Fri, 2 Jun 2023 17:50:49 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
+        Fri, 02 Jun 2023 17:52:18 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q5FV8-0076kT-2D;
+        Sat, 03 Jun 2023 10:52:14 +1000
+Date:   Sat, 3 Jun 2023 10:52:14 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+Cc:     Mike Snitzer <snitzer@kernel.org>,
         Joe Thornber <thornber@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>, dm-devel@redhat.com,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Brian Foster <bfoster@redhat.com>,
         Bart Van Assche <bvanassche@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Joe Thornber <ejt@redhat.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
         Alasdair Kergon <agk@redhat.com>
 Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZHpkOTMDdoxLD/j1@redhat.com>
+Message-ID: <ZHqOvq3ORETQB31m@dread.disaster.area>
 References: <ZG1dAtHmbQ53aOhA@dread.disaster.area>
  <ZG+KoxDMeyogq4J0@bfoster>
  <ZHB954zGG1ag0E/t@dread.disaster.area>
@@ -72,19 +89,17 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAG9=OMMnDfN++-bJP3jLmUD6O=Q_ApV5Dr392_5GqsPAi_dDkg@mail.gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 02 2023 at  2:44P -0400,
-Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
-
+On Fri, Jun 02, 2023 at 11:44:27AM -0700, Sarthak Kukreti wrote:
 > On Tue, May 30, 2023 at 8:28 AM Mike Snitzer <snitzer@kernel.org> wrote:
 > >
 > > On Tue, May 30 2023 at 10:55P -0400,
@@ -116,6 +131,32 @@ Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 > > So it wires up blkdev_fallocate() to call blkdev_issue_provision(). A
 > > user of XFS could then use fallocate() for user data -- which would
 > > cause thinp's reserve to _not_ be used for critical metadata.
+
+Mike, I think you might have misunderstood what I have been proposing.
+Possibly unintentionally, I didn't call it REQ_OP_PROVISION but
+that's what I intended - the operation does not contain data at all.
+It's an operation like REQ_OP_DISCARD or REQ_OP_WRITE_ZEROS - it
+contains a range of sectors that need to be provisioned (or
+discarded), and nothing else. The write IOs themselves are not
+tagged with anything special at all.
+
+i.e. The proposal I made does not use REQ_PROVISION anywhere in the
+metadata/data IO path; provisioned regions are created by separate
+operations and must be tracked by the underlying block device, then
+treat any write IO to those regions as "must not fail w/ ENOSPC"
+IOs.
+
+There seems to be a lot of fear about user data requiring
+provisioning. This is unfounded - provisioning is only needed for
+explicitly provisioned space via fallocate(), not every byte of
+user data written to the filesystem (the model Brian is proposing).
+
+Excessive use of fallocate() is self correcting - if users and/or
+their applications provision too much, they are going to get ENOSPC
+or have to pay more to expand the backing pool reserves they need.
+But that's not a problem the block device should be trying to solve;
+that's a problem for the sysadmin and/or bean counters to address.
+
 > >
 > > The only way to distinquish the caller (between on-behalf of user data
 > > vs XFS metadata) would be REQ_META?
@@ -123,102 +164,108 @@ Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 > > So should dm-thinp have a REQ_META-based distinction? Or just treat
 > > all REQ_OP_PROVISION the same?
 > >
-> I'm in favor of a REQ_META-based distinction. Does that imply that
+> I'm in favor of a REQ_META-based distinction.
+
+Why? What *requirement* is driving the need for this distinction?
+
+As the person who proposed this new REQ_OP_PROVISION architecture,
+I'm dead set against it.  Allowing the block device provide a set of
+poorly defined "conditional guarantees" policies instead of a
+mechanism with a single ironclad guarantee defeats the entire
+purpose of the proposal. 
+
+We have a requirement from the *kernel ABI* that *user data writes*
+must not fail with ENOSPC after an fallocate() operation.  That's
+one of the high level policies we need to implement. The filesystem
+is already capable of guaranteeing it won't give the user ENOSPC
+after fallocate, we now need a guarantee from the filesystem's
+backing store that it won't give ENOSPC, too.
+
+The _other thing_ we need to implement is a method of guaranteeing
+the filesystem won't shut down when the backing device goes ENOSPC
+unexpected during metadata writeback.  So we also need the backing
+device to guarantee the regions we write metadata to won't give
+ENOSPC.
+
+That's the whole point of REQ_OP_PROVISION: from the layers above
+the block device, there is -zero- difference between the guarantee
+we need for user data writes to avoid ENOSPC and for metadata writes
+to avoid ENOSPC. They are one and the same.
+
+Hence if the block device is going to say "I support provisioning"
+but then give different conditional guarantees according to the
+*type of data* in the IO request, then it does not provide the
+functionality the higher layers actually require from it.
+
+Indeed, what type of data the IO contains is *context dependent*.
+For example, sometimes we write metadata with user data IO and but
+we still need provisioning guarantees as if it was issued as
+metadata IO. This is the case for mkfs initialising the file system
+by writing directly to the block device.
+
+IOWs, filesystem metadata IO issued from kernel context would be
+considered metadata IO, but from userspace it would be considered
+normal user data IO and hence treated differently. But the reality
+is that they both need the same provisioning guarantees to be
+provided by the block device.
+
+So how do userspace tools deal with this if the block device
+requires REQ_META on user data IOs to do the right thing here? And
+if we provide a mechanism to allow this, how do we prevent userspace
+for always using it on writes to fallocate() provisioned space?
+
+It's just not practical for the block device to add arbitrary
+constraints based on the type of IO because we then have to add
+mechanisms to userspace APIs to allow them to control the IO context
+so the block device will do the right thing. Especially considering
+we really only need one type of guarantee regardless of where the IO
+originates from or what type of data the IO contains....
+
+> Does that imply that
 > REQ_META also needs to be passed through the block/filesystem stack
 > (eg. REQ_OP_PROVION + REQ_META on a loop device translates to a
 > fallocate(<insert meta flag name>) to the underlying file)?
 
-Unclear, I was thinking your REQ_UNSHARE (tied to fallocate) might be
-a means to translate REQ_OP_PROVISION + REQ_META to fallocate and have
-it perform the LBA-specific provisioning of Joe's design (referenced
-below).
+This is exactly the same case as above: the loopback device does
+user data IO to the backing file. Hence we have another situation
+where metadata IO is issued to fallocate()d user data ranges as user
+data ranges and so would be given a lesser guarantee that would lead
+to upper filesystem failure. BOth upper and lower filesystem data
+and metadata need to be provided the same ENOSPC guarantees by their
+backing stores....
 
-> <bikeshed>
-> I think that might have applications beyond just provisioning:
-> currently, for stacked filesystems (eg filesystems residing in a file
-> on top of another filesystem), even if the upper filesystem issues
-> read/write requests with REQ_META | REQ_PRIO, these flags are lost in
-> translation at the loop device layer.  A flag like the above would
-> allow the prioritization of stacked filesystem metadata requests.
-> </bikeshed>
+The whole point of the REQ_OP_PROVISION proposal I made is that it
+doesn't require any special handling in corner cases like this.
+There are no cross-layer interactions needed to make everything work
+correctly because the provisioning guarantee is not -data type
+dependent*. The entire user IO path code remains untouched and
+blissfully unaware of provisioned regions.
 
-Yes, it could prove useful.
+And, realistically, if we have to start handling complex corner
+cases in the filesystem and IO path layers to make REQ_OP_PROVISION
+work correctly because of arbitary constraints imposed by the block
+layer implementations, then we've failed miserably at the design and
+architecture stage.
 
-> Bringing the discussion back to this series for a bit, I'm still
-> waiting on feedback from the Block maintainers before sending out v8
-> (which at the moment, only have a
-> s/EXPORT_SYMBOL/EXPORT_SYMBOL_GPL/g). I believe from the conversation
-> most of the above is follow up work, but please let me know if you'd
-> prefer I add some of this to the current series!
+Keep in mind that every attempt made so far to address the problems
+with block device ENOSPC errors has failed because of the complexity
+of the corner cases that have arisen during design and/or
+implementation. It's pretty ironic that now we have a proposal that
+is remarkably simple, free of corner cases and has virtually no
+cross-layer coupling at all, the first thing that people want to do
+is add arbitrary implementation constraints that result in complex
+cross-layer corner cases that now need to be handled....
 
-I need a bit more time to work through various aspects of the broader
-requirements and the resulting interfaces that fall out.
+Put simply: if we restrict REQ_OP_PROVISION guarantees to just
+REQ_META writes (or any other specific type of write operation) then
+it's simply not worth persuing at the filesystem level because the
+guarantees we actually need just aren't there and the complexity of
+discovering and handling those corner cases just isn't worth the
+effort.
 
-Joe's design is pretty compelling because it will properly handle
-snapshot thin devices:
-https://listman.redhat.com/archives/dm-devel/2023-May/054351.html
+Cheers,
 
-Here is my latest status:
-- Focused on prototype for thinp block reservation (XFS metadata, XFS
-  delalloc, fallocate)
-- Decided the "dynamic" (non-LBA specific) reservation stuff (old
-  prototype code) is best left independent from Joe's design.  SO 2
-  classes of thinp reservation.
-  - Forward-ported the old prototype code that Brian Foster, Joe
-    Thornber and I worked on years ago.  It needs more careful review
-    (and very likely will need fixes from Brian and myself).  The XFS
-    changes are pretty intrusive and likely up for serious debate (as
-    to whether we even care to handle reservations for user data).
-- REQ_OP_PROVISION bio’s with REQ_META will use Joe’s design,
-  otherwise data (XFS data and fallocate) will use “dynamic”
-  reservation.
-  - "dynamic" name is due to the reservation being generic (non-LBA:
-    not in terms of an LBA range). Also, in-core only; so the associated
-    “dynamic_reserve_count” accounting is reset to 0 every activation. 
-  - Fallocate may require stronger guarantees in the end (in which
-    case we’ll add a REQ_UNSHARE flag that is selectable from the
-    fallocate interface) 
-- Will try to share common code, but just sorting out highlevel
-  interface(s) still...
-
-I'll try to get a git tree together early next week.  It will be the
-forward ported "dynamic" prototype code and your latest v7 code with
-some additional work to branch accordingly for each class of thinp
-reservation.  And I'll use your v7 code as a crude stub for Joe's
-approach (branch taken if REQ_META set).
-
-Lastly, here are some additional TODOs I've noted in code earlier in
-my review process:
-
-diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-index 0d9301802609..43a6702f9efe 100644
---- a/drivers/md/dm-thin.c
-+++ b/drivers/md/dm-thin.c
-@@ -1964,6 +1964,26 @@ static void process_provision_bio(struct thin_c *tc, struct bio *bio)
- 	struct dm_cell_key key;
- 	struct dm_thin_lookup_result lookup_result;
- 
-+	/*
-+	 * FIXME:
-+	 * Joe's elegant reservation design is detailed here:
-+	 * https://listman.redhat.com/archives/dm-devel/2023-May/054351.html
-+	 * - this design, with associated thinp metadata updates,
-+	 *   is how provision bios should be handled.
-+	 *
-+	 * FIXME: add thin-pool flag "ignore_provision"
-+	 *
-+	 * FIXME: needs provision_passdown support
-+	 *        (needs thinp flag "no_provision_passdown")
-+	 */
-+
-+	/*
-+	 * FIXME: require REQ_META (or REQ_UNSHARE?) to allow deeper
-+	 *        provisioning code that follows? (so that thinp
-+	 *        block _is_ fully provisioned upon return)
-+	 *        (or just remove all below code entirely?)
-+	 */
-+
- 	/*
- 	 * If cell is already occupied, then the block is already
- 	 * being provisioned so we have nothing further to do here.
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
