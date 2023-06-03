@@ -2,63 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD220721174
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jun 2023 19:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE3372117D
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jun 2023 20:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjFCR7u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 3 Jun 2023 13:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
+        id S229445AbjFCSKv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 3 Jun 2023 14:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjFCR7t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Jun 2023 13:59:49 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C528132
-        for <linux-ext4@vger.kernel.org>; Sat,  3 Jun 2023 10:59:48 -0700 (PDT)
+        with ESMTP id S229441AbjFCSKu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Jun 2023 14:10:50 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A132132
+        for <linux-ext4@vger.kernel.org>; Sat,  3 Jun 2023 11:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685815188; x=1717351188;
+  t=1685815849; x=1717351849;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=jgq+1rYwmgzHnud/Ohp248BNKPfvXLplI2J4Bycqv5M=;
-  b=jFP+18D6+YUPRAglcryNmTW88IBvM8axuHrplLLRm9YFBjMJ5Yzr+dq/
-   oUEcZoe3EUhczwjwCevZt0ihVNDv9qYJ4Ec9oRl43wgIsWEdfyvsk6NTg
-   sejQz3yA1AlsaO5Vluvpuqac5vocSrpnzY3LGOXgpn/h4/NKSko1LlDA3
-   O0uO3ajR7IDy2gdRvwmSfQb5RYcImK17AcYDtEytB6XXbk8X0vB72aaUX
-   10UFs9ad4JB/YTWYl4zItFpGnCoLOoDXMiTQrn902yfVODlukmhqFEvEm
-   b8OozzwwK/KhUeTobX/yULyzPpGx2D5WGQrGxiK+H1BjLDRGhse3qm6Qy
+  bh=PiVxAOBplKPVqLeSZYeQJUUaCvkuH2sLLrPQWUz/1zU=;
+  b=kw8NX4N+2teN7OzI2RHRO/hu4yh2jFUqF8MmqZUGW86GlQkUIDwLJiAP
+   crgKZlc348vDeV5PCgPNnNQtMeeuIJ4IPTtUYwQKCRKhGY9Q9W47P83Uc
+   aCZaTavGigqP40VfXU8c2DWY3vz+nbiTnSpBhsRj8EmOw2T/zxNUaUzAn
+   CWiYkOaCGtuSlb/IY9QUYV0g13fh4Fz7LOxlVXiwW0z8eVU7HUF3Fx/W6
+   EtnM9GcN4LIcGEo/+gjgm1wvuxQRFiN15tEK/jBfp0R9ROef+qzcpiAoM
+   kCR7YR55iAL6/7sWcX6HhGcsdz4pae1+kJjFzAL/PDLKkVOQTPDi2ulXi
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10730"; a="442474519"
+X-IronPort-AV: E=McAfee;i="6600,9927,10730"; a="340735527"
 X-IronPort-AV: E=Sophos;i="6.00,216,1681196400"; 
-   d="scan'208";a="442474519"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2023 10:59:47 -0700
+   d="scan'208";a="340735527"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2023 11:10:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10730"; a="711317210"
+X-IronPort-AV: E=McAfee;i="6600,9927,10730"; a="882422250"
 X-IronPort-AV: E=Sophos;i="6.00,216,1681196400"; 
-   d="scan'208";a="711317210"
+   d="scan'208";a="882422250"
 Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jun 2023 10:59:46 -0700
+  by orsmga005.jf.intel.com with ESMTP; 03 Jun 2023 11:10:46 -0700
 Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1q5VXV-0001rl-2M;
-        Sat, 03 Jun 2023 17:59:45 +0000
-Date:   Sun, 4 Jun 2023 01:59:03 +0800
+        id 1q5ViA-0001sF-0b;
+        Sat, 03 Jun 2023 18:10:46 +0000
+Date:   Sun, 4 Jun 2023 02:10:13 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Wang Jianjian <wangjianjian0@foxmail.com>,
         linux-ext4@vger.kernel.org, tytso@mit.edu
-Cc:     oe-kbuild-all@lists.linux.dev, wangjianjian0@foxmail.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        wangjianjian0@foxmail.com
 Subject: Re: [PATCH] ext4: Add correct group descriptors and reserved GDT
  blocks to system zone
-Message-ID: <202306040126.Feq16jJP-lkp@intel.com>
+Message-ID: <202306040223.dXAuRONL-lkp@intel.com>
 References: <tencent_4A474CC049B9E77D0F172468991EED5B9105@qq.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <tencent_4A474CC049B9E77D0F172468991EED5B9105@qq.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,10 +68,10 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Hi Wang,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master v6.4-rc4 next-20230602]
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v6.4-rc4 next-20230602]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
@@ -79,54 +80,100 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Wang-Jianjian/ext4-Add-co
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
 patch link:    https://lore.kernel.org/r/tencent_4A474CC049B9E77D0F172468991EED5B9105%40qq.com
 patch subject: [PATCH] ext4: Add correct group descriptors and reserved GDT blocks to system zone
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230604/202306040126.Feq16jJP-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+config: hexagon-randconfig-r041-20230604 (https://download.01.org/0day-ci/archive/20230604/202306040223.dXAuRONL-lkp@intel.com/config)
+compiler: clang version 15.0.4 (https://github.com/llvm/llvm-project 5c68a1cb123161b54b72ce90e7975d95a8eaf2a4)
 reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
         # https://github.com/intel-lab-lkp/linux/commit/54ea70d6b1189628ed4017129457d77e0bfa7fde
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Wang-Jianjian/ext4-Add-correct-group-descriptors-and-reserved-GDT-blocks-to-system-zone/20230604-003439
         git checkout 54ea70d6b1189628ed4017129457d77e0bfa7fde
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/ext4/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/ext4/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306040126.Feq16jJP-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306040223.dXAuRONL-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
-   fs/ext4/block_validity.c: In function 'ext4_setup_system_zone':
->> fs/ext4/block_validity.c:226:17: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-     226 |                 unsigned int sb_num = ext4_bg_has_super(sb, i);
-         |                 ^~~~~~~~
-   In file included from include/linux/byteorder/little_endian.h:5,
-                    from arch/x86/include/uapi/asm/byteorder.h:5,
-                    from arch/x86/include/asm/orc_types.h:49,
-                    from arch/x86/include/asm/unwind_hints.h:6,
-                    from arch/x86/include/asm/nospec-branch.h:13,
-                    from arch/x86/include/asm/paravirt_types.h:27,
-                    from arch/x86/include/asm/ptrace.h:97,
-                    from arch/x86/include/asm/math_emu.h:5,
-                    from arch/x86/include/asm/processor.h:13,
-                    from arch/x86/include/asm/timex.h:5,
-                    from include/linux/timex.h:67,
-                    from include/linux/time32.h:13,
-                    from include/linux/time.h:60,
-                    from fs/ext4/block_validity.c:12:
-   fs/ext4/block_validity.c:228:58: error: 'struct ext4_sb_info' has no member named 'es'; did you mean 's_es'?
-     228 |                 unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
-         |                                                          ^~
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: in definition of macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   fs/ext4/block_validity.c:228:41: note: in expansion of macro 'le16_to_cpu'
-     228 |                 unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
-         |                                         ^~~~~~~~~~~
+   In file included from fs/ext4/block_validity.c:16:
+   In file included from include/linux/buffer_head.h:12:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+   In file included from fs/ext4/block_validity.c:16:
+   In file included from include/linux/buffer_head.h:12:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                     ^
+   In file included from fs/ext4/block_validity.c:16:
+   In file included from include/linux/buffer_head.h:12:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+>> fs/ext4/block_validity.c:228:44: error: no member named 'es' in 'struct ext4_sb_info'
+                   unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
+                                                       ~~~  ^
+   include/linux/byteorder/generic.h:91:21: note: expanded from macro 'le16_to_cpu'
+   #define le16_to_cpu __le16_to_cpu
+                       ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+>> fs/ext4/block_validity.c:226:16: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+                   unsigned int sb_num = ext4_bg_has_super(sb, i);
+                                ^
+   7 warnings and 1 error generated.
 
 
-vim +226 fs/ext4/block_validity.c
+vim +228 fs/ext4/block_validity.c
 
    201	
    202	/*
@@ -155,7 +202,7 @@ vim +226 fs/ext4/block_validity.c
    225			cond_resched();
  > 226			unsigned int sb_num = ext4_bg_has_super(sb, i);
    227			unsigned long gdb_num = ext4_bg_num_gdb(sb, i);
-   228			unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
+ > 228			unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
    229	
    230			if (sb_num != 0 || gdb_num != 0) {
    231				ret = add_system_zone(system_blks,
