@@ -2,55 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EE8720EA3
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jun 2023 10:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F882720E4B
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Jun 2023 09:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjFCIHe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 3 Jun 2023 04:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S234026AbjFCHC1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 3 Jun 2023 03:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjFCIHe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Jun 2023 04:07:34 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CA81B3
-        for <linux-ext4@vger.kernel.org>; Sat,  3 Jun 2023 01:07:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685779652; x=1717315652;
-  h=date:from:to:cc:subject:message-id;
-  bh=BMUg/K8S5brvxAJz15eewf5ISMWPLfJEvoH7NNKBEOQ=;
-  b=MmPyl9zbyhrU1cN66E9bnxs5ngELCZrgtIsXAgmaJHNEkEMWLHs4l7ku
-   ZLpjSKbisT75B8JnfJQriZt6BiqEnwQRKVZE3Q3CALIZqbOn37p3DXBGS
-   gqx73tHfkjpX8jqSie1weDYdkQC1LbClidbrRZGV4A6mQotirrUlNWklq
-   4nOhlmAnd6xN9w3MF5bUx2r/ihpTQjC6KkZyaAFqborO9pbX/OZTAvba2
-   ZV1c0raZgo0Xi7Sftjn8Ch7bw7GbLOvE7TAq4lguTxsCH8AS8x7uwJfRe
-   t5HOC8GpWGUi7jLlUpIRxxgXwVQ3An0QdqVdavjIsCVj8KzGL/PmKi2fO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="442423967"
-X-IronPort-AV: E=Sophos;i="6.00,215,1681196400"; 
-   d="scan'208";a="442423967"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2023 01:07:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="777966983"
-X-IronPort-AV: E=Sophos;i="6.00,215,1681196400"; 
-   d="scan'208";a="777966983"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Jun 2023 01:07:26 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q5MII-0001Rf-0u;
-        Sat, 03 Jun 2023 08:07:26 +0000
-Date:   Sat, 03 Jun 2023 16:06:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 571bc93d3e2e298fccba7146ae2dc1144692a419
-Message-ID: <20230603080626.FoEfU%lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        with ESMTP id S232334AbjFCHCL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 3 Jun 2023 03:02:11 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D5E134;
+        Sat,  3 Jun 2023 00:02:09 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QY9lq6cGbz4f3w0b;
+        Sat,  3 Jun 2023 15:01:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgCHOKxk5Xpk+MxPKw--.30174S2;
+        Sat, 03 Jun 2023 15:01:57 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shikemeng@huaweicloud.com
+Subject: [PATCH v4 00/19] Fixes, cleanups and unit test for mballoc
+Date:   Sat,  3 Jun 2023 23:03:08 +0800
+Message-Id: <20230603150327.3596033-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCHOKxk5Xpk+MxPKw--.30174S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF48Aw18WFy3ZrWxKF17KFg_yoWxtw13pr
+        sIkrn8Kr1xJr1qya93Cw47W3WxKw48C3W7GryfK34xuFy3Jr92y3Z7KFWY9a4DWr4kZFya
+        9F15Cr4rCrn29a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRE
+        SoGDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,239 +58,161 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 571bc93d3e2e298fccba7146ae2dc1144692a419  ext4: Give symbolic names to mballoc criterias
+v3->v4:
+1. Collect Reviewed-by from Ojaswin
+2. Do improve as Ojaswin kindly suggested: Fix typo in commit,
+WARN if try to clear bit of uninitialized group and improve
+refactoring of AGGRESSIVE_CHECK code.
+3. Fix conflic on patch 16
+4. Improve git log in patch 16,17
 
-elapsed time: 721m
+v2->v3:
+1. Make patches on new branch head and fix conflic on "ext4: add
+EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated"
+2. Fix build warnings on "ext4: add some kunit stub for mballoc kunit
+test" and "ext4: add first unit test for ext4_mb_new_blocks_simple in
+mballoc"
 
-configs tested: 220
-configs skipped: 16
+There are three parts in this patchset:
+Part1: Patch 1-7 is v2 of sent series
+v1->v2:
+1. collect reviewed-by from Ojaswin. Only "ext4: add
+EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated" needs futher
+review. See [1] for previous comments.
+2. drop "ext4: fix wrong unit use in ext4_mb_new_inode_pa" which is
+already done in [2].
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Part2: Patch 8-17 are more fixes and cleanups to mballoc
+Some patches in this part will be conflict with patches in part1, so
+append new patches in this series instead of creating a new one.
+Patch 8-11 are some random fixes and cleanups, see respective log
+message for detail.
+Patch 12-17 factor out codes to mark bit in group is used or free
+which will update on disk block bitmap and group descriptor. Several
+reasons to do this:
+1. pair behavior of alloc/free bits. For example,
+ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+2. remove repeat code to read from disk, update and write back to disk.
+3. reduce future unit test mocks to avoid real IO to update structure
+on disk.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r001-20230531   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r004-20230531   gcc  
-alpha                randconfig-r011-20230602   gcc  
-alpha                randconfig-r015-20230601   gcc  
-alpha                randconfig-r021-20230531   gcc  
-alpha                randconfig-r024-20230531   gcc  
-alpha                randconfig-r025-20230531   gcc  
-alpha                randconfig-r033-20230602   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc          buildonly-randconfig-r005-20230531   gcc  
-arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                  randconfig-r015-20230601   gcc  
-arc                           tb10x_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                          collie_defconfig   clang
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                  randconfig-r003-20230602   clang
-arm                  randconfig-r024-20230531   gcc  
-arm                  randconfig-r026-20230531   gcc  
-arm                             rpc_defconfig   gcc  
-arm                           sama7_defconfig   clang
-arm                           spitz_defconfig   clang
-arm                           sunxi_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r031-20230531   gcc  
-arm64                randconfig-r031-20230602   gcc  
-arm64                randconfig-r036-20230602   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r005-20230531   gcc  
-csky                 randconfig-r023-20230531   gcc  
-csky                 randconfig-r035-20230602   gcc  
-hexagon              randconfig-r014-20230602   clang
-hexagon              randconfig-r041-20230531   clang
-hexagon              randconfig-r045-20230531   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r001-20230602   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230531   gcc  
-i386                 randconfig-i001-20230602   gcc  
-i386                 randconfig-i002-20230531   gcc  
-i386                 randconfig-i002-20230602   gcc  
-i386                 randconfig-i003-20230531   gcc  
-i386                 randconfig-i003-20230602   gcc  
-i386                 randconfig-i004-20230531   gcc  
-i386                 randconfig-i004-20230602   gcc  
-i386                 randconfig-i005-20230531   gcc  
-i386                 randconfig-i005-20230602   gcc  
-i386                 randconfig-i006-20230531   gcc  
-i386                 randconfig-i006-20230602   gcc  
-i386                 randconfig-i051-20230531   gcc  
-i386                 randconfig-i051-20230602   gcc  
-i386                 randconfig-i052-20230531   gcc  
-i386                 randconfig-i052-20230602   gcc  
-i386                 randconfig-i053-20230531   gcc  
-i386                 randconfig-i053-20230602   gcc  
-i386                 randconfig-i054-20230531   gcc  
-i386                 randconfig-i054-20230602   gcc  
-i386                 randconfig-i055-20230531   gcc  
-i386                 randconfig-i055-20230602   gcc  
-i386                 randconfig-i056-20230531   gcc  
-i386                 randconfig-i056-20230602   gcc  
-i386                 randconfig-i061-20230531   gcc  
-i386                 randconfig-i061-20230602   gcc  
-i386                 randconfig-i062-20230531   gcc  
-i386                 randconfig-i062-20230602   gcc  
-i386                 randconfig-i063-20230531   gcc  
-i386                 randconfig-i063-20230602   gcc  
-i386                 randconfig-i064-20230531   gcc  
-i386                 randconfig-i064-20230602   gcc  
-i386                 randconfig-i065-20230531   gcc  
-i386                 randconfig-i065-20230602   gcc  
-i386                 randconfig-i066-20230531   gcc  
-i386                 randconfig-i066-20230602   gcc  
-i386                 randconfig-r004-20230602   gcc  
-i386                 randconfig-r012-20230601   gcc  
-i386                 randconfig-r035-20230531   gcc  
-i386                 randconfig-r035-20230602   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r004-20230531   gcc  
-loongarch    buildonly-randconfig-r006-20230602   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r011-20230601   gcc  
-loongarch            randconfig-r016-20230601   gcc  
-loongarch            randconfig-r021-20230531   gcc  
-m68k                             allmodconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k         buildonly-randconfig-r006-20230531   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-m68k                 randconfig-r016-20230601   gcc  
-m68k                 randconfig-r023-20230531   gcc  
-m68k                 randconfig-r034-20230602   gcc  
-m68k                        stmark2_defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-microblaze           randconfig-r013-20230601   gcc  
-microblaze           randconfig-r021-20230531   gcc  
-microblaze           randconfig-r022-20230531   gcc  
-microblaze           randconfig-r024-20230531   gcc  
-microblaze           randconfig-r025-20230531   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   clang
-mips                           ci20_defconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                       lemote2f_defconfig   clang
-mips                        maltaup_defconfig   clang
-mips                 randconfig-r013-20230602   gcc  
-mips                 randconfig-r015-20230602   gcc  
-mips                 randconfig-r022-20230531   gcc  
-mips                          rm200_defconfig   clang
-nios2                         3c120_defconfig   gcc  
-nios2                            alldefconfig   gcc  
-nios2        buildonly-randconfig-r002-20230531   gcc  
-nios2        buildonly-randconfig-r004-20230531   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r001-20230531   gcc  
-nios2                randconfig-r012-20230601   gcc  
-openrisc     buildonly-randconfig-r003-20230531   gcc  
-openrisc             randconfig-r011-20230601   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r032-20230531   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                   bluestone_defconfig   clang
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   clang
-powerpc                        icon_defconfig   clang
-powerpc                      mgcoge_defconfig   gcc  
-powerpc                   motionpro_defconfig   gcc  
-powerpc                 mpc836x_rdk_defconfig   clang
-powerpc                      pcm030_defconfig   gcc  
-powerpc                      ppc44x_defconfig   clang
-powerpc              randconfig-r006-20230531   gcc  
-powerpc              randconfig-r032-20230602   gcc  
-powerpc                     tqm8560_defconfig   clang
-powerpc                        warp_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r034-20230602   gcc  
-riscv                randconfig-r042-20230531   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r011-20230601   gcc  
-s390                 randconfig-r044-20230531   clang
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r005-20230531   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                   randconfig-r002-20230602   gcc  
-sh                   randconfig-r003-20230531   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc        buildonly-randconfig-r002-20230531   gcc  
-sparc        buildonly-randconfig-r002-20230602   gcc  
-sparc        buildonly-randconfig-r006-20230531   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r006-20230602   gcc  
-sparc                randconfig-r013-20230601   gcc  
-sparc                randconfig-r015-20230601   gcc  
-sparc64      buildonly-randconfig-r002-20230531   gcc  
-sparc64      buildonly-randconfig-r004-20230531   gcc  
-sparc64              randconfig-r002-20230531   gcc  
-sparc64              randconfig-r022-20230531   gcc  
-sparc64              randconfig-r025-20230531   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r005-20230602   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230531   gcc  
-x86_64               randconfig-a002-20230531   gcc  
-x86_64               randconfig-a003-20230531   gcc  
-x86_64               randconfig-a004-20230531   gcc  
-x86_64               randconfig-a005-20230531   gcc  
-x86_64               randconfig-a006-20230531   gcc  
-x86_64               randconfig-a011-20230603   gcc  
-x86_64               randconfig-a012-20230603   gcc  
-x86_64               randconfig-a013-20230603   gcc  
-x86_64               randconfig-a014-20230603   gcc  
-x86_64               randconfig-a015-20230603   gcc  
-x86_64               randconfig-a016-20230603   gcc  
-x86_64               randconfig-r001-20230602   gcc  
-x86_64               randconfig-x051-20230603   gcc  
-x86_64               randconfig-x052-20230603   gcc  
-x86_64               randconfig-x053-20230603   gcc  
-x86_64               randconfig-x054-20230603   gcc  
-x86_64               randconfig-x055-20230603   gcc  
-x86_64               randconfig-x056-20230603   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r033-20230602   gcc  
-xtensa               randconfig-r036-20230531   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
+Part3: Patch 18-19 add one unit test for mballoc
+Patch 18 add mocks to functions which will issue IO to disk.
+Patch 19 add unit test for ext4_mb_new_blocks_simple in mballoc.
+Details can be found in respective log message.
+
+Before add more unit tests, there are something should be discussed:
+1. How to test static function in mballoc.c
+Currently, include mballoc-test.c in mballoc.c to test static function
+in mballoc.c from mballoc-test.c which is one way suggested in [3].
+Not sure if there is any more elegant way to test static function without
+touch mballoc.c.
+2. How to add mocks to function in mballoc.c which may issue IO to disk
+Currently, KUNIT_STATIC_STUB_REDIRECT is added to functions as suggested
+in kunit document [4].
+3. How to simulate a block bitmap.
+Currently, a fake buffer_head with bitmap data is returned, then no
+futher change is needed.
+If we simulate a block bitmap with an array of data structure like:
+struct test_bitmap {
+       unsigned int	start;
+       unsigned int	len;
+}
+which is suggested by Theodore in [5], then we need to add mocks to
+function which expected bitmap from bitmap_bh->b_data, like
+mb_find_next_bit, mb_find_next_zero_bit and maybe more.
+
+Would like to hear any suggestion! Thanks!
+
+[1]
+https://lore.kernel.org/linux-ext4/ZC3MoWn2UO6p+Swp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+[2]
+https://lore.kernel.org/linux-ext4/9b35f3955a1d7b66bbd713eca1e63026e01f78c1.1679731817.git.ojaswin@linux.ibm.com
+[3]
+https://docs.kernel.org/dev-tools/kunit/usage.html#testing-static-functions
+[4]
+https://docs.kernel.org/dev-tools/kunit/api/functionredirection.html#c.KUNIT_STATIC_STUB_REDIRECT
+[5]
+https://lore.kernel.org/linux-ext4/20230317155047.GB3270589@mit.edu/
+
+By the way, the "xfstest somke" passes. Please let me know if any more
+test is needed.
+Unit test result is as followings:
+# ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig --raw_output
+[18:44:39] Configuring KUnit Kernel ...
+[18:44:39] Building KUnit Kernel ...
+Populating config with:
+$ make ARCH=um O=.kunit olddefconfig
+Building with:
+$ make ARCH=um O=.kunit --jobs=88
+[18:44:47] Starting KUnit Kernel (1/1)...
+KTAP version 1
+1..2
+    KTAP version 1
+    # Subtest: ext4_mballoc_test
+    1..1
+    ok 1 test_new_blocks_simple
+ok 1 ext4_mballoc_test
+    KTAP version 1
+    # Subtest: ext4_inode_test
+    1..1
+        KTAP version 1
+        # Subtest: inode_test_xtimestamp_decoding
+        ok 1 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
+        ok 2 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
+        ok 3 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
+        ok 4 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
+        ok 5 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
+        ok 6 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
+        ok 7 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
+        ok 8 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
+        ok 9 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
+        ok 10 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
+        ok 11 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
+        ok 12 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
+        ok 13 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
+        ok 14 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
+        ok 15 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
+        ok 16 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
+    # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
+    ok 1 inode_test_xtimestamp_decoding
+# Totals: pass:16 fail:0 skip:0 total:16
+ok 2 ext4_inode_test
+[18:44:48] Elapsed time: 8.602s total, 0.001s configuring, 8.483s building, 0.072s running
+
+Kemeng Shi (19):
+  ext4: fix wrong unit use in ext4_mb_normalize_request
+  ext4: fix unit mismatch in ext4_mb_new_blocks_simple
+  ext4: fix wrong unit use in ext4_mb_find_by_goal
+  ext4: treat stripe in block unit
+  ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
+  ext4: remove ext4_block_group and ext4_block_group_offset declaration
+  ext4: try all groups in ext4_mb_new_blocks_simple
+  ext4: get block from bh before pass it to ext4_free_blocks_simple in
+    ext4_free_blocks
+  ext4: remove unsed parameter and unnecessary forward declaration of
+    ext4_mb_new_blocks_simple
+  ext4: fix wrong unit use in ext4_mb_clear_bb
+  ext4: fix wrong unit use in ext4_mb_new_blocks
+  ext4: factor out codes to update block bitmap and group descriptor on
+    disk from ext4_mb_mark_bb
+  ext4: call ext4_mb_mark_group_bb in ext4_free_blocks_simple
+  ext4: extent ext4_mb_mark_group_bb to support allocation under journal
+  ext4: call ext4_mb_mark_group_bb in ext4_mb_mark_diskspace_used
+  ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
+  ext4: call ext4_mb_mark_group_bb in ext4_group_add_blocks
+  ext4: add some kunit stub for mballoc kunit test
+  ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
+
+ fs/ext4/balloc.c       |  16 +
+ fs/ext4/ext4.h         |   4 -
+ fs/ext4/mballoc-test.c | 323 +++++++++++++++++++
+ fs/ext4/mballoc.c      | 714 ++++++++++++++++++-----------------------
+ fs/ext4/super.c        |  13 +
+ 5 files changed, 672 insertions(+), 398 deletions(-)
+ create mode 100644 fs/ext4/mballoc-test.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.0
+
