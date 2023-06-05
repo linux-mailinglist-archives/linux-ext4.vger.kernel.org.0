@@ -2,142 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F83772257F
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jun 2023 14:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2911D72282E
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jun 2023 16:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjFEMWM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Jun 2023 08:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S232723AbjFEOGu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Jun 2023 10:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjFEMWJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jun 2023 08:22:09 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF32EEA;
-        Mon,  5 Jun 2023 05:21:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D092C1F8C1;
-        Mon,  5 Jun 2023 12:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685967701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+xYIiqrQfOeCGvbrMjYIUOsP4rm9alei4PdeDzJkJKI=;
-        b=p8VVrJF19JBks7boZVrB42nnbFvYwZ+5bmhw7LioiONvZQPr8LgEowiMFCkkMOO8Rs7h43
-        M7s57mc7MvHTcLmhGE8sU4oKZyhJBNnjxPpR+4SCF3HXnLhT87C8q3LLj856nIgKx8XF3Z
-        95taV9BK3SVpXqArhZ62DYkI8IugYy0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685967701;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+xYIiqrQfOeCGvbrMjYIUOsP4rm9alei4PdeDzJkJKI=;
-        b=QuAiZvJbPY0ReJb/mlmXC00Y52+59Kx0/pxUSswr72T5lQek1Go2Gv1xX0RE858/H5n+Gf
-        e8W/goTtClvWiSDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD8BA139C7;
-        Mon,  5 Jun 2023 12:21:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7K8+LlXTfWSQDQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 05 Jun 2023 12:21:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3CC7BA0754; Mon,  5 Jun 2023 14:21:41 +0200 (CEST)
-Date:   Mon, 5 Jun 2023 14:21:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Baokun Li <libaokun1@huawei.com>,
-        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        jun.nie@linaro.org, ebiggers@kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com,
-        syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix race condition between buffer write and
- page_mkwrite
-Message-ID: <20230605122141.4njwwx3mrapqhvt4@quack3>
-References: <20230530134405.322194-1-libaokun1@huawei.com>
- <20230604030445.GF1128744@mit.edu>
- <20230604210821.GA1257572@mit.edu>
- <ZH1BN+H1/Sa4eLQ4@casper.infradead.org>
- <20230605091655.24vl5fjesfskt3o5@quack3>
+        with ESMTP id S234262AbjFEOGh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jun 2023 10:06:37 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C260F7;
+        Mon,  5 Jun 2023 07:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685973993; x=1717509993;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WRKu/nfyzxlPOPTEZMAva5K8wh48Rxd1u4OmkEAVcRc=;
+  b=Uhxurm7L76ryW9Mqd1S7e0a3Qk6W9q4eGRvFnPT4zi5OBbHiKXZp1uyE
+   ALRsULT7oG37SV5F3jZqDKcIuEBSRrlcrybSPuHfWAHh7zKLU9qy++LiR
+   b2PLRyi9f4Iki73Rh2jqkm7BRwgF66d+SjorEmJQfdj4VsGWBE7M9q5Rx
+   dHKZygv6IMDXlv3GWx2SGyhms/Q1AP/J90ddoxmM/1RpS1ol3oDDtcsf7
+   QekjdvbHy4NHcaKXp5z5y/s6Q0DjG2BB0lv6N4J7d7455Y/qkxipu1ft8
+   2FEvh18QMcqcg6EE5kZeC3KKnSA5L5MOaJ7ZnBGjarVr84fk6UqHITuFK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="336727073"
+X-IronPort-AV: E=Sophos;i="6.00,217,1681196400"; 
+   d="scan'208";a="336727073"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2023 07:04:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="955343562"
+X-IronPort-AV: E=Sophos;i="6.00,217,1681196400"; 
+   d="scan'208";a="955343562"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Jun 2023 07:04:45 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1q6Ap9-001OA1-2b;
+        Mon, 05 Jun 2023 17:04:43 +0300
+Date:   Mon, 5 Jun 2023 17:04:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kees Cook <kees@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 0/3] lib/string_helpers et al.: Change return value of
+ strreplace()
+Message-ID: <ZH3rezDApUro84HB@smile.fi.intel.com>
+References: <20230323123704.37983-1-andriy.shevchenko@linux.intel.com>
+ <ZC1454AwRUNFTbIW@smile.fi.intel.com>
+ <2023040523-unworthy-uncured-1eab@gregkh>
+ <ZC2H8ODMwoO5hzZG@smile.fi.intel.com>
+ <47D8878A-1108-4AC3-BF7F-507F90F6970A@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230605091655.24vl5fjesfskt3o5@quack3>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <47D8878A-1108-4AC3-BF7F-507F90F6970A@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 05-06-23 11:16:55, Jan Kara wrote:
-> On Mon 05-06-23 02:58:15, Matthew Wilcox wrote:
-> > On Sun, Jun 04, 2023 at 05:08:21PM -0400, Theodore Ts'o wrote:
-> > > On Sat, Jun 03, 2023 at 11:04:45PM -0400, Theodore Ts'o wrote:
-> > > > I tried testing to see if this fixed [1], and it appears to be
-> > > > triggering a lockdep warning[2] at this line in the patch:
-> > > > 
-> > > > [1] https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
-> > > > [2] https://syzkaller.appspot.com/x/report.txt?x=17260843280000
-> > > 
-> > > Looking at this more closely, the fundamental problem is by the time
-> > > ext4_file_mmap() is called, the mm layer has already taken
-> > > current->mm->mmap_lock, and when we try to take the inode_lock, this
-> > > causes locking ordering problems with how buffered write path works,
-> > > which take the inode_lock first, and then in some cases, may end up
-> > > taking the mmap_lock if there is a page fault for the buffer used for
-> > > the buffered write.
-> > > 
-> > > If we're going to stick with the approach in this patch, I think what
-> > > we would need is to add a pre_mmap() function to file_operations
-> > > struct, which would get called by the mmap path *before* taking
-> > > current->mm->mmap_lock, so we can do the inline conversion before we
-> > > take the mmap_lock.
-> > > 
-> > > I'm not sure how the mm folks would react to such a proposal, though.
-> > > I could be seen as a bit hacky, and it's not clear that any file
-> > > system other than ext4 would need something like this.  Willy, as
-> > > someone who does a lot of work in both mm and fs worlds --- I'm
-> > > curious what you think about this idea?
-> > 
-> > I'm probably missing something here, but why do we need to convert inline
-> > data in page_mkwrite?  mmap() can't change i_size (stores past i_size are
-> > discarded), so we should be able to simply copy the data from the page
-> > cache into the inode and write the inode when it comes to writepages()
-> > time.
-> > 
-> > Unless somebody does a truncate() or write() that expands i_size, but we
-> > should be able to do the conversion then without the mmap_lock held.  No?
-> > I'm not too familiar with inline data.
+On Wed, Apr 05, 2023 at 07:58:40PM -0700, Kees Cook wrote:
+> On April 5, 2023 7:38:40 AM PDT, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> >On Wed, Apr 05, 2023 at 04:24:42PM +0200, Greg Kroah-Hartman wrote:
+> >> On Wed, Apr 05, 2023 at 04:34:31PM +0300, Andy Shevchenko wrote:
+> >> > On Thu, Mar 23, 2023 at 02:37:01PM +0200, Andy Shevchenko wrote:
+> >> > > It's more convenient to have strreplace() to return the pointer to
+> >> > >  the string itself. This will help users to make their code better.
+> >> > > 
+> >> > > The patch 1 kills the only user of the returned value of strreplace(),
+> >> > > Patch 2 converts the return value of strreplace(). And patch 3 shows
+> >> > > how it may be useful. That said, the series can be routed via fs tree,
+> >> > > with or without the last patch.
+> >> > 
+> >> > Since there are no comments, who can apply this (patches 1 and 2)?
+> >> > Greg, are you fine with the kobject change?
+> >> 
+> >> Sure, want me to take them all through my driver-core tree?
+> >
+> >Fine by me! Dunno about others. Kees?
 > 
-> Yeah, I agree, that is also the conclusion I have arrived at when thinking
-> about this problem now. We should be able to just remove the conversion
-> from ext4_page_mkwrite() and rely on write(2) or truncate(2) doing it when
-> growing i_size.
+> Yeah, that's cool by me. :)
 
-OK, thinking more about this and searching through the history, I've
-realized why the conversion is originally in ext4_page_mkwrite(). The
-problem is described in commit 7b4cc9787fe35b ("ext4: evict inline data
-when writing to memory map") but essentially it boils down to the fact that
-ext4 writeback code does not expect dirty page for a file with inline data
-because ext4_write_inline_data_end() should have copied the data into the
-inode and cleared the folio's dirty flag.
+Greg, does this slip through the cracks?
 
-Indeed messing with xattrs from the writeback path to copy page contents
-into inline data xattr would be ... interesting. Hum, out of good ideas for
-now :-|.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
