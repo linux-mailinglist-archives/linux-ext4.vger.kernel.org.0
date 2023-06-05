@@ -2,95 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F85723331
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 00:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108B772338F
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 01:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjFEWb2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Jun 2023 18:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        id S233109AbjFEXLJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 5 Jun 2023 19:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjFEWb1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jun 2023 18:31:27 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE603F4
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 15:31:26 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b0d38ce700so4115355a34.2
-        for <linux-ext4@vger.kernel.org>; Mon, 05 Jun 2023 15:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1686004286; x=1688596286;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sc75ejD/B9ju2Ppm1yWUxALAa1mggaMhLldhOHB8pJM=;
-        b=jGfg66fXdP9R5wZaybDQ0asK6vUO627vz1q5dHOQNr8M1tLVJJE6NVBOYY9vEGWF1Z
-         G2D0ijldCWNK74Wrl/Mxlb6qxEknOgudO+i3eQ2EuOREPtBzLq1PyR8/UNAUZJB8M38T
-         aQGpGFIrQbW5r3f80ybqsNBN0nxlNPbnhY87s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686004286; x=1688596286;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sc75ejD/B9ju2Ppm1yWUxALAa1mggaMhLldhOHB8pJM=;
-        b=YHWTLEzyDlH5olYin80MeAzZ1iIR7V6c40uDKlI8j9LPPpmqgwCEspKSjsZ9s8PRpy
-         opZEOb/64j6BRetXL4Q9KaSobEdnNLbFPzelJSeMAOmqVDhInoTthjw4ljTro+hTK2J5
-         2MO9afTaEGRZkUZyvsA3yczyXYT5xpzQy8qYd4Gm6qqKq13GnlXbJPzBlzGI6AKEcae8
-         XwIccDlSVSx/2MZJjCpxMgaOgc3p3HIk9C7ARWga7m7uqGcMl2CETcAkhMFIkPb2+SSz
-         m10NMM+GbJJfZvu7CNPIj2rDkLxK8mQwiLyxlTsmKovckoYR6Y+awUVcRiRH3iIXbWWU
-         fYNg==
-X-Gm-Message-State: AC+VfDyISNcZNYQOgf7A6qZqtqD3tDM68mHF0WBMGvpGz+5d8CXJMAXD
-        wemgpkp+f7CI6li4ICqAG5pSmA==
-X-Google-Smtp-Source: ACHHUZ50kFXY6b6nPHFLD5yx8ofgsUJXKpdfqK2pU901ff3O0ybJwzXGoivL105WHg5fltvS5uobWQ==
-X-Received: by 2002:a05:6358:c122:b0:129:7bf:eeca with SMTP id fh34-20020a056358c12200b0012907bfeecamr463657rwb.21.1686004286192;
-        Mon, 05 Jun 2023 15:31:26 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id gx13-20020a17090b124d00b002560ab7a15fsm6284531pjb.36.2023.06.05.15.31.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 15:31:25 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, andriy.shevchenko@linux.intel.com,
-        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
-        cezary.rojewski@intel.com
-Cc:     Kees Cook <keescook@chromium.org>, tytso@mit.edu, jack@suse.com,
-        andy@kernel.org, rafael@kernel.org
-Subject: Re: [PATCH v3 0/3] lib/string_helpers et al.: Change return value of strreplace()
-Date:   Mon,  5 Jun 2023 15:31:23 -0700
-Message-Id: <168600428200.201645.8654517038188222559.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230605170553.7835-1-andriy.shevchenko@linux.intel.com>
-References: <20230605170553.7835-1-andriy.shevchenko@linux.intel.com>
+        with ESMTP id S233135AbjFEXLI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jun 2023 19:11:08 -0400
+X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Jun 2023 16:11:05 PDT
+Received: from cheetah.elm.relay.mailchannels.net (cheetah.elm.relay.mailchannels.net [23.83.212.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69CBD2
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 16:11:05 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 6F0063E1912
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 22:52:23 +0000 (UTC)
+Received: from pdx1-sub0-mail-a209.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 04AA13E191E
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 22:52:23 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686005543; a=rsa-sha256;
+        cv=none;
+        b=DRk+oxqJ0kXLE/R8+JupQvS/YOcGOc49KG8PgQV4MVD7pBCmVTl/SYunvLQnKvteX9xRek
+        I52srKrtu8qvIWY0cfMQRmdGeX2Eh2BCG+5pHwRvPQ/ewyPEaDv16AgIRwtkI3LynFY1WX
+        9kb7W+fS13PUNYAtVbvVclWmfPDmS06GswhwqjeF7HruioU3YhFedeCH5DAX6inyJOj7Js
+        ffuW1UzyZQVJcVdnZAYdspAu0/LTQMTNdCNRnHRttHLdGffqBcFSaOQuIa0gLZ+jOOI2wL
+        Yb4jqc6DOmR5Ijgg0VBtUNluHw/6DXtkWWluorqcomvBu/Mn9wwEdzVr1wTxsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1686005543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         dkim-signature; bh=qCaaQL9zkZwlRN/OdJMSGj1R5nuYpmOQzTYu1ZqcMi8=;
+        b=WFGQw1NgIwasH7y4S4ZlRozV0BIFdvx/r9PTb+bow9FrlLSlrdeEDNKhOSoMAVb/KP/b/W
+        D4bHjHvdnhv4F5hFXKBBSuzUTxMbEvR9PKEw8W+aFZ/J4g2zTfQxYYG59uuM75JTzYPrMB
+        UgsU2cPoKMxokY2JL9zzVih0SDgR1/uB1lgTUl2AXtNC3zE07qxASArJowNV/PzO04++1D
+        yq2qsZSVVLrhVGvWXvtJtqKpPm+Mi/rrekLYwyUBYZWFH1Ar23fjYMJdnjxVrp4XQCTvRF
+        eMk0Xu0VKQooldljAsmAnjsGaZr/P4cMY6gm+BwrEdanG+lYzB0V/tWGoZvGYQ==
+ARC-Authentication-Results: i=1;
+        rspamd-5f966895c-qqbg2;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Good
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Daffy-Dime: 1346dcf02aba688d_1686005543231_421817254
+X-MC-Loop-Signature: 1686005543231:2940660432
+X-MC-Ingress-Time: 1686005543231
+Received: from pdx1-sub0-mail-a209.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.104.253.241 (trex/6.8.1);
+        Mon, 05 Jun 2023 22:52:23 +0000
+Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kjlx@templeofstupid.com)
+        by pdx1-sub0-mail-a209.dreamhost.com (Postfix) with ESMTPSA id 4QZplV5ndlzZR
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 15:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+        s=dreamhost; t=1686005542;
+        bh=qCaaQL9zkZwlRN/OdJMSGj1R5nuYpmOQzTYu1ZqcMi8=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=bkQmSLHv0r6PRo5xMi/wqgKwDe06QMq+AOz/66glzLMDShrvz/D4aZT32B/9uncQR
+         UyhvNnMdyCC8Irkxxs1MJglotuwmoHouZTwVFhV09k10J0S0HpdWR+J58RNUkUimQk
+         vNwtlxcLr73DJIaWsjtRvp11mjAa7akupTxRsx+w=
+Received: from johansen (uid 1000)
+        (envelope-from kjlx@templeofstupid.com)
+        id e0062
+        by kmjvbox (DragonFly Mail Agent v0.12);
+        Mon, 05 Jun 2023 15:52:21 -0700
+Date:   Mon, 5 Jun 2023 15:52:21 -0700
+From:   Krister Johansen <kjlx@templeofstupid.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>
+Subject: [e2fsprogs PATCH] resize2fs: use directio when reading superblock
+Message-ID: <20230605225221.GA5737@templeofstupid.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 5 Jun 2023 20:05:50 +0300, Andy Shevchenko wrote:
-> It's more convenient to have strreplace() to return the pointer to
->  the string itself. This will help users to make their code better.
-> 
-> The patch 1 kills the only user of the returned value of strreplace(),
-> Patch 2 converts the return value of strreplace(). And patch 3 shows
-> how it may be useful. That said, the series can be routed via fs tree,
-> with or without the last patch.
-> 
-> [...]
+Invocations of resize2fs intermittently report failure due to superblock
+checksum mismatches in this author's environment.  This might happen a few
+times a week.  The following script can make this happen within minutes.
+(It assumes /dev/nvme1n1 is available and not in use by anything else).
 
-Applied to for-next/hardening, thanks!
+   #!/usr/bin/bash
+   set -euxo pipefail
+   
+   while true
+   do
+           parted /dev/nvme1n1 mklabel gpt mkpart primary 2048s 2099200s
+           sleep .5
+           mkfs.ext4 /dev/nvme1n1p1
+           mount -t ext4 /dev/nvme1n1p1 /mnt
+           stress-ng --temp-path /mnt -D 4 &
+           STRESS_PID=$!
+           sleep 1
+           growpart /dev/nvme1n1 1
+           resize2fs /dev/nvme1n1p1
+           kill $STRESS_PID
+           wait $STRESS_PID
+           umount /mnt
+           wipefs -a /dev/nvme1n1p1
+           wipefs -a /dev/nvme1n1
+   done
 
-[1/3] jbd2: Avoid printing outside the boundary of the buffer
-      https://git.kernel.org/kees/c/7afb6d8fa81f
-[2/3] lib/string_helpers: Change returned value of the strreplace()
-      https://git.kernel.org/kees/c/d01a77afd6be
-[3/3] kobject: Use return value of strreplace()
-      https://git.kernel.org/kees/c/b2f10148ec1e
+After trying a few possible solutions, adding an O_DIRECT read to the open
+path in resize2fs eliminated the occurrences on test systems. ext2fs_open2
+uses a negative count value when calling io_channel_read_blk to get the
+superblock.  According to unix_read_block, negative offsets are to be read
+direct.  However, when strace-ing a program without this fix, the
+underlying device was opened without O_DIRECT.  Adding the flags in the
+patch ensures the device is opend with O_DIRECT and that the superblock
+read appears consistent.
 
+Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+---
+ resize/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/resize/main.c b/resize/main.c
+index 94f5ec6d..b98af384 100644
+--- a/resize/main.c
++++ b/resize/main.c
+@@ -410,7 +410,7 @@ int main (int argc, char ** argv)
+ 	if (!(mount_flags & EXT2_MF_MOUNTED) && !print_min_size)
+ 		io_flags = EXT2_FLAG_RW | EXT2_FLAG_EXCLUSIVE;
+ 
+-	io_flags |= EXT2_FLAG_64BITS | EXT2_FLAG_THREADS;
++	io_flags |= EXT2_FLAG_64BITS | EXT2_FLAG_THREADS | EXT2_FLAG_DIRECT_IO;
+ 	if (undo_file) {
+ 		retval = resize2fs_setup_tdb(device_name, undo_file, &io_ptr);
+ 		if (retval)
 -- 
-Kees Cook
+2.25.1
 
