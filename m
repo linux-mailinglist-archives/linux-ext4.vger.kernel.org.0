@@ -2,245 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB887233E7
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 02:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB69723761
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 08:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjFFAES (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Jun 2023 20:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S234826AbjFFGPB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jun 2023 02:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjFFAER (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Jun 2023 20:04:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B69F9;
-        Mon,  5 Jun 2023 17:04:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA1BC62915;
-        Tue,  6 Jun 2023 00:04:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D1C3C433D2;
-        Tue,  6 Jun 2023 00:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686009855;
-        bh=xPqDBnA9crfcda+QJHDEogmu65T/ezefUhM18Debbm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ddPmBSXSMvlY9x94xIIznZYGaNuipQq3VI72KC0oXDBKaGeDQjKtRJmfrsGmehWvO
-         +dPcgrPTfGtR6It+kcXJltBdEm6/kbNCqegUMdcjJLpThWScaZHuyrI92e+KxL5eSE
-         6UYfqRlb93ixurnxyFXwOAH/gstR61UDyavP5IbH3jiHC6gYnE66jfhBxNASdfvKoO
-         3g91Y67k3IwVIP5kIbGlNmjoUpg38PKL0tJCWBDOdkxq0zpo0hU4ztLFtuUy69XDvZ
-         pgOw60wCPj40tpC46Ad5a91ebl7gCGcJ/iJcwmK8v80Pnvc61AL6XuQN4t+34IdDjQ
-         mC0Xvp8bW0hvA==
-Date:   Mon, 5 Jun 2023 17:04:14 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, Miklos Szeredi <mszeredi@redhat.com>
-Subject: Re: [PATCH 09/12] fs: factor out a direct_write_fallback helper
-Message-ID: <20230606000414.GJ1325469@frogsfrogsfrogs>
-References: <20230601145904.1385409-1-hch@lst.de>
- <20230601145904.1385409-10-hch@lst.de>
+        with ESMTP id S235059AbjFFGO7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 02:14:59 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9723183
+        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 23:14:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qb0Z53dm8z4f3nKG
+        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 14:14:53 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.170])
+        by APP2 (Coremail) with SMTP id Syh0CgA33erXzn5kkHrZKw--.1805S4;
+        Tue, 06 Jun 2023 14:14:50 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com,
+        chengzhihao1@huawei.com
+Subject: [PATCH v2 0/6] jbd2: fix several checkpoint inconsistent issues
+Date:   Tue,  6 Jun 2023 14:14:41 +0800
+Message-Id: <20230606061447.1125036-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230601145904.1385409-10-hch@lst.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgA33erXzn5kkHrZKw--.1805S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury5Jr1fZFyrJw47KFyrXrb_yoW8JF43pF
+        Z3K34fK395C397Wrn2ga1UAr40yF48ur47KF9xK3WkAF47uF4IqrZrWF10y348KFZ3Ka98
+        tr1UWrWrW3yjya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 04:59:01PM +0200, Christoph Hellwig wrote:
-> Add a helper dealing with handling the syncing of a buffered write fallback
-> for direct I/O.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Looks good to me; whose tree do you want this to go through?
+v1->v2:
+ - Drop the last patch in [1].
+ - Merge journal_clean_one_cp_list() into journal_shrink_one_cp_list().
+ - Fix the race issues through trying to hold buffer lock and check
+   dirty state under the lock.
+ - Append a cleanup patch, remove __journal_try_to_free_buffer().
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Hello,
 
---D
+The first two patches are from [1] and are not changed, appending
+another four (it depends on the first three) to fix another three race
+issues in the checkpoint procedure which could also lead to inconsistent
+results.
 
-> ---
->  fs/libfs.c         | 41 ++++++++++++++++++++++++++++
->  include/linux/fs.h |  2 ++
->  mm/filemap.c       | 66 +++++++++++-----------------------------------
->  3 files changed, 58 insertions(+), 51 deletions(-)
-> 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index 89cf614a327158..5b851315eeed03 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1613,3 +1613,44 @@ u64 inode_query_iversion(struct inode *inode)
->  	return cur >> I_VERSION_QUERIED_SHIFT;
->  }
->  EXPORT_SYMBOL(inode_query_iversion);
-> +
-> +ssize_t direct_write_fallback(struct kiocb *iocb, struct iov_iter *iter,
-> +		ssize_t direct_written, ssize_t buffered_written)
-> +{
-> +	struct address_space *mapping = iocb->ki_filp->f_mapping;
-> +	loff_t pos = iocb->ki_pos - buffered_written;
-> +	loff_t end = iocb->ki_pos - 1;
-> +	int err;
-> +
-> +	/*
-> +	 * If the buffered write fallback returned an error, we want to return
-> +	 * the number of bytes which were written by direct I/O, or the error
-> +	 * code if that was zero.
-> +	 *
-> +	 * Note that this differs from normal direct-io semantics, which will
-> +	 * return -EFOO even if some bytes were written.
-> +	 */
-> +	if (unlikely(buffered_written < 0)) {
-> +		if (direct_written)
-> +			return direct_written;
-> +		return buffered_written;
-> +	}
-> +
-> +	/*
-> +	 * We need to ensure that the page cache pages are written to disk and
-> +	 * invalidated to preserve the expected O_DIRECT semantics.
-> +	 */
-> +	err = filemap_write_and_wait_range(mapping, pos, end);
-> +	if (err < 0) {
-> +		/*
-> +		 * We don't know how much we wrote, so just return the number of
-> +		 * bytes which were direct-written
-> +		 */
-> +		if (direct_written)
-> +			return direct_written;
-> +		return err;
-> +	}
-> +	invalidate_mapping_pages(mapping, pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> +	return direct_written + buffered_written;
-> +}
-> +EXPORT_SYMBOL_GPL(direct_write_fallback);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 91021b4e1f6f48..6af25137543824 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2738,6 +2738,8 @@ extern ssize_t __generic_file_write_iter(struct kiocb *, struct iov_iter *);
->  extern ssize_t generic_file_write_iter(struct kiocb *, struct iov_iter *);
->  extern ssize_t generic_file_direct_write(struct kiocb *, struct iov_iter *);
->  ssize_t generic_perform_write(struct kiocb *, struct iov_iter *);
-> +ssize_t direct_write_fallback(struct kiocb *iocb, struct iov_iter *iter,
-> +		ssize_t direct_written, ssize_t buffered_written);
->  
->  ssize_t vfs_iter_read(struct file *file, struct iov_iter *iter, loff_t *ppos,
->  		rwf_t flags);
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index ddb6f8aa86d6ca..137508da5525b6 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -4006,23 +4006,19 @@ ssize_t __generic_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  {
->  	struct file *file = iocb->ki_filp;
->  	struct address_space *mapping = file->f_mapping;
-> -	struct inode 	*inode = mapping->host;
-> -	ssize_t		written = 0;
-> -	ssize_t		err;
-> -	ssize_t		status;
-> +	struct inode *inode = mapping->host;
-> +	ssize_t ret;
->  
-> -	err = file_remove_privs(file);
-> -	if (err)
-> -		goto out;
-> +	ret = file_remove_privs(file);
-> +	if (ret)
-> +		return ret;
->  
-> -	err = file_update_time(file);
-> -	if (err)
-> -		goto out;
-> +	ret = file_update_time(file);
-> +	if (ret)
-> +		return ret;
->  
->  	if (iocb->ki_flags & IOCB_DIRECT) {
-> -		loff_t pos, endbyte;
-> -
-> -		written = generic_file_direct_write(iocb, from);
-> +		ret = generic_file_direct_write(iocb, from);
->  		/*
->  		 * If the write stopped short of completing, fall back to
->  		 * buffered writes.  Some filesystems do this for writes to
-> @@ -4030,45 +4026,13 @@ ssize_t __generic_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		 * not succeed (even if it did, DAX does not handle dirty
->  		 * page-cache pages correctly).
->  		 */
-> -		if (written < 0 || !iov_iter_count(from) || IS_DAX(inode))
-> -			goto out;
-> -
-> -		pos = iocb->ki_pos;
-> -		status = generic_perform_write(iocb, from);
-> -		/*
-> -		 * If generic_perform_write() returned a synchronous error
-> -		 * then we want to return the number of bytes which were
-> -		 * direct-written, or the error code if that was zero.  Note
-> -		 * that this differs from normal direct-io semantics, which
-> -		 * will return -EFOO even if some bytes were written.
-> -		 */
-> -		if (unlikely(status < 0)) {
-> -			err = status;
-> -			goto out;
-> -		}
-> -		/*
-> -		 * We need to ensure that the page cache pages are written to
-> -		 * disk and invalidated to preserve the expected O_DIRECT
-> -		 * semantics.
-> -		 */
-> -		endbyte = pos + status - 1;
-> -		err = filemap_write_and_wait_range(mapping, pos, endbyte);
-> -		if (err == 0) {
-> -			written += status;
-> -			invalidate_mapping_pages(mapping,
-> -						 pos >> PAGE_SHIFT,
-> -						 endbyte >> PAGE_SHIFT);
-> -		} else {
-> -			/*
-> -			 * We don't know how much we wrote, so just return
-> -			 * the number of bytes which were direct-written
-> -			 */
-> -		}
-> -	} else {
-> -		written = generic_perform_write(iocb, from);
-> +		if (ret < 0 || !iov_iter_count(from) || IS_DAX(inode))
-> +			return ret;
-> +		return direct_write_fallback(iocb, from, ret,
-> +				generic_perform_write(iocb, from));
->  	}
-> -out:
-> -	return written ? written : err;
-> +
-> +	return generic_perform_write(iocb, from);
->  }
->  EXPORT_SYMBOL(__generic_file_write_iter);
->  
-> -- 
-> 2.39.2
-> 
+[1] https://lore.kernel.org/linux-ext4/20230516020226.2813588-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+Zhang Yi (5):
+  jbd2: recheck chechpointing non-dirty buffer
+  jbd2: remove t_checkpoint_io_list
+  jbd2: remove journal_clean_one_cp_list()
+  jbd2: fix a race when checking checkpoint buffer busy
+  jbd2: remove __journal_try_to_free_buffer()
+
+Zhihao Cheng (1):
+  jbd2: Fix wrongly judgement for buffer head removing while doing
+    checkpoint
+
+ fs/jbd2/checkpoint.c        | 276 ++++++++++++------------------------
+ fs/jbd2/commit.c            |   3 +-
+ fs/jbd2/transaction.c       |  40 ++----
+ include/linux/jbd2.h        |   7 +-
+ include/trace/events/jbd2.h |  12 +-
+ 5 files changed, 107 insertions(+), 231 deletions(-)
+
+-- 
+2.31.1
+
