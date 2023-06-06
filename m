@@ -2,56 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F50723765
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 08:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C185D7237EE
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 08:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbjFFGPK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jun 2023 02:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S231820AbjFFGnu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jun 2023 02:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234837AbjFFGPB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 02:15:01 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1AE1BD
-        for <linux-ext4@vger.kernel.org>; Mon,  5 Jun 2023 23:15:00 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qb0Z924gQz4f3pFP
-        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 14:14:57 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP2 (Coremail) with SMTP id Syh0CgA33erXzn5kkHrZKw--.1805S10;
-        Tue, 06 Jun 2023 14:14:58 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com,
-        chengzhihao1@huawei.com
-Subject: [PATCH v2 6/6] jbd2: remove __journal_try_to_free_buffer()
-Date:   Tue,  6 Jun 2023 14:14:47 +0800
-Message-Id: <20230606061447.1125036-7-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230606061447.1125036-1-yi.zhang@huaweicloud.com>
-References: <20230606061447.1125036-1-yi.zhang@huaweicloud.com>
+        with ESMTP id S230499AbjFFGnt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 02:43:49 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864B191;
+        Mon,  5 Jun 2023 23:43:48 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 294C46732D; Tue,  6 Jun 2023 08:43:44 +0200 (CEST)
+Date:   Tue, 6 Jun 2023 08:43:43 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Miklos Szeredi <mszeredi@redhat.com>
+Subject: Re: [PATCH 09/12] fs: factor out a direct_write_fallback helper
+Message-ID: <20230606064343.GA27497@lst.de>
+References: <20230601145904.1385409-1-hch@lst.de> <20230601145904.1385409-10-hch@lst.de> <20230606000414.GJ1325469@frogsfrogsfrogs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA33erXzn5kkHrZKw--.1805S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF1DXw47Zr4rKrWDuw4xCrg_yoW8Zryxpr
-        yak3y7Zryqva48Zr1kXF4rArWjqa1qvryUGrZru3Z3ta15AwsIv347tr1IqryDtFWSga15
-        Xr1UC3s8C3yjy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF18BUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230606000414.GJ1325469@frogsfrogsfrogs>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -61,66 +55,15 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Mon, Jun 05, 2023 at 05:04:14PM -0700, Darrick J. Wong wrote:
+> On Thu, Jun 01, 2023 at 04:59:01PM +0200, Christoph Hellwig wrote:
+> > Add a helper dealing with handling the syncing of a buffered write fallback
+> > for direct I/O.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> > Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
+> 
+> Looks good to me; whose tree do you want this to go through?
 
-__journal_try_to_free_buffer() has only one caller and it's logic is
-much simple now, so just remove it and open code in
-jbd2_journal_try_to_free_buffers().
-
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/jbd2/transaction.c | 31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 6ef5022949c4..4d1fda1f7143 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2099,29 +2099,6 @@ void jbd2_journal_unfile_buffer(journal_t *journal, struct journal_head *jh)
- 	__brelse(bh);
- }
- 
--/*
-- * Called from jbd2_journal_try_to_free_buffers().
-- *
-- * Called under jh->b_state_lock
-- */
--static void
--__journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
--{
--	struct journal_head *jh;
--
--	jh = bh2jh(bh);
--
--	if (jh->b_next_transaction != NULL || jh->b_transaction != NULL)
--		return;
--
--	spin_lock(&journal->j_list_lock);
--	/* Remove written-back checkpointed metadata buffer */
--	if (jh->b_cp_transaction != NULL)
--		jbd2_journal_try_remove_checkpoint(jh);
--	spin_unlock(&journal->j_list_lock);
--	return;
--}
--
- /**
-  * jbd2_journal_try_to_free_buffers() - try to free page buffers.
-  * @journal: journal for operation
-@@ -2179,7 +2156,13 @@ bool jbd2_journal_try_to_free_buffers(journal_t *journal, struct folio *folio)
- 			continue;
- 
- 		spin_lock(&jh->b_state_lock);
--		__journal_try_to_free_buffer(journal, bh);
-+		if (!jh->b_transaction && !jh->b_next_transaction) {
-+			spin_lock(&journal->j_list_lock);
-+			/* Remove written-back checkpointed metadata buffer */
-+			if (jh->b_cp_transaction != NULL)
-+				jbd2_journal_try_remove_checkpoint(jh);
-+			spin_unlock(&journal->j_list_lock);
-+		}
- 		spin_unlock(&jh->b_state_lock);
- 		jbd2_journal_put_journal_head(jh);
- 		if (buffer_jbd(bh))
--- 
-2.31.1
-
+Andrew has already picked them up.
