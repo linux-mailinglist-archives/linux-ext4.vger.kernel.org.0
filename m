@@ -2,126 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC6172451A
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 16:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E17B724525
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jun 2023 16:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbjFFOAO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Jun 2023 10:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
+        id S237460AbjFFOBh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jun 2023 10:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237445AbjFFN7p (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 09:59:45 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302AA10EB
-        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 06:59:43 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QbBtL3vHBz4f3wtn
-        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 21:59:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP2 (Coremail) with SMTP id Syh0CgAXB+XBO39kUFbyKw--.11143S10;
-        Tue, 06 Jun 2023 21:59:39 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com,
-        chengzhihao1@huawei.com
-Subject: [PATCH v3 6/6] jbd2: remove __journal_try_to_free_buffer()
-Date:   Tue,  6 Jun 2023 21:59:28 +0800
-Message-Id: <20230606135928.434610-7-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230606135928.434610-1-yi.zhang@huaweicloud.com>
-References: <20230606135928.434610-1-yi.zhang@huaweicloud.com>
+        with ESMTP id S237461AbjFFOBJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 10:01:09 -0400
+Received: from out-22.mta0.migadu.com (out-22.mta0.migadu.com [91.218.175.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45A810DB
+        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 07:01:07 -0700 (PDT)
+Message-ID: <c3173405-713d-d2eb-bd9c-af8b8c747533@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1686060065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2uml8vTQA7Jk00qED6Wb0yWaRiW4bBmvkl2obmUQkoY=;
+        b=cvjjhEbuIw4XMzuXB1gNKv2SDPspUiKAG9c1qfukbOq4Vu+Xvk3hRzqZTUkoLf1h8WgeIK
+        mX4iw7SxtoUFhollyDxq/cwh3Lh7vZZIsBzxlwz6oUhiblNeM4/UDIe/0JjU4VNs7YUQW0
+        +fKrohXUbW3ugX9LtBnHc4V513usgsI=
+Date:   Tue, 6 Jun 2023 22:00:57 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAXB+XBO39kUFbyKw--.11143S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF1DXw47Zr4rKrWDuw4xCrg_yoW8ZF4Dpr
-        yak3y7Zryqva48Zr18XF4rArWjqa1jvryUGrZru3Z3ta15AwsIv347tr1IqryDtFWSga15
-        Xr1UC3s8Cw4jy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZX7UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Subject: Re: [PATCH v2 09/12] ext4: Ensure ext4_mb_prefetch_fini() is called
+ for all prefetched BGs
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+References: <cover.1685449706.git.ojaswin@linux.ibm.com>
+ <05e648ae04ec5b754207032823e9c1de9a54f87a.1685449706.git.ojaswin@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <05e648ae04ec5b754207032823e9c1de9a54f87a.1685449706.git.ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Hello,
 
-__journal_try_to_free_buffer() has only one caller and it's logic is
-much simple now, so just remove it and open code in
-jbd2_journal_try_to_free_buffers().
+On 5/30/23 20:33, Ojaswin Mujoo wrote:
+> Before this patch, the call stack in ext4_run_li_request is as follows:
+>
+>    /*
+>     * nr = no. of BGs we want to fetch (=s_mb_prefetch)
+>     * prefetch_ios = no. of BGs not uptodate after
+>     * 		    ext4_read_block_bitmap_nowait()
+>     */
+>    next_group = ext4_mb_prefetch(sb, group, nr, prefetch_ios);
+>    ext4_mb_prefetch_fini(sb, next_group prefetch_ios);
+>
+> ext4_mb_prefetch_fini() will only try to initialize buddies for BGs in
+> range [next_group - prefetch_ios, next_group). This is incorrect since
+> sometimes (prefetch_ios < nr), which causes ext4_mb_prefetch_fini() to
+> incorrectly ignore some of the BGs that might need initialization. This
+> issue is more notable now with the previous patch enabling "fetching" of
+> BLOCK_UNINIT BGs which are marked buffer_uptodate by default.
+>
+> Fix this by passing nr to ext4_mb_prefetch_fini() instead of
+> prefetch_ios so that it considers the right range of groups.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/transaction.c | 31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
+Thanks for the series.
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 6ef5022949c4..4d1fda1f7143 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2099,29 +2099,6 @@ void jbd2_journal_unfile_buffer(journal_t *journal, struct journal_head *jh)
- 	__brelse(bh);
- }
- 
--/*
-- * Called from jbd2_journal_try_to_free_buffers().
-- *
-- * Called under jh->b_state_lock
-- */
--static void
--__journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
--{
--	struct journal_head *jh;
--
--	jh = bh2jh(bh);
--
--	if (jh->b_next_transaction != NULL || jh->b_transaction != NULL)
--		return;
--
--	spin_lock(&journal->j_list_lock);
--	/* Remove written-back checkpointed metadata buffer */
--	if (jh->b_cp_transaction != NULL)
--		jbd2_journal_try_remove_checkpoint(jh);
--	spin_unlock(&journal->j_list_lock);
--	return;
--}
--
- /**
-  * jbd2_journal_try_to_free_buffers() - try to free page buffers.
-  * @journal: journal for operation
-@@ -2179,7 +2156,13 @@ bool jbd2_journal_try_to_free_buffers(journal_t *journal, struct folio *folio)
- 			continue;
- 
- 		spin_lock(&jh->b_state_lock);
--		__journal_try_to_free_buffer(journal, bh);
-+		if (!jh->b_transaction && !jh->b_next_transaction) {
-+			spin_lock(&journal->j_list_lock);
-+			/* Remove written-back checkpointed metadata buffer */
-+			if (jh->b_cp_transaction != NULL)
-+				jbd2_journal_try_remove_checkpoint(jh);
-+			spin_unlock(&journal->j_list_lock);
-+		}
- 		spin_unlock(&jh->b_state_lock);
- 		jbd2_journal_put_journal_head(jh);
- 		if (buffer_jbd(bh))
--- 
-2.31.1
+> Similarly, make sure we don't pass nr=0 to ext4_mb_prefetch_fini() in
+> ext4_mb_regular_allocator() since we might have prefetched BLOCK_UNINIT
+> groups that would need buddy initialization.
+
+Seems ext4_mb_prefetch_fini can't be called by ext4_mb_regular_allocator
+if nr is 0.
+
+https://elixir.bootlin.com/linux/v6.4-rc5/source/fs/ext4/mballoc.c#L2816
+
+Am I miss something?
+
+Thanks,
+Guoqing
+
+> Signed-off-by: Ojaswin Mujoo<ojaswin@linux.ibm.com>
+> Reviewed-by: Ritesh Harjani (IBM)<ritesh.list@gmail.com>
+> Reviewed-by: Jan Kara<jack@suse.cz>
+> ---
+>   fs/ext4/mballoc.c |  4 ----
+>   fs/ext4/super.c   | 11 ++++-------
+>   2 files changed, 4 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 79455c7e645b..6775d73dfc68 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2735,8 +2735,6 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>   			if ((prefetch_grp == group) &&
+>   			    (cr > CR1 ||
+>   			     prefetch_ios < sbi->s_mb_prefetch_limit)) {
+> -				unsigned int curr_ios = prefetch_ios;
+> -
+>   				nr = sbi->s_mb_prefetch;
+>   				if (ext4_has_feature_flex_bg(sb)) {
+>   					nr = 1 << sbi->s_log_groups_per_flex;
+> @@ -2745,8 +2743,6 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>   				}
+>   				prefetch_grp = ext4_mb_prefetch(sb, group,
+>   							nr, &prefetch_ios);
+> -				if (prefetch_ios == curr_ios)
+> -					nr = 0;
+>   			}
+>   
+>   			/* This now checks without needing the buddy page */
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 2da5476fa48b..27c1dabacd43 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -3692,16 +3692,13 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
+>   	ext4_group_t group = elr->lr_next_group;
+>   	unsigned int prefetch_ios = 0;
+>   	int ret = 0;
+> +	int nr = EXT4_SB(sb)->s_mb_prefetch;
+>   	u64 start_time;
+>   
+>   	if (elr->lr_mode == EXT4_LI_MODE_PREFETCH_BBITMAP) {
+> -		elr->lr_next_group = ext4_mb_prefetch(sb, group,
+> -				EXT4_SB(sb)->s_mb_prefetch, &prefetch_ios);
+> -		if (prefetch_ios)
+> -			ext4_mb_prefetch_fini(sb, elr->lr_next_group,
+> -					      prefetch_ios);
+> -		trace_ext4_prefetch_bitmaps(sb, group, elr->lr_next_group,
+> -					    prefetch_ios);
+> +		elr->lr_next_group = ext4_mb_prefetch(sb, group, nr, &prefetch_ios);
+> +		ext4_mb_prefetch_fini(sb, elr->lr_next_group, nr);
+> +		trace_ext4_prefetch_bitmaps(sb, group, elr->lr_next_group, nr);
+>   		if (group >= elr->lr_next_group) {
+>   			ret = 1;
+>   			if (elr->lr_first_not_zeroed != ngroups &&
 
