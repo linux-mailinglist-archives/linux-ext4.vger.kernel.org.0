@@ -2,281 +2,278 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877D0725105
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 02:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE1E7251E2
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 04:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239702AbjFGALJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 6 Jun 2023 20:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        id S240523AbjFGCBe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Jun 2023 22:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234428AbjFGALI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 20:11:08 -0400
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546071985
-        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 17:11:07 -0700 (PDT)
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-33bea381b6bso2756725ab.3
-        for <linux-ext4@vger.kernel.org>; Tue, 06 Jun 2023 17:11:07 -0700 (PDT)
+        with ESMTP id S234323AbjFGCBd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Jun 2023 22:01:33 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56D710EA
+        for <linux-ext4@vger.kernel.org>; Tue,  6 Jun 2023 19:01:31 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6b15e510630so2500066a34.3
+        for <linux-ext4@vger.kernel.org>; Tue, 06 Jun 2023 19:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1686103291; x=1688695291;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j5Cy8tBCL9F/0/npHcEhwYUjt7WcWHdplqXcZoUtV+0=;
+        b=S38JhUY0rjGS8/ejnAM445GcScFR7303fsI7enooXy8aNW0507nQpNQhvO3u3E3lif
+         e60ZRwPp5ITPRpOhi6O7xOnkHrs3vMFzOOaqIzEvAs2Hxy3fCcjCl5yPImkw1L/tuZO3
+         rsgcvEWpJuoUxcbOGL9O4zkuhdrGp/WHrISPsZzNhhNFWYmFj9dsztrtXUgxqcFtpE8I
+         uWGXHvcab1fBbvJZWotAME4Z6VIN2YnnSEjsxv5DF0P3PcXeicy02gd3DQWsYBdR4Y/A
+         FroVS5zqewrJgH81ZL3YfdrvOWUJ98tTmrk04tCNxDyIpeJD1JKKXQvG1IPKG+PqFQPc
+         8PpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686096666; x=1688688666;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vvlqLDNCjcUMI27YWV13I+7apL/AauOa3lyDOfDowi0=;
-        b=FwZBTKleYdgSIPWCHRjq1EKG3S0wWRf3h9OGyswZiTeMKn086xYM8NVoe+rDNmqNyY
-         KsnEthTJzS4P0pa4MjWtA6BjOTABKiL+Usm8PsW1Utjt/7nO6pkOPyTeT8JL7E1AjDvk
-         y/iWCIbLQPiXcydUL6JcnyncWojIFUObnIf7HRZHD8+5D3wbXelV5H79Oc1dGDnSuEms
-         lSxs+m/NAHO1nSjXoq0m66XSeokmz9robD9PKGxDDGgYshGLD/MU3FKVqcBCimpiRHuC
-         ILNZgii6AvS/mjVeJ2FobIPUnMFKhzmep5SDP0XPmxeOa07ijjS7y1SaYhw0ROnFraW8
-         JCgw==
-X-Gm-Message-State: AC+VfDyYeY045ICaX+Ug3g+KSZBMXLLQQUy842RithThs+JDXIebgDoZ
-        NQMB+h95DYUVEv3kzzUYIsoGpCejbWPP5fZ73Ef7NReM+65a
-X-Google-Smtp-Source: ACHHUZ6hxjmjoQBl7YkEjN+gapxJqI8BUJ940W5pnhXmHWFfDg5cj7lkfeTbINmsg/bktA3n/i4kHhung4GEwRq2wA5dsDMl7NsL
+        d=1e100.net; s=20221208; t=1686103291; x=1688695291;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j5Cy8tBCL9F/0/npHcEhwYUjt7WcWHdplqXcZoUtV+0=;
+        b=YRS67cR9qbIo/00jrj9A6yA44gCSsmbl6c+PYpQnwkhMy70A+LQtDyFeE4SJ/1+7pc
+         ma0gsV7P7LNDxZce2BgPrOybArtm4LWqpm6Ew7taanKeEFDMsx6NF19cEUpa0J6isZos
+         0KnToUo4GKQcZ1+J4G80GOu1DX4LmfA+33Lg/OytQBLr6IWHB+x/cHhN4J0gTbhHEn6T
+         TW4Na+1coKpSxssv1IYSGNWVABFOMS7pakDG7Xq692OVG/17ekoTEzYL26PkXepKs05u
+         FvQk98ZTtl2EXy7FKa872JMOmxjcwNxlD4XOKVYr2313YPOVFvjf4H/tCZkvMApvoa2W
+         001A==
+X-Gm-Message-State: AC+VfDwwXmr4HOSbJjwK0ifLzdGZ7lVX78KtCE4MoUdoXGckOMdicqlq
+        zuWlMGKZ+zQeB4EinsVtWfEAww==
+X-Google-Smtp-Source: ACHHUZ5VYVq+3IAbaiVsgoydY4WCLUW/jBSbIonSM1lHWrf78Rur1YGuoiyya2F8GsBWigs9zYnexA==
+X-Received: by 2002:a05:6358:c525:b0:123:4444:e5f8 with SMTP id fb37-20020a056358c52500b001234444e5f8mr141321rwb.18.1686103290958;
+        Tue, 06 Jun 2023 19:01:30 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-79-151.pa.nsw.optusnet.com.au. [49.179.79.151])
+        by smtp.gmail.com with ESMTPSA id q66-20020a17090a1b4800b002533ce5b261sm220132pjq.10.2023.06.06.19.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jun 2023 19:01:29 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q6iUI-008iUT-2e;
+        Wed, 07 Jun 2023 12:01:26 +1000
+Date:   Wed, 7 Jun 2023 12:01:26 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Joe Thornber <thornber@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZH/k9ss2Cg9HYrEV@dread.disaster.area>
+References: <ZHB954zGG1ag0E/t@dread.disaster.area>
+ <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
+ <ZHFEfngPyUOqlthr@dread.disaster.area>
+ <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
+ <ZHYB/6l5Wi+xwkbQ@redhat.com>
+ <CAJ0trDaUOevfiEpXasOESrLHTCcr=oz28ywJU+s+YOiuh7iWow@mail.gmail.com>
+ <ZHYWAGmKhwwmTjW/@redhat.com>
+ <CAG9=OMMnDfN++-bJP3jLmUD6O=Q_ApV5Dr392_5GqsPAi_dDkg@mail.gmail.com>
+ <ZHqOvq3ORETQB31m@dread.disaster.area>
+ <ZHti/MLnX5xGw9b7@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c94a:0:b0:33e:325a:cc11 with SMTP id
- i10-20020a92c94a000000b0033e325acc11mr700329ilq.5.1686096666553; Tue, 06 Jun
- 2023 17:11:06 -0700 (PDT)
-Date:   Tue, 06 Jun 2023 17:11:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ddfe0405fd7ef847@google.com>
-Subject: [syzbot] [ext4?] KASAN: slab-use-after-free Read in __ext4_iget
-From:   syzbot <syzbot+5407ecf3112f882d2ef3@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZHti/MLnX5xGw9b7@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat, Jun 03, 2023 at 11:57:48AM -0400, Mike Snitzer wrote:
+> On Fri, Jun 02 2023 at  8:52P -0400,
+> Dave Chinner <david@fromorbit.com> wrote:
+> 
+> > On Fri, Jun 02, 2023 at 11:44:27AM -0700, Sarthak Kukreti wrote:
+> > > On Tue, May 30, 2023 at 8:28 AM Mike Snitzer <snitzer@kernel.org> wrote:
+> > > >
+> > > > On Tue, May 30 2023 at 10:55P -0400,
+> > > > Joe Thornber <thornber@redhat.com> wrote:
+> > > >
+> > > > > On Tue, May 30, 2023 at 3:02 PM Mike Snitzer <snitzer@kernel.org> wrote:
+> > > > >
+> > > > > >
+> > > > > > Also Joe, for you proposed dm-thinp design where you distinquish
+> > > > > > between "provision" and "reserve": Would it make sense for REQ_META
+> > > > > > (e.g. all XFS metadata) with REQ_PROVISION to be treated as an
+> > > > > > LBA-specific hard request?  Whereas REQ_PROVISION on its own provides
+> > > > > > more freedom to just reserve the length of blocks? (e.g. for XFS
+> > > > > > delalloc where LBA range is unknown, but dm-thinp can be asked to
+> > > > > > reserve space to accomodate it).
+> > > > > >
+> > > > >
+> > > > > My proposal only involves 'reserve'.  Provisioning will be done as part of
+> > > > > the usual io path.
+> > > >
+> > > > OK, I think we'd do well to pin down the top-level block interfaces in
+> > > > question. Because this patchset's block interface patch (2/5) header
+> > > > says:
+> > > >
+> > > > "This patch also adds the capability to call fallocate() in mode 0
+> > > > on block devices, which will send REQ_OP_PROVISION to the block
+> > > > device for the specified range,"
+> > > >
+> > > > So it wires up blkdev_fallocate() to call blkdev_issue_provision(). A
+> > > > user of XFS could then use fallocate() for user data -- which would
+> > > > cause thinp's reserve to _not_ be used for critical metadata.
+> > 
+> > Mike, I think you might have misunderstood what I have been proposing.
+> > Possibly unintentionally, I didn't call it REQ_OP_PROVISION but
+> > that's what I intended - the operation does not contain data at all.
+> > It's an operation like REQ_OP_DISCARD or REQ_OP_WRITE_ZEROS - it
+> > contains a range of sectors that need to be provisioned (or
+> > discarded), and nothing else.
+> 
+> No, I understood that.
+> 
+> > The write IOs themselves are not tagged with anything special at all.
+> 
+> I know, but I've been looking at how to also handle the delalloc
+> usecase (and yes I know you feel it doesn't need handling, the issue
+> is XFS does deal nicely with ensuring it has space when it tracks its
+> allocations on "thick" storage
 
-syzbot found the following issue on:
+Oh, no it doesn't. It -works for most cases-, but that does not mean
+it provides any guarantees at all. We can still get ENOSPC for user
+data when delayed allocation reservations "run out".
 
-HEAD commit:    a4d7d7011219 Merge tag 'spi-fix-v6.4-rc5' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1455f745280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
-dashboard link: https://syzkaller.appspot.com/bug?extid=5407ecf3112f882d2ef3
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+This may be news to you, but the ephemeral XFS delayed allocation
+space reservation is not accurate. It contains a "fudge factor"
+called "indirect length". This is a "wet finger in the wind"
+estimation of how much new metadata will need to be allocated to
+index the physical allocations when they are made. It assumes large
+data extents are allocated, which is good enough for most cases, but
+it is no guarantee when there are no large data extents available to
+allocate (e.g. near ENOSPC!).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+And therein lies the fundamental problem with ephemeral range
+reservations: at the time of reservation, we don't know how many
+individual physical LBA ranges the reserved data range is actually
+going to span.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/dedc2e62381b/disk-a4d7d701.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4809d6c705ea/vmlinux-a4d7d701.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5a89bc184831/bzImage-a4d7d701.xz
+As a result, XFS delalloc reservations are a "close-but-not-quite"
+reservation backed by a global reserve pool that can be dipped into
+if we run out of delalloc reservation. If the reserve pool is then
+fully depleted before all delalloc conversion completes, we'll still
+give ENOSPC. The pool is sized such that the vast majority of
+workloads will complete delalloc conversion successfully before the
+pool is depleted.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5407ecf3112f882d2ef3@syzkaller.appspotmail.com
+Hence XFS gives everyone the -appearance- that it deals nicely with
+ENOSPC conditions, but it never provides a -guarantee- that any
+accepted write will always succeed without ENOSPC.
 
-loop5: detected capacity change from 0 to 2048
-==================================================================
-BUG: KASAN: slab-use-after-free in __ext4_iget+0x2f2/0x3f30 fs/ext4/inode.c:4700
-Read of size 8 at addr ffff888078ca5550 by task syz-executor.5/26112
+IMO, using this "close-but-not-quite" reservation as the basis of
+space requirements for other layers to provide "won't ENOSPC"
+guarantees is fraught with problems. We already know that it is
+insufficient in important corner cases at the filesystem level, and
+we also know that lower layers trying to do ephemeral space
+reservations will have exactly the same problems providing a
+guarantee. And these are problems we've been unable to engineer
+around in the past, so the likelihood we can engineer around them
+now or in the future is also very unlikely.
 
-CPU: 1 PID: 26112 Comm: syz-executor.5 Not tainted 6.4.0-rc5-syzkaller-00016-ga4d7d7011219 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:351 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:462
- kasan_report+0x176/0x1b0 mm/kasan/report.c:572
- __ext4_iget+0x2f2/0x3f30 fs/ext4/inode.c:4700
- __ext4_fill_super fs/ext4/super.c:5446 [inline]
- ext4_fill_super+0x545b/0x6c60 fs/ext4/super.c:5672
- get_tree_bdev+0x405/0x620 fs/super.c:1303
- vfs_get_tree+0x8c/0x270 fs/super.c:1510
- do_new_mount+0x28f/0xae0 fs/namespace.c:3039
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3568
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f2842e8d69a
-Code: 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2843c59f88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00000000000007b1 RCX: 00007f2842e8d69a
-RDX: 0000000020000780 RSI: 0000000020000000 RDI: 00007f2843c59fe0
-RBP: 00007f2843c5a020 R08: 00007f2843c5a020 R09: 0000000002000480
-R10: 0000000002000480 R11: 0000000000000202 R12: 0000000020000780
-R13: 0000000020000000 R14: 00007f2843c59fe0 R15: 00000000200000c0
- </TASK>
+> -- so adding coordination between XFS
+> and dm-thin layers provides comparable safety.. that safety is an
+> expected norm).
+>
+> But rather than discuss in terms of data vs metadata, the distinction
+> is:
+> 1) LBA range reservation (normal case, your proposal)
+> 2) non-LBA reservation (absolute value, LBA range is known at later stage)
+> 
+> But I'm clearly going off script for dwelling on wanting to handle
+> both.
 
-Allocated by task 20729:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:328
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook+0x68/0x3a0 mm/slab.h:711
- slab_alloc_node mm/slub.c:3451 [inline]
- slab_alloc mm/slub.c:3459 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
- kmem_cache_alloc_lru+0x11f/0x2e0 mm/slub.c:3482
- alloc_inode_sb include/linux/fs.h:2705 [inline]
- reiserfs_alloc_inode+0x2a/0xc0 fs/reiserfs/super.c:642
- alloc_inode fs/inode.c:260 [inline]
- iget5_locked+0xa0/0x270 fs/inode.c:1241
- reiserfs_fill_super+0x12e4/0x2620 fs/reiserfs/super.c:2053
- mount_bdev+0x2d0/0x3f0 fs/super.c:1380
- legacy_get_tree+0xef/0x190 fs/fs_context.c:610
- vfs_get_tree+0x8c/0x270 fs/super.c:1510
- do_new_mount+0x28f/0xae0 fs/namespace.c:3039
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3568
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Right, because if we do 1) then we don't need 2). :)
 
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xb0/0xc0 mm/kasan/generic.c:491
- __call_rcu_common kernel/rcu/tree.c:2627 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2741
- dispose_list fs/inode.c:698 [inline]
- evict_inodes+0x5f8/0x690 fs/inode.c:748
- generic_shutdown_super+0x98/0x340 fs/super.c:479
- kill_block_super+0x84/0xf0 fs/super.c:1407
- deactivate_locked_super+0xa4/0x110 fs/super.c:331
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1177
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop+0xd9/0x100 kernel/entry/common.c:171
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:297
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> My looking at (ab)using REQ_META being set (use 1) vs not (use 2) was
+> a crude simplification for branching between the 2 approaches.
+> 
+> And I understand I made you nervous by expanding the scope to a much
+> more muddled/shitty interface. ;)
 
-Second to last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xb0/0xc0 mm/kasan/generic.c:491
- __call_rcu_common kernel/rcu/tree.c:2627 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2741
- dispose_list fs/inode.c:698 [inline]
- evict_inodes+0x5f8/0x690 fs/inode.c:748
- generic_shutdown_super+0x98/0x340 fs/super.c:479
- kill_block_super+0x84/0xf0 fs/super.c:1407
- deactivate_locked_super+0xa4/0x110 fs/super.c:331
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1177
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop+0xd9/0x100 kernel/entry/common.c:171
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:297
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Nervous? No, I'm simply trying to make sure that everyone is on the
+same page. i.e. that if we water down the guarantee that 1) relies
+on, then it's not actually useful to filesystems at all.
 
-The buggy address belongs to the object at ffff888078ca4f80
- which belongs to the cache reiser_inode_cache of size 1568
-The buggy address is located 1488 bytes inside of
- freed 1568-byte region [ffff888078ca4f80, ffff888078ca55a0)
+> > It's just not practical for the block device to add arbitrary
+> > constraints based on the type of IO because we then have to add
+> > mechanisms to userspace APIs to allow them to control the IO context
+> > so the block device will do the right thing. Especially considering
+> > we really only need one type of guarantee regardless of where the IO
+> > originates from or what type of data the IO contains....
+> 
+> If anything my disposition on the conditional to require a REQ_META
+> (or some fallocate generated REQ_UNSHARE ditto to reflect the same) to
+> perform your approach to REQ_OP_PROVISION and honor fallocate()
+> requirements is a big problem.  Would be much better to have a flag to
+> express "this reservation does not have an LBA range _yet_,
+> nevertheless try to be mindful of this expected near-term block
+> allocation".
 
-The buggy address belongs to the physical page:
-page:ffffea0001e32800 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888078ca5cc0 pfn:0x78ca0
-head:ffffea0001e32800 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-memcg:ffff888019f32101
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000010200 ffff8881400cba00 dead000000000122 0000000000000000
-raw: ffff888078ca5cc0 000000008013000a 00000001ffffffff ffff888019f32101
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Reclaimable, gfp_mask 0x1d20d0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL|__GFP_RECLAIMABLE), pid 965, tgid 940 (syz-executor.1), ts 1300044371541, free_ts 1155942618814
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1731
- prep_new_page mm/page_alloc.c:1738 [inline]
- get_page_from_freelist+0x321c/0x33a0 mm/page_alloc.c:3502
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4768
- alloc_slab_page+0x6a/0x160 mm/slub.c:1851
- allocate_slab mm/slub.c:1998 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2051
- ___slab_alloc+0xa85/0x10a0 mm/slub.c:3192
- __slab_alloc mm/slub.c:3291 [inline]
- __slab_alloc_node mm/slub.c:3344 [inline]
- slab_alloc_node mm/slub.c:3441 [inline]
- slab_alloc mm/slub.c:3459 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
- kmem_cache_alloc_lru+0x1b9/0x2e0 mm/slub.c:3482
- alloc_inode_sb include/linux/fs.h:2705 [inline]
- reiserfs_alloc_inode+0x2a/0xc0 fs/reiserfs/super.c:642
- alloc_inode fs/inode.c:260 [inline]
- new_inode_pseudo+0x65/0x1d0 fs/inode.c:1018
- new_inode+0x29/0x1d0 fs/inode.c:1046
- reiserfs_create+0x182/0x6e0 fs/reiserfs/namei.c:641
- lookup_open fs/namei.c:3492 [inline]
- open_last_lookups fs/namei.c:3560 [inline]
- path_openat+0x13df/0x3170 fs/namei.c:3788
- do_filp_open+0x234/0x490 fs/namei.c:3818
- do_sys_openat2+0x13f/0x500 fs/open.c:1356
- do_sys_open fs/open.c:1372 [inline]
- __do_sys_open fs/open.c:1380 [inline]
- __se_sys_open fs/open.c:1376 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1376
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1302 [inline]
- free_unref_page_prepare+0x903/0xa30 mm/page_alloc.c:2564
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2659
- qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook+0x68/0x3a0 mm/slab.h:711
- slab_alloc_node mm/slub.c:3451 [inline]
- slab_alloc mm/slub.c:3459 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
- kmem_cache_alloc+0x11f/0x2e0 mm/slub.c:3475
- getname_flags+0xbc/0x4e0 fs/namei.c:140
- getname fs/namei.c:219 [inline]
- __do_sys_mkdirat fs/namei.c:4153 [inline]
- __se_sys_mkdirat fs/namei.c:4151 [inline]
- __x64_sys_mkdirat+0x7c/0xa0 fs/namei.c:4151
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+And that's where all the complexity starts ;)
 
-Memory state around the buggy address:
- ffff888078ca5400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888078ca5480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888078ca5500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                 ^
- ffff888078ca5580: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888078ca5600: fc fc fc fc 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+> > Put simply: if we restrict REQ_OP_PROVISION guarantees to just
+> > REQ_META writes (or any other specific type of write operation) then
+> > it's simply not worth persuing at the filesystem level because the
+> > guarantees we actually need just aren't there and the complexity of
+> > discovering and handling those corner cases just isn't worth the
+> > effort.
+> 
+> Here is where I get to say: I think you misunderstood me (but it was
+> my fault for not being absolutely clear: I'm very much on the same
+> page as you and Joe; and your visions need to just be implemented
+> ASAP).
 
+OK, good that we've clarified the misunderstandings on both sides
+quickly :)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> I was taking your designs as a given, but looking further at: how do
+> we also handle the non-LBA (delalloc) usecase _before_ we include
+> REQ_OP_PROVISION in kernel.
+> 
+> But I'm happy to let the delalloc case go (we can revisit addressing
+> it if/when needed).
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Again, I really don't think filesystem delalloc ranges ever need to
+be covered by block device provisioning guarantees because the
+filesystem itself provides no guarantees for unprovisioned writes.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I suspect that if, in future, we want to manage unprovisioned space
+in different ways, we're better off taking this sort of approach:
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+https://lore.kernel.org/linux-xfs/20171026083322.20428-1-david@fromorbit.com/
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+because using grow/shrink to manage the filesystem's unprovisioned
+space if far, far simpler than trying to use dynamic, cross layer
+ephemeral reservations.  Indeed, with the block device filesystem
+shutdown path Christoph recently posted, we have a model for adding
+in-kernel filesystem control interfaces for block devices...
 
-If you want to undo deduplication, reply with:
-#syz undup
+There's something to be said for turning everything upside down
+occasionally. :)
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
