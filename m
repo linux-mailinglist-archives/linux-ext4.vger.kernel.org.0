@@ -2,61 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810277272F1
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jun 2023 01:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C07727353
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jun 2023 01:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbjFGX2P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jun 2023 19:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
+        id S232210AbjFGXvK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jun 2023 19:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjFGX2O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 19:28:14 -0400
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BDB2684
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 16:27:27 -0700 (PDT)
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-3f7a546efb1so7631cf.2
-        for <linux-ext4@vger.kernel.org>; Wed, 07 Jun 2023 16:27:27 -0700 (PDT)
+        with ESMTP id S232152AbjFGXvJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 19:51:09 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E38A269A
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 16:50:28 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-75ec7e8e826so14785a.0
+        for <linux-ext4@vger.kernel.org>; Wed, 07 Jun 2023 16:50:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686180446; x=1688772446;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=voj5Mda8Zfoqf83eL6TpEP6bEfS34qzT4ho4GEckRy8=;
-        b=ixDN5bYNQ1YVF4uYcfMnP9az5vVMlruwnopCnBYoV7O0wZpkAv8IuyLE2q035UPus9
-         mkPljT7YH9XxwO1LKJOh5SoiWW725SqaejkOKSLvHANBJCl+uJs549NsCV860j8fwSti
-         D/DzKWshwiacumwfzLHlwLsxbivWnIkPIe9kGk0rE5T41idzjRnUWZHpWmKSp0KWGlLm
-         mnM8Iw0AC5ljHTPzhO6uQ16my8QQqoMdVwAxHCHX3cwEEIiTbriPLJC2WFdszpX0vmB+
-         AS+q4Sw+fKE5DV61DS8YZhggBI4MWR7InYepHVZM43JJaB2U0pxrWYbpL2YAl8H62FUJ
-         MYEw==
-X-Gm-Message-State: AC+VfDwtWjLQUpZF8nCTCXPw3iVVA6q3LIWyDmaQeYxVqVkTsK4k6tyN
-        5MCbxuv4WMkR8lQ5l74WKeYx
-X-Google-Smtp-Source: ACHHUZ6bssYu3BmODSfk7D3JoJ9AovgnvY3uNrvFLLvCnNUVf2dqD8Ue69PPoyqRe4HMmDod3/Cmnw==
-X-Received: by 2002:ac8:5c16:0:b0:3d8:2352:a661 with SMTP id i22-20020ac85c16000000b003d82352a661mr6003241qti.3.1686180446161;
-        Wed, 07 Jun 2023 16:27:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686181827; x=1688773827;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mhikzEBmpROllrpUkG6N5rn5swH/R/MkyomEPj+0LRU=;
+        b=EOMLNegm10vwQVG7j1m6pqxPTAjwPaOt85/zuyvV87l1brn4F+ma9y0PY0ZlWp/0wt
+         9BmU5kBi0RzPA0mTAZQndSEShFci5yHQjaAtW1DIwoKVHD1Q18u2sarOp/BW9Alkslvr
+         OT7xe4HDglvY4QAHWmTb7pDLm40JzXW60X7GguZHC6MTpLFShp+D2v+PIq+oehv9WP8z
+         CSfazvUdHpG42jardhsV841DdBiRUpWHScnjGbiSJyJKK6bjPhWnm6hd3n1q98dxY4e+
+         x/tkK2JvTOlQxC1p2CAq76TBqqM14818XcWwAJ0j4ZQWJXqo9WwxMy+W6Lm/o4p9sEMj
+         gE0A==
+X-Gm-Message-State: AC+VfDwI2zKl1M+SJDS2lLmcHLF/K/SThBHcIMS/H/wkmRF7DjZPho8A
+        9f5eoZecoe3bbPnEn5LTpvXY
+X-Google-Smtp-Source: ACHHUZ6y+cOL+ZxgisiLenJjAOucQc9Wtuow/WkgwMRhUI55SkTWbqnmzTclMfUHnNVFzRSWwX/5Nw==
+X-Received: by 2002:a05:620a:2b4b:b0:75b:23a1:3651 with SMTP id dp11-20020a05620a2b4b00b0075b23a13651mr4139465qkb.18.1686181827499;
+        Wed, 07 Jun 2023 16:50:27 -0700 (PDT)
 Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id i9-20020ac84f49000000b003f018e18c35sm286121qtw.27.2023.06.07.16.27.25
+        by smtp.gmail.com with ESMTPSA id x12-20020ae9f80c000000b0075ca4cd03d4sm245229qkh.64.2023.06.07.16.50.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 16:27:25 -0700 (PDT)
-Date:   Wed, 7 Jun 2023 19:27:24 -0400
+        Wed, 07 Jun 2023 16:50:27 -0700 (PDT)
+Date:   Wed, 7 Jun 2023 19:50:25 -0400
 From:   Mike Snitzer <snitzer@kernel.org>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+To:     Dave Chinner <david@fromorbit.com>
 Cc:     Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Joe Thornber <thornber@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Jason Wang <jasowang@redhat.com>,
         Bart Van Assche <bvanassche@google.com>,
-        Dave Chinner <david@fromorbit.com>,
         linux-kernel@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
         linux-block@vger.kernel.org, dm-devel@redhat.com,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
         linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
         linux-ext4@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
         Alasdair Kergon <agk@redhat.com>
 Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
-Message-ID: <ZIESXNF5anyvJEjm@redhat.com>
+Message-ID: <ZIEXwTd17z0iYW4s@redhat.com>
 References: <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
  <ZHFEfngPyUOqlthr@dread.disaster.area>
  <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
@@ -66,12 +66,11 @@ References: <CAJ0trDbspRaDKzTzTjFdPHdB9n0Q9unfu1cEk8giTWoNu3jP8g@mail.gmail.com>
  <CAG9=OMMnDfN++-bJP3jLmUD6O=Q_ApV5Dr392_5GqsPAi_dDkg@mail.gmail.com>
  <ZHqOvq3ORETQB31m@dread.disaster.area>
  <ZHti/MLnX5xGw9b7@redhat.com>
- <CAG9=OMNv80fOyVixEY01XESnOFzYyfj9j8etHMq_Ap52z4UWNQ@mail.gmail.com>
+ <ZH/k9ss2Cg9HYrEV@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMNv80fOyVixEY01XESnOFzYyfj9j8etHMq_Ap52z4UWNQ@mail.gmail.com>
+In-Reply-To: <ZH/k9ss2Cg9HYrEV@dread.disaster.area>
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
@@ -82,55 +81,126 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 05 2023 at  5:14P -0400,
-Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
+On Tue, Jun 06 2023 at 10:01P -0400,
+Dave Chinner <david@fromorbit.com> wrote:
 
-> On Sat, Jun 3, 2023 at 8:57 AM Mike Snitzer <snitzer@kernel.org> wrote:
+> On Sat, Jun 03, 2023 at 11:57:48AM -0400, Mike Snitzer wrote:
+> > On Fri, Jun 02 2023 at  8:52P -0400,
+> > Dave Chinner <david@fromorbit.com> wrote:
+> > 
+> > > Mike, I think you might have misunderstood what I have been proposing.
+> > > Possibly unintentionally, I didn't call it REQ_OP_PROVISION but
+> > > that's what I intended - the operation does not contain data at all.
+> > > It's an operation like REQ_OP_DISCARD or REQ_OP_WRITE_ZEROS - it
+> > > contains a range of sectors that need to be provisioned (or
+> > > discarded), and nothing else.
+> > 
+> > No, I understood that.
+> > 
+> > > The write IOs themselves are not tagged with anything special at all.
+> > 
+> > I know, but I've been looking at how to also handle the delalloc
+> > usecase (and yes I know you feel it doesn't need handling, the issue
+> > is XFS does deal nicely with ensuring it has space when it tracks its
+> > allocations on "thick" storage
+> 
+> Oh, no it doesn't. It -works for most cases-, but that does not mean
+> it provides any guarantees at all. We can still get ENOSPC for user
+> data when delayed allocation reservations "run out".
+> 
+> This may be news to you, but the ephemeral XFS delayed allocation
+> space reservation is not accurate. It contains a "fudge factor"
+> called "indirect length". This is a "wet finger in the wind"
+> estimation of how much new metadata will need to be allocated to
+> index the physical allocations when they are made. It assumes large
+> data extents are allocated, which is good enough for most cases, but
+> it is no guarantee when there are no large data extents available to
+> allocate (e.g. near ENOSPC!).
+> 
+> And therein lies the fundamental problem with ephemeral range
+> reservations: at the time of reservation, we don't know how many
+> individual physical LBA ranges the reserved data range is actually
+> going to span.
+> 
+> As a result, XFS delalloc reservations are a "close-but-not-quite"
+> reservation backed by a global reserve pool that can be dipped into
+> if we run out of delalloc reservation. If the reserve pool is then
+> fully depleted before all delalloc conversion completes, we'll still
+> give ENOSPC. The pool is sized such that the vast majority of
+> workloads will complete delalloc conversion successfully before the
+> pool is depleted.
+> 
+> Hence XFS gives everyone the -appearance- that it deals nicely with
+> ENOSPC conditions, but it never provides a -guarantee- that any
+> accepted write will always succeed without ENOSPC.
+> 
+> IMO, using this "close-but-not-quite" reservation as the basis of
+> space requirements for other layers to provide "won't ENOSPC"
+> guarantees is fraught with problems. We already know that it is
+> insufficient in important corner cases at the filesystem level, and
+> we also know that lower layers trying to do ephemeral space
+> reservations will have exactly the same problems providing a
+> guarantee. And these are problems we've been unable to engineer
+> around in the past, so the likelihood we can engineer around them
+> now or in the future is also very unlikely.
+
+Thanks for clarifying. Wasn't aware of XFS delalloc's "wet finger in
+the air" ;)
+
+So do you think it reasonable to require applications to fallocate
+their data files? Unaware if users are aware to take that extra step.
+
+> > -- so adding coordination between XFS
+> > and dm-thin layers provides comparable safety.. that safety is an
+> > expected norm).
 > >
-> > We all just need to focus on your proposal and Joe's dm-thin
-> > reservation design...
-> >
-> > [Sarthak: FYI, this implies that it doesn't really make sense to add
-> > dm-thinp support before Joe's design is implemented.  Otherwise we'll
-> > have 2 different responses to REQ_OP_PROVISION.  The one that is
-> > captured in your patchset isn't adequate to properly handle ensuring
-> > upper layer (like XFS) can depend on the space being available across
-> > snapshot boundaries.]
-> >
-> Ack. Would it be premature for the rest of the series to go through
-> (REQ_OP_PROVISION + support for loop and non-dm-thinp device-mapper
-> targets)? I'd like to start using this as a reference to suggest
-> additions to the virtio-spec for virtio-blk support and start looking
-> at what an ext4 implementation would look like.
+> > But rather than discuss in terms of data vs metadata, the distinction
+> > is:
+> > 1) LBA range reservation (normal case, your proposal)
+> > 2) non-LBA reservation (absolute value, LBA range is known at later stage)
+> > 
+> > But I'm clearly going off script for dwelling on wanting to handle
+> > both.
+> 
+> Right, because if we do 1) then we don't need 2). :)
 
-Please drop the dm-thin.c and dm-snap.c changes.  dm-snap.c would need
-more work to provide the type of guarantee XFS requires across
-snapshot boundaries. I'm inclined to _not_ add dm-snap.c support
-because it is best to just use dm-thin.
+Sure.
 
-And FYI even your dm-thin patch will be the starting point for the
-dm-thin support (we'll keep attribution to you for all the code in a
-separate patch).
+> > My looking at (ab)using REQ_META being set (use 1) vs not (use 2) was
+> > a crude simplification for branching between the 2 approaches.
+> > 
+> > And I understand I made you nervous by expanding the scope to a much
+> > more muddled/shitty interface. ;)
+> 
+> Nervous? No, I'm simply trying to make sure that everyone is on the
+> same page. i.e. that if we water down the guarantee that 1) relies
+> on, then it's not actually useful to filesystems at all.
 
-> Fair points, I certainly don't want to derail this conversation; I'd
-> be happy to see this work merged sooner rather than later.
+Yeah, makes sense.
+ 
+> > > Put simply: if we restrict REQ_OP_PROVISION guarantees to just
+> > > REQ_META writes (or any other specific type of write operation) then
+> > > it's simply not worth persuing at the filesystem level because the
+> > > guarantees we actually need just aren't there and the complexity of
+> > > discovering and handling those corner cases just isn't worth the
+> > > effort.
+> > 
+> > Here is where I get to say: I think you misunderstood me (but it was
+> > my fault for not being absolutely clear: I'm very much on the same
+> > page as you and Joe; and your visions need to just be implemented
+> > ASAP).
+> 
+> OK, good that we've clarified the misunderstandings on both sides
+> quickly :)
 
-Once those dm target changes are dropped I think the rest of the
-series is fine to go upstream now.  Feel free to post a v8.
+Do you think you're OK to scope out, and/or implement, the XFS changes
+if you use v7 of this patchset as the starting point? (v8 should just
+be v7 minus the dm-thin.c and dm-snap.c changes).  The thinp
+support in v7 will work enough to allow XFS to issue REQ_OP_PROVISION
+and/or fallocate (via mkfs.xfs) to dm-thin devices.
 
-> For posterity, I'll distill what I said above into the following: I'd like
-> a capability for userspace to create thin snapshots that ignore the
-> thin volume's provisioned areas. IOW, an opt-in flag which makes
-> snapshots fallback to what they do today to provide flexibility to
-> userspace to decide the space requirements for the above mentioned
-> scenarios, and at the same time, not adding separate corner case
-> handling for filesystems. But to reiterate, my intent isn't to pile
-> this onto the work you, Mike and Joe have planned; just some insight
-> into why I'm in favor of ideas that reduce the snapshot size.
+And Joe and I can make independent progress on the dm-thin.c changes
+needed to ensure the REQ_OP_PROVISION gaurantee you need.
 
-I think it'd be useful to ignore a thin device's reservation for
-read-only snapshots.  Adding the ability to create read-only thin
-snapshots could make sense (later activations don't necessarily need
-to impose read-only, doing so would require some additional work).
-
+Thanks,
 Mike
