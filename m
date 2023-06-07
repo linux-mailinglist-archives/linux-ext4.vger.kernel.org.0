@@ -2,162 +2,307 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ECE7253B2
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 07:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDB47257A8
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 10:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjFGFvf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jun 2023 01:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        id S234020AbjFGIaZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jun 2023 04:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjFGFve (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 01:51:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBCA19AE;
-        Tue,  6 Jun 2023 22:51:33 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6af6de9fb74so5938194a34.2;
-        Tue, 06 Jun 2023 22:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686117092; x=1688709092;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O3rI6tnKxeARgopgF90YS7donPiDWh6Vu53ylR5OXg0=;
-        b=RmvWZQGtP3jLhos9gsUInx2oe9IIbwa3hwfhmzyWvsmnfF1tWBrX//YjcuHLCP7thf
-         BWk0scuAgJcutm2KIODyLq/Wt0CkMaDYBhmbrDMrarZ2ug9zGrfGkTgG383aEL9RDCYL
-         C7qU7KrWIs17ivI4/nMMuntO6vETS3JvQD8rnC8JMLG/oXYPi47K8fA0EEfZqHvM2Bw+
-         eHlJ5Jb2AEbc6hJcU+twVMSXXcs3q6R27Ott8mrAxYjB82Au7B11UImg3do/VnGxGy+c
-         czjsAFbihTl6iEybH8rzaHvTAfgPQTgo3+Ou0GAc1Qgh9XebDjacpVL5tWpcmd7cG9i9
-         vsYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686117092; x=1688709092;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=O3rI6tnKxeARgopgF90YS7donPiDWh6Vu53ylR5OXg0=;
-        b=GVpbo6uFJ3V2rcjUszMuGObXREFSRtUvvYQb35Qf9B9gtCEDY3KlnAmWrDhTKHgrmn
-         AgV0luHevHFUFvzW/DBKk6Q4LChTN5gG08eKrPLHly6J+Q4X8czDltJ7zwRoIMjOko2D
-         8XOn+aYQRdgpk4dzzqNv8K4TASR7dwe0hfgZYUKzki/5z1wWgTfAiyKz/RotsY2pbILr
-         LiOb8J881OQ2W1gdwxzD1ZPHYyjNSc8EtAa/1TVselH98C1frDGTZqrRh3eMlDDKLh6h
-         o8wdYbXn1zGJblODUdR7zW/5SprodtBLht5DPvZAKAvy7cGBM8ZZn4roMxUqjAms505Z
-         6fcA==
-X-Gm-Message-State: AC+VfDxDI2wekdOUp8QJLyyiw+c8L6QA9qF9X/bi1YB39HjrnjHGWIrw
-        wOPy++EZOv4EWqDd+VFETg4=
-X-Google-Smtp-Source: ACHHUZ7/d1dW7bob/8me+LolHy42civ7LW00G+Fcu7tlgp7+UFl1XGjOs3bfDFoj7EMeVlx+DOHOXg==
-X-Received: by 2002:a05:6830:13c9:b0:6ab:1b58:f408 with SMTP id e9-20020a05683013c900b006ab1b58f408mr3853451otq.19.1686117092582;
-        Tue, 06 Jun 2023 22:51:32 -0700 (PDT)
-Received: from [192.168.43.80] (subs28-116-206-12-58.three.co.id. [116.206.12.58])
-        by smtp.gmail.com with ESMTPSA id b16-20020aa78110000000b00660d80087a8sm1750425pfi.187.2023.06.06.22.51.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jun 2023 22:51:32 -0700 (PDT)
-Message-ID: <653b3359-2005-21b1-039d-c55ca4cffdcc@gmail.com>
-Date:   Wed, 7 Jun 2023 12:51:26 +0700
+        with ESMTP id S235660AbjFGIaY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 04:30:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC9E83
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 01:30:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E739F219F2;
+        Wed,  7 Jun 2023 08:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686126621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xfz8P5aKBwf077U7hT94NxYJ+Wqgu9Gn7nRQzJPP744=;
+        b=2C52cLyex1MbXWjnsgqb28DJlRErG5PoAZzosQm5cghlNfxg5kQEOLOnQEgWXmvVBbQYLd
+        O8k+8D+olRYW+S3wEZDbzkWEVsepXsl9n+/JtmSGkITI5NDpaRuJL/xD2jll6Ach6TnYxT
+        eT8rk2bLbh5h2F8Q9tJM++0ammZgT/U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686126621;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xfz8P5aKBwf077U7hT94NxYJ+Wqgu9Gn7nRQzJPP744=;
+        b=7Zg599glXu1PZ0WLiph7+dAurQIHPY1Dxp/mdgToUhbd2slgmCZQDRpKbllWWdB9TXof6s
+        zm70hgGVFDIR5HDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D38541346D;
+        Wed,  7 Jun 2023 08:30:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KGaaMx1AgGRZQAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 07 Jun 2023 08:30:21 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 58F24A0754; Wed,  7 Jun 2023 10:30:21 +0200 (CEST)
+Date:   Wed, 7 Jun 2023 10:30:21 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zhang Yi <yi.zhang@huaweicloud.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
+        yukuai3@huawei.com, chengzhihao1@huawei.com
+Subject: Re: [PATCH v3 3/6] jbd2: remove journal_clean_one_cp_list()
+Message-ID: <20230607083021.l7d4gfa53yl3heka@quack3>
+References: <20230606135928.434610-1-yi.zhang@huaweicloud.com>
+ <20230606135928.434610-4-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ext4 Development <linux-ext4@vger.kernel.org>,
-        Nikolas Kraetzschmar <nikolas.kraetzschmar@sap.com>,
-        Linux Stable <stable@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Remounting ext4 filesystem from ro to rw fails when quotas are
- enabled
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230606135928.434610-4-yi.zhang@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Tue 06-06-23 21:59:25, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> journal_clean_one_cp_list() and journal_shrink_one_cp_list() are almost
+> the same, so merge them into journal_shrink_one_cp_list(), remove the
+> nr_to_scan parameter, always scan and try to free the whole checkpoint
+> list.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+Looks good to me. Feel free to add:
 
-> Since commit a44be64, remounting a read-only ext4 filesystem to become read-write fails when quotas are enabled. The mount syscall returns -EROFS and outputs the following in dmesg:
-> 
-> ```
-> EXT4-fs warning (device loop0): ext4_enable_quotas:7028: Failed to enable quota tracking (type=0, err=-30, ino=3). Please run e2fsck
-> ```
-> 
-> 
-> Root cause
-> 
-> The problem can be traced back to the changes introduced in commit a44be64. It appears that the issue arises because the SB_RDONLY bit of the s_flags field is now only cleared after executing the ext4_enable_quotas function. However, the vfs_setup_quota_inode function, called by ext4_enable_quotas, checks whether this bit is set (fs/quota/dquot.c:2331):
-> 
-> ```
-> if (IS_RDONLY(inode))
-> 	return -EROFS;
-> ```
-> 
-> This condition therefore always triggers the -EROFS fail condition.
-> 
-> 
-> Steps to Reproduce
-> 
-> The bug can be reproduced by executing the following script on a current mainline kernel with defconfig:
-> 
-> ```
-> #!/bin/bash
-> 
-> set -ex
-> 
-> truncate -s 1G /tmp/img
-> mkfs.ext4 /tmp/img
-> tune2fs -Q usrquota,grpquota,prjquota /tmp/img
-> losetup /dev/loop0 /tmp/img
-> mount -o ro /dev/loop0 /mnt
-> mount -o remount,rw /mnt
-> ```
-> 
-> Executing the script results in the following output:
-> 
-> ```
-> + truncate -s 1G /tmp/img
-> + mkfs.ext4 /tmp/img
-> mke2fs 1.47.0 (5-Feb-2023)
-> Discarding device blocks: done
-> Creating filesystem with 262144 4k blocks and 65536 inodes
-> Filesystem UUID: b96a3da2-043f-11ee-b6f0-47c69db05231
-> Superblock backups stored on blocks:
-> 	32768, 98304, 163840, 229376
-> 
-> Allocating group tables: done
-> Writing inode tables: done
-> Creating journal (8192 blocks): done
-> Writing superblocks and filesystem accounting information: done
-> 
-> + tune2fs -Q usrquota,grpquota,prjquota /tmp/img
-> tune2fs 1.47.0 (5-Feb-2023)
-> + losetup /dev/loop0 /tmp/img
-> [    6.766763] loop0: detected capacity change from 0 to 2097152
-> + mount -o ro /dev/loop0 /mnt
-> [    6.791561] EXT4-fs (loop0): mounted filesystem b96a3da2-043f-11ee-b6f0-47c69db05231 ro with ordered data mode. Quota mode: journalled.
-> + mount -o remount,rw /mnt
-> [    6.805546] EXT4-fs warning (device loop0): ext4_enable_quotas:7028: Failed to enable quota tracking (type=0, err=-30, ino=3). Please run e2fsck to fix.
-> mount: /mnt: cannot remount /dev/loop0 read-write, is write-protected.
->        dmesg(1) may have more information after failed mount system call.
-> ```
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-See Bugzilla for the full thread.
+								Honza
 
-Ted, it looks like this regression is caused by your ext4_xattr_block_set()
-fix to earlier syzbot report. Would you like to take a look on it?
-
-Anyway, I'm adding it to regzbot:
-
-#regzbot introduced: a44be64bbecb15 https://bugzilla.kernel.org/show_bug.cgi?id=217529
-#regzbot title: Remounting ext4 filesystem from ro to rw fails when quotas are enabled
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217529
-
+> ---
+>  fs/jbd2/checkpoint.c        | 75 +++++++++----------------------------
+>  include/trace/events/jbd2.h | 12 ++----
+>  2 files changed, 21 insertions(+), 66 deletions(-)
+> 
+> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+> index 55d6efdbea64..b94f847960c2 100644
+> --- a/fs/jbd2/checkpoint.c
+> +++ b/fs/jbd2/checkpoint.c
+> @@ -347,50 +347,10 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
+>  
+>  /* Checkpoint list management */
+>  
+> -/*
+> - * journal_clean_one_cp_list
+> - *
+> - * Find all the written-back checkpoint buffers in the given list and
+> - * release them. If 'destroy' is set, clean all buffers unconditionally.
+> - *
+> - * Called with j_list_lock held.
+> - * Returns 1 if we freed the transaction, 0 otherwise.
+> - */
+> -static int journal_clean_one_cp_list(struct journal_head *jh, bool destroy)
+> -{
+> -	struct journal_head *last_jh;
+> -	struct journal_head *next_jh = jh;
+> -
+> -	if (!jh)
+> -		return 0;
+> -
+> -	last_jh = jh->b_cpprev;
+> -	do {
+> -		jh = next_jh;
+> -		next_jh = jh->b_cpnext;
+> -
+> -		if (!destroy && __cp_buffer_busy(jh))
+> -			return 0;
+> -
+> -		if (__jbd2_journal_remove_checkpoint(jh))
+> -			return 1;
+> -		/*
+> -		 * This function only frees up some memory
+> -		 * if possible so we dont have an obligation
+> -		 * to finish processing. Bail out if preemption
+> -		 * requested:
+> -		 */
+> -		if (need_resched())
+> -			return 0;
+> -	} while (jh != last_jh);
+> -
+> -	return 0;
+> -}
+> -
+>  /*
+>   * journal_shrink_one_cp_list
+>   *
+> - * Find 'nr_to_scan' written-back checkpoint buffers in the given list
+> + * Find all the written-back checkpoint buffers in the given list
+>   * and try to release them. If the whole transaction is released, set
+>   * the 'released' parameter. Return the number of released checkpointed
+>   * buffers.
+> @@ -398,15 +358,15 @@ static int journal_clean_one_cp_list(struct journal_head *jh, bool destroy)
+>   * Called with j_list_lock held.
+>   */
+>  static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
+> -						unsigned long *nr_to_scan,
+> -						bool *released)
+> +						bool destroy, bool *released)
+>  {
+>  	struct journal_head *last_jh;
+>  	struct journal_head *next_jh = jh;
+>  	unsigned long nr_freed = 0;
+>  	int ret;
+>  
+> -	if (!jh || *nr_to_scan == 0)
+> +	*released = false;
+> +	if (!jh)
+>  		return 0;
+>  
+>  	last_jh = jh->b_cpprev;
+> @@ -414,8 +374,7 @@ static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
+>  		jh = next_jh;
+>  		next_jh = jh->b_cpnext;
+>  
+> -		(*nr_to_scan)--;
+> -		if (__cp_buffer_busy(jh))
+> +		if (!destroy && __cp_buffer_busy(jh))
+>  			continue;
+>  
+>  		nr_freed++;
+> @@ -427,7 +386,7 @@ static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
+>  
+>  		if (need_resched())
+>  			break;
+> -	} while (jh != last_jh && *nr_to_scan);
+> +	} while (jh != last_jh);
+>  
+>  	return nr_freed;
+>  }
+> @@ -445,11 +404,11 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+>  						  unsigned long *nr_to_scan)
+>  {
+>  	transaction_t *transaction, *last_transaction, *next_transaction;
+> -	bool released;
+> +	bool __maybe_unused released;
+>  	tid_t first_tid = 0, last_tid = 0, next_tid = 0;
+>  	tid_t tid = 0;
+>  	unsigned long nr_freed = 0;
+> -	unsigned long nr_scanned = *nr_to_scan;
+> +	unsigned long freed;
+>  
+>  again:
+>  	spin_lock(&journal->j_list_lock);
+> @@ -478,10 +437,11 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+>  		transaction = next_transaction;
+>  		next_transaction = transaction->t_cpnext;
+>  		tid = transaction->t_tid;
+> -		released = false;
+>  
+> -		nr_freed += journal_shrink_one_cp_list(transaction->t_checkpoint_list,
+> -						       nr_to_scan, &released);
+> +		freed = journal_shrink_one_cp_list(transaction->t_checkpoint_list,
+> +						   false, &released);
+> +		nr_freed += freed;
+> +		(*nr_to_scan) -= min(*nr_to_scan, freed);
+>  		if (*nr_to_scan == 0)
+>  			break;
+>  		if (need_resched() || spin_needbreak(&journal->j_list_lock))
+> @@ -502,9 +462,8 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+>  	if (*nr_to_scan && next_tid)
+>  		goto again;
+>  out:
+> -	nr_scanned -= *nr_to_scan;
+>  	trace_jbd2_shrink_checkpoint_list(journal, first_tid, tid, last_tid,
+> -					  nr_freed, nr_scanned, next_tid);
+> +					  nr_freed, next_tid);
+>  
+>  	return nr_freed;
+>  }
+> @@ -520,7 +479,7 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+>  void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
+>  {
+>  	transaction_t *transaction, *last_transaction, *next_transaction;
+> -	int ret;
+> +	bool released;
+>  
+>  	transaction = journal->j_checkpoint_transactions;
+>  	if (!transaction)
+> @@ -531,8 +490,8 @@ void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
+>  	do {
+>  		transaction = next_transaction;
+>  		next_transaction = transaction->t_cpnext;
+> -		ret = journal_clean_one_cp_list(transaction->t_checkpoint_list,
+> -						destroy);
+> +		journal_shrink_one_cp_list(transaction->t_checkpoint_list,
+> +					   destroy, &released);
+>  		/*
+>  		 * This function only frees up some memory if possible so we
+>  		 * dont have an obligation to finish processing. Bail out if
+> @@ -545,7 +504,7 @@ void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
+>  		 * avoids pointless scanning of transactions which still
+>  		 * weren't checkpointed.
+>  		 */
+> -		if (!ret)
+> +		if (!released)
+>  			return;
+>  	} while (transaction != last_transaction);
+>  }
+> diff --git a/include/trace/events/jbd2.h b/include/trace/events/jbd2.h
+> index 8f5ee380d309..5646ae15a957 100644
+> --- a/include/trace/events/jbd2.h
+> +++ b/include/trace/events/jbd2.h
+> @@ -462,11 +462,9 @@ TRACE_EVENT(jbd2_shrink_scan_exit,
+>  TRACE_EVENT(jbd2_shrink_checkpoint_list,
+>  
+>  	TP_PROTO(journal_t *journal, tid_t first_tid, tid_t tid, tid_t last_tid,
+> -		 unsigned long nr_freed, unsigned long nr_scanned,
+> -		 tid_t next_tid),
+> +		 unsigned long nr_freed, tid_t next_tid),
+>  
+> -	TP_ARGS(journal, first_tid, tid, last_tid, nr_freed,
+> -		nr_scanned, next_tid),
+> +	TP_ARGS(journal, first_tid, tid, last_tid, nr_freed, next_tid),
+>  
+>  	TP_STRUCT__entry(
+>  		__field(dev_t, dev)
+> @@ -474,7 +472,6 @@ TRACE_EVENT(jbd2_shrink_checkpoint_list,
+>  		__field(tid_t, tid)
+>  		__field(tid_t, last_tid)
+>  		__field(unsigned long, nr_freed)
+> -		__field(unsigned long, nr_scanned)
+>  		__field(tid_t, next_tid)
+>  	),
+>  
+> @@ -484,15 +481,14 @@ TRACE_EVENT(jbd2_shrink_checkpoint_list,
+>  		__entry->tid		= tid;
+>  		__entry->last_tid	= last_tid;
+>  		__entry->nr_freed	= nr_freed;
+> -		__entry->nr_scanned	= nr_scanned;
+>  		__entry->next_tid	= next_tid;
+>  	),
+>  
+>  	TP_printk("dev %d,%d shrink transaction %u-%u(%u) freed %lu "
+> -		  "scanned %lu next transaction %u",
+> +		  "next transaction %u",
+>  		  MAJOR(__entry->dev), MINOR(__entry->dev),
+>  		  __entry->first_tid, __entry->tid, __entry->last_tid,
+> -		  __entry->nr_freed, __entry->nr_scanned, __entry->next_tid)
+> +		  __entry->nr_freed, __entry->next_tid)
+>  );
+>  
+>  #endif /* _TRACE_JBD2_H */
+> -- 
+> 2.31.1
+> 
 -- 
-An old man doll... just what I always wanted! - Clara
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
