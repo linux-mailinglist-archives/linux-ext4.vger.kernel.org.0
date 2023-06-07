@@ -2,103 +2,181 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265CF7259D6
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 11:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5D4725B7C
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 12:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239875AbjFGJOg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jun 2023 05:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S234667AbjFGKVJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jun 2023 06:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239900AbjFGJOQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 05:14:16 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EDC19B6
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 02:13:38 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QbhNH6dVCzqTRg;
-        Wed,  7 Jun 2023 17:08:47 +0800 (CST)
-Received: from [10.174.179.254] (10.174.179.254) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 7 Jun 2023 17:13:35 +0800
-Subject: Re: [PATCH] tune2fs: check whether filesystem is in use for I_flag
- and Q_flag test
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>, <adilger@whamcloud.com>,
-        Jan Kara <jack@suse.cz>, linfeilong <linfeilong@huawei.com>,
-        wuguanghao <wuguanghao3@huawei.com>,
-        zhanchengbin <zhanchengbin1@huawei.com>, <libaokun1@huawei.com>
-References: <28455341-ca26-d203-8b54-792bae002251@huawei.com>
-Message-ID: <46beb688-7f39-7184-1b83-5d14743fd083@huawei.com>
-Date:   Wed, 7 Jun 2023 17:13:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        with ESMTP id S233639AbjFGKVG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 06:21:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B65C11D;
+        Wed,  7 Jun 2023 03:21:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DD6EE219BF;
+        Wed,  7 Jun 2023 10:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686133263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PaXymw7r2ADMno+XYANmnydgCB3s3HtZ/gj7X6DBhRc=;
+        b=J3RP1esx98O+TAK740ShbBSTIdlVpgioz65lkUHAjtbIGb8xy5WBt+lIrCV0r9OnDoHREg
+        9nlx7ksSd90DHLE1psfx9asLCpUaxyv4B1zTBIfJJuOZzZQ1Gjyy+fo4l6YYgieeuG6jtj
+        lTaqiPv1XJSX9WqlZNBz7gekdX1pDmk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686133263;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PaXymw7r2ADMno+XYANmnydgCB3s3HtZ/gj7X6DBhRc=;
+        b=pYvlyw5JxqoI7wvZHzcb/+G8R8ZEDK5z/bLPAcqkyLXRVeqfv+ukSRUdvw2FmhPAW25a4G
+        T2CBVTCsheQZ24CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CE5FC13776;
+        Wed,  7 Jun 2023 10:21:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id a3peMg9agGSNfAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 07 Jun 2023 10:21:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4FF65A0754; Wed,  7 Jun 2023 12:21:03 +0200 (CEST)
+Date:   Wed, 7 Jun 2023 12:21:03 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v2 11/12] ext4: Add allocation criteria 1.5 (CR1_5)
+Message-ID: <20230607102103.gavbiywdudx54opk@quack3>
+References: <cover.1685449706.git.ojaswin@linux.ibm.com>
+ <150fdf65c8e4cc4dba71e020ce0859bcf636a5ff.1685449706.git.ojaswin@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <28455341-ca26-d203-8b54-792bae002251@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.254]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <150fdf65c8e4cc4dba71e020ce0859bcf636a5ff.1685449706.git.ojaswin@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-friendly ping...
+On Tue 30-05-23 18:03:49, Ojaswin Mujoo wrote:
+> CR1_5 aims to optimize allocations which can't be satisfied in CR1. The
+> fact that we couldn't find a group in CR1 suggests that it would be
+> difficult to find a continuous extent to compleltely satisfy our
+> allocations. So before falling to the slower CR2, in CR1.5 we
+> proactively trim the the preallocations so we can find a group with
+> (free / fragments) big enough.  This speeds up our allocation at the
+> cost of slightly reduced preallocation.
+> 
+> The patch also adds a new sysfs tunable:
+> 
+> * /sys/fs/ext4/<partition>/mb_cr1_5_max_trim_order
+> 
+> This controls how much CR1.5 can trim a request before falling to CR2.
+> For example, for a request of order 7 and max trim order 2, CR1.5 can
+> trim this upto order 5.
+> 
+> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> 
+> ext4 squash
 
-On 2023/3/20 13:04, Zhiqiang Liu wrote:
-> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> 
-> For changing inode size (-I) and setting quota fearture (-Q), tune2fs
-> only check whether the filesystem is umounted. Considering mount
-> namepspaces, the filesystem is umounted, however it already be left
-> in other mount namespace.
-> So we add one check whether the filesystem is not in use with using
-> EXT2_MF_BUSY flag, which can indicate the device is already opened
-> with O_EXCL, as suggested by Ted.
-> 
-> Reported-by: Baokun Li <libaokun1@huawei.com>
-> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> ---
->  misc/tune2fs.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 458f7cf6..d75f4d94 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -3520,9 +3520,9 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  	}
-> 
->  	if (Q_flag) {
-> -		if (mount_flags & EXT2_MF_MOUNTED) {
-> +		if (mount_flags & (EXT2_MF_BUSY | EXT2_MF_MOUNTED)) {
->  			fputs(_("The quota feature may only be changed when "
-> -				"the filesystem is unmounted.\n"), stderr);
-> +				"the filesystem is unmounted and not in use.\n"), stderr);
->  			rc = 1;
->  			goto closefs;
->  		}
-> @@ -3673,10 +3673,10 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  	}
-> 
->  	if (I_flag) {
-> -		if (mount_flags & EXT2_MF_MOUNTED) {
-> +		if (mount_flags & (EXT2_MF_BUSY | EXT2_MF_MOUNTED)) {
->  			fputs(_("The inode size may only be "
->  				"changed when the filesystem is "
-> -				"unmounted.\n"), stderr);
-> +				"unmounted and not in use.\n"), stderr);
->  			rc = 1;
->  			goto closefs;
->  		}
-> 
+Why is this here?
+
+> +/*
+> + * We couldn't find a group in CR1 so try to find the highest free fragment
+> + * order we have and proactively trim the goal request length to that order to
+> + * find a suitable group faster.
+> + *
+> + * This optimizes allocation speed at the cost of slightly reduced
+> + * preallocations. However, we make sure that we don't trim the request too
+> + * much and fall to CR2 in that case.
+> + */
+> +static void ext4_mb_choose_next_group_cr1_5(struct ext4_allocation_context *ac,
+> +		enum criteria *new_cr, ext4_group_t *group, ext4_group_t ngroups)
+> +{
+> +	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+> +	struct ext4_group_info *grp = NULL;
+> +	int i, order, min_order;
+> +	unsigned long num_stripe_clusters = 0;
+> +
+> +	if (unlikely(ac->ac_flags & EXT4_MB_CR1_5_OPTIMIZED)) {
+> +		if (sbi->s_mb_stats)
+> +			atomic_inc(&sbi->s_bal_cr1_5_bad_suggestions);
+> +	}
+> +
+> +	/*
+> +	 * mb_avg_fragment_size_order() returns order in a way that makes
+> +	 * retrieving back the length using (1 << order) inaccurate. Hence, use
+> +	 * fls() instead since we need to know the actual length while modifying
+> +	 * goal length.
+> +	 */
+> +	order = fls(ac->ac_g_ex.fe_len);
+> +	min_order = order - sbi->s_mb_cr1_5_max_trim_order;
+> +	if (min_order < 0)
+> +		min_order = 0;
+> +
+> +	if (1 << min_order < ac->ac_o_ex.fe_len)
+> +		min_order = fls(ac->ac_o_ex.fe_len) + 1;
+> +
+> +	if (sbi->s_stripe > 0) {
+> +		/*
+> +		 * We are assuming that stripe size is always a multiple of
+> +		 * cluster ratio otherwise __ext4_fill_super exists early.
+> +		 */
+> +		num_stripe_clusters = EXT4_NUM_B2C(sbi, sbi->s_stripe);
+> +		if (1 << min_order < num_stripe_clusters)
+> +			min_order = fls(num_stripe_clusters);
+> +	}
+> +
+> +	for (i = order; i >= min_order; i--) {
+> +		int frag_order;
+> +		/*
+> +		 * Scale down goal len to make sure we find something
+> +		 * in the free fragments list. Basically, reduce
+> +		 * preallocations.
+> +		 */
+> +		ac->ac_g_ex.fe_len = 1 << i;
+
+I smell some off-by-one issues here. Look fls(1) == 1 so (1 << fls(n)) > n.
+Hence this loop will actually *grow* the goal allocation length. Also I'm
+not sure why you have +1 in min_order = fls(ac->ac_o_ex.fe_len) + 1.
+
+> +
+> +		if (num_stripe_clusters > 0) {
+> +			/*
+> +			 * Try to round up the adjusted goal to stripe size
+						        ^^^ goal length?
+
+> +			 * (in cluster units) multiple for efficiency.
+> +			 *
+> +			 * XXX: Is s->stripe always a power of 2? In that case
+> +			 * we can use the faster round_up() variant.
+> +			 */
+
+I don't think s->stripe has to be a power of 2. E.g. when you have three
+data disks in a RAID config.
+
+Otherwise the patch looks good to me.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
