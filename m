@@ -2,126 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B01B1726933
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jun 2023 20:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39F472727E
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jun 2023 00:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjFGSut (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Jun 2023 14:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S233454AbjFGW4p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 7 Jun 2023 18:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbjFGSus (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 14:50:48 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C4418F
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 11:50:45 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 1B0F1540FEF
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 18:50:45 +0000 (UTC)
-Received: from pdx1-sub0-mail-a264.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id A7A025401D0
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 18:50:44 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686163844; a=rsa-sha256;
-        cv=none;
-        b=E4TAU5l7t/140nA7tDaob8tV76I8TNCYWv6P9Oqy+6Gy2ssaoy9Y0VrULMSMoHrcC2402q
-        Pm7ZlYTo+e2KcIl+mMqzmZoj5+M1QhyutuGZJbaT6WjjJCCTLz7mUJ9wo5W5pMlIE4BGCR
-        ZjDL6Op+RL+bBtU7aRcTEnkBxkS69KjTxuPWd8BKsMzNj8h1zjBt5HaCKA1haQIKclPnIU
-        TLOJpjE5GI9GLuxvV0yRjNVjRFpGu/CfZV02LkPUO2GWOSOpqU6j5QZ759LqBMNzKwhHmW
-        tUahqht37ZVKrap7EyBsGjbU44hWtz62BNlK+RFuaizonrC3sbPCMAvnUBkU4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1686163844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=WDt3+4i1DINQL5h5kVpxR4Ds/PxbHCAHGI5JHcsXfcA=;
-        b=qqVS0I5R3WeOGGciXYPOQXBR8tg1JWvGvzYBQE2na+UtiAZfMGvteqQ/aGqOPfVTBu0+eJ
-        s77POuyy3renELroC1v1+GFnWqDdJKx3wSKaoG43jVtzDXesmfUPoXQzAjxgE1DyuzFgRy
-        M64t1NKnk/rl14HX94YZfNicVIp2JzTFeMR//JnGGN1Vh7C664OAatia4VEySE29e/36uk
-        onumO5GKVBlbWEtVW0vRrkLVO4uL4eFyBNuDYqNy0i2M32CXvpwNu34Jq5sJOVw45+GlY4
-        LX+sQBUsWDZuvXsJKHhm1ewqmtLeiBsNlAfMveqCzEoMvDfajEygCOsGuwGn6g==
-ARC-Authentication-Results: i=1;
-        rspamd-6f5cfd578c-md99n;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Stretch-Cure: 7904f6ec66e790e0_1686163844904_540563933
-X-MC-Loop-Signature: 1686163844904:2728772384
-X-MC-Ingress-Time: 1686163844904
-Received: from pdx1-sub0-mail-a264.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.120.163.30 (trex/6.8.1);
-        Wed, 07 Jun 2023 18:50:44 +0000
-Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a264.dreamhost.com (Postfix) with ESMTPSA id 4QbxHm3C43z2p
-        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 11:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1686163844;
-        bh=WDt3+4i1DINQL5h5kVpxR4Ds/PxbHCAHGI5JHcsXfcA=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=rd6aVzLwiglCNjgK/9XmFuNq0/iDT7vxBIMvjcoST+kBvca0qr9P7nLHtIVeM99ev
-         HA4rv6vXRoP+tA0bgf+rbmi3abbWKwuh4JOqnYgKZCk8+M8Mf1KjaNj6OKeAAUhK/5
-         pvKLhplM/bVgrZ4R8+S7dRHC6ECklb9NeN8hOAOc=
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0042
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Wed, 07 Jun 2023 11:50:41 -0700
-Date:   Wed, 7 Jun 2023 11:50:41 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Krister Johansen <kjlx@templeofstupid.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [e2fsprogs PATCH] resize2fs: use directio when reading superblock
-Message-ID: <20230607185041.GA2023@templeofstupid.com>
-References: <20230605225221.GA5737@templeofstupid.com>
- <20230607133909.GA1309044@mit.edu>
+        with ESMTP id S233367AbjFGW4R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 7 Jun 2023 18:56:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC902704
+        for <linux-ext4@vger.kernel.org>; Wed,  7 Jun 2023 15:56:14 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-510d6b939bfso2581996a12.0
+        for <linux-ext4@vger.kernel.org>; Wed, 07 Jun 2023 15:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686178573; x=1688770573;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=Vs2O3FJiGjOSsYkVdVVwQ8usUW0Na2c1JkRxzODLflg+DQkLHMSvDUTON1eOgoDd5p
+         icZX7jz85gtt675JIQoCg2qYDeGvdgrlIlnYsBqJCXY6A+wwUH4Pzx63GHJ70nVIOHpq
+         q8q4NwQWw9O7Ka1WcBWhtc95lIatv8n89RH1nSmTaJwpto6eirRVCg2zeJDk+R5CA+KG
+         ThXmo+FVEx7rMo/R9HxHw2025VcLT8t8EGl5ZKxML6giyeJpWVWuCmdmhwVTBmwvl+lO
+         4Pyzwb5XpDz845p07KZNMlaubUmeRc4L02Q7u93h4SKEXfacqvhkSvKzrJS0PjXfy7pG
+         yWrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686178573; x=1688770573;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=VlE5nG/ZVh+hEHe8tcsXRRT+rHNegiGh5Hk+UJ+F7Wx4eNKObinm4qg0BqjUanOWx0
+         BXyes/cJ6ZCx/h1zUaW8rHqjFNNNcWiAYWLIxvBLGY11nYkLB4kLvcv+SOKf8zpMiz5q
+         kYm28kD3IkEKKv/1E/1EZkb4+R+bxphL2HK6l01tS08sH7U7lgDxgLZ38gyMZKn+3JFX
+         FUeR9aBOYrhiie9v1gTRY6owQTSSYIygpBw9EDgKeJ+oxswHr+FLU0NYQVosfuQDH70N
+         TQph5uyDwu687UtCJkJ0SjT8wxR9ksUiChysBsZU16p5O5OIg8UgJagcyDPVPXQf+dHh
+         sm3Q==
+X-Gm-Message-State: AC+VfDz2G+DCh4+cj708CGQCFGkxhU6RjQOtSLaDgPXY4y7ypYJyU+vs
+        q6bEN6zgjtl1zkJH3VH/3vJt+NPMzpL2r88cx2yTsvPeqcyhJg==
+X-Google-Smtp-Source: ACHHUZ5lc5uNG0II8N/7owu97MNYayebO2FU5BOHITGRdvZTCXANx0Yi1fv5Th/dfzvi0zTuZAaSCLE67mXxoPl8ud4=
+X-Received: by 2002:a17:907:8a08:b0:973:ad8f:ef9b with SMTP id
+ sc8-20020a1709078a0800b00973ad8fef9bmr8009971ejc.5.1686178552696; Wed, 07 Jun
+ 2023 15:55:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230607133909.GA1309044@mit.edu>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
+ 15:55:52 -0700 (PDT)
+Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
+From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
+        <successikolo@gmail.com>
+Date:   Wed, 7 Jun 2023 15:55:52 -0700
+Message-ID: <CADFNGJ8EwbrtVXBod+yuxOPvcNStu1uNZVywED0Ra-jpG92ATw@mail.gmail.com>
+Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:52f listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [successikolo[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 FILL_THIS_FORM Fill in a form with personal information
+        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
+        *  0.0 MONEY_FORM Lots of money if you fill out a form
+        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
+        *      money
+        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
+        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 07, 2023 at 09:39:09AM -0400, Theodore Ts'o wrote:
-> On Mon, Jun 05, 2023 at 03:52:21PM -0700, Krister Johansen wrote:
-> > Invocations of resize2fs intermittently report failure due to superblock
-> > checksum mismatches in this author's environment.  This might happen a few
-> > times a week.  The following script can make this happen within minutes.
-> > (It assumes /dev/nvme1n1 is available and not in use by anything else).
-> 
-> What version of e2fsprogs are you using, and what is your environment?
+UNITED NATION DEPUTY SECRETARY-GENERAL.
 
-I hit this originally using e2fsprogs 1.45.5.  That didn't have your
-patch for retrying the superblock read on checksum failure.  I pulled
-that patch in initially, but it did not fully resolve the checksum
-mismatch error.  The test provided in the report was using an EBS volume
-attached to an EC2 instance.  (Let me know what additional environment
-details would be useful, if these are not).
+This is to official inform you that we have been having meetings for
+the past three (3) weeks which ended two days ago with MR. JIM YONG
+KIM the world bank president and other seven continent presidents on
+the congress we treated on solution to scam victim problems.
 
-> Are you perhaps trying to change the UUID of the file system (for
-> example, in a cloud image environment) in parallel with resizing the
-> file system to fit the size of the block device?
+ Note: we have decided to contact you following the reports we
+received from anti-fraud international monitoring group your
+name/email has been submitted to us therefore the united nations have
+agreed to compensate you with the sum of (USD$ 1.5 Million) this
+compensation is also including international business that failed you
+in the past due to government problems etc.
 
-The growpart / resize2fs in the reproducer are essentially verbatim from
-our system provisioning scripts.  Unless those modify the UUID, we're
-not taking any explicit action to do so.
+ We have arranged your payment through our ATM Master Card and
+deposited it in DHL Office to deliver it to you which is the latest
+instruction from the World Bank president MR. JIM YONG KIM, For your
+information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
+he
+only money you will send to DHL office south Korea is
+($500). for security keeping fee, U.N coordinator already paid for
+others charges fees for delivery except the security keeping fee, the
+director of DHL refused to collect the security keeping fee from U.N
+coordinator, the Director of DHL office said that they don=E2=80=99t know
+exactly time you will contact them to reconfirm your details to avoid
+counting demur-rage that is why they refused collecting the ($500) .
+for security keeping fee.
 
-Thanks,
+ Therefore be advice to contact DHL Office agent south Korea. Rev:John
+Lee Tae-seok
+who is in position to deliver your ATM
+Master Card to your location address, contact DHL Office immediately
+with the bellow email & phone number as listed below.
 
--K
+ Contact name: John Lee Tae-seok
+
+ Email:( dhlgeneralheadquartersrepublic@gmail.com )
+
+ Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
+
+ read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
+
+ Make sure you reconfirmed DHL Office your details ASAP as stated
+below to avoid wrong delivery.
+
+ Your full name..........
+
+ Home address:.........
+
+ Your country...........
+
+ Your city..............
+
+ Telephone......
+
+ Occupation:.......
+
+ Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
+
+ Let us know as soon as possible you receive your ATM MasterCard
+for proper verification.
+
+ Regards,
+
+ Mrs Vivian kakadu.
+
+ DEPUTY SECRETARY-GENERAL (U.N)
