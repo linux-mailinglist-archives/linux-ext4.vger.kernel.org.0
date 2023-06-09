@@ -2,122 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 142E872A3F9
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 22:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BF672A4C1
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 22:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjFIUBI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Jun 2023 16:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        id S229912AbjFIUcd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Jun 2023 16:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjFIUBG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 16:01:06 -0400
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E270359A
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 13:00:27 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-3f9b8f1c2fdso16485441cf.2
-        for <linux-ext4@vger.kernel.org>; Fri, 09 Jun 2023 13:00:27 -0700 (PDT)
+        with ESMTP id S229684AbjFIUcc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 16:32:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF71F83
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 13:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686342705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kqBodWvsMAtzK0roMuBBNkvevtML0piZ6ybEx/MweaE=;
+        b=b7/CcLsAMjP9Vy5MDPbh9pobWxTi9TpMCZA2RAu+3f5OANasgfDj7emfZ3wC9souzt2j1h
+        eYzu+VZ6ZiAS9SWRWFhwuYbsYVhkJYhiHuJiMoSiOOqQ2MY7vzlWWZndnsNwBkHbAYfxJq
+        dMuYkC78uQxYduH5mN4xJXMn6mnIa10=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-657-ex2eL9qyPgyEpUFr7ysQ2w-1; Fri, 09 Jun 2023 16:31:43 -0400
+X-MC-Unique: ex2eL9qyPgyEpUFr7ysQ2w-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-62621cdb1f0so24202526d6.0
+        for <linux-ext4@vger.kernel.org>; Fri, 09 Jun 2023 13:31:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686340826; x=1688932826;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XFxNC6AwIefC8h+OVa9YMEjCXThkDxxKP8p9zX4LNFY=;
-        b=L71UunDDo9C57fDF8lcSUejs1sQkaUq3kEEQ1Rz62FUtLppFDgptCiEiISVPiaNL+T
-         AkNBoTxfn/ayHtNoAr2bH0qdqBZP+PWdK/E4zaCN1hLUL4Yh8fu44gPJXLBLKiXTXQmp
-         xtMaIkd6oBJ3gnhFj27fExpLB3uffwAOSZ/uPANPypHK8po35qLL7uhZYRZINGpdOXkR
-         9CeKMQ85uywVMSUsRcGLqSiP1xZzMWT3PpgMS6njchx58Xw02wF/nJfzq5Cg7m0S/wjJ
-         mRY1ScRCi0CLWDovZXwrwE2cdczWw3NZNszznlQuRSeS9BOb/sHpDQPwz+MDoL7g0JNC
-         dnxw==
-X-Gm-Message-State: AC+VfDwftBfgsc8lliSLmbHDX9LUhpIMllZCps0o608jFicTKSbxG45V
-        csbJb87mbVJJTg/MOnjX5wZY
-X-Google-Smtp-Source: ACHHUZ6f5D0na1vDQSbLNkOIR7VVTt7ADDPvJzshNMQToGx2m/jPA4IIyjKZFD+hGnfTs+abIWzkWA==
-X-Received: by 2002:ac8:7e88:0:b0:3f8:6c15:c3a5 with SMTP id w8-20020ac87e88000000b003f86c15c3a5mr3039832qtj.33.1686340826214;
-        Fri, 09 Jun 2023 13:00:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686342703; x=1688934703;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kqBodWvsMAtzK0roMuBBNkvevtML0piZ6ybEx/MweaE=;
+        b=gqhUyg7UgX9dM6sCfB8NKMXzTFbouIIwzDFHsqXC2ybE1B8dc24EQSsWDM/7RBLb1b
+         LbVh3IxxILm3tZ44q0Chw/5Ooh5NfbLkzPSLqC4amGNhHFmt0UlrlTc91qhEYt0FFaTu
+         tXP1iJ372gcvvENlEZZcEakDhxfHCRyRJSaOGdfA/sCGyc8zZLAb1xvyzPrq25ppf6Ky
+         zMTF3qCgbPpQscqnNUO34VEZOdumEgFShzC/A4hPYkXbc2SXQDWe5zCzzwROpB9FC7xn
+         EZaW0ZI+r+OiWcMCiF9MbYNOaRZn6gzTHVNdAsLj2kjdW3QLiESxdvCtxfZLoxOgxbbc
+         psbg==
+X-Gm-Message-State: AC+VfDxVW2BeX4JlZv644n9ClO3gGy2i8xBz2O2RRYF5PakBIFLh6eDs
+        uOivRQAnxPGihX1EI2VFsO6VxWW+p5TL8EKYmAXMtVu4UpB5vJ7aGLtUrNCR1q79D+RJI9F2yAx
+        FwxfTLCW3QCagF50T8Wl0
+X-Received: by 2002:a05:6214:124a:b0:626:3a5a:f8dc with SMTP id r10-20020a056214124a00b006263a5af8dcmr3512861qvv.57.1686342703119;
+        Fri, 09 Jun 2023 13:31:43 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ78w0WDf0o6qhufepqm2d8bEB8MBtf2WH2t9YiWbkCms2QdUrQ0M7FAIP95SCC+cHOEnZuU1A==
+X-Received: by 2002:a05:6214:124a:b0:626:3a5a:f8dc with SMTP id r10-20020a056214124a00b006263a5af8dcmr3512845qvv.57.1686342702858;
+        Fri, 09 Jun 2023 13:31:42 -0700 (PDT)
 Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
-        by smtp.gmail.com with ESMTPSA id d3-20020ac85343000000b003f740336bb9sm1418338qto.9.2023.06.09.13.00.25
+        by smtp.gmail.com with ESMTPSA id m24-20020ae9e718000000b007578622c861sm1250201qka.108.2023.06.09.13.31.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 13:00:25 -0700 (PDT)
-Date:   Fri, 9 Jun 2023 16:00:24 -0400
-From:   Mike Snitzer <snitzer@kernel.org>
+        Fri, 09 Jun 2023 13:31:42 -0700 (PDT)
+Date:   Fri, 9 Jun 2023 16:31:41 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
 To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
+Cc:     Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Joe Thornber <thornber@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
         Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v7 2/5] block: Introduce provisioning primitives
-Message-ID: <ZIOE2ASeUAXxzpRO@redhat.com>
-References: <20230518223326.18744-1-sarthakkukreti@chromium.org>
- <20230518223326.18744-3-sarthakkukreti@chromium.org>
+        Dave Chinner <david@fromorbit.com>,
+        linux-kernel@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZIOMLfMjugGf4C2T@redhat.com>
+References: <ZHFEfngPyUOqlthr@dread.disaster.area>
+ <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
+ <ZHYB/6l5Wi+xwkbQ@redhat.com>
+ <CAJ0trDaUOevfiEpXasOESrLHTCcr=oz28ywJU+s+YOiuh7iWow@mail.gmail.com>
+ <ZHYWAGmKhwwmTjW/@redhat.com>
+ <CAG9=OMMnDfN++-bJP3jLmUD6O=Q_ApV5Dr392_5GqsPAi_dDkg@mail.gmail.com>
+ <ZHqOvq3ORETQB31m@dread.disaster.area>
+ <ZHti/MLnX5xGw9b7@redhat.com>
+ <CAG9=OMNv80fOyVixEY01XESnOFzYyfj9j8etHMq_Ap52z4UWNQ@mail.gmail.com>
+ <ZIESXNF5anyvJEjm@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230518223326.18744-3-sarthakkukreti@chromium.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZIESXNF5anyvJEjm@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 18 2023 at  6:33P -0400,
-Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
+On Wed, Jun 07 2023 at  7:27P -0400,
+Mike Snitzer <snitzer@kernel.org> wrote:
 
-> Introduce block request REQ_OP_PROVISION. The intent of this request
-> is to request underlying storage to preallocate disk space for the given
-> block range. Block devices that support this capability will export
-> a provision limit within their request queues.
+> On Mon, Jun 05 2023 at  5:14P -0400,
+> Sarthak Kukreti <sarthakkukreti@chromium.org> wrote:
 > 
-> This patch also adds the capability to call fallocate() in mode 0
-> on block devices, which will send REQ_OP_PROVISION to the block
-> device for the specified range,
+> > On Sat, Jun 3, 2023 at 8:57 AM Mike Snitzer <snitzer@kernel.org> wrote:
+> > >
+> > > We all just need to focus on your proposal and Joe's dm-thin
+> > > reservation design...
+> > >
+> > > [Sarthak: FYI, this implies that it doesn't really make sense to add
+> > > dm-thinp support before Joe's design is implemented.  Otherwise we'll
+> > > have 2 different responses to REQ_OP_PROVISION.  The one that is
+> > > captured in your patchset isn't adequate to properly handle ensuring
+> > > upper layer (like XFS) can depend on the space being available across
+> > > snapshot boundaries.]
+> > >
+> > Ack. Would it be premature for the rest of the series to go through
+> > (REQ_OP_PROVISION + support for loop and non-dm-thinp device-mapper
+> > targets)? I'd like to start using this as a reference to suggest
+> > additions to the virtio-spec for virtio-blk support and start looking
+> > at what an ext4 implementation would look like.
 > 
-> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> ---
-...
-> diff --git a/block/blk-settings.c b/block/blk-settings.c
-> index 896b4654ab00..d303e6614c36 100644
-> --- a/block/blk-settings.c
-> +++ b/block/blk-settings.c
-> @@ -59,6 +59,7 @@ void blk_set_default_limits(struct queue_limits *lim)
->  	lim->zoned = BLK_ZONED_NONE;
->  	lim->zone_write_granularity = 0;
->  	lim->dma_alignment = 511;
-> +	lim->max_provision_sectors = 0;
->  }
->  
->  /**
-> @@ -82,6 +83,7 @@ void blk_set_stacking_limits(struct queue_limits *lim)
->  	lim->max_dev_sectors = UINT_MAX;
->  	lim->max_write_zeroes_sectors = UINT_MAX;
->  	lim->max_zone_append_sectors = UINT_MAX;
-> +	lim->max_provision_sectors = UINT_MAX;
->  }
->  EXPORT_SYMBOL(blk_set_stacking_limits);
->  
-> @@ -578,6 +594,9 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
->  	t->max_segment_size = min_not_zero(t->max_segment_size,
->  					   b->max_segment_size);
->  
-> +	t->max_provision_sectors = min_not_zero(t->max_provision_sectors,
-> +						b->max_provision_sectors);
-> +
+> Please drop the dm-thin.c and dm-snap.c changes.  dm-snap.c would need
+> more work to provide the type of guarantee XFS requires across
+> snapshot boundaries. I'm inclined to _not_ add dm-snap.c support
+> because it is best to just use dm-thin.
+> 
+> And FYI even your dm-thin patch will be the starting point for the
+> dm-thin support (we'll keep attribution to you for all the code in a
+> separate patch).
+> 
+> > Fair points, I certainly don't want to derail this conversation; I'd
+> > be happy to see this work merged sooner rather than later.
+> 
+> Once those dm target changes are dropped I think the rest of the
+> series is fine to go upstream now.  Feel free to post a v8.
 
-This needs to use min() since max_provision_sectors also serves to
-indicate if the device supports REQ_OP_PROVISION.  Otherwise, if I set
-max_provision_sectors to 0 on a dm thin-pool the blk_stack_limits()
-will ignore my having set it to 0 (to disable) and it'll remain as
-UINT_MAX (thanks to blk_set_default_limits).
+FYI, I've made my latest code available in this
+'dm-6.5-provision-support' branch (based on 'dm-6.5'):
+https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-6.5-provision-support
+
+It's what v8 should be plus the 2 dm-thin patches (that I don't think
+should go upstream yet, but are theoretically useful for Dave and
+Joe).
+
+The "dm thin: complete interface for REQ_OP_PROVISION support" commit
+establishes all the dm-thin interface I think is needed.  The FIXME in
+process_provision_bio() (and the patch header) cautions against upper
+layers like XFS using this dm-thinp support quite yet.
+
+Otherwise we'll have the issue where dm-thinp's REQ_OP_PROVISION
+support initially doesn't provide the guarantee that XFS needs across
+snapshots (which is: snapshots inherit all previous REQ_OP_PROVISION).
 
 Mike
+
