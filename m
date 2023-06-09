@@ -2,77 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC9172970B
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 12:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0C2729793
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 12:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239458AbjFIKgs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Jun 2023 06:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S238795AbjFIKyB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Jun 2023 06:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239070AbjFIKgW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 06:36:22 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86021A4;
-        Fri,  9 Jun 2023 03:34:27 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 359AMOje006735;
-        Fri, 9 Jun 2023 10:34:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=7uZG4P8ISVDtnNhJ+xnd3/B7iAy5dGQuZAAOlgdFs/0=;
- b=XXpaaGKzWnu16VuKcCu57iVXByYnEogGiGUpzFbQ3apaT+5ePxY6WSNhBM5Y60vrRpez
- Mk0TAq2TbuD6+vC9aH8s88t+ZKQlbYiFLksBERVnU/teDctXBHgReHOFEJPVq+2uedAm
- r/dS+ZiCA/pI5t9SX1Ls6j6Vq3YWt26W2eoLOui/2ZQjgQ8rhejkTZIjX5BKe0PDKNAL
- 2cs1/3XcV19w0zEUbJEz2Ofvww4MitGoc8/VQS3s2kCSQR5yua5JFh2t6FmbqxpKE9KG
- E0n9yqn0/IFLVA8CGBSx3ykRO+hAGdfz7ugR/rfDx5tsAJHdAiQlO+LeGbW42MaFBBQZ FA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3r4293r71p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jun 2023 10:34:17 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3593IovL030871;
-        Fri, 9 Jun 2023 10:34:15 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3r2a791bad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jun 2023 10:34:15 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 359AYDSe21037806
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Jun 2023 10:34:13 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1CC3C20043;
-        Fri,  9 Jun 2023 10:34:13 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E42120040;
-        Fri,  9 Jun 2023 10:34:11 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.171.3.58])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Jun 2023 10:34:11 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: [PATCH] ext4: fix off by one issue in ext4_mb_choose_next_group_best_avail()
-Date:   Fri,  9 Jun 2023 16:04:03 +0530
-Message-Id: <20230609103403.112807-1-ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229571AbjFIKyB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 06:54:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37F5C3
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 03:53:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FDEB656D2
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 10:53:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05E56C4339C
+        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 10:53:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686308039;
+        bh=ybSCO2PmbvAygRbJoYpy6kvytpeZCFcnlz/vpQFzIFA=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=IvvH6jXtI3NATZ1ti4XqXsaq6f4RKXoRCg1CyBR8B1r3sa8gMAbzC2t7HKHqpuzLC
+         zcvvOJmElyWoxdx5a/3BCiZmircrL6QItlZHd6tHFKrsyW8L0ne7VHU/ptMONL5FqX
+         0NJGj/qAKpPokfwF4KhKmi4Ped8eb0/YBsXnrQnIYKVz1deZV9pShQnGpydKpl5NSa
+         OAFK2QbFIk5WL6cuH3j+y7NQEtl4sp8T+WBg3k7H8mguY8mBqjkhv3Ua1fEg5jAkM9
+         wV4u3YCB9dLM9hNgcwDGCf8PYLaVuHI/vtaUsvIgilYZMSuLCOqobI/XpIebBLzkjS
+         IOm9g7mn3iO6A==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id E0879C43141; Fri,  9 Jun 2023 10:53:58 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217529] Remounting ext4 filesystem from ro to rw fails when
+ quotas are enabled
+Date:   Fri, 09 Jun 2023 10:53:58 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: bagasdotme@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-217529-13602-dBAEnQmAUg@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217529-13602@https.bugzilla.kernel.org/>
+References: <bug-217529-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EadNiE6X3iy49gkthzpPTeP8y2Xpksu5
-X-Proofpoint-ORIG-GUID: EadNiE6X3iy49gkthzpPTeP8y2Xpksu5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-09_06,2023-06-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 phishscore=0
- mlxscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
- definitions=main-2306090089
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,73 +71,107 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In ext4_mb_choose_next_group_best_avail(), we want the start order to be
-1 less than goal length and the min_order to be, at max, 1 more than the
-original length. This commit fixes an off by one issue that arose due to
-the fact that 1 << fls(n) > (n).
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217529
 
-After all the processing:
+Bagas Sanjaya (bagasdotme@gmail.com) changed:
 
-order = 1 order below goal len
-min_order = maximum of the three:-
-             - order - trim_order
-             - 1 order below B2C(s_stripe)
-             - 1 order above original len
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |bagasdotme@gmail.com
 
-Fixes: 33122aa930 ("ext4: Add allocation criteria 1.5 (CR1_5)")
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/mballoc.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+--- Comment #1 from Bagas Sanjaya (bagasdotme@gmail.com) ---
+(In reply to Nikolas Kraetzschmar from comment #0)
+> Description
+>=20
+> Since commit a44be64, remounting a read-only ext4 filesystem to become
+> read-write fails when quotas are enabled. The mount syscall returns -EROFS
+> and outputs the following in dmesg:
+>=20
+> ```
+> EXT4-fs warning (device loop0): ext4_enable_quotas:7028: Failed to enable
+> quota tracking (type=3D0, err=3D-30, ino=3D3). Please run e2fsck
+> ```
+>=20
+>=20
+> Root cause
+>=20
+> The problem can be traced back to the changes introduced in commit a44be6=
+4.
+> It appears that the issue arises because the SB_RDONLY bit of the s_flags
+> field is now only cleared after executing the ext4_enable_quotas function.
+> However, the vfs_setup_quota_inode function, called by ext4_enable_quotas,
+> checks whether this bit is set (fs/quota/dquot.c:2331):
+>=20
+> ```
+> if (IS_RDONLY(inode))
+>       return -EROFS;
+> ```
+>=20
+> This condition therefore always triggers the -EROFS fail condition.
+>=20
+>=20
+> Steps to Reproduce
+>=20
+> The bug can be reproduced by executing the following script on a current
+> mainline kernel with defconfig:
+>=20
+> ```
+> #!/bin/bash
+>=20
+> set -ex
+>=20
+> truncate -s 1G /tmp/img
+> mkfs.ext4 /tmp/img
+> tune2fs -Q usrquota,grpquota,prjquota /tmp/img
+> losetup /dev/loop0 /tmp/img
+> mount -o ro /dev/loop0 /mnt
+> mount -o remount,rw /mnt
+> ```
+>=20
+> Executing the script results in the following output:
+>=20
+> ```
+> + truncate -s 1G /tmp/img
+> + mkfs.ext4 /tmp/img
+> mke2fs 1.47.0 (5-Feb-2023)
+> Discarding device blocks: done
+> Creating filesystem with 262144 4k blocks and 65536 inodes
+> Filesystem UUID: b96a3da2-043f-11ee-b6f0-47c69db05231
+> Superblock backups stored on blocks:
+>       32768, 98304, 163840, 229376
+>=20
+> Allocating group tables: done
+> Writing inode tables: done
+> Creating journal (8192 blocks): done
+> Writing superblocks and filesystem accounting information: done
+>=20
+> + tune2fs -Q usrquota,grpquota,prjquota /tmp/img
+> tune2fs 1.47.0 (5-Feb-2023)
+> + losetup /dev/loop0 /tmp/img
+> [    6.766763] loop0: detected capacity change from 0 to 2097152
+> + mount -o ro /dev/loop0 /mnt
+> [    6.791561] EXT4-fs (loop0): mounted filesystem
+> b96a3da2-043f-11ee-b6f0-47c69db05231 ro with ordered data mode. Quota mod=
+e:
+> journalled.
+> + mount -o remount,rw /mnt
+> [    6.805546] EXT4-fs warning (device loop0): ext4_enable_quotas:7028:
+> Failed to enable quota tracking (type=3D0, err=3D-30, ino=3D3). Please ru=
+n e2fsck
+> to fix.
+> mount: /mnt: cannot remount /dev/loop0 read-write, is write-protected.
+>        dmesg(1) may have more information after failed mount system call.
+> ```
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 4f2a1df98141..d890495127d8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1007,14 +1007,11 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
- 	 * fls() instead since we need to know the actual length while modifying
- 	 * goal length.
- 	 */
--	order = fls(ac->ac_g_ex.fe_len);
-+	order = fls(ac->ac_g_ex.fe_len) - 1;
- 	min_order = order - sbi->s_mb_best_avail_max_trim_order;
- 	if (min_order < 0)
- 		min_order = 0;
- 
--	if (1 << min_order < ac->ac_o_ex.fe_len)
--		min_order = fls(ac->ac_o_ex.fe_len) + 1;
--
- 	if (sbi->s_stripe > 0) {
- 		/*
- 		 * We are assuming that stripe size is always a multiple of
-@@ -1022,9 +1019,16 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
- 		 */
- 		num_stripe_clusters = EXT4_NUM_B2C(sbi, sbi->s_stripe);
- 		if (1 << min_order < num_stripe_clusters)
--			min_order = fls(num_stripe_clusters);
-+			/*
-+			 * We consider 1 order less because later we round
-+			 * up the goal len to num_stripe_clusters
-+			 */
-+			min_order = fls(num_stripe_clusters) - 1;
- 	}
- 
-+	if (1 << min_order < ac->ac_o_ex.fe_len)
-+		min_order = fls(ac->ac_o_ex.fe_len);
-+
- 	for (i = order; i >= min_order; i--) {
- 		int frag_order;
- 		/*
-@@ -1038,9 +1042,6 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
- 			/*
- 			 * Try to round up the adjusted goal to stripe size
- 			 * (in cluster units) multiple for efficiency.
--			 *
--			 * XXX: Is s->stripe always a power of 2? In that case
--			 * we can use the faster round_up() variant.
- 			 */
- 			ac->ac_g_ex.fe_len = roundup(ac->ac_g_ex.fe_len,
- 						     num_stripe_clusters);
--- 
-2.31.1
+Ted had recently sent out the proposed fixes ([1] and [2]). Please test.
 
+[1]: https://lore.kernel.org/linux-ext4/20230608141805.1434230-1-tytso@mit.=
+edu/
+[2]: https://lore.kernel.org/linux-ext4/20230608141805.1434230-2-tytso@mit.=
+edu/
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
