@@ -2,67 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0C2729793
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 12:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A7D7297A4
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 12:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238795AbjFIKyB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Jun 2023 06:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S238532AbjFIK6X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Jun 2023 06:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjFIKyB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 06:54:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37F5C3
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 03:53:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FDEB656D2
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 10:53:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 05E56C4339C
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 10:53:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686308039;
-        bh=ybSCO2PmbvAygRbJoYpy6kvytpeZCFcnlz/vpQFzIFA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=IvvH6jXtI3NATZ1ti4XqXsaq6f4RKXoRCg1CyBR8B1r3sa8gMAbzC2t7HKHqpuzLC
-         zcvvOJmElyWoxdx5a/3BCiZmircrL6QItlZHd6tHFKrsyW8L0ne7VHU/ptMONL5FqX
-         0NJGj/qAKpPokfwF4KhKmi4Ped8eb0/YBsXnrQnIYKVz1deZV9pShQnGpydKpl5NSa
-         OAFK2QbFIk5WL6cuH3j+y7NQEtl4sp8T+WBg3k7H8mguY8mBqjkhv3Ua1fEg5jAkM9
-         wV4u3YCB9dLM9hNgcwDGCf8PYLaVuHI/vtaUsvIgilYZMSuLCOqobI/XpIebBLzkjS
-         IOm9g7mn3iO6A==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id E0879C43141; Fri,  9 Jun 2023 10:53:58 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217529] Remounting ext4 filesystem from ro to rw fails when
- quotas are enabled
-Date:   Fri, 09 Jun 2023 10:53:58 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bagasdotme@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-217529-13602-dBAEnQmAUg@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217529-13602@https.bugzilla.kernel.org/>
-References: <bug-217529-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S231156AbjFIK6W (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 06:58:22 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C0D1FF3;
+        Fri,  9 Jun 2023 03:58:20 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 359AlmNA016554;
+        Fri, 9 Jun 2023 10:58:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=knzNZL3FfdsawENWl8mQ/5isnk7TPntTlJ/uCLzF0CA=;
+ b=Ucb9nnGpA3bOfh5aX9+3VIHEqcgxYM57qZd1dkQ3KpEtGbae8gyN7LFsW11LrLzVR/fw
+ 7FTI6YDZFNeGpm93tJhr//yyR+IH7uOUEr9pz/PGGLOjRrsmKiLYLk5qCX2m7gWMkq/B
+ D41pFZmtlMpz6jVlHi7/E4Qz/zWd3z0cRaX9x5lEUQdS2mG1SpB08JjK4TBi0DPI5U9n
+ q9GbsSvB61dEfkmTVS0OxPp8kHll9Sn4UkooAyGRYQXRd0hiVD6lDqaLpRz8rcEpZ5v8
+ p+7q+G4hEA3RoRBrUcR45P1DRJ6uhp2QPiMPOvQ0Cfr69rrEZUiDpdRuWr/ysz1p7hmU pQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3r42mtr70s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jun 2023 10:58:09 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 359Ao8kZ023985;
+        Fri, 9 Jun 2023 10:58:08 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3r42mtr701-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jun 2023 10:58:08 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3592X3uC009666;
+        Fri, 9 Jun 2023 10:58:06 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3r2a769wjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jun 2023 10:58:06 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 359Aw3Oo18809352
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Jun 2023 10:58:04 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFE652004B;
+        Fri,  9 Jun 2023 10:58:03 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C9BB20040;
+        Fri,  9 Jun 2023 10:58:02 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.5.119])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri,  9 Jun 2023 10:58:01 +0000 (GMT)
+Date:   Fri, 9 Jun 2023 16:27:59 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v2 11/12] ext4: Add allocation criteria 1.5 (CR1_5)
+Message-ID: <ZIMFk5d17TPNgS4v@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1685449706.git.ojaswin@linux.ibm.com>
+ <150fdf65c8e4cc4dba71e020ce0859bcf636a5ff.1685449706.git.ojaswin@linux.ibm.com>
+ <20230607102103.gavbiywdudx54opk@quack3>
+ <20230608144505.GA1422249@mit.edu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230608144505.GA1422249@mit.edu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5kpqiHdartRibfM8eygJz2heEqLRgH0A
+X-Proofpoint-GUID: S-6cV6kB9I631U3WRA1rtig79SfRmo43
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-09_06,2023-06-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306090089
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,107 +96,168 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217529
+On Thu, Jun 08, 2023 at 10:45:05AM -0400, Theodore Ts'o wrote:
+> Jan, thanks for the comments to Ojaswin's patch series.  Since I had
+> already landed his patch series in my tree and have been testing it,
+> I've fixed the obvious issues you've raised in a fixup patch
+> (attached).
+> 
+> There is one issue which I have not fixed:
+> 
+> On Wed, Jun 07, 2023 at 12:21:03PM +0200, Jan Kara wrote:
+> > > +	for (i = order; i >= min_order; i--) {
+> > > +		int frag_order;
+> > > +		/*
+> > > +		 * Scale down goal len to make sure we find something
+> > > +		 * in the free fragments list. Basically, reduce
+> > > +		 * preallocations.
+> > > +		 */
+> > > +		ac->ac_g_ex.fe_len = 1 << i;
+> > 
+> > I smell some off-by-one issues here. Look fls(1) == 1 so (1 << fls(n)) > n.
+> > Hence this loop will actually *grow* the goal allocation length. Also I'm
+> > not sure why you have +1 in min_order = fls(ac->ac_o_ex.fe_len) + 1.
+> 
+> Ojaswin, could you take a look this?  Thanks!!
+> 
+> 	       	   	       	      - Ted
+> 
+> commit 182d2d90a180838789ed5a19e08c333043d1617a
+> Author: Theodore Ts'o <tytso@mit.edu>
+> Date:   Thu Jun 8 10:39:35 2023 -0400
+> 
+>     ext4: clean up mballoc criteria comments
+>     
+>     Line wrap and slightly clarify the comments describing mballoc's
+>     cirtiera.
+>     
+>     Define EXT4_MB_NUM_CRS as part of the enum, so that it will
+>     automatically get updated when criteria is added or removed.
+>     
+>     Also fix a potential unitialized use of 'cr' variable if
+>     CONFIG_EXT4_DEBUG is enabled.
+>     
+>     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-Bagas Sanjaya (bagasdotme@gmail.com) changed:
+Hi Ted, 
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |bagasdotme@gmail.com
+Patch looks good, thanks for doing this. I've sent the fix
+for the off by one issue here:
 
---- Comment #1 from Bagas Sanjaya (bagasdotme@gmail.com) ---
-(In reply to Nikolas Kraetzschmar from comment #0)
-> Description
->=20
-> Since commit a44be64, remounting a read-only ext4 filesystem to become
-> read-write fails when quotas are enabled. The mount syscall returns -EROFS
-> and outputs the following in dmesg:
->=20
-> ```
-> EXT4-fs warning (device loop0): ext4_enable_quotas:7028: Failed to enable
-> quota tracking (type=3D0, err=3D-30, ino=3D3). Please run e2fsck
-> ```
->=20
->=20
-> Root cause
->=20
-> The problem can be traced back to the changes introduced in commit a44be6=
-4.
-> It appears that the issue arises because the SB_RDONLY bit of the s_flags
-> field is now only cleared after executing the ext4_enable_quotas function.
-> However, the vfs_setup_quota_inode function, called by ext4_enable_quotas,
-> checks whether this bit is set (fs/quota/dquot.c:2331):
->=20
-> ```
-> if (IS_RDONLY(inode))
->       return -EROFS;
-> ```
->=20
-> This condition therefore always triggers the -EROFS fail condition.
->=20
->=20
-> Steps to Reproduce
->=20
-> The bug can be reproduced by executing the following script on a current
-> mainline kernel with defconfig:
->=20
-> ```
-> #!/bin/bash
->=20
-> set -ex
->=20
-> truncate -s 1G /tmp/img
-> mkfs.ext4 /tmp/img
-> tune2fs -Q usrquota,grpquota,prjquota /tmp/img
-> losetup /dev/loop0 /tmp/img
-> mount -o ro /dev/loop0 /mnt
-> mount -o remount,rw /mnt
-> ```
->=20
-> Executing the script results in the following output:
->=20
-> ```
-> + truncate -s 1G /tmp/img
-> + mkfs.ext4 /tmp/img
-> mke2fs 1.47.0 (5-Feb-2023)
-> Discarding device blocks: done
-> Creating filesystem with 262144 4k blocks and 65536 inodes
-> Filesystem UUID: b96a3da2-043f-11ee-b6f0-47c69db05231
-> Superblock backups stored on blocks:
->       32768, 98304, 163840, 229376
->=20
-> Allocating group tables: done
-> Writing inode tables: done
-> Creating journal (8192 blocks): done
-> Writing superblocks and filesystem accounting information: done
->=20
-> + tune2fs -Q usrquota,grpquota,prjquota /tmp/img
-> tune2fs 1.47.0 (5-Feb-2023)
-> + losetup /dev/loop0 /tmp/img
-> [    6.766763] loop0: detected capacity change from 0 to 2097152
-> + mount -o ro /dev/loop0 /mnt
-> [    6.791561] EXT4-fs (loop0): mounted filesystem
-> b96a3da2-043f-11ee-b6f0-47c69db05231 ro with ordered data mode. Quota mod=
-e:
-> journalled.
-> + mount -o remount,rw /mnt
-> [    6.805546] EXT4-fs warning (device loop0): ext4_enable_quotas:7028:
-> Failed to enable quota tracking (type=3D0, err=3D-30, ino=3D3). Please ru=
-n e2fsck
-> to fix.
-> mount: /mnt: cannot remount /dev/loop0 read-write, is write-protected.
->        dmesg(1) may have more information after failed mount system call.
-> ```
+https://lore.kernel.org/linux-ext4/20230609103403.112807-1-ojaswin@linux.ibm.com/T/#u
 
-Ted had recently sent out the proposed fixes ([1] and [2]). Please test.
+Jan, thanks for the review. I've addressed the bug for now. Since
+I'm on vacation for the next one and a half week I might not be able to
+address the other cleanups. I'll get them done once I'm back.
 
-[1]: https://lore.kernel.org/linux-ext4/20230608141805.1434230-1-tytso@mit.=
-edu/
-[2]: https://lore.kernel.org/linux-ext4/20230608141805.1434230-2-tytso@mit.=
-edu/
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Regards,
+ojaswin
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 6a1f013d23f7..45a531446ea2 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -128,47 +128,52 @@ enum SHIFT_DIRECTION {
+>  };
+>  
+>  /*
+> - * Number of criterias defined. For each criteria, mballoc has slightly
+> - * different way of finding the required blocks nad usually, higher the
+> - * criteria the slower the allocation. We start at lower criterias and keep
+> - * falling back to higher ones if we are not able to find any blocks.
+> - */
+> -#define EXT4_MB_NUM_CRS 5
+> -/*
+> - * All possible allocation criterias for mballoc. Lower are faster.
+> + * For each criteria, mballoc has slightly different way of finding
+> + * the required blocks nad usually, higher the criteria the slower the
+> + * allocation.  We start at lower criterias and keep falling back to
+> + * higher ones if we are not able to find any blocks.  Lower (earlier)
+> + * criteria are faster.
+>   */
+>  enum criteria {
+>  	/*
+> -	 * Used when number of blocks needed is a power of 2. This doesn't
+> -	 * trigger any disk IO except prefetch and is the fastest criteria.
+> +	 * Used when number of blocks needed is a power of 2. This
+> +	 * doesn't trigger any disk IO except prefetch and is the
+> +	 * fastest criteria.
+>  	 */
+>  	CR_POWER2_ALIGNED,
+>  
+>  	/*
+> -	 * Tries to lookup in-memory data structures to find the most suitable
+> -	 * group that satisfies goal request. No disk IO except block prefetch.
+> +	 * Tries to lookup in-memory data structures to find the most
+> +	 * suitable group that satisfies goal request. No disk IO
+> +	 * except block prefetch.
+>  	 */
+>  	CR_GOAL_LEN_FAST,
+>  
+>          /*
+> -	 * Same as CR_GOAL_LEN_FAST but is allowed to reduce the goal length to
+> -         * the best available length for faster allocation.
+> +	 * Same as CR_GOAL_LEN_FAST but is allowed to reduce the goal
+> +         * length to the best available length for faster allocation.
+>  	 */
+>  	CR_BEST_AVAIL_LEN,
+>  
+>  	/*
+> -	 * Reads each block group sequentially, performing disk IO if necessary, to
+> -	 * find find_suitable block group. Tries to allocate goal length but might trim
+> -	 * the request if nothing is found after enough tries.
+> +	 * Reads each block group sequentially, performing disk IO if
+> +	 * necessary, to find find_suitable block group. Tries to
+> +	 * allocate goal length but might trim the request if nothing
+> +	 * is found after enough tries.
+>  	 */
+>  	CR_GOAL_LEN_SLOW,
+>  
+>  	/*
+> -	 * Finds the first free set of blocks and allocates those. This is only
+> -	 * used in rare cases when CR_GOAL_LEN_SLOW also fails to allocate
+> -	 * anything.
+> +	 * Finds the first free set of blocks and allocates
+> +	 * those. This is only used in rare cases when
+> +	 * CR_GOAL_LEN_SLOW also fails to allocate anything.
+>  	 */
+>  	CR_ANY_FREE,
+> +
+> +	/*
+> +	 * Number of criterias defined.
+> +	 */
+> +	EXT4_MB_NUM_CRS
+>  };
+>  
+>  /* criteria below which we use fast block scanning and avoid unnecessary IO */
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 8a6896d4e9b0..2f9f5dc720cc 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2759,7 +2759,7 @@ static noinline_for_stack int
+>  ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  {
+>  	ext4_group_t prefetch_grp = 0, ngroups, group, i;
+> -	enum criteria cr, new_cr;
+> +	enum criteria new_cr, cr = CR_GOAL_LEN_FAST;
+>  	int err = 0, first_err = 0;
+>  	unsigned int nr = 0, prefetch_ios = 0;
+>  	struct ext4_sb_info *sbi;
+> @@ -2816,12 +2816,13 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  		spin_unlock(&sbi->s_md_lock);
+>  	}
+>  
+> -	/* Let's just scan groups to find more-less suitable blocks */
+> -	cr = ac->ac_2order ? CR_POWER2_ALIGNED : CR_GOAL_LEN_FAST;
+>  	/*
+> -	 * cr == CR_POWER2_ALIGNED try to get exact allocation,
+> -	 * cr == CR_ANY_FREE try to get anything
+> +	 * Let's just scan groups to find more-less suitable blocks We
+> +	 * start with CR_GOAL_LEN_FAST, unless it is power of 2
+> +	 * aligned, in which case let's do that faster approach first.
+>  	 */
+> +	if (ac->ac_2order)
+> +		cr = CR_POWER2_ALIGNED;
+>  repeat:
+>  	for (; cr < EXT4_MB_NUM_CRS && ac->ac_status == AC_STATUS_CONTINUE; cr++) {
+>  		ac->ac_criteria = cr;
