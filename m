@@ -2,51 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C119F728E61
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 05:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0FF728E94
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jun 2023 05:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237784AbjFIDPG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Jun 2023 23:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
+        id S237872AbjFIDdE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Jun 2023 23:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjFIDPC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Jun 2023 23:15:02 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A8230D1
-        for <linux-ext4@vger.kernel.org>; Thu,  8 Jun 2023 20:15:01 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-39.bstnma.fios.verizon.net [173.48.82.39])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3593El9L024530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 8 Jun 2023 23:14:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686280488; bh=bi5YUImZsrQre+HL6PNbB7PVoPRHILL6mBkAHMmvEd0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=h21FJYYihyi0JmJwLYLNfQ+JEABe8wREGlFlklmw5Nj8lF7FN1JNVxY0AnDxylz/o
-         lMk8ZCHI24ryObO4VnttT2Bu04WV71QEh0ub/SwM240XD3eVtxItim2K1bXMu0xxPo
-         M3YcI6x5oGefJ0LwKnj3kjNaPD1W2u/dvBDozw9j2wMNuOa6gyjh6knuae6TCnp/g/
-         7Zjz0foe4XcecQrxxyt46Z+11DTCL05J77PlhvYZzMEUuQvivC0uB0HAeoZw0HHtkz
-         jzMsJYLUMprrCYsL1Y6kxpUNd4XiLiBkK3CZJNe0vfREtz0L+0y61ufZbTSE5FrAKC
-         SBZtS6R5TmrCg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id CD7C515C02DF; Thu,  8 Jun 2023 23:14:46 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/19] Fixes, cleanups and unit test for mballoc
-Date:   Thu,  8 Jun 2023 23:14:45 -0400
-Message-Id: <168628045802.1458216.6038952360450376953.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230603150327.3596033-1-shikemeng@huaweicloud.com>
-References: <20230603150327.3596033-1-shikemeng@huaweicloud.com>
+        with ESMTP id S236884AbjFIDdC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Jun 2023 23:33:02 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F6430EE
+        for <linux-ext4@vger.kernel.org>; Thu,  8 Jun 2023 20:33:01 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6b2bdca0884so303396a34.2
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Jun 2023 20:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1686281580; x=1688873580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6iwigF78U3EwOQGn53e2UyWPNzHupFHtA26oaO3R2wc=;
+        b=IUFu6gG5Y34+fr+pT0fZlm3gbhBerxiSZw2i1915MxIWtDQeIYZTwhIfxZmRHtIyiR
+         NFlOVNBDBv4/iHd9xqTHen6L7cwEJR2miWxty9rxd+mk6AtmzR3I1xxG5LAkyihtV0UE
+         3/jD4CNKGPbNmdD2KK8c1YBe88FwQhH58dTi9C94lOBqYZTDhOFWExKvxj5Kp+IXNOgU
+         zX89XwkY9Pgh5GQ5zDMDjn1C2akzPzmnPzODvfSMY1/G48ZUuRJTjtxkVvp/a53l/BsA
+         SRJ7B68f+Pab/mILI/Gop73OnxPKT98d3/ZDR6sz0msjAMQnDOI/J9Kzm9qPanig48z3
+         RfKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686281580; x=1688873580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6iwigF78U3EwOQGn53e2UyWPNzHupFHtA26oaO3R2wc=;
+        b=Wgrbs1vQSvgUntgk7xgERKHb4ON7BuCK/KlFCm3C6/ByiYU5hoDkSHTpUVo7lY/HWn
+         wm+XzHlNrtpLil2uwRh4vaGSrXf68Mazo+hk6oDzDdVRlReMlncddi/uxfW5Tk4oQVLu
+         ARmGXOtTMHt41AsfVVzEyUjnGHZmOpiyoSXfz4u3Anc/WJKqoaVRS1YMR0P5mHzW9XYn
+         nS8lIMMMPlgEkjkLSlSKFO5F8DSlC2rJF0wnv6AtHlpX5+ehXw+SX1e8BewiOGdzSxUY
+         XIuIAR4fdMc6rpaOo70FlesbIWAE8WGty8HQrFNp3qtH5KHq5FMNPCyO/YoFsHfhunFG
+         3fdA==
+X-Gm-Message-State: AC+VfDxFRbm5WxANRKjRfLHfO6GWh9xAnJnwELMukYFhzuF6r2E0ZM+j
+        7W59ft4MN+aCDR8Z2/Lgc/wGeQ==
+X-Google-Smtp-Source: ACHHUZ4jpAKkv/P4I5GyogL5cyKUBbH9jdQo3rd8sW4sBbrGIyPOxPKXrqwUV/kK78Vqo7hkyQEMOA==
+X-Received: by 2002:a05:6830:3a0a:b0:6a6:6121:dc60 with SMTP id di10-20020a0568303a0a00b006a66121dc60mr317885otb.10.1686281580410;
+        Thu, 08 Jun 2023 20:33:00 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-79-151.pa.nsw.optusnet.com.au. [49.179.79.151])
+        by smtp.gmail.com with ESMTPSA id t1-20020aa79381000000b0064381853bfcsm1723703pfe.89.2023.06.08.20.32.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jun 2023 20:32:59 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1q7Srw-009XUr-2X;
+        Fri, 09 Jun 2023 13:32:56 +1000
+Date:   Fri, 9 Jun 2023 13:32:56 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joe Thornber <thornber@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bart Van Assche <bvanassche@google.com>,
+        linux-kernel@vger.kernel.org, Joe Thornber <ejt@redhat.com>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v7 0/5] Introduce provisioning primitives
+Message-ID: <ZIKdaJNhSq9JfFDU@dread.disaster.area>
+References: <ZHFEfngPyUOqlthr@dread.disaster.area>
+ <CAJ0trDZJQwvAzngZLBJ1hB0XkQ1HRHQOdNQNTw9nK-U5i-0bLA@mail.gmail.com>
+ <ZHYB/6l5Wi+xwkbQ@redhat.com>
+ <CAJ0trDaUOevfiEpXasOESrLHTCcr=oz28ywJU+s+YOiuh7iWow@mail.gmail.com>
+ <ZHYWAGmKhwwmTjW/@redhat.com>
+ <CAG9=OMMnDfN++-bJP3jLmUD6O=Q_ApV5Dr392_5GqsPAi_dDkg@mail.gmail.com>
+ <ZHqOvq3ORETQB31m@dread.disaster.area>
+ <ZHti/MLnX5xGw9b7@redhat.com>
+ <ZH/k9ss2Cg9HYrEV@dread.disaster.area>
+ <ZIEXwTd17z0iYW4s@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZIEXwTd17z0iYW4s@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,59 +95,21 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Jun 07, 2023 at 07:50:25PM -0400, Mike Snitzer wrote:
+> Do you think you're OK to scope out, and/or implement, the XFS changes
+> if you use v7 of this patchset as the starting point? (v8 should just
+> be v7 minus the dm-thin.c and dm-snap.c changes).  The thinp
+> support in v7 will work enough to allow XFS to issue REQ_OP_PROVISION
+> and/or fallocate (via mkfs.xfs) to dm-thin devices.
 
-On Sat, 03 Jun 2023 23:03:08 +0800, Kemeng Shi wrote:
-> v3->v4:
-> 1. Collect Reviewed-by from Ojaswin
-> 2. Do improve as Ojaswin kindly suggested: Fix typo in commit,
-> WARN if try to clear bit of uninitialized group and improve
-> refactoring of AGGRESSIVE_CHECK code.
-> 3. Fix conflic on patch 16
-> 4. Improve git log in patch 16,17
-> 
-> [...]
+Yup, XFS only needs blkdev_issue_provision() and
+bdev_max_provision_sectors() to be present.  filesystem code. The
+initial XFS provisioning detection and fallocate() support is just
+under 50 lines of new code...
 
-Applied, thanks!
+Cheers,
 
-[01/19] ext4: fix wrong unit use in ext4_mb_normalize_request
-        commit: cc891ea78ad04df2fedd419c23237cdc5a5dda62
-[02/19] ext4: fix unit mismatch in ext4_mb_new_blocks_simple
-        commit: abf6b44598cc3aa8684ff3fa5605a5a0104d69e7
-[03/19] ext4: fix wrong unit use in ext4_mb_find_by_goal
-        commit: ae04f8c997b0043e429e484019560417ffdb416f
-[04/19] ext4: treat stripe in block unit
-        commit: 7e1fb2de7d72fbb354c8ed883be34daf95cf3121
-[05/19] ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
-        commit: 4423c2f31548dd464ab56a716eb5868d7f599417
-[06/19] ext4: remove ext4_block_group and ext4_block_group_offset declaration
-        commit: 61896327e1c69492c5433aa60516a9256f0781b0
-[07/19] ext4: try all groups in ext4_mb_new_blocks_simple
-        commit: 7de4b9d4409a267abe088cbd5b06fba849626d62
-[08/19] ext4: get block from bh before pass it to ext4_free_blocks_simple in ext4_free_blocks
-        commit: 9c90b9af90f233c66ce7e1a30e6477f9f8b482dc
-[09/19] ext4: remove unsed parameter and unnecessary forward declaration of ext4_mb_new_blocks_simple
-        commit: e8a7cea1d0a43b78c934425b8640c8764b39772a
-[10/19] ext4: fix wrong unit use in ext4_mb_clear_bb
-        commit: 99101b01b1b63aaee4d573f4c857738171b455bf
-[11/19] ext4: fix wrong unit use in ext4_mb_new_blocks
-        commit: bec857ed03e324d2b111e920f467d201c900c8ed
-[12/19] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
-        commit: 80b9027c69d439d5fce276245f10c51153fa5301
-[13/19] ext4: call ext4_mb_mark_group_bb in ext4_free_blocks_simple
-        commit: 60ba685c5998aa8f8f0b4dd1bd8653062ee720dd
-[14/19] ext4: extent ext4_mb_mark_group_bb to support allocation under journal
-        commit: b989e0b98798c235a3f8b3b424590c4721c861a5
-[15/19] ext4: call ext4_mb_mark_group_bb in ext4_mb_mark_diskspace_used
-        commit: 2df9dcb865f335eea4edb4ce03f0e0bbb63a7d86
-[16/19] ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
-        commit: d83b42442e9d1f7a4a418c34514c7a7f3282f39a
-[17/19] ext4: call ext4_mb_mark_group_bb in ext4_group_add_blocks
-        commit: 797f324727ba1c07208431deec8d3ccf5ef4c3c6
-[18/19] ext4: add some kunit stub for mballoc kunit test
-        commit: b8eb90a9a9c2ceddd93bf5cbc16bbec69a2af0f5
-[19/19] ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
-        commit: d21e7bd66903c8f1f7264e63f310a463086d7bd2
-
-Best regards,
+Dave.
 -- 
-Theodore Ts'o <tytso@mit.edu>
+Dave Chinner
+david@fromorbit.com
