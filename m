@@ -2,96 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C814372A821
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jun 2023 04:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCA872ABE5
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jun 2023 15:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjFJCLh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Jun 2023 22:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        id S234676AbjFJNw6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jun 2023 09:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjFJCLf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Jun 2023 22:11:35 -0400
-Received: from cheetah.elm.relay.mailchannels.net (cheetah.elm.relay.mailchannels.net [23.83.212.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE58D3A87
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 19:11:33 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 15B7B102B46
-        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 02:11:33 +0000 (UTC)
-Received: from pdx1-sub0-mail-a273.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 90E6B102B7C
-        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 02:11:32 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686363092; a=rsa-sha256;
-        cv=none;
-        b=Lx576aYxdMqDdycGFGcimiaSYIU02ZkWMKeZeQUJWgtYuZ5xt4bOIXaQFeFZV5KpL0WOqg
-        QS//jKFCWJBDuTqSrH+9MCsdtcp8sP2tBxZoaYgbAPXpRw3TYx6yE2sVPeRaG/x0tSRmC5
-        davHQcYskrZ2NeblxvxM5Dv5PSk/i+UdpqnCLEfXoCBleS2b5phr/DOJyRvF/Ccx91ljHi
-        ipgwRlxRydWmo2MhUbbn3wRcuDoFZ7vsQovN6SJStDRTlJ7vMQl/BoCXZZDbL1bnUR5GFq
-        S9/e7IXhzrA2FYnE0EXnTnGlOt+w6vKdQRpolxgTH6N6ojSvupCKX4MfG89wNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1686363092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=6cCrXefebxIYGQLvZVuT/h0cRGS9RpFCZigzT3GjMfU=;
-        b=c99g8Awra04wdV7VfsgWR9ML3PSycgmTtO+NpjCnE2hxlpGTKmQR6ZDdtJZnmgstQ3MSI/
-        w0gk+NAqWRTS9j9Pf5ef57TrBseRPZdT3HSPnIjpEyaVGR87/JBeGGY7ldqryArQSNStZD
-        H7kxi+DBhNBibBQ/Kk5rVo4GXmBtr8ke0jAAo6ct3fMBS5FRpNQTabaaVrWlkckfA28TOz
-        8UMY5KpiC6V5X80Ws3T2zIlLsp6nZsEX7vkAneClOUwNtOKmeiqZP0Coh7SF0z8faV2vhn
-        fThBPWzFjywZeIXoVOva2y48nsE357AhKBF0Dpxnh6Dq3NoFUw7gk5+DQ+9LAw==
-ARC-Authentication-Results: i=1;
-        rspamd-6c69b8658d-b7mg5;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Good
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Cooing-Sponge: 24a3dd31633b301d_1686363092804_4223001024
-X-MC-Loop-Signature: 1686363092804:3222045330
-X-MC-Ingress-Time: 1686363092803
-Received: from pdx1-sub0-mail-a273.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.127.59.15 (trex/6.8.1);
-        Sat, 10 Jun 2023 02:11:32 +0000
-Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a273.dreamhost.com (Postfix) with ESMTPSA id 4QdLzS2g00zCf
-        for <linux-ext4@vger.kernel.org>; Fri,  9 Jun 2023 19:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1686363092;
-        bh=6cCrXefebxIYGQLvZVuT/h0cRGS9RpFCZigzT3GjMfU=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=AHAr4kTtlCFbT6/D0Sq29BQFqHg5jDfh2vKt3EHuh0OM4qOdYiEvEhX316cjLRZid
-         E8z2rqHq7+88uPYKtFnWbf220KozSASmpenfr4B5+oRoJXKP8MO0fG/p50jZKC6Qfl
-         sdVQCSTUBSiiMHp6NO+ULnolAjkRZt0qnmhOLhQU=
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0049
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Fri, 09 Jun 2023 19:11:31 -0700
-Date:   Fri, 9 Jun 2023 19:11:31 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [e2fsprogs PATCH] resize2fs: use directio when reading superblock
-Message-ID: <20230610021131.GA6134@templeofstupid.com>
-References: <20230605225221.GA5737@templeofstupid.com>
- <20230607133909.GA1309044@mit.edu>
- <20230607185041.GA2023@templeofstupid.com>
- <20230609042239.GA1436857@mit.edu>
+        with ESMTP id S232526AbjFJNw5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 09:52:57 -0400
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30675E57
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 06:52:56 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-77a1d6d2f7fso326272539f.2
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 06:52:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686405175; x=1688997175;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1b7InKmJ85x3JSORPjT0+2HX2ERAgCofcz+UFTFAFZ8=;
+        b=VcBqRK8ROpvIPCPT2XQcFwucvxcCVSnzXsLCKvptsjmoeMYL00FFF2AK0XtdZmR842
+         aahqd9XXiPpvj/6abNVHREx5aTSyreFlA0bLI2AyPqQtKSeH00ZvINY1pBK7oIOQxhqx
+         L+PUSCNR1SUWJqubDK7HI7VMR1b/23WKNmgaJv9hEQr0qRmXE78MQSrkRFun3akREY1a
+         FJBDlIBlN91vyWEVOQODMprPqS6br6NkuySU+/I3+X2YTNloZxh3o/EJONIVIic2AFGt
+         Ny5pW6h30VOsDxxbhYDL7oINx2DhlQzPvlVicvzleFCu95gHeJT8XsoHVOfLhB2cwH34
+         nwOg==
+X-Gm-Message-State: AC+VfDx7dLeQaP1dzGpeYZ45qbvuoWV390LhfauZ0J5awJvO8J8BWxoq
+        CJv6k0zET+zMObinmHlmDATo4ul0LPLRljRebZhDyldjpF2G
+X-Google-Smtp-Source: ACHHUZ5irBvYRMAMwTewiuyArJivnUAv6hx3GO4ej1lziyx+9dG7+1HQBG/QghQ2LAyd3nKr7sUdckJVxLzAMT8YvMd3Aqj8eq8i
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230609042239.GA1436857@mit.edu>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+X-Received: by 2002:a02:9542:0:b0:41d:9cf2:f41d with SMTP id
+ y60-20020a029542000000b0041d9cf2f41dmr1678161jah.0.1686405175595; Sat, 10 Jun
+ 2023 06:52:55 -0700 (PDT)
+Date:   Sat, 10 Jun 2023 06:52:55 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070575805fdc6cdb2@google.com>
+Subject: [syzbot] [ext4?] BUG: sleeping function called from invalid context
+ in ext4_update_super
+From:   syzbot <syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,69 +55,128 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+Hello,
 
-On Fri, Jun 09, 2023 at 12:22:39AM -0400, Theodore Ts'o wrote:
-> On Wed, Jun 07, 2023 at 11:50:41AM -0700, Krister Johansen wrote:
-> > The growpart / resize2fs in the reproducer are essentially verbatim from
-> > our system provisioning scripts.  Unless those modify the UUID, we're
-> > not taking any explicit action to do so.
-> 
-> Ah, OK.  OK, I'm guessing that your system provisioning scripts are
-> attempting mess with the file system a lot (creating, deleting, etc.)
-> files while trying to run resize2fs in parallel, then?
+syzbot found the following issue on:
 
-The growpart and resize bits are triggered out of cloud-init when the
-machine initially boots.  Some provisioning steps are machine-type
-depenent.  The instances in which this problem have manifested are on
-machines where the initial provisioning has more to do.  It's also on
-machine types that are frequently provisioned.  I, unfortunately, only
-get to look at these machines once they break.  It's been hard to say
-whether it's because some other step of the provisioning is happening in
-parallel, or if the probability is roughly the same, and these systems
-are hitting it because more come and go.  I wish I had a better answer
-for you. :/
+HEAD commit:    f8dba31b0a82 Merge tag 'asym-keys-fix-for-linus-v6.4-rc5' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11b5d0dd280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=4acc7d910e617b360859
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> As far as your patch is concerned, resize2fs can do both off-line
-> (unmounted) and on-line (mounted) resizes.  And turning direct I/O
-> unconditionally isn't a great idea for off-line resizes --- it will
-> really trash the performance of the resize.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thanks for the additional detail.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/92008b448c84/disk-f8dba31b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/25e27132216c/vmlinux-f8dba31b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/72466b6c1237/bzImage-f8dba31b.xz
 
-I also double-checked to make sure these systems had the following patch
-applied:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com
 
-05c2c00f3769 ext4: protect superblock modifications with a buffer lock
+EXT4-fs error (device loop4): ext4_get_group_info:331: comm syz-executor.4: invalid group 4294819419
+BUG: sleeping function called from invalid context at include/linux/buffer_head.h:404
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 21305, name: syz-executor.4
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+5 locks held by syz-executor.4/21305:
+ #0: ffff8880292c8460 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x5fb/0xff0 fs/read_write.c:1253
+ #1: ffff8880391da200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #1: ffff8880391da200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_buffered_write_iter+0xaf/0x3a0 fs/ext4/file.c:283
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_convert_inline_data_to_extent fs/ext4/inline.c:584 [inline]
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_write_inline_data+0x51d/0x1360 fs/ext4/inline.c:740
+ #3: ffff8880391da088 (&ei->i_data_sem){++++}-{3:3}, at: ext4_map_blocks+0x980/0x1cf0 fs/ext4/inode.c:616
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: spin_trylock include/linux/spinlock.h:360 [inline]
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_lock_group fs/ext4/ext4.h:3407 [inline]
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_mb_try_best_found+0x1ca/0x5a0 fs/ext4/mballoc.c:2166
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 21305 Comm: syz-executor.4 Not tainted 6.4.0-rc5-syzkaller-00002-gf8dba31b0a82 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ __might_resched+0x5cf/0x780 kernel/sched/core.c:10153
+ lock_buffer include/linux/buffer_head.h:404 [inline]
+ ext4_update_super+0x93/0x1230 fs/ext4/super.c:6039
+ ext4_commit_super+0xd0/0x4c0 fs/ext4/super.c:6117
+ ext4_handle_error+0x5ee/0x8b0 fs/ext4/super.c:676
+ __ext4_error+0x277/0x3b0 fs/ext4/super.c:776
+ ext4_get_group_info+0x382/0x3e0 fs/ext4/balloc.c:331
+ ext4_mb_new_inode_pa+0x89c/0x1300 fs/ext4/mballoc.c:4915
+ ext4_mb_try_best_found+0x3a1/0x5a0 fs/ext4/mballoc.c:2171
+ ext4_mb_regular_allocator+0x3511/0x3c20 fs/ext4/mballoc.c:2784
+ ext4_mb_new_blocks+0xe5f/0x44a0 fs/ext4/mballoc.c:5843
+ ext4_alloc_branch fs/ext4/indirect.c:340 [inline]
+ ext4_ind_map_blocks+0x10d7/0x29e0 fs/ext4/indirect.c:635
+ ext4_map_blocks+0x9e7/0x1cf0 fs/ext4/inode.c:625
+ _ext4_get_block+0x238/0x6a0 fs/ext4/inode.c:779
+ __block_write_begin_int+0x548/0x1a50 fs/buffer.c:2064
+ ext4_try_to_write_inline_data+0x7ed/0x1360 fs/ext4/inline.c:740
+ ext4_write_begin+0x290/0x10b0 fs/ext4/inode.c:1147
+ ext4_da_write_begin+0x300/0xa40 fs/ext4/inode.c:2893
+ generic_perform_write+0x300/0x5e0 mm/filemap.c:3923
+ ext4_buffered_write_iter+0x122/0x3a0 fs/ext4/file.c:289
+ ext4_file_write_iter+0x1d6/0x1930
+ do_iter_write+0x7b1/0xcb0 fs/read_write.c:860
+ iter_file_splice_write+0x843/0xfe0 fs/splice.c:795
+ do_splice_from fs/splice.c:873 [inline]
+ direct_splice_actor+0xe7/0x1c0 fs/splice.c:1039
+ splice_direct_to_actor+0x4c4/0xbd0 fs/splice.c:994
+ do_splice_direct+0x283/0x3d0 fs/splice.c:1082
+ do_sendfile+0x620/0xff0 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0ff0c8c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0ff1944168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f0ff0dabf80 RCX: 00007f0ff0c8c169
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007f0ff0ce7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0001000000201005 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffe35f5084f R14: 00007f0ff1944300 R15: 0000000000022000
+ </TASK>
+BUG: scheduling while atomic: syz-executor.4/21305/0x00000002
+5 locks held by syz-executor.4/21305:
+ #0: ffff8880292c8460 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x5fb/0xff0 fs/read_write.c:1253
+ #1: ffff8880391da200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #1: ffff8880391da200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: ext4_buffered_write_iter+0xaf/0x3a0 fs/ext4/file.c:283
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_convert_inline_data_to_extent fs/ext4/inline.c:584 [inline]
+ #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_write_inline_data+0x51d/0x1360 fs/ext4/inline.c:740
+ #3: ffff8880391da088 (&ei->i_data_sem){++++}-{3:3}, at: ext4_map_blocks+0x980/0x1cf0 fs/ext4/inode.c:616
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: spin_trylock include/linux/spinlock.h:360 [inline]
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_lock_group fs/ext4/ext4.h:3407 [inline]
+ #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_mb_try_best_found+0x1ca/0x5a0 fs/ext4/mballoc.c:2166
+Modules linked in:
+Preemption disabled at:
+[<0000000000000000>] 0x0
 
-And they do.  Not sure if that's directly applicable to the online
-resize case though.
 
-> Does this patch work for you instead?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks, it does!
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> 					- Ted
-> 
-> diff --git a/resize/main.c b/resize/main.c
-> index 94f5ec6d..f914c050 100644
-> --- a/resize/main.c
-> +++ b/resize/main.c
-> @@ -409,6 +409,8 @@ int main (int argc, char ** argv)
->  
->  	if (!(mount_flags & EXT2_MF_MOUNTED) && !print_min_size)
->  		io_flags = EXT2_FLAG_RW | EXT2_FLAG_EXCLUSIVE;
-> +	if (mount_flags & EXT2_MF_MOUNTED)
-> +		io_flags |= EXT2_FLAG_DIRECT_IO;
->  
->  	io_flags |= EXT2_FLAG_64BITS | EXT2_FLAG_THREADS;
->  	if (undo_file) {
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-If it counts:
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Reviewed-by: Krister Johansen <kjlx@templeofstupid.com>
-Tested-by: Krister Johansen <kjlx@templeofstupid.com>
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-Thanks again,
-
--K
+If you want to undo deduplication, reply with:
+#syz undup
