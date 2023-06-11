@@ -2,316 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380F472AEDD
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Jun 2023 22:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A08B72AFF9
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 04:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjFJUth (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jun 2023 16:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
+        id S231501AbjFKCCL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jun 2023 22:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjFJUtg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 16:49:36 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D089E;
-        Sat, 10 Jun 2023 13:49:35 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3f6e1394060so21251805e9.3;
-        Sat, 10 Jun 2023 13:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686430173; x=1689022173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNzq6G0OnsdDbZ+LEED2srClnZrWFedTNdX9EieNzl0=;
-        b=Tg0HFXgs9pbPt9GuEbUkkteSDa44PSSZappyWG3eDEvdV/qIe0G9/kwbyrEwne5DDF
-         ahXjHaNm4EhAk80mtK4XEabcg9G4+WED7iidHRvBvv9J0iEDP30uO7l/BUwGD9uPPlhh
-         2ZnmTBeobe84I8Q5wdOM/2EaDnIwcty/Cs1MBzpha0iXa93TSvZkxUEdiIo0c20AEYb3
-         T5u8a9Ei7f1ofIxH5kSujq6csCkhsy5+mdHbFS36Tmz3bGi/Uj8JdujYhxGf7OCE+PIi
-         FregWks/Te3kDxOgVszPZGt1JzyHbxSg/1aNXo+tFsvHQMcYPDsFSV+/g2XehGAblHd6
-         X8dg==
+        with ESMTP id S229677AbjFKCCK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 22:02:10 -0400
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75685115
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 19:02:08 -0700 (PDT)
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-33b88241696so33969675ab.1
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 19:02:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686430173; x=1689022173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNzq6G0OnsdDbZ+LEED2srClnZrWFedTNdX9EieNzl0=;
-        b=O7yhCoQ9uMdMegGi7FVlRTvBPfjifDa7qxFlIT7Ul/+ABVGVrqDDWRqrGxQ3EWAjRr
-         WfUv4uuhhlW8Ug7ABZYvYYWMsxns46qSEPbyVy7/EjAHGtPiM76tdxf+/DmojiYArQBF
-         /w3N2JQfR0FwZ1BPc2Y7wkGu+dV6PbyJewuB7OGmOjBIg0o/UWGzSD/Jdhc2hfMfA3/V
-         anjSM2naSDVHmIXPFGuIPUsXc5rVpqWxPj/tvj3rHwLd50U66nKLs/2xroGYHdJPvFBR
-         y+4gYi6Cz00aUVZaJ5Hq/T4UYZ6ZCB5B5uewsXtBTUVbRGA6plq/RcHg6Z9F8b6cwwTC
-         jt0Q==
-X-Gm-Message-State: AC+VfDzGnTPRBYLYf0NElV4MOVX8X03RwiwXmWk6Kcl4cyGTU+L8PPct
-        kawn01pUZ477kCnjysyUc3Q=
-X-Google-Smtp-Source: ACHHUZ5zpbGiskq8+dL1orVwQq80XFVScX8mKvkpCrlcF0zoiSVn2Pfx3YDIGmWO0l8+Fa6qIfBCXQ==
-X-Received: by 2002:a1c:4c15:0:b0:3f1:70a2:ceb5 with SMTP id z21-20020a1c4c15000000b003f170a2ceb5mr3024672wmf.13.1686430173287;
-        Sat, 10 Jun 2023 13:49:33 -0700 (PDT)
-Received: from suse.localnet (host-95-252-166-216.retail.telecomitalia.it. [95.252.166.216])
-        by smtp.gmail.com with ESMTPSA id n20-20020a7bc5d4000000b003f423508c6bsm6552052wmk.44.2023.06.10.13.49.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jun 2023 13:49:32 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+        d=1e100.net; s=20221208; t=1686448928; x=1689040928;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FpII4Bfe57dn9nuKVaPGfYaTqGD4QFjQiwpbINU+W+8=;
+        b=feexCHyrpkjn7XOW2Sqt5AR4d8Omnowciat8jd6UMHXGxTGRGRPsIsBiGmveytWdTz
+         3nLAjpX1DW9K2+ZjL3g66DrkcwvVFJvpyzmGxarYOO7mMJ2o2Ukxr5041gfO+ymgq81l
+         6LNqetsIBDMhawIdnbnW+L6VYX9kdxLQytIaWSUDn7sVZ2oL8vlQVp2H+sx9A5OXxQPx
+         mkr02nwejt7JfYFojOaH7kOrkQ6xkFL8MAbDM+bpcNQnJoLxfJKVGwKSKcT6S7KfO2d5
+         duKw5Vh2tftzZRsWaHfGDliDuIGrqfltN0SOQR1Gb8xwln7FAc9B0746Gb+i3Cdn8DYa
+         s5Uw==
+X-Gm-Message-State: AC+VfDxygWwKdfepRT8zrEDwjOuPeJImTSM2QZUSV5exr0P0XF7i3ldQ
+        2GvNmtBhGFK6Hv5LEpNsMEn5lnHvNOzbxIlEXTO7etSHKH7k
+X-Google-Smtp-Source: ACHHUZ5iWhJhLL+4nWkhhe23qDyFivueyJlcUSIdHpk2meCQJSr6USy+PIt1IMOZAL3RLrA4om5BggrM/Hr9MWFzYWOssS9tr93R
+MIME-Version: 1.0
+X-Received: by 2002:a92:ce04:0:b0:335:908b:8f9 with SMTP id
+ b4-20020a92ce04000000b00335908b08f9mr2481753ilo.1.1686448927847; Sat, 10 Jun
+ 2023 19:02:07 -0700 (PDT)
+Date:   Sat, 10 Jun 2023 19:02:07 -0700
+In-Reply-To: <000000000000e55d2005fd59d6c9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000046becb05fdd0fdef@google.com>
+Subject: Re: [syzbot] [ext4?] WARNING: locking bug in ext4_move_extents
+From:   syzbot <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
 To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Cc:     syzbot <syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [ext4?] BUG: sleeping function called from invalid context in
- ext4_update_super
-Date:   Sat, 10 Jun 2023 22:49:31 +0200
-Message-ID: <3170658.5fSG56mABF@suse>
-In-Reply-To: <7535327.EvYhyI6sBW@suse>
-References: <00000000000070575805fdc6cdb2@google.com> <7535327.EvYhyI6sBW@suse>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On sabato 10 giugno 2023 22:41:18 CEST Fabio M. De Francesco wrote:
-> On sabato 10 giugno 2023 15:52:55 CEST syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    f8dba31b0a82 Merge tag 'asym-keys-fix-for-linus-v6.4-rc5' 
-..
-> > git tree:       upstream
-> > 
-> > [...]
-> > 
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Unfortunately :-(
-> 
-> > Downloadable assets:
-> > 
-> > [...]
-> > 
-> > EXT4-fs error (device loop4): ext4_get_group_info:331: comm syz-executor.
-4:
-> > invalid group 4294819419 BUG: sleeping function called from invalid 
-context
-> > at include/linux/buffer_head.h:404 in_atomic(): 1, irqs_disabled(): 0,
-> > non_block: 0, pid: 21305, name: syz-executor.4 preempt_count: 1, expected: 
-0
-> > RCU nest depth: 0, expected: 0
-> > 
-> > 5 locks held by syz-executor.4/21305:
-> >  #0: ffff8880292c8460 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x5fb/
-> 
-> 0xff0
-> 
-> > fs/read_write.c:1253 #1: ffff8880391da200
-> > (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock
-> > include/linux/fs.h:775 [inline] #1: ffff8880391da200
-> > (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at:
-> > ext4_buffered_write_iter+0xaf/0x3a0 fs/ext4/file.c:283 #2: 
-ffff8880391d9ec8
-> > (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:
-155
-> > [inline] #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at:
-> > ext4_convert_inline_data_to_extent fs/ext4/inline.c:584 [inline] #2:
-> > ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at:
-> > ext4_try_to_write_inline_data+0x51d/0x1360 fs/ext4/inline.c:740 #3:
-> > ffff8880391da088 (&ei->i_data_sem){++++}-{3:3}, at:
-> > ext4_map_blocks+0x980/0x1cf0 fs/ext4/inode.c:616 #4: ffff88803944f018
-> > (&bgl->locks[i].lock){+.+.}-{2:2}, at: spin_trylock
-> > include/linux/spinlock.h:360 [inline] #4: ffff88803944f018
-> > (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_lock_group fs/ext4/ext4.h:3407
-> > [inline] #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at:
-> > ext4_mb_try_best_found+0x1ca/0x5a0 fs/ext4/mballoc.c:2166 Preemption
-> 
-> disabled
-> 
-> > at:
-> > [<0000000000000000>] 0x0
-> > CPU: 0 PID: 21305 Comm: syz-executor.4 Not tainted
-> > 6.4.0-rc5-syzkaller-00002-gf8dba31b0a82 #0 Hardware name: Google Google
-> > 
-> > Compute Engine/Google Compute Engine, BIOS Google 05/25/2023 Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
-> >  __might_resched+0x5cf/0x780 kernel/sched/core.c:10153
-> >  lock_buffer include/linux/buffer_head.h:404 [inline]
-> >  ext4_update_super+0x93/0x1230 fs/ext4/super.c:6039
-> >  ext4_commit_super+0xd0/0x4c0 fs/ext4/super.c:6117
-> >  ext4_handle_error+0x5ee/0x8b0 fs/ext4/super.c:676
-> 
-> Well, I'm a new to filesystems. However, I'd like to test a change in
-> ext4_handle_error().
-> 
-> Currently I see that errors are handled according to the next snippet of 
-code
-> from the above-mentioned function (please note that we are in atomic 
-context):
-> 
-> if (continue_fs)
-> 	if (continue_fs && journal)
-> 		schedule_work(&EXT4_SB(sb)->s_error_work);
-> 	else
-> 		ext4_commit_super(sb);
-> 
-> If evaluates false, we directly call ext4_commit_super(), forgetting that,
-> AFAICS we are in atomic context.
-> 
-> Obviously, we know that ext4_update_super() calls lock_buffer(), which
-> might_sleep().
-> 
-> As I said I have only little experience with filesystems, so my question is:
-> despite the overhead, can we delete the check and do the following?
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 05fcecc36244..574b096de059 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -662,19 +662,8 @@ static void ext4_handle_error(struct super_block *sb,
-> bool force_ro, int error,
->                         jbd2_journal_abort(journal, -EIO);
->         }
-> 
-> -       if (!bdev_read_only(sb->s_bdev)) {
-> -               save_error_info(sb, error, ino, block, func, line);
-> -               /*
-> -                * In case the fs should keep running, we need to writeout
-> -                * superblock through the journal. Due to lock ordering
-> -                * constraints, it may not be safe to do it right here so we
-> -                * defer superblock flushing to a workqueue.
-> -                */
-> -               if (continue_fs && journal)
-> -                       schedule_work(&EXT4_SB(sb)->s_error_work);
-> -               else
-> -                       ext4_commit_super(sb);
-> -       }
-> +       if (!bdev_read_only(sb->s_bdev))
-> +               schedule_work(&EXT4_SB(sb)->s_error_work);
-> 
->         /*
->          * We force ERRORS_RO behavior when system is rebooting. Otherwise 
-we
-> 
+syzbot has found a reproducer for the following issue on:
 
-O, sorry. I forgot something...
+HEAD commit:    d8b213732169 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15e74543280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd4213541e5ab26f
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139801f1280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a928ab280000
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 05fcecc36244..ac3a734b7d4d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -664,16 +664,7 @@ static void ext4_handle_error(struct super_block *sb, 
-bool force_ro, int error,
- 
-        if (!bdev_read_only(sb->s_bdev)) {
-                save_error_info(sb, error, ino, block, func, line);
--               /*
--                * In case the fs should keep running, we need to writeout
--                * superblock through the journal. Due to lock ordering
--                * constraints, it may not be safe to do it right here so we
--                * defer superblock flushing to a workqueue.
--                */
--               if (continue_fs && journal)
--                       schedule_work(&EXT4_SB(sb)->s_error_work);
--               else
--                       ext4_commit_super(sb);
-+               schedule_work(&EXT4_SB(sb)->s_error_work);
-        }
- 
-        /*
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3d15de852c90/disk-d8b21373.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ca6234ed6efc/vmlinux-d8b21373.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0fc706ec33bb/Image-d8b21373.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/a5ab37037d85/mount_0.gz
 
-> Am I missing something I'm not able to see here?
-> If not, I'll try this diff if and when Syzkaller provides a reproducer.
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> >  __ext4_error+0x277/0x3b0 fs/ext4/super.c:776
-> >  ext4_get_group_info+0x382/0x3e0 fs/ext4/balloc.c:331
-> >  ext4_mb_new_inode_pa+0x89c/0x1300 fs/ext4/mballoc.c:4915
-> >  ext4_mb_try_best_found+0x3a1/0x5a0 fs/ext4/mballoc.c:2171
-> >  ext4_mb_regular_allocator+0x3511/0x3c20 fs/ext4/mballoc.c:2784
-> >  ext4_mb_new_blocks+0xe5f/0x44a0 fs/ext4/mballoc.c:5843
-> >  ext4_alloc_branch fs/ext4/indirect.c:340 [inline]
-> >  ext4_ind_map_blocks+0x10d7/0x29e0 fs/ext4/indirect.c:635
-> >  ext4_map_blocks+0x9e7/0x1cf0 fs/ext4/inode.c:625
-> >  _ext4_get_block+0x238/0x6a0 fs/ext4/inode.c:779
-> >  __block_write_begin_int+0x548/0x1a50 fs/buffer.c:2064
-> >  ext4_try_to_write_inline_data+0x7ed/0x1360 fs/ext4/inline.c:740
-> >  ext4_write_begin+0x290/0x10b0 fs/ext4/inode.c:1147
-> >  ext4_da_write_begin+0x300/0xa40 fs/ext4/inode.c:2893
-> >  generic_perform_write+0x300/0x5e0 mm/filemap.c:3923
-> >  ext4_buffered_write_iter+0x122/0x3a0 fs/ext4/file.c:289
-> >  ext4_file_write_iter+0x1d6/0x1930
-> >  do_iter_write+0x7b1/0xcb0 fs/read_write.c:860
-> >  iter_file_splice_write+0x843/0xfe0 fs/splice.c:795
-> >  do_splice_from fs/splice.c:873 [inline]
-> >  direct_splice_actor+0xe7/0x1c0 fs/splice.c:1039
-> >  splice_direct_to_actor+0x4c4/0xbd0 fs/splice.c:994
-> >  do_splice_direct+0x283/0x3d0 fs/splice.c:1082
-> >  do_sendfile+0x620/0xff0 fs/read_write.c:1254
-> >  __do_sys_sendfile64 fs/read_write.c:1322 [inline]
-> >  __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1308
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > 
-> > RIP: 0033:0x7f0ff0c8c169
-> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7
-> 
-> 48
-> 
-> > 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 
-73
-> > 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 RSP: 002b:00007f0ff1944168
-> > EFLAGS: 00000246 ORIG_RAX: 0000000000000028 RAX: ffffffffffffffda RBX:
-> > 00007f0ff0dabf80 RCX: 00007f0ff0c8c169
-> > RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
-> > RBP: 00007f0ff0ce7ca1 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0001000000201005 R11: 0000000000000246 R12: 0000000000000000
-> > R13: 00007ffe35f5084f R14: 00007f0ff1944300 R15: 0000000000022000
-> > 
-> >  </TASK>
-> > 
-> > BUG: scheduling while atomic: syz-executor.4/21305/0x00000002
-> > 
-> > 5 locks held by syz-executor.4/21305:
-> >  #0: ffff8880292c8460 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x5fb/
-> 
-> 0xff0
-> 
-> > fs/read_write.c:1253 #1: ffff8880391da200
-> > (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock
-> > include/linux/fs.h:775 [inline] #1: ffff8880391da200
-> > (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at:
-> > ext4_buffered_write_iter+0xaf/0x3a0 fs/ext4/file.c:283 #2: 
-ffff8880391d9ec8
-> > (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:
-155
-> > [inline] #2: ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at:
-> > ext4_convert_inline_data_to_extent fs/ext4/inline.c:584 [inline] #2:
-> > ffff8880391d9ec8 (&ei->xattr_sem){++++}-{3:3}, at:
-> > ext4_try_to_write_inline_data+0x51d/0x1360 fs/ext4/inline.c:740 #3:
-> > ffff8880391da088 (&ei->i_data_sem){++++}-{3:3}, at:
-> > ext4_map_blocks+0x980/0x1cf0 fs/ext4/inode.c:616 #4: ffff88803944f018
-> > (&bgl->locks[i].lock){+.+.}-{2:2}, at: spin_trylock
-> > include/linux/spinlock.h:360 [inline] #4: ffff88803944f018
-> > (&bgl->locks[i].lock){+.+.}-{2:2}, at: ext4_lock_group fs/ext4/ext4.h:3407
-> > [inline] #4: ffff88803944f018 (&bgl->locks[i].lock){+.+.}-{2:2}, at:
-> > ext4_mb_try_best_found+0x1ca/0x5a0 fs/ext4/mballoc.c:2166 Modules linked 
-in:
-> > Preemption disabled at:
-> > [<0000000000000000>] 0x0
-> > 
-> > 
-> > ---
-> 
-> [...]
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 512
+------------[ cut here ]------------
+Looking for class "&ei->i_data_sem" with key init_once.__key.775, but found a different class "&ei->i_data_sem" with the same key
+WARNING: CPU: 0 PID: 6198 at kernel/locking/lockdep.c:941 look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
+Modules linked in:
+CPU: 0 PID: 6198 Comm: syz-executor258 Not tainted 6.4.0-rc5-syzkaller-gd8b213732169 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
+pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
+lr : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
+sp : ffff800097187040
+x29: ffff800097187040 x28: dfff800000000000 x27: ffff800080edb4a4
+x26: ffff80009222c6e0 x25: ffff80009222c000 x24: 0000000000000000
+x23: 0000000000000000 x22: 0000000000000000 x21: ffff8000923bfc61
+x20: ffff0000e0293488 x19: ffff800090e7b1c0 x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008a43bfbc x15: 0000000000000002
+x14: 0000000000000000 x13: 0000000000000001 x12: 0000000000000001
+x11: 0000000000000000 x10: 0000000000000000 x9 : 5933e84718dc2000
+x8 : 5933e84718dc2000 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff800097186938 x4 : ffff80008df9ee80 x3 : ffff8000805974f4
+x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
+Call trace:
+ look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
+ register_lock_class+0x8c/0x6a4 kernel/locking/lockdep.c:1290
+ __lock_acquire+0x184/0x7604 kernel/locking/lockdep.c:4965
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
+ down_write_nested+0x58/0xcc kernel/locking/rwsem.c:1689
+ ext4_double_down_write_data_sem+0x3c/0x4c
+ ext4_move_extents+0x2b0/0xb44 fs/ext4/move_extent.c:621
+ __ext4_ioctl fs/ext4/ioctl.c:1352 [inline]
+ ext4_ioctl+0x3eb4/0x6910 fs/ext4/ioctl.c:1608
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+ el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+ el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+irq event stamp: 6053
+hardirqs last  enabled at (6053): [<ffff80008099851c>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:240
+hardirqs last disabled at (6052): [<ffff8000809983b4>] kasan_quarantine_put+0x38/0x1c8 mm/kasan/quarantine.c:213
+softirqs last  enabled at (4378): [<ffff80008003437c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
+softirqs last disabled at (4376): [<ffff800080034348>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
+---[ end trace 0000000000000000 ]---
 
 
-
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
