@@ -2,112 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A0472B002
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 04:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34E572B017
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 05:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjFKC2A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jun 2023 22:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S229677AbjFKDUo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jun 2023 23:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjFKC17 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 22:27:59 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70750359D;
-        Sat, 10 Jun 2023 19:27:54 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-543d32eed7cso1230555a12.2;
-        Sat, 10 Jun 2023 19:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686450474; x=1689042474;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZZKyrk80GHGRjJOdJJel001FvO+j2KlRrTx+XA1IwaY=;
-        b=SShXsAlVmeCsuDtXoC4sUVjP18LPMX5YXeAyzaUykqPgqjdinAS9aVALm4NbO1tENU
-         Vp4dQgXCSDwH+qUoBfttSyBYTYTZPMWvUSAkKBWX8zlC6q3TmvR4q67zT5GFZgOgA973
-         WzAS0BkwQg77hZol7FWQfT2ebs7aA+3y4pRCwZumd1wInTQQohKXcvTnkPsVBvlfLr8x
-         71ovfgqOPS/0sWJvrXeLGzfzVYaxpToSe73LAIEkTIwP7dC+/DZuxPDPTMFgKKMed0y/
-         jpbWFAl40YRFaEvEIG9J58aJLwNf7M7QCo3Fpre208BwXo3PpYUE8jgsOklS+KKGVnew
-         RaHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686450474; x=1689042474;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZZKyrk80GHGRjJOdJJel001FvO+j2KlRrTx+XA1IwaY=;
-        b=Z6vKJIG7xZkLm+v9v7aA0iNuALkTYV3u82iVlqhQ8xmR2Q9dsnxl10eTQqhUD5tRlV
-         PKE1NGpMLTu4S5H0ULOaj7hItqN6yKtQww1/sLxh7DqPdvr+8mDEB3fMCTMsEWDdd8rL
-         UpKJ4l840B6kWWl7isuEXs5G8DQP49ViJ3eWxe3peeQh2zCWgotSisxJDpQ+9ECpMXmp
-         PcdiAj6o1OsQlgYBkI33y1BZhIczNIt1oD3/SlVuI6pk5frgZ0gFT/gSRrEnX/noZeTe
-         a1Oo3kZdl/lWkK2k9sUPZ3DdKCelF1m7ioeeGl1CeANfMEFy3hnWWWHH+7MVd38WvIrV
-         QK0g==
-X-Gm-Message-State: AC+VfDz3oYJw7vHYt0fMCax4TJPz/3XFtxhUnsCPEgW2t6qXNNl92SSo
-        NDPmVWIz1afZfG76qs3meoqWTr+xLmZhbA==
-X-Google-Smtp-Source: ACHHUZ6HnAVMhp2lSn0I3LgkbxqGHsODoUKgxm2ScyRFWnbq0b/2evpKIWwkzHPOPOpKkT4UrbW10Q==
-X-Received: by 2002:a17:90b:3b90:b0:259:d0f2:3576 with SMTP id pc16-20020a17090b3b9000b00259d0f23576mr5008901pjb.19.1686450473758;
-        Sat, 10 Jun 2023 19:27:53 -0700 (PDT)
-Received: from [192.168.43.80] (subs03-180-214-233-75.three.co.id. [180.214.233.75])
-        by smtp.gmail.com with ESMTPSA id z7-20020a170902708700b001ae3b51269dsm5566976plk.262.2023.06.10.19.27.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jun 2023 19:27:53 -0700 (PDT)
-Message-ID: <17d7e7f8-ad8d-1696-32b7-3ff9fd4548c1@gmail.com>
-Date:   Sun, 11 Jun 2023 09:27:45 +0700
+        with ESMTP id S229450AbjFKDUn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 23:20:43 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852CB10E
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 20:20:40 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-82-39.bstnma.fios.verizon.net [173.48.82.39])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35B3KXsA008999
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 10 Jun 2023 23:20:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1686453634; bh=W96TKHAZ6ESySZtEcS194nqdxBj1Tm+gm9r1oC+bMac=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=HdnHDs/1xhavufI/6paF+oJua2+oGGo5S+ezgp/TmaDPWKrXXkcegGeknzSGXnnkM
+         RhaDhrD9jOQTFQCYm28uEUdgjnjyqPcMAsQF6LlmnZ/pUkeaD5SKUgse6gYjOOQLyp
+         1NJAlM9+DQ7SyM/MBxqgrNSbv99iclMuDH3nTb3EEmD6CFPhFGNACWMqr6Bdg3FRa5
+         JuY9JIbKSVwmtQnW/DJ1iLCAhQiiBmCRqzWvJHzT6Yancv1ayjBu9JjKy0AYSWT03G
+         gVn9ByAJ3Y93amWqFtk9itR5OWaL21vn7s1KOiSNII2A5kxJZdCF4yJwWT7vPbc4M3
+         2D91DVRLrEnxA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0607F15C00B0; Sat, 10 Jun 2023 23:20:33 -0400 (EDT)
+Date:   Sat, 10 Jun 2023 23:20:32 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] [ext4?] BUG: sleeping function called from invalid
+ context in ext4_update_super
+Message-ID: <20230611032032.GC1436857@mit.edu>
+References: <00000000000070575805fdc6cdb2@google.com>
+ <7535327.EvYhyI6sBW@suse>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ext4 Development <linux-ext4@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: ext4_check_descriptors: Block bitmap for group 0 overlaps block
- group descriptors
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7535327.EvYhyI6sBW@suse>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+(Dropping linux-fsdevel and linux-kernel from the cc list.)
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> Hi,
+On Sat, Jun 10, 2023 at 10:41:18PM +0200, Fabio M. De Francesco wrote:
+> Well, I'm a new to filesystems. However, I'd like to test a change in 
+> ext4_handle_error().
 > 
-> Fail to mount a filesystem in kernel 6.4.0
+> Currently I see that errors are handled according to the next snippet of code 
+> from the above-mentioned function (please note that we are in atomic context):
 > 
-> The Filesystem is clean. fsck -fp reports no errors
+> 	if (continue_fs && journal)
+> 		schedule_work(&EXT4_SB(sb)->s_error_work);
+> 	else
+> 		ext4_commit_super(sb);
 > 
-> # uname -a
-> Linux medusa.dds.de 6.4.0-rc5 #2 SMP PREEMPT_DYNAMIC Wed Jun  7 08:11:59 CEST 2023 x86_64 GNU/Linux
-> # mount /dev/bigvg/lv_dat /mnt
-> mount: /mnt: mount(2) system call failed: Structure needs cleaning.
->        dmesg(1) may have more information after failed mount system call.
+> If evaluates false, we directly call ext4_commit_super(), forgetting that, 
+> AFAICS we are in atomic context.
 > 
-> Under Kernel 6.3.4 everything works with this Filesystem
+> As I said I have only little experience with filesystems, so my question is: 
+> despite the overhead, can we delete the check and do the following?
+>
+> [ Unconditionally call schedule_work(&EXT4_SB(sb)->s_error_work) ]
 
-The reporter then pasted short dmesg snippet:
+That doesn't work, for the simple reason that it's possible that file
+system might be configured to immediately panic on an error.  (See
+later in the ext4_handle_error() function after the check for
+test_opt(sb, ERRORS_PANIC).  If that happens, the workqueue will never
+have a chance to run.  In that case, we have to call
+ext4_commit_super().
 
-> [  104.501659] EXT4-fs (dm-9): ext4_check_descriptors: Block bitmap for group 0 overlaps block group descriptors
-> [  104.501664] EXT4-fs (dm-9): group descriptors corrupted!
-> 
+The real answer here is that ext4_error() must never be called from an
+atomic context, and a recent commit 5354b2af3406 ("ext4: allow
+ext4_get_group_info() to fail") added a call to ext4_error() which is
+problematic since some callers of the ext4_get_group_info() function
+may be holding a spinlock.  And so the best solution is to just simply
+to drop the call to ext4_error(), since it's not strictly necessary.
+If there is an antagonist process which is actively corrupting the
+superblock, some other code path will report the fact that the file
+system is corrupted soon enough.
 
-See Bugzilla for the full thread and attached dumpe2fs, lspci, and systeminfo.
+						- Ted
 
-Anyway, I'm adding it to regzbot:
-
-#regzbot introduced: v6.3..v6.4 https://bugzilla.kernel.org/show_bug.cgi?id=217534
-#regzbot title: Block bitmap for group 0 overlaps block group descriptors, causing mount failure
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217534
-
--- 
-An old man doll... just what I always wanted! - Clara
+P.S.  There is an exception to what I've described above, and that's
+special ext4_grp_locked_error() which is used in fs/ext4/mballoc.c.
+But that's a special case which requires very careful handling, In
+general, you simply must not be in atomic context when you want to
+report a problem.
