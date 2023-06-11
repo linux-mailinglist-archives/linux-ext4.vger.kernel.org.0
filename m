@@ -2,50 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C34E572B017
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 05:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3728372B03E
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 06:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjFKDUo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jun 2023 23:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        id S229552AbjFKEnF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Jun 2023 00:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjFKDUn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 23:20:43 -0400
+        with ESMTP id S229483AbjFKEnE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Jun 2023 00:43:04 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852CB10E
-        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 20:20:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FC3210E
+        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 21:43:02 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-82-39.bstnma.fios.verizon.net [173.48.82.39])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35B3KXsA008999
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35B4gS4d010701
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 10 Jun 2023 23:20:34 -0400
+        Sun, 11 Jun 2023 00:42:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686453634; bh=W96TKHAZ6ESySZtEcS194nqdxBj1Tm+gm9r1oC+bMac=;
+        t=1686458552; bh=73bmbFBB3UxlJQ4yQs+NJDwoTzApv0bKe+6sZFaYdDo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=HdnHDs/1xhavufI/6paF+oJua2+oGGo5S+ezgp/TmaDPWKrXXkcegGeknzSGXnnkM
-         RhaDhrD9jOQTFQCYm28uEUdgjnjyqPcMAsQF6LlmnZ/pUkeaD5SKUgse6gYjOOQLyp
-         1NJAlM9+DQ7SyM/MBxqgrNSbv99iclMuDH3nTb3EEmD6CFPhFGNACWMqr6Bdg3FRa5
-         JuY9JIbKSVwmtQnW/DJ1iLCAhQiiBmCRqzWvJHzT6Yancv1ayjBu9JjKy0AYSWT03G
-         gVn9ByAJ3Y93amWqFtk9itR5OWaL21vn7s1KOiSNII2A5kxJZdCF4yJwWT7vPbc4M3
-         2D91DVRLrEnxA==
+        b=ZkuyUn9JeLlmmhvEAOZLqdWNn43ppLS+lE5IUQxVWGxmhUuyyvK4K93iSknfZ5m4L
+         JfwPXWewz/ZD5U32BNd/vsAzQA0hAvZfCSkeLG50eFrodmjIoIXbf6XT9WQCRyBCO+
+         l+xncagRfQDRBuqR2P7FpCkE5FZ4XJjAS0m+FSONCjCUkehJkdIxhyEkxzMWWlOUYX
+         ihkBH1wpN56VuMd5VcbINdxA4VHwy0LRbNRYloUee+OTVuZIAjvXPia5jNBSEePk3Q
+         OhCjwKLqZoSy6XcLrWUmolQuBvvNwf/Dk04spp/DezT8Xo9dQMjVQY2Aw2M6WHYtYQ
+         sMhAewWr9zAMQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0607F15C00B0; Sat, 10 Jun 2023 23:20:33 -0400 (EDT)
-Date:   Sat, 10 Jun 2023 23:20:32 -0400
+        id C4F5215C00B0; Sun, 11 Jun 2023 00:42:28 -0400 (EDT)
+Date:   Sun, 11 Jun 2023 00:42:28 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [ext4?] BUG: sleeping function called from invalid
- context in ext4_update_super
-Message-ID: <20230611032032.GC1436857@mit.edu>
-References: <00000000000070575805fdc6cdb2@google.com>
- <7535327.EvYhyI6sBW@suse>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     adilger.kernel@dilger.ca, jack@suse.com, tudor.ambarus@linaro.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v3 0/6] ext4: Fix stale buffer loading from last failed
+Message-ID: <20230611044228.GD1436857@mit.edu>
+References: <20230315013128.3911115-1-chengzhihao1@huawei.com>
+ <f67f0b5c-d02b-7a72-e723-a10336739249@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7535327.EvYhyI6sBW@suse>
+In-Reply-To: <f67f0b5c-d02b-7a72-e723-a10336739249@huawei.com>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -55,49 +54,21 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-(Dropping linux-fsdevel and linux-kernel from the cc list.)
-
-On Sat, Jun 10, 2023 at 10:41:18PM +0200, Fabio M. De Francesco wrote:
-> Well, I'm a new to filesystems. However, I'd like to test a change in 
-> ext4_handle_error().
+On Fri, Jun 09, 2023 at 04:04:47PM +0800, Zhihao Cheng wrote:
 > 
-> Currently I see that errors are handled according to the next snippet of code 
-> from the above-mentioned function (please note that we are in atomic context):
-> 
-> 	if (continue_fs && journal)
-> 		schedule_work(&EXT4_SB(sb)->s_error_work);
-> 	else
-> 		ext4_commit_super(sb);
-> 
-> If evaluates false, we directly call ext4_commit_super(), forgetting that, 
-> AFAICS we are in atomic context.
-> 
-> As I said I have only little experience with filesystems, so my question is: 
-> despite the overhead, can we delete the check and do the following?
->
-> [ Unconditionally call schedule_work(&EXT4_SB(sb)->s_error_work) ]
+> Hi Ted, will this patchset be merged in next window?
 
-That doesn't work, for the simple reason that it's possible that file
-system might be configured to immediately panic on an error.  (See
-later in the ext4_handle_error() function after the check for
-test_opt(sb, ERRORS_PANIC).  If that happens, the workqueue will never
-have a chance to run.  In that case, we have to call
-ext4_commit_super().
+It's currently in the dev branch.  I haven't set the ack out for it
+yet because I'm still seeing some test failures, including some test
+hangs in my regression tests.  There are a number of patches series
+submission that I'm currently working through, so we'll have to see
+what the "guilty" patch set might be, and whether there is an obvious
+fix for it or not.  (I've found one such problem that was missed by
+code review[1], and unfortunately, there is at least one more issue
+that I'm currently trying to pin down.)
 
-The real answer here is that ext4_error() must never be called from an
-atomic context, and a recent commit 5354b2af3406 ("ext4: allow
-ext4_get_group_info() to fail") added a call to ext4_error() which is
-problematic since some callers of the ext4_get_group_info() function
-may be holding a spinlock.  And so the best solution is to just simply
-to drop the call to ext4_error(), since it's not strictly necessary.
-If there is an antagonist process which is actively corrupting the
-superblock, some other code path will report the fact that the file
-system is corrupted soon enough.
+[1] https://lore.kernel.org/r/20230610190319.GB1436857@mit.edu
 
-						- Ted
+Cheers,
 
-P.S.  There is an exception to what I've described above, and that's
-special ext4_grp_locked_error() which is used in fs/ext4/mballoc.c.
-But that's a special case which requires very careful handling, In
-general, you simply must not be in atomic context when you want to
-report a problem.
+					- Ted
