@@ -2,131 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A08B72AFF9
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 04:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A0472B002
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 04:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbjFKCCL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 10 Jun 2023 22:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        id S229677AbjFKC2A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 10 Jun 2023 22:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjFKCCK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 22:02:10 -0400
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75685115
-        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 19:02:08 -0700 (PDT)
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-33b88241696so33969675ab.1
-        for <linux-ext4@vger.kernel.org>; Sat, 10 Jun 2023 19:02:08 -0700 (PDT)
+        with ESMTP id S229552AbjFKC17 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 10 Jun 2023 22:27:59 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70750359D;
+        Sat, 10 Jun 2023 19:27:54 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-543d32eed7cso1230555a12.2;
+        Sat, 10 Jun 2023 19:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686450474; x=1689042474;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZZKyrk80GHGRjJOdJJel001FvO+j2KlRrTx+XA1IwaY=;
+        b=SShXsAlVmeCsuDtXoC4sUVjP18LPMX5YXeAyzaUykqPgqjdinAS9aVALm4NbO1tENU
+         Vp4dQgXCSDwH+qUoBfttSyBYTYTZPMWvUSAkKBWX8zlC6q3TmvR4q67zT5GFZgOgA973
+         WzAS0BkwQg77hZol7FWQfT2ebs7aA+3y4pRCwZumd1wInTQQohKXcvTnkPsVBvlfLr8x
+         71ovfgqOPS/0sWJvrXeLGzfzVYaxpToSe73LAIEkTIwP7dC+/DZuxPDPTMFgKKMed0y/
+         jpbWFAl40YRFaEvEIG9J58aJLwNf7M7QCo3Fpre208BwXo3PpYUE8jgsOklS+KKGVnew
+         RaHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686448928; x=1689040928;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FpII4Bfe57dn9nuKVaPGfYaTqGD4QFjQiwpbINU+W+8=;
-        b=feexCHyrpkjn7XOW2Sqt5AR4d8Omnowciat8jd6UMHXGxTGRGRPsIsBiGmveytWdTz
-         3nLAjpX1DW9K2+ZjL3g66DrkcwvVFJvpyzmGxarYOO7mMJ2o2Ukxr5041gfO+ymgq81l
-         6LNqetsIBDMhawIdnbnW+L6VYX9kdxLQytIaWSUDn7sVZ2oL8vlQVp2H+sx9A5OXxQPx
-         mkr02nwejt7JfYFojOaH7kOrkQ6xkFL8MAbDM+bpcNQnJoLxfJKVGwKSKcT6S7KfO2d5
-         duKw5Vh2tftzZRsWaHfGDliDuIGrqfltN0SOQR1Gb8xwln7FAc9B0746Gb+i3Cdn8DYa
-         s5Uw==
-X-Gm-Message-State: AC+VfDxygWwKdfepRT8zrEDwjOuPeJImTSM2QZUSV5exr0P0XF7i3ldQ
-        2GvNmtBhGFK6Hv5LEpNsMEn5lnHvNOzbxIlEXTO7etSHKH7k
-X-Google-Smtp-Source: ACHHUZ5iWhJhLL+4nWkhhe23qDyFivueyJlcUSIdHpk2meCQJSr6USy+PIt1IMOZAL3RLrA4om5BggrM/Hr9MWFzYWOssS9tr93R
+        d=1e100.net; s=20221208; t=1686450474; x=1689042474;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZZKyrk80GHGRjJOdJJel001FvO+j2KlRrTx+XA1IwaY=;
+        b=Z6vKJIG7xZkLm+v9v7aA0iNuALkTYV3u82iVlqhQ8xmR2Q9dsnxl10eTQqhUD5tRlV
+         PKE1NGpMLTu4S5H0ULOaj7hItqN6yKtQww1/sLxh7DqPdvr+8mDEB3fMCTMsEWDdd8rL
+         UpKJ4l840B6kWWl7isuEXs5G8DQP49ViJ3eWxe3peeQh2zCWgotSisxJDpQ+9ECpMXmp
+         PcdiAj6o1OsQlgYBkI33y1BZhIczNIt1oD3/SlVuI6pk5frgZ0gFT/gSRrEnX/noZeTe
+         a1Oo3kZdl/lWkK2k9sUPZ3DdKCelF1m7ioeeGl1CeANfMEFy3hnWWWHH+7MVd38WvIrV
+         QK0g==
+X-Gm-Message-State: AC+VfDz3oYJw7vHYt0fMCax4TJPz/3XFtxhUnsCPEgW2t6qXNNl92SSo
+        NDPmVWIz1afZfG76qs3meoqWTr+xLmZhbA==
+X-Google-Smtp-Source: ACHHUZ6HnAVMhp2lSn0I3LgkbxqGHsODoUKgxm2ScyRFWnbq0b/2evpKIWwkzHPOPOpKkT4UrbW10Q==
+X-Received: by 2002:a17:90b:3b90:b0:259:d0f2:3576 with SMTP id pc16-20020a17090b3b9000b00259d0f23576mr5008901pjb.19.1686450473758;
+        Sat, 10 Jun 2023 19:27:53 -0700 (PDT)
+Received: from [192.168.43.80] (subs03-180-214-233-75.three.co.id. [180.214.233.75])
+        by smtp.gmail.com with ESMTPSA id z7-20020a170902708700b001ae3b51269dsm5566976plk.262.2023.06.10.19.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Jun 2023 19:27:53 -0700 (PDT)
+Message-ID: <17d7e7f8-ad8d-1696-32b7-3ff9fd4548c1@gmail.com>
+Date:   Sun, 11 Jun 2023 09:27:45 +0700
 MIME-Version: 1.0
-X-Received: by 2002:a92:ce04:0:b0:335:908b:8f9 with SMTP id
- b4-20020a92ce04000000b00335908b08f9mr2481753ilo.1.1686448927847; Sat, 10 Jun
- 2023 19:02:07 -0700 (PDT)
-Date:   Sat, 10 Jun 2023 19:02:07 -0700
-In-Reply-To: <000000000000e55d2005fd59d6c9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000046becb05fdd0fdef@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING: locking bug in ext4_move_extents
-From:   syzbot <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux ext4 Development <linux-ext4@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: ext4_check_descriptors: Block bitmap for group 0 overlaps block
+ group descriptors
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi,
 
-HEAD commit:    d8b213732169 Merge branch 'for-next/core', remote-tracking..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=15e74543280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd4213541e5ab26f
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139801f1280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a928ab280000
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3d15de852c90/disk-d8b21373.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ca6234ed6efc/vmlinux-d8b21373.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0fc706ec33bb/Image-d8b21373.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a5ab37037d85/mount_0.gz
+> Hi,
+> 
+> Fail to mount a filesystem in kernel 6.4.0
+> 
+> The Filesystem is clean. fsck -fp reports no errors
+> 
+> # uname -a
+> Linux medusa.dds.de 6.4.0-rc5 #2 SMP PREEMPT_DYNAMIC Wed Jun  7 08:11:59 CEST 2023 x86_64 GNU/Linux
+> # mount /dev/bigvg/lv_dat /mnt
+> mount: /mnt: mount(2) system call failed: Structure needs cleaning.
+>        dmesg(1) may have more information after failed mount system call.
+> 
+> Under Kernel 6.3.4 everything works with this Filesystem
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com
+The reporter then pasted short dmesg snippet:
 
-loop0: detected capacity change from 0 to 512
-------------[ cut here ]------------
-Looking for class "&ei->i_data_sem" with key init_once.__key.775, but found a different class "&ei->i_data_sem" with the same key
-WARNING: CPU: 0 PID: 6198 at kernel/locking/lockdep.c:941 look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
-Modules linked in:
-CPU: 0 PID: 6198 Comm: syz-executor258 Not tainted 6.4.0-rc5-syzkaller-gd8b213732169 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
-lr : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
-sp : ffff800097187040
-x29: ffff800097187040 x28: dfff800000000000 x27: ffff800080edb4a4
-x26: ffff80009222c6e0 x25: ffff80009222c000 x24: 0000000000000000
-x23: 0000000000000000 x22: 0000000000000000 x21: ffff8000923bfc61
-x20: ffff0000e0293488 x19: ffff800090e7b1c0 x18: 0000000000000000
-x17: 0000000000000000 x16: ffff80008a43bfbc x15: 0000000000000002
-x14: 0000000000000000 x13: 0000000000000001 x12: 0000000000000001
-x11: 0000000000000000 x10: 0000000000000000 x9 : 5933e84718dc2000
-x8 : 5933e84718dc2000 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800097186938 x4 : ffff80008df9ee80 x3 : ffff8000805974f4
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:938
- register_lock_class+0x8c/0x6a4 kernel/locking/lockdep.c:1290
- __lock_acquire+0x184/0x7604 kernel/locking/lockdep.c:4965
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
- down_write_nested+0x58/0xcc kernel/locking/rwsem.c:1689
- ext4_double_down_write_data_sem+0x3c/0x4c
- ext4_move_extents+0x2b0/0xb44 fs/ext4/move_extent.c:621
- __ext4_ioctl fs/ext4/ioctl.c:1352 [inline]
- ext4_ioctl+0x3eb4/0x6910 fs/ext4/ioctl.c:1608
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 6053
-hardirqs last  enabled at (6053): [<ffff80008099851c>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:240
-hardirqs last disabled at (6052): [<ffff8000809983b4>] kasan_quarantine_put+0x38/0x1c8 mm/kasan/quarantine.c:213
-softirqs last  enabled at (4378): [<ffff80008003437c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (4376): [<ffff800080034348>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
+> [  104.501659] EXT4-fs (dm-9): ext4_check_descriptors: Block bitmap for group 0 overlaps block group descriptors
+> [  104.501664] EXT4-fs (dm-9): group descriptors corrupted!
+> 
 
+See Bugzilla for the full thread and attached dumpe2fs, lspci, and systeminfo.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Anyway, I'm adding it to regzbot:
+
+#regzbot introduced: v6.3..v6.4 https://bugzilla.kernel.org/show_bug.cgi?id=217534
+#regzbot title: Block bitmap for group 0 overlaps block group descriptors, causing mount failure
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217534
+
+-- 
+An old man doll... just what I always wanted! - Clara
