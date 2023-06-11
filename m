@@ -2,272 +2,250 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE73B72B24A
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 16:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDBC72B38D
+	for <lists+linux-ext4@lfdr.de>; Sun, 11 Jun 2023 21:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjFKOZ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Jun 2023 10:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
+        id S231910AbjFKTQF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Jun 2023 15:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233716AbjFKOZ5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Jun 2023 10:25:57 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9C2E64;
-        Sun, 11 Jun 2023 07:25:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b3c578c602so1984385ad.2;
-        Sun, 11 Jun 2023 07:25:51 -0700 (PDT)
+        with ESMTP id S230211AbjFKTQE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Jun 2023 15:16:04 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF536E42
+        for <linux-ext4@vger.kernel.org>; Sun, 11 Jun 2023 12:15:59 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-30fa23e106bso1369063f8f.3
+        for <linux-ext4@vger.kernel.org>; Sun, 11 Jun 2023 12:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686493551; x=1689085551;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FEUC84ROoHVABqnr4dI/cj4KX+6iNK6lndFHJ/mwlXo=;
-        b=edryt8mdvhQJj71/1dM05AfMgnAgWAUD1/uXzpwqZvcDwagyKMp2oFH70dnGBmc9rb
-         5UHSx2/81AqGWagmjfnarfkHF7AvypdF8EqNILonbt3Ao3AtbP1Fg60fPZOSTBIm1SzY
-         0MdHXJPnxwAJg9LecaqhCMd7jNOl+pkVda7QbCnZtEKkvKfTB+JvZZslwh1Vcjj4X3Pf
-         Zmc5PLrjxq3hXt7cSQccP0qakTiD7eKrD7WbZQ9PPxNqrIQa6pIannjbEnI322jO0fou
-         6qVGSAbKxbNOygr1F4T7wF1T75tpUTQIxqq/kkI9UXG24xQIPeXyplnhmEhtIpns5j1o
-         dAjQ==
+        d=gmail.com; s=20221208; t=1686510958; x=1689102958;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hHWKitVSNUTXHYt2b56fiVAJSf54M0aboHdzY/wLjqg=;
+        b=DZ2BDxOpfpt+df3o+UzH8/lrfrU0DH8A6Vik5h6ZgBL+WMhCt5zVr15OBv2h9/atat
+         GJzebf6xfgDB140t17XU42V6eDURbu5dSGb1c42nGq1PKvSWuc1Mjd2m/TuJQKPRbCX5
+         jyrmaW23BiJZXTGA5AFRA7zaOWXbp+byUXht2Bk08NcVa1ke28Ct06wxMNiVZL3rq1nT
+         YfMaR01DF2tWKzMputiaaj61ROpLh5bn8geN+oab6zpB1s8Z1ulL1vauzWjtAexwSECW
+         xjJwWfmJHuuJnmW4nn00oOdyJvu5WpRhRkxx1CkMwp//cV8fcx3SYqGgBGvQ3Ubqwnd2
+         8yfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686493551; x=1689085551;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FEUC84ROoHVABqnr4dI/cj4KX+6iNK6lndFHJ/mwlXo=;
-        b=AVyQKVscwMrNyVzXybMXWZVjjbWaJfzOoGfrOlVQsXT0ZimcY5UzLUyO2pIMDiPgfq
-         YCYWWbjZS1kW38b8pY+e62XkdRlxuebc41MegSe4p6Iz3YsydosSw7e273S9nI/mP/XB
-         bQVTF9tk2akTRC3W53mjYbQDSHjgJKkdZi8yT8nKZ6w5eub95830XlLHG6LzyR7FS419
-         09NtaEeAzo2UIAfyF1tlmu0s5RaV60YsV1InY0F+o+jfwcQHXLLVltpbA+hXQbEAD7FT
-         NAT8W1mcvyhXvOWsUH2c1poghyztGoxERDBRnMGgH/0WgPQ+afMjIJywFSkrLgKqUAhC
-         L+eA==
-X-Gm-Message-State: AC+VfDywPAHU8llhQHfJZUoJrQoAo6VARKeAPgEJ+TakARp6CUxKMLHw
-        RN3fkJLxKTf4OIKTei/XQIQ=
-X-Google-Smtp-Source: ACHHUZ6pzdYGNePrJpVUMSrvm6ii2LgA6QRoGnuOAP7gKCT4uEvBLaB1awpOa5yqI3WTwMbbfbVpOw==
-X-Received: by 2002:a17:903:11c9:b0:1b1:8e8b:7f6c with SMTP id q9-20020a17090311c900b001b18e8b7f6cmr4626208plh.16.1686493550787;
-        Sun, 11 Jun 2023 07:25:50 -0700 (PDT)
-Received: from dw-tp ([49.207.220.159])
-        by smtp.gmail.com with ESMTPSA id j3-20020a170902da8300b001b045c9ababsm6441256plx.264.2023.06.11.07.25.48
+        d=1e100.net; s=20221208; t=1686510958; x=1689102958;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hHWKitVSNUTXHYt2b56fiVAJSf54M0aboHdzY/wLjqg=;
+        b=WKaForiqj4n39ckjb/Zx41Q8rUTxkLPCRnWavx9U9khNdnzfRx6Gq1DAbNzY/+R0Hz
+         qA7Us9KBFKJru6/wQqsJ2hRx6uKMJxqifhbHZ341mQS7FwGVzOF4So5Pnb7Y5m4JYiP1
+         Ht+77Y12UBLE1YwlRZ8dcmC76aeOywEh3GWFrBVke9ZNHwvCroCXaxvrcizOPabgMtKK
+         Pe3eHCQTkTY3TzADv4jaeq9usD5VOtKX9u5ZFYWzoPzudWnMPo7FKtTjso0YzJmG6FTP
+         rGifcqBIS6/6l2L4iHfWPBz3L2KdPuYQ/d9XECtLw8pSBvTJYecc8y6OWESTr0oI4eqP
+         FbvA==
+X-Gm-Message-State: AC+VfDxwtUzfiIBTczEMPMFdZQlxoPCCBxN4v/EhZE9nWw2uPAZU98Tc
+        4089FDbSSVfZVe5cGgh2Ls94KHuhlk4=
+X-Google-Smtp-Source: ACHHUZ6xgAYxDdmO0xHFRtBBGFMvG7XGX2Ah9AsdxgVQFi6gZaHmvWqC0EiKXm4vxepdFkr8o+J2JA==
+X-Received: by 2002:a5d:6412:0:b0:30f:bafb:247a with SMTP id z18-20020a5d6412000000b0030fbafb247amr2146292wru.55.1686510958006;
+        Sun, 11 Jun 2023 12:15:58 -0700 (PDT)
+Received: from suse.localnet (host-95-252-166-216.retail.telecomitalia.it. [95.252.166.216])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05600c224b00b003f8126bcf34sm4799285wmm.48.2023.06.11.12.15.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jun 2023 07:25:50 -0700 (PDT)
-Date:   Sun, 11 Jun 2023 19:55:46 +0530
-Message-Id: <87a5x6hy8l.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+        Sun, 11 Jun 2023 12:15:57 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Disha Goel <disgoel@linux.ibm.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [RFCv2 2/5] ext4: Remove PAGE_SIZE assumption of folio from mpage_submit_folio
-In-Reply-To: <20230611055831.GF1436857@mit.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+4acc7d910e617b360859@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] [ext4?] BUG: sleeping function called from invalid context in
+ ext4_update_super
+Date:   Sun, 11 Jun 2023 21:15:56 +0200
+Message-ID: <7741416.gsGJI6kyIV@suse>
+In-Reply-To: <20230611131829.GA1584772@mit.edu>
+References: <20230611131829.GA1584772@mit.edu>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On domenica 11 giugno 2023 15:18:29 CEST Theodore Ts'o wrote:
+> On Sun, Jun 11, 2023 at 09:05:31AM +0200, Fabio M. De Francesco wrote:
+> > Are you okay with me submitting a patch with your "Suggested by:" tag? Or
+> > maybe you prefer to take care of it yourself? For now I await your kind
+> > reply.
+> Sure, feel free to create such a patch.
 
-Please ignore the previous email.
+Thanks!
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+Let me summarize, just to be sure we don't misunderstand each other... 
 
-> On Mon, May 15, 2023 at 04:10:41PM +0530, Ritesh Harjani (IBM) wrote:
->> mpage_submit_folio() was converted to take folio. Even though
->> folio_size() in ext4 as of now is PAGE_SIZE, but it's better to
->> remove that assumption which I am assuming is a missed left over from
->> patch[1].
->>
->> [1]: https://lore.kernel.org/linux-ext4/20230324180129.1220691-7-willy@infradead.org/
->>
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->
-> I didn't notice this right away, because the failure is not 100%
-> reliable, but this commit will sometimes cause "kvm-xfstests -c
-> ext4/encrypt generic/068" to crash.  Reverting the patch fixes the
-> problem, so I plan to drop this patch from my tree.
->
+To start off, I'll send out _only_ the patch for the bug reported by Syzbot, 
+the one about dropping the call to ext_error() in ext4_get_group_info(). 
 
-Sorry about the crash. I am now able to reproduce the problem on my
-setup as well. I will debug this and will update once I have some more info.
+I'll do this by Tuesday. (Sorry, I cannot do it by Monday because I must pass 
+an exam and an interview for a job).
 
-From the initial look, it looks like the problem might be occurring when
-folio_pos(folio) itself is > i_size_read(inode).
+However, on the other problems with ext4_grp_locked_error() that you noticed 
+in the final part of your first message in this thread I'll need some days 
+more to better understand the context I'm working in.
 
-If that is indeed the case, then I think even doing this with folio
-conversion (below code after folio conversion) looks incorrect for case
-when size is not PAGE_SIZE aligned.
+> I would strongly recommend that you use gce-xfstests or kvm-xfstests
+> before submitting ext4 patches.  In this particular case, it's a
+> relatively simple patch, but it's a good habit to get into.  See [1]
+> for more details.
+> 
+> [1] https://thunk.org/gce-xfstests
 
-However, I will spend some more time debugging this.
+Thanks also for these information. 
 
-static int mpage_submit_folio(struct mpage_da_data *mpd, struct folio *folio)
-{
-	size_t len;
-	loff_t size;
-	int err;
+In the last year I have been sending several patches patches for filesystems, 
+several little things that comprise conversions (sometimes with additional 
+related work, like a series of 5 patches to fs/sysv). 
 
-	BUG_ON(folio->index != mpd->first_page);
-	folio_clear_dirty_for_io(folio);
-	/*
-	 * We have to be very careful here!  Nothing protects writeback path
-	 * against i_size changes and the page can be writeably mapped into
-	 * page tables. So an application can be growing i_size and writing
-	 * data through mmap while writeback runs. folio_clear_dirty_for_io()
-	 * write-protects our page in page tables and the page cannot get
-	 * written to again until we release folio lock. So only after
-	 * folio_clear_dirty_for_io() we are safe to sample i_size for
-	 * ext4_bio_write_page() to zero-out tail of the written page. We rely
-	 * on the barrier provided by TestClearPageDirty in
-	 * folio_clear_dirty_for_io() to make sure i_size is really sampled only
-	 * after page tables are updated.
-	 */
-	size = i_size_read(mpd->inode);
-	len = folio_size(folio);
-	if (folio_pos(folio) + len > size &&
-	    !ext4_verity_in_progress(mpd->inode))
-		len = size & ~PAGE_MASK;
-	err = ext4_bio_write_page(&mpd->io_submit, &folio->page, len);
-	if (!err)
-		mpd->wbc->nr_to_write--;
+The only tools I've ever needed were running (x)fstests on a QEMU/KVM x86_32 
+VM, 6GB RAM, booting a Kernel with HIGHMEM64G enabled (for PAE).
 
-	return err;
-}
+Never heard about {kvm,gce}-xfstests. I'll have a look at the link and try 
+these tests. I can afford $2, but at the moment I don't want to assemble a 
+dedicated hardware for tests. 
 
->       	    		      	      	   	- Ted
->
-> generic/068 42s ...  [01:56:09][    7.014363] run fstests generic/068 at 2023-06-11 01:56:09
-> [    7.538841] EXT4-fs (vdc): Test dummy encryption mode enabled
-> [   11.407307] traps: PANIC: double fault, error_code: 0x0
-> [   11.407313] double fault: 0000 [#1] PREEMPT SMP NOPTI
-> [   11.407315] CPU: 1 PID: 3358 Comm: fsstress Not tainted 6.4.0-rc5-xfstests-lockdep-00069-gfc362247e79f #169
-> [   11.407316] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [   11.407317] RIP: 0010:__switch_to_asm+0x33/0x80
-> [   11.407322] Code: 55 41 56 41 57 48 89 a7 d8 17 00 00 48 8b a6 d8 17 00 00 48 8b 9e 40 04 00 00 65 48 89 1c 25 28 00 00 00 49 c7 c4 10 00 00 00 <e8> 01 00 00 00 cc e8 01 00 00 00 cc 48 83 c4 10 49 ff cc 75 eb 0f
-> [   11.407323] RSP: 0018:ffffc90003ec7e18 EFLAGS: 00010046
-> [   11.407324] RAX: 0000000000000001 RBX: 961d22f2e2e05800 RCX: 00000002afbf75a9
-> [   11.407325] RDX: 0000000000000003 RSI: ffff88800d174080 RDI: ffff88800d0ae200
-> [   11.407325] RBP: ffffc90003fd7af0 R08: 0000000000000001 R09: 0000000000000001
-> [   11.407326] R10: 00000000000003cc R11: 0000000000000001 R12: 0000000000000010
-> [   11.407326] R13: ffffe8ffffc29c50 R14: ffff88807ddee998 R15: ffff88800d174080
-> [   11.407327] FS:  00007f144aee4740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> [   11.407329] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   11.407330] CR2: ffffc90003ec7e08 CR3: 000000000cb3e004 CR4: 0000000000770ee0
-> [   11.407330] PKRU: 55555554
-> [   11.407330] Call Trace:
-> [   11.407331]  <#DF>
-> [   11.407332]  ? die+0x36/0x80
-> [   11.407334]  ? exc_double_fault+0xf1/0x1b0
-> [   11.407336]  ? asm_exc_double_fault+0x23/0x30
-> [   11.407338]  ? __switch_to_asm+0x33/0x80
-> [   11.407339]  </#DF>
-> [   11.413852] ---[ end trace 0000000000000000 ]---
-> [   11.413853] RIP: 0010:__switch_to_asm+0x33/0x80
-> [   11.413856] Code: 55 41 56 41 57 48 89 a7 d8 17 00 00 48 8b a6 d8 17 00 00 48 8b 9e 40 04 00 00 65 48 89 1c 25 28 00 00 00 49 c7 c4 10 00 00 00 <e8> 01 00 00 00 cc e8 01 00 00 00 cc 48 83 c4 10 49 ff cc 75 eb 0f
-> [   11.413857] RSP: 0018:ffffc90003ec7e18 EFLAGS: 00010046
-> [   11.413857] RAX: 0000000000000001 RBX: 961d22f2e2e05800 RCX: 00000002afbf75a9
-> [   11.413858] RDX: 0000000000000003 RSI: ffff88800d174080 RDI: ffff88800d0ae200
-> [   11.413858] RBP: ffffc90003fd7af0 R08: 0000000000000001 R09: 0000000000000001
-> [   11.413859] R10: 00000000000003cc R11: 0000000000000001 R12: 0000000000000010
-> [   11.413859] R13: ffffe8ffffc29c50 R14: ffff88807ddee998 R15: ffff88800d174080
-> [   11.413860] FS:  00007f144aee4740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> [   11.413861] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   11.413862] CR2: ffffc90003ec7e08 CR3: 000000000cb3e004 CR4: 0000000000770ee0
-> [   11.413863] PKRU: 55555554
-> [   11.413863] Kernel panic - not syncing: Fatal exception in interrupt
-> [   11.413889] BUG: unable to handle page fault for address: ffffc90003ebfe88
-> [   11.414112] #PF: supervisor read access in kernel mode
-> [   11.414320] #PF: error_code(0x0009) - reserved bit violation
-> [   11.415151] PGD 5000067 P4D 5000067 PUD 5219067 PMD d278067 PTE 1e914974aa550b07
-> [   11.417015] Oops: 0009 [#2] PREEMPT SMP NOPTI
-> [   11.417375] CPU: 0 PID: 29 Comm: kworker/u4:2 Tainted: G      D            6.4.0-rc5-xfstests-lockdep-00069-gfc362247e79f #169
-> [   11.417641] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [   11.417962] Workqueue: writeback wb_workfn (flush-254:32)
-> [   11.418683] RIP: 0010:timerqueue_add+0x28/0xb0
-> [   11.418916] Code: 90 90 66 0f 1f 00 55 53 48 3b 36 48 89 f3 0f 85 96 00 00 00 48 8b 07 48 85 c0 74 55 48 8b 73 18 bd 01 00 00 00 eb 03 48 89 d0 <48> 3b 70 18 48 8d 48 10 7c 06 48 8d 48 08 31 ed 48 8b 11 48 85 d2
-> [   11.419173] RSP: 0018:ffffc90000003f00 EFLAGS: 00010082
-> [   11.419710] RAX: ffffc90003ebfe70 RBX: ffff88807dbe0210 RCX: ffff88800d07a3e8
-> [   11.420219] RDX: ffffc90003ebfe70 RSI: 00000002a849a0e0 RDI: ffff88807dbdfb58
-> [   11.420634] RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> [   11.420877] R10: 0000000000000000 R11: 0000000000000659 R12: ffff88807dbdfa40
-> [   11.421082] R13: 0000000000000002 R14: ffff888005d3c180 R15: ffff88807dbdfb00
-> [   11.421924] FS:  0000000000000000(0000) GS:ffff88807da00000(0000) knlGS:0000000000000000
-> [   11.422165] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   11.422487] CR2: ffffc90003ebfe88 CR3: 000000000c81c001 CR4: 0000000000770ef0
-> [   11.422810] PKRU: 55555554
-> [   11.423133] Call Trace:
-> [   11.423451]  <IRQ>
-> [   11.423778]  ? __die+0x23/0x60
-> [   11.424139]  ? page_fault_oops+0xa4/0x170
-> [   11.424399]  ? exc_page_fault+0xfa/0x1e0
-> [   11.424741]  ? asm_exc_page_fault+0x26/0x30
-> [   11.424884]  ? timerqueue_add+0x28/0xb0
-> [   11.425001]  enqueue_hrtimer+0x42/0xa0
-> [   11.425097]  __hrtimer_run_queues+0x304/0x380
-> [   11.425241]  hrtimer_interrupt+0xf8/0x230
-> [   11.425426]  __sysvec_apic_timer_interrupt+0x75/0x190
-> [   11.425605]  sysvec_apic_timer_interrupt+0x65/0x80
-> [   11.425794]  </IRQ>
-> [   11.425966]  <TASK>
-> [   11.426139]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
-> [   11.426344] RIP: 0010:aesni_xts_encrypt+0x2d/0x1d0
-> [   11.426529] Code: 00 66 0f 6f 3d 24 ff 93 01 41 0f 10 18 44 8b 8f e0 01 00 00 48 83 e9 40 0f 8c f3 00 00 00 66 0f 6f c3 f3 0f 6f 0a 66 0f ef c1 <f3> 0f 7f 1e 66 0f 70 d3 13 66 0f d4 db 66 0f 72 e2 1f 66 0f db d7
-> [   11.426757] RSP: 0018:ffffc9000052f558 EFLAGS: 00010206
-> [   11.427074] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000fc0
-> [   11.427172] RDX: ffff88801281a000 RSI: ffff88800d7c3000 RDI: ffff88800d180220
-> [   11.427406] RBP: ffffc9000052f720 R08: ffffc9000052f780 R09: 0000000000000020
-> [   11.427624] R10: ffff88800d1800a0 R11: 0000000000000018 R12: ffffc9000052f580
-> [   11.428468] R13: ffff88800d180220 R14: 0000000000001000 R15: 0000000000000001
-> [   11.428705]  ? aesni_enc+0x13/0x20
-> [   11.429027]  xts_crypt+0x10f/0x340
-> [   11.429349]  ? lock_release+0x65/0x100
-> [   11.429667]  ? do_raw_spin_unlock+0x4e/0xa0
-> [   11.429987]  ? _raw_spin_unlock+0x23/0x40
-> [   11.430312]  ? lock_is_held_type+0x9d/0x110
-> [   11.430471]  fscrypt_crypt_block+0x268/0x320
-> [   11.430627]  ? mempool_alloc+0x94/0x1e0
-> [   11.430803]  fscrypt_encrypt_pagecache_blocks+0xde/0x150
-> [   11.430991]  ext4_bio_write_folio+0x371/0x500
-> [   11.431172]  mpage_submit_folio+0x6f/0x90
-> [   11.431363]  mpage_map_and_submit_buffers+0xc5/0x180
-> [   11.431558]  mpage_map_and_submit_extent+0x55/0x300
-> [   11.431739]  ext4_do_writepages+0x70d/0x810
-> [   11.431981]  ext4_writepages+0xf1/0x290
-> [   11.432182]  do_writepages+0xd2/0x1e0
-> [   11.432366]  ? __lock_release.isra.0+0x15e/0x2a0
-> [   11.432595]  __writeback_single_inode+0x54/0x300
-> [   11.432817]  ? do_raw_spin_unlock+0x4e/0xa0
-> [   11.433006]  writeback_sb_inodes+0x1fc/0x500
-> [   11.433183]  wb_writeback+0xf2/0x370
-> [   11.433352]  wb_do_writeback+0x9e/0x2e0
-> [   11.433560]  ? set_worker_desc+0xc7/0xd0
-> [   11.433772]  wb_workfn+0x6a/0x2b0
-> [   11.433964]  ? __lock_release.isra.0+0x15e/0x2a0
-> [   11.434157]  ? process_one_work+0x21b/0x540
-> [   11.434322]  process_one_work+0x286/0x540
-> [   11.434500]  worker_thread+0x53/0x3c0
-> [   11.434678]  ? __pfx_worker_thread+0x10/0x10
-> [   11.434831]  kthread+0xf2/0x130
-> [   11.435042]  ? __pfx_kthread+0x10/0x10
-> [   11.435233]  ret_from_fork+0x29/0x50
-> [   11.435417]  </TASK>
-> [   11.435584] CR2: ffffc90003ebfe88
-> [   11.435931] ---[ end trace 0000000000000000 ]---
-> [   11.436101] RIP: 0010:__switch_to_asm+0x33/0x80
-> [   11.436265] Code: 55 41 56 41 57 48 89 a7 d8 17 00 00 48 8b a6 d8 17 00 00 48 8b 9e 40 04 00 00 65 48 89 1c 25 28 00 00 00 49 c7 c4 10 00 00 00 <e8> 01 00 00 00 cc e8 01 00 00 00 cc 48 83 c4 10 49 ff cc 75 eb 0f
-> [   11.436367] RSP: 0018:ffffc90003ec7e18 EFLAGS: 00010046
-> [   11.436727] RAX: 0000000000000001 RBX: 961d22f2e2e05800 RCX: 00000002afbf75a9
-> [   11.436938] RDX: 0000000000000003 RSI: ffff88800d174080 RDI: ffff88800d0ae200
-> [   11.437766] RBP: ffffc90003fd7af0 R08: 0000000000000001 R09: 0000000000000001
-> [   11.438000] R10: 00000000000003cc R11: 0000000000000001 R12: 0000000000000010
-> [   11.438322] R13: ffffe8ffffc29c50 R14: ffff88807ddee998 R15: ffff88800d174080
-> [   11.438641] FS:  0000000000000000(0000) GS:ffff88807da00000(0000) knlGS:0000000000000000
-> [   11.438967] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   11.439285] CR2: ffffc90003ebfe88 CR3: 000000000c81c001 CR4: 0000000000770ef0
-> [   11.439604] PKRU: 55555554
-> [   12.433529] Shutting down cpus with NMI
-> [   12.433728] Kernel Offset: disabled
-> QEMU: Terminated
+What's the problem with running those tests in QEMU/KVM VMs??? 
 
-Thanks for letting me know. I will look more into this.
+Ah, I just recalled that in December 2022 I sent you three conversion from the 
+old kmap{,_atomic} that went reviewed by Jan K. and Ira W.. It was tested with 
+fstests as I explained above. That patch got lost, in fact I still see at 
+least a kmap_atomic() call site in ext4. One call site is no more in ext4. The 
+third today uses kmap_local_folio(). 
 
--ritesh
+Well, everybody dislike to see their patches completely ignored (https://
+lore.kernel.org/lkml/20221231174439.8557-1-fmdefrancesco@gmail.com/). If you 
+wanted you could at least apply the part regarding the kmap_atomic() 
+conversion in ext4_journalled_write_inline_data(). 
+
+Or I can convert the call to kmap_atomic() to kmap_local_folio(), if you 
+wanted. It's up to you, please let me know.
+
+> At the bare minimum, it would be useful for you to run
+> "{kvm,gce}-xfstests smoke" or more preferably, "{kvm,gce}-xfstests -c
+> ext4/4k -g auto".  If it's a particular complex patch series, running
+> "gce-xfstests -c ext4/all -g auto" is nice, since it can save me a lot
+> of time when y ou've introduced a subtle corner case bug that doesn't
+> show up with lighter testing, and I have to track it down myself.  The
+> latter only costs about $2 --- you could do "kvm-xfstests -c ext4/all
+> -g auto", but it will take a day or so, and it's not much fun unless
+> you have dedicated test hardware.  So if you can afford the $2, I
+> strongly recommend using gce-xfstests for the full set of tests.  (The
+> smoke test using gce-xfstests costs a penny or two, last time I priced
+> it out.  But it's not too bad to run it using kvm-xfstests.)
+
+OK, again thanks for these additional information. I'll surely use all this.
+
+> 
+> > Can we "reliably" test !in_atomic() and act accordingly? I remember that 
+the
+> > in_atomic() helper cannot always detect atomic contexts.
+> 
+> No; we can do something like BUG_ON(in_atomic(), 
+
+OK, it's the same from the other side of the ways to look at it.
+
+> but it will only work
+> if LOCKDEP is enabled, 
+
+I don't know what others do. I always enable LOCKDEP, also in production 
+systems.
+
+> and that's generally is not enabled on
+> production systems.
+
+Ah, OK.
+
+> On Sun, Jun 11, 2023 at 11:38:07AM +0200, Fabio M. De Francesco wrote:
+> > In the meantime, I have had time to think of a different solution that
+> > allows
+> > the workqueue the chance to run even if the file system is configured to
+> > immediately panic on error (sorry, no code - I'm in a hurry)...
+> > 
+> > This can let you leave that call to ext4_error() that commit 5354b2af3406
+> > ("ext4: allow ext4_get_group_info()") had introduced (if it works - please
+> > keep on reading).
+> > 
+> > 1) Init a global variable ("glob") and set it to 0.
+> > 2) Modify the code of the error handling workqueue to set "glob" to 1, 
+soon
+> > before the task is done.
+> > 3) Change the fragment that panics the system to call mdelay() in a loop 
+> > (it
+> > doesn't sleep - correct?) for an adequate amount of time and periodically
+> > check READ_ONCE(global) == 1. If true, break and then panic, otherwise
+> > reiterate the loop.
+> 
+> Well, it's more than a bit ugly,
+
+I fully agree. I'm still in search of a reliable way to let atomic context run 
+idle waiting for a status change. I am talking about atomic code in paths that 
+we don't mind if they loop for few seconds (like the case at hand - we don't 
+care to panic immediately or within a sec or two. Do we care???
+
+> and it's not necessarily guaranteed
+> to work.
+
+Why not? AFAIK, mdelay() doesn't trigger SAC bugs because it doesn't sleep, 
+very differently than msleep(). What's the problem to wait for panicking a 
+little later without causing bugs? Any other means to signal in atomic context 
+from a workqueue that is done with the assigned work?
+
+> After all we're doing this to allow ext4_error() to be
+> called in critical sections.  But that means that while we're doing
+> this mdelay loop, we're holding on to a spinlock.  While lockdep isn't
+> smart enough to catch this particular deadlock, it's still a real
+> potential problem, which means such a solution is also fragile.
+> 
+> It's better off simply prohibiting ext4_error() to be called while
+> holding a lock, and in most places this isn't all that hard. 
+
+I'll do as you asked, but (out of curiosity and especially for the purpose of 
+stealing knowledge from very experienced Kernel hackers like you, can you 
+please set aside some more minutes to answer all my questions above?
+
+Thanks in advance,
+
+Fabio
+
+> Most of
+> the time, you don't want to hold spinlocks across a long period of
+> time, because this can become a scalability bottleneck.  This means
+> very often the pattern is something like this:
+> 
+>       spin_lock(..);
+>          ...
+>       ret = do_stuff();
+>       spin_unlock(..);
+> 
+> So it's enough to check the error return after you've unlocked the
+> spinlock.  And you can also just _not_ call ext4_error() inside
+> do_stuff(), but have do_stuff return an error code, possibly with a
+> call to ext4_warning() if you want to get some context for the problem
+> into the kernel log, and then have the top-level function call
+> ext4_error().
+
+OK, yours is the right solution. Furthermore I didn't know about the 
+importance to show the errors exactly where they currently are. As said, I'll 
+follow your suggestion, but I'd like to know the answers at my questions, 
+please :-)
+
+> 
+> Cheers,
+> 
+> 						- Ted
+
+Again, thanks for all the time you are devoting to a newcomer like I am.
+
+Fabio
+
+
