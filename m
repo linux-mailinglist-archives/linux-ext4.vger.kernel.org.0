@@ -2,77 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8007E72B7CC
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jun 2023 07:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C754F72B765
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jun 2023 07:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbjFLFrM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jun 2023 01:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S234293AbjFLFhf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jun 2023 01:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235957AbjFLFqa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 01:46:30 -0400
-X-Greylist: delayed 616 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 11 Jun 2023 22:43:11 PDT
-Received: from striker.routify.me (unknown [64.94.212.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA14358E
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Jun 2023 22:43:11 -0700 (PDT)
-Received: from glitch (unknown [IPv6:2602:24c:b8f:cd90::8eb3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by striker.routify.me (Postfix) with ESMTPSA id 59DE3E34;
-        Mon, 12 Jun 2023 05:32:51 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 striker.routify.me 59DE3E34
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seangreenslade.com;
-        s=striker-outgoing; t=1686547971;
-        bh=OpuZonpOnWj1ze09y0fzISAkhENi9z8b6394SLSE3Dg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dABR/KqU7D3nbFKTGRcekMuG1xtblKLHWKpR7PLski27Ev3MnTCJJzY8RN8t0Kpsd
-         T3EEF2t6TtGvKqGRk8RqA1nYSmN6BsiX/t37HgzCPjTVRG9uzZmFnpEJheZ6BEvESM
-         4Cg3RWuc15GLeBSVHbXO6OzTxxQc3z8YoHx41jbk=
-Date:   Sun, 11 Jun 2023 22:32:53 -0700
-From:   Sean Greenslade <sean@seangreenslade.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Ye Bin <yebin10@huawei.com>
-Subject: RO mount of ext4 filesystem causes writes
-Message-ID: <ZIauBR7YiV3rVAHL@glitch>
+        with ESMTP id S234016AbjFLFhe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 01:37:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29F0E57
+        for <linux-ext4@vger.kernel.org>; Sun, 11 Jun 2023 22:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=MquovsiA29WnbmRrIhf27B+9waioevT6KCGe7+isMDo=; b=Wr9d9RcWPUiyN79HDUsXr0iLyy
+        DqmYhDSGWTgwJDZpdspFnF29MV4oRzmUN9YN/nTnSoCU7Gd+Hj/7tbW3IMDjaJw6oGzjXWrCchuDe
+        8iRDHyTHIx3YnJlt88mjY6eeiJRV45gHyObfK55lASwK2os2yclFP9dMp+dA0yiF0SKLhUXWJWBbi
+        exhrMdIxe4B1oc/g4wYF5rvOTC3oaNwHN7mYnYvHFKxy3q6Zbi+aZspwoTkqteZwGselUbKSNR//n
+        4zYi5qJcQVFI7TjZRYyXXa7S7YFDh3HNepluRgVIAknGCpDaTuW5y2kKSOPxS1OJRxriixlJE+jFZ
+        6S5+sHnQ==;
+Received: from 2a02-8389-2341-5b80-8c8c-28f8-1274-e038.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:8c8c:28f8:1274:e038] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q8aFB-002fJP-18;
+        Mon, 12 Jun 2023 05:37:33 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: set FMODE_CAN_ODIRECT instead of a dummy direct_IO method
+Date:   Mon, 12 Jun 2023 07:37:31 +0200
+Message-Id: <20230612053731.585947-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello, folks.
+Since commit a2ad63daa88b ("VFS: add FMODE_CAN_ODIRECT file flag") file
+systems can just set the FMODE_CAN_ODIRECT flag at open time instead of
+wiring up a dummy direct_IO method to indicate support for direct I/O.
 
-I noticed a change in behavior of ext4 in recent kernels. I make use of
-several luks loopback images formatted as ext4 that I mount read-only
-most of the time. I use rsync to synchronize the backing images between
-machines. In the past, mouning the images as read-only would not touch
-the backing image contents at all, but recently this changed. Every
-mount, even ones that are RO from the start, will cause some small
-writes to the backing image and thus force rsync to scan the whole file.
+Do that for ext4 so that noop_direct_IO can eventually be removed.
 
-I confirmed that the issue is still present on v6.4.rc6, so I performed
-a bisect and landed on the following commit:
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/ext4/file.c  | 2 +-
+ fs/ext4/inode.c | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-> eee00237fa5ec8f704f7323b54e48cc34e2d9168 is the first bad commit
-> commit eee00237fa5ec8f704f7323b54e48cc34e2d9168
-> Author: Ye Bin <yebin10@huawei.com>
-> Date:   Tue Mar 7 14:17:02 2023 +0800
-> 
->     ext4: commit super block if fs record error when journal record without error
-
-That certainly looks like a likely cause of my issue, but I'm not
-familiar enough with the ext4 code to diagnose any further. Please let
-me know if you need any additional information, or if you would like me
-to test anything.
-
-Thanks,
-
---Sean
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index d101b3b0c7dad8..a1d8ffbf571274 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -900,7 +900,7 @@ static int ext4_file_open(struct inode *inode, struct file *filp)
+ 	}
+ 
+ 	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC |
+-			FMODE_DIO_PARALLEL_WRITE;
++			FMODE_DIO_PARALLEL_WRITE | FMODE_CAN_ODIRECT;
+ 	return dquot_file_open(inode, filp);
+ }
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 02de439bf1f04e..b9c1cfa1864779 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3539,7 +3539,6 @@ static const struct address_space_operations ext4_aops = {
+ 	.bmap			= ext4_bmap,
+ 	.invalidate_folio	= ext4_invalidate_folio,
+ 	.release_folio		= ext4_release_folio,
+-	.direct_IO		= noop_direct_IO,
+ 	.migrate_folio		= buffer_migrate_folio,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
+@@ -3556,7 +3555,6 @@ static const struct address_space_operations ext4_journalled_aops = {
+ 	.bmap			= ext4_bmap,
+ 	.invalidate_folio	= ext4_journalled_invalidate_folio,
+ 	.release_folio		= ext4_release_folio,
+-	.direct_IO		= noop_direct_IO,
+ 	.migrate_folio		= buffer_migrate_folio_norefs,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
+@@ -3573,7 +3571,6 @@ static const struct address_space_operations ext4_da_aops = {
+ 	.bmap			= ext4_bmap,
+ 	.invalidate_folio	= ext4_invalidate_folio,
+ 	.release_folio		= ext4_release_folio,
+-	.direct_IO		= noop_direct_IO,
+ 	.migrate_folio		= buffer_migrate_folio,
+ 	.is_partially_uptodate  = block_is_partially_uptodate,
+ 	.error_remove_page	= generic_error_remove_page,
+@@ -3582,7 +3579,6 @@ static const struct address_space_operations ext4_da_aops = {
+ 
+ static const struct address_space_operations ext4_dax_aops = {
+ 	.writepages		= ext4_dax_writepages,
+-	.direct_IO		= noop_direct_IO,
+ 	.dirty_folio		= noop_dirty_folio,
+ 	.bmap			= ext4_bmap,
+ 	.swap_activate		= ext4_iomap_swap_activate,
+-- 
+2.39.2
 
