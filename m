@@ -2,52 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D53A72D544
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 01:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1762A72D6CF
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 03:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjFLX7A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jun 2023 19:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S229742AbjFMBW0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jun 2023 21:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjFLX67 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 19:58:59 -0400
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597D312A
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Jun 2023 16:58:58 -0700 (PDT)
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-77b266b9fc3so70611939f.3
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Jun 2023 16:58:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686614337; x=1689206337;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I60cThygFBEQa4s2JlbXnAAnVmBToxnr0RN30Ke0zVQ=;
-        b=GkPzqmJ3UYI47tooJJ0UY4vXMl5HLXha0BPACyP9iJp3Qz25NUDTfKOB2Z85nBPEmt
-         9tQ+vvR+GLABJW47PwngQdWSrgVe9mFtxmwza/4JuQ1I2Ihci/XxVPJlAXCK+5195MrA
-         +mcFCkv9tbVf9tDk2lNzEYiH3gyXvJYYSyFniGKXp++RSk/oJJsQcIIgB+tIlaZbqPde
-         QXWb/CGYoY7LrPiySNctZgY6m0qbgzz0iCGbryt7pyRvT/b/pT5F6bbOctHeJPgRsUf1
-         bKyoxbqT6vQo19VC64oSR6rBekMeTdYd4LzoDjhfIKt2Lwr+UjmYB3sFDgWovsKqfrCh
-         D0Xg==
-X-Gm-Message-State: AC+VfDzlgOjYFDIS71SXdz0Byr5N+4+Wm6pYpUxoheglNKmCV9/n6tjN
-        fQBBODcM0KzrceIkJCB+tkZNPBKipwJ/XdK9A9bULR3BA1lS
-X-Google-Smtp-Source: ACHHUZ55nByCQPnYhdB5pelTum4aoB271NyGVXkbd+02MVKqPl6kKOb6Qyck86RgkYKlcyQyrKcBRql2C2vDgw1c8shsLlJ000FZ
+        with ESMTP id S229454AbjFMBWZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 21:22:25 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE719E9;
+        Mon, 12 Jun 2023 18:22:23 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qg9lG0RXyz4f3jLq;
+        Tue, 13 Jun 2023 09:22:18 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgAHF+jJxIdk1ZT2LQ--.55421S2;
+        Tue, 13 Jun 2023 09:22:19 +0800 (CST)
+Subject: Re: [PATCH v4 13/19] ext4: call ext4_mb_mark_group_bb in
+ ext4_free_blocks_simple
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230603150327.3596033-1-shikemeng@huaweicloud.com>
+ <20230603150327.3596033-14-shikemeng@huaweicloud.com>
+ <20230611050532.GE1436857@mit.edu>
+ <cd236fdb-c48c-69b0-10a3-3df8a34f0a6e@huaweicloud.com>
+ <20230612034900.GI1436857@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <dfd93c84-757c-bf38-4b38-193d0ee2a425@huaweicloud.com>
+Date:   Tue, 13 Jun 2023 09:22:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:a1c8:0:b0:41d:86fc:4b43 with SMTP id
- o8-20020a02a1c8000000b0041d86fc4b43mr4688613jah.4.1686614337718; Mon, 12 Jun
- 2023 16:58:57 -0700 (PDT)
-Date:   Mon, 12 Jun 2023 16:58:57 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079134b05fdf78048@google.com>
-Subject: [syzbot] [ext4?] UBSAN: shift-out-of-bounds in ext2_fill_super (2)
-From:   syzbot <syzbot+af5e10f73dbff48f70af@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, jack@suse.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <20230612034900.GI1436857@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgAHF+jJxIdk1ZT2LQ--.55421S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ar43XF4Uuw1Utw17Kry5twb_yoW7Ar17pr
+        Wjkws5G3y8K34UGa97Xw45Ga1xu348Cr1UGryfWryDuFW5ta42gF9rKF45ZFWYkFs7X3ZI
+        qF42y34DC3Wjka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,88 +66,95 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    908f31f2a05b Merge branch 'for-next/core', remote-tracking..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=124e9053280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c1058fe68f4b7b2c
-dashboard link: https://syzkaller.appspot.com/bug?extid=af5e10f73dbff48f70af
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f66595280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14abde43280000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/87d095820229/disk-908f31f2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a1bf67af9675/vmlinux-908f31f2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7784a88b37e8/Image-908f31f2.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2816e591e0fa/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+af5e10f73dbff48f70af@syzkaller.appspotmail.com
-
-memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=5969 'syz-executor354'
-loop0: detected capacity change from 0 to 512
-EXT2-fs (loop0): (no)user_xattr optionsnot supported
-================================================================================
-UBSAN: shift-out-of-bounds in fs/ext2/super.c:1015:40
-shift exponent 63 is too large for 32-bit type 'int'
-CPU: 0 PID: 5969 Comm: syz-executor354 Not tainted 6.4.0-rc4-syzkaller-g908f31f2a05b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_shift_out_of_bounds+0x2f4/0x36c lib/ubsan.c:387
- ext2_fill_super+0x2270/0x2450 fs/ext2/super.c:1015
- mount_bdev+0x274/0x370 fs/super.c:1380
- ext2_mount+0x44/0x58 fs/ext2/super.c:1491
- legacy_get_tree+0xd4/0x16c fs/fs_context.c:610
- vfs_get_tree+0x90/0x274 fs/super.c:1510
- do_new_mount+0x25c/0x8c4 fs/namespace.c:3039
- path_mount+0x590/0xe04 fs/namespace.c:3369
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3568
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-================================================================================
-EXT2-fs (loop0): error: can't find an ext2 filesystem on dev loop0.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+on 6/12/2023 11:49 AM, Theodore Ts'o wrote:
+> On Mon, Jun 12, 2023 at 10:24:55AM +0800, Kemeng Shi wrote:
+> 
+>> Hi ted, sorry for this issue. This patch added a WARN_ON for case that we free block
+>> to uninitialized block group which should be invalid.
+>> We can simply remove the WARN_ON to allow free on uninitialized block group as old
+>> way for emergency fix and I will find out why we free blocks to uninitialized block
+>> group in fast commit code path and is it a valid behavior.
+> 
+> What I've done for now in the dev branch was to drop patches 12
+> through 19 of this patch series.  That seemed to be a good break
+> point, and I wanted to make sure we had something working so we can
+> start doing a lot more intesive testing on the patches so far.
+> 
+> Also, that way, when you resend the last 8 patches in the patch
+> series, we can make sure they get a proper review as opposed to making
+> changes on the fly.
+Sure, I will resend last 8 patches after I solve the issue. I can also take my time
+to look at problem in this way :)
+> The current contents of the dev branch are:
+> 
+> % git log --reverse --oneline origin..dev
+> 40fa8be3852f ext4: kill unused function ext4_journalled_write_inline_data
+> a030569c34be ext4: Change remaining tracepoints to use folio
+> d1ffc6fb5ded ext4: Make mpage_journal_page_buffers use folio
+> 5ac99c22fa84 ext4: Make ext4_write_inline_data_end() use folio
+> d578dfc510cf ext4: Call fsverity_verify_folio()
+> 30f0bd64ed09 ext4: fix wrong unit use in ext4_mb_normalize_request
+> b9dc976cc348 ext4: fix unit mismatch in ext4_mb_new_blocks_simple
+> 9afc5e21107a ext4: fix wrong unit use in ext4_mb_find_by_goal
+> 860f86ccff6e ext4: treat stripe in block unit
+> 710c384f1536 ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
+> f242d8a98a6f ext4: remove ext4_block_group and ext4_block_group_offset declaration
+> 5b859728b98b ext4: try all groups in ext4_mb_new_blocks_simple
+> ea7bbd168135 ext4: get block from bh before pass it to ext4_free_blocks_simple in ext4_free_blocks
+> 757d9100a5d1 ext4: remove unsed parameter and unnecessary forward declaration of ext4_mb_new_blocks_simple
+> 5d62e6da25f5 ext4: fix wrong unit use in ext4_mb_clear_bb
+> 993d22f0a250 ext4: fix wrong unit use in ext4_mb_new_blocks
+> bf4f2aa4844a ext4: mballoc: Remove useless setting of ac_criteria
+> 743f4dd07bf9 ext4: Remove unused extern variables declaration
+> bc40109767b3 ext4: Convert mballoc cr (criteria) to enum
+> 52e3814a1342 ext4: Add per CR extent scanned counter
+> a15c09da1255 ext4: Add counter to track successful allocation of goal length
+> 26cbe38f0275 ext4: Avoid scanning smaller extents in BG during CR1
+> 9c8f8195852c ext4: Don't skip prefetching BLOCK_UNINIT groups
+> cd303d98b9b5 ext4: Ensure ext4_mb_prefetch_fini() is called for all prefetched BGs
+> ea639ce794e5 ext4: Abstract out logic to search average fragment list
+> b080c84db854 ext4: Add allocation criteria 1.5 (CR1_5)
+> 3a08f7ac3bfa ext4: Give symbolic names to mballoc criterias
+> d14b5d0b1373 ext4: only update i_reserved_data_blocks on successful block allocation
+> b352d1f09a20 ext4: add a new helper to check if es must be kept
+> 579c020ea7b7 ext4: factor out __es_alloc_extent() and __es_free_extent()
+> f4ddcde91d00 ext4: use pre-allocated es in __es_insert_extent()
+> e77481862663 ext4: use pre-allocated es in __es_remove_extent()
+> 28774513875c ext4: using nofail preallocation in ext4_es_remove_extent()
+> e109a1db5b09 ext4: using nofail preallocation in ext4_es_insert_delayed_block()
+> 14d876070f03 ext4: using nofail preallocation in ext4_es_insert_extent()
+> 2af6f615b18b ext4: make ext4_es_remove_extent() return void
+> 0ee9cccd1971 ext4: make ext4_es_insert_delayed_block() return void
+> 7a7c285c485d ext4: make ext4_es_insert_extent() return void
+> 9d1c6dea1aa3 ext4: make ext4_zeroout_es() return void
+> 2e3f4cdef544 ext4: clean up mballoc criteria comments
+> acef67482edf ext4: allow concurrent unaligned dio overwrites
+> 63bc068f0d1a ext4: Fix reusing stale buffer heads from last failed mounting
+> 3a57c2f88be3 ext4: ext4_put_super: Remove redundant checking for 'sbi->s_journal_bdev'
+> 6b960d2155f9 jbd2: remove unused feature macros
+> 4b049709e652 jbd2: switch to check format version in superblock directly
+> d9eafe0afafa jbd2: factor out journal initialization from journal_get_superblock()
+> 6eecd1f4c7ef jbd2: remove j_format_version
+> 431ca11fafd3 jbd2: continue to record log between each mount
+> 2ea31402649c ext4: add journal cycled recording support
+> a228f0e153f6 ext4: update doc about journal superblock description
+> f9c45d83f4da ext4: turning quotas off if mount failed after enable quotas
+> 5404e4738054 ext4: refactoring to use the unified helper ext4_quotas_off()
+> d3ab1bca26b4 jbd2: recheck chechpointing non-dirty buffer
+> 7b0cfe40a991 jbd2: remove t_checkpoint_io_list
+> e86f802ab8d4 jbd2: remove journal_clean_one_cp_list()
+> e8ece5c78f36 jbd2: Fix wrongly judgement for buffer head removing while doing checkpoint
+> cdffaad9649e jbd2: fix a race when checking checkpoint buffer busy
+> 11761ed6026e jbd2: remove __journal_try_to_free_buffer()
+> 
+> Cheers,
+> 
+> 					- Ted
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Best wishes
+Kemeng Shi
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
