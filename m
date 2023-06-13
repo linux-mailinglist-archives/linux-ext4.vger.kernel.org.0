@@ -2,54 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4683D72D705
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 03:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B5972D845
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 05:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjFMBg5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Jun 2023 21:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S230073AbjFMD5q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Jun 2023 23:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjFMBg4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 21:36:56 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D34E57;
-        Mon, 12 Jun 2023 18:36:55 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QgB1F3PBmztQVH;
-        Tue, 13 Jun 2023 09:34:25 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 13 Jun 2023 09:36:53 +0800
-Message-ID: <db478a24-39f5-3cef-8814-89406ce4d2ca@huawei.com>
-Date:   Tue, 13 Jun 2023 09:36:52 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v4 10/12] ext4: make ext4_es_insert_delayed_block() return
- void
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <jack@suse.cz>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20230424033846.4732-1-libaokun1@huawei.com>
- <20230424033846.4732-11-libaokun1@huawei.com>
- <20230610190319.GB1436857@mit.edu> <20230612030405.GH1436857@mit.edu>
- <9af2b8d7-8ad4-96bf-6a30-587ad23cff59@huawei.com>
- <20230612152640.GA1500045@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230612152640.GA1500045@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229602AbjFMD5p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Jun 2023 23:57:45 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7B8E4E;
+        Mon, 12 Jun 2023 20:57:43 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b28fc7a6dcso3508019a34.0;
+        Mon, 12 Jun 2023 20:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686628663; x=1689220663;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gtLfJeozAFQCeMk3W1p4wvZMhqNmxJ/dZdZNt6XLDIY=;
+        b=S8LYsu5IbuZR1CEMAIS/pnhEiONkLAfQ/CHKKfe8It/aoUv6Ef9Ps9QcvFzBYR+oQm
+         8IcZZpi2mYdVMzfCgneNLGx5PsgPFd4eWWk2YngCksSj42pnzmzl6zrvOEMi9GbIHDWT
+         yriMIPcw9TT7QS6gRmKOYWss7LUXi6dM0pfq09OzElpfrqi1EITA3rwv+BaQwGusg8UT
+         ztjTcSDcwtIfn/R3KhKkoYutAeUOl4iQAeaswi+1daOvTSPHiE8+nMdfUwgchPEiOmFj
+         PO96Wk2lJKoYHizXJxtdsMHVQd1cQ39qm/r/j4nKvmgMkhEw5fzF/+KczB9voBi++RyI
+         maTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686628663; x=1689220663;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gtLfJeozAFQCeMk3W1p4wvZMhqNmxJ/dZdZNt6XLDIY=;
+        b=IbSA6is7J28YHcw+T+kLh/96G93ulVNyeo3C59UgYSsjl2jADA3CwbNNFdRDxnWjgw
+         +Nwd46sq73L5gYm9DQo8KhOYyJHAVitdTCuR8ic0YhXBKs0+m52FvMn3WYSuxa35c7pG
+         yeHurMgT84E3msxqjxP9NUk2ku+v+0HbLlXSQ/nyNp3hV8dyE5t75a5JyR/ua/UqGM41
+         QA8MRamAAuucfB9HHpy8oWY9bDfRK/vI8Kj5A+2SBjGzwYndLl+9f9p/w4qcQnjJVLJb
+         RsJsETL193Agj+xhVgbbGRgROPSHdhYzq/puMelSRWAKkg7VeHwsayvkiHj241oGJ9z/
+         nzdg==
+X-Gm-Message-State: AC+VfDx6gwASOX6MUGo91zxCy32h61O4ybqt/uRco+LJM0/7yRbtGORf
+        WrRepPbiYCb2fVy68dE2ejVhOX1zlWs=
+X-Google-Smtp-Source: ACHHUZ7JM6f5BCdsbTZ87jYEwfwM6Dk+uhFF/kc0sHbasP1GuxpvYaW5d0UTPgihArjG8WvJkBzzBQ==
+X-Received: by 2002:a05:6359:69d:b0:129:b8e9:b73b with SMTP id ei29-20020a056359069d00b00129b8e9b73bmr5940319rwb.4.1686628662846;
+        Mon, 12 Jun 2023 20:57:42 -0700 (PDT)
+Received: from dw-tp ([49.207.220.159])
+        by smtp.gmail.com with ESMTPSA id d3-20020aa78143000000b0064d681c753csm7583332pfn.40.2023.06.12.20.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 20:57:42 -0700 (PDT)
+Date:   Tue, 13 Jun 2023 09:27:38 +0530
+Message-Id: <87zg54580d.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Disha Goel <disgoel@linux.ibm.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [RFCv2 2/5] ext4: Remove PAGE_SIZE assumption of folio from mpage_submit_folio
+In-Reply-To: <ZIdvJLE945Qbzy+H@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,105 +67,117 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/6/12 23:26, Theodore Ts'o wrote:
-> On Mon, Jun 12, 2023 at 11:47:07AM +0800, Baokun Li wrote:
->> I'm very sorry, I didn't turn on encrypt or bigalloc when I tested it.
-> For complex series, it's helpful if you could run the equivalent of:
->
->     {gce,kvm}-xfstests -c ext4/all -g auto
->
-> It takes about 24 hours (plus or minus, depending on the speed of your
-> storage device; it will also take about twice as long if
-> CONFIG_LOCKDEP is enabled) if you use kvm-xfstests.  Using
-> gce-xfstests with the ltm takes about around 1.75 hours (w/o LOCKDEP)
-> since it runs the tests in parallel, using separate VM's for each file
-> system config.
->
-> There are a small number of failures (especially flaky test failures),
-> however, (a) if a VM ever crashes, that's definitely a problem, and
-> (b) the ext4/4k config should be failure-free.  For example, here's a
-> current "good" test run that I'm checking the dev branch against.
-> (Currently, we have some kind of issue with -c ext4/adv generic/475
-> that I'm still chasing down.)
->
-> 					- Ted
->
-> The failures seen below are known failures that we need to work
-> through.  Bill Whitney is working on the bigalloc_1k shared/298
-> failure, for example.  If you would like to work on one of the test
-> failures, especially if it's a file system config that you use in
-> production, please feel free to do so.  :-)   Also, if you are
-> interested in adapting the xfstests-bld codebase to support other
-> cloud services beyond Google Cloud Engine, again, let me know.
 
-It looks very good and I'll try to use it.
+I am hoping Jan and Ted could correct me if any of my understanding
+is incorrect. But here is my view...
 
-I'll try to locate some test case failures when I get free.
+Matthew Wilcox <willy@infradead.org> writes:
 
+> On Mon, Jun 12, 2023 at 11:55:55PM +0530, Ritesh Harjani wrote:
+>> Matthew Wilcox <willy@infradead.org> writes:
+>> I couldn't respond to your change because I still had some confusion
+>> around this suggestion -
+>>
+>> > So do we care if we write a random fragment of a page after a truncate?
+>> > If so, we should add:
+>> >
+>> >         if (folio_pos(folio) >= size)
+>> >                 return 0; /* Do we need to account nr_to_write? */
+>>
+>> I was not sure whether if go with above case then whether it will
+>> work with collapse_range. I initially thought that collapse_range will
+>> truncate the pages between start and end of the file and then
+>> it can also reduce the inode->i_size. That means writeback can find an
+>> inode->i_size smaller than folio_pos(folio) which it is writing to.
+>> But in this case we can't skip the write in writeback case like above
+>> because that write is still required (a spurious write) even though
+>> i_size is reduced as it's corresponding FS blocks are not truncated.
+>>
+>> But just now looking at ext4_collapse_range() code it doesn't look like
+>> it is the problem because it waits for any dirty data to be written
+>> before truncate. So no matter which folio_pos(folio) the writeback is
+>> writing, there should not be an issue if we simply return 0 like how
+>> you suggested above.
+>>
+>>     static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
+>>
+>>     <...>
+>>         ioffset = round_down(offset, PAGE_SIZE);
+>>         /*
+>>         * Write tail of the last page before removed range since it will get
+>>         * removed from the page cache below.
+>>         */
+>>
+>>         ret = filemap_write_and_wait_range(mapping, ioffset, offset);
+>>         if (ret)
+>>             goto out_mmap;
+>>         /*
+>>         * Write data that will be shifted to preserve them when discarding
+>>         * page cache below. We are also protected from pages becoming dirty
+>>         * by i_rwsem and invalidate_lock.
+>>         */
+>>         ret = filemap_write_and_wait_range(mapping, offset + len,
+>>                         LLONG_MAX);
+>>         truncate_pagecache(inode, ioffset);
+>>
+>>         <... within i_data_sem>
+>>         i_size_write(inode, new_size);
+>>
+>>     <...>
+>>
+>>
+>> However to avoid problems like this I felt, I will do some more code
+>> reading. And then I was mostly considering your second suggestion which
+>> is this. This will ensure we keep the current behavior as is and not
+>> change that.
+>>
+>> > If we simply don't care that we're doing a spurious write, then we can
+>> > do something like:
+>> >
+>> > -               len = size & ~PAGE_MASK;
+>> > +               len = size & (len - 1);
 >
-> The gce-xfstests run below was generated using:
->
-> % gce-xfstests install-kconfig --lockdep
-> % gce-xfstests kbuild --dpkg
-> % gce-xfstests launch-ltm
-> % gce-xfstests ltm full
->
-> (Using the --dpkg is needed because is because there is a kexec bug
-> showing up when running on a Google Cloud VM's that I haven't been
-> able to fix, and it's been easier to just work around the kexec
-> problem.  Kexec works just fine on kvm-xfstests, though, so there's no
-> need to use kbuild --dpkg if you are just using kvm-xfstests.)
->
-> TESTRUNID: ltm-20230611154922
-> KERNEL:    kernel 6.4.0-rc5-xfstests-lockdep-00002-gdea9d8f7643f #170 SMP PREEMPT_DYNAMIC Sun Jun 11 15:21:52 EDT 2023 x86_64
-> CMDLINE:   full
-> CPUS:      2
-> MEM:       7680
->
-> ext4/4k: 549 tests, 51 skipped, 6895 seconds
-> ext4/1k: 545 tests, 54 skipped, 10730 seconds
-> ext4/ext3: 541 tests, 140 skipped, 8547 seconds
-> ext4/encrypt: 527 tests, 3 failures, 158 skipped, 5783 seconds
->    Failures: generic/681 generic/682 generic/691
-> ext4/nojournal: 544 tests, 3 failures, 119 skipped, 8394 seconds
->    Failures: ext4/301 ext4/304 generic/455
-> ext4/ext3conv: 546 tests, 52 skipped, 9024 seconds
-> ext4/adv: 546 tests, 2 failures, 59 skipped, 8454 seconds
->    Failures: generic/477
->    Flaky: generic/475: 60% (3/5)
-> ext4/dioread_nolock: 547 tests, 51 skipped, 7883 seconds
-> ext4/data_journal: 545 tests, 2 failures, 119 skipped, 7605 seconds
->    Failures: generic/455 generic/484
-> ext4/bigalloc_4k: 521 tests, 56 skipped, 6650 seconds
-> ext4/bigalloc_1k: 521 tests, 1 failures, 64 skipped, 8074 seconds
->    Failures: shared/298
-> ext4/dax: 536 tests, 154 skipped, 5118 seconds
-> Totals: 6512 tests, 1077 skipped, 53 failures, 0 errors, 82214s
->
-> FSTESTIMG: gce-xfstests/xfstests-amd64-202305310154
-> FSTESTPRJ: gce-xfstests
-> FSTESTVER: blktests 676d42c (Thu, 2 Mar 2023 15:25:44 +0900)
-> FSTESTVER: e2fsprogs 1.47.0-2-4-gd4745c4a (Tue, 30 May 2023 16:20:44 -0400)
-> FSTESTVER: fio  fio-3.31 (Tue, 9 Aug 2022 14:41:25 -0600)
-> FSTESTVER: fsverity v1.5-6-g5d6f7c4 (Mon, 30 Jan 2023 23:22:45 -0800)
-> FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
-> FSTESTVER: nvme-cli v1.16 (Thu, 11 Nov 2021 13:09:06 -0800)
-> FSTESTVER: quota  v4.05-53-gd90b7d5 (Tue, 6 Dec 2022 12:59:03 +0100)
-> FSTESTVER: util-linux v2.38.1 (Thu, 4 Aug 2022 11:06:21 +0200)
-> FSTESTVER: xfsprogs v6.1.1 (Fri, 13 Jan 2023 19:06:37 +0100)
-> FSTESTVER: xfstests-bld 6599baba-dirty (Wed, 19 Apr 2023 23:16:10 -0400)
-> FSTESTVER: xfstests v2023.04.09-8-g2525b7af5-dirty (Wed, 19 Apr 2023 13:42:14 -0400)
-> FSTESTVER: zz_build-distro bullseye
-> FSTESTSET: -g auto
-> FSTESTOPT: aex
->
-I was using native xfstests for my previous tests, and I feel that
+> For all I know, I've found a bug here.  I don't know enough about ext4; if
+> we have truncated a file, and then writeback a page that is past i_size,
+> will the block its writing to have been freed?
 
-gce-xfstests is much easier to use and the results are very clear,
+I don't think so. If we look at truncate code, it first reduces i_size,
+then call truncate_pagecache(inode, newsize) and then we will call
+ext4_truncate() which will free the corresponding blocks.
+Since writeback happens with folio lock held until completion, hence I
+think truncate_pagecache() should block on that folio until it's lock
+has been released.
 
-thanks for the great recommendation!
+- IIUC, if truncate would have completed then the folio won't be in the
+foliocache for writeback to happen. Foliocache is kept consistent
+via
+    - first truncate the folio in the foliocache and then remove/free
+    the blocks on device.
 
--- 
-With Best Regards,
-Baokun Li
-.
+- Also the reason we update i_size "before" calling truncate_pagecache()
+  is to synchronize with mmap/pagefault.
+
+> Is this potentially a silent data corruptor?
+
+- Let's consider a case when folio_pos > i_size but both still belongs
+to the last block. i.e. it's a straddle write case.
+In such case we require writeback to write the data of this last folio
+straddling i_size. Because truncate will not remove/free this last folio
+straddling i_size & neither the last block will be freed. And I think
+writeback is supposed to write this last folio to the disk to keep the
+cache and disk data consistent. Because truncate will only zero out
+the rest of the folio in the foliocache. But I don't think it will go and
+write that folio out (It's not required because i_size means that the
+rest of the folio beyond i_size should remain zero).
+
+So, IMO writeback is supposed to write this last folio to the disk. And,
+if we skip this writeout, then I think it may cause silent data corruption.
+
+But I am not sure about the rest of the write beyond the last block of
+i_size. I think those could just be spurious writes which won't cause
+any harm because truncate will eventually first remove this folio from
+file mapping and then will release the corresponding disk blocks.
+So writing those out should does no harm
+
+
+-ritesh
