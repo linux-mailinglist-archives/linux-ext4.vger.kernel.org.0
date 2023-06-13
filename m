@@ -2,107 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DECAF72D8A8
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 06:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CB072D8BE
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jun 2023 06:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239633AbjFMEdp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Jun 2023 00:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
+        id S233950AbjFMEsg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Jun 2023 00:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239654AbjFMEdT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jun 2023 00:33:19 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8A82D52
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Jun 2023 21:31:59 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-39.bstnma.fios.verizon.net [173.48.82.39])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35D4VKsm027047
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jun 2023 00:31:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686630683; bh=cKB04XX96zaqTHLDk7A2yl9q/pYStDpBWJcQVn9eU9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=dn2TNZKsJPGrwCA6rNo4JfBttGFBnN6c95t6wBPoHOn2kBxqvLN+daRaEpRQdMpzQ
-         A8WIhHPUApwXJTlVHQcYCsfHYJwoNXWz7uI/4YQe6OCRFRJkx8ejmXSLfCzE9bWOhq
-         5Q8VFlPVDuEom/QMUHigTNhZDus3a8Kf9v7UWTzxMB+bi4xyUR3H+h+j9BjbKklt68
-         AsfRhLeZxRelkjUMXKsVIDeXDGJfffmizM6r7PaaR+ryhgo21BrfaQqLchhEwkUzWG
-         2sZTzSA6Sfil9r/Hadg9zxK7d/mrPSzfL1WwpDJ+v+PtpwDQo0dM0j/ykdOqgUAxeS
-         DC+Q/ocTUDysQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 96EF115C00B0; Tue, 13 Jun 2023 00:31:20 -0400 (EDT)
-Date:   Tue, 13 Jun 2023 00:31:20 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yukuai3@huawei.com, chengzhihao1@huawei.com
-Subject: Re: [PATCH v3 4/6] jbd2: Fix wrongly judgement for buffer head
- removing while doing checkpoint
-Message-ID: <20230613043120.GB1584772@mit.edu>
-References: <20230606135928.434610-1-yi.zhang@huaweicloud.com>
- <20230606135928.434610-5-yi.zhang@huaweicloud.com>
+        with ESMTP id S233856AbjFMEsg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Jun 2023 00:48:36 -0400
+Received: from striker.routify.me (unknown [64.94.212.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286DF13E
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Jun 2023 21:48:35 -0700 (PDT)
+Received: from glitch (unknown [IPv6:2602:24c:b8f:cd90::8eb3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by striker.routify.me (Postfix) with ESMTPSA id B72ACE34;
+        Tue, 13 Jun 2023 04:48:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 striker.routify.me B72ACE34
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seangreenslade.com;
+        s=striker-outgoing; t=1686631707;
+        bh=3SWM9HpbvhY+6JXsgZEbqdJ7uzmLqwt9dCy2pAjIAms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r9OFNliJWYsooYmf4esdOxSlSOzjzXXOFNdtBQRRqJXow8z+fd5nFSnzAtZaLG2f3
+         9Cgl0yfTaGG7xNxflDfil9S/SaoKw7b7/Fo1HewXr0qImxl7IqXB/1OHpxh39ml6Z6
+         eMg7swj9N5L67o5gIJS+O94x1U2oNyEZ3Wb9EiUE=
+Date:   Mon, 12 Jun 2023 21:48:30 -0700
+From:   Sean Greenslade <sean@seangreenslade.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: RO mount of ext4 filesystem causes writes
+Message-ID: <ZIf1HpUjmQWu0xXo@glitch>
+References: <ZIauBR7YiV3rVAHL@glitch>
+ <ZIa5P1HqE62rmzqu@debian.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230606135928.434610-5-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZIa5P1HqE62rmzqu@debian.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There is something about this patch which is causing test runs to hang
-when running "gce-xfstests -c ext4/adv -C 10 generic/475" at least
-60-70% of the time.
+On Mon, Jun 12, 2023 at 01:20:47PM +0700, Bagas Sanjaya wrote:
+> On Sun, Jun 11, 2023 at 10:32:53PM -0700, Sean Greenslade wrote:
+> > Hello, folks.
+> >=20
+> > I noticed a change in behavior of ext4 in recent kernels. I make use of
+> > several luks loopback images formatted as ext4 that I mount read-only
+> > most of the time. I use rsync to synchronize the backing images between
+> > machines. In the past, mouning the images as read-only would not touch
+> > the backing image contents at all, but recently this changed. Every
+> > mount, even ones that are RO from the start, will cause some small
+> > writes to the backing image and thus force rsync to scan the whole file.
+> >=20
+> > I confirmed that the issue is still present on v6.4.rc6, so I performed
+> > a bisect and landed on the following commit:
+> >=20
+> > > eee00237fa5ec8f704f7323b54e48cc34e2d9168 is the first bad commit
+> > > commit eee00237fa5ec8f704f7323b54e48cc34e2d9168
+> > > Author: Ye Bin <yebin10@huawei.com>
+> > > Date:   Tue Mar 7 14:17:02 2023 +0800
+> > >=20
+> > >     ext4: commit super block if fs record error when journal record w=
+ithout error
+> >=20
+> > That certainly looks like a likely cause of my issue, but I'm not
+> > familiar enough with the ext4 code to diagnose any further. Please let
+> > me know if you need any additional information, or if you would like me
+> > to test anything.
+> >=20
+>=20
+> Can you show dmesg when regression happens?
+>=20
+> Ye: It looks like this regression is caused by your commit. Would you like
+> to take a look on it?
+>=20
+> Anyway, thanks for the bug report. I'm adding it to regzbot:
+>=20
+> #regzbot ^introduced: eee00237fa5ec8
+> #regzbot title: commit super block writes even in read-only filesystems
 
-When I took a closer look, the problem seems to be e2fsck is hanging
-after a SEGV when running e2fsck -nf on the block device.  This then
-causes the check script to hang, until the test appliance's safety
-timer triggers and forces a shutdown of the test VM and aborts the
-test run.
+I did a fresh boot on the 6.4 rc6 kernel and did an RO mount and
+unmount. Here's the full dmesg output from that:
 
-The cause of the hang is clearly an e2fsprogs bug --- no matter how
-corrupted the file system is, e2fsck should never crash or hang.  So
-something is clearly going wrong with e2fsck:
-
-    ...
-    Symlink /p1/dc/d14/dee/l154 (inode #2898) is invalid.
-    Clear? no
-
-    Entry 'l154' in /p1/dc/d14/dee (2753) has an incorrect filetype (was 7, should be 0).
-    Fix? no
-
-    corrupted size vs. prev_size
-    Signal (6) SIGABRT si_code=SI_TKILL 
-
-    (Note: "corrutped size vs prev_size" is issued by glibc when
-    malloc's internal data structures have been corrupted.  So
-    there is definitely something going very wrong with e2fsck.)
-    
-That being said, if I run the same test on the parent commit (patch
-3/6, jbd2: remove journal_clean_one_cp_list()), e2fsck does *not* hang
-or crash, and the regression tests complete.  So this patch is
-changing the behavior of the kernel in terms of the file system that
-is left behind after a large number of injected I/O errors.
-
-My plan therefore is to drop patches 4/6 through 6/6 of this patch
-series.  This will allow at least the "long standing metadata
-corruption issue that happens from to time" to be addressed, and it
-will give us time study what's going on here in more detail.  I've
-captured the compressed file system image which is causing e2fsck
-(version 1.47.0) to corrupt malloc's data structure, and I'll try see
-what using Address Sanitizer or valgrind show about what's going on.
-
-Looking at the patch, it looks pretty innocuous, and I don't
-understand how this could be making a significant enough difference
-that it's causing e2fsck, which had previously been working fine, to
-now start tossing its cookies.  If you could double check the patch
-and see you see anything that I might have missed in my code review,
-I'd really appreciate it.
+[   48.955896] loop0: detected capacity change from 0 to 4194304
+[   48.965526] Key type trusted registered
+[   48.973640] Key type encrypted registered
+[   49.032404] EXT4-fs (dm-0): mounted filesystem 4e824972-4523-407e-b0da-3=
+229a71b68d8 ro with ordered data mode. Quota mode: none.
+[   61.180755] EXT4-fs (dm-0): unmounting filesystem 4e824972-4523-407e-b0d=
+a-3229a71b68d8.
+[   61.236958] dm-0: detected capacity change from 4190208 to 0
 
 Thanks,
 
-					- Ted
+--Sean
+
