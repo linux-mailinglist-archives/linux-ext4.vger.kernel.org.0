@@ -2,68 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5A472F91C
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jun 2023 11:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B568772F951
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jun 2023 11:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244006AbjFNJ2k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Jun 2023 05:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S243903AbjFNJfh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Jun 2023 05:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244056AbjFNJ2S (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jun 2023 05:28:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7C81FE4
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 02:28:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S244173AbjFNJfH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jun 2023 05:35:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A3D2126;
+        Wed, 14 Jun 2023 02:34:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E91F7638D4
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 09:28:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 59678C433C0
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 09:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686734892;
-        bh=Dyzf3Wv+/aBnfMN6vW3klVJuZLS2IEai/tEKwDAvlwg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=cwYZwMwUkeWIKAi/bEm1gNWqiKqXJH6KomJWlNkL18s5oLZIlq0VEI4FxvweOodyx
-         6UYJh3MLDSgDfR1uVnudFt4eqxIH+nKYe2eeWPNHwLSaekysHvsMt9WNPujuIhYe0K
-         wFzQr2vTcY+QfAyGp+EEtmGTgJdNrs50O9Fvjk0ipB0/W+7RU94yMp6/QbLf0iAyR1
-         YqPZU6XMdGESK+vR4oS1zFVRmpg1Cr7irNGVN/Dezh8CmzFfRy+vDu9wE0JikX8l4H
-         1YGF/NifZwCOyQy/awFVEpRK9zCOV2Q24MgMCZjnzxM8FVw8C7yRh7EvtLAh9drjMX
-         qQFzlp2jU0wqQ==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 4186DC53BCD; Wed, 14 Jun 2023 09:28:12 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217551] Unable to umount block device
-Date:   Wed, 14 Jun 2023 09:28:12 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: aros@gmx.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: WILL_NOT_FIX
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status resolution
-Message-ID: <bug-217551-13602-Q7lWxKHlxy@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217551-13602@https.bugzilla.kernel.org/>
-References: <bug-217551-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5AEB91FDD4;
+        Wed, 14 Jun 2023 09:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686735293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Raq4wSbTtPkjnLNJhAyMZD8KD5DkYkXU3htNdimdemQ=;
+        b=fSSCHKJRZ+Zq6h96vVBCGSq4ySljHcaC1mq9va9R3RsN0nM8806ZD9f3zWgSiqjvOuLQ1e
+        2uHg6k6nYRo+psxt5NMVR5wYAuYHvmDyWXGXwVSGCP0acuOVH2gJ/GJguCzCNHHcukvYEC
+        sTTkb7F94nZkOqH25H5ynvq9WzNw1mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686735293;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Raq4wSbTtPkjnLNJhAyMZD8KD5DkYkXU3htNdimdemQ=;
+        b=9vIuJbd51oRCuVxW0JAIvLpvwO2GnmPJokXbRP3x3LXtJTF7QjK71zm4vgWYEiX8tt51pI
+        WEEZbzipzMJIv0Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 492F61391E;
+        Wed, 14 Jun 2023 09:34:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k7zXEb2JiWRTXgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 14 Jun 2023 09:34:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id CE94EA0755; Wed, 14 Jun 2023 11:34:52 +0200 (CEST)
+Date:   Wed, 14 Jun 2023 11:34:52 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>
+Subject: Re: [PATCH -next] jbd2: remove unused function '__cp_buffer_busy'
+Message-ID: <20230614093452.j47ntd4slhvra2yr@quack3>
+References: <20230614004443.56937-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230614004443.56937-1-yang.lee@linux.alibaba.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,25 +72,55 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217551
+On Wed 14-06-23 08:44:43, Yang Li wrote:
+> The code calling function '__cp_buffer_busy' has been removed, so the
+> function should also be removed.
+> silence the warning:
+> fs/jbd2/checkpoint.c:48:20: warning: unused function '__cp_buffer_busy'
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5518
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Artem S. Tashkinov (aros@gmx.com) changed:
+Ted is now debugging other issues possibly caused by the patch series
+making this function unused (CCing its author). If we need to respin to the
+series, we might as well just fold this fixup into it. But otherwise the
+patch is obviously good. Feel free to add:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-         Resolution|---                         |WILL_NOT_FIX
+Reviewed-by: Jan Kara <jack@suse.cz>
 
---- Comment #3 from Artem S. Tashkinov (aros@gmx.com) ---
-Please report it to the vendor.
+								Honza
 
-This kernel release is not supported by the kernel dev team.
-
-If this is reproducible using any supported kernel versions at
-https://www.kernel.org/ please reopen this bug report.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+> ---
+>  fs/jbd2/checkpoint.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+> 
+> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+> index 9ec91017a7f3..ba4ae74c7167 100644
+> --- a/fs/jbd2/checkpoint.c
+> +++ b/fs/jbd2/checkpoint.c
+> @@ -40,18 +40,6 @@ static inline void __buffer_unlink(struct journal_head *jh)
+>  	}
+>  }
+>  
+> -/*
+> - * Check a checkpoint buffer could be release or not.
+> - *
+> - * Requires j_list_lock
+> - */
+> -static inline bool __cp_buffer_busy(struct journal_head *jh)
+> -{
+> -	struct buffer_head *bh = jh2bh(jh);
+> -
+> -	return (jh->b_transaction || buffer_locked(bh) || buffer_dirty(bh));
+> -}
+> -
+>  /*
+>   * __jbd2_log_wait_for_space: wait until there is space in the journal.
+>   *
+> -- 
+> 2.20.1.7.g153144c
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
