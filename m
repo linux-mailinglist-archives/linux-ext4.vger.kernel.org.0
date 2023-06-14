@@ -2,42 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE13E72F565
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jun 2023 09:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF2872F570
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jun 2023 09:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjFNHEe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Jun 2023 03:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S243347AbjFNHFx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Jun 2023 03:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbjFNHEK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jun 2023 03:04:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A85A1FE7
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 00:03:39 -0700 (PDT)
+        with ESMTP id S243160AbjFNHF1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Jun 2023 03:05:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C241FD8
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 00:05:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AEB12636EB
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 07:03:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0ECC9C433CC
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 07:03:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49C70633E5
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 07:05:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AC529C433C8
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 07:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686726218;
-        bh=xCXLLdypxoBgD9itVWI3WJkvuXDkr5uvmSOKmPq6xfY=;
+        s=k20201202; t=1686726303;
+        bh=5l53xIeetLvZ2AeXihaWwW9IUzd8SnYYjx+EDp4MtFs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=uYMSzdFY7lwUis4WPeGd3eZveDwzgO06xqkfnryDTvWrAZqEN84gaKtMZ+vXNQaGX
-         d8q6Mpmc/mMWjLQqEkz/HA8K8Gx7kIvNXyKHdm1K4nfSA+tFpMduUrKUKgT2Uk3SOa
-         rvDCB1FD9zq7714G0a+m0BHYqXDpqwUIZ9upCRli1ZEYD4KXjKtv3YIPFjYukuVnCv
-         vLmQ36hO5R/TO2TN0WocOE1zHczju3vSCbq8qyZ5Wo1RYZhzeyZbzkxPW4GuEqXzT+
-         j3SVXynG0XtMMU1/iJNKQeeKFQ6fDKjxpmOyAC2U15xkpN23j2CKJHbY8h6K5rZc4U
-         BhPmcNlCJ3gaQ==
+        b=A8PVYOIkIjPg6T5As4q/9ndKIwblM1bm9oBtwewu5TQ8IVLqNAen9yD5osBE0OjhD
+         LDR6yBZogmUTYtDmCXE74vfSINRzBcAde5rdzaILDRXJfcwtV5NsslPx/w2QvZT2Ar
+         rPQhhwEFj7zlA3gL+Ss/bfifA2NNNPv/XNZdL4eXjX4EytGt38duCng827jjXZpiPV
+         RxLYNrsUuVfy+seymbaX11iIIqA6KpsAVlton33458iHsxq9RJy6XpSfZmcPnNAPPT
+         NaJlRNfBrDQEj2pBThMAcpSST4DhK+v/LS159/9MrmB7g4XnxIyyOwuBh8hdIt9pmm
+         2Zq1p6I8OiRJQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id E9B3FC53BD0; Wed, 14 Jun 2023 07:03:37 +0000 (UTC)
+        id 9C450C53BD0; Wed, 14 Jun 2023 07:05:03 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 217551] Unable to umount block device
-Date:   Wed, 14 Jun 2023 07:03:37 +0000
+Date:   Wed, 14 Jun 2023 07:05:03 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -53,7 +53,7 @@ X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217551-13602-hc4KVydRk1@https.bugzilla.kernel.org/>
+Message-ID: <bug-217551-13602-PyCKfKkpGu@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217551-13602@https.bugzilla.kernel.org/>
 References: <bug-217551-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -61,8 +61,8 @@ Content-Transfer-Encoding: quoted-printable
 X-Bugzilla-URL: https://bugzilla.kernel.org/
 Auto-Submitted: auto-generated
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,14 +73,9 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217551
 
---- Comment #1 from Sunil Barhate (barhatesw09@gmail.com) ---
-OS - CentOS Linux release 7.6=20
-
-uname -a=20
-
-3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018 x86_64 x86_64 x86_=
-64
-GNU/Linux
+--- Comment #2 from Sunil Barhate (barhatesw09@gmail.com) ---
+There was no error in /var/log/messages.
+Also did not see any stack in dmesg.
 
 --=20
 You may reply to this email to add a comment.
