@@ -2,51 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A803C731087
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 09:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A004F731209
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 10:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244662AbjFOH1v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 03:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
+        id S244259AbjFOIXD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 04:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238214AbjFOH1t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 03:27:49 -0400
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E932D1FCC
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 00:27:47 -0700 (PDT)
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-77da0200928so10559339f.3
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 00:27:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686814067; x=1689406067;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xAv63TK6+H8amkIBOVsEgbBnijtiwu/OiHnNubY28M0=;
-        b=FOVNpzc8P4+q7Ad5mNNvdm7F5+lrHIcRiPqgx20wh/TSPRuoK4KwhxrZtycWn3yFL9
-         omfd34P8GIJd+zvBsY91gPMyM9nzg6qRBwkJtGu7s/jroe3m9L7qvAmJ7RmSHZteFGxO
-         1GRXCjCr0kHBIPAn8pcdL16yVobF767x7SaOPX0iDDCiFJvOgB3Cb14SxM/2Nbpx7ncT
-         /t0dvHOhkdY8S9jJjMbC6ihae/s8KICEaOAOspxoB59gDgsD5sHGOkDJ/0jyJwf+HtrB
-         0uOWFVYmdrJQg+GOvwl7ajGf1QRh6i4KS+58FRwndBEg7uu9zLTUa2J+/GSf9Ql4k8Ai
-         iHrw==
-X-Gm-Message-State: AC+VfDzPAHjHbHiIZqLExXBGMtswrhEL/2TKw/RIg/39K4nSXimyiueY
-        cfTF5xsFEtDTxacDFBpRLjMNGGny98REYAZAD2uWZB8i6ndz
-X-Google-Smtp-Source: ACHHUZ5sb7GjIFSuDe3CEciOQwdJcLFlQlLG869WUQS3uNV0+5NXdk8XX2TAaburY3p6s9bHWn+LvjgWJoZNf4M0BVAeeV4lj0Bq
+        with ESMTP id S243894AbjFOIXC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 04:23:02 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E29A1FC7
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 01:23:00 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QhZzh220yz4f4GfR
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 16:22:56 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+        by APP2 (Coremail) with SMTP id Syh0CgC3ltRayopkayutLg--.23024S3;
+        Thu, 15 Jun 2023 16:22:52 +0800 (CST)
+Subject: Re: [PATCH] jbd2: skip reading super block if it has been verified
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+References: <20230615034941.2335484-1-yi.zhang@huaweicloud.com>
+ <20230615052654.GF51259@mit.edu>
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <388f4a26-c689-3c0b-e1b4-45e68c245c6d@huaweicloud.com>
+Date:   Thu, 15 Jun 2023 16:22:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:b0ce:0:b0:423:ea8:4271 with SMTP id
- w14-20020a02b0ce000000b004230ea84271mr806622jah.6.1686814067268; Thu, 15 Jun
- 2023 00:27:47 -0700 (PDT)
-Date:   Thu, 15 Jun 2023 00:27:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048228805fe260165@google.com>
-Subject: [syzbot] [ext4?] KASAN: slab-use-after-free Read in check_igot_inode
-From:   syzbot <syzbot+741810aea4ac24243b2f@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <20230615052654.GF51259@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgC3ltRayopkayutLg--.23024S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww43Xr47Ww45Ww15JryrZwb_yoW3Aw4Upr
+        yakFyUWrWvyr17J3y0yF4Utas5X3yDAay7Gr18ur4Iyay5WrnxtF1UGr4UtFyUur9rWw1j
+        vF4DCw40gw4UtaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,226 +63,167 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On 2023/6/15 13:26, Theodore Ts'o wrote:
+> On Thu, Jun 15, 2023 at 11:49:41AM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> We got a NULL pointer dereference issue below while running generic/475
+>> I/O failure pressure test.
+> 
+> Have you been able to reproduce this failure without the "recheck
+> checkpoint" series applied?  I have not, so like with the e2fsck bug
+> fix, I can understand how the bug fix worked, but I still don't
+> understand why I wasn't seeing until I tried to apply the "recheck
+> chekcpoint" and the following patches in that patch series.
 
-syzbot found the following issue on:
+Yes, I can reproduce this failure without the "recheck
+checkpoint" series applied, I reproduced it in ranges from about 5
+minutes to 1 hour on your dev branch(just reset to the parent commit
+5404e4738054 "ext4: refactoring to use the unified helper
+ext4_quotas_off()") with below fstests config.
 
-HEAD commit:    022ce8862dff Merge tag 'i2c-for-6.4-rc6' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b1e263280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c980bfe8b399968
-dashboard link: https://syzkaller.appspot.com/bug?extid=741810aea4ac24243b2f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+# ext4 regression fstests config
+[ext4]
+export FSTYP=ext4
+export TEST_DEV=/dev/pmem0p1
+export TEST_DIR=/mnt/test
+export SCRATCH_DEV=/dev/pmem0p2
+export SCRATCH_MNT=/mnt/scratch
+export LOGWRITES_DEV=/dev/vdc1
+export SCRATCH_LOGDEV=/dev/vdc2
+export MKFS_OPTIONS="-O ^extents,^flex_bg,^uninit_bg,^64bit,^metadata_csum,^huge_file,^dir_nlink,^extra_isize"
 
-Unfortunately, I don't have any reproducer for this issue yet.
+[  315.435845] EXT4-fs (dm-0): previous I/O error to superblock detected
+[  315.435877] EXT4-fs (dm-0): I/O error while writing superblock
+[  315.435885] EXT4-fs (dm-0): Remounting filesystem read-only
+[  315.438261] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[  315.453689] #PF: supervisor write access in kernel mode
+[  315.454884] #PF: error_code(0x0002) - not-present page
+[  315.456048] PGD 139b3b067 P4D 139b3b067 PUD 1538ea067 PMD 0
+[  315.456201] EXT4-fs error (device dm-0): __ext4_find_entry:1678: inode #131073: comm fsstress: reading directory lblock 0
+[  315.457403] Oops: 0002 [#1] PREEMPT SMP
+[  315.457411] CPU: 14 PID: 10107 Comm: fsstress Not tainted 6.4.0-rc5-00054-g5404e4738054 #214
+[  315.457416] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+[  315.457418] RIP: 0010:jbd2_journal_set_features+0xf4/0x500
+[  315.461326] EXT4-fs (dm-0): I/O error while writing superblock
+[  315.462073] Code: 48 83 05 5e 32 90 0c 01 48 83 05 f6 05 90 0c 01 4d 8b 74 24 38 e8 dc 6c bc 00 48 83 05 ec 05 90 0c 01 48 83 05 bc 05 90 0c 01 <f0> 49 0f ba 2e 02 0f 92 c0 48 83 05 b3 05 90 0c 01 48 83 05 d5
+[  315.462086] RSP: 0018:ffffc900116cbad8 EFLAGS: 00010212
+[  315.462103] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
+[  315.462107] RDX: 0000000080000000 RSI: ffffffffafd25d54 RDI: 0000000000000001
+[  315.462115] RBP: 0000000000000000 R08: ffffffffafd256f0 R09: 0000000000000000
+[  315.468526] R10: 642820726f727265 R11: 2073662d34545845 R12: ffff88817e85e800
+[  315.468535] R13: 0000000000000000 R14: 0000000000000000 R15: ffff888126d93000
+[  315.468548] FS:  00007fda46982b80(0000) GS:ffff888237980000(0000) knlGS:0000000000000000
+[  315.468560] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  315.468568] CR2: 0000000000000000 CR3: 00000001398d0000 CR4: 00000000000006e0
+[  315.487792] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  315.487798] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  315.491048] Call Trace:
+[  315.491560]  <TASK>
+[  315.494065]  ? show_regs+0x84/0x90
+[  315.494089]  ? __die_body+0x22/0x90
+[  315.494104]  ? __die+0x35/0x50
+[  315.494121]  ? page_fault_oops+0x1d3/0x5e0
+[  315.515211]  ? search_bpf_extables+0x85/0xc0
+[  315.523168]  ? jbd2_journal_set_features+0xf4/0x500
+[  315.524214]  ? search_exception_tables+0x7c/0x90
+[  315.525211]  ? kernelmode_fixup_or_oops+0x140/0x1a0
+[  315.526370]  ? __bad_area_nosemaphore+0x208/0x350
+[  315.527475]  ? mt_find+0x2ab/0x3c0
+[  315.528718]  ? __bad_area+0x88/0xc0
+[  315.529936]  ? bad_area+0x1a/0x30
+[  315.530696]  ? do_user_addr_fault+0xa6d/0xd00
+[  315.531550]  ? exc_page_fault+0xe7/0x3b0
+[  315.532339]  ? asm_exc_page_fault+0x22/0x30
+[  315.533153]  ? jbd2_journal_set_features+0xf4/0x500
+[  315.533922]  ? jbd2_journal_set_features+0xe4/0x500
+[  315.534636]  jbd2_journal_revoke+0x43/0x330
+[  315.535272]  __ext4_forget+0x112/0x2c0
+[  315.535804]  ? __find_get_block+0x155/0x5a0
+[  315.536443]  ext4_free_blocks+0xbd2/0xf20
+[  315.537058]  ? ext4_free_data+0x140/0x210
+[  315.538420]  ? ext4_free_branches+0x2d4/0x3a0
+[  315.540534]  ext4_free_branches+0x1c9/0x3a0
+[  315.542064]  ext4_ind_truncate+0x361/0x3f0
+[  315.543304]  ? ext4_discard_preallocations+0x3c1/0x740
+[  315.546111]  ext4_truncate+0x4a0/0x710
+[  315.547623]  ext4_file_write_iter+0xb8d/0xe90
+[  315.548940]  vfs_write+0x20e/0x590
+[  315.549986]  ksys_write+0x77/0x160
+[  315.552027]  __x64_sys_write+0x1d/0x30
+[  315.553492]  do_syscall_64+0x68/0xf0
+[  315.554711]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-022ce886.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dec1ef12175c/vmlinux-022ce886.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c9c8021b7538/bzImage-022ce886.xz
+I also try to accelerate reproduce in about 2 mins through add
+delay in jbd2_write_superblock() either applied the "recheck
+chekcpoint" patch series or not.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+741810aea4ac24243b2f@syzkaller.appspotmail.com
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index b5e57735ab3f..90d78fe0fb33 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1623,6 +1623,7 @@ static int journal_reset(journal_t *journal)
+  * This function expects that the caller will have locked the journal
+  * buffer head, and will return with it unlocked
+  */
++#include <linux/delay.h>
+ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
+ {
+ 	struct buffer_head *bh = journal->j_sb_buffer;
+@@ -1659,6 +1660,7 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
+ 	bh->b_end_io = end_buffer_write_sync;
+ 	submit_bh(REQ_OP_WRITE | write_flags, bh);
+ 	wait_on_buffer(bh);
++	msleep(10);
+ 	if (buffer_write_io_error(bh)) {
+ 		clear_buffer_write_io_error(bh);
+ 		set_buffer_uptodate(bh);
 
-loop1: detected capacity change from 0 to 512
-EXT4-fs (loop1): encrypted files will use data=ordered instead of data journaling mode
-==================================================================
-BUG: KASAN: slab-use-after-free in check_igot_inode+0x196/0x1c0 fs/ext4/inode.c:4648
-Read of size 8 at addr ffff88805f1b0c70 by task syz-executor.1/16946
+> 
+>> If the journal super block had been read and verified, there is no need
+>> to call bh_read() read it again even if it has been failed to written
+>> out. So the fix could be simply move buffer_verified(bh) in front of
+>> bh_read().
+>>
+>> Fixes: d9eafe0afafa ("jbd2: factor out journal initialization from journal_get_superblock()")
+> 
+> That works, but it's worth noting that commit d9eafe0afafa caused the
+> failure by removing the check on j_journal_version to determine
+> whether the superblock was read or not.  If the journal superblock had
+> been previously read, j_journal_version would be either 1 or 2.  If it
+> had been zero, then superblock was not read.  So from commit
+> d9eafe0afafa:
+> 
+>  	/* Load journal superblock if it is not loaded yet. */
+> -	if (journal->j_format_version == 0 &&
+> -	    journal_get_superblock(journal) != 0)
+> +	if (journal_get_superblock(journal))
+>  		return 0;
+>  	if (!jbd2_format_support_feature(journal))
+>  		return 0;
+> 
+> 
+> The comment "Load journal superblock if it is not loaded yet." should
+> be removed, since it no longer makes sense once the
+> "journal->j_format_version == 0" check was removed.
 
-CPU: 2 PID: 16946 Comm: syz-executor.1 Not tainted 6.4.0-rc5-syzkaller-00305-g022ce8862dff #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
- print_report mm/kasan/report.c:462 [inline]
- kasan_report+0x11c/0x130 mm/kasan/report.c:572
- check_igot_inode+0x196/0x1c0 fs/ext4/inode.c:4648
- __ext4_iget+0x1598/0x4460 fs/ext4/inode.c:4700
- __ext4_fill_super fs/ext4/super.c:5446 [inline]
- ext4_fill_super+0x680f/0xafa0 fs/ext4/super.c:5672
- get_tree_bdev+0x44a/0x770 fs/super.c:1303
- vfs_get_tree+0x8d/0x350 fs/super.c:1510
- do_new_mount fs/namespace.c:3039 [inline]
- path_mount+0x134b/0x1e40 fs/namespace.c:3369
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __ia32_sys_mount+0x282/0x300 fs/namespace.c:3568
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-RIP: 0023:0xf7f26579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f7f21410 EFLAGS: 00000296 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 00000000f7f21480 RCX: 0000000020000000
-RDX: 0000000020000040 RSI: 000000000000000e RDI: 00000000f7f214c0
-RBP: 00000000f7f214c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+Yes.
 
-Allocated by task 5890:
- kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- __kasan_slab_alloc+0x7f/0x90 mm/kasan/common.c:328
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook mm/slab.h:711 [inline]
- slab_alloc_node mm/slub.c:3451 [inline]
- slab_alloc mm/slub.c:3459 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
- kmem_cache_alloc_lru+0x20a/0x600 mm/slub.c:3482
- alloc_inode_sb include/linux/fs.h:2705 [inline]
- reiserfs_alloc_inode+0x28/0xc0 fs/reiserfs/super.c:642
- alloc_inode+0x61/0x230 fs/inode.c:260
- new_inode_pseudo fs/inode.c:1018 [inline]
- new_inode+0x2b/0x280 fs/inode.c:1046
- reiserfs_mkdir+0x1f1/0x990 fs/reiserfs/namei.c:813
- xattr_mkdir fs/reiserfs/xattr.c:77 [inline]
- create_privroot fs/reiserfs/xattr.c:890 [inline]
- reiserfs_xattr_init+0x57e/0xbc0 fs/reiserfs/xattr.c:1006
- reiserfs_fill_super+0x2129/0x2eb0 fs/reiserfs/super.c:2175
- mount_bdev+0x358/0x420 fs/super.c:1380
- legacy_get_tree+0x109/0x220 fs/fs_context.c:610
- vfs_get_tree+0x8d/0x350 fs/super.c:1510
- do_new_mount fs/namespace.c:3039 [inline]
- path_mount+0x134b/0x1e40 fs/namespace.c:3369
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __ia32_sys_mount+0x282/0x300 fs/namespace.c:3568
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
+> 
+> I'll also note that a problem with d9eafe0afafa is that by removing
+> the j_format_version check, every time we add a revoke header, and we
+> call jbd2_journal_set_features(), this was causing an unconditional
+> read of the journal superblock and that unnecessary I/O could slow
+> down certain workloads.
+> 
 
-Last potentially related work creation:
- kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:491
- __call_rcu_common.constprop.0+0x99/0x7e0 kernel/rcu/tree.c:2627
- destroy_inode+0x129/0x1b0 fs/inode.c:315
- iput_final fs/inode.c:1747 [inline]
- iput.part.0+0x50a/0x740 fs/inode.c:1773
- iput+0x5c/0x80 fs/inode.c:1763
- reiserfs_new_inode+0x402/0x2110 fs/reiserfs/inode.c:2154
- reiserfs_mkdir+0x4b8/0x990 fs/reiserfs/namei.c:843
- xattr_mkdir fs/reiserfs/xattr.c:77 [inline]
- create_privroot fs/reiserfs/xattr.c:890 [inline]
- reiserfs_xattr_init+0x57e/0xbc0 fs/reiserfs/xattr.c:1006
- reiserfs_fill_super+0x2129/0x2eb0 fs/reiserfs/super.c:2175
- mount_bdev+0x358/0x420 fs/super.c:1380
- legacy_get_tree+0x109/0x220 fs/fs_context.c:610
- vfs_get_tree+0x8d/0x350 fs/super.c:1510
- do_new_mount fs/namespace.c:3039 [inline]
- path_mount+0x134b/0x1e40 fs/namespace.c:3369
- do_mount fs/namespace.c:3382 [inline]
- __do_sys_mount fs/namespace.c:3591 [inline]
- __se_sys_mount fs/namespace.c:3568 [inline]
- __ia32_sys_mount+0x282/0x300 fs/namespace.c:3568
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
+Yes, fortunately it is innocuous in general because the journal super
+block buffer is always in memory and uptodate, therefore bh_read() does
+not submit I/O. It's only affects the fault case about the window in
+jbd2_write_superblock() which the journal super block has been failed
+to write out and has not been restore to uptodate yet.
 
-The buggy address belongs to the object at ffff88805f1b06a0
- which belongs to the cache reiser_inode_cache of size 1568
-The buggy address is located 1488 bytes inside of
- freed 1568-byte region [ffff88805f1b06a0, ffff88805f1b0cc0)
-
-The buggy address belongs to the physical page:
-page:ffffea00017c6c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88805f1b13e0 pfn:0x5f1b0
-head:ffffea00017c6c00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-memcg:ffff888042f00c01
-flags: 0x4fff00000010200(slab|head|node=1|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 04fff00000010200 ffff888042d81040 dead000000000122 0000000000000000
-raw: ffff88805f1b13e0 0000000080130011 00000001ffffffff ffff888042f00c01
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Reclaimable, gfp_mask 0x1d20d0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL|__GFP_RECLAIMABLE), pid 5890, tgid 5888 (syz-executor.2), ts 111007407408, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2db/0x350 mm/page_alloc.c:1731
- prep_new_page mm/page_alloc.c:1738 [inline]
- get_page_from_freelist+0xf41/0x2c00 mm/page_alloc.c:3502
- __alloc_pages+0x1cb/0x4a0 mm/page_alloc.c:4768
- alloc_pages+0x1aa/0x270 mm/mempolicy.c:2279
- alloc_slab_page mm/slub.c:1851 [inline]
- allocate_slab+0x25f/0x390 mm/slub.c:1998
- new_slab mm/slub.c:2051 [inline]
- ___slab_alloc+0xa91/0x1400 mm/slub.c:3192
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3291
- __slab_alloc_node mm/slub.c:3344 [inline]
- slab_alloc_node mm/slub.c:3441 [inline]
- slab_alloc mm/slub.c:3459 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
- kmem_cache_alloc_lru+0x4a8/0x600 mm/slub.c:3482
- alloc_inode_sb include/linux/fs.h:2705 [inline]
- reiserfs_alloc_inode+0x28/0xc0 fs/reiserfs/super.c:642
- alloc_inode+0x61/0x230 fs/inode.c:260
- iget5_locked fs/inode.c:1241 [inline]
- iget5_locked+0x1cf/0x2c0 fs/inode.c:1234
- reiserfs_fill_super+0xf8c/0x2eb0 fs/reiserfs/super.c:2053
- mount_bdev+0x358/0x420 fs/super.c:1380
- legacy_get_tree+0x109/0x220 fs/fs_context.c:610
- vfs_get_tree+0x8d/0x350 fs/super.c:1510
- do_new_mount fs/namespace.c:3039 [inline]
- path_mount+0x134b/0x1e40 fs/namespace.c:3369
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88805f1b0b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88805f1b0b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88805f1b0c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                             ^
- ffff88805f1b0c80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88805f1b0d00: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
-==================================================================
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	retq
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+Thanks,
+Yi.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
