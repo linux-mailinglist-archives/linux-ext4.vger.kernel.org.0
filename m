@@ -2,99 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF135730EA4
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 07:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9598A731094
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 09:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjFOF1p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 01:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S243558AbjFOHap (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 03:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjFOF1o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 01:27:44 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDCA26A8
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jun 2023 22:27:42 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-128-67.bstnma.fios.verizon.net [173.48.128.67])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35F5QspV008358
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jun 2023 01:26:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686806819; bh=Po4rH3mQnno7yPh3tew09XIyoTvRmvr6uS4A8avOe5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=h3ViLjAzuEiURUQyEYkyI17a87bLptC1CrlRJfznkMym+PdMYwIc+qI8PH5lOhVvi
-         jd9j3XNsuQ88COnkwE5gTsamJjFEJgaJaMYaVVLm9rvXRl+UPGuFx4eEI2vgGOKyHH
-         XwBBa+hHf54I2VtBGaD9RQbSAtqLjq+ngBWbVlQupoPlkqSxvdWEQvkCd7MetWy0Jt
-         d3cFMHNFFXXVyw5T0PWgeNJXXULi8aI0VrsBM4o9lkdw3KuXTYQfapFzoNcwUr9vLq
-         oMUAKHysaezG046NiepM3V8kbSp5TZa98bGNzvgmhGevVr3Ce4Ha83n0pFw37FxyHv
-         oPrPFpey3X/1g==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 09D0415C00B0; Thu, 15 Jun 2023 01:26:54 -0400 (EDT)
-Date:   Thu, 15 Jun 2023 01:26:54 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH] jbd2: skip reading super block if it has been verified
-Message-ID: <20230615052654.GF51259@mit.edu>
-References: <20230615034941.2335484-1-yi.zhang@huaweicloud.com>
+        with ESMTP id S238540AbjFOHan (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 03:30:43 -0400
+X-Greylist: delayed 10287 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Jun 2023 00:30:41 PDT
+Received: from mail.sitirkam.com (mail.aurorateknoglobal.com [103.126.10.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2898312E;
+        Thu, 15 Jun 2023 00:30:41 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.sitirkam.com (Postfix) with ESMTP id 137E24E7BE86;
+        Thu, 15 Jun 2023 08:32:09 +0700 (WIB)
+Received: from mail.sitirkam.com ([127.0.0.1])
+        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TI0pmiUZZ583; Thu, 15 Jun 2023 08:32:08 +0700 (WIB)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.sitirkam.com (Postfix) with ESMTP id 9AE184E7B19D;
+        Thu, 15 Jun 2023 08:32:03 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.sitirkam.com 9AE184E7B19D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sitirkam.com;
+        s=B8AB377C-ED3B-11EA-8736-9248CAEF674E; t=1686792723;
+        bh=q7vDHy+gLAr4GKZUDI+hjt8I93kvW09nNmGJORUTyfg=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=dFdTPJycpJmgou/MhEbWyDym6M0WdU7NrsxT8ZckOfUSB2oGAZE0XYGX/SF+sDMxv
+         4eitajis0BU5mQm3ZSquoz13vgtOn6XXefenT3O7CdhmzdL/uPYXXfg/2d3MXc9aZK
+         OOmEzeXxeB/9bw3LwcawQuNVjyyTJdN1zs9HyzUsINWKOgW4TmpOfMgciHQYg3GbUB
+         sJ/xiki6lWhxJRs7M+vfnQxi8d8IF82+vIcxJXMPou7rOG6G9QT+/dJVRMnDU5xTHg
+         55V8oKqEZu8Ws1oCurj43MyJqDsrnfLSlgpQQCsDrAWnkTbP3tSRecNiuybK3gGO17
+         9DcgiALydjzGA==
+X-Virus-Scanned: amavisd-new at mail.sitirkam.com
+Received: from mail.sitirkam.com ([127.0.0.1])
+        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 09RgNCqtcJrY; Thu, 15 Jun 2023 08:32:03 +0700 (WIB)
+Received: from [185.169.4.111] (unknown [185.169.4.111])
+        by mail.sitirkam.com (Postfix) with ESMTPSA id D830A4E7ACFF;
+        Thu, 15 Jun 2023 08:31:55 +0700 (WIB)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615034941.2335484-1-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Spende
+To:     Recipients <admin@sitirkam.com>
+From:   "Maria-Elisabeth Schaeffler" <admin@sitirkam.com>
+Date:   Wed, 14 Jun 2023 18:34:03 -0700
+Reply-To: schaefflermariaelisabeth1941@gmail.com
+Message-Id: <20230615013155.D830A4E7ACFF@mail.sitirkam.com>
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,NIXSPAM_IXHASH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [schaefflermariaelisabeth1941[at]gmail.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  3.0 NIXSPAM_IXHASH http://www.nixspam.org/
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 11:49:41AM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> We got a NULL pointer dereference issue below while running generic/475
-> I/O failure pressure test.
+Your email account has been selected for a donation of =E2=82=AC1,700,000. =
+Please contact me for more information.
 
-Have you been able to reproduce this failure without the "recheck
-checkpoint" series applied?  I have not, so like with the e2fsck bug
-fix, I can understand how the bug fix worked, but I still don't
-understand why I wasn't seeing until I tried to apply the "recheck
-chekcpoint" and the following patches in that patch series.
-
-> If the journal super block had been read and verified, there is no need
-> to call bh_read() read it again even if it has been failed to written
-> out. So the fix could be simply move buffer_verified(bh) in front of
-> bh_read().
-> 
-> Fixes: d9eafe0afafa ("jbd2: factor out journal initialization from journal_get_superblock()")
-
-That works, but it's worth noting that commit d9eafe0afafa caused the
-failure by removing the check on j_journal_version to determine
-whether the superblock was read or not.  If the journal superblock had
-been previously read, j_journal_version would be either 1 or 2.  If it
-had been zero, then superblock was not read.  So from commit
-d9eafe0afafa:
-
- 	/* Load journal superblock if it is not loaded yet. */
--	if (journal->j_format_version == 0 &&
--	    journal_get_superblock(journal) != 0)
-+	if (journal_get_superblock(journal))
- 		return 0;
- 	if (!jbd2_format_support_feature(journal))
- 		return 0;
-
-
-The comment "Load journal superblock if it is not loaded yet." should
-be removed, since it no longer makes sense once the
-"journal->j_format_version == 0" check was removed.
-
-I'll also note that a problem with d9eafe0afafa is that by removing
-the j_format_version check, every time we add a revoke header, and we
-call jbd2_journal_set_features(), this was causing an unconditional
-read of the journal superblock and that unnecessary I/O could slow
-down certain workloads.
-
-						- Ted
+Mrs Maria Elisabeth Schaeffler
+CEO SCHAEFFLER.
