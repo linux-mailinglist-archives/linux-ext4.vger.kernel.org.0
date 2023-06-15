@@ -2,42 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C56D77313D0
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 11:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BE27314BF
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 12:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239090AbjFOJ2x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 05:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S241750AbjFOKBm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 06:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244675AbjFOJ2g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 05:28:36 -0400
-Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213E11BE5
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 02:28:35 -0700 (PDT)
-Received: by mail.lokoho.com (Postfix, from userid 1001)
-        id 066A08748D; Thu, 15 Jun 2023 10:26:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
-        t=1686821189; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=YP2jFvY6LSn5GGVCAm7rp661Ilp1VOwJJiJSkPb7eOkl8nZUNGf9ckt2oGWEylaaa
-         bKAVCXGC+H6l4EISPvh1v3rzNRPc3NQpOPNsMJ2J2ctEZ05/D1c3kS47aT1bINV6Sq
-         xl/qedUyf1saHzI1/N1O3bRm+udesb7hMmHcpxju+DPM3GVsvnJnqQD6taVlV9CEfA
-         F+RN1X7JcclQQSNArh7/eQXuSNqN/Vub4CIVJOGnlvwiPwkjDsoMU0i/ot5w+IwNFX
-         tPbEC0qLRCn1tplU7V+FeSGEjuQGig0da7NXBxKTrF0ge3B1iZ8ZWlbycplqQIOu2o
-         vZzYtf6vkxu0A==
-Received: by mail.lokoho.com for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 09:26:02 GMT
-Message-ID: <20230615094301-0.1.6n.2md9c.0.i8m51gigno@lokoho.com>
-Date:   Thu, 15 Jun 2023 09:26:02 GMT
-From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
-To:     <linux-ext4@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.lokoho.com
+        with ESMTP id S245550AbjFOKBa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 06:01:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB94296F
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 03:01:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AF159223EB;
+        Thu, 15 Jun 2023 10:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686823286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zwc5Q6r8DSVlGqrN9RxoOtoujMWUGpkzJ9oA//lqUxk=;
+        b=AoQWYpReUwVE51XJ86pLMV63wwgtBeCml6vcnuyWzV8KnucG7CzNsR/nqzNsAmZoZw5KFK
+        CxwTQBAJlqCih1oO03IQU0toSGQYIbI/7R0zxqBqlx5zXrypZjPJL8XsCVY8Bd9UNwlN2u
+        nGBDJIJ5ULOZXUgwUb3va01gUsly/UA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686823286;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zwc5Q6r8DSVlGqrN9RxoOtoujMWUGpkzJ9oA//lqUxk=;
+        b=/vjdkdPD+X5QQYnKp/Nj2MLs9OwAXRXPbAHkSnzcj21uSVMxZ3r52BCrFK3scgjcwZFUdD
+        UjXjbrqTBOUYwsAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2EAC13A47;
+        Thu, 15 Jun 2023 10:01:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gtvCJ3bhimScYwAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 15 Jun 2023 10:01:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 332C9A0755; Thu, 15 Jun 2023 12:01:26 +0200 (CEST)
+Date:   Thu, 15 Jun 2023 12:01:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        bagasdotme@gmail.com, nikolas.kraetzschmar@sap.com, jack@suse.cz
+Subject: Re: [PATCH 1/2] Revert "ext4: don't clear SB_RDONLY when remounting
+ r/w until quota is re-enabled"
+Message-ID: <20230615100126.othz2jtof4av4pur@quack3>
+References: <20230608044056.GA1418535@mit.edu>
+ <20230608141805.1434230-1-tytso@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230608141805.1434230-1-tytso@mit.edu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,19 +72,34 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Thu 08-06-23 10:18:04, Theodore Ts'o wrote:
+> This reverts commit a44be64bbecb15a452496f60db6eacfee2b59c79.
+> 
+> Link: https://lore.kernel.org/r/653b3359-2005-21b1-039d-c55ca4cffdcc@gmail.com
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+So I was looking more into how the warning in xattr code can trigger. Sadly
+the syzbot reproducer does not seem to reproduce the issue for me when I
+enable the warnings in xattr code. Anyway, after staring for some time into
+the code I think the problem has actually been introduced by the transition
+to the new mount API. Because in the old API, userspace could not start
+writes to the filesystem until we called set_mount_attributes() in
+do_remount() which cleared the MNT_READONLY flag on the mount (which
+happens after reconfigure_super(). In the new API, fsconfig(2) syscall
+allows you to toggle SB_RDONLY flag without touching the mount flags and so
+we can have userspace writing the filesystem as soon as we clear SB_RDONLY
+flag.
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+I have checked and the other direction (i.e., remount read-only) is
+properly serialized in the VFS by setting sb->s_readonly_remount (and
+making sure we either return EBUSY or all writers are going to see
+s_readonly_remount set) before calling into filesystem's reconfigure code.
+I have actually a fixup within ext4 ready but I think it may be better to
+fix this within VFS and provide similar serialization like for the rw-ro
+transition there... Let's see what VFS people say to this.
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+								Honza
 
-
-Pozdrawiam
-Adam Charachuta
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
