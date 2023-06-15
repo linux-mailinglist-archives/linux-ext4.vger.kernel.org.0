@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9A1731C10
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 17:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B38731C15
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 17:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241338AbjFOPA0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 11:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
+        id S1344784AbjFOPA6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 11:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345239AbjFOPAQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 11:00:16 -0400
+        with ESMTP id S1344708AbjFOPAe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 11:00:34 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348EF1FFA
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 08:00:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0812960
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 08:00:31 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-128-67.bstnma.fios.verizon.net [173.48.128.67])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35FExxqL026896
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35FF00hu026909
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jun 2023 11:00:00 -0400
+        Thu, 15 Jun 2023 11:00:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686841202; bh=GDS5qOYCrkvpT0btC8wIq61lei7488TDn18ijfW9EdE=;
+        t=1686841202; bh=4/TATINxJcGIc+5Qft9NYQhj4JIYqsumuVH6M49lT8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=EdMBfnQvGmil2TLw8/oXgqURGpUL4gbc8ANZuoYRaAGjVQ0jsT4vDxd0vXCAzTU92
-         /VTX8wKCbkj8FISLdZJZEAEUjzYHHcKqTkW+dfaGUzPcXmm0y6ae/W6TVSLL8q1Lrj
-         tWldjrzqOHU9R7MF0E4ix4EcxPDGgOjDv3gNvaYyNZ0jJkcKV87DjOFg4QhZbGa7UD
-         qMnxH5la6DfYy2iZSJyCXXbomckP8H0XVEQ93PTwlGqyrTsGi1IhJK/mdVtcrPwt4o
-         AcCj1rmEKNC/eot3r52oO0QHvSnqqntfEYx7dA48Za3wt11j+8KH696DEmt/xoFBNY
-         n1nqseAHt/xEA==
+        b=I/42DkFibUOu0eh9CCMUihY4OoOiLw/kUUN28hHtH2nNIZBt+y7B+VTob009nunpw
+         D7PbXOt3IMf6CGp2oFHKzyQtLd4Jll77dWmzb8xNU2lPaty6BmwDiPnz4wLofQaT4+
+         NrKvt6oB10jU7c5clkqkbn8yClNZfqF/cABQWchMcc46sV4bWu13SYe4uiJP9lG0zI
+         HVAKq34/9c0fDQfnWlGhlkqrUf1ItRErbBc5LeKpo+oqQeAn35CP0IIqDg2Pj74WFN
+         KHfVDZRKwJxojn+CXLRBfGBeapep/LwxdWG6JS++cm2EgDvOw9WCb55CzJD0h70nxw
+         H970Vfi6opgDQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D531515C02E0; Thu, 15 Jun 2023 10:59:59 -0400 (EDT)
+        id D703C15C02E1; Thu, 15 Jun 2023 10:59:59 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, s.l-h@gmx.de,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "ext4: remove unnecessary check in ext4_bg_num_gdb_nometa"
-Date:   Thu, 15 Jun 2023 10:59:56 -0400
-Message-Id: <168683994078.282246.12341856291517677835.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v5 0/3] ext4, jbd2: journal cycled record transactions between each mount
+Date:   Thu, 15 Jun 2023 10:59:57 -0400
+Message-Id: <168683994076.282246.11277662662888331081.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230613225025.3859522-1-shikemeng@huaweicloud.com>
-References: <20230613225025.3859522-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
+References: <20230322013353.1843306-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,23 +54,28 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Wed, 14 Jun 2023 06:50:25 +0800, Kemeng Shi wrote:
-> This reverts commit ad3f09be6cfe332be8ff46c78e6ec0f8839107aa.
-> 
-> The reverted commit was intended to simpfy the code to get group
-> descriptor block number in non-meta block group by assuming
-> s_gdb_count is block number used for all non-meta block group descriptors.
-> However s_gdb_count is block number used for all meta *and* non-meta
-> group descriptors. So s_gdb_group will be > actual group descriptor block
-> number used for all non-meta block group which should be "total non-meta
-> block group" / "group descriptors per block", e.g. s_first_meta_bg.
+On Wed, 22 Mar 2023 09:33:50 +0800, Zhang Yi wrote:
+> v4->v5:
+>  - Update doc about journal superblock in journal.rst.
+> v3->v4:
+>  - Remove journal_cycle_record mount option, always enable it on ext4.
+> v2->v3:
+>  - Prevent warning if mount old image with journal_cycle_record enabled.
+>  - Limit this mount option into ext4 iamge only.
+> v1->v2:
+>  - Fix the format type warning.
+>  - Add more check of journal_cycle_record mount options in remount.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] Revert "ext4: remove unnecessary check in ext4_bg_num_gdb_nometa"
-      commit: 19482792113fa1dc419f9bc7b04b9dbdaa5256fd
+[1/3] jbd2: continue to record log between each mount
+      commit: 0311c8729c0a35114d64a64f8977e7d9bec926df
+[2/3] ext4: add journal cycled recording support
+      commit: b956fe38a26861bfe13e7e83fbeadf9d2e159366
+[3/3] ext4: update doc about journal superblock description
+      commit: ecdae6e9d63414b263ab2848ba3835e727eef2f9
 
 Best regards,
 -- 
