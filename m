@@ -2,46 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53814731C16
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 17:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A1731C10
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 17:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbjFOPA7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 11:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
+        id S241338AbjFOPA0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 11:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344392AbjFOPAo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 11:00:44 -0400
+        with ESMTP id S1345239AbjFOPAQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 11:00:16 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C763F2944
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 08:00:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348EF1FFA
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 08:00:16 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-128-67.bstnma.fios.verizon.net [173.48.128.67])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35FExxWP026895
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35FExxqL026896
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 15 Jun 2023 11:00:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1686841202; bh=bqsSWsv2FgVt7A/NVFwu5x20dKwoSJZHizGcwbcBX6g=;
+        t=1686841202; bh=GDS5qOYCrkvpT0btC8wIq61lei7488TDn18ijfW9EdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=iqDPo8W9mMYI61Hl2BS738tm5WDV7yRC3GfuDBSkFzHKFYbS5YGGSW+6uszkEC8EF
-         uzv78BkkyCujPCQxJTmZ/N8rz+pJuiFOuOgW9mpIV4qcx7+xAbFHhWE8TIoRo8uQze
-         MWAD7ZN9mwCYtNZoZ17YNB528hMT3vFhP3JcpEliNNoSK9BhmFVr2dy3vs6vaNrhnK
-         pNx5+EcVp2pjta7NimPyQs9Wew4n8bam7y6wnMXE2xDLeic3rzsLbQ4ReCKRmSpao1
-         j+ChPXV5T13bmz30pke56NIgT5TUA97N4y4l6ydlE++GeLjcuFNChi/72qzKNRcbsp
-         cRg5GepOTow3Q==
+        b=EdMBfnQvGmil2TLw8/oXgqURGpUL4gbc8ANZuoYRaAGjVQ0jsT4vDxd0vXCAzTU92
+         /VTX8wKCbkj8FISLdZJZEAEUjzYHHcKqTkW+dfaGUzPcXmm0y6ae/W6TVSLL8q1Lrj
+         tWldjrzqOHU9R7MF0E4ix4EcxPDGgOjDv3gNvaYyNZ0jJkcKV87DjOFg4QhZbGa7UD
+         qMnxH5la6DfYy2iZSJyCXXbomckP8H0XVEQ93PTwlGqyrTsGi1IhJK/mdVtcrPwt4o
+         AcCj1rmEKNC/eot3r52oO0QHvSnqqntfEYx7dA48Za3wt11j+8KH696DEmt/xoFBNY
+         n1nqseAHt/xEA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D365515C02DF; Thu, 15 Jun 2023 10:59:59 -0400 (EDT)
+        id D531515C02E0; Thu, 15 Jun 2023 10:59:59 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v3 0/2] ext4: fix quotas leak in __ext4_fill_super()
-Date:   Thu, 15 Jun 2023 10:59:55 -0400
-Message-Id: <168683994077.282246.1824040252108506473.b4-ty@mit.edu>
+To:     adilger.kernel@dilger.ca, Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, s.l-h@gmx.de,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "ext4: remove unnecessary check in ext4_bg_num_gdb_nometa"
+Date:   Thu, 15 Jun 2023 10:59:56 -0400
+Message-Id: <168683994078.282246.12341856291517677835.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230327141630.156875-1-libaokun1@huawei.com>
-References: <20230327141630.156875-1-libaokun1@huawei.com>
+In-Reply-To: <20230613225025.3859522-1-shikemeng@huaweicloud.com>
+References: <20230613225025.3859522-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,24 +54,23 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Mon, 27 Mar 2023 22:16:28 +0800, Baokun Li wrote:
-> V1->V2:
-> 	Add judgment for CONFIG_QUOTA to avoid warning
-> 	"label 'failed_mount9' defined but not used".
-> 	(Reported-by: kernel test robot <lkp@intel.com>)
-> V2->V3:
-> 	By adding __maybe_unused to silence possible compilation
-> 	complain in patch one, instead of adding the judgment.
-> 	(Suggested by Jan Kara).
+On Wed, 14 Jun 2023 06:50:25 +0800, Kemeng Shi wrote:
+> This reverts commit ad3f09be6cfe332be8ff46c78e6ec0f8839107aa.
+> 
+> The reverted commit was intended to simpfy the code to get group
+> descriptor block number in non-meta block group by assuming
+> s_gdb_count is block number used for all non-meta block group descriptors.
+> However s_gdb_count is block number used for all meta *and* non-meta
+> group descriptors. So s_gdb_group will be > actual group descriptor block
+> number used for all non-meta block group which should be "total non-meta
+> block group" / "group descriptors per block", e.g. s_first_meta_bg.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] ext4: turning quotas off if mount failed after enable quotas
-      commit: e39a0c8d9cc298c5a4afdeb416441091ae3f1fcb
-[2/2] ext4: refactoring to use the unified helper ext4_quotas_off()
-      commit: 63ec000b35a3c6cbb42b2e545c7c18f3d36159d6
+[1/1] Revert "ext4: remove unnecessary check in ext4_bg_num_gdb_nometa"
+      commit: 19482792113fa1dc419f9bc7b04b9dbdaa5256fd
 
 Best regards,
 -- 
