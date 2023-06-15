@@ -2,56 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC4A731ED3
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 19:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A18732060
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jun 2023 21:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjFORUH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 13:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        id S229748AbjFOTeN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 15:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238896AbjFORTz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 13:19:55 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05A02710
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 10:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686849594; x=1718385594;
-  h=date:from:to:cc:subject:message-id;
-  bh=eh1vA6L1/F/ej7wg56IoXQc3YHvAcaIMKtLA0JNh33g=;
-  b=J8+m421ULqdSgz8CD+NiakS+W93jCkFSTapmyXvmFdnVAN1I7JhHso8B
-   kIPz6nzB3StMK1ZcoWRe43ExtF1c6+1mlQRTr4nI/9NvGAG/YBjxwr2Hl
-   KtNmO19Q6v1z9KFmeDhm9DSD94z1iXV1o99Q05bTA1zLx9BQ27OnetAOy
-   oMLRLKRlcPildXjUeSEIb8TXQm6kY9cBWpSeAB1Du4eZRcGyoqMFQLxI7
-   yq5sjAPhicjuezrgcSMYiy91mIX5F5DW1xMi/rUpGYmU9mZ352pESbocO
-   q3FyVziyhQ7gTuxJ8LDn/cXvlzsxgLwFMbk7SobIKI8A5iPIZqTtfigIY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="358981192"
-X-IronPort-AV: E=Sophos;i="6.00,245,1681196400"; 
-   d="scan'208";a="358981192"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2023 10:17:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="689856419"
-X-IronPort-AV: E=Sophos;i="6.00,245,1681196400"; 
-   d="scan'208";a="689856419"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 15 Jun 2023 10:17:40 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q9qbM-0000CK-13;
-        Thu, 15 Jun 2023 17:17:40 +0000
-Date:   Fri, 16 Jun 2023 01:16:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 63ec000b35a3c6cbb42b2e545c7c18f3d36159d6
-Message-ID: <202306160150.q5xJ0sWl-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S229648AbjFOTeL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 15:34:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69412949
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 12:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686857602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qJ9fh5TisbZKUaORbgtmA89u4YsXzvNQtjxXBV2tisQ=;
+        b=cjupLKqLzUuBVNKHObqJnGsRuLuWZDfArEPL4wYgWRJxxrCMyZ47Mb7q136GALwfKNw9Gf
+        uAs0Ee1fRyoTiiRH4r53WQKFQTzSEW8i/nsQG3DHT+2bPuzfhxV5gYlsTT45BqKSezt+Z8
+        DYeTG87kb8w/ilFWK7eKG+EtT8aAyOM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-91-eDuznSmOOdyLHrzgwzT6ag-1; Thu, 15 Jun 2023 15:33:18 -0400
+X-MC-Unique: eDuznSmOOdyLHrzgwzT6ag-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-62ffa1214edso104076d6.0
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 12:33:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686857596; x=1689449596;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJ9fh5TisbZKUaORbgtmA89u4YsXzvNQtjxXBV2tisQ=;
+        b=SisqpJ8cKq8gSA/cf9oyLNaojzribzM2AZXXoW/Y/Ckl8+4nSit+VhA4o7mRBRgPI3
+         I50shkj+V3XqV9+1UpvM8U7ik/shffXUUDzPChthjoIuLbaU+4cepmM37PYk9tBbAFXk
+         L2rlFthAwnDQs0foqOsKeoeEJl/O4Mx8480uEmMtvHGaiMJel1bCY3zYIV3BoaXZspjB
+         bVNriaA/5pDhxpo6Se/Gl9IVhQkIiy70WuDBR23niIDOat2gljIigkvTOtM2jXmKXjLg
+         Rmv6uaWyerml6QoVmQarGSlVPkq9AF198+tY4hVQWyWysupYqUoWcxsKZymqMdaCCrqI
+         FqRQ==
+X-Gm-Message-State: AC+VfDx3rr8npz8fThgCZq6YHQIY5NeUTzO4tnaeftLPSZU7gShz3aiw
+        lMCzr+na95PUrwNWjuWZ2AL5cd8mMzzTEjnSI859YiLhwguOMC7pLSNfn45pmG0lCk7/W0OvU65
+        A7ZDXQEdD3r8yhPfy4K6rAA==
+X-Received: by 2002:ad4:5bca:0:b0:5ed:c96e:ca4a with SMTP id t10-20020ad45bca000000b005edc96eca4amr22503022qvt.1.1686857595806;
+        Thu, 15 Jun 2023 12:33:15 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5M13ke+gvL3VoDObxmyNhDkjVrjDagXp/R2MhL92zTstn0T61v6zTXVFTefmODf0p29xAboA==
+X-Received: by 2002:ad4:5bca:0:b0:5ed:c96e:ca4a with SMTP id t10-20020ad45bca000000b005edc96eca4amr22503000qvt.1.1686857595549;
+        Thu, 15 Jun 2023 12:33:15 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id c20-20020a0cca14000000b0062ff47845fcsm719203qvk.48.2023.06.15.12.33.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 12:33:14 -0700 (PDT)
+Date:   Thu, 15 Jun 2023 15:33:12 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Sierra <alex.sierra@amd.com>
+Cc:     jgg@nvidia.com, david@redhat.com, Felix.Kuehling@amd.com,
+        linux-mm@kvack.org, rcampbell@nvidia.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        hch@lst.de, jglisse@redhat.com, apopple@nvidia.com,
+        willy@infradead.org, akpm@linux-foundation.org
+Subject: Re: [PATCH v9 02/14] mm: move page zone helpers from mm.h to mmzone.h
+Message-ID: <ZItneGX+sqg7WApF@x1n>
+References: <20220715150521.18165-1-alex.sierra@amd.com>
+ <20220715150521.18165-3-alex.sierra@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220715150521.18165-3-alex.sierra@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,125 +81,34 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 63ec000b35a3c6cbb42b2e545c7c18f3d36159d6  ext4: refactoring to use the unified helper ext4_quotas_off()
+Hello, all,
 
-elapsed time: 728m
+On Fri, Jul 15, 2022 at 10:05:09AM -0500, Alex Sierra wrote:
+> +static inline enum zone_type page_zonenum(const struct page *page)
+> +{
+> +	ASSERT_EXCLUSIVE_BITS(page->flags, ZONES_MASK << ZONES_PGSHIFT);
+> +	return (page->flags >> ZONES_PGSHIFT) & ZONES_MASK;
+> +}
 
-configs tested: 105
-configs skipped: 2
+Sorry to hijack this patch - not directly relevant to the movement, but
+relevant to this helper, so maybe I can leverage the cc list..
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+My question is whether page_zonenum() is ready for taking all kinds of tail
+pages?
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r023-20230615   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r006-20230614   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r036-20230615   gcc  
-arc                  randconfig-r043-20230615   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r031-20230615   clang
-arm                  randconfig-r046-20230615   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r003-20230615   gcc  
-csky                 randconfig-r034-20230615   gcc  
-hexagon      buildonly-randconfig-r004-20230614   clang
-hexagon              randconfig-r041-20230615   clang
-hexagon              randconfig-r045-20230615   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r005-20230614   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230615   gcc  
-i386                 randconfig-i002-20230615   gcc  
-i386                 randconfig-i003-20230615   gcc  
-i386                 randconfig-i004-20230615   gcc  
-i386                 randconfig-i005-20230615   gcc  
-i386                 randconfig-i006-20230615   gcc  
-i386                 randconfig-i011-20230615   clang
-i386                 randconfig-i012-20230615   clang
-i386                 randconfig-i013-20230615   clang
-i386                 randconfig-i014-20230615   clang
-i386                 randconfig-i015-20230615   clang
-i386                 randconfig-i016-20230615   clang
-i386                 randconfig-r024-20230615   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230615   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r012-20230614   gcc  
-m68k                 randconfig-r013-20230614   gcc  
-microblaze           randconfig-r016-20230614   gcc  
-microblaze           randconfig-r033-20230615   gcc  
-microblaze           randconfig-r035-20230615   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r006-20230615   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r005-20230615   gcc  
-parisc                           allyesconfig   gcc  
-parisc       buildonly-randconfig-r003-20230614   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230615   gcc  
-parisc               randconfig-r025-20230615   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r015-20230614   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230615   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r001-20230614   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r021-20230615   clang
-s390                 randconfig-r026-20230615   clang
-s390                 randconfig-r044-20230615   clang
-sh                               allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r011-20230614   gcc  
-sparc64              randconfig-r001-20230615   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230615   gcc  
-x86_64               randconfig-a002-20230615   gcc  
-x86_64               randconfig-a003-20230615   gcc  
-x86_64               randconfig-a004-20230615   gcc  
-x86_64               randconfig-a005-20230615   gcc  
-x86_64               randconfig-a006-20230615   gcc  
-x86_64               randconfig-a011-20230615   clang
-x86_64               randconfig-a012-20230615   clang
-x86_64               randconfig-a013-20230615   clang
-x86_64               randconfig-a014-20230615   clang
-x86_64               randconfig-a015-20230615   clang
-x86_64               randconfig-a016-20230615   clang
-x86_64               randconfig-r022-20230615   clang
-x86_64               randconfig-r032-20230615   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r002-20230614   gcc  
-xtensa               randconfig-r014-20230614   gcc  
+Zone device tail pages all look fine, per memmap_init_zone_device().  The
+question was other kinds of usual compound pages, like either thp or
+hugetlb.  IIUC page->flags can be uninitialized for those tail pages.
+
+Asking because I noticed it seems possible that page_zonenum() can just
+take any random tail page as input, e.g.:
+
+try_grab_folio -> is_pci_p2pdma_page -> is_zone_device_page -> page_zonenum
+
+I'm worried it'll just read fake things, but maybe I just missed something?
+
+Thanks,
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Peter Xu
+
