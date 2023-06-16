@@ -2,43 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34711732E77
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 12:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11779732EB3
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 12:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344605AbjFPKco (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Jun 2023 06:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
+        id S1345182AbjFPKel (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Jun 2023 06:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345124AbjFPKcJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 06:32:09 -0400
+        with ESMTP id S1345241AbjFPKdv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 06:33:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E12A5269;
-        Fri, 16 Jun 2023 03:27:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAA044B6;
+        Fri, 16 Jun 2023 03:28:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3DC36362E;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC7986361A;
+        Fri, 16 Jun 2023 10:27:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 791A9C433CB;
         Fri, 16 Jun 2023 10:27:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 763A7C433C9;
-        Fri, 16 Jun 2023 10:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686911267;
-        bh=l05rld8D3PITTefsXnd6Na23gFNBdOJ//xz6k0qL18o=;
+        s=k20201202; t=1686911268;
+        bh=g4LJPoNAxXv3km4cVxyDvAQf9LGpZoVWVGmzNVK1ysU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+9jy2hbj5wp8MOvFNwr2YzKYCCjoANSL+zAToYfquUJXHag/mrnX+edLlwwwVBd2
-         QPXFX0oYPyOYFnz8T2a9O1zprMedJrdUHPT2dTXPSvntd0p+d9Y73ZCZ2hxei5ptRa
-         5Y6N1g4J1gVUh5gQrGX3/opS6qKs9TBJr8b5x3k1S9lje41/NuflveR+NSeXd5MX8d
-         owhE32yUU4kziPuhJLSMDFDFmYFogr+Tnxmw28UBWmJ13+7DTTBgoZpI8jjcYZIuPr
-         eCn4SIz4f/9CjyC1QyuLKJYogSafnb9eWadVL7XqD+f1jDNlIooue9bc0CmKD6+3aL
-         2brjDXCtV8Ylg==
+        b=nusFBbBL6dnXyruwQGWYxGcTMjq79VNgJHavSPaJXy5eb+KtOmt6GWAx1iDoiQLv2
+         7GcaVFH3JRUCsaVhy8VkVkrHFaRNxPx5KJxaMgcJSFRzDMCzR8Wkl5TQvP6yy0HBka
+         X2NxF8zDBLBMrsi2p6uXZPP6GrbBSNucwtc379I16vOxpw1Gc3HdALV0YiSGcqI0qH
+         r7RlGSNUR/3AIF96UQi9RdXtTN77poTfpIGkw7oh+XXteK0sKTGLlnLWPD+e2RZaQQ
+         R0l0UesAcAOVjO6zZ2/hcOwST6S+RRYkQp7o+8bUF8fjtIU2NLwyvsLmMvqSPRITJq
+         hPYhmGq0Od/Ug==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/16] Revert "ext4: don't clear SB_RDONLY when remounting r/w until quota is re-enabled"
-Date:   Fri, 16 Jun 2023 06:27:16 -0400
-Message-Id: <20230616102721.673775-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 14/16] ext4: only check dquot_initialize_needed() when debugging
+Date:   Fri, 16 Jun 2023 06:27:17 -0400
+Message-Id: <20230616102721.673775-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230616102721.673775-1-sashal@kernel.org>
 References: <20230616102721.673775-1-sashal@kernel.org>
@@ -59,48 +59,48 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit 1b29243933098cdbc31b579b5616e183b4275e2f ]
+[ Upstream commit dea9d8f7643fab07bf89a1155f1f94f37d096a5e ]
 
-This reverts commit a44be64bbecb15a452496f60db6eacfee2b59c79.
+ext4_xattr_block_set() relies on its caller to call dquot_initialize()
+on the inode.  To assure that this has happened there are WARN_ON
+checks.  Unfortunately, this is subject to false positives if there is
+an antagonist thread which is flipping the file system at high rates
+between r/o and rw.  So only do the check if EXT4_XATTR_DEBUG is
+enabled.
 
-Link: https://lore.kernel.org/r/653b3359-2005-21b1-039d-c55ca4cffdcc@gmail.com
+Link: https://lore.kernel.org/r/20230608044056.GA1418535@mit.edu
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ fs/ext4/xattr.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ebe2abc064e7b..acbecefae3164 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5748,7 +5748,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	struct ext4_mount_options old_opts;
- 	ext4_group_t g;
- 	int err = 0;
--	int enable_rw = 0;
- #ifdef CONFIG_QUOTA
- 	int enable_quota = 0;
- 	int i, j;
-@@ -5949,7 +5948,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 			if (err)
- 				goto restore_opts;
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 55d6eb9319f57..6c982869f1011 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -2006,8 +2006,9 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+ 			else {
+ 				u32 ref;
  
--			enable_rw = 1;
-+			sb->s_flags &= ~SB_RDONLY;
- 			if (ext4_has_feature_mmp(sb)) {
- 				err = ext4_multi_mount_protect(sb,
- 						le64_to_cpu(es->s_mmp_block));
-@@ -5996,9 +5995,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->s_system_blks)
- 		ext4_release_system_zone(sb);
- 
--	if (enable_rw)
--		sb->s_flags &= ~SB_RDONLY;
++#ifdef EXT4_XATTR_DEBUG
+ 				WARN_ON_ONCE(dquot_initialize_needed(inode));
 -
- 	/*
- 	 * Reinitialize lazy itable initialization thread based on
- 	 * current settings
++#endif
+ 				/* The old block is released after updating
+ 				   the inode. */
+ 				error = dquot_alloc_block(inode,
+@@ -2070,8 +2071,9 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
+ 			/* We need to allocate a new block */
+ 			ext4_fsblk_t goal, block;
+ 
++#ifdef EXT4_XATTR_DEBUG
+ 			WARN_ON_ONCE(dquot_initialize_needed(inode));
+-
++#endif
+ 			goal = ext4_group_first_block_no(sb,
+ 						EXT4_I(inode)->i_block_group);
+ 			block = ext4_new_meta_blocks(handle, inode, goal, 0,
 -- 
 2.39.2
 
