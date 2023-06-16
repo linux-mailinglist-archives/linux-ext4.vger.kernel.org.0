@@ -2,127 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC35732397
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 01:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9257324FA
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 04:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239840AbjFOX0I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Jun 2023 19:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S229654AbjFPCAq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Jun 2023 22:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240517AbjFOXZz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 19:25:55 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E88B2D67
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 16:25:26 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-54fba092ef5so153961a12.2
-        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 16:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1686871455; x=1689463455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JheLVD7TgrrvPlKIUUj5StkKxZqSq86+H9+pZtscafQ=;
-        b=Lr3zDrvg2YjLbg3wAQHAeQdra8CjJ+8zvzS/D1LsCH8dUK4gEAlyx3fK6Lg92tUKyV
-         DA0u9/ttDd/fo4+MWQB1byPxmwICujA1bPmNPkCKf+2mc2toD/KHIY/50jB4gfhrs1pp
-         VjplEv4s/j0PdsCtMu5X2Yy1KWyLM9fSBoCJVP6SnMYLiYzDtS5EPOa9YobyjTRTltnX
-         1F81vewiLpjmqN7kneuUF835bmjj9UtxBlfLEZIrSy9EkUbnpyBPdp4geNyGZ2Gks8OE
-         3rc/7EfmOPDTwUmOm34+UtkjxAoo3jFKAlMPudGHc/zvR5qRusPLZmwwMWC2ufKPlxZ8
-         kJnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686871455; x=1689463455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JheLVD7TgrrvPlKIUUj5StkKxZqSq86+H9+pZtscafQ=;
-        b=Bhzxt3ovZB5VCbjRLKFtAlCMaqzuRSlfcl1+VCb2j1cnf6XWSpRwYO6QGGHG3CjJsn
-         gdqzd+jFQVP3rHa2gJz5mXNGoB5CZhoJEZ6vibGkno3kFbyagclWmgn90ra7/NjbLbus
-         Y+ubfyPyQyQX1U3/yG/tS5B+9DpMXyNhdM4RL01fL7N4No/eVn+AnobstZBzwgUgPoje
-         flaYg8O34ZXm2R8t1t29+SMO3Kvw2noyQWUy0QpdjRXUN4D7541jzowCnPKqpv3uuhvn
-         UWamg7tf0BUF7KNMe1E9hIzfVxtNO1PXG5M7vOoWhE2+RmkEQ+3OjLbi7h5SsWfshEH6
-         R46g==
-X-Gm-Message-State: AC+VfDzZvkIWOK0gLhp8KbZMJJhlJ+vozmxFkRH3LBpLFwWfw08f9JI2
-        3iEhhWuC0E9ENNd1P2zRACUz/g==
-X-Google-Smtp-Source: ACHHUZ78m4fIR3MUtoAd0hJNcioMO/s+jSbBSiDI5uOxzi/4tfw/TgO7KEDvR1BzVFf3efA8dahY2A==
-X-Received: by 2002:a17:903:32c1:b0:1ab:7fb:aac1 with SMTP id i1-20020a17090332c100b001ab07fbaac1mr531142plr.24.1686871455650;
-        Thu, 15 Jun 2023 16:24:15 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
-        by smtp.gmail.com with ESMTPSA id j3-20020a17090276c300b001ac7af58b66sm14509724plt.224.2023.06.15.16.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jun 2023 16:24:15 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1q9wK4-00CFk8-1K;
-        Fri, 16 Jun 2023 09:24:12 +1000
-Date:   Fri, 16 Jun 2023 09:24:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Aleksandr Nogikh <nogikh@google.com>, adilger.kernel@dilger.ca,
-        jack@suse.com, linux-ext4@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+af5e10f73dbff48f70af@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [ext4?] UBSAN: shift-out-of-bounds in ext2_fill_super
- (2)
-Message-ID: <ZIudnDI5JZU+4w42@dread.disaster.area>
-References: <00000000000079134b05fdf78048@google.com>
- <20230613180103.GC18303@mit.edu>
+        with ESMTP id S236191AbjFPCAp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Jun 2023 22:00:45 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CA62D55
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Jun 2023 19:00:30 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qj2Rt0t6Nz4f3jJF
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 10:00:26 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgCHK583wotk1M05Lw--.53637S4;
+        Fri, 16 Jun 2023 10:00:26 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
+        chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: [PATCH v2] jbd2: skip reading super block if it has been verified
+Date:   Fri, 16 Jun 2023 09:55:47 +0800
+Message-Id: <20230616015547.3155195-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230613180103.GC18303@mit.edu>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCHK583wotk1M05Lw--.53637S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw45try5uF1kWrW7Jry8Grg_yoW5AFy5pr
+        y3KFy8urWvvr15Aa18tFs7CFWUWay0yFyUGrn7uwn2yay8Xrnrtr9rKr15JF90yFW8Wa48
+        tF4DKa9akw4qkwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 02:01:03PM -0400, Theodore Ts'o wrote:
-> I wonder if we should have a separate syzkaller subsystem for ext2 (as
-> distinct from ext4)?  The syz reproducer seems to know that it should
-> be mounting using ext2, but also calls it an ext4 file system, which
-> is a bit weird.  I'm guessing there is something specific about the
-> syzkaller internals which might not make this be practical, but I
-> thought I should ask.
-> 
-> From the syz reproducer:
-> 
-> syz_mount_image$ext4(&(0x7f0000000100)='ext2\x00', ...)
-> 
-> More generally, there are a series of changes that were made to make
-> ext4 to make it more robust against maliciously fuzzed superblocks,
-> but we haven't necessarily made sure the same analogous changes have
-> been made to ext2.  I'm not sure how critical this is in practice,
-> since most distributions don't actually compile fs/ext2 and instead
-> use CONFIG_EXT4_USE_FOR_EXT2 instead.  However, while we maintain ext2
-> as a sample "simple" modern file system, I guess we should try to make
-> sure we do carry those fixes over.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Hmmmm.
+We got a NULL pointer dereference issue below while running generic/475
+I/O failure pressure test.
 
-Modern filesystems are crash resilient, based on extents and are
-using/moving to folios+iomap - calling a non-journalled, indirect
-block indexed, bufferhead based code base (that nobody is really
-using in production) "modern" seems like a real stretch.
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor write access in kernel mode
+ #PF: error_code(0x0002) - not-present page
+ PGD 0 P4D 0
+ Oops: 0002 [#1] PREEMPT SMP PTI
+ CPU: 1 PID: 15600 Comm: fsstress Not tainted 6.4.0-rc5-xfstests-00055-gd3ab1bca26b4 #190
+ RIP: 0010:jbd2_journal_set_features+0x13d/0x430
+ ...
+ Call Trace:
+  <TASK>
+  ? __die+0x23/0x60
+  ? page_fault_oops+0xa4/0x170
+  ? exc_page_fault+0x67/0x170
+  ? asm_exc_page_fault+0x26/0x30
+  ? jbd2_journal_set_features+0x13d/0x430
+  jbd2_journal_revoke+0x47/0x1e0
+  __ext4_forget+0xc3/0x1b0
+  ext4_free_blocks+0x214/0x2f0
+  ext4_free_branches+0xeb/0x270
+  ext4_ind_truncate+0x2bf/0x320
+  ext4_truncate+0x1e4/0x490
+  ext4_handle_inode_extension+0x1bd/0x2a0
+  ? iomap_dio_complete+0xaf/0x1d0
 
-I have my doubts that maintaining fs/ext2 is providing much benefit
-to anyone.  The code base is in the git history if anyone wants to
-study it, so it's not like we have to keep it active in the tree for
-it to remain a code base that people can learn from.
+The root cause is the journal super block had been failed to write out
+due to I/O fault injection, it's uptodate bit was cleared by
+end_buffer_write_sync() and didn't reset yet in jbd2_write_superblock().
+And it raced by journal_get_superblock()->bh_read(), unfortunately, the
+read IO is also failed, so the error handling in
+journal_fail_superblock() unexpectedly clear the journal->j_sb_buffer,
+finally lead to above NULL pointer dereference issue.
 
-Therefore, given the current push to sideline/remove bufferheads
-from the kernel, should we simply deprecate fs/ext2 and then remove
-it in a year or two like we're doing with reiser to reduce our
-future maintenance and/or conversion burden?
+If the journal super block had been read and verified, there is no need
+to call bh_read() read it again even if it has been failed to written
+out. So the fix could be simply move buffer_verified(bh) in front of
+bh_read(). Also remove a stale comment left in
+jbd2_journal_check_used_features().
 
-Or just remove it right now and simply make CONFIG_FS_EXT2 select
-CONFIG_EXT4_USE_FOR_EXT2?
+Fixes: 51bacdba23d8 ("jbd2: factor out journal initialization from journal_get_superblock()")
+Reported-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+v1->v2:
+ - Remove a stale comment left in jbd2_journal_check_used_features().
 
-/Devil's Advocate
+ fs/jbd2/journal.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Cheers,
-
-Dave.
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index b5e57735ab3f..559242df0f9a 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1919,6 +1919,9 @@ static int journal_get_superblock(journal_t *journal)
+ 	bh = journal->j_sb_buffer;
+ 
+ 	J_ASSERT(bh != NULL);
++	if (buffer_verified(bh))
++		return 0;
++
+ 	err = bh_read(bh, 0);
+ 	if (err < 0) {
+ 		printk(KERN_ERR
+@@ -1926,9 +1929,6 @@ static int journal_get_superblock(journal_t *journal)
+ 		goto out;
+ 	}
+ 
+-	if (buffer_verified(bh))
+-		return 0;
+-
+ 	sb = journal->j_superblock;
+ 
+ 	err = -EINVAL;
+@@ -2229,7 +2229,6 @@ int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
+ 
+ 	if (!compat && !ro && !incompat)
+ 		return 1;
+-	/* Load journal superblock if it is not loaded yet. */
+ 	if (journal_get_superblock(journal))
+ 		return 0;
+ 	if (!jbd2_format_support_feature(journal))
 -- 
-Dave Chinner
-david@fromorbit.com
+2.39.2
+
