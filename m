@@ -2,70 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AB57336A4
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 18:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131E57336A2
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 18:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345821AbjFPQwT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Jun 2023 12:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
+        id S1345772AbjFPQwQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Jun 2023 12:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345779AbjFPQv0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 12:51:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128BB3AB1
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 09:51:11 -0700 (PDT)
+        with ESMTP id S1344192AbjFPQvX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 12:51:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4083D3AB6
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 09:51:12 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3C04C1F8D4;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B60201F8D7;
         Fri, 16 Jun 2023 16:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1686934270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d22D1YQKRs5vF98OC1dT9k0P2nhfA4PW+E4J5qNBQ2U=;
-        b=3Ac1HRncZlshq5551rCCl2wXdglSZQLmrFyyV/RQGpZWqMFxM91FmFXbKh52ntiw13ofpn
-        T+NoRnSgHwnwDphgB2eereM5OLqkcioYHZaYV0rBLI4lPc3R8URVamiGdR1E8gixRdPoyr
-        +3XtKOiEInmj2BUdLZ6f+rG9ONryFN8=
+        bh=8bUnbunwCGijXqe0VRSM9RTLCmM3q7K2J14avJSKTUo=;
+        b=NukdnnuKxkYLewGAElwvYfTKRqoV4gatG9BDGD4w0dV/RdOliJJ+SvPIOl4xO2EJxW4dCw
+        AscDMSYLpus3xqNGTe8i9D92ElzsF/FZMGC2W54zNRe+2clQDt0LzHm8k+ROF6BVJEK+Sn
+        skRwh9SWZAjaDvKKi3x5WKQpCyzIINA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1686934270;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d22D1YQKRs5vF98OC1dT9k0P2nhfA4PW+E4J5qNBQ2U=;
-        b=ZRYsVhUQJ3mbRhsMPFX9SbNgwHDt/+Um2r6ZHPjIqqH5We/blPbNwE5lztKciU8zX4X2rk
-        lEZq5ar2t7QeWfAQ==
+        bh=8bUnbunwCGijXqe0VRSM9RTLCmM3q7K2J14avJSKTUo=;
+        b=ga4DL8Ht6AOiMJZH1sKNKdKTs5dBTTnndkfQDYR+et650klgR0o4fw14w6HZQ37q51IJvL
+        PfszvWDEALXRkrDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2505113A74;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6FCD1391E;
         Fri, 16 Jun 2023 16:51:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id csAJCf6SjGQuIwAAMHmgww
+        id G8zGKP6SjGQ/IwAAMHmgww
         (envelope-from <jack@suse.cz>); Fri, 16 Jun 2023 16:51:10 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 81CD0A0763; Fri, 16 Jun 2023 18:51:09 +0200 (CEST)
+        id 86F59A0764; Fri, 16 Jun 2023 18:51:09 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 04/11] ext4: Make 'abort' mount option handling standard
-Date:   Fri, 16 Jun 2023 18:50:50 +0200
-Message-Id: <20230616165109.21695-4-jack@suse.cz>
+Subject: [PATCH 05/11] ext4: Drop EXT4_MF_FS_ABORTED flag
+Date:   Fri, 16 Jun 2023 18:50:51 +0200
+Message-Id: <20230616165109.21695-5-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230616164553.1090-1-jack@suse.cz>
 References: <20230616164553.1090-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3229; i=jack@suse.cz; h=from:subject; bh=6PQFT+6FwtVEHQ/skFJ/Pull9WIBZnDXdy0ZyPut6sU=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkjJLq8ejWG5UbD7xzbpDGpk87kVMlDOmFoevQt7Jr DUe/yV6JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZIyS6gAKCRCcnaoHP2RA2YH2CA CsIWAxK8NNfW3lEknq+0AS5KkFucjsHLAlnixA+PN6HYA2iurvhbBBgiR40SMfqwIKleoMGIDAHves GEKx0MOrZqI+9/y6yoWwaoTDogijC3BummydzbWxbnVBrq/YFUCnLzNRuMZeiWvU+kNQJRlGnrnfi8 rKTKlsQLakCiLaf//LywrmBfbq5+jmZsJFC364gH1WzPyasiDKWPTMcVKjEwnjuDOyaCujxdR0xr9h imhyNd8YLseFzEO/W++zQNzdsRkhzSnlLScjNygLWg54rEvz9GjZpA/aD1VdqRDUYuhKF90z8MH1Db bvxm9noy5oUt9amp94xAz8tFsl1+jD
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5352; i=jack@suse.cz; h=from:subject; bh=BqkH9H98A5x9i/yAzxim0Rw2hDEOSo546fQGnUWRtqI=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBkjJLrQPCp1fg0FNKNIdO0hZ6WWG75z6lCtPTMszsv V4W9DzmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZIyS6wAKCRCcnaoHP2RA2bJrB/ 9BJfGAG7qIdAPEdpWK2tm/pTdBrjmErFT1t/LtGAo16+Lh5440FugrW1wrGEsf+uEixqnLvTtvbO/A fgEagmLXe0Sv20BtB/tBfwKs1bTopXn1OyrY385A77/aNwLidzopWFkFWD2+CXnFIBo6p2R9iBSK18 2CgZZUi68mtZAlVpjqjiAc7ywcG5/LDjHGJY7DDxkfxzPIWvJW3wpYrJfxl+j8VcO9+oCBprYP2oI4 wjcMPl8Qej5RCHYzWiipH8Efsk4c4ur4r4NbsQe4ACScYRC9GJjYmL0AkFS76HmxnKH2V3dTk5dje0 OxPNrYP8VkLT3oG4/djf1+Cn8KqyDK
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,93 +73,145 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-'abort' mount option is the only mount option that has special handling
-and sets a bit in sbi->s_mount_flags. There is not strong reason for
-that so just simplify the code and make 'abort' set a bit in
-sbi->s_mount_opt2 as any other mount option. This simplifies the code
-and will allow us to drop EXT4_MF_FS_ABORTED completely in the following
-patch.
+EXT4_MF_FS_ABORTED flag has practically the same intent as
+EXT4_FLAGS_SHUTDOWN flag. The shutdown flag is checked in many more
+places than the aborted flag which is mostly the historical artifact
+where we were relying on SB_RDONLY checks instead of the aborted flag
+checks. There are only three places - ext4_sync_file(),
+__ext4_remount(), and mballoc debug code - which check aborted flag and
+not shutdown flag and this is arguably a bug. Avoid these
+inconsistencies by removing EXT4_MF_FS_ABORTED flag and using
+EXT4_FLAGS_SHUTDOWN everywhere.
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4.h  |  1 +
- fs/ext4/super.c | 16 ++--------------
- 2 files changed, 3 insertions(+), 14 deletions(-)
+ fs/ext4/ext4.h    | 1 -
+ fs/ext4/fsync.c   | 7 +++----
+ fs/ext4/inode.c   | 8 +++-----
+ fs/ext4/mballoc.c | 4 ++--
+ fs/ext4/super.c   | 4 ++--
+ 5 files changed, 10 insertions(+), 14 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f0b6aa79dcc4..ae0c3a148c7b 100644
+index ae0c3a148c7b..46d359f5615d 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1180,6 +1180,7 @@ struct ext4_inode_info {
- #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
- 						    * scanning in mballoc
- 						    */
-+#define EXT4_MOUNT2_ABORT		0x00000100 /* Abort filesystem */
- 
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index d4978e705718..d57b135c8e54 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1886,6 +1886,7 @@ static const struct mount_opts {
- 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
- 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
- #endif
-+	{Opt_abort, EXT4_MOUNT2_ABORT, MOPT_SET | MOPT_2},
- 	{Opt_err, 0, 0}
+@@ -1740,7 +1740,6 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
+  */
+ enum {
+ 	EXT4_MF_MNTDIR_SAMPLED,
+-	EXT4_MF_FS_ABORTED,	/* Fatal error detected */
+ 	EXT4_MF_FC_INELIGIBLE	/* Fast commit ineligible */
  };
  
-@@ -1954,8 +1955,6 @@ struct ext4_fs_context {
- 	unsigned int	mask_s_mount_opt;
- 	unsigned int	vals_s_mount_opt2;
- 	unsigned int	mask_s_mount_opt2;
--	unsigned long	vals_s_mount_flags;
--	unsigned long	mask_s_mount_flags;
- 	unsigned int	opt_flags;	/* MOPT flags */
- 	unsigned int	spec;
- 	u32		s_max_batch_time;
-@@ -2106,12 +2105,6 @@ EXT4_SET_CTX(mount_opt2);
- EXT4_CLEAR_CTX(mount_opt2);
- EXT4_TEST_CTX(mount_opt2);
+diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+index 958bcaedcff6..b8e15b9f86c8 100644
+--- a/fs/ext4/fsync.c
++++ b/fs/ext4/fsync.c
+@@ -138,7 +138,6 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	int ret = 0, err;
+ 	bool needs_barrier = false;
+ 	struct inode *inode = file->f_mapping->host;
+-	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
  
--static inline void ctx_set_mount_flag(struct ext4_fs_context *ctx, int bit)
--{
--	set_bit(bit, &ctx->mask_s_mount_flags);
--	set_bit(bit, &ctx->vals_s_mount_flags);
--}
--
- static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
- {
- 	struct ext4_fs_context *ctx = fc->fs_private;
-@@ -2175,9 +2168,6 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		ext4_msg(NULL, KERN_WARNING, "Ignoring removed %s option",
- 			 param->key);
- 		return 0;
--	case Opt_abort:
--		ctx_set_mount_flag(ctx, EXT4_MF_FS_ABORTED);
--		return 0;
- 	case Opt_inlinecrypt:
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- 		ctx_set_flags(ctx, SB_INLINECRYPT);
-@@ -2831,8 +2821,6 @@ static void ext4_apply_options(struct fs_context *fc, struct super_block *sb)
- 	sbi->s_mount_opt |= ctx->vals_s_mount_opt;
- 	sbi->s_mount_opt2 &= ~ctx->mask_s_mount_opt2;
- 	sbi->s_mount_opt2 |= ctx->vals_s_mount_opt2;
--	sbi->s_mount_flags &= ~ctx->mask_s_mount_flags;
--	sbi->s_mount_flags |= ctx->vals_s_mount_flags;
- 	sb->s_flags &= ~ctx->mask_s_flags;
- 	sb->s_flags |= ctx->vals_s_flags;
+ 	if (unlikely(ext4_forced_shutdown(inode->i_sb)))
+ 		return -EIO;
+@@ -148,9 +147,9 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	trace_ext4_sync_file_enter(file, datasync);
  
-@@ -6460,7 +6448,7 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
- 		goto restore_opts;
+ 	if (sb_rdonly(inode->i_sb)) {
+-		/* Make sure that we read updated s_mount_flags value */
++		/* Make sure that we read updated s_ext4_flags value */
+ 		smp_rmb();
+-		if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FS_ABORTED))
++		if (ext4_forced_shutdown(inode->i_sb))
+ 			ret = -EROFS;
+ 		goto out;
  	}
+@@ -164,7 +163,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 *  Metadata is in the journal, we wait for proper transaction to
+ 	 *  commit here.
+ 	 */
+-	if (!sbi->s_journal)
++	if (!EXT4_SB(inode->i_sb)->s_journal)
+ 		ret = ext4_fsync_nojournal(inode, datasync, &needs_barrier);
+ 	else
+ 		ret = ext4_fsync_journal(inode, datasync, &needs_barrier);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index da3aaaea5f1c..fc6abafcc3fc 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2237,8 +2237,7 @@ static int mpage_map_and_submit_extent(handle_t *handle,
+ 		if (err < 0) {
+ 			struct super_block *sb = inode->i_sb;
+ 
+-			if (ext4_forced_shutdown(sb) ||
+-			    ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED))
++			if (ext4_forced_shutdown(sb))
+ 				goto invalidate_dirty_pages;
+ 			/*
+ 			 * Let the uper layers retry transient errors.
+@@ -2560,14 +2559,13 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
+ 	 * If the filesystem has aborted, it is read-only, so return
+ 	 * right away instead of dumping stack traces later on that
+ 	 * will obscure the real source of the problem.  We test
+-	 * EXT4_MF_FS_ABORTED instead of sb->s_flag's SB_RDONLY because
++	 * fs shutdown state instead of sb->s_flag's SB_RDONLY because
+ 	 * the latter could be true if the filesystem is mounted
+ 	 * read-only, and in that case, ext4_writepages should
+ 	 * *never* be called, so if that ever happens, we would want
+ 	 * the stack trace.
+ 	 */
+-	if (unlikely(ext4_forced_shutdown(mapping->host->i_sb) ||
+-		     ext4_test_mount_flag(inode->i_sb, EXT4_MF_FS_ABORTED))) {
++	if (unlikely(ext4_forced_shutdown(mapping->host->i_sb))) {
+ 		ret = -EROFS;
+ 		goto out_writepages;
+ 	}
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 20f67a260df5..5bcccf6908ea 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5341,7 +5341,7 @@ static inline void ext4_mb_show_pa(struct super_block *sb)
+ {
+ 	ext4_group_t i, ngroups;
  
 -	if (ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED))
-+	if (test_opt2(sb, ABORT))
- 		ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
++	if (ext4_forced_shutdown(sb))
+ 		return;
  
- 	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
+ 	ngroups = ext4_get_groups_count(sb);
+@@ -5375,7 +5375,7 @@ static void ext4_mb_show_ac(struct ext4_allocation_context *ac)
+ {
+ 	struct super_block *sb = ac->ac_sb;
+ 
+-	if (ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED))
++	if (ext4_forced_shutdown(sb))
+ 		return;
+ 
+ 	mb_debug(sb, "Can't allocate:"
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d57b135c8e54..f883f3fce066 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -657,7 +657,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+ 		WARN_ON_ONCE(1);
+ 
+ 	if (!continue_fs && !sb_rdonly(sb)) {
+-		ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
++		set_bit(EXT4_FLAGS_SHUTDOWN, &EXT4_SB(sb)->s_ext4_flags);
+ 		if (journal)
+ 			jbd2_journal_abort(journal, -EIO);
+ 	}
+@@ -6465,7 +6465,7 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+ 	flush_work(&sbi->s_error_work);
+ 
+ 	if ((bool)(fc->sb_flags & SB_RDONLY) != sb_rdonly(sb)) {
+-		if (ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED)) {
++		if (ext4_forced_shutdown(sb)) {
+ 			err = -EROFS;
+ 			goto restore_opts;
+ 		}
 -- 
 2.35.3
 
