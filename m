@@ -2,68 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFBB733228
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 15:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F00D7334B5
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jun 2023 17:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345649AbjFPN1w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Jun 2023 09:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        id S1345470AbjFPP21 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Jun 2023 11:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345403AbjFPN1s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 09:27:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46B22721
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 06:27:47 -0700 (PDT)
+        with ESMTP id S245134AbjFPP21 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 11:28:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E70270B;
+        Fri, 16 Jun 2023 08:28:26 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7F13021AEA;
-        Fri, 16 Jun 2023 13:27:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B030C21D85;
+        Fri, 16 Jun 2023 15:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686922066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1686929304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RQG9SvLCYT5CdQHbsIt/j1559mVkDuYjYOnXa/ktwp8=;
-        b=gVzaRLDyVe2g0d7M3W0ZDf5dxnGMt815C/DBNrs1VXnWMRPYJ378rHD+iw01aoLCSzuH5t
-        D52oBQ7upCXvZBFYKDAlYs0pV2QDR6hp7QygWYbIkBetorsU7UVKhQLbFL78KTKDGdN9cs
-        4OgTzRJlkxaS8LrJoQumK4f/cUp1EBE=
+        bh=0Kausdl49qJGfqu39jLtos4uf5kYOvO/lFvNKQ0Af1w=;
+        b=W+pmP7MwL/U/YnM7oawRQovQaVWhkNKeM6iNmCmjaTpzQv9vXxp2c8tIDX4plttkoy/w/z
+        nHA2FHYVip6S/o2bL4QPTK5ylIjsrTwbcKcWyVKVTNaCd7xrr1zw20ADayDe0OTJNrigMg
+        IJ5PVLM6hf+q4AfF8treZyyKYvdHqJE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686922066;
+        s=susede2_ed25519; t=1686929304;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RQG9SvLCYT5CdQHbsIt/j1559mVkDuYjYOnXa/ktwp8=;
-        b=NTtBIgyOaxkcpsCTYkvN+cOeIRhyyg5sD0MmH86705V8iHTl6brCQEellN1fc1fKGyH+uD
-        ThgUqXOchwNjEVDQ==
+        bh=0Kausdl49qJGfqu39jLtos4uf5kYOvO/lFvNKQ0Af1w=;
+        b=jjeFLEvXAN6LWxX6D+K19arDU9xpflBqH6voD4rCG+Du0GYpQfNZeQTEPql2atIsf5DrFN
+        eCFgDtEJGbDmRCCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A766138E8;
-        Fri, 16 Jun 2023 13:27:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A09391330B;
+        Fri, 16 Jun 2023 15:28:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1pb7GVJjjGQPRwAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 16 Jun 2023 13:27:46 +0000
+        id FHkvJ5h/jGSwAQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 16 Jun 2023 15:28:24 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id CC862A0755; Fri, 16 Jun 2023 15:27:45 +0200 (CEST)
-Date:   Fri, 16 Jun 2023 15:27:45 +0200
+        id 34F31A0755; Fri, 16 Jun 2023 17:28:24 +0200 (CEST)
+Date:   Fri, 16 Jun 2023 17:28:24 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2] jbd2: skip reading super block if it has been verified
-Message-ID: <20230616132745.d3enqs4uni55abrj@quack3>
-References: <20230616015547.3155195-1-yi.zhang@huaweicloud.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH] quota: fix race condition between dqput() and
+ dquot_mark_dquot_dirty()
+Message-ID: <20230616152824.ndpgvkegvvip2ahh@quack3>
+References: <20230616085608.42435-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230616015547.3155195-1-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230616085608.42435-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,104 +73,119 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 16-06-23 09:55:47, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+Hello Baokun!
+
+On Fri 16-06-23 16:56:08, Baokun Li wrote:
+> We ran into a problem that dqput() and dquot_mark_dquot_dirty() may race
+> like the function graph below, causing a released dquot to be added to the
+> dqi_dirty_list, and this leads to that dquot being released again in
+> dquot_writeback_dquots(), making two identical quotas in free_dquots.
 > 
-> We got a NULL pointer dereference issue below while running generic/475
-> I/O failure pressure test.
-> 
->  BUG: kernel NULL pointer dereference, address: 0000000000000000
->  #PF: supervisor write access in kernel mode
->  #PF: error_code(0x0002) - not-present page
->  PGD 0 P4D 0
->  Oops: 0002 [#1] PREEMPT SMP PTI
->  CPU: 1 PID: 15600 Comm: fsstress Not tainted 6.4.0-rc5-xfstests-00055-gd3ab1bca26b4 #190
->  RIP: 0010:jbd2_journal_set_features+0x13d/0x430
+>        cpu1              cpu2
+> _________________|_________________
+> wb_do_writeback         CHOWN(1)
 >  ...
->  Call Trace:
->   <TASK>
->   ? __die+0x23/0x60
->   ? page_fault_oops+0xa4/0x170
->   ? exc_page_fault+0x67/0x170
->   ? asm_exc_page_fault+0x26/0x30
->   ? jbd2_journal_set_features+0x13d/0x430
->   jbd2_journal_revoke+0x47/0x1e0
->   __ext4_forget+0xc3/0x1b0
->   ext4_free_blocks+0x214/0x2f0
->   ext4_free_branches+0xeb/0x270
->   ext4_ind_truncate+0x2bf/0x320
->   ext4_truncate+0x1e4/0x490
->   ext4_handle_inode_extension+0x1bd/0x2a0
->   ? iomap_dio_complete+0xaf/0x1d0
+>   ext4_da_update_reserve_space
+>    dquot_claim_block
+>     ...
+>      dquot_mark_dquot_dirty // try to dirty old quota
+>       test_bit(DQ_ACTIVE_B, &dquot->dq_flags) // still ACTIVE
+>       if (test_bit(DQ_MOD_B, &dquot->dq_flags))
+>       // test no dirty, wait dq_list_lock
+>                     ...
+>                      dquot_transfer
+>                       __dquot_transfer
+>                       dqput_all(transfer_from) // rls old dquot
+>                        dqput // last dqput
+>                         dquot_release
+>                          clear_bit(DQ_ACTIVE_B, &dquot->dq_flags)
+>                         atomic_dec(&dquot->dq_count)
+>                         put_dquot_last(dquot)
+>                          list_add_tail(&dquot->dq_free, &free_dquots)
+>                          // first add the dquot to free_dquots
+>       if (!test_and_set_bit(DQ_MOD_B, &dquot->dq_flags))
+>         add dqi_dirty_list // add freed dquot to dirty_list
+> P3:
+> ksys_sync
+>  ...
+>   dquot_writeback_dquots
+>    WARN_ON(!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
+>    dqgrab(dquot)
+>     WARN_ON_ONCE(!atomic_read(&dquot->dq_count))
+>     WARN_ON_ONCE(!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
+>    dqput(dquot)
+>     put_dquot_last(dquot)
+>      list_add_tail(&dquot->dq_free, &free_dquots)
+>      // Double add the dquot to free_dquots
 > 
-> The root cause is the journal super block had been failed to write out
-> due to I/O fault injection, it's uptodate bit was cleared by
-> end_buffer_write_sync() and didn't reset yet in jbd2_write_superblock().
-> And it raced by journal_get_superblock()->bh_read(), unfortunately, the
-> read IO is also failed, so the error handling in
-> journal_fail_superblock() unexpectedly clear the journal->j_sb_buffer,
-> finally lead to above NULL pointer dereference issue.
+> This causes a list_del corruption when removing the entry from free_dquots,
+> and even trying to free the dquot twice in dqcache_shrink_scan triggers a
+> use-after-free.
 > 
-> If the journal super block had been read and verified, there is no need
-> to call bh_read() read it again even if it has been failed to written
-> out. So the fix could be simply move buffer_verified(bh) in front of
-> bh_read(). Also remove a stale comment left in
-> jbd2_journal_check_used_features().
+> A warning may also be triggered by a race like the function diagram below:
 > 
-> Fixes: 51bacdba23d8 ("jbd2: factor out journal initialization from journal_get_superblock()")
-> Reported-by: Theodore Ts'o <tytso@mit.edu>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>        cpu1            cpu2           cpu3
+> ________________|_______________|________________
+> wb_do_writeback   CHOWN(1)        QUOTASYNC(1)
+>  ...                              ...
+>   ext4_da_update_reserve_space
+>     ...           __dquot_transfer
+>                    dqput // last dqput
+>                     dquot_release
+>                      dquot_is_busy
+>                       if (test_bit(DQ_MOD_B, &dquot->dq_flags))
+>                        // not dirty and still active
+>      dquot_mark_dquot_dirty
+>       if (!test_and_set_bit(DQ_MOD_B, &dquot->dq_flags))
+>         add dqi_dirty_list
+>                        clear_bit(DQ_ACTIVE_B, &dquot->dq_flags)
+>                                    dquot_writeback_dquots
+>                                     WARN_ON(!test_bit(DQ_ACTIVE_B))
+> 
+> To solve this problem, it is similar to the way dqget() avoids racing with
+> dquot_release(). First set the DQ_MOD_B flag, then execute wait_on_dquot(),
+> after this we know that either dquot_release() is already finished or it
+> will be canceled due to DQ_MOD_B flag test, at this point if the quota is
+> DQ_ACTIVE_B, then we can safely add the dquot to the dqi_dirty_list,
+> otherwise clear the DQ_MOD_B flag and exit directly.
+> 
+> Fixes: 4580b30ea887 ("quota: Do not dirty bad dquots")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> 
+> Hello Honza,
+> 
+> This problem can also be solved by modifying the reference count mechanism,
+> where dquots hold a reference count after they are allocated until they are
+> destroyed, i.e. the dquots in the free_dquots list have dq_count == 1. This
+> allows us to reduce the reference count as soon as we enter the dqput(),
+> and then add the dquot to the dqi_dirty_list only when dq_count > 1. This
+> also prevents the dquot in the dqi_dirty_list from not having the
+> DQ_ACTIVE_B flag, but this is a more impactful modification, so we chose to
+> refer to dqget() to avoid racing with dquot_release(). If you prefer this
+> solution by modifying the dq_count mechanism, I would be happy to send
+> another version of the patch.
 
-This works as a workaround. It is a bit kludgy but for now I guess it is
-good enough. Thanks for the fix and feel free to add:
+The way this *should* work is that dquot_mark_dquot_dirty() using dquot
+references from the inode should be protected by dquot_srcu. quota_off
+code takes care to call synchronize_srcu(&dquot_srcu) to not drop dquot
+references while they are used by other users. But you are right
+dquot_transfer() breaks this assumption. Most callers are fine since they
+are also protected by inode->i_lock but still I'd prefer to fix
+dquot_transfer() to follow the guarantees dquot_srcu should provide.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Now calling synchronize_srcu() directly from dquot_transfer() is too
+expensive (and mostly unnecessary) so what I would rather suggest is to
+create another dquot list (use dq_free list_head inside struct dquot for
+it) and add dquot whose last reference should be dropped there. We'd then
+queue work item which would call synchronize_srcu() and after that perform
+the final cleanup of all the dquots on the list.
+
+Now this also needs some modifications to dqget() and to quotaoff code to
+handle various races with the new dqput() code so if you feel it is too
+complex for your taste, I can implement this myself.
 
 								Honza
-
-
-> ---
-> v1->v2:
->  - Remove a stale comment left in jbd2_journal_check_used_features().
-> 
->  fs/jbd2/journal.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index b5e57735ab3f..559242df0f9a 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1919,6 +1919,9 @@ static int journal_get_superblock(journal_t *journal)
->  	bh = journal->j_sb_buffer;
->  
->  	J_ASSERT(bh != NULL);
-> +	if (buffer_verified(bh))
-> +		return 0;
-> +
->  	err = bh_read(bh, 0);
->  	if (err < 0) {
->  		printk(KERN_ERR
-> @@ -1926,9 +1929,6 @@ static int journal_get_superblock(journal_t *journal)
->  		goto out;
->  	}
->  
-> -	if (buffer_verified(bh))
-> -		return 0;
-> -
->  	sb = journal->j_superblock;
->  
->  	err = -EINVAL;
-> @@ -2229,7 +2229,6 @@ int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
->  
->  	if (!compat && !ro && !incompat)
->  		return 1;
-> -	/* Load journal superblock if it is not loaded yet. */
->  	if (journal_get_superblock(journal))
->  		return 0;
->  	if (!jbd2_format_support_feature(journal))
-> -- 
-> 2.39.2
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
