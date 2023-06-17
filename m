@@ -2,139 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C80AD733F9E
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jun 2023 10:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD97E734333
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jun 2023 20:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346238AbjFQI2G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 17 Jun 2023 04:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
+        id S229663AbjFQSvm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Jun 2023 14:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346111AbjFQI2F (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Jun 2023 04:28:05 -0400
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEC268C
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 01:28:04 -0700 (PDT)
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-340c149231fso13159975ab.2
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 01:28:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686990483; x=1689582483;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5v7zJpbVn4pQlwVyeTR+IJ1KhBxmoUGydBGoDXqtT5s=;
-        b=QreUALWHlQ1si6bOMktnKuaGRKVQG6Z+l7X+DntRDAhcRkTpYjM09yoUTV9Vqxzor6
-         MPEy76clzI4lJiWMuit3XWQuUCtQVHr3zLSeIfkzG3b0ICPcJaTdYLM7fFj6e/VnIwsB
-         UyWOmV8meT/R1JP6JWbfZJsC4L3Wl0hjI1TjhRj60eKT/IG3EigYEc3lKXrFsxvT5XAB
-         +7mCM3vVK6KCztN0cUKxC6ns2R+42OhHt7q5hJvjimHMVPdbua0fmkQJZVqrYXRgID6J
-         q0q1LL/0p743lp2MxH4V0JsViv459wFeV2nD9BSHlXo9LMNnbJJMOhTaTu21cwj4/zLL
-         Wvaw==
-X-Gm-Message-State: AC+VfDxT2t+JBrw9O3uYhjHjtjpTUtE2LjxbmhN2SScx+M6XZWmWwZHF
-        YtKFTwP/XqERkOtGH6GGczXiGyBu4kNYAMIzszQNO3C/EsLf
-X-Google-Smtp-Source: ACHHUZ6Acvbd1grZxHyWovYYNSTF9JTF7UqexvA3cF4TMD1kndKcZa0E387aHMcLolyKEKkfGEtz7tkfxtTTvg7hnGEbFjeumhKv
+        with ESMTP id S230339AbjFQSvl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Jun 2023 14:51:41 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4447C1BC9
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 11:51:40 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-117-59.bstnma.fios.verizon.net [173.48.117.59])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35HIovrn010959
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 17 Jun 2023 14:50:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1687027860; bh=xpkis3Guu7rOeGAVR6foU7dheW7zrVYAyHllrOR6Y7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Z6PTR6lToyU+sxcJ6kE0EjZ3peonX/jZOzwtswSj6RS6+FkxyIoi/HdunLxCMxlr1
+         hAplxmQncOsY9nV3do3PnNoDfqFhMvOF7V2pyBJvziUuXH1NaNYOVnyVjJEyr6qcuC
+         9BZHWv2PySzVnd3IHU4TlphfT/dLHjLzydz/IouzJeKBYqJdmVM5cT1/42eGHgPrsb
+         8nlEw+3ZcF3PnOQeUPTKLDEtE8d6zfs5GWDR/IVq47V4pvugUSum/+al+GcdBUbDc9
+         oMYjjhnVsz+7KzyKpUsGO7J5bYvS5mhNKJgyA5+L+qAJdOgrwDC867pZR89R4mxO+p
+         xihqH4d8X/4cg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 67C5A15C0266; Sat, 17 Jun 2023 14:50:57 -0400 (EDT)
+Date:   Sat, 17 Jun 2023 14:50:57 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Zhang Yi <yi.zhang@huaweicloud.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca, yi.zhang@huawei.com,
+        chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2] jbd2: skip reading super block if it has been verified
+Message-ID: <20230617185057.GA343628@mit.edu>
+References: <20230616015547.3155195-1-yi.zhang@huaweicloud.com>
+ <20230616132745.d3enqs4uni55abrj@quack3>
+ <bfd1b9f3-7f0e-4b3c-9399-4d697be37a9e@huaweicloud.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cac8:0:b0:33b:f9b5:d6c2 with SMTP id
- m8-20020a92cac8000000b0033bf9b5d6c2mr1100973ilq.5.1686990483333; Sat, 17 Jun
- 2023 01:28:03 -0700 (PDT)
-Date:   Sat, 17 Jun 2023 01:28:03 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007faf0005fe4f14b9@google.com>
-Subject: [syzbot] [ext4?] WARNING in ext4_file_write_iter
-From:   syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bfd1b9f3-7f0e-4b3c-9399-4d697be37a9e@huaweicloud.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Sat, Jun 17, 2023 at 10:42:59AM +0800, Zhang Yi wrote:
+> > This works as a workaround. It is a bit kludgy but for now I guess it is
+> > good enough. Thanks for the fix and feel free to add:
+> 
+> Thanks for the review. Yes, I suppose it's better to find a way to adjust
+> the sequence of journal load and feature checking in ocfs2_check_volume(),
+> so that we could completely remove the journal_get_superblock() in
+> jbd2_journal_check_used_features().
 
-syzbot found the following issue on:
+Indeed, thanks for the fix.
 
-HEAD commit:    f7efed9f38f8 Add linux-next specific files for 20230616
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=144c7b07280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=60b1a32485a77c16
-dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+This is would be for after the merge window, but I think we can clean
+this up in the jbd2 layer by simply moving the call to
+load_superblock() from jbd2_journal_load() and jbd2_journal_wipe() to
+journal_init_common().  This change would mean the journal superblock
+gets read as part of the call to jbd2_journal_init_{dev,inode}.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+That way, once the file system has a journal_t object, it's guaranteed
+that the j_sb_buffer contains valid data, and so we can drop the call
+to journal_get_superblock() from jbd2_journal_check_used_features().
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/95bcbee03439/disk-f7efed9f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6fd295caa4de/vmlinux-f7efed9f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/69c038a34b5f/bzImage-f7efed9f.xz
+And after we do that, we should be able to inline the code in
+load_superblock() and journal_get_superblock() into
+journal_init_common(), which would simplify things in
+jfs/jbd2/journal.c
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+Finally, so we can provide better error handling, we could change
+Jbd2_journal_init_{dev,inode} to return an ERR_PTR instead of a NULL
+if there is a failure.  And since it's a good idea to change the
+function name when changing the function signature, we could rename
+those functions to something like jbd2_open_{dev,inode} at the same
+time.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 17447 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
-WARNING: CPU: 1 PID: 17447 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
-Modules linked in:
-CPU: 1 PID: 17447 Comm: syz-executor.2 Not tainted 6.4.0-rc6-next-20230616-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
-RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
-Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 bd 5e 5b ff 85 db 0f 85 d5 fc ff ff e8 90 62 5b ff <0f> 0b e9 c9 fc ff ff e8 84 62 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
-RSP: 0018:ffffc9000bc5f9e8 EFLAGS: 00010216
-RAX: 000000000003523a RBX: 0000000000000000 RCX: ffffc9000b3d9000
-RDX: 0000000000040000 RSI: ffffffff8228ff90 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832160
-R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
-FS:  00007f129f62e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020105000 CR3: 0000000044e0d000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- call_write_iter include/linux/fs.h:1871 [inline]
- aio_write+0x350/0x7d0 fs/aio.c:1596
- __io_submit_one fs/aio.c:1968 [inline]
- io_submit_one+0xf4c/0x1c50 fs/aio.c:2015
- __do_sys_io_submit fs/aio.c:2074 [inline]
- __se_sys_io_submit fs/aio.c:2044 [inline]
- __x64_sys_io_submit+0x190/0x320 fs/aio.c:2044
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f129e88c389
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f129f62e168 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
-RAX: ffffffffffffffda RBX: 00007f129e9abf80 RCX: 00007f129e88c389
-RDX: 0000000020000780 RSI: 0000000000000001 RDI: 00007f129f5e4000
-RBP: 00007f129e8d7493 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fffd72c552f R14: 00007f129f62e300 R15: 0000000000022000
- </TASK>
+						- Ted
 
+P.S.  The only reason why we don't load the superblock in
+jbd2_journal_init_{dev,common} was that back in 2001, it was possible
+to create the journal by creating a zero length file in the file
+system, noting the inode number of the file system, unmounting the
+file system from ext2, and then remounting it with "mount -t ext3 -o
+journal=NNN ...".  In order to do this, the ext3 file system code
+called journal_init_inode() with the inode, and then follow it up with
+a call to journal_create(), which would actually write out the journal
+superblock.  For that reason, journal_init_inode() had to avoid
+reading the journal superblock, since it might not be initialized yet.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+We removed jbd2_journal_create() from fs/jbd2 back in 2009, and it
+hadn't been in use for quite a while before that --- in fact, I'm not
+sure ext4 ever supported this ext3-style "let's create a journal
+without e2fsprogs support because Stephen Tweedie was implementing the
+ext3 journal kernel code without wanting to make changes to e2fsprogs
+first" feature.  :-)
