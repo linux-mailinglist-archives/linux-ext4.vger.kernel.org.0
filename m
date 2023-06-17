@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF998733DCD
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jun 2023 05:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80AD733F9E
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jun 2023 10:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjFQD37 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Jun 2023 23:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S1346238AbjFQI2G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 17 Jun 2023 04:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbjFQD35 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Jun 2023 23:29:57 -0400
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3569173B
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 20:29:56 -0700 (PDT)
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-77abce06481so135636239f.2
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Jun 2023 20:29:56 -0700 (PDT)
+        with ESMTP id S1346111AbjFQI2F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Jun 2023 04:28:05 -0400
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEC268C
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 01:28:04 -0700 (PDT)
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-340c149231fso13159975ab.2
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 01:28:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686972596; x=1689564596;
+        d=1e100.net; s=20221208; t=1686990483; x=1689582483;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pvdhhAyjIGqiW/2XaJEPMrzfoSJmUNIqvaXkqDku/uU=;
-        b=D29FniBbEg67PUZ9wmYAJnaD+7qwKqgsPpDVud5vZleoPgkxFY5N2dOWZAeXN0ZXbn
-         OTVFgm3DGdtMa/tOS9tR+bta+CPr9/tHJwkR8Lokbb+8hCm++swnwbenSec2AyZ76S1B
-         OTavohcFh4KjwnB6gvrZJRayCfXzy/W4rlebyEhIktnmYF547ENrBpaavUMJyKX3am39
-         3TaXLkmpB8BDpgiOfpntjlZbTiKH21dL0PVV4ILvbSRowN6ZnJMW2FTxfrtRXfKTQ8++
-         4hN/+OR9w1RNy0DPltE8AY0n+uqQVbBx8vCS0SVSP5dmI/ur3aKg6tgLHitRxXlXnBOb
-         Wpfg==
-X-Gm-Message-State: AC+VfDxjsyjDvE6xm6dS3jfvpLvSryemCavW7lmhqSgVBmWNI/RTrpTX
-        cvCeXBD4cIUx9JvdaXEGQeQpsvJ5Je9zozLurRtPyw8r3gDl
-X-Google-Smtp-Source: ACHHUZ5Lvop51/XvhgL85KDAnkiM7HfyEFYyPSR/+02iWPT6gpvtZyMS/y1rH3DnCBq3enf5SkVXwAhh/FVTnlXsK1JSuzcnRktZ
+        bh=5v7zJpbVn4pQlwVyeTR+IJ1KhBxmoUGydBGoDXqtT5s=;
+        b=QreUALWHlQ1si6bOMktnKuaGRKVQG6Z+l7X+DntRDAhcRkTpYjM09yoUTV9Vqxzor6
+         MPEy76clzI4lJiWMuit3XWQuUCtQVHr3zLSeIfkzG3b0ICPcJaTdYLM7fFj6e/VnIwsB
+         UyWOmV8meT/R1JP6JWbfZJsC4L3Wl0hjI1TjhRj60eKT/IG3EigYEc3lKXrFsxvT5XAB
+         +7mCM3vVK6KCztN0cUKxC6ns2R+42OhHt7q5hJvjimHMVPdbua0fmkQJZVqrYXRgID6J
+         q0q1LL/0p743lp2MxH4V0JsViv459wFeV2nD9BSHlXo9LMNnbJJMOhTaTu21cwj4/zLL
+         Wvaw==
+X-Gm-Message-State: AC+VfDxT2t+JBrw9O3uYhjHjtjpTUtE2LjxbmhN2SScx+M6XZWmWwZHF
+        YtKFTwP/XqERkOtGH6GGczXiGyBu4kNYAMIzszQNO3C/EsLf
+X-Google-Smtp-Source: ACHHUZ6Acvbd1grZxHyWovYYNSTF9JTF7UqexvA3cF4TMD1kndKcZa0E387aHMcLolyKEKkfGEtz7tkfxtTTvg7hnGEbFjeumhKv
 MIME-Version: 1.0
-X-Received: by 2002:a02:a1dc:0:b0:423:1ab9:c57e with SMTP id
- o28-20020a02a1dc000000b004231ab9c57emr865646jah.6.1686972596130; Fri, 16 Jun
- 2023 20:29:56 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 20:29:56 -0700
+X-Received: by 2002:a92:cac8:0:b0:33b:f9b5:d6c2 with SMTP id
+ m8-20020a92cac8000000b0033bf9b5d6c2mr1100973ilq.5.1686990483333; Sat, 17 Jun
+ 2023 01:28:03 -0700 (PDT)
+Date:   Sat, 17 Jun 2023 01:28:03 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005697bd05fe4aea49@google.com>
-Subject: [syzbot] [ext4?] WARNING in ext4_iomap_begin (2)
-From:   syzbot <syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com>
+Message-ID: <0000000000007faf0005fe4f14b9@google.com>
+Subject: [syzbot] [ext4?] WARNING in ext4_file_write_iter
+From:   syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>
 To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com, tytso@mit.edu
@@ -58,68 +58,63 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    715abedee4cd Add linux-next specific files for 20230515
+HEAD commit:    f7efed9f38f8 Add linux-next specific files for 20230616
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d745dd280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6a2745d066dda0ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=307da6ca5cb0d01d581a
+console output: https://syzkaller.appspot.com/x/log.txt?x=144c7b07280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=60b1a32485a77c16
+dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d4d1d06b34b8/disk-715abede.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3ef33a86fdc8/vmlinux-715abede.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e0006b413ed1/bzImage-715abede.xz
+disk image: https://storage.googleapis.com/syzbot-assets/95bcbee03439/disk-f7efed9f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6fd295caa4de/vmlinux-f7efed9f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/69c038a34b5f/bzImage-f7efed9f.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com
+Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 9503 at fs/ext4/inode.c:3326 ext4_iomap_begin+0x1ae/0x7a0 fs/ext4/inode.c:3326
+WARNING: CPU: 1 PID: 17447 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+WARNING: CPU: 1 PID: 17447 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
 Modules linked in:
-CPU: 1 PID: 9503 Comm: syz-executor.1 Not tainted 6.4.0-rc2-next-20230515-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-RIP: 0010:ext4_iomap_begin+0x1ae/0x7a0 fs/ext4/inode.c:3326
-Code: 83 c0 01 38 d0 7c 08 84 d2 0f 85 ee 05 00 00 41 0f b7 9f ba 05 00 00 31 ff 89 de e8 4c a5 57 ff 66 85 db 74 5c e8 42 a9 57 ff <0f> 0b 41 bd de ff ff ff e8 35 a9 57 ff 48 b8 00 00 00 00 00 fc ff
-RSP: 0018:ffffc90006a1f560 EFLAGS: 00010216
-RAX: 000000000002ebb2 RBX: 00000000000000a4 RCX: ffffc90004103000
-RDX: 0000000000040000 RSI: ffffffff822c7a6e RDI: 0000000000000003
-RBP: 0000000000000080 R08: 0000000000000003 R09: 0000000000000000
-R10: 00000000000000a4 R11: 0000000000094001 R12: 000000000000000b
-R13: ffff88803f00bf7a R14: ffffc90006a1f838 R15: ffff88803f00beb0
-FS:  00007f3cc037b700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CPU: 1 PID: 17447 Comm: syz-executor.2 Not tainted 6.4.0-rc6-next-20230616-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 bd 5e 5b ff 85 db 0f 85 d5 fc ff ff e8 90 62 5b ff <0f> 0b e9 c9 fc ff ff e8 84 62 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
+RSP: 0018:ffffc9000bc5f9e8 EFLAGS: 00010216
+RAX: 000000000003523a RBX: 0000000000000000 RCX: ffffc9000b3d9000
+RDX: 0000000000040000 RSI: ffffffff8228ff90 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832160
+R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
+FS:  00007f129f62e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000080 CR3: 000000008f1f7000 CR4: 00000000003506e0
+CR2: 0000000020105000 CR3: 0000000044e0d000 CR4: 00000000003506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- iomap_iter+0x446/0x10e0 fs/iomap/iter.c:91
- __iomap_dio_rw+0x7a5/0x1f90 fs/iomap/direct-io.c:597
- iomap_dio_rw+0x40/0xa0 fs/iomap/direct-io.c:688
- ext4_dio_read_iter fs/ext4/file.c:94 [inline]
- ext4_file_read_iter+0x4be/0x690 fs/ext4/file.c:145
- call_read_iter include/linux/fs.h:1862 [inline]
- generic_file_splice_read+0x182/0x4b0 fs/splice.c:419
- do_splice_to+0x1b9/0x240 fs/splice.c:902
- splice_direct_to_actor+0x2ab/0x8a0 fs/splice.c:973
- do_splice_direct+0x1ab/0x280 fs/splice.c:1082
- do_sendfile+0xb19/0x12c0 fs/read_write.c:1254
- __do_sys_sendfile64 fs/read_write.c:1322 [inline]
- __se_sys_sendfile64 fs/read_write.c:1308 [inline]
- __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1308
+ call_write_iter include/linux/fs.h:1871 [inline]
+ aio_write+0x350/0x7d0 fs/aio.c:1596
+ __io_submit_one fs/aio.c:1968 [inline]
+ io_submit_one+0xf4c/0x1c50 fs/aio.c:2015
+ __do_sys_io_submit fs/aio.c:2074 [inline]
+ __se_sys_io_submit fs/aio.c:2044 [inline]
+ __x64_sys_io_submit+0x190/0x320 fs/aio.c:2044
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3cbf68c199
+RIP: 0033:0x7f129e88c389
 Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3cc037b168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007f3cbf7abf80 RCX: 00007f3cbf68c199
-RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
-RBP: 00007f3cbf6e7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0001000000201005 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffebb26bb1f R14: 00007f3cc037b300 R15: 0000000000022000
+RSP: 002b:00007f129f62e168 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+RAX: ffffffffffffffda RBX: 00007f129e9abf80 RCX: 00007f129e88c389
+RDX: 0000000020000780 RSI: 0000000000000001 RDI: 00007f129f5e4000
+RBP: 00007f129e8d7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffd72c552f R14: 00007f129f62e300 R15: 0000000000022000
  </TASK>
 
 
