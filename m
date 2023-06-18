@@ -2,108 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD97E734333
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Jun 2023 20:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53467348A5
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Jun 2023 23:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjFQSvm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 17 Jun 2023 14:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S229565AbjFRVgR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 18 Jun 2023 17:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbjFQSvl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 17 Jun 2023 14:51:41 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4447C1BC9
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Jun 2023 11:51:40 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-117-59.bstnma.fios.verizon.net [173.48.117.59])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35HIovrn010959
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 17 Jun 2023 14:50:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687027860; bh=xpkis3Guu7rOeGAVR6foU7dheW7zrVYAyHllrOR6Y7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Z6PTR6lToyU+sxcJ6kE0EjZ3peonX/jZOzwtswSj6RS6+FkxyIoi/HdunLxCMxlr1
-         hAplxmQncOsY9nV3do3PnNoDfqFhMvOF7V2pyBJvziUuXH1NaNYOVnyVjJEyr6qcuC
-         9BZHWv2PySzVnd3IHU4TlphfT/dLHjLzydz/IouzJeKBYqJdmVM5cT1/42eGHgPrsb
-         8nlEw+3ZcF3PnOQeUPTKLDEtE8d6zfs5GWDR/IVq47V4pvugUSum/+al+GcdBUbDc9
-         oMYjjhnVsz+7KzyKpUsGO7J5bYvS5mhNKJgyA5+L+qAJdOgrwDC867pZR89R4mxO+p
-         xihqH4d8X/4cg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 67C5A15C0266; Sat, 17 Jun 2023 14:50:57 -0400 (EDT)
-Date:   Sat, 17 Jun 2023 14:50:57 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2] jbd2: skip reading super block if it has been verified
-Message-ID: <20230617185057.GA343628@mit.edu>
-References: <20230616015547.3155195-1-yi.zhang@huaweicloud.com>
- <20230616132745.d3enqs4uni55abrj@quack3>
- <bfd1b9f3-7f0e-4b3c-9399-4d697be37a9e@huaweicloud.com>
+        with ESMTP id S229758AbjFRVgI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Jun 2023 17:36:08 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BA5E1;
+        Sun, 18 Jun 2023 14:36:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1687123982; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=EUvxIJsXeq/+3VNu36tGkHV2ixv0BVbNgN5kkxLYSJre3M5QOx/vRRAtehK4/uRs+7
+    pdVVIdp1onJ7yQXDqlpH+WIMQcRHvk3PJT2cN7eA7NTSqL6anxiqzWVdaJiv6FmtZbYN
+    cs8y0SEZ/F5pLfMMJ6F3blMkSavzPnajdai9slDgAndml04w4/iu2I6accGYqj0xNHW0
+    14QuVRvufbU4r+rcCr3N/GJgQ9X9reAI1vGzOaMfvOabrstuRDcrjph6FrOYcC0WsJVN
+    eIom3JRxc7pSYm3BT+os9PX4z/d5gEadrgOuGJLIAW3VvkTAARY6M5gDa3J7YPmcUafT
+    qgGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1687123982;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=oqCKd+CNjdzbLYFDJSrbVFBUX2kYJx0eW04RCZgiOf4=;
+    b=RQF9P9gJ17Ki6/4vOtmSpTWd47fA2+itNvDhalgwjMJ1ky3tid/kNUQzPavDpQH0br
+    QT+vJZO+yhRf3V3q6um3TPgUXQRZ5tk4um3tJN1jDgiFOvYCNqIkCb4vrTzfIzsrA/4N
+    krulaMKVwue+xBzqEg5CiWdDYDhNvKwuSJohc2G05aegt/UHBQfQ2Ocsma5qt4ERq66c
+    Viwvvd6ErIwDGaoT2v7cJV+Mkg0lQKteWxB0zp+Z6JgMbYo9I3TUT3ji6HeXjiLpnRB7
+    5IIGUjYl59c6WusVocNH/f3f8S/PUpMaeVzYPLXHXZ3Lxy7sGHy38rqQULbAwLmxGPmm
+    P/mw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1687123982;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=oqCKd+CNjdzbLYFDJSrbVFBUX2kYJx0eW04RCZgiOf4=;
+    b=SynOk+PpYuDNqLDoeQwxQPc4vsJAXAgVBd+7b/a8CziL205VAhRmSRD/sdLbUkcMpS
+    M+4tmpvng/YlcZyJjMr3E65swgDv23gduW+EcKjeZbcbhJ93xdqEim01XBlu9I/AGlJM
+    yeze88ReWHTqTIGTIBR6Glm/8gbvhGocPyw2ljfPWcrKAO24+YrTcYOyj8zi8belbVNd
+    HDshJlGvCW9EZXuN0uOYQikANPGFp9Ute3MQy2NixS/dc/3eg0FztlTNKFdShNumrRaS
+    od98ttTrZCBKdAX5UD53JVVfMWD11WM1nfT50T4hIm+aqyaDfb1u6GFyiWYgl3g24V2o
+    w5TQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1687123982;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=oqCKd+CNjdzbLYFDJSrbVFBUX2kYJx0eW04RCZgiOf4=;
+    b=imtXATNJCZgF2HR552RAsHOy451el7nsNuByG4+Cv1D0rWKwKHPRTXoyWLciYtOULd
+    y6F9bSYQOrbQ9mmSQkCA==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1EQ33bneoxgmq5ARfEwes1hW/CxwfjqKzP/cKnUXGNs35zouFQhI="
+Received: from blinux.speedport.ip
+    by smtp.strato.de (RZmta 49.6.0 AUTH)
+    with ESMTPSA id zb0c8bz5ILX0AHI
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 18 Jun 2023 23:33:00 +0200 (CEST)
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        beanhuo@micron.com, Bean Huo <beanhuo@iokpp.de>
+Subject: [PATCH v1 0/5] clean up block_commit_write
+Date:   Sun, 18 Jun 2023 23:32:45 +0200
+Message-Id: <20230618213250.694110-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfd1b9f3-7f0e-4b3c-9399-4d697be37a9e@huaweicloud.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jun 17, 2023 at 10:42:59AM +0800, Zhang Yi wrote:
-> > This works as a workaround. It is a bit kludgy but for now I guess it is
-> > good enough. Thanks for the fix and feel free to add:
-> 
-> Thanks for the review. Yes, I suppose it's better to find a way to adjust
-> the sequence of journal load and feature checking in ocfs2_check_volume(),
-> so that we could completely remove the journal_get_superblock() in
-> jbd2_journal_check_used_features().
+*** BLURB HERE ***
 
-Indeed, thanks for the fix.
+Bean Huo (5):
+  fs/buffer: clean up block_commit_write
+  fs/buffer.c: convert block_commit_write to return void
+  ext4: No need to check return value of block_commit_write()
+  fs/ocfs2: No need to check return value of block_commit_write()
+  udf: No need to check return value of block_commit_write()
 
-This is would be for after the merge window, but I think we can clean
-this up in the jbd2 layer by simply moving the call to
-load_superblock() from jbd2_journal_load() and jbd2_journal_wipe() to
-journal_init_common().  This change would mean the journal superblock
-gets read as part of the call to jbd2_journal_init_{dev,inode}.
+ fs/buffer.c                 | 24 +++++++-----------------
+ fs/ext4/move_extent.c       |  7 ++-----
+ fs/ocfs2/file.c             |  7 +------
+ fs/udf/file.c               |  6 +++---
+ include/linux/buffer_head.h |  2 +-
+ 5 files changed, 14 insertions(+), 32 deletions(-)
 
-That way, once the file system has a journal_t object, it's guaranteed
-that the j_sb_buffer contains valid data, and so we can drop the call
-to journal_get_superblock() from jbd2_journal_check_used_features().
+-- 
+2.34.1
 
-And after we do that, we should be able to inline the code in
-load_superblock() and journal_get_superblock() into
-journal_init_common(), which would simplify things in
-jfs/jbd2/journal.c
-
-Finally, so we can provide better error handling, we could change
-Jbd2_journal_init_{dev,inode} to return an ERR_PTR instead of a NULL
-if there is a failure.  And since it's a good idea to change the
-function name when changing the function signature, we could rename
-those functions to something like jbd2_open_{dev,inode} at the same
-time.
-
-						- Ted
-
-P.S.  The only reason why we don't load the superblock in
-jbd2_journal_init_{dev,common} was that back in 2001, it was possible
-to create the journal by creating a zero length file in the file
-system, noting the inode number of the file system, unmounting the
-file system from ext2, and then remounting it with "mount -t ext3 -o
-journal=NNN ...".  In order to do this, the ext3 file system code
-called journal_init_inode() with the inode, and then follow it up with
-a call to journal_create(), which would actually write out the journal
-superblock.  For that reason, journal_init_inode() had to avoid
-reading the journal superblock, since it might not be initialized yet.
-
-We removed jbd2_journal_create() from fs/jbd2 back in 2009, and it
-hadn't been in use for quite a while before that --- in fact, I'm not
-sure ext4 ever supported this ext3-style "let's create a journal
-without e2fsprogs support because Stephen Tweedie was implementing the
-ext3 journal kernel code without wanting to make changes to e2fsprogs
-first" feature.  :-)
