@@ -2,159 +2,161 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6E4734A82
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jun 2023 05:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5DC734BD7
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jun 2023 08:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjFSDOJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 18 Jun 2023 23:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
+        id S230039AbjFSGoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Jun 2023 02:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjFSDOI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 18 Jun 2023 23:14:08 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFED9E
-        for <linux-ext4@vger.kernel.org>; Sun, 18 Jun 2023 20:14:06 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-3fdd37c16bfso9084801cf.1
-        for <linux-ext4@vger.kernel.org>; Sun, 18 Jun 2023 20:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1687144445; x=1689736445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WKyRppiRwrrJIW1MqpLct0EWkMnjzLS74PdPWWkb/B0=;
-        b=ZWoptBdRjkwOy8n4IGBBaTwaqO8r/CyVA173rqo9vk5sCjbg4CJpB3H77cALXGgEgW
-         X5599/UOpUgOtHtELp/bBpHNmxH/dKDl9TIEp1E3PAS0IneBJPzYQ3QJKW1C2dImQGlw
-         T5Vsbkz3ktx0K+R0SNShBb7hqNLIs5yRygJddtYqWh32U4jvKPV3voJ4IvEOVCt3A25c
-         rnyMrcMXnPJZfoDElqm1MYXjlzzo/+GzjsupAiiT+zrvJtXm2eKza2kCX3o7TyIL4NnR
-         F1VhWPTWd0RNMWC8NK48VK4IbI4GlaTIZblxqpC8YxPmR0pXvz+AQgxtChvquqT56t4k
-         d5Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687144445; x=1689736445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WKyRppiRwrrJIW1MqpLct0EWkMnjzLS74PdPWWkb/B0=;
-        b=EgXXDigEBWAVPyzp/yGY1K9Tw9zmJ+pnsWDYB7sQ7MhwJyucFGsjQIcpqyTmpjPu7Z
-         aOObrQKVFGPp0/YIrBINmnt9sjxHGlDrfkQpHOryZQvJ9bEBaTrlTh8UdmfuiRk6e/NM
-         aVbUZVdaBerR2HMzfxQebc4NSCZ75yNRMHJBp/qd2g1dCN39t3g8OXk/hKB2ONtvyxy6
-         B/CiN4c6PHCFuTRnZUrV0Xo7eVEpcYJpQRhRglz1O7lJoqKocxh14ko79ChOeo4WCYvZ
-         xo1k0+LQ4oq+KsbBLnjwSo1TpAlpSTI+SePfjcDSLQl+CxWPXzLYRxTcU1zcLjWQmr+P
-         8mFg==
-X-Gm-Message-State: AC+VfDzqpoQILbchj71aDCLuwJ8lVnmDL4THeHLMWjeupB46Q4DSRDeo
-        9LtTJkvD8lsQaaoVjPXtl/OZMBlUrXQ5erCXVYuSpA==
-X-Google-Smtp-Source: ACHHUZ4r+tLCi4WxRm54ooicxkgmRJVsOROyDMNmWnudaJXAbUB5UCRl472OMlT7NfLGnUrfE/Q4mIacwdjTLWXIlTw=
-X-Received: by 2002:a05:622a:189c:b0:3f6:ab9a:3d8e with SMTP id
- v28-20020a05622a189c00b003f6ab9a3d8emr12570871qtc.4.1687144445674; Sun, 18
- Jun 2023 20:14:05 -0700 (PDT)
+        with ESMTP id S229803AbjFSGoL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Jun 2023 02:44:11 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AB9E5A;
+        Sun, 18 Jun 2023 23:44:08 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ql0bg4SFKzqTnB;
+        Mon, 19 Jun 2023 14:43:59 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 19 Jun 2023 14:44:04 +0800
+Message-ID: <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
+Date:   Mon, 19 Jun 2023 14:44:03 +0800
 MIME-Version: 1.0
-References: <20230615111200.11949-1-changfengnan@bytedance.com>
-In-Reply-To: <20230615111200.11949-1-changfengnan@bytedance.com>
-From:   Fengnan Chang <changfengnan@bytedance.com>
-Date:   Mon, 19 Jun 2023 11:13:54 +0800
-Message-ID: <CAPFOzZtapph+eKWpOC0Wyx9qDcd6HngA9QQR0Kz2BzmSxEiZfQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] ext4: improve discard efficiency
-To:     wangjianchao@kuaishou.com, tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] quota: fix race condition between dqput() and
+ dquot_mark_dquot_dirty()
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20230616085608.42435-1-libaokun1@huawei.com>
+ <20230616152824.ndpgvkegvvip2ahh@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230616152824.ndpgvkegvvip2ahh@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch free blocks too earily when do discard, maybe cause data
-corrupt, I'll fix this in
-next version.
+Hello Honza !
 
-Fengnan Chang <changfengnan@bytedance.com> =E4=BA=8E2023=E5=B9=B46=E6=9C=88=
-15=E6=97=A5=E5=91=A8=E5=9B=9B 19:12=E5=86=99=E9=81=93=EF=BC=9A
+On 2023/6/16 23:28, Jan Kara wrote:
+> Hello Baokun!
 >
-> In commit a015434480dc("ext4: send parallel discards on commit
-> completions"), issue all discard commands in parallel make all
-> bios could merged into one request, so lowlevel drive can issue
-> multi segments in one time which is more efficiency, but commit
-> 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
-> seems broke this way, let's fix it.
-> In my test, the time of fstrim fs with multi big sparse file
-> reduce from 6.7s to 1.3s.
+> On Fri 16-06-23 16:56:08, Baokun Li wrote:
+>> To solve this problem, it is similar to the way dqget() avoids racing with
+>> dquot_release(). First set the DQ_MOD_B flag, then execute wait_on_dquot(),
+>> after this we know that either dquot_release() is already finished or it
+>> will be canceled due to DQ_MOD_B flag test, at this point if the quota is
+>> DQ_ACTIVE_B, then we can safely add the dquot to the dqi_dirty_list,
+>> otherwise clear the DQ_MOD_B flag and exit directly.
+>>
+>> Fixes: 4580b30ea887 ("quota: Do not dirty bad dquots")
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>
+>> Hello Honza,
+>>
+>> This problem can also be solved by modifying the reference count mechanism,
+>> where dquots hold a reference count after they are allocated until they are
+>> destroyed, i.e. the dquots in the free_dquots list have dq_count == 1. This
+>> allows us to reduce the reference count as soon as we enter the dqput(),
+>> and then add the dquot to the dqi_dirty_list only when dq_count > 1. This
+>> also prevents the dquot in the dqi_dirty_list from not having the
+>> DQ_ACTIVE_B flag, but this is a more impactful modification, so we chose to
+>> refer to dqget() to avoid racing with dquot_release(). If you prefer this
+>> solution by modifying the dq_count mechanism, I would be happy to send
+>> another version of the patch.
+> The way this *should* work is that dquot_mark_dquot_dirty() using dquot
+> references from the inode should be protected by dquot_srcu. quota_off
+> code takes care to call synchronize_srcu(&dquot_srcu) to not drop dquot
+> references while they are used by other users. But you are right
+> dquot_transfer() breaks this assumption. Most callers are fine since they
+> are also protected by inode->i_lock but still I'd prefer to fix
+> dquot_transfer() to follow the guarantees dquot_srcu should provide.
+Indeed!
+Operation accessing dquots via inode pointers shuould be protectedby 
+dquot_srcu.
+And inode->i_lock ensures that we do not record usage changes in a 
+deprecated
+dquota pointer, even when concurrent with dquot_transfer().
+> Now calling synchronize_srcu() directly from dquot_transfer() is too
+> expensive (and mostly unnecessary) so what I would rather suggest is to
+> create another dquot list (use dq_free list_head inside struct dquot for
+> it) and add dquot whose last reference should be dropped there. We'd then
+> queue work item which would call synchronize_srcu() and after that perform
+> the final cleanup of all the dquots on the list.
 >
-> Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
-> ---
->  fs/ext4/mballoc.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+> Now this also needs some modifications to dqget() and to quotaoff code to
+> handle various races with the new dqput() code so if you feel it is too
+> complex for your taste, I can implement this myself.
 >
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a2475b8c9fb5..e5a27fd2e959 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6790,7 +6790,7 @@ int ext4_group_add_blocks(handle_t *handle, struct =
-super_block *sb,
->   * be called with under the group lock.
->   */
->  static int ext4_trim_extent(struct super_block *sb,
-> -               int start, int count, struct ext4_buddy *e4b)
-> +               int start, int count, struct ext4_buddy *e4b, struct bio =
-**biop)
->  __releases(bitlock)
->  __acquires(bitlock)
->  {
-> @@ -6812,7 +6812,7 @@ __acquires(bitlock)
->          */
->         mb_mark_used(e4b, &ex);
->         ext4_unlock_group(sb, group);
-> -       ret =3D ext4_issue_discard(sb, group, start, count, NULL);
-> +       ret =3D ext4_issue_discard(sb, group, start, count, biop);
->         ext4_lock_group(sb, group);
->         mb_free_blocks(NULL, e4b, start, ex.fe_len);
->         return ret;
-> @@ -6826,12 +6826,15 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group)=
-)
->  {
->         ext4_grpblk_t next, count, free_count;
->         void *bitmap;
-> +       struct bio *discard_bio =3D NULL;
-> +       struct blk_plug plug;
->
->         bitmap =3D e4b->bd_bitmap;
->         start =3D (e4b->bd_info->bb_first_free > start) ?
->                 e4b->bd_info->bb_first_free : start;
->         count =3D 0;
->         free_count =3D 0;
-> +       blk_start_plug(&plug);
->
->         while (start <=3D max) {
->                 start =3D mb_find_next_zero_bit(bitmap, max + 1, start);
-> @@ -6840,7 +6843,7 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->                 next =3D mb_find_next_bit(bitmap, max + 1, start);
->
->                 if ((next - start) >=3D minblocks) {
-> -                       int ret =3D ext4_trim_extent(sb, start, next - st=
-art, e4b);
-> +                       int ret =3D ext4_trim_extent(sb, start, next - st=
-art, e4b, &discard_bio);
->
->                         if (ret && ret !=3D -EOPNOTSUPP)
->                                 break;
-> @@ -6864,6 +6867,14 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->                         break;
->         }
->
-> +       if (discard_bio) {
-> +               ext4_unlock_group(sb, e4b->bd_group);
-> +               submit_bio_wait(discard_bio);
-> +               bio_put(discard_bio);
-> +               ext4_lock_group(sb, e4b->bd_group);
-> +       }
-> +       blk_finish_plug(&plug);
-> +
->         return count;
->  }
->
-> --
-> 2.37.1 (Apple Git-137.1)
->
+> 								Honza
+I see what you mean, what we are doing here is very similar to 
+drop_dquot_ref(),
+and if we have to modify it this way, I am happy to implement it.
+
+But as you said, calling synchronize_srcu() is too expensive and it 
+blocks almost all
+mark dirty processes, so we only call it now in performance insensitive 
+scenarios
+like dquot_disable(). And how do we control how often synchronize_srcu() 
+is called?
+Are there more than a certain number of dquots in releasing_dquots or 
+are they
+executed at regular intervals? And it would introduce various new 
+competitions.
+Is it worthwhile to do this for a corner scenario like this one?
+
+I think we can simply focus on the race between the DQ_ACTIVE_B flag and the
+DQ_MOD_B flag, which is the core problem, because the same quota should not
+have both flags. These two flags are protected by dq_list_lock and 
+dquot->dq_lock
+respectively, so it makes sense to add a wait_on_dquot() to ensure the 
+accuracy of
+DQ_ACTIVE_B.
+
+The addition of wait_on_dquot() to this solution also seems very 
+expensive, and I had
+similar concerns before, but testing found no performance impact due to 
+the fast path
+without any locks. We returns 1 directly when the current dquot is 
+already dirty, so there
+is no locking involved after dquot is dirty until DQ_MOD_B is cleared. 
+And clear the
+dirtying of the dqi_dirty_list only happens in last dqput and 
+dquot_writeback_dquots(),
+both of which occur very infrequently.
+
+And if we don't care about the harmless warning in 
+dquot_writeback_dquots() in the
+second function graph (just skip it), wait_on_dquot() in the solution 
+can be removed.
+We only need to determine again whether dquot is DQ_ACTIVE_B under 
+dq_list_lock
+protection to solve the problem in the first function graph. This is why 
+there are two
+function graphs in the patch description, because with the second 
+problem, we have
+to be more careful if we want to keep the warning.
+
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
