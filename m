@@ -2,161 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5DC734BD7
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jun 2023 08:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8B67350E7
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jun 2023 11:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbjFSGoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Jun 2023 02:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        id S229896AbjFSJwf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Jun 2023 05:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjFSGoL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Jun 2023 02:44:11 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AB9E5A;
-        Sun, 18 Jun 2023 23:44:08 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ql0bg4SFKzqTnB;
-        Mon, 19 Jun 2023 14:43:59 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 19 Jun 2023 14:44:04 +0800
-Message-ID: <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
-Date:   Mon, 19 Jun 2023 14:44:03 +0800
+        with ESMTP id S229916AbjFSJwe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Jun 2023 05:52:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CD6F3;
+        Mon, 19 Jun 2023 02:52:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 838F8210E7;
+        Mon, 19 Jun 2023 09:52:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1687168351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DxIJDuuYClXmgqYM4N1lEgYI6VAbXG1zZ254H2n4+qw=;
+        b=cfNES0tRgRt0IZv0nqHW23+HqATlwNpQKXeKBshiiYxpUWvkGCDRZ+Xv/27M4Oas5e7Am3
+        SGaDzkXL1/aWl/XjXWpwAP3yJUyAa0getdW6KZzTkY31VyFlS0WWeYjvFZdOrGyi4BJ6js
+        Kqe0majp2iBdXrYARIc++DT8QhLXOBE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1687168351;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DxIJDuuYClXmgqYM4N1lEgYI6VAbXG1zZ254H2n4+qw=;
+        b=7kExUx51RD0vHom4H8oJKaZpf32mIjedU88Fjzph254nHGLgby4ShOkk2dzXoePKpxwLt0
+        kRtpzEJMEkigAKDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EB02138E8;
+        Mon, 19 Jun 2023 09:52:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Esz8Gl8lkGQmNQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 19 Jun 2023 09:52:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 059ABA0755; Mon, 19 Jun 2023 11:52:31 +0200 (CEST)
+Date:   Mon, 19 Jun 2023 11:52:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        beanhuo@micron.com
+Subject: Re: [PATCH v1 1/5] fs/buffer: clean up block_commit_write
+Message-ID: <20230619095230.undchckir57stooe@quack3>
+References: <20230618213250.694110-1-beanhuo@iokpp.de>
+ <20230618213250.694110-2-beanhuo@iokpp.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] quota: fix race condition between dqput() and
- dquot_mark_dquot_dirty()
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20230616085608.42435-1-libaokun1@huawei.com>
- <20230616152824.ndpgvkegvvip2ahh@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230616152824.ndpgvkegvvip2ahh@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230618213250.694110-2-beanhuo@iokpp.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Honza !
+On Sun 18-06-23 23:32:46, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Originally inode is used to get blksize, after commit 45bce8f3e343
+> ("fs/buffer.c: make block-size be per-page and protected by the page lock"),
+> __block_commit_write no longer uses this parameter inode, this patch is to
+> remove inode and clean up block_commit_write.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-On 2023/6/16 23:28, Jan Kara wrote:
-> Hello Baokun!
->
-> On Fri 16-06-23 16:56:08, Baokun Li wrote:
->> To solve this problem, it is similar to the way dqget() avoids racing with
->> dquot_release(). First set the DQ_MOD_B flag, then execute wait_on_dquot(),
->> after this we know that either dquot_release() is already finished or it
->> will be canceled due to DQ_MOD_B flag test, at this point if the quota is
->> DQ_ACTIVE_B, then we can safely add the dquot to the dqi_dirty_list,
->> otherwise clear the DQ_MOD_B flag and exit directly.
->>
->> Fixes: 4580b30ea887 ("quota: Do not dirty bad dquots")
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>
->> Hello Honza,
->>
->> This problem can also be solved by modifying the reference count mechanism,
->> where dquots hold a reference count after they are allocated until they are
->> destroyed, i.e. the dquots in the free_dquots list have dq_count == 1. This
->> allows us to reduce the reference count as soon as we enter the dqput(),
->> and then add the dquot to the dqi_dirty_list only when dq_count > 1. This
->> also prevents the dquot in the dqi_dirty_list from not having the
->> DQ_ACTIVE_B flag, but this is a more impactful modification, so we chose to
->> refer to dqget() to avoid racing with dquot_release(). If you prefer this
->> solution by modifying the dq_count mechanism, I would be happy to send
->> another version of the patch.
-> The way this *should* work is that dquot_mark_dquot_dirty() using dquot
-> references from the inode should be protected by dquot_srcu. quota_off
-> code takes care to call synchronize_srcu(&dquot_srcu) to not drop dquot
-> references while they are used by other users. But you are right
-> dquot_transfer() breaks this assumption. Most callers are fine since they
-> are also protected by inode->i_lock but still I'd prefer to fix
-> dquot_transfer() to follow the guarantees dquot_srcu should provide.
-Indeed!
-Operation accessing dquots via inode pointers shuould be protectedby 
-dquot_srcu.
-And inode->i_lock ensures that we do not record usage changes in a 
-deprecated
-dquota pointer, even when concurrent with dquot_transfer().
-> Now calling synchronize_srcu() directly from dquot_transfer() is too
-> expensive (and mostly unnecessary) so what I would rather suggest is to
-> create another dquot list (use dq_free list_head inside struct dquot for
-> it) and add dquot whose last reference should be dropped there. We'd then
-> queue work item which would call synchronize_srcu() and after that perform
-> the final cleanup of all the dquots on the list.
->
-> Now this also needs some modifications to dqget() and to quotaoff code to
-> handle various races with the new dqput() code so if you feel it is too
-> complex for your taste, I can implement this myself.
->
-> 								Honza
-I see what you mean, what we are doing here is very similar to 
-drop_dquot_ref(),
-and if we have to modify it this way, I am happy to implement it.
+Nice! Feel free to add:
 
-But as you said, calling synchronize_srcu() is too expensive and it 
-blocks almost all
-mark dirty processes, so we only call it now in performance insensitive 
-scenarios
-like dquot_disable(). And how do we control how often synchronize_srcu() 
-is called?
-Are there more than a certain number of dquots in releasing_dquots or 
-are they
-executed at regular intervals? And it would introduce various new 
-competitions.
-Is it worthwhile to do this for a corner scenario like this one?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-I think we can simply focus on the race between the DQ_ACTIVE_B flag and the
-DQ_MOD_B flag, which is the core problem, because the same quota should not
-have both flags. These two flags are protected by dq_list_lock and 
-dquot->dq_lock
-respectively, so it makes sense to add a wait_on_dquot() to ensure the 
-accuracy of
-DQ_ACTIVE_B.
+								Honza
 
-The addition of wait_on_dquot() to this solution also seems very 
-expensive, and I had
-similar concerns before, but testing found no performance impact due to 
-the fast path
-without any locks. We returns 1 directly when the current dquot is 
-already dirty, so there
-is no locking involved after dquot is dirty until DQ_MOD_B is cleared. 
-And clear the
-dirtying of the dqi_dirty_list only happens in last dqput and 
-dquot_writeback_dquots(),
-both of which occur very infrequently.
-
-And if we don't care about the harmless warning in 
-dquot_writeback_dquots() in the
-second function graph (just skip it), wait_on_dquot() in the solution 
-can be removed.
-We only need to determine again whether dquot is DQ_ACTIVE_B under 
-dq_list_lock
-protection to solve the problem in the first function graph. This is why 
-there are two
-function graphs in the patch description, because with the second 
-problem, we have
-to be more careful if we want to keep the warning.
-
-Thanks!
+> ---
+>  fs/buffer.c | 15 +++------------
+>  1 file changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index a7fc561758b1..b88bb7ec38be 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2116,8 +2116,7 @@ int __block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  }
+>  EXPORT_SYMBOL(__block_write_begin);
+>  
+> -static int __block_commit_write(struct inode *inode, struct page *page,
+> -		unsigned from, unsigned to)
+> +int block_commit_write(struct page *page, unsigned int from, unsigned int to)
+>  {
+>  	unsigned block_start, block_end;
+>  	int partial = 0;
+> @@ -2154,6 +2153,7 @@ static int __block_commit_write(struct inode *inode, struct page *page,
+>  		SetPageUptodate(page);
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(block_commit_write);
+>  
+>  /*
+>   * block_write_begin takes care of the basic task of block allocation and
+> @@ -2188,7 +2188,6 @@ int block_write_end(struct file *file, struct address_space *mapping,
+>  			loff_t pos, unsigned len, unsigned copied,
+>  			struct page *page, void *fsdata)
+>  {
+> -	struct inode *inode = mapping->host;
+>  	unsigned start;
+>  
+>  	start = pos & (PAGE_SIZE - 1);
+> @@ -2214,7 +2213,7 @@ int block_write_end(struct file *file, struct address_space *mapping,
+>  	flush_dcache_page(page);
+>  
+>  	/* This could be a short (even 0-length) commit */
+> -	__block_commit_write(inode, page, start, start+copied);
+> +	block_commit_write(page, start, start+copied);
+>  
+>  	return copied;
+>  }
+> @@ -2535,14 +2534,6 @@ int cont_write_begin(struct file *file, struct address_space *mapping,
+>  }
+>  EXPORT_SYMBOL(cont_write_begin);
+>  
+> -int block_commit_write(struct page *page, unsigned from, unsigned to)
+> -{
+> -	struct inode *inode = page->mapping->host;
+> -	__block_commit_write(inode,page,from,to);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(block_commit_write);
+> -
+>  /*
+>   * block_page_mkwrite() is not allowed to change the file size as it gets
+>   * called from a page fault handler when a page is first dirtied. Hence we must
+> -- 
+> 2.34.1
+> 
 -- 
-With Best Regards,
-Baokun Li
-.
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
