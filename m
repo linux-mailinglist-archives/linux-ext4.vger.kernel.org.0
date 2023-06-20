@@ -2,69 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CC37361DE
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 05:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FDA7362BC
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 06:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjFTDCV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Jun 2023 23:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
+        id S229597AbjFTErh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Jun 2023 00:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjFTDBq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Jun 2023 23:01:46 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890EC10DD
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Jun 2023 20:01:42 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-196.bstnma.fios.verizon.net [173.48.111.196])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35K30bDT005043
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jun 2023 23:00:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687230043; bh=3n8GAvW8QrSdojYTtSqja8VtHL/WSJb5DJjbA1RhY/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=aUyd5I4x+bUQbJVVDNU1LP7CcS8iqNF2nVC4QkPqnPVd93PxKQYTmFUwe120hvjHD
-         LB6h2MDwE6KWqQS/tavsoozxBdF8t89kTVyqKzLZ0KJ/kqat81JoV6Y1o6VTQzb/FS
-         YJXhYJkq5smhu/5yG/JJ4PeZ0JGmO7k5uDa6cy5qIEg4W8UqrEmsLlJPkKP0dgCagA
-         wHaY9uUBazQtotST8InhIsVYklyPBIb8xy7TIBYcp69ooaFdxTYfNZ2lj0z0bv/I1r
-         xXTMQf/RSUjW0XIxhx6COquVPobNMxJpZ4pACwe8uQyfu9P2W+Q1CpcRGw0kUCP2FT
-         +SSM25sLqEa4A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2173B15C0266; Mon, 19 Jun 2023 23:00:37 -0400 (EDT)
-Date:   Mon, 19 Jun 2023 23:00:37 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
+        with ESMTP id S229506AbjFTErg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jun 2023 00:47:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B1DF1;
+        Mon, 19 Jun 2023 21:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=QeiChVQT7tf/l7Q1r7WXDXzuDc
+        TUlhW2KdJXT9248CtsyQTjKq+l52rQWzR5Xz/uDubkihDnIMkUIRceZXMDDMMkpojDdqnjPkoCd99
+        lU3070zo3zB/bo0FtUjgrKJL1VdZHp7A5Ccs75otFSejpC2zp3b1r8Jeij/2+oy1c/crzCoUsk5Lp
+        xDeim6QG6dfaAgLHxCtuMBGC5voKWbIuUnJQ6LQfPk40wKBK3lRAL1qmPj44rMJbbZDzDbJKMyjvE
+        ptf9lH/2i2JuzSRnRXWmifvnt7K+1fSokzjd0Lw1CZBNfZWal94utyqLlc8r5iqmprb2r6nm+4mXA
+        gTh8vzVw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qBTGy-00A8nf-1Y;
+        Tue, 20 Jun 2023 04:47:20 +0000
+Date:   Mon, 19 Jun 2023 21:47:20 -0700
+From:   Christoph Hellwig <hch@infradead.org>
 To:     Bean Huo <beanhuo@iokpp.de>
 Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
         akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
-        adilger.kernel@dilger.ca, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, beanhuo@micron.com
-Subject: Re: [PATCH v2 2/5] ext4: No need to check return value of
- block_commit_write()
-Message-ID: <20230620030037.GF286961@mit.edu>
+        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        beanhuo@micron.com
+Subject: Re: [PATCH v2 1/5] fs/buffer: clean up block_commit_write
+Message-ID: <ZJEvWNvZyjyEI4lJ@infradead.org>
 References: <20230619211827.707054-1-beanhuo@iokpp.de>
- <20230619211827.707054-3-beanhuo@iokpp.de>
+ <20230619211827.707054-2-beanhuo@iokpp.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230619211827.707054-3-beanhuo@iokpp.de>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230619211827.707054-2-beanhuo@iokpp.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 11:18:24PM +0200, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> Remove unnecessary check on the return value of block_commit_write(),
-> because it always returns 0.
-> 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+Looks good:
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
