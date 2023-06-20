@@ -2,98 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13235736A1E
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 13:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE632736BDD
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 14:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjFTK7s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Jun 2023 06:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S231966AbjFTMZe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Jun 2023 08:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbjFTK7q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jun 2023 06:59:46 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B06100;
-        Tue, 20 Jun 2023 03:59:45 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-988c495f35fso234791366b.1;
-        Tue, 20 Jun 2023 03:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687258784; x=1689850784;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UsfpIs8ZbY4FsxMJVdC8ReyTwzdMIzbHG6xjYSNsBro=;
-        b=cqx5XtAdAHDm10rjNY3fqjctrT7/AqesiOAO/ipraUwqmaTXxnPHxC+JRlYXU/Aoi2
-         67417T9YwBQ7KtG6rvQ8KthI9LPo7T4poZsF5O+hNeU4E6NYhQ1QnGwxvFWF9vjJRWwG
-         OBVTH7hgDU/IWyNQ00AnfxFnquSK6YZiNeLKCJ3PuDDKzl5BL40q3UM+Fj3risL5fAJs
-         jFKbnizVa4Z7DQgVqNlTGrweW9efdJfmFjUU6plPGU4Mhf8Pr4g44J//OkTbetyD2DPf
-         LkyrBduU6eoWEW0CtDCts3etVx/UlLNd4KneOrVcn25eYw2j4d1hzTLtC5swf+wOGb5g
-         UOxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687258784; x=1689850784;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UsfpIs8ZbY4FsxMJVdC8ReyTwzdMIzbHG6xjYSNsBro=;
-        b=bEtcJ5Tzwzc98b5akK5zIHyFE8uoGE5WMdcImMFl8QFqcsWv5tH8rzjTFrBxHXEC1a
-         rjnVLuERrz1vCDUsAP+qXkvDgYrp4DT807FVxuWFMxek2signdsKT7v1e13CF+vjRBIy
-         AS3j86yc9Gl9ZKOvAGVlpNrygSHGW9mG6TqEn41WuVTX1mAoakLPlEU93OT88E3k/YZt
-         LI2eUOaBuDZYHMR42DiEXIw0NNd0KYl6/uzlXu0u0tiFhwyKMVi8SOSSrvnpSRxqsXVY
-         5ozNLCgSxmABeLTW6x75RGp0nglNtmUdDchJXblU34Ry67xjB2bVnHaKUiZl8wtkkJwA
-         TiwQ==
-X-Gm-Message-State: AC+VfDxvB2224Op2HJ47bC+J4JnoULpEhuWgBGYLwXHMKVQ7vmbUVdAK
-        mds7k1tnLXsLakRtlSpzF8g=
-X-Google-Smtp-Source: ACHHUZ6nF0pp2ZRQkRSb1xXUWjmnMShWCcQHsA6Pbc+opfbPi2zM8yuaVjNg5nq9XYpkTu2Xx6QaAw==
-X-Received: by 2002:a17:907:36c5:b0:978:acec:36b1 with SMTP id bj5-20020a17090736c500b00978acec36b1mr10764445ejc.17.1687258784226;
-        Tue, 20 Jun 2023 03:59:44 -0700 (PDT)
-Received: from [10.176.234.233] ([147.161.245.31])
-        by smtp.gmail.com with ESMTPSA id z9-20020a1709063a0900b00988c0c175c6sm1151954eje.189.2023.06.20.03.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jun 2023 03:59:43 -0700 (PDT)
-Message-ID: <e30082535f1d7e92692718f1d25a08508f04fe0a.camel@gmail.com>
-Subject: Re: [PATCH v2 2/5] ext4: No need to check return value of
- block_commit_write()
-From:   Bean Huo <huobean@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>, Bean Huo <beanhuo@iokpp.de>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
-        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        beanhuo@micron.com
-Date:   Tue, 20 Jun 2023 12:59:42 +0200
-In-Reply-To: <ZJEvi8CJddmpeluC@infradead.org>
-References: <20230619211827.707054-1-beanhuo@iokpp.de>
-         <20230619211827.707054-3-beanhuo@iokpp.de> <ZJEvi8CJddmpeluC@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S231216AbjFTMZd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jun 2023 08:25:33 -0400
+Received: from fulda116.server4you.de (mister-muffin.de [144.76.155.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BBD0710C2
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Jun 2023 05:25:27 -0700 (PDT)
+Received: from localhost (ip1f12fe38.dynamic.kabel-deutschland.de [31.18.254.56])
+        by mister-muffin.de (Postfix) with ESMTPSA id 1E5C61BF5;
+        Tue, 20 Jun 2023 14:16:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+        s=mail; t=1687263417;
+        bh=H73yb/4Nmsq/KDuoAdh0q8PT3PYX8q0B5CbsGy04AJo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ln1cL2AREBJc2ExSBkQBwuEg3rFYfvkZtNs6DSIVmEy/EJYzC71N/PccGdUCdgGDA
+         +Jp/cJT80u4j8bFhmx7v6+X2nkDDR50muhXEyta9WqTu0hlJkYngtH44JfA5Tu/abj
+         3fGvhri6KzUtrgEgb7FcXnlFxLZDrqykPadi832s=
+From:   Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+To:     linux-ext4@vger.kernel.org
+Cc:     Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+Subject: [PATCH 0/1] allow mke2fs to understand tarballs as input
+Date:   Tue, 20 Jun 2023 14:16:40 +0200
+Message-Id: <20230620121641.469078-1-josch@mister-muffin.de>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2023-06-19 at 21:48 -0700, Christoph Hellwig wrote:
-> On Mon, Jun 19, 2023 at 11:18:24PM +0200, Bean Huo wrote:
-> > From: Bean Huo <beanhuo@micron.com>
-> >=20
-> > Remove unnecessary check on the return value of
-> > block_commit_write(),
-> > because it always returns 0.
->=20
-> Dropping the error check before the function signature is changes is
-> really odd.=C2=A0 I'd suggest to merge this and the following patches int=
-o
-> a single one.
+Hi,
 
-No problem, I will merge them together, thanks.
+I have already submitted this patch to Theodore Ts'o's github [1] but was
+advised that most patch proposals should go to linux-ext4@vger.kernel.org to
+get more review. I already got a lot of useful feedback in that github pull
+request, so the proposed patch already contains a few improvements over my
+initial version. Thanks a lot to Theodore Ts'o for their feedback!
 
-Kind regards,
-Bean
+I'm now reaching out to this list to get more input and iterate on this patch
+to get it ready for inclusion into e2fsprogs.
+
+I'm not very familiar with sending my patches via git-send-email, so please be
+patient with me surrounding this process and involved etiquettes. Please point
+out any mistakes so that I can improve myself.
+
+My intend with this patch is to remove my need for genext2fs [1] which is slow
+(seems to be O(N²)) and ext2-only, so it's missing important features like
+extended attributes and year-2038 support.
+
+The reason I want mke2fs to understand tarballs instead of directories is, that
+I want to be able to create filesystems without requiring superuser privileges.
+Using unshared user namespaces, this already works most of the way but even
+with those I'm unable to create device nodes. My main motivation is tarballs of
+Linux systems, so special devices under /dev should get included in the final
+ext4 image.
+
+An alternative way to supply device nodes to the final file system are
+"spec-files" as they can for example be provided to genext2fs via the
+--devtable option. These files are ascii tables, each row containing a path, a
+type, a mode, uid, gid and so on. While it would be possible for mke2fs to also
+gain a --devtable option, I argue that being able to read the same information
+from a tarball is superior because
+
+ a) tools and users interacting with mke2fs do not need to learn about yet
+    another file format
+ b) using tarballs, all information is contained in a single file instead of
+    a directory containing many files plus a spec-file
+ c) tarballs are a well-established distribution method for chroot environments
+ d) no additional tool would be needed to turn the information stored in a
+    tarball into a spec-file
+
+Adding a --devtable=spec-file option might still be useful for platforms
+without support for libarchive.
+
+One risk with using libarchive is, that its SOVERSION needs to remain the same.
+The last SOBUMP of libarchive happened 10 years ago. I opened an issue with
+libarchive asking about the stability of the interface [3].
+
+What are your thoughts?
+
+Thanks!
+
+cheers, josch
+
+[1] https://github.com/tytso/e2fsprogs/pull/118
+[2] https://github.com/bestouff/genext2fs
+[3] https://github.com/libarchive/libarchive/issues/1854
+
+Johannes Schauer Marin Rodrigues (1):
+  mke2fs: the -d option can now handle tarball input
+
+ MCONFIG.in                     |   1 +
+ configure                      |  52 +++
+ configure.ac                   |   9 +
+ debugfs/Makefile.in            |   2 +-
+ lib/config.h.in                |   3 +
+ lib/ext2fs/Makefile.in         |   2 +-
+ misc/Makefile.in               |   2 +-
+ misc/create_inode.c            | 621 ++++++++++++++++++++++++++++++++-
+ misc/mke2fs.8.in               |  10 +-
+ misc/mke2fs.c                  |  12 +-
+ tests/m_rootgnutar/expect      | 188 ++++++++++
+ tests/m_rootgnutar/output.sed  |   5 +
+ tests/m_rootgnutar/script      |  88 +++++
+ tests/m_rootpaxtar/expect      |  87 +++++
+ tests/m_rootpaxtar/mkpaxtar.pl |  69 ++++
+ tests/m_rootpaxtar/output.sed  |   5 +
+ tests/m_rootpaxtar/script      |  44 +++
+ tests/m_roottar/expect         | 208 +++++++++++
+ tests/m_roottar/mktar.pl       |  62 ++++
+ tests/m_roottar/output.sed     |   5 +
+ tests/m_roottar/script         |  57 +++
+ 21 files changed, 1513 insertions(+), 19 deletions(-)
+ create mode 100644 tests/m_rootgnutar/expect
+ create mode 100644 tests/m_rootgnutar/output.sed
+ create mode 100644 tests/m_rootgnutar/script
+ create mode 100644 tests/m_rootpaxtar/expect
+ create mode 100644 tests/m_rootpaxtar/mkpaxtar.pl
+ create mode 100644 tests/m_rootpaxtar/output.sed
+ create mode 100644 tests/m_rootpaxtar/script
+ create mode 100644 tests/m_roottar/expect
+ create mode 100644 tests/m_roottar/mktar.pl
+ create mode 100644 tests/m_roottar/output.sed
+ create mode 100644 tests/m_roottar/script
+
+-- 
+2.40.0
 
