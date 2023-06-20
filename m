@@ -2,33 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDE57362C3
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 06:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1EF736332
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jun 2023 07:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjFTEs3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Jun 2023 00:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
+        id S230319AbjFTFeA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Jun 2023 01:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjFTEsU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jun 2023 00:48:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8220C10F2;
-        Mon, 19 Jun 2023 21:48:19 -0700 (PDT)
+        with ESMTP id S229782AbjFTFd6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Jun 2023 01:33:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751CF10D5;
+        Mon, 19 Jun 2023 22:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IJtc0dSmvrdtDpxoBDdBZLPgMK+CrBpfQaCUFRKuZTE=; b=xysdKIXlVYrGJm8AdxF81CHfTL
-        R53hTcAtaIK4/Wdz2V7GPaDDAbVjZWeX2sAImKPCWK4xbFGJJvUSc3GxJp3S/LOYjldEPyH8TnG6b
-        OSmMAZMj1hL5tJsg5vmjXv6o95zaE88JIzozG5KoYd/Q0Vf8v6ql+TGdo3fmkGWitY+tXP5yMElce
-        8FT7VE+/j2D8PpL4YVgaQTdKSoDhXcUKhdlleUL7ioMqtNANohbBA5ikhfqHQl7IjkDmhXjBAILEy
-        BWPRN7lY2pgW0mLNsUKH5nECS9M/a/v9XfPP4vSISPnRbAEU770rSiUuKC7s9QPoZ2qVkMacR0We4
-        FyxEX4gQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qBTHn-00A8vD-0V;
-        Tue, 20 Jun 2023 04:48:11 +0000
-Date:   Mon, 19 Jun 2023 21:48:11 -0700
-From:   Christoph Hellwig <hch@infradead.org>
+        bh=tv/KxUiDyInx1PDIV4kKpPvm49qY+WbJYdAJ6sLDhoI=; b=R/t46TzhdTxke4UZWex1PeqvLr
+        IRfKCDDZTIim72lwJr8JnaG7z7w7yqd4Q3ncT9V6yosKeD8/lu7DDIHSW8OL3CzY79OHW7H4shFFR
+        HBy2XN3Tcx1JqfgZzSthwJGEKqDEdvxCOmRJ5qxKXNmxU9Up20N32mjZUcgGKmf1I3ORDTAxoequ3
+        UYP8qjGwFBHujcKbmWuPWmmPzmbHN3K8/IvlialHYgfWAikGSoNh2o7pby7XzpUv/rE9pP2IVR8sB
+        0DzWdX/8NwU4WW/g+MMRofhK4dQ2jPuNL4tnXylJUipBM81fPkPkUlbRlQD71cETnHVAdCf3AvFdr
+        JaGyFSIg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qBTzp-00Chre-QP; Tue, 20 Jun 2023 05:33:42 +0000
+Date:   Tue, 20 Jun 2023 06:33:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
 To:     Bean Huo <beanhuo@iokpp.de>
 Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
         akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
@@ -37,16 +36,14 @@ Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
         beanhuo@micron.com
-Subject: Re: [PATCH v2 2/5] ext4: No need to check return value of
- block_commit_write()
-Message-ID: <ZJEvi8CJddmpeluC@infradead.org>
+Subject: Re: [PATCH v2 1/5] fs/buffer: clean up block_commit_write
+Message-ID: <ZJE6Nf6XmeHIlFJI@casper.infradead.org>
 References: <20230619211827.707054-1-beanhuo@iokpp.de>
- <20230619211827.707054-3-beanhuo@iokpp.de>
+ <20230619211827.707054-2-beanhuo@iokpp.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230619211827.707054-3-beanhuo@iokpp.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20230619211827.707054-2-beanhuo@iokpp.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -57,12 +54,20 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 11:18:24PM +0200, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> Remove unnecessary check on the return value of block_commit_write(),
-> because it always returns 0.
+On Mon, Jun 19, 2023 at 11:18:23PM +0200, Bean Huo wrote:
+> +++ b/fs/buffer.c
+> @@ -2116,8 +2116,7 @@ int __block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  }
+>  EXPORT_SYMBOL(__block_write_begin);
+>  
+> -static int __block_commit_write(struct inode *inode, struct page *page,
+> -		unsigned from, unsigned to)
+> +int block_commit_write(struct page *page, unsigned int from, unsigned int to)
+>  {
+>  	unsigned block_start, block_end;
+>  	int partial = 0;
 
-Dropping the error check before the function signature is changes is
-really odd.  I'd suggest to merge this and the following patches into
-a single one.
+You're going to need to redo these patches, I'm afraid.  A series of
+patches I wrote just went in that convert __block_commit_write (but
+not block_commit_write) to take a folio instead of a page.
+
