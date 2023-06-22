@@ -2,112 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78ED573938B
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jun 2023 02:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C263F7394F8
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jun 2023 03:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjFVAGY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Jun 2023 20:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S230030AbjFVBz3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Jun 2023 21:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjFVAGV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Jun 2023 20:06:21 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C82135
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Jun 2023 17:05:44 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-666eef03ebdso2838849b3a.1
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Jun 2023 17:05:44 -0700 (PDT)
+        with ESMTP id S230131AbjFVBz3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 21 Jun 2023 21:55:29 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBE4198B
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Jun 2023 18:55:27 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668723729c5so3040369b3a.3
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Jun 2023 18:55:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687392290; x=1689984290;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687398927; x=1689990927;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=788rYanbVHYoHymSSCDQuQkLFJmxVv3NMkigvKoFSg8=;
-        b=SCTpPuLeHaddmo/McTxHe9QtBW6AE3Vg1KFczXkzvyQ37voJaocWjo/Dvl3S8v14xK
-         eLs8CM3ssBwlopA47r5eXtbcFyADsyniu7ipOrZEK6IL/s6aSlbUcpLPegbVsDzJsFE1
-         RuOCKD5sZI8FCzbnE7yTm0HBPTJYpbULbkke6Hq4r1cpGlvvbLsABVY6uGXyRlCZRGgU
-         cyYBaHJhOQ7ZFHN1klRhR+RCxFvhhyooulI9NiHok0LxF/cYEmxXG1/nA9GcH5zOgADM
-         v4tJG2EqAyITvr5D1YalB4HFSyFDMOvSbZh02hS0irxjgMD/cvkkSksWC2YDb72n3DFm
-         wnIA==
+        bh=i+ObdMW8OoUiyfLik8rkSqpBwoPFSpBmf3on8EgN4Qg=;
+        b=YCL3h6qlwyBUoIzALg9lGVi/cVpj6iE3TExxFCOSFx/s0YoNabdJFVEqJ6e8mXUhy3
+         78Dk5QxUhjJGSPliHQ6E1PECOUPmk45j3eDlkWIyciQPf8rMuGmGEys0ezqzfarCSTzS
+         UQwnqHtfOxr/CX69CcdHVLjZJXBRBVMKPmnKaN8C6qHVBuyRQaJa84971xrRLA0KvXYT
+         CxjHori3LWN0zB1DT3O8iNTObgy6Ho+j3cdK5nX3kzGZc0mikmflLk42ZWxwCVUgb2Nt
+         /fmnwioLgl+dYRC6KsGEIDRmSWNBJHkgKyrB+6u6kNhTyWar+aKrfbYQO7+i4LzT0y1J
+         /PbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687392290; x=1689984290;
+        d=1e100.net; s=20221208; t=1687398927; x=1689990927;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=788rYanbVHYoHymSSCDQuQkLFJmxVv3NMkigvKoFSg8=;
-        b=PYF0tUPj/+BW4cBL2DWW2JEKjn66JXLrkJq00qv3+9AJR8iHtWWMH0hpD3JXWaL4FF
-         Vwcw6uE2jSNfbI0JWLRdqAIBcA2gv4SmezcWpsZtep0iO0mhLnZDlQw08p29SMVmUFlI
-         lgM8dBYs0Lk+0Vl3G3PpmnLGcPe/4XVxD9qLfpno+nyTza5GnEUK9kkvMLORthWshcQa
-         EEPlybD0+5TwqrMAglquzQxccffGunzKshVifhVPMKuJ8+UXKYPvqIUmDSJ/aLlSbL7e
-         paUfO/8Ws9tbCRCoTX3eShh1B55zrLVFOPmK8oT9XIXd/oyx5TPHBo9DX9ei8FAVzOD9
-         Qllg==
-X-Gm-Message-State: AC+VfDyuQDQRgRalU7PkUquMElUIKOhUsMT2zpNvqW14CG2roSRh3kDP
-        Be1AO8a2Zk8+XxyYDDh7y/ldow==
-X-Google-Smtp-Source: ACHHUZ74tWpyMbpCkTknjwqs/V+ciWQxw301BjKhbwxqb6hGHFfNAu/mshRXv8ebra5fcjpbW64VHg==
-X-Received: by 2002:a05:6a00:3a14:b0:668:82fe:16e2 with SMTP id fj20-20020a056a003a1400b0066882fe16e2mr7321749pfb.16.1687392290498;
-        Wed, 21 Jun 2023 17:04:50 -0700 (PDT)
+        bh=i+ObdMW8OoUiyfLik8rkSqpBwoPFSpBmf3on8EgN4Qg=;
+        b=WBHp2fy9EuUXbAv9m883oFvgzKOEVmvUP2TY5kacxssxPvwEoZrM5lmWQSG84WkHLj
+         pv71wiwH8Zqtkph30frwGCWsLeLmzbl6q8y1or4J+sOuE/Yn8MbE3pZHcmdW4JfumeuC
+         zIf6WCaLoBveEm+JwSs3qWm9KUamoW2cgBZvCV6KT5oOY2OlrBVOcXawcBhuioVRIVzJ
+         78ers2q9Y/VfDo7Z7p0p3pPbH+DZ670Reg2v2deCtYWMu5o1QCP+NIU6SGvQ3EhnfQw4
+         d8wE02JN8pFhbSn/+mlSlpVBxZiGrtonYCLvZmgSlQTfnYZ9lyxqHPjN+38XKvvU7HDx
+         GzYg==
+X-Gm-Message-State: AC+VfDw82NjDGL8HMdpfJTbQXoWSML6YVbWgShuyvoWt2B7cCxNRctWl
+        PGBrLW/yuSpKajaDv1H2lb6CrQ==
+X-Google-Smtp-Source: ACHHUZ4HiKk1VLE3Wmy3vUtui6I6k3LDiDdDmYLqfv0n7WchOyoGpq0OFwfd1RFaCUn0V2ksYqma4A==
+X-Received: by 2002:a05:6a00:2193:b0:668:852a:ffc4 with SMTP id h19-20020a056a00219300b00668852affc4mr8431093pfi.4.1687398926934;
+        Wed, 21 Jun 2023 18:55:26 -0700 (PDT)
 Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
-        by smtp.gmail.com with ESMTPSA id j25-20020a62e919000000b00662610cf7a8sm3486378pfh.172.2023.06.21.17.04.49
+        by smtp.gmail.com with ESMTPSA id e20-20020a62ee14000000b0063b806b111csm3460107pfi.169.2023.06.21.18.55.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 17:04:49 -0700 (PDT)
+        Wed, 21 Jun 2023 18:55:26 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.96)
         (envelope-from <david@fromorbit.com>)
-        id 1qC7oc-00EdnR-1n;
-        Thu, 22 Jun 2023 10:04:46 +1000
-Date:   Thu, 22 Jun 2023 10:04:46 +1000
+        id 1qC9Xf-00EffU-0i;
+        Thu, 22 Jun 2023 11:55:23 +1000
+Date:   Thu, 22 Jun 2023 11:55:23 +1000
 From:   Dave Chinner <david@fromorbit.com>
 To:     Jeremy Bongio <bongiojp@gmail.com>
 Cc:     Ted Tso <tytso@mit.edu>, "Darrick J . Wong" <djwong@kernel.org>,
         Allison Henderson <allison.henderson@oracle.com>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 1/1] For DIO writes with no mapped pages for inode, skip
- deferring completion.
-Message-ID: <ZJOQHpKjghoGWYZ4@dread.disaster.area>
+Subject: Re: [PATCH 0/1] iomap regression for aio dio 4k writes
+Message-ID: <ZJOqC7Cfjr5AoW7S@dread.disaster.area>
 References: <20230621174114.1320834-1-bongiojp@gmail.com>
- <20230621174114.1320834-2-bongiojp@gmail.com>
+ <ZJOO4SobNFaQ+C5g@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230621174114.1320834-2-bongiojp@gmail.com>
+In-Reply-To: <ZJOO4SobNFaQ+C5g@dread.disaster.area>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 21, 2023 at 10:29:20AM -0700, Jeremy Bongio wrote:
-> If there are no mapped pages for an DIO write then the page cache does not
-> need to be updated. For very fast SSDs and direct async IO, deferring work
-> completion can result in a significant performance loss.
-> ---
->  fs/iomap/direct-io.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On Thu, Jun 22, 2023 at 09:59:30AM +1000, Dave Chinner wrote:
+> On Wed, Jun 21, 2023 at 10:29:19AM -0700, Jeremy Bongio wrote:
+> > Since no issues have been found for ext4 calling completion work
+> > directly in the io handler pre-iomap, it is unlikely that this is
+> > unsafe (sleeping within an io handler callback). However, this may not
+> > be true for all filesystems. Does XFS potentially sleep in its
+> > completion code?
 > 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 019cc87d0fb3..8f27d0dc4f6d 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -168,7 +168,9 @@ void iomap_dio_bio_end_io(struct bio *bio)
->  			struct task_struct *waiter = dio->submit.waiter;
->  			WRITE_ONCE(dio->submit.waiter, NULL);
->  			blk_wake_io_task(waiter);
-> -		} else if (dio->flags & IOMAP_DIO_WRITE) {
-> +		} else if (dio->flags & IOMAP_DIO_WRITE &&
-> +			(!dio->iocb->ki_filp->f_inode ||
-> +			    dio->iocb->ki_filp->f_inode->i_mapping->nrpages))) {
->  			struct inode *inode = file_inode(dio->iocb->ki_filp);
+> Yes, and ext4 does too. e.g. O_DSYNC overwrites always need to be
+> deferred to task context to be able to take sleeping locks and
+> potentially block on journal and or device cache flushes.
+> 
+> i.e. Have you considered what context all of XFS, f2fs, btrfs,
+> zonefs and gfs2 need for pure DIO overwrite completion in all it's
+> different variants?
+> 
+> AFAIC, it's far simpler conceptually to defer all writes to
+> completion context than it is to try to work out what writes need to
+> be deferred and what doesn't, especially as the filesystem ->end_io
+> completion might need to sleep and the iomap code has no idea
+> whether that is possible.
 
-Writes that are need O_DSYNC, unwritten extent conversion, file size
-extension, etc all need to be deferred. This will break all of them,
-as well as any other type of write that the filesystem itself needs
-to run completion in task context.
+Ok, so having spent a bit more thought on this away from the office
+this morning, I think there is a generic way we can avoid deferring
+completions for pure overwrites.
 
-Cheers,
+We already have a mechanism in iomap that tells us if the write is a
+pure overwrite and we use it to change how we issue O_DSYNC DIO
+writes. i.e. we use it to determine if we can use FUA writes rather
+than a post-IO journal/device cache flush to guarantee data
+integrity. See IOMAP_DIO_WRITE_FUA for how we determine whether we
+need issue a generic_write_sync() call or not in the post IO
+completion processing.
 
-Dave.
+The iomap flags that determines if we can make this optimisation are
+IOMAP_F_SHARED and IOMAP_F_DIRTY. IOMAP_F_SHARED indicates a COW is
+required to break sharing for the write IO to proceed, whilst
+IOMAP_F_DIRTY indicates that the inode is either dirty or that the
+write IO requires metadata to be dirtied at completion time (e.g.
+unwritten extent conversion) before the sync operation that provides
+data integrity guarantees can be run.
 
+If neither of these flags are set in the iomap, it effectively means
+that the IO is a pure overwrite. i.e. the filesytsem has explicitly
+said that this write IO does not need any post-IO completion
+filesystem work to be done.
+
+At this point, the iomap code can optimise for a pure overwrite into
+an IOMAP_MAPPED extent, knowing that the only thing it needs to care
+about on completion is internal data integrity requirements (i.e.
+O_DSYNC/O_SYNC) of the IO.
+
+Hence if the filesystem has told iomap that it has no IO completion
+requirements, and iomap doesn't need generic_write_sync() for data
+integrity (i.e. no data integrity required or FUA was used for the
+entire IO), then we could complete the DIO write directly from the
+bio completion callback context...
+
+IOWs, what you want can be done, it's just a whole lot more complex
+than just avoiding a queue_work() call...
+
+-Dave.
 -- 
 Dave Chinner
 david@fromorbit.com
