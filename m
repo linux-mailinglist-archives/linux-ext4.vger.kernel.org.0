@@ -2,400 +2,265 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2169473A816
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jun 2023 20:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94A173AD21
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 01:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbjFVSTQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Jun 2023 14:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S231548AbjFVXW3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Jun 2023 19:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbjFVSS6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Jun 2023 14:18:58 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119BD210A
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 11:18:26 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5344d45bfb0so789855a12.1
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 11:18:26 -0700 (PDT)
+        with ESMTP id S229978AbjFVXW1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Jun 2023 19:22:27 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0202413E;
+        Thu, 22 Jun 2023 16:22:25 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35MIIqa0005813;
+        Thu, 22 Jun 2023 23:22:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=aFIuUdwTOdI+ESUS/bY8/dlkUf92ayx8tiZStrjaJVQ=;
+ b=DEcHky/RMsJAQKtXPbNiKM6ZnsOcFXiEVAdSQYeaj51pQ0nV/ppNeiFNuXMI8kWlfliU
+ V7hLofzb7wzz50y+CwmERDw4sVtl8hkpPzl22YqavCK4RFXxab4JCnOSAL0d7yAVD3GT
+ kHOPs+uWQmwsUOWrUOF3ktdJD31SB9Urf8JDT0hO2FU/xQGQN97GVzptFxdoacPqU5gH
+ oWXwZaVqB9W6u7GmH75/4CcSFh7+FmdhCOr16hUnr8/qKCmCTyd7+qAwYWvBmAGFrJO7
+ nR5krPl0Td3T8g2RFQF65Nh4nn+B89mXautTGyNIs1enUmDnJBnYPcGH5zJMuWsFzRQa yA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r94vcu40t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Jun 2023 23:22:19 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35MMdtLO029627;
+        Thu, 22 Jun 2023 23:22:19 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2044.outbound.protection.outlook.com [104.47.51.44])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r939e926h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Jun 2023 23:22:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mAGX3TnA1dI+cs6wc9urYKJHTqsBrkuNGfo82PvTqe1ZY2zNpc3n/XBbh3cUmdRqsRLU9WsgYx3UJqcEJlQtAGUVwyr9FKNsPUjnil9FWddQ5RqdEHUf++nlzOIVQIcuZVHGGcU/d5RJHp/sT6TbFB4W9RnFy/Yf/e+lgGlkJG6KnviQXaHrCw/6Otb5Qm1zSo4zgjbHtE1Q4rRfsHDmXy7cEH0g1Co8ixMnLuqG/0v9mNfxnVVxV+IQRQOVwi/KZfKeyWXZWku9j2Vz9AXXBgLjVui3ACbBWGISTK6H6AoJcTgLJvN6er60cVHOzsF47sr+UU9TbTZ6ex7Dt60fqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aFIuUdwTOdI+ESUS/bY8/dlkUf92ayx8tiZStrjaJVQ=;
+ b=GbSdznTusBuDbnPuvUwHzDY2YEh79kUYkScNxSRkisZnUekAUlqMEJVwn/DT3ZrJeRcmaLrlcJKkjn93WK99PdJXglXBc6ai4hkUtlr8/ElfBshUnaniUlijqg1DxzfgiXy1UoWRhix5oxDo0DcXV2w6qW/Ui7umE6jzU6hHczQaq41EHco3n3kkCKskcu/0H8Jb1BKlHQ/7nz5o6GiHcGPRPqatkLDKZJftmGWg0UfH2Ev1c806Jboki+yC/Vnt+xGZeHzj7/NgeHbs5xCKTaCvlLXoqJbZBG+8iYAFsmhfDbzavrRTSxY+3I5P8ivMLw6kZ1w2EhkbYWAfnMB52w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1687457905; x=1690049905;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XWnWUcqBTIQ0WvcOAsMMT3oK6jUxpq7lG6aGxYxq7dU=;
-        b=AcdKIcTW/4lxioEve+ZncPIxZNpZJnoZSQ2d6R0LGr5JFdkCZLi8ZWDZbPYG1prM9f
-         Bx3ewJqWK+r0YapUkuESm1buHFvnGe9MCn2XUGq24aYCZWhG2UVOfZMAbQSsdzQyYD19
-         Vtgw38S3IarXDyDBtoaFHljz/fv6dJJ8GZg//kE4K1kcB9SW/6IETUTBY2jcYT6BVIQs
-         qt9CoKHt2vSEn3u2hEm1Z6F4S9w3NBZ7Ar0Wlk2vzJQYUSSu84XFMmwuJ2xjvMUuFRRh
-         kjttFAh6zmGoDp5esamuW+0ao75+9CoEnhrmqwIPpnui2ptvYAINDXCoffA5OWmJRx4S
-         72Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687457905; x=1690049905;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XWnWUcqBTIQ0WvcOAsMMT3oK6jUxpq7lG6aGxYxq7dU=;
-        b=VHsd8vsQFA3o9ZfbERQ+VX/rz/9Vwxi/usMP8bzrEOi2lL3O2ImE4tLjzE14cSkt3a
-         B9+PE1r1WCsD/g1NT0I2tTvqWEJBTLrCHHPiGY6AaSf6nmRP6ZootYjh5gWJybbJmMPQ
-         Ez58mEQpOMrZvym+X6Wu0WMrhO1JNDwOJ6b83Sjuj42aEGB26lCj90OoX1iIUAZKgkMp
-         iGUiqUYw8W74ng68tJJHzuHnJRZNEzg80C7aH2Fzo9e75MGMP7Ut4vCe7F0ALA2gVrOZ
-         S0YuztZEeWDheca0qMzElkG+h94AUJfEibmn0F5xTEsNyeWku4nRWOagU/PKIUQhhuyw
-         XyBw==
-X-Gm-Message-State: AC+VfDxwRRsXzGDPx2WNxb2vvRjcp3pyCYgmsI5f/OTjGH9qomVMDhCM
-        2MI/eZxQR7RLMa49bXAlrFXg8Q==
-X-Google-Smtp-Source: ACHHUZ5+4PMEaOUfWj2rKzMayjGpomQAgDFoYMuZteB/Xn8V44SdVV0X6Q+VMgxbL+Y+mrHc4xB+Wg==
-X-Received: by 2002:a05:6a20:8f22:b0:111:ee3b:59a7 with SMTP id b34-20020a056a208f2200b00111ee3b59a7mr24948054pzk.5.1687457905428;
-        Thu, 22 Jun 2023 11:18:25 -0700 (PDT)
-Received: from [10.4.168.167] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id 17-20020aa79111000000b0062bc045bf4fsm4949135pfh.19.2023.06.22.11.18.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jun 2023 11:18:24 -0700 (PDT)
-Message-ID: <a66f4fa5-e614-9dd6-b5fb-fb1189322840@bytedance.com>
-Date:   Fri, 23 Jun 2023 02:18:14 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aFIuUdwTOdI+ESUS/bY8/dlkUf92ayx8tiZStrjaJVQ=;
+ b=DKYIIWIrASo9votsXWrYztujXrIs1NQZq8n9kiVy6O6xFBVBTlT52ElCfBeJkAm8mQGNnLkupRJ82N/ZSNEK0qr9sO53uRTQgSkhYiGKypvjCkthZvUlo5ErGnDW1vNX2XrpQuiy7OnQaJCxPiUl0D9bfGo4KOtgaKKrKQxSyHE=
+Received: from BY5PR10MB4306.namprd10.prod.outlook.com (2603:10b6:a03:211::7)
+ by PH0PR10MB4744.namprd10.prod.outlook.com (2603:10b6:510:3c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Thu, 22 Jun
+ 2023 23:22:12 +0000
+Received: from BY5PR10MB4306.namprd10.prod.outlook.com
+ ([fe80::c47d:6b46:cca6:7183]) by BY5PR10MB4306.namprd10.prod.outlook.com
+ ([fe80::c47d:6b46:cca6:7183%4]) with mapi id 15.20.6521.026; Thu, 22 Jun 2023
+ 23:22:12 +0000
+From:   Allison Henderson <allison.henderson@oracle.com>
+To:     "bongiojp@gmail.com" <bongiojp@gmail.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH 0/1] iomap regression for aio dio 4k writes
+Thread-Topic: [PATCH 0/1] iomap regression for aio dio 4k writes
+Thread-Index: AQHZpGemLQxFaGEY8UKjr2rFQnKyHa+Xd+6A
+Date:   Thu, 22 Jun 2023 23:22:12 +0000
+Message-ID: <c5f32ae1c760f3296c2d2dcff0399f331e94d775.camel@oracle.com>
+References: <20230621174114.1320834-1-bongiojp@gmail.com>
+In-Reply-To: <20230621174114.1320834-1-bongiojp@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        Dave Chinner <david@fromorbit.com>, tkhai@ya.ru,
-        roman.gushchin@linux.dev, "Darrick J. Wong" <djwong@kernel.org>,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
-        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-25-zhengqi.arch@bytedance.com>
- <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
- <bfcf8b34-2efc-258e-bcec-d6ce10220205@bytedance.com>
- <43CEA22D-3FF5-40CB-BF07-0FB9829EF778@gmail.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <43CEA22D-3FF5-40CB-BF07-0FB9829EF778@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu1 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR10MB4306:EE_|PH0PR10MB4744:EE_
+x-ms-office365-filtering-correlation-id: e3047c9f-5f49-41b7-a7cf-08db737781fe
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ybgzYye3L9mAYDEDSsbejKRX53WCzji76IFGIjPgq0StXu8aXQ3J5pzSPNSaoqgLDWADwFYZHRWvT24Osc679Z5kb6KiHtp1BrX9tcWtEyLcIypRJKrgfs0dml/CDjzNkxR5eDQJCSFv07lLpx7q1sS+k4GV48cf64696/LzOpT3dxbq6Gm+Pi9sI353ZLjfR7KTuUke1mIHdFb+5Nsmv/uIUrPf91VmjDGCLPDCWLILJvLp3eYPNJAzowaAZnQjKMQ11D4Oifjt6+tND1tzOTifx2esBrx+K8YMpQnB2oLt1gaay4m4lMM3jdGf0XKBU4OUIlDlc9I6k5LjHn9mkbX5TmEPE/9wRXrACKxJ1b6E3lfAYf0H7VSEZDUL3iKELz10KfZ5fR0KkSux9ASe9GpfAAZHkGtddV5HhCvgLg1JjiTAXnAY3ooADb6uKxasqWSKP3Z6tFBs+pOFBT7m9qsQq42fwHzKZA9nLUNm6twXMvuGEBrODvrcNJon4+hc1mPv0M+DbpaDe6kp1x43dCCgcQ/z1h3jEGV8qBJcTibhPcZfBPvhLR9KbBqRdXQGnVLa5OeBRQNhlEJ83EdpxBBYDCHnSGaMfCntGuYwjII=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4306.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199021)(76116006)(66446008)(478600001)(66946007)(54906003)(66476007)(64756008)(71200400001)(38070700005)(36756003)(66556008)(316002)(86362001)(6512007)(110136005)(186003)(6486002)(6506007)(966005)(38100700002)(2616005)(83380400001)(26005)(8936002)(5660300002)(8676002)(41300700001)(2906002)(4326008)(122000001)(44832011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bG9GYmwxWDlLcTZMSitHU05NKzJYTnhGam9Pa0xRd2Fod005SHBneURXLzYz?=
+ =?utf-8?B?T0lBMnBza1l5eUZRVzhONDhnRVRUTjF0WCtYaGRhNDF6VzZNcmwrUVNvSFN2?=
+ =?utf-8?B?bXNISzl4TkZScHdhZDF3VnU0WXFSVGNnc2VpM0o5VVllbEdQS2VtVWszWUJp?=
+ =?utf-8?B?dXg0K1QrcE5HYWJUZHNwSzF6eldlbTh6YXVSTHNxd0FoWTIwSkZ4b25aWkdH?=
+ =?utf-8?B?eDJjSE1LMlg3NEFUbm52V1J4ZmJOL1BzR3V0QlFMSWJQUWRsVmRObUdta2V2?=
+ =?utf-8?B?Z0pGblBRT01DaVRaNFVHaUNKLytrbStFZ0RRUWVvUEIwL3RJTFlyY2JQNlZI?=
+ =?utf-8?B?TWVKbHFyMkUySHRpZmwxSUQxNS9JY0ZtTDVCV0hGdDVyemZRd1dueEJDTXR1?=
+ =?utf-8?B?M1BEcHpkS3ZEU1hHOXIzdjNTV3c4UktXTVlRUWFaMTBVY3BKL3pJbG1OVnh3?=
+ =?utf-8?B?YXJOTjU1dVpkcmFhdzlCSEYyWUlaM2I5NW83dUVxdUg2RWFHbm5vSVltM29r?=
+ =?utf-8?B?SG1OMjluaHNjSW11K3pIMXN1ODJCQUpFNG1QS29qSmIvLzN6cFovZ050NjJR?=
+ =?utf-8?B?MXNVR1dYbWQ2QmY4dW55Y3ZFQzZNcEFCSWlKcDFDQ29pU1JLblFCMGZiRnBj?=
+ =?utf-8?B?WTBMQStiU1JIYkhXajRodzFFaGdrWklLcVNxYjVvM0lIN1VndmRjZS9vV09D?=
+ =?utf-8?B?MzUyT3pXN2RxalRUTTY5K0krUno0d05hUEhzWFRmVXlYY1E2OFR3SkR1dXZx?=
+ =?utf-8?B?bWpUUnptK2RORUlpM0tLQXF1cWNSbzFTZFBIcGVHN2s5cklEK0ZiTTNVSFpW?=
+ =?utf-8?B?Vi8za21OR3ZSaEdqZlpkQ2QybTlLa1JEaDZsWXBvUkZtWWVyclEzQVowS2g0?=
+ =?utf-8?B?N3ZQMmhKQUE4SmxodDc4WWlPTlhlWlh5Z3Y4YUpqdEhPNzZqd1NOb0d3WWQ5?=
+ =?utf-8?B?Rmx2TWZiK3ZMb3VYNkR1SG9UcGJJaFErM2kzMS9XVXNLVW1rT1pPSDV2dGk4?=
+ =?utf-8?B?emZWblc0Wjk1WFhJUkNBb2NpdnlyZjNHTjJhdlp1TXYrbGQ4UkRiSDlhZ2J1?=
+ =?utf-8?B?UkdGNm5BanBuaHVSTXNZUFQ0bk9uclJLN0ZMM2pIMjAxc3NBNy9PTjZjNWUx?=
+ =?utf-8?B?MUJiSGRZNjFGendsdzJ4RWJzeXdMbkdsR0VrN1M0U0E4QUN4dm5lNThJVVVO?=
+ =?utf-8?B?VzVpTUNZTTdUdVNNd3d2VHBYcXFiZ2k4YllFc1I3dkVPU1FzZEpHY1dRNnRH?=
+ =?utf-8?B?bXh5RTYzd0lHZ3dUVzZRZy9iK2VDeVJ6aFprWlcvMXFsbmFJV21MblBHMTRz?=
+ =?utf-8?B?cm1icWgrQzV4MXJSVzFQQk1JU05iMEFIbFdXaGgySXRYc2x3NGl2NkVMTFVY?=
+ =?utf-8?B?VUg2RFh2TFdmVGV4cmRGbGovZkJScEIzM1c0MDVUdEJ6UzlkTmxNVzFiaUM5?=
+ =?utf-8?B?UlJmejk0MUcrckk0SmNUVSszenRjV1AzRk9vWHpkZjQveWg5WlVmeVhON3VJ?=
+ =?utf-8?B?Q2E0VitreDdjQWc1N1FUM0pNeWtIaEh0TXl4WHUyMnMwR3IxZVEwM2NmbzBs?=
+ =?utf-8?B?M3J1T1dMSUtscm40Q3BtZkpBajY0RXZMU0NqOUR4b0I3UU9XSFBlekpSZ2cy?=
+ =?utf-8?B?U2U4aU9xUXdoNWsySGk5K1ZrR0JjaUxNM1krSlVpOWthSDNlN1lsTm9QVURN?=
+ =?utf-8?B?dW03ZXhFZFFPVzRTTTV2elk5c09qMG9FMU9sN05UVFZoZ0lkWVU0V0VFdnN2?=
+ =?utf-8?B?Y2taVDU1c2pqWnZQNG12UDdjUGhLUWlwZUo0OG5JUHJDQlpURGhuR01zb2xP?=
+ =?utf-8?B?d0FDb1M5bWRVRXQxdlQvTmhBZWVhUzlCZGs5a0FxbDFXOU94NndFbUZMVDJ0?=
+ =?utf-8?B?WFBtdHdMZ2NXaDNHc2ZxM3h5MW1ucjFsMmk5WWE1b1puTFNGZUVLTFRRQkdW?=
+ =?utf-8?B?UTg4aDVLYWdaVG8xcDY0MWF2L013NnB4eHNEWkcxZ0ZFVEJNNFVtOUdldFNa?=
+ =?utf-8?B?ZFRmcTRWTURRbE1XM2hyQklqUXVpYyt5QUdFR3hxaHUzTUtjb09FdkZTcU42?=
+ =?utf-8?B?TTRFenBROHFQVGJHaFEzcFZRZGxkZHo0ajhmTGNRUk5BQ0MzaWovZkRTTUJz?=
+ =?utf-8?B?N0xLNXpieW1BOW43L1lIYTZhUUV1aFVtc3JITlNGVFNncklNTW5WUm5obmEr?=
+ =?utf-8?B?Smc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <44A9A5040EAE6E47A8C49BB03F4685E7@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: VUaKy3H+X6+8nJSMYNd90IeeUm4YOD3iaefTXoFiyhhf28YCPwcNcX0om5+GfNZcv1+Llo+i7dwlaSOnJtVxaX1RMFEeMH+WRH2CKjO/9ewlkvUhsHtRk2nHOi/1EQAXKtdKu1ni8mpypbs5U5ZB5cdW8baDgbDabmUey1I+CsFhSyNsvlYDV1bujOjAezzrNBb2tjFL+zDnZe15qQMi1VtT7/npAuJOmqcS952VdtYfxfID96KAzJJfpQ43NLW/QYdEzjE8NhGtWj2sRDh2VialTWMZiAd1oqPNdwWRA7AanR8KVURsjcr/RoiZoq5ACZEO1gSZ/CneuskVaC+kREHecMpHJVUFRsE98WneGcHkSdoRhhJMKm3K6I2Rh4I8ntPeShfN20gKdt297jSLZ4nArx2xwVFBQK2QOwaHX5CyD+hXaV5mh75W8FJplFrUTA9z6CHWA+0vb6ZRKcxePFGGDxHk3xyuot3VGKOzzBKA0mO0nxVie7wtPQUPNJNig/ZHgbyOYbctW5EKCVtVz/dgDBEWnt9w8sIFRSJbyd/yqRbP7pRBs4cox6HPn7qj96s4ojXNZAUzJ4ppNxeNXtLSiJ9O78ni+M1rg1ZU2HlFIYGGoj+OnqyU0pCRXLsba45HWf/0unfSUHNePoaU7dXu/yjenygCcemoXeawrZaiW3RQ72Ymvwmw2WWH8vgomdM+WYhv5L1Qh2vFxotpAWRPdqAHl9LzT5wl8o/UgQX7ssDSyzldbsM4Xa2OORpQzRmoXtm7Ey7AULJYegU3S/hxZeslV1O4DzrIWh9r0s+nRR+bTcbJFxE9/gUahaE13GYY+SMwOKWVjBsbOz0lsA==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4306.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3047c9f-5f49-41b7-a7cf-08db737781fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2023 23:22:12.1916
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MI06/2MMGVNGua78qQFM148rZhqHrZcf330UWqZtWxqp+yGLheC8E/WEhD1jTE5HPWRcO65F8OfQ0Pb9hCuJcOPU3oY0fx64H84wKblgt7I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4744
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-22_17,2023-06-22_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=778 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306220201
+X-Proofpoint-GUID: xeII8sYGvhyvbB69aNSsExgUcEdIkmfi
+X-Proofpoint-ORIG-GUID: xeII8sYGvhyvbB69aNSsExgUcEdIkmfi
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 2023/6/23 01:41, Alan Huang wrote:
-> 
->> 2023年6月23日 上午12:42，Qi Zheng <zhengqi.arch@bytedance.com> 写道：
->>
->>
->>
->> On 2023/6/22 23:12, Vlastimil Babka wrote:
->>> On 6/22/23 10:53, Qi Zheng wrote:
->>>> The shrinker_rwsem is a global read-write lock in
->>>> shrinkers subsystem, which protects most operations
->>>> such as slab shrink, registration and unregistration
->>>> of shrinkers, etc. This can easily cause problems in
->>>> the following cases.
->>>>
->>>> 1) When the memory pressure is high and there are many
->>>>     filesystems mounted or unmounted at the same time,
->>>>     slab shrink will be affected (down_read_trylock()
->>>>     failed).
->>>>
->>>>     Such as the real workload mentioned by Kirill Tkhai:
->>>>
->>>>     ```
->>>>     One of the real workloads from my experience is start
->>>>     of an overcommitted node containing many starting
->>>>     containers after node crash (or many resuming containers
->>>>     after reboot for kernel update). In these cases memory
->>>>     pressure is huge, and the node goes round in long reclaim.
->>>>     ```
->>>>
->>>> 2) If a shrinker is blocked (such as the case mentioned
->>>>     in [1]) and a writer comes in (such as mount a fs),
->>>>     then this writer will be blocked and cause all
->>>>     subsequent shrinker-related operations to be blocked.
->>>>
->>>> Even if there is no competitor when shrinking slab, there
->>>> may still be a problem. If we have a long shrinker list
->>>> and we do not reclaim enough memory with each shrinker,
->>>> then the down_read_trylock() may be called with high
->>>> frequency. Because of the poor multicore scalability of
->>>> atomic operations, this can lead to a significant drop
->>>> in IPC (instructions per cycle).
->>>>
->>>> We used to implement the lockless slab shrink with
->>>> SRCU [1], but then kernel test robot reported -88.8%
->>>> regression in stress-ng.ramfs.ops_per_sec test case [2],
->>>> so we reverted it [3].
->>>>
->>>> This commit uses the refcount+RCU method [4] proposed by
->>>> by Dave Chinner to re-implement the lockless global slab
->>>> shrink. The memcg slab shrink is handled in the subsequent
->>>> patch.
->>>>
->>>> Currently, the shrinker instances can be divided into
->>>> the following three types:
->>>>
->>>> a) global shrinker instance statically defined in the kernel,
->>>> such as workingset_shadow_shrinker.
->>>>
->>>> b) global shrinker instance statically defined in the kernel
->>>> modules, such as mmu_shrinker in x86.
->>>>
->>>> c) shrinker instance embedded in other structures.
->>>>
->>>> For case a, the memory of shrinker instance is never freed.
->>>> For case b, the memory of shrinker instance will be freed
->>>> after the module is unloaded. But we will call synchronize_rcu()
->>>> in free_module() to wait for RCU read-side critical section to
->>>> exit. For case c, the memory of shrinker instance will be
->>>> dynamically freed by calling kfree_rcu(). So we can use
->>>> rcu_read_{lock,unlock}() to ensure that the shrinker instance
->>>> is valid.
->>>>
->>>> The shrinker::refcount mechanism ensures that the shrinker
->>>> instance will not be run again after unregistration. So the
->>>> structure that records the pointer of shrinker instance can be
->>>> safely freed without waiting for the RCU read-side critical
->>>> section.
->>>>
->>>> In this way, while we implement the lockless slab shrink, we
->>>> don't need to be blocked in unregister_shrinker() to wait
->>>> RCU read-side critical section.
->>>>
->>>> The following are the test results:
->>>>
->>>> stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
->>>>
->>>> 1) Before applying this patchset:
->>>>
->>>>   setting to a 60 second run per stressor
->>>>   dispatching hogs: 9 ramfs
->>>>   stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
->>>>                             (secs)    (secs)    (secs)   (real time) (usr+sys time)
->>>>   ramfs            880623     60.02      7.71    226.93     14671.45        3753.09
->>>>   ramfs:
->>>>            1 System Management Interrupt
->>>>   for a 60.03s run time:
->>>>      5762.40s available CPU time
->>>>         7.71s user time   (  0.13%)
->>>>       226.93s system time (  3.94%)
->>>>       234.64s total time  (  4.07%)
->>>>   load average: 8.54 3.06 2.11
->>>>   passed: 9: ramfs (9)
->>>>   failed: 0
->>>>   skipped: 0
->>>>   successful run completed in 60.03s (1 min, 0.03 secs)
->>>>
->>>> 2) After applying this patchset:
->>>>
->>>>   setting to a 60 second run per stressor
->>>>   dispatching hogs: 9 ramfs
->>>>   stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
->>>>                             (secs)    (secs)    (secs)   (real time) (usr+sys time)
->>>>   ramfs            847562     60.02      7.44    230.22     14120.66        3566.23
->>>>   ramfs:
->>>>            4 System Management Interrupts
->>>>   for a 60.12s run time:
->>>>      5771.95s available CPU time
->>>>         7.44s user time   (  0.13%)
->>>>       230.22s system time (  3.99%)
->>>>       237.66s total time  (  4.12%)
->>>>   load average: 8.18 2.43 0.84
->>>>   passed: 9: ramfs (9)
->>>>   failed: 0
->>>>   skipped: 0
->>>>   successful run completed in 60.12s (1 min, 0.12 secs)
->>>>
->>>> We can see that the ops/s has hardly changed.
->>>>
->>>> [1]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
->>>> [2]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
->>>> [3]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
->>>> [4]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
->>>>
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>> ---
->>>>   include/linux/shrinker.h |  6 ++++++
->>>>   mm/vmscan.c              | 33 ++++++++++++++-------------------
->>>>   2 files changed, 20 insertions(+), 19 deletions(-)
->>>>
->>>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
->>>> index 7bfeb2f25246..b0c6c2df9db8 100644
->>>> --- a/include/linux/shrinker.h
->>>> +++ b/include/linux/shrinker.h
->>>> @@ -74,6 +74,7 @@ struct shrinker {
->>>>     	refcount_t refcount;
->>>>   	struct completion completion_wait;
->>>> +	struct rcu_head rcu;
->>>>     	void *private_data;
->>>>   @@ -123,6 +124,11 @@ struct shrinker *shrinker_alloc_and_init(count_objects_cb count,
->>>>   void shrinker_free(struct shrinker *shrinker);
->>>>   void unregister_and_free_shrinker(struct shrinker *shrinker);
->>>>   +static inline bool shrinker_try_get(struct shrinker *shrinker)
->>>> +{
->>>> +	return refcount_inc_not_zero(&shrinker->refcount);
->>>> +}
->>>> +
->>>>   static inline void shrinker_put(struct shrinker *shrinker)
->>>>   {
->>>>   	if (refcount_dec_and_test(&shrinker->refcount))
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index 6f9c4750effa..767569698946 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -57,6 +57,7 @@
->>>>   #include <linux/khugepaged.h>
->>>>   #include <linux/rculist_nulls.h>
->>>>   #include <linux/random.h>
->>>> +#include <linux/rculist.h>
->>>>     #include <asm/tlbflush.h>
->>>>   #include <asm/div64.h>
->>>> @@ -742,7 +743,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
->>>>   	down_write(&shrinker_rwsem);
->>>>   	refcount_set(&shrinker->refcount, 1);
->>>>   	init_completion(&shrinker->completion_wait);
->>>> -	list_add_tail(&shrinker->list, &shrinker_list);
->>>> +	list_add_tail_rcu(&shrinker->list, &shrinker_list);
->>>>   	shrinker->flags |= SHRINKER_REGISTERED;
->>>>   	shrinker_debugfs_add(shrinker);
->>>>   	up_write(&shrinker_rwsem);
->>>> @@ -800,7 +801,7 @@ void unregister_shrinker(struct shrinker *shrinker)
->>>>   	wait_for_completion(&shrinker->completion_wait);
->>>>     	down_write(&shrinker_rwsem);
->>>> -	list_del(&shrinker->list);
->>>> +	list_del_rcu(&shrinker->list);
->>>>   	shrinker->flags &= ~SHRINKER_REGISTERED;
->>>>   	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->>>>   		unregister_memcg_shrinker(shrinker);
->>>> @@ -845,7 +846,7 @@ EXPORT_SYMBOL(shrinker_free);
->>>>   void unregister_and_free_shrinker(struct shrinker *shrinker)
->>>>   {
->>>>   	unregister_shrinker(shrinker);
->>>> -	kfree(shrinker);
->>>> +	kfree_rcu(shrinker, rcu);
->>>>   }
->>>>   EXPORT_SYMBOL(unregister_and_free_shrinker);
->>>>   @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
->>>>   	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
->>>>   		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
->>>>   -	if (!down_read_trylock(&shrinker_rwsem))
->>>> -		goto out;
->>>> -
->>>> -	list_for_each_entry(shrinker, &shrinker_list, list) {
->>>> +	rcu_read_lock();
->>>> +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
->>>>   		struct shrink_control sc = {
->>>>   			.gfp_mask = gfp_mask,
->>>>   			.nid = nid,
->>>>   			.memcg = memcg,
->>>>   		};
->>>>   +		if (!shrinker_try_get(shrinker))
->>>> +			continue;
->>>> +		rcu_read_unlock();
->>> I don't think you can do this unlock?
->>>> +
->>>>   		ret = do_shrink_slab(&sc, shrinker, priority);
->>>>   		if (ret == SHRINK_EMPTY)
->>>>   			ret = 0;
->>>>   		freed += ret;
->>>> -		/*
->>>> -		 * Bail out if someone want to register a new shrinker to
->>>> -		 * prevent the registration from being stalled for long periods
->>>> -		 * by parallel ongoing shrinking.
->>>> -		 */
->>>> -		if (rwsem_is_contended(&shrinker_rwsem)) {
->>>> -			freed = freed ? : 1;
->>>> -			break;
->>>> -		}
->>>> -	}
->>>>   -	up_read(&shrinker_rwsem);
->>>> -out:
->>>> +		rcu_read_lock();
->>> That new rcu_read_lock() won't help AFAIK, the whole
->>> list_for_each_entry_rcu() needs to be under the single rcu_read_lock() to be
->>> safe.
->>
->> In the unregister_shrinker() path, we will wait for the refcount to zero
->> before deleting the shrinker from the linked list. Here, we first took
->> the rcu lock, and then decrement the refcount of this shrinker.
->>
->>     shrink_slab                 unregister_shrinker
->>     ===========                 ===================
->> 				
->> 				/* wait for B */
->> 				wait_for_completion()
->>   rcu_read_lock()
->>
->>   shrinker_put() --> (B)
->> 				list_del_rcu()
->>                                 /* wait for rcu_read_unlock() */
->> 				kfree_rcu()
->>
->>   /*
->>    * so this shrinker will not be freed here,
->>    * and can be used to traverse the next node
->>    * normally?
->>    */
->>   list_for_each_entry()
->>
->>   shrinker_try_get()
->>   rcu_read_unlock()
->>
->> Did I miss something?
-> 
-> After calling rcu_read_unlock(), the next shrinker in the list can be freed,
-> so in the next iteration, use after free might happen?
-> 
-> Is that right?
-
-IIUC, are you talking about the following scenario?
-
-      shrink_slab                 unregister_shrinker a
-      ===========                 =====================
-		
-
-    rcu_read_unlock()	
-
-    /* next *shrinker b* was
-     * removed from shrinker_list.
-     */
-				/* wait for B */
-				wait_for_completion()
-    rcu_read_lock()
-
-    shrinker_put() --> (B)
-				list_del_rcu()
-                                  /* wait for rcu_read_unlock() */
-				kfree_rcu()
-
-    list_for_each_entry()
-
-    shrinker_try_get()
-    rcu_read_unlock()
-
-When the next *shrinker b* is deleted, the *shrinker a* has not been
-deleted from the shrinker_list, so it will point a->next to b->next.
-Then in the next iteration, we will get the b->next instead of b?
-
-
-> 
->>
->>> IIUC this is why Dave in [4] suggests unifying shrink_slab() with
->>> shrink_slab_memcg(), as the latter doesn't iterate the list but uses IDR.
->>>> +		shrinker_put(shrinker);
->>>> +	}
->>>> +	rcu_read_unlock();
->>>>   	cond_resched();
->>>>   	return freed;
->>>>   }
-> 
+T24gV2VkLCAyMDIzLTA2LTIxIGF0IDEwOjI5IC0wNzAwLCBKZXJlbXkgQm9uZ2lvIHdyb3RlOg0K
+PiBIaSBEYXJyaWNrIGFuZCBBbGxpc29uLA0KPiANCj4gVGhlcmUgaGFzIGJlZW4gYSBzdGFuZGlu
+ZyBwZXJmb3JtYW5jZSByZWdyZXNzaW9uIGludm9sdmluZyBBSU8gRElPDQo+IDRrLWFsaWduZWQg
+d3JpdGVzIG9uIGV4dDQgYmFja2VkIGJ5IGEgZmFzdCBsb2NhbCBTU0Qgc2luY2UgdGhlIHN3aXRj
+aA0KPiB0byBpb21hcC4gSSB0aGluayBpdCB3YXMgb3JpZ2luYWxseSByZXBvcnRlZCBhbmQgaW52
+ZXN0aWdhdGVkIGluIHRoaXMNCj4gdGhyZWFkOg0KPiBodHRwczovL3VybGRlZmVuc2UuY29tL3Yz
+L19faHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzg3bGY3cmtmZnYuZnNmQGNvbGxhYm9yYS5j
+b20vX187ISFBQ1dWNU45TTJSVjk5aFEhTDZwVTAtZzVYV2o1Mjk4aGozZXRMajlMVzExdDVHYTdj
+dlRNMWlEZjE1OG4xZ1RMb3QwcjBXRUxvenNsbHMwTHZKOFg5dmlsODFwT25fQ1FNZ0haeVEkDQo+
+IMKgDQo+IA0KPiBTaG9ydCB2ZXJzaW9uOg0KPiBQcmUtaW9tYXAsIGZvciBleHQ0IGFzeW5jIGRp
+cmVjdCB3cml0ZXMsIGFmdGVyIHRoZSBiaW8gaXMgd3JpdHRlbiB0bw0KPiBkaXNrDQo+IHRoZSBj
+b21wbGV0aW9uIGZ1bmN0aW9uIGlzIGNhbGxlZCBkaXJlY3RseSBkdXJpbmcgdGhlIGVuZGlvIHN0
+YWdlLg0KPiANCj4gUG9zdC1pb21hcCwgZm9yIGRpcmVjdCB3cml0ZXMsIGFmdGVyIHRoZSBiaW8g
+aXMgd3JpdHRlbiB0byBkaXNrLCB0aGUNCj4gY29tcGxldGlvbg0KPiBmdW5jdGlvbiBpcyBkZWZl
+cnJlZCB0byBhIHdvcmsgcXVldWUuIFRoaXMgYWRkcyBsYXRlbmN5IHRoYXQgaW1wYWN0cw0KPiBw
+ZXJmb3JtYW5jZSBtb3N0IG5vdGljZWFibHkgaW4gdmVyeSBmYXN0IFNTRHMuDQo+IA0KPiBEZXRh
+aWxlZCB2ZXJzaW9uOg0KPiBBIHBvc3NpYmxlIGV4cGxhbmF0aW9uIGlzIGJlbG93LCBmb2xsb3dl
+ZCBieSBhIGZldyBxdWVzdGlvbnMgdG8NCj4gZmlndXJlDQo+IG91dCB0aGUgcmlnaHQgd2F5IHRv
+IGZpeCBpdC4NCj4gDQo+IEluIDQuMTUsIGV4dDQgdXNlcyBmcy9kaXJlY3QtaW8uYy4gV2hlbiBh
+biBBSU8gRElPIHdyaXRlIGhhcw0KPiBjb21wbGV0ZWQNCj4gaW4gdGhlIG52bWUgZHJpdmVyLCB0
+aGUgaW50ZXJydXB0IGhhbmRsZXIgZm9yIHRoZSB3cml0ZSByZXF1ZXN0IGVuZHMNCj4gaW4gY2Fs
+bGluZyBiaW9fZW5kaW8oKSB3aGljaCBlbmRzIHVwIGNhbGxpbmcgZGlvX2Jpb19lbmRfYWlvKCku
+IEENCj4gZGlmZmVyZW50IGVuZF9pbyBmdW5jdGlvbiBpcyB1c2VkIGZvciBhc3luYyBhbmQgc3lu
+YyBpby4gSWYgdGhlcmUgYXJlDQo+IG5vIHBhZ2VzIG1hcHBlZCBpbiBtZW1vcnkgZm9yIHRoZSB3
+cml0ZSBvcGVyYXRpb24ncyBpbm9kZSwgdGhlbiB0aGUNCj4gY29tcGxldGlvbiBmdW5jdGlvbiBm
+b3IgZXh0NCBpcyBjYWxsZWQgZGlyZWN0bHkuIElmIHRoZXJlIGFyZSBwYWdlcw0KPiBtYXBwZWQs
+IHRoZW4gdGhleSBtaWdodCBiZSBkaXJ0eSBhbmQgbmVlZCB0byBiZSB1cGRhdGVkIGFuZCB3b3Jr
+DQo+IGlzIGRlZmVycmVkIHRvIGEgd29yayBxdWV1ZS4NCj4gDQo+IEhlcmUgaXMgdGhlIHJlbGV2
+YW50IDQuMTUgY29kZToNCj4gDQo+IGZzL2RpcmVjdC1pby5jOiBkaW9fYmlvX2VuZF9haW8oKQ0K
+PiBpZiAoZGlvLT5yZXN1bHQpDQo+IMKgwqDCoMKgwqDCoMKgIGRlZmVyX2NvbXBsZXRpb24gPSBk
+aW8tPmRlZmVyX2NvbXBsZXRpb24gfHwNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoZGlvX29wID09IFJFUV9PUF9XUklURSAmJg0KPiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRpby0+aW5v
+ZGUtPmlfbWFwcGluZy0+bnJwYWdlcyk7DQo+IGlmIChkZWZlcl9jb21wbGV0aW9uKSB7DQo+IMKg
+wqDCoMKgwqDCoMKgIElOSVRfV09SSygmZGlvLT5jb21wbGV0ZV93b3JrLCBkaW9fYWlvX2NvbXBs
+ZXRlX3dvcmspOw0KPiDCoMKgwqDCoMKgwqDCoCBxdWV1ZV93b3JrKGRpby0+aW5vZGUtPmlfc2It
+PnNfZGlvX2RvbmVfd3EsDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAm
+ZGlvLT5jb21wbGV0ZV93b3JrKTsNCj4gfSBlbHNlIHsNCj4gwqDCoMKgwqDCoMKgwqAgZGlvX2Nv
+bXBsZXRlKGRpbywgMCwgRElPX0NPTVBMRVRFX0FTWU5DKTsNCj4gfQ0KPiANCj4gQWZ0ZXIgZXh0
+NCBzd2l0Y2hlZCB0byB1c2luZyBpb21hcCwgdGhlIGVuZGlvIGZ1bmN0aW9uIGJlY2FtZQ0KPiBp
+b21hcF9kaW9fYmlvX2VuZF9pbygpIGluIGZzL2lvbWFwL2RpcmVjdC1pby5jLiBJbiBpb21hcCB0
+aGUgc2FtZSBlbmQNCj4gaW8NCj4gZnVuY3Rpb24gaXMgdXNlZCBmb3IgYm90aCBhc3luYyBhbmQg
+c3luYyBpby4gQWxsIHdyaXRlIHJlcXVlc3RzIHdpbGwNCj4gZGVmZXIgaW8gY29tcGxldGlvbiB0
+byBhIHdvcmsgcXVldWUgZXZlbiBpZiB0aGVyZSBhcmUgbm8gbWFwcGVkIHBhZ2VzDQo+IGZvciB0
+aGUgaW5vZGUuDQo+IA0KPiBIZXJlIGlzIHRoZSByZWxldmFudCBjb2RlIGluIGxhdGVzdCBrZXJu
+ZWwgKHBvc3QtaW9tYXApIC4uLg0KPiANCj4gZnMvaW9tYXAvZGlyZWN0LWlvLmM6IGlvbWFwX2Rp
+b19iaW9fZW5kX2lvKCkNCj4gaWYgKGRpby0+d2FpdF9mb3JfY29tcGxldGlvbikgew0KPiDCoMKg
+wqDCoMKgwqDCoMKgwqAgc3RydWN0IHRhc2tfc3RydWN0ICp3YWl0ZXIgPSBkaW8tPnN1Ym1pdC53
+YWl0ZXI7DQo+IMKgwqDCoMKgwqDCoMKgwqDCoCBXUklURV9PTkNFKGRpby0+c3VibWl0LndhaXRl
+ciwgTlVMTCk7DQo+IMKgwqDCoMKgwqDCoMKgwqDCoCBibGtfd2FrZV9pb190YXNrKHdhaXRlcik7
+DQo+IMKgwqAgfSBlbHNlIGlmIChkaW8tPmZsYWdzICYgSU9NQVBfRElPX1dSSVRFKSB7DQo+IMKg
+wqDCoMKgwqDCoMKgwqAgc3RydWN0IGlub2RlICppbm9kZSA9IGZpbGVfaW5vZGUoZGlvLT5pb2Ni
+LT5raV9maWxwKTsNCj4gDQo+IMKgwqDCoMKgwqDCoMKgwqAgV1JJVEVfT05DRShkaW8tPmlvY2It
+PnByaXZhdGUsIE5VTEwpOw0KPiDCoMKgwqDCoMKgwqDCoMKgIElOSVRfV09SSygmZGlvLT5haW8u
+d29yaywgaW9tYXBfZGlvX2NvbXBsZXRlX3dvcmspOw0KPiDCoMKgwqDCoMKgwqDCoMKgIHF1ZXVl
+X3dvcmsoaW5vZGUtPmlfc2ItPnNfZGlvX2RvbmVfd3EsICZkaW8tPmFpby53b3JrKTsNCj4gwqDC
+oCB9IGVsc2Ugew0KPiDCoMKgwqDCoMKgwqDCoMKgIFdSSVRFX09OQ0UoZGlvLT5pb2NiLT5wcml2
+YXRlLCBOVUxMKTsNCj4gwqDCoMKgwqDCoMKgwqDCoCBpb21hcF9kaW9fY29tcGxldGVfd29yaygm
+ZGlvLT5haW8ud29yayk7DQo+IH0NCj4gDQo+IFdpdGggdGhlIGF0dGFjaGVkIHBhdGNoLCBJIHNl
+ZSBzaWduaWZpY2FudGx5IGJldHRlciBwZXJmb3JtYW5jZSBpbg0KPiA1LjEwIHRoYW4gNC4xNS4g
+NS4xMCBpcyB0aGUgbGF0ZXN0IGtlcm5lbCB3aGVyZSBJIGhhdmUgZHJpdmVyIHN1cHBvcnQNCj4g
+Zm9yIGFuIFNTRCB0aGF0IGlzIGZhc3QgZW5vdWdoIHRvIHJlcHJvZHVjZSB0aGUgcmVncmVzc2lv
+bi4gSQ0KPiB2ZXJpZmllZCB0aGF0IHVwc3RyZWFtIGlvbWFwIHdvcmtzIHRoZSBzYW1lLg0KPiAN
+Cj4gVGVzdCByZXN1bHRzIHVzaW5nIHRoZSByZXByb2R1Y3Rpb24gc2NyaXB0IGZyb20gdGhlIG9y
+aWdpbmFsIHJlcG9ydA0KPiBhbmQgdGVzdGluZyB3aXRoIDRrLzhrLzEyay8xNmsgYmxvY2tzaXpl
+cyBhbmQgd3JpdGUtb25seToNCj4gaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8v
+cGVvcGxlLmNvbGxhYm9yYS5jb20vKmtyaXNtYW4vZGlvL3dlZWsyMS9iZW5jaC5zaF9fO2ZnISFB
+Q1dWNU45TTJSVjk5aFEhTDZwVTAtZzVYV2o1Mjk4aGozZXRMajlMVzExdDVHYTdjdlRNMWlEZjE1
+OG4xZ1RMb3QwcjBXRUxvenNsbHMwTHZKOFg5dmlsODFwT25fQ3BuaFZYZmckDQo+IMKgDQo+IA0K
+PiBmaW8gYmVuY2htYXJrIGNvbW1hbmQ6DQo+IGZpbyAtLWlvZW5naW5lIGxpYmFpbyAtLXNpemU9
+MkcgLS1kaXJlY3Q9MSAtLWZpbGVuYW1lPSR7TU5UfS9maWxlIC0tDQo+IGlvZGVwdGg9NjQgXA0K
+PiAtLXRpbWVfYmFzZWQ9MSAtLXRocmVhZD0xIC0tb3ZlcndyaXRlPTEgLS1icz0ke0JTfSAtLXJ3
+PSRSVyBcDQo+IC0tbmFtZSAiYHVuYW1lIC1yYC0ke1RZUEV9LSR7Uld9LSR7QlN9LSR7RlN9IiBc
+DQo+IC0tcnVudGltZT0xMDAgLS1vdXRwdXQtZm9ybWF0PXRlcnNlID4+ICR7TE9HfQ0KPiANCj4g
+Rm9yIDQuMTUsIHdpdGggYWxsIHdyaXRlIGNvbXBsZXRpb25zIGNhbGxlZCBpbiBpbyBoYW5kbGVy
+Og0KPiA0azrCoCBidz0xMDU2TWlCL3MNCj4gOGs6wqAgYnc9MjA4Mk1pQi9zDQo+IDEyazogYnc9
+MjMzMk1pQi9zDQo+IDE2azogYnc9MjQ1M01pQi9zDQo+IA0KPiBGb3IgdW5tb2RpZmllZCA1LjEw
+LCB3aXRoIGFsbCB3cml0ZSBjb21wbGV0aW9ucyBkZWZlcnJlZDoNCj4gNGs6wqAgYnc9MTAwNE1p
+Qi9zDQo+IDhrOsKgIGJ3PTIwNzRNaUIvcw0KPiAxMms6IGJ3PTIzMDlNaUIvcw0KPiAxNms6IGJ3
+PTI0NjVNaUIvcw0KPiANCj4gRm9yIG1vZGlmaWVkIDUuMTAsIHdpdGggYWxsIHdyaXRlIGNvbXBs
+ZXRpb25zIGNhbGxlZCBpbiBpbyBoYW5kbGVyOg0KPiA0azrCoCBidz0xMTkzTWlCL3MNCj4gOGs6
+wqAgYnc9MjI1OE1pQi9zDQo+IDEyazogYnc9MjM0Nk1pQi9zDQo+IDE2azogYnc9MjQ0Nk1pQi9z
+DQo+IA0KPiBRdWVzdGlvbnM6DQo+IA0KPiBXaHkgZGlkIGlvbWFwIGZyb20gdGhlIGJlZ2lubmlu
+ZyBub3QgbWFrZSB0aGUgYXN5bmMvc3luYyBpbyBhbmQNCj4gbWFwcGVkL3VubWFwcGVkIGRpc3Rp
+bmN0aW9uIHRoYXQgZnMvZGlyZWN0LWlvLmMgZGlkPw0KPiANCj4gU2luY2Ugbm8gaXNzdWVzIGhh
+dmUgYmVlbiBmb3VuZCBmb3IgZXh0NCBjYWxsaW5nIGNvbXBsZXRpb24gd29yaw0KPiBkaXJlY3Rs
+eSBpbiB0aGUgaW8gaGFuZGxlciBwcmUtaW9tYXAsIGl0IGlzIHVubGlrZWx5IHRoYXQgdGhpcyBp
+cw0KPiB1bnNhZmUgKHNsZWVwaW5nIHdpdGhpbiBhbiBpbyBoYW5kbGVyIGNhbGxiYWNrKS4gSG93
+ZXZlciwgdGhpcyBtYXkNCj4gbm90DQo+IGJlIHRydWUgZm9yIGFsbCBmaWxlc3lzdGVtcy4gRG9l
+cyBYRlMgcG90ZW50aWFsbHkgc2xlZXAgaW4gaXRzDQo+IGNvbXBsZXRpb24gY29kZT8NCj4gDQo+
+IEFsbGlzb24sIFRlZCBtZW50aW9uZWQgeW91IHNhdyBhIHNpbWlsYXIgcHJvYmxlbSB3aGVuIGRv
+aW5nDQo+IHBlcmZvcm1hbmNlIHRlc3RpbmcgZm9yIHRoZSBsYXRlc3QgdmVyc2lvbiBvZiBVbmJy
+ZWFrYWJsZSBMaW51eC4gQ2FuDQo+IHlvdSB0ZXN0L3ZlcmlmeSB0aGlzIHBhdGNoIGFkZHJlc3Nl
+cyB5b3VyIHBlcmZvcm1hbmNlIHJlZ3Jlc3Npb24gYXMNCj4gd2VsbD8NCkhpIEplcmVteSzCoA0K
+DQpTdXJlIEkgY2FuIGxpbmsgdGhpcyBwYXRjaCB0byB0aGUgYnVnIHJlcG9ydCB0byBzZWUgaWYg
+dGhlIHRlc3RlciBzZWVzDQphbnkgaW1wcm92ZW1lbnRzLiAgSWYgYW55dGhpbmcsIEkgdGhpbmsg
+aXQncyBhIGdvb2QgZGF0YSBwb2ludCB0byBoYXZlLA0KZXZlbiBpZiB3ZSBhcmUgc3RpbGwgY29u
+c2lkZXJpbmcgb3RoZXIgc29sdXRpb25zLiAgVGhhbmtzIQ0KDQpBbGxpc29uDQoNCj4gDQo+IEpl
+cmVteSBCb25naW8gKDEpOg0KPiDCoCBGb3IgRElPIHdyaXRlcyB3aXRoIG5vIG1hcHBlZCBwYWdl
+cyBmb3IgaW5vZGUsIHNraXAgZGVmZXJyaW5nDQo+IMKgwqDCoCBjb21wbGV0aW9uLg0KPiANCj4g
+wqBmcy9pb21hcC9kaXJlY3QtaW8uYyB8IDQgKysrLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQoNCg==
