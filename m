@@ -2,66 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A49FE73B887
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 15:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6019173B8B4
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 15:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbjFWNNY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jun 2023 09:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        id S231138AbjFWNYm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jun 2023 09:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbjFWNNS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 09:13:18 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FE82685
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Jun 2023 06:12:52 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b5079b8cb3so1370345ad.1
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Jun 2023 06:12:52 -0700 (PDT)
+        with ESMTP id S231159AbjFWNYl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 09:24:41 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F5B268C
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Jun 2023 06:24:36 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-780c89d1998so2499439f.1
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Jun 2023 06:24:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1687525972; x=1690117972;
+        d=bytedance.com; s=google; t=1687526676; x=1690118676;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ztC9JD/gutKJP42tTw7xRzDnyP1Mlz22AqRtCxWHul4=;
-        b=iReOyCzgXqjGHDqep4+7Y02y+2KsxvqbysTBx4QdxMakwFT9O9Z6y8UTRhYCpdiwGk
-         ivfBmaLpXRLdsg2xXtWNoGf0LJW9OuaoWVHjbG5+PmrhjKOTehTkz5xr7u03dJPl3Vvf
-         epR4VYk9iCpPZkMT+p54jmiUndhguXzeWsKZiPn3OwVHy+V1VU+7xSZ1lgncoZQcneJS
-         pVLxKUfpwqKrHzPfUfH95joX35kksCvYI/qVSfPkEqAU61Mo8RwQARiYkcVaAbzt+5qk
-         cYcyAi42FXf01kq9CxVaIQAWB9c34fULDSPKve/N0V/DkCTafLxv3dWbsj8Ke3WxSlSL
-         ozRA==
+        bh=gz92l7DBmLTrf6935v1JTyj18AL7FL04QRL4qQAWqJU=;
+        b=gIWwtDXxJuivuEsWsn7sqCZTBLYzZCSIZH5HGE4qZ8EWB5QUXMWkTscVi5K7m3pLUb
+         AWoNDhJ8ESx9DRpn3UGCp2Uvm2dath67lulczhMMzXUHSfw+KuuuWZKZ5vDu4lXfHnd5
+         hQR/vcg8QKo72hHneWZ3miZE29ysHMJmApIFRQ1SzZroa/a+qdV6Dpe2uLtETWZSf5Di
+         DwUbZUrml+/apF9HoV5pAAcN8e5k4Mr7obMwZugAwGAvvUEtH2WFBgfX4jOKDMjPri+A
+         N84eYclRTYh7THW7IcSdjB8iFp8xE+GCdJYVPjGEA03gXDcctC8fDrc4P9qjfAoL/G9z
+         jxWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687525972; x=1690117972;
+        d=1e100.net; s=20221208; t=1687526676; x=1690118676;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ztC9JD/gutKJP42tTw7xRzDnyP1Mlz22AqRtCxWHul4=;
-        b=YQFCu77RJh8wPLOiUzfqtDFi7hj+/LkIjVErXn6yl/dxjRetupY/elQ1d1C7nCyd1n
-         QZhrd4GmDjJjthcO02qiOuSJQNdi5b6u3AX05URDJah7quq+6FTj/USIMn6gfR7e7wgT
-         tctsTyKZFPlzSIlx0MsykDDd1CaGc/rQz9QufSfeq9EUhWCsAya2tuYWVLc6IQMO1jFq
-         sZ+kFBNxIBEPBnA23Xn344tl5+70cXuGd2FdXYQRs915g6yV4vZ4loNYlw8Ev0nliIJA
-         mwR7otqyTYkcZn73AmRyGlo1MUFUQ/u77CjmH/qFtwIu2iVfRRDR/CUNr6lUep0Ev8l3
-         +LTw==
-X-Gm-Message-State: AC+VfDw1Llybh80/2sZHJHel2FNSgd7WW+3NDTqRoTRSsj2r/05zYN4r
-        N10sKEF7zKEQm4lXp0tepVDFFg==
-X-Google-Smtp-Source: ACHHUZ78dOQlFEQQrAnXInKb8JKnRB3NkeUnqCzTvDvkAqdG76W+IPYWNvfD8Ue2cdvcaNnPedDi+w==
-X-Received: by 2002:a17:902:dac6:b0:1ac:656f:a68d with SMTP id q6-20020a170902dac600b001ac656fa68dmr25602985plx.4.1687525971804;
-        Fri, 23 Jun 2023 06:12:51 -0700 (PDT)
+        bh=gz92l7DBmLTrf6935v1JTyj18AL7FL04QRL4qQAWqJU=;
+        b=aq9y3DdW+TWLpwO8AUuJ5vJELHOU5G7EN+1IVC/D+EzvSDSlYW24ObbjafSu5SzqCF
+         fWtuxS9qSYKxj/vYrniMef7tfdD4HLnc8wYWugswfzVsqK21z517JkDFJ18il99JBvhV
+         +NApvFi2J0YLT9D9nHDm3PNBJjxOcOaeErj1OX29REx4evLb3ir97tEkYno9Hqkz2CKN
+         YGvNya53moQsqB7P7e41G215ZMEjJO+b0bFwwM56s2qLAWsSaJs5bU7NWQfKgu7Z1F9E
+         yw6fNoXWDbjAo+lwUfyXfmrK2vTsZ7iUXz2SUnC9YNxjPzlLl7vPX94tMrWc2ukJQLb9
+         qsxQ==
+X-Gm-Message-State: AC+VfDw9tEIXwAAf08HG0BGk4VT8TDUdoVOc8JD/+yPHS2fvxJuENil6
+        EtD009xVzIv7c3iBQ06vazcHAg==
+X-Google-Smtp-Source: ACHHUZ5gEbRKgAaE+N8YtReVmyo3V0rllQa6wCPNTx2RvtSftj/ir5NFrmfS2AckYJcn//Bnc41ZpQ==
+X-Received: by 2002:a6b:1581:0:b0:780:c6bb:ad8d with SMTP id 123-20020a6b1581000000b00780c6bbad8dmr5508761iov.0.1687526676020;
+        Fri, 23 Jun 2023 06:24:36 -0700 (PDT)
 Received: from [10.4.168.167] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170903234f00b001b694130c05sm5473889plh.1.2023.06.23.06.12.44
+        by smtp.gmail.com with ESMTPSA id w5-20020a17090a380500b0025bcdada95asm1562852pjb.38.2023.06.23.06.24.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jun 2023 06:12:51 -0700 (PDT)
-Message-ID: <792beadd-7597-ec8c-e3b1-d8274d68d8c1@bytedance.com>
-Date:   Fri, 23 Jun 2023 21:12:42 +0800
+        Fri, 23 Jun 2023 06:24:35 -0700 (PDT)
+Message-ID: <f8d924e7-8faf-438d-4d2f-5f806ef88a49@bytedance.com>
+Date:   Fri, 23 Jun 2023 21:24:25 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.12.0
 Subject: Re: [PATCH 29/29] mm: shrinker: move shrinker-related code into a
  separate file
 Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, roman.gushchin@linux.dev,
-        djwong@kernel.org, brauner@kernel.org, paulmck@kernel.org,
-        tytso@mit.edu
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
         linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
@@ -71,9 +71,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-btrfs@vger.kernel.org
 References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
  <20230622085335.77010-30-zhengqi.arch@bytedance.com>
- <f90772f6-11fe-0d8a-7b1c-d630b884d775@suse.cz>
+ <20230623052554.GA11471@google.com>
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <f90772f6-11fe-0d8a-7b1c-d630b884d775@suse.cz>
+In-Reply-To: <20230623052554.GA11471@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,21 +86,78 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Vlastimil,
+Hi Sergey,
 
-On 2023/6/22 22:53, Vlastimil Babka wrote:
-> On 6/22/23 10:53, Qi Zheng wrote:
->> The mm/vmscan.c file is too large, so separate the shrinker-related
->> code from it into a separate file. No functional changes.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+On 2023/6/23 13:25, Sergey Senozhatsky wrote:
+> On (23/06/22 16:53), Qi Zheng wrote:
+>> +/*
+>> + * Remove one
+>> + */
+>> +void unregister_shrinker(struct shrinker *shrinker)
+>> +{
+>> +	struct dentry *debugfs_entry;
+>> +	int debugfs_id;
+>> +
+>> +	if (!(shrinker->flags & SHRINKER_REGISTERED))
+>> +		return;
+>> +
+>> +	shrinker_put(shrinker);
+>> +	wait_for_completion(&shrinker->completion_wait);
+>> +
+>> +	mutex_lock(&shrinker_mutex);
+>> +	list_del_rcu(&shrinker->list);
 > 
-> Maybe do this move as patch 01 so the further changes are done in the new
-> file already?
+> Should this function wait for RCU grace period(s) before it goes
+> touching shrinker fields?
 
-Sure, I will do it in the v2.
+Why? We will free this shrinker instance by rcu after executing
+unregister_shrinker(). So it is safe to touch shrinker fields here.
+
+> 
+>> +	shrinker->flags &= ~SHRINKER_REGISTERED;
+>> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>> +		unregister_memcg_shrinker(shrinker);
+>> +	debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
+>> +	mutex_unlock(&shrinker_mutex);
+>> +
+>> +	shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+>> +
+>> +	kfree(shrinker->nr_deferred);
+>> +	shrinker->nr_deferred = NULL;
+>> +}
+>> +EXPORT_SYMBOL(unregister_shrinker);
+> 
+> [..]
+> 
+>> +void shrinker_free(struct shrinker *shrinker)
+>> +{
+>> +	kfree(shrinker);
+>> +}
+>> +EXPORT_SYMBOL(shrinker_free);
+>> +
+>> +void unregister_and_free_shrinker(struct shrinker *shrinker)
+>> +{
+>> +	unregister_shrinker(shrinker);
+>> +	kfree_rcu(shrinker, rcu);
+>> +}
+> 
+> Seems like this
+> 
+> 	unregister_shrinker();
+> 	shrinker_free();
+> 
+> is not exact equivalent of this
+> 
+> 	unregister_and_free_shrinker();
+
+Yes, my original intention is that shrinker_free() is only used to
+handle the case where register_shrinker() returns failure.
+
+I will implement the method suggested by Dave in 02/29. Those APIs are
+more concise and will bring more benefits. :)
 
 Thanks,
 Qi
 
-> 
+
+
