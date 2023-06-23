@@ -2,129 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B8973AF8C
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 06:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA9B73AFCA
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 07:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjFWErE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jun 2023 00:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
+        id S231433AbjFWF0J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jun 2023 01:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjFWErD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 00:47:03 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D559B
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 21:47:02 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-196.bstnma.fios.verizon.net [173.48.111.196])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35N4kBao028696
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jun 2023 00:46:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687495576; bh=OEyKCoUungp0u3TZdsQ1kTkqvt2C/vIWCgVVJqjpu8M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=i4S4C4NoQoCxVg8tZZiZoUSZ0Dx8tEIDgAR61N4OW7H/tJCrmvxvqTtSLJUnTzhoh
-         hiUahurRQtLKlqJJiyrIt0n/fSTHeOs+gkj9badQ71ADpxRzl4v0367juF0M3w8KDB
-         mPd3DBXVw0C0ySkgJWBb/8dLZHVnY7aS5jw12BZ36IiEnLUW6Hv0erbvdoaOkE/uq5
-         gKBV/ufV6fO4d3T5BMFrWGmBmnKW4zR6YZZ+lQBeNmvKJlwkypKogPmYo/ElxpWyv2
-         CzkI173ev6S9xeSwiJ0gEqLUbkPHpKuWjfNRz29yZJLMOFhrnvtFIdk31bCb8TmiMf
-         W4s7xPdHFfZ6A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6249015C027E; Fri, 23 Jun 2023 00:46:11 -0400 (EDT)
-Date:   Fri, 23 Jun 2023 00:46:11 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Sean Greenslade <sean@seangreenslade.com>,
-        linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: RO mount of ext4 filesystem causes writes
-Message-ID: <20230623044611.GD34229@mit.edu>
-References: <ZIauBR7YiV3rVAHL@glitch>
- <ZIa5P1HqE62rmzqu@debian.me>
- <ZJTv+it2x/glkmpp@debian.me>
+        with ESMTP id S230237AbjFWF0H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 01:26:07 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4A6212C
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 22:26:02 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b6824141b4so10167955ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 22:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1687497961; x=1690089961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I74A3FzNlMiWSwenHJ0qW6K9Kk3RrnXa52gDQFbNI94=;
+        b=FE8O7Vw+I3Rj3/ymdkfv8Bc+lpDZ080s6kF+VZ6KYuJ8IcvSDzEvJHrYtehbevzDKJ
+         k39KSog3mD45RBSDswKQweqzUA8WL0SL0uOXty3tY4QBaCgZzpYfPiVwVN0bS3NDj5Wp
+         Vlnc7que1gB/FOXny+Xqd3OrpA8296BqQ44lM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687497961; x=1690089961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I74A3FzNlMiWSwenHJ0qW6K9Kk3RrnXa52gDQFbNI94=;
+        b=fFBvlds7A7YrAoB4MWyzWJISQl+NQEVCmz2sActGLgIl03m+QVvQCex98MsrSh0G3B
+         frTvWcg0WapaSV1Igcwcm5zV+FKwtWy7PT9NKBDPORFMNquNTLzJtDqQffYFsRwvRjp3
+         rU1w+H57i/bcv66wSFYA2gvkDBdhTW/FYh+53PT5UnetTU6HKrg3shYhufwGTTl2G1jS
+         EPN19Pw/4guxezD5DyeLr4eLTtc/vixfwa493421t65HLUjmuFfQo5tTKHQ8pC8SmdH9
+         F8iQ3XtxplS0RGxj/dKfSEwjbwNhqaeTcLUNEWiHgOvYreIUwGqjIpZngvDJTcebOZs8
+         DlSw==
+X-Gm-Message-State: AC+VfDzEfzX17dg0TMKOgq+fVeqp7P5Oaop/49yhaGevkzSMwJTyDMm5
+        20tG8dnTfSn6ulu0i6GSa89Baw==
+X-Google-Smtp-Source: ACHHUZ5sPbLx4vVXAJjIGembGjCJJyMTydKicDo1snyQX4c1P9pglVj/z3vqORh1yZ2I9l32bGJbWQ==
+X-Received: by 2002:a17:902:ecc6:b0:1ae:8fa:cd4c with SMTP id a6-20020a170902ecc600b001ae08facd4cmr41235916plh.7.1687497961344;
+        Thu, 22 Jun 2023 22:26:01 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:3383:b451:fa2:1538])
+        by smtp.gmail.com with ESMTPSA id c1-20020a170902d48100b00192aa53a7d5sm6288753plg.8.2023.06.22.22.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 22:26:00 -0700 (PDT)
+Date:   Fri, 23 Jun 2023 14:25:54 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 29/29] mm: shrinker: move shrinker-related code into a
+ separate file
+Message-ID: <20230623052554.GA11471@google.com>
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-30-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZJTv+it2x/glkmpp@debian.me>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230622085335.77010-30-zhengqi.arch@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 23, 2023 at 08:06:02AM +0700, Bagas Sanjaya wrote:
-> 
-> No reply so far from the culprit author (Ye Bin) nor from Ted. Can
-> you help in this case?
+On (23/06/22 16:53), Qi Zheng wrote:
+> +/*
+> + * Remove one
+> + */
+> +void unregister_shrinker(struct shrinker *shrinker)
+> +{
+> +	struct dentry *debugfs_entry;
+> +	int debugfs_id;
+> +
+> +	if (!(shrinker->flags & SHRINKER_REGISTERED))
+> +		return;
+> +
+> +	shrinker_put(shrinker);
+> +	wait_for_completion(&shrinker->completion_wait);
+> +
+> +	mutex_lock(&shrinker_mutex);
+> +	list_del_rcu(&shrinker->list);
 
-There's been no reply because I haven't been able to replicate it, and
-I didn't have the time do enough work to convince myself the report
-was bogus.  At this point, I have spent time trying to reproduce it,
-and I've had no luck.
+Should this function wait for RCU grace period(s) before it goes
+touching shrinker fields?
 
-So, unless you can give me a simple set of reproduction instructions,
-I'm going to have to treat this report is invalid.
+> +	shrinker->flags &= ~SHRINKER_REGISTERED;
+> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> +		unregister_memcg_shrinker(shrinker);
+> +	debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
+> +	mutex_unlock(&shrinker_mutex);
+> +
+> +	shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+> +
+> +	kfree(shrinker->nr_deferred);
+> +	shrinker->nr_deferred = NULL;
+> +}
+> +EXPORT_SYMBOL(unregister_shrinker);
 
-Regards,
+[..]
 
-						- Ted
+> +void shrinker_free(struct shrinker *shrinker)
+> +{
+> +	kfree(shrinker);
+> +}
+> +EXPORT_SYMBOL(shrinker_free);
+> +
+> +void unregister_and_free_shrinker(struct shrinker *shrinker)
+> +{
+> +	unregister_shrinker(shrinker);
+> +	kfree_rcu(shrinker, rcu);
+> +}
 
-Note: this test was done using kvm-xfstests which can be found
-https://github.com/tytso/xfstests-bld using the install-kconfig and
-the kbuild script that can also be found in this report.  So if you
-want to play along from home, feel free.  :-)
+Seems like this
 
+	unregister_shrinker();
+	shrinker_free();
 
-root@kvm-xfstests:~# mkfs.ext4 /dev/vdc
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done                            
-Creating filesystem with 1310720 4k blocks and 327680 inodes
-Filesystem UUID: fe434060-6731-4b40-a94a-3a8517df0660
-Superblock backups stored on blocks: 
-        32768, 98304, 163840, 229376, 294912, 819200, 884736
+is not exact equivalent of this
 
-Allocating group tables: done                            
-Writing inode tables: done                            
-Creating journal (16384 blocks): done
-Writing superblocks and filesystem accounting information: done 
-
-root@kvm-xfstests:~# md5sum /dev/vdc
-fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
-root@kvm-xfstests:~# mount -o ro /dev/vdc /mnt
-[  472.893614] EXT4-fs (vdc): orphan cleanup on readonly fs
-[  472.894022] EXT4-fs (vdc): mounted filesystem fe434060-6731-4b40-a94a-3a8517df0660 ro with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# umount /mnt
-[  475.698053] EXT4-fs (vdc): unmounting filesystem fe434060-6731-4b40-a94a-3a8517df0660.
-root@kvm-xfstests:~# md5sum /dev/vdc
-fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
-
-Hmm.... OK, let's try it with LUKS, even though that *really*
-shouldn't make a difference.  The cryptsetup lukeFormat and mkfs.ext4
-steps are skipped here.  Also, note that I had to manually edit the
-.config file to enable CONFIG_DM_CRYPT, since I dm_crypt is used by
-xfstests, so my install-kconfig script doesn't enable CONFIG_DM_CRYPT.
-
-
-root@kvm-xfstests:~# uname -a
-Linux kvm-xfstests 6.4.0-rc6-xfstests-lockdep #200 SMP PREEMPT_DYNAMIC Fri Jun 23 00:33:39 EDT 2023 x86_64 GNU/Linux
-
-root@kvm-xfstests:~# md5sum /dev/vdc
-28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
-root@kvm-xfstests:~# cryptsetup luksOpen /dev/vdc test
-Enter passphrase for /dev/vdc: 
-root@kvm-xfstests:~# mount -o ro /dev/mapper/test /mnt
-[  812.073771] EXT4-fs (dm-0): orphan cleanup on readonly fs
-[  812.074306] EXT4-fs (dm-0): mounted filesystem ac3f76f1-da0a-426e-85b2-08526afb2224 ro with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# umount /mnt
-[  814.383016] EXT4-fs (dm-0): unmounting filesystem ac3f76f1-da0a-426e-85b2-08526afb2224.
-root@kvm-xfstests:~# cryptsetup luksClose /dev/mapper/test
-[  830.001992] dm-0: detected capacity change from 10452992 to 0
-root@kvm-xfstests:~# md5sum /dev/vdc
-28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
-
-
+	unregister_and_free_shrinker();
