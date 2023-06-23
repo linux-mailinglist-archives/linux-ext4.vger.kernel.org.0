@@ -2,82 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BD873B090
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 08:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BB173B0A3
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 08:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjFWGMM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jun 2023 02:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S231209AbjFWGSO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jun 2023 02:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjFWGML (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 02:12:11 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DFA10F8
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:12:08 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76243a787a7so18731585a.2
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687500728; x=1690092728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g6Rx1Xf0LH0dvCkca5awQZbD4QgAJXvuKCZBBi/mUhU=;
-        b=SecpzgOSYBos+0sqL4EbPW75FGWVTx9L5r0t3G2iuevcqFrKG4F/tLNs6eWS22kOmh
-         C0PZvcjnf7UYxgnqR+bpG0mTlEGom1YtlVhT3auz/n35x7KxiTrn9uMCHEu7lYc1dP6p
-         eY+aw4EnvIi6B8fviKsKoQH1Jzl15W85hgTxNUcsJ3dNHiRrVQFHxysMeC3SWqeWxnsy
-         yeeVzTshwEBU92s9eN4WsR3lm2qnu+8pne5nYPYtXC9PnDXRC5K4UnNnq5jjmfz2fAMm
-         luXgCfjy27KBowEi38EwnMkC5XGcuX6tyW21/tEwr1FrSp+rGCyLdSsWF3R6DJsSbivl
-         1Q3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687500728; x=1690092728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g6Rx1Xf0LH0dvCkca5awQZbD4QgAJXvuKCZBBi/mUhU=;
-        b=MWJoW3ifRRV4yOsxTs3cMUCWOOo1DkAT1feIlyGYX7JbQeWIOnAGPpLbVM6NXnB7gx
-         8ykzo0yFVkpM5Nz7zWPdTHbZPL9ZoQHEkPpMg0Ghn8qI4q8IugsGM3B1TGsOvIDy2Icl
-         09Exob36cZp3F3vBMXf4KBaWr1V9Nh562U8xzDPU69O/TbyeyD1R3oerbooLkNAoLnZ/
-         oyc3JYtdKpv/yiLyRCauZ32DDzmBERsANk4QRDj1HaroFCIS114nDfOgXKImwTj7Lpf5
-         oEsJJ2cgQi4WQ0BDKWevadDA8GVVUQFnabLKHc6gm9zUWf1iZIKSuCIfl/pZFKXqz22S
-         gDOg==
-X-Gm-Message-State: AC+VfDwvUj7ViXC8HLhH0bGlVjPQ4poxW2ZMY62v7jtUv+U8oFStnnuo
-        lGq5n8IjvRJMHTLSOzlYD0cRbA==
-X-Google-Smtp-Source: ACHHUZ5b6N+FK7PXoTwlvRKh6LsH0vyG6YXCaEWGf5NRL5zfUiNEb8MHT84h6djsafTCO/ahpimwww==
-X-Received: by 2002:a05:6214:764:b0:62d:e913:f9ae with SMTP id f4-20020a056214076400b0062de913f9aemr22933956qvz.1.1687500727864;
-        Thu, 22 Jun 2023 23:12:07 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
-        by smtp.gmail.com with ESMTPSA id p28-20020a634f5c000000b0055387ffef10sm5712930pgl.24.2023.06.22.23.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 23:12:07 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qCa1b-00F8aV-2d;
-        Fri, 23 Jun 2023 16:12:03 +1000
-Date:   Fri, 23 Jun 2023 16:12:03 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 02/29] mm: vmscan: introduce some helpers for dynamically
- allocating shrinker
-Message-ID: <ZJU3s8tyGsYTVS8f@dread.disaster.area>
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-3-zhengqi.arch@bytedance.com>
+        with ESMTP id S230163AbjFWGSN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 02:18:13 -0400
+Received: from striker.routify.me (unknown [64.94.212.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E9CE4B
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:18:10 -0700 (PDT)
+Received: from glitch (unknown [IPv6:2602:24c:b8f:cd90::8eb3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by striker.routify.me (Postfix) with ESMTPSA id 13E901639;
+        Fri, 23 Jun 2023 06:17:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 striker.routify.me 13E901639
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seangreenslade.com;
+        s=striker-outgoing; t=1687501068;
+        bh=kHwByngXCATF1lkNwacD8znlC4DBUO39C7FS8gXGYfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DvkvmBVjtHyZbpHrKSYzk2Uk7duZ637CkLxvQnqf5wX05Bqk6DN3lH7KXoseIlRJS
+         vwX4RMX8EELSp2cgOF7gmhB41pE5RZZ2rsl7xDE1t9bw8ZdJUrlpOTshDAeB5EmStj
+         I8a2F62A/pVO2Rhfk9lfSlnyf9i9Uqhp4foH8DPM=
+Date:   Thu, 22 Jun 2023 23:18:04 -0700
+From:   Sean Greenslade <sean@seangreenslade.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-ext4@vger.kernel.org,
+        Ye Bin <yebin10@huawei.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: RO mount of ext4 filesystem causes writes
+Message-ID: <ZJU5HN3bmXR3FvzE@glitch>
+References: <ZIauBR7YiV3rVAHL@glitch>
+ <ZIa5P1HqE62rmzqu@debian.me>
+ <ZJTv+it2x/glkmpp@debian.me>
+ <20230623044611.GD34229@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230622085335.77010-3-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+In-Reply-To: <20230623044611.GD34229@mit.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,121 +56,102 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 04:53:08PM +0800, Qi Zheng wrote:
-> Introduce some helpers for dynamically allocating shrinker instance,
-> and their uses are as follows:
+On Fri, Jun 23, 2023 at 12:46:11AM -0400, Theodore Ts'o wrote:
+> On Fri, Jun 23, 2023 at 08:06:02AM +0700, Bagas Sanjaya wrote:
+> > 
+> > No reply so far from the culprit author (Ye Bin) nor from Ted. Can
+> > you help in this case?
 > 
-> 1. shrinker_alloc_and_init()
+> There's been no reply because I haven't been able to replicate it, and
+> I didn't have the time do enough work to convince myself the report
+> was bogus.  At this point, I have spent time trying to reproduce it,
+> and I've had no luck.
 > 
-> Used to allocate and initialize a shrinker instance, the priv_data
-> parameter is used to pass the pointer of the previously embedded
-> structure of the shrinker instance.
+> So, unless you can give me a simple set of reproduction instructions,
+> I'm going to have to treat this report is invalid.
 > 
-> 2. shrinker_free()
+> Regards,
 > 
-> Used to free the shrinker instance when the registration of shrinker
-> fails.
+> 						- Ted
 > 
-> 3. unregister_and_free_shrinker()
+> Note: this test was done using kvm-xfstests which can be found
+> https://github.com/tytso/xfstests-bld using the install-kconfig and
+> the kbuild script that can also be found in this report.  So if you
+> want to play along from home, feel free.  :-)
 > 
-> Used to unregister and free the shrinker instance, and the kfree()
-> will be changed to kfree_rcu() later.
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  include/linux/shrinker.h | 12 ++++++++++++
->  mm/vmscan.c              | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 47 insertions(+)
+> root@kvm-xfstests:~# mkfs.ext4 /dev/vdc
+> mke2fs 1.47.0 (5-Feb-2023)
+> Discarding device blocks: done                            
+> Creating filesystem with 1310720 4k blocks and 327680 inodes
+> Filesystem UUID: fe434060-6731-4b40-a94a-3a8517df0660
+> Superblock backups stored on blocks: 
+>         32768, 98304, 163840, 229376, 294912, 819200, 884736
 > 
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 43e6fcabbf51..8e9ba6fa3fcc 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -107,6 +107,18 @@ extern void unregister_shrinker(struct shrinker *shrinker);
->  extern void free_prealloced_shrinker(struct shrinker *shrinker);
->  extern void synchronize_shrinkers(void);
->  
-> +typedef unsigned long (*count_objects_cb)(struct shrinker *s,
-> +					  struct shrink_control *sc);
-> +typedef unsigned long (*scan_objects_cb)(struct shrinker *s,
-> +					 struct shrink_control *sc);
-> +
-> +struct shrinker *shrinker_alloc_and_init(count_objects_cb count,
-> +					 scan_objects_cb scan, long batch,
-> +					 int seeks, unsigned flags,
-> +					 void *priv_data);
-> +void shrinker_free(struct shrinker *shrinker);
-> +void unregister_and_free_shrinker(struct shrinker *shrinker);
+> Allocating group tables: done                            
+> Writing inode tables: done                            
+> Creating journal (16384 blocks): done
+> Writing superblocks and filesystem accounting information: done 
+> 
+> root@kvm-xfstests:~# md5sum /dev/vdc
+> fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
+> root@kvm-xfstests:~# mount -o ro /dev/vdc /mnt
+> [  472.893614] EXT4-fs (vdc): orphan cleanup on readonly fs
+> [  472.894022] EXT4-fs (vdc): mounted filesystem fe434060-6731-4b40-a94a-3a8517df0660 ro with ordered data mode. Quota mode: none.
+> root@kvm-xfstests:~# umount /mnt
+> [  475.698053] EXT4-fs (vdc): unmounting filesystem fe434060-6731-4b40-a94a-3a8517df0660.
+> root@kvm-xfstests:~# md5sum /dev/vdc
+> fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
+> 
+> Hmm.... OK, let's try it with LUKS, even though that *really*
+> shouldn't make a difference.  The cryptsetup lukeFormat and mkfs.ext4
+> steps are skipped here.  Also, note that I had to manually edit the
+> .config file to enable CONFIG_DM_CRYPT, since I dm_crypt is used by
+> xfstests, so my install-kconfig script doesn't enable CONFIG_DM_CRYPT.
+> 
+> 
+> root@kvm-xfstests:~# uname -a
+> Linux kvm-xfstests 6.4.0-rc6-xfstests-lockdep #200 SMP PREEMPT_DYNAMIC Fri Jun 23 00:33:39 EDT 2023 x86_64 GNU/Linux
+> 
+> root@kvm-xfstests:~# md5sum /dev/vdc
+> 28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
+> root@kvm-xfstests:~# cryptsetup luksOpen /dev/vdc test
+> Enter passphrase for /dev/vdc: 
+> root@kvm-xfstests:~# mount -o ro /dev/mapper/test /mnt
+> [  812.073771] EXT4-fs (dm-0): orphan cleanup on readonly fs
+> [  812.074306] EXT4-fs (dm-0): mounted filesystem ac3f76f1-da0a-426e-85b2-08526afb2224 ro with ordered data mode. Quota mode: none.
+> root@kvm-xfstests:~# umount /mnt
+> [  814.383016] EXT4-fs (dm-0): unmounting filesystem ac3f76f1-da0a-426e-85b2-08526afb2224.
+> root@kvm-xfstests:~# cryptsetup luksClose /dev/mapper/test
+> [  830.001992] dm-0: detected capacity change from 10452992 to 0
+> root@kvm-xfstests:~# md5sum /dev/vdc
+> 28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
 
-Hmmmm. Not exactly how I envisioned this to be done.
+Hi, Ted. Thanks for taking the time to look into this.
 
-Ok, this will definitely work, but I don't think it is an
-improvement. It's certainly not what I was thinking of when I
-suggested dynamically allocating shrinkers.
+I perhaps should have been more explicit in my report. The issue is not
+that the image is any different after the mount; indeed, the md5sums are
+identical before and after on my machine as well. The issue is that
+something is issuing writes to the backing image, which bumps the mtime
+of the backing image. When handling the images with rsync, a difference
+in mtime causes the whole image to need to be read.
 
-The main issue is that this doesn't simplify the API - it expands it
-and creates a minefield of old and new functions that have to be
-used in exactly the right order for the right things to happen.
+See this flow:
 
-What I was thinking of was moving the entire shrinker setup code
-over to the prealloc/register_prepared() algorithm, where the setup
-is already separated from the activation of the shrinker.
+$ stat image.block | grep Modify
+Modify: 2023-06-22 23:00:15.211379972 -0700
 
-That is, we start by renaming prealloc_shrinker() to
-shrinker_alloc(), adding a flags field to tell it everything that it
-needs to alloc (i.e. the NUMA/MEMCG_AWARE flags) and having it
-returned a fully allocated shrinker ready to register. Initially
-this also contains an internal flag to say the shrinker was
-allocated so that unregister_shrinker() knows to free it.
+# cryptsetup luksOpen image.block t2 && mount -o ro /dev/mapper/t2 /mnt/t2
+# umount /mnt/t2 && cryptsetup luksClose t2
 
-The caller then fills out the shrinker functions, seeks, etc. just
-like the do now, and then calls register_shrinker_prepared() to make
-the shrinker active when it wants to turn it on.
-
-When it is time to tear down the shrinker, no API needs to change.
-unregister_shrinker() does all the shutdown and frees all the
-internal memory like it does now. If the shrinker is also marked as
-allocated, it frees the shrinker via RCU, too.
-
-Once everything is converted to this API, we then remove
-register_shrinker(), rename register_shrinker_prepared() to
-shrinker_register(), rename unregister_shrinker to
-shrinker_unregister(), get rid of the internal "allocated" flag
-and always free the shrinker.
-
-At the end of the patchset, every shrinker should be set
-up in a manner like this:
+$ stat image.block | grep Modify
+Modify: 2023-06-22 23:03:56.141139649 -0700
 
 
-	sb->shrinker = shrinker_alloc(SHRINKER_MEMCG_AWARE|SHRINKER_NUMA_AWARE,
-				"sb-%s", type->name);
-	if (!sb->shrinker)
-		return -ENOMEM;
+The regression is the mtime bumping behavior, which doesn't happen prior
+to the eee00237 commit.
 
-	sb->shrinker->count_objects = super_cache_count;
-	sb->shrinker->scan_objects = super_cache_scan;
-	sb->shrinker->batch = 1024;
-	sb->shrinker->private = sb;
+Thanks,
 
-	.....
+--Sean
 
-	shrinker_register(sb->shrinker);
-
-And teardown is just a call to shrinker_unregister(sb->shrinker)
-as it is now.
-
-i.e. the entire shrinker regsitration API is now just three
-functions, down from the current four, and much simpler than the
-the seven functions this patch set results in...
-
-The other advantage of this is that it will break all the existing
-out of tree code and third party modules using the old API and will
-no longer work with a kernel using lockless slab shrinkers. They
-need to break (both at the source and binary levels) to stop bad
-things from happening due to using uncoverted shrinkers in the new
-setup.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
