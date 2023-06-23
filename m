@@ -2,53 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BB173B0A3
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 08:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0A873B0BE
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jun 2023 08:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjFWGSO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Jun 2023 02:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
+        id S230387AbjFWG3p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Jun 2023 02:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjFWGSN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 02:18:13 -0400
-Received: from striker.routify.me (unknown [64.94.212.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E9CE4B
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:18:10 -0700 (PDT)
-Received: from glitch (unknown [IPv6:2602:24c:b8f:cd90::8eb3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by striker.routify.me (Postfix) with ESMTPSA id 13E901639;
-        Fri, 23 Jun 2023 06:17:48 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 striker.routify.me 13E901639
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seangreenslade.com;
-        s=striker-outgoing; t=1687501068;
-        bh=kHwByngXCATF1lkNwacD8znlC4DBUO39C7FS8gXGYfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DvkvmBVjtHyZbpHrKSYzk2Uk7duZ637CkLxvQnqf5wX05Bqk6DN3lH7KXoseIlRJS
-         vwX4RMX8EELSp2cgOF7gmhB41pE5RZZ2rsl7xDE1t9bw8ZdJUrlpOTshDAeB5EmStj
-         I8a2F62A/pVO2Rhfk9lfSlnyf9i9Uqhp4foH8DPM=
-Date:   Thu, 22 Jun 2023 23:18:04 -0700
-From:   Sean Greenslade <sean@seangreenslade.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-ext4@vger.kernel.org,
-        Ye Bin <yebin10@huawei.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: RO mount of ext4 filesystem causes writes
-Message-ID: <ZJU5HN3bmXR3FvzE@glitch>
-References: <ZIauBR7YiV3rVAHL@glitch>
- <ZIa5P1HqE62rmzqu@debian.me>
- <ZJTv+it2x/glkmpp@debian.me>
- <20230623044611.GD34229@mit.edu>
+        with ESMTP id S229865AbjFWG3p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Jun 2023 02:29:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73B21BFA
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b50e309602so2203985ad.0
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687501783; x=1690093783;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zCEqJX5mm9cbUE56OVCDucRVQniQh/jh7QjO1tCYRyw=;
+        b=VCN1cKAzYZWGpOm/hUHuPZp8plVnErZlG9G0OlFzhPpXaNGHYvVufkX79JUDsPqJVj
+         SxdYAM9A9ivCYhtFxc3SyvMZr6s5SlnDngyF1CSlxpEdm/HUuOSGwHgmJomuuYgedrRX
+         aqax0M2Dw9QUTGwitN8bpL0qLseKhs7EVUc6lepS488qyivLAQHSFGtevNE0LyqUhWPi
+         NKkNR95/QZWn2OoaLsjXJllgmMFsp0mHDlbo5o60jR1YeUkdYXlMSdAiD7/jZsXdB48G
+         reDdzoxXO5mM4WdQ8i9rMsSwtC5huiBFlnlMXvIXzYTlsiTrC5P7Z8F16npWgNIfnf8B
+         ShDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687501783; x=1690093783;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zCEqJX5mm9cbUE56OVCDucRVQniQh/jh7QjO1tCYRyw=;
+        b=MuXCNiz7NsPqhjNvkZ3DnhRs1d80DIjP381AQhiRTKc455QYwG55C7gqdYdG4ir22K
+         MtqEkdTVt5ZITpJtDyr13vk48Qh62J47WHmLScKPT3qGDh6OC83kFj57ZflL4aZ/weLG
+         lHPBLv4iDtT0U5WoahcZtMdP5pYpGcKKL5wjU2w0itnpAiExPWvpPwxRlJhtyKyMtmvw
+         LWTLa5D8t+Ja8aFBaNNokX6JtHzUXPs2tAEM2jWhzJn6n7w9hQUmt5NvRzf2PEZPztj4
+         YsvmG9xd/ed5KTTdUp4jPA5001ZJTdh5YbU/YUV8Tct9WoTdDocVAjcbUfXMIRiraamT
+         935A==
+X-Gm-Message-State: AC+VfDxuhAXWvyFlY54T47GOFAOARZLEAjwYJfBUJd3PYaHPdt5hdYvE
+        DXd5FG3QyCynYj1ZCVqswqQwoA==
+X-Google-Smtp-Source: ACHHUZ6xCu/M/0AOwG5LVLb8OX3DoTsqyFTeplRrHsUG1u2SLkBGduWAm9ZrSI41Zhf0Zeq1UunMJA==
+X-Received: by 2002:a17:902:8214:b0:1aa:d971:4623 with SMTP id x20-20020a170902821400b001aad9714623mr18870991pln.38.1687501783228;
+        Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
+        by smtp.gmail.com with ESMTPSA id x5-20020a1709027c0500b001b246dcffb7sm6311389pll.300.2023.06.22.23.29.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 23:29:42 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qCaId-00F8x8-0s;
+        Fri, 23 Jun 2023 16:29:39 +1000
+Date:   Fri, 23 Jun 2023 16:29:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tkhai@ya.ru, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
+Message-ID: <ZJU708VIyJ/3StAX@dread.disaster.area>
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-25-zhengqi.arch@bytedance.com>
+ <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230623044611.GD34229@mit.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,102 +85,85 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 23, 2023 at 12:46:11AM -0400, Theodore Ts'o wrote:
-> On Fri, Jun 23, 2023 at 08:06:02AM +0700, Bagas Sanjaya wrote:
-> > 
-> > No reply so far from the culprit author (Ye Bin) nor from Ted. Can
-> > you help in this case?
+On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
+> On 6/22/23 10:53, Qi Zheng wrote:
+> > @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+> >  	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+> >  		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+> >  
+> > -	if (!down_read_trylock(&shrinker_rwsem))
+> > -		goto out;
+> > -
+> > -	list_for_each_entry(shrinker, &shrinker_list, list) {
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+> >  		struct shrink_control sc = {
+> >  			.gfp_mask = gfp_mask,
+> >  			.nid = nid,
+> >  			.memcg = memcg,
+> >  		};
+> >  
+> > +		if (!shrinker_try_get(shrinker))
+> > +			continue;
+> > +		rcu_read_unlock();
 > 
-> There's been no reply because I haven't been able to replicate it, and
-> I didn't have the time do enough work to convince myself the report
-> was bogus.  At this point, I have spent time trying to reproduce it,
-> and I've had no luck.
+> I don't think you can do this unlock?
 > 
-> So, unless you can give me a simple set of reproduction instructions,
-> I'm going to have to treat this report is invalid.
+> > +
+> >  		ret = do_shrink_slab(&sc, shrinker, priority);
+> >  		if (ret == SHRINK_EMPTY)
+> >  			ret = 0;
+> >  		freed += ret;
+> > -		/*
+> > -		 * Bail out if someone want to register a new shrinker to
+> > -		 * prevent the registration from being stalled for long periods
+> > -		 * by parallel ongoing shrinking.
+> > -		 */
+> > -		if (rwsem_is_contended(&shrinker_rwsem)) {
+> > -			freed = freed ? : 1;
+> > -			break;
+> > -		}
+> > -	}
+> >  
+> > -	up_read(&shrinker_rwsem);
+> > -out:
+> > +		rcu_read_lock();
 > 
-> Regards,
-> 
-> 						- Ted
-> 
-> Note: this test was done using kvm-xfstests which can be found
-> https://github.com/tytso/xfstests-bld using the install-kconfig and
-> the kbuild script that can also be found in this report.  So if you
-> want to play along from home, feel free.  :-)
-> 
-> 
-> root@kvm-xfstests:~# mkfs.ext4 /dev/vdc
-> mke2fs 1.47.0 (5-Feb-2023)
-> Discarding device blocks: done                            
-> Creating filesystem with 1310720 4k blocks and 327680 inodes
-> Filesystem UUID: fe434060-6731-4b40-a94a-3a8517df0660
-> Superblock backups stored on blocks: 
->         32768, 98304, 163840, 229376, 294912, 819200, 884736
-> 
-> Allocating group tables: done                            
-> Writing inode tables: done                            
-> Creating journal (16384 blocks): done
-> Writing superblocks and filesystem accounting information: done 
-> 
-> root@kvm-xfstests:~# md5sum /dev/vdc
-> fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
-> root@kvm-xfstests:~# mount -o ro /dev/vdc /mnt
-> [  472.893614] EXT4-fs (vdc): orphan cleanup on readonly fs
-> [  472.894022] EXT4-fs (vdc): mounted filesystem fe434060-6731-4b40-a94a-3a8517df0660 ro with ordered data mode. Quota mode: none.
-> root@kvm-xfstests:~# umount /mnt
-> [  475.698053] EXT4-fs (vdc): unmounting filesystem fe434060-6731-4b40-a94a-3a8517df0660.
-> root@kvm-xfstests:~# md5sum /dev/vdc
-> fd38f9f8476ad63a744d179846ee7e18  /dev/vdc
-> 
-> Hmm.... OK, let's try it with LUKS, even though that *really*
-> shouldn't make a difference.  The cryptsetup lukeFormat and mkfs.ext4
-> steps are skipped here.  Also, note that I had to manually edit the
-> .config file to enable CONFIG_DM_CRYPT, since I dm_crypt is used by
-> xfstests, so my install-kconfig script doesn't enable CONFIG_DM_CRYPT.
-> 
-> 
-> root@kvm-xfstests:~# uname -a
-> Linux kvm-xfstests 6.4.0-rc6-xfstests-lockdep #200 SMP PREEMPT_DYNAMIC Fri Jun 23 00:33:39 EDT 2023 x86_64 GNU/Linux
-> 
-> root@kvm-xfstests:~# md5sum /dev/vdc
-> 28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
-> root@kvm-xfstests:~# cryptsetup luksOpen /dev/vdc test
-> Enter passphrase for /dev/vdc: 
-> root@kvm-xfstests:~# mount -o ro /dev/mapper/test /mnt
-> [  812.073771] EXT4-fs (dm-0): orphan cleanup on readonly fs
-> [  812.074306] EXT4-fs (dm-0): mounted filesystem ac3f76f1-da0a-426e-85b2-08526afb2224 ro with ordered data mode. Quota mode: none.
-> root@kvm-xfstests:~# umount /mnt
-> [  814.383016] EXT4-fs (dm-0): unmounting filesystem ac3f76f1-da0a-426e-85b2-08526afb2224.
-> root@kvm-xfstests:~# cryptsetup luksClose /dev/mapper/test
-> [  830.001992] dm-0: detected capacity change from 10452992 to 0
-> root@kvm-xfstests:~# md5sum /dev/vdc
-> 28b75cc094e1e2a62ac25a730fc1dfee  /dev/vdc
+> That new rcu_read_lock() won't help AFAIK, the whole
+> list_for_each_entry_rcu() needs to be under the single rcu_read_lock() to be
+> safe.
 
-Hi, Ted. Thanks for taking the time to look into this.
+Yeah, that's the pattern we've been taught and the one we can look
+at and immediately say "this is safe".
 
-I perhaps should have been more explicit in my report. The issue is not
-that the image is any different after the mount; indeed, the md5sums are
-identical before and after on my machine as well. The issue is that
-something is issuing writes to the backing image, which bumps the mtime
-of the backing image. When handling the images with rsync, a difference
-in mtime causes the whole image to need to be read.
+This is a different pattern, as has been explained bi Qi, and I
+think it *might* be safe.
 
-See this flow:
+*However.*
 
-$ stat image.block | grep Modify
-Modify: 2023-06-22 23:00:15.211379972 -0700
+Right now I don't have time to go through a novel RCU list iteration
+pattern it one step at to determine the correctness of the
+algorithm. I'm mostly worried about list manipulations that can
+occur outside rcu_read_lock() section bleeding into the RCU
+critical section because rcu_read_lock() by itself is not a memory
+barrier.
 
-# cryptsetup luksOpen image.block t2 && mount -o ro /dev/mapper/t2 /mnt/t2
-# umount /mnt/t2 && cryptsetup luksClose t2
+Maybe Paul has seen this pattern often enough he could simply tell
+us what conditions it is safe in. But for me to work that out from
+first principles? I just don't have the time to do that right now.
 
-$ stat image.block | grep Modify
-Modify: 2023-06-22 23:03:56.141139649 -0700
+> IIUC this is why Dave in [4] suggests unifying shrink_slab() with
+> shrink_slab_memcg(), as the latter doesn't iterate the list but uses IDR.
 
+Yes, I suggested the IDR route because radix tree lookups under RCU
+with reference counted objects are a known safe pattern that we can
+easily confirm is correct or not.  Hence I suggested the unification
++ IDR route because it makes the life of reviewers so, so much
+easier...
 
-The regression is the mtime bumping behavior, which doesn't happen prior
-to the eee00237 commit.
+Cheers,
 
-Thanks,
-
---Sean
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
