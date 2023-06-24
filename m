@@ -2,83 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89DC73CBBD
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jun 2023 17:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1281473CC9D
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jun 2023 21:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjFXPyb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 24 Jun 2023 11:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S233231AbjFXTkJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 24 Jun 2023 15:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjFXPya (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Jun 2023 11:54:30 -0400
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A941BCA
-        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 08:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1687622058;
-        bh=PppnM6CNiCqibVNJC/KxLiZ/Vbb9z1GbgweMJYp75Mw=;
-        h=From:To:Cc:Subject:Date;
-        b=y2FWz7xnvziyXrCIBIo3tfg9qz3eabP5epHk3nyqloN6Kz9+ms+Dw4PtYYSeQFFGn
-         1O05MD1yiUia8UTeLo31WJvHgYbAxf8NgIVwx4b9zPtZdQvcmwwv0aplPjBt1AvB6k
-         2iHdEnuNhUZ5fxZG67JobS6jvLwe8auBxWIVYkGE=
-Received: from fedora.. ([2409:8a00:2570:b8a0:da5a:8709:bf59:8c40])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id D4E3C8DB; Sat, 24 Jun 2023 23:53:14 +0800
-X-QQ-mid: xmsmtpt1687621994t0hh4gafs
-Message-ID: <tencent_D6CD42314E6CD7A9ABA771CF10C464390005@qq.com>
-X-QQ-XMAILINFO: MjBTD0ccEFNA4LdVE34A9s1fyhJEUTDr7etk7LU4fI3p5o0i+8fsMRjry7QTEc
-         r8Md5VW5tz/dEolB/N3xFtU5TKnw6kAAbLRRKZzje86GauHSQeMbnNqrVFmsVRTyJK1+W4BUTZ0n
-         6UaQAy6Jh+REr0HNQlHxBbNlVzrqnDf590c6qkuCSswsfufqWcYYyRe4+b1JjXtmkzmNZ2cEUJkI
-         /0lFgNQCvqW6d4LnIvpxNe/ZkWphuXi0QCJMrfJIrflD6gVIqnhGm3Ntkbakie1AlCZWb2vySQrH
-         29y7nOK2/9/5YYGRtM3dkqgqVwZQX0DhSM6tVo6HhxaUo2UMPCPDLwnC3EOesz3R+FCpENfj0Qdj
-         VLoOJdAHDxAzLfqATf4Qh4M+5aZMhMFm2cteIAIZ4eZ7rrLtfkO+TvTLIQNt2q07sX0RTvO9EsBq
-         OSAsCc1y3LbLk5jYrd5nsTGJoru3/eDm5zIN5AsLepMNhMW375PJiSwkpXt2bF2nbeKaal6vNLLb
-         uxOvS3fnsddJzgBNqrb1wZ1seOHsEn6sDbCBdSWYOacY7EfUbsWYwUJw1mlhMH4i4riQEn4NA4a/
-         zxB7PCqRf+vn++mIMT1FN30Y3WoN9+seuSh3LMdWBrlJw5ZRDXi/A4WNp1UKNSD+cQLKdtsvSskB
-         19KOmeNnmREkAfuq/n4VwVqNElCakW4mlvUpQKI5gWEv74qPZvUfNaOpTG1GUWfcjcsErojUQHn1
-         aTpOe3gTtAqeEswS6l4wkra4vzJwJQMHmzdd+jzyMOlJioKBXurw4v/chNjsrped79s0YcwwiK/H
-         NUo7e0dHVwlKPbTHvMlnD0J2DM4Msr6bAdosiDs/MXZq8Tz7Ya3OIyHE3okrTpBj1Zk/Vn1FjUw5
-         9fsE8OMvDEzzEzIftlFp0eDax7YIUJlB0HXNENz92GjKZLvFsf6+izFvK/y6/idrIDtQ6FmhGuD2
-         1CENWPm3zoNVvOT445T12EcrH49/yHu7kAid98vR6tnBobhvFDFA==
-X-QQ-XMRINFO: OaHeJnMbHdYJoNPX7mruotAPXHzc5BrOrw==
-From:   Wang Jianjian <wangjianjian0@foxmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     wangjianjian0@foxmail.com
-Subject: [PATCH] ext4: Free data blocks directly for ordered journal
-Date:   Sat, 24 Jun 2023 23:52:59 +0800
-X-OQ-MSGID: <20230624155259.62799-1-wangjianjian0@foxmail.com>
-X-Mailer: git-send-email 2.34.3
+        with ESMTP id S229448AbjFXTkI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Jun 2023 15:40:08 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E24510C9
+        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 12:40:06 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-119-246.bstnma.fios.verizon.net [173.48.119.246])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35OJdO4o013225
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 24 Jun 2023 15:39:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1687635569; bh=1YC4/ncstssRHOG8z3j8Cee2TMGjfDhXuHmQtvTDZVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=SUGsHC/pyGCwMdsKREBdyz18U4bonF6NCQTcAYJdVrQ1uLyP2uaPeeh8yxYWKAM+C
+         nm321uri1rRhUsrhuddodAip0/0ItgJYGH7gPN7W3O6BrQX+XjgV+6pxgIUG64OE2t
+         qmPOwhVMYyIg6wYMRrDDKqGJR0PcAQIKcLtxoTM7BheePrRCVzY/PEqByY6ksDMQwU
+         HTGA7LDTPulaJX4zt6SR5Kl2qX0Hxhh/iiuBBuoDPYLhuzzOr7kcfHR/gheO5egMcW
+         9SbYDgbs5ZMpbMA/aBSVtybZUKQW+NGlzg78SfMcBn3Yc6P2jZ+992fN3f3bY+AUOs
+         qO0ypJeJLl6kw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 788DE15C027E; Sat, 24 Jun 2023 15:39:24 -0400 (EDT)
+Date:   Sat, 24 Jun 2023 15:39:24 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Sean Greenslade <sean@seangreenslade.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: RO mount of ext4 filesystem causes writes
+Message-ID: <20230624193924.GD8954@mit.edu>
+References: <20230623143411.GF34229@mit.edu>
+ <87leganq82.fsf@doe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87leganq82.fsf@doe.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
----
- fs/ext4/mballoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Jun 23, 2023 at 09:08:37PM +0530, Ritesh Harjani wrote:
+> It seems in the original code what we were trying to do was to preseve
+> the error information area of superblock across journal load (which I am
+> not sure why though?)
+> 
+> In the new code we see if the journal load changed that area and if yes
+> we change that back to original log but we also marked changed = true. Why?
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 7b2e36d103cb..41fdc2f8c061 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6206,7 +6206,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
- 	 * consistency guarantees.
- 	 */
- 	if (ext4_handle_valid(handle) &&
--	    ((flags & EXT4_FREE_BLOCKS_METADATA) ||
-+	    ((ext4_should_order_data(inode) && (flags & EXT4_FREE_BLOCKS_METADATA)) ||
- 	     !ext4_should_writeback_data(inode))) {
- 		struct ext4_free_data *new_entry;
- 		/*
--- 
-2.34.3
+That's a good question; thanks for asking it.  The first part of this
+code was introduced by commit 1c13d5c08728 ("ext4: Save error
+information to the superblock for analysis") in 2010.  So that part of
+the code is not "new", but very, very, old. 
 
+The basic idea here was that back then, when a file system error was
+detected, it was always written directly to the superblock, by passing
+the journal.  So that's why the original code saved the error
+information, replayed the journal and then restored it.
+
+Of course, this changed with commit 2d01ddc86606 ("ext4: save error
+info to sb through journal if available") in 2020.  But the problem is
+"if available".  If the jbd2 layer has shut down, then we can't route
+the superblock error updates through the journal, at which point ext4
+will do a direct update of the superlbock.
+
+This was the rational behind commit eee00237fa5e ("ext4: commit super
+block if fs record error when journal record without error").
+Sometimes the error bit EXT4_ERROR_FS is set via a direct write to the
+superblock; but other times the error bit might be set via the
+journal.  In the former case, after we do a journal replay, the error
+bit will be cleared.  However, since the kernel never clears the
+EXT4_ERROR_FS bit, it's pretty easy for commit eee00237fa5e to handle
+things.
+
+So what we need to for that first part of the code, introduced in
+commit 1c13d5c08728 and made invalid in commit 2d01ddc86606 is we need
+to add code to examine s_last_error_time.  If the version that was
+originally in the superblock is newer than the version found after the
+journal replay, then presumably an error happened but ext4 wasn't able
+to write the error information out through the journal, and we need to
+replace it after the the call to jbd2_journal_load().
+
+Cheers,
+
+						- Ted
