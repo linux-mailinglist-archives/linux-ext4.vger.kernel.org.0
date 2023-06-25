@@ -2,180 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5039973CE32
-	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jun 2023 05:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCFA73CF10
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jun 2023 09:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjFYDPt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 24 Jun 2023 23:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
+        id S230058AbjFYH4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 25 Jun 2023 03:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjFYDPh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Jun 2023 23:15:37 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638CDE78
-        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 20:15:11 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6687b209e5aso495382b3a.0
-        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 20:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1687662910; x=1690254910;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TKI5JnbDIC0GxIDWgHq4O/cOoJK+mFi4lHzSLMfVTqU=;
-        b=ZAMx9Z9f9sidua+INHohqUOzi6qohVG8u4jVCH5kW+5KNZXm213btXme0+oY3eiFas
-         kJ1eg2nzkYdYzNdOe7oa9qHmaJUnXCYxjS+yzRkh4fKBRaJsJ8sThwNTH8lHQfNkQNAM
-         VzcFUF7+yXpjBTL7GbZNoITLErtoJw0Vjk1rTp/DbKRrvAbdhI1W9mMFrodUhQiTOgU4
-         x87qi5B+whZkF6jL19/UUqYgrCxdv27BCv4u4d4gCY3C0TEpHKxxaHXbF0gjifwSN242
-         21vqEHW8Cm8PCiF/LjQeQL8d9CMETY+gbtFossFoUbQJa5ZrwnE/J5ioBpxXDyTlqBxM
-         qigg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687662910; x=1690254910;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKI5JnbDIC0GxIDWgHq4O/cOoJK+mFi4lHzSLMfVTqU=;
-        b=EJ7ykl0/yIWDwAX29g1zJE6NS5NxO8duFt+nWxkHR1HyARFsSYhByFz03pJjhMv4GT
-         VehdiML3lLFq16jJW8sslJTDlbrnM92RVEOUjxGWnE/1qiKIAkOCRu6rlPFflXXI6mSj
-         m2MLZEHmogZomCPGUeU83ETIB4Ptli+1Q6k9h3X78jrfzVlO+5qJ6fffnT6T/X6trb3/
-         JH2nxw7oj88Wr5Tt32QHQ1He63vyxgz5DkQxR+45NjZuR6+CqAh8aRJEnUdQmPNz1ip3
-         0rrRySmXkpGzUn+w3qGGXZ5cG2LsID3FKg27maRKFYjsK5gaLfFjNNkTFFKcMniXMiyF
-         rKCw==
-X-Gm-Message-State: AC+VfDxNZVkJNYzQ1+N4ZDhw2J+Xix6xjIPtF5NBeYL4Ly3N/Cx3rF/L
-        j1LTL6OFclgkIf1yXCtDwbGS0Q==
-X-Google-Smtp-Source: ACHHUZ4cDGND46+rMO/jpoItKK6gyWoVPMpHTImOruhTgKiq3D9MdRMxw7KZsaNY9vtDgu3MtWReMw==
-X-Received: by 2002:a05:6a20:8426:b0:11f:7829:6d6c with SMTP id c38-20020a056a20842600b0011f78296d6cmr28507253pzd.3.1687662910560;
-        Sat, 24 Jun 2023 20:15:10 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id r9-20020a62e409000000b0066642f95bc5sm1648412pfh.35.2023.06.24.20.15.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 20:15:10 -0700 (PDT)
-Message-ID: <00641d5b-86a3-f5d1-02ee-13b4f815df75@bytedance.com>
-Date:   Sun, 25 Jun 2023 11:15:01 +0800
+        with ESMTP id S230154AbjFYH4Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Jun 2023 03:56:16 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E749DF;
+        Sun, 25 Jun 2023 00:56:13 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QpjrY2gXKzMpSP;
+        Sun, 25 Jun 2023 15:53:01 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 25 Jun 2023 15:56:10 +0800
+Message-ID: <b73894fc-0c7a-0503-25ad-ab5a9dfbd852@huawei.com>
+Date:   Sun, 25 Jun 2023 15:56:10 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] quota: fix race condition between dqput() and
+ dquot_mark_dquot_dirty()
 Content-Language: en-US
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     Dave Chinner <david@fromorbit.com>, paulmck@kernel.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        tkhai@ya.ru, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, RCU <rcu@vger.kernel.org>
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-25-zhengqi.arch@bytedance.com>
- <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
- <ZJU708VIyJ/3StAX@dread.disaster.area>
- <a21047bb-3b87-a50a-94a7-f3fa4847bc08@bytedance.com>
- <ZJYaYv4pACmCaBoT@dread.disaster.area>
- <a7baf44a-1eb8-d4e1-d112-93cf9cdb7beb@bytedance.com>
-In-Reply-To: <a7baf44a-1eb8-d4e1-d112-93cf9cdb7beb@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20230616085608.42435-1-libaokun1@huawei.com>
+ <20230616152824.ndpgvkegvvip2ahh@quack3>
+ <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
+ <20230622145620.hk3bdjxtlr64gtzl@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230622145620.hk3bdjxtlr64gtzl@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello!
 
+Sorry for the late reply, just had a Dragon Boat holiday.
 
-On 2023/6/24 19:08, Qi Zheng wrote:
-> Hi Dave,
-> 
-> On 2023/6/24 06:19, Dave Chinner wrote:
->> On Fri, Jun 23, 2023 at 09:10:57PM +0800, Qi Zheng wrote:
->>> On 2023/6/23 14:29, Dave Chinner wrote:
->>>> On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
->>>>> On 6/22/23 10:53, Qi Zheng wrote:
->>>> Yes, I suggested the IDR route because radix tree lookups under RCU
->>>> with reference counted objects are a known safe pattern that we can
->>>> easily confirm is correct or not.  Hence I suggested the unification
->>>> + IDR route because it makes the life of reviewers so, so much
->>>> easier...
+On 2023/6/22 22:56, Jan Kara wrote:
+> Hello!
+>
+> On Mon 19-06-23 14:44:03, Baokun Li wrote:
+>> On 2023/6/16 23:28, Jan Kara wrote:
+>>> Now calling synchronize_srcu() directly from dquot_transfer() is too
+>>> expensive (and mostly unnecessary) so what I would rather suggest is to
+>>> create another dquot list (use dq_free list_head inside struct dquot for
+>>> it) and add dquot whose last reference should be dropped there. We'd then
+>>> queue work item which would call synchronize_srcu() and after that perform
+>>> the final cleanup of all the dquots on the list.
 >>>
->>> In fact, I originally planned to try the unification + IDR method you
->>> suggested at the beginning. But in the case of CONFIG_MEMCG disabled,
->>> the struct mem_cgroup is not even defined, and root_mem_cgroup and
->>> shrinker_info will not be allocated.  This required more code 
->>> changes, so
->>> I ended up keeping the shrinker_list and implementing the above pattern.
+>>> Now this also needs some modifications to dqget() and to quotaoff code to
+>>> handle various races with the new dqput() code so if you feel it is too
+>>> complex for your taste, I can implement this myself.
+>>>
+>>> 								Honza
+>> I see what you mean, what we are doing here is very similar to
+>> drop_dquot_ref(),
+>> and if we have to modify it this way, I am happy to implement it.
 >>
->> Yes. Go back and read what I originally said needed to be done
->> first. In the case of CONFIG_MEMCG=n, a dummy root memcg still needs
->> to exist that holds all of the global shrinkers. Then shrink_slab()
->> is only ever passed a memcg that should be iterated.
->>
->> Yes, it needs changes external to the shrinker code itself to be
->> made to work. And even if memcg's are not enabled, we can still use
->> the memcg structures to ensure a common abstraction is used for the
->> shrinker tracking infrastructure....
-> 
-> Yeah, what I imagined before was to define a more concise struct
-> mem_cgroup in the case of CONFIG_MEMCG=n, then allocate a dummy root
-> memcg on system boot:
-> 
-> #ifdef !CONFIG_MEMCG
-> 
-> struct shrinker_info {
->      struct rcu_head rcu;
->      atomic_long_t *nr_deferred;
->      unsigned long *map;
->      int map_nr_max;
-> };
-> 
-> struct mem_cgroup_per_node {
->      struct shrinker_info __rcu    *shrinker_info;
-> };
-> 
-> struct mem_cgroup {
->      struct mem_cgroup_per_node *nodeinfo[];
-> };
-> 
-> #endif
-> 
-> But I have a concern: if all global shrinkers are tracking with the
-> info->map of root memcg, a shrinker->id needs to be assigned to them,
-> which will cause info->map_nr_max to become larger than before, then
-> making the traversal of info->map slower.
+>> But as you said, calling synchronize_srcu() is too expensive and it blocks
+>> almost all
+>> mark dirty processes, so we only call it now in performance insensitive
+>> scenarios
+>> like dquot_disable(). And how do we control how often synchronize_srcu() is
+>> called?
+>> Are there more than a certain number of dquots in releasing_dquots or are
+>> they
+>> executed at regular intervals? And it would introduce various new
+>> competitions.
+>> Is it worthwhile to do this for a corner scenario like this one?
+> So the way this is handled (e.g. in fsnotify subsystem) is that we just
+> queue work item when we drop the last reference to the protected structure.
+> The scheduling latency before the work item gets executed is enough to
+> batch synchronize_srcu() calls and once synchronize_srcu() finishes, we add
+> all items from the "staging list" to the free_dquots list.
 
-But most of the system is 'sb-xxx' shrinker instances, they all have
-the SHRINKER_MEMCG_AWARE flag, so it should have little impact on the
-speed of traversing info->map. ;)
+Cool, thanks a lot for clearing up the confusion!
 
-> 
->>
->>> If the above pattern is not safe, I will go back to the unification +
->>> IDR method.
->>
->> And that is exactly how we got into this mess in the first place....
-> 
-> I only found one similar pattern in the kernel:
-> 
-> fs/smb/server/oplock.c:find_same_lease_key/smb_break_all_levII_oplock/lookup_lease_in_table
-> 
-> But IIUC, the refcount here needs to be decremented after holding
-> rcu lock as I did above.
-> 
-> So regardless of whether we choose unification + IDR in the end, I still
-> want to confirm whether the pattern I implemented above is safe. :)
+I will implement it in the next version.
 
-Also + RCU mailing list.
+>
+>> I think we can simply focus on the race between the DQ_ACTIVE_B flag and
+>> the DQ_MOD_B flag, which is the core problem, because the same quota
+>> should not have both flags. These two flags are protected by dq_list_lock
+>> and dquot->dq_lock respectively, so it makes sense to add a
+>> wait_on_dquot() to ensure the accuracy of DQ_ACTIVE_B.
+> But the fundamental problem is not only the race with DQ_MOD_B setting. The
+> dquot structure can be completely freed by the time
+> dquot_claim_space_nodirty() calls dquot_mark_dquot_dirty() on it. That's
+> why I think making __dquot_transfer() obey dquot_srcu rules is the right
+> solution.
+>
+> 								Honza
+Yes, now I also think that making __dquot_transfer() obey dquot_srcu 
+rules is
+a better solution. But with inode->i_lock protection, why would the dquot
+structure be completely freed?
 
-> 
-> Thanks,
-> Qi
-> 
->>
->> -Dave
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
