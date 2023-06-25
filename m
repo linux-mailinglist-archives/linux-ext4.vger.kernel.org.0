@@ -2,102 +2,286 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1281473CC9D
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jun 2023 21:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1C873CE07
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jun 2023 04:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbjFXTkJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 24 Jun 2023 15:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
+        id S230459AbjFYCVr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 24 Jun 2023 22:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjFXTkI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Jun 2023 15:40:08 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E24510C9
-        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 12:40:06 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-119-246.bstnma.fios.verizon.net [173.48.119.246])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35OJdO4o013225
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Jun 2023 15:39:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687635569; bh=1YC4/ncstssRHOG8z3j8Cee2TMGjfDhXuHmQtvTDZVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=SUGsHC/pyGCwMdsKREBdyz18U4bonF6NCQTcAYJdVrQ1uLyP2uaPeeh8yxYWKAM+C
-         nm321uri1rRhUsrhuddodAip0/0ItgJYGH7gPN7W3O6BrQX+XjgV+6pxgIUG64OE2t
-         qmPOwhVMYyIg6wYMRrDDKqGJR0PcAQIKcLtxoTM7BheePrRCVzY/PEqByY6ksDMQwU
-         HTGA7LDTPulaJX4zt6SR5Kl2qX0Hxhh/iiuBBuoDPYLhuzzOr7kcfHR/gheO5egMcW
-         9SbYDgbs5ZMpbMA/aBSVtybZUKQW+NGlzg78SfMcBn3Yc6P2jZ+992fN3f3bY+AUOs
-         qO0ypJeJLl6kw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 788DE15C027E; Sat, 24 Jun 2023 15:39:24 -0400 (EDT)
-Date:   Sat, 24 Jun 2023 15:39:24 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Sean Greenslade <sean@seangreenslade.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-ext4@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: RO mount of ext4 filesystem causes writes
-Message-ID: <20230624193924.GD8954@mit.edu>
-References: <20230623143411.GF34229@mit.edu>
- <87leganq82.fsf@doe.com>
+        with ESMTP id S229560AbjFYCVq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Jun 2023 22:21:46 -0400
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FA3DA
+        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 19:21:44 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-77a1f4e92cdso149387239f.1
+        for <linux-ext4@vger.kernel.org>; Sat, 24 Jun 2023 19:21:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687659704; x=1690251704;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B+EwnMDRCODIH9OqO4aAf82Xo3JQ4joGMJA2Ab/bmTY=;
+        b=i97kfYuxPI8fNKsDLrh5IFPBapy6dyA/b+A2nkX2KFcDumrpB7tjVrjftrC1ip5XS7
+         AWIW+hDO55HbAHpbArEv6p7IA9wlLITQUgO5rCamqFIP4rnLGM0NEKXwm5Umdc6NTsoQ
+         qgO5DE6+87acp8mKfZ77QUSfu56MKcYlDdGBW93tbYJQ5q/CNdhFjyvoh6zWuZPrNxBX
+         Wzhp9Y9zS0QAnNP542XG7uCQ8bWOoV8yEV+RSfLjXFZQEVFVgzAdXM01MyyTh3qrJFLw
+         GAufcdvJM4ENB0jEIqyV8+VFCzyTPWWgyfkZXuwl6XXz+uQXpLhOdNIlfiRXc0r1ij/t
+         kSdg==
+X-Gm-Message-State: AC+VfDx0zHcw9y4EUk0PrRmM3wKaYVRQ0vu5ctUtUdutrChA0KbRPk+0
+        rpV5sbQRFHZjQqfFejukp6mNp3B9WBpnClqHSC95W7f3vjZ3
+X-Google-Smtp-Source: ACHHUZ5tEHhNcFESJbRkIz286gsVjRiamwYztupd+uu8b6VLN5PWmbK6tE8EQUI8zVSd+hnlR/UoTYnn2rTj2NkWH6aE1q0LcIz2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87leganq82.fsf@doe.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:7f02:0:b0:780:da2d:b80d with SMTP id
+ l2-20020a6b7f02000000b00780da2db80dmr2071141ioq.1.1687659704091; Sat, 24 Jun
+ 2023 19:21:44 -0700 (PDT)
+Date:   Sat, 24 Jun 2023 19:21:44 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002a0b1305feeae5db@google.com>
+Subject: [syzbot] [ext4?] general protection fault in ext4_put_io_end_defer
+From:   syzbot <syzbot+94a8c779c6b238870393@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 23, 2023 at 09:08:37PM +0530, Ritesh Harjani wrote:
-> It seems in the original code what we were trying to do was to preseve
-> the error information area of superblock across journal load (which I am
-> not sure why though?)
-> 
-> In the new code we see if the journal load changed that area and if yes
-> we change that back to original log but we also marked changed = true. Why?
+Hello,
 
-That's a good question; thanks for asking it.  The first part of this
-code was introduced by commit 1c13d5c08728 ("ext4: Save error
-information to the superblock for analysis") in 2010.  So that part of
-the code is not "new", but very, very, old. 
+syzbot found the following issue on:
 
-The basic idea here was that back then, when a file system error was
-detected, it was always written directly to the superblock, by passing
-the journal.  So that's why the original code saved the error
-information, replayed the journal and then restored it.
+HEAD commit:    f7efed9f38f8 Add linux-next specific files for 20230616
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=152e89f3280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=60b1a32485a77c16
+dashboard link: https://syzkaller.appspot.com/bug?extid=94a8c779c6b238870393
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116af1eb280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e22d2f280000
 
-Of course, this changed with commit 2d01ddc86606 ("ext4: save error
-info to sb through journal if available") in 2020.  But the problem is
-"if available".  If the jbd2 layer has shut down, then we can't route
-the superblock error updates through the journal, at which point ext4
-will do a direct update of the superlbock.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/95bcbee03439/disk-f7efed9f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6fd295caa4de/vmlinux-f7efed9f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/69c038a34b5f/bzImage-f7efed9f.xz
 
-This was the rational behind commit eee00237fa5e ("ext4: commit super
-block if fs record error when journal record without error").
-Sometimes the error bit EXT4_ERROR_FS is set via a direct write to the
-superblock; but other times the error bit might be set via the
-journal.  In the former case, after we do a journal replay, the error
-bit will be cleared.  However, since the kernel never clears the
-EXT4_ERROR_FS bit, it's pretty easy for commit eee00237fa5e to handle
-things.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+94a8c779c6b238870393@syzkaller.appspotmail.com
 
-So what we need to for that first part of the code, introduced in
-commit 1c13d5c08728 and made invalid in commit 2d01ddc86606 is we need
-to add code to examine s_last_error_time.  If the version that was
-originally in the superblock is newer than the version found after the
-journal replay, then presumably an error happened but ext4 wasn't able
-to write the error information out through the journal, and we need to
-replace it after the the call to jbd2_journal_load().
+general protection fault, probably for non-canonical address 0xdffffc00000000c5: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000628-0x000000000000062f]
+CPU: 1 PID: 5032 Comm: syz-executor136 Not tainted 6.4.0-rc6-next-20230616-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:EXT4_SB fs/ext4/ext4.h:1741 [inline]
+RIP: 0010:ext4_add_complete_io fs/ext4/page-io.c:225 [inline]
+RIP: 0010:ext4_put_io_end_defer fs/ext4/page-io.c:297 [inline]
+RIP: 0010:ext4_put_io_end_defer+0x162/0x460 fs/ext4/page-io.c:289
+Code: c1 ea 03 80 3c 02 00 0f 85 b9 02 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 6c 24 28 49 8d bd 28 06 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c0 02 00 00 f7 d3 31 ff 4d 8b ad 28 06 00 00 83
+RSP: 0000:ffffc900001e0cb8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000100
+RDX: 00000000000000c5 RSI: ffffffff8234a5d2 RDI: 0000000000000628
+RBP: ffff888076af2180 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807f3ee6b0
+R13: 0000000000000000 R14: ffff8880213eb400 R15: ffff8880213eb3d8
+FS:  0000555556fc0300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000002a18c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ ext4_end_bio+0x282/0x560 fs/ext4/page-io.c:359
+ bio_endio+0x589/0x690 block/bio.c:1617
+ req_bio_endio block/blk-mq.c:766 [inline]
+ blk_update_request+0x56b/0x14f0 block/blk-mq.c:911
+ scsi_end_request+0x7a/0xa20 drivers/scsi/scsi_lib.c:541
+ scsi_io_completion+0x17b/0x1770 drivers/scsi/scsi_lib.c:978
+ scsi_complete+0x126/0x3b0 drivers/scsi/scsi_lib.c:1442
+ blk_complete_reqs+0xb3/0xf0 block/blk-mq.c:1110
+ __do_softirq+0x1d4/0x905 kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
+Code: f6 da 90 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 1d 58 7f 7e 89 c1 48 8b 34 24 81 e1 00 01 00
+RSP: 0000:ffffc900039df500 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000200 RCX: 0000000000000000
+RDX: ffff8880265c1dc0 RSI: ffffffff81687255 RDI: 0000000000000007
+RBP: ffffffff8d4ba518 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000200 R11: 00000000000000d4 R12: 0000000000000000
+R13: ffffffff8d4ba4c0 R14: dffffc0000000000 R15: 0000000000000001
+ console_emit_next_record arch/x86/include/asm/irqflags.h:42 [inline]
+ console_flush_all+0x61b/0xcc0 kernel/printk/printk.c:2933
+ console_unlock+0xb8/0x1f0 kernel/printk/printk.c:3007
+ vprintk_emit+0x1bd/0x600 kernel/printk/printk.c:2307
+ vprintk+0x84/0xa0 kernel/printk/printk_safe.c:50
+ _printk+0xbf/0xf0 kernel/printk/printk.c:2328
+ __list_add_valid+0xb9/0x100 lib/list_debug.c:30
+ __list_add include/linux/list.h:69 [inline]
+ list_add_tail include/linux/list.h:102 [inline]
+ list_lru_add+0x298/0x520 mm/list_lru.c:129
+ d_lru_add fs/dcache.c:431 [inline]
+ retain_dentry fs/dcache.c:685 [inline]
+ dput+0x806/0xe10 fs/dcache.c:908
+ do_unlinkat+0x3f3/0x680 fs/namei.c:4398
+ do_coredump+0x1836/0x4040 fs/coredump.c:675
+ get_signal+0x1c16/0x25f0 kernel/signal.c:2863
+ arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ irqentry_exit_to_user_mode+0x9/0x40 kernel/entry/common.c:310
+ exc_page_fault+0xc0/0x170 arch/x86/mm/fault.c:1593
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f7d17d7ce13
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5032 at arch/x86/mm/tlb.c:1295 nmi_uaccess_okay+0x99/0xb0 arch/x86/mm/tlb.c:1295
+Modules linked in:
+CPU: 1 PID: 5032 Comm: syz-executor136 Not tainted 6.4.0-rc6-next-20230616-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:nmi_uaccess_okay+0x99/0xb0 arch/x86/mm/tlb.c:1295
+Code: d8 48 ba 00 f0 ff ff ff ff 0f 00 41 b8 01 00 00 00 48 21 d0 48 ba 00 00 00 00 80 88 ff ff 48 01 d0 48 39 85 80 00 00 00 74 b0 <0f> 0b eb ac 0f 0b eb a0 e8 ba d5 9d 00 eb 8d e8 b3 d5 9d 00 eb be
+RSP: 0000:ffffc900001e0938 EFLAGS: 00010007
+RAX: ffff88802a18c000 RBX: ffff88807f50b600 RCX: 0000000000000100
+RDX: ffff888000000000 RSI: ffffffff8a11653d RDI: ffff88807f50b680
+RBP: ffff88807f50b600 R08: 0000000000000001 R09: 00007f7d17d7cde9
+R10: 00007f7d17d7ce29 R11: 0000000000096001 R12: 00007f7d17d7cde9
+R13: 00007f7d17d7ce29 R14: 0000000000000000 R15: ffffc900001e0aa8
+FS:  0000555556fc0300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000002a18c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ copy_from_user_nmi+0x62/0x150 arch/x86/lib/usercopy.c:39
+ copy_code arch/x86/kernel/dumpstack.c:91 [inline]
+ show_opcodes+0x5d/0xd0 arch/x86/kernel/dumpstack.c:121
+ show_ip arch/x86/kernel/dumpstack.c:144 [inline]
+ show_iret_regs+0x30/0x60 arch/x86/kernel/dumpstack.c:149
+ __show_regs+0x22/0x680 arch/x86/kernel/process_64.c:75
+ show_trace_log_lvl+0x255/0x390 arch/x86/kernel/dumpstack.c:301
+ __die_body arch/x86/kernel/dumpstack.c:420 [inline]
+ die_addr+0x3c/0xa0 arch/x86/kernel/dumpstack.c:460
+ __exc_general_protection arch/x86/kernel/traps.c:783 [inline]
+ exc_general_protection+0x129/0x230 arch/x86/kernel/traps.c:728
+ asm_exc_general_protection+0x26/0x30 arch/x86/include/asm/idtentry.h:564
+RIP: 0010:EXT4_SB fs/ext4/ext4.h:1741 [inline]
+RIP: 0010:ext4_add_complete_io fs/ext4/page-io.c:225 [inline]
+RIP: 0010:ext4_put_io_end_defer fs/ext4/page-io.c:297 [inline]
+RIP: 0010:ext4_put_io_end_defer+0x162/0x460 fs/ext4/page-io.c:289
+Code: c1 ea 03 80 3c 02 00 0f 85 b9 02 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 6c 24 28 49 8d bd 28 06 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c0 02 00 00 f7 d3 31 ff 4d 8b ad 28 06 00 00 83
+RSP: 0000:ffffc900001e0cb8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000100
+RDX: 00000000000000c5 RSI: ffffffff8234a5d2 RDI: 0000000000000628
+RBP: ffff888076af2180 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807f3ee6b0
+R13: 0000000000000000 R14: ffff8880213eb400 R15: ffff8880213eb3d8
+ ext4_end_bio+0x282/0x560 fs/ext4/page-io.c:359
+ bio_endio+0x589/0x690 block/bio.c:1617
+ req_bio_endio block/blk-mq.c:766 [inline]
+ blk_update_request+0x56b/0x14f0 block/blk-mq.c:911
+ scsi_end_request+0x7a/0xa20 drivers/scsi/scsi_lib.c:541
+ scsi_io_completion+0x17b/0x1770 drivers/scsi/scsi_lib.c:978
+ scsi_complete+0x126/0x3b0 drivers/scsi/scsi_lib.c:1442
+ blk_complete_reqs+0xb3/0xf0 block/blk-mq.c:1110
+ __do_softirq+0x1d4/0x905 kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
+Code: f6 da 90 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 1d 58 7f 7e 89 c1 48 8b 34 24 81 e1 00 01 00
+RSP: 0000:ffffc900039df500 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000200 RCX: 0000000000000000
+RDX: ffff8880265c1dc0 RSI: ffffffff81687255 RDI: 0000000000000007
+RBP: ffffffff8d4ba518 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000200 R11: 00000000000000d4 R12: 0000000000000000
+R13: ffffffff8d4ba4c0 R14: dffffc0000000000 R15: 0000000000000001
+ console_emit_next_record arch/x86/include/asm/irqflags.h:42 [inline]
+ console_flush_all+0x61b/0xcc0 kernel/printk/printk.c:2933
+ console_unlock+0xb8/0x1f0 kernel/printk/printk.c:3007
+ vprintk_emit+0x1bd/0x600 kernel/printk/printk.c:2307
+ vprintk+0x84/0xa0 kernel/printk/printk_safe.c:50
+ _printk+0xbf/0xf0 kernel/printk/printk.c:2328
+ __list_add_valid+0xb9/0x100 lib/list_debug.c:30
+ __list_add include/linux/list.h:69 [inline]
+ list_add_tail include/linux/list.h:102 [inline]
+ list_lru_add+0x298/0x520 mm/list_lru.c:129
+ d_lru_add fs/dcache.c:431 [inline]
+ retain_dentry fs/dcache.c:685 [inline]
+ dput+0x806/0xe10 fs/dcache.c:908
+ do_unlinkat+0x3f3/0x680 fs/namei.c:4398
+ do_coredump+0x1836/0x4040 fs/coredump.c:675
+ get_signal+0x1c16/0x25f0 kernel/signal.c:2863
+ arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ irqentry_exit_to_user_mode+0x9/0x40 kernel/entry/common.c:310
+ exc_page_fault+0xc0/0x170 arch/x86/mm/fault.c:1593
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f7d17d7ce13
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RSP: 002b:00007ffecfb11b00 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000000014024 RCX: 00007f7d17d95071
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00000000000001b1 R08: 0000000000000000 R09: 00007ffecfbcc080
+R10: 0000000000000000 R11: 0000000000000000 R12: 00007ffecfb11b64
+R13: 00007ffecfb11bc0 R14: 00000000000000d7 R15: 431bde82d7b634db
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	c1 ea 03             	shr    $0x3,%edx
+   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   7:	0f 85 b9 02 00 00    	jne    0x2c6
+   d:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  14:	fc ff df
+  17:	4d 8b 6c 24 28       	mov    0x28(%r12),%r13
+  1c:	49 8d bd 28 06 00 00 	lea    0x628(%r13),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 c0 02 00 00    	jne    0x2f4
+  34:	f7 d3                	not    %ebx
+  36:	31 ff                	xor    %edi,%edi
+  38:	4d 8b ad 28 06 00 00 	mov    0x628(%r13),%r13
+  3f:	83                   	.byte 0x83
 
-Cheers,
 
-						- Ted
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
