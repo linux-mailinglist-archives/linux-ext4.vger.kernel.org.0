@@ -2,107 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4ED73E02D
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 15:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C0A73E00E
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 15:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjFZNGR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Jun 2023 09:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S231481AbjFZNCt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Jun 2023 09:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbjFZNGN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 09:06:13 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5271E7B
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Jun 2023 06:05:50 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QqSLv2CkKz4f3lxD
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Jun 2023 20:48:23 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP3 (Coremail) with SMTP id _Ch0CgA3LRsYiZlkhiOjLg--.9627S2;
-        Mon, 26 Jun 2023 20:48:25 +0800 (CST)
-To:     tytso@mit.edu, linux-ext4@vger.kernel.org
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: mkfs.ext4 failed when orphan_file is enabled
-Message-ID: <3f0c3d5c-3dbf-6e9e-962b-616016c7427e@huaweicloud.com>
-Date:   Mon, 26 Jun 2023 20:48:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S231163AbjFZNCl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 09:02:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B40019F;
+        Mon, 26 Jun 2023 06:02:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F2FE960E86;
+        Mon, 26 Jun 2023 13:02:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9A6C433C0;
+        Mon, 26 Jun 2023 13:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1687784546;
+        bh=qHCByCNDys2ECT6mI9nx7oOPVqRAJqAf0TdsDuDj2PI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o53DZaDNvEAwptnEewGQrTiUVPR6v8FwlmTYX7yfgHWj/oUbJGR0mhRH1GL39WX5g
+         fp4oalcmiYuaNf5x8s65Ydy5ihYFrRckIWBUSM6GaHDjLwal1iUXFES1D/rhkOxDnz
+         cdPK4n96JJlMF7nWtd+JoN35UgJzBHocXT3XWUCw=
+Date:   Mon, 26 Jun 2023 15:02:22 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Byungchul Park <byungchul@sk.com>
+Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+        amir73il@gmail.com, kernel-team@lge.com, linux-mm@kvack.org,
+        akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+        hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+        jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        paolo.valente@linaro.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
+        hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
+        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
+        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
+        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
+        her0gyugyu@gmail.com
+Subject: Re: [PATCH v10 00/25] DEPT(Dependency Tracker)
+Message-ID: <2023062627-chooser-douche-6613@gregkh>
+References: <20230626115700.13873-1-byungchul@sk.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _Ch0CgA3LRsYiZlkhiOjLg--.9627S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF48Kr1rCry8WrWUArWkZwb_yoW8CrWUpw
-        43JFn0gFWkXa4fCa92yw4xWa4Sgr4Iy398X34jg3s7tFy3Gas2ywsxKa4UtFykKrnxAa12
-        9F9Fqryjq3yUtaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230626115700.13873-1-byungchul@sk.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi all, I find that "kvm-xfstests -c ext4/1k ext4/049" is failed on
-current dev branch because of mkfs.ext4 failure.
-I can simply reproduce the failure by:
- # kvm-xfstests shell
- # /sbin/mkfs.ext4  -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/vdc
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done
-Creating filesystem with 1310720 4k blocks and 1280 inodes
-Filesystem UUID: a202296a-c5dd-495c-8aee-4bc92983083a
-Superblock backups stored on blocks:
-        8192, 24576, 40960, 57344, 73728, 204800, 221184, 401408, 663552,
-        1024000
+On Mon, Jun 26, 2023 at 08:56:35PM +0900, Byungchul Park wrote:
+> >From now on, I can work on LKML again! I'm wondering if DEPT has been
+> helping kernel debugging well even though it's a form of patches yet.
+> 
+> I'm happy to see that DEPT reports a real problem in practice. See:
+> 
+>    https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/#t
+>    https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+> 
+> Nevertheless, I apologize for the lack of document. I promise to add it
+> before it gets needed to use DEPT's APIs by users. For now, you can use
+> DEPT just with CONFIG_DEPT on.
+> 
+> ---
+> 
+> Hi Linus and folks,
+> 
+> I've been developing a tool for detecting deadlock possibilities by
+> tracking wait/event rather than lock(?) acquisition order to try to
+> cover all synchonization machanisms. It's done on v6.2-rc2.
+> 
+> Benifit:
+> 
+> 	0. Works with all lock primitives.
+> 	1. Works with wait_for_completion()/complete().
+> 	2. Works with 'wait' on PG_locked.
+> 	3. Works with 'wait' on PG_writeback.
+> 	4. Works with swait/wakeup.
+> 	5. Works with waitqueue.
+> 	6. Works with wait_bit.
+> 	7. Multiple reports are allowed.
+> 	8. Deduplication control on multiple reports.
+> 	9. Withstand false positives thanks to 6.
+> 	10. Easy to tag any wait/event.
+> 
+> Future work:
+> 
+> 	0. To make it more stable.
+> 	1. To separates Dept from Lockdep.
+> 	2. To improves performance in terms of time and space.
+> 	3. To use Dept as a dependency engine for Lockdep.
+> 	4. To add any missing tags of wait/event in the kernel.
+> 	5. To deduplicate stack trace.
 
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (16384 blocks): done
-*mkfs.ext4: Inode checksum does not match inode while creating orphan file*
+If you run this today, does it find any issues with any subsystems /
+drivers that the current lockdep code does not find?  Have you run your
+tool on patches sent to the different mailing lists for new drivers and
+code added to the tree to verify that it can find issues easily?
 
-I also try this on my host machine with old version mke2fs. The orphan_file
-feature is not set in old version /etc/mke2fs.conf and the mkfs.ext4 works
-fine. After orphan_file added to /etc/mke2fs.conf, mkfs.ext4 failed as
-following:
- # mkfs.ext4  -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/sda1
-mke2fs 1.45.6 (20-Mar-2020)
-/dev/sda1 contains a ext4 file system
-        created on Tue Jun 27 03:49:19 2023
-Invalid filesystem option set: has_journal,extent,huge_file,
-flex_bg,metadata_csum,64bit,dir_nlink,extra_isize,orphan_file
+In other words, why do we need this at all?  What makes it 'better' than
+what we already have that works for us today?  What benifit is it?
 
-It's likely orphan_file is not supported by old version.
+thanks,
 
-After install new version mke2fs on my host machine. The checksum failure
-appears again:
-mkfs.ext4  -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/sda1
-mke2fs 1.47.0 (5-Feb-2023)
-/dev/sda1 contains a ext4 file system
-        created on Tue Jun 27 03:49:19 2023
-Creating filesystem with 1310720 4k blocks and 1280 inodes
-Filesystem UUID: 6ea06e27-5d56-4389-afaf-a99055fa85fd
-Superblock backups stored on blocks:
-        8192, 24576, 40960, 57344, 73728, 204800, 221184, 401408, 663552,
-        1024000
-
-Can anyone help with this?
-
--- 
-Best wishes
-Kemeng Shi
-
+greg k-h
