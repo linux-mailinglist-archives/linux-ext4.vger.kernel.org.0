@@ -2,74 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A7373E036
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 15:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35B673E0E1
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 15:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjFZNKF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Jun 2023 09:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        id S229762AbjFZNlq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Jun 2023 09:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjFZNKE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 09:10:04 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E699B9;
-        Mon, 26 Jun 2023 06:10:03 -0700 (PDT)
+        with ESMTP id S229570AbjFZNlp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 09:41:45 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A413F4;
+        Mon, 26 Jun 2023 06:41:43 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3A4031F8AB;
-        Mon, 26 Jun 2023 13:10:02 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F33C21867;
+        Mon, 26 Jun 2023 13:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687785002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1687786902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=p6JfJgn7WigU75C2F7rQV1RIBlnMRsvyrWJCIdw/dCA=;
-        b=eys9iBcHZeEhwoM+4xJcArAsNTJEoZ4F5/JuvySgzA6lig0YQ2tKBwmhJgJeGuTKW0ojic
-        uU6ctK6n8OkxZ1BPLsNhpVVwGfa3dN5NOYQdiORfGNJsaHjXve08g9PgKOjHS89z+XuLtS
-        G20EEJ5kA0P7k0HkW1y/WVHUf7dDKB8=
+        bh=nvrMGiHpP8dqIjK7zu4WtGJ8NhmqnwYO1zz07P5FzZw=;
+        b=Qz7XcL/HzBpS4a3YE/6pzhzqg7KK7Q4L7hdbGwRVSbCl+dpn0ocUdjXQi9X1GneRvrdgrk
+        AN/yplnhol1afovIWvUZhfJew9ePCDRiRGD6qhnkZCQznuNmtSaA5gbiq13s/XW5jtu65j
+        a5y8zYcSbW6obWcwTd6DsNzF8Wq8Abo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687785002;
+        s=susede2_ed25519; t=1687786902;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=p6JfJgn7WigU75C2F7rQV1RIBlnMRsvyrWJCIdw/dCA=;
-        b=VXWH/ebYmCkoxq1Jrdwc3zdPADBQ/c6B+J2fQ2Otd4ECu7PfiGlen3urUdNidZRR7g2tvt
-        zOaSHX36FGPHZwAQ==
+        bh=nvrMGiHpP8dqIjK7zu4WtGJ8NhmqnwYO1zz07P5FzZw=;
+        b=DPxKDZF35wYWAhMBk0ccpJVemlJDEbDtIe6K0j0/ug9TkAkt/wkfqpuM1qAOFroSY1u/vq
+        SgBSC3yatmAhdwBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D9F613483;
-        Mon, 26 Jun 2023 13:10:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED62D13483;
+        Mon, 26 Jun 2023 13:41:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id hTf9JSmOmWQaXgAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 26 Jun 2023 13:10:01 +0000
+        id zzLmOZWVmWQCbgAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 26 Jun 2023 13:41:41 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 472B1A0754; Mon, 26 Jun 2023 15:09:57 +0200 (CEST)
-Date:   Mon, 26 Jun 2023 15:09:57 +0200
+        id 82718A0754; Mon, 26 Jun 2023 15:41:41 +0200 (CEST)
+Date:   Mon, 26 Jun 2023 15:41:41 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH] quota: fix race condition between dqput() and
- dquot_mark_dquot_dirty()
-Message-ID: <20230626130957.kvfli23djxc2opkq@quack3>
-References: <20230616085608.42435-1-libaokun1@huawei.com>
- <20230616152824.ndpgvkegvvip2ahh@quack3>
- <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
- <20230622145620.hk3bdjxtlr64gtzl@quack3>
- <b73894fc-0c7a-0503-25ad-ab5a9dfbd852@huawei.com>
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        willy@infradead.org, hch@infradead.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, beanhuo@micron.com
+Subject: Re: [RESEND PATCH v3 1/2] fs/buffer: clean up block_commit_write
+Message-ID: <20230626134141.reroeq3hj4tja24d@quack3>
+References: <20230626055518.842392-1-beanhuo@iokpp.de>
+ <20230626055518.842392-2-beanhuo@iokpp.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b73894fc-0c7a-0503-25ad-ab5a9dfbd852@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230626055518.842392-2-beanhuo@iokpp.de>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,30 +76,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+On Mon 26-06-23 07:55:17, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Originally inode is used to get blksize, after commit 45bce8f3e343
+> ("fs/buffer.c: make block-size be per-page and protected by the page lock"),
+> __block_commit_write no longer uses this parameter inode.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-On Sun 25-06-23 15:56:10, Baokun Li wrote:
-> > > I think we can simply focus on the race between the DQ_ACTIVE_B flag and
-> > > the DQ_MOD_B flag, which is the core problem, because the same quota
-> > > should not have both flags. These two flags are protected by dq_list_lock
-> > > and dquot->dq_lock respectively, so it makes sense to add a
-> > > wait_on_dquot() to ensure the accuracy of DQ_ACTIVE_B.
-> > But the fundamental problem is not only the race with DQ_MOD_B setting. The
-> > dquot structure can be completely freed by the time
-> > dquot_claim_space_nodirty() calls dquot_mark_dquot_dirty() on it. That's
-> > why I think making __dquot_transfer() obey dquot_srcu rules is the right
-> > solution.
-> Yes, now I also think that making __dquot_transfer() obey dquot_srcu
-> rules is a better solution. But with inode->i_lock protection, why would
-> the dquot structure be completely freed?
+Looks good to me. Feel free to add:
 
-Well, when dquot_claim_space_nodirty() calls mark_all_dquot_dirty() it does
-not hold any locks (only dquot_srcu). So nothing prevents dquot_transfer()
-to go, swap dquot structure pointers and drop dquot references and after
-that mark_all_dquot_dirty() can use a stale pointer to call
-mark_dquot_dirty() on already freed memory.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+>  fs/buffer.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index bd091329026c..50821dfb02f7 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2180,8 +2180,7 @@ int __block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  }
+>  EXPORT_SYMBOL(__block_write_begin);
+>  
+> -static int __block_commit_write(struct inode *inode, struct folio *folio,
+> -		size_t from, size_t to)
+> +static int __block_commit_write(struct folio *folio, size_t from, size_t to)
+>  {
+>  	size_t block_start, block_end;
+>  	bool partial = false;
+> @@ -2277,7 +2276,7 @@ int block_write_end(struct file *file, struct address_space *mapping,
+>  	flush_dcache_folio(folio);
+>  
+>  	/* This could be a short (even 0-length) commit */
+> -	__block_commit_write(inode, folio, start, start + copied);
+> +	__block_commit_write(folio, start, start + copied);
+>  
+>  	return copied;
+>  }
+> @@ -2601,8 +2600,7 @@ EXPORT_SYMBOL(cont_write_begin);
+>  int block_commit_write(struct page *page, unsigned from, unsigned to)
+>  {
+>  	struct folio *folio = page_folio(page);
+> -	struct inode *inode = folio->mapping->host;
+> -	__block_commit_write(inode, folio, from, to);
+> +	__block_commit_write(folio, from, to);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(block_commit_write);
+> @@ -2650,7 +2648,7 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
+>  
+>  	ret = __block_write_begin_int(folio, 0, end, get_block, NULL);
+>  	if (!ret)
+> -		ret = __block_commit_write(inode, folio, 0, end);
+> +		ret = __block_commit_write(folio, 0, end);
+>  
+>  	if (unlikely(ret < 0))
+>  		goto out_unlock;
+> -- 
+> 2.34.1
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
