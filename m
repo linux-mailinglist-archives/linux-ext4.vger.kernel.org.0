@@ -2,110 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E8073D5C2
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 04:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFD573D741
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jun 2023 07:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjFZCSk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 25 Jun 2023 22:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S229763AbjFZFml (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Jun 2023 01:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjFZCSk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Jun 2023 22:18:40 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54C318D
-        for <linux-ext4@vger.kernel.org>; Sun, 25 Jun 2023 19:18:38 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-119-246.bstnma.fios.verizon.net [173.48.119.246])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35Q2HxRN006795
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 25 Jun 2023 22:18:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687745880; bh=rEHSJcjvBWLTA0J/CvIhhDB7WDxfHmI7nwgCmPrpbDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=SYx/ZYPD3ZomQTFtSmxuuVpj04SUFpKJ7i9trhw/zVBzYXV4uF6sZ6WMj+dvsPwTQ
-         Xc7uK12RfhQZS28ZvgQQFcQZMwfaTtofxhRlOQusvzykh3YbPQzHj4n/QmZdZyMqV+
-         qvTlrmWf9er1WEtvUYZjh1AXS7jYyIVH9AOycLWYPY7N48YuFzgxaECC96d447QskQ
-         yUlRNYrZizv2hQLEOtrmQCtQG22jDEQK9FYRWs07vZF46eJlbY9/T0yRIMVnK4mUna
-         B8mCGJrZ9cD3DaEz7KJ+lPPMSfC2fR3OeprC7qxzbeCMXOeuKpCipuVLFi1rr8PDfY
-         DPRLp8lVAex9Q==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9648F15C027E; Sun, 25 Jun 2023 22:17:58 -0400 (EDT)
-Date:   Sun, 25 Jun 2023 22:17:58 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, linfeilong <linfeilong@huawei.com>,
-        louhongxiang@huawei.com, liuzhiqiang26@huawei.com
-Subject: Re: [bug report] tune2fs: filesystem inconsistency occurs by
- concurrent write
-Message-ID: <20230626021758.GF8954@mit.edu>
-References: <29f6134f-ba0a-d601-0a5a-ad2b5e9bbf1d@huawei.com>
+        with ESMTP id S229584AbjFZFmk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 01:42:40 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE1AE48;
+        Sun, 25 Jun 2023 22:42:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1687758122; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=UmdVEWQo0uezW3gzYI8AGYJNrAzST0w0p1m2K4Gy2/HaL3YMKh7dU9JGWY34mJWvao
+    tVZGMtToJJXaBr+FtXfc2Hp+9Q0eTwxER7h4Cirqz6zVdFMLDqc3bq4xy3k4sdcYiGol
+    AYUsMDSdsXz3JeRWShwCtvAzSY7BxUappx0oLIikg5lZFDjhjL5wtEqnDFWQ44xCYbH+
+    F/pbaWPKcsAtGFuT4cDtpqgAIlLq5FL6YD505NS0hQ1I5pjQfEf5rShD8oqXBbc3sAI3
+    M8l0oKQxsYvPvT3V5bSQn2FNYdNaY4ew1RaA7FyZPWCui//6DW4knLYasqq5q7uB5SGs
+    TOCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1687758122;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=u84PcML5e480sTa8HkZqNl0cQA2NFsZSaC6NnQ5PLFk=;
+    b=VOecyVDzGmcEar+tZSwaVZyvYyR8xoGyhAQnnqiMsg6OtOOCDfe8UpiXNOB804DSAl
+    EQhcGlisbAy39RKUfSMEQXPk9m34sJNPGbyvwasodeICCBFmfUvkvsylcCCnqu+0veSO
+    llB312bnL9vrAvk0bsxykpgs90VcaiUBEYVStDWAJ1SrJgkL7eZhuQaWKc+2vzaHh9sw
+    7X1GG2IJlMrQNydAsFY8We50jGKdGNWFs9MUDaAk/BDQxrlyhpON/uDpOLSSN7xFCJsh
+    +/oivfnz9nJ3EiS2ojGy4bm2LWKqUTa3w7sD2l2pmvogEEx/WoTDL25qXuuVF03PB07f
+    QRvQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1687758122;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=u84PcML5e480sTa8HkZqNl0cQA2NFsZSaC6NnQ5PLFk=;
+    b=VWyoD7aBvrrl7+S6R0ytC2ezlnhivupTe/tkyi9bL53i2l0PfntXr5aRcliYRAZHAC
+    C/u1YtTTPFjGTnRllVi98JpknXUgKYkl6D3iWd9nWORos8Jr8UeVafDS2Am4o2rIdH2M
+    UfQX5T7QqKOVF4nAJ8f1y0j0Tzf32cTBu4ALeO0JWZgKxYLZit+/SmR6qn/LmRIBxkg6
+    ZteTTqpM+OOat1t+EKkFO3Reu5u8Nm5RIzAZBIPIVipRGUR3oZ6XCoZQluIImECgTZp6
+    JwHybKNru2Iqz5FepNKxaR3jqFN3EQ44UTzGkaymgAbZf6DluhUJarGI47bxKbt4xYq4
+    Sm6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1687758122;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=u84PcML5e480sTa8HkZqNl0cQA2NFsZSaC6NnQ5PLFk=;
+    b=4uursAC7+f1zlisTJ7H6N9A601ItGoeMxAgnDzNgxvc7m1glMB5P017maCLOAHDQTA
+    HuKG8Jw+3DqAcCVw8LDw==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1QLj68UeUr1+U1RrW5o+P9bSFaHg+gZu+uCjL2b+VQTRnVQrIOQ=="
+Received: from blinux.speedport.ip
+    by smtp.strato.de (RZmta 49.6.0 AUTH)
+    with ESMTPSA id zb0c8bz5Q5g1Vv8
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 26 Jun 2023 07:42:01 +0200 (CEST)
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        akpm@linux-foundation.org, jack@suse.cz, jack@suse.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        willy@infradead.org, hch@infradead.org
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        beanhuo@micron.com, Bean Huo <beanhuo@iokpp.de>
+Subject: [PATCH v3 0/2] clean up block_commit_write
+Date:   Mon, 26 Jun 2023 07:41:51 +0200
+Message-Id: <20230626054153.839672-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29f6134f-ba0a-d601-0a5a-ad2b5e9bbf1d@huawei.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 12:00:08AM +0800, zhanchengbin wrote:
-> Tune2fs does not recognize writes to the manipulated filesystem in another
-> namespace, there will be two simultaneous write operations on a
-> block, resulting in filesystem inconsistencies.
+change log:
+    v1--v2:
+        1. reordered patches
+    v2-v3:
+        1. rebased patches to git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next
 
-What you are reporting has nothing to do with namespaces, since
-"tune2fs -e remount-ro /dev/sdb" is something which is allowed
-regardless of whether the file system is mounted.  What reproduction
-is effectively doing is trying to set up a race between when tune2fs
-writes a byte to update to update the errors behavior, and when the
-actual unmount of the file system happens (e.g., when the last
-namespace unmounts the file system).  At that point, the kernel is
-going to be updating the superblock as part of the unmount, and then
-it calculates the superblock, and then it writes out the superblock.
 
-If the tune2fs races with the unmount, it's possible for the tune2fs
-update of the error beavhiour bit, and the update of the superblock
-checksum, to race with the kernel's final update of the superblock,
-includinig its attempt to update the checksum.
+Bean Huo (2):
+  fs/buffer: clean up block_commit_write
+  fs: convert block_commit_write to return void
 
-There are some workarounds to this, but ultimately, we need to replace
-the ad-hoc modification of the block device by tune2fs with some
-ioctls which specifically update superblock when the file system
-mounted.
+ fs/buffer.c                 | 20 ++++++++------------
+ fs/ext4/move_extent.c       |  7 ++-----
+ fs/ocfs2/file.c             |  7 +------
+ fs/udf/file.c               |  6 +++---
+ include/linux/buffer_head.h |  2 +-
+ 5 files changed, 15 insertions(+), 27 deletions(-)
 
-As far as whether or not tune2fs can detect if the file system is
-mounted, what we can do is check to see if the block device is busy.
-If it is mounted in some other namespace, we won't be able to see it
-mounted in /proc/self/mounts, but we can see that it's not possible to
-open the block device with O_EXCL.
+-- 
+2.34.1
 
-Compare:
-
-root@kvm-xfstests:~# /vtmp/tst_ismounted /dev/vdc
-Device /dev/vdc reports flags 31
-        /dev/vdc is apparently in use.
-        /dev/vdc is mounted.
-        /dev/vdc is mounted on /vdc.
-
-and then "unshare -m" in another terminal, followed by umount /dev/vdc
-in the first terminal:
-
-root@kvm-xfstests:~# /vtmp/tst_ismounted /dev/vdc
-Device /dev/vdc reports flags 10
-        /dev/vdc is apparently in use.
-
-... and then after we exit the last mount namespace which was keeping
-/dev/vdc mounted:
-
-root@kvm-xfstests:~# [ 2409.811328] EXT4-fs (vdc): unmounting filesystem bdc026fd-85a8-4ccf-94f8-961487000293.
-root@kvm-xfstests:~# /vtmp/tst_ismounted /dev/vdc
-Device /dev/vdc reports flags 00
-
-Cheers,
-
-						- Ted
