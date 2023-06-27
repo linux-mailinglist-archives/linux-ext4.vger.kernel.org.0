@@ -2,124 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96B273F75C
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 10:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EF273F77A
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 10:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjF0Iee (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jun 2023 04:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
+        id S231127AbjF0If6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jun 2023 04:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjF0IeK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 04:34:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE7919A8;
-        Tue, 27 Jun 2023 01:34:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S230475AbjF0Ifm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 04:35:42 -0400
+X-Greylist: delayed 83992 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 27 Jun 2023 01:35:36 PDT
+Received: from mail.xolti.net (master.xolti.net [51.77.231.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6F82E3
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 01:35:36 -0700 (PDT)
+Received: from [172.23.0.31] (93-44-176-40.ip98.fastwebnet.it [93.44.176.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 79CA12185A;
-        Tue, 27 Jun 2023 08:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687854847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=60UzWG/75gz4NOILHLeD/9PkhGjuoyZUVYU3uGZdrp0=;
-        b=d4VoKrCdfYSufabLKfmo5vzGpuNe5gtVTH+CtlSi6IUeD4RCSmqX/svx4rQzuWyVPLQZ/8
-        WSrOkluHzHTjdkigUqBKFuJZ70nggDYOwym90vnbT8KCPaYff+JvbsCSr5a0cmYcMTaCu3
-        oCJMA59hUNMJTM5vfboHBqOhZUKnGVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687854847;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=60UzWG/75gz4NOILHLeD/9PkhGjuoyZUVYU3uGZdrp0=;
-        b=o83Na7FRpIdvCG2qsO+9Jb1VrUW06rkj81rLnH0lKvQ9hoDNQ655rTxof0Cgm4IITsVhwf
-        SWY6NyFUNXJcZkCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6456013276;
-        Tue, 27 Jun 2023 08:34:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KrJ3GP+emmSiPwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 27 Jun 2023 08:34:07 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EA671A0762; Tue, 27 Jun 2023 10:34:06 +0200 (CEST)
-Date:   Tue, 27 Jun 2023 10:34:06 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH] quota: fix race condition between dqput() and
- dquot_mark_dquot_dirty()
-Message-ID: <20230627083406.hhjf55e2tqnwqaf6@quack3>
-References: <20230616085608.42435-1-libaokun1@huawei.com>
- <20230616152824.ndpgvkegvvip2ahh@quack3>
- <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
- <20230622145620.hk3bdjxtlr64gtzl@quack3>
- <b73894fc-0c7a-0503-25ad-ab5a9dfbd852@huawei.com>
- <20230626130957.kvfli23djxc2opkq@quack3>
- <2486ec73-55e0-00cb-fc76-97b9b285a9ce@huawei.com>
+        by mail.xolti.net (Postfix) with ESMTPSA id 3E0AE16A0
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 10:35:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.xolti.net 3E0AE16A0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=robertoragusa.it;
+        s=default; t=1687854935;
+        bh=EncmQHph7DpTSrjuKkXy63pZvVH0KdHL73B7RDRWkKA=;
+        h=Date:Subject:From:To:References:In-Reply-To:From;
+        b=RGivvaW7XHyK+gFkeNTKzvNX33SJO2ID2RFZ5RIJMyO8I8MBzpdIL/SqWg5KqgPuj
+         3M0f3Zs7YqSMAxpFVsESD++ZpaGB3ROWmHWoN/QHDfkpS4kUiGHw56Hvs+XXFeyIje
+         EnE3owS7pPgRbzMxAI5Zjy6eBVPUsyAMw8jj+6zs=
+Message-ID: <c4351547-af48-d023-e6a8-cbc353effa75@robertoragusa.it>
+Date:   Tue, 27 Jun 2023 10:35:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2486ec73-55e0-00cb-fc76-97b9b285a9ce@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: packed_meta_blocks=1 incompatible with resize2fs?
+Content-Language: en-US
+From:   Roberto Ragusa <mail@robertoragusa.it>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+References: <49752bf2-71ec-7fbf-dcdf-93940cfa92c9@robertoragusa.it>
+In-Reply-To: <49752bf2-71ec-7fbf-dcdf-93940cfa92c9@robertoragusa.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+On 6/26/23 11:15, Roberto Ragusa wrote:
+> My attempts to work around the issue have failed:
+> - adding resize=4290772992 in mkfs doesn't help
+> - creating a bigger fs with packed_meta_blocks, then shrinking it,
+> then re-extending it to the original size still allocates from the
+> new space
 
-On Mon 26-06-23 21:55:49, Baokun Li wrote:
-> On 2023/6/26 21:09, Jan Kara wrote:
-> > On Sun 25-06-23 15:56:10, Baokun Li wrote:
-> > > > > I think we can simply focus on the race between the DQ_ACTIVE_B flag and
-> > > > > the DQ_MOD_B flag, which is the core problem, because the same quota
-> > > > > should not have both flags. These two flags are protected by dq_list_lock
-> > > > > and dquot->dq_lock respectively, so it makes sense to add a
-> > > > > wait_on_dquot() to ensure the accuracy of DQ_ACTIVE_B.
-> > > > But the fundamental problem is not only the race with DQ_MOD_B setting. The
-> > > > dquot structure can be completely freed by the time
-> > > > dquot_claim_space_nodirty() calls dquot_mark_dquot_dirty() on it. That's
-> > > > why I think making __dquot_transfer() obey dquot_srcu rules is the right
-> > > > solution.
-> > > Yes, now I also think that making __dquot_transfer() obey dquot_srcu
-> > > rules is a better solution. But with inode->i_lock protection, why would
-> > > the dquot structure be completely freed?
-> > Well, when dquot_claim_space_nodirty() calls mark_all_dquot_dirty() it does
-> > not hold any locks (only dquot_srcu). So nothing prevents dquot_transfer()
-> > to go, swap dquot structure pointers and drop dquot references and after
-> > that mark_all_dquot_dirty() can use a stale pointer to call
-> > mark_dquot_dirty() on already freed memory.
-> > 
-> No, this doesn't look like it's going to happen.  The
-> mark_all_dquot_dirty() uses a pointer array pointer, the dquot in the
-> array is dynamically changing, so after swap dquot structure pointers,
-> mark_all_dquot_dirty() uses the new pointer, and the stale pointer is
-> always destroyed after swap, so there is no case of using the stale
-> pointer here.
+An additional attempt is still not fully reaching the objective.
 
-There is a case - CPU0 can prefetch the values from dquots[] array into its
-local cache, then CPU1 can update the dquots[] array (these writes can
-happily stay in CPU1 store cache invisible to other CPUs) and free the
-dquots via dqput(). Then CPU0 can pass the prefetched dquot pointers to
-mark_dquot_dirty(). There are no locks or memory barries preventing CPUs
-from ordering instructions and memory operations like this in the code...
-You can read Documentation/memory-barriers.txt about all the perils current
-CPU architecture brings wrt coordination of memory accesses among CPUs ;)
+mkfs.ext4 -E resize=1073741824 -G 32768 /dev/mydev
 
-								Honza
+I've tried raising G to have a single flex_bg group and this
+is partially working, since resizing places "block bitmap"
+and "inode bitmap" in the initial part of the disk, while "inode table"
+is still taken from the added space. (tested on a rather full fs)
+
+Do I have any other option?
+
+It looks like resize2fs has no way to force the inode table to be
+where a fresh mkfs would put it, pushing existing blocks out of
+the way.
+What complexity can I expect to find if I try to add this
+feature to resize2fs?
+
+Is there a way to NOT add more inodes when resizing? I would
+be happy to keep the same number I've originally got, but apparently
+each new block group assumes to have some inodes.
+
+My use case should be a really wide interest one: metadata on fast
+hardware, data on slow hardware. Is there no solution?
+
+Regards.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    Roberto Ragusa    mail at robertoragusa.it
+
