@@ -2,147 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C805473F0EC
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 04:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7363473F4D5
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 08:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjF0Cqh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Jun 2023 22:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S229568AbjF0GwN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jun 2023 02:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjF0Cqg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 22:46:36 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E16173A
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Jun 2023 19:46:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qqpxx4JvCz4f3xbq
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 10:46:29 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgDHp9WBTZpkd44vMg--.10362S2;
-        Tue, 27 Jun 2023 10:46:26 +0800 (CST)
-Subject: Re: mkfs.ext4 failed when orphan_file is enabled
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <3f0c3d5c-3dbf-6e9e-962b-616016c7427e@huaweicloud.com>
- <20230626180001.GA225716@mit.edu>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <3536fd3e-95d8-e062-32ae-a4add83e1ea5@huaweicloud.com>
-Date:   Tue, 27 Jun 2023 10:46:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S229799AbjF0GwM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 02:52:12 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F367D109;
+        Mon, 26 Jun 2023 23:52:08 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35R6lkxi014094;
+        Tue, 27 Jun 2023 06:51:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=ljMzO1E71unERBxVtqDA2RJAX7kAFF0nnhouWnI+x8Y=;
+ b=Bb6b4LU5d1BFCqwd3S0uR+rF7w/+MRWWr/bg1agFbyVE8b6L2zkomk7FK5cVINKNdmpe
+ jffL4TbyHvSVh+l+vzEab5PVmWi2WscmXX7/tAhFhCTiH7k9YjU2wqvNdDBG4MDKSjXP
+ Ic7Kfg1o4i7H91OXfN9Nh7na3IYZvxKchHSquFSd3s+icQPu+I7Hm0bSujsbemCxNjfo
+ wwp1KV93bC0Kk2mTEESk+7vEU5qgKEQc66Bj5XdDauwf1k+Wih+DatPX5QxyrpDsTfwB
+ 7xW6XKdtj3t0agiOqXprtIacepjTASe8JJyA4PzTbNhGYUq9YrkBvTlPbHzlN5yhyPQK yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rfttc82ep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jun 2023 06:51:50 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 35R6mRKu015631;
+        Tue, 27 Jun 2023 06:51:50 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rfttc82ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jun 2023 06:51:50 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 35R3onYl010114;
+        Tue, 27 Jun 2023 06:51:48 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3rdr451aec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jun 2023 06:51:47 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 35R6pjn342271132
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jun 2023 06:51:45 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75DAD2004B;
+        Tue, 27 Jun 2023 06:51:45 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2881320043;
+        Tue, 27 Jun 2023 06:51:42 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.169])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 27 Jun 2023 06:51:41 +0000 (GMT)
+Date:   Tue, 27 Jun 2023 12:21:38 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH v2 09/12] ext4: Ensure ext4_mb_prefetch_fini() is called
+ for all prefetched BGs
+Message-ID: <ZJqG+rEl9DATNRIX@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1685449706.git.ojaswin@linux.ibm.com>
+ <05e648ae04ec5b754207032823e9c1de9a54f87a.1685449706.git.ojaswin@linux.ibm.com>
+ <c3173405-713d-d2eb-bd9c-af8b8c747533@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3173405-713d-d2eb-bd9c-af8b8c747533@linux.dev>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: pIP5lKK82fE7DkKe64js4SX9CTWH7DqX
+X-Proofpoint-ORIG-GUID: nsge9KerDHTbCxBtf8Qx2XrdE4HLaU4K
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20230626180001.GA225716@mit.edu>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgDHp9WBTZpkd44vMg--.10362S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr45XFyrKFWxAr4rWr13twb_yoW5urWxpa
-        y8JFy5KrW8Xas3tFWvy340qa4fWw4vy398XrWUWwn2vry3GFn2gwsxKa4UJFWjkwsxAa1Y
-        9F9Fq3yUK3y0vrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-27_03,2023-06-26_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ impostorscore=0 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2306270061
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-on 6/27/2023 2:00 AM, Theodore Ts'o wrote:
-> On Mon, Jun 26, 2023 at 08:48:23PM +0800, Kemeng Shi wrote:
->> Hi all, I find that "kvm-xfstests -c ext4/1k ext4/049" is failed on
->> current dev branch because of mkfs.ext4 failure.
+On Tue, Jun 06, 2023 at 10:00:57PM +0800, Guoqing Jiang wrote:
+> Hello,
 > 
-> Hmm, I'm not seeing this mkfs.ext4 failure using 1.47.0.  I have two
-> cherry-picks on top of 1.47, but neither relate to mkfs.ext4:
+> On 5/30/23 20:33, Ojaswin Mujoo wrote:
+> > Before this patch, the call stack in ext4_run_li_request is as follows:
+> > 
+> >    /*
+> >     * nr = no. of BGs we want to fetch (=s_mb_prefetch)
+> >     * prefetch_ios = no. of BGs not uptodate after
+> >     * 		    ext4_read_block_bitmap_nowait()
+> >     */
+> >    next_group = ext4_mb_prefetch(sb, group, nr, prefetch_ios);
+> >    ext4_mb_prefetch_fini(sb, next_group prefetch_ios);
+> > 
+> > ext4_mb_prefetch_fini() will only try to initialize buddies for BGs in
+> > range [next_group - prefetch_ios, next_group). This is incorrect since
+> > sometimes (prefetch_ios < nr), which causes ext4_mb_prefetch_fini() to
+> > incorrectly ignore some of the BGs that might need initialization. This
+> > issue is more notable now with the previous patch enabling "fetching" of
+> > BLOCK_UNINIT BGs which are marked buffer_uptodate by default.
+> > 
+> > Fix this by passing nr to ext4_mb_prefetch_fini() instead of
+> > prefetch_ios so that it considers the right range of groups.
 > 
->   24a11cc371a4 ("e2fsck: Suppress "orphan file is clean" message in preen mode")
+> Thanks for the series.
 > 
-> and
+> > Similarly, make sure we don't pass nr=0 to ext4_mb_prefetch_fini() in
+> > ext4_mb_regular_allocator() since we might have prefetched BLOCK_UNINIT
+> > groups that would need buddy initialization.
 > 
->   8798bbb81687 ("e2fsck: fix handling of a invalid symlink in an inline_data directory")
+> Seems ext4_mb_prefetch_fini can't be called by ext4_mb_regular_allocator
+> if nr is 0.
+
+Hi Guoqing,
+
+Sorry I was on vacation so didn't get a chance to reply to this sooner.
+Let me explain what I meant by that statement in the commit message.
+
+So basically, the prefetch_ios output argument is incremented whenever
+ext4_mb_prefetch() reads a block group with !buffer_uptodate(bh).
+However, for BLOCK_UNINIT BGs the buffer is marked uptodate after
+initialization and hence prefetch_ios is not incremented when such BGs
+are prefetched. 
+
+This leads to nr becoming 0 due to the following line (removed in this patch):
+
+				if (prefetch_ios == curr_ios)
+					nr = 0;
+
+hence ext4_mb_prefetch_fini() would never pre initialise the corresponding 
+buddy structures. Instead, these structures would then get initialized
+probably at a later point during the slower allocation criterias. The
+motivation of making sure the BLOCK_UNINIT BGs' buddies are pre
+initialized is so the faster allocation criterias can utilize the data
+to make better decisions.
+
+Regards,
+ojaswin
+
 > 
-> See:
+> https://elixir.bootlin.com/linux/v6.4-rc5/source/fs/ext4/mballoc.c#L2816
 > 
-> root@kvm-xfstests:~# /sbin/mkfs.ext4  -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/vdc
-> mke2fs 1.47.0 (5-Feb-2023)
-> /dev/vdc contains a ext4 file system
->         last mounted on /vdc on Sun Jun 25 22:14:30 2023
-> Discarding device blocks: done                            
-> Creating filesystem with 1310720 4k blocks and 1280 inodes
-> Filesystem UUID: 127d490e-6caa-45cf-b5da-5616c5564a1a
-> Superblock backups stored on blocks: 
->         8192, 24576, 40960, 57344, 73728, 204800, 221184, 401408, 663552, 
->         1024000
+> Am I miss something?
 > 
-> Allocating group tables: done                            
-> Writing inode tables: done                            
-> Creating journal (16384 blocks): done
-> Writing superblocks and filesystem accounting information: done   
+> Thanks,
+> Guoqing
 > 
-> Can you confirm what version of e2fsprogs you are using?  Is it
-> exactly 1.47.0, or do you have some additional commits (either from
-> the upstream master or maint branches) applied?
-For virutal machine, I use built-in e2fsprogs in image[1]. For host mahcine, I build mke2fs
-from the upstream master branch with commit e76886f76dfca ("Merge branch 'maint' into next").
-I find some more clues that rename from mke2fs to mkfs.ext4 will cause this issue:
-
-/* make sure mkfs.ext4 and mke2fs is renamed */
-root@kvm-xfstests:~# md5sum /sbin/mkfs.ext4
-746f94dbfef93ed68bd760530613b176  /sbin/mkfs.ext4
-root@kvm-xfstests:~# md5sum /sbin/mke2fs
-746f94dbfef93ed68bd760530613b176  /sbin/mke2fs
-
-/* /sbin/mkfs.ext4 failed */
-root@kvm-xfstests:~# /sbin/mkfs.ext4 -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/vdc
-mke2fs 1.47.0 (5-Feb-2023)
-/dev/vdc contains a ext2 file system
-        created on Tue Jun 27 10:28:17 2023
-Discarding device blocks: done
-Creating filesystem with 1310720 4k blocks and 1280 inodes
-Filesystem UUID: d7287d23-c4fa-42da-8d53-14078dec8d70
-Superblock backups stored on blocks:
-        8192, 24576, 40960, 57344, 73728, 204800, 221184, 401408, 663552,
-        1024000
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (16384 blocks): done
-* mkfs.ext4: Inode checksum does not match inode while creating orphan file *
-
-/* /sbin/mke2fs successed */
-root@kvm-xfstests:~# /sbin/mke2fs -F  -b 4096 -g 8192 -N 1024 -I 4096 /dev/vdc
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done
-Creating filesystem with 1310720 4k blocks and 1280 inodes
-Filesystem UUID: 0e01e99b-52bf-4c2c-b986-fb497780bf40
-Superblock backups stored on blocks:
-        8192, 24576, 40960, 57344, 73728, 204800, 221184, 401408, 663552,
-        1024000
-
-Allocating group tables: done
-Writing inode tables: done
-Writing superblocks and filesystem accounting information: done
-
-This can be reproduced in my host machine too.
-
-[1]https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/kvm-xfstests/root_fs.img.amd64
--- 
-Best wishes
-Kemeng Shi
-
