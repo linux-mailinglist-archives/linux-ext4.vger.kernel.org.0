@@ -2,221 +2,202 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AAD73FFD5
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 17:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7617400A8
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 18:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjF0Pgd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jun 2023 11:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        id S230430AbjF0QQ7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jun 2023 12:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbjF0PgZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 11:36:25 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E93D2D4A
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 08:36:23 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-119-246.bstnma.fios.verizon.net [173.48.119.246])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35RFaIHH013049
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jun 2023 11:36:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1687880179; bh=jfG1GFuhPoMAosl3VLkDP5qeRDVr/htHFmqRKU3oBGU=;
-        h=Date:From:To:Cc:Subject;
-        b=nNudwhU0EzN0K3XDV/e71Og2Elu+M4VLElDqlmLZFJoD9FAPXZbbQZyS7rAiWdUBU
-         o3XOsNBwUIkinY4iIRAf1DjrFM4CoAaWFQWztj4z0qPDZ5EpfjDEx082yrJ7OBXFpw
-         h0m+iN7sxUznJjol45GHscBgRH9UuQSkQMOY0RS8cGUaeYV1i/lPexaazKKGibq6Hr
-         hgR8yOFY8J5qQV/tKCLH4YNqhqsKJjZiCl4TuiCWHjfZdxGyoaWJ4Lf7AgSO/wX9MO
-         rhe/sZzwemi9pjiRaXu/lIQc/T028bRcdrPJE2uZXpVH+uLmAPRXNy5q0zLTwMJBQL
-         zyScY8Q0+e3Qw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3DA4D15C027E; Tue, 27 Jun 2023 11:36:18 -0400 (EDT)
-Date:   Tue, 27 Jun 2023 11:36:18 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: [GIT PULL] ext4 updates for 6.5
-Message-ID: <20230627153618.GA329146@mit.edu>
+        with ESMTP id S231222AbjF0QQ6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 12:16:58 -0400
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DE219A8
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 09:16:57 -0700 (PDT)
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-77e23d23eccso406739f.1
+        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 09:16:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687882616; x=1690474616;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bmmWO32l6+0tLvq0cR3kBF1JPORpl7by7B2xGMqwy8c=;
+        b=jKh+s+Rqia7w63sDd8tESeOusGuv0Ok3VNymGMHdq9eoN4BBpIqRfPJtMgd1dTmf2r
+         3LnZftH/4dpY/W4O2dtGXjLuBJ2rZWh9ZduQGk+bSgpLM8iM//lD+Z53I/BxOGpwdc4P
+         pJ9lw1GyfuHGO+kicjjOYGizsjiUhJZFXnEAZzYt0XF8jaYr5bVloKdReTEZNbIR5G8X
+         bRW1C5a6bitFszQk+3rVTqQWwalMHSTe8Abebw/00p6fhrna/bmO798eSAObUlYKbZs5
+         hPWbnwT/Qi7MIK1UWwR500h+JUYW3ZsHHcE3KgdAQeNYyXaEGkHJr/bAO+CPDDAltrWA
+         z9/w==
+X-Gm-Message-State: AC+VfDyN7TSwaxJLR2dWWpq0yky+MaFdm9ja7QS8MTsRMefTZY2Nny7X
+        kQOVi0QpDD77sk9QGt5gS0p4BykhwVZvvlpLBAQ62VYCsMsz
+X-Google-Smtp-Source: ACHHUZ47VF3fPYX94LHOoXfm7+4nU08ofyIIkEIWBQUHv8RgvcYtEUPLMNV5YVomKesHRfByh7u9TZt6yc/bpma236k0UiKFHLE6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:6018:0:b0:783:535f:85d9 with SMTP id
+ r24-20020a6b6018000000b00783535f85d9mr2131481iog.2.1687882616507; Tue, 27 Jun
+ 2023 09:16:56 -0700 (PDT)
+Date:   Tue, 27 Jun 2023 09:16:56 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7970f05ff1ecb4d@google.com>
+Subject: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_find_extent (3)
+From:   syzbot <syzbot+7ec4ebe875a7076ebb31@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit f451fd97dd2b78f286379203a47d9d295c467255:
+Hello,
 
-  ext4: drop the call to ext4_error() from ext4_get_group_info() (2023-06-14 22:24:05 -0400)
+syzbot found the following issue on:
 
-are available in the Git repository at:
+HEAD commit:    8a28a0b6f1a1 Merge tag 'net-6.4-rc8' of git://git.kernel.o..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12f5b40b280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e74b395fe4978721
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ec4ebe875a7076ebb31
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a2b5c0a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1181c5c0a80000
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1e2a94b42e4e/disk-8a28a0b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7b1e26b25d39/vmlinux-8a28a0b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bd8294ebd044/bzImage-8a28a0b6.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/52d75ce070c3/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/8168124ab578/mount_5.gz
 
-for you to fetch changes up to 2ef6c32a914b85217b44a0a2418e830e520b085e:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7ec4ebe875a7076ebb31@syzkaller.appspotmail.com
 
-  ext4: avoid updating the superblock on a r/o mount if not needed (2023-06-26 19:36:45 -0400)
+==================================================================
+BUG: KASAN: use-after-free in ext4_ext_binsearch fs/ext4/extents.c:837 [inline]
+BUG: KASAN: use-after-free in ext4_find_extent+0xbc8/0xde0 fs/ext4/extents.c:953
+Read of size 4 at addr ffff888073caa838 by task syz-executor976/4999
 
+CPU: 0 PID: 4999 Comm: syz-executor976 Not tainted 6.4.0-rc7-syzkaller-00194-g8a28a0b6f1a1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:351 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:462
+ kasan_report+0x176/0x1b0 mm/kasan/report.c:572
+ ext4_ext_binsearch fs/ext4/extents.c:837 [inline]
+ ext4_find_extent+0xbc8/0xde0 fs/ext4/extents.c:953
+ ext4_ext_map_blocks+0x2d1/0x7210 fs/ext4/extents.c:4102
+ ext4_map_blocks+0xa4c/0x1cf0 fs/ext4/inode.c:623
+ _ext4_get_block+0x238/0x6a0 fs/ext4/inode.c:779
+ __block_write_begin_int+0x548/0x1a50 fs/buffer.c:2064
+ __block_write_begin fs/buffer.c:2114 [inline]
+ block_page_mkwrite+0x2fc/0x620 fs/buffer.c:2588
+ ext4_page_mkwrite+0x4ff/0x1290 fs/ext4/inode.c:6142
+ do_page_mkwrite+0x1a4/0x600 mm/memory.c:2931
+ wp_page_shared mm/memory.c:3280 [inline]
+ do_wp_page+0x501/0x3690 mm/memory.c:3362
+ handle_pte_fault mm/memory.c:4964 [inline]
+ __handle_mm_fault mm/memory.c:5089 [inline]
+ handle_mm_fault+0x2371/0x5860 mm/memory.c:5243
+ do_user_addr_fault arch/x86/mm/fault.c:1440 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1534 [inline]
+ exc_page_fault+0x7d2/0x910 arch/x86/mm/fault.c:1590
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f4b17ab09d5
+Code: 73 00 e9 06 f8 ff ff 66 c7 04 25 00 01 00 20 2e 00 e9 28 f8 ff ff b8 00 36 00 20 48 8d 35 0b 4e 0a 00 b9 25 00 00 00 48 89 c7 <f3> 48 a5 0f b6 06 88 07 e9 38 f8 ff ff 50 b9 00 36 00 20 ba ac 04
+RSP: 002b:00007ffcb22cf580 EFLAGS: 00010246
+RAX: 0000000020003600 RBX: 00007ffcb22cf5b8 RCX: 0000000000000025
+RDX: 40854a4c23aebd1f RSI: 00007f4b17b557d8 RDI: 0000000020003600
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffcb22cf5b0
+R13: 0000000000000000 R14: 431bde82d7b634db R15: 0000000000000000
+ </TASK>
 
-Note: there are some minor merge conflicts; see below for the merge
-fixup I used before doing my final regression tests.
+The buggy address belongs to the physical page:
+page:ffffea0001cf2a80 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x73caa
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 ffffea0001cf2ac8 ffffea0001cf2a48 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 0, migratetype Movable, gfp_mask 0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_COMP|__GFP_ZERO), pid 4990, tgid 4990 (sshd), ts 67865553810, free_ts 68052578311
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1731
+ prep_new_page mm/page_alloc.c:1738 [inline]
+ get_page_from_freelist+0x321c/0x33a0 mm/page_alloc.c:3502
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4768
+ __folio_alloc+0x13/0x30 mm/page_alloc.c:4800
+ vma_alloc_folio+0x48a/0x9a0 mm/mempolicy.c:2240
+ do_anonymous_page mm/memory.c:4085 [inline]
+ do_pte_missing mm/memory.c:3645 [inline]
+ handle_pte_fault mm/memory.c:4947 [inline]
+ __handle_mm_fault mm/memory.c:5089 [inline]
+ handle_mm_fault+0x2942/0x5860 mm/memory.c:5243
+ do_user_addr_fault arch/x86/mm/fault.c:1349 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1534 [inline]
+ exc_page_fault+0x274/0x910 arch/x86/mm/fault.c:1590
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1302 [inline]
+ free_unref_page_prepare+0x903/0xa30 mm/page_alloc.c:2564
+ free_unref_page_list+0x596/0x830 mm/page_alloc.c:2705
+ release_pages+0x2193/0x2470 mm/swap.c:1042
+ tlb_batch_pages_flush mm/mmu_gather.c:97 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:292 [inline]
+ tlb_flush_mmu+0x100/0x210 mm/mmu_gather.c:299
+ tlb_finish_mmu+0xd4/0x1f0 mm/mmu_gather.c:391
+ exit_mmap+0x3da/0xaf0 mm/mmap.c:3120
+ __mmput+0x115/0x3c0 kernel/fork.c:1351
+ exit_mm+0x227/0x310 kernel/exit.c:567
+ do_exit+0x612/0x2290 kernel/exit.c:861
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1024
+ __do_sys_exit_group kernel/exit.c:1035 [inline]
+ __se_sys_exit_group kernel/exit.c:1033 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1033
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-
-----------------------------------------------------------------
-Various cleanups and bug fixes in ext4's extent status tree,
-journalling, and block allocator subsystems.  Also improve performance
-for parallel DIO overwrites.
-
-----------------------------------------------------------------
-Baokun Li (14):
-      ext4: only update i_reserved_data_blocks on successful block allocation
-      ext4: add a new helper to check if es must be kept
-      ext4: factor out __es_alloc_extent() and __es_free_extent()
-      ext4: use pre-allocated es in __es_insert_extent()
-      ext4: use pre-allocated es in __es_remove_extent()
-      ext4: using nofail preallocation in ext4_es_remove_extent()
-      ext4: using nofail preallocation in ext4_es_insert_delayed_block()
-      ext4: using nofail preallocation in ext4_es_insert_extent()
-      ext4: make ext4_es_remove_extent() return void
-      ext4: make ext4_es_insert_delayed_block() return void
-      ext4: make ext4_es_insert_extent() return void
-      ext4: make ext4_zeroout_es() return void
-      ext4: turn quotas off if mount failed after enabling quotas
-      ext4: refactoring to use the unified helper ext4_quotas_off()
-
-Brian Foster (1):
-      ext4: allow concurrent unaligned dio overwrites
-
-Chao Yu (1):
-      ext4: fix to check return value of freeze_bdev() in ext4_shutdown()
-
-Kemeng Shi (11):
-      ext4: fix wrong unit use in ext4_mb_normalize_request
-      ext4: fix unit mismatch in ext4_mb_new_blocks_simple
-      ext4: fix wrong unit use in ext4_mb_find_by_goal
-      ext4: treat stripe in block unit
-      ext4: add EXT4_MB_HINT_GOAL_ONLY test in ext4_mb_use_preallocated
-      ext4: remove ext4_block_group and ext4_block_group_offset declaration
-      ext4: try all groups in ext4_mb_new_blocks_simple
-      ext4: get block from bh in ext4_free_blocks for fast commit replay
-      ext4: remove unused parameter from ext4_mb_new_blocks_simple()
-      ext4: fix wrong unit use in ext4_mb_clear_bb
-      ext4: fix wrong unit use in ext4_mb_new_blocks
-
-Matthew Wilcox (1):
-      ext4: Call fsverity_verify_folio()
-
-Ojaswin Mujoo (9):
-      ext4: Convert mballoc cr (criteria) to enum
-      ext4: Add per CR extent scanned counter
-      ext4: Add counter to track successful allocation of goal length
-      ext4: Avoid scanning smaller extents in BG during CR1
-      ext4: Don't skip prefetching BLOCK_UNINIT groups
-      ext4: Ensure ext4_mb_prefetch_fini() is called for all prefetched BGs
-      ext4: Abstract out logic to search average fragment list
-      ext4: Add allocation criteria 1.5 (CR1_5)
-      ext4: Give symbolic names to mballoc criterias
-
-Ritesh Harjani (6):
-      ext4: kill unused function ext4_journalled_write_inline_data
-      ext4: Change remaining tracepoints to use folio
-      ext4: Make mpage_journal_page_buffers use folio
-      ext4: Make ext4_write_inline_data_end() use folio
-      ext4: mballoc: Remove useless setting of ac_criteria
-      ext4: Remove unused extern variables declaration
-
-Theodore Ts'o (2):
-      ext4: clean up mballoc criteria comments
-      ext4: avoid updating the superblock on a r/o mount if not needed
-
-Zhang Yi (8):
-      jbd2: remove unused feature macros
-      jbd2: switch to check format version in superblock directly
-      jbd2: factor out journal initialization from journal_get_superblock()
-      jbd2: remove j_format_version
-      jbd2: continue to record log between each mount
-      ext4: add journal cycled recording support
-      ext4: update doc about journal superblock description
-      jbd2: skip reading super block if it has been verified
-
-Zhihao Cheng (2):
-      ext4: Fix reusing stale buffer heads from last failed mounting
-      ext4: ext4_put_super: Remove redundant checking for 'sbi->s_journal_bdev'
-
- Documentation/filesystems/ext4/journal.rst |   7 +-
- fs/ext4/ext4.h                             |  89 +++--
- fs/ext4/extents.c                          |  49 +--
- fs/ext4/extents_status.c                   | 207 +++++++-----
- fs/ext4/extents_status.h                   |  14 +-
- fs/ext4/file.c                             |  86 ++---
- fs/ext4/indirect.c                         |   8 +
- fs/ext4/inline.c                           |  39 +--
- fs/ext4/inode.c                            | 114 +++----
- fs/ext4/ioctl.c                            |   5 +-
- fs/ext4/mballoc.c                          | 644 ++++++++++++++++++++++++------------
- fs/ext4/mballoc.h                          |  16 +-
- fs/ext4/readpage.c                         |   2 +-
- fs/ext4/super.c                            |  86 +++--
- fs/ext4/sysfs.c                            |   2 +
- fs/jbd2/journal.c                          |  78 ++---
- fs/jbd2/recovery.c                         |  22 +-
- include/linux/jbd2.h                       |  42 +--
- include/trace/events/ext4.h                |  44 ++-
- 19 files changed, 939 insertions(+), 615 deletions(-)
+Memory state around the buggy address:
+ ffff888073caa700: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888073caa780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff888073caa800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                        ^
+ ffff888073caa880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888073caa900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
 
-commit 4b50c2604f922d0cdd4940d338506ecf817cba14
-Merge: 1ef6663a587b 2ef6c32a914b
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Tue Jun 27 00:23:58 2023 -0400
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-    Merge branch 'dev' into test
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --cc fs/ext4/ioctl.c
-index 961284cc9b65,55be1b8a6360..331859511f80
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@@ -793,10 -793,18 +793,11 @@@ static int ext4_ioctl_setproject(struc
-  }
-  #endif
-  
- -static int ext4_shutdown(struct super_block *sb, unsigned long arg)
- +int ext4_force_shutdown(struct super_block *sb, u32 flags)
-  {
-  	struct ext4_sb_info *sbi = EXT4_SB(sb);
- -	__u32 flags;
-+ 	int ret;
-  
- -	if (!capable(CAP_SYS_ADMIN))
- -		return -EPERM;
- -
- -	if (get_user(flags, (__u32 __user *)arg))
- -		return -EFAULT;
- -
-  	if (flags > EXT4_GOING_FLAGS_NOLOGFLUSH)
-  		return -EINVAL;
-  
-diff --cc fs/ext4/super.c
-index eaa5858d5285,c638b0db3b2b..c94ebf704616
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@@ -1133,7 -1128,13 +1133,13 @@@ static void ext4_blkdev_remove(struct e
-  	struct block_device *bdev;
-  	bdev = sbi->s_journal_bdev;
-  	if (bdev) {
-+ 		/*
-+ 		 * Invalidate the journal device's buffers.  We don't want them
-+ 		 * floating about in memory - the physical journal device may
-+ 		 * hotswapped, and it breaks the `ro-after' testing code.
-+ 		 */
-+ 		invalidate_bdev(bdev);
- -		ext4_blkdev_put(bdev);
- +		blkdev_put(bdev, sbi->s_sb);
-  		sbi->s_journal_bdev = NULL;
-  	}
-  }
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
