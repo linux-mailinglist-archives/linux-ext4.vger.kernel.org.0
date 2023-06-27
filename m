@@ -2,92 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8230C73EFAD
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 02:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC21773F045
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 03:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjF0A3D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Jun 2023 20:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S230051AbjF0BUp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Jun 2023 21:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjF0A3C (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 20:29:02 -0400
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F7F81704;
-        Mon, 26 Jun 2023 17:28:58 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-51-649a2d4740c7
-Date:   Tue, 27 Jun 2023 09:27:20 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-        amir73il@gmail.com, kernel-team@lge.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
-        hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
-        jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        paolo.valente@linaro.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jack@suse.cz, jlayton@kernel.org, dan.j.williams@intel.com,
-        hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
-        her0gyugyu@gmail.com
-Subject: Re: [PATCH v10 00/25] DEPT(Dependency Tracker)
-Message-ID: <20230627002720.GA55700@system.software.com>
-References: <20230626115700.13873-1-byungchul@sk.com>
- <2023062627-chooser-douche-6613@gregkh>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023062627-chooser-douche-6613@gregkh>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sb0xTZxTG87739r23jV3uqrJX2L50MVswKC4sHANxW7Jk98PMliybyUh0
-        zXqVZi2SQossMaJUwx8lwAIdhWwFTCFYBYvzb0v4E8CrGbLBWNcAUaab1SKm2tpahrYQM7+c
-        /PI8T55zPhye0dhIOm8oKpXMRTqjlqhY1eK69iwxy6HP7oupoOFENkSeVLHQ1usmMHn2NAL3
-        +SMYgqOfwJ/REILErzcZsDdNImi/PcfA+bF5BL7uowSm7rwG05ElAnJTLYHKzl4Cvz1YxjDb
-        3IjhtGcX3KjvwDAY/5cFe5BAq70SJ8c9DHFXDweuis2w0O3gYPn2dpDnZxTgC2yBlp9mCXh9
-        MgtjlxYwTF1pIzDvfq6AG2PXWJhsOKmAMw87CDyIuhhwRZY4+H3QiaHPliy6v+zDcPzxigLG
-        Tw4m6dQ5DNN/XUUwUHULg8c9Q2AkEsLQ72li4FnXKIKFukUOjp2Ic9B6pA5B7bFmFm7+N64A
-        2+z7kIi1kQ/zxJHQEiPa+stEX9TJitc7qHjZMceJtoEAJzo9FrG/O1Ps9Aax2B6OKERPTzUR
-        PeFGTqxZnMbi7IyXiA8nJjjx2o8J9vM3v1bl6yWjwSqZt+38RlXoGbHj4kj6wbpfqkkFcmys
-        QUqeCjk07p1nXnKosyvJPM8Km2l4al9KJsI71O+Pr0Y2CO/S4GiArUEqnhHmVHToWT2XMtYL
-        ubSusnk1pBaALl31r+oaYS/1D/zDrumvU7nlziozQib1rwRxahcjZNCuFT4lK5MnzD2VFSne
-        KLxNBy+M47XTJpTUfdG6xpvoULefrUeC45VWxyutjv9bnYjpQRpDkdWkMxhzthaWFxkObv32
-        gMmDkr/pOrRccAmFJ78YRgKPtOvUsbMteo1CZy0pNw0jyjPaDeq0mF2vUet15d9L5gN7zRaj
-        VDKMMnhW+4b6vWiZXiPs15VK30lSsWR+6WJemV6BfjZl5t4aP/XB37UBd0C5pzSjPWeb7Bvy
-        7rhLPtqdk1cwdOZJvq/REgy3hr7cknhUlWemhxP4uPxW725vwWdNwV0/XD/3KLQzO++PTxuM
-        8tPDlvw+6+Ov4jucpmJLWukh592YQTq6UBXL/bgsbWzavomrkP2Lwxf9Xc5oK0mrztKyJYW6
-        7ZmMuUT3AjQPjl2XAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTdxTG9//fV+qq1w70BrMsdsoU0Sm+7ETNsmSG3mhEsw8w/aA09m5t
-        eBFbYYIxQcFFUBsggY5aXAUtBBhsF9+hFSG8dERklrCOFILo0CpKgi1QYGjLsswvJ788z3nO
-        OR8OSyieUZGsLu24qE9TpyhpGSmL35G7XrXerNlY7FkLRRc2gt93jgRLQx0NvfW1COqun8bg
-        bVfBn5NjCGYfPCTAVNKL4MrjQQKudwwhsFefocH1dDH0+cdpcJacpyG3soGGP17OYfCUFmOo
-        lfZCd2EFhpbAMxJMXhoumXJxsDzHELDVMGDLWQ0j1WYG5h5vAudQPwVt5U4K7AProOyyh4Zm
-        u5OEjtsjGFx3LTQM1b2loLuji4TeoosU/PK6goaXkzYCbP5xBh61WDH8mhec9mLOjuHHN/MU
-        dF5sCdLV3zD0/dWEwHFuGINU109Dm38MQ6NUQsBMVTuCEeMrBs5eCDBw6bQRwfmzpSQ8/KeT
-        gjzPVpidttBf7RTaxsYJIa/xB8E+aSWF3yt44Y55kBHyHAOMYJUyhMbqaKGy2YuFKxN+SpBq
-        8mlBmihmhIJXfVjw9DfTwuueHkbo+mmW3P/xQdlOjZiiyxT1n3+ZJNNKbSac7o88YbyRT+cg
-        c0QBCmN5bgs/VllFFCCWJbnV/ITru5BMc5/xbneACHE4t4b3tg+QBUjGEtygjL8/U8iEjI+4
-        L3hjbulCk5wDfrzJvaAruMO82zFK/qsv5Z1lTxeY4KJ597wXh3YR3Aq+ap4NyWHBEwannFSI
-        I7hP+ZabnbgQyc3vpc3vpc3/p62IqEHhurTMVLUuZesGQ7I2K013YsORo6kSCr6f7dRc0W3k
-        c6laEcci5Yfy6foyjYJSZxqyUlsRzxLKcPmyaZNGIdeos7JF/dHD+owU0dCKVrCkcrl8d6KY
-        pOC+Vx8Xk0UxXdT/52I2LDIH3eMdGY+2JLXHSDqHcfPfq/ZWxS3eFaieirmFE/NPxibMaHPO
-        qFhMvfjAcPDJjp+zv96HPrlTv8gS1/Ct9tjoAV2Eae1AXLm+saar373Skf1mmy/eN588Vbvc
-        0BOVEZ9unj70vDxzODbhmyjV2wej3UuQNWHCt+ea67Jl+9KOsPxbStKgVW+KJvQG9Tt/39ah
-        egMAAA==
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        with ESMTP id S229766AbjF0BUn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Jun 2023 21:20:43 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B331984
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Jun 2023 18:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687828842; x=1719364842;
+  h=date:from:to:cc:subject:message-id;
+  bh=DIyqWxZYS1QUlzC5JD3j72rThMvu33hAVBMeO/CcwEw=;
+  b=BWoc7McMLDjf3B5mkikW5M6Ne7N1auV0WtNtmlFgeFoTlMRGLiITltdT
+   Ae67feg83+QO96I52cJZrDPF6b2O2pJGtgb4gWAAvah4z6/UJXX0f1mCj
+   aQ1FdAeYRfQgyhSLrd90W/OATPJAwi1V7cn0+Xm5oeoN0lwN6yOZTXse5
+   tCAVWo1ZI+z8eQJ+urDDOIZHtZRorhgmfuvmfsfGMpCqMPm6B4RnX1jJp
+   pSGEAD1k3pYDgQ5IaTNSOBcvSka+F+3YYCkS674X8G8H2PaoJ7XEPgCIt
+   8F8BIvQKk2Q1ge3dPLSdcW506kj98TCC7aDNaDzDnpBZmn414dtF0f3DE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="391879246"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="391879246"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:20:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="719592927"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="719592927"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 26 Jun 2023 18:20:41 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qDxNo-000BMq-0z;
+        Tue, 27 Jun 2023 01:20:40 +0000
+Date:   Tue, 27 Jun 2023 09:20:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 6bb438fa0aac4c08acd626d408cb6d4b745df7fd
+Message-ID: <202306270914.Ji4yvwdo-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,84 +60,131 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 03:02:22PM +0200, Greg KH wrote:
-> On Mon, Jun 26, 2023 at 08:56:35PM +0900, Byungchul Park wrote:
-> > >From now on, I can work on LKML again! I'm wondering if DEPT has been
-> > helping kernel debugging well even though it's a form of patches yet.
-> > 
-> > I'm happy to see that DEPT reports a real problem in practice. See:
-> > 
-> >    https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/#t
-> >    https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
-> > 
-> > Nevertheless, I apologize for the lack of document. I promise to add it
-> > before it gets needed to use DEPT's APIs by users. For now, you can use
-> > DEPT just with CONFIG_DEPT on.
-> > 
-> > ---
-> > 
-> > Hi Linus and folks,
-> > 
-> > I've been developing a tool for detecting deadlock possibilities by
-> > tracking wait/event rather than lock(?) acquisition order to try to
-> > cover all synchonization machanisms. It's done on v6.2-rc2.
-> > 
-> > Benifit:
-> > 
-> > 	0. Works with all lock primitives.
-> > 	1. Works with wait_for_completion()/complete().
-> > 	2. Works with 'wait' on PG_locked.
-> > 	3. Works with 'wait' on PG_writeback.
-> > 	4. Works with swait/wakeup.
-> > 	5. Works with waitqueue.
-> > 	6. Works with wait_bit.
-> > 	7. Multiple reports are allowed.
-> > 	8. Deduplication control on multiple reports.
-> > 	9. Withstand false positives thanks to 6.
-> > 	10. Easy to tag any wait/event.
-> > 
-> > Future work:
-> > 
-> > 	0. To make it more stable.
-> > 	1. To separates Dept from Lockdep.
-> > 	2. To improves performance in terms of time and space.
-> > 	3. To use Dept as a dependency engine for Lockdep.
-> > 	4. To add any missing tags of wait/event in the kernel.
-> > 	5. To deduplicate stack trace.
-> 
-> If you run this today, does it find any issues with any subsystems /
-> drivers that the current lockdep code does not find?  Have you run your
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 6bb438fa0aac4c08acd626d408cb6d4b745df7fd  ext4: avoid updating the superblock on a r/o mount if not needed
 
-Yes, it found some deadlocks. The following issue was about a deadlock
-by PG_locked detected by DEPT which lockdep couldn't. Check it out:
+elapsed time: 1307m
 
-   https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/#t
-   https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+configs tested: 111
+configs skipped: 3
 
-> tool on patches sent to the different mailing lists for new drivers and
-> code added to the tree to verify that it can find issues easily?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I had been co-working with GPU driver developers for their new drivers
-adding to their CI system to verify that it can find issues easily. Now
-that I've almost organized my stuff, I will re-start it.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsimosci_defconfig   gcc  
+arc                  randconfig-r006-20230626   gcc  
+arc                  randconfig-r043-20230626   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r002-20230626   gcc  
+arm                  randconfig-r011-20230626   clang
+arm                  randconfig-r046-20230626   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r012-20230626   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r015-20230626   clang
+hexagon              randconfig-r041-20230626   clang
+hexagon              randconfig-r045-20230626   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230626   clang
+i386         buildonly-randconfig-r005-20230626   clang
+i386         buildonly-randconfig-r006-20230626   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230626   clang
+i386                 randconfig-i002-20230626   clang
+i386                 randconfig-i003-20230626   clang
+i386                 randconfig-i004-20230626   clang
+i386                 randconfig-i005-20230626   clang
+i386                 randconfig-i006-20230626   clang
+i386                 randconfig-i011-20230626   gcc  
+i386                 randconfig-i012-20230626   gcc  
+i386                 randconfig-i013-20230626   gcc  
+i386                 randconfig-i014-20230626   gcc  
+i386                 randconfig-i015-20230626   gcc  
+i386                 randconfig-i016-20230626   gcc  
+i386                 randconfig-r013-20230626   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r003-20230626   gcc  
+loongarch            randconfig-r005-20230626   gcc  
+m68k                             alldefconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                 randconfig-r023-20230626   gcc  
+microblaze           randconfig-r004-20230626   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                            ar7_defconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+mips                 randconfig-r021-20230626   clang
+mips                 randconfig-r034-20230626   gcc  
+mips                   sb1250_swarm_defconfig   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r014-20230626   gcc  
+nios2                randconfig-r022-20230626   gcc  
+nios2                randconfig-r031-20230626   gcc  
+openrisc             randconfig-r032-20230626   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r001-20230626   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                   lite5200b_defconfig   clang
+powerpc                  mpc885_ads_defconfig   clang
+powerpc              randconfig-r035-20230626   clang
+riscv                            alldefconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r024-20230626   gcc  
+riscv                randconfig-r042-20230626   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r016-20230626   gcc  
+s390                 randconfig-r036-20230626   clang
+s390                 randconfig-r044-20230626   gcc  
+sh                               allmodconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                           se7206_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r025-20230626   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230626   clang
+x86_64       buildonly-randconfig-r002-20230626   clang
+x86_64       buildonly-randconfig-r003-20230626   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa               randconfig-r026-20230626   gcc  
 
-> In other words, why do we need this at all?  What makes it 'better' than
-> what we already have that works for us today?  What benifit is it?
-
-AS IS : It can detect deadlocks by wrong lock usage e.g. acqusition order.
-	Once it reports a issue, you must resolve it or work around to
-	see further reports even if it's not one you are into.
-
-TO BE : It can detect deadlocks by not only locks but also any waits e.g.
-	wait_for_completion(), PG_locked, PG_writeback, dma fence and
-	so on. Last but not least, DEPT can report issues multiple times
-	at a single system-up so that any issues that you are not into,
-	no longer prevent further reports that is valuable to you.
-
-However, yes. DEPT needs to be more matured. I'd like to do that together.
-
-	Byungchul
-
-> thanks,
-> 
-> greg k-h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
