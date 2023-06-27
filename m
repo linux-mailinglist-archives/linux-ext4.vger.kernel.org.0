@@ -2,173 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB20473FD08
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 15:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A3473FD5A
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jun 2023 16:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjF0NnX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jun 2023 09:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        id S230473AbjF0OGy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Jun 2023 10:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjF0NnQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 09:43:16 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0BC2D77
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 06:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687873393; x=1719409393;
-  h=date:from:to:cc:subject:message-id;
-  bh=Ym7Tc5GSeTTn9TSKrZSyUSFcArCoeeztZspvEgXMELg=;
-  b=d/STEqAvsqQ+ljZXG2UXassCIuCdH0QnpBldDYQNaWaBm7ifW9tmYDYf
-   MnonRzkY/T/f0qo9JvxuCC9AwWtLoI0ZQSLr44ol93tXOYZ8mXFU5kQ0b
-   XOin3Ney/qJKtnD3vLB5pfk1t/4JkaQJwv9lny/ckWToeRWHFSWZernL3
-   fwU9D1HgyRZC1Ylg7L5i+uGSXmKQLUQgCffjSY4+McfI3Ff7fesjXMw9q
-   qI4lwqlXAt0Wag1U4/aI5A5B7WsPZconsT6FUR9DJ3LIfF1xVt/vwqRsj
-   +AYuymHXzILmBSNLgp+Sg0Ql5mYjGow6wwat0nP558s1UvhqWSlyddrwa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="361611339"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="361611339"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 06:43:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="890695096"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="890695096"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 27 Jun 2023 06:43:07 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qE8yI-000Bws-2D;
-        Tue, 27 Jun 2023 13:43:06 +0000
-Date:   Tue, 27 Jun 2023 21:42:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 2ef6c32a914b85217b44a0a2418e830e520b085e
-Message-ID: <202306272145.JIolDs02-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229957AbjF0OGx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 10:06:53 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD393295B;
+        Tue, 27 Jun 2023 07:06:50 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Qr62c2BvtzqTcQ;
+        Tue, 27 Jun 2023 22:06:32 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 27 Jun 2023 22:06:47 +0800
+Message-ID: <9dbd6a1b-4e24-bb6d-1fec-923325ca1cb6@huawei.com>
+Date:   Tue, 27 Jun 2023 22:06:47 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] quota: fix race condition between dqput() and
+ dquot_mark_dquot_dirty()
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20230616085608.42435-1-libaokun1@huawei.com>
+ <20230616152824.ndpgvkegvvip2ahh@quack3>
+ <c8daf4a0-769f-f769-50f6-8b7063542499@huawei.com>
+ <20230622145620.hk3bdjxtlr64gtzl@quack3>
+ <b73894fc-0c7a-0503-25ad-ab5a9dfbd852@huawei.com>
+ <20230626130957.kvfli23djxc2opkq@quack3>
+ <2486ec73-55e0-00cb-fc76-97b9b285a9ce@huawei.com>
+ <20230627083406.hhjf55e2tqnwqaf6@quack3>
+ <fe7d3b03-4d08-34ac-a695-a5c57c751aeb@huawei.com>
+ <20230627092829.d3s3x4nkprux7jmo@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230627092829.d3s3x4nkprux7jmo@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 2ef6c32a914b85217b44a0a2418e830e520b085e  ext4: avoid updating the superblock on a r/o mount if not needed
+On 2023/6/27 17:28, Jan Kara wrote:
+> On Tue 27-06-23 17:08:27, Baokun Li wrote:
+>> Hello!
+>>
+>> On 2023/6/27 16:34, Jan Kara wrote:
+>>> Hello!
+>>>
+>>> On Mon 26-06-23 21:55:49, Baokun Li wrote:
+>>>> On 2023/6/26 21:09, Jan Kara wrote:
+>>>>> On Sun 25-06-23 15:56:10, Baokun Li wrote:
+>>>>>>>> I think we can simply focus on the race between the DQ_ACTIVE_B flag and
+>>>>>>>> the DQ_MOD_B flag, which is the core problem, because the same quota
+>>>>>>>> should not have both flags. These two flags are protected by dq_list_lock
+>>>>>>>> and dquot->dq_lock respectively, so it makes sense to add a
+>>>>>>>> wait_on_dquot() to ensure the accuracy of DQ_ACTIVE_B.
+>>>>>>> But the fundamental problem is not only the race with DQ_MOD_B setting. The
+>>>>>>> dquot structure can be completely freed by the time
+>>>>>>> dquot_claim_space_nodirty() calls dquot_mark_dquot_dirty() on it. That's
+>>>>>>> why I think making __dquot_transfer() obey dquot_srcu rules is the right
+>>>>>>> solution.
+>>>>>> Yes, now I also think that making __dquot_transfer() obey dquot_srcu
+>>>>>> rules is a better solution. But with inode->i_lock protection, why would
+>>>>>> the dquot structure be completely freed?
+>>>>> Well, when dquot_claim_space_nodirty() calls mark_all_dquot_dirty() it does
+>>>>> not hold any locks (only dquot_srcu). So nothing prevents dquot_transfer()
+>>>>> to go, swap dquot structure pointers and drop dquot references and after
+>>>>> that mark_all_dquot_dirty() can use a stale pointer to call
+>>>>> mark_dquot_dirty() on already freed memory.
+>>>>>
+>>>> No, this doesn't look like it's going to happen.  The
+>>>> mark_all_dquot_dirty() uses a pointer array pointer, the dquot in the
+>>>> array is dynamically changing, so after swap dquot structure pointers,
+>>>> mark_all_dquot_dirty() uses the new pointer, and the stale pointer is
+>>>> always destroyed after swap, so there is no case of using the stale
+>>>> pointer here.
+>>> There is a case - CPU0 can prefetch the values from dquots[] array into its
+>>> local cache, then CPU1 can update the dquots[] array (these writes can
+>>> happily stay in CPU1 store cache invisible to other CPUs) and free the
+>>> dquots via dqput(). Then CPU0 can pass the prefetched dquot pointers to
+>>> mark_dquot_dirty(). There are no locks or memory barries preventing CPUs
+>>> from ordering instructions and memory operations like this in the code...
+>>> You can read Documentation/memory-barriers.txt about all the perils current
+>>> CPU architecture brings wrt coordination of memory accesses among CPUs ;)
+>>>
+>>> 								Honza
+>> Got it!
+>>
+>> Sorry for misunderstanding you (I thought "completely freed" meant
+>> dquot_destroy(), but you should have meant dquot_release()).
+> Well, the dquot can even get to dquot_destroy(). There's nothing really
+> preventing CPU2 going into memory reclaim and free the dquot in
+> dqcache_shrink_scan() still before CPU0 even calls mark_dquot_dirty() on
+> it. Sure such timing on real hardware is very unlikely but in a VM where a
+> virtual CPU can get starved for a significant amount of time this could
+> happen.
+>
+> 								Honza
+Yes, invalidate_dquots() calling do_destroy_dquot() does not have this 
+problem
+because it calls synchronize_srcu(&dquot_srcu) in drop_dquot_ref() before.
 
-elapsed time: 722m
+However, calling do_destroy_dquot() from dqcache_shrink_scan() is not
+protected, and calling dqcache_shrink_scan() after P3 execution will trigger
+the UAF by calling do_destroy_dquot() twice, as shown in function graph 1
+in the patch description; If dqcache_shrink_scan() is called after dquot is
+added to free_dquots and before P3 is executed, the UAF may be
+triggered in dquot_mark_dquot_dirty().
 
-configs tested: 97
-configs skipped: 8
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r004-20230627   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r036-20230627   gcc  
-arc                  randconfig-r043-20230627   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                          collie_defconfig   clang
-arm                                 defconfig   gcc  
-arm                            hisi_defconfig   gcc  
-arm                  randconfig-r046-20230627   gcc  
-arm64                            alldefconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r022-20230627   gcc  
-csky                 randconfig-r031-20230627   gcc  
-hexagon              randconfig-r041-20230627   clang
-hexagon              randconfig-r045-20230627   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i006-20230627   gcc  
-i386                 randconfig-i016-20230627   clang
-i386                 randconfig-r015-20230627   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r005-20230627   gcc  
-loongarch            randconfig-r006-20230627   gcc  
-loongarch            randconfig-r034-20230627   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                           xway_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r035-20230627   gcc  
-openrisc             randconfig-r012-20230627   gcc  
-openrisc             randconfig-r016-20230627   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r012-20230627   gcc  
-parisc               randconfig-r021-20230627   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc                      pasemi_defconfig   gcc  
-powerpc              randconfig-r014-20230627   clang
-powerpc              randconfig-r026-20230627   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r011-20230627   clang
-riscv                randconfig-r042-20230627   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r033-20230627   gcc  
-s390                 randconfig-r044-20230627   clang
-sh                               allmodconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                          rsk7264_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r025-20230627   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r032-20230627   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r023-20230627   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r013-20230627   clang
-x86_64               randconfig-x001-20230627   clang
-x86_64               randconfig-x002-20230627   clang
-x86_64               randconfig-x003-20230627   clang
-x86_64               randconfig-x004-20230627   clang
-x86_64               randconfig-x005-20230627   clang
-x86_64               randconfig-x015-20230627   gcc  
-x86_64               randconfig-x016-20230627   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r001-20230627   gcc  
-
+Thank you for your patient explanation!
+The new version of the solution is almost complete, and is doing some stress
+testing, which I will send out once it passes.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Baokun Li
+.
