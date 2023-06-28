@@ -2,115 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F23E740B90
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 10:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E926740CEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 11:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbjF1Ic3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Jun 2023 04:32:29 -0400
-Received: from dfw.source.kernel.org ([139.178.84.217]:37900 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbjF1I3t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 04:29:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 204B26126D
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 04:52:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BAEC433C0;
-        Wed, 28 Jun 2023 04:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687927928;
-        bh=jwatz+rto1S/6MwsHg3Gwt8EWKIb1yJNk+UPEFu98Lc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RotoMZoZ/Y6lALRDWf6kxWyAChVze3qa1cXVwEZ025gQAh4/ojQN8feWMFtEzLxC2
-         BWzC+jCkJtV7CEaXd3fJW/WYFi9+FAM0bVvUnz7rF7cwT9mmumyNrYxdv95y0rghL3
-         t2whU90fDxvGmXcfzuQrdMUzxmeCB3fe2Bm+ZNXm74ZKtE5f2D5p1tFZnqPePQAZcv
-         nXtaaMqA94aI+HUC8r52GIRpCadJCNz9ZbW9oy5+ORgEnhwgINBtHyYiPjWEAXEo4V
-         z/X1Qqc8CBKsDkoCAS/PwJo5WrvunYtX42C5eOWw++AYk66C2hUUhDi3CUfY/X5E/U
-         XjXJjhRFJ7cbA==
-Date:   Tue, 27 Jun 2023 21:52:06 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: Question regarding the use of CRC32c for checksumming
-Message-ID: <20230628045206.GA1908@sol.localdomain>
-References: <CAKbZUD01uR5kfP4=SSfQ111jKsfKi8ojfDZs5CStLD_h5qb5GQ@mail.gmail.com>
+        id S233506AbjF1J3D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jun 2023 05:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbjF1H4Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 03:56:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FBD30D1;
+        Wed, 28 Jun 2023 00:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=C33zFIpKW844M7vGJZLSrDh0in
+        5zuFrOdj/j3Rrj343ckHaurAox21yI9kRoPymItAHVDQyn9YAY/xZi5oc4ZuLeoMgXAWXbQmeqpCZ
+        PakCICXSdR/LkWA5P5nIgx+v2gmdlnaOb406+eZlOutumJDRinM5u2TX0riUphi1poTuQNkg/gKRr
+        noO7opbZsFkrK5LrVAckgnbRLyp1YgcOLBDhNN302Oyrxs4r4zFe8AYCrLz3JLzmoCIdLfhONCG1l
+        PMIsDOmUqrysER74ktMDvKoXVBNOzQmTG+aCcUZl9byobsPEtQy0+w61ukQ60FvTeVPgVsZQZqej3
+        GNd6t4WA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qENBy-00Ep7x-12;
+        Wed, 28 Jun 2023 04:54:10 +0000
+Date:   Tue, 27 Jun 2023 21:54:10 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        akpm@linux-foundation.org, tytso@mit.edu, willy@infradead.org,
+        adilger.kernel@dilger.ca, hughd@google.com, hch@infradead.org
+Subject: Re: [PATCH] mm: increase usage of folio_next_index() helper
+Message-ID: <ZJu88ptO6k2xrosy@infradead.org>
+References: <20230627174349.491803-1-sidhartha.kumar@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKbZUD01uR5kfP4=SSfQ111jKsfKi8ojfDZs5CStLD_h5qb5GQ@mail.gmail.com>
+In-Reply-To: <20230627174349.491803-1-sidhartha.kumar@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Pedro,
+Looks good:
 
-On Mon, Jun 26, 2023 at 09:17:10PM +0100, Pedro Falcato wrote:
-> Hi,
-> 
-> (+CC the original author, Darrick)
-> I've been investigating (in the context of my EFI ext4 driver) why all
-> ext4 checksums appear inverted. After making sure my CRC32c
-> implementation was correct and up-to-par with other ones, I looked at
-> the fs/ext4 checksumming code, which took me to the implementation of
-> ext4_chksum in ext4.h (excuse the gmail whitespace damage):
-> 
-> >static inline u32 ext4_chksum(struct ext4_sb_info *sbi, u32 crc,
-> >       const void *address, unsigned int length)
-> >{
-> > struct {
-> > struct shash_desc shash;
-> > char ctx[4];
-> > } desc;
-> 
-> Open coding the crc32c crypto driver's internal state, seemingly to save a call?
-> >
-> > BUG_ON(crypto_shash_descsize(sbi->s_chksum_driver)!=sizeof(desc.ctx));
-> >
-> > desc.shash.tfm = sbi->s_chksum_driver;
-> > *(u32 *)desc.ctx = crc;
-> 
-> ...we set the starting CRC
-> >
-> > BUG_ON(crypto_shash_update(&desc.shash, address, length));
-> 
-> then call update, which keeps the current internal state in ctx[4]
-> >
-> > return *(u32 *)desc.ctx;
-> 
-> and then we never call ->final() (nor ->finup()), which for crc32c would do:
-> > put_unaligned_le32(~ctx->crc, out);
-> 
-> and as such get me the properly "inverted" crc32c I would expect.
-> FreeBSD never found this issue as their calculate_crc32c seems borked
-> too, and never inverts the result.
-> 
-> Is my assessment correct? Was ->final() never called on purpose, or is
-> it an accident? Or is this merely a CRC32c variation I'm unaware of?
-> 
-> I'd like to make sure I get all the context on this, before sending
-> any kind of documentation patch :)
-> 
-> Thanks,
-> Pedro
-
-As far as I can tell, you are correct that ext4's CRC32C is just a raw CRC.  It
-doesn't do the bitwise inversion at either the beginning or end.
-
-IMO, this is a mistake.  In the design of CRCs, doing these inversions is
-recommended to strengthen the CRC slightly.
-
-However, it's also a common "mistake" to leave them out, and not too important,
-especially if many of the messages checksummed are fixed-length structures.
-
-Yes, if ext4 had used the kernel crypto API "properly", with crypto_shash_init()
-+ crypto_shash_update() + crypto_shash_final(), it would have gotten the
-inversion at the beginning and end.  (Note, this is true for "crc32c" but not
-"crc32".  The crypto API isn't consistent about its CRC conventions.)
-
-But I'd also think of ext4's direct use of crypto_shash_update() as less of ext4
-taking a shortcut or hack, and more of ext4 just having to work around the
-kernel crypto API being very clunky and inefficient for use cases like this...
-
-- Eric
+Reviewed-by: Christoph Hellwig <hch@lst.de>
