@@ -2,119 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F427407B2
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 03:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F23E740B90
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 10:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbjF1Bjn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Jun 2023 21:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjF1Bjn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Jun 2023 21:39:43 -0400
-X-Greylist: delayed 386 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 27 Jun 2023 18:39:41 PDT
-Received: from out-35.mta1.migadu.com (out-35.mta1.migadu.com [IPv6:2001:41d0:203:375::23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A603710D2
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Jun 2023 18:39:41 -0700 (PDT)
-Message-ID: <9db7b307-11c7-2770-786d-5727d771aaa9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687915993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/C2/e9OXN1uWKWIpZoEkIk0l2No59LPS3LVXKbpNiKw=;
-        b=np7oTgs6/QoAHAGzSbaUg+u/r13kffSUylCb3S7Sc4I/DmYNP5QxmisSgAqx3ATWRIxzwO
-        EiGMlqhXcn1T8qCzcm+tjJ/dC/RVkWbOUd5ZakaqNF9U4fKo7dd69z7Vt6LTh7XVhjY0+m
-        gKPDEMWgY/N4L502LCeMvhppiEXvQp4=
-Date:   Wed, 28 Jun 2023 09:33:19 +0800
+        id S233626AbjF1Ic3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jun 2023 04:32:29 -0400
+Received: from dfw.source.kernel.org ([139.178.84.217]:37900 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234042AbjF1I3t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 04:29:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 204B26126D
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 04:52:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BAEC433C0;
+        Wed, 28 Jun 2023 04:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687927928;
+        bh=jwatz+rto1S/6MwsHg3Gwt8EWKIb1yJNk+UPEFu98Lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RotoMZoZ/Y6lALRDWf6kxWyAChVze3qa1cXVwEZ025gQAh4/ojQN8feWMFtEzLxC2
+         BWzC+jCkJtV7CEaXd3fJW/WYFi9+FAM0bVvUnz7rF7cwT9mmumyNrYxdv95y0rghL3
+         t2whU90fDxvGmXcfzuQrdMUzxmeCB3fe2Bm+ZNXm74ZKtE5f2D5p1tFZnqPePQAZcv
+         nXtaaMqA94aI+HUC8r52GIRpCadJCNz9ZbW9oy5+ORgEnhwgINBtHyYiPjWEAXEo4V
+         z/X1Qqc8CBKsDkoCAS/PwJo5WrvunYtX42C5eOWw++AYk66C2hUUhDi3CUfY/X5E/U
+         XjXJjhRFJ7cbA==
+Date:   Tue, 27 Jun 2023 21:52:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: Question regarding the use of CRC32c for checksumming
+Message-ID: <20230628045206.GA1908@sol.localdomain>
+References: <CAKbZUD01uR5kfP4=SSfQ111jKsfKi8ojfDZs5CStLD_h5qb5GQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 09/12] ext4: Ensure ext4_mb_prefetch_fini() is called
- for all prefetched BGs
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-References: <cover.1685449706.git.ojaswin@linux.ibm.com>
- <05e648ae04ec5b754207032823e9c1de9a54f87a.1685449706.git.ojaswin@linux.ibm.com>
- <c3173405-713d-d2eb-bd9c-af8b8c747533@linux.dev>
- <ZJqG+rEl9DATNRIX@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-In-Reply-To: <ZJqG+rEl9DATNRIX@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKbZUD01uR5kfP4=SSfQ111jKsfKi8ojfDZs5CStLD_h5qb5GQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ojaswin,
+Hi Pedro,
 
-On 6/27/23 14:51, Ojaswin Mujoo wrote:
-> On Tue, Jun 06, 2023 at 10:00:57PM +0800, Guoqing Jiang wrote:
->> Hello,
->>
->> On 5/30/23 20:33, Ojaswin Mujoo wrote:
->>> Before this patch, the call stack in ext4_run_li_request is as follows:
->>>
->>>     /*
->>>      * nr = no. of BGs we want to fetch (=s_mb_prefetch)
->>>      * prefetch_ios = no. of BGs not uptodate after
->>>      * 		    ext4_read_block_bitmap_nowait()
->>>      */
->>>     next_group = ext4_mb_prefetch(sb, group, nr, prefetch_ios);
->>>     ext4_mb_prefetch_fini(sb, next_group prefetch_ios);
->>>
->>> ext4_mb_prefetch_fini() will only try to initialize buddies for BGs in
->>> range [next_group - prefetch_ios, next_group). This is incorrect since
->>> sometimes (prefetch_ios < nr), which causes ext4_mb_prefetch_fini() to
->>> incorrectly ignore some of the BGs that might need initialization. This
->>> issue is more notable now with the previous patch enabling "fetching" of
->>> BLOCK_UNINIT BGs which are marked buffer_uptodate by default.
->>>
->>> Fix this by passing nr to ext4_mb_prefetch_fini() instead of
->>> prefetch_ios so that it considers the right range of groups.
->> Thanks for the series.
->>
->>> Similarly, make sure we don't pass nr=0 to ext4_mb_prefetch_fini() in
->>> ext4_mb_regular_allocator() since we might have prefetched BLOCK_UNINIT
->>> groups that would need buddy initialization.
->> Seems ext4_mb_prefetch_fini can't be called by ext4_mb_regular_allocator
->> if nr is 0.
-> Hi Guoqing,
->
-> Sorry I was on vacation so didn't get a chance to reply to this sooner.
-> Let me explain what I meant by that statement in the commit message.
->
-> So basically, the prefetch_ios output argument is incremented whenever
-> ext4_mb_prefetch() reads a block group with !buffer_uptodate(bh).
-> However, for BLOCK_UNINIT BGs the buffer is marked uptodate after
-> initialization and hence prefetch_ios is not incremented when such BGs
-> are prefetched.
->
-> This leads to nr becoming 0 due to the following line (removed in this patch):
->
-> 				if (prefetch_ios == curr_ios)
-> 					nr = 0;
->
-> hence ext4_mb_prefetch_fini() would never pre initialise the corresponding
-> buddy structures. Instead, these structures would then get initialized
-> probably at a later point during the slower allocation criterias. The
-> motivation of making sure the BLOCK_UNINIT BGs' buddies are pre
-> initialized is so the faster allocation criterias can utilize the data
-> to make better decisions.
+On Mon, Jun 26, 2023 at 09:17:10PM +0100, Pedro Falcato wrote:
+> Hi,
+> 
+> (+CC the original author, Darrick)
+> I've been investigating (in the context of my EFI ext4 driver) why all
+> ext4 checksums appear inverted. After making sure my CRC32c
+> implementation was correct and up-to-par with other ones, I looked at
+> the fs/ext4 checksumming code, which took me to the implementation of
+> ext4_chksum in ext4.h (excuse the gmail whitespace damage):
+> 
+> >static inline u32 ext4_chksum(struct ext4_sb_info *sbi, u32 crc,
+> >       const void *address, unsigned int length)
+> >{
+> > struct {
+> > struct shash_desc shash;
+> > char ctx[4];
+> > } desc;
+> 
+> Open coding the crc32c crypto driver's internal state, seemingly to save a call?
+> >
+> > BUG_ON(crypto_shash_descsize(sbi->s_chksum_driver)!=sizeof(desc.ctx));
+> >
+> > desc.shash.tfm = sbi->s_chksum_driver;
+> > *(u32 *)desc.ctx = crc;
+> 
+> ...we set the starting CRC
+> >
+> > BUG_ON(crypto_shash_update(&desc.shash, address, length));
+> 
+> then call update, which keeps the current internal state in ctx[4]
+> >
+> > return *(u32 *)desc.ctx;
+> 
+> and then we never call ->final() (nor ->finup()), which for crc32c would do:
+> > put_unaligned_le32(~ctx->crc, out);
+> 
+> and as such get me the properly "inverted" crc32c I would expect.
+> FreeBSD never found this issue as their calculate_crc32c seems borked
+> too, and never inverts the result.
+> 
+> Is my assessment correct? Was ->final() never called on purpose, or is
+> it an accident? Or is this merely a CRC32c variation I'm unaware of?
+> 
+> I'd like to make sure I get all the context on this, before sending
+> any kind of documentation patch :)
+> 
+> Thanks,
+> Pedro
 
-Got it, appreciate for the detailed explanation!
+As far as I can tell, you are correct that ext4's CRC32C is just a raw CRC.  It
+doesn't do the bitwise inversion at either the beginning or end.
 
-Thanks,
-Guoqing
+IMO, this is a mistake.  In the design of CRCs, doing these inversions is
+recommended to strengthen the CRC slightly.
+
+However, it's also a common "mistake" to leave them out, and not too important,
+especially if many of the messages checksummed are fixed-length structures.
+
+Yes, if ext4 had used the kernel crypto API "properly", with crypto_shash_init()
++ crypto_shash_update() + crypto_shash_final(), it would have gotten the
+inversion at the beginning and end.  (Note, this is true for "crc32c" but not
+"crc32".  The crypto API isn't consistent about its CRC conventions.)
+
+But I'd also think of ext4's direct use of crypto_shash_update() as less of ext4
+taking a shortcut or hack, and more of ext4 just having to work around the
+kernel crypto API being very clunky and inefficient for use cases like this...
+
+- Eric
