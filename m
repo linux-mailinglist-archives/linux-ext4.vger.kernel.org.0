@@ -2,113 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72F5741227
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 15:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2A674123D
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 15:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjF1NUe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Jun 2023 09:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjF1NUd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 09:20:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989141705
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 06:20:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E0B46131A
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 13:20:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 96712C433C9
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 13:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687958431;
-        bh=w/BKxEulecA5yOiuE2gpo8Oy4HZHAaZamkgk9h0yavc=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=YnHSTDEkCbfGCXNSlPhGMgeOvlYm8LNH2aVxfiswVz3b4C6DfoJH7ZbquAyoaitoi
-         wBkCv8ly7+7s4RO9VDMPX3G4cPCiFdfP9k7INuZMQOIljUbyk5Q8c4BTJa2TVRILu/
-         UkghkILWA9GTDuIRiEArJUprYS9+fW5baAiDT/0BTXj75z9zN4RQwZa8xlFzbxP43q
-         Vl3pQ6ZyKfa70NfZTqgcPIms5v773t+Q9YoE0USI2R8y2KS/XoUYHALsS8LXDA8cao
-         +fRJeAXrcKksIXrpkZnKkj5mKXobAsO33LtHIXzhZZeA9i9yth9l00Kk4WublI5kXm
-         VcOOe4bi1p++w==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 862FDC53BD0; Wed, 28 Jun 2023 13:20:31 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217605] unttached inode after power cut with orphan file
- feature enabled
-Date:   Wed, 28 Jun 2023 13:20:31 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: chengzhihao1@huawei.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217605-13602-7HW7rl0nTR@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217605-13602@https.bugzilla.kernel.org/>
-References: <bug-217605-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S231856AbjF1NYU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jun 2023 09:24:20 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:21997 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbjF1NYU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 09:24:20 -0400
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Qrj0D1KzvzlVmr;
+        Wed, 28 Jun 2023 21:21:32 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 28 Jun
+ 2023 21:24:16 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <jack@suse.cz>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH v2 0/7] quota: fix race condition between dqput() and dquot_mark_dquot_dirty()
+Date:   Wed, 28 Jun 2023 21:21:48 +0800
+Message-ID: <20230628132155.1560425-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217605
+Hello Honza,
 
---- Comment #4 from Zhihao Cheng (chengzhihao1@huawei.com) ---
-(In reply to Zhihao Cheng from comment #1)
+This is a solution that uses dquot_srcu to avoid race condition between
+dqput() and dquot_mark_dquot_dirty(). I performed a 24+h fault injection
+stress test (6 VMs, 4 test threads per VM) and have not found any problems.
+And I tested the performance based on the latest mainline (6aeadf7896bf),
+the patch set did not lead to performance degradation, and even a little
+bit of improvement.
 
-Apply diff first of all
+V1->V2:
+	Modify the solution to use dquot_srcu.
 
-> reproducer:
-> 1. ./test.sh
-> [   73.704796] inject err for ino 13 creation
-> [   73.705523] wait commit journal
-> [   75.741472] commit trans
-> [   76.550550] reboot: Restarting system
->=20
-> 2. mount /dev/sda temp
->    umount temp
-> [   82.683096] orphan replay: reserve 13
->=20
-> 3. fsck.ext4 -fn /dev/sda
-> e2fsck 1.47.0 (5-Feb-2023)
-> Pass 1: Checking inodes, blocks, and sizes
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> Pass 4: Checking reference counts
-> Unattached zero-length inode 13.  Clear? no
->=20
-> Unattached inode 13
-> Connect to /lost+found? no
->=20
-> Pass 5: Checking group summary information
->=20
-> /dev/sda: ********** WARNING: Filesystem still has errors **********
->=20
-> /dev/sda: 13/25584 files (0.0% non-contiguous), 12113/102400 block
+Baokun Li (7):
+  quota: factor out dquot_write_dquot()
+  quota: add new global dquot list releasing_dquots
+  quota: rename dquot_active() to inode_dquot_active()
+  quota: add new helper dquot_active()
+  quota: fix dqput() to follow the guarantees dquot_srcu should provide
+  quota: simplify drop_dquot_ref()
+  quota: remove unused function put_dquot_list()
 
---=20
-You may reply to this email to add a comment.
+ fs/quota/dquot.c | 237 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 134 insertions(+), 103 deletions(-)
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+-- 
+2.31.1
+
