@@ -2,56 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E926740CEB
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 11:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F83740F3C
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jun 2023 12:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbjF1J3D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Jun 2023 05:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbjF1H4Z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 03:56:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FBD30D1;
-        Wed, 28 Jun 2023 00:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=C33zFIpKW844M7vGJZLSrDh0in
-        5zuFrOdj/j3Rrj343ckHaurAox21yI9kRoPymItAHVDQyn9YAY/xZi5oc4ZuLeoMgXAWXbQmeqpCZ
-        PakCICXSdR/LkWA5P5nIgx+v2gmdlnaOb406+eZlOutumJDRinM5u2TX0riUphi1poTuQNkg/gKRr
-        noO7opbZsFkrK5LrVAckgnbRLyp1YgcOLBDhNN302Oyrxs4r4zFe8AYCrLz3JLzmoCIdLfhONCG1l
-        PMIsDOmUqrysER74ktMDvKoXVBNOzQmTG+aCcUZl9byobsPEtQy0+w61ukQ60FvTeVPgVsZQZqej3
-        GNd6t4WA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qENBy-00Ep7x-12;
-        Wed, 28 Jun 2023 04:54:10 +0000
-Date:   Tue, 27 Jun 2023 21:54:10 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        akpm@linux-foundation.org, tytso@mit.edu, willy@infradead.org,
-        adilger.kernel@dilger.ca, hughd@google.com, hch@infradead.org
-Subject: Re: [PATCH] mm: increase usage of folio_next_index() helper
-Message-ID: <ZJu88ptO6k2xrosy@infradead.org>
-References: <20230627174349.491803-1-sidhartha.kumar@oracle.com>
+        id S230468AbjF1Ktw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jun 2023 06:49:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32961 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231322AbjF1Ktv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 28 Jun 2023 06:49:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687949341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+QydiwIjN9aTPx/xjudDhfoGuS6UX8G9SMmj+YNOpRA=;
+        b=WYn/AnRwPgELAz6A5BSOTcRS951r/Gjx3TtjzKBK6fTFzgQZTpzkK3O0I58sUIIvmbXdtb
+        ZdRfAlRNIui8SWmBVk+hibAvOTW04v/LBARNHgz8ZYQx95ppKFDwU6E38qZEcAZtrZ8UrV
+        MNE+YfkttTEb875En4E/4dhD20MmXhg=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-508-vLNGNocHNsqPW492eEhOXw-1; Wed, 28 Jun 2023 06:48:57 -0400
+X-MC-Unique: vLNGNocHNsqPW492eEhOXw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C298E3810D42;
+        Wed, 28 Jun 2023 10:48:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk.com (unknown [10.42.28.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 25EC6200B677;
+        Wed, 28 Jun 2023 10:48:55 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v7 0/2] mm, netfs, fscache: Stop read optimisation when folio removed from pagecache
+Date:   Wed, 28 Jun 2023 11:48:50 +0100
+Message-ID: <20230628104852.3391651-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230627174349.491803-1-sidhartha.kumar@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Looks good:
+Hi Andrew,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Should this go through the mm tree?
+
+This fixes an optimisation in fscache whereby we don't read from the cache
+for a particular file until we know that there's data there that we don't
+have in the pagecache.  The problem is that I'm no longer using PG_fscache
+(aka PG_private_2) to indicate that the page is cached and so I don't get a
+notification when a cached page is dropped from the pagecache.
+
+The first patch merges some folio_has_private() and filemap_release_folio()
+pairs and introduces a helper, folio_needs_release(), to indicate if a
+release is required.
+
+The second patch is the actual fix.  Following Willy's suggestions[1], it
+adds an AS_RELEASE_ALWAYS flag to an address_space that will make
+filemap_release_folio() always call ->release_folio(), even if
+PG_private/PG_private_2 aren't set.  folio_needs_release() is altered to
+add a check for this.
+
+David
+
+Changes:
+========
+ver #7)
+ - Make NFS set AS_RELEASE_ALWAYS.
+
+ver #6)
+ - Drop the third patch which removes a duplicate check in vmscan().
+
+ver #5)
+ - Rebased on linus/master.  try_to_release_page() has now been entirely
+   replaced by filemap_release_folio(), barring one comment.
+ - Cleaned up some pairs in ext4.
+
+ver #4)
+ - Split has_private/release call pairs into own patch.
+ - Moved folio_needs_release() to mm/internal.h and removed open-coded
+   version from filemap_release_folio().
+ - Don't need to clear AS_RELEASE_ALWAYS in ->evict_inode().
+ - Added experimental patch to reduce shrink_folio_list().
+
+ver #3)
+ - Fixed mapping_clear_release_always() to use clear_bit() not set_bit().
+ - Moved a '&&' to the correct line.
+
+ver #2)
+ - Rewrote entirely according to Willy's suggestion[1].
+
+Link: https://lore.kernel.org/r/Yk9V/03wgdYi65Lb@casper.infradead.org/ [1]
+Link: https://lore.kernel.org/r/164928630577.457102.8519251179327601178.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/166844174069.1124521.10890506360974169994.stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/166869495238.3720468.4878151409085146764.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/1459152.1669208550@warthog.procyon.org.uk/ # v3 also
+Link: https://lore.kernel.org/r/166924370539.1772793.13730698360771821317.stgit@warthog.procyon.org.uk/ # v4
+Link: https://lore.kernel.org/r/167172131368.2334525.8569808925687731937.stgit@warthog.procyon.org.uk/ # v5
+Link: https://lore.kernel.org/r/20230216150701.3654894-1-dhowells@redhat.com/ # v6
+
+David Howells (2):
+  mm: Merge folio_has_private()/filemap_release_folio() call pairs
+  mm, netfs, fscache: Stop read optimisation when folio removed from
+    pagecache
+
+ fs/9p/cache.c           |  2 ++
+ fs/afs/internal.h       |  2 ++
+ fs/cachefiles/namei.c   |  2 ++
+ fs/ceph/cache.c         |  2 ++
+ fs/ext4/move_extent.c   | 12 ++++--------
+ fs/nfs/fscache.c        |  3 +++
+ fs/smb/client/fscache.c |  2 ++
+ fs/splice.c             |  3 +--
+ include/linux/pagemap.h | 16 ++++++++++++++++
+ mm/filemap.c            |  2 ++
+ mm/huge_memory.c        |  3 +--
+ mm/internal.h           | 11 +++++++++++
+ mm/khugepaged.c         |  3 +--
+ mm/memory-failure.c     |  8 +++-----
+ mm/migrate.c            |  3 +--
+ mm/truncate.c           |  6 ++----
+ mm/vmscan.c             |  8 ++++----
+ 17 files changed, 59 insertions(+), 29 deletions(-)
+
