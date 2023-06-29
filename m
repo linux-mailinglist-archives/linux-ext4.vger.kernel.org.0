@@ -2,90 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35E0741EC0
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 05:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A590741EF8
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 05:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjF2Dfl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Jun 2023 23:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        id S231392AbjF2D5v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Jun 2023 23:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjF2Dfk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 23:35:40 -0400
+        with ESMTP id S232047AbjF2D52 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 23:57:28 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080A92680
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 20:35:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A052724
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Jun 2023 20:57:23 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-117-150.bstnma.fios.verizon.net [173.48.117.150])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35T3Z9nZ001101
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35T3vFjH012677
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jun 2023 23:35:10 -0400
+        Wed, 28 Jun 2023 23:57:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1688009712; bh=8kjIV4lIzkhZOX9U+hzvz1B+7tNY+I1GSOViXiuWJss=;
+        t=1688011037; bh=/B8OaI8xdxY2/ixF7cPiltqwMuMLhwgslkQoAhheftU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=dqn7Txnw2HRfGKZv/SAQj+uRsMBt9ipF6TT9l9Tf1LmeYLlvHcKMAbos2A301QRhU
-         wSGJMn6pTGOVWeem9IHvo/YR5RLozu7G0qPdt0+WuK+yS4fPdmLf2Tq9o6CtqE0SSD
-         FQhe2RP8sHKDirowwmFlL2e+C0R5wuPM0VF3OGhh/HCmHULMVkYJklSjCPZp4ZXq5f
-         aPhpWpUAokngFhmk6qYpcGZtechu/JDejwTSf5Pa2HDk85seIqt8UFA1QO1uGlP7uJ
-         qx5+98AXYWsHXNW6IffoeZ3W+EiR1nyagV0hSuARL+zIKnrtrE9h3S6rCrfLj3+P7q
-         vyXx49HEp7Frw==
+        b=UzYyGrCC7DvV69tgz6T2gHwlRJM5qg1CvOb/CX9+Ih8HXtCpAgwr9z/JG5zYJ6hvN
+         5zaRJ9UYwuxZnbcnOMQSLjptkjrSs99kdqod/Y/O8f5i71iDGmLU4kgCK55SbwpLcN
+         qg8CdFi/gZQxw1KmoNLaM+t5OJ9eZEe3L4qI2aV83t/15gf03Ln3Su9U2mXVCFsYbx
+         nSst3tqbAB0bfh9Il4yK2x3ytAEexWl4ouZeD5m5Yammq9jdKNls0xqRLwIBbH7wZj
+         csjcFVoVw/mLhY6EtCKlL+V8LPhE8SDVbPVEKYpP+naG1X3d74a1qasdkVbOIVAc5L
+         bF76yvSJYip5Q==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 68B9115C027F; Wed, 28 Jun 2023 23:35:09 -0400 (EDT)
-Date:   Wed, 28 Jun 2023 23:35:09 -0400
+        id EBEDC15C027F; Wed, 28 Jun 2023 23:57:14 -0400 (EDT)
+Date:   Wed, 28 Jun 2023 23:57:14 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     syzbot <syzbot+f4cf49c6365d87eb8e0e@syzkaller.appspotmail.com>
+To:     syzbot <syzbot+94a8c779c6b238870393@syzkaller.appspotmail.com>
 Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Subject: Re: [syzbot] [ext4?] UBSAN: shift-out-of-bounds in
- ext4_handle_clustersize
-Message-ID: <20230629033509.GI8954@mit.edu>
-References: <000000000000edf08305feb6a5f6@google.com>
+        linux-crypto@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] general protection fault in
+ ext4_put_io_end_defer
+Message-ID: <20230629035714.GJ8954@mit.edu>
+References: <0000000000002a0b1305feeae5db@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000edf08305feb6a5f6@google.com>
+In-Reply-To: <0000000000002a0b1305feeae5db@google.com>
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
         DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 05:01:44AM -0700, syzbot wrote:
+#syz set subsystems: crypto
+
+On Sat, Jun 24, 2023 at 07:21:44PM -0700, syzbot wrote:
 > Hello,
 > 
 > syzbot found the following issue on:
 > 
-> HEAD commit:    1b29d271614a Merge tag 'staging-6.4-rc7' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15fefd03280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ff8f87c7ab0e04e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f4cf49c6365d87eb8e0e
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> HEAD commit:    f7efed9f38f8 Add linux-next specific files for 20230616
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=152e89f3280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=60b1a32485a77c16
+> dashboard link: https://syzkaller.appspot.com/bug?extid=94a8c779c6b238870393
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116af1eb280000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e22d2f280000
 
-> UBSAN: shift-out-of-bounds in fs/ext4/super.c:4401:27
-> shift exponent 374 is too large for 32-bit type 'int'
+If you look at the reproducer, it's creating an AF_ALG (algorithm)
+socket and messing with it.  This is easier to see in the syz
+reproducer, but you can see exactly what it's doing in the C
+reproducer above:
 
-fs/ext4/super.c:4401 is:
+# https://syzkaller.appspot.com/bug?id=4ee7656695de92cbd5820111379ae0698af0f475
+# See https://goo.gl/kgGztJ for information about syzkaller reproducers.
+#{"threaded":true,"repeat":true,"procs":1,"slowdown":1,"sandbox":"none","sandbox_arg":0,"netdev":true,"binfmt_misc":true,"close_fds":true,"vhci":true,"ieee802154":true,"sysctl":true,"swap":true,"tmpdir":true}
+r0 = socket$alg(0x26, 0x5, 0x0)
+bind$alg(r0, &(0x7f0000000280)={0x26, 'hash\x00', 0x0, 0x0, 'sha3-256-generic\x00'}, 0x58)
+r1 = accept4(r0, 0x0, 0x0, 0x0)
+recvmmsg$unix(r1, &(0x7f0000003700)=[{{0x0, 0x700, 0x0}}], 0x600, 0x0, 0x0)
+sendmsg$can_bcm(r1, &(0x7f0000000180)={0x0, 0x0, &(0x7f0000000140)={0x0}}, 0x400c800)
 
-	clustersize = BLOCK_SIZE << le32_to_cpu(es->s_log_cluster_size);
+(0x26 is 38, or AF_ALG)
 
-... however earlier, in ext4_load_super() we check to make sure that
-(es->s_log_cluster_size) is no more than 20 (EXT4_MAX_BLOCK_LOG_SIZE -
-EXT4_MIN_BLOCK_LOG_SIZE).
+From looking at the stack trace, it looks like this is triggering a
+coredump, which presumably is the ext4 write that triggers the GPF in
+ext4_put_io_end_defer.  But given that the syz and C reproducer isn't
+doing anything ext4 related at all, and it's purely trying to use the
+AF_ALG socket to calculate SHA3 in the kernel (and the greek chorus
+cries out, "WHY?"[1]), I'm going to send this over to the crypto folks to
+investigate.
 
-So it's likely this is either a while pointer corrupting the
-superblock after we've checked the value, but before we try to use it
-later.... or this is another "some thread is actively writing to the
-block device while we are in the process of mounting the file system".
+Cheers,
 
-Since it's only occurred once, and we have no reproducer, it's
-impossible to say, but we'll just ignore this for now.
+					- Ted
 
-	      	       	     	  	      - Ted
+[1] TIL that AF_ALG exists.  Inquiring minds want to know:
+   * Why do we expose the AF_ALG userspace interface?
+   * Who uses it?
+   * Why do they use it?
+   * Is there a CONFIG option to disable it in the name of decreasing
+     the attack surface of the kernel?
+   * If not, should we add one?  :-)
