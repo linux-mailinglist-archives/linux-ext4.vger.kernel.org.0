@@ -2,32 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE117424DC
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 13:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1782742521
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 13:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjF2LPR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jun 2023 07:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S230036AbjF2LrP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Jun 2023 07:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbjF2LPA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 07:15:00 -0400
+        with ESMTP id S230456AbjF2LrN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 07:47:13 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123E4125;
-        Thu, 29 Jun 2023 04:14:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A1AE58;
+        Thu, 29 Jun 2023 04:47:11 -0700 (PDT)
 Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QsG3y0q7YzMpbG;
-        Thu, 29 Jun 2023 19:11:42 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QsGqq6chxzTlPl;
+        Thu, 29 Jun 2023 19:46:15 +0800 (CST)
 Received: from [10.174.177.174] (10.174.177.174) by
  dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 29 Jun 2023 19:14:53 +0800
-Message-ID: <20dddac7-8f01-2d37-02d2-f63c8bcfbf25@huawei.com>
-Date:   Thu, 29 Jun 2023 19:14:52 +0800
+ 15.1.2507.27; Thu, 29 Jun 2023 19:47:09 +0800
+Message-ID: <9ac4fdcf-f236-8a05-bb96-b0b85a63b54e@huawei.com>
+Date:   Thu, 29 Jun 2023 19:47:08 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.1.2
-Subject: Re: [PATCH v2 3/7] quota: rename dquot_active() to
- inode_dquot_active()
+Subject: Re: [PATCH v2 5/7] quota: fix dqput() to follow the guarantees
+ dquot_srcu should provide
 Content-Language: en-US
 To:     Jan Kara <jack@suse.cz>
 CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
@@ -35,14 +35,14 @@ CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
         <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
         <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
 References: <20230628132155.1560425-1-libaokun1@huawei.com>
- <20230628132155.1560425-4-libaokun1@huawei.com>
- <20230629102445.injcpqkfm6wnrw3y@quack3>
+ <20230628132155.1560425-6-libaokun1@huawei.com>
+ <20230629105954.5cpqpch46ik4bg27@quack3>
 From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230629102445.injcpqkfm6wnrw3y@quack3>
+In-Reply-To: <20230629105954.5cpqpch46ik4bg27@quack3>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -55,123 +55,112 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/6/29 18:24, Jan Kara wrote:
-> On Wed 28-06-23 21:21:51, Baokun Li wrote:
->> Now we have a helper function dquot_dirty() to determine if dquot has
->> DQ_MOD_B bit. dquot_active() can easily be misunderstood as a helper
->> function to determine if dquot has DQ_ACTIVE_B bit. So we avoid this by
->> adding the "inode_" prefix and later on we will add the helper function
->> dquot_active() to determine if dquot has DQ_ACTIVE_B bit.
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Maybe inode_quota_active() will be a better name what you are already
-> renaming it?
+On 2023/6/29 18:59, Jan Kara wrote:
+> On Wed 28-06-23 21:21:53, Baokun Li wrote:
+>> @@ -760,6 +771,8 @@ dqcache_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>>   	struct dquot *dquot;
+>>   	unsigned long freed = 0;
+>>   
+>> +	flush_delayed_work(&quota_release_work);
+>> +
+> I would not flush the work here. Sure, it can make more dquots available
+> for reclaim but I think it is more important for the shrinker to not wait
+> on srcu period as shrinker can be called very frequently under memory
+> pressure.
+This is because I want to use remove_free_dquot() directly, and if I 
+don't do
+flush here anymore, then DQST_FREE_DQUOTS will not be accurate.
+Since that's the case, I'll remove the flush here and add a determination
+to remove_free_dquot() whether to increase DQST_FREE_DQUOTS.
+>>   	spin_lock(&dq_list_lock);
+>>   	while (!list_empty(&free_dquots) && sc->nr_to_scan) {
+>>   		dquot = list_first_entry(&free_dquots, struct dquot, dq_free);
+>> @@ -787,6 +800,60 @@ static struct shrinker dqcache_shrinker = {
+>>   	.seeks = DEFAULT_SEEKS,
+>>   };
+>>   
+>> +/*
+>> + * Safely release dquot and put reference to dquot.
+>> + */
+>> +static void quota_release_workfn(struct work_struct *work)
+>> +{
+>> +	struct dquot *dquot;
+>> +	struct list_head rls_head;
+>> +
+>> +	spin_lock(&dq_list_lock);
+>> +	/* Exchange the list head to avoid livelock. */
+>> +	list_replace_init(&releasing_dquots, &rls_head);
+>> +	spin_unlock(&dq_list_lock);
+>> +
+>> +restart:
+>> +	synchronize_srcu(&dquot_srcu);
+>> +	spin_lock(&dq_list_lock);
+>> +	while (!list_empty(&rls_head)) {
+> I think the logic below needs a bit more work. Firstly, I think that
+> dqget() should removing dquots from releasing_dquots list - basically just
+> replace the:
+> 	if (!atomic_read(&dquot->dq_count))
+> 		remove_free_dquot(dquot);
+> with
+> 	/* Dquot on releasing_dquots list? Drop ref kept by that list. */
+> 	if (atomic_read(&dquot->dq_count) == 1 && !list_empty(&dquot->dq_free))
+> 		atomic_dec(&dquot->dq_count);
+> 	remove_free_dquot(dquot);
+> 	atomic_inc(&dquot->dq_count);
+>
+> That way we are sure that while we are holding dq_list_lock, all dquots on
+> rls_head list have dq_count == 1.
+I wrote it this way at first, but that would have been problematic, so I 
+ended up
+dropping the dq_count == 1 constraint for dquots on releasing_dquots.
+Like the following, we will get a bad dquot directly:
+
+quota_release_workfn
+  spin_lock(&dq_list_lock)
+  dquot = list_first_entry(&rls_head, struct dquot, dq_free)
+  spin_unlock(&dq_list_lock)
+  dquot->dq_sb->dq_op->release_dquot(dquot)
+  release_dquot
+        dqget
+         atomic_dec(&dquot->dq_count)
+         remove_free_dquot(dquot)
+         atomic_inc(&dquot->dq_count)
+         spin_unlock(&dq_list_lock)
+         wait_on_dquot(dquot)
+         if (!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
+         // still active
+  mutex_lock(&dquot->dq_lock)
+  dquot_is_busy(dquot)
+   atomic_read(&dquot->dq_count) > 1
+  clear_bit(DQ_ACTIVE_B, &dquot->dq_flags)
+  mutex_unlock(&dquot->dq_lock)
+
+Removing dquot from releasing_dquots and its reduced reference count
+will cause dquot_is_busy() in dquot_release to fail. wait_on_dquot(dquot)
+in dqget would have no effect. This is also the reason why I did not restart
+at dquot_active. Adding dquot to releasing_dquots only in dqput() and
+removing dquot from releasing_dquots only in quota_release_workfn() is
+a simple and effective way to ensure consistency.
+
+
+>> +		dquot = list_first_entry(&rls_head, struct dquot, dq_free);
+>> +		if (dquot_dirty(dquot)) {
+>> +			spin_unlock(&dq_list_lock);
+>> +			/* Commit dquot before releasing */
+>> +			dquot_write_dquot(dquot);
+>> +			goto restart;
+>> +		}
+>> +		/* Always clear DQ_ACTIVE_B, unless racing with dqget() */
+>> +		if (dquot_active(dquot)) {
+>> +			spin_unlock(&dq_list_lock);
+>> +			dquot->dq_sb->dq_op->release_dquot(dquot);
+> I'd just go to restart here to make the logic simple. Forward progress is
+> guaranteed anyway and it isn't really much less efficient.
+>
+>
+> The rest looks good.
 >
 > 								Honza
-Indeed! I will rename it to inode_quota_active() in the next version.
->
->> ---
->>   fs/quota/dquot.c | 20 ++++++++++----------
->>   1 file changed, 10 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
->> index a8b43b5b5623..b21f5e888482 100644
->> --- a/fs/quota/dquot.c
->> +++ b/fs/quota/dquot.c
->> @@ -1435,7 +1435,7 @@ static int info_bdq_free(struct dquot *dquot, qsize_t space)
->>   	return QUOTA_NL_NOWARN;
->>   }
->>   
->> -static int dquot_active(const struct inode *inode)
->> +static int inode_dquot_active(const struct inode *inode)
->>   {
->>   	struct super_block *sb = inode->i_sb;
->>   
->> @@ -1458,7 +1458,7 @@ static int __dquot_initialize(struct inode *inode, int type)
->>   	qsize_t rsv;
->>   	int ret = 0;
->>   
->> -	if (!dquot_active(inode))
->> +	if (!inode_dquot_active(inode))
->>   		return 0;
->>   
->>   	dquots = i_dquot(inode);
->> @@ -1566,7 +1566,7 @@ bool dquot_initialize_needed(struct inode *inode)
->>   	struct dquot **dquots;
->>   	int i;
->>   
->> -	if (!dquot_active(inode))
->> +	if (!inode_dquot_active(inode))
->>   		return false;
->>   
->>   	dquots = i_dquot(inode);
->> @@ -1677,7 +1677,7 @@ int __dquot_alloc_space(struct inode *inode, qsize_t number, int flags)
->>   	int reserve = flags & DQUOT_SPACE_RESERVE;
->>   	struct dquot **dquots;
->>   
->> -	if (!dquot_active(inode)) {
->> +	if (!inode_dquot_active(inode)) {
->>   		if (reserve) {
->>   			spin_lock(&inode->i_lock);
->>   			*inode_reserved_space(inode) += number;
->> @@ -1747,7 +1747,7 @@ int dquot_alloc_inode(struct inode *inode)
->>   	struct dquot_warn warn[MAXQUOTAS];
->>   	struct dquot * const *dquots;
->>   
->> -	if (!dquot_active(inode))
->> +	if (!inode_dquot_active(inode))
->>   		return 0;
->>   	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
->>   		warn[cnt].w_type = QUOTA_NL_NOWARN;
->> @@ -1790,7 +1790,7 @@ int dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
->>   	struct dquot **dquots;
->>   	int cnt, index;
->>   
->> -	if (!dquot_active(inode)) {
->> +	if (!inode_dquot_active(inode)) {
->>   		spin_lock(&inode->i_lock);
->>   		*inode_reserved_space(inode) -= number;
->>   		__inode_add_bytes(inode, number);
->> @@ -1832,7 +1832,7 @@ void dquot_reclaim_space_nodirty(struct inode *inode, qsize_t number)
->>   	struct dquot **dquots;
->>   	int cnt, index;
->>   
->> -	if (!dquot_active(inode)) {
->> +	if (!inode_dquot_active(inode)) {
->>   		spin_lock(&inode->i_lock);
->>   		*inode_reserved_space(inode) += number;
->>   		__inode_sub_bytes(inode, number);
->> @@ -1876,7 +1876,7 @@ void __dquot_free_space(struct inode *inode, qsize_t number, int flags)
->>   	struct dquot **dquots;
->>   	int reserve = flags & DQUOT_SPACE_RESERVE, index;
->>   
->> -	if (!dquot_active(inode)) {
->> +	if (!inode_dquot_active(inode)) {
->>   		if (reserve) {
->>   			spin_lock(&inode->i_lock);
->>   			*inode_reserved_space(inode) -= number;
->> @@ -1931,7 +1931,7 @@ void dquot_free_inode(struct inode *inode)
->>   	struct dquot * const *dquots;
->>   	int index;
->>   
->> -	if (!dquot_active(inode))
->> +	if (!inode_dquot_active(inode))
->>   		return;
->>   
->>   	dquots = i_dquot(inode);
->> @@ -2103,7 +2103,7 @@ int dquot_transfer(struct mnt_idmap *idmap, struct inode *inode,
->>   	struct super_block *sb = inode->i_sb;
->>   	int ret;
->>   
->> -	if (!dquot_active(inode))
->> +	if (!inode_dquot_active(inode))
->>   		return 0;
->>   
->>   	if (i_uid_needs_update(idmap, iattr, inode)) {
->> -- 
->> 2.31.1
->>
-
 Thanks!
 -- 
 With Best Regards,
