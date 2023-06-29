@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C1C741F02
+	by mail.lfdr.de (Postfix) with ESMTP id 30B52741F01
 	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 06:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbjF2EAL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jun 2023 00:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
+        id S229441AbjF2EAN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Jun 2023 00:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjF2D7x (ORCPT
+        with ESMTP id S231249AbjF2D7x (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 23:59:53 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0B22724;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA46F2D50;
         Wed, 28 Jun 2023 20:59:51 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qs4Tb6kvvz4f3m7r;
-        Thu, 29 Jun 2023 11:59:47 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qs4Tc1XrTz4f3vqZ;
+        Thu, 29 Jun 2023 11:59:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgC3quiwAZ1kw6DMMg--.26995S5;
+        by APP2 (Coremail) with SMTP id Syh0CgC3quiwAZ1kw6DMMg--.26995S6;
         Thu, 29 Jun 2023 11:59:48 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/13] ext4: correct return value of ext4_convert_meta_bg
-Date:   Thu, 29 Jun 2023 20:00:34 +0800
-Message-Id: <20230629120044.1261968-4-shikemeng@huaweicloud.com>
+Subject: [PATCH 04/13] ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
+Date:   Thu, 29 Jun 2023 20:00:35 +0800
+Message-Id: <20230629120044.1261968-5-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
 References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgC3quiwAZ1kw6DMMg--.26995S5
-X-Coremail-Antispam: 1UD129KBjvdXoW5KFyDXFy3KFW8tr1fCry3Arb_yoWxWrg_Ca
-        42yry7X39xXrnakayfAw1aqw4F93W0qr1rua95tFyUWF1jya1UJw4kZrWxCr1UuF1jkFnx
-        C3Z5Xr9rJF1Y9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-        xGYIkIc2x26280x7IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kI
-        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7
-        xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jy0PhUUUUU=
+X-CM-TRANSID: Syh0CgC3quiwAZ1kw6DMMg--.26995S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF4xWrWxJFy5tFWDZrWDJwb_yoW8CFW3pr
+        s3C3W5GFWUGrWjga18A392gF1kGw4xGr48trW5Ga1xGrW3X3WkWryqqF1IyFW5KFZIqrn2
+        q3Z8ZFy2yw17C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+        8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAv
+        FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
+        A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
+        3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3XTQUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -59,29 +59,61 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We return error in "ret", so collect previous error in "ret" instead
-of "err" or previous error will be ignored.
+Wrong check of gdb backup in meta bg as following:
+first_group is the first group of meta_bg which contains target group, so
+target group is always >= first_group. We check if target group has gdb
+backup by comparing first_group with [group + 1] and [group +
+EXT4_DESC_PER_BLOCK(sb) - 1]. As group >= first_group, then [group + N] is
+> first_group. So no copy of gdb backup in meta bg is done in
+setup_new_flex_group_blocks.
+
+No need to do gdb backup copy in meta bg from setup_new_flex_group_blocks
+as we always copy updated gdb block to backups at end of
+ext4_flex_group_add as following:
+
+ext4_flex_group_add
+  /* no gdb backup copy for meta bg any more */
+  setup_new_flex_group_blocks
+
+  /* update current group number */
+  ext4_update_super
+    sbi->s_groups_count += flex_gd->count;
+
+  /*
+   * if group in meta bg contains backup is added, the primary gdb block
+   * of the meta bg will be copy to backup in new added group here.
+   */
+  for (; gdb_num <= gdb_num_end; gdb_num++)
+    update_backups(...)
+
+In summary, we can remove wrong gdb backup copy code in
+setup_new_flex_group_blocks.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/resize.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/resize.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 7cbc695b7005..0b3d8c808de1 100644
+index 0b3d8c808de1..0e83b3f91545 100644
 --- a/fs/ext4/resize.c
 +++ b/fs/ext4/resize.c
-@@ -1984,8 +1984,8 @@ static int ext4_convert_meta_bg(struct super_block *sb, struct inode *inode)
+@@ -560,13 +560,8 @@ static int setup_new_flex_group_blocks(struct super_block *sb,
+ 		if (meta_bg == 0 && !ext4_bg_has_super(sb, group))
+ 			goto handle_itb;
  
- errout:
- 	ret = ext4_journal_stop(handle);
--	if (!err)
--		err = ret;
-+	if (!ret)
-+		ret = err;
- 	return ret;
+-		if (meta_bg == 1) {
+-			ext4_group_t first_group;
+-			first_group = ext4_meta_bg_first_group(sb, group);
+-			if (first_group != group + 1 &&
+-			    first_group != group + EXT4_DESC_PER_BLOCK(sb) - 1)
+-				goto handle_itb;
+-		}
++		if (meta_bg == 1)
++			goto handle_itb;
  
- invalid_resize_inode:
+ 		block = start + ext4_bg_has_super(sb, group);
+ 		/* Copy all of the GDT blocks into the backup in this group */
 -- 
 2.30.0
 
