@@ -2,70 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B39C7427D8
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 16:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BD27427F7
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 16:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjF2OAX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jun 2023 10:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
+        id S231668AbjF2OJ0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Jun 2023 10:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjF2OAW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 10:00:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EBE19B5;
-        Thu, 29 Jun 2023 07:00:20 -0700 (PDT)
+        with ESMTP id S231443AbjF2OJZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 10:09:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA27D1B1;
+        Thu, 29 Jun 2023 07:09:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 667F721836;
-        Thu, 29 Jun 2023 14:00:19 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A69BB1F8AF;
+        Thu, 29 Jun 2023 14:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688047219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1688047762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3XvzUQu801FzKs3iHBW/hsxqJwuXABN8gyB4Y3gdE7o=;
-        b=ppZd0acwCMJhuiNjBA5IXPFF7rbhySCTrty7M/XTzecktoCJmNfc7k5k8PcFvgpicaXH2M
-        NGnLwA7kEvKl9Q3OhWDYOh0zqSkKBGZjXcTgCW0usXlPtudZncoH2Uu8voxtAsTxin04TU
-        8uezYNtjJxzVsfOcU4kklvp9qkHpYFk=
+        bh=71RZpLoOR8WYSh7imeQpwmDDhV+BCqDsCV9ISGQsCK8=;
+        b=bOzAat0NSo7RDK5B8cqq0vhPaf0FH7qw+zwCC6CiHe85TxXZnp2GjF4deTGUHSbtiBj7KT
+        hPAxL+k6qQUXWv6R3wkYSqvVByhhoWWoitIRg+rW36nxGuS1uxQ+HRjjXXIB2BzosnINLu
+        HYQ8kG/7lgiKV2f1WGfkeK5AKLKsp98=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688047219;
+        s=susede2_ed25519; t=1688047762;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3XvzUQu801FzKs3iHBW/hsxqJwuXABN8gyB4Y3gdE7o=;
-        b=Lidt5ltBK3XiQ+0j4+ksxbTNrvY3zSJfovpUuD/y8/54xO/2/8B9RvS/NSGoj3C2aN71zC
-        X1XnggrnvIE/08CQ==
+        bh=71RZpLoOR8WYSh7imeQpwmDDhV+BCqDsCV9ISGQsCK8=;
+        b=8PYcx+XcIW466le2pRQYKLH8oKk8vPZ2U7BVCLyhZUBlulCyZsforuBWV4b2fIVyiihntb
+        j7roBo0AWsAkgpCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5772A13905;
-        Thu, 29 Jun 2023 14:00:19 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9440513905;
+        Thu, 29 Jun 2023 14:09:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8IJNFXOOnWQ/CQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 29 Jun 2023 14:00:19 +0000
+        id 7lsjJJKQnWRUDgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 29 Jun 2023 14:09:22 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E5210A0722; Thu, 29 Jun 2023 16:00:18 +0200 (CEST)
-Date:   Thu, 29 Jun 2023 16:00:18 +0200
+        id 18201A0722; Thu, 29 Jun 2023 16:09:22 +0200 (CEST)
+Date:   Thu, 29 Jun 2023 16:09:22 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: Re: [PATCH] ext4: Replace CR_FAST macro with inline function for
- readability
-Message-ID: <20230629140018.duaaxqnxe55yfvqq@quack3>
-References: <20230629134719.108104-1-ojaswin@linux.ibm.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2 6/7] quota: simplify drop_dquot_ref()
+Message-ID: <20230629140922.dp74owntkbm5avop@quack3>
+References: <20230628132155.1560425-1-libaokun1@huawei.com>
+ <20230628132155.1560425-7-libaokun1@huawei.com>
+ <20230629110813.kfaja4bdomilmns6@quack3>
+ <d00a224e-1991-ce90-d458-45390a20f8dc@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230629134719.108104-1-ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d00a224e-1991-ce90-d458-45390a20f8dc@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,34 +78,31 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 29-06-23 19:17:19, Ojaswin Mujoo wrote:
-> Replace CR_FAST with ext4_mb_cr_expensive() inline function for better
-> readability. This function returns true if the criteria is one of the
-> expensive/slower ones where lots of disk IO/prefetching is acceptable.
+On Thu 29-06-23 20:13:05, Baokun Li wrote:
+> On 2023/6/29 19:08, Jan Kara wrote:
+> > On Wed 28-06-23 21:21:54, Baokun Li wrote:
+> > > Now when dqput() drops the last reference count, it will call
+> > > synchronize_srcu(&dquot_srcu) in quota_release_workfn() to ensure that
+> > > no other user will use the dquot after the last reference count is dropped,
+> > > so we don't need to call synchronize_srcu(&dquot_srcu) in drop_dquot_ref()
+> > > and remove the corresponding logic directly to simplify the code.
+> > Nice simplification!  It is also important that dqput() now cannot sleep
+> > which was another reason for the logic with tofree_head in
+> > remove_inode_dquot_ref().
 > 
-> No functional changes are intended in this patch.
+> I don't understand this sentence very well, so I would appreciate it
 > 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> if you could explain it in detail. 🤔
 
-Thanks for this cleanup! Feel free to add:
+OK, let me phrase it in a "changelog" way :):
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-Just one suggestion for consideration below:
-
-> @@ -2630,7 +2630,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
->  	free = grp->bb_free;
->  	if (free == 0)
->  		goto out;
-> -	if (cr <= CR_FAST && free < ac->ac_g_ex.fe_len)
-> +	if (cr <= CR_GOAL_LEN_SLOW && free < ac->ac_g_ex.fe_len)
-
-Maybe this could be (!ext4_mb_cr_expensive(cr) || cr == CR_GOAL_LEN_SLOW)?
-Or maybe more explanatory would be (cr < CR_ANY_FREE) because AFAIU that's
-the only scan where we bother scanning groups that have no chance of
-satisfying the full allocation? Anyway a short comment explaining this
-might be useful. And in either case we can get rid of a bit confusing
-CR_FAST define.
+remove_inode_dquot_ref() currently does not release the last dquot
+reference but instead adds the dquot to tofree_head list. This is because
+dqput() can sleep while dropping of the last dquot reference (writing back
+the dquot and calling ->release_dquot()) and that must not happen under
+dq_list_lock. Now that dqput() queues the final dquot cleanup into a
+workqueue, remove_inode_dquot_ref() can call dqput() unconditionally
+and we can significantly simplify it.
 
 								Honza
 -- 
