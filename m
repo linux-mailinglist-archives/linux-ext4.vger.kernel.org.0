@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81262741F06
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 06:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73012741F05
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 06:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbjF2EAU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jun 2023 00:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
+        id S232022AbjF2EAS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Jun 2023 00:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjF2D7y (ORCPT
+        with ESMTP id S231731AbjF2D7y (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Jun 2023 23:59:54 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37322D52;
-        Wed, 28 Jun 2023 20:59:51 -0700 (PDT)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A28A2D55;
+        Wed, 28 Jun 2023 20:59:52 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qs4Tb2mmQz4f3s5v;
-        Thu, 29 Jun 2023 11:59:47 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qs4Tc6ssVz4f48kM;
+        Thu, 29 Jun 2023 11:59:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgC3quiwAZ1kw6DMMg--.26995S8;
+        by APP2 (Coremail) with SMTP id Syh0CgC3quiwAZ1kw6DMMg--.26995S9;
         Thu, 29 Jun 2023 11:59:49 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/13] ext4: remove redundant check of count
-Date:   Thu, 29 Jun 2023 20:00:37 +0800
-Message-Id: <20230629120044.1261968-7-shikemeng@huaweicloud.com>
+Subject: [PATCH 07/13] ext4: remove commented code in reserve_backup_gdb
+Date:   Thu, 29 Jun 2023 20:00:38 +0800
+Message-Id: <20230629120044.1261968-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
 References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgC3quiwAZ1kw6DMMg--.26995S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw45Xw18Zr4DKFWDCry7GFg_yoW3Crc_Ka
-        47Cr1kurWfJrySkF9rtw1Fyw4FyF4vyr1rGFWfJFW8uF15A3y8X3yqqrW8ur48Wa1UJasx
-        u3s5tr1fK3WFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: Syh0CgC3quiwAZ1kw6DMMg--.26995S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4Uur1rtr4Dur1fJFWkZwb_yoW3ArXEqa
+        srCr4kX3yrurn5CFyxWr1Sy3yv9r1Fyrn5uay3trn3u3W0yFZ5A3yDXwsxCryUuF4ayw45
+        uF1vv3sIyay0gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbS8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
         Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
         xGYIkIc2x26280x7IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC
@@ -59,42 +59,27 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove zero check of count which is always non-zero.
+Remove commented code in reserve_backup_gdb
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/resize.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ fs/ext4/resize.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index f2a8c24a6fbb..c14b09d48679 100644
+index c14b09d48679..07828903b818 100644
 --- a/fs/ext4/resize.c
 +++ b/fs/ext4/resize.c
-@@ -699,16 +699,14 @@ static int setup_new_flex_group_blocks(struct super_block *sb,
- 			block = start;
- 		}
- 
--		if (count) {
--			err = set_flexbg_block_bitmap(sb, handle,
--						      flex_gd,
--						      EXT4_B2C(sbi, start),
--						      EXT4_B2C(sbi,
--							       start + count
--							       - 1));
--			if (err)
--				goto out;
--		}
-+		err = set_flexbg_block_bitmap(sb, handle,
-+				flex_gd,
-+				EXT4_B2C(sbi, start),
-+				EXT4_B2C(sbi,
-+					start + count
-+					- 1));
-+		if (err)
-+			goto out;
- 	}
- 
- out:
+@@ -1080,9 +1080,6 @@ static int reserve_backup_gdb(handle_t *handle, struct inode *inode,
+ 	for (i = 0; i < reserved_gdb; i++) {
+ 		int err2;
+ 		data = (__le32 *)primary[i]->b_data;
+-		/* printk("reserving backup %lu[%u] = %lu\n",
+-		       primary[i]->b_blocknr, gdbackups,
+-		       blk + primary[i]->b_blocknr); */
+ 		data[gdbackups] = cpu_to_le32(blk + primary[i]->b_blocknr);
+ 		err2 = ext4_handle_dirty_metadata(handle, NULL, primary[i]);
+ 		if (!err)
 -- 
 2.30.0
 
