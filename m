@@ -2,197 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460D774287E
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 16:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469447428BE
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jun 2023 16:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjF2OeE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Jun 2023 10:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        id S232316AbjF2Onr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Jun 2023 10:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjF2Odh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 10:33:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609A435B6;
-        Thu, 29 Jun 2023 07:33:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E8D6721862;
-        Thu, 29 Jun 2023 14:33:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688049184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vz32fmlHi5odwx+tnDz9Q3kgjj/P9DMRTzxO9oNWLGE=;
-        b=0qgxloJ5gILsJw2B4hTNWenffCctS663fNWFPd2jULcVBQjBV2A0ZVqIwua1s8rCHgpS6B
-        WH5AH9U2toouKgwm69NiIqF7xmKVyp2OGrE3anbjUWn/CJqInorGA+sYOMU5VKESX8lCN7
-        oewpWHtr7VmqHCWToJcgLT2lP1QX6Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688049184;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vz32fmlHi5odwx+tnDz9Q3kgjj/P9DMRTzxO9oNWLGE=;
-        b=O3mGDKOBli+l2OghNHnJjaK4xaKr0ZiUl5eyTax23DL80Bu4gmAx3rztOXLhaqDqSKaS1m
-        d4NDI9jod2OrfyDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7B9513905;
-        Thu, 29 Jun 2023 14:33:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id immhNCCWnWSgGgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 29 Jun 2023 14:33:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 63AE0A0722; Thu, 29 Jun 2023 16:33:04 +0200 (CEST)
-Date:   Thu, 29 Jun 2023 16:33:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v2 5/7] quota: fix dqput() to follow the guarantees
- dquot_srcu should provide
-Message-ID: <20230629143304.2t45zta3f57imowa@quack3>
-References: <20230628132155.1560425-1-libaokun1@huawei.com>
- <20230628132155.1560425-6-libaokun1@huawei.com>
- <20230629105954.5cpqpch46ik4bg27@quack3>
- <9ac4fdcf-f236-8a05-bb96-b0b85a63b54e@huawei.com>
+        with ESMTP id S232400AbjF2Onf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Jun 2023 10:43:35 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5936035B6;
+        Thu, 29 Jun 2023 07:43:28 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35TENCCU026321;
+        Thu, 29 Jun 2023 14:43:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=eiXTRdg0gT1rq2HTYY5jeBN/xLVc4P6F8V+u2KYIp/A=;
+ b=rylkxOO0ibutXNGtCkKoKhHb4bY3sHcxi8ZX8LnIWEflamg2B/gsjGPp9UiP8A9ASdCg
+ NbwVW43KJbJkTPwEb6jiwXomAzwnIYbZ0kwmTTw0drbReAwuiODGUdY8GMYFVysioJ/T
+ tdQ2jzVfapxCEh57Oy+POTh+OXRm6NJSFRXmmm4cbRl4Z34tfrS2ciyRit+gf0xyfDtw
+ eGwSh3sQH3U2Cxy3M/nwahWlJginnoePCbf4Ba9qEX7d0u8CGD96SDMd2/EtYAfvwwob
+ P3zCxjKguCve8z3jk4Q2hXa5ajwCmpOp32w13tqQ+Ou1ritCBOq7K18cXE+uDdr/kQR2 Vg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rhbnu8nfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jun 2023 14:43:13 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 35T9UexC018753;
+        Thu, 29 Jun 2023 14:41:45 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3rdr453ddk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jun 2023 14:41:44 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 35TEfgLs62521850
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jun 2023 14:41:42 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F91A2004B;
+        Thu, 29 Jun 2023 14:41:42 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0331C20043;
+        Thu, 29 Jun 2023 14:41:41 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.95.242])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 29 Jun 2023 14:41:40 +0000 (GMT)
+Date:   Thu, 29 Jun 2023 20:11:38 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Kemeng Shi <shikemeng@huaweicloud.com>
+Subject: Re: [PATCH] ext4: Replace CR_FAST macro with inline function for
+ readability
+Message-ID: <ZJ2YIr5EVbz4ezIc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20230629134719.108104-1-ojaswin@linux.ibm.com>
+ <20230629140018.duaaxqnxe55yfvqq@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ac4fdcf-f236-8a05-bb96-b0b85a63b54e@huawei.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230629140018.duaaxqnxe55yfvqq@quack3>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GqgDT4e5Wf1eIZmML9vU-v-GLqi64ynT
+X-Proofpoint-GUID: GqgDT4e5Wf1eIZmML9vU-v-GLqi64ynT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-29_03,2023-06-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxlogscore=536 malwarescore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 phishscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306290132
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 29-06-23 19:47:08, Baokun Li wrote:
-> On 2023/6/29 18:59, Jan Kara wrote:
-> > On Wed 28-06-23 21:21:53, Baokun Li wrote:
-> > > @@ -760,6 +771,8 @@ dqcache_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> > >   	struct dquot *dquot;
-> > >   	unsigned long freed = 0;
-> > > +	flush_delayed_work(&quota_release_work);
-> > > +
-> > I would not flush the work here. Sure, it can make more dquots available
-> > for reclaim but I think it is more important for the shrinker to not wait
-> > on srcu period as shrinker can be called very frequently under memory
-> > pressure.
-> This is because I want to use remove_free_dquot() directly, and if I don't
-> do
-> flush here anymore, then DQST_FREE_DQUOTS will not be accurate.
-> Since that's the case, I'll remove the flush here and add a determination
-> to remove_free_dquot() whether to increase DQST_FREE_DQUOTS.
-
-OK.
-
-> > >   	spin_lock(&dq_list_lock);
-> > >   	while (!list_empty(&free_dquots) && sc->nr_to_scan) {
-> > >   		dquot = list_first_entry(&free_dquots, struct dquot, dq_free);
-> > > @@ -787,6 +800,60 @@ static struct shrinker dqcache_shrinker = {
-> > >   	.seeks = DEFAULT_SEEKS,
-> > >   };
-> > > +/*
-> > > + * Safely release dquot and put reference to dquot.
-> > > + */
-> > > +static void quota_release_workfn(struct work_struct *work)
-> > > +{
-> > > +	struct dquot *dquot;
-> > > +	struct list_head rls_head;
-> > > +
-> > > +	spin_lock(&dq_list_lock);
-> > > +	/* Exchange the list head to avoid livelock. */
-> > > +	list_replace_init(&releasing_dquots, &rls_head);
-> > > +	spin_unlock(&dq_list_lock);
-> > > +
-> > > +restart:
-> > > +	synchronize_srcu(&dquot_srcu);
-> > > +	spin_lock(&dq_list_lock);
-> > > +	while (!list_empty(&rls_head)) {
-> > I think the logic below needs a bit more work. Firstly, I think that
-> > dqget() should removing dquots from releasing_dquots list - basically just
-> > replace the:
-> > 	if (!atomic_read(&dquot->dq_count))
-> > 		remove_free_dquot(dquot);
-> > with
-> > 	/* Dquot on releasing_dquots list? Drop ref kept by that list. */
-> > 	if (atomic_read(&dquot->dq_count) == 1 && !list_empty(&dquot->dq_free))
-> > 		atomic_dec(&dquot->dq_count);
-> > 	remove_free_dquot(dquot);
-> > 	atomic_inc(&dquot->dq_count);
+On Thu, Jun 29, 2023 at 04:00:18PM +0200, Jan Kara wrote:
+> On Thu 29-06-23 19:17:19, Ojaswin Mujoo wrote:
+> > Replace CR_FAST with ext4_mb_cr_expensive() inline function for better
+> > readability. This function returns true if the criteria is one of the
+> > expensive/slower ones where lots of disk IO/prefetching is acceptable.
 > > 
-> > That way we are sure that while we are holding dq_list_lock, all dquots on
-> > rls_head list have dq_count == 1.
-> I wrote it this way at first, but that would have been problematic, so I
-> ended up dropping the dq_count == 1 constraint for dquots on
-> releasing_dquots.  Like the following, we will get a bad dquot directly:
+> > No functional changes are intended in this patch.
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > 
-> quota_release_workfn
->  spin_lock(&dq_list_lock)
->  dquot = list_first_entry(&rls_head, struct dquot, dq_free)
->  spin_unlock(&dq_list_lock)
->  dquot->dq_sb->dq_op->release_dquot(dquot)
->  release_dquot
->        dqget
->         atomic_dec(&dquot->dq_count)
->         remove_free_dquot(dquot)
->         atomic_inc(&dquot->dq_count)
->         spin_unlock(&dq_list_lock)
->         wait_on_dquot(dquot)
->         if (!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
->         // still active
->  mutex_lock(&dquot->dq_lock)
->  dquot_is_busy(dquot)
->   atomic_read(&dquot->dq_count) > 1
->  clear_bit(DQ_ACTIVE_B, &dquot->dq_flags)
->  mutex_unlock(&dquot->dq_lock)
+> Thanks for this cleanup! Feel free to add:
 > 
-> Removing dquot from releasing_dquots and its reduced reference count
-> will cause dquot_is_busy() in dquot_release to fail. wait_on_dquot(dquot)
-> in dqget would have no effect. This is also the reason why I did not restart
-> at dquot_active. Adding dquot to releasing_dquots only in dqput() and
-> removing dquot from releasing_dquots only in quota_release_workfn() is
-> a simple and effective way to ensure consistency.
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> Just one suggestion for consideration below:
+> 
+> > @@ -2630,7 +2630,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
+> >  	free = grp->bb_free;
+> >  	if (free == 0)
+> >  		goto out;
+> > -	if (cr <= CR_FAST && free < ac->ac_g_ex.fe_len)
+> > +	if (cr <= CR_GOAL_LEN_SLOW && free < ac->ac_g_ex.fe_len)
+> 
+> Maybe this could be (!ext4_mb_cr_expensive(cr) || cr == CR_GOAL_LEN_SLOW)?
+> Or maybe more explanatory would be (cr < CR_ANY_FREE) because AFAIU that's
+> the only scan where we bother scanning groups that have no chance of
+> satisfying the full allocation? Anyway a short comment explaining this
+> might be useful. And in either case we can get rid of a bit confusing
+> CR_FAST define.
+> 
+> 								Honza
 
-Indeed, that's a good point. Still cannot we simplify the loop like:
+Thanks for the review Jan! I actually had the same idea since it 
+felt like (cr <= CR_GOAL_LEN_SLOW) doesnt clearly express the intent of this
+check. I think I ultimately decided to leave it untouched to keep things
+simple.
 
-	while (!list_empty(&rls_head)) {
-		dquot = list_first_entry(&rls_head, struct dquot, dq_free);
-		/* Dquot got used again? */
-		if (atomic_read(&dquot->dq_count) > 1) {
-			atomic_dec(&dquot->dq_count);
-			remove_free_dquot(dquot);
-			continue;
-		}
-		if (dquot_dirty(dquot)) {
-			keep what you had
-		}
-		if (dquot_active(dquot)) {
-			spin_unlock(&dq_list_lock);
-			dquot->dq_sb->dq_op->release_dquot(dquot);
-			goto restart;
-		}
-		/* Dquot is inactive and clean, we can move it to free list */
-		atomic_dec(&dquot->dq_count);
-		remove_free_dquot(dquot);
-		put_dquot_last(dquot);
-	}
+However, I like the idea of making it (cr < CR_ANY_FREE) with a comment
+to explain the intent behind this condition. If it's fine with everyone I can
+address it in v2.
 
-What do you think?
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+ojaswin
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
