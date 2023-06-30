@@ -2,113 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DC674402D
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 18:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A537440F2
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 19:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjF3QzI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Jun 2023 12:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        id S232793AbjF3ROF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Jun 2023 13:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbjF3QzD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 12:55:03 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2672E3C01;
-        Fri, 30 Jun 2023 09:55:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso12779325e9.0;
-        Fri, 30 Jun 2023 09:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688144100; x=1690736100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1rJgY0QGGp/jeN+32+rMb8429ffAnAZpXa/Aa5nGjjw=;
-        b=NN+EDZhIb/QahO+GwDV+Bh3Ur/kDh7XL+jRw3POa/LTKwAFFIeRkmVicJBuIMOmo68
-         /mtCSmvcnNdkJx5vdpcxnLKveyiBQdIQzZ/5ZfMWfPd7hk4eYJeffP3DFYl18egBQ8OH
-         skXA2SNHTslB19UfVxGYdrW/HxeUc1nXhIy6jUD2MLdwae8nIo4XNMz4hnKn7vhx6PR0
-         G4B+VqL0i7dnzudhWFVyi0Je+uVgpB5QEXFDWJQcWwWEaEGOc81eBShxd25hqeKJwf0G
-         +3cLE4QfTUHo7X3J97ZFWrYEN8c9gxWWsalKjSsyAKIj1J5+Ve6T3h76lEZaNIInJ/Qh
-         7NTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688144100; x=1690736100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1rJgY0QGGp/jeN+32+rMb8429ffAnAZpXa/Aa5nGjjw=;
-        b=iSPvEb+d/MBONB95tN0fs9IDHdygrIP5p+0fOLMuKcF9m8Q8IB9X5AvFo/BgrC/bPH
-         fDzVb7nMVoDvPnHVzTsUiyCMXyrtpD6AXUIwDzSjW4RPRXZVoDOg7lrDkHf5TNI71tj0
-         BHIde9gJpDXsGWmxlxCCE5diKiHzQB361s85MNwMNnta2OPpafxaNOMYrU+fD1sKCPpR
-         lRJQUhfc5vkrp0m3LCbZHP/2xKor5Cl7Iyht9eReZkvu5hU0qqf4rlpqqOr69hLwYilK
-         cEeBe9tfl54HTbc696EBALkKiPLPDvjAfAE0Ruu6bfbcLYQK4CejQohMc3Qln4ysRSml
-         hxtw==
-X-Gm-Message-State: AC+VfDyXr/QMR4Oq1hhAOEK108qYcZKyXacwvCVagnQQZR0BaTqcORxb
-        Kl4bYjYr3XW7UkpTPSehMNg=
-X-Google-Smtp-Source: ACHHUZ7aIM94BF0G4f11uD0SLm5O59jr1gtTRZLm2Tgqeu4EipZ92uYR+88wxPIzJVPpa1VJyjvO+A==
-X-Received: by 2002:a1c:f70a:0:b0:3fb:c060:8b3d with SMTP id v10-20020a1cf70a000000b003fbc0608b3dmr2482477wmh.40.1688144100416;
-        Fri, 30 Jun 2023 09:55:00 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id z10-20020a7bc7ca000000b003f8f8fc3c32sm19554577wmk.31.2023.06.30.09.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 09:54:59 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] ext2: remove redundant assignment to variable desc and variable best_desc
-Date:   Fri, 30 Jun 2023 17:54:58 +0100
-Message-Id: <20230630165458.166238-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S232714AbjF3ROD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 13:14:03 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2780735B6
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Jun 2023 10:14:03 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-82-24.bstnma.fios.verizon.net [173.48.82.24])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 35UHDgXR012238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jun 2023 13:13:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1688145225; bh=eRkiqUCEclG9KgZecVs1P0Wzt0tTZDVD/MSUDf9IzBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=dFFHXNePbIQJpb2yYz32mHlzqBti0NQXFuVoitWpMlKrj4nhtfFzhBy+z18UrGMh+
+         BStLvAxp8o+GwVDvCHXuVglZ47YUrqk3SZzk/Lrxt0tYZWYfrQ35XkufbYrRUDV+oF
+         Ra4R/quxfVZ13jfAa30FiJTgSUcWVcll2SeaWiY8KOZn1ojO67BGq74sPTxrTHDmfp
+         UqkvcoyjO/ckIP7HgvV+4M0X9Eipk36ne6EZnRSAaRKArqrLwDDTPoDZsn5GPxVBFd
+         N9DYdrTU0R7XmPjr8CyiZ5ia0CKsverjzw/CPat5gsmuf/YDcAgWTctNV/h1ZHI/AX
+         I85PBlKTpPrlA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 36D6715C027F; Fri, 30 Jun 2023 13:13:42 -0400 (EDT)
+Date:   Fri, 30 Jun 2023 13:13:42 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     syzbot <syzbot+94a8c779c6b238870393@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [syzbot] [ext4?] general protection fault in
+ ext4_put_io_end_defer
+Message-ID: <20230630171342.GC591635@mit.edu>
+References: <0000000000002a0b1305feeae5db@google.com>
+ <20230629035714.GJ8954@mit.edu>
+ <20230630074111.GB36542@sol.localdomain>
+ <20230630074614.GC36542@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230630074614.GC36542@sol.localdomain>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Variable desc is being assigned a value that is never read, the exit
-via label found immeditely returns with no access to desc. The
-assignment is redundant and can be removed. Also remove variable best_desc
-since this is not used. Cleans up clang scan muild warning:
+On Fri, Jun 30, 2023 at 12:46:14AM -0700, Eric Biggers wrote:
+> > AF_ALG has existed since 2010.  My understanding that its original purpose was
+> > to expose hardware crypto accelerators to userspace.  Unfortunately, support for
+> > exposing *any* crypto algorithm was included as well, which IMO was a mistake.
 
-fs/ext2/ialloc.c:297:4: warning: Value stored to 'desc' is never
-read [deadcode.DeadStores]
++1000....
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
+> > There are quite a few different userspace programs that use AF_ALG purely to get
+> > at the CPU-based algorithm implementations, without any sort of intention to use
+> > hardware crypto accelerator.  Probably because it seemed "easy".  Or "better"
+> > because everything in the kernel is better, right?
 
-V2: Also remove best_desc. Kudos to Dan Carpenter for spottin this extra
-    janitorial cleanup.
+Do we know if any to standard crypto libraries are using AF_ALG?  All
+aside from whether it's a good idea for userspace programs to be using
+kernel code because "everything is better in the kernel", I'm
+wondering how solicitous we should be for programs who are very likely
+rolling their own crypto, as opposed to using crypto library that has
+been written and vetted and tested for vulnerability by experts...
 
----
- fs/ext2/ialloc.c | 3 ---
- 1 file changed, 3 deletions(-)
+> > It's controlled by the CONFIG_CRYPTO_USER_API_* options, with the hash support
+> > in particular controlled by CONFIG_CRYPTO_USER_API_HASH.  Though good luck
+> > disabling it on most systems, as systemd depends on it...
+> > 
+> 
+> Actually it turns out systemd has finally seen the light:
+> https://github.com/systemd/systemd/commit/2c3794f4228162c9bfd9e10886590d9f5b1920d7
 
-diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
-index a4e1d7a9c544..34cd5dc1da23 100644
---- a/fs/ext2/ialloc.c
-+++ b/fs/ext2/ialloc.c
-@@ -273,7 +273,6 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
- 
- 	if ((parent == d_inode(sb->s_root)) ||
- 	    (EXT2_I(parent)->i_flags & EXT2_TOPDIR_FL)) {
--		struct ext2_group_desc *best_desc = NULL;
- 		int best_ndir = inodes_per_group;
- 		int best_group = -1;
- 
-@@ -291,10 +290,8 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
- 				continue;
- 			best_group = group;
- 			best_ndir = le16_to_cpu(desc->bg_used_dirs_count);
--			best_desc = desc;
- 		}
- 		if (best_group >= 0) {
--			desc = best_desc;
- 			group = best_group;
- 			goto found;
- 		}
--- 
-2.39.2
+Aside from those PCI-attached crypto accelerators where you have to go
+through the kernel (although my experience has been that most of the
+time, the overhead for key scheduling, etc., is such that unless
+you're doing bulk crypto on large chunks of data, using external
+crypto hardware acclerators no longer makes sense 99.99% of the time
+in the 21st century), I wonder if we should consider having the kernel
+print a warning, "WARNING: [comm] is using AF_ALG; please consider
+using a real crypto library instead of rolling your own crypto".
 
+(Only half kidding.)
+
+					- Ted
