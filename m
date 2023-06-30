@@ -2,71 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFEF744024
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 18:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DC674402D
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 18:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbjF3QxL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Jun 2023 12:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
+        id S232351AbjF3QzI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Jun 2023 12:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbjF3QxJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 12:53:09 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D483AB2;
-        Fri, 30 Jun 2023 09:53:08 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fb7dc16ff0so3344332e87.2;
-        Fri, 30 Jun 2023 09:53:08 -0700 (PDT)
+        with ESMTP id S232680AbjF3QzD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 12:55:03 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2672E3C01;
+        Fri, 30 Jun 2023 09:55:02 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso12779325e9.0;
+        Fri, 30 Jun 2023 09:55:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688143986; x=1690735986;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UnKDhU99zIz+yl6/YbRHuy4g7+5+My9tn6hsFqI9FMA=;
-        b=m50o5QSBGmbRThTFk0fh+Jn0tLn3FWPihCCxcaOpgJ3y90Q3xuY7GPtEngMJdW93AS
-         oAkX7hyqeDJbV+z/WdWUSnJ/w0yT9d7LkM0KvH+fafKkMB7YkD/1GD7j+Pd4/Z6klEpe
-         F+nIGMzxS5+eOOrJITg3mruEl38J8vSjw6WGcEgyZRa28FHZ6fYQ0+IQvpR8YZfmelok
-         H51BfmaPvvUqj5mChteoYAu06nEchSon70t1VWw2IpWxYyXaTQmI32jCi7UhbuV0QRif
-         KRpDoh2xd+i7TTSDMrJ2xb2keSoyJdyJYZO7MB5pDc4JSHPxPuUD5Awu6S4LkWrN07Fv
-         2mkg==
+        d=gmail.com; s=20221208; t=1688144100; x=1690736100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1rJgY0QGGp/jeN+32+rMb8429ffAnAZpXa/Aa5nGjjw=;
+        b=NN+EDZhIb/QahO+GwDV+Bh3Ur/kDh7XL+jRw3POa/LTKwAFFIeRkmVicJBuIMOmo68
+         /mtCSmvcnNdkJx5vdpcxnLKveyiBQdIQzZ/5ZfMWfPd7hk4eYJeffP3DFYl18egBQ8OH
+         skXA2SNHTslB19UfVxGYdrW/HxeUc1nXhIy6jUD2MLdwae8nIo4XNMz4hnKn7vhx6PR0
+         G4B+VqL0i7dnzudhWFVyi0Je+uVgpB5QEXFDWJQcWwWEaEGOc81eBShxd25hqeKJwf0G
+         +3cLE4QfTUHo7X3J97ZFWrYEN8c9gxWWsalKjSsyAKIj1J5+Ve6T3h76lEZaNIInJ/Qh
+         7NTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688143986; x=1690735986;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UnKDhU99zIz+yl6/YbRHuy4g7+5+My9tn6hsFqI9FMA=;
-        b=eUDm+x3QbR8onf5iux3bNg/d9e/b2svfbHEfNB1EVTjRsovljcEeRzr06FlK9LEsh7
-         WfGCbKynSvFWpu3jWwHypyJR003B7hz4IZlEIvPbc8qutDoLWwZ8vnuR4ucWw2d5gLNN
-         3NxEsbJa4+LOZX/gZ2qaxIMiB9cz4Pfz063Gs6KC/4jU/yRJ/zYgZcIoPqkXU6KVK4j8
-         JG9LHjHzdC6HjTZ5FoccKPLlgGoB+IgXr9lNdQtpIvVjP6OOD2q1ysk8Fy7Gk16OYW9A
-         3re6L4RhoUFx562YiUbQVDdCpOr3azobiyOdxyVE66KQXN4g+MKVYKzydQMxtuYnj1HA
-         XyvQ==
-X-Gm-Message-State: ABy/qLYMDFCvkydRyGV9buL/AnM/3GhSE8tzQp/4RXsz60vq6KjqTqTQ
-        /BeP2OCaWEXckEUWrYJJzcs=
-X-Google-Smtp-Source: APBJJlGr8bFeQJpTqdpniL3Hf3AquG7nj9QcjiPwq3F7ictd7nwYQaF/qVFq54W8Gkx6HxkWgUIf3w==
-X-Received: by 2002:a05:6512:2107:b0:4f6:6b:a43b with SMTP id q7-20020a056512210700b004f6006ba43bmr2416617lfr.52.1688143986238;
-        Fri, 30 Jun 2023 09:53:06 -0700 (PDT)
-Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id 5-20020a05600c024500b003fbb00599e4sm7698158wmj.2.2023.06.30.09.53.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jun 2023 09:53:05 -0700 (PDT)
-Message-ID: <428ac287-6a4b-fb3c-dfa2-7043c3459ec7@gmail.com>
-Date:   Fri, 30 Jun 2023 17:53:04 +0100
+        d=1e100.net; s=20221208; t=1688144100; x=1690736100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1rJgY0QGGp/jeN+32+rMb8429ffAnAZpXa/Aa5nGjjw=;
+        b=iSPvEb+d/MBONB95tN0fs9IDHdygrIP5p+0fOLMuKcF9m8Q8IB9X5AvFo/BgrC/bPH
+         fDzVb7nMVoDvPnHVzTsUiyCMXyrtpD6AXUIwDzSjW4RPRXZVoDOg7lrDkHf5TNI71tj0
+         BHIde9gJpDXsGWmxlxCCE5diKiHzQB361s85MNwMNnta2OPpafxaNOMYrU+fD1sKCPpR
+         lRJQUhfc5vkrp0m3LCbZHP/2xKor5Cl7Iyht9eReZkvu5hU0qqf4rlpqqOr69hLwYilK
+         cEeBe9tfl54HTbc696EBALkKiPLPDvjAfAE0Ruu6bfbcLYQK4CejQohMc3Qln4ysRSml
+         hxtw==
+X-Gm-Message-State: AC+VfDyXr/QMR4Oq1hhAOEK108qYcZKyXacwvCVagnQQZR0BaTqcORxb
+        Kl4bYjYr3XW7UkpTPSehMNg=
+X-Google-Smtp-Source: ACHHUZ7aIM94BF0G4f11uD0SLm5O59jr1gtTRZLm2Tgqeu4EipZ92uYR+88wxPIzJVPpa1VJyjvO+A==
+X-Received: by 2002:a1c:f70a:0:b0:3fb:c060:8b3d with SMTP id v10-20020a1cf70a000000b003fbc0608b3dmr2482477wmh.40.1688144100416;
+        Fri, 30 Jun 2023 09:55:00 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id z10-20020a7bc7ca000000b003f8f8fc3c32sm19554577wmk.31.2023.06.30.09.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jun 2023 09:54:59 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] ext2: remove redundant assignment to variable desc and variable best_desc
+Date:   Fri, 30 Jun 2023 17:54:58 +0100
+Message-Id: <20230630165458.166238-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH][next] ext2: remove redundant assignment to variable desc
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230630163033.165326-1-colin.i.king@gmail.com>
- <b12f7d11-4bfe-4e53-9a32-ce8db056d561@kadam.mountain>
-From:   "Colin King (gmail)" <colin.i.king@gmail.com>
-In-Reply-To: <b12f7d11-4bfe-4e53-9a32-ce8db056d561@kadam.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,37 +68,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 30/06/2023 17:47, Dan Carpenter wrote:
-> On Fri, Jun 30, 2023 at 05:30:33PM +0100, Colin Ian King wrote:
->> Variable desc is being assigned a value that is never read, the exit
->> via label found immeditely returns with no access to desc. The
->> assignment is redundant and can be removed. Cleans up clang scan
->> muild warning:
->>
->> fs/ext2/ialloc.c:297:4: warning: Value stored to 'desc' is never
->> read [deadcode.DeadStores]
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
->> ---
->>   fs/ext2/ialloc.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
->> index a4e1d7a9c544..f50beb77d6ba 100644
->> --- a/fs/ext2/ialloc.c
->> +++ b/fs/ext2/ialloc.c
->> @@ -294,7 +294,6 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
->>   			best_desc = desc;
->>   		}
->>   		if (best_group >= 0) {
->> -			desc = best_desc;
-> 
-> You should get rid of the "best_desc" variable as well.
+Variable desc is being assigned a value that is never read, the exit
+via label found immeditely returns with no access to desc. The
+assignment is redundant and can be removed. Also remove variable best_desc
+since this is not used. Cleans up clang scan muild warning:
 
-Good point! Will send V2. Thanks Dan.
+fs/ext2/ialloc.c:297:4: warning: Value stored to 'desc' is never
+read [deadcode.DeadStores]
 
-> 
-> regards,
-> dan carpenter
-> 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+
+V2: Also remove best_desc. Kudos to Dan Carpenter for spottin this extra
+    janitorial cleanup.
+
+---
+ fs/ext2/ialloc.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+index a4e1d7a9c544..34cd5dc1da23 100644
+--- a/fs/ext2/ialloc.c
++++ b/fs/ext2/ialloc.c
+@@ -273,7 +273,6 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
+ 
+ 	if ((parent == d_inode(sb->s_root)) ||
+ 	    (EXT2_I(parent)->i_flags & EXT2_TOPDIR_FL)) {
+-		struct ext2_group_desc *best_desc = NULL;
+ 		int best_ndir = inodes_per_group;
+ 		int best_group = -1;
+ 
+@@ -291,10 +290,8 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
+ 				continue;
+ 			best_group = group;
+ 			best_ndir = le16_to_cpu(desc->bg_used_dirs_count);
+-			best_desc = desc;
+ 		}
+ 		if (best_group >= 0) {
+-			desc = best_desc;
+ 			group = best_group;
+ 			goto found;
+ 		}
+-- 
+2.39.2
 
