@@ -2,175 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11FA743A74
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 13:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F30743DB4
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Jun 2023 16:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjF3LKx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Jun 2023 07:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S232002AbjF3Omd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 30 Jun 2023 10:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbjF3LKv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 07:10:51 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693D8198E;
-        Fri, 30 Jun 2023 04:10:50 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Qst050Q3SzqV8f;
-        Fri, 30 Jun 2023 19:10:29 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 30 Jun
- 2023 19:10:48 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <jack@suse.cz>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v3 5/5] quota: simplify drop_dquot_ref()
-Date:   Fri, 30 Jun 2023 19:08:22 +0800
-Message-ID: <20230630110822.3881712-6-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230630110822.3881712-1-libaokun1@huawei.com>
-References: <20230630110822.3881712-1-libaokun1@huawei.com>
+        with ESMTP id S230106AbjF3Omd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 30 Jun 2023 10:42:33 -0400
+Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661711BDB
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Jun 2023 07:41:55 -0700 (PDT)
+Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-666e5f0d639so1424360b3a.3
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Jun 2023 07:41:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688136115; x=1690728115;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uYsAQ8U6esTUCuxlgJSsi+am1Pv+ZjuDgx5c8wyZ8yQ=;
+        b=cRBc9AHxDqoOb20IIw12MyRx/skZ9aganYpedyevTKJaCDd2dXJjDyDXTWDng8aBMf
+         LUhkCUfpYFNQa13IuG9+Qc4Kpu26DYGU6D00SW1w8LxB1cgDmOw/mjg+Rwv9tglvtg3g
+         bip5irF4AVvPNnPFN0zdzhxcThvrhmS/5OYhjKayKbpvM5VJ9NOLXl7CqLEyPbAQwY93
+         NCsNIrNINPqd70tg0JeNKRJ4GPy1DqjYWOE7U0xoNRdI8F/TSZL0FUA/IKnVi4xsVbmX
+         8Ve2qY2dF7/BFkiQSjgqfSdz2HT5KPDerjnGZfr8EKRthXhDSiFACBT6iJCFmmpFGie0
+         Q8gw==
+X-Gm-Message-State: ABy/qLaDcy/Pzfrf1F/8o7z3DM/LLlHd5kbOO+8aJ2KiOKoP9UUIzsSd
+        32YpKeOcncCXKB7xzOXawCiGSh0zohZkj2WDlSCFnCl7TBbe
+X-Google-Smtp-Source: APBJJlESbafdgXVY0BTJ0KDu0tiD3gFFheTysNcDUL1JhmVFL0ve80aCvnp1vLH9L3L9a+FE2m7ka9XVim0bOfKzV82f8bQduOAx
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a62:7b0e:0:b0:668:7377:1fe3 with SMTP id
+ w14-20020a627b0e000000b0066873771fe3mr2817998pfc.2.1688136114967; Fri, 30 Jun
+ 2023 07:41:54 -0700 (PDT)
+Date:   Fri, 30 Jun 2023 07:41:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007720b405ff59d161@google.com>
+Subject: [syzbot] [ext4?] general protection fault in ext4_quota_read
+From:   syzbot <syzbot+b960a0fea3fa8df1cd22@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As Honza said, remove_inode_dquot_ref() currently does not release the
-last dquot reference but instead adds the dquot to tofree_head list. This
-is because dqput() can sleep while dropping of the last dquot reference
-(writing back the dquot and calling ->release_dquot()) and that must not
-happen under dq_list_lock. Now that dqput() queues the final dquot cleanup
-into a workqueue, remove_inode_dquot_ref() can call dqput() unconditionally
-and we can significantly simplify it.
+Hello,
 
-Here we open code the simplified code of remove_inode_dquot_ref() into
-remove_dquot_ref() and remove the function put_dquot_list() which is no
-longer used.
+syzbot found the following issue on:
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+HEAD commit:    6995e2de6891 Linux 6.4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=175bc8bf280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f4df35260418daa6
+dashboard link: https://syzkaller.appspot.com/bug?extid=b960a0fea3fa8df1cd22
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e661af280000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1f2e8d4aac75/disk-6995e2de.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/db793abf1e91/vmlinux-6995e2de.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/60215f5bf9ff/bzImage-6995e2de.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/428a4f7e064c/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b960a0fea3fa8df1cd22@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc000000000a: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000050-0x0000000000000057]
+CPU: 0 PID: 6808 Comm: syz-executor.0 Not tainted 6.4.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:i_size_read include/linux/fs.h:883 [inline]
+RIP: 0010:ext4_quota_read+0xd5/0x330 fs/ext4/super.c:7107
+Code: ff 41 80 fc 3f 0f 87 00 11 cd 07 e8 05 93 49 ff 48 8b 44 24 08 48 8d 78 50 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 0d 02 00 00 48 8b 44 24 08 4c 89 ef 45 31 ff 48
+RSP: 0018:ffffc9000c17f420 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000000a RSI: ffffffff823ab65b RDI: 0000000000000050
+RBP: 0000000000000001 R08: 0000000000000001 R09: 000000000000003f
+R10: 000000000000000c R11: 0000000000094001 R12: 000000000000000c
+R13: 0000000000000400 R14: ffff888021014800 R15: ffff888028e6fc00
+FS:  00007f94b3a7f700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc5437a8000 CR3: 000000002826f000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ do_insert_tree+0x117/0x12d0 fs/quota/quota_tree.c:347
+ dq_insert_tree fs/quota/quota_tree.c:401 [inline]
+ qtree_write_dquot+0x3b4/0x570 fs/quota/quota_tree.c:420
+ v2_write_dquot+0x120/0x250 fs/quota/quota_v2.c:358
+ dquot_acquire+0x3d1/0x6c0 fs/quota/dquot.c:444
+ ext4_acquire_dquot+0x2b1/0x3d0 fs/ext4/super.c:6814
+ dqget+0x67d/0x1080 fs/quota/dquot.c:914
+ __dquot_initialize+0x560/0xbe0 fs/quota/dquot.c:1492
+ dquot_initialize fs/quota/dquot.c:1550 [inline]
+ dquot_file_open fs/quota/dquot.c:2181 [inline]
+ dquot_file_open+0x90/0xb0 fs/quota/dquot.c:2175
+ ext4_file_open fs/ext4/file.c:904 [inline]
+ ext4_file_open+0x35d/0xbf0 fs/ext4/file.c:873
+ do_dentry_open+0x6cc/0x13f0 fs/open.c:920
+ do_open fs/namei.c:3636 [inline]
+ path_openat+0x1baa/0x2750 fs/namei.c:3791
+ do_filp_open+0x1ba/0x410 fs/namei.c:3818
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1356
+ do_sys_open fs/open.c:1372 [inline]
+ __do_sys_openat fs/open.c:1388 [inline]
+ __se_sys_openat fs/open.c:1383 [inline]
+ __x64_sys_openat+0x143/0x1f0 fs/open.c:1383
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f94b2c8c389
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f94b3a7f168 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f94b2dabf80 RCX: 00007f94b2c8c389
+RDX: 000000000000275a RSI: 0000000020000040 RDI: ffffffffffffff9c
+RBP: 00007f94b2cd7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff112e5fcf R14: 00007f94b3a7f300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:i_size_read include/linux/fs.h:883 [inline]
+RIP: 0010:ext4_quota_read+0xd5/0x330 fs/ext4/super.c:7107
+Code: ff 41 80 fc 3f 0f 87 00 11 cd 07 e8 05 93 49 ff 48 8b 44 24 08 48 8d 78 50 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 0d 02 00 00 48 8b 44 24 08 4c 89 ef 45 31 ff 48
+RSP: 0018:ffffc9000c17f420 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000000a RSI: ffffffff823ab65b RDI: 0000000000000050
+RBP: 0000000000000001 R08: 0000000000000001 R09: 000000000000003f
+R10: 000000000000000c R11: 0000000000094001 R12: 000000000000000c
+R13: 0000000000000400 R14: ffff888021014800 R15: ffff888028e6fc00
+FS:  00007f94b3a7f700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4f5d63e000 CR3: 000000002826f000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	41 80 fc 3f          	cmp    $0x3f,%r12b
+   4:	0f 87 00 11 cd 07    	ja     0x7cd110a
+   a:	e8 05 93 49 ff       	callq  0xff499314
+   f:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+  14:	48 8d 78 50          	lea    0x50(%rax),%rdi
+  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1f:	fc ff df
+  22:	48 89 fa             	mov    %rdi,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2d:	0f 85 0d 02 00 00    	jne    0x240
+  33:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+  38:	4c 89 ef             	mov    %r13,%rdi
+  3b:	45 31 ff             	xor    %r15d,%r15d
+  3e:	48                   	rex.W
+
+
 ---
-V2->V3:
-	Added changelog provided by Jan Kara (thanks Jan).
-	Merge the patch that removed put_dquot_list() to the current patch.
-	Open code Simplified remove_inode_dquot_ref() code to
-	  remove_dquot_ref().
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- fs/quota/dquot.c | 70 +++++++-----------------------------------------
- 1 file changed, 9 insertions(+), 61 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index c7afe433d991..e8232242dd34 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -1072,59 +1072,7 @@ static int add_dquot_ref(struct super_block *sb, int type)
- 	return err;
- }
- 
--/*
-- * Remove references to dquots from inode and add dquot to list for freeing
-- * if we have the last reference to dquot
-- */
--static void remove_inode_dquot_ref(struct inode *inode, int type,
--				   struct list_head *tofree_head)
--{
--	struct dquot **dquots = i_dquot(inode);
--	struct dquot *dquot = dquots[type];
--
--	if (!dquot)
--		return;
--
--	dquots[type] = NULL;
--	if (list_empty(&dquot->dq_free)) {
--		/*
--		 * The inode still has reference to dquot so it can't be in the
--		 * free list
--		 */
--		spin_lock(&dq_list_lock);
--		list_add(&dquot->dq_free, tofree_head);
--		spin_unlock(&dq_list_lock);
--	} else {
--		/*
--		 * Dquot is already in a list to put so we won't drop the last
--		 * reference here.
--		 */
--		dqput(dquot);
--	}
--}
--
--/*
-- * Free list of dquots
-- * Dquots are removed from inodes and no new references can be got so we are
-- * the only ones holding reference
-- */
--static void put_dquot_list(struct list_head *tofree_head)
--{
--	struct list_head *act_head;
--	struct dquot *dquot;
--
--	act_head = tofree_head->next;
--	while (act_head != tofree_head) {
--		dquot = list_entry(act_head, struct dquot, dq_free);
--		act_head = act_head->next;
--		/* Remove dquot from the list so we won't have problems... */
--		list_del_init(&dquot->dq_free);
--		dqput(dquot);
--	}
--}
--
--static void remove_dquot_ref(struct super_block *sb, int type,
--		struct list_head *tofree_head)
-+static void remove_dquot_ref(struct super_block *sb, int type)
- {
- 	struct inode *inode;
- #ifdef CONFIG_QUOTA_DEBUG
-@@ -1141,11 +1089,16 @@ static void remove_dquot_ref(struct super_block *sb, int type,
- 		 */
- 		spin_lock(&dq_data_lock);
- 		if (!IS_NOQUOTA(inode)) {
-+			struct dquot **dquots = i_dquot(inode);
-+			struct dquot *dquot = dquots[type];
-+
- #ifdef CONFIG_QUOTA_DEBUG
- 			if (unlikely(inode_get_rsv_space(inode) > 0))
- 				reserved = 1;
- #endif
--			remove_inode_dquot_ref(inode, type, tofree_head);
-+			dquots[type] = NULL;
-+			if (dquot)
-+				dqput(dquot);
- 		}
- 		spin_unlock(&dq_data_lock);
- 	}
-@@ -1162,13 +1115,8 @@ static void remove_dquot_ref(struct super_block *sb, int type,
- /* Gather all references from inodes and drop them */
- static void drop_dquot_ref(struct super_block *sb, int type)
- {
--	LIST_HEAD(tofree_head);
--
--	if (sb->dq_op) {
--		remove_dquot_ref(sb, type, &tofree_head);
--		synchronize_srcu(&dquot_srcu);
--		put_dquot_list(&tofree_head);
--	}
-+	if (sb->dq_op)
-+		remove_dquot_ref(sb, type);
- }
- 
- static inline
--- 
-2.31.1
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
