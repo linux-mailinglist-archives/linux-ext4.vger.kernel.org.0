@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85744747303
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF6E747302
 	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 15:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbjGDNoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S231444AbjGDNoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Tue, 4 Jul 2023 09:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbjGDNoH (ORCPT
+        with ESMTP id S231534AbjGDNoH (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 09:44:07 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E5D11D
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1EFE6B
         for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 06:44:05 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QwPCN4BDxz4f3mJb
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 21:44:00 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QwPCQ2Svmz4f3nJt
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 21:44:02 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLASIqRk9WjENA--.31120S11;
-        Tue, 04 Jul 2023 21:44:02 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLASIqRk9WjENA--.31120S12;
+        Tue, 04 Jul 2023 21:44:03 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
         chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: [PATCH 07/12] jbd2: add fast_commit space check
-Date:   Tue,  4 Jul 2023 21:42:28 +0800
-Message-Id: <20230704134233.110812-8-yi.zhang@huaweicloud.com>
+Subject: [PATCH 08/12] jbd2: cleanup journal_init_common()
+Date:   Tue,  4 Jul 2023 21:42:29 +0800
+Message-Id: <20230704134233.110812-9-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
 References: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLASIqRk9WjENA--.31120S11
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF18JF17JF1ktF15Ww4Durg_yoW8ury5pF
-        W7GryakrW8ZrW7Z3WxJF4DJFWFva4jyFWUGr9ak3sYkw4UtwnIk34qqr15J3WqyFWj9340
-        qFnIyw1UCw1rt3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgD3rLASIqRk9WjENA--.31120S12
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrW5Jw13XF4DWw13try3XFb_yoWrXw18pr
+        y7KasxArW8Zr47Xr1fJF4kJrWjq3y09FyUGr9ruwn5ta1UtrnxXw1Utw1xJayqvFW8W3Wr
+        XFyfC34xCw1UKaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -52,9 +52,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7KF18JF17JF1ktF15Ww4Durg_yoW8ury5pF
         v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoxhLUUUUU
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,61 +63,111 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-If JBD2_FEATURE_INCOMPAT_FAST_COMMIT bit is set, it means the journal
-have fast commit records need to recover, so the fast commit size
-should not be zero, and also the leftover normal journal size should
-never less than JBD2_MIN_JOURNAL_BLOCKS. Add a check into the
-journal_check_superblock() and drop the pointless branch when
-initializing in-memory fastcommit parameters.
+Adjust the initialization sequence and error handle of journal_t, moving
+load superblock to the begin, and classify others initialization.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/jbd2/journal.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ fs/jbd2/journal.c | 45 ++++++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index efdb8db3c06e..210b532a3673 100644
+index 210b532a3673..065b5e789299 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -1392,6 +1392,18 @@ static int journal_check_superblock(journal_t *journal)
- 		return err;
- 	}
+@@ -1541,6 +1541,16 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	if (!journal)
+ 		return NULL;
  
-+	if (jbd2_has_feature_fast_commit(journal)) {
-+		int num_fc_blks = be32_to_cpu(sb->s_num_fc_blks);
++	journal->j_blocksize = blocksize;
++	journal->j_dev = bdev;
++	journal->j_fs_dev = fs_dev;
++	journal->j_blk_offset = start;
++	journal->j_total_len = len;
 +
-+		if (!num_fc_blks ||
-+		    (be32_to_cpu(sb->s_maxlen) - num_fc_blks <
-+		     JBD2_MIN_JOURNAL_BLOCKS)) {
-+			printk(KERN_ERR "JBD2: Invalid fast commit size %d\n",
-+			       num_fc_blks);
-+			return err;
-+		}
-+	}
++	err = journal_load_superblock(journal);
++	if (err)
++		goto err_cleanup;
 +
- 	if (jbd2_has_feature_csum2(journal) &&
- 	    jbd2_has_feature_csum3(journal)) {
- 		/* Can't have checksum v2 and v3 at the same time! */
-@@ -1460,7 +1472,6 @@ static int journal_load_superblock(journal_t *journal)
- 	int err;
- 	struct buffer_head *bh;
- 	journal_superblock_t *sb;
--	int num_fc_blocks;
+ 	init_waitqueue_head(&journal->j_wait_transaction_locked);
+ 	init_waitqueue_head(&journal->j_wait_done_commit);
+ 	init_waitqueue_head(&journal->j_wait_commit);
+@@ -1552,12 +1562,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	mutex_init(&journal->j_checkpoint_mutex);
+ 	spin_lock_init(&journal->j_revoke_lock);
+ 	spin_lock_init(&journal->j_list_lock);
++	spin_lock_init(&journal->j_history_lock);
+ 	rwlock_init(&journal->j_state_lock);
  
- 	bh = getblk_unmovable(journal->j_dev, journal->j_blk_offset,
- 			      journal->j_blocksize);
-@@ -1498,9 +1509,8 @@ static int journal_load_superblock(journal_t *journal)
+ 	journal->j_commit_interval = (HZ * JBD2_DEFAULT_MAX_COMMIT_AGE);
+ 	journal->j_min_batch_time = 0;
+ 	journal->j_max_batch_time = 15000; /* 15ms */
+ 	atomic_set(&journal->j_reserved_credits, 0);
++	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
++			 &jbd2_trans_commit_key, 0);
  
- 	if (jbd2_has_feature_fast_commit(journal)) {
- 		journal->j_fc_last = be32_to_cpu(sb->s_maxlen);
--		num_fc_blocks = jbd2_journal_get_num_fc_blks(sb);
--		if (journal->j_last - num_fc_blocks >= JBD2_MIN_JOURNAL_BLOCKS)
--			journal->j_last = journal->j_fc_last - num_fc_blocks;
-+		journal->j_last = journal->j_fc_last -
-+				  be32_to_cpu(sb->s_num_fc_blks);
- 		journal->j_fc_first = journal->j_last + 1;
- 		journal->j_fc_off = 0;
- 	}
+ 	/* The journal is marked for error until we succeed with recovery! */
+ 	journal->j_flags = JBD2_ABORT;
+@@ -1567,18 +1580,10 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	if (err)
+ 		goto err_cleanup;
+ 
+-	spin_lock_init(&journal->j_history_lock);
+-
+-	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
+-			 &jbd2_trans_commit_key, 0);
+-
+-	/* journal descriptor can store up to n blocks -bzzz */
+-	journal->j_blocksize = blocksize;
+-	journal->j_dev = bdev;
+-	journal->j_fs_dev = fs_dev;
+-	journal->j_blk_offset = start;
+-	journal->j_total_len = len;
+-	/* We need enough buffers to write out full descriptor block. */
++	/*
++	 * journal descriptor can store up to n blocks, we need enough
++	 * buffers to write out full descriptor block.
++	 */
+ 	n = journal->j_blocksize / jbd2_min_tag_size();
+ 	journal->j_wbufsize = n;
+ 	journal->j_fc_wbuf = NULL;
+@@ -1587,7 +1592,8 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	if (!journal->j_wbuf)
+ 		goto err_cleanup;
+ 
+-	err = journal_load_superblock(journal);
++	err = percpu_counter_init(&journal->j_checkpoint_jh_count, 0,
++				  GFP_KERNEL);
+ 	if (err)
+ 		goto err_cleanup;
+ 
+@@ -1596,21 +1602,18 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
+ 	journal->j_shrinker.seeks = DEFAULT_SEEKS;
+ 	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
+-
+-	if (percpu_counter_init(&journal->j_checkpoint_jh_count, 0, GFP_KERNEL))
++	err = register_shrinker(&journal->j_shrinker, "jbd2-journal:(%u:%u)",
++				MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
++	if (err)
+ 		goto err_cleanup;
+ 
+-	if (register_shrinker(&journal->j_shrinker, "jbd2-journal:(%u:%u)",
+-			      MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev))) {
+-		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
+-		goto err_cleanup;
+-	}
+ 	return journal;
+ 
+ err_cleanup:
+-	brelse(journal->j_sb_buffer);
++	percpu_counter_destroy(&journal->j_checkpoint_jh_count);
+ 	kfree(journal->j_wbuf);
+ 	jbd2_journal_destroy_revoke(journal);
++	journal_fail_superblock(journal);
+ 	kfree(journal);
+ 	return NULL;
+ }
 -- 
 2.39.2
 
