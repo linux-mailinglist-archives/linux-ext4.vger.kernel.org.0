@@ -2,144 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA097476AE
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 18:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9627478B8
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 21:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbjGDQ2p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jul 2023 12:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S230011AbjGDTeg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jul 2023 15:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbjGDQ2o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 12:28:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C05E7B;
-        Tue,  4 Jul 2023 09:28:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20F4061302;
-        Tue,  4 Jul 2023 16:28:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A8C9C433C7;
-        Tue,  4 Jul 2023 16:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688488122;
-        bh=ZbfFFniWhSahnp7jSJ3oIaV9POCcbiLvynkhKSgpXe4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rYhrvsNpwqCJwn41eekT5X8PaPVwBQ6ub8Netmz5zCPt/qzVPnkLxH2Kjiq9nv1Cm
-         yUeZjhUrBrMq2ThgKqf6VqdUdYp1P2/zpT5yvYD7siJiybpmyKwoPpaa5gXpr6CMMv
-         akxinQnPPwXHrxodKNqiTb/6JTMYG4lY9mmxI0dhS9y7wawVJYcWdRHa64BuE/8weJ
-         eX7co1v82fmGWp5kKAm9BaeWX8/tRjFqKX1EDWvGtKd5aZ5LCCXaAY86lmuE5eezEu
-         Ix6OVXIAm9Wp1Cia2H4ClFO9rKC6nhjukt+dwjQnGXu6F26u0+VUNsprhPIs/s+nRo
-         qHwq5/jxHTM8Q==
-Date:   Tue, 4 Jul 2023 10:28:36 -0600
-From:   Keith Busch <kbusch@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
-Message-ID: <ZKRItBRhm8f5Vba/@kbusch-mbp>
-References: <20230629165206.383-1-jack@suse.cz>
- <20230704122224.16257-1-jack@suse.cz>
+        with ESMTP id S229451AbjGDTef (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 15:34:35 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D529410C9
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 12:34:33 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-5.bstnma.fios.verizon.net [173.48.102.5])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 364JXvM8016277
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 4 Jul 2023 15:33:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1688499239; bh=a/hYOHJOkSry0UDTQ201cVWuuRSTQMAsl1WqU881mt4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=nLNUd2N1VENrRzY6nXkyXkl0YCtj3e73DX4ylJaNuyock4Z+QJouH+Fc6iWau67fG
+         5hiEsaodvN7xgqU/2IialuZ93FVlAoltoHiGlD6EveVlU1lxc1kJaxrl+prSC+7m5E
+         ZtoKZPs1ACUh0za37FlkDGui5IXeREdOzKMle8CiZ+ozEI+hoDytmEC8PhBDLynf4K
+         IjITYY5YaZrmiYEiRq8KQ5D6Vve8OMcWq5ytn1Gyapd5E36Gy+kX7pkS9Tf4LFJJAJ
+         l3PldQyypodvfInfnhsfD151/D/9spGfaScOT12FZQ/cwVQgMSjN9PowgDCT6i4IX8
+         H/c0OmFzvjxgQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 226AF15C0280; Tue,  4 Jul 2023 15:33:57 -0400 (EDT)
+Date:   Tue, 4 Jul 2023 15:33:57 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     zhanchengbin <zhanchengbin1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, linfeilong <linfeilong@huawei.com>,
+        louhongxiang@huawei.com, liuzhiqiang26@huawei.com,
+        Ye Bin <yebin@huaweicloud.com>
+Subject: Re: [bug report] tune2fs: filesystem inconsistency occurs by
+ concurrent write
+Message-ID: <20230704193357.GG1178919@mit.edu>
+References: <29f6134f-ba0a-d601-0a5a-ad2b5e9bbf1d@huawei.com>
+ <20230626021758.GF8954@mit.edu>
+ <4e647e9b-4f2f-b89f-6825-838f22c4bf2e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230704122224.16257-1-jack@suse.cz>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4e647e9b-4f2f-b89f-6825-838f22c4bf2e@huawei.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
-> +struct bdev_handle *blkdev_get_handle_by_dev(dev_t dev, blk_mode_t mode,
-> +		void *holder, const struct blk_holder_ops *hops)
-> +{
-> +	struct bdev_handle *handle = kmalloc(sizeof(struct bdev_handle),
-> +					     GFP_KERNEL);
+On Tue, Jul 04, 2023 at 04:35:43PM +0800, zhanchengbin wrote:
 
-I believe 'sizeof(*handle)' is the preferred style.
+> 3) Add interface write_super in ext4_ioctl. The mount point is
+> obtained through the block device, and open a random file in the
+> file system, the superblock is passed to the kernel through ioctl of
+> the file, and finally, the superblock is flushed to disk. Due to the
+> inherent risks associated with granting user space write permissions
+> to the superblock, it is deemed unsafe to utilize the entire
+> superblock as provided by user space. Instead, the superblock should
+> be validated, followed by selective data writing and recording. Of
+> course, it is dangerous to directly modify the data in the super
+> block, so I plan to add a flag in the super block to record that
+> this modification is from the user state.
 
-> +	struct block_device *bdev;
-> +
-> +	if (!handle)
-> +		return ERR_PTR(-ENOMEM);
-> +	bdev = blkdev_get_by_dev(dev, mode, holder, hops);
-> +	if (IS_ERR(bdev))
-> +		return ERR_CAST(bdev);
 
-Need a 'kfree(handle)' before the error return. Or would it be simpler
-to get the bdev first so you can check the mode settings against a
-read-only bdev prior to the kmalloc?
+> Personally speaking, I favour the third solution the most, what are
+> your opinions? If you already have other schemes, I will be more
+> than delighted to discuss it with you.  Looking foward to hearing
+> from you soon
 
-> +	handle->bdev = bdev;
-> +	handle->holder = holder;
-> +	return handle;
-> +}
-> +EXPORT_SYMBOL(blkdev_get_handle_by_dev);
-> +
->  /**
->   * blkdev_get_by_path - open a block device by name
->   * @path: path to the block device to open
-> @@ -884,6 +902,28 @@ struct block_device *blkdev_get_by_path(const char *path, blk_mode_t mode,
->  }
->  EXPORT_SYMBOL(blkdev_get_by_path);
->  
-> +struct bdev_handle *blkdev_get_handle_by_path(const char *path, blk_mode_t mode,
-> +		void *holder, const struct blk_holder_ops *hops)
-> +{
-> +	struct bdev_handle *handle;
-> +	dev_t dev;
-> +	int error;
-> +
-> +	error = lookup_bdev(path, &dev);
-> +	if (error)
-> +		return ERR_PTR(error);
-> +
-> +	handle = blkdev_get_handle_by_dev(dev, mode, holder, hops);
-> +	if (!IS_ERR(handle) && (mode & BLK_OPEN_WRITE) &&
-> +	    bdev_read_only(handle->bdev)) {
-> +		blkdev_handle_put(handle);
-> +		return ERR_PTR(-EACCES);
-> +	}
-> +
-> +	return handle;
-> +}
-> +EXPORT_SYMBOL(blkdev_get_handle_by_path);
+I agree that the third solution (or some variant thereof) is the best.
+The first two involve changes to the block layer, and in addition the
+problems you've outlined, different file systems have file systems in
+different superblocks in locations on disk, and the superblock may be
+differently sized, etc.  The problem we are trying to solve is also
+fairly unique to ext2/3/4, since many other file systems either have
+their own specialized ioctls, or they may simply not allow any file
+system tuning operations while the file system is mounted.
+
+The problem though with a write_super() ioctl though is that while it
+solves the problem of false positive complaints from syzbot (at least
+according to my opinion, sane threat models --- the syzbot folks seem
+to disagree about what a sane threat model ought to be), it doesn't
+solve the *other* problem which is that the superblock can also be
+modified by the kernel, so there are some inherent race conditions
+that can occcur when userspace and kernel are trying to modify the
+superblock at the same time.
+
+This can be potentially solved by a lot of checks by the kernel code
+handling the hypothetical EXT4_IOC_WRITE_SUPER ioctl.  This could be
+improved by a passing in a second superblock so the ioctl handling
+code can compare the modified superblocks between the original and
+modified superblock, and then apply more sanity checks.  But that's a
+lot of extra complexity, and you won't know whether the kernel will
+support modifying some pariticular superblock field.
+
+So the better approach is to have multiple new ioctl's for each
+superblock field (or set of fields) that you might want modify.  We
+have some of these already --- for example, EXT4_IOC_SETFSUUID and
+FS_IOC_SETFSLABEL.  For tune2fs, all of additional ioctls for making
+configuration changes while the file system is mounted are:
+
+   * EXT4_IOC_SET_FEATURES
+	- for tune2fs -O...
+   * EXT4_IOC_CLEAR_FEATURES
+	- for tune2fs -O^...
+   * EXT4_IOC_SET_ERROR_BEHAVIOR
+	- for tune2fs -e
+   * EXT4_IOC_SET_DEFAULT_MOUNT_FLAGS
+        - for tune2fs -o
+   * EXT4_IOC_SET_DEFAULT_MOUNT_OPTS
+        - for tune2fs -E mount_opts=XXX
+   * EXT4_IOC_SET_FSCK_POLICY
+	- for tune2fs -[cCiT]
+   * EXT4_IOC_SET_RESERVED_ALLOC
+	- for tune2fs -[ugm]
+
+(The last two assumes using a structure, since it's probably not worth
+creating 7 new ioctls when 2 would probably do).
+
+Some of these ioctls are pretty esoteric, and are rarely used by most
+system adminsitrators.  And we don't have to add all of them all at
+once; we could gradually add some of them, and most of these are
+simple enough that we could assign them as a starter project for a new
+college grad that you've hired into your company, or to an intern.
+
+Cheers,
+
+						- Ted
+
+P.S.  I've ignored ioctls to "get" the superblock.  We could just have
+a single EXT4_IOC_READ_SUPERBLOCK, or we can solve the problem by
+simply having the userspace use an O_DIRECT to read the superblock,
+since this will avoid the potential invalid checksum issues the
+superblock will only be written out to disk by the kernel when it is
+self-consistent.
