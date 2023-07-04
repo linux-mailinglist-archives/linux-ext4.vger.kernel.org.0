@@ -2,137 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59522747224
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 15:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABDF7472FD
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 15:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjGDNEh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jul 2023 09:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        id S231249AbjGDNoF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jul 2023 09:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbjGDNEf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 09:04:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1C810C1;
-        Tue,  4 Jul 2023 06:04:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F0F5F20573;
-        Tue,  4 Jul 2023 13:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688475837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rY6MxLY5e9SVa1+4BCCd7ntNwV9Px5uEGT5nvi2Xw9M=;
-        b=ejRwbAIwZQbMrOxksN9aG/ZDDESpKoHA5R/d85WHYyhF32Si43PFRfl6mcCR9WYB3Qv5Xb
-        bFzVFYQ3692eypLdUzJN5qIXY9S2kweTJplS9sF53SAyJ7HvtNyhlweUs2wFtrS+zKSTOj
-        TegqbmWrWk4Vs0DZGSAEKRmheCwdTpE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688475837;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rY6MxLY5e9SVa1+4BCCd7ntNwV9Px5uEGT5nvi2Xw9M=;
-        b=T7VmytPRSDJUviPwV6lejrGCKn7KjlWBXNR5Weqcyul/51HqsbD9tiSRFlJo/bbQX+dGnV
-        08LOGAmrpvM1ddAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC3001346D;
-        Tue,  4 Jul 2023 13:03:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kueeNbwYpGTARwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 04 Jul 2023 13:03:56 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 6B4A7A0722; Tue,  4 Jul 2023 15:03:56 +0200 (CEST)
-Date:   Tue, 4 Jul 2023 15:03:56 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
-Message-ID: <20230704130356.xwdlxvgvi4l6sruc@quack3>
-References: <20230629165206.383-1-jack@suse.cz>
- <20230704122224.16257-1-jack@suse.cz>
- <ZKQUB4rU8Gebhq6R@casper.infradead.org>
+        with ESMTP id S229994AbjGDNoE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 09:44:04 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085DCEE
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 06:44:04 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QwPCM2k2cz4f3lfW
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 21:43:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLASIqRk9WjENA--.31120S4;
+        Tue, 04 Jul 2023 21:43:56 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
+        chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: [PATCH 00/12] ext4,jbd2: cleanup journal load and initialization process
+Date:   Tue,  4 Jul 2023 21:42:21 +0800
+Message-Id: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZKQUB4rU8Gebhq6R@casper.infradead.org>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3rLASIqRk9WjENA--.31120S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF1xGw1xtF4fKr4kZr1DWrg_yoW8Ary3pF
+        43Ga4furWUC34xAa1IqF4xGFWfWw1Ikay7Grn7Crn7Aw4rZFnrtr48Jr1rJFyUCFW8ua12
+        gF4UGanxGw10k37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 04-07-23 13:43:51, Matthew Wilcox wrote:
-> On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
-> > +struct bdev_handle *blkdev_get_handle_by_dev(dev_t dev, blk_mode_t mode,
-> > +		void *holder, const struct blk_holder_ops *hops)
-> > +{
-> > +	struct bdev_handle *handle = kmalloc(sizeof(struct bdev_handle),
-> > +					     GFP_KERNEL);
-> > +	struct block_device *bdev;
-> > +
-> > +	if (!handle)
-> > +		return ERR_PTR(-ENOMEM);
-> > +	bdev = blkdev_get_by_dev(dev, mode, holder, hops);
-> > +	if (IS_ERR(bdev))
-> > +		return ERR_CAST(bdev);
-> 
-> Would we be better off with a handle->error (and a NULL return from this
-> function means "we couldn't allocate a handle")?  I have no objection
-> to what you've done here, just wondering if it might end up nicer for
-> the users.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Hum, I've checked a couple of users and it seems it would be more
-complicated for the users to handle this convention than the one I've
-chosen. And that one is also pretty standard so I think by the principle of
-least surprise it is also better.
+Hello,
 
-								Honza
+This patch set cleanup the journal load and initialization process
+(discussed and suggested by Ted in [1]). Firstly, move reading of the
+journal superblock from jbd2_journal_load() and jbd2_journal_wipe()
+early to journal_init_common(), and completely drop the kludgy call of
+journal_get_superblock() in jbd2_journal_check_used_features(). Then
+cleanup the ext4_get_journal() and ext4_get_dev_journal(), making their
+initialization process and error handling process more clear, and return
+proper errno if some bad happens. Finally rename those two functions to
+jbd2_open_{dev,inode}_journal. This patch set has passed
+'kvm-xfstests -g auto'.
 
-> 
+[1] https://lore.kernel.org/linux-ext4/20230617185057.GA343628@mit.edu/
+
+Thanks,
+Yi.
+
+Zhang Yi (12):
+  jbd2: move load_superblock() dependent functions
+  jbd2: move load_superblock() into journal_init_common()
+  jbd2: don't load superblock in jbd2_journal_check_used_features()
+  jbd2: checking valid features early in journal_get_superblock()
+  jbd2: open code jbd2_verify_csum_type() helper
+  jbd2: cleanup load_superblock()
+  jbd2: add fast_commit space check
+  jbd2: cleanup journal_init_common()
+  jbd2: drop useless error tag in jbd2_journal_wipe()
+  jbd2: jbd2_journal_init_{dev,inode} return proper error return value
+  ext4: cleanup ext4_get_dev_journal() and ext4_get_journal()
+  ext4: ext4_get_{dev}_journal return proper error value
+
+ fs/ext4/super.c    | 154 ++++++++-------
+ fs/jbd2/journal.c  | 474 ++++++++++++++++++++++-----------------------
+ fs/ocfs2/journal.c |   8 +-
+ 3 files changed, 308 insertions(+), 328 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
