@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF6E747302
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 15:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F2E747301
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jul 2023 15:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjGDNoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jul 2023 09:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S231565AbjGDNoL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jul 2023 09:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjGDNoH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 09:44:07 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1EFE6B
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 06:44:05 -0700 (PDT)
+        with ESMTP id S231444AbjGDNoG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jul 2023 09:44:06 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218A8E6E
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 06:44:06 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QwPCQ2Svmz4f3nJt
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 21:44:02 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QwPCP2MQQz4f3mJp
+        for <linux-ext4@vger.kernel.org>; Tue,  4 Jul 2023 21:44:01 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLASIqRk9WjENA--.31120S12;
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLASIqRk9WjENA--.31120S13;
         Tue, 04 Jul 2023 21:44:03 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
         chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: [PATCH 08/12] jbd2: cleanup journal_init_common()
-Date:   Tue,  4 Jul 2023 21:42:29 +0800
-Message-Id: <20230704134233.110812-9-yi.zhang@huaweicloud.com>
+Subject: [PATCH 09/12] jbd2: drop useless error tag in jbd2_journal_wipe()
+Date:   Tue,  4 Jul 2023 21:42:30 +0800
+Message-Id: <20230704134233.110812-10-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
 References: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLASIqRk9WjENA--.31120S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrW5Jw13XF4DWw13try3XFb_yoWrXw18pr
-        y7KasxArW8Zr47Xr1fJF4kJrWjq3y09FyUGr9ruwn5ta1UtrnxXw1Utw1xJayqvFW8W3Wr
-        XFyfC34xCw1UKaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoxhLUUUUU
+X-CM-TRANSID: gCh0CgD3rLASIqRk9WjENA--.31120S13
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrWry3GrWUGF15Zr4xJFb_yoWfZFXEqa
+        10v3yxW39xtr47A3yrC3yUursY9rs7ur1kWw1ftw4DKrWUJ3ZIqFn7tryjqryxuw1kKrW7
+        X39Fkr40qa9rKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbTkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+        1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxK
+        x2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl2NtUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,111 +63,40 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-Adjust the initialization sequence and error handle of journal_t, moving
-load superblock to the begin, and classify others initialization.
+no_recovery is redundant, just drop it.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/jbd2/journal.c | 45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ fs/jbd2/journal.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 210b532a3673..065b5e789299 100644
+index 065b5e789299..cc344b8d7476 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -1541,6 +1541,16 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (!journal)
- 		return NULL;
+@@ -2506,12 +2506,12 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
  
-+	journal->j_blocksize = blocksize;
-+	journal->j_dev = bdev;
-+	journal->j_fs_dev = fs_dev;
-+	journal->j_blk_offset = start;
-+	journal->j_total_len = len;
-+
-+	err = journal_load_superblock(journal);
-+	if (err)
-+		goto err_cleanup;
-+
- 	init_waitqueue_head(&journal->j_wait_transaction_locked);
- 	init_waitqueue_head(&journal->j_wait_done_commit);
- 	init_waitqueue_head(&journal->j_wait_commit);
-@@ -1552,12 +1562,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	mutex_init(&journal->j_checkpoint_mutex);
- 	spin_lock_init(&journal->j_revoke_lock);
- 	spin_lock_init(&journal->j_list_lock);
-+	spin_lock_init(&journal->j_history_lock);
- 	rwlock_init(&journal->j_state_lock);
+ int jbd2_journal_wipe(journal_t *journal, int write)
+ {
+-	int err = 0;
++	int err;
  
- 	journal->j_commit_interval = (HZ * JBD2_DEFAULT_MAX_COMMIT_AGE);
- 	journal->j_min_batch_time = 0;
- 	journal->j_max_batch_time = 15000; /* 15ms */
- 	atomic_set(&journal->j_reserved_credits, 0);
-+	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
-+			 &jbd2_trans_commit_key, 0);
+ 	J_ASSERT (!(journal->j_flags & JBD2_LOADED));
  
- 	/* The journal is marked for error until we succeed with recovery! */
- 	journal->j_flags = JBD2_ABORT;
-@@ -1567,18 +1580,10 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (err)
- 		goto err_cleanup;
+ 	if (!journal->j_tail)
+-		goto no_recovery;
++		return 0;
  
--	spin_lock_init(&journal->j_history_lock);
--
--	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
--			 &jbd2_trans_commit_key, 0);
--
--	/* journal descriptor can store up to n blocks -bzzz */
--	journal->j_blocksize = blocksize;
--	journal->j_dev = bdev;
--	journal->j_fs_dev = fs_dev;
--	journal->j_blk_offset = start;
--	journal->j_total_len = len;
--	/* We need enough buffers to write out full descriptor block. */
-+	/*
-+	 * journal descriptor can store up to n blocks, we need enough
-+	 * buffers to write out full descriptor block.
-+	 */
- 	n = journal->j_blocksize / jbd2_min_tag_size();
- 	journal->j_wbufsize = n;
- 	journal->j_fc_wbuf = NULL;
-@@ -1587,7 +1592,8 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (!journal->j_wbuf)
- 		goto err_cleanup;
+ 	printk(KERN_WARNING "JBD2: %s recovery information on journal\n",
+ 		write ? "Clearing" : "Ignoring");
+@@ -2524,7 +2524,6 @@ int jbd2_journal_wipe(journal_t *journal, int write)
+ 		mutex_unlock(&journal->j_checkpoint_mutex);
+ 	}
  
--	err = journal_load_superblock(journal);
-+	err = percpu_counter_init(&journal->j_checkpoint_jh_count, 0,
-+				  GFP_KERNEL);
- 	if (err)
- 		goto err_cleanup;
- 
-@@ -1596,21 +1602,18 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	journal->j_shrinker.count_objects = jbd2_journal_shrink_count;
- 	journal->j_shrinker.seeks = DEFAULT_SEEKS;
- 	journal->j_shrinker.batch = journal->j_max_transaction_buffers;
--
--	if (percpu_counter_init(&journal->j_checkpoint_jh_count, 0, GFP_KERNEL))
-+	err = register_shrinker(&journal->j_shrinker, "jbd2-journal:(%u:%u)",
-+				MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
-+	if (err)
- 		goto err_cleanup;
- 
--	if (register_shrinker(&journal->j_shrinker, "jbd2-journal:(%u:%u)",
--			      MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev))) {
--		percpu_counter_destroy(&journal->j_checkpoint_jh_count);
--		goto err_cleanup;
--	}
- 	return journal;
- 
- err_cleanup:
--	brelse(journal->j_sb_buffer);
-+	percpu_counter_destroy(&journal->j_checkpoint_jh_count);
- 	kfree(journal->j_wbuf);
- 	jbd2_journal_destroy_revoke(journal);
-+	journal_fail_superblock(journal);
- 	kfree(journal);
- 	return NULL;
+- no_recovery:
+ 	return err;
  }
+ 
 -- 
 2.39.2
 
