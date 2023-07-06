@@ -2,123 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E99749D1D
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 15:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC6D749ED5
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 16:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjGFNKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jul 2023 09:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S233077AbjGFOSu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jul 2023 10:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjGFNKq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 09:10:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DD71FC9;
-        Thu,  6 Jul 2023 06:10:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0CFB6195C;
-        Thu,  6 Jul 2023 13:10:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D009C433C7;
-        Thu,  6 Jul 2023 13:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688649019;
-        bh=U4DQhi7mOPrGgIbuzx0vC/TJNm7AB04bsngGM1ZNiKY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hD8s3cacuL+rlBWEE+Y2STmdjnIe2imLtc3s8dw4ZBi02XMCOR+Uzpn5rn+z7Il59
-         oV8RrIID4kFpmzRqgk7vgpM1rCY0/PSQngyTKcahd28TuconlZPT3/heegUvR6KrP9
-         U8E9VsTCG/0uv1e5F0oa2RfVHiOrd2B6ym1GKJ9WCosHzReHdvae7YD72qdvEO3o0H
-         HCwAJDBqDmkYHrWNiXSna1aMPh3Wornxb+OH1I6QAidxfg0PzErwxosFufRhPNbs8q
-         B77t6zo5ytlZMqIM79muX1+UpGgun8zGq4Lw7g018DgqzKi84WJP8KfNOXeHp1V3VJ
-         0x7Al8QvkqQRA==
-Message-ID: <5290be64ba87d01938c578f49443ce41f9be5e77.camel@kernel.org>
-Subject: Re: [PATCH v2 42/92] ext4: convert to ctime accessor functions
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Date:   Thu, 06 Jul 2023 09:10:17 -0400
-In-Reply-To: <20230706123643.3pumra5f4fthz3qq@quack3>
-References: <20230705185755.579053-1-jlayton@kernel.org>
-         <20230705190309.579783-1-jlayton@kernel.org>
-         <20230705190309.579783-40-jlayton@kernel.org>
-         <20230706123643.3pumra5f4fthz3qq@quack3>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S232113AbjGFOSt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 10:18:49 -0400
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C8E12A
+        for <linux-ext4@vger.kernel.org>; Thu,  6 Jul 2023 07:18:48 -0700 (PDT)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-682ce1a507bso580110b3a.0
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jul 2023 07:18:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688653128; x=1691245128;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JTfB1lUG5uiw0ksctY3dfVoZYVSL9IN/8FwRIlaLhnM=;
+        b=bF5v3DRU/NAJvraIs/04lUKBkbeDOSxFI4SPbG9T5oF6OhF5mbOR+dL3HvRDrI9RA9
+         Zljn/xrdgLHmbioxQh3hefhU+ZyYgkH2Ci1UGrlKFEMftaXAfYZF1KHTY11x55mEKBRv
+         HCTzJMjV0bkWtsERzJOH3UUs9hHACg7u1rReosu/Me7Ro19Ktwr18kVREQosph90JI5b
+         OBW1vfY76vvTxZ7kQaPydBmNAwH/kpRcx1LMv2mRDjYIjeusGBj4uCVvr/spLc9H42zZ
+         tjMpiAWvNaK9OBvLsMwRbNAFubrdUpl7/eADSE9jPS2Ei6ETccdLbdwpSYGGbtvUxuNX
+         ibPQ==
+X-Gm-Message-State: ABy/qLZmZGg29m7hX2oZE0PO2tG/P9QfQHU02cWwIrT89/c+vLiiOKAp
+        Y/jjLU6yXPnZ2jGmzxkqI9wXmHdJlX5X+DcwivRleg9BjULe
+X-Google-Smtp-Source: APBJJlFlgJ2eVDAPM43xPc+LlNo+eDVtqOEUmA72XQmyPdpD27BR6mlztuGnuDsQJBtf0Aef7Jp6sP4DD30PlHg/srydSfqLqEYS
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:9a9:b0:682:69ee:5037 with SMTP id
+ u41-20020a056a0009a900b0068269ee5037mr2642548pfg.0.1688653128240; Thu, 06 Jul
+ 2023 07:18:48 -0700 (PDT)
+Date:   Thu, 06 Jul 2023 07:18:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000db94d405ffd231f7@google.com>
+Subject: [syzbot] Monthly ext4 report (Jul 2023)
+From:   syzbot <syzbot+list863fc044988daa3042ea@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2023-07-06 at 14:36 +0200, Jan Kara wrote:
-> On Wed 05-07-23 15:01:07, Jeff Layton wrote:
-> > In later patches, we're going to change how the inode's ctime field is
-> > used. Switch to using accessor functions instead of raw accesses of
-> > inode->i_ctime.
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Some comment below:
->=20
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 0a2d55faa095..d502b930431b 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -3823,6 +3823,27 @@ static inline int ext4_buffer_uptodate(struct bu=
-ffer_head *bh)
-> >  	return buffer_uptodate(bh);
-> >  }
-> > =20
-> > +static inline void ext4_inode_set_ctime(struct inode *inode, struct ex=
-t4_inode *raw_inode)
-> > +{
-> > +	struct timespec64 ctime =3D inode_get_ctime(inode);
-> > +
-> > +	if (EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), i_ctime_extra)) {
-> > +		raw_inode->i_ctime =3D cpu_to_le32(ctime.tv_sec);
-> > +		raw_inode->i_ctime_extra =3D ext4_encode_extra_time(&ctime);
-> > +	} else {
-> > +		raw_inode->i_ctime =3D cpu_to_le32(clamp_t(int32_t, ctime.tv_sec, S3=
-2_MIN, S32_MAX));
-> > +	}
-> > +}
-> > +
-> > +static inline void ext4_inode_get_ctime(struct inode *inode, const str=
-uct ext4_inode *raw_inode)
-> > +{
-> > +	struct timespec64 ctime =3D { .tv_sec =3D (signed)le32_to_cpu(raw_ino=
-de->i_ctime) };
-> > +
-> > +	if (EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), i_ctime_extra))
-> > +		ext4_decode_extra_time(&ctime, raw_inode->i_ctime_extra);
-> > +	inode_set_ctime(inode, ctime.tv_sec, ctime.tv_nsec);
-> > +}
-> > +
->=20
-> This duplication is kind of unpleasant. I was looking into it for a while
-> and I think we can rather do some initial cleanup (attached patch 1) and
-> then your conversion patch would not need to duplicate the conversion cod=
-e
-> (see attached patch 2).
->=20
-> =09
->=20
+Hello ext4 maintainers/developers,
 
-Thanks Jan. That looks fine at first glance. I'll plan to drop my ext4
-patch and replace it with these.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-Cheers,
---=20
-Jeff Layton <jlayton@kernel.org>
+During the period, 8 new issues were detected and 3 were fixed.
+In total, 51 issues are still open and 112 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  1186    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<2>  207     No    INFO: task hung in path_openat (7)
+                   https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
+<3>  147     Yes   WARNING in ext4_file_write_iter
+                   https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
+<4>  141     Yes   possible deadlock in quotactl_fd
+                   https://syzkaller.appspot.com/bug?extid=cdcd444e4d3a256ada13
+<5>  115     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<6>  97      Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<7>  52      Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<8>  24      Yes   kernel BUG in ext4_write_inline_data_end
+                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
+<9>  5       Yes   INFO: task hung in ext4_evict_ea_inode
+                   https://syzkaller.appspot.com/bug?extid=38e6635a03c83c76297a
+<10> 5       Yes   KASAN: use-after-free Read in ext4_search_dir
+                   https://syzkaller.appspot.com/bug?extid=34a0f26f0f61c4888ea4
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
