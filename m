@@ -2,210 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B78B274A427
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 21:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5AE74A3B8
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 20:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjGFTGQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jul 2023 15:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
+        id S230309AbjGFS0E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jul 2023 14:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbjGFTGO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 15:06:14 -0400
-X-Greylist: delayed 5284 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 06 Jul 2023 12:06:12 PDT
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E491BDB;
-        Thu,  6 Jul 2023 12:06:12 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:40568)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qHQio-00FMgf-7e; Thu, 06 Jul 2023 09:16:42 -0600
-Received: from ip68-110-29-46.om.om.cox.net ([68.110.29.46]:55228 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qHQim-00AsXt-Fk; Thu, 06 Jul 2023 09:16:41 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
-        cmllamas@google.com, surenb@google.com,
-        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
-        ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
-        linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
-        marc.dionne@auristor.com, viro@zeniv.linux.org.uk,
-        raven@themaw.net, luisbg@kernel.org, salah.triki@gmail.com,
-        aivazian.tigran@gmail.com, keescook@chromium.org, clm@fb.com,
-        josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
-        jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
-        hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
-        ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
-        huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-        linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
-        tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        hirofumi@mail.parknet.co.jp, miklos@szeredi.hu,
-        rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
-        tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-        chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
-        anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
-        mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
-        hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
-        mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
-        gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
-        pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
-        senozhatsky@chromium.org, phillip@squashfs.org.uk,
-        rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
-        hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
-        naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, john.johansen@canonical.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        jgross@suse.com, stern@rowland.harvard.edu, lrh2000@pku.edu.cn,
-        sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com,
-        quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com,
-        john@keeping.me.uk, error27@gmail.com, quic_uaggarwa@quicinc.com,
-        hayama@lineo.co.jp, jomajm@gmail.com, axboe@kernel.dk,
-        dhavale@google.com, dchinner@redhat.com, hannes@cmpxchg.org,
-        zhangpeng362@huawei.com, slava@dubeyko.com, gargaditya08@live.com,
-        penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu,
-        madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu,
-        yuzhe@nfschina.com, willy@infradead.org, okanatov@gmail.com,
-        jeffxu@chromium.org, linux@treblig.org, mirimmad17@gmail.com,
-        yijiangshan@kylinos.cn, yang.yang29@zte.com.cn,
-        xu.xin16@zte.com.cn, chengzhihao1@huawei.com, shr@devkernel.io,
-        Liam.Howlett@Oracle.com, adobriyan@gmail.com,
-        chi.minghao@zte.com.cn, roberto.sassu@huawei.com,
-        linuszeng@tencent.com, bvanassche@acm.org, zohar@linux.ibm.com,
-        yi.zhang@huawei.com, trix@redhat.com, fmdefrancesco@gmail.com,
-        ebiggers@google.com, princekumarmaurya06@gmail.com,
-        chenzhongjin@huawei.com, riel@surriel.com,
-        shaozhengchao@huawei.com, jingyuwang_vip@163.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        autofs@vger.kernel.org, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-um@lists.infradead.org,
-        linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-References: <20230705185812.579118-1-jlayton@kernel.org>
-        <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org>
-Date:   Thu, 06 Jul 2023 10:16:19 -0500
-In-Reply-To: <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org> (Jeff
-        Layton's message of "Wed, 05 Jul 2023 17:57:46 -0400")
-Message-ID: <87ilaxgjek.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        with ESMTP id S229997AbjGFS0C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 14:26:02 -0400
+Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBC51FCC
+        for <linux-ext4@vger.kernel.org>; Thu,  6 Jul 2023 11:25:45 -0700 (PDT)
+Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-262dc0ba9ceso1695550a91.3
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jul 2023 11:25:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688667945; x=1691259945;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OZzgEZl6/g7psZ0E4d9jCKRJiroc9+4BEHoe0FwqD0A=;
+        b=HGL/dyKiasHJcGH6zYbnYeLY/PwQe/hQePxIwhFtEmj9/o3h239f+doxT3ZKMG6aMY
+         Gpp64j+Q6lNUeReRCdjiZ6mQf7xEtHOpye8s8mwWPxPxySiB2J3014tZds1MZRAX0Ffa
+         UOOmk0Epu6TiJ9VANHug66XV8IV+BaSxQ2vSKGFbZ5BZnt2FwKUPizhcsNfLTF9in63b
+         whKtBkg9kRdBTlFTQUn5/e948hFuplag4AaCHc2t/fit2h9K8Ffcg/f66njrX6G32fDT
+         RhI07zUP5KY+utnlgHWO4mDGTktqmwEXV+hm7V9XivDhcALNG4M6TV9peN1/PtZxgk2F
+         oWeQ==
+X-Gm-Message-State: ABy/qLZdaPGxPtJpfMkumYNcOvFiCeJLO7xWR+AyJAK6/VAO0qm1rACp
+        lNnS6zdPySiN3TXSdZw8J/iWbAnajAqAlKT5GCmzCszMxf5q
+X-Google-Smtp-Source: APBJJlERvrpoZOMihfbOTAEJysCghlB1JQkU8loiCXpqc2u7eML+so9n5tmRY1ZNli1dxl9JKH9Jdyj8VD5cudXSRC/XpN2FqPEo
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qHQim-00AsXt-Fk;;;mid=<87ilaxgjek.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.110.29.46;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19hfnilZzLMqG1RlF+DuMto1+nqSkCNAbk=
-X-SA-Exim-Connect-IP: 68.110.29.46
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Received: by 2002:a17:90b:1215:b0:263:347:25b3 with SMTP id
+ gl21-20020a17090b121500b00263034725b3mr2029757pjb.6.1688667944984; Thu, 06
+ Jul 2023 11:25:44 -0700 (PDT)
+Date:   Thu, 06 Jul 2023 11:25:44 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000126ec05ffd5a528@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_enable_quotas
+From:   syzbot <syzbot+693985588d7a5e439483@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jeff Layton <jlayton@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 959 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 12 (1.2%), b_tie_ro: 10 (1.1%), parse: 1.62
-        (0.2%), extract_message_metadata: 4.3 (0.4%), get_uri_detail_list:
-        1.88 (0.2%), tests_pri_-2000: 2.4 (0.3%), tests_pri_-1000: 10 (1.1%),
-        tests_pri_-950: 1.27 (0.1%), tests_pri_-900: 1.56 (0.2%),
-        tests_pri_-200: 0.85 (0.1%), tests_pri_-100: 4.3 (0.4%),
-        tests_pri_-90: 283 (29.5%), check_bayes: 278 (29.0%), b_tokenize: 27
-        (2.9%), b_tok_get_all: 20 (2.1%), b_comp_prob: 4.6 (0.5%),
-        b_tok_touch_all: 220 (23.0%), b_finish: 0.94 (0.1%), tests_pri_0: 616
-        (64.3%), check_dkim_signature: 0.56 (0.1%), check_dkim_adsp: 2.8
-        (0.3%), poll_dns_idle: 0.55 (0.1%), tests_pri_10: 2.2 (0.2%),
-        tests_pri_500: 9 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
+Hello,
 
-> On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
->> v2:
->> - prepend patches to add missing ctime updates
->> - add simple_rename_timestamp helper function
->> - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_*
->> - drop individual inode_ctime_set_{sec,nsec} helpers
->> 
->> I've been working on a patchset to change how the inode->i_ctime is
->> accessed in order to give us conditional, high-res timestamps for the
->> ctime and mtime. struct timespec64 has unused bits in it that we can use
->> to implement this. In order to do that however, we need to wrap all
->> accesses of inode->i_ctime to ensure that bits used as flags are
->> appropriately handled.
->> 
->> The patchset starts with reposts of some missing ctime updates that I
->> spotted in the tree. It then adds a new helper function for updating the
->> timestamp after a successful rename, and new ctime accessor
->> infrastructure.
->> 
->> The bulk of the patchset is individual conversions of different
->> subsysteme to use the new infrastructure. Finally, the patchset renames
->> the i_ctime field to __i_ctime to help ensure that I didn't miss
->> anything.
->> 
->> This should apply cleanly to linux-next as of this morning.
->> 
->> Most of this conversion was done via 5 different coccinelle scripts, run
->> in succession, with a large swath of by-hand conversions to clean up the
->> remainder.
->> 
->
-> A couple of other things I should note:
->
-> If you sent me an Acked-by or Reviewed-by in the previous set, then I
-> tried to keep it on the patch here, since the respun patches are mostly
-> just renaming stuff from v1. Let me know if I've missed any.
->
-> I've also pushed the pile to my tree as this tag:
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/tag/?h=ctime.20230705
->
-> In case that's easier to work with.
+syzbot found the following issue on:
 
-Are there any preliminary patches showing what you want your introduced
-accessors to turn into?  It is hard to judge the sanity of the
-introduction of wrappers without seeing what the wrappers are ultimately
-going to do.
+HEAD commit:    995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fdda4f280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
+dashboard link: https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Eric
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/01122b567c73/disk-995b406c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/75b7a37e981e/vmlinux-995b406c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/758b5afcf092/bzImage-995b406c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+693985588d7a5e439483@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/ext4/super.c:7010!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 27977 Comm: syz-executor.2 Not tainted 6.4.0-syzkaller-10098-g995b406c7e97 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:ext4_quota_enable fs/ext4/super.c:7010 [inline]
+RIP: 0010:ext4_enable_quotas+0xb7a/0xb90 fs/ext4/super.c:7057
+Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 3a f7 ff ff 49 89 d6 48 89 df e8 03 10 99 ff 4c 89 f2 e9 27 f7 ff ff e8 46 60 40 ff <0f> 0b e8 3f 60 40 ff 0f 0b e8 18 6e 6e 08 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc9000392f880 EFLAGS: 00010293
+RAX: ffffffff824b91aa RBX: 0000000000000000 RCX: ffff88803c1d8000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000392fa50 R08: ffffffff824b8aa4 R09: 1ffff11010674957
+R10: dffffc0000000000 R11: ffffed1010674958 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff88807f545464 R15: dffffc0000000000
+FS:  00007f5112313700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002007f000 CR3: 000000002cb28000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __ext4_fill_super fs/ext4/super.c:5562 [inline]
+ ext4_fill_super+0x6157/0x6ce0 fs/ext4/super.c:5696
+ get_tree_bdev+0x468/0x6c0 fs/super.c:1318
+ vfs_get_tree+0x8c/0x270 fs/super.c:1519
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f511168d8ba
+Code: 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5112312f88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00000000000005d8 RCX: 00007f511168d8ba
+RDX: 0000000020000580 RSI: 00000000200005c0 RDI: 00007f5112312fe0
+RBP: 00007f5112313020 R08: 00007f5112313020 R09: 0000000001008002
+R10: 0000000001008002 R11: 0000000000000202 R12: 0000000020000580
+R13: 00000000200005c0 R14: 00007f5112312fe0 R15: 0000000020000100
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_quota_enable fs/ext4/super.c:7010 [inline]
+RIP: 0010:ext4_enable_quotas+0xb7a/0xb90 fs/ext4/super.c:7057
+Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 3a f7 ff ff 49 89 d6 48 89 df e8 03 10 99 ff 4c 89 f2 e9 27 f7 ff ff e8 46 60 40 ff <0f> 0b e8 3f 60 40 ff 0f 0b e8 18 6e 6e 08 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc9000392f880 EFLAGS: 00010293
+RAX: ffffffff824b91aa RBX: 0000000000000000 RCX: ffff88803c1d8000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000392fa50 R08: ffffffff824b8aa4 R09: 1ffff11010674957
+R10: dffffc0000000000 R11: ffffed1010674958 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff88807f545464 R15: dffffc0000000000
+FS:  00007f5112313700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2d324000 CR3: 000000002cb28000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
