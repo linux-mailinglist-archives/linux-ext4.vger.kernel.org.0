@@ -2,219 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B9174A205
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 18:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0539074A249
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jul 2023 18:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbjGFQPY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jul 2023 12:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S231466AbjGFQgu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jul 2023 12:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjGFQPU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 12:15:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79750DC;
-        Thu,  6 Jul 2023 09:15:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBCAB602F1;
-        Thu,  6 Jul 2023 16:15:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AD63C433C7;
-        Thu,  6 Jul 2023 16:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688660118;
-        bh=r5Eqjb/koo4X65bgDBYxDesIkgsRAdhnfATQ4gt2Esk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uOgU9evq5o16T6L6tpJH1n8YSQl4p50BjR5wiJPLoKkMzHgO7DWjFII6ePLp5KpdE
-         3SlBOVBQ0Ayb1Ck5njyhQkfK/lBmsjOnzq7A/dE1stN3VqJX7pH6IQsgFKtN1DalJo
-         E+zh6oq4S0OPw7rIh8zXpFwi+8/fexgoqLXDvhFUUOG0TWnPj5LM1mmg7dIC7PaCB3
-         IOEyQDVn/tGwcs+s3mZaJELn1kEqbOemjyG66rmihhs9u/EaGnd4WvmH/942idbgOQ
-         fgiPtHR0C+lrv0o8CzKEzOTX/CaJMpmdnCKaL0ZpaSmvJsFgbp9PEliTkXRbGZddzd
-         Fm4yxVau37qTQ==
-Message-ID: <3948ae7653d1cb7c51febcca26a35775e71a53b4.camel@kernel.org>
-Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
-        cmllamas@google.com, surenb@google.com,
-        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
-        ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
-        linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
-        marc.dionne@auristor.com, viro@zeniv.linux.org.uk,
-        raven@themaw.net, luisbg@kernel.org, salah.triki@gmail.com,
-        aivazian.tigran@gmail.com, keescook@chromium.org, clm@fb.com,
-        josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
-        jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
-        hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
-        ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
-        huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-        linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
-        tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        hirofumi@mail.parknet.co.jp, miklos@szeredi.hu,
-        rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
-        tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-        chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
-        anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
-        mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
-        hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
-        mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
-        gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
-        pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
-        senozhatsky@chromium.org, phillip@squashfs.org.uk,
-        rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
-        hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
-        naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, john.johansen@canonical.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        jgross@suse.com, stern@rowland.harvard.edu, lrh2000@pku.edu.cn,
-        sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com,
-        quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com,
-        john@keeping.me.uk, error27@gmail.com, quic_uaggarwa@quicinc.com,
-        hayama@lineo.co.jp, jomajm@gmail.com, axboe@kernel.dk,
-        dhavale@google.com, dchinner@redhat.com, hannes@cmpxchg.org,
-        zhangpeng362@huawei.com, slava@dubeyko.com, gargaditya08@live.com,
-        penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu,
-        madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu,
-        yuzhe@nfschina.com, willy@infradead.org, okanatov@gmail.com,
-        jeffxu@chromium.org, linux@treblig.org, mirimmad17@gmail.com,
-        yijiangshan@kylinos.cn, yang.yang29@zte.com.cn,
-        xu.xin16@zte.com.cn, chengzhihao1@huawei.com, shr@devkernel.io,
-        Liam.Howlett@Oracle.com, adobriyan@gmail.com,
-        chi.minghao@zte.com.cn, roberto.sassu@huawei.com,
-        linuszeng@tencent.com, bvanassche@acm.org, zohar@linux.ibm.com,
-        yi.zhang@huawei.com, trix@redhat.com, fmdefrancesco@gmail.com,
-        ebiggers@google.com, princekumarmaurya06@gmail.com,
-        chenzhongjin@huawei.com, riel@surriel.com,
-        shaozhengchao@huawei.com, jingyuwang_vip@163.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        autofs@vger.kernel.org, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-um@lists.infradead.org,
-        linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Thu, 06 Jul 2023 12:14:58 -0400
-In-Reply-To: <87ilaxgjek.fsf@email.froward.int.ebiederm.org>
-References: <20230705185812.579118-1-jlayton@kernel.org>
-         <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org>
-         <87ilaxgjek.fsf@email.froward.int.ebiederm.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S229490AbjGFQgt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jul 2023 12:36:49 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2831703
+        for <linux-ext4@vger.kernel.org>; Thu,  6 Jul 2023 09:36:48 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4035441869fso6631871cf.3
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jul 2023 09:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688661407; x=1691253407;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=89CwZx6yCxx/IPOug4xJ3oqiiv0qEE5wgq06/Da2ZjQ=;
+        b=Ab/+16MOQwcCsA+L8AiAn3J/FJop3BMgRROWqboM19XAGKG5W7DmG0Yq7TPSlurClS
+         L8TZ5Lk2dPeG9hLajcIHlbxJm4J9Pbjqzgk48YaNe1LEAOncSoGPO3FKvP4ZdhFxtDkX
+         adyYGP5Vv9jzU+WuE75Co0ipGal/LdYiiXMzTsNTUqxG4b+QtXF2fgsbl4dmNS/+EbJE
+         xYMXNIYUYInf3EFhTVmHET0VZGnqnXLuT8RfoFGRFq06Nv6NAvQB0HaunXas9oDq3CQK
+         qA+VXUEeU3OKdu1+7RJfJLpFvxUh5Bbz41qDFUj4kSHpg7NTStBB20yxb5+9HwiUSi31
+         Fpzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688661407; x=1691253407;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=89CwZx6yCxx/IPOug4xJ3oqiiv0qEE5wgq06/Da2ZjQ=;
+        b=i8zHPW9aG0WmpEiLxgDuOz/AZq137KIZy22ETEim3Uf9qZ0L1AGREsVNhVcDW82JkV
+         p8P+DUqy9YB4cIg8KLRxHKb1BfvU2GkGpb390D7pEgRDQ3KfBSaFX5UCm9ukNm++uUWT
+         xvLjftB7SKZ8rLcPFJGcvE3RJ0cTc49Wb2ULqy5kfew6gfdxcdMmReFKf4nw0xMzz5wE
+         1dr+TvcQduUoiq1tLEtqCXYUzkx2lGtqNqGIJVS4ffwZoM/8IUOartSjQyQ4AYBkeMgZ
+         DtVowGQhJVr3f4lr0+FUZp4OeHLJgIuxivXnHlqXwVU1yLRZ0SLOCizHeX6s2kiEFcrM
+         9VJw==
+X-Gm-Message-State: ABy/qLbqrmG2+t5WXLXfUOCVnMVhs75Z95EO6Vjr+VRMwZjIjsGs4NTt
+        RZ2tqsh5mO24DrmO3ZHdC7OYRa7ey1A=
+X-Google-Smtp-Source: APBJJlHNOVlHX4/gXxZCTE8GIFT2jM8RVZBso6R9R4qOTdWHbwMu2rS2gaCvKJSmUA9S0H0L0j+bQQ==
+X-Received: by 2002:ac8:7dd6:0:b0:3dc:fa58:97fd with SMTP id c22-20020ac87dd6000000b003dcfa5897fdmr3214297qte.25.1688661407463;
+        Thu, 06 Jul 2023 09:36:47 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id h2-20020ac85482000000b00401eafa8f1fsm777004qtq.24.2023.07.06.09.36.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jul 2023 09:36:47 -0700 (PDT)
+Date:   Thu, 6 Jul 2023 12:36:45 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, ojaswin@linux.ibm.com
+Subject: generic/269 failure on ext4 dev branch
+Message-ID: <ZKbtnaXWgZ6eDK0N@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2023-07-06 at 10:16 -0500, Eric W. Biederman wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
->=20
-> > On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
-> > > v2:
-> > > - prepend patches to add missing ctime updates
-> > > - add simple_rename_timestamp helper function
-> > > - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_=
-*
-> > > - drop individual inode_ctime_set_{sec,nsec} helpers
-> > >=20
-> > > I've been working on a patchset to change how the inode->i_ctime is
-> > > accessed in order to give us conditional, high-res timestamps for the
-> > > ctime and mtime. struct timespec64 has unused bits in it that we can =
-use
-> > > to implement this. In order to do that however, we need to wrap all
-> > > accesses of inode->i_ctime to ensure that bits used as flags are
-> > > appropriately handled.
-> > >=20
-> > > The patchset starts with reposts of some missing ctime updates that I
-> > > spotted in the tree. It then adds a new helper function for updating =
-the
-> > > timestamp after a successful rename, and new ctime accessor
-> > > infrastructure.
-> > >=20
-> > > The bulk of the patchset is individual conversions of different
-> > > subsysteme to use the new infrastructure. Finally, the patchset renam=
-es
-> > > the i_ctime field to __i_ctime to help ensure that I didn't miss
-> > > anything.
-> > >=20
-> > > This should apply cleanly to linux-next as of this morning.
-> > >=20
-> > > Most of this conversion was done via 5 different coccinelle scripts, =
-run
-> > > in succession, with a large swath of by-hand conversions to clean up =
-the
-> > > remainder.
-> > >=20
-> >=20
-> > A couple of other things I should note:
-> >=20
-> > If you sent me an Acked-by or Reviewed-by in the previous set, then I
-> > tried to keep it on the patch here, since the respun patches are mostly
-> > just renaming stuff from v1. Let me know if I've missed any.
-> >=20
-> > I've also pushed the pile to my tree as this tag:
-> >=20
-> >     https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/t=
-ag/?h=3Dctime.20230705
-> >=20
-> > In case that's easier to work with.
->=20
-> Are there any preliminary patches showing what you want your introduced
-> accessors to turn into?  It is hard to judge the sanity of the
-> introduction of wrappers without seeing what the wrappers are ultimately
-> going to do.
->=20
-> Eric
+I've discovered that generic/269 will trigger a BUG_ON on line 5070 in
+ext4_mb_new_inode_pa when running kvm-xfstests on the 1k test case
+with a kernel built from the current ext4 dev branch. After hitting the
+BUG_ON, the kernel then reports persistent soft lockups.  I mentioned this in
+today's concall, and Ted confirmed the current dev branch should reflect
+what's upstream at this time.
 
-I have a draft version of the multigrain patches on top of the wrapper
-conversion I've already posted in my "mgctime-experimental" branch:
+This test reproduces for me 5 to 10% of the time, but reliably enough - I
+typically don't need more than 25 trials to see the failure, and 10 often
+suffices. (I haven't yet tried the 4k test case, but will do so.)
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/log/?=
-h=3Dmgctime-experimental
+The failure bisects to:
+7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
 
-The rationale is best explained in this changelog:
+Trace follows.
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/commi=
-t/?h=3Dmgctime-experimental&id=3Dface437a144d3375afb7f70c233b0644b4edccba
+Eric
 
-The idea will be to enable this on a per-fs basis.
---=20
-Jeff Layton <jlayton@kernel.org>
+
+generic/269 24s ...  [21:41:11][  284.208474] run fstests generic/269 at 2023-07-03 21:41:11
+[  284.511484] EXT4-fs (vdc): mounted filesystem 2b1fbdd6-2724-47bc-b7b5-f4a73c9f19be r/w with ordered data mode. Quota mode: none.
+[  284.950657] ------------[ cut here ]------------
+[  284.950901] kernel BUG at fs/ext4/mballoc.c:5070!
+[  284.951104] invalid opcode: 0000 [#1] PREEMPT SMP
+[  284.951296] CPU: 0 PID: 12039 Comm: fsstress Not tainted 6.4.0-rc5+ #6
+[  284.951567] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+[  284.951900] RIP: 0010:ext4_mb_new_inode_pa+0x2a6/0x2c0
+[  284.952124] Code: b5 7e 0f 85 b5 fe ff ff 0f 1f 44 00 00 e9 ab fe ff ff e8 9d 56 d3 ff 84 c0 0f 85 b5 fe ff ff 0f 0b e9 ae fe ff ff 0f 0b 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 4c 89 c1 31 c0 e9 42 ff ff ff 0f 1f 84 00
+[  284.952891] RSP: 0018:ffffc90004053970 EFLAGS: 00010a87
+[  284.953124] RAX: 0000000000000002 RBX: ffff8880342d0720 RCX: 0000000000000001
+[  284.953420] RDX: 0000000000004000 RSI: 00001e4000000000 RDI: ffff8880342d0720
+[  284.953720] RBP: ffffc90004053a00 R08: ffff88800a5fc000 R09: 0000000000000000
+[  284.954020] R10: ffff888007964a98 R11: 0000000000000002 R12: 0000000000000003
+[  284.954321] R13: ffff8880342d0720 R14: ffff88800a5fc000 R15: ffff88800abfc000
+[  284.954610] FS:  00007f3d9db07740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+[  284.954923] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  284.955148] CR2: 000055b54ce0fde8 CR3: 0000000006730006 CR4: 0000000000770ef0
+[  284.955443] PKRU: 55555554
+[  284.955559] Call Trace:
+[  284.955669]  <TASK>
+[  284.955760]  ? die+0x33/0x90
+[  284.955887]  ? do_trap+0xe0/0x110
+[  284.956031]  ? ext4_mb_new_inode_pa+0x2a6/0x2c0
+[  284.956223]  ? do_error_trap+0x65/0x80
+[  284.956385]  ? ext4_mb_new_inode_pa+0x2a6/0x2c0
+[  284.956575]  ? exc_invalid_op+0x4b/0x70
+[  284.956738]  ? ext4_mb_new_inode_pa+0x2a6/0x2c0
+[  284.956929]  ? asm_exc_invalid_op+0x16/0x20
+[  284.957112]  ? ext4_mb_new_inode_pa+0x2a6/0x2c0
+[  284.957305]  ext4_mb_complex_scan_group+0x2e0/0x3e0
+[  284.957512]  ext4_mb_regular_allocator+0x3be/0xd80
+[  284.957716]  ext4_mb_new_blocks+0x9dc/0x1040
+[  284.957895]  ? __kmalloc+0xca/0x150
+[  284.958038]  ? ext4_find_extent+0x3ec/0x450
+[  284.958204]  ? _raw_write_unlock+0x29/0x50
+[  284.958369]  ext4_ext_map_blocks+0x9a4/0x19d0
+[  284.958543]  ? __kmem_cache_free+0x17d/0x2e0
+[  284.958723]  ? find_held_lock+0x2b/0x80
+[  284.958889]  ext4_map_blocks+0x230/0x5d0
+[  284.959056]  ? lock_release+0x139/0x280
+[  284.959222]  ext4_getblk+0x7b/0x2d0
+[  284.959369]  ext4_bread+0xc/0x70
+[  284.959510]  ext4_append+0x8d/0x190
+[  284.959665]  ext4_init_new_dir+0xd5/0x1b0
+[  284.959835]  ext4_mkdir+0x192/0x340
+[  284.959987]  vfs_mkdir+0x98/0x140
+[  284.960133]  do_mkdirat+0x131/0x160
+[  284.960285]  __x64_sys_mkdir+0x48/0x70
+[  284.960445]  do_syscall_64+0x38/0x90
+[  284.960600]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[  284.960814] RIP: 0033:0x7f3d9dbf8b07
+[  284.960967] Code: 1f 40 00 48 8b 05 89 f3 0c 00 64 c7 00 5f 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 59 f3 0c 00 f7 d8 64 89 01 48
+[  284.961741] RSP: 002b:00007ffcd5131098 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
+[  284.962075] RAX: ffffffffffffffda RBX: 00007ffcd5131200 RCX: 00007f3d9dbf8b07
+[  284.962363] RDX: 0000000000000000 RSI: 00000000000001ff RDI: 000055b54cdac240
+[  284.962647] RBP: 00000000000001ff R08: 0000000000000001 R09: 0000000000000003
+[  284.962928] R10: 00007ffcd5130d16 R11: 0000000000000206 R12: 00000000000000cb
+[  284.963209] R13: 8f5c28f5c28f5c29 R14: 000055b54c8ec660 R15: 00000000000000cb
+[  284.963492]  </TASK>
+[  284.963586] Modules linked in:
+[  284.963730] ---[ end trace 0000000000000000 ]---
+
