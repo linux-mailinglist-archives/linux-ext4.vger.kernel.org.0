@@ -2,290 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4784E74AEFA
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 12:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8918074AF26
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 12:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbjGGKvF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jul 2023 06:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S232786AbjGGKzi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jul 2023 06:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjGGKvC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 06:51:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F221172B;
-        Fri,  7 Jul 2023 03:51:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF33561728;
-        Fri,  7 Jul 2023 10:51:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1904CC433C7;
-        Fri,  7 Jul 2023 10:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688727060;
-        bh=YY2+JZ9K159BEA5iSbeX62sRGYZcpbUaLjQvLugmLbE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jXdQbiZ5Du/aIdze7VeTdm89AeKeYW1m4/7P1K420P54fp2uTq7aOaGBMwqlLnw11
-         5T+jXE1w9xr2TFIydSymIs59E5/D60tiQwOrG5t4hwTmZ4+DNTLa0LgW/JlS7C6Rg0
-         Mzl7zZGaHcBNbE8fs+RYzBh/pLfQTiwpAzbqUwnaVBq4Wks4CGEmJGniuijWbkznN9
-         yKSAP4Wd0VGwzQyH6kGj1b/zaEVMosXLl47jzHBi50p2AWNvdkuhe4kCPVw/2GfwLp
-         PcUD4QVeNETkqKyUuCjgzrA8gjstIliNy9GhxSwhdsoWExJoMegiOtBnIsuS31XbZX
-         flM91ZzrsjFeA==
-Message-ID: <ff1f471a9d33ae01ad570644273e4e579204a3b6.camel@kernel.org>
-Subject: Re: [apparmor] [PATCH v2 08/92] fs: new helper:
- simple_rename_timestamp
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Seth Arnold <seth.arnold@canonical.com>
-Cc:     Damien Le Moal <dlemoal@kernel.org>, jk@ozlabs.org, arnd@arndb.de,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
-        cmllamas@google.com, surenb@google.com,
-        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
-        ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
-        linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
-        marc.dionne@auristor.com, viro@zeniv.linux.org.uk,
-        raven@themaw.net, luisbg@kernel.org, salah.triki@gmail.com,
-        aivazian.tigran@gmail.com, ebiederm@xmission.com,
-        keescook@chromium.org, clm@fb.com, josef@toxicpanda.com,
-        xiubli@redhat.com, idryomov@gmail.com, jaharkes@cs.cmu.edu,
-        coda@cs.cmu.edu, jlbec@evilplan.org, hch@lst.de, nico@fluxnic.net,
-        rafael@kernel.org, code@tyhicks.com, ardb@kernel.org,
-        xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
-        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
-        sj1557.seo@samsung.com, jack@suse.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        hirofumi@mail.parknet.co.jp, miklos@szeredi.hu,
-        rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
-        tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-        chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
-        anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
-        mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
-        hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
-        mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
-        gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
-        pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
-        senozhatsky@chromium.org, phillip@squashfs.org.uk,
-        rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
-        hdegoede@redhat.com, djwong@kernel.org, naohiro.aota@wdc.com,
-        jth@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        hughd@google.com, akpm@linux-foundation.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        john.johansen@canonical.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        jgross@suse.com, stern@rowland.harvard.edu, lrh2000@pku.edu.cn,
-        sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com,
-        quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com,
-        john@keeping.me.uk, error27@gmail.com, quic_uaggarwa@quicinc.com,
-        hayama@lineo.co.jp, jomajm@gmail.com, axboe@kernel.dk,
-        dhavale@google.com, dchinner@redhat.com, hannes@cmpxchg.org,
-        zhangpeng362@huawei.com, slava@dubeyko.com, gargaditya08@live.com,
-        penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu,
-        madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu,
-        yuzhe@nfschina.com, willy@infradead.org, okanatov@gmail.com,
-        jeffxu@chromium.org, linux@treblig.org, mirimmad17@gmail.com,
-        yijiangshan@kylinos.cn, yang.yang29@zte.com.cn,
-        xu.xin16@zte.com.cn, chengzhihao1@huawei.com, shr@devkernel.io,
-        Liam.Howlett@Oracle.com, adobriyan@gmail.com,
-        chi.minghao@zte.com.cn, roberto.sassu@huawei.com,
-        linuszeng@tencent.com, bvanassche@acm.org, zohar@linux.ibm.com,
-        yi.zhang@huawei.com, trix@redhat.com, fmdefrancesco@gmail.com,
-        ebiggers@google.com, princekumarmaurya06@gmail.com,
-        chenzhongjin@huawei.com, riel@surriel.com,
-        shaozhengchao@huawei.com, jingyuwang_vip@163.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        autofs@vger.kernel.org, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-um@lists.infradead.org,
-        linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Fri, 07 Jul 2023 06:50:40 -0400
-In-Reply-To: <20230706210236.GB3244704@millbarge>
-References: <20230705185812.579118-1-jlayton@kernel.org>
-         <20230705185812.579118-3-jlayton@kernel.org>
-         <3b403ef1-22e6-0220-6c9c-435e3444b4d3@kernel.org>
-         <7c783969641b67d6ffdfb10e509f382d083c5291.camel@kernel.org>
-         <20230706210236.GB3244704@millbarge>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S232828AbjGGKze (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 06:55:34 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2117.outbound.protection.outlook.com [40.107.215.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7421BEE;
+        Fri,  7 Jul 2023 03:55:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HAL0oFWbZHXAMKGjOy0MnTx3z3wQKBCFyfG4ZuwHESeUDglSbYzUzGdb91wNHm3JKckoNdEEKEp8lwdoDwsEHWrDvjN4XfQ4TNBIGxYFqzlqZhkHVNLGfzJmuKu5d4ZEKJzGYot/ABWaJyQM/tu2KcaOzhMHa7+rvW+Zn1cZlaAsf8Gq5l15TeBrYl+NQx72smgoCncdip5TOexWXn3yBtowRCtABKavaM0DjeSMAdfBatVr4+NW1zNl8RjsKVW+V7NwdLpp1XaBwMmvK7qwkNZafdOkhg/WB/w1+kziyOhbkVH9ngYHffr2Tb7vGLep+YEm/aQZg2Zypjxr3tQYSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HMokTIZ3+imezFtmHG2FPlIKEbwriDrIwY6rcIpYihw=;
+ b=D4QfQe5nQo0kNi0UDGYY+a8ctH/c+iPvkTG7tjOz69Owf0tNsCq2B4Yr8Q/QYFtVylpZvHX7iPV3qopZm/i1ng2fOCYbIR0g8FCwbrjv7nnwKHJ0GoRI/EEhiy/z9Pe6Fmh8BHSw7eOCY4HTyQuktdWOiJcX/WR/DO3ZgCWXzR3mzEJIYJeSP5mVhbmbMKDulE8/3Q2avNiJBd/n9qkTZ8glzZ5uR2qbb+5UgI0+PdzGpW6G/VZf2uiq5Pawozv3xyjjd76L2dGq1R/NarVpwvXoaVDaTL/bWnN269zPslhX8xAZqdPqKtQQiwwimemNDeApjVyJYIBsfJTIHJon5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HMokTIZ3+imezFtmHG2FPlIKEbwriDrIwY6rcIpYihw=;
+ b=EO/0LrpdAORQQkKUAlzh46ulEnRQtNtiWSVKP9tqtayZ+plaQljuUgcG2NS94Ikjtl2L7Sz1ytmZCQozWpInRcJvuujrsWrEZ5K+tiqztEl6YkXINHo8rttSMaTQVaON/QPlHnFsQITGCIhpVstjyUJJIlP6Wwhi4hEKPx4BesjuY6VocYZPMpj+HxB5pjpcuqKU0I92w4H58eqVbVwSuwa12rPGAVhlU4//4u66LK1F/X68dLqgcp0Weijk8pryc3yT4KFnKr24jtDMmgISiyP6qIbeVBmBMxH0NULk6kmo+TdtM0Nd2daB6ar0HBUhttivyju50HcH2aaZPXEJjQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
+ by SEYPR06MB6456.apcprd06.prod.outlook.com (2603:1096:101:171::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Fri, 7 Jul
+ 2023 10:55:27 +0000
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::8586:be41:eaad:7c03]) by TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::8586:be41:eaad:7c03%7]) with mapi id 15.20.6565.019; Fri, 7 Jul 2023
+ 10:55:26 +0000
+From:   Lu Hongfei <luhongfei@vivo.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, luhongfei@vivo.com
+Subject: [PATCH] fs/ext4: Change the type of blocksize from 'int' to 'unsigned int' in ext4_mb_init_cache
+Date:   Fri,  7 Jul 2023 18:55:16 +0800
+Message-Id: <20230707105516.9156-1-luhongfei@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0038.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::15) To TYZPR06MB6697.apcprd06.prod.outlook.com
+ (2603:1096:400:451::6)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|SEYPR06MB6456:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44220646-14a2-4c70-c9d8-08db7ed8abf2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ifQOvWTT/7di21/8iCuwVUO1tNfQXQW7mjuS6QMPUZwO98ft9HQKHtpM8S9d6Fe4bL+yz/4uKxvK31UCHUHqU8FMcUPn5wgGK+MKU4iXxiaXgN5KVXFshqQ7R95jWb2iNYM3drgPWDnpb9W+ZBoRcYSCmNVUmYq/a0MNlkPUrbHhFiIp815yJi+cttb5CRL9V09TbWWWS/qxBC4jWCCj7ltpReC4JqWtsladqJ/FPqY+gFOvpkEW7hBqGx96OtrLrql/yeCQsbNkFfLokkwYvYGjjsUsMbahGVceO+zg9sT/RfOYQRCmN1+3k97C5s6bcvrPTeob/2II6nzGUgGgMcIPmiI49F4rA29Ze3UWD6Gcdm5X+gFZ7B2Qup5SNsPSK9Q6tfDXca/t/oz0bOCUmTSF0WBttIdHKyjn/Wy8qAbBe2VZ0ecOJ+cdc2RZtXef07LmWbQAQ4wJ5hOyaNkyFcCDQxXxNRgsB+m32XeBWIxFs2Gw+NN3pWQq3UEVlt3RYaK5+9i3R0vBovxoRCP37aZnIGrr1ybN2QNkE4ssK8lRHQDXNP18Zs3c2/F8Q64ECsLoX/FoYgHuRhnv33espajzhc1hBogypWh76TryYoQaiz7cMNlf82wo6rL6KUhx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39860400002)(346002)(396003)(376002)(451199021)(36756003)(6512007)(38350700002)(4744005)(38100700002)(5660300002)(66476007)(86362001)(8936002)(41300700001)(8676002)(66556008)(316002)(66946007)(6666004)(26005)(2906002)(6486002)(4326008)(6506007)(1076003)(186003)(107886003)(52116002)(478600001)(83380400001)(110136005)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nGWuf5WvUn7/kbztyYSGya7/qgzXnleQsOwLbww2CvJFU7YCM47rtVL4OdQc?=
+ =?us-ascii?Q?rK9WXvt0AUe5Za0WXKMQ3SLVWk1P7Ajp42WbpRmCg/iHVgZ4aZGmMObwgySd?=
+ =?us-ascii?Q?HvNQmFbOPEK76D90NUpxvw9cEGXmmSWWRxrfJEEIgD+66WHKO2Zzc1XHH9eR?=
+ =?us-ascii?Q?cOccoYuQJEdeEgKwciyD0GiHuGiIRFgvHCe2/ur5PME2DdNTEXyyh59kj63W?=
+ =?us-ascii?Q?KxSiZz3bN1zXmGf45OLh5Y10dNbBUXMJocg5U/asVtYpTKgUqzbMqNdrbX0F?=
+ =?us-ascii?Q?5MU9WPHiZ5jYEePriHxOu0lJ20FX/y4KBOiiGwnx9M9Sw9VOdDzQ1yEpMrVl?=
+ =?us-ascii?Q?4XRg6fAdJ885AMDYNJQxblRyNoYIDWTtWlgXi/yeT9Alufp0HuthmVXo+kzd?=
+ =?us-ascii?Q?37iVPo2oisxwkaGKlgTbKDQGTEL8+c/96iXMy1nxy4+Je3zFrJ5M6+kIz/VT?=
+ =?us-ascii?Q?iR86FsN1rXF1MpHYxVJHbH8WLewFlLLj5ewJ4UM6mrDjXQvRL9zTmOQ7byYA?=
+ =?us-ascii?Q?Gvd9PO2St7XD86ofxa9cmbyZ01oIZUZHHe2xO9h6fSCvmaKhVuW5a/Zx7Wrg?=
+ =?us-ascii?Q?w5PfWDUYKISYrPEaaXDUXLMy9A6cm0sLGQlrYwdhBQSCWLnM8naxpXnw8GRj?=
+ =?us-ascii?Q?f06zfQjiSp7kMp+P1abjmQmghknSrSB7wyOz4GH3OBJuG5MzTTHMafBABjOD?=
+ =?us-ascii?Q?RQ+BcKe+8CPT4GPEOasRjV1av5pMD4J6agq0XajzEW5Z6TtZDR7J71pscEGs?=
+ =?us-ascii?Q?WQJuhMe7nLL35OHxYKUbsi9x686kzHSP1x/omywGQ16GLRGf0GGoQ1i9Kxqe?=
+ =?us-ascii?Q?vIXnOSRSxWEIYEDVKTyPHr/ZquoIAhHm5SR4KxNRGRKnYwSmq/1r+T50Ang3?=
+ =?us-ascii?Q?+LgKFhpJrv9w9ROQwv7jZ39M1XywBfbeB/CUx1EqAVAUx+MM1Q5m27aBF1Tu?=
+ =?us-ascii?Q?IyRdKfARMEQBESVfwulYQy86V8kiEUlJuH8EiiDqlF8nLGdIQNQ/kCwejY8n?=
+ =?us-ascii?Q?bwIsqSnUPOdlEreS4zA0lvyOAghMeI7jB4AKGz8u20ElWTMFrwPo5nWUNCxb?=
+ =?us-ascii?Q?jz5dPiu+thQmS8YeHves2L68guo7tYy/JW6FjIzAFTzQwZlJHrtTSH5AbO3t?=
+ =?us-ascii?Q?5lEDhAyCDIjI7+xecIouT/Z2672wcaiWycxS1dcy08ZdSE0WrR/jJFbqjZUe?=
+ =?us-ascii?Q?6Q6jS3zfPpH0RrxmzQpm3nvFMk890FurI8zU6N+h0GuW1gYYwkjAbJZfN967?=
+ =?us-ascii?Q?9irW1PzBJAMqyEvqn7B3LXyYXRBtWlgqb/J5/vLhB+px3Shm9b+s36uiJ2Tq?=
+ =?us-ascii?Q?mg0bwR+yneIvC0ThceWFg6WPaAkZ2wzZ4wowgzRLpQG+mYybUMGV3nCt63h7?=
+ =?us-ascii?Q?iFXjbCqHOYWlHHZwB0/B/0to2zglZnIeWALzXC+YFDzdUtSMoWozRtM2VBG1?=
+ =?us-ascii?Q?KY7eM62zwIj/NctgVYRXiHkaOZ07OHAwyV25XVJFvf2fZO1lT2cjX7IT4aIu?=
+ =?us-ascii?Q?C9Z87p6TyXjENjCxjW3xvVMU5xRp8wyGmxaIjIg/aSN0Ay4ZENaT+6Ds+xPC?=
+ =?us-ascii?Q?fFneppiONzyXeYl3Pcu9cl16hhbRqfagR53xIDRf?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44220646-14a2-4c70-c9d8-08db7ed8abf2
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2023 10:55:26.8057
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HEseJFgRj+a63CGzC/mLLH8pp4Up45ZyNAAFXH0YxdVKU+oXb3vUU7sjSfIckt8GkneDF8knVAsNlDi6DSI9mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6456
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2023-07-06 at 21:02 +0000, Seth Arnold wrote:
-> On Wed, Jul 05, 2023 at 08:04:41PM -0400, Jeff Layton wrote:
-> >=20
-> > I don't believe it's an issue. I've seen nothing in the POSIX spec that
-> > mandates that timestamp updates to different inodes involved in an
-> > operation be set to the _same_ value. It just says they must be updated=
-.
-> >=20
-> > It's also hard to believe that any software would depend on this either=
-,
-> > given that it's very inconsistent across filesystems today. AFAICT, thi=
-s
-> > was mostly done in the past just as a matter of convenience.
->=20
-> I've seen this assumption in several programs:
->=20
+The return value type of i_blocksize() is 'unsigned int', so the
+type of blocksize has been modified from 'int' to 'unsigned int'
+to ensure data type consistency.
 
-Thanks for looking into this!
+Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-To be clear, POSIX doesn't require that _different_ inodes ever be set
-to the same timestamp value. IOW, it certainly doesn't require that the
-source and target directories on a rename() end up with the exact same
-timestamp value.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a2475b8c9fb5..f087e1435e52 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1251,7 +1251,7 @@ void ext4_mb_generate_buddy(struct super_block *sb,
+ static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
+ {
+ 	ext4_group_t ngroups;
+-	int blocksize;
++	unsigned int blocksize;
+ 	int blocks_per_page;
+ 	int groups_per_page;
+ 	int err = 0;
+-- 
+2.39.0
 
-Granted, POSIX is rather vague on timestamps in general, but most of the
-examples below involve comparing different timestamps on the _same_
-inode.
-
-
-> mutt buffy.c
-> https://sources.debian.org/src/mutt/2.2.9-1/buffy.c/?hl=3D625#L625
->=20
->   if (mailbox->newly_created &&
->       (sb->st_ctime !=3D sb->st_mtime || sb->st_ctime !=3D sb->st_atime))
->     mailbox->newly_created =3D 0;
->=20
-
-This should be fine with this patchset. Note that this is comparing
-a/c/mtime on the same inode, and our usual pattern on inode
-instantiation is:
-
-    inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(inode);
-
-...which should result in all of inode's timestamps being synchronized.
-
->=20
-> neomutt mbox/mbox.c
-> https://sources.debian.org/src/neomutt/20220429+dfsg1-4.1/mbox/mbox.c/?hl=
-=3D1820#L1820
->=20
->   if (m->newly_created && ((st.st_ctime !=3D st.st_mtime) || (st.st_ctime=
- !=3D st.st_atime)))
->     m->newly_created =3D false;
->=20
-
-Ditto here.
-
->=20
-> screen logfile.c
-> https://sources.debian.org/src/screen/4.9.0-4/logfile.c/?hl=3D130#L130
->=20
->   if ((!s->st_dev && !s->st_ino) ||             /* stat failed, that's ne=
-w! */
->       !s->st_nlink ||                           /* red alert: file unlink=
-ed */
->       (s->st_size < o.st_size) ||               /*           file truncat=
-ed */
->       (s->st_mtime !=3D o.st_mtime) ||            /*            file modi=
-fied */
->       ((s->st_ctime !=3D o.st_ctime) &&           /*     file changed (mo=
-ved) */
->        !(s->st_mtime =3D=3D s->st_ctime &&          /*  and it was not a =
-change */
->          o.st_ctime < s->st_ctime)))            /* due to delayed nfs wri=
-te */
->   {
->=20
-
-This one is really weird. You have two different struct stat's, "o" and
-"s". I assume though that these should be stat values from the same
-inode, because otherwise this comparison would make no sense:
-
-      ((s->st_ctime !=3D o.st_ctime) &&           /*     file changed (move=
-d) */
-
-In general, we can never contrive to ensure that the ctime of two
-different inodes are the same, since that is always set by the kernel to
-the current time, and you'd have to ensure that they were created within
-the same jiffy (at least with today's code).
-
-> nemo libnemo-private/nemo-vfs-file.c
-> https://sources.debian.org/src/nemo/5.6.5-1/libnemo-private/nemo-vfs-file=
-.c/?hl=3D344#L344
->=20
-> 		/* mtime is when the contents changed; ctime is when the
-> 		 * contents or the permissions (inc. owner/group) changed.
-> 		 * So we can only know when the permissions changed if mtime
-> 		 * and ctime are different.
-> 		 */
-> 		if (file->details->mtime =3D=3D file->details->ctime) {
-> 			return FALSE;
-> 		}
->=20
-
-Ditto here with the first examples. This involves comparing timestamps
-on the same inode, which should be fine.
-
->=20
-> While looking for more examples, I found a perl test that seems to sugges=
-t
-> that at least Solaris, AFS, AmigaOS, DragonFly BSD do as you suggest:
-> https://sources.debian.org/src/perl/5.36.0-7/t/op/stat.t/?hl=3D158#L140
->=20
-
-(I kinda miss Perl. I wrote a bunch of stuff in it in the 90's and early
-naughties)
-
-I think this test is supposed to be testing whether the mtime changes on
-link() ?
-
------------------8<----------------
-    my($nlink, $mtime, $ctime) =3D (stat($tmpfile))[$NLINK, $MTIME, $CTIME]=
-;
-
-[...]
-
-
-        skip "Solaris tmpfs has different mtime/ctime link semantics", 2
-                                     if $Is_Solaris and $cwd =3D~ m#^/tmp# =
-and
-                                        $mtime && $mtime =3D=3D $ctime;
------------------8<----------------
-
-...again, I think this would be ok too since it's just comparing the
-mtime and ctime of the same inode. Granted this is a Solaris-specific
-test, but Linux would be fine here too.
-
-So in conclusion, I don't think this patchset will cause problems with
-any of the above code.
---=20
-Jeff Layton <jlayton@kernel.org>
