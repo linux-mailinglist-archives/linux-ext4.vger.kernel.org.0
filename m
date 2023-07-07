@@ -2,135 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5228774B05B
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 13:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE6C74B09D
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 14:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjGGL7Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jul 2023 07:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        id S231895AbjGGMYk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jul 2023 08:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjGGL7X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 07:59:23 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2102.outbound.protection.outlook.com [40.107.215.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ACA1FF9;
-        Fri,  7 Jul 2023 04:59:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSvVAi3EXam2EpPqjP6bcO7gMPs3H7YFyGFAgoeRIngRXi+Uu15i3mH+6+Kgbv6xOIE9QZBAPYZUASbHzjvVA5y38XLKlIucVdXBgOa4wey/Cmn9X4qbzAXSJR3F+jRKmzBpfrcEoai39f8W0/DGMH+pD02Uyve0gJ0DXs99YzMH+azsL49J+Rf1ySMjO3L1omIVwb/1OX+QwuEV2AhfbtTXdSlwoirtkjtbRMTkdv5dWX83K7W9W7rtPXekk31M0f3KZKp7qvx3Z77FQ8UtAOJN97JMEcyu9eoewJSFWhqru6CBKtqjNF7Nqb88er5JgyB3G0rAT+Ni8iu1HFv6aQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VZdQecR+nLLnTW9y6Ylj0AudMG3nYWI789EOvNRovvM=;
- b=WhKWVJqIiUncVJrxgTFAOSBDXs3ccKN5/bAR7/TgUTJOsmFq7V8K99YwW+c2Vwenbba6Fe7Fgaow3Df1HMecICNLXmQvfVLK1fAs+JBEiKuKxMo3PXypX7CTL0EGZvSdb/LR2GXnhvVLbXBBuECv3vyCfGDwr/xUQCcI3p9NBdUviD36UXxhhIEjN3K/TTpjAFD9ETrg8kcvDeGdZLQVGOl9iZufz0W4366ooeIfqnfTsq5apy+hOD87LM6Q/6ce4dLdUfxgEDnqFZ+6SmaP0l00StlHJWS8/7+9PrrrbzLjtiiiMvxyNhCIYN1JueT20rWhhGo8Gp84+3MIt3sMIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VZdQecR+nLLnTW9y6Ylj0AudMG3nYWI789EOvNRovvM=;
- b=M37/mxOZMQ1ZDNabQx33ojyTPSS7q1a0aazws7BrIPXYLtOHoJ97j8eqyc+Xl5p0YizSb9ZDA5NbvqfkeTUT3qMNH6BMKjC67sSOCj3NgS5BnMXQ+DRqJGTPgaSSapZJKh6fVD/F7BZo6mSGcjRZCj8Z4WSb0K4EevX2fyov4Xi3MMKRzB7nfzFMvxVntg/yvqTDdR5Ot+Kx+VYwaPdWpezYJGSruhYX1a0WOFbfu59rGLhDoDz4X1AqcEdyXlZSNwHS8udIojs8lJlxkSLGw6Fkuit/L7OR4Elf6c0CrbAESDeE2hRbSqRXc5ij6fVo5A1uqy1qKhBwT2QdEQXL+w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
- by SI2PR06MB5363.apcprd06.prod.outlook.com (2603:1096:4:1eb::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.24; Fri, 7 Jul
- 2023 11:59:18 +0000
-Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
- ([fe80::8586:be41:eaad:7c03]) by TYZPR06MB6697.apcprd06.prod.outlook.com
- ([fe80::8586:be41:eaad:7c03%7]) with mapi id 15.20.6565.019; Fri, 7 Jul 2023
- 11:59:18 +0000
-From:   Lu Hongfei <luhongfei@vivo.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, luhongfei@vivo.com
-Subject: [PATCH] fs/ext4: convert to use sbi directly
-Date:   Fri,  7 Jul 2023 19:59:07 +0800
-Message-Id: <20230707115907.26637-1-luhongfei@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0137.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::17) To TYZPR06MB6697.apcprd06.prod.outlook.com
- (2603:1096:400:451::6)
+        with ESMTP id S229556AbjGGMYj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 08:24:39 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53051FE6;
+        Fri,  7 Jul 2023 05:24:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F0C8D1FDB5;
+        Fri,  7 Jul 2023 12:24:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1688732675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v97Z4h87RrabL7WLNBXHFysNCdL5KIt8mtxxyrwI0lE=;
+        b=LqFRs1c1G67BsNNDLuNq3gTOMo8UAqFT+ZgX0/ce2GYyjoNTkNY3JvymPyQUIIgvdCfdfA
+        wvYabjfbqON86k1PsUxAyhGKf+BANbZ0orxg0fUOS7bjyZ5ddpTiVyICESJEtA4U8iKIIb
+        0Zu9Qq9rWpT0jHo3EjIE5diazY1476M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1688732675;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v97Z4h87RrabL7WLNBXHFysNCdL5KIt8mtxxyrwI0lE=;
+        b=WsVzOxtNAjI8cmGR5IMHwFDPJM5ZBawTTSTtFHjjnpb4nomNuwaP8lcoennzww9M9DfIc5
+        k35MoJGFDmLh3vBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D97F7139E0;
+        Fri,  7 Jul 2023 12:24:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rMQMNQIEqGT9NgAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 07 Jul 2023 12:24:34 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 6AC15A0717; Fri,  7 Jul 2023 14:24:34 +0200 (CEST)
+Date:   Fri, 7 Jul 2023 14:24:34 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+Message-ID: <20230707122434.s46ytxpne42hecni@quack3>
+References: <20230629165206.383-1-jack@suse.cz>
+ <20230704122224.16257-1-jack@suse.cz>
+ <ZKbgAG5OoHVyUKOG@infradead.org>
+ <20230706161433.lj4apushiwguzvdd@quack3>
+ <ZKf26fYMDHnTCb29@infradead.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|SI2PR06MB5363:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff740a64-509d-436a-2b38-08db7ee197ac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JAzN2JFa3/OWCeJQ7LAHlj1Q8uHKAcArd/qfuRqezxzWaptVXaWMeyr9jqyfir3wwCJRgjjCGQg2ubqSVIBbnkiUmze679ppE1TzfUV2Oyw1AgIOP80WbB65FpdI77VcYNmW+CRP7GGaE1ti4pAca/hg3CMft3AJqx+G1UNPs+cehzp/Juhp4Nowi/W8FGt/PYOu9mipkJmq+EOEHkQB1k1fWpMTfC5LHaR04B8nJEagRuctO56RSKiCsOjF/PSYT+jgZcNVKyF0T/w/M7+/vhubz4gTqkfJypXHcwCfnFFSXbLEi9Xp5WuN9w6q/gz6xztEzAAgCuSZTj6KdN9Sw7Nx38DVru/wvkgl38Dmun6e/awhbyTUeqTyHPMz08KWmwBI+u/S577iEjp4zO8SLM2OghuL+LazXgZpaNwxMoPnaHoK6+NJuZJ2Wjttj+MeYDOeYwwABswH1N8TgvYVsZxaZlEVQ+Wa+SEsFAkTa6HfA4JspCyyEoC62pFwFXi12dG3TuP6E9W6ftMc/h7p73FbH0vatdbH5FlBLlOJTRgZZeDbeNOB980kYF3VxCCkX7SxsLptCvWu1wyEXH7Qffp8o0kDxP/9kh1wmozWZJhgwDVJOnJ1Ie9ONcgim4j3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(366004)(346002)(376002)(39860400002)(451199021)(36756003)(86362001)(110136005)(38100700002)(38350700002)(478600001)(6486002)(52116002)(6666004)(6512007)(8676002)(8936002)(5660300002)(4326008)(316002)(66476007)(2906002)(66556008)(66946007)(41300700001)(4744005)(2616005)(83380400001)(1076003)(26005)(6506007)(107886003)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AH7/w7zgoUEERYI7kWmZiKG4AGD1ayYOXdha9v5yWCc4MCcLRQitK5i5jCJc?=
- =?us-ascii?Q?1WiuHKibbfHSoqWE33koHOjFmQNtdtAT5+rSNUsbPv1qvaO8cth2CZ1M6w1T?=
- =?us-ascii?Q?yLMf5xhtRb8Id3yWKyk2nUIjgigcGACMi1lh8yFoNx+JyFKjgQXWwqVQtIwl?=
- =?us-ascii?Q?5vm0btZcvraAgzeih25hmLMduW+IpQYBnLdswwwaDjsE3ngyFklXMXvRl9+0?=
- =?us-ascii?Q?ARWQcpkTE8lwYTLcFHQC30W5xw1Pqy1nphkiZKUXgeoKh1ROyC3JOT+/lgMI?=
- =?us-ascii?Q?Z5PXBYnr99ctnBBRpgDgQ2t006SxUQFux+dKI4U+Rcn897IgOgsvhJNGPlOx?=
- =?us-ascii?Q?xvSBi8h69N1PV0iesoFLWrvkoahLGp+LBa7yxX9uqY4AF4PVDOn5OVxCABO1?=
- =?us-ascii?Q?JKF83md1v7M5wmYPwYZq95IdZMTsokJyuMu5zEzRl8fcoxHAzV2+OKUxoJZU?=
- =?us-ascii?Q?/xFBbgb9GunDeO7neGsHpjXBJvHMYpKpdp7+ZBABm2Vc1TB1f1l1wYHGIeQa?=
- =?us-ascii?Q?JKqgJkfFc60UepDRE0/O/o1cx/SJH3oNl60U2u5WkUyb2mc8xMMy8gOLnKCf?=
- =?us-ascii?Q?JZ2/AU0UhZGZMO/XAx4hpueKJghEfFElp041XRhjyknFO8sLn+OfoOzcrsWK?=
- =?us-ascii?Q?qUGMJWm9D6jlFGEyS3/IeEq+nHmkWrTmYXsWIO47kJJSYPvAaCuJkWpmhIS9?=
- =?us-ascii?Q?Au+7iD9c4N07r2LOIrwCersHyf8P3e6sSrnIMkgpz31BrCBteXItZYs+w4ea?=
- =?us-ascii?Q?hll+Gk4JOY1+hvl+hNWn7Dmrx/D2w0/wzr9duWM42shEtCa4xPn9FNH19Igu?=
- =?us-ascii?Q?kwBKfQsqdTv7vTxONqbiePwEUdBLrrFUzqhnH869AnSdOOhttFvjoDK47TOE?=
- =?us-ascii?Q?lMUTr98guiu6wjmNG3Bez2DVuiMmaNxMwGkDv0Cy11aue97pFK9dx6C1+JsC?=
- =?us-ascii?Q?GkxVlzHeUdiyyec2sN58zL0KJC9fFRAenn0dsjbagsld1wTrzWQgqzFxwKo9?=
- =?us-ascii?Q?eIQ1Egr4Q1bv4Od3ZU3ldD5CZ8vjCbGBamWSZyiWBgFf9/wlKmOLDDA82mJP?=
- =?us-ascii?Q?/xpUy/nYIUqwbR5AdSOVgpedEZ5traAE8kMdAbnmTemddF6lrOpJViEwCXsV?=
- =?us-ascii?Q?B3yIqTf41BEHPmG7PhBO5ocwx1KTgzIMdwndn6FGEpaJZDVtx6IvAWOiWNHu?=
- =?us-ascii?Q?x8Wxf/A/C3PBhKkMozJIeNzDnatfJehiWQ+BVEaBrlkbS/3MxZ/AjfJcpZRm?=
- =?us-ascii?Q?9Lg28CRvtfl+m0QqzDPGuoHrqC8HB1Zt4vhN1trIS93KAfMKhYh01WvwfSXX?=
- =?us-ascii?Q?C16gKdFGIhSpgsVZi7u9YrXaCApWRM5D+i3AmKK9lDIkb4ZM1bMVFuFAAg5/?=
- =?us-ascii?Q?7oaqhupXsyl5DBbibmEL3JlNwO6h+gCJSq8/lFkHY1ZTNC3dkgthiEbNIwdU?=
- =?us-ascii?Q?xyxA0RqZGHYuoAQB+eQOTiIVN02VjQJcaoctRf6ZT+2LV7ZEn7YqRhvjqovs?=
- =?us-ascii?Q?+dVstJYnQckHvcDXrSlSWtBqO8ZCS4ae2NWTX7qbWnE1DjudIN+KM4GQ+gV/?=
- =?us-ascii?Q?FIwFpzKqTJN88QiUlTa3pmqIDf6f26vPoA9HLPOC?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff740a64-509d-436a-2b38-08db7ee197ac
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2023 11:59:18.2265
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3hn71o2+vIs7pGg56M8IEYU+2P/bEhRzUE2kKbo5HBYVSSC3qbytY8LGs/FxE3z+eb1J8ZObNwnmcIp4wypPKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB5363
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZKf26fYMDHnTCb29@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-EXT4_SB(sb) is redundant.
+On Fri 07-07-23 04:28:41, Christoph Hellwig wrote:
+> On Thu, Jul 06, 2023 at 06:14:33PM +0200, Jan Kara wrote:
+> > > struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+> > > 		void *holder, const struct blk_holder_ops *hops);
+> > > void bdev_release(struct bdev_handle *handle);
+> > 
+> > I'd maybe use bdev_close() instead of bdev_release() but otherwise I like
+> > the new naming.
+> 
+> We're using release everywhese else, but if Jens is fine with that I
+> can live with close.
 
-Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
----
- fs/ext4/mballoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dunno, to me words pair like open-close, get-put, acquire-release.
+Furthermore e.g. ->release() (and thus blkdev_release()) is called only
+when the last file reference is dropped, not when each reference is
+dropped, so that's why bdev_release() seems a bit confusing to me.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a2475b8c9fb5..752260903d14 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5994,7 +5994,7 @@ ext4_mb_new_blocks_simple(struct ext4_allocation_request *ar, int *errp)
- 	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
- 	ext4_grpblk_t i = 0;
- 	ext4_fsblk_t goal, block;
--	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-+	struct ext4_super_block *es = sbi->s_es;
- 
- 	goal = ar->goal;
- 	if (goal < le32_to_cpu(es->s_first_data_block) ||
+								Honza
+
 -- 
-2.39.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
