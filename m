@@ -2,36 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CE174B674
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 20:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6452C74B706
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jul 2023 21:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbjGGSk2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jul 2023 14:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S233023AbjGGTXK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jul 2023 15:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjGGSk1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 14:40:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803872682;
-        Fri,  7 Jul 2023 11:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+PlsjkygUy/NaxzRVXPs1XdCvvqCmcP1CuzrF3FYi78=; b=N9zitiD9uhOT4xbkk5LyzIKHYX
-        oMrbk08jA82Cz40fcP3zliWq/SUVTzVrGkNTbfI64T5Pq/aGZg83/qJ31NjmTNPAQbW9ihmPy+4Bz
-        NDHN7KsjjXDoZXpNlaTDsw0Ng6OxNfS6riYufmFDduqttjy1zl4EUtSjenPwizBzCgiZ4scKn3AvY
-        RDaCdpBbV5FKlXZRJICebIvzPv59Ij8Y3A1iB2yXsA/gwIxEiD136/HwOCEFl/Y0dlnzG4D6J47XA
-        bVwW12r4UqbiAs7v/ppdzBM31FENe0bllXM8Oze0HAKyWzwax1MzW5QFef3oJozoBS6poHHz1PNcd
-        f5aQg21g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qHqNQ-00CGGh-H0; Fri, 07 Jul 2023 18:40:20 +0000
-Date:   Fri, 7 Jul 2023 19:40:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     David Wysochanski <dwysocha@redhat.com>,
+        with ESMTP id S233020AbjGGTXJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jul 2023 15:23:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F8519AE;
+        Fri,  7 Jul 2023 12:23:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C1B1A61A53;
+        Fri,  7 Jul 2023 19:23:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63501C433C7;
+        Fri,  7 Jul 2023 19:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688757785;
+        bh=94A738552oPcNLUcdadUB8TIEGBu7Z7b4zP4i/CSZhk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tgLCFacDRH2vFBvGsS1BdApLvk5sLS7WaSV2sgoXnSapnBONfvmv9X8eKnvugMJHE
+         jqjgRwSKqOqTX8fmIldEGKg0KhXTvE0Bema9AGOztxJ3On1k5IAODVtjRLYQSXxP2D
+         t/ZQ+Qpmi+iWBisfwT5UB4sgtSMbE1mZirUi9Sv4DwscQ0HrO92bVw63QK67r9cxrQ
+         QxbM6U35zant3vdXmjw3fsF5Ss+czDaGBBWJvUTejeoPPj3ruozwzQAv9CaKvhOlKV
+         2nM3B31uev1RK+ZATSoyzNzgygragekkgVMBHp/70Fr46Mi/QGbs3iEtE2igexxk6o
+         AYNbqLhudXizg==
+From:   SeongJae Park <sj@kernel.org>
+To:     David Wysochanski <dwysocha@redhat.com>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
         David Howells <dhowells@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Jeff Layton <jlayton@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
@@ -45,23 +51,20 @@ Cc:     David Wysochanski <dwysocha@redhat.com>,
         Shyam Prasad N <nspmangalore@gmail.com>,
         Dominique Martinet <asmadeus@codewreck.org>,
         Ilya Dryomov <idryomov@gmail.com>, linux-mm@kvack.org,
-        Daire Byrne <daire.byrne@gmail.com>
-Subject: Re: [BUG mm-unstable] BUG: KASAN: use-after-free in
- shrink_folio_list+0x9f4/0x1ae0
-Message-ID: <ZKhcFE1JpT6F2ez3@casper.infradead.org>
-References: <20230628104852.3391651-1-dhowells@redhat.com>
- <20230628104852.3391651-3-dhowells@redhat.com>
- <ZKg/J3OG3kQ9ynSO@fedora>
- <CAB=+i9Qbi7+o90Cd_ecd1TeaAYnWPcO-gNp7kzc95Pxecy0XTw@mail.gmail.com>
- <CALF+zO=nGdoxcT-ya3aaUCBi-4iKPo3kZyzcWYCKMCf4n2wVbA@mail.gmail.com>
- <ZKhZHg6LSGnvryIe@fedora>
+        Daire Byrne <daire.byrne@gmail.com>,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [BUG mm-unstable] BUG: KASAN: use-after-free in shrink_folio_list+0x9f4/0x1ae0
+Date:   Fri,  7 Jul 2023 19:23:01 +0000
+Message-Id: <20230707192301.27308-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CALF+zO=nGdoxcT-ya3aaUCBi-4iKPo3kZyzcWYCKMCf4n2wVbA@mail.gmail.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZKhZHg6LSGnvryIe@fedora>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,16 +72,139 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 03:27:42AM +0900, Hyeonggon Yoo wrote:
-> Hmm, was it UAF because it references wrong field ->mapping,
-> instead of swapper address space?
+On Fri, 7 Jul 2023 14:12:06 -0400 David Wysochanski <dwysocha@redhat.com> wrote:
 
-Ooh, I know this one!
+> On Fri, Jul 7, 2023 at 12:46 PM Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+> >
+> > On Sat, Jul 8, 2023 at 1:39 AM Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+> > >
+> > > On Wed, Jun 28, 2023 at 11:48:52AM +0100, David Howells wrote:
+> > > > Fscache has an optimisation by which reads from the cache are skipped until
+> > > > we know that (a) there's data there to be read and (b) that data isn't
+> > > > entirely covered by pages resident in the netfs pagecache.  This is done
+> > > > with two flags manipulated by fscache_note_page_release():
+> > > >
+> > > >       if (...
+> > > >           test_bit(FSCACHE_COOKIE_HAVE_DATA, &cookie->flags) &&
+> > > >           test_bit(FSCACHE_COOKIE_NO_DATA_TO_READ, &cookie->flags))
+> > > >               clear_bit(FSCACHE_COOKIE_NO_DATA_TO_READ, &cookie->flags);
+> > > >
+> > > > where the NO_DATA_TO_READ flag causes cachefiles_prepare_read() to indicate
+> > > > that netfslib should download from the server or clear the page instead.
+> > > >
+> > > > The fscache_note_page_release() function is intended to be called from
+> > > > ->releasepage() - but that only gets called if PG_private or PG_private_2
+> > > > is set - and currently the former is at the discretion of the network
+> > > > filesystem and the latter is only set whilst a page is being written to the
+> > > > cache, so sometimes we miss clearing the optimisation.
+> > > >
+> > > > Fix this by following Willy's suggestion[1] and adding an address_space
+> > > > flag, AS_RELEASE_ALWAYS, that causes filemap_release_folio() to always call
+> > > > ->release_folio() if it's set, even if PG_private or PG_private_2 aren't
+> > > > set.
+> > > >
+> > > > Note that this would require folio_test_private() and page_has_private() to
+> > > > become more complicated.  To avoid that, in the places[*] where these are
+> > > > used to conditionalise calls to filemap_release_folio() and
+> > > > try_to_release_page(), the tests are removed the those functions just
+> > > > jumped to unconditionally and the test is performed there.
+> > > >
+> > > > [*] There are some exceptions in vmscan.c where the check guards more than
+> > > > just a call to the releaser.  I've added a function, folio_needs_release()
+> > > > to wrap all the checks for that.
+> > > >
+> > > > AS_RELEASE_ALWAYS should be set if a non-NULL cookie is obtained from
+> > > > fscache and cleared in ->evict_inode() before truncate_inode_pages_final()
+> > > > is called.
+> > > >
+> > > > Additionally, the FSCACHE_COOKIE_NO_DATA_TO_READ flag needs to be cleared
+> > > > and the optimisation cancelled if a cachefiles object already contains data
+> > > > when we open it.
+> > > >
+> > > > Fixes: 1f67e6d0b188 ("fscache: Provide a function to note the release of a page")
+> > > > Fixes: 047487c947e8 ("cachefiles: Implement the I/O routines")
+> > > > Reported-by: Rohith Surabattula <rohiths.msft@gmail.com>
+> > > > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > > > Signed-off-by: David Howells <dhowells@redhat.com>
+> > >
+> > > Hi David,
+> > >
+> > > I was bisecting a use-after-free BUG on the latest mm-unstable,
+> > > where HEAD is 347e208de0e4 ("rmap: pass the folio to __page_check_anon_rmap()").
+> > >
+> > > According to my bisection, this is the first bad commit.
+> > > Use-After-Free is triggered on reclamation path when swap is enabled.
+> >
+> > This was originally occurred during kernel compilation but
+> > can easily be reproduced via:
+> >
+> > stress-ng --bigheap $(nproc)
+> >
+> > > (and couldn't trigger without swap enabled)
+> > >
+> > > the config, KASAN splat, bisect log are attached.
+> > > hope this isn't too late :(
+> > >
+> > > > cc: Matthew Wilcox <willy@infradead.org>
+> > > > cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > cc: Steve French <sfrench@samba.org>
+> > > > cc: Shyam Prasad N <nspmangalore@gmail.com>
+> > > > cc: Rohith Surabattula <rohiths.msft@gmail.com>
+> > > > cc: Dave Wysochanski <dwysocha@redhat.com>
+> > > > cc: Dominique Martinet <asmadeus@codewreck.org>
+> > > > cc: Ilya Dryomov <idryomov@gmail.com>
+> > > > cc: linux-cachefs@redhat.com
+> > > > cc: linux-cifs@vger.kernel.org
+> > > > cc: linux-afs@lists.infradead.org
+> > > > cc: v9fs-developer@lists.sourceforge.net
+> > > > cc: ceph-devel@vger.kernel.org
+> > > > cc: linux-nfs@vger.kernel.org
+> > > > cc: linux-fsdevel@vger.kernel.org
+> > > > cc: linux-mm@kvack.org
+> > > > ---
+> > > >
+> > > > Notes:
+> > > >     ver #7)
+> > > >      - Make NFS set AS_RELEASE_ALWAYS.
+> > > >
+> > > >     ver #4)
+> > > >      - Split out merging of folio_has_private()/filemap_release_folio() call
+> > > >        pairs into a preceding patch.
+> > > >      - Don't need to clear AS_RELEASE_ALWAYS in ->evict_inode().
+> > > >
+> > > >     ver #3)
+> > > >      - Fixed mapping_clear_release_always() to use clear_bit() not set_bit().
+> > > >      - Moved a '&&' to the correct line.
+> > > >
+> > > >     ver #2)
+> > > >      - Rewrote entirely according to Willy's suggestion[1].
+> > > >
+> > > >  fs/9p/cache.c           |  2 ++
+> > > >  fs/afs/internal.h       |  2 ++
+> > > >  fs/cachefiles/namei.c   |  2 ++
+> > > >  fs/ceph/cache.c         |  2 ++
+> > > >  fs/nfs/fscache.c        |  3 +++
+> > > >  fs/smb/client/fscache.c |  2 ++
+> > > >  include/linux/pagemap.h | 16 ++++++++++++++++
+> > > >  mm/internal.h           |  5 ++++-
+> > > >  8 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> 
+> I think myself / Daire Byrne may have already tracked this down and I
+> found a 1-liner that fixed a similar crash in his environment.
+> 
+> Can you try this patch on top and let me know if it still crashes?
+> https://github.com/DaveWysochanskiRH/kernel/commit/902c990e311120179fa5de99d68364b2947b79ec
 
-When a folio is in use as an anonymous page, ->mapping has the bottom
-two bits set to 01b.  The rest of the pointer is actually a pointer
-to an anon_vma.  It's entirely plausible that an anon page might have
-had its anon_vma freed by the time the folio is on the inactive list,
-and on its way to being recycled (eg it was unmapped).  I'm not
-terribly familiar with the lifetime rules of the anon_vma, but I doubt
-that a folio still being in RAM would pin it if it has been unmapped.
+I also encountered this issue with my DAMON tests, and was trying to find a
+time slot for deep dive.  And I confirmed your fix works.  Thank you for this
+great work.  Please Cc me when you post the patch if possible.
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+
+Thanks,
+SJ
+
+> 
+> 
