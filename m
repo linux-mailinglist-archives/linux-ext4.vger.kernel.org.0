@@ -2,132 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAE2750D89
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jul 2023 18:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1254751006
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jul 2023 19:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjGLQGy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jul 2023 12:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
+        id S231723AbjGLRxW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jul 2023 13:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbjGLQGv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 12:06:51 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8D31BF2
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 09:06:48 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb863edcb6so11538966e87.0
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 09:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1689178006; x=1691770006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
-        b=V0Mwyzpfv5NHo344FebMkemb4OkDhqesSJzk3oLJrC1sXingJzi/DqoHJPX3cM7/kU
-         /daZbGumusx7p3ETz9bL+dV7+a249DzrdJ5ucaxUqFs1cH4q4UNK1aBbCP0kRMVezgvK
-         Gb0u18D1omT5qk875/bvJSIuyWWXlLKu5WnA0OT929rTcOY7rHqZVsWOvIcdQTq+Q4TI
-         Xty8IQiQ2uEFjkBqRHhjaYUeIIjdk3TlKuW6ZBNL29/kZI8LKdOXvAAi+FiRNxSMUXsG
-         92h/diWQ5jGfG/Pc/9JTOLcLZ2bS8Hyd3sIfxIs/rFITeR6YjIQmonhcUevYE5m/zN7s
-         SmPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689178006; x=1691770006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
-        b=fIcttYSvK9Zaw+VOFBh0hJA0mhL7xF6WVZMC9GAvI6U22TVvq1eUwqK1V5XWcfa8JB
-         Hc19jCX/Fbp2Jp2ka4Fo9o1fHO4LF3nSbDOd3mC1DMevaASbH2qanWYh7jdkZBoJHtSM
-         LdA62+dAMRaHCsBiCF8vdJ2dJ2Rr+FnfG2TrVCoH1tsS2q9Heo4vo6st+PWTW03nR3Nj
-         k9Qd1AxrIN8i0Ihl6CdBavEETPgiE+jpWEKrG0AX8fGqCDaXv+hRNAKLzW2KSLcjZ/lf
-         tXOq9C4Nr7UVrlvG+8IrnSQ6PxKE15kfLJWp2A7366JofwdWk6XOuD6CeWlqKQ+0Se+y
-         ZHew==
-X-Gm-Message-State: ABy/qLZpKjM4A0XTwR1gFE9Y1OmblapZPBZHQP3FfFOLAP0/G/66LNV2
-        8pcX4IU36e9avpq/f3Ympp/LqlYqlGDwlnegtp7NNw==
-X-Google-Smtp-Source: APBJJlHjPtNIqZNhhKZT3JSG1orBAozCwd3+TwwvFjulJuToD7D5iIrA7grwKZQU8Z67qc0UJ0oDxWof6WbkdfMRi3A=
-X-Received: by 2002:ac2:5b1d:0:b0:4fb:7a90:1abe with SMTP id
- v29-20020ac25b1d000000b004fb7a901abemr15797051lfn.49.1689178006211; Wed, 12
- Jul 2023 09:06:46 -0700 (PDT)
+        with ESMTP id S232442AbjGLRxR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 13:53:17 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935011BE4
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 10:53:12 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-82-193.bstnma.fios.verizon.net [173.48.82.193])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36CHqwKl004990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 13:52:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1689184380; bh=iYK3lUF2GbPPt1xA1PwWleN6r/7tba+hiPLcX61WWlU=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=VUztdmxBOWM7Tx/fAekc5Iqt2n4UQL1FhP9NCmyLYSAlDHD+8iuhuoA6NOJ6H1Gh9
+         C/gQ64YeLxytLkLOzZdCJlYTrX6OfxGA9ghmECZAVWiLCvhgzJsfXPANMfJmRnWIhT
+         AEAnZuRI8AOcSvP6W3qsiBnoedbQkMVwSTB6k6Kkh4ho7sQEFujK3eug3t8Zg+A5d/
+         XooRfZ91K8cNpJdH6oW3zKrddfNdGlHeoTJnYMHCHHAzFI1ECHgdubsuL2oKua8LW9
+         WU6V4RUsDRn26NqK3S/vOB/G3NonVNFMi/xpQrWOBTsh5gfcIDBHVcZYEhcWBVoEb9
+         HBF4O6Z4i53FQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 332E615C0280; Wed, 12 Jul 2023 13:52:58 -0400 (EDT)
+Date:   Wed, 12 Jul 2023 13:52:58 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
+Message-ID: <20230712175258.GB3677745@mit.edu>
+References: <20230712150251.163790-1-jlayton@kernel.org>
 MIME-Version: 1.0
-References: <20230629165206.383-1-jack@suse.cz> <20230704122224.16257-1-jack@suse.cz>
- <ZKbgAG5OoHVyUKOG@infradead.org>
-In-Reply-To: <ZKbgAG5OoHVyUKOG@infradead.org>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Wed, 12 Jul 2023 18:06:35 +0200
-Message-ID: <CAJpMwyiUcw+mH0sZa8f8UJsaSZ7NSE65s2gZDEia+pASyP_gJQ@mail.gmail.com>
-Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712150251.163790-1-jlayton@kernel.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 6, 2023 at 5:38=E2=80=AFPM Christoph Hellwig <hch@infradead.org=
-> wrote:
->
-> On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
-> > Create struct bdev_handle that contains all parameters that need to be
-> > passed to blkdev_put() and provide blkdev_get_handle_* functions that
-> > return this structure instead of plain bdev pointer. This will
-> > eventually allow us to pass one more argument to blkdev_put() without
-> > too much hassle.
->
-> Can we use the opportunity to come up with better names?  blkdev_get_*
-> was always a rather horrible naming convention for something that
-> ends up calling into ->open.
->
-> What about:
->
-> struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *ho=
-lder,
->                 const struct blk_holder_ops *hops);
-> struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
->                 void *holder, const struct blk_holder_ops *hops);
-> void bdev_release(struct bdev_handle *handle);
+On Wed, Jul 12, 2023 at 11:02:49AM -0400, Jeff Layton wrote:
+> When we covert a timestamp from raw disk format, we need to consider it
+> to be signed, as the value may represent a date earlier than 1970. This
+> fixes generic/258 on ext4.
+> 
+> Cc: Jan Kara <jack@suse.cz>
+> Fixes: f2ddb05870fb ("ext4: convert to ctime accessor functions")
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-+1 to this.
-Also, if we are removing "handle" from the function, should the name
-of the structure it returns also change? Would something like bdev_ctx
-be better?
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-(Apologies for the previous non-plaintext email)
+Thanks for the fix!
 
->
-> ?
+It had been on my list to checking to see if the ext4 kunit tests
+would pass, since Jan had mentioned that he had done the work to make
+sure the ext4 kunit test would compile, but he hadn't gotten around to
+try run the kunit test.  Unfortunately, I hadn't gotten to it.
+
+I *think* the ext4 kunit tests should have caught this as well; out of
+curiosity, have you tried running the ext4 kunit tests either before
+or after this patch?  If so, what were your findings?
+
+Cheers,
+
+					- Ted
