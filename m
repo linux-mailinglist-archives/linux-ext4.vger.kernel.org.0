@@ -2,145 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41072750CE0
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jul 2023 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAE2750D89
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jul 2023 18:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbjGLPnp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jul 2023 11:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S232981AbjGLQGy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jul 2023 12:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjGLPno (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 11:43:44 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BD31BE4
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 08:43:42 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-193.bstnma.fios.verizon.net [173.48.82.193])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36CFgnKr029953
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Jul 2023 11:42:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1689176571; bh=xsSByqbmsyoJkMRqqgRv3PByRRncH+lqoJ2s5dNBnC8=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=UVy94ReRlS5gg9SoabcTJpMMzShGL/9GHrmEqeC9c6/DvE1YH8bx8DqTlDDqHhnOY
-         dZk9I4MZoh8xQEjiOKUCEBtO4O1oT2dnVHvBZleyGemPC8sv6kMkQ+71BXbP5JvRuu
-         LBy7cQGweS+9ZgRIsaXPLTqKrKsCCw92FGcGGHJuohGvG/dNNSSekVtj9v3Bl1z04x
-         n50DvWGBV+dA7FfdFe+TjzcjWEwFQ7CdfNSS7FhMbUacQJ2I0+qwEx0+TDbGsro51I
-         YYFW8xz3Vnh7Kx/uiO7sLomLFi0dv3rsfceWYiN+u0xj0CsVFiDonJSipre8qBzMIa
-         eOzG+VS3l96Ow==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0844915C0280; Wed, 12 Jul 2023 11:42:49 -0400 (EDT)
-Date:   Wed, 12 Jul 2023 11:42:49 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     zhanchengbin <zhanchengbin1@huawei.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
-        linfeilong <linfeilong@huawei.com>, louhongxiang@huawei.com,
-        liuzhiqiang26@huawei.com, Ye Bin <yebin@huaweicloud.com>
-Subject: Re: [bug report] tune2fs: filesystem inconsistency occurs by
- concurrent write
-Message-ID: <20230712154249.GA3675593@mit.edu>
-References: <29f6134f-ba0a-d601-0a5a-ad2b5e9bbf1d@huawei.com>
- <20230626021758.GF8954@mit.edu>
- <4e647e9b-4f2f-b89f-6825-838f22c4bf2e@huawei.com>
- <20230704193357.GG1178919@mit.edu>
- <84a1a21a-be09-f70d-1d1b-234c706ddf14@huawei.com>
- <20230712000511.GA11427@frogsfrogsfrogs>
- <4a3ac0da-69cf-e282-dc56-aefaa0e90718@huawei.com>
+        with ESMTP id S233205AbjGLQGv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 12:06:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8D31BF2
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 09:06:48 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb863edcb6so11538966e87.0
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 09:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1689178006; x=1691770006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
+        b=V0Mwyzpfv5NHo344FebMkemb4OkDhqesSJzk3oLJrC1sXingJzi/DqoHJPX3cM7/kU
+         /daZbGumusx7p3ETz9bL+dV7+a249DzrdJ5ucaxUqFs1cH4q4UNK1aBbCP0kRMVezgvK
+         Gb0u18D1omT5qk875/bvJSIuyWWXlLKu5WnA0OT929rTcOY7rHqZVsWOvIcdQTq+Q4TI
+         Xty8IQiQ2uEFjkBqRHhjaYUeIIjdk3TlKuW6ZBNL29/kZI8LKdOXvAAi+FiRNxSMUXsG
+         92h/diWQ5jGfG/Pc/9JTOLcLZ2bS8Hyd3sIfxIs/rFITeR6YjIQmonhcUevYE5m/zN7s
+         SmPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689178006; x=1691770006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
+        b=fIcttYSvK9Zaw+VOFBh0hJA0mhL7xF6WVZMC9GAvI6U22TVvq1eUwqK1V5XWcfa8JB
+         Hc19jCX/Fbp2Jp2ka4Fo9o1fHO4LF3nSbDOd3mC1DMevaASbH2qanWYh7jdkZBoJHtSM
+         LdA62+dAMRaHCsBiCF8vdJ2dJ2Rr+FnfG2TrVCoH1tsS2q9Heo4vo6st+PWTW03nR3Nj
+         k9Qd1AxrIN8i0Ihl6CdBavEETPgiE+jpWEKrG0AX8fGqCDaXv+hRNAKLzW2KSLcjZ/lf
+         tXOq9C4Nr7UVrlvG+8IrnSQ6PxKE15kfLJWp2A7366JofwdWk6XOuD6CeWlqKQ+0Se+y
+         ZHew==
+X-Gm-Message-State: ABy/qLZpKjM4A0XTwR1gFE9Y1OmblapZPBZHQP3FfFOLAP0/G/66LNV2
+        8pcX4IU36e9avpq/f3Ympp/LqlYqlGDwlnegtp7NNw==
+X-Google-Smtp-Source: APBJJlHjPtNIqZNhhKZT3JSG1orBAozCwd3+TwwvFjulJuToD7D5iIrA7grwKZQU8Z67qc0UJ0oDxWof6WbkdfMRi3A=
+X-Received: by 2002:ac2:5b1d:0:b0:4fb:7a90:1abe with SMTP id
+ v29-20020ac25b1d000000b004fb7a901abemr15797051lfn.49.1689178006211; Wed, 12
+ Jul 2023 09:06:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a3ac0da-69cf-e282-dc56-aefaa0e90718@huawei.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230629165206.383-1-jack@suse.cz> <20230704122224.16257-1-jack@suse.cz>
+ <ZKbgAG5OoHVyUKOG@infradead.org>
+In-Reply-To: <ZKbgAG5OoHVyUKOG@infradead.org>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Wed, 12 Jul 2023 18:06:35 +0200
+Message-ID: <CAJpMwyiUcw+mH0sZa8f8UJsaSZ7NSE65s2gZDEia+pASyP_gJQ@mail.gmail.com>
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 05:06:31PM +0800, zhanchengbin wrote:
-> > ...at a cost of racing with the mounted fs, which might be updating the
-> > superblock at the same time; and prohibiting the kernel devs from
-> > closing the "scribble on mounted bdev" attack surface.
-> 
-> Regardless of whether I am modifying a single byte or the entire
-> buffer_head, there will always be a situation of contention with the kernel
-> lock, You can take a look at ext4_update_superblocks_fn which calls
-> lock_buffer.
+On Thu, Jul 6, 2023 at 5:38=E2=80=AFPM Christoph Hellwig <hch@infradead.org=
+> wrote:
+>
+> On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
+> > Create struct bdev_handle that contains all parameters that need to be
+> > passed to blkdev_put() and provide blkdev_get_handle_* functions that
+> > return this structure instead of plain bdev pointer. This will
+> > eventually allow us to pass one more argument to blkdev_put() without
+> > too much hassle.
+>
+> Can we use the opportunity to come up with better names?  blkdev_get_*
+> was always a rather horrible naming convention for something that
+> ends up calling into ->open.
+>
+> What about:
+>
+> struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *ho=
+lder,
+>                 const struct blk_holder_ops *hops);
+> struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+>                 void *holder, const struct blk_holder_ops *hops);
+> void bdev_release(struct bdev_handle *handle);
 
-Many/most of the fields that tune2fs will need to modify are ones
-which the kernel never needs to modify.  So no locking will be
-necessary, and so long as you are using the journal, we don't need to
-worry about an invalid checksum getting written to the disk.
++1 to this.
+Also, if we are removing "handle" from the function, should the name
+of the structure it returns also change? Would something like bdev_ctx
+be better?
 
-There might be races with buffered reads to the superblock, but those
-races exist today.  E2fsprogs has a way of dealing this where if the
-checksum is invalid, it will just sleep and retry.  Another way of
-dealing with is to use an O_DIRECT read to the superblock.
+(Apologies for the previous non-plaintext email)
 
-Longer-term, we may want to have a EXT4_IOC_GET_SUPERBLOCK ioctl, at
-which point we may need to have some kind of new kernel locking ----
-or we can just take a snapshot of the superblock, and check to see the
-checksum is valid; if not, it can just retry the snapshot.
-
-> What I am more concerned about is that the superblock needs to be
-> synchronized to the memory before being saved to the disk. Otherwise, during
-> the ext4_commit_super process, outdated data may be saved to the disk.
-
-As I've noted above, this is already not a problem if journalling is
-enabled.  If journalling is not enabled, it's possible that an invalid
-superblock is written to disk.  This can sort of happen already, if
-you have an orphan list update racing with an ext4_error() update to
-the superblock.  It's a debateable point how much we should care,
-since if you don't have journalling enabled, on a crash the file
-system may be corrupted in many situations, and so we will need to use
-fsck.ext4 anyway.  If there is only a single superblock, then fsck
-might not have a fallback superblock to use, but arguably that's a
-corner case.
-
-> The program perceives that the superblock has been modified
-> successfully, and the value of the modified superblock is saved on
-> disk in ext4_update_primary_sb, but there is no guarantee whether
-> the super block is saved in journal on the disk or whether it is
-> checkpointed.
-
-So in actual practice, e2fsprogs will replay the journal and then
-reread the superblock.  So if you change the max_mounts_count via
-tune2fs -c (even though very few systems use that these days, and it's
-largely a deprecated feature), so long as the transaction has been
-committed, the superblock update will be honored by e2fsck.
-
-I'm not sure we care *all* that much, but if we really want to make
-sure things like tune2fs -c will always "take" after a crash, we can
-simply have the ioctl force a journal commit before returning.
-
-> If the super block has not been saved in journal on
-> the disk and the system crashes, the modification of the super block
-> may be overwritten when the journal recover; similarly, this problem
-> will also occur for the translation that has not been checkpointed;
-> Both of these scenarios are not perceptible to user process unless
-> there is a backup mechanism implemented in user mode.
-
-We now *always* update the superblock through the journal.  We only
-fall back to a direct update of the superblock if the journal is not
-present, or the journal has aborted due to some kind of fundamental
-failure (so that the ext4_error can be written out before we reboot
-the system or force the file system to be read-only).
-
-> Moreover, the method of rerunning the program cannot resolve the conflicting
-> racing condition between the two ioctls.
-
-These ioctls are quite rarely used, and it's a problem we have today
-if we have two racing tune2fs commands.  By having the kernel handle
-it, so long as the two ioctls are modifying different superblock
-fields, both ioctl updates will happen --- where as today, when we
-have two racing tune2fs, one of the tune2fs updates could be
-completely lost.  This has been true for decades in ext2, ext3, and
-ext4, and no one has actually reported this as a problem.
-
-Cheers,
-
-
+>
+> ?
