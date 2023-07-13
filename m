@@ -2,95 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D6275129B
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jul 2023 23:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A163751705
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jul 2023 05:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjGLV0N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jul 2023 17:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
+        id S233771AbjGMDzi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jul 2023 23:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjGLV0M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 17:26:12 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B153CCF
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jul 2023 14:26:10 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-193.bstnma.fios.verizon.net [173.48.82.193])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36CLPva0018858
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Jul 2023 17:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1689197159; bh=RwWQLMaX2MoBOl5ry57wnXU6qCPKEzTD7QWyoGJjf6M=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=JXBTYpBZR/xRt+J1w2Upg2lBNAb/N/0JTRg1zn2jcwInGczg2J6abjd0oYvOVhbXR
-         XfgiwFUicXcNZUtGq0MDEBA0SheA8lEGnyAnbQIAcGaKk2pFRQD2FxoE2XTslF8441
-         nrhyKDolLWXMfs1OIxICAvmzVdjWVrhYjMCb7oHzsAL6soluidgB90f72OIMQrSyLH
-         8xjVOX/9T+ICZSqObGj8K1iuL1S0FaV9pnZRWTkiRd863frMtzDWv/ddCTMwILmz7B
-         RNaup0laRbdrSO4apL9kVnINzs54NnCW3/MEJMb+HMFUWSXPW0g4uFllj6dXv5KJ3Q
-         ZALvjxzKZUykg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1180915C0280; Wed, 12 Jul 2023 17:25:57 -0400 (EDT)
-Date:   Wed, 12 Jul 2023 17:25:57 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
-Message-ID: <20230712212557.GE3432379@mit.edu>
-References: <20230712150251.163790-1-jlayton@kernel.org>
- <20230712175258.GB3677745@mit.edu>
- <4c29c4e8f88509b2f8e8c08197dba8cfeb07c045.camel@kernel.org>
+        with ESMTP id S232036AbjGMDze (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jul 2023 23:55:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9611FEE;
+        Wed, 12 Jul 2023 20:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=jhgPtDmYYOVv+edSxa1VnGYvAPEvu+uXYOqgq3fjTTY=; b=mT6ncVRduE6uK+2JV6NnGf9oby
+        hkBuLFodEFApteZyC11j/xmfVGsn6iGS+DxvH2rHW9Os1KznCMCPTdEgr3sX7UkQWzEp21NPYmIbX
+        K6hmv9UIp+OaFOnzrAGAagOdAjQ2Ttg1CHbR7Xjx2G5Blv5lMR0ictbeRdjRRqafNQtl8ACvltNCA
+        1blLSWPKKXy628i3Llp9v5Tgs1Nrj1zQnFMOSVr5/0xzfW06HVeKqblGX1d25ikvVqLEwJi8L8UiB
+        yvTldA8MC4r8gW2Yj4JM47U8jl4F5aHlbgFm1EKiFbjmb14JoCJckT2iwPKm6uMoxwzFFZ2fJXEXf
+        /6+vzZ3g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qJnQA-00HMrc-52; Thu, 13 Jul 2023 03:55:14 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, "Theodore Tso" <tytso@mit.edu>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
+Subject: [PATCH 0/7] More filesystem folio conversions for 6.6
+Date:   Thu, 13 Jul 2023 04:55:05 +0100
+Message-Id: <20230713035512.4139457-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c29c4e8f88509b2f8e8c08197dba8cfeb07c045.camel@kernel.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 02:09:59PM -0400, Jeff Layton wrote:
-> 
-> No, I haven't. I'm running fstests on it now. Is there a quickstart for
-> running those tests?
+Remove the only spots in affs which actually use a struct page; there
+are a few places where one is mentioned, but it's part of the interface.
 
-At the top level kernel sources:
+The rest of this is removing the remaining calls to set_bh_page(),
+and then removing the function before any new users show up.
 
-./tools/testing/kunit/kunit.py  run --kunitconfig ./fs/ext4/.kunitconfig
+Matthew Wilcox (Oracle) (7):
+  highmem: Add memcpy_to_folio() and memcpy_from_folio()
+  affs: Convert affs_symlink_read_folio() to use the folio
+  affs: Convert data read and write to use folios
+  migrate: Use folio_set_bh() instead of set_bh_page()
+  ntfs3: Convert ntfs_get_block_vbo() to use a folio
+  jbd2: Use a folio in jbd2_journal_write_metadata_buffer()
+  buffer: Remove set_bh_page()
 
-You should get:
+ fs/affs/file.c              | 77 ++++++++++++++++++-------------------
+ fs/affs/symlink.c           | 12 +++---
+ fs/buffer.c                 | 15 --------
+ fs/jbd2/journal.c           | 35 ++++++++---------
+ fs/ntfs3/inode.c            | 10 ++---
+ include/linux/buffer_head.h |  2 -
+ include/linux/highmem.h     | 44 +++++++++++++++++++++
+ mm/migrate.c                |  2 +-
+ 8 files changed, 109 insertions(+), 88 deletions(-)
 
-[17:23:09] Starting KUnit Kernel (1/1)...
-[17:23:09] ============================================================
-[17:23:09] =============== ext4_inode_test (1 subtest) ================
-[17:23:09] ============= inode_test_xtimestamp_decoding  ==============
-[17:23:09] [PASSED] 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
-[17:23:09] [PASSED] 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
-[17:23:09] [PASSED] 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
-[17:23:09] [PASSED] 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
-[17:23:09] [PASSED] 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
-[17:23:09] [PASSED] 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
-[17:23:09] [PASSED] 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
-[17:23:09] [PASSED] 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
-[17:23:09] [PASSED] 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
-[17:23:09] [PASSED] 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
-[17:23:09] [PASSED] 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
-[17:23:09] [PASSED] 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
-[17:23:09] [PASSED] 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
-[17:23:09] [PASSED] 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
-[17:23:09] [PASSED] 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
-[17:23:09] [PASSED] 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
-[17:23:09] ========= [PASSED] inode_test_xtimestamp_decoding ==========
-[17:23:09] ================= [PASSED] ext4_inode_test =================
-[17:23:09] ============================================================
-[17:23:09] Testing complete. Ran 16 tests: passed: 16
-[17:23:09] Elapsed time: 1.943s total, 0.001s configuring, 1.777s building, 0.123s running
+-- 
+2.39.2
 
-	   	   	 	       	      		   - Ted
