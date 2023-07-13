@@ -2,51 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F154875286E
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jul 2023 18:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FD0752D52
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jul 2023 01:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbjGMQfB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jul 2023 12:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
+        id S233753AbjGMXBM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jul 2023 19:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjGMQe6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jul 2023 12:34:58 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F4630C0
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jul 2023 09:34:28 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-39a9590f9fdso1185208b6e.1
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jul 2023 09:34:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689266026; x=1691858026;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K3ho6xXohiGptiysxkdNs0zr5VXNkhbGRNFfWgt++Yc=;
-        b=kAYlCUp5EHuUMmEImtApmEc0OBZgigD7x8M06DSMMRRHNpVQHKPKo7QgsuWHvZ22XL
-         UgjF+XL9YqWnov1j/nvrgrqW51iWeBZ/JKYwpP+vO36shAOMfcACCgPXrDm45Z+1dFe0
-         JfXMz65HWfsjL/13jhi1X1qGkp7iJiGa8CtvadAbHF2+tJsRP7RhmEwDrB9doacr24Zm
-         fAXevGY91pWbSqPeUVneca/Vw8gUaC3MRx31wjI9fIhTdwhJiE3692Ek5IDPWO9PaB+H
-         NMimKiLWdEYWkHSfj7ArjbmfN1GPoVpxhM43brdLNWde4pqWrneZ7qepOxsO3ZI7eiBb
-         pk+w==
-X-Gm-Message-State: ABy/qLY92CBIoigPLCCSvXETj8Y9vyip15OFquyT9hX39o1cckCmOdDu
-        fJO4Zq+2/lQBCDbAs3hdumNVS19w5By3xbMY7NAtaFVH8l1h
-X-Google-Smtp-Source: APBJJlGOyLraT05agNLqXzPVWF56vPakWCVDUWfF0JUTV93KsFJRMN3gxu8G06wGOuoXxNkoeHrPnANRG+gvOvasmzO7JbjRUx5f
+        with ESMTP id S232353AbjGMXBL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jul 2023 19:01:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904D02127;
+        Thu, 13 Jul 2023 16:01:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B9961B79;
+        Thu, 13 Jul 2023 23:01:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61080C433C8;
+        Thu, 13 Jul 2023 23:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689289269;
+        bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+        h=From:Subject:Date:To:Cc:From;
+        b=j9LDsK+FDIrm6x6MxYyXms5zVTjaW1P6LxjzfQKg1pbSvAHLTtuNDrEBEAvQz7a59
+         IEj5BzbSPgpyeqfAqbd+Re3r0d6jbIHKhpnRq3qprdKRfzdD9X103cXf3qX6JZft6A
+         8K/RH8+CdgTcLHSepEL1YlNk2ZQmp4oagzqZSvVyVEd/d4TvlnBEIAX/8mUMo/DIpV
+         2h3UVlHoa/Q76fgIu2dVBLs3sOHMs2qunAcM77C5kvmuuB2TAhiX7+yoiPjn4EbiL6
+         oufcrYQQLmAklyR8BnHSjocZBlFXqdC5grfG/sCfx8gif0JU3ybUeAnX6i/lTGUMEc
+         tKVmtuCgMrfHw==
+From:   Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v5 0/8] fs: implement multigrain timestamps
+Date:   Thu, 13 Jul 2023 19:00:49 -0400
+Message-Id: <20230713-mgctime-v5-0-9eb795d2ae37@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1290:b0:3a4:1484:b3db with SMTP id
- a16-20020a056808129000b003a41484b3dbmr258967oiw.5.1689266026722; Thu, 13 Jul
- 2023 09:33:46 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 09:33:46 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000743ce2060060e5ce@google.com>
-Subject: [syzbot] [ext4?] INFO: task hung in find_inode_fast (2)
-From:   syzbot <syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACGCsGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0Nj3dz05JLM3FTdNKNEy7RkYyMTS0MLJaDqgqLUtMwKsEnRsbW1AO6
+ XW1JZAAAA
+To:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4474; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBksIIu4PKEKGnoDdi+GMLN5ufs2UB8ZsDTn9Oqp
+ SYtweP3skyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLCCLgAKCRAADmhBGVaC
+ FXJhEADW493xZyCYf/hlVo1POCOZGol0XDpJIN1EQK3h+61XPis26awGDTcXczc9yZK/JvZV7oC
+ VtVStL44kvzeqn7kh1AH/EuLmeazbYMEFTdl5PiizH53xrWmidL26fTjpjn01gvjb9Y5gGXTvuI
+ h0JLInpNr5Hn509RQU2T5/D8WBKVnLWeHB/itiDWCZ1CG8iFNWfgbgC/bpdW2+H0eIDHvr6bUcJ
+ m0mfxwAUL6lA/b/G8kmsdj0YEEWf2bOLzdxZcQPh/MEfkRuKwWqy9d5mFLJlJ5GiheG9qiqOwOA
+ wLz9M0J4e32Di/q+QL/HpihUZOB0jrZB+bRhKxqWD04cFRtTTwE15w/xGAgjvPLe2l+sNzEUxoq
+ nIscPnAScgiRW3Bzq6PUd7ljrtLvvU6Vcgd0HqFcyfn9APLCjnLCckVW7S0ofkRL7oksLIoSGDJ
+ qo/IpJl4X/Mu1LBY//fFZp6QVhp54iwAR+D7VJ3z7wtZSktaXJ9f1o0qcT1Bo254702FlLGvbxf
+ Bkj6FZDMZrSXrx81pjrLvUB8jCQQ13oz7O3kmOzVX4pLmnO9PRLcQLj14velupamDvwexZgudyW
+ jiqR3IwVXCTiN2WgmssqUyuQi+GQ1LKePEwVpDx8izF0VnbQshX6OqMvuRzVcDG29pzQBTc0dy+
+ lAVc/7Mp3vHZu0g==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,195 +129,106 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+The VFS always uses coarse-grained timestamps when updating the
+ctime and mtime after a change. This has the benefit of allowing
+filesystems to optimize away a lot metadata updates, down to around 1
+per jiffy, even when a file is under heavy writes.
 
-syzbot found the following issue on:
+Unfortunately, this coarseness has always been an issue when we're
+exporting via NFSv3, which relies on timestamps to validate caches. A
+lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+help the client decide to invalidate the cache.
 
-HEAD commit:    1c7873e33645 mm: lock newly mapped VMA with corrected orde..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d2771ca80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=15873d91ff37a949
-dashboard link: https://syzkaller.appspot.com/bug?extid=adfd362e7719c02b3015
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=136b54c4a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179ec9d8a80000
+Even with NFSv4, a lot of exported filesystems don't properly support a
+change attribute and are subject to the same problems with timestamp
+granularity. Other applications have similar issues with timestamps (e.g
+backup applications).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/266e35c3f21e/disk-1c7873e3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9cf36dfe8b31/vmlinux-1c7873e3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a274cf2ce4d3/bzImage-1c7873e3.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3d70fcee5ad3/mount_0.gz
+If we were to always use fine-grained timestamps, that would improve the
+situation, but that becomes rather expensive, as the underlying
+filesystem would have to log a lot more metadata updates.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com
+What we need is a way to only use fine-grained timestamps when they are
+being actively queried. The idea is to use an unused bit in the ctime's
+tv_nsec field to mark when the mtime or ctime has been queried via
+getattr. Once that has been marked, the next m/ctime update will use a
+fine-grained timestamp.
 
-INFO: task syz-executor173:7462 blocked for more than 143 seconds.
-      Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor173 state:D stack:25544 pid:7462  ppid:5046   flags:0x00004004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- __wait_on_freeing_inode fs/inode.c:2240 [inline]
- find_inode_fast+0x319/0x450 fs/inode.c:950
- iget_locked+0xcb/0x830 fs/inode.c:1317
- __ext4_iget+0x261/0x3f30 fs/ext4/inode.c:4670
- ext4_xattr_inode_cache_find fs/ext4/xattr.c:1542 [inline]
- ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
- ext4_xattr_set_entry+0x219f/0x3e80 fs/ext4/xattr.c:1719
- ext4_xattr_block_set+0xb12/0x3630 fs/ext4/xattr.c:2025
- ext4_xattr_set_handle+0xcd4/0x15c0 fs/ext4/xattr.c:2442
- ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2544
- __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x420 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9b8cd80509
-RSP: 002b:00007f9b841472f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 00007f9b8ce0c550 RCX: 00007f9b8cd80509
-RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 00000000200000c0
-RBP: 0030656c69662f2e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000002000 R11: 0000000000000246 R12: 00007f9b8cdd2360
-R13: 66763d746d66716a R14: 2f30656c69662f2e R15: 00007f9b8ce0c558
- </TASK>
-INFO: task syz-executor173:7468 blocked for more than 143 seconds.
-      Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor173 state:D stack:25768 pid:7468  ppid:5046   flags:0x00004004
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- mb_cache_entry_wait_unused+0x166/0x250 fs/mbcache.c:148
- ext4_evict_ea_inode+0x14a/0x2f0 fs/ext4/xattr.c:480
- ext4_evict_inode+0x184/0xf20 fs/ext4/inode.c:180
- evict+0x2a4/0x620 fs/inode.c:665
- ext4_xattr_set_entry+0x13d4/0x3e80 fs/ext4/xattr.c:1856
- ext4_xattr_block_set+0x69c/0x3630 fs/ext4/xattr.c:1956
- ext4_xattr_set_handle+0xcd4/0x15c0 fs/ext4/xattr.c:2442
- ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2544
- __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x420 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9b8cd80509
-RSP: 002b:00007f9b841262f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 00007f9b8ce0c560 RCX: 00007f9b8cd80509
-RDX: 0000000000000000 RSI: 0000000020000200 RDI: 00000000200001c0
-RBP: 0030656c69662f2e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9b8cdd2360
-R13: 66763d746d66716a R14: 2f30656c69662f2e R15: 00007f9b8ce0c568
- </TASK>
+This patch series is based on top of Christian's vfs.all branch, which
+has the recent conversion to the new ctime accessors. It should apply
+cleanly on top of linux-next.
 
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8d328af0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8d328eb0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/28:
- #0: ffffffff8d328920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
-3 locks held by kworker/1:2/2094:
- #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc9000786fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
- #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:325 [inline]
- #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x46c/0x890 kernel/rcu/tree_exp.h:992
-3 locks held by kworker/0:3/4759:
- #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc9000379fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
- #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:293 [inline]
- #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3a3/0x890 kernel/rcu/tree_exp.h:992
-2 locks held by getty/4772:
- #0: ffff88802d3c2098
- (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015b02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
-1 lock held by udevd/5050:
-2 locks held by kworker/0:2/5052:
- #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc90003c0fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
-2 locks held by kworker/1:3/5060:
- #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc90003c9fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
-1 lock held by udevd/5105:
-2 locks held by kworker/0:4/5115:
- #0: ffff888012872538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc90003e6fd20 ((work_completion)(&rew->rew_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
-3 locks held by syz-executor173/7462:
- #0: ffff8880220f2410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
- #1: ffff8880783cf200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
- #1: ffff8880783cf200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: vfs_setxattr+0x1e1/0x420 fs/xattr.c:321
- #2: ffff8880783ceec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
- #2: ffff8880783ceec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x274/0x15c0 fs/ext4/xattr.c:2357
-3 locks held by syz-executor173/7468:
- #0: ffff8880220f2410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
- #1: ffff88806aed8400 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
- #1: ffff88806aed8400 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0x1e1/0x420 fs/xattr.c:321
- #2: ffff88806aed80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
- #2: ffff88806aed80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x274/0x15c0 fs/ext4/xattr.c:2357
+While the patchset does work, I'm mostly looking for feedback on the
+core infrastructure API. Does this look reasonable? Am I missing any
+races?
 
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 28 Comm: khungtaskd Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xec2/0xf00 kernel/hung_task.c:379
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
-NMI backtrace for cpu 1 skipped: idling at __intel_idle_hlt drivers/idle/intel_idle.c:205 [inline]
-NMI backtrace for cpu 1 skipped: idling at intel_idle_hlt+0x15/0x20 drivers/idle/intel_idle.c:224
-
-
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Jeff Layton (8):
+      fs: pass the request_mask to generic_fillattr
+      fs: add infrastructure for multigrain timestamps
+      tmpfs: bump the mtime/ctime/iversion when page becomes writeable
+      tmpfs: add support for multigrain timestamps
+      xfs: XFS_ICHGTIME_CREATE is unused
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ fs/9p/vfs_inode.c               |  4 +-
+ fs/9p/vfs_inode_dotl.c          |  4 +-
+ fs/afs/inode.c                  |  2 +-
+ fs/btrfs/file.c                 | 24 ++--------
+ fs/btrfs/inode.c                |  2 +-
+ fs/btrfs/super.c                |  5 ++-
+ fs/ceph/inode.c                 |  2 +-
+ fs/coda/inode.c                 |  3 +-
+ fs/ecryptfs/inode.c             |  5 ++-
+ fs/erofs/inode.c                |  2 +-
+ fs/exfat/file.c                 |  2 +-
+ fs/ext2/inode.c                 |  2 +-
+ fs/ext4/inode.c                 |  2 +-
+ fs/ext4/super.c                 |  2 +-
+ fs/f2fs/file.c                  |  2 +-
+ fs/fat/file.c                   |  2 +-
+ fs/fuse/dir.c                   |  2 +-
+ fs/gfs2/inode.c                 |  2 +-
+ fs/hfsplus/inode.c              |  2 +-
+ fs/inode.c                      | 98 +++++++++++++++++++++++++++++------------
+ fs/kernfs/inode.c               |  2 +-
+ fs/libfs.c                      |  4 +-
+ fs/minix/inode.c                |  2 +-
+ fs/nfs/inode.c                  |  2 +-
+ fs/nfs/namespace.c              |  3 +-
+ fs/ntfs3/file.c                 |  2 +-
+ fs/ocfs2/file.c                 |  2 +-
+ fs/orangefs/inode.c             |  2 +-
+ fs/proc/base.c                  |  4 +-
+ fs/proc/fd.c                    |  2 +-
+ fs/proc/generic.c               |  2 +-
+ fs/proc/proc_net.c              |  2 +-
+ fs/proc/proc_sysctl.c           |  2 +-
+ fs/proc/root.c                  |  3 +-
+ fs/smb/client/inode.c           |  2 +-
+ fs/smb/server/smb2pdu.c         | 22 ++++-----
+ fs/smb/server/vfs.c             |  3 +-
+ fs/stat.c                       | 59 ++++++++++++++++++++-----
+ fs/sysv/itree.c                 |  3 +-
+ fs/ubifs/dir.c                  |  2 +-
+ fs/udf/symlink.c                |  2 +-
+ fs/vboxsf/utils.c               |  2 +-
+ fs/xfs/libxfs/xfs_shared.h      |  2 -
+ fs/xfs/libxfs/xfs_trans_inode.c |  8 ++--
+ fs/xfs/xfs_iops.c               |  4 +-
+ fs/xfs/xfs_super.c              |  2 +-
+ include/linux/fs.h              | 47 ++++++++++++++++++--
+ mm/shmem.c                      | 16 ++++++-
+ 48 files changed, 248 insertions(+), 129 deletions(-)
+---
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
+change-id: 20230713-mgctime-f2a9fc324918
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
