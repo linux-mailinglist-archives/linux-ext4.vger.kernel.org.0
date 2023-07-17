@@ -2,266 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F4F756300
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jul 2023 14:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9076E75667E
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jul 2023 16:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjGQMpJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jul 2023 08:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S229708AbjGQOfC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Jul 2023 10:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjGQMpI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jul 2023 08:45:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738DFB1
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Jul 2023 05:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689597869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cPBr5P6RMAc5J6eRrRxygG6j4FumvyTiuWHqCKdLMWY=;
-        b=amWrORrOnZDCpgMvWWcfqvT5UBD+kLHaCmiF3/RT7fDu722plwiokyTY7EBjZJGwscPdNm
-        nfHkyF/HgQcPBYOepd8HYymECqRxSzc6+hi7qpo1osSuqZYc0p9GF/hleM6tWihHbJugU6
-        oUZW3lYcK3qsHmoorx6+8Ilc3RCtiqU=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-80-mKQ88wqdNrOU3PhXB8cj0g-1; Mon, 17 Jul 2023 08:44:28 -0400
-X-MC-Unique: mKQ88wqdNrOU3PhXB8cj0g-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-53b9eb7bda0so1894977a12.0
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Jul 2023 05:44:28 -0700 (PDT)
+        with ESMTP id S229471AbjGQOfB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jul 2023 10:35:01 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D551A8;
+        Mon, 17 Jul 2023 07:35:00 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68336d06620so4675925b3a.1;
+        Mon, 17 Jul 2023 07:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689604500; x=1692196500;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4BYLcNQI8huu9QFMy9I1uV9Z2M9k8SXeF4zF9gh3CZU=;
+        b=jPSv5Sk5pxmVc8p5jjDApn+MZrG0aK3Tzn7t9YcSUHTKnNZ1ADUAoGJXASUubASmEn
+         WIQZelQhm2559jwQKDsREioZrkpoQRPaJZTIsiwPhnOAai2fgyPccFV7xlAIRT1XGHWd
+         9xUVxB/XdBj1+BOnFX4vWbjn6uhNRMR+FOrmt/sEz1Za8Xez5r9L+xzGGrluP33eLJG6
+         UqX43s+AvqaiaYuIG8eV9E8aeSpqf0rRIOdsh5MhPbopjsxBbmAnYQUkpDLYhBzyj5Du
+         oJe8KI1E0YafvghyjQitXy9cya8WlgGbGSDoma0wTrwweyYP353kU6wOINFVHJj/cx3Y
+         Rl+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689597867; x=1692189867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cPBr5P6RMAc5J6eRrRxygG6j4FumvyTiuWHqCKdLMWY=;
-        b=IXhaTwnrF+ziJT9aMLsl7/U08F7eFbFfl66gcCzsCv6ilWlYigx8ZQwf434qp8MRIq
-         zKPVBq1om8SZ3VBZ9tJTjDIO9qfkISsYOcIW7eT0P8RR2IkFutrAOJLyiOoWZUwnimgp
-         bTVt7KIVlx54dqLYYlY4KBJefH0XieCzgYIDlgbecmW4vXHzs8n/2KcYigMHroCDzpUn
-         cJe5DckykaqlwWOO4mfAQncSLEdceXeqWPKmB3zeBLkaduAbvT5zkdU2gI+Q0PGu9FAS
-         8wl+QocSgTo6h5vHu6z/eBH5qBwC2kHik01kzYuKjqhgbSxtJ6fe46f5fqeN4pcDj44B
-         rgJQ==
-X-Gm-Message-State: ABy/qLZzHCC84xtwI6PbU6vcRl+9sxAZvHdCNqb16qvpHzynTulmANsf
-        p69jPbGuUE/btBaZOTWJNJaY1p/qrNafGFwbg+UjzXh9bFgBy/hykaSGl+lkeeHJMfoCkZ48L3v
-        LernC9gNd8Ou5gb0UZ0Zn94oWuiIdRl2Jk+pDiw==
-X-Received: by 2002:a17:90a:5902:b0:263:ea6a:1049 with SMTP id k2-20020a17090a590200b00263ea6a1049mr10021661pji.2.1689597867204;
-        Mon, 17 Jul 2023 05:44:27 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHasnKG+SNiDONa+CP1OSdvJTohPXX69WzDE7nIpw5fYJbI1G9ilrC2Cj9qoIe3xkPsQOURqnSvBH8qP+XIJY0=
-X-Received: by 2002:a17:90a:5902:b0:263:ea6a:1049 with SMTP id
- k2-20020a17090a590200b00263ea6a1049mr10021649pji.2.1689597866936; Mon, 17 Jul
- 2023 05:44:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230628104852.3391651-3-dhowells@redhat.com> <202307171548.7ab20146-oliver.sang@intel.com>
-In-Reply-To: <202307171548.7ab20146-oliver.sang@intel.com>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Mon, 17 Jul 2023 08:43:50 -0400
-Message-ID: <CALF+zOm5RuFSkd=KNxh+-vF+2SNsgP7s-WVrwHxVxxLrS6NtxQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] mm, netfs, fscache: Stop read optimisation when
- folio removed from pagecache
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     David Howells <dhowells@redhat.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Rohith Surabattula <rohiths.msft@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steve French <sfrench@samba.org>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>, v9fs@lists.linux.dev,
-        linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        v9fs-developer@lists.sourceforge.net, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689604500; x=1692196500;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4BYLcNQI8huu9QFMy9I1uV9Z2M9k8SXeF4zF9gh3CZU=;
+        b=ZU9rP61Mce4SFlUfI8hB2ML4kQR8mVXMNkzm8lKCGsqCX6pEcvZB3gOnS4qA45LDwS
+         nKf0OnJ4N4CPyUoQNNwUSXWrGLu6sygkOJ8C952+Xon05G3pX/xTnkTgyY8b3fXEo6fk
+         PrzgS+oGXYQTIdgpg+ipByS7BbcM5l6e3rScLAkXcdM2kU1zd2FYKnlD6mP/AWmLWRz8
+         qVtngoiiqd1+9nnNmchqRoO2uKhMwo54Kd8ipt+F016PdARbiP88wYTarjeIK5tukK0t
+         fczkzZIxQSRC9bwmRgzHy/y7Neaqe+XPvG1gCWHJ4Pb/GHUJPQAhgp6/UB0Z+jrePFRt
+         0duQ==
+X-Gm-Message-State: ABy/qLa3foi/glUkWIEEeZKzD4zh+u8ZCMOVCVw/0QwstcU7x8F2aiFm
+        afZwUH6Zn3HroziwoTqQpNQ=
+X-Google-Smtp-Source: APBJJlHAPdcJ6KFA2sv9z3Ia/B+Z9Y4x09UnZq7fBkGBsVJ2BJn5QQ5Fk3EK5lO+9+2Glx7Z2FZW0Q==
+X-Received: by 2002:a05:6a00:2e05:b0:681:415d:ba2c with SMTP id fc5-20020a056a002e0500b00681415dba2cmr16138558pfb.31.1689604499783;
+        Mon, 17 Jul 2023 07:34:59 -0700 (PDT)
+Received: from dw-tp ([49.207.232.207])
+        by smtp.gmail.com with ESMTPSA id x18-20020aa784d2000000b0068288aaf23esm11992747pfn.100.2023.07.17.07.34.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 07:34:59 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 20:04:54 +0530
+Message-Id: <87jzuyobch.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Subject: Re: next: kernel BUG at fs/ext4/mballoc.c:4369!
+In-Reply-To: <87o7kbnle9.fsf@doe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 3:35=E2=80=AFAM kernel test robot <oliver.sang@inte=
-l.com> wrote:
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+
+> Naresh Kamboju <naresh.kamboju@linaro.org> writes:
+>
+>> Following kernel BUG noticed while testing LTP fs testing on x86_64
+>> arch x86_64 on the Linux next-20230716 built with clang toolchain.
+>>
+>> I see a similar crash log on arm64 Juno-r2. The logs are shared below.
+>>
+>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> x86 log:
+>> -------
+>> tst_test.c:1634: TINFO: === Testing on ext2 ===
+>> tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+>> mke2fs 1.46.5 (30-Dec-2021)
+>> [ 1393.346989] EXT4-fs (loop0): mounting ext2 file system using the
+>> ext4 subsystem
+>
+> ext4 driver is used for ext2 filesystem here. It will be using indirect
+> block mapping path.
+>
+>> [ 1393.396754] EXT4-fs (loop0): mounted filesystem
+>> 7ca8e239-bc8f-488c-af12-5e0ef12d17a5 r/w without journal. Quota mode:
+>> none.
+>> fs_fill.c:115: TINFO: Running 6 writer threads
+>> tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread6/AOF\", iov,
+>> 512): ENOSPC
+>> tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread5/AOF\", iov,
+>> 512): ENOSPC
+>> ...
+>> tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread6/AOF\", iov,
+>> 512): ENOSPC
+>> tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread3/AOF\", iov,
+>> 512): ENOSPC
+>> tst_fill_fs.c:109: TINF[ 1393.817197] ------------[ cut here ]------------
+>> [ 1393.823305] kernel BUG at fs/ext4/mballoc.c:4369!
+>
+> It's hard to trigger the race I guess. But here are some debugging
+> information.
+>
+> [  955.508751] EXT4-fs (loop1): mounting ext2 file system using the ext4 subsystem
+> [  955.515527] EXT4-fs (loop1): mounted filesystem 57096378-d173-4bc5-ac06-9cd53c1dfa1c r/w without journal. Quota mode: none.
+> [  959.289672] EXT4-fs (loop1): unmounting filesystem 57096378-d173-4bc5-ac06-9cd53c1dfa1c.
+> [  959.490548] EXT4-fs (loop1): mounting ext3 file system using the ext4 subsystem
+> [  959.503719] EXT4-fs (loop1): mounted filesystem 841c90bd-4d83-4bc5-be10-39452034e84b r/w with ordered data mode. Quota mode: none.
+> [  960.553669] ext4_mb_pa_adjust_overlap: ==== This should not happend ==== left_pa=ffff8881471c7f50 deleted=0 lstart=6144 len=656 right_pa=0000000000000000
+> [  960.557437] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7540, deleted=1 lstart=5872 len=272 pstart=34560
+> [  960.560659] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7f50, deleted=0 lstart=6144 len=656 pstart=26848
+> [  960.563855] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7ee0, deleted=1 lstart=6623 len=2 pstart=45503
+>
+> (This is the rbtree printed ^^^ )
+>
+> (gdb) p ac->ac_o_ex
+> $8 = {
+>   fe_logical = 6625,
+>   fe_start = 27328,
+>   fe_group = 0,
+>   fe_len = 1
+> }
+> (gdb) p new_start
+> $9 = 6144
+> (gdb) p new_end
+> $10 = 8192
+> (gdb) p left_pa_end
+> $11 = 6800
 >
 >
+> The bug one happens here -
 >
-> Hello,
+> 	if (left_pa) {
+> 		left_pa_end =
+> 			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
+> 		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
+> 	}
 >
-> kernel test robot noticed "canonical_address#:#[##]" on:
+> i.e. left_pa_end(6144 + 656 = 6800) > ac->ac_o_ex.fe_logical(6625)
 >
-> commit: 830503440449014dcf0e4b0b6d905a1b0b2c92ad ("[PATCH v7 2/2] mm, net=
-fs, fscache: Stop read optimisation when folio removed from pagecache")
-> url: https://github.com/intel-lab-lkp/linux/commits/David-Howells/mm-Merg=
-e-folio_has_private-filemap_release_folio-call-pairs/20230628-185100
-> base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everyth=
-ing
-> patch link: https://lore.kernel.org/all/20230628104852.3391651-3-dhowells=
-@redhat.com/
-> patch subject: [PATCH v7 2/2] mm, netfs, fscache: Stop read optimisation =
-when folio removed from pagecache
->
-> in testcase: vm-scalability
-> version: vm-scalability-x86_64-1.0-0_20220518
-> with following parameters:
->
->         runtime: 300
->         thp_enabled: always
->         thp_defrag: always
->         nr_task: 32
->         nr_ssd: 1
->         priority: 1
->         test: swap-w-rand
->         cpufreq_governor: performance
->
-> test-description: The motivation behind this suite is to exercise functio=
-ns and regions of the mm/ of the Linux kernel which are of interest to us.
-> test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability=
-.git/
->
->
-> compiler: gcc-12
-> test machine: 128 threads 2 sockets Intel(R) Xeon(R) Platinum 8358 CPU @ =
-2.60GHz (Ice Lake) with 128G memory
->
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
->
->
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202307171548.7ab20146-oliver.san=
-g@intel.com
+> Thought of sharing this info which can save time for others.
 >
 
-This has already been fixed with
-https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/commit/?h=3Dmm-=
-everything&id=3Daf18573471db5c5c9b96ec95208c340ae7c00e64
+Ok, so looks like we have some idea of what could be going wrong here. 
+ext4_mb_pa_adjust_overlap() account and adjust for PAs that are marked
+deleted as well. However ext4_mb_use_preallocated() doesn't. It will
+simply skip the PAs which are marked deleted and move forward with
+searching in the rbtree. This could create problems while searching
+when we had PAs marked as deleted which were fixed in ext4_mb_adjust_overlap().
 
+For e.g. when we have below tree...
 
->
-> [   45.898720][ T1453]
-> [   45.907480][ T1453] 2023-07-16 00:36:07  ./case-swap-w-rand
-> [   45.907481][ T1453]
-> [   45.917873][ T1453] 2023-07-16 00:36:07  ./usemem --runtime 300 -n 32 =
---random 8048142432
-> [   45.917876][ T1453]
-> [   47.348632][  T973] general protection fault, probably for non-canonic=
-al address 0xf8ff1100207778e6: 0000 [#1] SMP NOPTI
-> [   47.359787][  T973] CPU: 123 PID: 973 Comm: kswapd1 Tainted: G S      =
-           6.4.0-rc4-00533-g830503440449 #3
-> [   47.370301][  T973] Hardware name: Intel Corporation M50CYP2SB1U/M50CY=
-P2SB1U, BIOS SE5C620.86B.01.01.0003.2104260124 04/26/2021
-> [ 47.382201][ T973] RIP: 0010:filemap_release_folio (kbuild/src/x86_64/mm=
-/filemap.c:4063 (discriminator 1))
-> [ 47.388172][ T973] Code: 00 48 8b 07 48 8b 57 18 83 e0 01 74 4f 48 f7 07=
- 00 60 00 00 74 22 48 8b 07 f6 c4 80 75 32 48 85 d2 74 34 48 8b 82 90 00 00=
- 00 <48> 8b 40 48 48 85 c0 74 24 ff e0 cc 66 90 48 85 d2 74 15 48 8b 8a
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   00 48 8b                add    %cl,-0x75(%rax)
->    3:   07                      (bad)
->    4:   48 8b 57 18             mov    0x18(%rdi),%rdx
->    8:   83 e0 01                and    $0x1,%eax
->    b:   74 4f                   je     0x5c
->    d:   48 f7 07 00 60 00 00    testq  $0x6000,(%rdi)
->   14:   74 22                   je     0x38
->   16:   48 8b 07                mov    (%rdi),%rax
->   19:   f6 c4 80                test   $0x80,%ah
->   1c:   75 32                   jne    0x50
->   1e:   48 85 d2                test   %rdx,%rdx
->   21:   74 34                   je     0x57
->   23:   48 8b 82 90 00 00 00    mov    0x90(%rdx),%rax
->   2a:*  48 8b 40 48             mov    0x48(%rax),%rax          <-- trapp=
-ing instruction
->   2e:   48 85 c0                test   %rax,%rax
->   31:   74 24                   je     0x57
->   33:   ff e0                   jmpq   *%rax
->   35:   cc                      int3
->   36:   66 90                   xchg   %ax,%ax
->   38:   48 85 d2                test   %rdx,%rdx
->   3b:   74 15                   je     0x52
->   3d:   48                      rex.W
->   3e:   8b                      .byte 0x8b
->   3f:   8a                      .byte 0x8a
->
-> Code starting with the faulting instruction
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->    0:   48 8b 40 48             mov    0x48(%rax),%rax
->    4:   48 85 c0                test   %rax,%rax
->    7:   74 24                   je     0x2d
->    9:   ff e0                   jmpq   *%rax
->    b:   cc                      int3
->    c:   66 90                   xchg   %ax,%ax
->    e:   48 85 d2                test   %rdx,%rdx
->   11:   74 15                   je     0x28
->   13:   48                      rex.W
->   14:   8b                      .byte 0x8b
->   15:   8a                      .byte 0x8a
-> [   47.408103][  T973] RSP: 0018:ffa00000094f7b28 EFLAGS: 00010246
-> [   47.414266][  T973] RAX: f8ff11002077789e RBX: ffa00000094f7c08 RCX: 9=
-8ff110020777898
-> [   47.422337][  T973] RDX: ff11002077788f71 RSI: 0000000000000cc0 RDI: f=
-fd4000042870d00
-> [   47.430417][  T973] RBP: ffa00000094f7b98 R08: ff110001ba106300 R09: 0=
-000000000000028
-> [   47.438497][  T973] R10: ff110010846bd080 R11: ff1100207ffd4000 R12: f=
-fd4000042870d00
-> [   47.446575][  T973] R13: ffa00000094f7e10 R14: ffa00000094f7c1c R15: f=
-fd4000042870d08
-> [   47.454658][  T973] FS:  0000000000000000(0000) GS:ff110020046c0000(00=
-00) knlGS:0000000000000000
-> [   47.463703][  T973] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   47.470406][  T973] CR2: 00007fddcaf308f8 CR3: 00000001e1a82003 CR4: 0=
-000000000771ee0
-> [   47.478496][  T973] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0=
-000000000000000
-> [   47.486594][  T973] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0=
-000000000000400
-> [   47.494696][  T973] PKRU: 55555554
-> [   47.498372][  T973] Call Trace:
-> [   47.501795][  T973]  <TASK>
-> [ 47.504870][ T973] ? die_addr (kbuild/src/x86_64/arch/x86/kernel/dumpsta=
-ck.c:421 kbuild/src/x86_64/arch/x86/kernel/dumpstack.c:460)
-> [ 47.509153][ T973] ? exc_general_protection (kbuild/src/x86_64/arch/x86/=
-kernel/traps.c:783 kbuild/src/x86_64/arch/x86/kernel/traps.c:728)
-> [ 47.514826][ T973] ? asm_exc_general_protection (kbuild/src/x86_64/arch/=
-x86/include/asm/idtentry.h:564)
-> [ 47.520679][ T973] ? filemap_release_folio (kbuild/src/x86_64/mm/filemap=
-.c:4063 (discriminator 1))
->
->
-> To reproduce:
->
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         sudo bin/lkp install job.yaml           # job file is attached in=
- this email
->         bin/lkp split-job --compatible job.yaml # generate the yaml file =
-for lkp run
->         sudo bin/lkp run generated-yaml-file
->
->         # if come across any failure that blocks the test,
->         # please remove ~/.lkp and /lkp dir to run from a clean state.
->
->
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
->
->
+[ 5473.519335] ext4_mb_pa_adjust_overlap: pa = ffff88814a2ed1c0, deleted=1 lstart=1040 len=16 
+[ 5473.515741] ext4_mb_pa_adjust_overlap: pa = ffff88814a2ed4d0, deleted=0 lstart=1024 len=46 
+(Note the entries have overlapping ranges).
 
+(gdb) p ac->ac_o_ex
+$26 = {
+  fe_logical = 1042,
+  fe_start = 21967,
+  fe_group = 0,
+  fe_len = 1
+}
+
+... and we are allocating for ac_o_ex (1042) and root is pa =
+0xffff88814a2ed1c0 (lstart=1040). The root pa covers the requested range
+but since it is marked as deleted, we ignore and search further.
+Since 1042 > 1040, we go to right. But we won't find any PA in the right
+subtree of pa (1040).
+This could cause PAs to be skipped for e.g. pa with lstart = 1024 will
+not be considered which ideally should have been used. 
+
+This then causes a bug_on in ext4_mb_adjust_overlap() function
+(normalization path) when it finds an already allocated overlapping PA.
+
+@Ojaswin mentioned the same problem was solved in
+ext4_mb_pa_adjust_overlap(), however the logic was never added to
+ext4_mb_use_preallocated().
+
+These can basically trigger in extremely low memory space and only when
+such ranges exist in the PA rbtree. Hence, I guess it is a little hard
+to tigger race.
+
+-ritesh
