@@ -2,169 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A85757C48
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 14:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1556C757C4D
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 14:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGRMyb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 08:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S231792AbjGRM4i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 08:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjGRMya (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 08:54:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDACD2;
-        Tue, 18 Jul 2023 05:54:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27F586155A;
-        Tue, 18 Jul 2023 12:54:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD82EC433C7;
-        Tue, 18 Jul 2023 12:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689684868;
-        bh=V2g39nCpYOscNbJKZ9rJmpSsa451hj9EPNRN51OdGRk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hqhb6g5vJo+6+8W0RT9xDtqbOW4AnzhS1/KyN/dceFbd7YKpJbQPWq4/Cb6dq7CYf
-         yAjXM+mz0/w854eRtpX5wlAeE95iG/IjxMxlxrF8PmBKq+fUtbQibuknEfBBkvv/jA
-         A/iaq062saIeZ5/pg2QxPjXRMA5o+uYg7EyJLWRN8io5npshv7pVIjquFFNlQXDQ2i
-         5z7JfZZ16JSPS6SLwX3ZzneOuic2kNiDc0hYFpUuCbg+eHl7hbFHwpNebskPML4TS3
-         fZMHLLLRrsJNqVimjN1ZTBf057T2DRLf2nNm2rSq8TmEEHmHgaBomzWaDK0vlKWM26
-         11NGJGYZvLUxQ==
-Message-ID: <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
-Subject: Re: linux-next ext4 inode size 128 corrupted
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 18 Jul 2023 08:54:26 -0400
-In-Reply-To: <26cd770-469-c174-f741-063279cdf7e@google.com>
-References: <26cd770-469-c174-f741-063279cdf7e@google.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S231578AbjGRM4h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 08:56:37 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9B4188;
+        Tue, 18 Jul 2023 05:56:36 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-579dd20b1c8so54897237b3.1;
+        Tue, 18 Jul 2023 05:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689684995; x=1692276995;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=a+0X0iJnqmGwLeZZKHvvTwxTTecPY5lyxNZQeh8dZFg=;
+        b=hHDnz9GZY3LbhcWhRmlM9JlzfhIK4dF9EukEMjKsJeBsjHumsWBQHWfgm32KZbUETq
+         rAhsK1Hle/ygFwxyHxlBXRLC/M36rAkGU1Z+hEjI8aZniAiQPsB4tOfjo3B8U5sO1hnZ
+         gHyqZiSYhekBWbM1B1nyIuMhXyIc8X8RGxROx65S1POnb9oDFV6/vTs1FV94sOhgNg+i
+         V+baPhFCkRxFHyVX2dk+CnxzLPohwNsErlpff9ivGVp1R2Izl7ObfN83ApIMSuIvTtoY
+         Ggl/EVVnTKasoOH3MKTtpBV4llo5rHVHqnTV/daaBzGIGASIs6I1g/HGiqY+zS95Xsm1
+         0PjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689684995; x=1692276995;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a+0X0iJnqmGwLeZZKHvvTwxTTecPY5lyxNZQeh8dZFg=;
+        b=Y03WAxCA1XX0+c4RxcqwtXAIc+bZF/9gQg42SzdhyQFmZ5gAfmGGXm2KlRQDRH2aUY
+         vrdh4woGsAbguATjm80hOxx9GHP/pPd1EoFVUcYMbp354BLFGSZr7/PHaKGLfGUjnXvi
+         1vjLJXsQFYbDjS1GRr/0C+pTVfEz8J5Y7SFtOeQvhq1F/MwrJgH9/9KmtrQ7J/vaHxmh
+         gruQk5XGpECTUqldRo1F4mpvLeJictc3qFB7cMJrDq0gMqeXdyfZDP/jzkvBFcyzGC8p
+         DweLfWMMPOxhYQNUioXfHV/YRJ17gWhADw3cjwFVqMlvS+lzLMFck3XhUcOR4HmU2fCs
+         ZcSA==
+X-Gm-Message-State: ABy/qLY+VfhZbSvctaoaALjdJIUDvE8i1KgGKKqs5BbT9XwZde70qp8I
+        5Ca8crO1nI7UMhf2pSN52neCw/uZ7PtsTdxbn/WIJnwb7qQ=
+X-Google-Smtp-Source: APBJJlGBp+5JYQ8bOuozx4yrJygeTAY50dwDQ7E9NrZdK+2yi1qtbmKH5Xu3Zq/ewQusx/ZrAy3f/VB59CoVOidMQKU=
+X-Received: by 2002:a0d:c804:0:b0:577:3561:8a81 with SMTP id
+ k4-20020a0dc804000000b0057735618a81mr15404153ywd.22.1689684995262; Tue, 18
+ Jul 2023 05:56:35 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7108:7886:b0:31a:16:342c with HTTP; Tue, 18 Jul 2023
+ 05:56:34 -0700 (PDT)
+In-Reply-To: <20230718053017.GB6042@tomerius.de>
+References: <20230717075035.GA9549@tomerius.de> <CAG4Y6eTU=WsTaSowjkKT-snuvZwqWqnH3cdgGoCkToH02qEkgg@mail.gmail.com>
+ <20230718053017.GB6042@tomerius.de>
+From:   "Alan C. Assis" <acassis@gmail.com>
+Date:   Tue, 18 Jul 2023 09:56:34 -0300
+Message-ID: <CAG4Y6eQX8wE6ErByZmWFN+a_ekR09q8NzP+jJyEey4Ficqdosg@mail.gmail.com>
+Subject: Re: File system robustness
+To:     Kai Tomerius <kai@tomerius.de>
+Cc:     linux-embedded@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        dm-devel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
-> Hi Jeff,
->=20
-> I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
-> swapping load on linux-next recently, on one machine: various kinds
-> of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
-> systemd-journald errors, segfaults.  But no problem observed running
-> on a more recent installation.
->=20
-> Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
-> functions").
->=20
-> I've mostly averted my eyes from the EXT4_INODE macro changes there,
-> but I think that's where the problem lies.  Reading the comment in
-> fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
-> and look at /etc/mke2fs.conf.  It's an old installation, its own
-> inodes are 256, but that old mke2fs.conf does default to 128 for small
-> FSes, and what I use for the load test is small.  Passing -I 256 to the
-> mkfs makes the problems go away.
->=20
-> (What's most alarming about the corruption is that it appears to extend
-> beyond just the throwaway test filesystem: segfaults on bash and libc.so
-> from the root filesystem.  But no permanent damage done there.)
->=20
-> One oddity I noticed in scrutinizing that commit, didn't help with
-> the issues above, but there's a hunk in ext4_rename() which changes
-> -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
-> +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
->=20
->=20
+Hi Kai,
 
-I suspect the problem here is the i_crtime, which lives wholly in the
-extended part of the inode. The old macros would just not store anything
-if the i_crtime didn't fit, but the new ones would still store the
-tv_sec field in that case, which could be a memory corruptor. This patch
-should fix it, and I'm testing it now.
+I never used that, but please take a look at F2FS too.
 
-Hugh, if you're able to give this a spin on your setup, then that would
-be most helpful. This is also in the "ctime" branch in my kernel.org
-tree if that helps. If this looks good, I'll ask Christian to fold this
-into the ext4 conversion patch.
+BR,
 
-Thanks for the bug report!
+Alan
 
----------------------------8<--------------------------
-
-[PATCH] ext4: fix the time handling macros when ext4 is using small inodes
-
-If ext4 is using small on-disk inodes, then it may not be able to store
-fine grained timestamps. It also can't store the i_crtime at all in that
-case since that fully lives in the extended part of the inode.
-
-979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
-still store the tv_sec field of the i_crtime into the raw_inode, even
-when they were small, corrupting adjacent memory.
-
-This fixes those macros to skip setting anything in the raw_inode if the
-tv_sec field doesn't fit.=20
-
-Cc: Jan Kara <jack@suse.cz>
-Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
-Reported-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ext4/ext4.h | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 2af347669db7..1e2259d9967d 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -900,8 +900,10 @@ do {										\
- #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
- 	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode=
-))
-=20
--#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
--	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einod=
-e)->xtime)
-+#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
-+	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
-+		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
-+					 raw_inode, (einode)->xtime)
-=20
- #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
- 	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
-@@ -922,9 +924,14 @@ do {										\
- 		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
- } while (0)
-=20
--#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
--do {									       \
--	(einode)->xtime =3D EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),=
- raw_inode);	\
-+#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
-+do {										\
-+	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
-+		(einode)->xtime =3D						\
-+			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
-+						 raw_inode);			\
-+	else									\
-+		(einode)->xtime =3D (struct timespec64){0, 0};			\
- } while (0)
-=20
- #define i_disk_version osd1.linux1.l_i_version
---=20
-2.41.0
-
-
+On 7/18/23, Kai Tomerius <kai@tomerius.de> wrote:
+> Hi Alan,
+>
+> thx a lot.
+>
+> I should have mentioned that I'll have a large NAND flash, so ext4
+> might still be the file system of choice. The other ones you mentioned
+> are interesting to consider, but seem to be more fitting for a smaller
+> NOR flash.
+>
+> Regards
+> Kai
+>
+>
+>
+> On Mon, Jul 17, 2023 at 10:50:50AM -0300, Alan C. Assis wrote:
+>> Hi Kai,
+>>
+>> On 7/17/23, Kai Tomerius <kai@tomerius.de> wrote:
+>> > Hi,
+>> >
+>> > let's suppose an embedded system with a read-only squashfs root file
+>> > system, and a writable ext4 data partition with data=journal.
+>> > Furthermore, the data partition shall be protected with dm-integrity.
+>> >
+>> > Normally, I'd umount the data partition while shutting down the
+>> > system. There might be cases though where power is cut. In such a
+>> > case, there'll be ext4 recoveries, which is ok.
+>> >
+>> > How robust would such a setup be? Are there chances that the ext4
+>> > requires a fsck? What might happen if fsck is not run, ever? Is there
+>> > a chance that the data partition can't be mounted at all? How often
+>> > might that happen?
+>> >
+>>
+>> Please take a look at this document:
+>>
+>> https://elinux.org/images/0/02/Filesystem_Considerations_for_Embedded_Devices.pdf
+>>
+>> In general EXT4 is fine, but it has some limitation, more info here:
+>> https://opensource.com/article/18/4/ext4-filesystem
+>>
+>> I think Linux users suffer from the same problem we have with NuttX (a
+>> Linux-like RTOS): which FS to use?
+>>
+>> So for deep embedded systems running NuttX I follow this logic:
+>>
+>> I need better performance and wear leveling, but I don't need to worry
+>> about power loss: I choose SmartFS
+>>
+>> I need good performance, wear leveling and some power loss protection:
+>> SPIFFS
+>>
+>> I need good performance, wear leveling and good protection for
+>> frequent power loss: LittleFS
+>>
+>> In a NuttShell: There is no FS that 100% meets all user needs, select
+>> the FS that meets your core needs and do lots of field testing to
+>> confirm it works as expected.
+>>
+>> BR,
+>>
+>> Alan
+>
