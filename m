@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129B8757D05
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 15:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD2757D03
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 15:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbjGRNN4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 09:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
+        id S232657AbjGRNNz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 09:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbjGRNNu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 09:13:50 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1803B3;
-        Tue, 18 Jul 2023 06:13:47 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4zpM65F9ztR6c;
-        Tue, 18 Jul 2023 21:10:35 +0800 (CST)
+        with ESMTP id S229589AbjGRNNr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 09:13:47 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E741CB0;
+        Tue, 18 Jul 2023 06:13:45 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4zp6576szNmSP;
+        Tue, 18 Jul 2023 21:10:22 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
@@ -28,9 +28,9 @@ CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
         <yangerkun@huawei.com>, <yukuai3@huawei.com>,
         <libaokun1@huawei.com>
-Subject: [PATCH 3/4] ext4: avoid overlapping preallocations due to overflow
-Date:   Tue, 18 Jul 2023 21:10:51 +0800
-Message-ID: <20230718131052.283350-4-libaokun1@huawei.com>
+Subject: [PATCH 4/4] ext4: avoid prealloc space being skipped due to overflow
+Date:   Tue, 18 Jul 2023 21:10:52 +0800
+Message-ID: <20230718131052.283350-5-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230718131052.283350-1-libaokun1@huawei.com>
 References: <20230718131052.283350-1-libaokun1@huawei.com>
@@ -50,98 +50,46 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Let's say we want to allocate 2 blocks starting from 4294966386, after
-predicting the file size, start is aligned to 4294965248, len is changed
-to 2048, then end = start + size = 0x100000000. Since end is of
-type ext4_lblk_t, i.e. uint, end is truncated to 0.
+If there is a pa in the i_prealloc_list of an inode with a tmp_pa_end
+of 4294967296(0x100000000), since tmp_pa_end is of type ext4_lblk_t,
+tmp_pa_end will be recognized as 0 due to overflow, which causes
+(ac->ac_o_ ex.fe_logical >= tmp_pa_end) always holds, so that pa will
+always be skipped. This then triggers the regular allocation process,
+and if the excess tail of the free extent from that allocation is put
+into the i_prealloc_list again, it will again not be used. This ends up
+leaving us with a lot of free physical blocks in the i_prealloc_list.
 
-This causes (pa->pa_lstart >= end) to always hold when checking if the
-current extent to be allocated crosses already preallocated blocks, so the
-resulting ac_g_ex may cross already preallocated blocks.
-
-Hence we convert the end type to loff_t and use pa_end() to avoid overflow.
+We avoid this problem by using pa_end() to compute tmp_pa_end and
+declaring tmp_pa_end to be of type loff_t.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/mballoc.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ fs/ext4/mballoc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 2090e5e7ba58..77d47af525d9 100644
+index 77d47af525d9..06db40fb29d6 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -4222,12 +4222,13 @@ ext4_mb_pa_rb_next_iter(ext4_lblk_t new_start, ext4_lblk_t cur_start, struct rb_
- 
- static inline void
- ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t start, ext4_lblk_t end)
-+			  ext4_lblk_t start, loff_t end)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+@@ -4765,7 +4765,8 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_prealloc_space *tmp_pa;
+ 	struct ext4_locality_group *lg;
+ 	struct ext4_prealloc_space *tmp_pa, *cpa = NULL;
 -	ext4_lblk_t tmp_pa_start, tmp_pa_end;
 +	ext4_lblk_t tmp_pa_start;
 +	loff_t tmp_pa_end;
  	struct rb_node *iter;
+ 	ext4_fsblk_t goal_block;
  
- 	read_lock(&ei->i_prealloc_lock);
-@@ -4236,7 +4237,7 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
+@@ -4784,7 +4785,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+ 		/* all fields in this condition don't change,
+ 		 * so we can skip locking for them */
  		tmp_pa_start = tmp_pa->pa_lstart;
 -		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
 +		tmp_pa_end = pa_end(sbi, tmp_pa);
  
- 		spin_lock(&tmp_pa->pa_lock);
- 		if (tmp_pa->pa_deleted == 0)
-@@ -4258,14 +4259,14 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
-  */
- static inline void
- ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t *start, ext4_lblk_t *end)
-+			  ext4_lblk_t *start, loff_t *end)
- {
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_prealloc_space *tmp_pa = NULL, *left_pa = NULL, *right_pa = NULL;
- 	struct rb_node *iter;
--	ext4_lblk_t new_start, new_end;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end, left_pa_end = -1, right_pa_start = -1;
-+	ext4_lblk_t new_start, tmp_pa_start, right_pa_start = -1;
-+	loff_t new_end, tmp_pa_end, left_pa_end = -1;
- 
- 	new_start = *start;
- 	new_end = *end;
-@@ -4284,7 +4285,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_end(sbi, tmp_pa);
- 
- 		/* PA must not overlap original request */
- 		spin_lock(&tmp_pa->pa_lock);
-@@ -4364,8 +4365,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 	}
- 
- 	if (left_pa) {
--		left_pa_end =
--			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
-+		left_pa_end = pa_end(sbi, left_pa);
- 		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
- 	}
- 
-@@ -4404,8 +4404,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	int bsbits, max;
--	ext4_lblk_t end;
--	loff_t size, start_off;
-+	loff_t size, start_off, end;
- 	loff_t orig_size __maybe_unused;
- 	ext4_lblk_t start;
- 
+ 		/* original request start doesn't lie in this PA */
+ 		if (ac->ac_o_ex.fe_logical < tmp_pa_start ||
 -- 
 2.31.1
 
