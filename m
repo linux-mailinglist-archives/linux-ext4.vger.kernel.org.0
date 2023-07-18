@@ -2,71 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A98F5758266
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01443758383
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 19:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjGRQrc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 12:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S232296AbjGRRcR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 13:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjGRQr3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 12:47:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BC710D2;
-        Tue, 18 Jul 2023 09:47:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S230215AbjGRRcQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 13:32:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9508DB3;
+        Tue, 18 Jul 2023 10:32:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 02C3D21835;
-        Tue, 18 Jul 2023 16:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689698847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0gG/SrZGF5/s3yIgwzjFlba62tVC4bEASQFHFHTinDw=;
-        b=sCqIZIaeY+lZmLjsOPsAbQI7GvoRp+QnzyxAweo04VRhB02G7zlyPODdtnMibPbRArJBXD
-        EmKHbQr2G1Hg/mlor+k1OhYUl6g3r4QossnKRSkX+YcTTQxPScxqx/r35yGnTw3fNEyVf5
-        ghYS+pV/sSq88EFejZe58ccHS7UeR7E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689698847;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0gG/SrZGF5/s3yIgwzjFlba62tVC4bEASQFHFHTinDw=;
-        b=5Agcg3CzsovgtmLs9P2htHWvOOKunhSV4WopA6/9BhjEF+Ts1aNnzWoRaa1U1bHqG+xwJc
-        Fil0WRvm5Z4c3BAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0405134B0;
-        Tue, 18 Jul 2023 16:47:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id llAuKR7CtmTiUwAAMHmgww
-        (envelope-from <krisman@suse.de>); Tue, 18 Jul 2023 16:47:26 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     brauner@kernel.org, tytso@mit.edu,
-        linux-f2fs-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v2 3/7] libfs: Validate negative dentries in
- case-insensitive directories
-References: <20230422000310.1802-1-krisman@suse.de>
-        <20230422000310.1802-4-krisman@suse.de>
-        <20230714050028.GC913@sol.localdomain>
-Date:   Tue, 18 Jul 2023 12:47:25 -0400
-In-Reply-To: <20230714050028.GC913@sol.localdomain> (Eric Biggers's message of
-        "Thu, 13 Jul 2023 22:00:28 -0700")
-Message-ID: <87pm4p5fqa.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 167DF616A0;
+        Tue, 18 Jul 2023 17:32:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE2FFC433C7;
+        Tue, 18 Jul 2023 17:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689701534;
+        bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
+        h=From:Date:Subject:To:Cc:From;
+        b=RGGHYKAdr9A1pP7KSCiMF8arJ7ePa1xy5wVRsQ8toGSZKsQAX/s28NQG1OYyQ8HNB
+         PXNUg2EZk7ZarV9f3H8m+d1Mhuvi5RDJsUz/xS6829UpLddV73HIdXeRL+D6ZFx32i
+         6X5FrOOHoVaat/QK9pYmYXG+zABEJpxYhyOXyhkXtuTaev+nob1frEnf7vXN06ZxuY
+         8bi+I/QD39orPeSov7EwjGheVsbcnrRTglOk1276rMbEMKnbSRfSFjHqeOFk/oubBl
+         0GBN48lUuOCmLIkochWE3O/XHUQuEzsOe8RHkb6NLGG66ceReDI++GvvwJf2lEha6+
+         Af6eXnBB07d/A==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Tue, 18 Jul 2023 13:31:59 -0400
+Subject: [PATCH] ext4: fix the time handling macros when ext4 is using
+ small inodes
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230718-ctime-v1-1-24e2f96dcdf3@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAI7MtmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0ML3eSSzNxU3TRDE4OUxFQLcwvLFCWg2oKi1LTMCrA50bG1tQDzzuw
+ cVwAAAA==
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2549; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBktsydVvBKNzDju8jE+b0NYW+NkK39lUgCDtOnh
+ VRGrTTKhBOJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLbMnQAKCRAADmhBGVaC
+ FV9uEAC+J5EE0zF76pogRmUja2GnRdskqbCVOTmRIXPfWiRGO3E8Kwcl2kEKknqmBO/9oLatu2D
+ vL3C2B4Fbr78VWkpOobK0qveTjWxvnBJk1KAtIASaXWiqzsRN1YztjAYUbT3u3St39996c7EKZe
+ 1mFdjwvrKqQXIpkJSLba41/iw6Snem/3DZNMKgA518hpfyetiwK3+FGg8NQ0TZ9ZSRjjQncklA6
+ LzjjB27Le1dhQ/X8TWViottRwmtWPqciS9tuVz7iQi82ijmxAr852f9ltYCaHYwLbL0h4U9au8U
+ MiO1pwqmjSvsrmLu2blvmMOLWWb/pukEe1rhSbxKuDxNrfCR8I4GP65i9Dxp5tV36Xl+CinlMRP
+ 2qZ/nxPfNKInKqF1tq84Eg8jRxCXJ/qNEqqQdSYjLB+Erpd6HHpJZKejinJyzpPF7rqAAt9hNA8
+ iudm6QXBcKO9WtjPkiiogrBicJPPzyPQ2tGBxcLCcdx8HBrrrBMc10xrNGZrsKPL//h2+5nZ3sU
+ BK2lWiiifimf6rbeG/eXyKU/r8AWxGKwJLyXYRg3iswI+1t4QN4HQMi90sN5ooVZgQAcuONbbUA
+ Lpa35rXQLXwYdP+jGOzUeEhhA57qXH2a2S5HuOjICAIHC1Om9LzqyzzovegzEGjOStTk4t4gPS4
+ 21wFYAISREwI9HA==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,64 +76,67 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+If ext4 is using small on-disk inodes, then it may not be able to store
+fine grained timestamps. It also can't store the i_crtime at all in that
+case since that fully lives in the extended part of the inode.
 
-> I notice that the existing vfat_revalidate_ci() in fs/fat/namei_vfat.c behaves
-> differently in the 'flags == 0' case:
->
->
-> 	/*
-> 	 * This may be nfsd (or something), anyway, we can't see the
-> 	 * intent of this. So, since this can be for creation, drop it.
-> 	 */
-> 	if (!flags)
-> 		return 0;
->
-> I don't know whether that's really needed, but have you thought about this?
+979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+still store the tv_sec field of the i_crtime into the raw_inode, even
+when they were small, corrupting adjacent memory.
 
-Hi Eric,
+This fixes those macros to skip setting anything in the raw_inode if the
+tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
+the raw_inode doesn't support it.
 
-I didn't look much into it before because, as you know, the vfat
-case-insensitive implementation is completely different than the
-ext4/f2fs code. But I think you are on to something.
+Cc: Jan Kara <jack@suse.cz>
+Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+Reported-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/ext4/ext4.h | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-The original intent of this check was to safeguard against the case
-where d_revalidate would be called without nameidata from the filesystem
-helpers. The filesystems don't give the purpose of the lookup
-(nd->flags) so there is no way to tell if the dentry is being used for
-creation, and therefore we can't rely on the negative dentry for ci. The
-path is like this:
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 2af347669db7..1e2259d9967d 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -900,8 +900,10 @@ do {										\
+ #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
+ 	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode))
+ 
+-#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
+-	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einode)->xtime)
++#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
++		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
++					 raw_inode, (einode)->xtime)
+ 
+ #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
+ 	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
+@@ -922,9 +924,14 @@ do {										\
+ 		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
+ } while (0)
+ 
+-#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
+-do {									       \
+-	(einode)->xtime = EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode), raw_inode);	\
++#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
++do {										\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
++		(einode)->xtime =						\
++			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
++						 raw_inode);			\
++	else									\
++		(einode)->xtime = (struct timespec64){0, 0};			\
+ } while (0)
+ 
+ #define i_disk_version osd1.linux1.l_i_version
 
-lookup_one_len(...)
-  __lookup_hash(..., nd = NULL)
-     cached_lookup(...)
-       do_revalidate(parent, name, nd)
-         dentry->d_op->d_revalidate(parent, nd);
+---
+base-commit: c62e19541f8bb39f1f340247f651afe4532243df
+change-id: 20230718-ctime-f140dae8789d
 
-Then !nd was dropped to pass flags directly around 2012, which
-overloaded the flags meaning. Which means, d_revalidate can
-still be called for creation without (LOOKUP_CREATE|...). For
-instance, in nfsd_create.  I wasn't considering this.
-
-This sucks, because we don't have enough information to avoid the name
-check in this case, so we'd also need memcmp there.  Except it won't be
-safe. because callers won't necessarily hold the parent lock in the path
-below.
-
- lookup_one_unlocked()
-   lookup_dcache()
-      d_revalidate()  // called unlocked
-
-Thus, I'll have to add a similar:
-
-  if (!flags)
-    return 0;
-
-Ahead of the is_creation check.  It will solve it.
-
-But i think the issue is in VFS.  the lookup_one_* functions should have
-proper lookup flags, such that d_revalidate can tell the purpose of the
-lookup.
-
+Best regards,
 -- 
-Gabriel Krisman Bertazi
+Jeff Layton <jlayton@kernel.org>
+
