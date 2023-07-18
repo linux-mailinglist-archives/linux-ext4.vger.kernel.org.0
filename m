@@ -2,94 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DD2757D03
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 15:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98F5758266
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 18:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbjGRNNz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 09:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
+        id S231614AbjGRQrc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 12:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjGRNNr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 09:13:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E741CB0;
-        Tue, 18 Jul 2023 06:13:45 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4zp6576szNmSP;
-        Tue, 18 Jul 2023 21:10:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 21:13:41 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH 4/4] ext4: avoid prealloc space being skipped due to overflow
-Date:   Tue, 18 Jul 2023 21:10:52 +0800
-Message-ID: <20230718131052.283350-5-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230718131052.283350-1-libaokun1@huawei.com>
-References: <20230718131052.283350-1-libaokun1@huawei.com>
+        with ESMTP id S230428AbjGRQr3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 12:47:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BC710D2;
+        Tue, 18 Jul 2023 09:47:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 02C3D21835;
+        Tue, 18 Jul 2023 16:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689698847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0gG/SrZGF5/s3yIgwzjFlba62tVC4bEASQFHFHTinDw=;
+        b=sCqIZIaeY+lZmLjsOPsAbQI7GvoRp+QnzyxAweo04VRhB02G7zlyPODdtnMibPbRArJBXD
+        EmKHbQr2G1Hg/mlor+k1OhYUl6g3r4QossnKRSkX+YcTTQxPScxqx/r35yGnTw3fNEyVf5
+        ghYS+pV/sSq88EFejZe58ccHS7UeR7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689698847;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0gG/SrZGF5/s3yIgwzjFlba62tVC4bEASQFHFHTinDw=;
+        b=5Agcg3CzsovgtmLs9P2htHWvOOKunhSV4WopA6/9BhjEF+Ts1aNnzWoRaa1U1bHqG+xwJc
+        Fil0WRvm5Z4c3BAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0405134B0;
+        Tue, 18 Jul 2023 16:47:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id llAuKR7CtmTiUwAAMHmgww
+        (envelope-from <krisman@suse.de>); Tue, 18 Jul 2023 16:47:26 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     brauner@kernel.org, tytso@mit.edu,
+        linux-f2fs-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v2 3/7] libfs: Validate negative dentries in
+ case-insensitive directories
+References: <20230422000310.1802-1-krisman@suse.de>
+        <20230422000310.1802-4-krisman@suse.de>
+        <20230714050028.GC913@sol.localdomain>
+Date:   Tue, 18 Jul 2023 12:47:25 -0400
+In-Reply-To: <20230714050028.GC913@sol.localdomain> (Eric Biggers's message of
+        "Thu, 13 Jul 2023 22:00:28 -0700")
+Message-ID: <87pm4p5fqa.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If there is a pa in the i_prealloc_list of an inode with a tmp_pa_end
-of 4294967296(0x100000000), since tmp_pa_end is of type ext4_lblk_t,
-tmp_pa_end will be recognized as 0 due to overflow, which causes
-(ac->ac_o_ ex.fe_logical >= tmp_pa_end) always holds, so that pa will
-always be skipped. This then triggers the regular allocation process,
-and if the excess tail of the free extent from that allocation is put
-into the i_prealloc_list again, it will again not be used. This ends up
-leaving us with a lot of free physical blocks in the i_prealloc_list.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-We avoid this problem by using pa_end() to compute tmp_pa_end and
-declaring tmp_pa_end to be of type loff_t.
+> I notice that the existing vfat_revalidate_ci() in fs/fat/namei_vfat.c behaves
+> differently in the 'flags == 0' case:
+>
+>
+> 	/*
+> 	 * This may be nfsd (or something), anyway, we can't see the
+> 	 * intent of this. So, since this can be for creation, drop it.
+> 	 */
+> 	if (!flags)
+> 		return 0;
+>
+> I don't know whether that's really needed, but have you thought about this?
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/mballoc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hi Eric,
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 77d47af525d9..06db40fb29d6 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4765,7 +4765,8 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_locality_group *lg;
- 	struct ext4_prealloc_space *tmp_pa, *cpa = NULL;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end;
-+	ext4_lblk_t tmp_pa_start;
-+	loff_t tmp_pa_end;
- 	struct rb_node *iter;
- 	ext4_fsblk_t goal_block;
- 
-@@ -4784,7 +4785,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 		/* all fields in this condition don't change,
- 		 * so we can skip locking for them */
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_end(sbi, tmp_pa);
- 
- 		/* original request start doesn't lie in this PA */
- 		if (ac->ac_o_ex.fe_logical < tmp_pa_start ||
+I didn't look much into it before because, as you know, the vfat
+case-insensitive implementation is completely different than the
+ext4/f2fs code. But I think you are on to something.
+
+The original intent of this check was to safeguard against the case
+where d_revalidate would be called without nameidata from the filesystem
+helpers. The filesystems don't give the purpose of the lookup
+(nd->flags) so there is no way to tell if the dentry is being used for
+creation, and therefore we can't rely on the negative dentry for ci. The
+path is like this:
+
+lookup_one_len(...)
+  __lookup_hash(..., nd = NULL)
+     cached_lookup(...)
+       do_revalidate(parent, name, nd)
+         dentry->d_op->d_revalidate(parent, nd);
+
+Then !nd was dropped to pass flags directly around 2012, which
+overloaded the flags meaning. Which means, d_revalidate can
+still be called for creation without (LOOKUP_CREATE|...). For
+instance, in nfsd_create.  I wasn't considering this.
+
+This sucks, because we don't have enough information to avoid the name
+check in this case, so we'd also need memcmp there.  Except it won't be
+safe. because callers won't necessarily hold the parent lock in the path
+below.
+
+ lookup_one_unlocked()
+   lookup_dcache()
+      d_revalidate()  // called unlocked
+
+Thus, I'll have to add a similar:
+
+  if (!flags)
+    return 0;
+
+Ahead of the is_creation check.  It will solve it.
+
+But i think the issue is in VFS.  the lookup_one_* functions should have
+proper lookup flags, such that d_revalidate can tell the purpose of the
+lookup.
+
 -- 
-2.31.1
-
+Gabriel Krisman Bertazi
