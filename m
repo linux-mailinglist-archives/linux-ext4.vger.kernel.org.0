@@ -2,70 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6A757ADC
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 13:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A85757C48
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 14:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjGRLsQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 07:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S230193AbjGRMyb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 08:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjGRLsI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 07:48:08 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F42EC0
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Jul 2023 04:48:07 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51e48e1f6d1so7600529a12.1
-        for <linux-ext4@vger.kernel.org>; Tue, 18 Jul 2023 04:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689680886; x=1692272886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zlIs2dsVoMlsB/D5YESYBz8KY0+SG3lYxZZPQTzebVI=;
-        b=frcHAFDOWpjvuR36HpnIiI72u46e2CI0GU5+TvRTYYrKYhzpHE1jrPxYSJpHb1WZ5u
-         Rjvu3QuVwgrssy1PGJBfjXSgeoHvbLEBcq6o9pGZTRy8rXryEJkmJsKGrX44KuirUX/S
-         Bjbra8AqzdhaNbsmCtLTLmR2L1UK9PwUFAEHGuIFjm5a+LQijfaIBIIj4z1HqpkM+Lwo
-         pW0Ex8ONIDt9E45A2Zlex2R3W6Ho7WHjQA6dNGePcE9pod5uKo5N7m3vvl7MrKq3gYcy
-         cy2AZU6ewullzS2mWYg3aXPuoOjS4HFCJ2vDeikr/9IrtasI5b+MryhNPKGWkJ6gEqSU
-         I9fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689680886; x=1692272886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zlIs2dsVoMlsB/D5YESYBz8KY0+SG3lYxZZPQTzebVI=;
-        b=XtO5d1d+03UVHyh3WROyLog+hmOERuc03CTCI2YOkG8N7ZTJPYsrPOavGQKBsxZLEK
-         eLrHCvSAeaiFavTbLt5n8ISuqpmhY3KvnJm7qnxCRRrmJd5qzNtQU3bIsKsZnl6iz9ML
-         WI4xoPrgzw5ewIMmtJ/MOA3ru1nVcupqr2/rO/4s3TUzIIqRTMwv0wT5xaH4sBznGVMU
-         ipU1EZnzf7e4xQ8NbtDIQXjudpBYUPuEW5pHHMFkLDJvE8SVecO6coiH4r//z9q1G6E2
-         of/eC827mNwP8zqCeNAj2ypIUQ6DP9txP/DAFKBOq8TueHwcWEko0f4+H0vUutIgDmSu
-         vGuA==
-X-Gm-Message-State: ABy/qLb/eZwV/zjTY2IKYaWNoWAEMh8jJ/EysTznK3RdnTfpY0kczFD3
-        8tGiVVePun3x/raoIrAVM924KDhF/bJzTxm6nvUk/g==
-X-Google-Smtp-Source: APBJJlFOb4s90Dp23tihg0GBLYaT6KbaJU1ZWY/54YeFcSGLkmVWc1J7vMYdT7KOfZGpbIWxsV9ACDuKXIxwSpFDJ64=
-X-Received: by 2002:a05:6402:457:b0:521:8bf7:bd32 with SMTP id
- p23-20020a056402045700b005218bf7bd32mr4736081edw.19.1689680885550; Tue, 18
- Jul 2023 04:48:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <87o7kbnle9.fsf@doe.com> <87jzuyobch.fsf@doe.com> <20230717213424.GB3842864@mit.edu>
-In-Reply-To: <20230717213424.GB3842864@mit.edu>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 18 Jul 2023 17:17:52 +0530
-Message-ID: <CA+G9fYt4dDCw+nLvUGcX-JHG6fvyA8qsu1Caqdog53DW8MO4Mw@mail.gmail.com>
-Subject: Re: next: kernel BUG at fs/ext4/mballoc.c:4369!
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
+        with ESMTP id S232240AbjGRMya (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 08:54:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDACD2;
+        Tue, 18 Jul 2023 05:54:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27F586155A;
+        Tue, 18 Jul 2023 12:54:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD82EC433C7;
+        Tue, 18 Jul 2023 12:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689684868;
+        bh=V2g39nCpYOscNbJKZ9rJmpSsa451hj9EPNRN51OdGRk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hqhb6g5vJo+6+8W0RT9xDtqbOW4AnzhS1/KyN/dceFbd7YKpJbQPWq4/Cb6dq7CYf
+         yAjXM+mz0/w854eRtpX5wlAeE95iG/IjxMxlxrF8PmBKq+fUtbQibuknEfBBkvv/jA
+         A/iaq062saIeZ5/pg2QxPjXRMA5o+uYg7EyJLWRN8io5npshv7pVIjquFFNlQXDQ2i
+         5z7JfZZ16JSPS6SLwX3ZzneOuic2kNiDc0hYFpUuCbg+eHl7hbFHwpNebskPML4TS3
+         fZMHLLLRrsJNqVimjN1ZTBf057T2DRLf2nNm2rSq8TmEEHmHgaBomzWaDK0vlKWM26
+         11NGJGYZvLUxQ==
+Message-ID: <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
+Subject: Re: linux-next ext4 inode size 128 corrupted
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 18 Jul 2023 08:54:26 -0400
+In-Reply-To: <26cd770-469-c174-f741-063279cdf7e@google.com>
+References: <26cd770-469-c174-f741-063279cdf7e@google.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,36 +59,112 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 03:04, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Jul 17, 2023 at 08:04:54PM +0530, Ritesh Harjani wrote:
-> >
-> > These can basically trigger in extremely low memory space and only when
-> > such ranges exist in the PA rbtree. Hence, I guess it is a little hard
-> > to tigger race.
->
-> Ritesh, thanks for looking into this!
->
-> Naresh, how easy is it for you to trigger the BUG when using LTP?  I
-> did two xfstests runs using "gce-xfstests -c ext2/default -g auto",
-> one on the ext4 dev branch, and one on linux-next 20230717, and I
-> wasn't able to trigger the BUG.
->
-> If you can trivially trigger it using LTP (perhaps with a low memory
-> configuration in your test setup?), that would be useful to know.
+On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
+> Hi Jeff,
+>=20
+> I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
+> swapping load on linux-next recently, on one machine: various kinds
+> of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
+> systemd-journald errors, segfaults.  But no problem observed running
+> on a more recent installation.
+>=20
+> Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
+> functions").
+>=20
+> I've mostly averted my eyes from the EXT4_INODE macro changes there,
+> but I think that's where the problem lies.  Reading the comment in
+> fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
+> and look at /etc/mke2fs.conf.  It's an old installation, its own
+> inodes are 256, but that old mke2fs.conf does default to 128 for small
+> FSes, and what I use for the load test is small.  Passing -I 256 to the
+> mkfs makes the problems go away.
+>=20
+> (What's most alarming about the corruption is that it appears to extend
+> beyond just the throwaway test filesystem: segfaults on bash and libc.so
+> from the root filesystem.  But no permanent damage done there.)
+>=20
+> One oddity I noticed in scrutinizing that commit, didn't help with
+> the issues above, but there's a hunk in ext4_rename() which changes
+> -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
+> +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
+>=20
+>=20
 
-In our setup it is not easy to reproduce with the same device and
-same build on x86_4 and arm64 juno-r2 connected with SSD drive
-and running LTP fs testing.
+I suspect the problem here is the i_crtime, which lives wholly in the
+extended part of the inode. The old macros would just not store anything
+if the i_crtime didn't fit, but the new ones would still store the
+tv_sec field in that case, which could be a memory corruptor. This patch
+should fix it, and I'm testing it now.
 
-LTP fs_fill is triggering several ENOSPC before getting this reported
-kernel BUG at fs/ext4/mballoc.c:4369!
+Hugh, if you're able to give this a spin on your setup, then that would
+be most helpful. This is also in the "ctime" branch in my kernel.org
+tree if that helps. If this looks good, I'll ask Christian to fold this
+into the ext4 conversion patch.
 
-The reported issues are not noticed on latest Linux next tags.
+Thanks for the bug report!
 
-- Naresh
+---------------------------8<--------------------------
 
->
-> Cheers,
->
->                                         - Ted
+[PATCH] ext4: fix the time handling macros when ext4 is using small inodes
+
+If ext4 is using small on-disk inodes, then it may not be able to store
+fine grained timestamps. It also can't store the i_crtime at all in that
+case since that fully lives in the extended part of the inode.
+
+979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+still store the tv_sec field of the i_crtime into the raw_inode, even
+when they were small, corrupting adjacent memory.
+
+This fixes those macros to skip setting anything in the raw_inode if the
+tv_sec field doesn't fit.=20
+
+Cc: Jan Kara <jack@suse.cz>
+Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+Reported-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/ext4/ext4.h | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 2af347669db7..1e2259d9967d 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -900,8 +900,10 @@ do {										\
+ #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
+ 	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode=
+))
+=20
+-#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
+-	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einod=
+e)->xtime)
++#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
++		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
++					 raw_inode, (einode)->xtime)
+=20
+ #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
+ 	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
+@@ -922,9 +924,14 @@ do {										\
+ 		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
+ } while (0)
+=20
+-#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
+-do {									       \
+-	(einode)->xtime =3D EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),=
+ raw_inode);	\
++#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
++do {										\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
++		(einode)->xtime =3D						\
++			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
++						 raw_inode);			\
++	else									\
++		(einode)->xtime =3D (struct timespec64){0, 0};			\
+ } while (0)
+=20
+ #define i_disk_version osd1.linux1.l_i_version
+--=20
+2.41.0
+
+
