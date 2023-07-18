@@ -2,104 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949DC757183
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 03:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C4F757271
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 05:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjGRB5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jul 2023 21:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        id S230319AbjGRDno (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Jul 2023 23:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjGRB5X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jul 2023 21:57:23 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9706E6C;
-        Mon, 17 Jul 2023 18:57:22 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b89d47ffb6so29112075ad.2;
-        Mon, 17 Jul 2023 18:57:22 -0700 (PDT)
+        with ESMTP id S229820AbjGRDnn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jul 2023 23:43:43 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54080134
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Jul 2023 20:43:42 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso5560710276.2
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Jul 2023 20:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689645442; x=1692237442;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+        d=google.com; s=20221208; t=1689651821; x=1692243821;
+        h=mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=zpwYvBryKekjodYDIsqD2F2J1FH8FhSMhj0KMFUDpts=;
-        b=PyC5itYPYjFB8EUfq/sZ8PT9+t0hU4PHacCGlqauyl/VWXiFOMEgNtExFuGt/s04SQ
-         uW9fBR15QWzE5Ib5xcf9D7Pej7xuslfpVWT10KmmNwtnK9f7LbXoXSfBLLs5NnHwYUo+
-         8ub7C0ZkfkGF2SU2lyke1UwOxbAGU7PM9vj3TQYrjzB0POW4LPSNh5eFKTFsxFCSi5yH
-         bL+PKTQsNUK3f38N+oBc7gNZU3fx0moALggKAqvEu0R5z7v5scuvBW8XBK6vmqvU0ygd
-         14erZcpwJ4k23QQbN3QED1AYGKsARnFGQ+HQxDs46nOz7weQKipxurhI7+R7FvgsTrWz
-         OGCg==
+        bh=X/0l9RJowbMxXDULly0Ti3aPz7vZFI5wYz6gn4D5zxQ=;
+        b=CncNHcE3w55A8LIGKQUsaOgkrJsUyucNE+YSlx8iqq6BtRqhkmprOPimO3jnWweAxj
+         aN228hLHIju/BFL4mOpO8q2s1QG61Zi1cf1KnLCSi1LTALG0quvDiKY/m6oxsvQmrd1K
+         ECdlWD1OtwzqxeTOEvOO96szV8e71C12QAC+/4doO4R804A55oqsyhgny0cYMU3DOZ0R
+         Lr+XTUqV4vNE6FngkWVnwQeJ5In9W+Mjp2nxeRJQh+Pj6IKm5EAvI8UcbWqlkF6oXvPN
+         tngVvzOucnth/Nw3yz/xdpMq32Mr88Fo185e8cKzl1lNUTXHEsCKcVwEnmhSZYe2zrpR
+         i8zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689645442; x=1692237442;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+        d=1e100.net; s=20221208; t=1689651821; x=1692243821;
+        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zpwYvBryKekjodYDIsqD2F2J1FH8FhSMhj0KMFUDpts=;
-        b=EC+23SZrkeIdjBf2kikDMzwpoNIR01CzNUv/+bFXOXSaGOfQ+FYCwmy9vBx3XgN59U
-         H6aeDeFuH2jeOoGUoVHlcGEJK7IJaZwN1/byxdBazamkkbI2jaacMeK08JXbl7brMXy1
-         V0UhuEhd2CKsVCB7Uq+vFLQn6Pgrd0b0AlYaVoVdbZwgso0dGc1Y+Ddiut03PJVzpWaJ
-         XKEefXQ+CoptrtUxyryABE/DmF9z7dm1rF84i5KkRS6dzKCjHMe/9ELjb2PreziKoHkB
-         IpH/zUhxIzajz/+JyAFvjE7B92adYgBqEJ+r0atk7nkphDfHIZ4I63cWxFQ+axNKMC/N
-         AfCA==
-X-Gm-Message-State: ABy/qLZKSV0wHxEDynEl7/oG0QtsoFdDwHWsHZSRRlaXye9X6ODxa9vz
-        /3J7+H+0CUBIUqOKK6xbsyRrG46tJQ0=
-X-Google-Smtp-Source: APBJJlFgGWmuKWn5GFBhQDlQxlq4jLT9kF22MJBnNKr2ToSHiTCslUYnwdKsvmsmZBsYB3+p4ihjLA==
-X-Received: by 2002:a17:903:244c:b0:1ba:ff36:e0d8 with SMTP id l12-20020a170903244c00b001baff36e0d8mr13122916pls.61.1689645442038;
-        Mon, 17 Jul 2023 18:57:22 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902e98400b001b882880550sm487420plb.282.2023.07.17.18.57.18
+        bh=X/0l9RJowbMxXDULly0Ti3aPz7vZFI5wYz6gn4D5zxQ=;
+        b=eOrZyY/9m8+kgm7m6yGsWYI3YdHcBCKszH/HjdKs1gR4lnSw5x3BUWAbhpv/hi4BXx
+         iGJqKXViZjCAgzR65seHbJu6uUmS6FCP8KFs2w2bZu4HMUvN/MnkFfkvi7jj62DKl40E
+         rg8ERS9wzAxoCNqf+sUDU+BCMjRlTnBVGvwr4g3UiyIvCel6OSIeUupvS8A/AA61E9p0
+         29eGlbbRFuiRtiP7veSxuh5VhQvwex0NLMoeoBQiky5+Mm8Zg8xvcui3TxugBANM7MOu
+         RPFilHDDl+mOMsGbQEwrflmQ9WJ9FoF6jZrC3eXPX9mmu3sJro1uHwPTt9VCEtqaGo3R
+         +FHw==
+X-Gm-Message-State: ABy/qLaq3ePR0Tj5T2g9On0USwFluZPkRyuK3QjQbnS88CcSbeWiLJv7
+        B39JF/fKFUKxQCnlLEUmpSojXTqiZMmGYP2wZPCl+g==
+X-Google-Smtp-Source: APBJJlFC950yHTDDs30Dfo+udphheJh0ySlAY8ixTHrpSMmicnpTVarfG8yPJ59C/YDcqaFiP5999w==
+X-Received: by 2002:a25:21d7:0:b0:b9e:889:420f with SMTP id h206-20020a2521d7000000b00b9e0889420fmr1629907ybh.12.1689651821104;
+        Mon, 17 Jul 2023 20:43:41 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id j11-20020a25550b000000b00bceb538a275sm255483ybb.21.2023.07.17.20.43.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 18:57:21 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 07:27:16 +0530
-Message-Id: <87h6q2nfr7.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
+        Mon, 17 Jul 2023 20:43:40 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 20:43:30 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Jeff Layton <jlayton@kernel.org>
+cc:     Theodore Ts'o <tytso@mit.edu>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: Re: next: kernel BUG at fs/ext4/mballoc.c:4369!
-In-Reply-To: <20230717213424.GB3842864@mit.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: linux-next ext4 inode size 128 corrupted
+Message-ID: <26cd770-469-c174-f741-063279cdf7e@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+Hi Jeff,
 
-> On Mon, Jul 17, 2023 at 08:04:54PM +0530, Ritesh Harjani wrote:
->> 
->> These can basically trigger in extremely low memory space and only when
->> such ranges exist in the PA rbtree. Hence, I guess it is a little hard
->> to tigger race.
->
-> Ritesh, thanks for looking into this!
->
-> Naresh, how easy is it for you to trigger the BUG when using LTP?  I
-> did two xfstests runs using "gce-xfstests -c ext2/default -g auto",
-> one on the ext4 dev branch, and one on linux-next 20230717, and I
-> wasn't able to trigger the BUG.
->
-> If you can trivially trigger it using LTP (perhaps with a low memory
-> configuration in your test setup?), that would be useful to know.
+I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
+swapping load on linux-next recently, on one machine: various kinds
+of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
+systemd-journald errors, segfaults.  But no problem observed running
+on a more recent installation.
 
-Hi Ted,
+Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
+functions").
 
-Sorry for wrong choice of words. By low memory space I meant low disk
-space i.e. ENOSPC test (fs_fill). I reproduced it like this - 
+I've mostly averted my eyes from the EXT4_INODE macro changes there,
+but I think that's where the problem lies.  Reading the comment in
+fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
+and look at /etc/mke2fs.conf.  It's an old installation, its own
+inodes are 256, but that old mke2fs.conf does default to 128 for small
+FSes, and what I use for the load test is small.  Passing -I 256 to the
+mkfs makes the problems go away.
 
-root@ubuntu:/opt/ltp# while [ 1 ]; do ./runltp -s fs_fill; sleep 1; done
+(What's most alarming about the corruption is that it appears to extend
+beyond just the throwaway test filesystem: segfaults on bash and libc.so
+from the root filesystem.  But no permanent damage done there.)
 
-For me it took around ~1-2 hours for it to reproduce when I tried again.
-I am hoping if we run generic/269 (fsstress ENOSPC) in a while loop like
-this maybe it can hit this bug. But I didn't give it a shot.
+One oddity I noticed in scrutinizing that commit, didn't help with
+the issues above, but there's a hunk in ext4_rename() which changes
+-	old.dir->i_ctime = old.dir->i_mtime = current_time(old.dir);
++	old.dir->i_mtime = inode_set_ctime_current(old.inode);
 
--ritesh
+Hugh
