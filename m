@@ -2,122 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB995758598
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 21:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD59175873D
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 23:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjGRTeR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 15:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S230375AbjGRVci (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 17:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjGRTeQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 15:34:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D7198D;
-        Tue, 18 Jul 2023 12:34:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 912B521228;
-        Tue, 18 Jul 2023 19:34:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689708854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nfRfgiokLRl5nqf7y5XFPbUJv0GuTL/H7C55bO7v3R4=;
-        b=cDrfz3Bxd3Nd94VFgL2JVO8njdKs183T68KwWa+HKUDHdGI4+lryOaPHUxSmejrApiOfr0
-        D/uaaLm82JxebaF1tnpXJdSInbh1FTMQsm7swQhggH66EAFEjvbzcBfkZ2xbh2zmJNftVM
-        4GEhE7V8Pw/YWR6lp0cAzGw+1yJPuSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689708854;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nfRfgiokLRl5nqf7y5XFPbUJv0GuTL/H7C55bO7v3R4=;
-        b=NQiOerI24agrAV49xPs4KDHdoE/FPKXqLjVaD+XVZCNr66B3f73Bp098UjLLk5Z9RLAmVl
-        RBcw3XRxPIsiOCAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57904134B0;
-        Tue, 18 Jul 2023 19:34:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fVW6DzbptmQaIgAAMHmgww
-        (envelope-from <krisman@suse.de>); Tue, 18 Jul 2023 19:34:14 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 4/7] libfs: Support revalidation of encrypted
- case-insensitive dentries
-References: <20230422000310.1802-1-krisman@suse.de>
-        <20230422000310.1802-5-krisman@suse.de>
-        <20230714053135.GD913@sol.localdomain>
-Date:   Tue, 18 Jul 2023 15:34:13 -0400
-In-Reply-To: <20230714053135.GD913@sol.localdomain> (Eric Biggers's message of
-        "Thu, 13 Jul 2023 22:31:35 -0700")
-Message-ID: <87h6q1580a.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        with ESMTP id S230197AbjGRVcf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 17:32:35 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478AF19B0
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Jul 2023 14:32:31 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-116-181.bstnma.fios.verizon.net [173.48.116.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36ILWCmR016366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 17:32:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1689715935; bh=60OkbbKeTbip62zLW81bcGNdcbyOjtefyk1+2g/3VaE=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=YHXOEGydXdG+I3F0VyUNF2MN5/PxUaZPy4Paf0QoCqgp76+4r2PMam19alPa0Yayu
+         cEe6xRFB1x/ZOYUzCDshBQMRt8KOeHb5gt7YXH3vJ54PPhpqotd6HQoTn+zIcSru13
+         qCoA+IMID7JVL2611GvDX4kuoaI/VcpHIVAIcATq7GpTE+laMHT+aescxDdpRWFAjq
+         DxU7ruFUnMi1iRGN9e4xTBtvPbPVMeoFvjuFMSlazdJj0rFLiukQpOT5Mj7qtHGM3b
+         60+kdhQpcH6iswdsxJ4Qx3zHCD5N4HHwcamnHhFgNU8bmgmJuldn2SAgEWCXlztYcY
+         poBQVBGfuK6vQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5D34B15C026A; Tue, 18 Jul 2023 17:32:12 -0400 (EDT)
+Date:   Tue, 18 Jul 2023 17:32:12 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Alan C. Assis" <acassis@gmail.com>
+Cc:     =?iso-8859-1?Q?Bj=F8rn?= Forsman <bjorn.forsman@gmail.com>,
+        Kai Tomerius <kai@tomerius.de>, linux-embedded@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        dm-devel@redhat.com
+Subject: Re: File system robustness
+Message-ID: <20230718213212.GE3842864@mit.edu>
+References: <20230717075035.GA9549@tomerius.de>
+ <CAG4Y6eTU=WsTaSowjkKT-snuvZwqWqnH3cdgGoCkToH02qEkgg@mail.gmail.com>
+ <20230718053017.GB6042@tomerius.de>
+ <CAEYzJUGC8Yj1dQGsLADT+pB-mkac0TAC-typAORtX7SQ1kVt+g@mail.gmail.com>
+ <CAG4Y6eTN1XbZ_jAdX+t2mkEN=KoNOqprrCqtX0BVfaH6AxkdtQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG4Y6eTN1XbZ_jAdX+t2mkEN=KoNOqprrCqtX0BVfaH6AxkdtQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Tue, Jul 18, 2023 at 10:04:55AM -0300, Alan C. Assis wrote:
+> 
+> You are right, for NAND there is an old (but gold) presentation here:
+> 
+> https://elinux.org/images/7/7e/ELC2009-FlashFS-Toshiba.pdf
+> 
+> UBIFS and YAFFS2 are the way to go.
 
-> On Fri, Apr 21, 2023 at 08:03:07PM -0400, Gabriel Krisman Bertazi wrote:
->> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->> 
->> Preserve the existing behavior for encrypted directories, by rejecting
->> negative dentries of encrypted+casefolded directories.  This allows
->> generic_ci_d_revalidate to be used by filesystems with both features
->> enabled, as long as the directory is either casefolded or encrypted, but
->> not both at the same time.
->> 
->> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->> ---
->>  fs/libfs.c | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->> 
->> diff --git a/fs/libfs.c b/fs/libfs.c
->> index f8881e29c5d5..0886044db593 100644
->> --- a/fs/libfs.c
->> +++ b/fs/libfs.c
->> @@ -1478,6 +1478,9 @@ static inline int generic_ci_d_revalidate(struct dentry *dentry,
->>  		const struct inode *dir = READ_ONCE(parent->d_inode);
->>  
->>  		if (dir && needs_casefold(dir)) {
->> +			if (IS_ENCRYPTED(dir))
->> +				return 0;
->> +
->
-> Why not allow negative dentries in case-insensitive encrypted directories?
-> I can't think any reason why it wouldn't just work.
+This presentation is specifically talking about flash devices that do
+not have a flash translation layer (that is, they are using the MTD
+interface).
 
-TBH, I'm not familiar with the details of combined encrypted+casefold
-support to be confident it works.  This patch preserves the current
-behavior of disabling them for encrypted+casefold directories.
+There are multiple kinds of flash devices, that can be exported via
+different interfaces: MTD, USB Storage, eMMC, UFS, SATA, SCSI, NVMe,
+etc.  There are also differences in terms of the sophistication of the
+Flash Translation Layer in terms of how powerful is the
+microcontroller, how much memory and persistant storage for flash
+metadata is available to the FTL, etc.
 
-I suspect it might require extra work that I'm not focusing on this
-patchset.  For instance, what should be the order of
-fscrypt_d_revalidate and the checks I'm adding here? Note we will start
-creating negative dentries in casefold directories after patch 6/7, so
-unless we disable it here, we will start calling fscrypt_d_revalidate
-for negative+casefold.
+F2FS is a good choice for "low end flash", especially those flash
+devices that use a very simplistic mapping between LBA (block/sector
+numbers) and the physical flash to be used, and may have a very
+limited number of flash blocks that can be open for modification at a
+time.  For more sophiscated flash storage devices (e.g., SSD's and
+higher end flash devices), this consideration won't matter, and then
+the best file system to use will be very dependant on your workload.
 
-Should I just drop this hunk?  Unless you are confident it works as is, I
-prefer to add this support in stages and keep negative dentries of
-encrypted+casefold directories disabled for now.
+In answer to Kai's original question, the setup that was described
+should be fine --- assuming high quality hardware.  There are some
+flash devices that designed to handle power failures correctly; which
+is to say, if power is cut suddenly, the data used by the Flash
+Translation Layer can be corrupted, in which case data written months
+or years ago (not just recent data) could be lost.  There have been
+horror stories about wedding photographers who dropped their camera,
+and the SD Card came shooting out, and *all* of the data that was shot
+on some couple's special day was completely *gone*.
 
--- 
-Gabriel Krisman Bertazi
+Assuming that you have valid, power drop safe hardware, running fsck
+after a power cut is not necessary, at least as far as file system
+consistency is concerned.  If you have badly written userspace
+application code, then all bets can be off.  For example, consider the
+following sequence of events:
+
+1)  An application like Tuxracer truncates the top-ten score file
+2)  It then writes a new top-ten score file
+3)  <Fail to call fsync, or write the file to a foo.new and then
+       rename on top of the old version of the file>
+4)  Ut then closes the Open GL library, triggering a bug in the cruddy
+    proprietary binary-only kernel module video driver,
+    leading to an immediate system crash.
+5)  Complain to the file system developers that users' top-ten score
+    file was lost, and what are the file system developers going to
+    do about it?
+6)  File system developers start creating T-shirts saying that what userspace
+    applications really are asking for is a new open(2) flag, O_PONIES[1]
+
+[1] https://blahg.josefsipek.net/?p=364
+
+So when you talk about overall system robustness, you need robust
+hardware, you need a robust file aystem, you need to use the file
+system correctly, and you have robust userspace applications.
+
+If you get it all right, you'll be fine.  On the other hand, if you
+have crappy hardware (such as might be found for cheap in the checkout
+counter of the local Micro Center, or in a back alley vendor in
+Shenzhen, China), or if you do something like misconfigure the file
+system such as using the "nobarrier" mount option "to speed things
+up", or if you have applications that update files in an unsafe
+manner, then you will have problems.
+
+Welcome to systems engineering.  :-)
+
+						- Ted
