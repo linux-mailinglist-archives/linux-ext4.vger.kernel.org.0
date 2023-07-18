@@ -2,139 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DC97584C3
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 20:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB995758598
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jul 2023 21:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjGRS1b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 14:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        id S229665AbjGRTeR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 15:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGRS1b (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 14:27:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEDFB6;
-        Tue, 18 Jul 2023 11:27:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S229660AbjGRTeQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 15:34:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D7198D;
+        Tue, 18 Jul 2023 12:34:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D1DE616A8;
-        Tue, 18 Jul 2023 18:27:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344B5C433C7;
-        Tue, 18 Jul 2023 18:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689704849;
-        bh=uNk0XUkdDBUHQlqednb/jEUGmxpFPqSLJgCZ0SHSywA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ATBHZKnA6K3s7qp0wC9FoKKdLm8GN8TwCjn20vt11Xo/Rp44a3FuZiHkE7kCVFdLF
-         Idtw0XGj+HcRZm8frnVjt0aWvAmc1VnRQIG6VQXLEvFTyfIR8Io2HaP9tIpjd8R6iC
-         7YrmeydcowvlHarjkWzzu3H9SHpIhineZA0RmgYw/QYq6pjVDsQuYR6X6sM61i0/2F
-         DcjtrgQi7XEVLka8acDvqZKcS9t1HFalcCxGsBHyNKFbX2vYQH/YmVMmbOtho6T7t7
-         LpMjhcJRvb/fm/nGvdXUPf+umv7L6beeIa20+PqbRIuGdQNhfDsjMl10VHNKblVwcY
-         /p0LFfpF3JhTw==
-Message-ID: <a77881074b9710399fd2ad43e17fa26bf9b397cb.camel@kernel.org>
-Subject: Re: linux-next ext4 inode size 128 corrupted
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 18 Jul 2023 14:27:26 -0400
-In-Reply-To: <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
-References: <26cd770-469-c174-f741-063279cdf7e@google.com>
-         <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
-         <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 912B521228;
+        Tue, 18 Jul 2023 19:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689708854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nfRfgiokLRl5nqf7y5XFPbUJv0GuTL/H7C55bO7v3R4=;
+        b=cDrfz3Bxd3Nd94VFgL2JVO8njdKs183T68KwWa+HKUDHdGI4+lryOaPHUxSmejrApiOfr0
+        D/uaaLm82JxebaF1tnpXJdSInbh1FTMQsm7swQhggH66EAFEjvbzcBfkZ2xbh2zmJNftVM
+        4GEhE7V8Pw/YWR6lp0cAzGw+1yJPuSc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689708854;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nfRfgiokLRl5nqf7y5XFPbUJv0GuTL/H7C55bO7v3R4=;
+        b=NQiOerI24agrAV49xPs4KDHdoE/FPKXqLjVaD+XVZCNr66B3f73Bp098UjLLk5Z9RLAmVl
+        RBcw3XRxPIsiOCAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57904134B0;
+        Tue, 18 Jul 2023 19:34:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fVW6DzbptmQaIgAAMHmgww
+        (envelope-from <krisman@suse.de>); Tue, 18 Jul 2023 19:34:14 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 4/7] libfs: Support revalidation of encrypted
+ case-insensitive dentries
+References: <20230422000310.1802-1-krisman@suse.de>
+        <20230422000310.1802-5-krisman@suse.de>
+        <20230714053135.GD913@sol.localdomain>
+Date:   Tue, 18 Jul 2023 15:34:13 -0400
+In-Reply-To: <20230714053135.GD913@sol.localdomain> (Eric Biggers's message of
+        "Thu, 13 Jul 2023 22:31:35 -0700")
+Message-ID: <87h6q1580a.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-07-18 at 11:03 -0700, Hugh Dickins wrote:
-> On Tue, 18 Jul 2023, Jeff Layton wrote:
-> > On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
-> > > Hi Jeff,
-> > >=20
-> > > I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
-> > > swapping load on linux-next recently, on one machine: various kinds
-> > > of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
-> > > systemd-journald errors, segfaults.  But no problem observed running
-> > > on a more recent installation.
-> > >=20
-> > > Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
-> > > functions").
-> > >=20
-> > > I've mostly averted my eyes from the EXT4_INODE macro changes there,
-> > > but I think that's where the problem lies.  Reading the comment in
-> > > fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
-> > > and look at /etc/mke2fs.conf.  It's an old installation, its own
-> > > inodes are 256, but that old mke2fs.conf does default to 128 for smal=
-l
-> > > FSes, and what I use for the load test is small.  Passing -I 256 to t=
-he
-> > > mkfs makes the problems go away.
-> > >=20
-> > > (What's most alarming about the corruption is that it appears to exte=
-nd
-> > > beyond just the throwaway test filesystem: segfaults on bash and libc=
-.so
-> > > from the root filesystem.  But no permanent damage done there.)
-> > >=20
-> > > One oddity I noticed in scrutinizing that commit, didn't help with
-> > > the issues above, but there's a hunk in ext4_rename() which changes
-> > > -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
-> > > +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
-> > >=20
-> > >=20
-> >=20
-> > I suspect the problem here is the i_crtime, which lives wholly in the
-> > extended part of the inode. The old macros would just not store anythin=
-g
-> > if the i_crtime didn't fit, but the new ones would still store the
-> > tv_sec field in that case, which could be a memory corruptor. This patc=
-h
-> > should fix it, and I'm testing it now.
->=20
-> That makes sense.
->=20
-> >=20
-> > Hugh, if you're able to give this a spin on your setup, then that would
-> > be most helpful. This is also in the "ctime" branch in my kernel.org
-> > tree if that helps. If this looks good, I'll ask Christian to fold this
-> > into the ext4 conversion patch.
->=20
-> Yes, it's now running fine on the problem machine, and on the no-problem.
->=20
-> Tested-by: Hugh Dickins <hughd@google.com>
->=20
-> >=20
-> > Thanks for the bug report!
->=20
-> And thanks for the quick turnaround!
->=20
-> But I'm puzzled by your dismissing that
-> -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
-> +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
-> in ext4_rename() as "actually looks fine".
->=20
-> Different issue, nothing to do with the corruption, sure.  Much less
-> important, sure.  But updating ctime on the wrong inode is "fine"?
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Ahh , sorry I wasn't looking at that properly. I think you're correct.
-The right fix is probably to move ext4 to use generic_rename_timestamp.
-I'll test and send another patch for that.
+> On Fri, Apr 21, 2023 at 08:03:07PM -0400, Gabriel Krisman Bertazi wrote:
+>> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> 
+>> Preserve the existing behavior for encrypted directories, by rejecting
+>> negative dentries of encrypted+casefolded directories.  This allows
+>> generic_ci_d_revalidate to be used by filesystems with both features
+>> enabled, as long as the directory is either casefolded or encrypted, but
+>> not both at the same time.
+>> 
+>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> ---
+>>  fs/libfs.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/fs/libfs.c b/fs/libfs.c
+>> index f8881e29c5d5..0886044db593 100644
+>> --- a/fs/libfs.c
+>> +++ b/fs/libfs.c
+>> @@ -1478,6 +1478,9 @@ static inline int generic_ci_d_revalidate(struct dentry *dentry,
+>>  		const struct inode *dir = READ_ONCE(parent->d_inode);
+>>  
+>>  		if (dir && needs_casefold(dir)) {
+>> +			if (IS_ENCRYPTED(dir))
+>> +				return 0;
+>> +
+>
+> Why not allow negative dentries in case-insensitive encrypted directories?
+> I can't think any reason why it wouldn't just work.
 
-Thanks again!
---=20
-Jeff Layton <jlayton@kernel.org>
+TBH, I'm not familiar with the details of combined encrypted+casefold
+support to be confident it works.  This patch preserves the current
+behavior of disabling them for encrypted+casefold directories.
+
+I suspect it might require extra work that I'm not focusing on this
+patchset.  For instance, what should be the order of
+fscrypt_d_revalidate and the checks I'm adding here? Note we will start
+creating negative dentries in casefold directories after patch 6/7, so
+unless we disable it here, we will start calling fscrypt_d_revalidate
+for negative+casefold.
+
+Should I just drop this hunk?  Unless you are confident it works as is, I
+prefer to add this support in stages and keep negative dentries of
+encrypted+casefold directories disabled for now.
+
+-- 
+Gabriel Krisman Bertazi
