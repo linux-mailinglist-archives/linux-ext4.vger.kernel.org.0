@@ -2,123 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFF4758847
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jul 2023 00:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD30D758AE1
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jul 2023 03:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjGRWKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Jul 2023 18:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        id S229875AbjGSBfp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jul 2023 21:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjGRWKq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 18:10:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF521998;
-        Tue, 18 Jul 2023 15:10:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 792276122C;
-        Tue, 18 Jul 2023 22:10:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B545C433C7;
-        Tue, 18 Jul 2023 22:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689718242;
-        bh=N9VprbmcyfsUGUzo3F8QagSXSUpuZxEJLOZz4+DJsd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PuNa0R7001LENL2JRD37XvuwidpUxdIf0B9ioJPshgsa+WiqpKDW8R8g1hBEBdfUM
-         RCbwjD5W5l9Bd6m6m5o3cAAxyasl5fSYIxdJQZL5mJUzfagFbBqj1/Y7HzbnPDrSq/
-         cEK7/MtSWLIVrQGIC/nrl6B+z1nkQuEdi4grmH8cpnJzueVs4xGkFY/sATd5KLCmbD
-         FsT+XS6j1Imo1VbpTY0FRpthfugptFReBBQQ/d0IyXtYPUjfTRG8+3pY/DJH6nlvxB
-         RQFHii7kFOTxMEUNlcHv8m9+/AUy6aN/uACsh6es5Yd4+n4X92i6Z7CVoSfRj2UCX9
-         rt8gq3dXyjOGw==
-Date:   Tue, 18 Jul 2023 15:10:40 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 4/7] libfs: Support revalidation of encrypted
- case-insensitive dentries
-Message-ID: <20230718221040.GA1005@sol.localdomain>
-References: <20230422000310.1802-1-krisman@suse.de>
- <20230422000310.1802-5-krisman@suse.de>
- <20230714053135.GD913@sol.localdomain>
- <87h6q1580a.fsf@suse.de>
+        with ESMTP id S229562AbjGSBfo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jul 2023 21:35:44 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704961BDB
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Jul 2023 18:35:42 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bac0e25891so754514fac.2
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Jul 2023 18:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1689730541; x=1692322541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xZssYNKocP7SJAjxckC3wBJ507CzulE9IvrMWjf3P+k=;
+        b=5Slf0Wf1DkEOl9A1TiQUYv8SMKm8hpMZkE2pdlrBFVPzzvpLYuiVjUXLVmHCw57mm3
+         QfMAXPNPanSdHmq5ZWXmuM6TgukKEbveLzpwksx2dw9ZklwdjhA52vimEHT2eirBfa+2
+         IT2vnquxNaJm7BjHGdah8DmKJSIjdo0Yp6c26+N05rt7PzrzOKrn94s8yKsSInPTUfNp
+         YfGoevKBsYDtPuhIbewKvY1jLvJ5fb914inI0h60wc0+K8b0g/S/UYKcw11+BXpzkI08
+         6FecWUvMm8TYFIR2erayRFzaDHDt6sysMcKT2DfDdd2VqMiXCbsW5RRwMl7laE7GyBrL
+         HnfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689730541; x=1692322541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xZssYNKocP7SJAjxckC3wBJ507CzulE9IvrMWjf3P+k=;
+        b=D6BMFCPxejw04I6B9i4vsqDmVkbKnpwwS2sRdPakyPjjPD0cVlmFY7thnJud17aCL+
+         9PyorSpvNiNdPTdEhkq3Pwmm+Xh0UKxjwZyr1eib5SZDgsQ54l4X11TNVRNc1x5rU5SL
+         d8GwYI6hj8HF4BEV1OBiy4gwdPMYMdTnB8UBPTs41i5OaFEse6p8B4OslsZglF4Le/OU
+         L8wuwa/8uuld/fJrwAAIZTR4nH3Cv6gi7oAi9PuJ0te3brMJhR/EEXYrkieIM/wQp564
+         RovrpNG9QqAWeA45R7duZxqPL7W/lUtWuHIwiZqaRrQywvxN/8o1P3xDbFAY1RTePeeS
+         ueAQ==
+X-Gm-Message-State: ABy/qLYYc1RTxQjwanit1GyMKGiy2eAF8klf8yEYIhsfMiJJz+lqy/k7
+        Gxme/JqYPZFbLbmvpWwd7SnvCg==
+X-Google-Smtp-Source: APBJJlHb4gEwJfD+TL2icCrXL1rPSO1/If2sqk52+FC1gSV2ztjdma15fYoDbEqUpP5c7bsoFPcHEw==
+X-Received: by 2002:a05:6870:96a6:b0:1b3:8d35:c85f with SMTP id o38-20020a05687096a600b001b38d35c85fmr1011777oaq.1.1689730541592;
+        Tue, 18 Jul 2023 18:35:41 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id 201-20020a6301d2000000b005633311c70dsm2343100pgb.32.2023.07.18.18.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 18:35:40 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qLw6L-007mcz-1V;
+        Wed, 19 Jul 2023 11:35:37 +1000
+Date:   Wed, 19 Jul 2023 11:35:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v5 6/8] xfs: switch to multigrain timestamps
+Message-ID: <ZLc96V2Yo72sthsi@dread.disaster.area>
+References: <20230713-mgctime-v5-0-9eb795d2ae37@kernel.org>
+ <20230713-mgctime-v5-6-9eb795d2ae37@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h6q1580a.fsf@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230713-mgctime-v5-6-9eb795d2ae37@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 03:34:13PM -0400, Gabriel Krisman Bertazi wrote:
-> Eric Biggers <ebiggers@kernel.org> writes:
+On Thu, Jul 13, 2023 at 07:00:55PM -0400, Jeff Layton wrote:
+> Enable multigrain timestamps, which should ensure that there is an
+> apparent change to the timestamp whenever it has been written after
+> being actively observed via getattr.
 > 
-> > On Fri, Apr 21, 2023 at 08:03:07PM -0400, Gabriel Krisman Bertazi wrote:
-> >> From: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >> 
-> >> Preserve the existing behavior for encrypted directories, by rejecting
-> >> negative dentries of encrypted+casefolded directories.  This allows
-> >> generic_ci_d_revalidate to be used by filesystems with both features
-> >> enabled, as long as the directory is either casefolded or encrypted, but
-> >> not both at the same time.
-> >> 
-> >> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >> ---
-> >>  fs/libfs.c | 8 ++++++--
-> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >> 
-> >> diff --git a/fs/libfs.c b/fs/libfs.c
-> >> index f8881e29c5d5..0886044db593 100644
-> >> --- a/fs/libfs.c
-> >> +++ b/fs/libfs.c
-> >> @@ -1478,6 +1478,9 @@ static inline int generic_ci_d_revalidate(struct dentry *dentry,
-> >>  		const struct inode *dir = READ_ONCE(parent->d_inode);
-> >>  
-> >>  		if (dir && needs_casefold(dir)) {
-> >> +			if (IS_ENCRYPTED(dir))
-> >> +				return 0;
-> >> +
-> >
-> > Why not allow negative dentries in case-insensitive encrypted directories?
-> > I can't think any reason why it wouldn't just work.
+> Also, anytime the mtime changes, the ctime must also change, and those
+> are now the only two options for xfs_trans_ichgtime. Have that function
+> unconditionally bump the ctime, and warn if XFS_ICHGTIME_CHG is ever not
+> set.
 > 
-> TBH, I'm not familiar with the details of combined encrypted+casefold
-> support to be confident it works.This patch preserves the current
-> behavior of disabling them for encrypted+casefold directories.
-
-Not allowing that combination reduces the usefulness of this patchset.
-Note that Android's use of casefold is always combined with encryption.
-
-> I suspect it might require extra work that I'm not focusing on this
-> patchset.  For instance, what should be the order of
-> fscrypt_d_revalidate and the checks I'm adding here?
-
-Why would order matter?  If either "feature" wants the dentry to be invalidated,
-then the dentry gets invalidated.
-
-> Note we will start creating negative dentries in casefold directories after
-> patch 6/7, so unless we disable it here, we will start calling
-> fscrypt_d_revalidate for negative+casefold.
-
-fscrypt_d_revalidate() only cares about the DCACHE_NOKEY_NAME flag, so that's
-not a problem.
-
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/xfs/libxfs/xfs_trans_inode.c | 6 +++---
+>  fs/xfs/xfs_iops.c               | 4 ++--
+>  fs/xfs/xfs_super.c              | 2 +-
+>  3 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> Should I just drop this hunk?  Unless you are confident it works as is, I
-> prefer to add this support in stages and keep negative dentries of
-> encrypted+casefold directories disabled for now.
+> diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
+> index 0c9df8df6d4a..86f5ffce2d89 100644
+> --- a/fs/xfs/libxfs/xfs_trans_inode.c
+> +++ b/fs/xfs/libxfs/xfs_trans_inode.c
+> @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
+>  	ASSERT(tp);
+>  	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+>  
+> -	tv = current_time(inode);
+> +	/* If the mtime changes, then ctime must also change */
+> +	WARN_ON_ONCE(!(flags & XFS_ICHGTIME_CHG));
 
-Unless I'm missing something, I think you're overcomplicating it.  It should
-just work if you don't go out of your way to prohibit this case.  I.e., just
-don't add the IS_ENCRYPTED(dir) check to generic_ci_d_revalidate().
+Make that an ASSERT(flags & XFS_ICHGTIME_CHG), please. There's no
+need to verify this at runtime on production kernels.
 
-- Eric
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
