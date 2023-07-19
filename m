@@ -2,125 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A75175937A
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jul 2023 12:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06888759D3E
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jul 2023 20:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjGSKyv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Jul 2023 06:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S229542AbjGSS1R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Jul 2023 14:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGSKyu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jul 2023 06:54:50 -0400
-X-Greylist: delayed 174 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 03:54:48 PDT
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B79123;
-        Wed, 19 Jul 2023 03:54:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1689763901; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=YFE3oRIx5xOpJJkrH2X2V/kuuQ7dXiLg6xxrLpPcYM1jXz/zzdjAmrmf7fhceOM82S
-    ogQt+TotYoe4773Jn4uPBastZLsaOi5ir+Yp/hYlK/JMtvpI/hnUvg8G1UvuOOwqCXJy
-    v/WXn4jrRkn9pIIS38ychBdfiC5qOVdrlsko6a/9Zgwu6+QViFS2VVLTXdRObFf+5uAl
-    aWNzDbdaH4lJr4X0gnmsnm/eXTRBUQEe1seBJuuBbHNTIrP+SmsGZ+33cTeT7K+iqius
-    SOinfVhCFIZS/w4je3ypKMMvS5P46s60emDY3ZPb2quw3BCzrfsTO4WgKqivc7jP+0Bw
-    RzTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689763901;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=lvLGZstJ8wKorYy8rcLHdorayXbsT3iQ7MhbnharKpE=;
-    b=qHzVZrne5P4O25MRsho6FvQgsyWrjfiVzZJ31HhjAf92pDc5FhipQRyQaM0r4WjRN1
-    GkgVDC9q01lwiiKwPFhmyETrYmjJs5hpn1bb0ymnf459wNtzCFSTMcWKiCGpy/SQdNbe
-    ebKNXXKFTSLyoN8hJo+KoFV1Jw3+dPzfEqL7LgvLbxdBZ8SxTqmeF3zDYp1Y8vnroC0c
-    Sm7uOnQ2QWaZW0hFxmhVe1ceA6RgOcSEgi3lhBjoipSGjQmyr1nw/1gQ7pG50qGrn+8e
-    mRoTUA+V34KsQj1jetUEkePgvJBdiofQAohbWFRtLFDDmVTx148I+3O1tVrExTBMDfvC
-    Sbiw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689763901;
-    s=strato-dkim-0002; d=tomerius.de;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=lvLGZstJ8wKorYy8rcLHdorayXbsT3iQ7MhbnharKpE=;
-    b=M3N9Gj1Ihv8I9YUfstwtzWIFX3+X2U9J5CpGZ6oP7Di3hrzt3WsVVJv1AOAErs7Ove
-    CUu06Y8twnNwBNCHrSlB2nck7Vs5gxPbe0zltkHifMwKwABBUophuepqxMzpFUdWTCA3
-    Qap36HEHkzX9ZZ59g3CLLXZob5ZWjMinDx1ttADn2Ah8kn9kYVxYd6Lxygin2qWGA+MY
-    MruND7adGncDE2d/mlXQ2mp/HQtqB/n1A3qAQ11K0HNW7hKknR+WGr1NyByh5uKO+I5l
-    QtnBiarBhsYIBGx1XvhsYuZVbmKa+oCrmut3yi6UzUbQBfaIZEcBZGhDCEi1c+nXbBDa
-    +uiQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689763901;
-    s=strato-dkim-0003; d=tomerius.de;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=lvLGZstJ8wKorYy8rcLHdorayXbsT3iQ7MhbnharKpE=;
-    b=izeiG+UjQBLTpfzhdAuho9H+oPiIG8m14QCvDr/1SnrXC/4LZIUG7e8H9/IuiaHNyB
-    l7nJ7yHBtDsAwrCpWADQ==
-X-RZG-AUTH: ":J20NVVSndvp4466vFhCXUxk5AzpkHwfKmUFBoZWB6MoGGjIYlcL1veuiArSdmAK/Sg=="
-Received: from jukebox.tomerius.de
-    by smtp.strato.de (RZmta 49.6.4 DYNA|AUTH)
-    with ESMTPSA id Y0a99ez6JApf0CC
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 19 Jul 2023 12:51:41 +0200 (CEST)
-Received: from [192.168.3.20] (helo=tomerius.de)
-        by jukebox.tomerius.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <kai@tomerius.de>)
-        id 1qM4mS-0005X8-JQ; Wed, 19 Jul 2023 12:51:40 +0200
-Date:   Wed, 19 Jul 2023 12:51:39 +0200
-From:   Kai Tomerius <kai@tomerius.de>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "Alan C. Assis" <acassis@gmail.com>,
-        =?iso-8859-1?Q?Bj=F8rn?= Forsman <bjorn.forsman@gmail.com>,
-        linux-embedded@vger.kernel.org,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        dm-devel@redhat.com
-Subject: Re: File system robustness
-Message-ID: <20230719105138.GA19936@tomerius.de>
-References: <20230717075035.GA9549@tomerius.de>
- <CAG4Y6eTU=WsTaSowjkKT-snuvZwqWqnH3cdgGoCkToH02qEkgg@mail.gmail.com>
- <20230718053017.GB6042@tomerius.de>
- <CAEYzJUGC8Yj1dQGsLADT+pB-mkac0TAC-typAORtX7SQ1kVt+g@mail.gmail.com>
- <CAG4Y6eTN1XbZ_jAdX+t2mkEN=KoNOqprrCqtX0BVfaH6AxkdtQ@mail.gmail.com>
- <20230718213212.GE3842864@mit.edu>
+        with ESMTP id S230181AbjGSS1N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jul 2023 14:27:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FECC1FE1;
+        Wed, 19 Jul 2023 11:27:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B6A2F200A9;
+        Wed, 19 Jul 2023 18:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689791226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YhOyZ0ZdWLkpby1Iqtq7SFOqx2lnmUd32VWJ4JlD36g=;
+        b=q1pdcQZFX7fifseO0xceZtJzp64S4KFfju3lzq3XamQ4l+/jrkC9W9yY8ELdzRNXOKk9pm
+        BxzTE/f0OoOHt6g8jiCH/YXB2SKcw8cb7yjf3TDZcYy8TYspyfp2qdkRZzeqQfbICZTcP+
+        8b50YM1XhfVza9lBxrUkCPGEPW8NeKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689791226;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YhOyZ0ZdWLkpby1Iqtq7SFOqx2lnmUd32VWJ4JlD36g=;
+        b=7zQHJhTWV4xn+EbDtJEI8gXkRtL3feXW+bzV28gFBd4UZIC1ArWepTBVRpeIMHZKE7+4qB
+        Kzm9IpgtZrSQnuBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74C9D1361C;
+        Wed, 19 Jul 2023 18:27:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SwbvFvoquGS1QwAAMHmgww
+        (envelope-from <krisman@suse.de>); Wed, 19 Jul 2023 18:27:06 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 4/7] libfs: Support revalidation of encrypted
+ case-insensitive dentries
+Organization: SUSE
+References: <20230422000310.1802-1-krisman@suse.de>
+        <20230422000310.1802-5-krisman@suse.de>
+        <20230714053135.GD913@sol.localdomain> <87h6q1580a.fsf@suse.de>
+        <20230718221040.GA1005@sol.localdomain>
+Date:   Wed, 19 Jul 2023 14:27:05 -0400
+In-Reply-To: <20230718221040.GA1005@sol.localdomain> (Eric Biggers's message
+        of "Tue, 18 Jul 2023 15:10:40 -0700")
+Message-ID: <874jlz69l2.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718213212.GE3842864@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> In answer to Kai's original question, the setup that was described
-> should be fine --- assuming high quality hardware.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-I wonder how to judge that ... it's an eMMC supposedly complying to
-some JEDEC standard, so it *should* be ok.
+> Why would order matter?  If either "feature" wants the dentry to be invalidated,
+> then the dentry gets invalidated.
 
-> ... if power is cut suddenly, the data used by the Flash
-> Translation Layer can be corrupted, in which case data written months
-> or years ago (not just recent data) could be lost.
+For instance, I was wondering makes sense for instance to memcmp d_name for
+!DCACHE_NOKEY_NAME or if we wanted fscrypt_d_revalidate to come first.
 
-At least I haven't observed anything like that up to now.
+>> Note we will start creating negative dentries in casefold directories after
+>> patch 6/7, so unless we disable it here, we will start calling
+>> fscrypt_d_revalidate for negative+casefold.
+>
+> fscrypt_d_revalidate() only cares about the DCACHE_NOKEY_NAME flag, so that's
+> not a problem.
 
-But on another aspect: how about the interaction between dm-integrity
-and ext4? Sure, they each have their own journal, and they're
-independent layers. Is there anything that could go wrong, say a block
-that can't be recovered in the dm-integrity layer, causing ext4 to run
-into trouble, e.g., an I/O error that prevents ext4 from mounting?
+..I see now it is the first thing checked in fscrypt_d_revalidate.
 
-I assume tne answer is "No", but can I be sure?
+>> Should I just drop this hunk?  Unless you are confident it works as is, I
+>> prefer to add this support in stages and keep negative dentries of
+>> encrypted+casefold directories disabled for now.
+>
+> Unless I'm missing something, I think you're overcomplicating it.
 
-Thx
-regards
-Kai
+Not overcomplicating. I'm just not familiar with fscrypt details enough to be
+sure I could enable it.  But yes, it seems safe.
+
+> It should
+> just work if you don't go out of your way to prohibit this case.  I.e., just
+> don't add the IS_ENCRYPTED(dir) check to generic_ci_d_revalidate().
+
+I'll drop the check. And resend.
+
+Thanks,
+
+-- 
+Gabriel Krisman Bertazi
