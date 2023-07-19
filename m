@@ -2,316 +2,265 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23AB759DD6
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jul 2023 20:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5E775A1A1
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 00:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjGSStR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Jul 2023 14:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        id S229609AbjGSWTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Jul 2023 18:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGSStR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jul 2023 14:49:17 -0400
-Received: from outbound-ip7a.ess.barracuda.com (outbound-ip7a.ess.barracuda.com [209.222.82.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D27B6
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Jul 2023 11:49:15 -0700 (PDT)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47]) by mx-outbound40-232.us-east-2c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 19 Jul 2023 18:49:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=faAus2XSwJlHRssON5ngsOgMDta4WzWHqZyzrh0GOdWySLqAX+N2arMtH/LOZHgCI79uxcQJXd+uAzaYk9Iw/uH8wbGh6aBPMJZe3TWfL/k5D13q/ufDt6y79afORZ9RaILLPMv3sv+faMKD/SeniY1h6wki5I5RJSJo+rvDdZ10a1hCKR4ySVXcp8BXAVEc7icb5xt+yUlMXbLZ3/ks5PHcy9bqTF4MPbqRtP6MDW/BEEfNaobKdNlrCDJco3mBLoKMOyBmsKpfDUjLBPNn256zjSbZHnzT6d0GPSU5+7J0JBjsWUHHsT7pd0jL6vVnVDxekn3oSf6YevzJA0is4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JVdaM2GanHm3q2Dk885yQRXxkxyVWvrw7TJUBBd28Eg=;
- b=OUNf2DMAUdzQJxApRO1bbZHrd9/qrL7Bgoazp1JzXATDmx6h20rIma4Vufq092t708MtPsr9IUhRmi64nt3Ja9xrK3dylvbPgxoS9ACeu1DD/r6Z97k4DaHL9TQlfcDPtuI/fMHAQ9RUTnruZcYcjI4nz2PBTo/1IIhfpqBlPJ76cyP4M6x5ieygAivR7SZSsN+fHUl2SB392UKGy6REuBdjREj9NpsqII1YGk5QmGL283rS2NOK5e6aaCokfZB2T4MDMwmJFR0Dliol5W34nuS2gw000KMYRJE5ck6WQSTFDQLBPeNQ9OpvPu+9W3YR2abqNU2AK0auCfaVlR9XhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=whamcloud.com; dmarc=pass action=none
- header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JVdaM2GanHm3q2Dk885yQRXxkxyVWvrw7TJUBBd28Eg=;
- b=IsOT60eZAucqOXZPguiR2qq87X60bAPnA1gOJUu+UXUNWK7RHzbjp+SNVk/jEUbyeMM6DU0TACRM1PjWae4oYiCcgWI5PJEP6LwS2BPx/4pU0oWDpyiejv9Wn9pwupwKAV6v09P50KNSQIfsiMjnCtZBSBKZJ036nbise6asUtU=
-Received: from DM4PR19MB5835.namprd19.prod.outlook.com (2603:10b6:8:66::17) by
- MW4PR19MB6746.namprd19.prod.outlook.com (2603:10b6:303:20b::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.28; Wed, 19 Jul 2023 18:49:09 +0000
-Received: from DM4PR19MB5835.namprd19.prod.outlook.com
- ([fe80::45e6:859d:2311:fb49]) by DM4PR19MB5835.namprd19.prod.outlook.com
- ([fe80::45e6:859d:2311:fb49%3]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 18:49:09 +0000
-From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: [PATCH] merge extent blocks when possible
-Thread-Topic: [PATCH] merge extent blocks when possible
-Thread-Index: AQHZunGzXjhcvJZZ50i5yJHA/C3e0Q==
-Date:   Wed, 19 Jul 2023 18:49:09 +0000
-Message-ID: <7746B8CB-D759-47A2-8564-624B5263B5C3@whamcloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=whamcloud.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR19MB5835:EE_|MW4PR19MB6746:EE_
-x-ms-office365-filtering-correlation-id: 0591bebd-51ea-4c50-23ca-08db8888d614
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 89+8TvbNaBH0Bsw8fEAcoYRt+7wtryu5GfbyhJpG6wZM7MRsSEQo1KuVYVYGC1aTqNfqUrmBrixefRx5FGFX1ippx9E2mLU0Owfj4WSAX6gdETiv2GHMI3TegOE6dfILqAceu+ZYuXQBjCsLCOUPKIVrNL74Ie+owI4tSjqcB05fcABmFicA0mBVHsqw4vTgjYWSlQrb4JlP5nIipOSJO5if/BlSQ0wJripUvr4BgzMh0ZirbcQ8DuX3KH43JgE3V9euK68VjGMvRrn7nUeBCg1st7vcvUqVQJjBhcARkOjJCRoasm3wKdy0yno/miIjUlrYpBbPLDtbJC6MiNlv2CuUMNFl3G6uJ4m759i3V2ZdgE5F5lfTY0jbs7ai0nOnPNE2xGHIlY3oGaAgOowEP32Vv/RufXQHL/k+CVhZ6PRKzSPf3Sja5qvQ14uMqOWiV6lXcc45aL5RVC9qpniW2+kaZFlxvhxoh6z4Bob16MTLr8lXFFzsAM8Sa21MB1d1OEBUtz5ti7LNm60th/ppJiRTJJVWtaYipJ77ulZBhgHUWPGVGRo/FoY7ymWQY6LyukFiUjJCiEdhGzw/lubEMrGQJDUvLYevgtBtgKwKLNunjZXpwYJlT9zGk1enZSiCgzmZfIVx+qPFVdC6LSoGdg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR19MB5835.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39850400004)(346002)(376002)(396003)(136003)(451199021)(38070700005)(66476007)(86362001)(64756008)(66946007)(66446008)(122000001)(66556008)(76116006)(91956017)(83380400001)(2906002)(26005)(186003)(6506007)(2616005)(5660300002)(8676002)(38100700002)(71200400001)(8936002)(33656002)(41300700001)(6916009)(316002)(478600001)(6512007)(36756003)(6486002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dEoxaVVJZ2E2eGdkWjJWQUszSDYwbmpwUVM3Sno1MEpsbjBiM2JaSkFHb3A2?=
- =?utf-8?B?UTFURk52R2dudS9MSEtsMTAzaGk5dXFOQVJsblRFQTBwWDZRNGlSbW8vaUV0?=
- =?utf-8?B?cGM1eWxtekhFSElYeks0a25QV2Z2VHFpSzNXM2NRQWJPcUxOU2pXNk1PK2Qz?=
- =?utf-8?B?WUM2Z1lGR2tCMnFmYXBrQ0Z3KzBGV1NTNGhJZGRHWXhFU2twT01DM1lxTy9I?=
- =?utf-8?B?bmJYcmxHU0l0bEhzaTVnb0E0cG80amt4N0ZNRWpSZnNseUdwQjhONHhkUGl4?=
- =?utf-8?B?S3dIbEJpZk9PQ1VWZGEwbXlOcW42NU1nenRzQ3NxMFVxNVE0RHF6NjJ6bzM2?=
- =?utf-8?B?blFaaWpkZ3ZseEFHOHpOaVZqM2VMakZZNlJTNDZEenNkSGRyN1dRODJpdmVN?=
- =?utf-8?B?c2I0K2hCaE91TGxNREcxcTZSVWd0Sk44dE9NYkNOQ2l6enRKZENiRmNIY1RG?=
- =?utf-8?B?QnFOMmRRN0tZWEVXVUlPNlJGS3I2cis1SkprQWw0bTVDeEJUVkhkTE9tTHpu?=
- =?utf-8?B?dXlWQmx2aE5HWFd2VHZuU2htQVI2dVhNUXRmL3NWb1RJdVF0ZUhKdVF3OU9T?=
- =?utf-8?B?a2c2elRQZnBIRkZIaXJtc2lqVCtIL1pFcXJ0aExMOUhwZEVIelA3VTJqMEg5?=
- =?utf-8?B?Yjd4TWxTTFZPUzRHN0FvZENIaWg2Mm9DajlHUGtwNi93ZXpMTVFvTCtjRjh1?=
- =?utf-8?B?UWFXTGVBRjlFdzNkKzgzaEpwL1l3TUtFeXcvMHpRQm0yMjVjcS9ZNXNSZTBi?=
- =?utf-8?B?blhFajcyekVaUWltdTJXUmxQTVRDdFBXMkVqUC9hZDhacGNxcnhLRlQ4VHN1?=
- =?utf-8?B?TnJyWnRiTFl2b3k0M3FsdkFnNk1KKzVtUEZTYVdJVWl2NDdtamZqR2JJWDR4?=
- =?utf-8?B?Y3hSeTIyL25sZTJMeThVTk5lcjlCQ29UcFJlVENYQ3FMSGcvakIwcU9qMm1z?=
- =?utf-8?B?aXhOaTZiakV5V05mYjNRZ0pWZWk3ZUJsbnpONEZveTBVSitmMmJnbS9vWlV3?=
- =?utf-8?B?SHV4eS9TUEY5QVRjb1IyemErMG9Va2ViQlpHOXVUOUJ4UUpmMnF2L0R4RHlt?=
- =?utf-8?B?Y1MzS28xaVF3anZNL2svZ3lsTmpGTEt1RzdSNWUwUXZER29ZdCtkOFRIa2FI?=
- =?utf-8?B?OE9rZEdpUExyQ2VDYUEvUktGM2ZoZUY2WjZIRVJKZ2dYSEROK01sejdDMTU0?=
- =?utf-8?B?REJ2RDVkd1hPZTBzb3A1ODFmK1dRQlYyZzcxeFhPejdqc0hSMVE5SnUyUnJW?=
- =?utf-8?B?MXVQY01Od0kzaHdpQ0ZvdzNVVjdnUjByNHBqS04rVEhsMWV6Y0hzcmIwQTln?=
- =?utf-8?B?dXBGVWRYVVZDb3FvSTlEa0pOMnJZbUVDaTZUNzZtQUk5ODU3SnhZN0x5cGdO?=
- =?utf-8?B?bDhnL01uaDA0bXZPd1dYempJbG5xKzFFRG0xVU9EUWJKU2N1QXAwREl5dmNl?=
- =?utf-8?B?enQ2b1E0MW4zN3RkNkRtTmJtRFoxT0F4MkZUYUFQQkRKSlhhNG1PNTM2cDVQ?=
- =?utf-8?B?SXhMdDRVTngxZkNKa3F3ZUxYSUhYVGNVWUtFVEh4VHdMYUtNRjcyRWIxbkdp?=
- =?utf-8?B?eDlKdmdBSVJDN0hUN3lxVnRnMFRldHZvTlRYWFNrQzBNQ1crTDFPeTNRM21L?=
- =?utf-8?B?cytITnJPUWJieElsTTVOUno0UU1VVytXYm5jV0JUT1N2NnpJbGhybEdWaXd6?=
- =?utf-8?B?cnIzcm1WK1ZaMFE0bTVQb2ZUdVF5SFN0R3VuSkRqZ2ZJRmZyVlREM2VaMlFn?=
- =?utf-8?B?UWhjbngxc2NYTVNqbU4wVVVPWDZpZHBBRFg1QlFYTHhnM1l2cmJrRzFKSVhY?=
- =?utf-8?B?VnVrOXAxaFlvRGI3YjBWUlkwZWhsbnRFQ3d0N05aR0JtMlZlcUs3b083MGM1?=
- =?utf-8?B?OHdKTXg4NlF3R1dUaTB1eTVzdW8rVE8yNm9hRFY0WE1EVk9YZ0dXTlVid2Ez?=
- =?utf-8?B?OCtUdHJ2eUx4Y013dW5MRVJjREgzZERQMTN3KysrRTFuM3pXRXh1RzRmVlRk?=
- =?utf-8?B?UWhXYnl2OUI4YkFCRnJNWUhmZndZcUxpSG9GOENVZFhKY0hEMXpFMWxxZ2lQ?=
- =?utf-8?B?dE9rYXd5eDJBMGJWNTJjYm9QRld0ZzUwSmZYdFZmUXV3M3BIdXQvSlUzYzZB?=
- =?utf-8?Q?p8LY+FgEwjHa88vJPRObl7Hkm?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <74C7B08B5B31A241B7EB83CFF6013448@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229518AbjGSWTf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jul 2023 18:19:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9771FE6;
+        Wed, 19 Jul 2023 15:19:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4D7ED201EE;
+        Wed, 19 Jul 2023 22:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689805169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=0p74TWWKgP41B2ZWH/6Z8tKBD08Cd7hyDoHn+vOSdBY=;
+        b=Ff2JpcNTAc1ZTe1eZJ3GdE1J9myHjAlGH2lOCav0HcVYiLmjaHniW8jxG9bIfYrkbCcK5d
+        PjL53m1XqNVv0siWMLH/eXD8Z+NuC4aH2G8SXJ+TkGGg3nvHkt/yuHsenXXN9RRIfUfw56
+        Fxk72T2eCP2gHgTweT0qeIWaOARUGsE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689805169;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=0p74TWWKgP41B2ZWH/6Z8tKBD08Cd7hyDoHn+vOSdBY=;
+        b=PXhyPlSrC2r0Lho/zVxSbwPjj2ioVcNcUMiL7Y3XjUsSaFFRLLgq0imfmt97FpSntpZAjt
+        3AxotTJ4qQMUtDDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 173271361C;
+        Wed, 19 Jul 2023 22:19:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aDB3AHFhuGQGJgAAMHmgww
+        (envelope-from <krisman@suse.de>); Wed, 19 Jul 2023 22:19:29 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        ebiggers@kernel.org, jaegeuk@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: [PATCH v3 0/7] Support negative dentries on case-insensitive ext4 and f2fs
+Date:   Wed, 19 Jul 2023 18:19:11 -0400
+Message-ID: <20230719221918.8937-1-krisman@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: L+YLC71FQkzYlaEn/S8kwF6A866G7yaXovHmyWwfXto5ijKtbf74USOTm4j/8WxzbpS7b/WKWX+jmhtMGEVMVFv2XheNtY9i92g3Sg5x3wCy6YqI0btVFy7ZcjB3ws9uZIfgpIumTXe02Fb0VNt51KRzXz7ntobf8YFBJ9ts4OzJruLTmvXgBc2266e4QdoFlRBzhfQgZu4OQ0vk6bt01QBbQdUt16o9KlAwhO2hT9CGcC1u9zt+kl7vkk1YM45yDPAHtHBovg+YI7Tb3yeauS3sxCDnQRg3bovYcLiOqIuj7m5Ngb1DVpoSIX5YMJWXl/K/MY/64S1cJWISKtcWGyeWbZcUt9l/wrekepVqLieZpk4R+egm9VGWnJlEMr8Q00mm1Znfk9UHaVwKBvDmUNTo9XlbWQSX2trkR4RcFymRcGg54lDZSe4zjZggUiKJHG9xBHkMoTHNuzeRoPdoNd0NH8RvOJ6WlVE9yJ7gDS+3+6r+G8uEDanovIEE+T/3gpiMGVqvzii+iNuo+je35/cyeFjR7eF99wenRL9BhCulLsKK2PKL4jLXc5f6rZQJ7es83/XZ6IcmVOCYwCtXomd2Fll0vfWsgyTpwnlfEtoHc3Yvzwj9dkhRIJnxkgUyzudraq/6fhqEoE9ZZm2+4j8ts53nbJeFlWe3WcIKhr5t01NaooK+Pw2hR7xTf70eSrG7dIdvmtELDw1WrAi+eMThrBGpJ6EbKLa10tDSPP86YriUiTn2MFhwK1JToVmaS+d9xbp+6eIT5uMt7kdj8GAhdJKf6llqgGAORRzjsjXIYZubBRhstpQzaUyyh2FG
-X-OriginatorOrg: whamcloud.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR19MB5835.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0591bebd-51ea-4c50-23ca-08db8888d614
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2023 18:49:09.1546
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dLDRYIJIklX9j80ytWvjJWi1dgIOsAqrIVTXDaZ1vQE+lqPSKVFPivSIF8celeIBDJaJGMUpop00Nkffpt00Eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR19MB6746
-X-BESS-ID: 1689792553-110472-12440-5738-1
-X-BESS-VER: 2019.1_20230719.1652
-X-BESS-Apparent-Source-IP: 104.47.66.47
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVpbmxgZAVgZQMM3AwsgoNTkxzc
-        TMMsXCwMw0LSnRIDHJ1NDSwsA4ychEqTYWAPFhECNBAAAA
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.249595 [from 
-        cloudscan15-211.us-east-2a.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND
-X-BESS-BRTS-Status: 1
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGksDQoNClBsZWFzZSBoYXZlIGEgbG9vayBhdCB0aGUgcGF0Y2ggYXR0ZW1wdGluZyB0byBoYW5k
-bGUgdGhlIHByb2JsZW0gd2l0aCBkZWVwIGV4dGVudCB0cmVlLg0KDQpUaGFua3MsIEFsZXgNCg0K
-SW4gc29tZSBjYXNlcyB3aGVuIGEgbG90IG9mIGV4dGVudHMgYXJlIGNyZWF0ZWQgaW5pdGlhbGx5
-IGJ5IHNwYXJzZSBmaWxlIHdyaXRlcywgdGhleQ0KZ2V0IG1lcmdlZCBvdmVyIHRpbWUsIGJ1dCB0
-aGVyZSBpcyBubyB3YXkgdG8gbWVyZ2UgYmxvY2tzIGluIGRpZmZlcmVudCBpbmRleGVzLg0KDQpG
-b3IgZXhhbXBsZSwgaWYgYSBmaWxlIGlzIHdyaXR0ZW4gc3luY2hyb25vdXNseSwgYWxsIGV2ZW4g
-YmxvY2tzIGZpcnN0LCB0aGVuIG9kZCBibG9ja3MuDQpUaGUgcmVzdWx0aW5nIGV4dGVudHMgdHJl
-ZSBsb29rcyBsaWtlIHRoZSBmb2xsb3dpbmcgaW4gImRlYnVnZnMgc3RhdCIgb3V0cHV0LCBvZnRl
-bg0Kd2l0aCBvbmx5IGEgc2luZ2xlIGJsb2NrIGluIGVhY2ggaW5kZXgvbGVhZjoNCg0KICAgRVhU
-RU5UUzoNCiAgIChFVEIwKTozMzc5Ng0KICAgKEVUQjEpOjMzNzk1DQogICAoMC02NzcpOjI1ODg2
-NzItMjU4OTM0OQ0KICAgKEVUQjEpOjI1OTA3NTMNCiAgICg2NzgpOjI1ODkzNTANCiAgIChFVEIx
-KToyNTkwNzIwDQogICAoNjc5LTEzNTcpOjI1ODkzNTEtMjU5MDAyOQ0KICAgKEVUQjEpOjI1OTA3
-NTINCiAgICgxMzU4KToyNTkwMDMwDQogICAoRVRCMSk6MjU5MDcyMQ0KICAgKDEzNTktMjAzNyk6
-MjU5MDAzMS0yNTkwNzA5DQogICAoRVRCMSk6MjU5MDc1MQ0KICAgKDIwMzgpOjI1OTA3MTANCiAg
-IChFVEIxKToyNTkwNzIyDQogICA6DQogICA6DQoNCldpdGggdGhlIHBhdGNoIGFwcGxpZWQgdGhl
-IGluZGV4IGFuZCBsZWFkIGJsb2NrcyBhcmUgcHJvcGVybHkgbWVyZ2VkICgwLjYlIHNsb3dlcg0K
-dW5kZXIgdGhpcyByYW5kb20gc3luYyB3cml0ZSB3b3JrbG9hZCwgYnV0IGxhdGVyIHJlYWQgSU9Q
-UyBhcmUgZ3JlYXRseSByZWR1Y2VkKToNCg0KICAgRVhURU5UUzoNCiAgIChFVEIwKTozMzc5Ng0K
-ICAgKEVUQjEpOjI1OTA3MzYNCiAgICgwLTIwNDcpOjI1ODg2NzItMjU5MDcxOQ0KICAgKDIwNDgt
-MTE5OTkpOjI1OTI3NjgtMjYwMjcxOQ0KDQpPcmlnaW5hbGx5IHRoZSBwcm9ibGVtIHdhcyBoaXQg
-d2l0aCBhIHJlYWwgYXBwbGljYXRpb24gb3BlcmF0aW5nIG9uIGh1Z2UgZGF0YXNldHMgYW5kIHdp
-dGgganVzdA0KMjczNzEgZXh0ZW50cyAiaW5vZGUgaGFzIGludmFsaWQgZXh0ZW50IGRlcHRoOiA2
-4oCdIHByb2JsZW0gb2NjdXJyZWQuDQpXaXRoIHRoZSBwYXRjaCBhcHBsaWVkIHRoZSBhcHBsaWNh
-dGlvbiBzdWNjZWVkZWQgaGF2aW5nIGZpbmFsbHkgNzM2MzcgaW4gMy1sZXZlbCB0cmVlLg0KDQpT
-aWduZWQtb2ZmLWJ5OiBBbGV4IFpodXJhdmxldiA8Ynp6ekB3aGFtY2xvdWQuY29tPg0KLS0tDQog
-ZnMvZXh0NC9leHRlbnRzLmMgICAgIHwgMTg1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLQ0KIGZzL2piZDIvdHJhbnNhY3Rpb24uYyB8ICAgMSArDQogMiBmaWxlcyBj
-aGFuZ2VkLCAxODAgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBh
-L2ZzL2V4dDQvZXh0ZW50cy5jIGIvZnMvZXh0NC9leHRlbnRzLmMNCmluZGV4IGU0MTE1ZDMzOGYx
-MC4uNWIwZTA1Y2Q1NTk1IDEwMDY0NA0KLS0tIGEvZnMvZXh0NC9leHRlbnRzLmMNCisrKyBiL2Zz
-L2V4dDQvZXh0ZW50cy5jDQpAQCAtMTg4NSw3ICsxODg1LDcgQEAgc3RhdGljIHZvaWQgZXh0NF9l
-eHRfdHJ5X3RvX21lcmdlX3VwKGhhbmRsZV90ICpoYW5kbGUsDQogICogVGhpcyBmdW5jdGlvbiB0
-cmllcyB0byBtZXJnZSB0aGUgQGV4IGV4dGVudCB0byBuZWlnaGJvdXJzIGluIHRoZSB0cmVlLCB0
-aGVuDQogICogdHJpZXMgdG8gY29sbGFwc2UgdGhlIGV4dGVudCB0cmVlIGludG8gdGhlIGlub2Rl
-Lg0KICAqLw0KLXN0YXRpYyB2b2lkIGV4dDRfZXh0X3RyeV90b19tZXJnZShoYW5kbGVfdCAqaGFu
-ZGxlLA0KK3N0YXRpYyBpbnQgZXh0NF9leHRfdHJ5X3RvX21lcmdlKGhhbmRsZV90ICpoYW5kbGUs
-DQogCQkJCSAgc3RydWN0IGlub2RlICppbm9kZSwNCiAJCQkJICBzdHJ1Y3QgZXh0NF9leHRfcGF0
-aCAqcGF0aCwNCiAJCQkJICBzdHJ1Y3QgZXh0NF9leHRlbnQgKmV4KQ0KQEAgLTE5MDIsOSArMTkw
-MiwxNzggQEAgc3RhdGljIHZvaWQgZXh0NF9leHRfdHJ5X3RvX21lcmdlKGhhbmRsZV90ICpoYW5k
-bGUsDQogCQltZXJnZV9kb25lID0gZXh0NF9leHRfdHJ5X3RvX21lcmdlX3JpZ2h0KGlub2RlLCBw
-YXRoLCBleCAtIDEpOw0KIA0KIAlpZiAoIW1lcmdlX2RvbmUpDQotCQkodm9pZCkgZXh0NF9leHRf
-dHJ5X3RvX21lcmdlX3JpZ2h0KGlub2RlLCBwYXRoLCBleCk7DQorCQltZXJnZV9kb25lID0gZXh0
-NF9leHRfdHJ5X3RvX21lcmdlX3JpZ2h0KGlub2RlLCBwYXRoLCBleCk7DQogDQogCWV4dDRfZXh0
-X3RyeV90b19tZXJnZV91cChoYW5kbGUsIGlub2RlLCBwYXRoKTsNCisNCisJcmV0dXJuIG1lcmdl
-X2RvbmU7DQorfQ0KKw0KKy8qDQorICogVGhpcyBmdW5jdGlvbiB0cmllcyB0byBtZXJnZSBibG9j
-a3MgZnJvbSBAcGF0aCBpbnRvIEBucGF0aA0KKyAqLw0KK3N0YXRpYyBpbnQgZXh0NF9leHRfbWVy
-Z2VfYmxvY2tzKGhhbmRsZV90ICpoYW5kbGUsDQorCQkJCXN0cnVjdCBpbm9kZSAqaW5vZGUsDQor
-CQkJCXN0cnVjdCBleHQ0X2V4dF9wYXRoICpwYXRoLA0KKwkJCQlzdHJ1Y3QgZXh0NF9leHRfcGF0
-aCAqbnBhdGgpDQorew0KKwl1bnNpZ25lZCBpbnQgZGVwdGggPSBleHRfZGVwdGgoaW5vZGUpOw0K
-KwlpbnQgdXNlZCwgbnVzZWQsIGZyZWUsIGksIGssIGVycjsNCisJZXh0NF9sYmxrX3QgbmV4dDsN
-CisNCisJaWYgKHBhdGhbZGVwdGhdLnBfaGRyID09IG5wYXRoW2RlcHRoXS5wX2hkcikNCisJCXJl
-dHVybiAwOw0KKw0KKwl1c2VkID0gbGUxNl90b19jcHUocGF0aFtkZXB0aF0ucF9oZHItPmVoX2Vu
-dHJpZXMpOw0KKwlmcmVlID0gbGUxNl90b19jcHUobnBhdGhbZGVwdGhdLnBfaGRyLT5laF9tYXgp
-IC0NCisJCWxlMTZfdG9fY3B1KG5wYXRoW2RlcHRoXS5wX2hkci0+ZWhfZW50cmllcyk7DQorCWlm
-IChmcmVlIDwgdXNlZCkNCisJCXJldHVybiAwOw0KKw0KKwllcnIgPSBleHQ0X2V4dF9nZXRfYWNj
-ZXNzKGhhbmRsZSwgaW5vZGUsIHBhdGggKyBkZXB0aCk7DQorCWlmIChlcnIpDQorCQlyZXR1cm4g
-ZXJyOw0KKwllcnIgPSBleHQ0X2V4dF9nZXRfYWNjZXNzKGhhbmRsZSwgaW5vZGUsIG5wYXRoICsg
-ZGVwdGgpOw0KKwlpZiAoZXJyKQ0KKwkJcmV0dXJuIGVycjsNCisNCisJLyogbW92ZSBlbnRyaWVz
-IGZyb20gdGhlIGN1cnJlbnQgbGVhdmUgdG8gdGhlIG5leHQgb25lICovDQorCW51c2VkID0gbGUx
-Nl90b19jcHUobnBhdGhbZGVwdGhdLnBfaGRyLT5laF9lbnRyaWVzKTsNCisJbWVtbW92ZShFWFRf
-RklSU1RfRVhURU5UKG5wYXRoW2RlcHRoXS5wX2hkcikgKyB1c2VkLA0KKwkJRVhUX0ZJUlNUX0VY
-VEVOVChucGF0aFtkZXB0aF0ucF9oZHIpLA0KKwkJbnVzZWQgKiBzaXplb2Yoc3RydWN0IGV4dDRf
-ZXh0ZW50KSk7DQorCW1lbWNweShFWFRfRklSU1RfRVhURU5UKG5wYXRoW2RlcHRoXS5wX2hkciks
-DQorCQlFWFRfRklSU1RfRVhURU5UKHBhdGhbZGVwdGhdLnBfaGRyKSwNCisJCXVzZWQgKiBzaXpl
-b2Yoc3RydWN0IGV4dDRfZXh0ZW50KSk7DQorCWxlMTZfYWRkX2NwdSgmbnBhdGhbZGVwdGhdLnBf
-aGRyLT5laF9lbnRyaWVzLCB1c2VkKTsNCisJbGUxNl9hZGRfY3B1KCZwYXRoW2RlcHRoXS5wX2hk
-ci0+ZWhfZW50cmllcywgLXVzZWQpOw0KKwlleHQ0X2V4dF90cnlfdG9fbWVyZ2VfcmlnaHQoaW5v
-ZGUsIG5wYXRoLA0KKwkJCQkJRVhUX0ZJUlNUX0VYVEVOVChucGF0aFtkZXB0aF0ucF9oZHIpKTsN
-CisNCisJZXJyID0gZXh0NF9leHRfZGlydHkoaGFuZGxlLCBpbm9kZSwgcGF0aCArIGRlcHRoKTsN
-CisJaWYgKGVycikNCisJCXJldHVybiBlcnI7DQorCWVyciA9IGV4dDRfZXh0X2RpcnR5KGhhbmRs
-ZSwgaW5vZGUsIG5wYXRoICsgZGVwdGgpOw0KKwlpZiAoZXJyKQ0KKwkJcmV0dXJuIGVycjsNCisN
-CisJLyogb3RoZXJ3aXNlIHRoZSBpbmRleCB3b24ndCBnZXQgY29ycmVjdGVkICovDQorCW5wYXRo
-W2RlcHRoXS5wX2V4dCA9IEVYVF9GSVJTVF9FWFRFTlQobnBhdGhbZGVwdGhdLnBfaGRyKTsNCisJ
-ZXJyID0gZXh0NF9leHRfY29ycmVjdF9pbmRleGVzKGhhbmRsZSwgaW5vZGUsIG5wYXRoKTsNCisJ
-aWYgKGVycikNCisJCXJldHVybiBlcnI7DQorDQorCWZvciAoaSA9IGRlcHRoIC0gMTsgaSA+PSAw
-OyBpLS0pIHsNCisNCisJCW5leHQgPSBleHQ0X2lkeF9wYmxvY2socGF0aFtpXS5wX2lkeCk7DQor
-CQlleHQ0X2ZyZWVfYmxvY2tzKGhhbmRsZSwgaW5vZGUsIE5VTEwsIG5leHQsIDEsDQorCQkJCUVY
-VDRfRlJFRV9CTE9DS1NfTUVUQURBVEEgfA0KKwkJCQlFWFQ0X0ZSRUVfQkxPQ0tTX0ZPUkdFVCk7
-DQorCQllcnIgPSBleHQ0X2V4dF9nZXRfYWNjZXNzKGhhbmRsZSwgaW5vZGUsIHBhdGggKyBpKTsN
-CisJCWlmIChlcnIpDQorCQkJcmV0dXJuIGVycjsNCisJCWxlMTZfYWRkX2NwdSgmcGF0aFtpXS5w
-X2hkci0+ZWhfZW50cmllcywgLTEpOw0KKwkJaWYgKGxlMTZfdG9fY3B1KHBhdGhbaV0ucF9oZHIt
-PmVoX2VudHJpZXMpID09IDApIHsNCisJCQkvKiB3aG9sZSBpbmRleCBibG9jayBjb2xsYXBzZWQs
-IGdvIHVwICovDQorCQkJY29udGludWU7DQorCQl9DQorCQkvKiByZW1vdmUgaW5kZXggcG9pbnRl
-ciAqLw0KKwkJdXNlZCA9IEVYVF9MQVNUX0lOREVYKHBhdGhbaV0ucF9oZHIpIC0gcGF0aFtpXS5w
-X2lkeCArIDE7DQorCQltZW1tb3ZlKHBhdGhbaV0ucF9pZHgsIHBhdGhbaV0ucF9pZHggKyAxLA0K
-KwkJCXVzZWQgKiBzaXplb2Yoc3RydWN0IGV4dDRfZXh0ZW50X2lkeCkpOw0KKw0KKwkJZXJyID0g
-ZXh0NF9leHRfZGlydHkoaGFuZGxlLCBpbm9kZSwgcGF0aCArIGkpOw0KKwkJaWYgKGVycikNCisJ
-CQlyZXR1cm4gZXJyOw0KKw0KKwkJaWYgKHBhdGhbaV0ucF9oZHIgPT0gbnBhdGhbaV0ucF9oZHIp
-DQorCQkJYnJlYWs7DQorDQorCQkvKiB0cnkgdG8gbW92ZSBpbmRleCBwb2ludGVycyAqLw0KKwkJ
-dXNlZCA9IGxlMTZfdG9fY3B1KHBhdGhbaV0ucF9oZHItPmVoX2VudHJpZXMpOw0KKwkJZnJlZSA9
-IGxlMTZfdG9fY3B1KG5wYXRoW2ldLnBfaGRyLT5laF9tYXgpIC0NCisJCQlsZTE2X3RvX2NwdShu
-cGF0aFtpXS5wX2hkci0+ZWhfZW50cmllcyk7DQorCQlpZiAodXNlZCA+IGZyZWUpDQorCQkJYnJl
-YWs7DQorCQllcnIgPSBleHQ0X2V4dF9nZXRfYWNjZXNzKGhhbmRsZSwgaW5vZGUsIG5wYXRoICsg
-aSk7DQorCQlpZiAoZXJyKQ0KKwkJCXJldHVybiBlcnI7DQorCQltZW1tb3ZlKEVYVF9GSVJTVF9J
-TkRFWChucGF0aFtpXS5wX2hkcikgKyB1c2VkLA0KKwkJCUVYVF9GSVJTVF9JTkRFWChucGF0aFtp
-XS5wX2hkciksDQorCQkJbnBhdGhbaV0ucF9oZHItPmVoX2VudHJpZXMgKiBzaXplb2Yoc3RydWN0
-IGV4dDRfZXh0ZW50X2lkeCkpOw0KKwkJbWVtY3B5KEVYVF9GSVJTVF9JTkRFWChucGF0aFtpXS5w
-X2hkciksIEVYVF9GSVJTVF9JTkRFWChwYXRoW2ldLnBfaGRyKSwNCisJCQl1c2VkICogc2l6ZW9m
-KHN0cnVjdCBleHQ0X2V4dGVudF9pZHgpKTsNCisJCWxlMTZfYWRkX2NwdSgmcGF0aFtpXS5wX2hk
-ci0+ZWhfZW50cmllcywgLXVzZWQpOw0KKwkJbGUxNl9hZGRfY3B1KCZucGF0aFtpXS5wX2hkci0+
-ZWhfZW50cmllcywgdXNlZCk7DQorCQllcnIgPSBleHQ0X2V4dF9kaXJ0eShoYW5kbGUsIGlub2Rl
-LCBwYXRoICsgaSk7DQorCQlpZiAoZXJyKQ0KKwkJCXJldHVybiBlcnI7DQorCQllcnIgPSBleHQ0
-X2V4dF9kaXJ0eShoYW5kbGUsIGlub2RlLCBucGF0aCArIGkpOw0KKwkJaWYgKGVycikNCisJCQly
-ZXR1cm4gZXJyOw0KKw0KKwkJLyogY29ycmVjdCBpbmRleCBhYm92ZSAqLw0KKwkJZm9yIChrID0g
-aTsgayA+IDA7IGstLSkgew0KKwkJCWVyciA9IGV4dDRfZXh0X2dldF9hY2Nlc3MoaGFuZGxlLCBp
-bm9kZSwgbnBhdGggKyBrIC0gMSk7DQorCQkJaWYgKGVycikNCisJCQkJcmV0dXJuIGVycjsNCisJ
-CQlucGF0aFtrLTFdLnBfaWR4LT5laV9ibG9jayA9DQorCQkJCUVYVF9GSVJTVF9JTkRFWChucGF0
-aFtrXS5wX2hkciktPmVpX2Jsb2NrOw0KKwkJCWVyciA9IGV4dDRfZXh0X2RpcnR5KGhhbmRsZSwg
-aW5vZGUsIG5wYXRoICsgayAtIDEpOw0KKwkJCWlmIChlcnIpDQorCQkJCXJldHVybiBlcnI7DQor
-CQl9DQorCX0NCisNCisJLyoNCisJICogVE9ETzogZ2l2ZW4gd2UndmUgZ290IHR3byBwYXRocywg
-aXQgc2hvdWxkIGJlIHBvc3NpYmxlIHRvDQorCSAqIGNvbGxhcHNlIHRob3NlIHR3byBibG9ja3Mg
-aW50byB0aGUgcm9vdCBvbmUgaW4gc29tZSBjYXNlcw0KKwkgKi8NCisJcmV0dXJuIDE7DQorfQ0K
-Kw0KK3N0YXRpYyBpbnQgZXh0NF9leHRfdHJ5X3RvX21lcmdlX2Jsb2NrcyhoYW5kbGVfdCAqaGFu
-ZGxlLA0KKwkJc3RydWN0IGlub2RlICppbm9kZSwNCisJCXN0cnVjdCBleHQ0X2V4dF9wYXRoICpw
-YXRoKQ0KK3sNCisJc3RydWN0IGV4dDRfZXh0X3BhdGggKm5wYXRoID0gTlVMTDsNCisJdW5zaWdu
-ZWQgaW50IGRlcHRoID0gZXh0X2RlcHRoKGlub2RlKTsNCisJZXh0NF9sYmxrX3QgbmV4dDsNCisJ
-aW50IHVzZWQsIHJjID0gMDsNCisNCisJaWYgKGRlcHRoID09IDApDQorCQlyZXR1cm4gMDsNCisN
-CisJdXNlZCA9IGxlMTZfdG9fY3B1KHBhdGhbZGVwdGhdLnBfaGRyLT5laF9lbnRyaWVzKTsNCisJ
-LyogZG9uJ3QgYmUgdG9vIGFncmVzc2l2ZSBhcyBjaGVja2luZyBzcGFjZSBpbg0KKwkgKiB0aGUg
-bmV4dCBibG9jayBpcyBub3QgZnJlZSAqLw0KKwlpZiAodXNlZCA+IGV4dDRfZXh0X3NwYWNlX2Js
-b2NrKGlub2RlLCAwKSAvIDQpDQorCQlyZXR1cm4gMDsNCisNCisJLyogdHJ5IHRvIG1lcmdlIHRv
-IHRoZSBuZXh0IGJsb2NrICovDQorCW5leHQgPSBleHQ0X2V4dF9uZXh0X2xlYWZfYmxvY2socGF0
-aCk7DQorCWlmIChuZXh0ID09IEVYVF9NQVhfQkxPQ0tTKQ0KKwkJcmV0dXJuIDA7DQorCW5wYXRo
-ID0gZXh0NF9maW5kX2V4dGVudChpbm9kZSwgbmV4dCwgTlVMTCwgMCk7DQorCWlmIChJU19FUlIo
-bnBhdGgpKQ0KKwkJcmV0dXJuIDA7DQorCXJjID0gZXh0NF9leHRfbWVyZ2VfYmxvY2tzKGhhbmRs
-ZSwgaW5vZGUsIHBhdGgsIG5wYXRoKTsNCisJZXh0NF9leHRfZHJvcF9yZWZzKG5wYXRoKTsNCisJ
-a2ZyZWUobnBhdGgpOw0KKwlpZiAocmMpDQorCQlyZXR1cm4gcmMgPiAwID8gMCA6IHJjOw0KKw0K
-KwkvKiB0cnkgdG8gbWVyZ2Ugd2l0aCB0aGUgcHJldmlvdXMgYmxvY2sgKi8NCisJaWYgKEVYVF9G
-SVJTVF9FWFRFTlQocGF0aFtkZXB0aF0ucF9oZHIpLT5lZV9ibG9jayA9PSAwKQ0KKwkJcmV0dXJu
-IDA7DQorCW5leHQgPSBFWFRfRklSU1RfRVhURU5UKHBhdGhbZGVwdGhdLnBfaGRyKS0+ZWVfYmxv
-Y2sgLSAxOw0KKwlucGF0aCA9IGV4dDRfZmluZF9leHRlbnQoaW5vZGUsIG5leHQsIE5VTEwsIDAp
-Ow0KKwlpZiAoSVNfRVJSKG5wYXRoKSkNCisJCXJldHVybiAwOw0KKwlyYyA9IGV4dDRfZXh0X21l
-cmdlX2Jsb2NrcyhoYW5kbGUsIGlub2RlLCBucGF0aCwgcGF0aCk7DQorCWV4dDRfZXh0X2Ryb3Bf
-cmVmcyhucGF0aCk7DQorCWtmcmVlKG5wYXRoKTsNCisJcmV0dXJuIHJjID4gMCA/IDAgOiByYzsN
-CiB9DQogDQogLyoNCkBAIC0xOTc2LDYgKzIxNDUsNyBAQCBpbnQgZXh0NF9leHRfaW5zZXJ0X2V4
-dGVudChoYW5kbGVfdCAqaGFuZGxlLCBzdHJ1Y3QgaW5vZGUgKmlub2RlLA0KIAlpbnQgZGVwdGgs
-IGxlbiwgZXJyOw0KIAlleHQ0X2xibGtfdCBuZXh0Ow0KIAlpbnQgbWJfZmxhZ3MgPSAwLCB1bndy
-aXR0ZW47DQorCWludCBtZXJnZWQgPSAwOw0KIA0KIAlpZiAoZ2JfZmxhZ3MgJiBFWFQ0X0dFVF9C
-TE9DS1NfREVMQUxMT0NfUkVTRVJWRSkNCiAJCW1iX2ZsYWdzIHw9IEVYVDRfTUJfREVMQUxMT0Nf
-UkVTRVJWRUQ7DQpAQCAtMjE2Nyw4ICsyMzM3LDcgQEAgaW50IGV4dDRfZXh0X2luc2VydF9leHRl
-bnQoaGFuZGxlX3QgKmhhbmRsZSwgc3RydWN0IGlub2RlICppbm9kZSwNCiBtZXJnZToNCiAJLyog
-dHJ5IHRvIG1lcmdlIGV4dGVudHMgKi8NCiAJaWYgKCEoZ2JfZmxhZ3MgJiBFWFQ0X0dFVF9CTE9D
-S1NfUFJFX0lPKSkNCi0JCWV4dDRfZXh0X3RyeV90b19tZXJnZShoYW5kbGUsIGlub2RlLCBwYXRo
-LCBuZWFyZXgpOw0KLQ0KKwkJbWVyZ2VkID0gZXh0NF9leHRfdHJ5X3RvX21lcmdlKGhhbmRsZSwg
-aW5vZGUsIHBhdGgsIG5lYXJleCk7DQogDQogCS8qIHRpbWUgdG8gY29ycmVjdCBhbGwgaW5kZXhl
-cyBhYm92ZSAqLw0KIAllcnIgPSBleHQ0X2V4dF9jb3JyZWN0X2luZGV4ZXMoaGFuZGxlLCBpbm9k
-ZSwgcGF0aCk7DQpAQCAtMjE3Niw2ICsyMzQ1LDggQEAgaW50IGV4dDRfZXh0X2luc2VydF9leHRl
-bnQoaGFuZGxlX3QgKmhhbmRsZSwgc3RydWN0IGlub2RlICppbm9kZSwNCiAJCWdvdG8gY2xlYW51
-cDsNCiANCiAJZXJyID0gZXh0NF9leHRfZGlydHkoaGFuZGxlLCBpbm9kZSwgcGF0aCArIHBhdGgt
-PnBfZGVwdGgpOw0KKwlpZiAoIWVyciAmJiBtZXJnZWQpDQorCQllcnIgPSBleHQ0X2V4dF90cnlf
-dG9fbWVyZ2VfYmxvY2tzKGhhbmRsZSwgaW5vZGUsIHBhdGgpOw0KIA0KIGNsZWFudXA6DQogCWV4
-dDRfZnJlZV9leHRfcGF0aChucGF0aCk7DQpAQCAtMzc2NSw3ICszOTM2LDggQEAgc3RhdGljIGlu
-dCBleHQ0X2NvbnZlcnRfdW53cml0dGVuX2V4dGVudHNfZW5kaW8oaGFuZGxlX3QgKmhhbmRsZSwN
-CiAJLyogbm90ZTogZXh0NF9leHRfY29ycmVjdF9pbmRleGVzKCkgaXNuJ3QgbmVlZGVkIGhlcmUg
-YmVjYXVzZQ0KIAkgKiBib3JkZXJzIGFyZSBub3QgY2hhbmdlZA0KIAkgKi8NCi0JZXh0NF9leHRf
-dHJ5X3RvX21lcmdlKGhhbmRsZSwgaW5vZGUsIHBhdGgsIGV4KTsNCisJaWYgKGV4dDRfZXh0X3Ry
-eV90b19tZXJnZShoYW5kbGUsIGlub2RlLCBwYXRoLCBleCkpDQorCQlleHQ0X2V4dF90cnlfdG9f
-bWVyZ2VfYmxvY2tzKGhhbmRsZSwgaW5vZGUsIHBhdGgpOw0KIA0KIAkvKiBNYXJrIG1vZGlmaWVk
-IGV4dGVudCBhcyBkaXJ0eSAqLw0KIAllcnIgPSBleHQ0X2V4dF9kaXJ0eShoYW5kbGUsIGlub2Rl
-LCBwYXRoICsgcGF0aC0+cF9kZXB0aCk7DQpAQCAtMzgyOCw3ICs0MDAwLDggQEAgY29udmVydF9p
-bml0aWFsaXplZF9leHRlbnQoaGFuZGxlX3QgKmhhbmRsZSwgc3RydWN0IGlub2RlICppbm9kZSwN
-CiAJLyogbm90ZTogZXh0NF9leHRfY29ycmVjdF9pbmRleGVzKCkgaXNuJ3QgbmVlZGVkIGhlcmUg
-YmVjYXVzZQ0KIAkgKiBib3JkZXJzIGFyZSBub3QgY2hhbmdlZA0KIAkgKi8NCi0JZXh0NF9leHRf
-dHJ5X3RvX21lcmdlKGhhbmRsZSwgaW5vZGUsIHBhdGgsIGV4KTsNCisJaWYgKGV4dDRfZXh0X3Ry
-eV90b19tZXJnZShoYW5kbGUsIGlub2RlLCBwYXRoLCBleCkpDQorCQlleHQ0X2V4dF90cnlfdG9f
-bWVyZ2VfYmxvY2tzKGhhbmRsZSwgaW5vZGUsIHBhdGgpOw0KIA0KIAkvKiBNYXJrIG1vZGlmaWVk
-IGV4dGVudCBhcyBkaXJ0eSAqLw0KIAllcnIgPSBleHQ0X2V4dF9kaXJ0eShoYW5kbGUsIGlub2Rl
-LCBwYXRoICsgcGF0aC0+cF9kZXB0aCk7DQpkaWZmIC0tZ2l0IGEvZnMvamJkMi90cmFuc2FjdGlv
-bi5jIGIvZnMvamJkMi90cmFuc2FjdGlvbi5jDQppbmRleCAxODYxMTI0MWY0NTEuLjc0MjFmMmFm
-OWNmMiAxMDA2NDQNCi0tLSBhL2ZzL2piZDIvdHJhbnNhY3Rpb24uYw0KKysrIGIvZnMvamJkMi90
-cmFuc2FjdGlvbi5jDQpAQCAtNTEzLDYgKzUxMyw3IEBAIGhhbmRsZV90ICpqYmQyX19qb3VybmFs
-X3N0YXJ0KGpvdXJuYWxfdCAqam91cm5hbCwgaW50IG5ibG9ja3MsIGludCByc3ZfYmxvY2tzLA0K
-IAkJfQ0KIAkJcnN2X2hhbmRsZS0+aF9yZXNlcnZlZCA9IDE7DQogCQlyc3ZfaGFuZGxlLT5oX2pv
-dXJuYWwgPSBqb3VybmFsOw0KKwkJcnN2X2hhbmRsZS0+aF9yZXZva2VfY3JlZGl0cyA9IHJldm9r
-ZV9yZWNvcmRzOw0KIAkJaGFuZGxlLT5oX3Jzdl9oYW5kbGUgPSByc3ZfaGFuZGxlOw0KIAl9DQog
-CWhhbmRsZS0+aF9yZXZva2VfY3JlZGl0cyA9IHJldm9rZV9yZWNvcmRzOw0KLS0gDQoyLjQwLjEN
-Cg0K
+Hi,
+
+V3 applies the fixes suggested by Eric Biggers (thank you for your
+review!).  Changelog inlined in the patches.
+
+Retested with xfstests for ext4 and f2fs.
+
+--
+cover letter from v1.
+
+This patchset enables negative dentries for case-insensitive directories
+in ext4/f2fs.  It solves the corner cases for this feature, including
+those already tested by fstests (generic/556).  It also solves an
+existing bug with the existing implementation where old negative
+dentries are left behind after a directory conversion to
+case-insensitive.
+
+Testing-wise, I ran sanity checks to show it properly uses the created
+negative dentries, observed the expected performance increase of the
+dentry cache hit, and showed it survives the quick group in fstests on
+both f2fs and ext4 without regressions.
+
+* Background
+
+Negative dentries have always been disabled in case-insensitive
+directories because, in their current form, they can't provide enough
+assurances that all the case variations of a filename won't exist in a
+directory, and the name-preserving case-insenstive semantics
+during file creation prevents some negative dentries from being
+instantiated unmodified.
+
+Nevertheless, for the general case, the existing implementation would
+already work with negative dentries, even though they are fully
+disabled. That is: if the original lookup that created the dentry was
+done in a case-insensitive way, the negative dentry can usually be
+validated, since it assures that no other dcache entry exists, *and*
+that no variation of the file exists on disk (since the lookup
+failed). A following lookup would then be executed with the
+case-insensitive-aware d_hash and d_lookup, which would find the right
+negative dentry and use it.
+
+The first corner case arises when a case-insensitive directory has
+negative dentries that were created before the directory was flipped to
+case-insensitive.  A directory must be empty to be converted, but it
+doesn't mean the directory doesn't have negative dentry children.  If
+that happens, the dangling dentries left behind can't assure that no
+case-variation of the name exists. They only mean the exact name
+doesn't exist.  A further lookup would incorrectly validate them.
+
+The code below demonstrates the problem.  In this example $1 and $2 are
+two strings, where:
+
+      (i) $1 != $2
+     (ii) casefold($1) == casefold($2)
+    (iii) hash($1) == hash($2) == hash(casefold($1))
+
+Then, the following sequence could potentially return a ENOENT, even
+though the case-insensitive lookup should exist:
+
+  mkdir  d      <- Case-sensitive directory
+  touch  d/$1
+  touch  d/$2
+  unlink d/$1   <- leaves negative dentry  behind.
+  unlink d/$2   <- leaves *another* negative dentry behind.
+  chattr +F d   <- make 'd' case-insensitive.
+  touch  d/$1   <- Both negative dentries could match. finds one of them,
+		   and instantiate
+  access d/$1   <- Find the other negative dentry, get -ENOENT.
+
+In fact, this is a problem even on the current implementation, where
+negative dentries for CI are disabled.  There was a bug reported by Al
+Viro in 2020, where a directory might end up with dangling negative
+dentries created during a case-sensitive lookup, because they existed
+before the +F attribute was set.
+
+It is hard to trigger the issue, because condition (iii) is hard to test
+on an unmodified kernel.  By hacking the kernel to force the hash
+collision, there are a few ways we can trigger this bizarre behavior in
+case-insensitive directories through the insertion of negative dentries.
+
+Another problem exists when turning a negative dentry to positive.  If
+the negative dentry has a different case than what is currently being
+used for lookup, the dentry cannot be reused without changing its name,
+in order to guarantee filename-preserving semantics to userspace.  We
+need to either change the name or invalidate the dentry. This issue is
+currently avoided in mainline, since the negative dentry mechanism is
+disabled.
+
+* Proposal
+
+The main idea is to differentiate negative dentries created in a
+case-insensitive context from those created during a case-sensitive
+lookup via a new dentry flag, D_CASEFOLD_LOOKUP, set by the filesystem
+the d_lookup hook.  Since the former can be used (except for the
+name-preserving issue), d_revalidate will just check the flag to
+quickly accept or reject the dentry.
+
+A different solution would be to guarantee no negative dentry exists
+during the case-sensitive to case-insensitive directory conversion (the
+other direction is safe).  It has the following problems:
+
+  1) It is not trivial to implement a race-free mechanism to ensure
+  negative dentries won't be recreated immediately after invalidation
+  while converting the directory.
+
+  2) The knowledge whether the negative dentry is valid (i.e. comes from
+  a case-insensitive lookup) is implicit on the fact that we are
+  correctly invalidating dentries when converting the directory.
+
+Having a D_CASEFOLD_LOOKUP avoids both issues, and seems to be a cheap
+solution to the problem.
+
+But, as explained above, due to the filename preserving semantics, we
+cannot just validate based on D_CASEFOLD_LOOKUP.
+
+For that, one solution would be to invalidate the negative dentry when
+it is decided to turn it positive, instead of reusing it. I implemented
+that in the past (2018) but Al Viro made it clear we don't want to incur
+costs on the VFS critical path for filesystems who don't care about
+case-insensitiveness.
+
+Instead, this patch invalidates negative dentries in casefold
+directories in d_revalidate during creation lookups, iff the lookup name
+is not exactly what is cached.  Other kinds of lookups wouldn't need
+this limitation.
+
+* caveats
+
+1) Encryption
+
+Negative dentries on case-insensitive encrypted directories are also
+disabled.  No semantic change for them is intended in
+this patchset; we just bypass the revalidation directly to fscrypt, for
+positive dentries.  Encryption support is future work.
+
+2) revalidate the cached dentry using the name under lookup
+
+Validating based on the lookup name is strange for a cache.  the new
+semantic is implemented by d_revalidate, to stay out of the critical
+path of filesystems who don't care about case-insensitiveness, as much
+as possible.  The only change is the addition of a new flavor of
+d_revalidate.
+
+* Tests
+
+There are a tests in place for most of the corner cases in generic/556.
+They mainly verify the name-preserving semantics.  The invalidation when
+converting the directory is harder to test, because it is hard to force
+the invalidation of specific cached dentries that occlude a dangling
+invalid dentry.  I tested it with forcing the positive dentries to be
+removed, but I'm not sure how to write an upstreamable test.
+
+It also survives fstests quick group regression testing on both ext4 and
+f2fs.
+
+* Performance
+
+The latency of lookups of non-existing files is obviously improved, as
+would be expected.  The following numbers compare the execution time of 10^6
+lookups of a non-existing file in a case-insensitive directory
+pre-populated with 100k files in ext4.
+
+Without the patch: 10.363s / 0.349s / 9.920s  (real/user/sys)
+With the patch:     1.752s / 0.276s / 1.472s  (real/user/sys)
+
+* patchset
+
+Patch 1 introduces a new flavor of d_revalidate to provide the
+filesystem with the name under lookup; Patch 2 introduces the new flag
+to signal the dentry creation context; Patch 3 introduces a libfs helper
+to revalidate negative dentries on case-insensitive directories; Patch 4
+deals with encryption; Patch 5 cleans up the now redundant dentry
+operations for case-insensitive with and without encryption; Finally,
+Patch 6 and 7 enable support on case-insensitive directories
+for ext4 and f2fs, respectively.
+
+Gabriel Krisman Bertazi (7):
+  fs: Expose name under lookup to d_revalidate hook
+  fs: Add DCACHE_CASEFOLDED_NAME flag
+  libfs: Validate negative dentries in case-insensitive directories
+  libfs: Chain encryption checks after case-insensitive revalidation
+  libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+  ext4: Enable negative dentries on case-insensitive lookup
+  f2fs: Enable negative dentries on case-insensitive lookup
+
+ Documentation/filesystems/locking.rst |  3 +
+ Documentation/filesystems/vfs.rst     | 12 ++++
+ fs/dcache.c                           | 10 ++-
+ fs/ext4/namei.c                       | 35 ++--------
+ fs/f2fs/namei.c                       | 25 ++-----
+ fs/libfs.c                            | 93 ++++++++++++++++++---------
+ fs/namei.c                            | 23 ++++---
+ include/linux/dcache.h                |  9 +++
+ 8 files changed, 116 insertions(+), 94 deletions(-)
+
+-- 
+2.41.0
+
