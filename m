@@ -2,120 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 681FD75B245
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 17:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959B75B5AF
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 19:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjGTPSI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jul 2023 11:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
+        id S230340AbjGTRfp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jul 2023 13:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbjGTPSH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 11:18:07 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3AC26BA
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Jul 2023 08:18:00 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbd200d354so75485e9.1
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Jul 2023 08:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689866279; x=1690471079;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJ0NbXFA9avjbEQfqJk/EA+XEw1aR3Ivofcz45w0LCA=;
-        b=4zsWWvMQRf761GwK0wlm8TqRImyAgBmtAtAiwi/z6R4ikcmlrCgZeNryjNAsaY6aBw
-         2xPyQvkr8OVjDsAeSX0KbunAkAiDMK9gY0BP7VU9Kj907wT5RhuNe+d0CzQL9Vn61TMs
-         BRnYLDdR5ER4vQe8luRVGrvaF+FnjyOJdqIPE0EbxqCBCWz9LpIfd+EMC5sK2Nepmn/f
-         IIX9JWOG4xBkPdkWSk1XhYF/rkeVzXfSE5QTakqIKeQswJXucB8+v891O+2Na6jiOG6Z
-         Dy0vhEgm3Sb74sQmVsDJU+qxHPacRi0QJElpxSpLpmcxMZnJz8xk7rlaoMZG/W1xm88P
-         aL3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689866279; x=1690471079;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eJ0NbXFA9avjbEQfqJk/EA+XEw1aR3Ivofcz45w0LCA=;
-        b=BDdYa/pEhQwBwrbNwAwrUfHMURLFOeZ9cexQeEpC7p4rWZu6lmFqs62HHuDTHBL4an
-         IFPssSEdSOp4KAS2xVrlCUedeD3MwPFfHN445jRB4sqMEV7rLyoyZDNv7G/N4bvx3nHc
-         qzXGubWvffSTisgBt4UU52mAVkiLkVHMvPV/jOQy16P5GwySgntola9CgBq28oTfxZKI
-         pKyXk/a2+qGyEra3Es6NLBAPJ2PRad3hJvRz6owfuQzlQ9JDa0s21shHVlylNUnQp/Vt
-         FldVGAjiI5c40fcKc/EGXNqFqP+PsK1ilynZp/JGukTpwzREK5eYvOsnuPo05zgIDP+2
-         lk+Q==
-X-Gm-Message-State: ABy/qLZk0C1FFWtCtUbLcFsTFXDsF69s45fpmZq+lkKlOzUr6r4lRHb8
-        gwARm2X37zPq8Q6nOHzu7mlQycro/biem7nJr2vbm+VSxg4PUu5RsOA=
-X-Google-Smtp-Source: APBJJlGWkMQZnMrS3KhKyX7lmKsFZcAyablJRMBmdfqLiT6WAZCJllQjO8G+cBO4WMYeMLZ1B8KzEuZd7hXfb8Lza4s=
-X-Received: by 2002:a05:600c:4745:b0:3fd:e15:41e3 with SMTP id
- w5-20020a05600c474500b003fd0e1541e3mr120394wmo.2.1689866279099; Thu, 20 Jul
- 2023 08:17:59 -0700 (PDT)
+        with ESMTP id S230027AbjGTRfo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 13:35:44 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA7ECC;
+        Thu, 20 Jul 2023 10:35:40 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E1D7920505;
+        Thu, 20 Jul 2023 17:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689874538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bx1yg3Jg+5Ltd8iqCFWRF8VuzeM7HV3z2vdytiQt5Yk=;
+        b=PngWjs3AoBtc3UEXbsy4RXLMM+WwOXtOaETHMIKlObHITJNGj7FJZ4hPCKD54JDAk2nJAl
+        pyA292JTp9N3ZP9LM60TZTYUWN5nLNFtfQnof0FRIZoLnjFItINkAuqulTEQVY9W8y/7TP
+        Zjuj5PDDl3oZ08U1lzw77D6gIfjSvkU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689874538;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bx1yg3Jg+5Ltd8iqCFWRF8VuzeM7HV3z2vdytiQt5Yk=;
+        b=xDCGVMAH4W5xpkJ3rw9cFHAVYgMRGr7QKLXhNDzAp/DC3RLxIESyxmyLvuLH96tj0bygov
+        FqHF7Y/pNcuJo2Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6C48133DD;
+        Thu, 20 Jul 2023 17:35:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bnjlImpwuWSLVQAAMHmgww
+        (envelope-from <krisman@suse.de>); Thu, 20 Jul 2023 17:35:38 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v3 0/7] Support negative dentries on case-insensitive
+ ext4 and f2fs
+Organization: SUSE
+References: <20230719221918.8937-1-krisman@suse.de>
+        <20230720074318.GA56170@sol.localdomain>
+Date:   Thu, 20 Jul 2023 13:35:37 -0400
+In-Reply-To: <20230720074318.GA56170@sol.localdomain> (Eric Biggers's message
+        of "Thu, 20 Jul 2023 00:43:18 -0700")
+Message-ID: <87y1ja4hau.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <0000000000006a74dd05e9931449@google.com> <000000000000073a4a05ed620676@google.com>
- <Y3Jb1Wcs/mQlZP32@mit.edu> <8c3757ae-1aeb-49a4-47af-598d1d4737ea@redhat.com> <Y3KAfyQOf6GvEo/x@mit.edu>
-In-Reply-To: <Y3KAfyQOf6GvEo/x@mit.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 20 Jul 2023 17:17:46 +0200
-Message-ID: <CACT4Y+Z83JvP9ifU7Bv8=KO8oZVYEoYA2K+Jwk7Vusoij1M8_w@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in ext4_enable_quotas
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Waiman Long <longman@redhat.com>,
-        syzbot <syzbot+ea70429cd5cf47ba8937@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 14 Nov 2022 at 18:53, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Nov 14, 2022 at 11:21:33AM -0500, Waiman Long wrote:
-> >
-> > lockdep_set_subclass() should be translated into a call to
-> > lockdep_init_map_type():
-> >
-> > #define lockdep_set_subclass(lock, sub)                                 \
-> >         lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key,
-> > sub,\
-> > (lock)->dep_map.wait_type_inner,          \
-> > (lock)->dep_map.wait_type_outer,          \
-> >                               (lock)->dep_map.lock_type)
-> >
-> > All memory access should be within the bound of the given "&ei->i_data_sem".
-> > Also lockdep_init_map_type() is not in the stack trace. So it is not a
-> > problem within this lockdep_init_map_type() function. So is it possible that
-> > the given inode pointer is invalid?
->
-> Well, the inode pointer would be coming from iget().  And since this
-> is coming from ext4 mount operation, we would be getting a fresh inode
-> that should be freshly allocated.  So the possibilities which comes to
-> mind is some kind of use-after-free (probbly in f2fs) that was
-> smashing the inode itself, such that ei->i_data_sem was pointing off
-> into la-la-land, or in the inode cache's internal data srtuctures.
->
-> The reason why I would assume it would be in f2fs is I *assume*
-> syzkaller would have pruned down the test case enough to remove the
-> messing around with mounting the invalid f2fs file system.  But the
-> other mystery here is why didn't KASAN report the use-after-free (if
-> that it is what it was) in the thousands of f2fs mount and
-> unmount operations before it finally triggered?
->
-> Anyway, I plan to ignore this Syzkaller unless report Syzkaller (or
-> someone else) can come up with a more minimal/reliable reproducer.  (I
-> mean, we could open a bug, but with kind of reproducer, it would get
-> prioritized P3 or P4 and ignored for years until it finally got closed
-> in a buganizer bankruptcy, so I figured I would just skip a few steps.  :-)
+Eric Biggers <ebiggers@kernel.org> writes:
 
+>> Another problem exists when turning a negative dentry to positive.  If
+>> the negative dentry has a different case than what is currently being
+>> used for lookup, the dentry cannot be reused without changing its name,
+>> in order to guarantee filename-preserving semantics to userspace.  We
+>> need to either change the name or invalidate the dentry. This issue is
+>> currently avoided in mainline, since the negative dentry mechanism is
+>> disabled.
+>
+> Are you sure this problem even needs to be solved?
 
-Let's set the subsystem then, so it's in the f2fs bucket rather than in ext4:
+Yes, because we promise name-preserving semantics.  If we don't do it,
+the name on the disk might be different than what was asked for, and tools
+that rely on it (they exist) will break.  During initial testing, I've
+had tools breaking with case-insensitive ext4 because they created a
+file, did getdents and wanted to see exactly the name they used.
 
-#syz set subsystems: f2fs
+> It actually isn't specific to negative dentries.  If you have a file "foo"
+> that's not in the dcache, and you open it (or look it up in any other way) as
+> "FOO", then the positive dentry that gets created is named "FOO".
+>
+> As a result, the name that shows up in /proc/$pid/fd/ for anyone who has the
+> file open is "FOO", not the true name "foo".  This is true even for processes
+> that open it as "foo", as long as the dentry remains in the dcache.
+>
+> No negative dentries involved at all!
+
+I totally agree it is goes beyond negative dentries, but this case is
+particularly important because it is the only one (that I know of) where
+the incorrect case might actually be written to the disk.  other cases,
+like /proc/<pid>/fd/ can just display a different case to userspace,
+which is confusing.  Still, the disk has the right version, exactly as
+originally created.
+
+I see the current /proc/$pid/fd/ semantics as a bug. In fact, I have/had
+a bug report for bwrap/flatkpak breaking because it was mounting
+something and immediately checking /proc/mounts to confirm it worked.  A
+former team member tried fixing it a while ago, but we didn't follow up,
+and I don't really love the way they did it.  I need to look into that.
+
+> Or, it looks like the positive dentry case is solvable using d_add_ci().
+> So maybe you are planning to do that?  It's not clear to me.
+
+I want to use d_add_ci for the future, yes. It is not hard, but not
+trivial, because there is an infinite recursion if d_add_ci uses
+->d_compare() when doing the lookup for a duplicate.  We sent a patch to
+fix d_add_ci a while ago, but it was rejected.  I need to revisit.
+
+-- 
+Gabriel Krisman Bertazi
