@@ -2,53 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522CC75A80D
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 09:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D41275A852
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 09:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjGTHnn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jul 2023 03:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        id S231837AbjGTHze (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jul 2023 03:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbjGTHnf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 03:43:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0F02D4A;
-        Thu, 20 Jul 2023 00:43:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S231516AbjGTHzd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 03:55:33 -0400
+X-Greylist: delayed 91947 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 00:55:26 PDT
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A95269F;
+        Thu, 20 Jul 2023 00:55:26 -0700 (PDT)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CA3E618F6;
-        Thu, 20 Jul 2023 07:43:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3FBDC433C8;
-        Thu, 20 Jul 2023 07:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689839000;
-        bh=wkKDK2+s1pOg2JvqCSmY6SM9Z1YuLDwx2K3C/NKe7xI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eizBjjVGnO2vg1Tt2xjCxt2izjubXLk5XoIzez+G7NV6q1Pov2b3Jowbwu6LF+wXa
-         DNbJBORvYQCs0/CSWTrRQCmYn6FsD3maICWoXOwort8kKP5IwPbtFXh0cPUvhaD40s
-         ExnEkERouBZ6IjvHtIe0E+mUHUFZGymwvdhnJCHYdompFyjMBUL9wWaF6UroxpCZqR
-         Dcf1rsRIHmOSHhnxJooVrw450EAg1dAqIDazslQUWsPdBfInFNqjaoEzFkfSmavNZK
-         WkRV1J2XALtQTXEZC0xXWSOWH7LG+fDbExR5IFjiJMxBKUO/yvbkRuAfAebaoIjELj
-         0C2zvsGLMPibA==
-Date:   Thu, 20 Jul 2023 00:43:18 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v3 0/7] Support negative dentries on case-insensitive
- ext4 and f2fs
-Message-ID: <20230720074318.GA56170@sol.localdomain>
-References: <20230719221918.8937-1-krisman@suse.de>
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 225317497FD;
+        Thu, 20 Jul 2023 09:55:23 +0200 (CEST)
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     "Alan C. Assis" <acassis@gmail.com>,
+        =?ISO-8859-1?Q?Bj=F8rn?= Forsman <bjorn.forsman@gmail.com>,
+        Kai Tomerius <kai@tomerius.de>, linux-embedded@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        dm-devel@redhat.com
+Subject: Nobarrier mount option (was: Re: File system robustness)
+Date:   Thu, 20 Jul 2023 09:55:22 +0200
+Message-ID: <38426448.10thIPus4b@lichtvoll.de>
+In-Reply-To: <20230720042034.GA5764@mit.edu>
+References: <20230717075035.GA9549@tomerius.de> <4835096.GXAFRqVoOG@lichtvoll.de>
+ <20230720042034.GA5764@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719221918.8937-1-krisman@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,34 +48,72 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sorry, one more thing...
-
-On Wed, Jul 19, 2023 at 06:19:11PM -0400, Gabriel Krisman Bertazi wrote:
+Theodore Ts'o - 20.07.23, 06:20:34 CEST:
+> On Wed, Jul 19, 2023 at 08:22:43AM +0200, Martin Steigerwald wrote:
+> > Is "nobarrier" mount option still a thing? I thought those mount
+> > options have been deprecated or even removed with the introduction
+> > of cache flush handling in kernel 2.6.37?
 > 
-> Another problem exists when turning a negative dentry to positive.  If
-> the negative dentry has a different case than what is currently being
-> used for lookup, the dentry cannot be reused without changing its name,
-> in order to guarantee filename-preserving semantics to userspace.  We
-> need to either change the name or invalidate the dentry. This issue is
-> currently avoided in mainline, since the negative dentry mechanism is
-> disabled.
+> Yes, it's a thing, and if your server has a UPS with a reliable power
+> failure / low battery feedback, it's *possible* to engineer a reliable
+> system.  Or, for example, if you have a phone with an integrated
+> battery, so when you drop it the battery compartment won't open and
+> the battery won't go flying out, *and* the baseboard management
+> controller (BMC) will halt the CPU before the battery complete dies,
+> and gives a chance for the flash storage device to commit everything
+> before shutdown, *and* the BMC arranges to make sure the same thing
+> happens when the user pushes and holds the power button for 30
+> seconds, then it could be safe.
 
-Are you sure this problem even needs to be solved?
+Thanks for clarification. I am aware that something like this can be 
+done. But I did not think that is would be necessary to explicitly 
+disable barriers, or should I more accurately write cache flushes, in 
+such a case:
 
-It actually isn't specific to negative dentries.  If you have a file "foo"
-that's not in the dcache, and you open it (or look it up in any other way) as
-"FOO", then the positive dentry that gets created is named "FOO".
+I thought that nowadays a cache flush would be (almost) a no-op in the 
+case the storage receiving it is backed by such reliability measures. 
+I.e. that the hardware just says "I am ready" when having the I/O 
+request in stable storage whatever that would be, even in case that 
+would be battery backed NVRAM and/or temporary flash.
 
-As a result, the name that shows up in /proc/$pid/fd/ for anyone who has the
-file open is "FOO", not the true name "foo".  This is true even for processes
-that open it as "foo", as long as the dentry remains in the dcache.
+At least that is what I thought was the background for not doing the 
+"nobarrier" thing anymore: Let the storage below decide whether it is 
+safe to basically ignore cache flushes by answering them (almost) 
+immediately.
 
-No negative dentries involved at all!
+However, not sending the cache flushes in the first place would likely 
+still be more efficient although as far as I am aware block layer does not 
+return back a success / failure information to the upper layers anymore 
+since kernel 2.6.37.
 
-Is your thinking that you just don't want to increase the number of ways in
-which this behavior can occur?
+Seems I got to update my Linux Performance tuning slides about this once 
+again.
 
-Or, it looks like the positive dentry case is solvable using d_add_ci().
-So maybe you are planning to do that?  It's not clear to me.
+> We also use nobarrier for a scratch file systems which by definition
+> go away when the borg/kubernetes job dies, and which will *never*
+> survive a reboot, let alone a power failure.  In such a situation,
+> there's no point sending the cache flush, because the partition will
+> be mkfs'ed on reboot.  Or, in if the iSCSI or Cloud Persistent Disk
+> will *always* go away when the VM dies, because any persistent state
+> is saved to some cluster or distributed file store (e.g., to the MySQL
+> server, or Big Table, or Spanner, etc.  In these cases, you don't
+> *want* the Cache Flush operation, since skipping it reduce I/O
+> overhead.
 
-- Eric
+Hmm, right.
+
+> So if you know what you are doing, in certain specialized use cases,
+> nobarrier can make sense, and it is used today at my $WORK's data
+> center for production jobs *all* the time.  So we won't be making
+> ext4's nobarrier mount option go away; it has users.  :-)
+
+I now wonder why XFS people deprecated and even removed those mount 
+options. But maybe I better ask them separately instead of adding their 
+list in CC. Probably by forwarding this mail to the XFS mailing list 
+later on.
+
+Best,
+-- 
+Martin
+
+
