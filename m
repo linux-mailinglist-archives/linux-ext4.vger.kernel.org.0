@@ -2,194 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C212275B047
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 15:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE89375B18F
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 16:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbjGTNmL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jul 2023 09:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S231691AbjGTOsc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jul 2023 10:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjGTNmL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 09:42:11 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60D7198D;
-        Thu, 20 Jul 2023 06:42:08 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R6DLs2BX8zLnpY;
-        Thu, 20 Jul 2023 21:39:33 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 21:42:01 +0800
-Message-ID: <d75562f3-62fc-c54b-967b-0c2e9571b914@huawei.com>
-Date:   Thu, 20 Jul 2023 21:42:01 +0800
+        with ESMTP id S231330AbjGTOsb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 10:48:31 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7632127
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Jul 2023 07:48:30 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-116-181.bstnma.fios.verizon.net [173.48.116.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36KEm7VL023871
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 10:48:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1689864489; bh=3qENlvGeUSbvXcarripQ98xoXLuUgBMJEeEDtgpgOzs=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=o38BvjzvkxR9ejnyf8J9SKcPT7ZJcGH4zqa8IXw45DFO13eV5m5TSfM/gDPPLoBZ8
+         ta5EDsmwfIfQF2mCPexYVge9lWt9uqcW72rvke+rTwAxwEzkaV6CbzIGEyqfC9rfa2
+         L7PyDewRuWCC3rP/VAWX75IVcDCQpXRu+IvV2lJhK513oNNTwjjJ0QKrI/QcTkNGRN
+         1Ao43il3c+osacjK/ueGFmJ0esAkLCI1CXgqj6eiphjsjm3dhq/1iTcrnR0mQH4eP1
+         +XRYJFu9iux33+GCMMv4VqIBGH6dMWz3z0S6z7uSu2JdubNsT7UxAuL5UyOCqN437e
+         UlcbgKyYSUUaw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7824515C04D6; Thu, 20 Jul 2023 10:48:07 -0400 (EDT)
+Date:   Thu, 20 Jul 2023 10:48:07 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v2] ext4: fix the time handling macros when ext4 is using
+ small inodes
+Message-ID: <20230720144807.GC5764@mit.edu>
+References: <20230719-ctime-v2-1-869825696d6d@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
- overflow
-Content-Language: en-US
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <87edl2oipn.fsf@doe.com>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <87edl2oipn.fsf@doe.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719-ctime-v2-1-869825696d6d@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/7/20 20:44, Ritesh Harjani (IBM) wrote:
-> Baokun Li <libaokun1@huawei.com> writes:
->
->> When we calculate the end position of ext4_free_extent, this position may
->> be exactly where ext4_lblk_t (i.e. uint) overflows. For example, if
->> ac_g_ex.fe_logical is 4294965248 and ac_orig_goal_len is 2048, then the
->> computed end is 0x100000000, which is 0. If ac->ac_o_ex.fe_logical is not
->> the first case of adjusting the best extent, that is, new_bex_end > 0, the
->> following BUG_ON will be triggered:
-> Nice spotting.
->
->> =========================================================
->> kernel BUG at fs/ext4/mballoc.c:5116!
->> invalid opcode: 0000 [#1] PREEMPT SMP PTI
->> CPU: 3 PID: 673 Comm: xfs_io Tainted: G E 6.5.0-rc1+ #279
->> RIP: 0010:ext4_mb_new_inode_pa+0xc5/0x430
->> Call Trace:
->>   <TASK>
->>   ext4_mb_use_best_found+0x203/0x2f0
->>   ext4_mb_try_best_found+0x163/0x240
->>   ext4_mb_regular_allocator+0x158/0x1550
->>   ext4_mb_new_blocks+0x86a/0xe10
->>   ext4_ext_map_blocks+0xb0c/0x13a0
->>   ext4_map_blocks+0x2cd/0x8f0
->>   ext4_iomap_begin+0x27b/0x400
->>   iomap_iter+0x222/0x3d0
->>   __iomap_dio_rw+0x243/0xcb0
->>   iomap_dio_rw+0x16/0x80
->> =========================================================
->>
->> A simple reproducer demonstrating the problem:
->>
->> 	mkfs.ext4 -F /dev/sda -b 4096 100M
->> 	mount /dev/sda /tmp/test
->> 	fallocate -l1M /tmp/test/tmp
->> 	fallocate -l10M /tmp/test/file
->> 	fallocate -i -o 1M -l16777203M /tmp/test/file
->> 	fsstress -d /tmp/test -l 0 -n 100000 -p 8 &
->> 	sleep 10 && killall -9 fsstress
->> 	rm -f /tmp/test/tmp
->> 	xfs_io -c "open -ad /tmp/test/file" -c "pwrite -S 0xff 0 8192"
->
-> Could you please also add it into xfstests?
-Sure！I'll try to push this test case to xfstests.
-> I think it's a nice test which can check the boundary conditions for
-> start and end of data types used in mballoc. I think it should even work
-> if you don't do fsstress but instead just fallocate some remaining space
-> in filesystem, so that when you open and try to write it to 0th offset,
-> if automatically hits this error in ext4_mb_new_inode_pa().
-Yes, the fsstress here is just to fill up the remaining space on the disk.
->
->> We declare new_bex_start and new_bex_end as correct types and use fex_end()
->> to avoid the problems caused by the ext4_lblk_t overflow above.
->>
->> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/ext4/mballoc.c | 11 +++++------
->>   1 file changed, 5 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index eb7f5d35ef96..2090e5e7ba58 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -5076,8 +5076,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>   	pa = ac->ac_pa;
->>   
->>   	if (ac->ac_b_ex.fe_len < ac->ac_orig_goal_len) {
->> -		int new_bex_start;
->> -		int new_bex_end;
->> +		ext4_lblk_t new_bex_start;
->> +		loff_t new_bex_end;
->>   
->>   		/* we can't allocate as much as normalizer wants.
->>   		 * so, found space must get proper lstart
->> @@ -5096,8 +5096,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>   		 *    still cover original start
->>   		 * 3. Else, keep the best ex at start of original request.
->>   		 */
->> -		new_bex_end = ac->ac_g_ex.fe_logical +
->> -			EXT4_C2B(sbi, ac->ac_orig_goal_len);
->> +		new_bex_end = fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len);
->>   		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
->>   		if (ac->ac_o_ex.fe_logical >= new_bex_start)
->>   			goto adjust_bex;
->> @@ -5117,8 +5116,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>   
->>   		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
->>   		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
->> -		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
->> -				      EXT4_C2B(sbi, ac->ac_orig_goal_len)));
-> Ok so the right hand becomes 0 (because then end can go upto 1<<32 which
-> will be 0 for unsigned int). And the left (new_bex_end) might be
-> negative due to some operations above as I see it.
-> And comparing an int with unsigned int, it will promote new_bex_end to
-> unsigned int which will make it's value too large and will hit the
-> bug_on.
-Exactly!
->
-> I would like to carefully review all such paths. I will soon review and
-> get back.
-Okay, thank you very much for your careful review.
-The 2nd and 3rd cases of adjusting the best extent are impossible to 
-overflow,
-so only the first case is converted here.
->
->
->> +		BUG_ON(new_bex_end >
->> +			fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len));
-> I am not sure whether using fex_end or pa_end is any helpful.
-> I think we can just typecast if needed and keep it simple rather
-> than adding helpers functions for addition operation.
-> (because of the fact that fex_end() can take a third parameter which
-> sometimes you pass as NULL. Hence it doesn't look clean, IMO)
-I added the helper functions here for two reasons:
-1. restricting the type of the return value.
-2. This avoids the ugly line breaks in most cases.
+On Wed, Jul 19, 2023 at 06:32:19AM -0400, Jeff Layton wrote:
+> If ext4 is using small on-disk inodes, then it may not be able to store
+> fine grained timestamps. It also can't store the i_crtime at all in that
+> case since that fully lives in the extended part of the inode.
+> 
+> 979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+> still store the tv_sec field of the i_crtime into the raw_inode, even
+> when they were small, corrupting adjacent memory.
+> 
+> This fixes those macros to skip setting anything in the raw_inode if the
+> tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
+> the raw_inode doesn't support it.
+> 
+> Also, fix a bug in ctime handling during rename. It was updating the
+> renamed inode's ctime twice rather than the old directory.
+> 
+> Cc: Jan Kara <jack@suse.cz>
+> Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Tested-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-The fex_end() indeed doesn't look as clean as the pa_end(), because we 
-might use
-the start of the free extent plus some other length to get a new end, 
-like right in
-ext4_mb_new_inode_pa(), which makes me have to add another extra length
-argument, but I think it's worth it, and even with the addition of a 
-parameter
-that will probably be unused, it still looks a lot shorter than the 
-original code.
->>   	}
->>   
->>   	pa->pa_lstart = ac->ac_b_ex.fe_logical;
->> -- 
->> 2.31.1
-> -ritesh
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
+I assume this is will be applied to the vfs.ctime branch, yes?
 
-Thanks again!
--- 
-With Best Regards,
-Baokun Li
-.
+  	      	      	 	    	- Ted
