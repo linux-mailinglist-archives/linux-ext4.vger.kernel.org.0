@@ -2,222 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CB275B7FD
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jul 2023 21:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B9C75BA99
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 00:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbjGTTa7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jul 2023 15:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        id S229744AbjGTW3P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jul 2023 18:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjGTTa6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 15:30:58 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD78171D;
-        Thu, 20 Jul 2023 12:30:57 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so779553b3a.3;
-        Thu, 20 Jul 2023 12:30:57 -0700 (PDT)
+        with ESMTP id S229593AbjGTW3P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jul 2023 18:29:15 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0150210A
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Jul 2023 15:29:12 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b89b75dc1cso16672705ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Jul 2023 15:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689881457; x=1690486257;
-        h=content-transfer-encoding:mime-version:in-reply-to:subject:cc:to
-         :from:message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kJT8UdZo4RMICIP5pYgVCCOmIKLtgXe9oZtHxttH3o=;
-        b=VGPzHzhi9pH3HopFLJI5TfRruM3ZZVQFOwbtJ4WIxDuJpZDyxfha586FfplFQmHJCq
-         gj10+wu23XgfRgjUIpvTAKZDnAqPWlK0Uh7jPMcoLMQCX5dKhe9ZxSathKVSb3Okzh1T
-         7np4FKkAXPi0mjH6O6ZH3jfzOGdJceASmIv7tBb+3K/AAAPkutA0WFSEiJS/c32H2r7g
-         Ek95UNJGPJkcD4ouifK0xtAmgF8LgiCpkDf9wlmgdmHjnfgPdihrX1pPvc3o/giWa1GC
-         Vw1Azh8Cjaz7VIegXG7zhFMZs7PHJJ7BZ1FNzvEBPGMkJ+zom6tOrtLO0k8M6uSQexfH
-         Ox4A==
+        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1689892152; x=1690496952;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZBYvQ+Q7KCi3OcX/BsHTCCcIcEnWb+SsWxZuRP5oDs=;
+        b=WWBSUnfbSFAONQmhb+ogFu30MmbVerFnp9DWovMx7BHBvIWFXgjqRl6Y24qIcZewXL
+         BxzrsKPRVw4ZraaWY/w9EyC1HUUKmsP+uV393r/8B4LJQMbt+0NP6oXZSvz+wpg2kkjX
+         pMv3HnUcSh323Cij2LFsru9cHdu0CA4w1ZmxNaKU1tRniBM8f7z/rIJwX5gIJxjalfvy
+         09i0LsMy4dowl2apZfMblszPFP+jSfjlCW5Cmxkt+TsLUrn9OW79BVL7cAoakjBou499
+         BMTWc1oe2ik1J4eDUGUYl2071Rjk54bf9bXmh3bSNAUU7XKm7g8h406na4/Lha+SsDz7
+         KiCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689881457; x=1690486257;
-        h=content-transfer-encoding:mime-version:in-reply-to:subject:cc:to
-         :from:message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0kJT8UdZo4RMICIP5pYgVCCOmIKLtgXe9oZtHxttH3o=;
-        b=LFF80nhfqO4FyqE1ZpwajtSdq3JFPJmF0m8kl9sWKyFDL6d5efnTwVnltOaA1RlZH+
-         oR7xmuCa4NUQ5PiSJDStGsUZD3NUDa9p2jPfAyy2XNilxSA23+qfEL+cYByvxC9YJvEx
-         NZPSYM8rcNkqQd5WWQzV588ohSpMCjsbKaxsXiKzwa73Mghnmsn6qHfdhS4vU95ZDREZ
-         bk/AJxW/9qDyBaaMtR2NvflrxkFL6nRGYmIyaWf5FDNrQr9lAn1Fncrh+u6NOX2fVe75
-         vG/pWxxAs0ZKQidr18MFXfyViO0aw4TRhN4YQd49b2m6Myhz4wcMXK4VDqNy78jsceCh
-         n0EQ==
-X-Gm-Message-State: ABy/qLYre4PQ5fEBu88qz+mdL6uBH1zl4bf8WEl5QHP4CeymD2MEtkle
-        z1RZg5pSqKyHUddcTEskC3c=
-X-Google-Smtp-Source: APBJJlHzDhNQjGCxwLUAUrJJYOo/guCzBZ0qC+XRiKaR+C7V17FWb+qyxpObS3ugn7EUlBMIKIz2vg==
-X-Received: by 2002:a05:6a20:508:b0:133:f5c1:57bb with SMTP id 8-20020a056a20050800b00133f5c157bbmr148855pzp.20.1689881456806;
-        Thu, 20 Jul 2023 12:30:56 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id j21-20020aa78dd5000000b00682a61fa525sm1609779pfr.91.2023.07.20.12.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 12:30:55 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 01:00:51 +0530
-Message-Id: <87zg3qmlck.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-        Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to overflow
-In-Reply-To: <d75562f3-62fc-c54b-967b-0c2e9571b914@huawei.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689892152; x=1690496952;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZBYvQ+Q7KCi3OcX/BsHTCCcIcEnWb+SsWxZuRP5oDs=;
+        b=BJjLLiv26wsvcskt88VjG/Q+GrOmwLpwWEH6T1QfoFm47aG7rj8YR/k5lhx9Et4dAI
+         aK5HU3+MWJjhdAckMuV+XhK757DWyB/91AE1NntkRBJZNGCAb6Pg91loQ8f5dpMLvfBG
+         SqtoMdmCB3AqtTsQcRKME3q+8S7F5ZLCQuhFTrGs0LKFgFwZoAzs+mWkX1P2YQljNOi1
+         y8g1slOTHutcmIBemasrvn1oCwj9rlxMJC6rXTCSeEtdscXvGR5yym69f1sMcKf2flj5
+         gKDBPCVM7aC7/ktFBaM2y/3pufxpJ51pVp07nbad9QXbMeeUPFE06tIvLU6Cnh5xVZCs
+         O0xA==
+X-Gm-Message-State: ABy/qLaLTPL9sSBTPaF6+TenBUHAaaVigY4IE/Zis5usSVHucr7aepK4
+        Wg4iCQJQwH7JvYYLrEi+hftg8Q==
+X-Google-Smtp-Source: APBJJlHx8TV1JyD5hU6NSEufn+IYruL9u4tU9X5Sii4ha2GlKlRy7fZlusWdaN4Ie2rLdZKDDcDhwQ==
+X-Received: by 2002:a17:90b:1d8c:b0:263:161c:9e9c with SMTP id pf12-20020a17090b1d8c00b00263161c9e9cmr1048933pjb.12.1689892152390;
+        Thu, 20 Jul 2023 15:29:12 -0700 (PDT)
+Received: from cabot.hitronhub.home (S0106bc4dfb596de3.ek.shawcable.net. [174.0.67.248])
+        by smtp.gmail.com with ESMTPSA id rm10-20020a17090b3eca00b00262e604724dsm3068776pjb.50.2023.07.20.15.29.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Jul 2023 15:29:11 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <4BAF012D-8C54-4382-8F73-F5628241328B@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_E91825CC-AC33-4EDC-B94E-9EB6A43F086D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext2fs: make sure we have at least EXT2_FIRST_INO + 1
+ inodes
+Date:   Thu, 20 Jul 2023 16:30:28 -0600
+In-Reply-To: <20230720125012.641504-1-dongyangli@ddn.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Li Dongyang <dongyangli@ddn.com>
+References: <20230720125012.641504-1-dongyangli@ddn.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Baokun Li <libaokun1@huawei.com> writes:
 
-> On 2023/7/20 20:44, Ritesh Harjani (IBM) wrote:
->> Baokun Li <libaokun1@huawei.com> writes:
->>
->>> When we calculate the end position of ext4_free_extent, this position may
->>> be exactly where ext4_lblk_t (i.e. uint) overflows. For example, if
->>> ac_g_ex.fe_logical is 4294965248 and ac_orig_goal_len is 2048, then the
->>> computed end is 0x100000000, which is 0. If ac->ac_o_ex.fe_logical is not
->>> the first case of adjusting the best extent, that is, new_bex_end > 0, the
->>> following BUG_ON will be triggered:
->> Nice spotting.
->>
->>> =========================================================
->>> kernel BUG at fs/ext4/mballoc.c:5116!
->>> invalid opcode: 0000 [#1] PREEMPT SMP PTI
->>> CPU: 3 PID: 673 Comm: xfs_io Tainted: G E 6.5.0-rc1+ #279
->>> RIP: 0010:ext4_mb_new_inode_pa+0xc5/0x430
->>> Call Trace:
->>>   <TASK>
->>>   ext4_mb_use_best_found+0x203/0x2f0
->>>   ext4_mb_try_best_found+0x163/0x240
->>>   ext4_mb_regular_allocator+0x158/0x1550
->>>   ext4_mb_new_blocks+0x86a/0xe10
->>>   ext4_ext_map_blocks+0xb0c/0x13a0
->>>   ext4_map_blocks+0x2cd/0x8f0
->>>   ext4_iomap_begin+0x27b/0x400
->>>   iomap_iter+0x222/0x3d0
->>>   __iomap_dio_rw+0x243/0xcb0
->>>   iomap_dio_rw+0x16/0x80
->>> =========================================================
->>>
->>> A simple reproducer demonstrating the problem:
->>>
->>> 	mkfs.ext4 -F /dev/sda -b 4096 100M
->>> 	mount /dev/sda /tmp/test
->>> 	fallocate -l1M /tmp/test/tmp
->>> 	fallocate -l10M /tmp/test/file
->>> 	fallocate -i -o 1M -l16777203M /tmp/test/file
->>> 	fsstress -d /tmp/test -l 0 -n 100000 -p 8 &
->>> 	sleep 10 && killall -9 fsstress
->>> 	rm -f /tmp/test/tmp
->>> 	xfs_io -c "open -ad /tmp/test/file" -c "pwrite -S 0xff 0 8192"
->>
->> Could you please also add it into xfstests?
-> Sure！I'll try to push this test case to xfstests.
+--Apple-Mail=_E91825CC-AC33-4EDC-B94E-9EB6A43F086D
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Thanks that would be great!
+On Jul 20, 2023, at 6:50 AM, Li Dongyang <dongyangli@ddn.com> wrote:
+>=20
+> When creating a small fs with 100 1k blocks, mke2fs fails with:
+>=20
+> Creating filesystem with 100 1k blocks and 8 inodes
+>=20
+> Allocating group tables: done
+> Writing inode tables: done
+> ext2fs_mkdir: Could not allocate inode in ext2 filesystem while =
+creating /lost+found
+>=20
+> Increase s_inodes_per_group with a step of 8 to make
+> sure we have at least EXT2_FIRST_INO + 1 inodes.
+>=20
+> Change-Id: Ib885735641dfa0ed9c6f6a4a1f9afec291673126
+> Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 
->> I think it's a nice test which can check the boundary conditions for
->> start and end of data types used in mballoc. I think it should even work
->> if you don't do fsstress but instead just fallocate some remaining space
->> in filesystem, so that when you open and try to write it to 0th offset,
->> if automatically hits this error in ext4_mb_new_inode_pa().
-> Yes, the fsstress here is just to fill up the remaining space on the disk.
->>
->>> We declare new_bex_start and new_bex_end as correct types and use fex_end()
->>> to avoid the problems caused by the ext4_lblk_t overflow above.
->>>
->>> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>> ---
->>>   fs/ext4/mballoc.c | 11 +++++------
->>>   1 file changed, 5 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->>> index eb7f5d35ef96..2090e5e7ba58 100644
->>> --- a/fs/ext4/mballoc.c
->>> +++ b/fs/ext4/mballoc.c
->>> @@ -5076,8 +5076,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>>   	pa = ac->ac_pa;
->>>   
->>>   	if (ac->ac_b_ex.fe_len < ac->ac_orig_goal_len) {
->>> -		int new_bex_start;
->>> -		int new_bex_end;
->>> +		ext4_lblk_t new_bex_start;
->>> +		loff_t new_bex_end;
->>>   
->>>   		/* we can't allocate as much as normalizer wants.
->>>   		 * so, found space must get proper lstart
->>> @@ -5096,8 +5096,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>>   		 *    still cover original start
->>>   		 * 3. Else, keep the best ex at start of original request.
->>>   		 */
->>> -		new_bex_end = ac->ac_g_ex.fe_logical +
->>> -			EXT4_C2B(sbi, ac->ac_orig_goal_len);
->>> +		new_bex_end = fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len);
->>>   		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
->>>   		if (ac->ac_o_ex.fe_logical >= new_bex_start)
->>>   			goto adjust_bex;
->>> @@ -5117,8 +5116,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->>>   
->>>   		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
->>>   		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
->>> -		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
->>> -				      EXT4_C2B(sbi, ac->ac_orig_goal_len)));
->> Ok so the right hand becomes 0 (because then end can go upto 1<<32 which
->> will be 0 for unsigned int). And the left (new_bex_end) might be
->> negative due to some operations above as I see it.
->> And comparing an int with unsigned int, it will promote new_bex_end to
->> unsigned int which will make it's value too large and will hit the
->> bug_on.
-> Exactly!
->>
->> I would like to carefully review all such paths. I will soon review and
->> get back.
-> Okay, thank you very much for your careful review.
-> The 2nd and 3rd cases of adjusting the best extent are impossible to 
-> overflow,
-> so only the first case is converted here.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-I noticed them too during review. I think it would be safe to make the
-changes in other two places as well such that in future we never
-trip over such overlooked overflow bugs.
 
->>
->>
->>> +		BUG_ON(new_bex_end >
->>> +			fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len));
->> I am not sure whether using fex_end or pa_end is any helpful.
->> I think we can just typecast if needed and keep it simple rather
->> than adding helpers functions for addition operation.
->> (because of the fact that fex_end() can take a third parameter which
->> sometimes you pass as NULL. Hence it doesn't look clean, IMO)
-> I added the helper functions here for two reasons:
-> 1. restricting the type of the return value.
-> 2. This avoids the ugly line breaks in most cases.
->
-> The fex_end() indeed doesn't look as clean as the pa_end(), because we 
-> might use
-> the start of the free extent plus some other length to get a new end, 
-> like right in
-> ext4_mb_new_inode_pa(), which makes me have to add another extra length
-> argument, but I think it's worth it, and even with the addition of a 
-> parameter
-> that will probably be unused, it still looks a lot shorter than the 
-> original code.
+Cheers, Andreas
 
-IMO, we don't need pa_end() and fex_end() at all. In several places in
-ext4 we always have taken care by directly typecasting to avoid
-overflows. Also it reads much simpler rather to typecast in place than
-having a helper function which is also not very elegant due to a third
-parameter. Hence I think we should drop those helpers.
 
-Thanks once again for catching the overflows and coming up with a
-easy reproducer. I am surprised that this bug was never caught with LTP,
-fstests, smatch static checker.
-How did you find it? :)
 
--ritesh
+
+
+
+--Apple-Mail=_E91825CC-AC33-4EDC-B94E-9EB6A43F086D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmS5tYQACgkQcqXauRfM
+H+Av9g/+MgbapoJk39ScY8fVQOJY08vy8De1naPBJf3IGsQXWMnCed2s4CC2Sy/D
+nLVZXuPZS7BaO5wmnwe/2nlTh+V56h2RNMJ06vt0YTkbCa3wjTNcdS3ukhTJlS8f
+prBryOhxN8LTU77jkhtLai1rertpjeCTEW1sZAudSaf8BNB4vy+F/vaCfaz3L+VJ
+IghR1nuPFQDCyJ8JZJPp8xLYqXLdj5a0VMi/5nOc+Ct27jle/DNtcbIidGfY8zQm
+xFvVv9YBwdxzA35NNa5T7YapQtrCr+K31tpRfQtbk0G3P++h/aiQ8amEqUCrP9uD
+SDDFx3DwE9Xfwolq+5RjMv0qrWF0H4XM9xbDGnvpm60zzfx+Nbyu/gbU5i6672Jy
+bMFEsNOkkeygXMwh93PvTLU8yHxbbVqqaLmZlcRB5QjGwRHBgUIKPye4ctgNprEK
+Skueuxt2dGxIjo1JUAd19pvUxyCFm6cgu9SvMcN5AO0H/+rYqiVtixorWT9qepbn
+8X16aILrpzV5EjRULqakz2zk7w268xGUfi3MTIdLwrMOXqNLFmRIh5HSA0VQf4pC
+KativsUVsQJRY0fAnIx1DW1QtQWgizb004NIKomA9+Q626qz5wnjFuDZvC+6brvv
+VzF0G9hwBFg25p307ImhlUqJv+W2PX6KRAt3XCqgYAk66dSdbgs=
+=ZsR8
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_E91825CC-AC33-4EDC-B94E-9EB6A43F086D--
