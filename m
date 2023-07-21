@@ -2,60 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBF575CC72
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 17:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A11575CCC6
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 17:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjGUPtn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 11:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S230470AbjGUP4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jul 2023 11:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjGUPtm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 11:49:42 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7C01BD;
-        Fri, 21 Jul 2023 08:49:41 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68336d06620so1825260b3a.1;
-        Fri, 21 Jul 2023 08:49:41 -0700 (PDT)
+        with ESMTP id S231370AbjGUP4P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 11:56:15 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1A1359F;
+        Fri, 21 Jul 2023 08:56:01 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b8ad356f03so13395575ad.1;
+        Fri, 21 Jul 2023 08:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689954581; x=1690559381;
+        d=gmail.com; s=20221208; t=1689954961; x=1690559761;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=HimBXaqllq26zQkYgjRuRe4b9hljrQWyh4an49zyCYE=;
-        b=QZLeKXZKxP+a56BhL8fnTKdKFfRYJO9cinucv3D3Dt6mouiVOro22Qx1rw6Iv9gdUw
-         63zDH1LeVKOon8uCOVZxvwcvnKNO541Ag4Lts65nIe8wtY1tnYMnyOLp6U1JL12ZI85H
-         Z8xTUvh9043S9/fdzJLMlbP478i7IBBIqjfEXa6yoRIOFTquWumbQCFpesMum8a6+O6/
-         dhXXLWrk9iRsH4gmqHUHs5s6z/g+FZbQPmk7fQMceVBg6QT4EiSCXgp3iDJYnwVGsIPF
-         fenRj4Nk1q+ku1aeIxO9QScXid/z8yLzdUDdlXg/Z0eph3j9XvzYfKy29BF9S8Doy0XL
-         E9yQ==
+        bh=VibBhfAmpo7g9rNI688LGzgM6u6sTP/EcrjxZUdK32s=;
+        b=P7bWSeoDKv75IRxhioSl5JP6HfISxZkViAc6M/xqc2Ik6yDRauZxmzcDi6nQXXAIer
+         BTVcwTfTQh4cvBG7+h7sU9trWkWW1ieJgp9jPgLccEVPo2Jp0G09aYuLGZomC/RtGxOy
+         9OmpGut+NkiUAof5AXvDOQwCI8bFR5mkzDgWjMMzCcwZZn4ska3CoCSuN57QFmQmddIK
+         yLgxhlOnLtuFHDjBePv6GFDalR/wP9ULoTnRGSRWh9VPCRhS6jzMTLLmZxICgiwbQbwI
+         YwLyUy5hz5bwdU+7nv9OL9QtASw6vdITWZoPVYP7jJHyxBrDQHf+vDDmVnQv0EwDRyhk
+         ROGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689954581; x=1690559381;
+        d=1e100.net; s=20221208; t=1689954961; x=1690559761;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HimBXaqllq26zQkYgjRuRe4b9hljrQWyh4an49zyCYE=;
-        b=Chc33tJcTo6JbOT0jvNqYdIFXQHaK7ANnuB+ixZ/bEThr9FCYcFHvaYWe4Ag2uczjL
-         8un6d4Tetw/wxB3hXenqjevDWujae3sfNXItSGERAce78I4H9jvTtoajpHx8hYzomM4y
-         3ECUs0qaGc4klCkbjL/4MEt+Bu3wgJrIopGNnTl5Sb1lhz6LojrYcKkXmwcTqmYRkAeC
-         z/AmT5FfnzsinCXNlgGnYSw/ovcMif4KybJ9/xx9RG/2yR2gtNCB5558qJStBKog8pL9
-         A/5Jpea6Y1HZ5zwSmwmaoXhpWQxXrfPmrLqgN7//V2OFE5fgPfr/BVFgcmT9hNUwhh4o
-         7Ohg==
-X-Gm-Message-State: ABy/qLafr7gB169RPyqsGenCq4MWPpoAx6eEX+Nt8lNTlsgKw8xAPNTc
-        MblQ3tVDzJ7MbJEjmeMdrYg=
-X-Google-Smtp-Source: APBJJlF568lAOyJHJI+eaCy8LHBhtAHZBsKfFWF0AjojYslML8NCPgRI6OmzXqpqdBk42BvRgH9JpA==
-X-Received: by 2002:a05:6a00:15cc:b0:686:25a7:3cf3 with SMTP id o12-20020a056a0015cc00b0068625a73cf3mr513234pfu.29.1689954581144;
-        Fri, 21 Jul 2023 08:49:41 -0700 (PDT)
+        bh=VibBhfAmpo7g9rNI688LGzgM6u6sTP/EcrjxZUdK32s=;
+        b=Bfpsi2n1nnM7eZ1Tp+rmzhf+hTGW+hOMUNIGlUk0BBHZW4pb1ig5heD2Ex82cTZwfG
+         Knizi3prH2iy/obyCvfPdPdFBS+EV+lD4Tn3CHru4+X1JScv9kfQ0+GvcbMdcTnmcqAQ
+         tcs12yBaZr2R3sJt8uTFfUo5L0+J9szaXwzBL+nqI1AA69AS/EfprlFpodXrLW04mmma
+         FytQ34xhBdVntoQyGx7BnL3+NupWWRUmnrJeYF6UkcGqerGuLS0BAD7B/sorzmQBLfxP
+         Gg7VHebaOWgDcrk3l5bugsnAxKoqjkDwsdr7D8EJtjGZYOe3P5/M4wGQNgn5MZc3YYMP
+         Mqfg==
+X-Gm-Message-State: ABy/qLaVS6veypJAsHs4qGsDoUdguIXUG8GWqeg59hsZM7Vp95IKrAoq
+        vqBBN5nWNfET/rIL26m/DI4=
+X-Google-Smtp-Source: APBJJlF7y037M3XL7JEidVjX0CUTHlew3nLMq6JQMa17hN6K8gXqZXWrBT+bueKJoN37pAcEZvyNeA==
+X-Received: by 2002:a17:902:70cb:b0:1b8:2dca:fa19 with SMTP id l11-20020a17090270cb00b001b82dcafa19mr1718927plt.28.1689954961091;
+        Fri, 21 Jul 2023 08:56:01 -0700 (PDT)
 Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id r6-20020a62e406000000b00684b64da08bsm3135187pfh.132.2023.07.21.08.49.38
+        by smtp.gmail.com with ESMTPSA id u4-20020a17090282c400b001b9cd9d7ce4sm3641668plz.219.2023.07.21.08.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:49:40 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 21:19:37 +0530
-Message-Id: <87r0p1jmcu.fsf@doe.com>
+        Fri, 21 Jul 2023 08:56:00 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 21:25:56 +0530
+Message-Id: <87o7k5jm2b.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH 10/10] ext4: correct some stale comment of criteria
-In-Reply-To: <20230721171007.2065423-11-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH 00/10] A few fixes and cleanups to mballoc
+In-Reply-To: <20230721171007.2065423-1-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,47 +68,45 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> We named criteria with CR_XXX, correct stale comment to criteria with
-> raw number.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Hi all, this series contains some random fixes and cleanups to mballoc
+> which include correct grp validation, fix data overflow and so on.
+> More details can be found in respective patches.
+> Besides, 'kvm-xfstest smoke' runs successfully without error.
 
+Thanks Kemeng for the cleanup series. Looks good to me with few minor
+nits which I have commented in individual patches.
 
-Looks good to me. Feel free to add: 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Note that I couldn't cleanly apply the series on ted's dev branch
+(Patch-05 gave some minor conflict). Maybe you might have based your
+changes on top of linux master or something. Anyways it was just a minor
+conflict and I don't know what is Ted's general preference here, but I
+thought of doing an FYI - 
 
 -ritesh
 
+
 >
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index b04eceeab967..e30494f3d289 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2778,8 +2778,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  
->  	/*
->  	 * ac->ac_2order is set only if the fe_len is a power of 2
-> -	 * if ac->ac_2order is set we also set criteria to 0 so that we
-> -	 * try exact allocation using buddy.
-> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
-> +	 * so that we try exact allocation using buddy.
->  	 */
->  	i = fls(ac->ac_g_ex.fe_len);
->  	ac->ac_2order = 0;
-> @@ -2836,8 +2836,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  			/*
->  			 * Batch reads of the block allocation bitmaps
->  			 * to get multiple READs in flight; limit
-> -			 * prefetching at cr=0/1, otherwise mballoc can
-> -			 * spend a lot of time loading imperfect groups
-> +			 * prefetching at cr below CR_FAST, otherwise mballoc
-> +			 * can spend a lot of time loading imperfect groups
->  			 */
->  			if ((prefetch_grp == group) &&
->  			    (cr >= CR_FAST ||
+> Thanks!
+>
+> Kemeng Shi (10):
+>   ext4: correct grp validation in ext4_mb_good_group
+>   ext4: avoid potential data overflow in next_linear_group
+>   ext4: return found group directly in
+>     ext4_mb_choose_next_group_p2_aligned
+>   ext4: use is_power_of_2 helper in ext4_mb_regular_allocator
+>   ext4: remove unnecessary return for void function
+>   ext4: replace the traditional ternary conditional operator with with
+>     max()/min()
+>   ext4: remove unused ext4_{set}/{clear}_bit_atomic
+>   ext4: return found group directly in
+>     ext4_mb_choose_next_group_goal_fast
+>   ext4: return found group directly in
+>     ext4_mb_choose_next_group_best_avail
+>   ext4: correct some stale comment of criteria
+>
+>  fs/ext4/ext4.h    |  2 --
+>  fs/ext4/mballoc.c | 85 ++++++++++++++++++-----------------------------
+>  2 files changed, 32 insertions(+), 55 deletions(-)
+>
 > -- 
 > 2.30.0
