@@ -2,60 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7092475CBA9
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 17:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46BE75CBC9
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 17:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjGUP0L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 11:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S230112AbjGUPcE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jul 2023 11:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjGUP0K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 11:26:10 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71C512F;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5607cdb0959so1127091eaf.2;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+        with ESMTP id S229801AbjGUPcD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 11:32:03 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F532D47;
+        Fri, 21 Jul 2023 08:32:02 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-262e839647eso1185223a91.2;
+        Fri, 21 Jul 2023 08:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689953164; x=1690557964;
+        d=gmail.com; s=20221208; t=1689953522; x=1690558322;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
-        b=iKPRwnvs9sqCriXOw/HdWzzJ6w5MYPPuTn/ZViObaPe5zoVBNcUA394quv1FTU8IZA
-         uu87NSHHwQ58Mzsz6a1RSavv6W00W2rwo5yt0OY0tcaaBXheCvltY30m/ycBNotVplUV
-         CH6m1p+CbotMkZqG01VoSCFvAb8TQe7beRK81Xhk2GagSSz1QzX8SpWLNfnBXCGT3Bsn
-         dXANoI57rj75kbUs9BF1IdbH9GoVSTf8vU409IHK2jdM5lGUXi0D7TS3k5oDRKqp0Xkb
-         +1PpdI6SRXhc7Qk0/oAZ2p8AWVmyp9HgkvQoKtTRne4ZgIdkxXsjfmyGFEHvtuUWNe59
-         XA3w==
+        bh=WIUnonEuz9s/GXG9WtFQfFvEvlsTMFF0HTxFInJ1mG0=;
+        b=fJ4PUmtXNPGf0B0fr09V6fdwEJoTM9bq4O5PnJchACO0/MHwAJkBgzsCRUfyTSD22V
+         D/0cLhvcSjVciOcvfpbGfZOEKKqdYANcmZY4pyxZ5To2nlyMoh21lMU4yAozTgqXpdZN
+         zTsqUxrgau3vrU/GiqAlU3Y4cHAqkcAgKCySJ3r2jSGkQdS25nNLPZjskOx5+OOGH/g4
+         LMWUu3Bnq6TeJ9uCTletrZ3LalufheQtxLRONEEjIo4Gvn2g0lRf636U579xSC/qbjvH
+         92eioK0u3tHTPX2NjPhgbXongKpIWiZ+ROHRH/qffQQbMAD+edWziytCS174ICgEASfF
+         9aug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689953164; x=1690557964;
+        d=1e100.net; s=20221208; t=1689953522; x=1690558322;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
-        b=ML1bEyQLyjJx/ZoBmHpftWvGreUi70GpG0ULtRJM3yCWVhqp3hWzYN/uWGfPuFKQj1
-         A6Dup7O/Yjn2IcgxHJFPk8Rq8hvzfkI0pUWodwvz0mllfoDsxNJbITAKjsmzjKSlWf+I
-         hjtTDxhnr1/Bwc5eWjl8rOfnVoBwPOpBkFM0usl8CTgb2ZprB20ti80tmAhxNFaVBBhM
-         p5XIOG4cKOdQkrfV3u9qI5B397oqWq6xm9GxUeUELVzyyOw4tLL831JzU0/pY9d5kchi
-         DvmUtfkx/3v/366e+vh7uWfu6VlOw2Whcswuf5Gkt4/7fTnqj3iMZC3V6wFUKVw84EaF
-         Dohg==
-X-Gm-Message-State: ABy/qLZejKGPcQNAN7md0x6JG20RbHhPtOp4HBeCyKFaQpl9Mjwi9Eh5
-        0GVjhepM2hbfLndKtXEyAbE=
-X-Google-Smtp-Source: APBJJlFXGIAfsDoT/WoZZltvCYh3AlJifi4lbFeTodR9/ZlSsyKgDUUepmSm1K23OQAJrb4qZ9EwzQ==
-X-Received: by 2002:a05:6808:1819:b0:3a1:f135:6a49 with SMTP id bh25-20020a056808181900b003a1f1356a49mr2925509oib.29.1689953164061;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+        bh=WIUnonEuz9s/GXG9WtFQfFvEvlsTMFF0HTxFInJ1mG0=;
+        b=CZz7GB5OsgzKV4AmDxbeZOyq4dalgorYMo6HT7mncpPcnV0Tmc+V+CL2bUS1Hc1Q47
+         4Ut0qXg+vtCImK0EOsNK3gzJFKsnlJXXk24eXl/McEwqmB62dezH+i/T33Joff99sRF+
+         3EXpcgbqowOvUHjeg1AJ/LYKuhd8c2cVj+x/dOkwwEEi1hFg/b1K4SYEY7JIhNArjQvi
+         sIlxxDrIGqORHQOL1xPmXL5nhVHrXrt02tYT+aagxte6K1QTv5t8G5xyoctCh6h/MAdR
+         l1DSeVNbEGRYjrj23aJPH2SE9Gqn6Avsui+4t7QD945FBWn+rofGozt33G+5P/Zu+CNl
+         QIuA==
+X-Gm-Message-State: ABy/qLZWLz2liUsy6AIFsa9Y10qPJa+aJHLxRQ7l0H2699PXAoPm06xs
+        joU6iOxacaLEumo6Ofg0/UU=
+X-Google-Smtp-Source: APBJJlHuZyk1TVkN4lmw5V01/td2omLBXot4vw7QkvH2pFvC5VKpZFrU9L7xnfliJawoqdo2+uUb8w==
+X-Received: by 2002:a17:90b:3887:b0:267:9767:d1a6 with SMTP id mu7-20020a17090b388700b002679767d1a6mr1949400pjb.3.1689953522182;
+        Fri, 21 Jul 2023 08:32:02 -0700 (PDT)
 Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id l6-20020a17090a850600b002635db431a0sm2688201pjn.45.2023.07.21.08.26.01
+        by smtp.gmail.com with ESMTPSA id n20-20020a17090ade9400b0024e4f169931sm4327647pjv.2.2023.07.21.08.31.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:26:03 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 20:56:00 +0530
-Message-Id: <87fs5hl20n.fsf@doe.com>
+        Fri, 21 Jul 2023 08:32:01 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 21:01:58 +0530
+Message-Id: <87cz0ll1qp.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH 02/10] ext4: avoid potential data overflow in next_linear_group
-In-Reply-To: <20230721171007.2065423-3-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH 03/10] ext4: return found group directly in ext4_mb_choose_next_group_p2_aligned
+In-Reply-To: <20230721171007.2065423-4-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,39 +68,77 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> ngroups is ext4_group_t (unsigned int) while next_linear_group treat it
-> in int. If ngroups is bigger than max number described by int, it will
-> be treat as a negative number. Then "return group + 1 >= ngroups ? 0 :
-> group + 1;" may keep returning 0.
-> Switch int to ext4_group_t in next_linear_group to fix the overflow.
+> Return good group when it's found in loop to remove unnecessary NULL
+> initialization of grp and futher check if good group is found after loop.
 >
-
-Fixes: 196e402adf2e ("ext4: improve cr 0 / cr 1 group scanning")
-
-With that feel free to add: 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > ---
->  fs/ext4/mballoc.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  fs/ext4/mballoc.c | 21 +++++++--------------
+>  1 file changed, 7 insertions(+), 14 deletions(-)
+
+Makes it simpler. Thanks for the cleanup. 
+
+Feel free to add: 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
+-ritesh
+
 >
 > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 90ffabac100b..33ee3991f62c 100644
+> index 33ee3991f62c..4031f8e2a660 100644
 > --- a/fs/ext4/mballoc.c
 > +++ b/fs/ext4/mballoc.c
-> @@ -1081,8 +1081,9 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
->   * Return next linear group for allocation. If linear traversal should not be
->   * performed, this function just returns the same group
->   */
-> -static int
-> -next_linear_group(struct ext4_allocation_context *ac, int group, int ngroups)
-> +static ext4_group_t
-> +next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
-> +		  ext4_group_t ngroups)
+> @@ -875,7 +875,7 @@ static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context
+>  			enum criteria *new_cr, ext4_group_t *group, ext4_group_t ngroups)
 >  {
->  	if (!should_optimize_scan(ac))
->  		goto inc_and_return;
+>  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+> -	struct ext4_group_info *iter, *grp;
+> +	struct ext4_group_info *iter;
+>  	int i;
+>  
+>  	if (ac->ac_status == AC_STATUS_FOUND)
+> @@ -884,7 +884,6 @@ static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context
+>  	if (unlikely(sbi->s_mb_stats && ac->ac_flags & EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED))
+>  		atomic_inc(&sbi->s_bal_p2_aligned_bad_suggestions);
+>  
+> -	grp = NULL;
+>  	for (i = ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
+>  		if (list_empty(&sbi->s_mb_largest_free_orders[i]))
+>  			continue;
+> @@ -893,28 +892,22 @@ static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context
+>  			read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
+>  			continue;
+>  		}
+> -		grp = NULL;
+>  		list_for_each_entry(iter, &sbi->s_mb_largest_free_orders[i],
+>  				    bb_largest_free_order_node) {
+>  			if (sbi->s_mb_stats)
+>  				atomic64_inc(&sbi->s_bal_cX_groups_considered[CR_POWER2_ALIGNED]);
+>  			if (likely(ext4_mb_good_group(ac, iter->bb_group, CR_POWER2_ALIGNED))) {
+> -				grp = iter;
+> -				break;
+> +				*group = iter->bb_group;
+> +				ac->ac_flags |= EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED;
+> +				read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
+> +				return;
+>  			}
+>  		}
+>  		read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
+> -		if (grp)
+> -			break;
+>  	}
+>  
+> -	if (!grp) {
+> -		/* Increment cr and search again */
+> -		*new_cr = CR_GOAL_LEN_FAST;
+> -	} else {
+> -		*group = grp->bb_group;
+> -		ac->ac_flags |= EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED;
+> -	}
+> +	/* Increment cr and search again if no group is found */
+> +	*new_cr = CR_GOAL_LEN_FAST;
+>  }
+>  
+>  /*
 > -- 
 > 2.30.0
