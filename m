@@ -2,129 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6B975D20A
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 20:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879BF75D562
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 22:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjGUSzh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 14:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
+        id S229518AbjGUUQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jul 2023 16:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjGUSzf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 14:55:35 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14323A9C
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Jul 2023 11:55:24 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7658430eb5dso226312685a.2
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Jul 2023 11:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689965723; x=1690570523;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Y6KtmmjFqHmJrfTGwtLo5U3CvX7kiUQqxJ8NaF4Z1Q=;
-        b=bbx2PP0EUBQ9VY6gX4TpbfewIYeawiHLiq4jPINrs/32ZcYUpmZaidLYIigJZFAs2g
-         +/n0VRZd7DPbVwJDRkozs6lNvOdeEVwB3QkhYKKX6Lrpc2EvbB8I0DxqF2aUspXLJ7+1
-         s8lCpYB36T79Shxo8VGJyBzL2mUNZHSSVxAsPoKW/QCr5HJ51eQp5AfCQ76SNEV/edsL
-         G0Ir30Lmeg5jwUWGIvHi3EifVXCZodKO6ncCnuWeGCA2x58/bpaXjMgd4sT10gjjwFeB
-         tVUZQLuYj2LTH49Yx3Rj1Xclj8m7uvo2zTwnUYk2isieHrloPx2Z6T88UItsUiKPH15M
-         GsbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689965723; x=1690570523;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3Y6KtmmjFqHmJrfTGwtLo5U3CvX7kiUQqxJ8NaF4Z1Q=;
-        b=UudS6loLbpDdw9jEs7xFawds181XAMLoZ+7fjG6vNvmqbG2dUJ4t9CNhOWrDHR+2Bh
-         ixyOpswpuY3C8D8doy7E5WsO/la2LxUaDtEigNyHdTqSG7UV42MBSrUpG4PF2VVj3zJ0
-         byAPr/BXO+MsNdUFlDTkm8vsU0Zl2MuRWx/2e3WrbrUjEzuuTBgNPk4B6aM9yjf197Cs
-         Hcc0fIjA42rr+SutnDeCaFq7W360fS+/zJlytpLY1LrhoU2w8RBU4kyUdbAeqIhTGlEP
-         ZPbdSy6ePMWCsCnjHPuiv4L6E9XsApSbWRJ7+ENT3/GxwMzUl1Bm2cQXCp9ORyev2nJE
-         oW3g==
-X-Gm-Message-State: ABy/qLZzKGLDd1eoZG+6bw9Y90oj7a+yQytlBR3Jj32iYT+WnWFahdmw
-        g/kHocnGQbqlT1v8wJl2MweCKRauhOA=
-X-Google-Smtp-Source: APBJJlHN60PLrNIzZC9gB0IFcxs1ENnSLbBhdkfqj8p15Lye1Jw1LzXbvtA3m9KVEYSb0m9AP62JZw==
-X-Received: by 2002:a05:620a:4546:b0:767:28ca:3f4 with SMTP id u6-20020a05620a454600b0076728ca03f4mr945855qkp.55.1689965723268;
-        Fri, 21 Jul 2023 11:55:23 -0700 (PDT)
-Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id p28-20020a05620a133c00b00768283dcb63sm1285745qkj.123.2023.07.21.11.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 11:55:23 -0700 (PDT)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] e2fsprogs: modify dumpe2fs to report free block ranges for bigalloc
-Date:   Fri, 21 Jul 2023 14:55:06 -0400
-Message-Id: <20230721185506.1020225-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229477AbjGUUQe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 16:16:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6E3272C;
+        Fri, 21 Jul 2023 13:16:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 82AE31F45F;
+        Fri, 21 Jul 2023 20:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689970591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n+3XV/m/wutn1BSKHTosdH9uZC2velfSXaZJesszQtA=;
+        b=HrxIAbhGLWdpGDDiDBx0VURnTA7UwcQvC7+Prk5xgB9teOCVx6Atmqz/L6XQ7pZjeGoh6H
+        dABX9P0cchQs5hHktNwqiZi1QtQBOO2TMG5AuvK2frOoJliwwkktdsFzY+FVmIISkb/KoZ
+        5x/xifmlHJmBzePhqOZ95F0Gnr+/6cY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689970591;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n+3XV/m/wutn1BSKHTosdH9uZC2velfSXaZJesszQtA=;
+        b=3wyh95/nmrmuLtQ2O2njeLLNw43OlE660K1uYRlbN0gN/Wdlb3eMKXtZ8rxNUnyqL1arjW
+        9MAmFpSKG6XgJ5CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F89D134B0;
+        Fri, 21 Jul 2023 20:16:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tEvjCZ/numSdJAAAMHmgww
+        (envelope-from <krisman@suse.de>); Fri, 21 Jul 2023 20:16:31 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     brauner@kernel.org, tytso@mit.edu,
+        linux-f2fs-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v3 3/7] libfs: Validate negative dentries in
+ case-insensitive directories
+Organization: SUSE
+References: <20230719221918.8937-1-krisman@suse.de>
+        <20230719221918.8937-4-krisman@suse.de>
+        <20230720060657.GB2607@sol.localdomain>
+        <20230720064103.GC2607@sol.localdomain>
+Date:   Fri, 21 Jul 2023 16:16:30 -0400
+In-Reply-To: <20230720064103.GC2607@sol.localdomain> (Eric Biggers's message
+        of "Wed, 19 Jul 2023 23:41:03 -0700")
+Message-ID: <87bkg53tr5.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-dumpe2fs has never been modified to correctly report block ranges
-corresponding to free clusters in block allocation bitmaps from bigalloc
-file systems.  Rather than reporting block ranges covering all the
-blocks in free clusters found in a block bitmap, it either reports just
-the first block number in a cluster for a single free cluster, or a
-range beginning with the first block number in the first cluster in a
-series of free clusters, and ending with the first block number in the
-last cluster in that series.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-This behavior causes xfstest shared/298 to fail when run on a bigalloc
-file system with a 1k block size.  The test uses dumpe2fs to collect
-a list of the blocks freed when files are deleted from a file system.
-When the test deletes a file containing blocks located after the first
-block in the last cluster in a series of clusters, dumpe2fs does not
-report those blocks as free per the test's expectations.
+> On Wed, Jul 19, 2023 at 11:06:57PM -0700, Eric Biggers wrote:
+>> 
+>> I'm also having trouble understanding exactly when ->d_name is stable here.
+>> AFAICS, unfortunately the VFS has an edge case where a dentry can be moved
+>> without its parent's ->i_rwsem being held.  It happens when a subdirectory is
+>> "found" under multiple names.  The VFS doesn't support directory hard links, so
+>> if it finds a second link to a directory, it just moves the whole dentry tree to
+>> the new location.  This can happen if a filesystem image is corrupted and
+>> contains directory hard links.  Coincidentally, it can also happen in an
+>> encrypted directory due to the no-key name => normal name transition...
+>
+> Sorry, I think I got this slightly wrong.  The move does happen with the
+> parent's ->i_rwsem held, but it's for read, not for write.  First, before
+> ->lookup is called, the ->i_rwsem of the parent directory is taken for read.
+> ->lookup() calls d_splice_alias() which can call __d_unalias() which does the
+> __d_move().  If the old alias is in a different directory (which cannot happen
+> in that fscrypt case, but can happen in the general "directory hard links"
+> case), __d_unalias() takes that directory's ->i_rwsem for read too.
+>
+> So it looks like the parent's ->i_rwsem does indeed exclude moves of child
+> dentries, but only if it's taken for *write*.  So I guess you can rely on that;
+> it's just a bit more subtle than it first appears.  Though, some of your
+> explanation seems to assume that a read lock is sufficient ("In __lookup_slow,
+> either the parent inode is locked by the caller (lookup_slow) ..."), so maybe
+> there is still a problem.
 
-Modify dumpe2fs to report full block ranges for free clusters.  At the
-same time, fix a small bug causing unnecessary !in_use() retests while
-iterating over a block bitmap.
+I think I'm missing something on your clarification. I see your point
+about __d_unalias, and I see in the case where alias->d_parent !=
+dentry->d_parent we acquire the parent inode read lock:
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- misc/dumpe2fs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+static int __d_unalias(struct inode *inode,
+		struct dentry *dentry, struct dentry *alias)
+{
+...
+	m1 = &dentry->d_sb->s_vfs_rename_mutex;
+	if (!inode_trylock_shared(alias->d_parent->d_inode))
+		goto out_err;
+}
 
-diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
-index 7c080ed9..d2d57fb0 100644
---- a/misc/dumpe2fs.c
-+++ b/misc/dumpe2fs.c
-@@ -84,8 +84,7 @@ static void print_free(unsigned long group, char * bitmap,
- 		       unsigned long num, unsigned long offset, int ratio)
- {
- 	int p = 0;
--	unsigned long i;
--	unsigned long j;
-+	unsigned long i, j;
- 
- 	offset /= ratio;
- 	offset += group * num;
-@@ -95,13 +94,14 @@ static void print_free(unsigned long group, char * bitmap,
- 			if (p)
- 				printf (", ");
- 			print_number((i + offset) * ratio);
--			for (j = i; j < num && !in_use (bitmap, j); j++)
-+			for (j = i + 1; j < num && !in_use(bitmap, j); j++)
- 				;
--			if (--j != i) {
-+			if (j != i + 1 || ratio > 1) {
- 				fputc('-', stdout);
--				print_number((j + offset) * ratio);
--				i = j;
-+				print_number(((j - 1 + offset) * ratio) +
-+					     ratio - 1);
- 			}
-+			i = j;
- 			p = 1;
- 		}
- }
+And it seems to use that for __d_move. In this case, __d_move changes
+from under us even with a read lock, which is dangerous.  I think I
+agree with your first email more than the clarification.
+
+In the lookup_slow then:
+
+lookup_slow()
+  d_lookup()
+    d_splice_alias()
+      __d_unalias()
+        __d_move()
+
+this __d_move Can do a dentry move and race with d_revalidate even
+though it has the parent read lock.
+
+> So it looks like the parent's ->i_rwsem does indeed exclude moves of child
+> dentries, but only if it's taken for *write*.  So I guess you can rely on that;
+
+We can get away of it with acquiring the d_lock as you suggested, I
+think.  But can you clarify the above? I wanna make sure I didn't miss
+anything. I am indeed relying only on the read lock here, as you can see.
+
 -- 
-2.30.2
-
+Gabriel Krisman Bertazi
