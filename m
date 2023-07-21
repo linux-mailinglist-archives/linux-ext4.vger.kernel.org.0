@@ -2,116 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 786B075D071
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 19:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6B975D20A
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jul 2023 20:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjGURQT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 13:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
+        id S231320AbjGUSzh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jul 2023 14:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjGURQS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 13:16:18 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCB62D4E
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Jul 2023 10:16:17 -0700 (PDT)
-Received: from letrec.thunk.org (ip-185-104-139-34.ptr.icomera.net [185.104.139.34])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36LHFXqP020651
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 13:15:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1689959742; bh=Szsp8WWenCLEPTlAaYEVnrEfw0PS3KRnzvfturnU6yk=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=lI4ZTtLB5wljuOQzWBPvAShrWDQOZ+Sto4f02+n0rtdzFV30G2AhET8QBav+6NR3C
-         Y+7vKGSGvJHE7r0sOxdZuyuinDOkl/MatmgrAkmH+rahaxSQgSomdKaPX5uBWolPDf
-         qTr3bu1pqplymX1b3MZWf+rI/VMrua1BSYE+3UufQgaj9b4bRIftnkGaRMkH9KjI09
-         zJTZOu/VPcaNO2jZTQLS03pb8g0gKjRputOw2ybO2QNaZhgefmfu5sG/H2lwHya/i+
-         8xHm6GGbIXmrWtWGRG37KYrJd3wOyIBwe2cI2H8yoqkGspSYXJDy/TXrH/qHOC7w51
-         6qllXjBiI4OAw==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 23BB28C0717; Fri, 21 Jul 2023 13:15:29 -0400 (EDT)
-Date:   Fri, 21 Jul 2023 13:15:29 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
- overflow
-Message-ID: <ZLq9MROKiyet9Oce@mit.edu>
-References: <87lef9lljt.fsf@doe.com>
- <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com>
+        with ESMTP id S230349AbjGUSzf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 14:55:35 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14323A9C
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Jul 2023 11:55:24 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7658430eb5dso226312685a.2
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Jul 2023 11:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689965723; x=1690570523;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Y6KtmmjFqHmJrfTGwtLo5U3CvX7kiUQqxJ8NaF4Z1Q=;
+        b=bbx2PP0EUBQ9VY6gX4TpbfewIYeawiHLiq4jPINrs/32ZcYUpmZaidLYIigJZFAs2g
+         +/n0VRZd7DPbVwJDRkozs6lNvOdeEVwB3QkhYKKX6Lrpc2EvbB8I0DxqF2aUspXLJ7+1
+         s8lCpYB36T79Shxo8VGJyBzL2mUNZHSSVxAsPoKW/QCr5HJ51eQp5AfCQ76SNEV/edsL
+         G0Ir30Lmeg5jwUWGIvHi3EifVXCZodKO6ncCnuWeGCA2x58/bpaXjMgd4sT10gjjwFeB
+         tVUZQLuYj2LTH49Yx3Rj1Xclj8m7uvo2zTwnUYk2isieHrloPx2Z6T88UItsUiKPH15M
+         GsbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689965723; x=1690570523;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3Y6KtmmjFqHmJrfTGwtLo5U3CvX7kiUQqxJ8NaF4Z1Q=;
+        b=UudS6loLbpDdw9jEs7xFawds181XAMLoZ+7fjG6vNvmqbG2dUJ4t9CNhOWrDHR+2Bh
+         ixyOpswpuY3C8D8doy7E5WsO/la2LxUaDtEigNyHdTqSG7UV42MBSrUpG4PF2VVj3zJ0
+         byAPr/BXO+MsNdUFlDTkm8vsU0Zl2MuRWx/2e3WrbrUjEzuuTBgNPk4B6aM9yjf197Cs
+         Hcc0fIjA42rr+SutnDeCaFq7W360fS+/zJlytpLY1LrhoU2w8RBU4kyUdbAeqIhTGlEP
+         ZPbdSy6ePMWCsCnjHPuiv4L6E9XsApSbWRJ7+ENT3/GxwMzUl1Bm2cQXCp9ORyev2nJE
+         oW3g==
+X-Gm-Message-State: ABy/qLZzKGLDd1eoZG+6bw9Y90oj7a+yQytlBR3Jj32iYT+WnWFahdmw
+        g/kHocnGQbqlT1v8wJl2MweCKRauhOA=
+X-Google-Smtp-Source: APBJJlHN60PLrNIzZC9gB0IFcxs1ENnSLbBhdkfqj8p15Lye1Jw1LzXbvtA3m9KVEYSb0m9AP62JZw==
+X-Received: by 2002:a05:620a:4546:b0:767:28ca:3f4 with SMTP id u6-20020a05620a454600b0076728ca03f4mr945855qkp.55.1689965723268;
+        Fri, 21 Jul 2023 11:55:23 -0700 (PDT)
+Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id p28-20020a05620a133c00b00768283dcb63sm1285745qkj.123.2023.07.21.11.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 11:55:23 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] e2fsprogs: modify dumpe2fs to report free block ranges for bigalloc
+Date:   Fri, 21 Jul 2023 14:55:06 -0400
+Message-Id: <20230721185506.1020225-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 05:13:13PM +0800, Baokun Li wrote:
-> > Doing this with helpers, IMO is not useful as we also saw above.
-> 
-> I still think it is necessary to add a helper to make the code more concise.
-> 
-> Ted, do you think the fex_end() helper function is needed here?
-> 
-> I think we might need your advice to end this discussion. 😅
+dumpe2fs has never been modified to correctly report block ranges
+corresponding to free clusters in block allocation bitmaps from bigalloc
+file systems.  Rather than reporting block ranges covering all the
+blocks in free clusters found in a block bitmap, it either reports just
+the first block number in a cluster for a single free cluster, or a
+range beginning with the first block number in the first cluster in a
+series of free clusters, and ending with the first block number in the
+last cluster in that series.
 
-Having helper functions doesn't bother me all _that_ much --- so long
-as they are named appropriately.  The readibility issues start with
-the fact that the helper function uses loff_t as opposed to
-ext4_lblk_t, and because someone looking at fex_end() would need
-additional thinking to figure out what it did.  If renamed it to be
-fex_logical_end() and made it take an ext4_lblk_t, I think it would be
-better.
+This behavior causes xfstest shared/298 to fail when run on a bigalloc
+file system with a 1k block size.  The test uses dumpe2fs to collect
+a list of the blocks freed when files are deleted from a file system.
+When the test deletes a file containing blocks located after the first
+block in the last cluster in a series of clusters, dumpe2fs does not
+report those blocks as free per the test's expectations.
 
-The bigger complaint that I have, although it's not the fault of your
-patch, is the use of "ext4_free_extent" all over ext4/mballoc.c when
-it's much more often used for allocating blocks.  So the name of the
-structure and the "fex" in "fex_end" or "fex_logical_end" is also
-confusing.
+Modify dumpe2fs to report full block ranges for free clusters.  At the
+same time, fix a small bug causing unnecessary !in_use() retests while
+iterating over a block bitmap.
 
-Hmm... how about naming helper function extent_logial_end()?
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+---
+ misc/dumpe2fs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-And at some point we might want to do a global search and replace
-changing ext4_free_extent to something like ext4_mballoc_extent, and
-changing the structure element names.  Perhaps:
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index 7c080ed9..d2d57fb0 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -84,8 +84,7 @@ static void print_free(unsigned long group, char * bitmap,
+ 		       unsigned long num, unsigned long offset, int ratio)
+ {
+ 	int p = 0;
+-	unsigned long i;
+-	unsigned long j;
++	unsigned long i, j;
+ 
+ 	offset /= ratio;
+ 	offset += group * num;
+@@ -95,13 +94,14 @@ static void print_free(unsigned long group, char * bitmap,
+ 			if (p)
+ 				printf (", ");
+ 			print_number((i + offset) * ratio);
+-			for (j = i; j < num && !in_use (bitmap, j); j++)
++			for (j = i + 1; j < num && !in_use(bitmap, j); j++)
+ 				;
+-			if (--j != i) {
++			if (j != i + 1 || ratio > 1) {
+ 				fputc('-', stdout);
+-				print_number((j + offset) * ratio);
+-				i = j;
++				print_number(((j - 1 + offset) * ratio) +
++					     ratio - 1);
+ 			}
++			i = j;
+ 			p = 1;
+ 		}
+ }
+-- 
+2.30.2
 
-       fe_logical  --->  ex_lblk
-       fe_start    --->  ex_cluster_start
-       fe_group    --->  ex_group
-       fe_len      --->  ex_cluster_len
-
-This is addressing problems where "start" can mean the starting
-physical block, the starting logical block, or the starting cluster
-relative to the beginning of the block group.
-
-There is also documentation which is just wrong.  For example:
-
-/**
- * ext4_trim_all_free -- function to trim all free space in alloc. group
- * @sb:			super block for file system
- * @group:		group to be trimmed
- * @start:		first group block to examine
- * @max:		last group block to examine
-
-start and max should be "first group cluster to examine" and "last
-group cluster to examine", respectively.
-
-The bottom line is that there are much larger opportunities to make
-the code more maintainable than worrying about two new helper
-functions.  :-)
-
-Cheers,
-
-					- Ted
