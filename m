@@ -2,159 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771FF75D95F
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 05:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5272C75D9AD
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 06:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjGVDQR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 23:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S229610AbjGVE3o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 22 Jul 2023 00:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGVDQQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 23:16:16 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9C3A9C;
-        Fri, 21 Jul 2023 20:16:14 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R7BPk5djjzrRmB;
-        Sat, 22 Jul 2023 11:15:22 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 22 Jul 2023 11:16:10 +0800
-Message-ID: <1e382d8f-84b6-c1df-4091-9db14e9f82cf@huawei.com>
-Date:   Sat, 22 Jul 2023 11:16:10 +0800
+        with ESMTP id S229529AbjGVE3n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Jul 2023 00:29:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7FF2D46;
+        Fri, 21 Jul 2023 21:29:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F7C660A38;
+        Sat, 22 Jul 2023 04:29:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78390C433C9;
+        Sat, 22 Jul 2023 04:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690000181;
+        bh=KBzG5bolVWZz3VdJ21H1CdN4OdjZ+jv8Wok+YIRRtaM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YmY7ZCVl6UKWNvfLhwuerzICgHNPsKEXC/FamYqipG6pCKnUsYQIyCcIFkrOExufl
+         5onwwtqAeVw2LwsT69R8gDc4q3rd0vu7OncHVb15Qp7HCVpwzNf3o0iyxKH6LpWLB/
+         xTBMOGfLvcnft4+poJKLEELPnbz4Wsh+9VLWIQDmNtA/LDk0vXbcw0Si91Mn4g6Vgn
+         Bf8eqGbAqi/P/CuiG0D1HD9l7IwgvjxSEV1c8lcO8d4QS5nCZQeuU7J1GnF9veA9IL
+         0TnUXzHRYeVgZd/DoxskbGLuHjvP1zjRDKzMDVDou4yxKgdIL97+d4c9Tgj7qYMVyB
+         3mAdc3RH1bMNg==
+Date:   Fri, 21 Jul 2023 21:29:39 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     brauner@kernel.org, tytso@mit.edu,
+        linux-f2fs-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v3 3/7] libfs: Validate negative dentries in
+ case-insensitive directories
+Message-ID: <20230722042939.GC5660@sol.localdomain>
+References: <20230719221918.8937-1-krisman@suse.de>
+ <20230719221918.8937-4-krisman@suse.de>
+ <20230720060657.GB2607@sol.localdomain>
+ <20230720064103.GC2607@sol.localdomain>
+ <87bkg53tr5.fsf@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
- overflow
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <jack@suse.cz>, <ojaswin@linux.ibm.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <87lef9lljt.fsf@doe.com>
- <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com> <ZLq9MROKiyet9Oce@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <ZLq9MROKiyet9Oce@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bkg53tr5.fsf@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/7/22 1:15, Theodore Ts'o wrote:
-> On Fri, Jul 21, 2023 at 05:13:13PM +0800, Baokun Li wrote:
->>> Doing this with helpers, IMO is not useful as we also saw above.
->> I still think it is necessary to add a helper to make the code more concise.
->>
->> Ted, do you think the fex_end() helper function is needed here?
->>
->> I think we might need your advice to end this discussion. 😅
-> Having helper functions doesn't bother me all _that_ much --- so long
-> as they are named appropriately.  The readibility issues start with
-> the fact that the helper function uses loff_t as opposed to
-> ext4_lblk_t, and because someone looking at fex_end() would need
-> additional thinking to figure out what it did.  If renamed it to be
-> fex_logical_end() and made it take an ext4_lblk_t, I think it would be
-> better.
-Yes, naming is one of the most difficult things.
+On Fri, Jul 21, 2023 at 04:16:30PM -0400, Gabriel Krisman Bertazi wrote:
+> Eric Biggers <ebiggers@kernel.org> writes:
+> 
+> > On Wed, Jul 19, 2023 at 11:06:57PM -0700, Eric Biggers wrote:
+> >> 
+> >> I'm also having trouble understanding exactly when ->d_name is stable here.
+> >> AFAICS, unfortunately the VFS has an edge case where a dentry can be moved
+> >> without its parent's ->i_rwsem being held.  It happens when a subdirectory is
+> >> "found" under multiple names.  The VFS doesn't support directory hard links, so
+> >> if it finds a second link to a directory, it just moves the whole dentry tree to
+> >> the new location.  This can happen if a filesystem image is corrupted and
+> >> contains directory hard links.  Coincidentally, it can also happen in an
+> >> encrypted directory due to the no-key name => normal name transition...
+> >
+> > Sorry, I think I got this slightly wrong.  The move does happen with the
+> > parent's ->i_rwsem held, but it's for read, not for write.  First, before
+> > ->lookup is called, the ->i_rwsem of the parent directory is taken for read.
+> > ->lookup() calls d_splice_alias() which can call __d_unalias() which does the
+> > __d_move().  If the old alias is in a different directory (which cannot happen
+> > in that fscrypt case, but can happen in the general "directory hard links"
+> > case), __d_unalias() takes that directory's ->i_rwsem for read too.
+> >
+> > So it looks like the parent's ->i_rwsem does indeed exclude moves of child
+> > dentries, but only if it's taken for *write*.  So I guess you can rely on that;
+> > it's just a bit more subtle than it first appears.  Though, some of your
+> > explanation seems to assume that a read lock is sufficient ("In __lookup_slow,
+> > either the parent inode is locked by the caller (lookup_slow) ..."), so maybe
+> > there is still a problem.
+> 
+> I think I'm missing something on your clarification. I see your point
+> about __d_unalias, and I see in the case where alias->d_parent !=
+> dentry->d_parent we acquire the parent inode read lock:
+> 
+> static int __d_unalias(struct inode *inode,
+> 		struct dentry *dentry, struct dentry *alias)
+> {
+> ...
+> 	m1 = &dentry->d_sb->s_vfs_rename_mutex;
+> 	if (!inode_trylock_shared(alias->d_parent->d_inode))
+> 		goto out_err;
+> }
+> 
+> And it seems to use that for __d_move. In this case, __d_move changes
+> from under us even with a read lock, which is dangerous.  I think I
+> agree with your first email more than the clarification.
+> 
+> In the lookup_slow then:
+> 
+> lookup_slow()
+>   d_lookup()
+>     d_splice_alias()
+>       __d_unalias()
+>         __d_move()
+> 
+> this __d_move Can do a dentry move and race with d_revalidate even
+> though it has the parent read lock.
+> 
+> > So it looks like the parent's ->i_rwsem does indeed exclude moves of child
+> > dentries, but only if it's taken for *write*.  So I guess you can rely on that;
+> 
+> We can get away of it with acquiring the d_lock as you suggested, I
+> think.  But can you clarify the above? I wanna make sure I didn't miss
+> anything. I am indeed relying only on the read lock here, as you can see.
 
-The reason the helper function uses loff_t instead of ext4_lblk_t is because
-when we compute the extent logical end or pa end, we may exceed the
-maximum length of ext4_lblk_t and get an overflowed result, which can lead
-to the four issues fixed in the patch set. Perhaps I should add some 
-comments
-to explain these.
+In my first email I thought that __d_move() can be called without the parent
+inode's i_rwsem held at all.  In my second email I realized that it is always
+called with at least a read (shared) lock.
 
-In other words, add this helper function and limit the return value of 
-the function
-to loff_t is precisely to remind people that such overflow problems exist.
-As mentioned by ritesh, ext4 has many places to directly perform type 
-conversion
-in place. However, when we modify the kernel or review code, we will 
-still ignore
-that the current code may have overflow problems, as in the commit fixed 
-by this
-patch.
+The question is what kind of parent i_rwsem lock is guaranteed to be held by the
+caller of ->d_revalidate() when the name comparison is done.  Based on the
+above, it needs to be at least a write (exclusive) lock to exclude __d_move()
+without taking d_lock.  However, your analysis (in the commit message of "libfs:
+Validate negative dentries in case-insensitive directories") only talks about
+i_rwsem being "taken", without saying whether it's for read or write.  One thing
+you mentioned as taking i_rwsem is lookup_slow, but that only takes it for read.
+That seems like a problem, as it makes your analysis not correct.
 
-If we have a helper function fex_end(), we can avoid potential overflow 
-problems
-by using it directly when we make changes or by questioning why we 
-didn't use
-a simpler helper function when reviewing the code, rather than just 
-adding a (loff_t)
-when we spot the problem and saying, "Oh, the problem is perfectly 
-solved!" 😀
-
-The current problem can be solved in any way, the key is how to prevent 
-similar
-problems in the future?
-> The bigger complaint that I have, although it's not the fault of your
-> patch, is the use of "ext4_free_extent" all over ext4/mballoc.c when
-> it's much more often used for allocating blocks.  So the name of the
-> structure and the "fex" in "fex_end" or "fex_logical_end" is also
-> confusing.
->
-> Hmm... how about naming helper function extent_logial_end()?
-Great! Thank you for naming the helper function.
->
-> And at some point we might want to do a global search and replace
-> changing ext4_free_extent to something like ext4_mballoc_extent, and
-> changing the structure element names.  Perhaps:
->
->         fe_logical  --->  ex_lblk
->         fe_start    --->  ex_cluster_start
->         fe_group    --->  ex_group
->         fe_len      --->  ex_cluster_len
->
-> This is addressing problems where "start" can mean the starting
-> physical block, the starting logical block, or the starting cluster
-> relative to the beginning of the block group.
->
-> There is also documentation which is just wrong.  For example:
->
-> /**
->   * ext4_trim_all_free -- function to trim all free space in alloc. group
->   * @sb:			super block for file system
->   * @group:		group to be trimmed
->   * @start:		first group block to examine
->   * @max:		last group block to examine
->
-> start and max should be "first group cluster to examine" and "last
-> group cluster to examine", respectively.
-Yes, it is also very important to distinguish between mballoc_extent and 
-free_extent.
-I will try to rename ext4_free_extent to ext4_mballoc_extent and fix 
-some comment
-errors in another patch set that does some performance optimizations using
-"free extent".
->
-> The bottom line is that there are much larger opportunities to make
-> the code more maintainable than worrying about two new helper
-> functions.  :-)
->
-> Cheers,
->
-> 					- Ted
-Yes, making code more maintainable is always the goal.
-Thank you for your patient explanation!
-
-Cheers!
--- 
-With Best Regards,
-Baokun Li
-.
+- Eric
