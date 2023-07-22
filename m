@@ -2,304 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D14A275DD11
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 17:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50DC75DDB7
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 19:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjGVPEy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 22 Jul 2023 11:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S229534AbjGVRP6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 22 Jul 2023 13:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGVPEx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Jul 2023 11:04:53 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7003910F5;
-        Sat, 22 Jul 2023 08:04:52 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-668704a5b5bso2678389b3a.0;
-        Sat, 22 Jul 2023 08:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690038288; x=1690643088;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wilBskxoDLE0WDOTpeghLkRAu1C7OaNnBdQQcZMzLkI=;
-        b=B0Jab/5JHgCCwnSQ6jUTtkFRtAx7xLaCuEztsjj4cfy+HOtr9aSKtg+wlKCdOJR9DD
-         8GXr+XDJIhk5+2fgr+f2DAX8eYHXuM586gFHFjeVtK9HBBXAPzx3LoN+6whfMlNev0J6
-         BjUMa8rM3hj4JtRcbPPeFkwcCnYta3ot0jOiv1k8RAbkn7IK3Ftv5rmkc5nhSR0U/A7T
-         qAMUmQH+p2+3Eh58ejVBLdgiY7xsQjCnFQqAXmzoeOi/GFzmjpfrrs7poYY4FI9pLU1V
-         sSWvcoyJnnDBx2La3lsN/veXSSbKI94NYWSfXxYAL1B3VgrQH8Zk1AJ25/VIyY5V+xli
-         9Ahg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690038288; x=1690643088;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wilBskxoDLE0WDOTpeghLkRAu1C7OaNnBdQQcZMzLkI=;
-        b=V5JHcVJKoydCGUinr3VrhxKdrpHyyLZB7CheJgFmwQpdIxSE7I063OGLqdfMvI8War
-         pAgC6KmN/y4PYcTo4ey4MWdCDseCdKgcIWW4bZAT9c8wdSh993xTGNEFrkHQrY7nLEKV
-         PmD1OMjuKZcTg/yl2Hzmr/+5gDUgJ79AyMcso6AXZNHPciIUKSgbO8P0uzrMmPYo7IXr
-         0Xq0LUfkCZcrh+d/CtPMXispauX1wwLZPY3ke1NKiHILX79HwUCqj18yXOfXijGPfG8p
-         y3NyEh2UDjGve0CcW63Vw8jhFqz6EUloiKIQIIMO0AifOr6fTuzp2cX/J45T2xdNnZAL
-         A2rA==
-X-Gm-Message-State: ABy/qLa5auMa5ycfoU5vbKkQ6HFHcjP7Gfo/5vrrbZBLOrUHDqPhul9Y
-        xDBFCQNzk2O91G5J86xaDMM=
-X-Google-Smtp-Source: APBJJlGxcmrBPJkkrmx/e3PRqO2PvqLRi84fUXlTWzRTPNzPB8X7wH0zopvOQ+rcNGWzlUfRGaUpvg==
-X-Received: by 2002:a05:6a20:3d26:b0:133:f860:ac42 with SMTP id y38-20020a056a203d2600b00133f860ac42mr6636953pzi.34.1690038287764;
-        Sat, 22 Jul 2023 08:04:47 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id s21-20020a62e715000000b00678afd4824asm4858236pfh.175.2023.07.22.08.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 08:04:47 -0700 (PDT)
-Date:   Sat, 22 Jul 2023 20:34:43 +0530
-Message-Id: <87h6pwj8c4.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com
-Subject: Re: [PATCH v5 5/8] ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
-In-Reply-To: <20230629144007.1263510-6-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229477AbjGVRP5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 22 Jul 2023 13:15:57 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6061E67;
+        Sat, 22 Jul 2023 10:15:56 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36MH9nNi022276;
+        Sat, 22 Jul 2023 17:15:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=eXVHnjQ+t0+JDz3/G5CtPgtwlxm1XNAVCmaWksybvr4=;
+ b=kgH2kSbpfkSn1mgj3MZVOOwpxiM5AuJVwlg2fNeUi4EAti2F6NXRIv+eT+0HXaoTC0sH
+ THBbTeIbklZkyzaflmIlgURa0nb1zsyq/X8xjyyphn+yNEnOupFYcRjHuElBXZ06uVXP
+ IlKYgJoG92q056woQ1Yo6lVjZr+zOjDCWEOldDDU76l4JkhOcN2LGSed1HFQxbv/phev
+ 21SZr3xCVviQpYHuXi092AKB3A8y2dPkZ6J/lO4lB6w3zMJUufkBhtkfGdMjpsH08qTc
+ yI05VQ2CtqNi7aRd8ifg17QC+qDsu5HxH197Zop8zqImegXy/v413pxPMlnno53XBzOR pg== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s0fhfu04j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 17:15:50 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36MGoWQv007605;
+        Sat, 22 Jul 2023 17:15:49 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80jx19q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 17:15:49 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36MHFlUm21955290
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 22 Jul 2023 17:15:47 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4B1A2004E;
+        Sat, 22 Jul 2023 17:15:47 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 432C92004B;
+        Sat, 22 Jul 2023 17:15:35 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.0.4])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Sat, 22 Jul 2023 17:15:34 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH 0/1] ext4: Fix regression in mballoc due to deleted inode PAs in rbtree
+Date:   Sat, 22 Jul 2023 22:45:23 +0530
+Message-Id: <cover.1690045963.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7W_iCINthKmD23OgZ9LBdzOQUFTeyABX
+X-Proofpoint-ORIG-GUID: 7W_iCINthKmD23OgZ9LBdzOQUFTeyABX
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-22_07,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 adultscore=0 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=972 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307220156
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Hello,
 
-> call ext4_mb_mark_group_bb in ext4_mb_clear_bb to remove repeat code
-> to update block bitmap and group descriptor on disk.
->
-> Note: ext4_mb_clear_bb will update buddy and bitmap in two critical
-> sections instead of update in the same critical section.
->
-> Original lock behavior introduced in commit 7a2fcbf7f8573 ("ext4: don't
-> use blocks freed but not yet committed in buddy cache init") to avoid
-> race betwwen ext4_mb_free_blocks and ext4_mb_init_cache:
-> ext4_mb_load_buddy_gfp
-> ext4_lock_group
-> mb_clear_bits(bitmap_bh, ...)
-> mb_free_blocks/ext4_mb_free_metadata
-> ext4_unlock_group
-> ext4_mb_unload_buddy
->
-> New lock behavior in this patch:
-> ext4_mb_load_buddy_gfp
-> ext4_lock_group
-> mb_clear_bits(bitmap_bh, ...)
-> ext4_unlock_group
->
-> /* no ext4_mb_init_cache for the same group will be called as
-> ext4_mb_load_buddy_gfp will ensure buddy page is update-to-date */
->
-> ext4_lock_group
-> mb_free_blocks/ext4_mb_free_metadata
-> ext4_unlock_group
-> ext4_mb_unload_buddy
->
-> As buddy page for group is always update-to-date between
-> ext4_mb_load_buddy_gfp and ext4_mb_unload_buddy. Then no
-> ext4_mb_init_cache will be called for the same group concurrentlly when
-> we update bitmap and buddy page betwwen buddy load and unload.
+Recently there was a regression found in the mballoc [1] due the existence
+of deleted preallocations(PAs) in the per inode preallocation rbtree.
+Such deleted PAs can occur because ext4_mb_discard_group_preallocations 
+traverses the grp->bb_prealloc_list and marks the PAs as deleted without
+taking any inode specific locks like i_data_sem. 
 
-More information will definitely help.
+Due to presence of such PAs, we were sometimes missing some of the pa
+entries when traversing the per node rbtree in ext4_mb_use_preallocated.
+Due to this, in some rare conditions we ended up missing a PA that did
+overlap with our original request start. when this happens, we exit 
+ext4_mb_use_preallocated and proceed with the allocation. However,
+during ext4_mb_normalize_request() we were hitting a bug on as
+a PA that could satisfy our request already existed. Since normalize
+request was already fixed earlier to account for the deleted PAs we
+actually able to catch it there.
 
-In ext4_mb_init_cache(), within a lock_group(), we first initialize
-a incore bitmap from on disk block bitmap, pa and from
-ext4_mb_generate_from_freelist() (this function basically requires
-ext4_mb_free_metadata() to be called)
-Then we go and initialize incore buddy within a page which utilize bitmap
-block data (from previous step) for generating buddy info.
-So this clearly means we need incore bitmap and mb_free_metadata() to be updated
-together within the same group lock.
+This patch aims to fix this regression by using a different appraoch to
+traverse the rbtree in ext4_mb_use_preallocated(). More comments can be
+found in the commit message.
 
-Now you said that ext4_mb_init_cache() can't be called together between
-ext4_mb_load_buddy_gfp() and unload_buddy() because buddy page is uptodate?? 
-Can you give more details please? 
+We've run several overnight runs of xfstests generic/269 as well as
+several hours of ltp test on both x86 machines with 4k blocks size and
+Power machines with 64k and 4k block size and have yet to hit the
+regression. Further we added some debug prints in our testing to make
+sure we were correctly handling the conditions that were triggering the
+bug ons previously.
 
-What about if the resize gets called on the last group which is within the
-same page on which we are operating. Also consider blocksize < pagesize.
-That means we can have even more blocks within the same page.
-So ext4_mb_init_cache() can still get called right while between load_buddy and unload_buddy?
+[1]
+https://lore.kernel.org/linux-ext4/CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com/
 
-Maybe I need to take a closer look at it.
+Regards,
+ojaswin
 
--ritesh
+Ojaswin Mujoo (1):
+  ext4: Fix rbtree traversal bug in ext4_mb_use_preallocated
 
+ fs/ext4/mballoc.c | 158 ++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 131 insertions(+), 27 deletions(-)
 
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 90 ++++++++++++-----------------------------------
->  1 file changed, 23 insertions(+), 67 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 34fd12aeaf8d..57cc304b724e 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6325,19 +6325,21 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			       ext4_fsblk_t block, unsigned long count,
->  			       int flags)
->  {
-> -	struct buffer_head *bitmap_bh = NULL;
-> +	struct ext4_mark_context mc = {
-> +		.handle = handle,
-> +		.sb = inode->i_sb,
-> +		.state = 0,
-> +	};
->  	struct super_block *sb = inode->i_sb;
-> -	struct ext4_group_desc *gdp;
->  	struct ext4_group_info *grp;
->  	unsigned int overflow;
->  	ext4_grpblk_t bit;
-> -	struct buffer_head *gd_bh;
->  	ext4_group_t block_group;
->  	struct ext4_sb_info *sbi;
->  	struct ext4_buddy e4b;
->  	unsigned int count_clusters;
->  	int err = 0;
-> -	int ret;
-> +	int mark_flags = 0;
->  
->  	sbi = EXT4_SB(sb);
->  
-> @@ -6369,18 +6371,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		/* The range changed so it's no longer validated */
->  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->  	}
-> -	count_clusters = EXT4_NUM_B2C(sbi, count);
-> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		err = PTR_ERR(bitmap_bh);
-> -		bitmap_bh = NULL;
-> -		goto error_return;
-> -	}
-> -	gdp = ext4_get_group_desc(sb, block_group, &gd_bh);
-> -	if (!gdp) {
-> -		err = -EIO;
-> -		goto error_return;
-> -	}
->  
->  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
->  	    !ext4_inode_block_valid(inode, block, count)) {
-> @@ -6390,28 +6380,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		goto error_return;
->  	}
->  
-> -	BUFFER_TRACE(bitmap_bh, "getting write access");
-> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-> -					    EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -
-> -	/*
-> -	 * We are about to modify some metadata.  Call the journal APIs
-> -	 * to unshare ->b_data if a currently-committing transaction is
-> -	 * using it
-> -	 */
-> -	BUFFER_TRACE(gd_bh, "get_write_access");
-> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -#ifdef AGGRESSIVE_CHECK
-> -	{
-> -		int i;
-> -		for (i = 0; i < count_clusters; i++)
-> -			BUG_ON(!mb_test_bit(bit + i, bitmap_bh->b_data));
-> -	}
-> -#endif
-> +	count_clusters = EXT4_NUM_B2C(sbi, count);
->  	trace_ext4_mballoc_free(sb, inode, block_group, bit, count_clusters);
->  
->  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
-> @@ -6420,6 +6389,22 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	if (err)
->  		goto error_return;
->  
-> +#ifdef AGGRESSIVE_CHECK
-> +	mark_flags |= EXT4_MB_BITMAP_MARKED_CHECK;
-> +#endif
-> +	err = ext4_mb_mark_group_bb(&mc, block_group, bit, count_clusters,
-> +				    mark_flags);
-> +
-> +
-> +	if (err && mc.changed == 0) {
-> +		ext4_mb_unload_buddy(&e4b);
-> +		goto error_return;
-> +	}
-> +
-> +#ifdef AGGRESSIVE_CHECK
-> +	BUG_ON(mc.changed != count_clusters);
-> +#endif
-> +
->  	/*
->  	 * We need to make sure we don't reuse the freed block until after the
->  	 * transaction is committed. We make an exception if the inode is to be
-> @@ -6442,13 +6427,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		new_entry->efd_tid = handle->h_transaction->t_tid;
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		ext4_mb_free_metadata(handle, &e4b, new_entry);
->  	} else {
-> -		/* need to update group_info->bb_free and bitmap
-> -		 * with group lock held. generate_buddy look at
-> -		 * them with group lock_held
-> -		 */
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
->  						 count_clusters, NULL);
-> @@ -6461,23 +6441,11 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		mb_free_blocks(inode, &e4b, bit, count_clusters);
->  	}
->  
-> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
-> -	ext4_free_group_clusters_set(sb, gdp, ret);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, block_group, gdp);
->  	ext4_unlock_group(sb, block_group);
->  
-> -	if (sbi->s_log_groups_per_flex) {
-> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-> -		atomic64_add(count_clusters,
-> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-> -						  flex_group)->free_clusters);
-> -	}
-> -
->  	/*
->  	 * on a bigalloc file system, defer the s_freeclusters_counter
->  	 * update to the caller (ext4_remove_space and friends) so they
-> @@ -6492,26 +6460,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  
->  	ext4_mb_unload_buddy(&e4b);
->  
-> -	/* We dirtied the bitmap block */
-> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
-> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> -
-> -	/* And the group descriptor block */
-> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
-> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-> -	if (!err)
-> -		err = ret;
-> -
->  	if (overflow && !err) {
->  		block += count;
->  		count = overflow;
-> -		put_bh(bitmap_bh);
->  		/* The range changed so it's no longer validated */
->  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->  		goto do_more;
->  	}
->  error_return:
-> -	brelse(bitmap_bh);
->  	ext4_std_error(sb, err);
->  	return;
->  }
-> -- 
-> 2.30.0
+-- 
+2.31.1
+
