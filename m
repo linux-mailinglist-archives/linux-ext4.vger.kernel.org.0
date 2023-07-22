@@ -2,147 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8271675D803
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 02:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771FF75D95F
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jul 2023 05:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjGVAHH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jul 2023 20:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S229529AbjGVDQR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jul 2023 23:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjGVAHG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 20:07:06 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37857E44;
-        Fri, 21 Jul 2023 17:07:03 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4faaaa476a9so4038296e87.2;
-        Fri, 21 Jul 2023 17:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689984421; x=1690589221;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YuIgZ0kCdlWgwOipolMH4qwbkf4qo8GzSPfjGjifT9M=;
-        b=B3Hme8dqaOXMsrPG2++TgbuKnjnbxyHIC+ORugqmopZwL1w8TJEChZufUpZKZR1PQq
-         tOIy46NPX7iBctrWcZ1cseEMzbjLLKRJD3MY6izVCeb7CUBHq1JFi8n8XXsXOzHMMCXH
-         sx8gn6dzNjDKuNgfW5k8AGYZX6oKrCw1CkMimOwfAoj412POis87U/94PR+7owwkLeOg
-         k2z88VJTw5RViiSFqp+7NcIass1DiRMrYcSyqFU3tm8WBa7FbhJmZeTOr1v9kRzFhloX
-         XXbnQ4Bs79CaLpJjTTc8drlWVkncvsKx3tk6AqeExXG1KFqazjwMLuz+PnhJtnhSUTe3
-         nYrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689984421; x=1690589221;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YuIgZ0kCdlWgwOipolMH4qwbkf4qo8GzSPfjGjifT9M=;
-        b=RZw/q8/b8HLM7DwJK/I0gPQ/dPGXRz+uXv3ROOMwvX6e1EhjNCryv5u92nu6GyHld4
-         Lk+RqmpIqZHzUeH/DXLGACTpvx37Ft0/3oaAUE2c5ltpp7W8mV01NXzOOJNmCsf/T2vQ
-         h5T/ehqjMz/qfsAkZI5ym5PlbZEewTFqva/W4bZGrgC01VgJUmtYobgX6U3sFzmSGc1k
-         +Sf+C5Er5kE8cC24BY5b3zfCko6oTkXf6jcxScNETfiBgAe1nVdWsavEQyPId4WWDd0e
-         B7HBcZp6waUczOsBNJL58DafXUl+bNtv1YhcLxBGXbC7ezjkEpf/9YhuyH4a86Mb99Sx
-         Ibnw==
-X-Gm-Message-State: ABy/qLZy45R+IjW1wehjv6p6AU56ld9fW+Z70GWCDILUracSflqaq6tQ
-        eSd92GNltG/6z3dW7lIEYKiS48HlDaQKs/4RgX8=
-X-Google-Smtp-Source: APBJJlEz6MOY64ghyriSbK69kEtmWUCnsBm/JE0LJAyd4kPsue89R5aANO77pQOMG5YK4KrXGWPnwyYh2eFGvZj7XYk=
-X-Received: by 2002:a05:6512:3da7:b0:4fb:52a3:e809 with SMTP id
- k39-20020a0565123da700b004fb52a3e809mr3283162lfv.28.1689984421181; Fri, 21
- Jul 2023 17:07:01 -0700 (PDT)
+        with ESMTP id S229503AbjGVDQQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jul 2023 23:16:16 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9C3A9C;
+        Fri, 21 Jul 2023 20:16:14 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R7BPk5djjzrRmB;
+        Sat, 22 Jul 2023 11:15:22 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 22 Jul 2023 11:16:10 +0800
+Message-ID: <1e382d8f-84b6-c1df-4091-9db14e9f82cf@huawei.com>
+Date:   Sat, 22 Jul 2023 11:16:10 +0800
 MIME-Version: 1.0
-References: <20230713035512.4139457-1-willy@infradead.org> <20230713035512.4139457-2-willy@infradead.org>
-In-Reply-To: <20230713035512.4139457-2-willy@infradead.org>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Sat, 22 Jul 2023 02:06:50 +0200
-Message-ID: <CAHpGcM+LQyXBC64EC=YJv4SQAT3HudKzsYyxpCuK=VFGr0XTZA@mail.gmail.com>
-Subject: Re: [PATCH 1/7] highmem: Add memcpy_to_folio() and memcpy_from_folio()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Theodore Tso <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
+ overflow
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <jack@suse.cz>, <ojaswin@linux.ibm.com>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <87lef9lljt.fsf@doe.com>
+ <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com> <ZLq9MROKiyet9Oce@mit.edu>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <ZLq9MROKiyet9Oce@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Do., 13. Juli 2023 um 06:04 Uhr schrieb Matthew Wilcox (Oracle)
-<willy@infradead.org>:
-> These are the folio equivalent of memcpy_to_page() and memcpy_from_page().
+On 2023/7/22 1:15, Theodore Ts'o wrote:
+> On Fri, Jul 21, 2023 at 05:13:13PM +0800, Baokun Li wrote:
+>>> Doing this with helpers, IMO is not useful as we also saw above.
+>> I still think it is necessary to add a helper to make the code more concise.
+>>
+>> Ted, do you think the fex_end() helper function is needed here?
+>>
+>> I think we might need your advice to end this discussion. 😅
+> Having helper functions doesn't bother me all _that_ much --- so long
+> as they are named appropriately.  The readibility issues start with
+> the fact that the helper function uses loff_t as opposed to
+> ext4_lblk_t, and because someone looking at fex_end() would need
+> additional thinking to figure out what it did.  If renamed it to be
+> fex_logical_end() and made it take an ext4_lblk_t, I think it would be
+> better.
+Yes, naming is one of the most difficult things.
+
+The reason the helper function uses loff_t instead of ext4_lblk_t is because
+when we compute the extent logical end or pa end, we may exceed the
+maximum length of ext4_lblk_t and get an overflowed result, which can lead
+to the four issues fixed in the patch set. Perhaps I should add some 
+comments
+to explain these.
+
+In other words, add this helper function and limit the return value of 
+the function
+to loff_t is precisely to remind people that such overflow problems exist.
+As mentioned by ritesh, ext4 has many places to directly perform type 
+conversion
+in place. However, when we modify the kernel or review code, we will 
+still ignore
+that the current code may have overflow problems, as in the commit fixed 
+by this
+patch.
+
+If we have a helper function fex_end(), we can avoid potential overflow 
+problems
+by using it directly when we make changes or by questioning why we 
+didn't use
+a simpler helper function when reviewing the code, rather than just 
+adding a (loff_t)
+when we spot the problem and saying, "Oh, the problem is perfectly 
+solved!" 😀
+
+The current problem can be solved in any way, the key is how to prevent 
+similar
+problems in the future?
+> The bigger complaint that I have, although it's not the fault of your
+> patch, is the use of "ext4_free_extent" all over ext4/mballoc.c when
+> it's much more often used for allocating blocks.  So the name of the
+> structure and the "fex" in "fex_end" or "fex_logical_end" is also
+> confusing.
 >
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  include/linux/highmem.h | 44 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+> Hmm... how about naming helper function extent_logial_end()?
+Great! Thank you for naming the helper function.
 >
-> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> index 68da30625a6c..0280f57d4744 100644
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -439,6 +439,50 @@ static inline void memzero_page(struct page *page, size_t offset, size_t len)
->         kunmap_local(addr);
->  }
+> And at some point we might want to do a global search and replace
+> changing ext4_free_extent to something like ext4_mballoc_extent, and
+> changing the structure element names.  Perhaps:
 >
-> +static inline void memcpy_from_folio(char *to, struct folio *folio,
-> +               size_t offset, size_t len)
-> +{
-> +       VM_BUG_ON(offset + len > folio_size(folio));
-> +
-> +       do {
-> +               char *from = kmap_local_folio(folio, offset);
-> +               size_t chunk = len;
-> +
-> +               if (folio_test_highmem(folio) &&
-> +                   (chunk > (PAGE_SIZE - offset_in_page(offset))))
-> +                       chunk = PAGE_SIZE - offset_in_page(offset);
-> +               memcpy(to, from, len);
-
-We want memcpy(to, from, chunk) here.
-
-> +               kunmap_local(from);
-> +
-> +               from += chunk;
-> +               offset += chunk;
-> +               len -= chunk;
-> +       } while (len > 0);
-> +}
-> +
-> +static inline void memcpy_to_folio(struct folio *folio, size_t offset,
-> +               const char *from, size_t len)
-> +{
-> +       VM_BUG_ON(offset + len > folio_size(folio));
-> +
-> +       do {
-> +               char *to = kmap_local_folio(folio, offset);
-> +               size_t chunk = len;
-> +
-> +               if (folio_test_highmem(folio) &&
-> +                   (chunk > (PAGE_SIZE - offset_in_page(offset))))
-> +                       chunk = PAGE_SIZE - offset_in_page(offset);
-> +               memcpy(to, from, len);
-
-And also here.
-
-> +               kunmap_local(to);
-> +
-> +               from += chunk;
-> +               offset += chunk;
-> +               len -= chunk;
-> +       } while (len > 0);
-> +
-> +       flush_dcache_folio(folio);
-> +}
-> +
->  /**
->   * memcpy_from_file_folio - Copy some bytes from a file folio.
->   * @to: The destination buffer.
-> --
-> 2.39.2
+>         fe_logical  --->  ex_lblk
+>         fe_start    --->  ex_cluster_start
+>         fe_group    --->  ex_group
+>         fe_len      --->  ex_cluster_len
 >
+> This is addressing problems where "start" can mean the starting
+> physical block, the starting logical block, or the starting cluster
+> relative to the beginning of the block group.
+>
+> There is also documentation which is just wrong.  For example:
+>
+> /**
+>   * ext4_trim_all_free -- function to trim all free space in alloc. group
+>   * @sb:			super block for file system
+>   * @group:		group to be trimmed
+>   * @start:		first group block to examine
+>   * @max:		last group block to examine
+>
+> start and max should be "first group cluster to examine" and "last
+> group cluster to examine", respectively.
+Yes, it is also very important to distinguish between mballoc_extent and 
+free_extent.
+I will try to rename ext4_free_extent to ext4_mballoc_extent and fix 
+some comment
+errors in another patch set that does some performance optimizations using
+"free extent".
+>
+> The bottom line is that there are much larger opportunities to make
+> the code more maintainable than worrying about two new helper
+> functions.  :-)
+>
+> Cheers,
+>
+> 					- Ted
+Yes, making code more maintainable is always the goal.
+Thank you for your patient explanation!
 
-Thanks,
-Andreas
+Cheers!
+-- 
+With Best Regards,
+Baokun Li
+.
