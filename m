@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 107FD75F275
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 12:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5C075F203
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 12:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbjGXKOu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jul 2023 06:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S233080AbjGXKFU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jul 2023 06:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbjGXKN6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 06:13:58 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A9444BD
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 03:06:37 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-785d3a53ed6so40619339f.1
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 03:06:37 -0700 (PDT)
+        with ESMTP id S233085AbjGXKFH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 06:05:07 -0400
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB08710E2
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 02:57:20 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1b8c364ad3bso8864015ad.1
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 02:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690193195; x=1690797995;
+        d=bytedance.com; s=google; t=1690192290; x=1690797090;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xAp7xgO7HdkgEPthzXwizc0Cva5ED0l1RHYipwvkRG8=;
-        b=PE5m8TNZL1hvDfIjblVD6zFmRWt+7mQ31xbVJ5pN6sc+eZbsuJx4+6/FR38bH78iK2
-         uOT8JPJTJ1mi9L2NiiqIjVSiiDA82I2iQx8eRWZoLOtaBOVLZeyuAfcb6G4HGHpP6btx
-         9OZ+LR+EgpsRvNP5czvXZ3/0/54LSGJlbkcZKq8p6OzVX41ymTDhehwxGuO30fA0nUg5
-         AT/UQQpH8y/FgM7bxu3gyEBXmm/WLucwDtR6YLZR+cgWEyvdDwBH7ojrri6FkiaARox4
-         DzOR7BpAt10i6UFvSMWn9+oOI5ZvtLoY7OV5kPGWRtuSaZHRrFf1HTAQhalNz15JZH/E
-         EaJQ==
+        bh=oXR+qbQ7FZSOf8H8/XKWyl6GGcPr2+dTjVkbZb7uW4E=;
+        b=hOD9KvuIa/sVR/XUeit3UEUy4lAv7qisrKP+dY73zqCVNh5USDs3UmvxT9Mu0HPAd/
+         sQoZTlZIhyjE9hP5yaJCN279yVD9q+u+zszBd3e/RRrSWK4lH9Sj6N23h1hoy3tnMHt9
+         Prw78GIFByR0J3YK+swLHgojCOBGOspVkhguuywNaBo2olaDrD94vFbNjxafvVNqL5jj
+         kb7wPt4FuUX1Yqc+w6X3ILlcOhkKLx335rMW5M/f76lMo6KZSankQneuXGq4M4YDo1Pw
+         4QB0FQMF4kEeIJcpti49nOtrs1POFPvCGoLSeyUrx9gHxzPZXlLq/CHz3lcRP0C+66Sl
+         YJZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690193195; x=1690797995;
+        d=1e100.net; s=20221208; t=1690192290; x=1690797090;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xAp7xgO7HdkgEPthzXwizc0Cva5ED0l1RHYipwvkRG8=;
-        b=BWJX2RJQzTVm8scmS+Vme0e/DblDGT8Wl5+MJsx6BQb4hAT/Wjl1yF5u3dx88QsxgE
-         PCvka8JT9UonZBFF9NK9lYrGb4A6zmowX/cE2Ih37uEOd/XM+GnmkQlOptj86cTtANZg
-         UCuuudJHhmYDoSJDpSLWgmDFEA8Bzye30Z4XlMFb5qh+0SnlyH1A7Z1iRR4XMmyyAfgk
-         cDWlOaqxQPPWG5ewjyVGznf0+0LTdyTG7tj5/iP1Kezu8lhwSH0xpRl8jzerPdIshFBJ
-         6jaSg2JCE9Rqxr0PC50nOhg63F2YxzxVkIyAH16qwEEfmv/ix3WnP+5EfCAx/kErg4lH
-         bPLg==
-X-Gm-Message-State: ABy/qLYJMcpVcAJM9FIE3EKQWjvtWqX8xFd6p7M0wdHH6OSOR2viOlSf
-        xFL1HYIwfF2NZ9+p/fmiTZ7u8b3gcD2q5LzBNhI=
-X-Google-Smtp-Source: APBJJlHQq2D/WuDC+k4NqN86HhNTJ9MoR7Y5JtfL6V1jvtKqTGYGB1+jpVAvGxo9g3eH8SGsNzYhlw==
-X-Received: by 2002:a17:902:f681:b0:1b8:a469:53d8 with SMTP id l1-20020a170902f68100b001b8a46953d8mr12728311plg.0.1690192278196;
-        Mon, 24 Jul 2023 02:51:18 -0700 (PDT)
+        bh=oXR+qbQ7FZSOf8H8/XKWyl6GGcPr2+dTjVkbZb7uW4E=;
+        b=XeV/JMEgRP86PKL+Kk4cqAK5w98WgM83fnLb1YQ4/wXyZsXadXgS1K/SYU9Q/tZ7xo
+         uaAlwLzsL/HaPYwxVKJeu1Ddi54Vqs5dcfDhdmOipu5/7pCqVR0tualDRymLDiv4qQRn
+         r0r6NOZFTxg6/lGdtDvYJV8yg79+6QuWIJcO98oNdGjEMwUohk+URYFijznnDywnIuDz
+         Z9BCDq+lQ5TfuMf+uzKDCPHa1T8mGvjl7xnGtId1Szmv9rNjHY7wpV9y/RBI1EUWAWHQ
+         YWaZ1yJU7LdLoEOAgRlk+n5OXnqCKlXRaK3K/hKKlXPZf8XvN3rPdZng193bYguODs7f
+         gPcQ==
+X-Gm-Message-State: ABy/qLZxb3QFLecsRjapGl7rhf7fd4qtfI1/D6P6mLOAl4aogSJ99zcB
+        TLqgbDNd6SUuUd0pFqur/p4jXg==
+X-Google-Smtp-Source: APBJJlFC05XpXuobjW4LsGQFjmg3Q9TZDeGvX5MkKK/m+2sDEjZkN7MidhVsDpGMtrBJxCeRn4k3XA==
+X-Received: by 2002:a17:903:22ce:b0:1b8:2ba0:c9a8 with SMTP id y14-20020a17090322ce00b001b82ba0c9a8mr12484346plg.2.1690192289977;
+        Mon, 24 Jul 2023 02:51:29 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.51.06
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.51.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:51:17 -0700 (PDT)
+        Mon, 24 Jul 2023 02:51:29 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -69,9 +69,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 31/47] mbcache: dynamically allocate the mbcache shrinker
-Date:   Mon, 24 Jul 2023 17:43:38 +0800
-Message-Id: <20230724094354.90817-32-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 32/47] ext4: dynamically allocate the ext4-es shrinker
+Date:   Mon, 24 Jul 2023 17:43:39 +0800
+Message-Id: <20230724094354.90817-33-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
@@ -79,8 +79,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,82 +89,85 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the mbcache shrinker, so that it can be freed
+dynamically allocate the ext4-es shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct mb_cache.
+read-side critical section when releasing the struct ext4_sb_info.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- fs/mbcache.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ fs/ext4/ext4.h           |  2 +-
+ fs/ext4/extents_status.c | 22 ++++++++++++----------
+ 2 files changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/fs/mbcache.c b/fs/mbcache.c
-index 2a4b8b549e93..bfecebeec828 100644
---- a/fs/mbcache.c
-+++ b/fs/mbcache.c
-@@ -37,7 +37,7 @@ struct mb_cache {
- 	struct list_head	c_list;
- 	/* Number of entries in cache */
- 	unsigned long		c_entry_count;
--	struct shrinker		c_shrink;
-+	struct shrinker		*c_shrink;
- 	/* Work for shrinking when the cache has too many entries */
- 	struct work_struct	c_shrink_work;
- };
-@@ -293,8 +293,7 @@ EXPORT_SYMBOL(mb_cache_entry_touch);
- static unsigned long mb_cache_count(struct shrinker *shrink,
- 				    struct shrink_control *sc)
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0a2d55faa095..1bd150d454f5 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1651,7 +1651,7 @@ struct ext4_sb_info {
+ 	__u32 s_csum_seed;
+ 
+ 	/* Reclaim extents from extent status tree */
+-	struct shrinker s_es_shrinker;
++	struct shrinker *s_es_shrinker;
+ 	struct list_head s_es_list;	/* List of inodes with reclaimable extents */
+ 	long s_es_nr_inode;
+ 	struct ext4_es_stats s_es_stats;
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index 9b5b8951afb4..8d4a959dd32f 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -1596,7 +1596,7 @@ static unsigned long ext4_es_count(struct shrinker *shrink,
+ 	unsigned long nr;
+ 	struct ext4_sb_info *sbi;
+ 
+-	sbi = container_of(shrink, struct ext4_sb_info, s_es_shrinker);
++	sbi = shrink->private_data;
+ 	nr = percpu_counter_read_positive(&sbi->s_es_stats.es_stats_shk_cnt);
+ 	trace_ext4_es_shrink_count(sbi->s_sb, sc->nr_to_scan, nr);
+ 	return nr;
+@@ -1605,8 +1605,7 @@ static unsigned long ext4_es_count(struct shrinker *shrink,
+ static unsigned long ext4_es_scan(struct shrinker *shrink,
+ 				  struct shrink_control *sc)
  {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
+-	struct ext4_sb_info *sbi = container_of(shrink,
+-					struct ext4_sb_info, s_es_shrinker);
++	struct ext4_sb_info *sbi = shrink->private_data;
+ 	int nr_to_scan = sc->nr_to_scan;
+ 	int ret, nr_shrunk;
  
- 	return cache->c_entry_count;
- }
-@@ -333,8 +332,7 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
- static unsigned long mb_cache_scan(struct shrinker *shrink,
- 				   struct shrink_control *sc)
- {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
- 	return mb_cache_shrink(cache, sc->nr_to_scan);
- }
+@@ -1690,14 +1689,17 @@ int ext4_es_register_shrinker(struct ext4_sb_info *sbi)
+ 	if (err)
+ 		goto err3;
  
-@@ -377,15 +375,20 @@ struct mb_cache *mb_cache_create(int bucket_bits)
- 	for (i = 0; i < bucket_count; i++)
- 		INIT_HLIST_BL_HEAD(&cache->c_hash[i]);
+-	sbi->s_es_shrinker.scan_objects = ext4_es_scan;
+-	sbi->s_es_shrinker.count_objects = ext4_es_count;
+-	sbi->s_es_shrinker.seeks = DEFAULT_SEEKS;
+-	err = register_shrinker(&sbi->s_es_shrinker, "ext4-es:%s",
+-				sbi->s_sb->s_id);
+-	if (err)
++	sbi->s_es_shrinker = shrinker_alloc(0, "ext4-es:%s", sbi->s_sb->s_id);
++	if (!sbi->s_es_shrinker)
+ 		goto err4;
  
--	cache->c_shrink.count_objects = mb_cache_count;
--	cache->c_shrink.scan_objects = mb_cache_scan;
--	cache->c_shrink.seeks = DEFAULT_SEEKS;
--	if (register_shrinker(&cache->c_shrink, "mbcache-shrinker")) {
-+	cache->c_shrink = shrinker_alloc(0, "mbcache-shrinker");
-+	if (!cache->c_shrink) {
- 		kfree(cache->c_hash);
- 		kfree(cache);
- 		goto err_out;
- 	}
- 
-+	cache->c_shrink->count_objects = mb_cache_count;
-+	cache->c_shrink->scan_objects = mb_cache_scan;
-+	cache->c_shrink->seeks = DEFAULT_SEEKS;
-+	cache->c_shrink->private_data = cache;
++	sbi->s_es_shrinker->scan_objects = ext4_es_scan;
++	sbi->s_es_shrinker->count_objects = ext4_es_count;
++	sbi->s_es_shrinker->seeks = DEFAULT_SEEKS;
++	sbi->s_es_shrinker->private_data = sbi;
 +
-+	shrinker_register(cache->c_shrink);
++	shrinker_register(sbi->s_es_shrinker);
 +
- 	INIT_WORK(&cache->c_shrink_work, mb_cache_shrink_worker);
+ 	return 0;
+ err4:
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_shk_cnt);
+@@ -1716,7 +1718,7 @@ void ext4_es_unregister_shrinker(struct ext4_sb_info *sbi)
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_cache_misses);
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_all_cnt);
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_shk_cnt);
+-	unregister_shrinker(&sbi->s_es_shrinker);
++	shrinker_unregister(sbi->s_es_shrinker);
+ }
  
- 	return cache;
-@@ -406,7 +409,7 @@ void mb_cache_destroy(struct mb_cache *cache)
- {
- 	struct mb_cache_entry *entry, *next;
- 
--	unregister_shrinker(&cache->c_shrink);
-+	shrinker_unregister(cache->c_shrink);
- 
- 	/*
- 	 * We don't bother with any locking. Cache must not be used at this
+ /*
 -- 
 2.30.2
 
