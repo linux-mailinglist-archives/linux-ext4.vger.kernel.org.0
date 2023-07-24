@@ -2,88 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FF075FA4D
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 17:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE8675FD04
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 19:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjGXPBD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jul 2023 11:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
+        id S230074AbjGXRTP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jul 2023 13:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjGXPBC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 11:01:02 -0400
-Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0874E56
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 08:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1690210856;
-        bh=TIUSbSTVTSqMfUwntP9fp42C7TFU50djMwl0U2BqCvA=;
-        h=From:To:Cc:Subject:Date;
-        b=fMZi9lt+py9yxqZUAv7HcsTaBusyWgG6Ea3PygjJK97lkAgmAiN2ykyi8mphPR/4S
-         0uVel9YY1QcojH7ib4DarN6nrc+dV/ouYV9LmtKAeU9sTgTMwm43i+/Bwae6NksHfV
-         011xr+RaJVjCaYKKwthBWM7ryiRWfHrR9mnpD6Jg=
-Received: from fedora.. ([2409:8a00:257d:1060:8e4e:4276:b7e5:8a0e])
-        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-        id 3708A82; Mon, 24 Jul 2023 23:00:55 +0800
-X-QQ-mid: xmsmtpt1690210855tgrkvi83e
-Message-ID: <tencent_CB3115278E9ED6BD081097E5753433452107@qq.com>
-X-QQ-XMAILINFO: MmpliBmRb3iCy42EVV+6PfDJ68H1fM+qGvvhTCtTHGKSC6DwBA6LFlaUk120Pf
-         fVdT60DOO+tkSxWpAeAxSSEPZQstxUMD1ZWMx7tIWF69Si9N+ohtl5/Wmbv+OyWJ/TYMoaJ1mCla
-         oNzHmyi8BwmqyEIlqRoi5y+Mjnsf55VVyY5RC9RekA9P9aHTzzT3NFJ1bog9L77uuNyVj7Z52RlJ
-         oKPo2xnZxlhusdSch8Gf10xXwC0H6xxafrHeeTJoxtjgNtkYfoDb2JKAi6FYFHIrFjW5klJpl6M7
-         JA3m5lk8YcB/ah3bbiGmgSp9eIfdrSiBCv610p5JrGpsagXo0FLeq/J69qG9dHAe596IWKeBcxZb
-         chKMj50xwAQoMmZ0Xe8bjWwaKOi2hbmOvCn3R7NE0UfLnVAy/YOLuA+X+eYW5SrzwgP2lOYFM5PR
-         rGubsiIx75Tw1gujFua1d4v3GeWJ+UqyURv00GMGXv96dBFFep48xHUfwtxwc0R5he+o7E+F2u7P
-         AHtxGhO5+FZlEh+N8emnwXyBfULdm0e2RON2aAROIsPYJsK4MqI7SstXtM0HMai0PwF9UWQu11gP
-         DYqRTUaPf7XYQ8CCwUSO7YW/0RuSmQz2juGuYh/MwjiGpV2mLNx9u9GQqW7MWi0z2b82t8PgRjnq
-         4KcEz6I68xFKFhQ8p0MLyiaWsmzTn3zhClxBMQlP30e7wfn3en5KxgZi63OjSGPGYVI0aeS8cowb
-         uY0LBie4yAzBrlk354vtkwwUJmHsWJL7tTUcuWHX8HSy5jmPD2vixXXdhiXwkdd1VRjHehibmBsq
-         gOxK6kWo5+SnW27JRXyTMwnV8jI1dwaR6De/8on9R0CNvr1jZ50PFDMve03OSChrtfkR+KkGTEEX
-         iBsLU9b0yiOp2H4r0f3qiI0CZCiw0pg51rZTbh+EtmqZQRqDvFIrrggmhijGAd2nOcOQe6hLOlRU
-         C9BMrzo8U/L3/CIT3Uqu9hHhiAs70qz/2ZJwOtnCV9qsUBqmM5iw==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From:   Wang Jianjian <wangjianjian0@foxmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     wangjianjian0@foxmail.com
-Subject: [PATCH] jbd2: Remove unused t_handle_lock
-Date:   Mon, 24 Jul 2023 22:58:21 +0800
-X-OQ-MSGID: <20230724145821.152396-1-wangjianjian0@foxmail.com>
-X-Mailer: git-send-email 2.34.3
+        with ESMTP id S229547AbjGXRTO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 13:19:14 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD53DE76
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 10:19:13 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-63cf7cce5fbso13726766d6.0
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 10:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690219153; x=1690823953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tHqlkjiN6F7mZHmC296PE6xQOoItN+fVKPLF3TUGTVI=;
+        b=HFHY127KcwxOhKq5Bri1cro15FAkNa5SlM1FnQX3pl0u+VO3Bn11Vc+BLFKQsIh0qd
+         4+3053sdoGd0VLrcSU+KtN0OCxZTjUqtSMCssDwasWUzfIoYX5+POQkWDxZt89M0kz96
+         zIlQG61pCNSEKCeryktg+GDMoz9NSSszsiF2CptitKlAcDo+RlBOaSbyxGsETMFf0wLt
+         qgzd9wtLBkB57uRY44bxZIabgouPeMWmBnOKge2XEc0potLBZTB7tXvdiO1T2+e+GZLy
+         wBX1Mr3RKUi1mWgq8JyelZglpRXG7M2gtWKKlZ3o9x/qjhS4NRFAyo7niZCQalU1EwRC
+         ch3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690219153; x=1690823953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tHqlkjiN6F7mZHmC296PE6xQOoItN+fVKPLF3TUGTVI=;
+        b=f5boSmhQsyo0kc3DAtMLRI6fiH3MhcveD2aEPh3eKhRw7/TWF0C5gCHDs+KL4wuyJ5
+         rhVA0bf11v+FQ1z7n2rKQgOqwKNNe9URhXusZ9ugRja9M6YZMITWHEv0LwGCwcBg2a4R
+         C0dPGOG4gHaBrYpdJcoWRy8KfmXI4rd0ck6TYgmuiSw90A1AxIdd9SKMTKvNmq+nb8Zo
+         MOC3QdU5uGRtFNrkMVKXhK92p5jK3xy0naiW4ppwUbfZC8nxbk2DcjIFGbLyF2TBUPjP
+         zzr1E09xrqSML+GNP6+gKcBH+xadH0FX9Dw9NdovAUOcZLLzoJSxx3vzZ61HrTQUcq0n
+         6k3A==
+X-Gm-Message-State: ABy/qLZo1TlNJkRgCi6Y96NGWBfa9lmr9/9lTbT8dZ4pvy59YhH9XxGl
+        HIgY6ScjSeIzewfGVM0TOelbru6gRLVKDZwf+Z121ULhKa/Reh4EV3o=
+X-Google-Smtp-Source: APBJJlG0PzmZgMeYmmyxh6fQCtTCaFVli27ad8SwdfVceQNoqUOHJJbJZFe9iMSAnB6bk7i+ctom86Y91hMRQVsqDOs=
+X-Received: by 2002:a0c:fe0d:0:b0:63c:a22e:ddaf with SMTP id
+ x13-20020a0cfe0d000000b0063ca22eddafmr461068qvr.16.1690219152868; Mon, 24 Jul
+ 2023 10:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <20230724054538.163319-1-suhui@nfschina.com>
+In-Reply-To: <20230724054538.163319-1-suhui@nfschina.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jul 2023 10:19:02 -0700
+Message-ID: <CAKwvOdk-fdJr9TcgUnOhCiU0LvD2Qe_c+6YOe-c1k0Ukm+negA@mail.gmail.com>
+Subject: Re: [PATCH] ext4: mballoc: avoid garbage value from err
+To:     Su Hui <suhui@nfschina.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, nathan@kernel.org,
+        trix@redhat.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Since commit 4f98186848('jbd2: refactor wait logic for transaction
-updates into a common function'), this lock has been no use.
----
- include/linux/jbd2.h | 5 -----
- 1 file changed, 5 deletions(-)
+On Sun, Jul 23, 2023 at 10:46=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
+>
+> clang warning: fs/ext4/mballoc.c, line 4178, column 6
+> Branch condition evaluates to a garbage value.
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index d860499e15e4..8199235dbaf3 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -636,11 +636,6 @@ struct transaction_s
- 	 */
- 	struct list_head	t_inode_list;
- 
--	/*
--	 * Protects info related to handles
--	 */
--	spinlock_t		t_handle_lock;
--
- 	/*
- 	 * Longest time some handle had to wait for running transaction
- 	 */
--- 
-2.34.3
+Specifically this is clang's static analysis; not the compiler itself.
 
+>
+> err is uninitialized and will be judged when it enters the
+> loop first time and the condition "!ext4_sb_block_valid()"
+> is true. Although this can't make problems now, it's better
+> to correct it.
+>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+
+Hi Su,
+Thanks for the patch!  I see what the warning is getting at;
+
+If `len <=3D 0` then `err` is never initialized, then is used at line
+4178 (that is UB).
+
+Would you mind sending a v2 with the commit message updated to reflect
+the above points?  I'd be happy to sign-off on that.
+
+> ---
+>  fs/ext4/mballoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 21b903fe546e..769000c970b0 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4084,7 +4084,7 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_f=
+sblk_t block,
+>         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+>         ext4_group_t group;
+>         ext4_grpblk_t blkoff;
+> -       int i, err;
+> +       int i, err =3D 0;
+>         int already;
+>         unsigned int clen, clen_changed, thisgrp_len;
+>
+> --
+> 2.30.2
+>
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
