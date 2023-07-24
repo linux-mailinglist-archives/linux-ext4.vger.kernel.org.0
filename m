@@ -2,128 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB4075F8E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 15:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FF075FA4D
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jul 2023 17:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjGXNuu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jul 2023 09:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
+        id S229573AbjGXPBD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jul 2023 11:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjGXNui (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 09:50:38 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5B646AB;
-        Mon, 24 Jul 2023 06:47:37 -0700 (PDT)
-Received: from canpemm100004.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R8hGK6gdPzNmbL;
-        Mon, 24 Jul 2023 21:44:09 +0800 (CST)
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm100004.china.huawei.com (7.192.105.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 21:47:31 +0800
-Subject: Re: [PATCH v5 7/8] ext4: add some kunit stub for mballoc kunit test
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <ojaswin@linux.ibm.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230629144007.1263510-1-shikemeng@huaweicloud.com>
- <20230629144007.1263510-8-shikemeng@huaweicloud.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <fbc8b67b-d3cd-a30b-99b5-8c160224e928@huawei.com>
-Date:   Mon, 24 Jul 2023 21:47:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S229975AbjGXPBC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jul 2023 11:01:02 -0400
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0874E56
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jul 2023 08:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1690210856;
+        bh=TIUSbSTVTSqMfUwntP9fp42C7TFU50djMwl0U2BqCvA=;
+        h=From:To:Cc:Subject:Date;
+        b=fMZi9lt+py9yxqZUAv7HcsTaBusyWgG6Ea3PygjJK97lkAgmAiN2ykyi8mphPR/4S
+         0uVel9YY1QcojH7ib4DarN6nrc+dV/ouYV9LmtKAeU9sTgTMwm43i+/Bwae6NksHfV
+         011xr+RaJVjCaYKKwthBWM7ryiRWfHrR9mnpD6Jg=
+Received: from fedora.. ([2409:8a00:257d:1060:8e4e:4276:b7e5:8a0e])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id 3708A82; Mon, 24 Jul 2023 23:00:55 +0800
+X-QQ-mid: xmsmtpt1690210855tgrkvi83e
+Message-ID: <tencent_CB3115278E9ED6BD081097E5753433452107@qq.com>
+X-QQ-XMAILINFO: MmpliBmRb3iCy42EVV+6PfDJ68H1fM+qGvvhTCtTHGKSC6DwBA6LFlaUk120Pf
+         fVdT60DOO+tkSxWpAeAxSSEPZQstxUMD1ZWMx7tIWF69Si9N+ohtl5/Wmbv+OyWJ/TYMoaJ1mCla
+         oNzHmyi8BwmqyEIlqRoi5y+Mjnsf55VVyY5RC9RekA9P9aHTzzT3NFJ1bog9L77uuNyVj7Z52RlJ
+         oKPo2xnZxlhusdSch8Gf10xXwC0H6xxafrHeeTJoxtjgNtkYfoDb2JKAi6FYFHIrFjW5klJpl6M7
+         JA3m5lk8YcB/ah3bbiGmgSp9eIfdrSiBCv610p5JrGpsagXo0FLeq/J69qG9dHAe596IWKeBcxZb
+         chKMj50xwAQoMmZ0Xe8bjWwaKOi2hbmOvCn3R7NE0UfLnVAy/YOLuA+X+eYW5SrzwgP2lOYFM5PR
+         rGubsiIx75Tw1gujFua1d4v3GeWJ+UqyURv00GMGXv96dBFFep48xHUfwtxwc0R5he+o7E+F2u7P
+         AHtxGhO5+FZlEh+N8emnwXyBfULdm0e2RON2aAROIsPYJsK4MqI7SstXtM0HMai0PwF9UWQu11gP
+         DYqRTUaPf7XYQ8CCwUSO7YW/0RuSmQz2juGuYh/MwjiGpV2mLNx9u9GQqW7MWi0z2b82t8PgRjnq
+         4KcEz6I68xFKFhQ8p0MLyiaWsmzTn3zhClxBMQlP30e7wfn3en5KxgZi63OjSGPGYVI0aeS8cowb
+         uY0LBie4yAzBrlk354vtkwwUJmHsWJL7tTUcuWHX8HSy5jmPD2vixXXdhiXwkdd1VRjHehibmBsq
+         gOxK6kWo5+SnW27JRXyTMwnV8jI1dwaR6De/8on9R0CNvr1jZ50PFDMve03OSChrtfkR+KkGTEEX
+         iBsLU9b0yiOp2H4r0f3qiI0CZCiw0pg51rZTbh+EtmqZQRqDvFIrrggmhijGAd2nOcOQe6hLOlRU
+         C9BMrzo8U/L3/CIT3Uqu9hHhiAs70qz/2ZJwOtnCV9qsUBqmM5iw==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From:   Wang Jianjian <wangjianjian0@foxmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     wangjianjian0@foxmail.com
+Subject: [PATCH] jbd2: Remove unused t_handle_lock
+Date:   Mon, 24 Jul 2023 22:58:21 +0800
+X-OQ-MSGID: <20230724145821.152396-1-wangjianjian0@foxmail.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-In-Reply-To: <20230629144007.1263510-8-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.14]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm100004.china.huawei.com (7.192.105.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/6/29 22:40, Kemeng Shi wrote:
-> Multiblocks allocation will read and write block bitmap and group
-> descriptor which reside on disk. Add kunit stub to function
-> ext4_get_group_desc, ext4_read_block_bitmap_nowait, ext4_wait_block_bitmap
-> and ext4_mb_mark_group_bb to avoid real IO to disk.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   fs/ext4/balloc.c  | 16 ++++++++++++++++
->   fs/ext4/mballoc.c |  6 ++++++
->   2 files changed, 22 insertions(+)
-> 
-> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-> index 1f72f977c6db..d39655fb2f53 100644
-> --- a/fs/ext4/balloc.c
-> +++ b/fs/ext4/balloc.c
-> @@ -22,6 +22,7 @@
->   #include "mballoc.h"
->   
->   #include <trace/events/ext4.h>
-> +#include <kunit/static_stub.h>
->   
->   static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
->   					    ext4_group_t block_group);
-> @@ -274,6 +275,11 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
->   	struct ext4_sb_info *sbi = EXT4_SB(sb);
->   	struct buffer_head *bh_p;
->   
-> +#ifdef CONFIG_EXT4_KUNIT_TESTS
-> +	KUNIT_STATIC_STUB_REDIRECT(ext4_get_group_desc,
-> +				   sb, block_group, bh);
-> +#endif
+Since commit 4f98186848('jbd2: refactor wait logic for transaction
+updates into a common function'), this lock has been no use.
+---
+ include/linux/jbd2.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Hi Kemeng,
-
-I'm not a fan of adding "#ifdef" blocks in functions everywhere. The 
-right thing to do is to put these "#ifdef" blocks in header files and to 
-make the macro or functions empty if you want to make these codes 
-conditionally-compiled out.
-
-The standard usage in kernel looks like:
-
-In the header file: "a.h"
-
-#ifdef CONFIG_XXXX
-void foo(struct sas_task *task);
-#else
-static inline void foo(struct sas_task *task)
-{
-}
-#endif
-
-or
-
-#ifdef CONFIG_XXXX
-#define foo()  do_something()
-#else
-#define foo()
-#endif
-
-And in the c file: "a.c"
-
-#include "a.h"
-
-void bar(void)
-{
-	foo();
-	something_else();
-}
-
-Please refer to:
-https://docs.kernel.org/process/4.Coding.html?#ifdef-and-preprocessor-use-in-general
-
-Thanks,
-Jason
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index d860499e15e4..8199235dbaf3 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -636,11 +636,6 @@ struct transaction_s
+ 	 */
+ 	struct list_head	t_inode_list;
+ 
+-	/*
+-	 * Protects info related to handles
+-	 */
+-	spinlock_t		t_handle_lock;
+-
+ 	/*
+ 	 * Longest time some handle had to wait for running transaction
+ 	 */
+-- 
+2.34.3
 
