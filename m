@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA620761188
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jul 2023 12:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CBF761181
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jul 2023 12:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbjGYKwa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jul 2023 06:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S231942AbjGYKwE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jul 2023 06:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbjGYKvU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 06:51:20 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8E1273E;
-        Tue, 25 Jul 2023 03:50:52 -0700 (PDT)
+        with ESMTP id S233800AbjGYKvO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 06:51:14 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AF01FEF;
+        Tue, 25 Jul 2023 03:50:45 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9DMj4L2Lz4f3tP1;
-        Tue, 25 Jul 2023 18:50:41 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R9DMh2YK6z4f3tDK;
+        Tue, 25 Jul 2023 18:50:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgC3quj+qL9kl7XQOg--.17520S9;
+        by APP2 (Coremail) with SMTP id Syh0CgC3quj+qL9kl7XQOg--.17520S10;
         Tue, 25 Jul 2023 18:50:42 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
         ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v2 07/10] ext4: remove unused ext4_{set}/{clear}_bit_atomic
-Date:   Wed, 26 Jul 2023 02:51:03 +0800
-Message-Id: <20230725185106.2147273-8-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 08/10] ext4: return found group directly in ext4_mb_choose_next_group_goal_fast
+Date:   Wed, 26 Jul 2023 02:51:04 +0800
+Message-Id: <20230725185106.2147273-9-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230725185106.2147273-1-shikemeng@huaweicloud.com>
 References: <20230725185106.2147273-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgC3quj+qL9kl7XQOg--.17520S9
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyUXr1kGF45Wr4xZw13Arb_yoWfuFX_J3
-        4Iva1kGryYk3WxKFs5u3WkJF1ktrnIqr18u3Z5Jr1ruFyYqa15Ar4kCryjvw1rWr45XFy0
-        yrn2qr1YqFykXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: Syh0CgC3quj+qL9kl7XQOg--.17520S10
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFykAr45Wry5CFWxAFy5Arb_yoWDKrb_Ga
+        47AFs3AayrAr18G3WF9wsYyr48KFWkAr4DXr9xtF45W3WUCFykK3Wq9r4rAay8ua10yry3
+        KasIvFWxKF4SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbq8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -62,30 +62,42 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove ext4_set_bit_atomic and ext4_clear_bit_atomic which are defined but not
-used.
+Return good group when it's found in loop to remove futher check if good
+group is found after loop.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- fs/ext4/ext4.h | 2 --
- 1 file changed, 2 deletions(-)
+ fs/ext4/mballoc.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 0a2d55faa095..7166edb2e4a7 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1252,10 +1252,8 @@ struct ext4_inode_info {
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 73f8ecdf4d23..88a3c00e484f 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -959,16 +959,14 @@ static void ext4_mb_choose_next_group_goal_fast(struct ext4_allocation_context *
+ 	for (i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
+ 	     i < MB_NUM_ORDERS(ac->ac_sb); i++) {
+ 		grp = ext4_mb_find_good_group_avg_frag_lists(ac, i);
+-		if (grp)
+-			break;
++		if (grp) {
++			*group = grp->bb_group;
++			ac->ac_flags |= EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED;
++			return;
++		}
+ 	}
  
- #define ext4_test_and_set_bit		__test_and_set_bit_le
- #define ext4_set_bit			__set_bit_le
--#define ext4_set_bit_atomic		ext2_set_bit_atomic
- #define ext4_test_and_clear_bit		__test_and_clear_bit_le
- #define ext4_clear_bit			__clear_bit_le
--#define ext4_clear_bit_atomic		ext2_clear_bit_atomic
- #define ext4_test_bit			test_bit_le
- #define ext4_find_next_zero_bit		find_next_zero_bit_le
- #define ext4_find_next_bit		find_next_bit_le
+-	if (grp) {
+-		*group = grp->bb_group;
+-		ac->ac_flags |= EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED;
+-	} else {
+-		*new_cr = CR_BEST_AVAIL_LEN;
+-	}
++	*new_cr = CR_BEST_AVAIL_LEN;
+ }
+ 
+ /*
 -- 
 2.30.0
 
