@@ -2,37 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCC3762C53
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 09:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05453762C60
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 09:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbjGZHCP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 03:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S232333AbjGZHCp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 03:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbjGZHBk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 03:01:40 -0400
-Received: from out-6.mta0.migadu.com (out-6.mta0.migadu.com [91.218.175.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC3E3596
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 00:00:23 -0700 (PDT)
+        with ESMTP id S230521AbjGZHCH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 03:02:07 -0400
+Received: from out-24.mta0.migadu.com (out-24.mta0.migadu.com [IPv6:2001:41d0:1004:224b::18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5692729;
+        Wed, 26 Jul 2023 00:00:55 -0700 (PDT)
 Content-Type: text/plain;
         charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690354821;
+        t=1690354853;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OC4KPzU6tciOrfm8EFdW/zf4963ci4mLF+j8l1KE5tM=;
-        b=iDZQzOerHRE+IOt6kDpFe/TDB+N4qMvQTQndP12lYqhs3OrJd5JfINtesZHtptfd9iC616
-        /Xb+r1wFTA+uxkP+jFrdX8hbQcjrGCMcJ2CcELtL1UjS+fWQpVujDpOM7OXMN1vC4ZHnGG
-        o/IYYCnTDc7xLzZrYv28Q3UtMNEdLjE=
+        bh=vPvKdDrljW6F/uCSplNpQplPV8vRRURSjQLOuFds+Ao=;
+        b=aaSBBHeBtwwGqsWMnojqRVsl/STDmmnYtUnl5ZO4CtbJBB+yMsEQoYCMTU1jXiNn7BQJ5o
+        TY2b0wzcluA2pEgVpI6zUX6jG/ZH5Pzg0tSizSeLRNZh0UJXNUcxmFOyz901cApQh34Dur
+        CIKrvfbRyMRXngths0iuBPdRZIsqJNY=
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 15/47] quota: dynamically allocate the dquota-cache
+Subject: Re: [PATCH v2 16/47] ubifs: dynamically allocate the ubifs-slab
  shrinker
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-16-zhengqi.arch@bytedance.com>
-Date:   Wed, 26 Jul 2023 14:59:35 +0800
+In-Reply-To: <20230724094354.90817-17-zhengqi.arch@bytedance.com>
+Date:   Wed, 26 Jul 2023 15:00:21 +0800
 Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
         Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
@@ -53,9 +53,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Transfer-Encoding: 7bit
-Message-Id: <425A7B54-A16E-4B93-A1EE-F6860F15C559@linux.dev>
+Message-Id: <76B579EB-401B-46DD-9666-180F9EAA18BF@linux.dev>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-16-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-17-zhengqi.arch@bytedance.com>
 To:     Qi Zheng <zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,7 +72,7 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 > On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
-> Use new APIs to dynamically allocate the dquota-cache shrinker.
+> Use new APIs to dynamically allocate the ubifs-slab shrinker.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
