@@ -2,152 +2,201 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157EC762811
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 03:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6636276283C
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 03:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjGZBSG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jul 2023 21:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S230194AbjGZBjm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jul 2023 21:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGZBSF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 21:18:05 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499162698;
-        Tue, 25 Jul 2023 18:18:02 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9bZf5rDpzVjf2;
-        Wed, 26 Jul 2023 09:16:26 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 09:17:59 +0800
-Message-ID: <d59c7b0e-2887-4823-c524-0ab001d8ef95@huawei.com>
-Date:   Wed, 26 Jul 2023 09:17:59 +0800
+        with ESMTP id S229568AbjGZBjl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 21:39:41 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0687626B5
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Jul 2023 18:39:39 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-583f65806f8so34627607b3.0
+        for <linux-ext4@vger.kernel.org>; Tue, 25 Jul 2023 18:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=MZxYT2MdZ0Omg+tGFjNofeHkNy3Qahh2PBaeRGC1CPgAvaobe+CbfQzviGlH2bRGld
+         yZXqVlc4rdM7Hn/0uDpIIp7PtuXFyXV1rOEzEcPsa6KfHQ8WsO8NrD1ggf9GGi+atd7F
+         nKDBxVEOzhZviRxzmHMsde7z3UqWCZoSc0lNm1akA/R8EHPW9npAKef3Z/pjfCjWQWBN
+         xmycegOze/hxSYYenv2HpylIbUfqF9JiHr0gy59wVHZoy8dXEq78uEH7BvhlWGHxnNVM
+         Pm/pG6h4Z3mK+EEHLb2xoyIraXRTQQ+dd3MgzFr8XAVX1x101W0eH3RmqvYAcZ2a0tMf
+         tMBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=GLNCTr3p4vllSh/cHHcs44bCzwahGBc18kHMXcylKsI/v4t7btU+KMkRpbjHD+SkcY
+         RoWyaHFV4AAV1FuJdk1SgiYmHoWow2egCfP+kpxJlv0+/z4KhJhGElcRT72nLBXlUiUi
+         2B+Q1qpBAMvLMW1OZc7lqE6oOZ10oYWjTySuSssXeSHgmno6dUoe/EX8/vIeMHf3Znlv
+         Rq4cLvJgqdf6G381bPlbSADOgLjsTjlyLb/6IHmF8ua60Gmvo3ZMUhFIraU9ZE1K2epm
+         I/vOFWufbDK/f7Nptc4ZMq8S8oUoS+cLO5f53++w3TZrLPI6DEA6+tBEJXaHTyPyKwMF
+         dEWQ==
+X-Gm-Message-State: ABy/qLY/tpmFCuhc7BiEfkUiA3PfALzfwQZj5wHZLrDI0wIDWoDtGpsR
+        kot7UUmbKeyb3lx3cVTqP610oA==
+X-Google-Smtp-Source: APBJJlHxqCs0/k9opPHZr1oFjC/IjLn2NWFjtEyuaFY5bDdVyDOg3sTAz2vkUnxY9z5liUX1UEynKA==
+X-Received: by 2002:a81:46c3:0:b0:56d:2189:d87a with SMTP id t186-20020a8146c3000000b0056d2189d87amr821699ywa.15.1690335578030;
+        Tue, 25 Jul 2023 18:39:38 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s10-20020a5b044a000000b00c654cc439fesm3165326ybp.52.2023.07.25.18.39.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 18:39:37 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 18:39:25 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Jeff Layton <jlayton@kernel.org>
+cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
+ becomes writeable
+In-Reply-To: <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
+Message-ID: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org> <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v2 1/3] ext4: add two helper functions
- extent_logical_end() and pa_logical_end()
-Content-Language: en-US
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <871qgvdhnd.fsf@doe.com>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <871qgvdhnd.fsf@doe.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/7/26 1:29, Ritesh Harjani (IBM) wrote:
-> Baokun Li <libaokun1@huawei.com> writes:
->
->> When we use lstart + len to calculate the end of free extent or prealloc
->> space, it may exceed the maximum value of 4294967295(0xffffffff) supported
->> by ext4_lblk_t and cause overflow, which may lead to various problems.
->>
->> Therefore, we add two helper functions, extent_logical_end() and
->> pa_logical_end(), to limit the type of end to loff_t, and also convert
->> lstart to loff_t for calculation to avoid overflow.
-> Sure. extent_logical_end() is not as bad after dropping the third param.
-> Thanks for addressing review comments and identifying overflow issues :)
->
-> Looks good to me. Feel free to add:
->
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->
-Thank you very much for your patient review! 😊
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/ext4/mballoc.c |  9 +++------
->>   fs/ext4/mballoc.h | 14 ++++++++++++++
->>   2 files changed, 17 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 21b903fe546e..4cb13b3e41b3 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -4432,7 +4432,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
->>   
->>   	/* first, let's learn actual file size
->>   	 * given current request is allocated */
->> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
->> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
->>   	size = size << bsbits;
->>   	if (size < i_size_read(ac->ac_inode))
->>   		size = i_size_read(ac->ac_inode);
->> @@ -4766,7 +4766,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
->>   	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
->>   	struct ext4_locality_group *lg;
->>   	struct ext4_prealloc_space *tmp_pa = NULL, *cpa = NULL;
->> -	loff_t tmp_pa_end;
->>   	struct rb_node *iter;
->>   	ext4_fsblk_t goal_block;
->>   
->> @@ -4862,9 +4861,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
->>   	 * pa can possibly satisfy the request hence check if it overlaps
->>   	 * original logical start and stop searching if it doesn't.
->>   	 */
->> -	tmp_pa_end = (loff_t)tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
->> -
->> -	if (ac->ac_o_ex.fe_logical >= tmp_pa_end) {
->> +	if (ac->ac_o_ex.fe_logical >= pa_logical_end(sbi, tmp_pa)) {
->>   		spin_unlock(&tmp_pa->pa_lock);
->>   		goto try_group_pa;
->>   	}
->> @@ -5769,7 +5766,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
->>   
->>   	group_pa_eligible = sbi->s_mb_group_prealloc > 0;
->>   	inode_pa_eligible = true;
->> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
->> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
->>   	isize = (i_size_read(ac->ac_inode) + ac->ac_sb->s_blocksize - 1)
->>   		>> bsbits;
->>   
->> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
->> index df6b5e7c2274..d7aeb5da7d86 100644
->> --- a/fs/ext4/mballoc.h
->> +++ b/fs/ext4/mballoc.h
->> @@ -233,6 +233,20 @@ static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
->>   		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
->>   }
->>   
->> +static inline loff_t extent_logical_end(struct ext4_sb_info *sbi,
->> +					struct ext4_free_extent *fex)
->> +{
->> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
->> +	return (loff_t)fex->fe_logical + EXT4_C2B(sbi, fex->fe_len);
->> +}
->> +
->> +static inline loff_t pa_logical_end(struct ext4_sb_info *sbi,
->> +				    struct ext4_prealloc_space *pa)
->> +{
->> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
->> +	return (loff_t)pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
->> +}
->> +
->>   typedef int (*ext4_mballoc_query_range_fn)(
->>   	struct super_block		*sb,
->>   	ext4_group_t			agno,
->> -- 
->> 2.31.1
-Cheers!
--- 
-With Best Regards,
-Baokun Li
-.
+On Tue, 25 Jul 2023, Jeff Layton wrote:
+
+> Most filesystems that use the pagecache will update the mtime, ctime,
+> and change attribute when a page becomes writeable. Add a page_mkwrite
+> operation for tmpfs and just use it to bump the mtime, ctime and change
+> attribute.
+> 
+> This fixes xfstest generic/080 on tmpfs.
+
+Huh.  I didn't notice when this one crept into the multigrain series.
+
+I'm inclined to NAK this patch: at the very least, it does not belong
+in the series, but should be discussed separately.
+
+Yes, tmpfs does not and never has used page_mkwrite, and gains some
+performance advantage from that.  Nobody has ever asked for this
+change before, or not that I recall.
+
+Please drop it from the series: and if you feel strongly, or know
+strong reasons why tmpfs suddenly needs to use page_mkwrite now,
+please argue them separately.  To pass generic/080 is not enough.
+
+Thanks,
+Hugh
+
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  mm/shmem.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index b154af49d2df..654d9a585820 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+>  	return ret;
+>  }
+>  
+> +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
+> +{
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	struct inode *inode = file_inode(vma->vm_file);
+> +
+> +	file_update_time(vma->vm_file);
+> +	inode_inc_iversion(inode);
+> +	return 0;
+> +}
+> +
+>  unsigned long shmem_get_unmapped_area(struct file *file,
+>  				      unsigned long uaddr, unsigned long len,
+>  				      unsigned long pgoff, unsigned long flags)
+> @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops = {
+>  
+>  static const struct vm_operations_struct shmem_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm_ops = {
+>  
+>  static const struct vm_operations_struct shmem_anon_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> 
+> -- 
+> 2.41.0
