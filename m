@@ -2,90 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC09762031
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jul 2023 19:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157EC762811
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 03:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjGYRav (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jul 2023 13:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S229798AbjGZBSG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jul 2023 21:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbjGYRau (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 13:30:50 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA7EE3;
-        Tue, 25 Jul 2023 10:30:48 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686b9920362so308510b3a.1;
-        Tue, 25 Jul 2023 10:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690306248; x=1690911048;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+nloVmxs0M2sNFQEN8k6CsE0eaoEHVBJeSVDFD7qrqk=;
-        b=CAIqniHn9UDooLjnBH6VhtQwveTvWHMPlB9nZvudVvT4odqN9kUUzJ5r5+9b0aoRAB
-         zGfNZOYoddYqCkewbBVYOAs7iIzh/jt2z5TglpPd+JJdnc+a6kKgotxpLhdyDEgApn20
-         HDyFH4Szuwlgmqukv5VTyyE2I26p4FXEKZwyQWN/yNqiZVcC0o3EC8Vw2xxXeVY97k1z
-         oYxsnl9M0cKxec8r58q8BT3/wqisllGT+V5OxZJkWx7fOG2ZTunFQgzrkUMW0u2bJ6Ia
-         HBwNJc8UPjimXEW60FRJiDskQ+OZxnqe2ZM5rLo/MR4pWOV4SymEZBvNz0dJAtKLQ6gg
-         bwvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690306248; x=1690911048;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+nloVmxs0M2sNFQEN8k6CsE0eaoEHVBJeSVDFD7qrqk=;
-        b=INbuuV/BD+KblR15czUgztrIVNgMQlkoCPFJ87LhLS45qc9cd5zsOesyIhV9NlpIZy
-         fFik7o+emxUKmjuzOkMKImWeKjqKKVRXVRDbGXXJo43sjXf8RMCkRwtrnPZHo3px+Be6
-         ml5TgJLKAPTn44cXMj6RSu7rufyEFs+HyJ4L3gPoR0OAjCKLPTzjAjK2GJ4M8G7rGkq+
-         scUujNKn8na2XihlW1niIccmWQtN1idFH+77qFiXl4CR6qPfX+wA4cFLP5uidtdFsdY3
-         ErnxrAvA5V5JCQ16wfRWr2g5Pa8qrWSo0LRmHoxslHhSi9dHHY100xSiwrot+Yl7FJ4C
-         u87Q==
-X-Gm-Message-State: ABy/qLbOEe5SB59qtF58J9BflMxOiyXAg/IOU6e9sAd/k4ahiETvmo10
-        Hfmr7VJ3PrH3ytJeakbx1aU=
-X-Google-Smtp-Source: APBJJlGNRff1oOkzSMTyiRXU+7jw101au4w5hAp1Su0x5WotIcenkyy9c+E9Clz8Y1rP9Kq81aYMHA==
-X-Received: by 2002:a05:6a20:12d3:b0:12f:8755:96ba with SMTP id v19-20020a056a2012d300b0012f875596bamr12326131pzg.28.1690306248031;
-        Tue, 25 Jul 2023 10:30:48 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id f9-20020aa782c9000000b00679d3fb2f92sm9854139pfn.154.2023.07.25.10.30.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 10:30:47 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 23:00:43 +0530
-Message-Id: <87v8e7c30c.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-        libaokun1@huawei.com
-Subject: Re: [PATCH v2 3/3] ext4: avoid overlapping preallocations due to overflow
-In-Reply-To: <20230724121059.11834-4-libaokun1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229483AbjGZBSF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jul 2023 21:18:05 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499162698;
+        Tue, 25 Jul 2023 18:18:02 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9bZf5rDpzVjf2;
+        Wed, 26 Jul 2023 09:16:26 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 09:17:59 +0800
+Message-ID: <d59c7b0e-2887-4823-c524-0ab001d8ef95@huawei.com>
+Date:   Wed, 26 Jul 2023 09:17:59 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 1/3] ext4: add two helper functions
+ extent_logical_end() and pa_logical_end()
+Content-Language: en-US
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <871qgvdhnd.fsf@doe.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <871qgvdhnd.fsf@doe.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Baokun Li <libaokun1@huawei.com> writes:
-
-> Let's say we want to allocate 2 blocks starting from 4294966386, after
-> predicting the file size, start is aligned to 4294965248, len is changed
-> to 2048, then end = start + size = 0x100000000. Since end is of
-> type ext4_lblk_t, i.e. uint, end is truncated to 0.
+On 2023/7/26 1:29, Ritesh Harjani (IBM) wrote:
+> Baokun Li <libaokun1@huawei.com> writes:
 >
-> This causes (pa->pa_lstart >= end) to always hold when checking if the
-> current extent to be allocated crosses already preallocated blocks, so the
-> resulting ac_g_ex may cross already preallocated blocks. Hence we convert
-> the end type to loff_t and use pa_logical_end() to avoid overflow.
+>> When we use lstart + len to calculate the end of free extent or prealloc
+>> space, it may exceed the maximum value of 4294967295(0xffffffff) supported
+>> by ext4_lblk_t and cause overflow, which may lead to various problems.
+>>
+>> Therefore, we add two helper functions, extent_logical_end() and
+>> pa_logical_end(), to limit the type of end to loff_t, and also convert
+>> lstart to loff_t for calculation to avoid overflow.
+> Sure. extent_logical_end() is not as bad after dropping the third param.
+> Thanks for addressing review comments and identifying overflow issues :)
 >
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  fs/ext4/mballoc.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
-
-Looks good to me. Feel free to add:
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
+> Looks good to me. Feel free to add:
+>
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>
+Thank you very much for your patient review! 😊
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c |  9 +++------
+>>   fs/ext4/mballoc.h | 14 ++++++++++++++
+>>   2 files changed, 17 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 21b903fe546e..4cb13b3e41b3 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -4432,7 +4432,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>>   
+>>   	/* first, let's learn actual file size
+>>   	 * given current request is allocated */
+>> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
+>> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
+>>   	size = size << bsbits;
+>>   	if (size < i_size_read(ac->ac_inode))
+>>   		size = i_size_read(ac->ac_inode);
+>> @@ -4766,7 +4766,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+>>   	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+>>   	struct ext4_locality_group *lg;
+>>   	struct ext4_prealloc_space *tmp_pa = NULL, *cpa = NULL;
+>> -	loff_t tmp_pa_end;
+>>   	struct rb_node *iter;
+>>   	ext4_fsblk_t goal_block;
+>>   
+>> @@ -4862,9 +4861,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+>>   	 * pa can possibly satisfy the request hence check if it overlaps
+>>   	 * original logical start and stop searching if it doesn't.
+>>   	 */
+>> -	tmp_pa_end = (loff_t)tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
+>> -
+>> -	if (ac->ac_o_ex.fe_logical >= tmp_pa_end) {
+>> +	if (ac->ac_o_ex.fe_logical >= pa_logical_end(sbi, tmp_pa)) {
+>>   		spin_unlock(&tmp_pa->pa_lock);
+>>   		goto try_group_pa;
+>>   	}
+>> @@ -5769,7 +5766,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
+>>   
+>>   	group_pa_eligible = sbi->s_mb_group_prealloc > 0;
+>>   	inode_pa_eligible = true;
+>> -	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
+>> +	size = extent_logical_end(sbi, &ac->ac_o_ex);
+>>   	isize = (i_size_read(ac->ac_inode) + ac->ac_sb->s_blocksize - 1)
+>>   		>> bsbits;
+>>   
+>> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+>> index df6b5e7c2274..d7aeb5da7d86 100644
+>> --- a/fs/ext4/mballoc.h
+>> +++ b/fs/ext4/mballoc.h
+>> @@ -233,6 +233,20 @@ static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
+>>   		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
+>>   }
+>>   
+>> +static inline loff_t extent_logical_end(struct ext4_sb_info *sbi,
+>> +					struct ext4_free_extent *fex)
+>> +{
+>> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
+>> +	return (loff_t)fex->fe_logical + EXT4_C2B(sbi, fex->fe_len);
+>> +}
+>> +
+>> +static inline loff_t pa_logical_end(struct ext4_sb_info *sbi,
+>> +				    struct ext4_prealloc_space *pa)
+>> +{
+>> +	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
+>> +	return (loff_t)pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
+>> +}
+>> +
+>>   typedef int (*ext4_mballoc_query_range_fn)(
+>>   	struct super_block		*sb,
+>>   	ext4_group_t			agno,
+>> -- 
+>> 2.31.1
+Cheers!
+-- 
+With Best Regards,
+Baokun Li
+.
