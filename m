@@ -2,62 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93221763220
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 11:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE5D76323C
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 11:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbjGZJbB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 05:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        id S231335AbjGZJd2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 05:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbjGZJac (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 05:30:32 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70627423B
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 02:28:45 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6862d4a1376so1660731b3a.0
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 02:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690363725; x=1690968525;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ET5z1iXVl3TCzfyIPhSPq9r+sES1n7GH6hJTCnF+vYo=;
-        b=RgneqgkXKODRrFr78EJ2DiU2LP1auMSsEluGXDNHK2/ImK1m1wgxIc9rc0KyChzerd
-         9pp9E0d70JkoKPUeaRftr+jglcQl9qJ1NHO80UjvVHwRcDm/HyYkv/adcdLVyb0tT2RZ
-         DBfPuhO0Xzb3EkxZ8Lnv+NpBNxlgzINPxdWjI2p4gXmhxr9F42wMDqq5WIk8CWvg0ei0
-         04D2fNryYi6h/fKlwXKsAJNXxbdFzcjkeSQHK+ZzWAzpfHtAdyeZZlzM27TnNlh1u/69
-         UWlC2QlusG6aR16W+ARLMoeEnjaKWlhVg7tepMtvkY5m/QLzYLh0WRDX9uQBe16cx9gs
-         O9rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690363725; x=1690968525;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ET5z1iXVl3TCzfyIPhSPq9r+sES1n7GH6hJTCnF+vYo=;
-        b=XKErDW7RbPfAtzkDINblAWqEjmQtqLh1kabfgNVV5ylBZIxaPlOALtmJ+5boBhgiAE
-         oJ+unZZK+nCpzwD7h46Lgq4e0oY6U5Xb5OzBJlO+ZU2U5eOPLH/DC3HF8MUuRlAfb4B7
-         5Sqrg+vEt6DXGHnH0Rp0BpPQpUgLq37WZ0vsuEsxPtA1oqHNX3JOe2ezSomJ8a3WS+zL
-         Xi8fCYoTW6QjGLeRUi+9mkMVAsiImWV1/2lKfk9DiL+CS36vW5FQONDM51uKcC0ZBTvf
-         GNauvAdQbS1/CBqRSC9lDIXpGvjoEhAndU6XcrNMSAmBRLCWzxh2/EE5JADewnM6HCKp
-         zF1Q==
-X-Gm-Message-State: ABy/qLa5bhC+VUK5Lm77mytF63mjli10OUKWMZTpULKrjluZNfXsIWT8
-        1BZ1qB7EdRa7lXI1G3Uyd4HOKw==
-X-Google-Smtp-Source: APBJJlFvSUUJYrPzKxRMgKGWHa7iMtrF7iaocGD/XAPkPO20BZ2/Wf52mLvF02dnCC8LpFHDclZgZw==
-X-Received: by 2002:a17:903:41c8:b0:1bb:83ec:832 with SMTP id u8-20020a17090341c800b001bb83ec0832mr2040388ple.2.1690363724990;
-        Wed, 26 Jul 2023 02:28:44 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id bc2-20020a170902930200b001a95f632340sm12591323plb.46.2023.07.26.02.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:28:44 -0700 (PDT)
-Message-ID: <acb14ed0-b9ca-e7c9-e81b-a2db290a1b94@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:28:30 +0800
+        with ESMTP id S233736AbjGZJdI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 05:33:08 -0400
+Received: from out-36.mta0.migadu.com (out-36.mta0.migadu.com [IPv6:2001:41d0:1004:224b::24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61542122
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 02:31:43 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690363901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C9JATXkXZaN7f0jrXVOoaEMLIPnzZ4EB9BwhBVu88/k=;
+        b=BJaw31GHkPVMB5J3bFLk7nCWUXBih3Evut0vs64rGABml16vhPPP+VTCvSpnvcgPtpNdnt
+        lUE24RniQLpCmG5kFgpHNW+1PDmB/qhB9l9vhPT5YKqpl2p08nrVkD19PS1VqQI3/KFSOu
+        LvMc1Yox7zbU5EqPQ+5oAKbHUZVLA0E=
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 21/47] mm: workingset: dynamically allocate the
- mm-shadow shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH v2 43/47] mm: shrinker: add a secondary array for
+ shrinker_info::{map, nr_deferred}
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230724094354.90817-44-zhengqi.arch@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:30:53 +0800
 Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
         Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
@@ -65,30 +40,30 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
         steven.price@arm.com, cel@kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
+        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
         linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
         linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
         dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         dm-devel@redhat.com, linux-raid@vger.kernel.org,
         linux-bcache@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B421DD89-09B5-4488-BEC1-D6F88C6DE75A@linux.dev>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-22-zhengqi.arch@bytedance.com>
- <08F2140B-0684-4FB0-8FB9-CEB88882F884@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <08F2140B-0684-4FB0-8FB9-CEB88882F884@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+ <20230724094354.90817-44-zhengqi.arch@bytedance.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,36 +72,60 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 
 
-On 2023/7/26 15:13, Muchun Song wrote:
-> 
-> 
->> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->>
->> Use new APIs to dynamically allocate the mm-shadow shrinker.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->> mm/workingset.c | 26 ++++++++++++++------------
->> 1 file changed, 14 insertions(+), 12 deletions(-)
->>
->> diff --git a/mm/workingset.c b/mm/workingset.c
->> index 4686ae363000..4bc85f739b13 100644
->> --- a/mm/workingset.c
->> +++ b/mm/workingset.c
->> @@ -762,12 +762,7 @@ static unsigned long scan_shadow_nodes(struct shrinker *shrinker,
->> NULL);
->> }
->>
->> -static struct shrinker workingset_shadow_shrinker = {
->> -	.count_objects = count_shadow_nodes,
->> -	.scan_objects = scan_shadow_nodes,
->> -	.seeks = 0, /* ->count reports only fully expendable nodes */
->> -	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
->> -};
->> +static struct shrinker *workingset_shadow_shrinker;
-> 
-> 
-> Same as patch #17.
+> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> =
+wrote:
+>=20
+> Currently, we maintain two linear arrays per node per memcg, which are
+> shrinker_info::map and shrinker_info::nr_deferred. And we need to =
+resize
+> them when the shrinker_nr_max is exceeded, that is, allocate a new =
+array,
+> and then copy the old array to the new array, and finally free the old
+> array by RCU.
+>=20
+> For shrinker_info::map, we do set_bit() under the RCU lock, so we may =
+set
+> the value into the old map which is about to be freed. This may cause =
+the
+> value set to be lost. The current solution is not to copy the old map =
+when
+> resizing, but to set all the corresponding bits in the new map to 1. =
+This
+> solves the data loss problem, but bring the overhead of more pointless
+> loops while doing memcg slab shrink.
+>=20
+> For shrinker_info::nr_deferred, we will only modify it under the read =
+lock
+> of shrinker_rwsem, so it will not run concurrently with the resizing. =
+But
+> after we make memcg slab shrink lockless, there will be the same data =
+loss
+> problem as shrinker_info::map, and we can't work around it like the =
+map.
+>=20
+> For such resizable arrays, the most straightforward idea is to change =
+it
+> to xarray, like we did for list_lru [1]. We need to do xa_store() in =
+the
+> list_lru_add()-->set_shrinker_bit(), but this will cause memory
+> allocation, and the list_lru_add() doesn't accept failure. A possible
+> solution is to pre-allocate, but the location of pre-allocation is not
+> well determined.
+>=20
+> Therefore, this commit chooses to introduce a secondary array for
+> shrinker_info::{map, nr_deferred}, so that we only need to copy this
+> secondary array every time the size is resized. Then even if we get =
+the
+> old secondary array under the RCU lock, the found map and nr_deferred =
+are
+> also true, so no data is lost.
+>=20
+> [1]. =
+https://lore.kernel.org/all/20220228122126.37293-13-songmuchun@bytedance.c=
+om/
+>=20
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-OK, will do.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
 
