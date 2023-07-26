@@ -2,89 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5427D763389
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 12:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F99A76343B
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 12:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjGZK0j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 06:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
+        id S234032AbjGZKtn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 06:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjGZK0d (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 06:26:33 -0400
+        with ESMTP id S231467AbjGZKtm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 06:49:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD08D211C;
-        Wed, 26 Jul 2023 03:26:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023D8212D;
+        Wed, 26 Jul 2023 03:49:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 57FFE61A2D;
-        Wed, 26 Jul 2023 10:26:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DDF4C433C7;
-        Wed, 26 Jul 2023 10:26:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8220461A74;
+        Wed, 26 Jul 2023 10:49:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C146FC433C7;
+        Wed, 26 Jul 2023 10:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690367190;
-        bh=5KYTw7QzTyvtxBFV3dygoBH0PeFk0S7OnkeeUk9b43Y=;
+        s=k20201202; t=1690368579;
+        bh=2dfZYSb7SXGkMObcrfK4A6YGYYkg6dqmecGQRsejOiM=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ndKso9yUYsbZwpDHng42ep2CAfco3wLs2OV40nFjqGLYD9AEcWQWsW6ETt5eznwfc
-         cv1pssJER1sswKXyNjOiTQENkKxQk0VK7z2g3ch3Yi2JD1b11x0Zkl0EFgKozkvsxy
-         f1dZ8Uzp9NvZuR0ShQq2ncjDBcvWQLsdpHvv+hCoNZE8CswlcoELNBb87INDiV++T7
-         H3FxOmXTcDxptDoUUj0sqZ+IrTepfzb2qKKeU0koRPwfU0de4m8txUllhzV58rHcVD
-         p+AU8vMVOdefcjxtH+iRA3W4CG6/XXiQ3a2jG5SNH585qxa35MBMZ5O8U7Wt7Y0BFJ
-         4GDCTXheHD02g==
-Message-ID: <9b3292b65d3c63c50e671c47ed90304c4a8d1af9.camel@kernel.org>
-Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
- becomes writeable
+        b=nlKvlRJi9pgRH+6o2ty2NFubBfldMbVG92auYpu5rLnD7BHetmDU9VKYf6sT5m1Lw
+         9z8nCOyKDUhe+AxVNHBpmS6G2dD8dJzX+rJji+yaVhGIr54DxEXSQ8Naflc5EqkZXm
+         oMx3oc62nv59pQtbN4bwMHejWgL7/m3Ho4bpcELYand2g/GOfOpkZzzw8UfdxYWu0D
+         cRTsM9p1Zy07AvT/CyljCNa9RVmM27z0pUsiEqV9U73RULJVyyi4xsIH17O7pCeT7K
+         2vuopndVreRhDXzjIQrwQNhfO8nP7E7b/KPlwkbJ15nkxHodGzG9a+hw+kyXBC4p1M
+         3/8b9w+0ZBn0Q==
+Message-ID: <4d4a9a3c59ed2efe5132c01f08a7719c2ea60f04.camel@kernel.org>
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
 From:   Jeff Layton <jlayton@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
+To:     Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
         Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
         linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
         linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
@@ -96,11 +48,11 @@ Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
         linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Date:   Wed, 26 Jul 2023 06:26:23 -0400
-In-Reply-To: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+Date:   Wed, 26 Jul 2023 06:49:36 -0400
+In-Reply-To: <1da81657-2ee1-0ef3-c222-66e00d021c24@linux.alibaba.com>
 References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-         <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
-         <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+         <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+         <1da81657-2ee1-0ef3-c222-66e00d021c24@linux.alibaba.com>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
@@ -115,90 +67,157 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-07-25 at 18:39 -0700, Hugh Dickins wrote:
-> On Tue, 25 Jul 2023, Jeff Layton wrote:
+On Wed, 2023-07-26 at 17:40 +0800, Joseph Qi wrote:
 >=20
-> > Most filesystems that use the pagecache will update the mtime, ctime,
-> > and change attribute when a page becomes writeable. Add a page_mkwrite
-> > operation for tmpfs and just use it to bump the mtime, ctime and change
-> > attribute.
+> On 7/25/23 10:58 PM, Jeff Layton wrote:
+> > generic_fillattr just fills in the entire stat struct indiscriminately
+> > today, copying data from the inode. There is at least one attribute
+> > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> > and we're looking at adding more with the addition of multigrain
+> > timestamps.
 > >=20
-> > This fixes xfstest generic/080 on tmpfs.
->=20
-> Huh.  I didn't notice when this one crept into the multigrain series.
->=20
-> I'm inclined to NAK this patch: at the very least, it does not belong
-> in the series, but should be discussed separately.
->=20
-> Yes, tmpfs does not and never has used page_mkwrite, and gains some
-> performance advantage from that.  Nobody has ever asked for this
-> change before, or not that I recall.
->=20
-> Please drop it from the series: and if you feel strongly, or know
-> strong reasons why tmpfs suddenly needs to use page_mkwrite now,
-> please argue them separately.  To pass generic/080 is not enough.
->=20
-> Thanks,
-> Hugh
->=20
-
-Dropped.
-
-This was just something I noticed while testing this series. It stood
-out since I was particularly watching for timestamp-related test
-failures. I don't feel terribly strongly about it.
-
-Thanks!
-
+> > Add a request_mask argument to generic_fillattr and have most callers
+> > just pass in the value that is passed to getattr. Have other callers
+> > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> > STATX_CHANGE_COOKIE into generic_fillattr.
 > >=20
 > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > > ---
-> >  mm/shmem.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
+> >  fs/9p/vfs_inode.c       |  4 ++--
+> >  fs/9p/vfs_inode_dotl.c  |  4 ++--
+> >  fs/afs/inode.c          |  2 +-
+> >  fs/btrfs/inode.c        |  2 +-
+> >  fs/ceph/inode.c         |  2 +-
+> >  fs/coda/inode.c         |  3 ++-
+> >  fs/ecryptfs/inode.c     |  5 +++--
+> >  fs/erofs/inode.c        |  2 +-
+> >  fs/exfat/file.c         |  2 +-
+> >  fs/ext2/inode.c         |  2 +-
+> >  fs/ext4/inode.c         |  2 +-
+> >  fs/f2fs/file.c          |  2 +-
+> >  fs/fat/file.c           |  2 +-
+> >  fs/fuse/dir.c           |  2 +-
+> >  fs/gfs2/inode.c         |  2 +-
+> >  fs/hfsplus/inode.c      |  2 +-
+> >  fs/kernfs/inode.c       |  2 +-
+> >  fs/libfs.c              |  4 ++--
+> >  fs/minix/inode.c        |  2 +-
+> >  fs/nfs/inode.c          |  2 +-
+> >  fs/nfs/namespace.c      |  3 ++-
+> >  fs/ntfs3/file.c         |  2 +-
+> >  fs/ocfs2/file.c         |  2 +-
+> >  fs/orangefs/inode.c     |  2 +-
+> >  fs/proc/base.c          |  4 ++--
+> >  fs/proc/fd.c            |  2 +-
+> >  fs/proc/generic.c       |  2 +-
+> >  fs/proc/proc_net.c      |  2 +-
+> >  fs/proc/proc_sysctl.c   |  2 +-
+> >  fs/proc/root.c          |  3 ++-
+> >  fs/smb/client/inode.c   |  2 +-
+> >  fs/smb/server/smb2pdu.c | 22 +++++++++++-----------
+> >  fs/smb/server/vfs.c     |  3 ++-
+> >  fs/stat.c               | 18 ++++++++++--------
+> >  fs/sysv/itree.c         |  3 ++-
+> >  fs/ubifs/dir.c          |  2 +-
+> >  fs/udf/symlink.c        |  2 +-
+> >  fs/vboxsf/utils.c       |  2 +-
+> >  include/linux/fs.h      |  2 +-
+> >  mm/shmem.c              |  2 +-
+> >  40 files changed, 70 insertions(+), 62 deletions(-)
 > >=20
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index b154af49d2df..654d9a585820 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *v=
-mf)
-> >  	return ret;
+>=20
+> ...
+>=20
+> > diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+> > index 1b337ebce4df..8184499ae7a5 100644
+> > --- a/fs/ocfs2/file.c
+> > +++ b/fs/ocfs2/file.c
+> > @@ -1319,7 +1319,7 @@ int ocfs2_getattr(struct mnt_idmap *idmap, const =
+struct path *path,
+> >  		goto bail;
+> >  	}
+> > =20
+> > -	generic_fillattr(&nop_mnt_idmap, inode, stat);
+> > +	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
+>=20
+> For ocfs2 part, looks fine to me.
+>=20
+> Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+>=20
+> >  	/*
+> >  	 * If there is inline data in the inode, the inode will normally not
+> >  	 * have data blocks allocated (it may have an external xattr block).
+>=20
+> ...
+>=20
+> > diff --git a/fs/stat.c b/fs/stat.c
+> > index 8c2b30af19f5..062f311b5386 100644
+> > --- a/fs/stat.c
+> > +++ b/fs/stat.c
+> > @@ -29,6 +29,7 @@
+> >  /**
+> >   * generic_fillattr - Fill in the basic attributes from the inode stru=
+ct
+> >   * @idmap:	idmap of the mount the inode was found from
+> > + * @req_mask	statx request_mask
+>=20
+> s/req_mask/request_mask
+>=20
+
+Thanks. Fixed in my tree.
+
+> >   * @inode:	Inode to use as the source
+> >   * @stat:	Where to fill in the attributes
+> >   *
+> > @@ -42,8 +43,8 @@
+> >   * uid and gid filds. On non-idmapped mounts or if permission checking=
+ is to be
+> >   * performed on the raw inode simply passs @nop_mnt_idmap.
+> >   */
+> > -void generic_fillattr(struct mnt_idmap *idmap, struct inode *inode,
+> > -		      struct kstat *stat)
+> > +void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
+> > +		      struct inode *inode, struct kstat *stat)
+> >  {
+> >  	vfsuid_t vfsuid =3D i_uid_into_vfsuid(idmap, inode);
+> >  	vfsgid_t vfsgid =3D i_gid_into_vfsgid(idmap, inode);
+> > @@ -61,6 +62,12 @@ void generic_fillattr(struct mnt_idmap *idmap, struc=
+t inode *inode,
+> >  	stat->ctime =3D inode_get_ctime(inode);
+> >  	stat->blksize =3D i_blocksize(inode);
+> >  	stat->blocks =3D inode->i_blocks;
+> > +
+> > +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> > +		stat->result_mask |=3D STATX_CHANGE_COOKIE;
+> > +		stat->change_cookie =3D inode_query_iversion(inode);
+> > +	}
+> > +
 > >  }
+> >  EXPORT_SYMBOL(generic_fillattr);
 > > =20
-> > +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
-> > +{
-> > +	struct vm_area_struct *vma =3D vmf->vma;
-> > +	struct inode *inode =3D file_inode(vma->vm_file);
-> > +
-> > +	file_update_time(vma->vm_file);
-> > +	inode_inc_iversion(inode);
-> > +	return 0;
-> > +}
-> > +
-> >  unsigned long shmem_get_unmapped_area(struct file *file,
-> >  				      unsigned long uaddr, unsigned long len,
-> >  				      unsigned long pgoff, unsigned long flags)
-> > @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops =
-=3D {
+> > @@ -123,17 +130,12 @@ int vfs_getattr_nosec(const struct path *path, st=
+ruct kstat *stat,
+> >  	stat->attributes_mask |=3D (STATX_ATTR_AUTOMOUNT |
+> >  				  STATX_ATTR_DAX);
 > > =20
-> >  static const struct vm_operations_struct shmem_vm_ops =3D {
-> >  	.fault		=3D shmem_fault,
-> > +	.page_mkwrite	=3D shmem_page_mkwrite,
-> >  	.map_pages	=3D filemap_map_pages,
-> >  #ifdef CONFIG_NUMA
-> >  	.set_policy     =3D shmem_set_policy,
-> > @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm=
-_ops =3D {
+> > -	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> > -		stat->result_mask |=3D STATX_CHANGE_COOKIE;
+> > -		stat->change_cookie =3D inode_query_iversion(inode);
+> > -	}
+> > -
+> >  	idmap =3D mnt_idmap(path->mnt);
+> >  	if (inode->i_op->getattr)
+> >  		return inode->i_op->getattr(idmap, path, stat,
+> >  					    request_mask, query_flags);
 > > =20
-> >  static const struct vm_operations_struct shmem_anon_vm_ops =3D {
-> >  	.fault		=3D shmem_fault,
-> > +	.page_mkwrite	=3D shmem_page_mkwrite,
-> >  	.map_pages	=3D filemap_map_pages,
-> >  #ifdef CONFIG_NUMA
-> >  	.set_policy     =3D shmem_set_policy,
-> >=20
-> > --=20
-> > 2.41.0
+> > -	generic_fillattr(idmap, inode, stat);
+> > +	generic_fillattr(idmap, request_mask, inode, stat);
+> >  	return 0;
+> >  }
+> >  EXPORT_SYMBOL(vfs_getattr_nosec);
+>=20
+> ...
+>=20
 
 --=20
 Jeff Layton <jlayton@kernel.org>
