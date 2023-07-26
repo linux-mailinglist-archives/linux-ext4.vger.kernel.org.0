@@ -2,128 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE5B763B13
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 17:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E20763C24
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 18:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232641AbjGZPaJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 11:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S232876AbjGZQPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 12:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjGZPaI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 11:30:08 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A0268B;
-        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-58451ecf223so5360817b3.1;
-        Wed, 26 Jul 2023 08:30:03 -0700 (PDT)
+        with ESMTP id S232744AbjGZQPt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 12:15:49 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8889D2D6A
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 09:15:39 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bba04b9df3so28093605ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 09:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690385403; x=1690990203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
-        b=IfQOikjTb54JcoQOnhR/3Fq0FlEKu8EnycAFmIQLw1zLeRNxqDoNAwmyVIhZkPF/QT
-         +JKHfyxiDvW04jhJpcOFcj0C2PKdMmWCrunMR2AzxG0XfyRJJBMCaQhTRoLGmYm3IYXd
-         lGIO55xgdc1kvjTJ6XJE1yNt1XIOO0MtUoCMwigMn0OAQWsmSvhujLJ15v6B0t2yd6pw
-         X0MidQmtlMJG6RVSarnypuX/llFdlPvZ6IDlkQkBN9OSZUjnDHzhCWSbuvBlNcp7FRAP
-         sfVGXpcdfaxj9zK9FMZMTyJODEA5x5SDojiVCcamwVuuOafYQuYqurs6a8cIWKqW1bCF
-         zRVQ==
+        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1690388138; x=1690992938;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=onO9uEGHkzci8Q3HqDarTwi6NVQ5X3moP62GXfbu6bk=;
+        b=1nYqa0dULGb6vW3IHTl0gJlD/Wv5L7r4F/RAu6e5hAs7WBTwrr8oXfWC2f4wSk3EA+
+         77u7gD50gxYWfW7UUpB12GXyUI78tr0I+DUI200NLSLeAA41kNfAWafwpxxJs6g8+CAt
+         nBvSMXG8wmTQZXHDqSuAU1oadx3XW8qkhdx4vqHYao5ev4krMSdcjdVBCxTjjAeK5ry1
+         YSAECAzZhBt1rnJ+5v6YucwpcqqIcDjN4wT+lMcK/4RSTL/17owrmtbX1HNRnEQmRSQ1
+         drCBgCIvIGa0h5JR8N224zhN2NMcSyC+O2/lKRAbRWv12Pdg2LZZ0A+BQ4ELcbOlrsF0
+         9FAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690385403; x=1690990203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690388138; x=1690992938;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lrg+45f8OyZpsYrZsCtiNxFu62qT5zsFL2TVU9KzV9Y=;
-        b=G2ESgXcmeAZgIp9K1GKDJJ4qF4wwuf8kt8xqhwzMHznmcIXejYoiVFyGei4yfHc4NP
-         LvISr7TtR2akSqwbWIdDQcsjcsxhBZqlxFJu3iqxPQEmyBJ7ozuLlsAUaSPEFj2rpVRr
-         EVjyndX54eSzOvZB+Cje+L8xP+RvJYWrjfLE3f7KBPfNbkEKFTfacBP1KvRY7t+hzg17
-         LHKwGeB3vRZdyNPN5KN+uaimZutbcoSwh8C6q1KW12rl81nF48mRItwaYli8V1anOsiL
-         ShTH38TKExzEhsJcyRsSG9S2zA5iUYJpKuEc0Sj8qUKCtJj1tYEx11k/YdGAv2hVYirD
-         Sd4w==
-X-Gm-Message-State: ABy/qLbGFRo5doVjFaOdHucpLh5kj+CwB0sICi/+ZOkJSGHjk16zXged
-        L3y3N2+YKJ+Y2itt3G4Xm8iW6qPl8PYTb/aBdxI=
-X-Google-Smtp-Source: APBJJlH9c/Cm1Gn1k/bqGcIifEtT5WA6JYO4NWDRh17eGkNuN//LPGYMjb5PrsKWtVwk5jtZLub4b2CzwC+F8JFg/Zw=
-X-Received: by 2002:a81:a151:0:b0:584:5e7e:40c1 with SMTP id
- y78-20020a81a151000000b005845e7e40c1mr533351ywg.28.1690385402927; Wed, 26 Jul
- 2023 08:30:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <4919.1690365747@warthog.procyon.org.uk>
-In-Reply-To: <4919.1690365747@warthog.procyon.org.uk>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Wed, 26 Jul 2023 23:29:51 +0800
-Message-ID: <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-Subject: Re: [dm-devel] Processes hung in "D" state in ext4, mm, md and dmcrypt
-To:     David Howells <dhowells@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-ext4@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        bh=onO9uEGHkzci8Q3HqDarTwi6NVQ5X3moP62GXfbu6bk=;
+        b=RubYVlwdb2bq1Go75l5qYhrECT+p29IKgJUgUu2xLLllQGVY1hxIXWffJqCiZKee90
+         IFCt+lOOZlVnOQ2QRWw76Z4mgVHUVYwv38sydpdEsyJ6md238j2SN1Hmjnxvb2urWKjv
+         fBowwnRN0RvTg64Jw1ciB+7Ou/bPE3ryx8xEPcs2fb7VIvyXrJyn5Q0aIQRGvVpY3kux
+         cBlxDdXXjDC4Hzn1q5isBu6gZU/LHssziKIR19znObxUDjBnTdlIoc5I5M27PuZjXpft
+         2kMNTC6fqubQyd5Mv7Pr25oR5j5ushd9CDlzUHpKSRiMnXZ3JGKm22ao3vgp49ewvBpL
+         LXzg==
+X-Gm-Message-State: ABy/qLbtXgMLKz2R0Nw0lDAuwReytCmrz6UsxZ7dJN9DY8WT1PL//xJO
+        xG/PyfKzjKRnJVaj0gPfah7wL1kcavxxdRbyYD0=
+X-Google-Smtp-Source: APBJJlHMybV+h8vIEC70P7oTcJ/f2k2Yw1KSiF1vk3WdjRhJmhpy+1f0Yr2ZhMZ0nM8N4Dr0tu8qCA==
+X-Received: by 2002:a17:902:7204:b0:1b8:b41a:d4be with SMTP id ba4-20020a170902720400b001b8b41ad4bemr2425586plb.10.1690388138605;
+        Wed, 26 Jul 2023 09:15:38 -0700 (PDT)
+Received: from smtpclient.apple (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id je7-20020a170903264700b001b8b0ac2258sm13395244plb.174.2023.07.26.09.15.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 09:15:37 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/1] e2fsck: Add percent to files and blocks feature
+Date:   Wed, 26 Jul 2023 10:15:26 -0600
+Message-Id: <7023297C-8D10-4903-A0E2-7ED8B8BFA043@dilger.ca>
+References: <20230423082349.53474-2-megia.oscar@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+In-Reply-To: <20230423082349.53474-2-megia.oscar@gmail.com>
+To:     =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
+X-Mailer: iPhone Mail (20F75)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 6:02=E2=80=AFPM David Howells <dhowells@redhat.com>=
- wrote:
->
-> Hi,
->
-> With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm se=
-eing
-> a bunch of processes getting stuck in the D state on my desktop after a f=
-ew
-> hours of reading email and compiling stuff.  It's happened every day this=
- week
-> so far and I managed to grab stack traces of the stuck processes this mor=
-ning
-> (see attached).
->
-> There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a =
-raid1
-> array with two partitions with an ext4 partition on it.  md2 is similar b=
-ut
-> it's dm-crypted and ext4 is on top of that.
->
-...
+On Apr 23, 2023, at 02:25, Oscar Megia L=C3=B3pez <megia.oscar@gmail.com> wr=
+ote:
+>=20
+> =EF=BB=BFI need percentages to see how disk is occupied.
+> Used and maximum are good, but humans work better with percentages.
+>=20
+> When my linux boots,
+> I haven't enough time to remember numbers and calculate.
+>=20
+> My PC is very fast. I can only see the message for one or two seconds.
+>=20
+> If also I would see percentages for me would be perfect.
+>=20
+> I think that this feature is going to be good for everyone.
+>=20
+> Signed-off-by: Oscar Megia L=C3=B3pez <megia.oscar@gmail.com>
+> ---
+> e2fsck/unix.c | 25 +++++++++++++++++++++++--
+> 1 file changed, 23 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+> index e5b672a2..b820ca8d 100644
+> --- a/e2fsck/unix.c
+> +++ b/e2fsck/unix.c
+> @@ -350,6 +350,8 @@ static void check_if_skip(e2fsck_t ctx)
+>    int defer_check_on_battery;
+>    int broken_system_clock;
+>    time_t lastcheck;
+> +    char percent_files[9];
+> +    char percent_blocks[9];
+>=20
+>    if (ctx->flags & E2F_FLAG_PROBLEMS_FIXED)
+>        return;
+> @@ -442,14 +444,33 @@ static void check_if_skip(e2fsck_t ctx)
+>        ext2fs_mark_super_dirty(fs);
+>    }
+>=20
+> +    /* Calculate percentages */
+> +    if (fs->super->s_inodes_count > 0) {
+> +        snprintf(percent_files, sizeof(percent_files), " (%u%%) ",
+> +        ((fs->super->s_inodes_count - fs->super->s_free_inodes_count) * 1=
+00) /
+> +        fs->super->s_inodes_count);
+> +    } else {
+> +        snprintf(percent_files, sizeof(percent_files), " ");
+> +    }
 
-> =3D=3D=3D117547=3D=3D=3D
->     PID TTY      STAT   TIME COMMAND
->  117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
-> [<0>] blk_mq_get_tag+0x11e/0x2b0
-> [<0>] __blk_mq_alloc_requests+0x1bc/0x350
-> [<0>] blk_mq_submit_bio+0x2c7/0x680
-> [<0>] __submit_bio+0x8b/0x170
-> [<0>] submit_bio_noacct_nocheck+0x159/0x370
-> [<0>] __block_write_full_folio+0x1e1/0x400
-> [<0>] writepage_cb+0x1a/0x70
-> [<0>] write_cache_pages+0x144/0x3b0
-> [<0>] do_writepages+0x164/0x1e0
-> [<0>] __writeback_single_inode+0x3d/0x360
-> [<0>] writeback_sb_inodes+0x1ed/0x4b0
-> [<0>] __writeback_inodes_wb+0x4c/0xf0
-> [<0>] wb_writeback+0x298/0x310
-> [<0>] wb_workfn+0x35b/0x510
-> [<0>] process_one_work+0x1de/0x3f0
-> [<0>] worker_thread+0x51/0x390
-> [<0>] kthread+0xe5/0x120
-> [<0>] ret_from_fork+0x31/0x50
-> [<0>] ret_from_fork_asm+0x1b/0x30
+Instead of snprintf() this could just be initialized at variable declaration=
+ time:
 
-BTW, -rc3 fixes one similar issue on the above code path, so please try -rc=
-3.
+        char percent_files[8] =3D "";
 
-106397376c03 sbitmap: fix batching wakeup
+That avoids extra runtime overhead and is no less safe. (This is adjusted to=
+ compensate
+for the format change below.)
 
-Thanks,
-Ming Lei
+> +    if (ext2fs_blocks_count(fs->super) > 0) {
+> +        snprintf(percent_blocks, sizeof(percent_blocks), " (%llu%%) ",
+> +        (unsigned long long) ((ext2fs_blocks_count(fs->super) -
+> +        ext2fs_free_blocks_count(fs->super)) * 100) / ext2fs_blocks_count=
+(fs->super));
+> +    } else {
+> +        snprintf(percent_blocks, sizeof(percent_blocks), " ");
+> +    }
+
+This could similarly be set at initialization:
+
+        char percent_blocks[8] =3D "";
+
+>    /* Print the summary message when we're skipping a full check */
+> -    log_out(ctx, _("%s: clean, %u/%u files, %llu/%llu blocks"),
+> +    log_out(ctx, _("%s: clean, %u/%u%sfiles, %llu/%llu%sblocks"),
+
+This would be more readable if it left one space after each "%s" and then di=
+dn't
+include the trailing space in each string:
+
+    log_out(ctx, _("%s: clean, %u/%u%s files, %llu/%llu%s blocks"),
+
+Cheers, Andreas
+
+>        ctx->device_name,
+>        fs->super->s_inodes_count - fs->super->s_free_inodes_count,
+>        fs->super->s_inodes_count,
+> +        percent_files,
+>        (unsigned long long) ext2fs_blocks_count(fs->super) -
+>        ext2fs_free_blocks_count(fs->super),
+> -        (unsigned long long) ext2fs_blocks_count(fs->super));
+> +        (unsigned long long) ext2fs_blocks_count(fs->super),
+> +        percent_blocks);
+>    next_check =3D 100000;
+>    if (fs->super->s_max_mnt_count > 0) {
+>        next_check =3D fs->super->s_max_mnt_count - fs->super->s_mnt_count;=
+
+> --=20
+> 2.40.0
+>=20
