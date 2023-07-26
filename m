@@ -2,114 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156D9763FA2
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 21:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC8C76416B
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 23:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbjGZTau (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 15:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        id S229880AbjGZVuv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 17:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjGZTat (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 15:30:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C7010DB;
-        Wed, 26 Jul 2023 12:30:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36D6861CB1;
-        Wed, 26 Jul 2023 19:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBEC3C433C8;
-        Wed, 26 Jul 2023 19:30:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1690399847;
-        bh=RV8tXL7RQ7wnolCqR1y4PyPALTKooCyEOhzhJRXcm/I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SVgBXvcrYNhex0+1z06NCyli0sUblvDQ90P7N/xe5kJ0+Q0OeP9lBlMuWohBd599E
-         X0HwNQlpDq4CCkcsveKBraRfvaJNSyGF5bPHYv15pSAWcbsia2p99BVqHMVZ9ZvqOY
-         0doZpYRXWnSGvBupT8LtftvO3Yru9jMJIrV7gPkQ=
-Date:   Wed, 26 Jul 2023 12:30:46 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ming Lei <tom.leiming@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Song Liu <song@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-ext4@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: [dm-devel] Processes hung in "D" state in ext4, mm, md and
- dmcrypt
-Message-Id: <20230726123046.a001b6963da19ca883045271@linux-foundation.org>
-In-Reply-To: <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-References: <4919.1690365747@warthog.procyon.org.uk>
-        <CACVXFVM8rcGJu-f+6zOgY8t4KPPR0J=giYD5dnCLL8_XVo234w@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229844AbjGZVut (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 17:50:49 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836A7E78
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 14:50:47 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b89cfb4571so2136295ad.3
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 14:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690408247; x=1691013047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEVsgMhfJCo3+WMo9jBocLy7Yo6Kj93DjounOZpsoZ8=;
+        b=JImPWHdVbo7ZJgolrQI/m8aHyPEXt0Of30eNRqZAa8bdH+gsYimY42WGx7XcoqTiz/
+         wW9Ik+WwYLvLnD5860DeZxolVzNv1e8r5hy2PB9G8Or8v39vUOHg1xG0x5ibSBxqwSQm
+         MiPuxdFBcYromSZ0J+88yBmN6GQLzO1vBRM/PirC6Mu8N0CtTbAWlmODJ2ZayZ3mbWU+
+         W36vZpVaHKxdb3Qi0jq6FJZClLAUPYMkyQp6u3q/GgBhucYRY01GL6ai7O9VP/RSax8Q
+         kvBabVIWwmi62NhNBFWp4mKro1HRN/z1hYz2Kgj5+p504uztWFPMUlFllQke6DUBeF2J
+         Cn8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690408247; x=1691013047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oEVsgMhfJCo3+WMo9jBocLy7Yo6Kj93DjounOZpsoZ8=;
+        b=Qi/I5rW4YjFK1/Dl58YTtuovbcL9updIH4fK/MFwax0MY/dnkIfqbrg26v4m02Rio4
+         op0Enlma1pI5Vv3qTT1ym29BgwdSPlnw0m6y3fwaaqFzsY34jsNolf/pRBw2kPMR5T4C
+         vfj0e2QyokmDFu3+Z+LVQQYdXML0YKpeTrs8mRk2pkwtEj5YHd8alLlGFHdjK3E/5vKz
+         7FpdYpjGTcqjWtZ/Pu4GJeborhACj5Gl2sX65alsrrCXG8MTbYNFc6J+aww2niE0NTb+
+         9W5B5RsUQ2RHvMOeQ1RXCwpXXcPDhRg/cWrk+bvVjhnApoIq4D28fl6sGUkvqXIuENTu
+         tF4Q==
+X-Gm-Message-State: ABy/qLaInmgATjzD6JelIe6gpGJtgdEQ+NqkIYVnFtaCOS/0I2v0gGwg
+        zl1V2rxgIFlP6w4qglWHMjLSkA==
+X-Google-Smtp-Source: APBJJlEYMi5IrHUY78a1kRiay85JTqoZqaM8MkfAimsJL8TH5HyPPxcjiUtXy1E0Yotpel0Ii7ehpA==
+X-Received: by 2002:a17:902:f80a:b0:1bb:d048:3173 with SMTP id ix10-20020a170902f80a00b001bbd0483173mr1929140plb.61.1690408246973;
+        Wed, 26 Jul 2023 14:50:46 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id jj6-20020a170903048600b001ab39cd875csm25252plb.133.2023.07.26.14.50.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 14:50:46 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qOmP5-00AuAE-0V;
+        Thu, 27 Jul 2023 07:50:43 +1000
+Date:   Thu, 27 Jul 2023 07:50:43 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 1/7] iomap: merge iomap_seek_hole() and iomap_seek_data()
+Message-ID: <ZMGVM/BdgsjMSsIF@dread.disaster.area>
+References: <20230726102603.155522-1-hao.xu@linux.dev>
+ <20230726102603.155522-2-hao.xu@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726102603.155522-2-hao.xu@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 26 Jul 2023 23:29:51 +0800 Ming Lei <tom.leiming@gmail.com> wrote:
-
-> On Wed, Jul 26, 2023 at 6:02 PM David Howells <dhowells@redhat.com> wrote:
-> >
-> > Hi,
-> >
-> > With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm seeing
-> > a bunch of processes getting stuck in the D state on my desktop after a few
-> > hours of reading email and compiling stuff.  It's happened every day this week
-> > so far and I managed to grab stack traces of the stuck processes this morning
-> > (see attached).
-> >
-> > There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a raid1
-> > array with two partitions with an ext4 partition on it.  md2 is similar but
-> > it's dm-crypted and ext4 is on top of that.
-> >
-> ...
+On Wed, Jul 26, 2023 at 06:25:57PM +0800, Hao Xu wrote:
+> From: Hao Xu <howeyxu@tencent.com>
 > 
-> > ===117547===
-> >     PID TTY      STAT   TIME COMMAND
-> >  117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
-> > [<0>] blk_mq_get_tag+0x11e/0x2b0
-> > [<0>] __blk_mq_alloc_requests+0x1bc/0x350
-> > [<0>] blk_mq_submit_bio+0x2c7/0x680
-> > [<0>] __submit_bio+0x8b/0x170
-> > [<0>] submit_bio_noacct_nocheck+0x159/0x370
-> > [<0>] __block_write_full_folio+0x1e1/0x400
-> > [<0>] writepage_cb+0x1a/0x70
-> > [<0>] write_cache_pages+0x144/0x3b0
-> > [<0>] do_writepages+0x164/0x1e0
-> > [<0>] __writeback_single_inode+0x3d/0x360
-> > [<0>] writeback_sb_inodes+0x1ed/0x4b0
-> > [<0>] __writeback_inodes_wb+0x4c/0xf0
-> > [<0>] wb_writeback+0x298/0x310
-> > [<0>] wb_workfn+0x35b/0x510
-> > [<0>] process_one_work+0x1de/0x3f0
-> > [<0>] worker_thread+0x51/0x390
-> > [<0>] kthread+0xe5/0x120
-> > [<0>] ret_from_fork+0x31/0x50
-> > [<0>] ret_from_fork_asm+0x1b/0x30
-> 
-> BTW, -rc3 fixes one similar issue on the above code path, so please try -rc3.
-> 
-> 106397376c03 sbitmap: fix batching wakeup
+> The two functions share almost same code, merge them together.
+> No functional change in this patch.
 
-That patch really needs a Fixes:, please.  And consideration for a
--stable backport.
+No, please don't. seek data and seek hole have subtly different
+semantics and return values, and we've explicitly kept them separate
+because it's much easier to maintain them as separate functions with
+separate semantics than combine them into a single function with
+lots of non-obvious conditional behaviour.
 
-Looking at what has changed recently in sbitmap, it seems unlikely that
-106397376c03 fixes an issue that just appeared in 6.5-rcX.  But maybe
-the issue you have identified has recently become easier to hit; we'll
-see.
+The fact that the new iomap_seek() API requires a boolean "SEEK_DATA
+or SEEK_HOLE" field to indicate that the caller wants makes it clear
+that this isn't actually an improvement over explicit
+iomap_seek_data() and iomap_seek_hole() API calls.
 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
