@@ -2,198 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CC4763280
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 11:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36044763313
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jul 2023 12:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbjGZJlI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jul 2023 05:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
+        id S231163AbjGZKDV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jul 2023 06:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGZJlI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 05:41:08 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D47B100;
-        Wed, 26 Jul 2023 02:41:03 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0VoGYt9._1690364457;
-Received: from 30.221.136.164(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VoGYt9._1690364457)
-          by smtp.aliyun-inc.com;
-          Wed, 26 Jul 2023 17:40:58 +0800
-Message-ID: <1da81657-2ee1-0ef3-c222-66e00d021c24@linux.alibaba.com>
-Date:   Wed, 26 Jul 2023 17:40:57 +0800
+        with ESMTP id S229519AbjGZKDR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jul 2023 06:03:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1774BA2
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Jul 2023 03:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690365752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=QxaSGBKWwKusAWuFQg+kqDTec3ra+7FZ31YmMAcoho4=;
+        b=buMTMNTXTqlHyiQUXe2DYdexJLwZOqrEImFLll3HXoyW8Tfp4tkHMVZ2zOcDKEc7gkijGZ
+        2AbeZFm/8ZOimrGPzVxl+QJ6l+iTCHkCengLPdywnpW2BcyUSqq5OCapLa60nRGn+uNUCp
+        Hn0uzxUzZKdGPndI+f79+j8L9OrVTdU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-650-60OqMXRANEOtWuWkknBIdA-1; Wed, 26 Jul 2023 06:02:31 -0400
+X-MC-Unique: 60OqMXRANEOtWuWkknBIdA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8BCEF185A792;
+        Wed, 26 Jul 2023 10:02:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AEA43492B01;
+        Wed, 26 Jul 2023 10:02:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>
+cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-raid@vger.kernel.org,
+        dm-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: Processes hung in "D" state in ext4, mm, md and dmcrypt
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-Content-Language: en-US
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4918.1690365747.1@warthog.procyon.org.uk>
+Date:   Wed, 26 Jul 2023 11:02:27 +0100
+Message-ID: <4919.1690365747@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi,
 
+With 6.5-rc2 (6.5.0-0.rc2.20230721gitf7e3a1bafdea.20.fc39.x86_64), I'm seeing
+a bunch of processes getting stuck in the D state on my desktop after a few
+hours of reading email and compiling stuff.  It's happened every day this week
+so far and I managed to grab stack traces of the stuck processes this morning
+(see attached).
 
-On 7/25/23 10:58 PM, Jeff Layton wrote:
-> generic_fillattr just fills in the entire stat struct indiscriminately
-> today, copying data from the inode. There is at least one attribute
-> (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> and we're looking at adding more with the addition of multigrain
-> timestamps.
-> 
-> Add a request_mask argument to generic_fillattr and have most callers
-> just pass in the value that is passed to getattr. Have other callers
-> (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> STATX_CHANGE_COOKIE into generic_fillattr.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/9p/vfs_inode.c       |  4 ++--
->  fs/9p/vfs_inode_dotl.c  |  4 ++--
->  fs/afs/inode.c          |  2 +-
->  fs/btrfs/inode.c        |  2 +-
->  fs/ceph/inode.c         |  2 +-
->  fs/coda/inode.c         |  3 ++-
->  fs/ecryptfs/inode.c     |  5 +++--
->  fs/erofs/inode.c        |  2 +-
->  fs/exfat/file.c         |  2 +-
->  fs/ext2/inode.c         |  2 +-
->  fs/ext4/inode.c         |  2 +-
->  fs/f2fs/file.c          |  2 +-
->  fs/fat/file.c           |  2 +-
->  fs/fuse/dir.c           |  2 +-
->  fs/gfs2/inode.c         |  2 +-
->  fs/hfsplus/inode.c      |  2 +-
->  fs/kernfs/inode.c       |  2 +-
->  fs/libfs.c              |  4 ++--
->  fs/minix/inode.c        |  2 +-
->  fs/nfs/inode.c          |  2 +-
->  fs/nfs/namespace.c      |  3 ++-
->  fs/ntfs3/file.c         |  2 +-
->  fs/ocfs2/file.c         |  2 +-
->  fs/orangefs/inode.c     |  2 +-
->  fs/proc/base.c          |  4 ++--
->  fs/proc/fd.c            |  2 +-
->  fs/proc/generic.c       |  2 +-
->  fs/proc/proc_net.c      |  2 +-
->  fs/proc/proc_sysctl.c   |  2 +-
->  fs/proc/root.c          |  3 ++-
->  fs/smb/client/inode.c   |  2 +-
->  fs/smb/server/smb2pdu.c | 22 +++++++++++-----------
->  fs/smb/server/vfs.c     |  3 ++-
->  fs/stat.c               | 18 ++++++++++--------
->  fs/sysv/itree.c         |  3 ++-
->  fs/ubifs/dir.c          |  2 +-
->  fs/udf/symlink.c        |  2 +-
->  fs/vboxsf/utils.c       |  2 +-
->  include/linux/fs.h      |  2 +-
->  mm/shmem.c              |  2 +-
->  40 files changed, 70 insertions(+), 62 deletions(-)
-> 
+There are two blockdevs involved below, /dev/md2 and /dev/md3.  md3 is a raid1
+array with two partitions with an ext4 partition on it.  md2 is similar but
+it's dm-crypted and ext4 is on top of that.
 
-...
+David
+---
 
-> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
-> index 1b337ebce4df..8184499ae7a5 100644
-> --- a/fs/ocfs2/file.c
-> +++ b/fs/ocfs2/file.c
-> @@ -1319,7 +1319,7 @@ int ocfs2_getattr(struct mnt_idmap *idmap, const struct path *path,
->  		goto bail;
->  	}
->  
-> -	generic_fillattr(&nop_mnt_idmap, inode, stat);
-> +	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
+   1015 ?        D      0:04 [md2_raid1]
+   1074 ?        D      0:00 [jbd2/sda6-8]
+   1138 ?        D      0:00 [jbd2/md3-8]
+   1167 ?        D      0:10 [dmcrypt_write/253:0]
+   1202 ?        D      0:03 [jbd2/dm-0-8]
+ 117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
+ 121540 ?        D      0:46 [kworker/u16:10+flush-253:0]
+ 125431 pts/2    Dl+    0:00 emacs .stgit-edit.txt
+ 125469 ?        D      0:00 /usr/libexec/nmh/rcvstore +kernel
 
-For ocfs2 part, looks fine to me.
+===1015===
+    PID TTY      STAT   TIME COMMAND
+   1015 ?        D      0:04 [md2_raid1]
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_daemon_work+0x183/0x3b0
+[<0>] md_check_recovery+0x42/0x5a0
+[<0>] raid1d+0x87/0x16f0 [raid1]
+[<0>] md_thread+0xab/0x190
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
-Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+===1074===
+    PID TTY      STAT   TIME COMMAND
+   1074 ?        D      0:00 [jbd2/sda6-8]
+[<0>] jbd2_journal_commit_transaction+0x11a6/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
->  	/*
->  	 * If there is inline data in the inode, the inode will normally not
->  	 * have data blocks allocated (it may have an external xattr block).
+===1138===
+    PID TTY      STAT   TIME COMMAND
+   1138 ?        D      0:00 [jbd2/md3-8]
+[<0>] jbd2_journal_commit_transaction+0x162d/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
-...
+===1167===
+    PID TTY      STAT   TIME COMMAND
+   1167 ?        D      0:10 [dmcrypt_write/253:0]
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_unplug+0xad/0x120
+[<0>] flush_bio_list+0xf3/0x100 [raid1]
+[<0>] raid1_unplug+0x3b/0xb0 [raid1]
+[<0>] __blk_flush_plug+0xd8/0x160
+[<0>] blk_finish_plug+0x29/0x40
+[<0>] dmcrypt_write+0x132/0x140 [dm_crypt]
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 8c2b30af19f5..062f311b5386 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -29,6 +29,7 @@
->  /**
->   * generic_fillattr - Fill in the basic attributes from the inode struct
->   * @idmap:	idmap of the mount the inode was found from
-> + * @req_mask	statx request_mask
+===1202===
+    PID TTY      STAT   TIME COMMAND
+   1202 ?        D      0:03 [jbd2/dm-0-8]
+[<0>] jbd2_journal_commit_transaction+0x162d/0x1a20
+[<0>] kjournald2+0xad/0x280
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
-s/req_mask/request_mask
+===117547===
+    PID TTY      STAT   TIME COMMAND
+ 117547 ?        D      5:12 [kworker/u16:8+flush-9:3]
+[<0>] blk_mq_get_tag+0x11e/0x2b0
+[<0>] __blk_mq_alloc_requests+0x1bc/0x350
+[<0>] blk_mq_submit_bio+0x2c7/0x680
+[<0>] __submit_bio+0x8b/0x170
+[<0>] submit_bio_noacct_nocheck+0x159/0x370
+[<0>] __block_write_full_folio+0x1e1/0x400
+[<0>] writepage_cb+0x1a/0x70
+[<0>] write_cache_pages+0x144/0x3b0
+[<0>] do_writepages+0x164/0x1e0
+[<0>] __writeback_single_inode+0x3d/0x360
+[<0>] writeback_sb_inodes+0x1ed/0x4b0
+[<0>] __writeback_inodes_wb+0x4c/0xf0
+[<0>] wb_writeback+0x298/0x310
+[<0>] wb_workfn+0x35b/0x510
+[<0>] process_one_work+0x1de/0x3f0
+[<0>] worker_thread+0x51/0x390
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
->   * @inode:	Inode to use as the source
->   * @stat:	Where to fill in the attributes
->   *
-> @@ -42,8 +43,8 @@
->   * uid and gid filds. On non-idmapped mounts or if permission checking is to be
->   * performed on the raw inode simply passs @nop_mnt_idmap.
->   */
-> -void generic_fillattr(struct mnt_idmap *idmap, struct inode *inode,
-> -		      struct kstat *stat)
-> +void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
-> +		      struct inode *inode, struct kstat *stat)
->  {
->  	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, inode);
->  	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, inode);
-> @@ -61,6 +62,12 @@ void generic_fillattr(struct mnt_idmap *idmap, struct inode *inode,
->  	stat->ctime = inode_get_ctime(inode);
->  	stat->blksize = i_blocksize(inode);
->  	stat->blocks = inode->i_blocks;
-> +
-> +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
-> +		stat->result_mask |= STATX_CHANGE_COOKIE;
-> +		stat->change_cookie = inode_query_iversion(inode);
-> +	}
-> +
->  }
->  EXPORT_SYMBOL(generic_fillattr);
->  
-> @@ -123,17 +130,12 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
->  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
->  				  STATX_ATTR_DAX);
->  
-> -	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
-> -		stat->result_mask |= STATX_CHANGE_COOKIE;
-> -		stat->change_cookie = inode_query_iversion(inode);
-> -	}
-> -
->  	idmap = mnt_idmap(path->mnt);
->  	if (inode->i_op->getattr)
->  		return inode->i_op->getattr(idmap, path, stat,
->  					    request_mask, query_flags);
->  
-> -	generic_fillattr(idmap, inode, stat);
-> +	generic_fillattr(idmap, request_mask, inode, stat);
->  	return 0;
->  }
->  EXPORT_SYMBOL(vfs_getattr_nosec);
+===121540===
+    PID TTY      STAT   TIME COMMAND
+ 121540 ?        D      0:46 [kworker/u16:10+flush-253:0]
+[<0>] folio_wait_bit_common+0x13d/0x350
+[<0>] mpage_prepare_extent_to_map+0x309/0x4d0
+[<0>] ext4_do_writepages+0x25d/0xc90
+[<0>] ext4_writepages+0xad/0x180
+[<0>] do_writepages+0xcf/0x1e0
+[<0>] __writeback_single_inode+0x3d/0x360
+[<0>] writeback_sb_inodes+0x1ed/0x4b0
+[<0>] __writeback_inodes_wb+0x4c/0xf0
+[<0>] wb_writeback+0x298/0x310
+[<0>] wb_workfn+0x35b/0x510
+[<0>] process_one_work+0x1de/0x3f0
+[<0>] worker_thread+0x51/0x390
+[<0>] kthread+0xe5/0x120
+[<0>] ret_from_fork+0x31/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
 
-...
+===125431===
+    PID TTY      STAT   TIME COMMAND
+ 125431 pts/2    Dl+    0:00 emacs .stgit-edit.txt
+[<0>] jbd2_log_wait_commit+0xd8/0x140
+[<0>] ext4_sync_file+0x1cc/0x380
+[<0>] __x64_sys_fsync+0x3b/0x70
+[<0>] do_syscall_64+0x5d/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+===125469===
+    PID TTY      STAT   TIME COMMAND
+ 125469 ?        D      0:00 /usr/libexec/nmh/rcvstore +kernel
+[<0>] folio_wait_bit_common+0x13d/0x350
+[<0>] folio_wait_writeback+0x2c/0x90
+[<0>] truncate_inode_partial_folio+0x5e/0x1a0
+[<0>] truncate_inode_pages_range+0x1da/0x400
+[<0>] truncate_pagecache+0x47/0x60
+[<0>] ext4_setattr+0x685/0xba0
+[<0>] notify_change+0x1e0/0x4a0
+[<0>] do_truncate+0x98/0xf0
+[<0>] do_sys_ftruncate+0x15c/0x1b0
+[<0>] do_syscall_64+0x5d/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
