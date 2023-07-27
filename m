@@ -2,89 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B1176664C
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 10:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD78766659
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 10:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjG1IEy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 04:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
+        id S234380AbjG1IG1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 04:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbjG1IEP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 04:04:15 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2093.outbound.protection.outlook.com [40.92.98.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126C31BD9
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 01:03:48 -0700 (PDT)
+        with ESMTP id S232910AbjG1IGA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 04:06:00 -0400
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2066.outbound.protection.outlook.com [40.92.98.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507844C0F
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 01:04:57 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CxvHY0+rgFDkCle1CxeqQ1irLttVEniNpqkevEADCnZijNAWFn4F7s3BQrIMLESrCVKRblRluBEXAgr94vPyYfhz5ljWEIZl3Afjy7kmlpS7BFDZ2uN03dQ0wOOWr8Lf+AbZhohGTs4r+n6wdN/FO9xdfxYZSuEyqKwnG2VBcsiPgAH0AQ4ZgJVhts2vaePemMuWn3ka+PDa3gCXv5YVFoTZPAtYpcmt71ZYinrGE8OeMpa2jWYos82ZDGL7orxORkWfvnCzApd097EE80GoEL7rqYB3c4wFMdyjJEdog60/dVRyHEbHqyfDvSuubRcZxR6lSQC1pE1ToXjW0qMHDg==
+ b=hdmqYvYCANyphtixMfWotADosN7x7obdnV6SqFeJ5vayuD1Qrii3HosP5jZImqvedaTxPRrEYCbn0zWxMX5stMTGsCJJ4RyeI9zgXdQxb9dy7BG85ewZE8VlNzE0bWkyhQ2BupQaHkZLfkG4HJYWXy3zA2w95NLBwBgcq10+3Vphde7E7RK0MqfIxLH5Voij3QbD8cl/s8jreaB90aXG/myeIdiieytVzhZmlJs+u1uro828g37Qk927HYwYsgajSAXzbGe8p7Y6EYln60CDIBtnehI8KYrCAdKoZR8LoYs4wZn9LUiceCxfghCsUMGUjt1hy7Esx5GEjU7nyYVK2Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gGlDW+GlJvbUn0tMi6mo94mIzevKwatr+d2D2x0IBEc=;
- b=VGKsSP/8e84VUforFz5thpGlk4RkBCVmBqZjv9jsTLzN5pDz0PNP73Ggdo8/5osST9erdIBsQxFsU3Q1QcS4O1Z2QYBswPIvwEFBWfRHMMswnLyDLV2PTLVKS0zEkmnSaYgoH6cUVqKIyWKm/nL9z7GVtctnMZpcvcUxo3RetLZvLkGvPDnaUPB54j4uVEyMdfnEqBKuf2MDRi13E7hCKlZXIYqnZs5QrPyUWbLligQaJZSKQCQ1I+iAAiMpgqb1fgtCIgS25S+asr/c7jyH+3l3QhAwQ0fy9KOz9vB+Y3qYbrcR+OtH/7a0Q7ZFSF9A4UlHzF+CWiZEuAmXEGwjfw==
+ bh=HKgXeH2bl93nkvUYvStGtcqpBrITdpA8k3LS1lmGetU=;
+ b=N6rg2YYyRvoRBLu1c4Io3NlKOOHqQY5yQMMlPZKfFzhHFByYj1QI3Il6MBHhxq7xSRNl3aWFqnop6Y7lsI5g94qlDIuzfkVZ6SBX7by/nePTFsPdyUSQ6Iv6AxoXJWke2IdPPQW4RrA5Enyp33PJ9tmyErPRgAwXcBTvvyMbgIWRzPKIjDw1/agKcXsnDi7sqThkR9/7cpyBCKOoPElOVChPXGExdddFjs3k9NDDMlZ4SVqwNdg31VtV/qfDjB8725R9URHzooMHK2InTTFznb9oi7jiZb1wnr5sAwiKXM9eKaio9mr86JNoD4JYGTXsnbOeSZOuS9YAlCXzRkdxhA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gGlDW+GlJvbUn0tMi6mo94mIzevKwatr+d2D2x0IBEc=;
- b=gZiZMIVb3/fQt/puc45F8rolBCT7YdDFFYaoKPQvGZeGgFsmHKzOvO0GybUEmzUUa8Bo3zHR2/ItntDRmQ4r5rla320aPBE1+Qiz1RrD6XH6SSovS3zQK1fvHvOxxIP8UlUAhWwpi819/2GYGlJBPUrjHrpR/dmZOwx2NP+LtpOVyB9hK3rWpICpRou/sCUgNlvBrXa8vsZaEfQSxJ5SX9CAjFut3YNblH6NN0Ll6DmOrnKZbSb1npkR6U3YBTqY3Wxupxz9bahUG6EZ6VIbzMqXd3xiuJdVD+J2Z5NcZb8RT/F2MQrdvjxz9zfOiWXkrkJozXxS8YEH7skXLOpY9g==
+ bh=HKgXeH2bl93nkvUYvStGtcqpBrITdpA8k3LS1lmGetU=;
+ b=LjTRFdAC62qFyqqwE3Yv9remryHT9riLmrnZBCo3ADMLqBflhXmMLb4U6iefy6RcTiIKh3voS3mw7Q2UQdMkMIf/rxDBbmarl21QwzYHpgyU6qyBb/GOcX6H3gwQ0eNO78937UMvtZhEIKgvkzdwQ3DGe/xWGIBN4z5fUG/O04eeNkX+9Dka5BEOAmR2XqzEVyqo5IegjgS/f+7DMHgMfLcjP6f9YUgHx7r8aAV/p90sTvEtcjO6AhMDt3K4JAIvFnB7NjXA4GFRQT/t+v32YLTc/FGbOusVVScQ1ixqYGk5Q8mDL+q1y/GWo2tKgRKuCZSP+nAfomYxdnOy9ilXPA==
 Received: from OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:d7::9) by
  TYWP286MB2154.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:175::13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Fri, 28 Jul 2023 08:03:45 +0000
+ 15.20.6631.29; Fri, 28 Jul 2023 08:04:51 +0000
 Received: from OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
  ([fe80::6d37:bb31:8707:ae72]) by OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
  ([fe80::6d37:bb31:8707:ae72%4]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 08:03:45 +0000
+ 08:04:51 +0000
 From:   Bobi Jam <bobijam@hotmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Bobi Jam <bobijam@hotmail.com>
-Subject: [PATCH 1/2] ext4: optimize metadata allocation for hybrid LUNs
-Date:   Fri, 28 Jul 2023 07:45:42 +0800
-Message-ID: <OS3P286MB056789DF4EBAA7363A4346B5AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM>
+Subject: [PATCH 2/2] mke2fs: add "-E iops" to set IOPS storage group
+Date:   Fri, 28 Jul 2023 07:47:03 +0800
+Message-ID: <OS3P286MB05671A52A5472EFBDFE78FF2AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.39.3
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [aOE79NPsQMqaA1veeLQ3aIxlI1Ubn8pF]
-X-ClientProxiedBy: SI1PR02CA0001.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::15) To OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
+X-TMN:  [MxIbltF6bTqk433ZqXy1V7fW6NyRxGcC]
+X-ClientProxiedBy: SI1PR02CA0059.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::19) To OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
  (2603:1096:604:d7::9)
-X-Microsoft-Original-Message-ID: <20230727234543.223293-1-bobijam@hotmail.com>
+X-Microsoft-Original-Message-ID: <20230727234703.223305-1-bobijam@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: OS3P286MB0567:EE_|TYWP286MB2154:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad721cfd-7c86-4886-ce19-08db8f412a22
-X-MS-Exchange-SLBlob-MailProps: EgT5Wr3QDKw0QULYt1QB1fu3fpWx5VZ8WuXD9q5ftQJbd2Vsd6zs57EItn5gQ9RPYNDCvrbP/uxUa8WvYOpkuUlUtDSzD6DJ4If3gr9VwSdEZ95R2dweegccDR/Fs3agLS4DdPiMmM+GLZNrUOUDd8iAz1EfHir5vbcfM+8tpHhoNT6rZCDoyJh1gkGlS6dauiJbZRmgajaqe7uu95EHvKcnmR2XXhnIzuHp5RgbHx7Z50P+hCa2Jb2obcMvCQVOGPWZKybS1yxFOIgXcdAXNkBhtBwQglSn2f0ZWxLM3Z/sF5Am8Kd2Vik7Xf4hah/6z6RLfZPI7oMb9LVRFQspfNIWTjCquIPeab2TGGmabIBSZBM6d+SbnlTDJ22KCYY8CGq+KXmzfsoh/eTMf/SJGhfIg+D0rI64dci1F7VLqCJ7rC1LnGOtgXsZ4v9m24YeC3awP5EdbRf6L2fwNzN2VH7kwnwu8j/XRkV4iEjIEKr1benWxnwuaU2NTZjnE/g0/feE8FoQs1cYFgatYST3I+xf3ciYP+F9O274bdr07LqUzVoJUqLwuGMdIXQwjusNj5OgJ9gPxXalV7nZv1ow1kyS92UZzbaLWwefakuJ2txnXuyrFQRo7qETwnGB9M4wxWyEMEb99SrJeicrSmcWUDCocL4m103AgMSXiEwp+SPu7vUQBSwGjhz1t2VwOoGj3pPtgFe1IGQTV8nV61g4xgdKxmC5W0Td+ZQ3SyUe5F8=
+X-MS-Office365-Filtering-Correlation-Id: d2c239cc-dc30-4c18-86e3-08db8f41519b
+X-MS-Exchange-SLBlob-MailProps: AZnQBsB9XmoyETMvEuKw1oXBqTEVl4vtL1X7FRfdBlTrzQgAYnUM/6NEDWsJiqXvCw8ApBVOBCsHidKxInFu665xzb9iNavgIHeZuvNs3KRl9uLkjSs/84FZO60oAF3XKulaZ9CpNedDXvcFVHe9vbvH7rlmI+q8+01EcNnIuHvEH3KzygU43EMzYxgYbSN1JA2rsuyj6BsftnGzFX4/HaMSoUsgrOOzCeod0ve6oOXHc/ZMVy6qUh+GDv+cGJmNuplWeGKwdGy08pfNG0jQd0KDIMnZk91bUXZFxbf9KhMFERuMpDEk7aYWbskU4wxl4mdgdlUT4/k0X0QodqYn330/NUSDjrMjDq1TXCJofm4BMQASgez8nDgO/827e8ytrFlqDroHFCzGoJbX53FVNA7PZw+E6Qn71crmkq9F2IjticClCMBDlu5rrrSMEg+1mmNbRdMTzq1j8J1t/yQCXsB/WSpD8rnt3WIWEuQhNpc7faISLKdzzP+SgutgxaunIB5gm6e0q+GHp1ddf+FxMsm3Bd/3dTjrDE/144P0vVO1sqSLOeqKiTMSQTMGe2VwKAAG9SSnaCJ+kThCy2v3179T3jquRg/PUVxgQ7rOXNAhF4up/NqQ6iBwPQAIuJDHHh1XfLBueuAtEeKv4LLQUUkkSF9dfqKy92j7SPKiNKHJ7EDYUDxQj4iNVYAAczaqL8+m8mcfWeY9UAU84SA3O6ZB8D/zBvAsM8UwC8rMRt/OS7WLaRQLCsgJwyFudqvMW8+/jeDIiNk=
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m+fpt8g8ioB8/8z6HgaXetPUCC9Xao/u01hUCbEEb1jgRbbKsPHjbC8Fy/uiphlqwCLPeDpu5BwY2j+8pPi1iPggPtJOSoghpUnFCjlqfCFqpVTW84xd2wsxgdeToBwMvJVd0c18CTeYfq04yIHxHUpUpdprcoXReqMOWOHZgjDRSM5PIJM4lqq1FbJKlPHlSRtUD5+Wc+/lvKoytrFu74r1p+r3SQlTG4M107+FfteaqeGebqiG8X0h2NQWb+AOlWyEVb5EsGcuJdhQQkXSBMVZszFJ4DdgcJPHWo8gyJsyDBvDy/mWtlRvgWplX2azssvwv105vp4JTcJ/szmJtRnpdYYT3SVnFSuAmZCk14QlSSTeSFmeZWUKEA+EELKSoFEAtMv2ZR4VHGeqAA9yOJAzVu0jlYUgjgT4N0UhtCLci+FUWQV1TYwikHQiRX8dFPJk0NF5OOMbGM0+Kw6KZnjKmOccOdzMpQlaAmNRcYxlMAdKdGMKD14/6BrLeDDk1yNufwKE69t/JvEQ1oYQidVva9JqOf/Rl8kn5i9PIyKs7LdmaHzQ9FlFwmmsaw5iaGT8JEvQ3BZKNf8I1eCZ/8IHoWnDLOTZoYuKcuutchc=
+X-Microsoft-Antispam-Message-Info: /1Dg0Qc3tkhgFPEPj0y+IECmbfg3E/xCAISWoxXNeEY/X6aF8dZZSUy3fLRzPupTcTh9pGC2agAjRCOOiKgMH1h8x5th+2kUP1Z3Ek4g0WC+7oEFTvfbU5Gsw/WhVWes3wQk8LXJ7ETEkozQ+gnwO2/ILWr6grFpHkmnHavdXmEaHpDyMj/bDtE2dxa6bZOsuGohd6ViVH1ufnCEwK2zEPvHL9UIgfl9lMILgfn2161bx7ZC9T9rc2wd8TxI48u2nwIlp63vYf5posUUBvRTCRAhUjO84uleWo0LUQJaHe1WQSpHY2CiRuN9GK3NNp9hR8GBLMCeHpNfD7mkuID4JByoY5tf4xsMYAUoMsa064nYg9yh8AexuPPmilE6/uJqu24UVlmZ8jQvFqt0tF6ZlhdZpfT4Qf/hvLcROXl0CcjgxZTjIOGP7JSf1dIMkByt5r/Rx1ttG6Q7go9mpKKX5Pmb9DSJkc6DUM+jUUKnx4yoxpevbCWT9h76uWyz2b4qysR4aWVjOfujlDBzbQ8/Wafy+g8q7X+Gro48qoLTbiRUoQ2Ng1FpFvqa542lk8z/sX9kmfbYMOelPog4mUhg4LuSTqtn7tySUhCGxTdU0JCkdlXUZT2YZRL0s+npMPnl
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eIypSBrzPXX6FsGFHdhQOOgq5q4SDgnEBltc5/KeXZv81fdk8J1A+bob1IrW?=
- =?us-ascii?Q?ijnKZKQ9J/7UVr/NMLDCs48ahvUt2O/69jK7c7P/94Wv0Z3Ay0pVGcCqfvyH?=
- =?us-ascii?Q?QIV7Oo5nC1pm3CqLkchouRT+Tyae1U3LEkvoERp8mRSMg8B/dzC75KL1JEP7?=
- =?us-ascii?Q?z3YCmOAdNmIejbNx6kuqgRB9s69X1HNxKmszVY7qhDEU1sIbfoS7UchKin30?=
- =?us-ascii?Q?lbNN9oHXXALHmOx4xtcrPnrBeujhsRMdnDE4nu0h7eJCTEf/CukdSqs2OAXi?=
- =?us-ascii?Q?IvTOz80MQ7CBKza+J2ZuWut/XLpQNqoF+FZhIGEQ3p1IYjTHoriDqYK5+QTN?=
- =?us-ascii?Q?OAb4710r1jaPxsQzb02fAfQ83CM/JaS8T4TRlG1BBVlE88gVSCyVWciHMnra?=
- =?us-ascii?Q?leiMrHBpOTRQCnz/L1KIuyl2g+3z+AefXDOnbXkDoLtMLljF6wbZ30onl/xs?=
- =?us-ascii?Q?BJRVK3ZtyC21MDi42IE8TZmn4dh/Pq2VJFQT+cmS/CS4CBAHrWQNmYjAok+P?=
- =?us-ascii?Q?YEurSSHNk2Ar5l1vH2ule8acP6s4VxtdGCuaUycgBCwr1LTxKDthcOSJsTyL?=
- =?us-ascii?Q?vIRijKyn5LKxhkzLa6gtfpis3A0hjZc1C8zydJnGT/AD/mf3mKoeRxiJLK3i?=
- =?us-ascii?Q?98tDIymAnpuR6SiDqAHTkHlS8iHUSzFkw8F/cT0QO487QHJPjQ/IchndB6Xt?=
- =?us-ascii?Q?9IQvjQUWtIrzjeWH8Qr7HAvP+/XyQVp5kHOW7svBGa4Ebkye+7l6+X20ZYAB?=
- =?us-ascii?Q?vZfjYnAogoQRAkfHAtcEzXWas5YG6mzmuF4oxoYgG+xymWx3rt3Kkjtll7dR?=
- =?us-ascii?Q?ZvV/PZoJ0uFAhavSVSiSVBDOopQqD1KbcVT+cmg6e1I0Km9sjKJ0F8q5TKUr?=
- =?us-ascii?Q?f5C5feFRlBmh2O6uJn477gVW/m1mXRNHxmLOu1yu70Vz76kuUNMCnBSOBTbR?=
- =?us-ascii?Q?22pwxWwiDCqSbUXt5OUpHNTPShcVK57tAC8UdUaDjkU+zEk38Ot/eS9kUW57?=
- =?us-ascii?Q?pkgvikzqoSce9Gg/G8MGVYoImsvrjXHPtSjfEgV/8z5mTOr6L/kufJ/u55VV?=
- =?us-ascii?Q?ZOnvtYdGZxjH/E/gbvB2T+NcgbpiaPrdvNpKOSftq2U1u8DMKJV8bE7p2v4n?=
- =?us-ascii?Q?TpApdPRPVYRfQHJKKgfQmEPCGB0yqpSJXac+EyDZkQ45N2xdRuXU4oKcw5Tf?=
- =?us-ascii?Q?aIpxK1NEBelFYYSH4c42yx74sW3DBytXg/WL/w=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RBcutXwjsaf1udOKAhrSfd+PgrfP8cler7ms6uUSwA/zpfuoBnAWWD5AJpaM?=
+ =?us-ascii?Q?8s6YYU4lPSIinqozUVOG7CZFOE9HV03Mi3Me49dF+dhCXsD5IKoaq4eT15SJ?=
+ =?us-ascii?Q?nPgqZ3xhMKQW0OwgqnThe/uH/CFrInHu7re7f9Ehj+Xx2SFAKl0/OW7UNVQh?=
+ =?us-ascii?Q?D3FIdkeuSWkFgSSvQIYVKEJUj32vWruUi9DfuW3afUGS7YKSqjWObj4U0qSr?=
+ =?us-ascii?Q?XyttAG+jHIlQPGWaW22AeHbe8ZQYmPfncJxyRoMQJ8NNw864MmJ+51iLIYa9?=
+ =?us-ascii?Q?EggRsLbqnUFd9MEQABIvGfbAm+W7fr6A+F/rSf4ZThktuhNmhPAusd8177xp?=
+ =?us-ascii?Q?fALTUAjtC/XiSoVA/pnkxJU6paeEg6BZOak7Q/XlJ4/a7csuXFYrx6HkY+f+?=
+ =?us-ascii?Q?KS3kr46PX39P0I6/F1GkqPhQmw0majKTntPVaeo1tpDD12JbMCPgFFmIG/2c?=
+ =?us-ascii?Q?37CaF0XXpbNQZkkLrTrfC9jgcqHJcwLnh1FimnFQ8Mw/5pjvVRj2O8XmIIoV?=
+ =?us-ascii?Q?crAVK7g8tazmeMIo25Vrtgb+NHzlAtsnhR6AtThi6AKuCXKKZHPs2sp5Y+Lc?=
+ =?us-ascii?Q?avdITUGBibH3fdAuJMBMux7NiR3471mOSUW2qjSRF0fLl05QzefNhXV8CNB/?=
+ =?us-ascii?Q?gg23OKg5vuwagr7M9nU0IcOx4vMlF5HodsEZEhyQHWTpwNw3j5zizCQYLuPb?=
+ =?us-ascii?Q?x63zKwborQ8gXLW8eS665NY+zGKCPEhH23I9wqUOjg/6f/XVPNZO1DHlJA6c?=
+ =?us-ascii?Q?vjF74XUw9hFhkL+QtGq2Sq9FUCEvRJhTUv4MdCtR3k3BjxU0zRQ6lBPkh2sy?=
+ =?us-ascii?Q?rv+dZLgSdcOP+wcCCcL+3thVgS5SBozUDg0GTrn2hoGH5xJTt7vdUyqB73UE?=
+ =?us-ascii?Q?41gfpIbKDXc6Iryytwi8+rV5+P9jGNnSRAavVsIch7aHGogE+9/+SVvzLGZY?=
+ =?us-ascii?Q?6LcgsVCWis4Sm7VSGiyBVWUnW8glN0Wt+FLhw92N1kITKJ4HuImOKwNMe4zK?=
+ =?us-ascii?Q?YH6atcnkdQzqkMHBPgng4TcM9Xn4Ou1huTIwoeJ6ixn/7oKInAY0A2LxnXzf?=
+ =?us-ascii?Q?eNxNIxZr4j49/oc4eAglTHDouXNfppttKMp1Tg2DfthMKqK2iKgGoJhkBVsS?=
+ =?us-ascii?Q?LOV65nZ1fS5Yd+uTiFsaxzbYjDz2/PBkyT/7lvz4+0UlIUlAElnGdQrW3GA1?=
+ =?us-ascii?Q?nT2ntLNI2QBUp4XhIZlsc3cAkCSct5KJ8KMj2A=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad721cfd-7c86-4886-ce19-08db8f412a22
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2c239cc-dc30-4c18-86e3-08db8f41519b
 X-MS-Exchange-CrossTenant-AuthSource: OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 08:03:45.1177
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 08:04:51.2239
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -92,8 +92,8 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-0000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB2154
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -112,395 +112,311 @@ This would improve performance for inode and other metadata access,
 such as ls, find, e2fsck, and in general improve file access latency,
 modification, truncate, unlink, transaction commit, etc.
 
-This patch split largest free order group lists and average fragment
-size lists into other two lists for IOPS/fast storage groups, and
-cr 0 / cr 1 group scanning for metadata block allocation in following
-order:
+For mke2fs, using the sparse_super2 and packed_meta_blocks options
+places all of the static metadata (group descriptors, block/inode
+bitmaps, inode tables, journal) at the start of the device in the
+(IOPS) flash region.
 
-cr 0 on largest free order IOPS group list
-cr 1 on average fragment size IOPS group list
-cr 0 on largest free order non-IOPS group list
-cr 1 on average fragment size non-IOPS group list
-cr >= 2 perform the linear search as before
-
-Non-metadata block allocation does not allocate from the IOPS groups.
-
-Add for mke2fs an option to mark which blocks are in the IOPS region
-of storage at format time:
+Add an option to mark which blocks are in the IOPS region of storage
+at format time:
 
   -E iops=0-1024G,4096-8192G
 
 so the ext4 mballoc code can then use the EXT4_BG_IOPS flag in the
-group descriptors to decide which groups to allocate dynamic filesystem
-metadata.
+group descriptors to decide which groups to allocate dynamic
+filesystem metadata.
 
+Change-Id: I13cc2820c71737848eab8a2d6e246748258a64df
 Signed-off-by: Bobi Jam <bobijam@hotmail.com>
 ---
- fs/ext4/balloc.c  |   2 +-
- fs/ext4/ext4.h    |  12 +++++
- fs/ext4/mballoc.c | 154 ++++++++++++++++++++++++++++++++++++++++++------------
- 3 files changed, 134 insertions(+), 34 deletions(-)
+ debugfs/debugfs.c    |   2 +
+ lib/e2p/ls.c         |   4 ++
+ lib/ext2fs/ext2_fs.h |   2 +
+ misc/dumpe2fs.c      |   2 +
+ misc/mke2fs.8.in     |   8 +++
+ misc/mke2fs.c        | 150 +++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 168 insertions(+)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index c1edde8..7b1b3ec 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -739,7 +739,7 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
- 	ar.inode = inode;
- 	ar.goal = goal;
- 	ar.len = count ? *count : 1;
--	ar.flags = flags;
-+	ar.flags = flags | EXT4_MB_HINT_METADATA;
- 
- 	ret = ext4_mb_new_blocks(handle, &ar, errp);
- 	if (count)
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 8104a21..3444b6e 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -382,6 +382,7 @@ struct flex_groups {
- #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
- #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
- #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
-+#define EXT4_BG_IOPS		0x0010 /* In IOPS/fast storage */
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index 9b6321dc..81c51de1 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -515,6 +515,8 @@ void do_show_super_stats(int argc, char *argv[],
+ 			      &first, out);
+ 		print_bg_opts(current_fs, i, EXT2_BG_BLOCK_UNINIT, "Block not init",
+ 			      &first, out);
++		print_bg_opts(current_fs, i, EXT2_BG_IOPS, "IOPS",
++			      &first, out);
+ 		if (gdt_csum) {
+ 			fprintf(out, "%sChecksum 0x%04x",
+ 				first ? "           [":", ", ext2fs_bg_checksum(current_fs, i));
+diff --git a/lib/e2p/ls.c b/lib/e2p/ls.c
+index 0b74aea2..c13927c6 100644
+--- a/lib/e2p/ls.c
++++ b/lib/e2p/ls.c
+@@ -162,6 +162,10 @@ static void print_super_flags(struct ext2_super_block * s, FILE *f)
+ 		fputs("test_filesystem ", f);
+ 		flags_found++;
+ 	}
++	if (s->s_flags & EXT2_FLAGS_HAS_IOPS) {
++		fputs("iops ", f);
++		flags_found++;
++	}
+ 	if (flags_found)
+ 		fputs("\n", f);
+ 	else
+diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
+index fb69e964..ea26d356 100644
+--- a/lib/ext2fs/ext2_fs.h
++++ b/lib/ext2fs/ext2_fs.h
+@@ -223,6 +223,7 @@ struct ext4_group_desc
+ #define EXT2_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not initialized */
+ #define EXT2_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not initialized */
+ #define EXT2_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
++#define EXT2_BG_IOPS		0x0010 /* In IOPS/fast storage */
  
  /*
-  * Macro-instructions used to manage group descriptors
-@@ -1112,6 +1113,8 @@ struct ext4_inode_info {
- #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in use */
- #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test development code */
- 
+  * Data structures used by the directory indexing feature
+@@ -572,6 +573,7 @@ struct ext2_inode *EXT2_INODE(struct ext2_inode_large *large_inode)
+ #define EXT2_FLAGS_IS_SNAPSHOT		0x0010	/* This is a snapshot image */
+ #define EXT2_FLAGS_FIX_SNAPSHOT		0x0020	/* Snapshot inodes corrupted */
+ #define EXT2_FLAGS_FIX_EXCLUDE		0x0040	/* Exclude bitmaps corrupted */
 +#define EXT2_FLAGS_HAS_IOPS		0x0080	/* has IOPS storage */
-+
+ 
  /*
-  * Mount flags set via mount options or defaults
-  */
-@@ -1514,8 +1517,12 @@ struct ext4_sb_info {
- 	atomic_t s_retry_alloc_pending;
- 	struct list_head *s_mb_avg_fragment_size;
- 	rwlock_t *s_mb_avg_fragment_size_locks;
-+	struct list_head *s_avg_fragment_size_list_iops;  /* avg_frament_size for IOPS groups */
-+	rwlock_t *s_avg_fragment_size_locks_iops;
- 	struct list_head *s_mb_largest_free_orders;
- 	rwlock_t *s_mb_largest_free_orders_locks;
-+	struct list_head *s_largest_free_orders_list_iops; /* largest_free_orders for IOPS grps */
-+	rwlock_t *s_largest_free_orders_locks_iops;
+  * Mount flags
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index 7c080ed9..c6e43d3a 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -131,6 +131,8 @@ static void print_bg_opts(ext2_filsys fs, dgrp_t i)
+  		     &first);
+ 	print_bg_opt(bg_flags, EXT2_BG_INODE_ZEROED, "ITABLE_ZEROED",
+  		     &first);
++	print_bg_opt(bg_flags, EXT2_BG_IOPS, "IOPS",
++		     &first);
+ 	if (!first)
+ 		fputc(']', stdout);
+ 	fputc('\n', stdout);
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index 30f97bb5..2d1bc829 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -435,6 +435,14 @@ effect only if the
+ feature is set.   The default quota types to be initialized if this
+ option is not specified is both user and group quotas.  If the project
+ feature is enabled that project quotas will be initialized as well.
++.TP
++.BI iops= <size_range>[:<size_range>][...]
++Specify IOPS block group size range like:
++.B iops=0-1024G:4096-8192G
++So the file system can get the knowledge that which block groups to be accessed
++are on a relatively faster storage and allow the kernel block allocator to
++optimize metadata allocations onto high-IOPS storage for a hybrid flash/HDD
++devices for better performance.
+ .RE
+ .TP
+ .B \-F
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index c69efe39..ccfcf3d1 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -103,6 +103,10 @@ static __u64	offset;
+ static blk64_t journal_location = ~0LL;
+ static int	proceed_delay = -1;
+ static blk64_t	dev_size;
++blk64_t		iops_array[64];
++unsigned int	iops_size = sizeof(iops_array);
++unsigned int	iops_count = 0;
++blk64_t		*iops_range = iops_array;
  
- 	/* tunables */
- 	unsigned long s_stripe;
-@@ -3366,6 +3373,7 @@ struct ext4_group_info {
- #define EXT4_GROUP_INFO_IBITMAP_CORRUPT		\
- 	(1 << EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT)
- #define EXT4_GROUP_INFO_BBITMAP_READ_BIT	4
-+#define EXT4_GROUP_INFO_IOPS_BIT		5
- 
- #define EXT4_MB_GRP_NEED_INIT(grp)	\
- 	(test_bit(EXT4_GROUP_INFO_NEED_INIT_BIT, &((grp)->bb_state)))
-@@ -3382,6 +3390,10 @@ struct ext4_group_info {
- 	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
- #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
- 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, &((grp)->bb_state)))
-+#define EXT4_MB_GRP_TEST_IOPS(grp)	\
-+	(test_bit(EXT4_GROUP_INFO_IOPS_BIT, &((grp)->bb_state)))
-+#define EXT4_MB_GRP_SET_IOPS(grp)	\
-+	(set_bit(EXT4_GROUP_INFO_IOPS_BIT, &((grp)->bb_state)))
- 
- #define EXT4_MAX_CONTENTION		8
- #define EXT4_CONTENTION_THRESHOLD	2
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 20f67a2..6d218af 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -828,6 +828,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
- mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	rwlock_t *afs_locks;
-+	struct list_head *afs_list;
- 	int new_order;
- 
- 	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_free == 0)
-@@ -838,20 +840,23 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
- 	if (new_order == grp->bb_avg_fragment_size_order)
- 		return;
- 
-+	if (EXT4_MB_GRP_TEST_IOPS(grp)) {
-+		afs_locks = sbi->s_avg_fragment_size_locks_iops;
-+		afs_list = sbi->s_avg_fragment_size_list_iops;
-+	} else {
-+		afs_locks = sbi->s_mb_avg_fragment_size_locks;
-+		afs_list = sbi->s_mb_avg_fragment_size;
-+	}
-+
- 	if (grp->bb_avg_fragment_size_order != -1) {
--		write_lock(&sbi->s_mb_avg_fragment_size_locks[
--					grp->bb_avg_fragment_size_order]);
-+		write_lock(&afs_locks[grp->bb_avg_fragment_size_order]);
- 		list_del(&grp->bb_avg_fragment_size_node);
--		write_unlock(&sbi->s_mb_avg_fragment_size_locks[
--					grp->bb_avg_fragment_size_order]);
-+		write_unlock(&afs_locks[grp->bb_avg_fragment_size_order]);
- 	}
- 	grp->bb_avg_fragment_size_order = new_order;
--	write_lock(&sbi->s_mb_avg_fragment_size_locks[
--					grp->bb_avg_fragment_size_order]);
--	list_add_tail(&grp->bb_avg_fragment_size_node,
--		&sbi->s_mb_avg_fragment_size[grp->bb_avg_fragment_size_order]);
--	write_unlock(&sbi->s_mb_avg_fragment_size_locks[
--					grp->bb_avg_fragment_size_order]);
-+	write_lock(&afs_locks[new_order]);
-+	list_add_tail(&grp->bb_avg_fragment_size_node, &afs_list[new_order]);
-+	write_unlock(&afs_locks[new_order]);
+ static struct ext2_super_block fs_param;
+ static __u32 zero_buf[4];
+@@ -742,6 +746,54 @@ static int set_os(struct ext2_super_block *sb, char *os)
+ 	return 1;
  }
  
- /*
-@@ -863,6 +868,10 @@ static void ext4_mb_choose_next_group_cr0(struct ext4_allocation_context *ac,
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_group_info *iter, *grp;
-+	bool iops = ac->ac_flags & EXT4_MB_HINT_METADATA &&
-+		    ac->ac_sb->s_flags & EXT2_FLAGS_HAS_IOPS;
-+	rwlock_t *lfo_locks;
-+	struct list_head *lfo_list;
- 	int i;
- 
- 	if (ac->ac_status == AC_STATUS_FOUND)
-@@ -871,17 +880,25 @@ static void ext4_mb_choose_next_group_cr0(struct ext4_allocation_context *ac,
- 	if (unlikely(sbi->s_mb_stats && ac->ac_flags & EXT4_MB_CR0_OPTIMIZED))
- 		atomic_inc(&sbi->s_bal_cr0_bad_suggestions);
- 
-+	if (iops) {
-+		lfo_locks = sbi->s_largest_free_orders_locks_iops;
-+		lfo_list = sbi->s_largest_free_orders_list_iops;
-+	} else {
-+		lfo_locks = sbi->s_mb_largest_free_orders_locks;
-+		lfo_list = sbi->s_mb_largest_free_orders;
-+	}
++static int parse_range(char *p_start, char *p_end, char *p_hyphen)
++{
++	blk64_t start, end;
++	blk64_t *new_array;
 +
- 	grp = NULL;
- 	for (i = ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
--		if (list_empty(&sbi->s_mb_largest_free_orders[i]))
-+		if (list_empty(&lfo_list[i]))
- 			continue;
--		read_lock(&sbi->s_mb_largest_free_orders_locks[i]);
--		if (list_empty(&sbi->s_mb_largest_free_orders[i])) {
--			read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-+		read_lock(&lfo_locks[i]);
-+		if (list_empty(&lfo_list[i])) {
-+			read_unlock(&lfo_locks[i]);
- 			continue;
- 		}
- 		grp = NULL;
--		list_for_each_entry(iter, &sbi->s_mb_largest_free_orders[i],
-+		list_for_each_entry(iter, &lfo_list[i],
- 				    bb_largest_free_order_node) {
- 			if (sbi->s_mb_stats)
- 				atomic64_inc(&sbi->s_bal_cX_groups_considered[0]);
-@@ -890,7 +907,7 @@ static void ext4_mb_choose_next_group_cr0(struct ext4_allocation_context *ac,
- 				break;
- 			}
- 		}
--		read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-+		read_unlock(&lfo_locks[i]);
- 		if (grp)
- 			break;
- 	}
-@@ -913,6 +930,10 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_group_info *grp = NULL, *iter;
-+	bool iops = ac->ac_flags & EXT4_MB_HINT_METADATA &&
-+		    ac->ac_sb->s_flags & EXT2_FLAGS_HAS_IOPS;
-+	rwlock_t *afs_locks;
-+	struct list_head *afs_list;
- 	int i;
- 
- 	if (unlikely(ac->ac_flags & EXT4_MB_CR1_OPTIMIZED)) {
-@@ -920,16 +941,24 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- 			atomic_inc(&sbi->s_bal_cr1_bad_suggestions);
- 	}
- 
-+	if (iops) {
-+		afs_locks = sbi->s_avg_fragment_size_locks_iops;
-+		afs_list = sbi->s_avg_fragment_size_list_iops;
-+	} else {
-+		afs_locks = sbi->s_mb_avg_fragment_size_locks;
-+		afs_list = sbi->s_mb_avg_fragment_size;
-+	}
++	/**
++	 * e.g  0-1024G
++	 *      ^      ^
++	 *      |      |
++	 *   p_start  p_end
++	 */
++	end = parse_num_blocks(p_hyphen + 1, -1);
 +
- 	for (i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
- 	     i < MB_NUM_ORDERS(ac->ac_sb); i++) {
--		if (list_empty(&sbi->s_mb_avg_fragment_size[i]))
-+		if (list_empty(&afs_list[i]))
- 			continue;
--		read_lock(&sbi->s_mb_avg_fragment_size_locks[i]);
--		if (list_empty(&sbi->s_mb_avg_fragment_size[i])) {
--			read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
-+		read_lock(&afs_locks[i]);
-+		if (list_empty(&afs_list[i])) {
-+			read_unlock(&afs_locks[i]);
- 			continue;
- 		}
--		list_for_each_entry(iter, &sbi->s_mb_avg_fragment_size[i],
-+		list_for_each_entry(iter, &afs_list[i],
- 				    bb_avg_fragment_size_node) {
- 			if (sbi->s_mb_stats)
- 				atomic64_inc(&sbi->s_bal_cX_groups_considered[1]);
-@@ -938,7 +967,7 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- 				break;
- 			}
- 		}
--		read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
-+		read_unlock(&afs_locks[i]);
- 		if (grp)
- 			break;
- 	}
-@@ -947,7 +976,15 @@ static void ext4_mb_choose_next_group_cr1(struct ext4_allocation_context *ac,
- 		*group = grp->bb_group;
- 		ac->ac_flags |= EXT4_MB_CR1_OPTIMIZED;
- 	} else {
--		*new_cr = 2;
-+		if (iops) {
-+			/* cannot find proper group in IOPS storage,
-+			 * fall back to cr0 for non-IOPS groups.
-+			 */
-+			ac->ac_flags &= ~EXT4_MB_HINT_METADATA;
-+			*new_cr = 0;
-+		} else {
-+			*new_cr = 2;
++	if (!isdigit(*(p_end - 1)) && isdigit(*(p_hyphen -1))) {
++		/* copy G/M/K unit to start value */
++		*p_hyphen = *(p_end - 1);
++		p_hyphen++;
++	}
++	*p_hyphen = 0;
++
++	start = parse_num_blocks(p_start, -1);
++
++	/* add to iops_range */
++	if (iops_count == iops_size) {
++		iops_size <<= 1;
++		if (iops_size == 0) {
++			iops_size = iops_count;
++			return -E2BIG;
 +		}
- 	}
- }
- 
-@@ -1030,6 +1067,8 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
- mb_set_largest_free_order(struct super_block *sb, struct ext4_group_info *grp)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	rwlock_t *lfo_locks;
-+	struct list_head *lfo_list;
- 	int i;
- 
- 	for (i = MB_NUM_ORDERS(sb) - 1; i >= 0; i--)
-@@ -1042,21 +1081,24 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
- 		return;
- 	}
- 
-+	if (EXT4_MB_GRP_TEST_IOPS(grp)) {
-+		lfo_locks = sbi->s_largest_free_orders_locks_iops;
-+		lfo_list = sbi->s_largest_free_orders_list_iops;
-+	} else {
-+		lfo_locks = sbi->s_mb_largest_free_orders_locks;
-+		lfo_list = sbi->s_mb_largest_free_orders;
++		if (iops_range == iops_array)
++			new_array = malloc(iops_size * sizeof(blk64_t));
++		else
++			new_array = realloc(iops_range,
++					    iops_size * sizeof(blk64_t));
++		if (!new_array) {
++			iops_size >>= 1;
++			return -ENOMEM;
++		} else {
++			iops_range = new_array;
++		}
 +	}
 +
- 	if (grp->bb_largest_free_order >= 0) {
--		write_lock(&sbi->s_mb_largest_free_orders_locks[
--					      grp->bb_largest_free_order]);
-+		write_lock(&lfo_locks[grp->bb_largest_free_order]);
- 		list_del_init(&grp->bb_largest_free_order_node);
--		write_unlock(&sbi->s_mb_largest_free_orders_locks[
--					      grp->bb_largest_free_order]);
-+		write_unlock(&lfo_locks[grp->bb_largest_free_order]);
++	iops_range[iops_count++] = start;
++	iops_range[iops_count++] = end;
++
++	return 0;
++}
++
+ #define PATH_SET "PATH=/sbin"
+ 
+ static void parse_extended_opts(struct ext2_super_block *param,
+@@ -1059,6 +1111,62 @@ static void parse_extended_opts(struct ext2_super_block *param,
+ 				r_usage++;
+ 				continue;
+ 			}
++		} else if (!strcmp(token, "iops")) {
++			char *p_colon, *p_hyphen;
++			blk64_t start, end;
++
++			/* example: iops=0-1024G:4096-8192G */
++
++			if (!arg) {
++				r_usage++;
++				badopt = token;
++				continue;
++			}
++			p_colon = strchr(arg, ':');
++			while (p_colon != NULL) {
++				*p_colon = 0;
++
++				p_hyphen = strchr(arg, '-');
++				if (p_hyphen == NULL) {
++					fprintf(stderr,
++						_("error: parse iops %s\n"),
++						arg);
++					r_usage++;
++					badopt = token;
++					break;
++				}
++
++				ret = parse_range(arg, p_colon, p_hyphen);
++				if (ret < 0) {
++					fprintf(stderr,
++						_("error: parse iops %s:%d\n"),
++						arg, ret);
++					r_usage++;
++					badopt = token;
++					break;
++				}
++
++				arg = p_colon + 1;
++				p_colon = strchr(arg, ':');
++			}
++			p_hyphen = strchr(arg, '-');
++			if (p_hyphen == NULL) {
++				fprintf(stderr,
++					_("error: parse iops %s\n"), arg);
++				r_usage++;
++				badopt = token;
++				continue;
++			}
++
++			ret = parse_range(arg, arg + strlen(arg), p_hyphen);
++			if (ret	< 0) {
++				fprintf(stderr,
++					_("error: parse iops %s:%d\n"),
++					arg, ret);
++				r_usage++;
++				badopt = token;
++				continue;
++			}
+ 		} else {
+ 			r_usage++;
+ 			badopt = token;
+@@ -1085,10 +1193,13 @@ static void parse_extended_opts(struct ext2_super_block *param,
+ 			"\tnodiscard\n"
+ 			"\tencoding=<encoding>\n"
+ 			"\tencoding_flags=<flags>\n"
++			"\tiops=<iops storage size range>\n"
+ 			"\tquotatype=<quota type(s) to be enabled>\n"
+ 			"\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
+ 			badopt ? badopt : "");
+ 		free(buf);
++		if (iops_range != iops_array)
++			free(iops_range);
+ 		exit(1);
  	}
- 	grp->bb_largest_free_order = i;
- 	if (grp->bb_largest_free_order >= 0 && grp->bb_free) {
--		write_lock(&sbi->s_mb_largest_free_orders_locks[
--					      grp->bb_largest_free_order]);
--		list_add_tail(&grp->bb_largest_free_order_node,
--		      &sbi->s_mb_largest_free_orders[grp->bb_largest_free_order]);
--		write_unlock(&sbi->s_mb_largest_free_orders_locks[
--					      grp->bb_largest_free_order]);
-+		write_lock(&lfo_locks[i]);
-+		list_add_tail(&grp->bb_largest_free_order_node, &lfo_list[i]);
-+		write_unlock(&lfo_locks[i]);
- 	}
+ 	if (param->s_raid_stride &&
+@@ -2973,6 +3084,35 @@ try_user:
+ 	return 0;
  }
  
-@@ -3150,6 +3192,8 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 	INIT_LIST_HEAD(&meta_group_info[i]->bb_prealloc_list);
- 	init_rwsem(&meta_group_info[i]->alloc_sem);
- 	meta_group_info[i]->bb_free_root = RB_ROOT;
-+	if (desc->bg_flags & EXT4_BG_IOPS)
-+		EXT4_MB_GRP_SET_IOPS(meta_group_info[i]);
- 	INIT_LIST_HEAD(&meta_group_info[i]->bb_largest_free_order_node);
- 	INIT_LIST_HEAD(&meta_group_info[i]->bb_avg_fragment_size_node);
- 	meta_group_info[i]->bb_largest_free_order = -1;  /* uninit */
-@@ -3423,6 +3467,24 @@ int ext4_mb_init(struct super_block *sb)
- 		INIT_LIST_HEAD(&sbi->s_mb_avg_fragment_size[i]);
- 		rwlock_init(&sbi->s_mb_avg_fragment_size_locks[i]);
++static int ext2fs_group_in_range(ext2_filsys fs, dgrp_t group,
++				 blk64_t *array, int count)
++{
++	int i;
++	blk64_t grp_off = group * EXT2_BLOCKS_PER_GROUP(fs->super) *
++			  fs->blocksize;
++
++	for (i = 0; i < count; i += 2) {
++		if (grp_off >= array[i] && grp_off < array[i + 1])
++			return 1;
++	}
++	return 0;
++}
++
++static void ext2fs_set_iops_group(ext2_filsys fs, blk64_t *array, int count)
++{
++	dgrp_t i;
++
++	if (!array || !count)
++		return;
++
++	for (i = 0; i < fs->group_desc_count; i++) {
++		if (ext2fs_group_in_range(fs, i, array, count)) {
++			ext2fs_bg_flags_set(fs, i, EXT2_BG_IOPS);
++			ext2fs_group_desc_csum_set(fs, i);
++		}
++	}
++}
++
+ int main (int argc, char *argv[])
+ {
+ 	errcode_t	retval = 0;
+@@ -3054,6 +3194,16 @@ int main (int argc, char *argv[])
+ 			_("while setting up superblock"));
+ 		exit(1);
  	}
-+	sbi->s_avg_fragment_size_list_iops =
-+		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct list_head),
-+			      GFP_KERNEL);
-+	if (!sbi->s_avg_fragment_size_list_iops) {
-+		ret = -ENOMEM;
-+		goto out;
++
++	if (iops_range && iops_count) {
++		ext2fs_set_iops_group(fs, iops_range, iops_count);
++		fs->super->s_flags |= EXT2_FLAGS_HAS_IOPS;
++		ext2fs_mark_super_dirty(fs);
++
++		if (iops_range != iops_array)
++			free(iops_range);
 +	}
-+	sbi->s_avg_fragment_size_locks_iops =
-+		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
-+			      GFP_KERNEL);
-+	if (!sbi->s_avg_fragment_size_locks_iops) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	for (i = 0; i < MB_NUM_ORDERS(sb); i++) {
-+		INIT_LIST_HEAD(&sbi->s_avg_fragment_size_list_iops[i]);
-+		rwlock_init(&sbi->s_avg_fragment_size_locks_iops[i]);
-+	}
- 	sbi->s_mb_largest_free_orders =
- 		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct list_head),
- 			GFP_KERNEL);
-@@ -3441,6 +3503,24 @@ int ext4_mb_init(struct super_block *sb)
- 		INIT_LIST_HEAD(&sbi->s_mb_largest_free_orders[i]);
- 		rwlock_init(&sbi->s_mb_largest_free_orders_locks[i]);
- 	}
-+	sbi->s_largest_free_orders_list_iops =
-+		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct list_head),
-+			      GFP_KERNEL);
-+	if (!sbi->s_largest_free_orders_list_iops) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	sbi->s_largest_free_orders_locks_iops =
-+		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
-+			      GFP_KERNEL);
-+	if (!sbi->s_largest_free_orders_locks_iops) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	for (i = 0; i < MB_NUM_ORDERS(sb); i++) {
-+		INIT_LIST_HEAD(&sbi->s_largest_free_orders_list_iops[i]);
-+		rwlock_init(&sbi->s_largest_free_orders_locks_iops[i]);
-+	}
++
+ 	fs->progress_ops = &ext2fs_numeric_progress_ops;
  
- 	spin_lock_init(&sbi->s_md_lock);
- 	sbi->s_mb_free_pending = 0;
-@@ -3512,8 +3592,12 @@ int ext4_mb_init(struct super_block *sb)
- out:
- 	kfree(sbi->s_mb_avg_fragment_size);
- 	kfree(sbi->s_mb_avg_fragment_size_locks);
-+	kfree(sbi->s_avg_fragment_size_list_iops);
-+	kfree(sbi->s_avg_fragment_size_locks_iops);
- 	kfree(sbi->s_mb_largest_free_orders);
- 	kfree(sbi->s_mb_largest_free_orders_locks);
-+	kfree(sbi->s_largest_free_orders_list_iops);
-+	kfree(sbi->s_largest_free_orders_locks_iops);
- 	kfree(sbi->s_mb_offsets);
- 	sbi->s_mb_offsets = NULL;
- 	kfree(sbi->s_mb_maxs);
-@@ -3582,8 +3666,12 @@ int ext4_mb_release(struct super_block *sb)
- 	}
- 	kfree(sbi->s_mb_avg_fragment_size);
- 	kfree(sbi->s_mb_avg_fragment_size_locks);
-+	kfree(sbi->s_avg_fragment_size_list_iops);
-+	kfree(sbi->s_avg_fragment_size_locks_iops);
- 	kfree(sbi->s_mb_largest_free_orders);
- 	kfree(sbi->s_mb_largest_free_orders_locks);
-+	kfree(sbi->s_largest_free_orders_list_iops);
-+	kfree(sbi->s_largest_free_orders_locks_iops);
- 	kfree(sbi->s_mb_offsets);
- 	kfree(sbi->s_mb_maxs);
- 	iput(sbi->s_buddy_cache);
+ 	/* Set the error behavior */
 -- 
-1.8.3.1
+2.41.0
 
