@@ -2,190 +2,465 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC0A764892
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 09:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810A5764AC2
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 10:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbjG0H0s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Jul 2023 03:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S232388AbjG0ILe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Jul 2023 04:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233345AbjG0HZi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 03:25:38 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237A26A58
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 00:15:45 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b93fba1f62so8743751fa.1
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 00:15:45 -0700 (PDT)
+        with ESMTP id S233814AbjG0IKj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 04:10:39 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5937249CC
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 01:07:17 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686f74a8992so77088b3a.1
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 01:07:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690442143; x=1691046943;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zPB0nHDKB2MY9/V0kyarS8eAvSvUMRhf8sIhD0usjI4=;
-        b=qo4tqhEspDDtjnCz32t8XTrfteKhrIlZBunjCAvzvfGDL20CXoQPabvFXcVt6OST9q
-         PlAF9/fQWWDDr9ueU0l4Qis6wTJRDUGkwcERVoh6Y00Y4AHWeiBUZvwwv30dVk0ZT5nr
-         42K+WtJfzyC15kttd6S4iJS5JlvFX11OKKmT5AnLxbNbOvNeqXUGS+Yutmt6uWzRqsQF
-         5WRiTW/j4xOdSLXS4RYBERrs58uAxET3k4BWLUsK1cEJHSsn0gFync2kofM/rhwK4eKu
-         fWPWYUaexiCyCXDhd0hRtO22p4JHpGMLowRyLNae2idAmE2EIhEkVSo7xatSsUbBZfSw
-         4gog==
+        d=bytedance.com; s=google; t=1690445148; x=1691049948;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qdw/R1TEr1q6uUENoD+Woah5iYuWx4u9kScfP8x1rxA=;
+        b=UUJaeFKAdq/JSi5KDicB1qh4QBmRcV8RkxHtwurNfyrC9pvt0PpJjH65AQH5l7q+9C
+         LBSbbXBKaKVPiOBm5Fcd7UwqnCv/nEH/yt0y5LrhuYjiTeYJnf52fAGE42aPOuO3ed4I
+         CH7E03GStk9tqzsUMP9cj27lKTUxq4yf7rn8YSn3a1/cGCpMeTGgVRRuuMbsr0zMmRBv
+         oFevVOT5MMhRX1z1WtEnmwtuG+UoVxDf5GDWIQJoDIkeB0n3AbOwh1FoMsy9IWleLQsE
+         a2RKQ5yrgmmGdYoGmSpmONZKAmN9Gsyqp+HtxmVjQ9FehgBv4a+hpgIRjC2ZmCuobuW+
+         eCOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690442143; x=1691046943;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zPB0nHDKB2MY9/V0kyarS8eAvSvUMRhf8sIhD0usjI4=;
-        b=OA01dtLVd4PSuynM6E2HTG7seDp4UZbUIvEp0QOJxvtwbqxlzGIeguZrJushSY25uC
-         hrqNooXzJFh5VE7YzxqBqRNBsCl9UIb78DjmXXSvwulUUNzytqErCovgO7B6RamtZ9zL
-         LIh7xxsUgWfpVfoyoBGm5m2IFCV6o0qs1xARV3bKjXQYGRJh1pCs936WfDVfO+ludBTZ
-         HqHmIEeskK+R5iY4U0f5bGvgC5NJKjuj/n8Fse0W0vRtvxGa3tjnbpJrs4qYkUxwbi8y
-         yTWc8R2sPfbb2BRHi1u2Nz4LN6yfKpd/PTwgYOj8L0h5qWnop0DB0RlHbYRXFkHItWW4
-         y4Bg==
-X-Gm-Message-State: ABy/qLaFF7LQO9jiSNaw+TraoxruWljq2WAjhfzj73Vt4+6wYxy6+wcu
-        qA1HjV5t9UTXWd35IAAGzh3+NKBY3Kgljg==
-X-Google-Smtp-Source: APBJJlGAtHAJpwvQ2Q6sWZhS2HJ7sxaFR3aW3a/aFAwU8b7c9hPbaKvm+npe/N2KtYOMgOfmlZX1zA==
-X-Received: by 2002:a2e:99c7:0:b0:2b6:e9e6:b50b with SMTP id l7-20020a2e99c7000000b002b6e9e6b50bmr1075313ljj.25.1690442142502;
-        Thu, 27 Jul 2023 00:15:42 -0700 (PDT)
-Received: from torreasustufgamingpro (209.pool90-77-130.dynamic.orange.es. [90.77.130.209])
-        by smtp.gmail.com with ESMTPSA id a20-20020a05600c225400b003fbe791a0e8sm1080053wmm.0.2023.07.27.00.15.41
+        d=1e100.net; s=20221208; t=1690445148; x=1691049948;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qdw/R1TEr1q6uUENoD+Woah5iYuWx4u9kScfP8x1rxA=;
+        b=HCzBtssiYD9cE6ILjXy8H+0ttlyxRFBw9aYwVO4yli7bolX3qani8DC6GDigP+byud
+         uXIYm43nY6MRSfvMS0nkgoWuBWIltwIx8/T5IEaWhAMvxXx2svAEFM69CP2RkevNYUv3
+         fKZvtlGtua7NundOf5jdBLyWQ687ajHGM15EMzrzv7gN8HodyUf6aeG3gNj//0rqSFb9
+         ZeYxa1HiICLbHWZiRIhgSZQTdgDVbwvyhmgT5oFUZ09KiU9V4FDDDluhYCK7yR+5rOW7
+         zgRJTwO1gD91KAZYdWuCisPN5pZZ6Iz37MfttTDdZABQWJsmauvle/S5fda1laCzgHcc
+         ezLg==
+X-Gm-Message-State: ABy/qLZ7kFAV4LOkYmKArBrj031tatYEbTK7bDNM/h7x81sKUPkCi+bb
+        sZQuxoLKUDB6N1rgw9FaWH+6yQ==
+X-Google-Smtp-Source: APBJJlHb1kgnpQXfb8RS/UAhh8zGcgdqY4J3wYE+oXj/zAg8rYeLxmGzIhYoi+ua72NIH6S8sFTnXQ==
+X-Received: by 2002:a05:6a20:1595:b0:137:30db:bc1e with SMTP id h21-20020a056a20159500b0013730dbbc1emr5685837pzj.3.1690445147652;
+        Thu, 27 Jul 2023 01:05:47 -0700 (PDT)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.05.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 00:15:41 -0700 (PDT)
-From:   =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] e2fsck: Add percent to files and blocks feature
-References: <20230423082349.53474-2-megia.oscar@gmail.com>
-        <7023297C-8D10-4903-A0E2-7ED8B8BFA043@dilger.ca>
-Date:   Thu, 27 Jul 2023 09:15:14 +0200
-In-Reply-To: <7023297C-8D10-4903-A0E2-7ED8B8BFA043@dilger.ca> (Andreas
-        Dilger's message of "Wed, 26 Jul 2023 10:15:26 -0600")
-Message-ID: <878rb17rlp.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 27 Jul 2023 01:05:47 -0700 (PDT)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 00/49] use refcount+RCU method to implement lockless slab shrink
+Date:   Thu, 27 Jul 2023 16:04:13 +0800
+Message-Id: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Andreas Dilger <adilger@dilger.ca> writes:
+Hi all,
 
-> On Apr 23, 2023, at 02:25, Oscar Megia L=C3=B3pez <megia.oscar@gmail.com>=
- wrote:
->>=20
->> =EF=BB=BFI need percentages to see how disk is occupied.
->> Used and maximum are good, but humans work better with percentages.
->>=20
->> When my linux boots,
->> I haven't enough time to remember numbers and calculate.
->>=20
->> My PC is very fast. I can only see the message for one or two seconds.
->>=20
->> If also I would see percentages for me would be perfect.
->>=20
->> I think that this feature is going to be good for everyone.
->>=20
->> Signed-off-by: Oscar Megia L=C3=B3pez <megia.oscar@gmail.com>
->> ---
->> e2fsck/unix.c | 25 +++++++++++++++++++++++--
->> 1 file changed, 23 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/e2fsck/unix.c b/e2fsck/unix.c
->> index e5b672a2..b820ca8d 100644
->> --- a/e2fsck/unix.c
->> +++ b/e2fsck/unix.c
->> @@ -350,6 +350,8 @@ static void check_if_skip(e2fsck_t ctx)
->>    int defer_check_on_battery;
->>    int broken_system_clock;
->>    time_t lastcheck;
->> +    char percent_files[9];
->> +    char percent_blocks[9];
->>=20
->>    if (ctx->flags & E2F_FLAG_PROBLEMS_FIXED)
->>        return;
->> @@ -442,14 +444,33 @@ static void check_if_skip(e2fsck_t ctx)
->>        ext2fs_mark_super_dirty(fs);
->>    }
->>=20
->> +    /* Calculate percentages */
->> +    if (fs->super->s_inodes_count > 0) {
->> +        snprintf(percent_files, sizeof(percent_files), " (%u%%) ",
->> +        ((fs->super->s_inodes_count - fs->super->s_free_inodes_count) *=
- 100) /
->> +        fs->super->s_inodes_count);
->> +    } else {
->> +        snprintf(percent_files, sizeof(percent_files), " ");
->> +    }
->
-> Instead of snprintf() this could just be initialized at variable declarat=
-ion time:
->
->         char percent_files[8] =3D "";
->
-> That avoids extra runtime overhead and is no less safe. (This is adjusted=
- to compensate
-> for the format change below.)
->
+1. Background
+=============
 
-Thanks for your advice, I will apply it.
+We used to implement the lockless slab shrink with SRCU [1], but then kernel
+test robot reported -88.8% regression in stress-ng.ramfs.ops_per_sec test
+case [2], so we reverted it [3].
 
->> +    if (ext2fs_blocks_count(fs->super) > 0) {
->> +        snprintf(percent_blocks, sizeof(percent_blocks), " (%llu%%) ",
->> +        (unsigned long long) ((ext2fs_blocks_count(fs->super) -
->> +        ext2fs_free_blocks_count(fs->super)) * 100) / ext2fs_blocks_cou=
-nt(fs->super));
->> +    } else {
->> +        snprintf(percent_blocks, sizeof(percent_blocks), " ");
->> +    }
->
-> This could similarly be set at initialization:
->
->         char percent_blocks[8] =3D "";
->
+This patch series aims to re-implement the lockless slab shrink using the
+refcount+RCU method proposed by Dave Chinner [4].
 
-Thanks for your advice, I will apply it.
+[1]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
+[2]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
+[3]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
+[4]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
 
->>    /* Print the summary message when we're skipping a full check */
->> -    log_out(ctx, _("%s: clean, %u/%u files, %llu/%llu blocks"),
->> +    log_out(ctx, _("%s: clean, %u/%u%sfiles, %llu/%llu%sblocks"),
->
-> This would be more readable if it left one space after each "%s" and then=
- didn't
-> include the trailing space in each string:
->
->     log_out(ctx, _("%s: clean, %u/%u%s files, %llu/%llu%s blocks"),
->
+2. Implementation
+=================
 
-You are right. I will apply it.
+Currently, the shrinker instances can be divided into the following three types:
 
-> Cheers, Andreas
->
+a) global shrinker instance statically defined in the kernel, such as
+   workingset_shadow_shrinker.
 
-Very thanks Andreas for your advices and your time.
+b) global shrinker instance statically defined in the kernel modules, such as
+   mmu_shrinker in x86.
 
-I will apply these changes to my patch.
+c) shrinker instance embedded in other structures.
 
-Regards
-Oscar
+For case a, the memory of shrinker instance is never freed. For case b, the
+memory of shrinker instance will be freed after synchronize_rcu() when the
+module is unloaded. For case c, the memory of shrinker instance will be freed
+along with the structure it is embedded in.
 
->>        ctx->device_name,
->>        fs->super->s_inodes_count - fs->super->s_free_inodes_count,
->>        fs->super->s_inodes_count,
->> +        percent_files,
->>        (unsigned long long) ext2fs_blocks_count(fs->super) -
->>        ext2fs_free_blocks_count(fs->super),
->> -        (unsigned long long) ext2fs_blocks_count(fs->super));
->> +        (unsigned long long) ext2fs_blocks_count(fs->super),
->> +        percent_blocks);
->>    next_check =3D 100000;
->>    if (fs->super->s_max_mnt_count > 0) {
->>        next_check =3D fs->super->s_max_mnt_count - fs->super->s_mnt_coun=
-t;
->> --=20
->> 2.40.0
->>=20
+In preparation for implementing lockless slab shrink, we need to dynamically
+allocate those shrinker instances in case c, then the memory can be dynamically
+freed alone by calling kfree_rcu().
+
+This patchset adds the following new APIs for dynamically allocating shrinker,
+and add a private_data field to struct shrinker to record and get the original
+embedded structure.
+
+1. shrinker_alloc()
+2. shrinker_register()
+3. shrinker_free()
+
+In order to simplify shrinker-related APIs and make shrinker more independent of
+other kernel mechanisms, this patchset uses the above APIs to convert all
+shrinkers (including case a and b) to dynamically allocated, and then remove all
+existing APIs. This will also have another advantage mentioned by Dave Chinner:
+
+```
+The other advantage of this is that it will break all the existing out of tree
+code and third party modules using the old API and will no longer work with a
+kernel using lockless slab shrinkers. They need to break (both at the source and
+binary levels) to stop bad things from happening due to using uncoverted
+shrinkers in the new setup.
+```
+
+Then we free the shrinker by calling call_rcu(), and use rcu_read_{lock,unlock}()
+to ensure that the shrinker instance is valid. And the shrinker::refcount
+mechanism ensures that the shrinker instance will not be run again after
+unregistration. So the structure that records the pointer of shrinker instance
+can be safely freed without waiting for the RCU read-side critical section.
+
+In this way, while we implement the lockless slab shrink, we don't need to be
+blocked in unregister_shrinker() to wait RCU read-side critical section.
+
+PATCH 1: fix memory leak in binder_init()
+PATCH 2: move some shrinker-related function declarations to mm/internal.h
+PATCH 3: move shrinker-related code into a separate file
+PATCH 4: remove redundant shrinker_rwsem in debugfs operations
+PATCH 5: add infrastructure for dynamically allocating shrinker
+PATCH 6 ~ 23: dynamically allocate the shrinker instances in case a and b
+PATCH 24 ~ 42: dynamically allocate the shrinker instances in case c
+PATCH 43: remove old APIs
+PATCH 44: introduce pool_shrink_rwsem to implement private synchronize_shrinkers()
+PATCH 45: add a secondary array for shrinker_info::{map, nr_deferred}
+PATCH 46 ~ 47: implement the lockless slab shrink
+PATCH 48 ~ 49: convert shrinker_rwsem to mutex
+
+3. Testing
+==========
+
+3.1 slab shrink stress test
+---------------------------
+
+We can reproduce the down_read_trylock() hotspot through the following script:
+
+```
+
+DIR="/root/shrinker/memcg/mnt"
+
+do_create()
+{
+    mkdir -p /sys/fs/cgroup/memory/test
+    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
+    for i in `seq 0 $1`;
+    do
+        mkdir -p /sys/fs/cgroup/memory/test/$i;
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        mkdir -p $DIR/$i;
+    done
+}
+
+do_mount()
+{
+    for i in `seq $1 $2`;
+    do
+        mount -t tmpfs $i $DIR/$i;
+    done
+}
+
+do_touch()
+{
+    for i in `seq $1 $2`;
+    do
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
+    done
+}
+
+case "$1" in
+  touch)
+    do_touch $2 $3
+    ;;
+  test)
+    do_create 4000
+    do_mount 0 4000
+    do_touch 0 3000
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+```
+
+Save the above script, then run test and touch commands. Then we can use the
+following perf command to view hotspots:
+
+perf top -U -F 999
+
+1) Before applying this patchset:
+
+  40.44%  [kernel]            [k] down_read_trylock
+  17.59%  [kernel]            [k] up_read
+  13.64%  [kernel]            [k] pv_native_safe_halt
+  11.90%  [kernel]            [k] shrink_slab
+   8.21%  [kernel]            [k] idr_find
+   2.71%  [kernel]            [k] _find_next_bit
+   1.36%  [kernel]            [k] shrink_node
+   0.81%  [kernel]            [k] shrink_lruvec
+   0.80%  [kernel]            [k] __radix_tree_lookup
+   0.50%  [kernel]            [k] do_shrink_slab
+   0.21%  [kernel]            [k] list_lru_count_one
+   0.16%  [kernel]            [k] mem_cgroup_iter
+
+2) After applying this patchset:
+
+  60.17%  [kernel]           [k] shrink_slab
+  20.42%  [kernel]           [k] pv_native_safe_halt
+   3.03%  [kernel]           [k] do_shrink_slab
+   2.73%  [kernel]           [k] shrink_node
+   2.27%  [kernel]           [k] shrink_lruvec
+   2.00%  [kernel]           [k] __rcu_read_unlock
+   1.92%  [kernel]           [k] mem_cgroup_iter
+   0.98%  [kernel]           [k] __rcu_read_lock
+   0.91%  [kernel]           [k] osq_lock
+   0.63%  [kernel]           [k] mem_cgroup_calculate_protection
+   0.55%  [kernel]           [k] shrinker_put
+   0.46%  [kernel]           [k] list_lru_count_one
+
+We can see that the first perf hotspot becomes shrink_slab, which is what we
+expect.
+
+3.2 registeration and unregisteration stress test
+-------------------------------------------------
+
+Run the command below to test:
+
+stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+
+1) Before applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            735238     60.00     12.37    363.70     12253.05        1955.08
+for a 60.01s run time:
+   1440.27s available CPU time
+     12.36s user time   (  0.86%)
+    363.70s system time ( 25.25%)
+    376.06s total time  ( 26.11%)
+load average: 10.79 4.47 1.69
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+2) After applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            746698     60.00     12.45    376.16     12444.02        1921.47
+for a 60.01s run time:
+   1440.28s available CPU time
+     12.44s user time   (  0.86%)
+    376.16s system time ( 26.12%)
+    388.60s total time  ( 26.98%)
+load average: 9.01 3.85 1.49
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+We can see that the ops/s has hardly changed.
+
+This series is based on next-20230726.
+
+Comments and suggestions are welcome.
+
+Thanks,
+Qi
+
+Changelog in v2 -> v3:
+ - add the patch that [PATCH v3 07/49] depends on
+ - move some shrinker-related function declarations to mm/internal.h
+   (suggested by Muchun Song)
+ - combine shrinker_free_non_registered() and shrinker_unregister() into
+   shrinker_free() (suggested by Dave Chinner)
+ - add missing __init and fix return value in bch_btree_cache_alloc()
+   (pointed by Muchun Song)
+ - remove unnecessary WARN_ON() (pointed by Steven Price)
+ - go back to use completion to implement lockless slab shrink
+   (pointed by Dave Chinner)
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20230726.
+
+Changelog in v1 -> v2:
+ - implement the new APIs and convert all shrinkers to use it.
+   (suggested by Dave Chinner)
+ - fix UAF in PATCH [05/29] (pointed by Steven Price)
+ - add a secondary array for shrinker_info::{map, nr_deferred}
+ - re-implement the lockless slab shrink
+   (Since unifying the processing of global and memcg slab shrink needs to
+    modify the startup sequence (As I mentioned in https://lore.kernel.org/lkml/38b14080-4ce5-d300-8a0a-c630bca6806b@bytedance.com/),
+    I finally choose to process them separately.)
+ - collect Acked-bys
+
+Qi Zheng (49):
+  binder: fix memory leak in binder_init()
+  mm: move some shrinker-related function declarations to mm/internal.h
+  mm: vmscan: move shrinker-related code into a separate file
+  mm: shrinker: remove redundant shrinker_rwsem in debugfs operations
+  mm: shrinker: add infrastructure for dynamically allocating shrinker
+  kvm: mmu: dynamically allocate the x86-mmu shrinker
+  binder: dynamically allocate the android-binder shrinker
+  drm/ttm: dynamically allocate the drm-ttm_pool shrinker
+  xenbus/backend: dynamically allocate the xen-backend shrinker
+  erofs: dynamically allocate the erofs-shrinker
+  f2fs: dynamically allocate the f2fs-shrinker
+  gfs2: dynamically allocate the gfs2-glock shrinker
+  gfs2: dynamically allocate the gfs2-qd shrinker
+  NFSv4.2: dynamically allocate the nfs-xattr shrinkers
+  nfs: dynamically allocate the nfs-acl shrinker
+  nfsd: dynamically allocate the nfsd-filecache shrinker
+  quota: dynamically allocate the dquota-cache shrinker
+  ubifs: dynamically allocate the ubifs-slab shrinker
+  rcu: dynamically allocate the rcu-lazy shrinker
+  rcu: dynamically allocate the rcu-kfree shrinker
+  mm: thp: dynamically allocate the thp-related shrinkers
+  sunrpc: dynamically allocate the sunrpc_cred shrinker
+  mm: workingset: dynamically allocate the mm-shadow shrinker
+  drm/i915: dynamically allocate the i915_gem_mm shrinker
+  drm/msm: dynamically allocate the drm-msm_gem shrinker
+  drm/panfrost: dynamically allocate the drm-panfrost shrinker
+  dm: dynamically allocate the dm-bufio shrinker
+  dm zoned: dynamically allocate the dm-zoned-meta shrinker
+  md/raid5: dynamically allocate the md-raid5 shrinker
+  bcache: dynamically allocate the md-bcache shrinker
+  vmw_balloon: dynamically allocate the vmw-balloon shrinker
+  virtio_balloon: dynamically allocate the virtio-balloon shrinker
+  mbcache: dynamically allocate the mbcache shrinker
+  ext4: dynamically allocate the ext4-es shrinker
+  jbd2,ext4: dynamically allocate the jbd2-journal shrinker
+  nfsd: dynamically allocate the nfsd-client shrinker
+  nfsd: dynamically allocate the nfsd-reply shrinker
+  xfs: dynamically allocate the xfs-buf shrinker
+  xfs: dynamically allocate the xfs-inodegc shrinker
+  xfs: dynamically allocate the xfs-qm shrinker
+  zsmalloc: dynamically allocate the mm-zspool shrinker
+  fs: super: dynamically allocate the s_shrink
+  mm: shrinker: remove old APIs
+  drm/ttm: introduce pool_shrink_rwsem
+  mm: shrinker: add a secondary array for shrinker_info::{map,
+    nr_deferred}
+  mm: shrinker: make global slab shrink lockless
+  mm: shrinker: make memcg slab shrink lockless
+  mm: shrinker: hold write lock to reparent shrinker nr_deferred
+  mm: shrinker: convert shrinker_rwsem to mutex
+
+ arch/x86/kvm/mmu/mmu.c                        |  18 +-
+ drivers/android/binder.c                      |   1 +
+ drivers/android/binder_alloc.c                |  35 +-
+ drivers/android/binder_alloc.h                |   1 +
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  30 +-
+ drivers/gpu/drm/i915/i915_drv.h               |   2 +-
+ drivers/gpu/drm/msm/msm_drv.c                 |   4 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |   4 +-
+ drivers/gpu/drm/msm/msm_gem_shrinker.c        |  34 +-
+ drivers/gpu/drm/panfrost/panfrost_device.h    |   2 +-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |   6 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.h       |   2 +-
+ .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  30 +-
+ drivers/gpu/drm/ttm/ttm_pool.c                |  38 +-
+ drivers/md/bcache/bcache.h                    |   2 +-
+ drivers/md/bcache/btree.c                     |  27 +-
+ drivers/md/bcache/sysfs.c                     |   3 +-
+ drivers/md/dm-bufio.c                         |  26 +-
+ drivers/md/dm-cache-metadata.c                |   2 +-
+ drivers/md/dm-zoned-metadata.c                |  28 +-
+ drivers/md/raid5.c                            |  25 +-
+ drivers/md/raid5.h                            |   2 +-
+ drivers/misc/vmw_balloon.c                    |  38 +-
+ drivers/virtio/virtio_balloon.c               |  25 +-
+ drivers/xen/xenbus/xenbus_probe_backend.c     |  18 +-
+ fs/btrfs/super.c                              |   2 +-
+ fs/erofs/utils.c                              |  20 +-
+ fs/ext4/ext4.h                                |   2 +-
+ fs/ext4/extents_status.c                      |  22 +-
+ fs/f2fs/super.c                               |  32 +-
+ fs/gfs2/glock.c                               |  20 +-
+ fs/gfs2/main.c                                |   6 +-
+ fs/gfs2/quota.c                               |  26 +-
+ fs/gfs2/quota.h                               |   3 +-
+ fs/jbd2/journal.c                             |  27 +-
+ fs/kernfs/mount.c                             |   2 +-
+ fs/mbcache.c                                  |  23 +-
+ fs/nfs/nfs42xattr.c                           |  87 +-
+ fs/nfs/super.c                                |  20 +-
+ fs/nfsd/filecache.c                           |  22 +-
+ fs/nfsd/netns.h                               |   4 +-
+ fs/nfsd/nfs4state.c                           |  20 +-
+ fs/nfsd/nfscache.c                            |  31 +-
+ fs/proc/root.c                                |   2 +-
+ fs/quota/dquot.c                              |  18 +-
+ fs/super.c                                    |  38 +-
+ fs/ubifs/super.c                              |  22 +-
+ fs/xfs/xfs_buf.c                              |  25 +-
+ fs/xfs/xfs_buf.h                              |   2 +-
+ fs/xfs/xfs_icache.c                           |  26 +-
+ fs/xfs/xfs_mount.c                            |   4 +-
+ fs/xfs/xfs_mount.h                            |   2 +-
+ fs/xfs/xfs_qm.c                               |  26 +-
+ fs/xfs/xfs_qm.h                               |   2 +-
+ include/linux/fs.h                            |   2 +-
+ include/linux/jbd2.h                          |   2 +-
+ include/linux/memcontrol.h                    |  12 +-
+ include/linux/shrinker.h                      |  67 +-
+ kernel/rcu/tree.c                             |  22 +-
+ kernel/rcu/tree_nocb.h                        |  20 +-
+ mm/Makefile                                   |   4 +-
+ mm/huge_memory.c                              |  69 +-
+ mm/internal.h                                 |  41 +
+ mm/shrinker.c                                 | 770 ++++++++++++++++++
+ mm/shrinker_debug.c                           |  45 +-
+ mm/vmscan.c                                   | 701 ----------------
+ mm/workingset.c                               |  27 +-
+ mm/zsmalloc.c                                 |  28 +-
+ net/sunrpc/auth.c                             |  19 +-
+ 69 files changed, 1534 insertions(+), 1234 deletions(-)
+ create mode 100644 mm/shrinker.c
+
+-- 
+2.30.2
+
