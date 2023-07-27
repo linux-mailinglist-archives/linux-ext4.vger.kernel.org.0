@@ -2,70 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F07765B76
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 20:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E69765C3E
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 21:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjG0SkA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Jul 2023 14:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
+        id S231334AbjG0Tl2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Jul 2023 15:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG0Sj7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 14:39:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBE82D5D;
-        Thu, 27 Jul 2023 11:39:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8394821A6C;
-        Thu, 27 Jul 2023 18:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690483197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8/V8iHGHSv+JkjaulJJfd0u7+FldJFTn2B4741bG7s=;
-        b=pY7xJfduW/6AevRW1gpBnw2+o/lalqgiGdpIpgb8a36fV0VPJQbFJpeKD/+iHajpAxFQoZ
-        WxDrI+mh2W7AghNhOiiYqd00cY2hnkBeuUtKKh3EqFU4K2blkRL6eM/DJRuF30KmLelK8Z
-        cAJ69xSHsw1KGSoZ/V3fdghqT55UXFI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690483197;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8/V8iHGHSv+JkjaulJJfd0u7+FldJFTn2B4741bG7s=;
-        b=ZLBm2/R+T5G/C7PnCLDJwK+SOfa4pb3gmcixk2m0cqwJVAMWXz9y7botWgDEYF2IHH2wph
-        Qjor1waHfaUejSCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D579138E5;
-        Thu, 27 Jul 2023 18:39:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id N016Cf25wmTfCQAAMHmgww
-        (envelope-from <krisman@suse.de>); Thu, 27 Jul 2023 18:39:57 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     "Theodore Ts'o" <tytso@mit.edu>
+        with ESMTP id S231359AbjG0Tl2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 15:41:28 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFE92D57
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 12:41:26 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-115-64.bstnma.fios.verizon.net [173.48.115.64])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36RJf3O0011710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 15:41:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690486865; bh=tz9uDfs6x3woAC8m0CkGKUI4YE1GEN19wLcnCAZOmDw=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=It93TSp9L8wmstJLNCNTuAY5F9XA33MfVDdDuin7qGEU7Z1pdbkb7Wi8DTEerb91b
+         5RUCBvW6KEGb1NP56fho0ANmvHGN/2GLSHW7LdnapAg1oA8TTlGolMOswnkL6AQFUd
+         vRBVD7JvntP5y/H1d0dh+uF5UW+E7Khk3ghokHmnOkADEU6ecU3YAu/uWO0tCMMcKs
+         BVBZRsaJIri2VAjngUhGkhDqxZD8V9tnlLVu3LL/ZFd/MI+wiedOYssjhcnhbFWISf
+         9npS4Oy8x1mcuf8CLcc779ImSxiGWu4oMHFSO/2FPHFDk1BftxWejYODL+x2fWnQSu
+         4Y1X77ku0GlVg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 5951E15C04EF; Thu, 27 Jul 2023 15:41:03 -0400 (EDT)
+Date:   Thu, 27 Jul 2023 15:41:03 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
 Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, ebiggers@kernel.org,
         jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [PATCH v4 0/7] Support negative dentries on case-insensitive
  ext4 and f2fs
-Organization: SUSE
+Message-ID: <20230727194103.GJ30264@mit.edu>
 References: <20230727172843.20542-1-krisman@suse.de>
-        <20230727181339.GH30264@mit.edu>
-Date:   Thu, 27 Jul 2023 14:39:55 -0400
-In-Reply-To: <20230727181339.GH30264@mit.edu> (Theodore Ts'o's message of
-        "Thu, 27 Jul 2023 14:13:39 -0400")
-Message-ID: <87cz0d2o78.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+ <20230727181339.GH30264@mit.edu>
+ <87cz0d2o78.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87cz0d2o78.fsf@suse.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,33 +57,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+On Thu, Jul 27, 2023 at 02:39:55PM -0400, Gabriel Krisman Bertazi wrote:
+> > Also, Christian, I notice one of the five VFS patches in the series
+> > has your Reviewed-by tag, but not the others?  Is that because you
+> > haven't had a chance to make a final determination on those patches,
+> > or you have outstanding comments still to be addressed?
+> 
+> I'm not sure if I missed Christian's tag in a previous iteration. I
+> looked through my archive and didn't find it. Unless I'm mistaken, I
+> don't think I have any r-b from him here yet.
 
-> On Thu, Jul 27, 2023 at 01:28:36PM -0400, Gabriel Krisman Bertazi wrote:
->> This is the v4 of the negative dentry support on case-insensitive
->> directories.  It doesn't have any functional changes from v1. It applies
->> Eric's comments to bring the flags check closet together, improve the
->> documentation and improve comments in the code.  I also relooked at the
->> locks to ensure the inode read lock is indeed enough in the lookup_slow
->> path.
->
-> Al, Christian, any thoughts or preferences for how we should handle
-> this patch series?  I'm willing to take it through the ext4 tree, but
-> since it has vfs, ext4, and f2fs changes (and the bulk of the changes
-> are in the vfs), perhaps it should go through the vfs tree?
->
-> Also, Christian, I notice one of the five VFS patches in the series
-> has your Reviewed-by tag, but not the others?  Is that because you
-> haven't had a chance to make a final determination on those patches,
-> or you have outstanding comments still to be addressed?
+Ah, right.  I looked back and I'm not sure why I thought he had signed
+off one of them; I must have hallucinated it....
 
-Hi Ted,
-
-Thanks for helping push it forward!
-
-I'm not sure if I missed Christian's tag in a previous iteration. I
-looked through my archive and didn't find it. Unless I'm mistaken, I
-don't think I have any r-b from him here yet.
-
--- 
-Gabriel Krisman Bertazi
+							- Ted
