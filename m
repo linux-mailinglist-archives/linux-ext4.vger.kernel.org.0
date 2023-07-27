@@ -2,70 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BD2765A35
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 19:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C350765B3B
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jul 2023 20:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbjG0R3H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Jul 2023 13:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
+        id S230041AbjG0SOJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Jul 2023 14:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232394AbjG0R3C (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 13:29:02 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3AD2D67;
-        Thu, 27 Jul 2023 10:29:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CB67D1F891;
-        Thu, 27 Jul 2023 17:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690478939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6/tW1jwjtYiYuyuYvkAhhibnCktQlXT3ch84n1xLpug=;
-        b=T5+9oXZM7VOYWkbVVSZ+cRiransKqUWFd2gr/Ax2T1XFDJWyi/5dbpmunhfCttK3UgBkfS
-        ZZG4E93MFr6PIGLl8K8XrMMlUpLxFRswWGEEI/U7cvH/EmSxB9Zs7t3TmE6DXJG26RU7Q4
-        hmKDkPLjLhi2gWewEWzcz3Ooi6tNtGo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690478939;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6/tW1jwjtYiYuyuYvkAhhibnCktQlXT3ch84n1xLpug=;
-        b=SUMBGdvOPU1uHLgfSiOvSD5GXQd4vwaVukDnFicXj8AZb+HA8GWxYGiqW3pNhbMz+JA/zV
-        0AwSo96ss7oJHBCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 939A213902;
-        Thu, 27 Jul 2023 17:28:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1ylWHlupwmTdaAAAMHmgww
-        (envelope-from <krisman@suse.de>); Thu, 27 Jul 2023 17:28:59 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        ebiggers@kernel.org, jaegeuk@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@suse.de>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v4 7/7] f2fs: Enable negative dentries on case-insensitive lookup
-Date:   Thu, 27 Jul 2023 13:28:43 -0400
-Message-ID: <20230727172843.20542-8-krisman@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230727172843.20542-1-krisman@suse.de>
+        with ESMTP id S230395AbjG0SOF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Jul 2023 14:14:05 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B2930E4
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Jul 2023 11:14:04 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-115-64.bstnma.fios.verizon.net [173.48.115.64])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36RIDdNJ032404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 14:13:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690481621; bh=YhV95XsKE5ygKImXHE1eq93G7xXd76r7xSZbt1Eo2yM=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=Jk0wiFKtbRC5O3WJWjnZ2xh+xyCKHrTjzINuGBBeD8UVxpWB8GV44VbRpWwgLz0qo
+         ejRW0dZrPurHOSBaYdlvb0JS1/cwU8SRMjF+jexEYelgK2JklChrQfMebrl044UnRW
+         6q2UPLMYTpdTcFMbVAK4NvzHAyB4+sbOOdc4z5U7CWXEpf5w24hu5ziSqNy24pBphd
+         mB2nr87xwE3PHYrVxZKzv0GIoJ86UlTyBu69wdfMBiSsGBgdeKDf7ydGLPtAM9Sxw4
+         ilCU/kBrrs5nqJ+acgWcdOOF17qi7JfXWlGTOEpVJ0aHmFwy/b5ghndVr6hHp8pfbg
+         jDoMewJBrFQMQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 30B1A15C04EF; Thu, 27 Jul 2023 14:13:39 -0400 (EDT)
+Date:   Thu, 27 Jul 2023 14:13:39 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, ebiggers@kernel.org,
+        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v4 0/7] Support negative dentries on case-insensitive
+ ext4 and f2fs
+Message-ID: <20230727181339.GH30264@mit.edu>
 References: <20230727172843.20542-1-krisman@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727172843.20542-1-krisman@suse.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,72 +55,24 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Thu, Jul 27, 2023 at 01:28:36PM -0400, Gabriel Krisman Bertazi wrote:
+> This is the v4 of the negative dentry support on case-insensitive
+> directories.  It doesn't have any functional changes from v1. It applies
+> Eric's comments to bring the flags check closet together, improve the
+> documentation and improve comments in the code.  I also relooked at the
+> locks to ensure the inode read lock is indeed enough in the lookup_slow
+> path.
 
-Instead of invalidating negative dentries during case-insensitive
-lookups, mark them as such and let them be added to the dcache.
-d_ci_revalidate is able to properly filter them out if necessary based
-on the dentry casefold flag.
+Al, Christian, any thoughts or preferences for how we should handle
+this patch series?  I'm willing to take it through the ext4 tree, but
+since it has vfs, ext4, and f2fs changes (and the bulk of the changes
+are in the vfs), perhaps it should go through the vfs tree?
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Also, Christian, I notice one of the five VFS patches in the series
+has your Reviewed-by tag, but not the others?  Is that because you
+haven't had a chance to make a final determination on those patches,
+or you have outstanding comments still to be addressed?
 
----
-Changes since v2:
-  - Move dentry flag set closer to fscrypt code (Eric)
----
- fs/f2fs/namei.c | 25 ++++---------------------
- 1 file changed, 4 insertions(+), 21 deletions(-)
+Cheers,
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index bee0568888da..fef8e2e77f75 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -533,6 +533,10 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 
- 	err = f2fs_prepare_lookup(dir, dentry, &fname);
- 	generic_set_encrypted_ci_d_ops(dentry);
-+
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
-+		d_set_casefold_lookup(dentry);
-+
- 	if (err == -ENOENT)
- 		goto out_splice;
- 	if (err)
-@@ -578,17 +582,6 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
--		/* Eventually we want to call d_add_ci(dentry, NULL)
--		 * for negative dentries in the encoding case as
--		 * well.  For now, prevent the negative dentry
--		 * from being cached.
--		 */
--		trace_f2fs_lookup_end(dir, dentry, ino, err);
--		return NULL;
--	}
--#endif
- 	new = d_splice_alias(inode, dentry);
- 	trace_f2fs_lookup_end(dir, !IS_ERR_OR_NULL(new) ? new : dentry,
- 				ino, IS_ERR(new) ? PTR_ERR(new) : err);
-@@ -641,16 +634,6 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 	f2fs_delete_entry(de, page, dir, inode);
- 	f2fs_unlock_op(sbi);
- 
--#if IS_ENABLED(CONFIG_UNICODE)
--	/* VFS negative dentries are incompatible with Encoding and
--	 * Case-insensitiveness. Eventually we'll want avoid
--	 * invalidating the dentries here, alongside with returning the
--	 * negative dentries at f2fs_lookup(), when it is better
--	 * supported by the VFS for the CI case.
--	 */
--	if (IS_CASEFOLDED(dir))
--		d_invalidate(dentry);
--#endif
- 	if (IS_DIRSYNC(dir))
- 		f2fs_sync_fs(sbi->sb, 1);
- fail:
--- 
-2.41.0
-
+					- Ted
