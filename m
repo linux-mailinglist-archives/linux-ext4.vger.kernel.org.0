@@ -2,74 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F3C7670F2
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 17:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25FC767447
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 20:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbjG1PtF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 11:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S235875AbjG1SKl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 14:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234149AbjG1PtE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 11:49:04 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB9CE0;
-        Fri, 28 Jul 2023 08:49:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5EB981F8A3;
-        Fri, 28 Jul 2023 15:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690559342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WraNl6n1+7jI6xXHbPsuy6St/2gdjjWwknimz9pA0c4=;
-        b=NOjZQExpGN1h+BnjL4x/+zDY7xA/osu0t+Eb/ODtkzqlxS/WNF212zks42/FQL97++dGXy
-        X7VSMRJQi5ZEJVgf2DrPMSWQ7HHP8DedqN0WL8SzC0yqB+VnwCC/VxcOlLNjKVKBlJye81
-        5gMZeYJknfsnejRgrb25EMm/2XSeBWE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690559342;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WraNl6n1+7jI6xXHbPsuy6St/2gdjjWwknimz9pA0c4=;
-        b=OytHCysNU0rLyHfQ/8nppZIFxwhUdNsbC4LiV4pWZDlBg0cs96Gh0PM+XI5/WsTYo82F7m
-        2oZWSNEh6AiRh8Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28FA9133F7;
-        Fri, 28 Jul 2023 15:49:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MeSBBG7jw2SRTQAAMHmgww
-        (envelope-from <krisman@suse.de>); Fri, 28 Jul 2023 15:49:02 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, tytso@mit.edu, ebiggers@kernel.org,
-        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v4 1/7] fs: Expose name under lookup to d_revalidate hook
-Organization: SUSE
-References: <20230727172843.20542-1-krisman@suse.de>
-        <20230727172843.20542-2-krisman@suse.de>
-        <20230728-unrentabel-volumen-1500701f2524@brauner>
-Date:   Fri, 28 Jul 2023 11:49:00 -0400
-In-Reply-To: <20230728-unrentabel-volumen-1500701f2524@brauner> (Christian
-        Brauner's message of "Fri, 28 Jul 2023 16:00:10 +0200")
-Message-ID: <87mszg11g3.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        with ESMTP id S235711AbjG1SKa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 14:10:30 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F3B44BD
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 11:10:20 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-113-23.bstnma.fios.verizon.net [173.48.113.23])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36SIAFvh031473
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 14:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690567816; bh=g+d4IjMFNjcS40MnJm7H5xhWANs4yJAkAPApqj2itHE=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=o4XMVyFRMZKghotFWRYuoXaPBpEjZKki+gaqxFDNBQ+Y2cLHHAKnTOArqqNuxaMOa
+         8eMxrb8Gkg9K9Grg91aL4LIiKGEIEJoQCfLy7xityXWniwfStmDwsWEkPCuY1QapqW
+         EFkH/4x48M2bohiSOS5b5of9dORjBCHzizcnwchVU1/VGw26Vgujqc4MFBAcJuuEVN
+         /v+6Ne5leSz16oOIRwbOf7I2iHcyh2Xxb0yq+mRYYXb33/rpCDvSQ7EGHNL67M+bq6
+         TR5LVXmyc27zDSZkjS4I7ywVr7NYAuIjdcnHMkyQG/YhBiE28ypYc2FGljLITVf1so
+         cNOIfOj/Ej/6Q==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id F315615C04EF; Fri, 28 Jul 2023 14:10:14 -0400 (EDT)
+Date:   Fri, 28 Jul 2023 14:10:14 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Oscar Megia =?iso-8859-1?Q?L=F3pez?= <megia.oscar@gmail.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Contributing subsequent patch versions
+Message-ID: <20230728181014.GA607743@mit.edu>
+References: <877cqlmdpg.fsf@gmail.com>
+ <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
+ <877cqk5zdt.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <877cqk5zdt.fsf@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,55 +56,74 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Christian Brauner <brauner@kernel.org> writes:
+On Fri, Jul 28, 2023 at 08:22:22AM +0200, Oscar Megia López wrote:
+> Yes, I read
+> https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+> yesterday and more online documentation and I didn't find any describing the
+> correct way to send next patch version.
+> 
+> Today I found this
+> https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+> but I still have some doubts.
 
->> -static inline int d_revalidate(struct dentry *dentry, unsigned int flag=
-s)
->> +static inline int d_revalidate(struct dentry *dentry,
->> +			       const struct qstr *name,
->> +			       unsigned int flags)
->>  {
->> -	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE))
->> +
->> +	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE)) {
->> +		if (dentry->d_op->d_revalidate_name)
->> +			return dentry->d_op->d_revalidate_name(dentry, name, flags);
->>  		return dentry->d_op->d_revalidate(dentry, flags);
->
-> This whole sequence got me thinking.
->
+What you're running into is the fact that there are multiple ways that
+people will prepare patch versions, and so the process documentation
+merely specify what the patch series should look like.
 
-...
+> Yes, I know, but I want to know how an expert programmer send
+> next version (create new branch for each patch's version?, create new
+> directory outgoing for each patch's version?, run git pull on patch's
+> branch?, add --in-reply-to= to previous patch's version email?
+> ¿cover letter or 1/1?, etc.).
 
-> ubuntu@imp1-vm:~$ sudo mount -t ecryptfs /mnt/test/casefold-dir /opt
-> ubuntu@imp1-vm:/opt$ findmnt | grep opt
-> =E2=94=94=E2=94=80/opt  /mnt/test/casefold-dir ecryptfs rw,relatime,ecryp=
-tfs_sig=3D8567ee2ae5880f2d,ecryptfs_cipher=3Daes,ecryptfs_key_bytes=3D16,ec=
-ryptfs_unlink_sigs
+Not only do many experienced programmers might have different
+perferred workflows, they might use different procedures depending on
+how complex the patch series would be.  For example, for the case for
+a single patch, I'd probably just use "git format-patch -1 ...",
+meaning "just format the top-most patch on the current branch".
 
-That's interesting.  I was aware of overlayfs and wanted to eventually
-get it to work together with casefold, but never considered an ecryptfs com=
-bo.
+For a really simple patch, I might just use "git commit --amend" to
+make changes, and I might not bother rebasing unless it was necessary
+to make sure it would apply on the top of the development branch.  If
+it was necessary to rebase, assuming that you have the local branch
+"origin_<topic>" which points as the base to your patch or patch
+series, then what *I* typically do is just do:
 
-> So it doesn't even seem to care if the underlying filesytem uses a
-> custom dentry hash function which seems problematic (So unrelated to
-> this change someone should likely explain why that doesn't matter.).
->
-> Afaict with your series this will be even more broken because ecryptfs
-> and overlayfs call ->d_revalidate() directly.
->
-> So this suggests that really you want to extend ->d_revalidate() and we
-> should at least similar to overlayfs make ecryptfs reject being mounted
-> on casefolding directories and refuse lookup requests for casefolding
-> directories.
->
-> Ideally we'd explicitly reject by having such fses detect casefolding
-> unless it's really enough to reject based on DCACHE_OP_HASH.
+git branch -f orgin_<topic> origin/master
+git rebase origin_<topic>
 
-Thanks for finding this issue. I'll follow up with merging d_revalidate
-and d_revalidate_name and adding a patch to explicitly reject
-combinations of ecryptfs/overlayfs with casefolding filesystems, and
-safeguard the lookup.
+Now the topic branch is rebased on the tip of the upstream development
+branch, and now I might just do:
 
---=20
-Gabriel Krisman Bertazi
+git format-patch -o /tmp/p origin_<topic>..
+
+For a single patch, I might not bother with cover letter, and most of
+the time, I'll just manually copy the cover letter from the previous
+version into the current cover letter, append the description of what
+changed from the last version, and then I'll send it out.
+
+This just uses all basic git commands.  There *are* more sophisticated
+systems that will automate things, and it's completely up to you
+whether or not you want to use them.  Sometimes, the simpler methods
+are best and systems which try to "automate" things can just confuse
+you.
+
+If you want to see an example of a much more sophistcated system, take
+a look at the b4's "prep" command[1].  I don't use it, my self,
+although I do use "b4 am" and "b4 ty" for my maintenance work.  So
+don't feel like you have to use "b4 prep"; try it out, and see if it
+makes your life easier.  If so, use it!  If not, just let it go, and
+try something else.
+
+[1] https://b4.docs.kernel.org/en/latest/contributor/prep.html
+
+Finally, with respect to your original patch.  My apologies for not
+looking at it eariler.  I'm pretty swamped these days, which means
+that I'm prioritizing which patches get my attention.  As far as this
+particular patch, I don't think it's actively harmful, but I also
+don't quite see the point.  If you want to see how full a file system
+might be, and it's disappearing too quickly because shortly after fsck
+finishes, the graphical login has come up, you can always use the "df"
+command, right?
+
+						- Ted
