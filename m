@@ -2,112 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0284766704
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 10:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF1D766B3D
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 13:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbjG1IZm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 04:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        id S236138AbjG1LBR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 07:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjG1IYw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 04:24:52 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8EE49FD
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 01:23:41 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-440ac4b44a8so704972137.3
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 01:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690532620; x=1691137420;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VITdmtGLQLGT4fU+DRADhN9JhICIDjdOtOp+++31gds=;
-        b=LORxXc68KB4tEibFVmg9W0YfTHb+2Gs6GJt+KP0RhvLKYdR/8SbMJJodiQQhK+L07E
-         gDCM2D1wnc0+62dFrcwykubsx7ycbvfRwB6xE3zYyuBeVln5OxQMAKPM5zG2reAmHiIm
-         NTnSfEI2LqGnzI1doMeNsavDKh+RkE7eobt5MJlWlVW9j2P+lRbpUUVShT+q2NHsKaSD
-         ABZyv8PZYGHdCk/Apj2Eslnh+D3QDwJgj2m+TcU0G7wSujmqcO+vGkgE+Vc+K3GnPE77
-         2AwQ6bjlkHxKq4LloKH5wvF3+q/qtc8ftc7XG5ASuNJiZSzOXSpLsXNJHAAK88DhA21L
-         C+0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690532620; x=1691137420;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VITdmtGLQLGT4fU+DRADhN9JhICIDjdOtOp+++31gds=;
-        b=Ql15/dsk3EHyEH6zaaMLxfN7sburVwQoujUU6y6u0sRDjsxj0ayrVVtZp0fS+s/Kjt
-         CWKT7pBfHAj2XiOVEZo2wayYXLtUsUM2UYfHrI1WA2dUbkiwVNGx1fVJ6uDUfx23gQFK
-         R0b3G3WpmLJn3mHNXXkjK/sQYgMALG/x3MoJQ2juB4utRnbSHCkM5gX1mRB7ioAoj8gX
-         TvVBaJ9x9A+puDg7IrEViJ0Cb98w+sB3ufoxdxSOOyA9O7uk/0emAN4JHZlYznnnac9D
-         B0WtIb16zJCpBCC18yR3mwlHYxyEeAbemVWzlahJcce+RShsL0FSM1izHc6gdH3GyLlm
-         kBOg==
-X-Gm-Message-State: ABy/qLZQBc6O3hiNqDZkjayH0AhnlHrNoYY2qZ+67PYUrG+HOdEXlZ5n
-        KaWyWDAa5Yj9oKJ6bDScDsqIDKdauEuCYmH1Qa0=
-X-Google-Smtp-Source: APBJJlHsa0ncbrhZyTOkqk9jroMNZLagoKo/f/WRmKrxBdiuIN67/R9SCcaBfaMpYpTRTBz7gcgnGpHRcjF/w8T2uJk=
-X-Received: by 2002:a67:fbd0:0:b0:447:4e20:d2da with SMTP id
- o16-20020a67fbd0000000b004474e20d2damr1363499vsr.7.1690532620069; Fri, 28 Jul
- 2023 01:23:40 -0700 (PDT)
+        with ESMTP id S236129AbjG1LBK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 07:01:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F8D3C30;
+        Fri, 28 Jul 2023 04:01:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 690D4620DC;
+        Fri, 28 Jul 2023 11:01:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71689C433C8;
+        Fri, 28 Jul 2023 11:00:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690542063;
+        bh=OHILmmeiUht8a/iNB32Wqo6p3CZSNTmmXf/wqdU8eyM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lUHncmkLN11wgaMD1KR1Gy5if09x5xh0KGyx50ZGUuC2fBx+ijTW2wECE/sOye+rG
+         qDHl4LIc5ruyg2PAO1VZI95ZW/5j7Q0Vo/saVvtDVwvUJlMtgeQjFVYzjalCOIixt6
+         gEQ+u8asPVZluAxs1HoSNgHXPJA0QhMWBw4NywwMFrjIj9j61U5pX9yO+iEoVUAfbu
+         mdakOz70WJL7rxDzg7P00Ji6kHPu+xHi68+/TquTtcuasIukOIAL/+DVn48WGku6nx
+         2ORenDwB3jD7HGc7jH1b/evq7YZ9RS2gsMH8Qjv3EgEZjMk8pxaawj3uGeQKo/zCuQ
+         +lMRyzmoHCobQ==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: (subset) [PATCH v6 0/7] fs: implement multigrain timestamps
+Date:   Fri, 28 Jul 2023 13:00:37 +0200
+Message-Id: <20230728-unrecht-ersichtlich-cfa7d0c703d1@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a59:d6b0:0:b0:3f1:5382:4ef1 with HTTP; Fri, 28 Jul 2023
- 01:23:39 -0700 (PDT)
-Reply-To: laurabeckwith001@gmail.com
-From:   laura beckwith <jonnyangus51@gmail.com>
-Date:   Fri, 28 Jul 2023 12:23:39 +0400
-Message-ID: <CAEQMgS0kUgPtUae97hm13DKUtny+=iUkg+zjX1c9V3r9GkXCzw@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:e2c listed in]
-        [list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [jonnyangus51[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [laurabeckwith001[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [jonnyangus51[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1874; i=brauner@kernel.org; h=from:subject:message-id; bh=4DjYiXolHUh8qQu1N+OzbWT4vtvmgyT4c+N7Ht8XGtY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQcnsy9IaFu+ZP9z1N8rj/+PH2Pm5FLY6hTmXAw+6xpv069 EIk93lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARMyFGhh2xp3MqP+WJ6kre7E0z/m vxVuf2tOrqbz/KOXZnbdld4czI8C9ly15G/weVYRsOZM6bEHF4077Al0vcwkM2vDFrTz89nQsA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
-Hi,
-I am Mrs. Laura Beckwith, I have decided to donate what I have to you,
-motherless babies, Less privileged and widows, because I am dying and
-diagnosed with cancer about 2 years ago. I have been touched by God
-Almighty to donate all I have to you for the good work of God almighty. I
-have asked almighty God to forgive me and I believe he has because he is a
-merciful God. May the good God bless you abundantly, and please use the
-funds judiciously for charitable projects, motherless babies, Less
-privileged and widows. I came to this decision to reach out to you because
-I have limited time on this earth. I don't know you but I have been
-directed to do this by God almighty. If you are interested in carrying out
-this task, get back to me.
-Reply at: laurabeckwith001@gmail.com
-Yours Faithfully,
-Mrs. Laura Beckwith
+On Tue, 25 Jul 2023 10:58:13 -0400, Jeff Layton wrote:
+> The VFS always uses coarse-grained timestamps when updating the
+> ctime and mtime after a change. This has the benefit of allowing
+> filesystems to optimize away a lot metadata updates, down to around 1
+> per jiffy, even when a file is under heavy writes.
+> 
+> Unfortunately, this coarseness has always been an issue when we're
+> exporting via NFSv3, which relies on timestamps to validate caches. A
+> lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+> help the client decide to invalidate the cache.
+> 
+> [...]
+
+Survives xfstests (tmpfs, ext4, overlayfs) and the fs portions of LTP.
+Let's keep our eyes open for any potential issues. Past suspects has
+been IMA interacting with overlayfs. We'll see. Picked everything minus
+the tmpfs-writepage patch that was contentious.
+
+---
+
+Applied to the vfs.ctime branch of the vfs/vfs.git tree.
+Patches in the vfs.ctime branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.ctime
+
+[1/7] fs: pass the request_mask to generic_fillattr
+      https://git.kernel.org/vfs/vfs/c/0a6ab6dc6958
+[2/7] fs: add infrastructure for multigrain timestamps
+      https://git.kernel.org/vfs/vfs/c/d242b98ac3e9
+[4/7] tmpfs: add support for multigrain timestamps
+      https://git.kernel.org/vfs/vfs/c/1f31c58cf032
+[5/7] xfs: switch to multigrain timestamps
+      https://git.kernel.org/vfs/vfs/c/859dd91017dd
+[6/7] ext4: switch to multigrain timestamps
+      https://git.kernel.org/vfs/vfs/c/093af249eab4
+[7/7] btrfs: convert to multigrain timestamps
+      https://git.kernel.org/vfs/vfs/c/b90a04d1c30c
