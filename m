@@ -2,421 +2,203 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD78766659
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 10:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F637666A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 10:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbjG1IG1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 04:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
+        id S234731AbjG1IN6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 04:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbjG1IGA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 04:06:00 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2066.outbound.protection.outlook.com [40.92.98.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507844C0F
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 01:04:57 -0700 (PDT)
+        with ESMTP id S234772AbjG1INi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 04:13:38 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0861E3A94;
+        Fri, 28 Jul 2023 01:13:30 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hdmqYvYCANyphtixMfWotADosN7x7obdnV6SqFeJ5vayuD1Qrii3HosP5jZImqvedaTxPRrEYCbn0zWxMX5stMTGsCJJ4RyeI9zgXdQxb9dy7BG85ewZE8VlNzE0bWkyhQ2BupQaHkZLfkG4HJYWXy3zA2w95NLBwBgcq10+3Vphde7E7RK0MqfIxLH5Voij3QbD8cl/s8jreaB90aXG/myeIdiieytVzhZmlJs+u1uro828g37Qk927HYwYsgajSAXzbGe8p7Y6EYln60CDIBtnehI8KYrCAdKoZR8LoYs4wZn9LUiceCxfghCsUMGUjt1hy7Esx5GEjU7nyYVK2Q==
+ b=Fu7do9vqFCgFsADyZ82hNoY/UZLzKuhqMcOnUosc7CU1gRARx52ZsmX/k3jQqqfWApVRnBmUWRhAjuU7NmXABoUauEcu+4BsFWL+iQvWctsSSd3J+OEl1nuojXV5LqlwQAV4O6Aa5FX6RS4QMHq9VxdUVQf3CIB3Lf+dyRKu2d6M6EqS2PnnmZOCYOXwHbqBewL1o/bOMaDqYjze38jxmFhs/Iv+br8SfT+8RW8ik5NSR8vaP81ZQYcdY76GopywsKtifA+tCByL5Om2pzeazLJ3uYUIjt8/7ob+IWLXdba180/f4usweAh8S07h9TWD5tHXBCqcmjq5lBKUTlV0hw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HKgXeH2bl93nkvUYvStGtcqpBrITdpA8k3LS1lmGetU=;
- b=N6rg2YYyRvoRBLu1c4Io3NlKOOHqQY5yQMMlPZKfFzhHFByYj1QI3Il6MBHhxq7xSRNl3aWFqnop6Y7lsI5g94qlDIuzfkVZ6SBX7by/nePTFsPdyUSQ6Iv6AxoXJWke2IdPPQW4RrA5Enyp33PJ9tmyErPRgAwXcBTvvyMbgIWRzPKIjDw1/agKcXsnDi7sqThkR9/7cpyBCKOoPElOVChPXGExdddFjs3k9NDDMlZ4SVqwNdg31VtV/qfDjB8725R9URHzooMHK2InTTFznb9oi7jiZb1wnr5sAwiKXM9eKaio9mr86JNoD4JYGTXsnbOeSZOuS9YAlCXzRkdxhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
+ bh=yGPNEOQFiqYcBK63/Om9x23uvQtVmgPahFvNarchGnw=;
+ b=bxOPErCsni0aI6FEntZiPQijAIZDy0MW/IxPv639d8y+dZggkTNWOyuFAO/9SE+UgdXasAOUI3wVhzoH+CfaRJmbUIFqJoyEp9Ec5EP+Ir4UV9u4lZPJYEk9+IPq0p73BQdCtzT9xPvZQzKBaCZlGR3snCZTKSywAEhwAMI82788Emd6bxTcZGrPNH2SHdPb+Dy204vWYszNsqa4acgNtWNqodXyDEw0y7myqVcOxLuUrUTT8tRFt3FWyIgK8HDGppCS6jE0eN7Yc4E+jmEmxhvNTLrtTDOkbhwL/D9jHujspqJpRHY4R5d2byBVhKMu4+i1d28V1eeoN8H1OIizYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HKgXeH2bl93nkvUYvStGtcqpBrITdpA8k3LS1lmGetU=;
- b=LjTRFdAC62qFyqqwE3Yv9remryHT9riLmrnZBCo3ADMLqBflhXmMLb4U6iefy6RcTiIKh3voS3mw7Q2UQdMkMIf/rxDBbmarl21QwzYHpgyU6qyBb/GOcX6H3gwQ0eNO78937UMvtZhEIKgvkzdwQ3DGe/xWGIBN4z5fUG/O04eeNkX+9Dka5BEOAmR2XqzEVyqo5IegjgS/f+7DMHgMfLcjP6f9YUgHx7r8aAV/p90sTvEtcjO6AhMDt3K4JAIvFnB7NjXA4GFRQT/t+v32YLTc/FGbOusVVScQ1ixqYGk5Q8mDL+q1y/GWo2tKgRKuCZSP+nAfomYxdnOy9ilXPA==
-Received: from OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:d7::9) by
- TYWP286MB2154.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:175::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Fri, 28 Jul 2023 08:04:51 +0000
-Received: from OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
- ([fe80::6d37:bb31:8707:ae72]) by OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
- ([fe80::6d37:bb31:8707:ae72%4]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 08:04:51 +0000
-From:   Bobi Jam <bobijam@hotmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Bobi Jam <bobijam@hotmail.com>
-Subject: [PATCH 2/2] mke2fs: add "-E iops" to set IOPS storage group
-Date:   Fri, 28 Jul 2023 07:47:03 +0800
-Message-ID: <OS3P286MB05671A52A5472EFBDFE78FF2AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.3
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [MxIbltF6bTqk433ZqXy1V7fW6NyRxGcC]
-X-ClientProxiedBy: SI1PR02CA0059.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::19) To OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:604:d7::9)
-X-Microsoft-Original-Message-ID: <20230727234703.223305-1-bobijam@hotmail.com>
+ bh=yGPNEOQFiqYcBK63/Om9x23uvQtVmgPahFvNarchGnw=;
+ b=m3prTWSXX6KZUhayrV91IRjMJI7ZwF62Kyc+RHKQ5wKJ5j5qAOm8WKXmDTLOzJZexS3MUHCg9Gn6vzAl1zOiXhoEipR2XxPt79A2JuBf25BGhqZ1DaFob4yfuccZFIJJgpycnIR7kUl05XAEhKT1pLB12AmPPln4yziKR08YR+A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SJ0PR13MB5269.namprd13.prod.outlook.com (2603:10b6:a03:3e1::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 08:13:25 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 08:13:24 +0000
+Date:   Fri, 28 Jul 2023 10:13:14 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v3 04/49] mm: shrinker: remove redundant shrinker_rwsem
+ in debugfs operations
+Message-ID: <ZMN4mjsF1QEsvW7D@corigine.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-5-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727080502.77895-5-zhengqi.arch@bytedance.com>
+X-ClientProxiedBy: AM0PR02CA0114.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28c::11) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OS3P286MB0567:EE_|TYWP286MB2154:EE_
-X-MS-Office365-Filtering-Correlation-Id: d2c239cc-dc30-4c18-86e3-08db8f41519b
-X-MS-Exchange-SLBlob-MailProps: AZnQBsB9XmoyETMvEuKw1oXBqTEVl4vtL1X7FRfdBlTrzQgAYnUM/6NEDWsJiqXvCw8ApBVOBCsHidKxInFu665xzb9iNavgIHeZuvNs3KRl9uLkjSs/84FZO60oAF3XKulaZ9CpNedDXvcFVHe9vbvH7rlmI+q8+01EcNnIuHvEH3KzygU43EMzYxgYbSN1JA2rsuyj6BsftnGzFX4/HaMSoUsgrOOzCeod0ve6oOXHc/ZMVy6qUh+GDv+cGJmNuplWeGKwdGy08pfNG0jQd0KDIMnZk91bUXZFxbf9KhMFERuMpDEk7aYWbskU4wxl4mdgdlUT4/k0X0QodqYn330/NUSDjrMjDq1TXCJofm4BMQASgez8nDgO/827e8ytrFlqDroHFCzGoJbX53FVNA7PZw+E6Qn71crmkq9F2IjticClCMBDlu5rrrSMEg+1mmNbRdMTzq1j8J1t/yQCXsB/WSpD8rnt3WIWEuQhNpc7faISLKdzzP+SgutgxaunIB5gm6e0q+GHp1ddf+FxMsm3Bd/3dTjrDE/144P0vVO1sqSLOeqKiTMSQTMGe2VwKAAG9SSnaCJ+kThCy2v3179T3jquRg/PUVxgQ7rOXNAhF4up/NqQ6iBwPQAIuJDHHh1XfLBueuAtEeKv4LLQUUkkSF9dfqKy92j7SPKiNKHJ7EDYUDxQj4iNVYAAczaqL8+m8mcfWeY9UAU84SA3O6ZB8D/zBvAsM8UwC8rMRt/OS7WLaRQLCsgJwyFudqvMW8+/jeDIiNk=
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SJ0PR13MB5269:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8611e466-4b59-4307-f46d-08db8f4283c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /1Dg0Qc3tkhgFPEPj0y+IECmbfg3E/xCAISWoxXNeEY/X6aF8dZZSUy3fLRzPupTcTh9pGC2agAjRCOOiKgMH1h8x5th+2kUP1Z3Ek4g0WC+7oEFTvfbU5Gsw/WhVWes3wQk8LXJ7ETEkozQ+gnwO2/ILWr6grFpHkmnHavdXmEaHpDyMj/bDtE2dxa6bZOsuGohd6ViVH1ufnCEwK2zEPvHL9UIgfl9lMILgfn2161bx7ZC9T9rc2wd8TxI48u2nwIlp63vYf5posUUBvRTCRAhUjO84uleWo0LUQJaHe1WQSpHY2CiRuN9GK3NNp9hR8GBLMCeHpNfD7mkuID4JByoY5tf4xsMYAUoMsa064nYg9yh8AexuPPmilE6/uJqu24UVlmZ8jQvFqt0tF6ZlhdZpfT4Qf/hvLcROXl0CcjgxZTjIOGP7JSf1dIMkByt5r/Rx1ttG6Q7go9mpKKX5Pmb9DSJkc6DUM+jUUKnx4yoxpevbCWT9h76uWyz2b4qysR4aWVjOfujlDBzbQ8/Wafy+g8q7X+Gro48qoLTbiRUoQ2Ng1FpFvqa542lk8z/sX9kmfbYMOelPog4mUhg4LuSTqtn7tySUhCGxTdU0JCkdlXUZT2YZRL0s+npMPnl
+X-Microsoft-Antispam-Message-Info: pwW465vo9hI5eC/8Ntm80OiPZIBHfs3VML+30ACZ6q1gKIiw07bi63fgQFFRLxhjeMOvYXvKDQCbhdJXvkJtuvlV+CXofrjYF/nUT4dPDX7q3opgHQdml0n1/4JWskU89OGJAciXmkpGNxgq9ry3pQOnhUiBe/rX017qs0avdKvOdhPtlbR+VQVKZn19geR1qa1unKg72RhRR53/MXIMsfQLudax4C3TSjl+Giz2dgx40XXbX34DzfbwIhH5bpBtGAGLaj3zSQAl3qvuVXHTkg909IcoX6oZGllYm2+Eps+5dhGhNgPCU1/7AU4O5pm4wOrjGhtYfZoZ9N02ekDRjKTQ4lquadIeum0uy/WYwMrctBR3EpkOJHSBHPG5+OYlhSGKYRuhxcaOuJyq9NPyXaRtIwoJbm2SQ2E3gbw5UzfYNh4+Zsdlyyf2fqz/nfuTulgnbDZUN06bw3dCKQlgorH/+ohWbaa1SQLbJzCxvKZOx/MJCh1pBm/F2VBIa/so2tKi49EA+ktn349EbCy+bMhrGONwPCzwf2MNJSruQNMUKPHUtE6Ber7adMWlIhvkRQnideoRjxmflS1kiPiAMuBzpM3AyXXbMb1u0RgXupI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39840400004)(136003)(376002)(346002)(366004)(451199021)(316002)(6486002)(6666004)(6512007)(38100700002)(66946007)(66476007)(66556008)(4326008)(6916009)(478600001)(83380400001)(44832011)(2616005)(36756003)(2906002)(86362001)(41300700001)(6506007)(186003)(7416002)(7406005)(8676002)(8936002)(5660300002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RBcutXwjsaf1udOKAhrSfd+PgrfP8cler7ms6uUSwA/zpfuoBnAWWD5AJpaM?=
- =?us-ascii?Q?8s6YYU4lPSIinqozUVOG7CZFOE9HV03Mi3Me49dF+dhCXsD5IKoaq4eT15SJ?=
- =?us-ascii?Q?nPgqZ3xhMKQW0OwgqnThe/uH/CFrInHu7re7f9Ehj+Xx2SFAKl0/OW7UNVQh?=
- =?us-ascii?Q?D3FIdkeuSWkFgSSvQIYVKEJUj32vWruUi9DfuW3afUGS7YKSqjWObj4U0qSr?=
- =?us-ascii?Q?XyttAG+jHIlQPGWaW22AeHbe8ZQYmPfncJxyRoMQJ8NNw864MmJ+51iLIYa9?=
- =?us-ascii?Q?EggRsLbqnUFd9MEQABIvGfbAm+W7fr6A+F/rSf4ZThktuhNmhPAusd8177xp?=
- =?us-ascii?Q?fALTUAjtC/XiSoVA/pnkxJU6paeEg6BZOak7Q/XlJ4/a7csuXFYrx6HkY+f+?=
- =?us-ascii?Q?KS3kr46PX39P0I6/F1GkqPhQmw0majKTntPVaeo1tpDD12JbMCPgFFmIG/2c?=
- =?us-ascii?Q?37CaF0XXpbNQZkkLrTrfC9jgcqHJcwLnh1FimnFQ8Mw/5pjvVRj2O8XmIIoV?=
- =?us-ascii?Q?crAVK7g8tazmeMIo25Vrtgb+NHzlAtsnhR6AtThi6AKuCXKKZHPs2sp5Y+Lc?=
- =?us-ascii?Q?avdITUGBibH3fdAuJMBMux7NiR3471mOSUW2qjSRF0fLl05QzefNhXV8CNB/?=
- =?us-ascii?Q?gg23OKg5vuwagr7M9nU0IcOx4vMlF5HodsEZEhyQHWTpwNw3j5zizCQYLuPb?=
- =?us-ascii?Q?x63zKwborQ8gXLW8eS665NY+zGKCPEhH23I9wqUOjg/6f/XVPNZO1DHlJA6c?=
- =?us-ascii?Q?vjF74XUw9hFhkL+QtGq2Sq9FUCEvRJhTUv4MdCtR3k3BjxU0zRQ6lBPkh2sy?=
- =?us-ascii?Q?rv+dZLgSdcOP+wcCCcL+3thVgS5SBozUDg0GTrn2hoGH5xJTt7vdUyqB73UE?=
- =?us-ascii?Q?41gfpIbKDXc6Iryytwi8+rV5+P9jGNnSRAavVsIch7aHGogE+9/+SVvzLGZY?=
- =?us-ascii?Q?6LcgsVCWis4Sm7VSGiyBVWUnW8glN0Wt+FLhw92N1kITKJ4HuImOKwNMe4zK?=
- =?us-ascii?Q?YH6atcnkdQzqkMHBPgng4TcM9Xn4Ou1huTIwoeJ6ixn/7oKInAY0A2LxnXzf?=
- =?us-ascii?Q?eNxNIxZr4j49/oc4eAglTHDouXNfppttKMp1Tg2DfthMKqK2iKgGoJhkBVsS?=
- =?us-ascii?Q?LOV65nZ1fS5Yd+uTiFsaxzbYjDz2/PBkyT/7lvz4+0UlIUlAElnGdQrW3GA1?=
- =?us-ascii?Q?nT2ntLNI2QBUp4XhIZlsc3cAkCSct5KJ8KMj2A=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2c239cc-dc30-4c18-86e3-08db8f41519b
-X-MS-Exchange-CrossTenant-AuthSource: OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EwJcBo/2mvzDAcZlwWvTX9INa/Cd4/lFcnamw+5KB2J69OYpKA3aGp5Wd/XF?=
+ =?us-ascii?Q?Vjt1Q6FMtfkPT96kdcb4hxokRaLTkBreJ1T36jkKBbExivpNKSZ6veIvC/M4?=
+ =?us-ascii?Q?jrCBhciqYx3+6CIDSXOzrvyFcFGYL2Yoe1VQGDJ7NdDD5l0XwHG+93LniBR0?=
+ =?us-ascii?Q?AC3/KSBGGJTCJ06zamH3IV6dDULUlTJhzm/pIZUJ/EWtK7yxw+go6gb+7bsb?=
+ =?us-ascii?Q?GNmIfq+OCxbfIvLSus5tHnhiHP5OesDtsNHLDznFWUW/G/Lmo/+J1OFJzmoH?=
+ =?us-ascii?Q?RITysfiVBMj55kz7cS+ZPLvGIfm8kdkhOghNhMN3NBBLtXwtGwJo5omwrNVG?=
+ =?us-ascii?Q?J1vTaUl7LcWFEq2X1SOaK8K4/6Ia3JWLxWKLRxy3Ww4uBVp7+2i/SZa9mFbj?=
+ =?us-ascii?Q?frtZCGrY28gP1W0cOaS0pH73V5HmSCYk5cbij51ERGBgOpga0ADx0XHxbFwQ?=
+ =?us-ascii?Q?O5taUvqZVD+YUBO09GBwkxw/rXt9bZ3p+tl0GkMzDw3rMPNo5Iiqs8Q7YLtl?=
+ =?us-ascii?Q?QnIGVeXrT9dOvCPEFdcCjIdtTYbOTjdDHfbAbXIwEN2LEHFDx51xljpLnzoj?=
+ =?us-ascii?Q?q6JlISd8nfmBNuAE82FX2Lfg9cjoTaEPWWoVPZG72vP0TPQGCo5rg+N5xg5+?=
+ =?us-ascii?Q?RA9dMJEpTUcVArKtlxNThUjNr/lXLQD2djxQG4SygkFdNSbOIg+Py5fn4KMQ?=
+ =?us-ascii?Q?VM6sDlWNOXcbgtJIHGGZNj7fiUlUPxTpownfc1c4LE42xLPnRHtGXEP9gqSA?=
+ =?us-ascii?Q?snUmINmb3Px4hk0VdGXyakeqY6tNY5w5AGS+MUD7tSY9rFxMbnhmArg+UUZE?=
+ =?us-ascii?Q?i73ij7qu7+jTmwf34+LrI95qmZ0ttNUbtvojB+anPSnSbsSmKyG6GOyDgdDj?=
+ =?us-ascii?Q?1Q8qS+/Pk+qDjwjSV6oDR5KDVg31OLrvNp/zYuvlMlX0IhekWbiJFuhZcDzF?=
+ =?us-ascii?Q?AQLPFRIatsy4f+ShA4r06BfxUfqS9AM3xlDQDA/TuaCkS65hHcKnjG7ssGxV?=
+ =?us-ascii?Q?6wo/p/ORe67hNfAjMWhnJoVU5KB1cJ8ra6ei3E+v+SkG6SmMGtAv/0oPpPuU?=
+ =?us-ascii?Q?fk42VugnI0lugCDN1EQawQHpI+ocrjKTtJgfvf65Gj0bxKANcxVQOqbjWLID?=
+ =?us-ascii?Q?8oXHR6mTmC6ENdB5NHmG42BWQJwcowGxu+i9mU8n3S1/1JXFgKAEOfbrQd/5?=
+ =?us-ascii?Q?Cs8GeKBlj4ogqJ9DEvux/7uYG9mSmkqZBCtfXbYeCmm8POr37MhzLWkvTMRO?=
+ =?us-ascii?Q?TNw+7pHndTN8XIIottGRIXCDjsLjJkNK37QoW2iOVxgkXOaCDs4v/ZPvu2BS?=
+ =?us-ascii?Q?yItjrzpQ7Wv/V/T0mShaQr35yWensUSLg8kwArBLTM+1TpeUjQvlRTRa2QEM?=
+ =?us-ascii?Q?eBhHGQssV3+tngbS/tmYBR8K+ByZIKYtpZzqEUrHnOGBWuMmBorzNjocuLAI?=
+ =?us-ascii?Q?0pmuEP2b4mk3PLcri7AeHoHgZmpbghkq4M/UOwzgrfPl8rOdOFcanX9cAkZ6?=
+ =?us-ascii?Q?9QPpEusH9TeQH4ecp7Cjadc8dwuN5sJzzuVBs840pTrx8rCTXZtCWFBrdxH1?=
+ =?us-ascii?Q?GQ8aV1bM3szxVEZWi1L9tiLEBSSbrR18uuwppQLJFRySYRV8eMAQc/EPvB84?=
+ =?us-ascii?Q?YOmbXUzPIyQOL7toNCW5V83Ij8+QcxN+t1bzFJsRVsd7LA7EUFd9DTAbDPkv?=
+ =?us-ascii?Q?1A2tGA=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8611e466-4b59-4307-f46d-08db8f4283c5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 08:04:51.2239
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 08:13:24.7088
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB2154
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZO18g4iU6cCBfbXbdk05XK2h3U98gv1o0RvG8C19b61bZGM6zcodErQeQen1aIioiwU32nm1ls4To/v/MA7i5mi21rgU93wTSzMKCF+aMJ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5269
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With LVM it is possible to create an LV with SSD storage at the
-beginning of the LV and HDD storage at the end of the LV, and use that
-to separate ext4 metadata allocations (that need small random IOs)
-from data allocations (that are better suited for large sequential
-IOs) depending on the type of underlying storage.  Between 0.5-1.0% of
-the filesystem capacity would need to be high-IOPS storage in order to
-hold all of the internal metadata.
+On Thu, Jul 27, 2023 at 04:04:17PM +0800, Qi Zheng wrote:
+> The debugfs_remove_recursive() will wait for debugfs_file_put() to return,
+> so the shrinker will not be freed when doing debugfs operations (such as
+> shrinker_debugfs_count_show() and shrinker_debugfs_scan_write()), so there
+> is no need to hold shrinker_rwsem during debugfs operations.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/shrinker_debug.c | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
+> diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
+> index 3ab53fad8876..f1becfd45853 100644
+> --- a/mm/shrinker_debug.c
+> +++ b/mm/shrinker_debug.c
+> @@ -55,11 +55,6 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
+>  	if (!count_per_node)
+>  		return -ENOMEM;
+>  
+> -	ret = down_read_killable(&shrinker_rwsem);
+> -	if (ret) {
+> -		kfree(count_per_node);
+> -		return ret;
+> -	}
+>  	rcu_read_lock();
 
-This would improve performance for inode and other metadata access,
-such as ls, find, e2fsck, and in general improve file access latency,
-modification, truncate, unlink, transaction commit, etc.
+Hi Qi Zheng,
 
-For mke2fs, using the sparse_super2 and packed_meta_blocks options
-places all of the static metadata (group descriptors, block/inode
-bitmaps, inode tables, journal) at the start of the device in the
-(IOPS) flash region.
+As can be seen in the next hunk, this function returns 'ret'.
+However, with this change 'ret' is uninitialised unless
+signal_pending() returns non-zero in the while loop below.
 
-Add an option to mark which blocks are in the IOPS region of storage
-at format time:
+This is flagged in a clan-16 W=1 build.
 
-  -E iops=0-1024G,4096-8192G
+ mm/shrinker_debug.c:87:11: warning: variable 'ret' is used uninitialized whenever 'do' loop exits because its condition is false [-Wsometimes-uninitialized]
+         } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ mm/shrinker_debug.c:92:9: note: uninitialized use occurs here
+         return ret;
+                ^~~
+ mm/shrinker_debug.c:87:11: note: remove the condition if it is always true
+         } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  1
+ mm/shrinker_debug.c:77:7: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+                 if (!memcg_aware) {
+                     ^~~~~~~~~~~~
+ mm/shrinker_debug.c:92:9: note: uninitialized use occurs here
+         return ret;
+                ^~~
+ mm/shrinker_debug.c:77:3: note: remove the 'if' if its condition is always false
+                 if (!memcg_aware) {
+                 ^~~~~~~~~~~~~~~~~~~
+ mm/shrinker_debug.c:52:9: note: initialize the variable 'ret' to silence this warning
+         int ret, nid;
+                ^
+                 = 0
 
-so the ext4 mballoc code can then use the EXT4_BG_IOPS flag in the
-group descriptors to decide which groups to allocate dynamic
-filesystem metadata.
+>  
+>  	memcg_aware = shrinker->flags & SHRINKER_MEMCG_AWARE;
+> @@ -92,7 +87,6 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
+>  	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+>  
+>  	rcu_read_unlock();
+> -	up_read(&shrinker_rwsem);
+>  
+>  	kfree(count_per_node);
+>  	return ret;
 
-Change-Id: I13cc2820c71737848eab8a2d6e246748258a64df
-Signed-off-by: Bobi Jam <bobijam@hotmail.com>
----
- debugfs/debugfs.c    |   2 +
- lib/e2p/ls.c         |   4 ++
- lib/ext2fs/ext2_fs.h |   2 +
- misc/dumpe2fs.c      |   2 +
- misc/mke2fs.8.in     |   8 +++
- misc/mke2fs.c        | 150 +++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 168 insertions(+)
-
-diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
-index 9b6321dc..81c51de1 100644
---- a/debugfs/debugfs.c
-+++ b/debugfs/debugfs.c
-@@ -515,6 +515,8 @@ void do_show_super_stats(int argc, char *argv[],
- 			      &first, out);
- 		print_bg_opts(current_fs, i, EXT2_BG_BLOCK_UNINIT, "Block not init",
- 			      &first, out);
-+		print_bg_opts(current_fs, i, EXT2_BG_IOPS, "IOPS",
-+			      &first, out);
- 		if (gdt_csum) {
- 			fprintf(out, "%sChecksum 0x%04x",
- 				first ? "           [":", ", ext2fs_bg_checksum(current_fs, i));
-diff --git a/lib/e2p/ls.c b/lib/e2p/ls.c
-index 0b74aea2..c13927c6 100644
---- a/lib/e2p/ls.c
-+++ b/lib/e2p/ls.c
-@@ -162,6 +162,10 @@ static void print_super_flags(struct ext2_super_block * s, FILE *f)
- 		fputs("test_filesystem ", f);
- 		flags_found++;
- 	}
-+	if (s->s_flags & EXT2_FLAGS_HAS_IOPS) {
-+		fputs("iops ", f);
-+		flags_found++;
-+	}
- 	if (flags_found)
- 		fputs("\n", f);
- 	else
-diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
-index fb69e964..ea26d356 100644
---- a/lib/ext2fs/ext2_fs.h
-+++ b/lib/ext2fs/ext2_fs.h
-@@ -223,6 +223,7 @@ struct ext4_group_desc
- #define EXT2_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not initialized */
- #define EXT2_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not initialized */
- #define EXT2_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
-+#define EXT2_BG_IOPS		0x0010 /* In IOPS/fast storage */
- 
- /*
-  * Data structures used by the directory indexing feature
-@@ -572,6 +573,7 @@ struct ext2_inode *EXT2_INODE(struct ext2_inode_large *large_inode)
- #define EXT2_FLAGS_IS_SNAPSHOT		0x0010	/* This is a snapshot image */
- #define EXT2_FLAGS_FIX_SNAPSHOT		0x0020	/* Snapshot inodes corrupted */
- #define EXT2_FLAGS_FIX_EXCLUDE		0x0040	/* Exclude bitmaps corrupted */
-+#define EXT2_FLAGS_HAS_IOPS		0x0080	/* has IOPS storage */
- 
- /*
-  * Mount flags
-diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
-index 7c080ed9..c6e43d3a 100644
---- a/misc/dumpe2fs.c
-+++ b/misc/dumpe2fs.c
-@@ -131,6 +131,8 @@ static void print_bg_opts(ext2_filsys fs, dgrp_t i)
-  		     &first);
- 	print_bg_opt(bg_flags, EXT2_BG_INODE_ZEROED, "ITABLE_ZEROED",
-  		     &first);
-+	print_bg_opt(bg_flags, EXT2_BG_IOPS, "IOPS",
-+		     &first);
- 	if (!first)
- 		fputc(']', stdout);
- 	fputc('\n', stdout);
-diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
-index 30f97bb5..2d1bc829 100644
---- a/misc/mke2fs.8.in
-+++ b/misc/mke2fs.8.in
-@@ -435,6 +435,14 @@ effect only if the
- feature is set.   The default quota types to be initialized if this
- option is not specified is both user and group quotas.  If the project
- feature is enabled that project quotas will be initialized as well.
-+.TP
-+.BI iops= <size_range>[:<size_range>][...]
-+Specify IOPS block group size range like:
-+.B iops=0-1024G:4096-8192G
-+So the file system can get the knowledge that which block groups to be accessed
-+are on a relatively faster storage and allow the kernel block allocator to
-+optimize metadata allocations onto high-IOPS storage for a hybrid flash/HDD
-+devices for better performance.
- .RE
- .TP
- .B \-F
-diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-index c69efe39..ccfcf3d1 100644
---- a/misc/mke2fs.c
-+++ b/misc/mke2fs.c
-@@ -103,6 +103,10 @@ static __u64	offset;
- static blk64_t journal_location = ~0LL;
- static int	proceed_delay = -1;
- static blk64_t	dev_size;
-+blk64_t		iops_array[64];
-+unsigned int	iops_size = sizeof(iops_array);
-+unsigned int	iops_count = 0;
-+blk64_t		*iops_range = iops_array;
- 
- static struct ext2_super_block fs_param;
- static __u32 zero_buf[4];
-@@ -742,6 +746,54 @@ static int set_os(struct ext2_super_block *sb, char *os)
- 	return 1;
- }
- 
-+static int parse_range(char *p_start, char *p_end, char *p_hyphen)
-+{
-+	blk64_t start, end;
-+	blk64_t *new_array;
-+
-+	/**
-+	 * e.g  0-1024G
-+	 *      ^      ^
-+	 *      |      |
-+	 *   p_start  p_end
-+	 */
-+	end = parse_num_blocks(p_hyphen + 1, -1);
-+
-+	if (!isdigit(*(p_end - 1)) && isdigit(*(p_hyphen -1))) {
-+		/* copy G/M/K unit to start value */
-+		*p_hyphen = *(p_end - 1);
-+		p_hyphen++;
-+	}
-+	*p_hyphen = 0;
-+
-+	start = parse_num_blocks(p_start, -1);
-+
-+	/* add to iops_range */
-+	if (iops_count == iops_size) {
-+		iops_size <<= 1;
-+		if (iops_size == 0) {
-+			iops_size = iops_count;
-+			return -E2BIG;
-+		}
-+		if (iops_range == iops_array)
-+			new_array = malloc(iops_size * sizeof(blk64_t));
-+		else
-+			new_array = realloc(iops_range,
-+					    iops_size * sizeof(blk64_t));
-+		if (!new_array) {
-+			iops_size >>= 1;
-+			return -ENOMEM;
-+		} else {
-+			iops_range = new_array;
-+		}
-+	}
-+
-+	iops_range[iops_count++] = start;
-+	iops_range[iops_count++] = end;
-+
-+	return 0;
-+}
-+
- #define PATH_SET "PATH=/sbin"
- 
- static void parse_extended_opts(struct ext2_super_block *param,
-@@ -1059,6 +1111,62 @@ static void parse_extended_opts(struct ext2_super_block *param,
- 				r_usage++;
- 				continue;
- 			}
-+		} else if (!strcmp(token, "iops")) {
-+			char *p_colon, *p_hyphen;
-+			blk64_t start, end;
-+
-+			/* example: iops=0-1024G:4096-8192G */
-+
-+			if (!arg) {
-+				r_usage++;
-+				badopt = token;
-+				continue;
-+			}
-+			p_colon = strchr(arg, ':');
-+			while (p_colon != NULL) {
-+				*p_colon = 0;
-+
-+				p_hyphen = strchr(arg, '-');
-+				if (p_hyphen == NULL) {
-+					fprintf(stderr,
-+						_("error: parse iops %s\n"),
-+						arg);
-+					r_usage++;
-+					badopt = token;
-+					break;
-+				}
-+
-+				ret = parse_range(arg, p_colon, p_hyphen);
-+				if (ret < 0) {
-+					fprintf(stderr,
-+						_("error: parse iops %s:%d\n"),
-+						arg, ret);
-+					r_usage++;
-+					badopt = token;
-+					break;
-+				}
-+
-+				arg = p_colon + 1;
-+				p_colon = strchr(arg, ':');
-+			}
-+			p_hyphen = strchr(arg, '-');
-+			if (p_hyphen == NULL) {
-+				fprintf(stderr,
-+					_("error: parse iops %s\n"), arg);
-+				r_usage++;
-+				badopt = token;
-+				continue;
-+			}
-+
-+			ret = parse_range(arg, arg + strlen(arg), p_hyphen);
-+			if (ret	< 0) {
-+				fprintf(stderr,
-+					_("error: parse iops %s:%d\n"),
-+					arg, ret);
-+				r_usage++;
-+				badopt = token;
-+				continue;
-+			}
- 		} else {
- 			r_usage++;
- 			badopt = token;
-@@ -1085,10 +1193,13 @@ static void parse_extended_opts(struct ext2_super_block *param,
- 			"\tnodiscard\n"
- 			"\tencoding=<encoding>\n"
- 			"\tencoding_flags=<flags>\n"
-+			"\tiops=<iops storage size range>\n"
- 			"\tquotatype=<quota type(s) to be enabled>\n"
- 			"\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
- 			badopt ? badopt : "");
- 		free(buf);
-+		if (iops_range != iops_array)
-+			free(iops_range);
- 		exit(1);
- 	}
- 	if (param->s_raid_stride &&
-@@ -2973,6 +3084,35 @@ try_user:
- 	return 0;
- }
- 
-+static int ext2fs_group_in_range(ext2_filsys fs, dgrp_t group,
-+				 blk64_t *array, int count)
-+{
-+	int i;
-+	blk64_t grp_off = group * EXT2_BLOCKS_PER_GROUP(fs->super) *
-+			  fs->blocksize;
-+
-+	for (i = 0; i < count; i += 2) {
-+		if (grp_off >= array[i] && grp_off < array[i + 1])
-+			return 1;
-+	}
-+	return 0;
-+}
-+
-+static void ext2fs_set_iops_group(ext2_filsys fs, blk64_t *array, int count)
-+{
-+	dgrp_t i;
-+
-+	if (!array || !count)
-+		return;
-+
-+	for (i = 0; i < fs->group_desc_count; i++) {
-+		if (ext2fs_group_in_range(fs, i, array, count)) {
-+			ext2fs_bg_flags_set(fs, i, EXT2_BG_IOPS);
-+			ext2fs_group_desc_csum_set(fs, i);
-+		}
-+	}
-+}
-+
- int main (int argc, char *argv[])
- {
- 	errcode_t	retval = 0;
-@@ -3054,6 +3194,16 @@ int main (int argc, char *argv[])
- 			_("while setting up superblock"));
- 		exit(1);
- 	}
-+
-+	if (iops_range && iops_count) {
-+		ext2fs_set_iops_group(fs, iops_range, iops_count);
-+		fs->super->s_flags |= EXT2_FLAGS_HAS_IOPS;
-+		ext2fs_mark_super_dirty(fs);
-+
-+		if (iops_range != iops_array)
-+			free(iops_range);
-+	}
-+
- 	fs->progress_ops = &ext2fs_numeric_progress_ops;
- 
- 	/* Set the error behavior */
--- 
-2.41.0
-
+...
