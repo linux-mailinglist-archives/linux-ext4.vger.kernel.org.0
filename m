@@ -2,259 +2,234 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0EB766DD8
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 15:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA0766EF5
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 16:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbjG1NGi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 09:06:38 -0400
+        id S235782AbjG1OAR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 10:00:17 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbjG1NGh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 09:06:37 -0400
+        with ESMTP id S234866AbjG1OAR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 10:00:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22F8BA;
-        Fri, 28 Jul 2023 06:06:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BE22D67;
+        Fri, 28 Jul 2023 07:00:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 607B162136;
-        Fri, 28 Jul 2023 13:06:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6311C433C7;
-        Fri, 28 Jul 2023 13:06:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 753C76214D;
+        Fri, 28 Jul 2023 14:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E74BAC433C7;
+        Fri, 28 Jul 2023 14:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690549595;
-        bh=B5eDKcaoTXLugVjBQrPAJwdWNhFF7TbrpxphDJEcWEg=;
+        s=k20201202; t=1690552814;
+        bh=dIDs9VaKmXyd5CQQamII2fuzaJZZ/rrGjIB/Vv1ZMXA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ujq2W3motdbWyEsbwKZCMeTPTQxXd2t1I/SrcH9azhOZn/ak+gQinKrUWl0VTf2Qq
-         BxXIVneSZuWTjRKw/GVZ5ZDZIO6RgPl4uY1ouAQOpfox/+IbfH4rFXKM8LOxulNxNy
-         S9FhAd+MLi+W8qgg7wLIqC4UkLfKVTi1JC7hLBAN9kqj9wQzhaeD3mmieL1R05Kvzg
-         SGyADjFmSatANJnLqL1/PvDvTh0RtoX0UO+/URnyM+Fq0tetNujCWjhvGS0tItAGbM
-         T8eQEQGQwOk7eBnAXurQH7/IPb8QI1SKUhwFATf+bmNwNUehcgoCYj8jwpUKJVOpQc
-         g+NS/HSOSid0A==
-Date:   Fri, 28 Jul 2023 15:06:30 +0200
+        b=O23HruYPvglX9Lor/OifmLyxNBpV31d6BJgAkrsV1VPXHjVv5A7vPvAoEendMTxeD
+         TX6WfgGyw8wBQiG/jPaec3cBN12XZrz8Ic9Di4PQAFeln29v9kGHGJ7O2E+EykHsDl
+         BlRIyGfMUZeLFx9RRwB6aP70oAaHCH5eLqITi7FmXYGbDZ04EXwifq2TnavSeBevqQ
+         Z+lyRdUuv4pQCP9utJml9KJVcuor6At63T04IIJXw8IjTqrxUiynWTsqUXD7CKl0/3
+         Q0bs/hbrHIHrhv+i6nT71djGmPlqt9EaklPYdojV9K22wvQ2kIAPNZ3i6loOekXsLS
+         mM0mlzaZoLFYw==
+Date:   Fri, 28 Jul 2023 16:00:10 +0200
 From:   Christian Brauner <brauner@kernel.org>
 To:     Gabriel Krisman Bertazi <krisman@suse.de>
 Cc:     viro@zeniv.linux.org.uk, tytso@mit.edu, ebiggers@kernel.org,
         jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v4 3/7] libfs: Validate negative dentries in
- case-insensitive directories
-Message-ID: <20230728-beckenrand-wahrlich-62d6b0505d68@brauner>
+Subject: Re: [PATCH v4 1/7] fs: Expose name under lookup to d_revalidate hook
+Message-ID: <20230728-unrentabel-volumen-1500701f2524@brauner>
 References: <20230727172843.20542-1-krisman@suse.de>
- <20230727172843.20542-4-krisman@suse.de>
+ <20230727172843.20542-2-krisman@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230727172843.20542-4-krisman@suse.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230727172843.20542-2-krisman@suse.de>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:28:39PM -0400, Gabriel Krisman Bertazi wrote:
+On Thu, Jul 27, 2023 at 01:28:37PM -0400, Gabriel Krisman Bertazi wrote:
 > From: Gabriel Krisman Bertazi <krisman@collabora.com>
 > 
-> Introduce a dentry revalidation helper to be used by case-insensitive
-> filesystems to check if it is safe to reuse a negative dentry.
+> Negative dentries support on case-insensitive ext4/f2fs will require
+> access to the name under lookup to ensure it matches the dentry.  This
+> adds an optional new flavor of cached dentry revalidation hook to expose
+> this extra parameter.
 > 
-> A negative dentry is safe to be reused on a case-insensitive lookup if
-> it was created during a case-insensitive lookup and this is not a lookup
-> that will instantiate a dentry. If this is a creation lookup, we also
-> need to make sure the name matches sensitively the name under lookup in
-> order to assure the name preserving semantics.
-> 
-> dentry->d_name is only checked by the case-insensitive d_revalidate hook
-> in the LOOKUP_CREATE/LOOKUP_RENAME_TARGET case since, for these cases,
-> d_revalidate is always called with the parent inode read-locked, and
-> therefore the name cannot change from under us.
-> 
-> d_revalidate is only called in 4 places: lookup_dcache, __lookup_slow,
-> lookup_open and lookup_fast:
-> 
->   - lookup_dcache always calls it with zeroed flags, with the exception
->     of when coming from __lookup_hash, which needs the parent locked
->     already, for instance in the open/creation path, which is locked in
->     open_last_lookups.
-> 
->   - In __lookup_slow, either the parent inode is read locked by the
->     caller (lookup_slow), or it is called with no flags (lookup_one*).
->     The read lock suffices to prevent ->d_name modifications, with the
->     exception of one case: __d_unalias, will call __d_move to fix a
->     directory accessible from multiple dentries, which effectively swaps
->     ->d_name while holding only the shared read lock.  This happens
->     through this flow:
-> 
->     lookup_slow()  //LOOKUP_CREATE
->       d_lookup()
->         ->d_lookup()
->           d_splice_alias()
->             __d_unalias()
->               __d_move()
-> 
->     Nevertheless, this case is not a problem because negative dentries
->     are not allowed to be moved with __d_move.
-> 
->   - lookup_open also requires the parent to be locked in the creation
->     case, which is done in open_last_lookups.
-> 
->   - lookup_fast will indeed be called with the parent unlocked, but it
->     shouldn't be called with LOOKUP_CREATE.  Either it is called in the
->     link_path_walk, where nd->flags doesn't have LOOKUP_CREATE yet or in
->     open_last_lookups. But, in this case, it also never has LOOKUP_CREATE,
->     because it is only called on the !O_CREAT case, which means op->intent
->     doesn't have LOOKUP_CREAT (set in build_open_flags only if O_CREAT is
->     set).
-> 
-> Finally, for the LOOKUP_RENAME_TARGET, we are doing a rename, so the
-> parents inodes are also locked.
+> I'm fine with extending d_revalidate instead of adding a new hook, if
+> it is considered cleaner and the approach is accepted.  I wrote a new
+> hook to simplify reviewing.
 > 
 > Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 > 
 > ---
-> Changes since v3:
->   - Add comment regarding creation (Eric)
->   - Reorder checks to clarify !flags meaning (Eric)
->   - Add commit message explanaton of the inode read lock wrt.
->     __d_move. (Eric)
 > Changes since v2:
->   - Add comments to all rejection cases (Eric)
->   - safeguard against filesystem creating dentries without LOOKUP flags
+>   - Document d_revalidate_name hook. (Eric)
 > ---
->  fs/libfs.c | 55 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 55 insertions(+)
+>  Documentation/filesystems/locking.rst |  3 +++
+>  Documentation/filesystems/vfs.rst     | 12 ++++++++++++
+>  fs/dcache.c                           |  2 +-
+>  fs/namei.c                            | 23 ++++++++++++++---------
+>  include/linux/dcache.h                |  1 +
+>  5 files changed, 31 insertions(+), 10 deletions(-)
 > 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index 5b851315eeed..ed04c4dcc312 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1462,9 +1462,64 @@ static int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
->  	return 0;
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index ed148919e11a..d68997ba6584 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -18,6 +18,8 @@ dentry_operations
+>  prototypes::
+>  
+>  	int (*d_revalidate)(struct dentry *, unsigned int);
+> +	int (*d_revalidate_name)(struct dentry *, const struct qstr *,
+> +				 unsigned int);
+
+I think we should just extend d_revalidate(). You can't reasonably
+implement d_revalidate() and d_revalidate_name() and then have the VFS
+call both. That's just weird. Imho, it belongs into d_revalidate()
+proper. Documentation should come with the same warning about handling
+d_inode in so far as under some condition d_name can change under the
+caller.
+
+>  	int (*d_weak_revalidate)(struct dentry *, unsigned int);
+>  	int (*d_hash)(const struct dentry *, struct qstr *);
+>  	int (*d_compare)(const struct dentry *,
+> @@ -37,6 +39,7 @@ locking rules:
+>  ops		   rename_lock	->d_lock	may block	rcu-walk
+>  ================== ===========	========	==============	========
+>  d_revalidate:	   no		no		yes (ref-walk)	maybe
+> +d_revalidate_name: no		no		yes (ref-walk)	maybe
+>  d_weak_revalidate: no		no		yes	 	no
+>  d_hash		   no		no		no		maybe
+>  d_compare:	   yes		no		no		maybe
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index cb2a97e49872..34c842bd7cb2 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -1252,6 +1252,8 @@ defined:
+>  
+>  	struct dentry_operations {
+>  		int (*d_revalidate)(struct dentry *, unsigned int);
+> +		int (*d_revalidate_name)(struct dentry *, const struct qstr *,
+> +					 unsigned int);
+>  		int (*d_weak_revalidate)(struct dentry *, unsigned int);
+>  		int (*d_hash)(const struct dentry *, struct qstr *);
+>  		int (*d_compare)(const struct dentry *,
+> @@ -1288,6 +1290,16 @@ defined:
+>  	return
+>  	-ECHILD and it will be called again in ref-walk mode.
+>  
+> +``d_revalidate_name``
+> +	Variant of d_revalidate that also provides the name under look-up.  Most
+> +	filesystems will keep it as NULL, unless there are particular semantics
+> +	for filenames encoding that need to be handled during dentry
+> +	revalidation.
+> +
+> +	When available, it is called in lieu of d_revalidate and has the same
+> +	locking rules and return semantics.  Refer to d_revalidate for more
+> +	information.
+> +
+>  ``d_weak_revalidate``
+>  	called when the VFS needs to revalidate a "jumped" dentry.  This
+>  	is called when a path-walk ends at dentry that was not acquired
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index 52e6d5fdab6b..98521862e58a 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -1928,7 +1928,7 @@ void d_set_d_op(struct dentry *dentry, const struct dentry_operations *op)
+>  		dentry->d_flags |= DCACHE_OP_HASH;
+>  	if (op->d_compare)
+>  		dentry->d_flags |= DCACHE_OP_COMPARE;
+> -	if (op->d_revalidate)
+> +	if (op->d_revalidate || op->d_revalidate_name)
+>  		dentry->d_flags |= DCACHE_OP_REVALIDATE;
+>  	if (op->d_weak_revalidate)
+>  		dentry->d_flags |= DCACHE_OP_WEAK_REVALIDATE;
+> diff --git a/fs/namei.c b/fs/namei.c
+> index e56ff39a79bc..84df0ddd20db 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -853,11 +853,16 @@ static bool try_to_unlazy_next(struct nameidata *nd, struct dentry *dentry)
+>  	return false;
 >  }
 >  
-> +static inline int generic_ci_d_revalidate(struct dentry *dentry,
-> +					  const struct qstr *name,
-> +					  unsigned int flags)
-> +{
-> +	if (d_is_negative(dentry)) {
-> +		const struct dentry *parent = READ_ONCE(dentry->d_parent);
-> +		const struct inode *dir = READ_ONCE(parent->d_inode);
+> -static inline int d_revalidate(struct dentry *dentry, unsigned int flags)
+> +static inline int d_revalidate(struct dentry *dentry,
+> +			       const struct qstr *name,
+> +			       unsigned int flags)
+>  {
+> -	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE))
 > +
-> +		if (dir && needs_casefold(dir)) {
-> +			/*
-> +			 * Negative dentries created prior to turning the
-> +			 * directory case-insensitive cannot be trusted, since
-> +			 * they don't ensure any possible case version of the
-> +			 * filename doesn't exist.
-> +			 */
-> +			if (!d_is_casefold_lookup(dentry))
-> +				return 0;
-> +
-> +			/*
-> +			 * Filesystems will call into d_revalidate without
-> +			 * setting LOOKUP_ flags even for file creation (see
-> +			 * lookup_one* variants).  Reject negative dentries in
-> +			 * this case, since we can't know for sure it won't be
-> +			 * used for creation.
-> +			 */
-> +			if (!flags)
-> +				return 0;
-> +
-> +			/*
-> +			 * If the lookup is for creation, then a negative dentry
-> +			 * can only be reused if it's a case-sensitive match,
-> +			 * not just a case-insensitive one.  This is needed to
-> +			 * make the new file be created with the name the user
-> +			 * specified, preserving case.
-> +			 */
-> +			if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET)) {
-> +				/*
-> +				 * ->d_name won't change from under us in the
-> +				 * creation path only, since d_revalidate during
-> +				 * creation and renames is always called with
-> +				 * the parent inode locked.  It isn't the case
-> +				 * for all lookup callpaths, so ->d_name must
-> +				 * not be touched outside
-> +				 * (LOOKUP_CREATE|LOOKUP_RENAME_TARGET) context.
-> +				 */
-> +				if (dentry->d_name.len != name->len ||
-> +				    memcmp(dentry->d_name.name, name->name, name->len))
-> +					return 0;
-> +			}
-> +		}
-> +	}
-> +	return 1;
-> +}
-> +
->  static const struct dentry_operations generic_ci_dentry_ops = {
->  	.d_hash = generic_ci_d_hash,
->  	.d_compare = generic_ci_d_compare,
-> +	.d_revalidate_name = generic_ci_d_revalidate,
->  };
->  #endif
+> +	if (unlikely(dentry->d_flags & DCACHE_OP_REVALIDATE)) {
+> +		if (dentry->d_op->d_revalidate_name)
+> +			return dentry->d_op->d_revalidate_name(dentry, name, flags);
+>  		return dentry->d_op->d_revalidate(dentry, flags);
 
-Wouldn't it make sense to get rid of all this indentation?
+This whole sequence got me thinking.
 
-	const struct dentry *parent;
-	const struct inode *dir;
+If you create an ext4 filesystem with casefolding like:
 
-	if (!d_is_negative(dentry))
-		return 1;
+mkfs.ext4 -F -E encoding=utf8 /dev/sdb
 
-	parent = READ_ONCE(dentry->d_parent);
-	dir = READ_ONCE(parent->d_inode);
+and then
 
-	if (!dir)
-		return 1;
+mount -t ext4 /dev/sdb /mnt
+mkdir /mnt/casefold
+chattr +F /mnt/casefold
 
-	if (!needs_casefold(dir))
-		return 1;
+then you can mount overlayfs on the non-casefolded root dentry at /mnt:
 
-	/*
-	 * Negative dentries created prior to turning the
-	 * directory case-insensitive cannot be trusted, since
-	 * they don't ensure any possible case version of the
-	 * filename doesn't exist.
-	 */
-	if (!d_is_casefold_lookup(dentry))
-		return 0;
+(1) mount -t overlay overlay -o upperdir=/upper,workdir=/work,lowerdir=/mnt /opt
 
-	/*
-	 * Filesystems will call into d_revalidate without
-	 * setting LOOKUP_ flags even for file creation (see
-	 * lookup_one* variants).  Reject negative dentries in
-	 * this case, since we can't know for sure it won't be
-	 * used for creation.
-	 */
-	if (!flags)
-		return 0;
+but you cannot mount overlayfs on the casefolded root dentry at
+/mnt/casefolded:
 
-	/*
-	 * If the lookup is for creation, then a negative dentry
-	 * can only be reused if it's a case-sensitive match,
-	 * not just a case-insensitive one.  This is needed to
-	 * make the new file be created with the name the user
-	 * specified, preserving case.
-	 */
-	if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET)) {
-		/*
-		 * ->d_name won't change from under us in the
-		 * creation path only, since d_revalidate during
-		 * creation and renames is always called with
-		 * the parent inode locked.  It isn't the case
-		 * for all lookup callpaths, so ->d_name must
-		 * not be touched outside
-		 * (LOOKUP_CREATE|LOOKUP_RENAME_TARGET) context.
-		 */
-		if (dentry->d_name.len != name->len ||
-		    memcmp(dentry->d_name.name, name->name, name->len))
-			return 0;
-	}
-	return 1;
+(2) mount -t overlay overlay -o upperdir=/upper,workdir=/work,lowerdir=/mnt/casefold /opt
+
+because overlayfs rejects the dentry in ovl_dentry_weird() because the
+dentry will have DCACHE_OP_HASH set because casefold libfs helpers rely
+on a custom dentry hash function.
+
+In any case (1) shouldn't a problem per se as overlayfs will return
+EREMOTE from lookup because ovl_dentry_weird() will also be called by
+overlayfs during lookup. So it should be safe though I haven't spent a
+lot of mental effort to figure out whether this can somehow be otherwise
+used to trigger nonsensical behavior or potential bugs.
+
+But this logic is predicated on DCACHE_OP_HASH. So if for some crazy
+reason a filesystem were to implement ->d_revalidate_name() but didn't
+also implement ->d_hash() we'd be hosed because overlayfs calls
+->d_revalidate() directly.
+
+And then there's ecryptfs which is happily mountable over casefolding
+directories:
+
+ubuntu@imp1-vm:~$ sudo mount -t ecryptfs /mnt/test/casefold-dir /opt
+ubuntu@imp1-vm:/opt$ findmnt | grep opt
+└─/opt  /mnt/test/casefold-dir ecryptfs rw,relatime,ecryptfs_sig=8567ee2ae5880f2d,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_unlink_sigs
+
+So it doesn't even seem to care if the underlying filesytem uses a
+custom dentry hash function which seems problematic (So unrelated to
+this change someone should likely explain why that doesn't matter.).
+
+Afaict with your series this will be even more broken because ecryptfs
+and overlayfs call ->d_revalidate() directly.
+
+So this suggests that really you want to extend ->d_revalidate() and we
+should at least similar to overlayfs make ecryptfs reject being mounted
+on casefolding directories and refuse lookup requests for casefolding
+directories.
+
+Ideally we'd explicitly reject by having such fses detect casefolding
+unless it's really enough to reject based on DCACHE_OP_HASH.
