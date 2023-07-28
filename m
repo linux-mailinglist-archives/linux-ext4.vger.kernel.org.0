@@ -2,338 +2,261 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF8C76758C
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 20:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263377676B2
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jul 2023 22:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjG1ShA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jul 2023 14:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S231184AbjG1UAL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Jul 2023 16:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjG1Sg7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 14:36:59 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FB4233;
-        Fri, 28 Jul 2023 11:36:57 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31765aee31bso2454249f8f.1;
-        Fri, 28 Jul 2023 11:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690569416; x=1691174216;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NaIeSiUSjb8fketmDNvRtwhYw5l03NwE0c/80G9ErnE=;
-        b=Sbh1ekRScmCW+hqU5miVuk2EfWCRaLjPM05h3zlG/2NkbtHqFR/VjJq2V3YeLUJQnT
-         Ucga4YM2Ib7Fbm4flwG9o2izid7S9Rx/VPhSxXJeA/6/YU1oz7/W/LQTBGxhD6I6Siqb
-         JKu5avs7aCz1Y+nFhu2TEquktfNBey8hzgjSqNcu7qkn/OBrRi1rTYn1/iq3ZQbmhsgQ
-         +sNcGndrfI94jo4syWoyO7grFcUOXTWjJQl1157tv2H/rdScDyeMHDxU4qDsSBjkZidz
-         8hB9+Q4QKUw2gMp95HKqRj78l/JfC2hfGgL0juAbLze0eZgJl4LYIpqQAJ7t/6z0/0Dd
-         j5GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690569416; x=1691174216;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NaIeSiUSjb8fketmDNvRtwhYw5l03NwE0c/80G9ErnE=;
-        b=G7ikZs+p+JeDYhrCstiPTyqOMIWGKIHQCwMWuAEIqLk4gIi2O6ctgHs9HDaBiHJ2+x
-         fYy2lO9tB+Cd/3MFq0O8otySDk9YxFJweNp4dh48CEeUx3u5KsN6II7O3cLCJl6KUI+f
-         S872nRHblVhw/Uq3jP7/ZNw8j02V7MKM+OOf9U2ZQozSwM5Cc+Ts3zPbgE7bpYNCbcP8
-         jBokqta2v3Rd0yAL08miA51ZPHCRK0KUqglVl0yHO5CU5Gg0C5fVhstzONMmtXPFdZrA
-         PSSZF7w99kXnn/SgBB7NlqKM/+4x+5oi6WPU/DkIfEbj/cfM9yJ8kCepKtNApEcEUwCK
-         1QtQ==
-X-Gm-Message-State: ABy/qLavEPIKXqUBRq8o3ER/L8zAhk53z2cDZBmnlkev+v072e/Bm8Pl
-        fT77+4F7F82b6sBSgH/MhdiIti8Dkz4IINtm
-X-Google-Smtp-Source: APBJJlF2bLApUZuxjE1tMAtdtFPFDaejA0MlVSujfTtSepI6qvibNa4/vHm0z0KrB7aRtvwxKojA2Q==
-X-Received: by 2002:adf:d4c3:0:b0:313:e8bf:a77 with SMTP id w3-20020adfd4c3000000b00313e8bf0a77mr2684917wrk.5.1690569415854;
-        Fri, 28 Jul 2023 11:36:55 -0700 (PDT)
-Received: from torreasustufgamingpro (209.pool90-77-130.dynamic.orange.es. [90.77.130.209])
-        by smtp.gmail.com with ESMTPSA id f13-20020adfdb4d000000b003141e9e2f81sm5544207wrj.4.2023.07.28.11.36.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 11:36:55 -0700 (PDT)
-From:   =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     kernel-janitors@vger.kernel.org, linux-ext4@vger.kernel.org,
+        with ESMTP id S230147AbjG1UAK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jul 2023 16:00:10 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351403C1D
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Jul 2023 13:00:09 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-113-23.bstnma.fios.verizon.net [173.48.113.23])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36SJxx66023314
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 16:00:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690574402; bh=Rr0teEryQs0w9W1G/buPf3/HX7UpIS/tnGSgH9tvnLQ=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=oAh07rAxFZKOrHsf0e377P2q7roMFDoSmuc9kqfzHy6yjyExZJWh4b0/DOnqi6GT0
+         ADgQU5M98IqI0FKsi3KwlburKk1Sx/KtpFe57eoxB0i5rvrDFjlYELsIPrUKToF/yF
+         XaJh23rkS0qGphj4a8PPlyRTWPCaDNbsclqWyujFCOJtaFchJcLuKwEcCV8IqjdPE1
+         M+z1YNyAYvwc0tFOK+8oKlYP91kwN0QsE+0f67T6DIlg+ufgou4h5Rl0yUC7C7zp+l
+         CCMX2oyu85itsL6BsZu4zBQAX89c/taJepR8UtQks0qG4OVWkCa5GDYCZT4X74/gq5
+         aIF3nv8HE7sMg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 61E9015C04EF; Fri, 28 Jul 2023 15:59:59 -0400 (EDT)
+Date:   Fri, 28 Jul 2023 15:59:59 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Oscar Megia =?iso-8859-1?Q?L=F3pez?= <megia.oscar@gmail.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        kernel-janitors@vger.kernel.org, linux-ext4@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
         Dan Carpenter <error27@gmail.com>
 Subject: Re: Contributing subsequent patch versions
+Message-ID: <20230728195959.GB607743@mit.edu>
 References: <877cqlmdpg.fsf@gmail.com>
-        <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de> <877cqk5zdt.fsf@gmail.com>
-        <61a79836-3981-b6e0-cbbf-fe03507dbea4@web.de>
-Date:   Fri, 28 Jul 2023 20:36:50 +0200
-In-Reply-To: <61a79836-3981-b6e0-cbbf-fe03507dbea4@web.de> (Markus Elfring's
-        message of "Fri, 28 Jul 2023 11:30:35 +0200")
-Message-ID: <87tttnhohp.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+ <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
+ <877cqk5zdt.fsf@gmail.com>
+ <61a79836-3981-b6e0-cbbf-fe03507dbea4@web.de>
+ <87tttnhohp.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87tttnhohp.fsf@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Markus Elfring <Markus.Elfring@web.de> writes:
+On Fri, Jul 28, 2023 at 08:36:50PM +0200, Oscar Megia López wrote:
+> I don't know correct steps to send patch's v2 as above instance. Sorry,
+> but I need step by step instructions, if not I think that I can make
+> mistakes and I don't want. Sorry, but my experience says that is very
+> easy make mistakes when I am newbie.
 
->> Yes, I read
->> https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
->> yesterday and more online documentation and I didn't find any describing=
- the
->> correct way to send next patch version.
->
-> Would you like to adjust this view any further?
->
+We all make mistakes; don't worry about it!  This includes myself,
+which is why I often will run:
 
-I mean I haven't found the steps to submit v2 (and later) of a patch (as
-v1 in https://ext4.wiki.kernel.org/index.php/Ext4_Contributing).
+      git format-patch -o /tmp/p -5
 
-For instance (as far as I learned, but sure there are mistakes):
+<then examine the patches in /tmp/p very carefully to make sure they make sense>
 
-   1. Create a new branch from the v1 branch branch:
-          Run git checkout patch_v1
-          Run git checkout -b patch_v2
-   2. Modify the sources for version v2.
-   3. Commit the modified files with -s to add Signed-off-by: Your name
-          <your email> at end.
-   4. Run make to build or whatever.
-   5. Test your changes.
-   6. If everything is fine,
-      Run git format-patch --base=3Dauto --in-reply-to=3D[email id from
-          patch_v1 (0/1 cover letter? or 1/1?)] [--cover-letter]? -o
-          outgoing_v2/ master
-      This will create three files (if you added --cover-letter
-          parameter). I don't know if in patch's v2 is neccesary cover
-          letter. The file starting by 0001- is patch's v1 (I am not
-          sure if is necessary send patch's v1 or only link is enougth) and=
- file
-          starting by 0002- is patch's v2. You need to edit these files
-          and add version changes after --- line (they are only
-          information won't be on commit) from version to version.
+before I run
 
-   7. Run your patches through the kernel's style checker in scripts/checkp=
-atch.pl
-   8. Run path/kernel/linux/scripts/get_maintainer.pl path/yourPatch_v2/out=
-going_v2/0002-patchSubject.patch
-   9. Run git send-email --to=3D"mailing list email" --cc=3D"[emails from s=
-tep 8 separated by commas (if any)], [other emails you want to send patch v=
-2 separated by commas]" outgoing_v2/
+       git send-email /tmp/e --to linux-<subsystem>
 
-At this point you will have sent the v2 patch to the --to and --cc
-emails. If you don't use git send-email, note that emails to be sent to
-mailing lists must be in plain text
-(https://www.kernel.org/doc/html/latest/process/email-clients.html).
+where I have a bunch of aliases in ~/.mail_aliases, e.g.:
 
->
->> Today I found this
->> https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
->
-> Such advices by Dan Carpenter are also helpful.
->
->
->> but I still have some doubts.
->
-> Which concerns will need clarifications?
->
+alias linux-ext4 Ext4 Developers List <linux-ext4@vger.kernel.org>
+alias linux-fsdevel Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>
+alias linux-kernel Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+alias lkml Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+alias fstests fstests@vger.kernel.org
+alias djwong Darrick J. Wong <djwong@kernel.org>
+alias torvalds Linus Torvalds <torvalds@linux-foundation.org>
 
-I don't know correct steps to send patch's v2 as above instance. Sorry,
-but I need step by step instructions, if not I think that I can make
-mistakes and I don't want. Sorry, but my experience says that is very
-easy make mistakes when I am newbie.
+that way, I can just use a alias like "--to lkml" instead of having to
+type linux-kernel@vger.kernel.org.
 
->
->>> You can manage as many topic or development branches as needed,
->>> can't you?
->>
->> Yes, I know, but I want to know how an expert programmer send
->> next version
->
-> Are you looking for more advanced development tools?
->
+Now, do you *have* to do this?  No, of course not!  It's a short-cut,
+which can use if it saves you time.
 
-No, I just want to know how an expert programmer will do the task that I
-need to do. I can try it myself with trial/error, but I'm not alone, am I?
 
->
->>               create new directory outgoing for each patch's version?,
->
-> Corresponding name selections are influenced by some case distinctions.
->
+As far as wanting step-by-step instructions, the problem is that there
+are always exception cases.  So it's very hard to have someone try to
+anticipate every single contingency, and encode that in a step-by-step
+recipe that someone follows blindly.
 
-I apologize if I said anything that was confusing (English is not my
-native tongue). My question was if expert developers create a different
-name for outgoing directory for each patch's version on
-git format-patch ... -o outgoing/ master command.
-For instance: -o outgoing_v1 for v1, -o outgoing_v2 for v2 and so on.
-I ask this because you can lost patch files from previous
-patches if you run this command several times (it makes backup ending
-with ~, but usually last backup is lost after update). Or not?
+It's much more important that you understand *how* git works, for
+example, and what might be happening at various steps, as opposed to,
+"just give me the step by step formula and don't bother me with how
+things works under the covers".
 
->
->>               run git pull on patch's branch?,
->
-> Software evolution (and their time ranges) can occasionally trigger speci=
-al consequences.
->
+> No, I just want to know how an expert programmer will do the task that I
+> need to do. I can try it myself with trial/error, but I'm not alone, am I?
 
-So I undertand that is not neccesary. Right?
+Well, for something *really* simple, I might skep some of the steps.
+That's because as an "expert" I understand what each of the steps are
+doing, so I know when it might be safe to skip them.  For example, if
+I'm only making spelling fixes in comments, I won't need to run
+regression tests.  And to for a really, REALLY, simple patch, I might
+not bother with checkpatch.pl --- but that's because I understand what
+checkpatch.pl can and can't catch.
 
->
->>               add --in-reply-to=3D to previous patch's version email?
->
-> Replies can generally be attempted according to previous messages
-> (by different communication tools).
->
->
+It also depends on what the maintainer wants.  In the case of fstests,
+for example, the current maintainer doesn't mind making minor edits to
+the commit before he applies it.  So I might not *send* a v2 version
+of the patch, I'll just send a follow-up e-mail describing the typo
+fixes that I failed to notice before sending out the patch.  For
+example, see this email-thread:
 
-I apologize if I said anything that was confusing (English is not my
-native tongue). My question was if is necessary add this parameter (--in-re=
-ply-to).
+   https://lore.kernel.org/all/20230727190512.357064-1-tytso@mit.edu/T/#u
 
->
->> I create new branch and reseted to my v1 patch's commit
->
-> I suggest to reconsider your imaginations around the need for =E2=80=9Cre=
-setting=E2=80=9D.
->
+In this particular case, it was pretty much "edit the Makefile", "git
+commit -a", write up the commit, build fstests and make sure the
+install worked properly, "git send-email -1 --to fstests --cc djwong".
+There were no "9 steps", because I was in a hurry, and I knew when I
+could skip some of the steps.
 
-I apologize if I said anything that was confusing (English is not my
-native tongue). I wanted to say that I created new branch from branch
-for patch v1 to run git reset or whatever without modify branch patch
-v1. If I make any mistake or something harmful I can checkout to
-original branch for patch v1 and delete this test branch.
 
-I think that is secure. Right?
+> I apologize if I said anything that was confusing (English is not my
+> native tongue). My question was if expert developers create a different
+> name for outgoing directory for each patch's version on
+> git format-patch ... -o outgoing/ master command.
+> For instance: -o outgoing_v1 for v1, -o outgoing_v2 for v2 and so on.
+> I ask this because you can lost patch files from previous
+> patches if you run this command several times (it makes backup ending
+> with ~, but usually last backup is lost after update). Or not?
 
->
->> and commited v2 changes. And when I ran:
->>
->> $ git format-patch --base=3Dauto --in-reply-to=3D20230423082349.53474-1-=
-megia.oscar@gmail.com --cover-letter -o outgoing/ master
->> outgoing/0000-cover-letter.patch
->> outgoing/0001-e2fsck-Add-percent-to-files-and-blocks-feature.patch
->> outgoing/0002-e2fsck-Add-percent-to-files-and-blocks-feature.patch
->> $
->>
->> It didn't return previous error and also saved the previous patch and
->> I don't know if is correct to send previous patch's version.
->
-> You would probably like to present only improved information.
-> Did a patch series become relevant then?
->
+So *I* don't bother saving the older patch versions.  One of the
+reasons for that is I have the older patches in my e-mail archives,
+and I can find my e-mail archives much more quickly than I can
+archiving other things.  Worse case, I can always search for older
+versions of the patch set using https://lore.kernel.org, and I can
+fetch previous versions of the patches via:
 
-I apologize if I said anything that was confusing (English is not my
-native tongue). I wanted to say that is not necessary send previous
-patch v1 because I sent it before. For instance, if I send v20, is
-necessary send 19 previous versions to mailing list? How usually is
-managed? As format-patch do?, sending only last version with links to
-previous versions? Sorry for my question, but I think that send again
-the previous versions is not necessary and will saturate the mailing
-list, but it is only my modest opinion, the important thing is how it is
-usually done.
+git am -o /tmp/m <message-id>
 
->
->> So I doubt I'm doing it correctly because git send-email will send
->> previous patch that I sent.
->
-> Please reconsider the selection of desired data.
->
+But that doesn't mean that there might not be *some* expert developers
+who might keep older versions of the directories around.  Although to
+be honest, in the case where I expect that I might need to resend a
+patch series many times, I'd probably just have a series of branches
+in git, named <topic>_v2, <topic>_v3, etc. and then it's not all that
+hard to regenerate them using "git format-patch" if I really need
+them.  (In actual practice, it's rare that I need refer to anything
+but the immediate patch set, and only when I'm assembling toe
+differences between the v<n-1> and v<n> patch set.  And most of the
+time, I try very hard to keep my patch sets small, so I can usually
+write the changes from memory, and I don't need to run diffs on the
+patches.)
 
-Sorry, could you explain me deeper what you mean?
+> >>               add --in-reply-to= to previous patch's version email?
+> >
+> > Replies can generally be attempted according to previous messages
+> > (by different communication tools).
 
->
->> How am I going to learn without manuals?
->
-> Will any observations and experiments help to improve the understanding
-> for desired activities?
->
+So in *general* I don't recommend adding an --in-reply-to for the
+previous version of the messages.  If I need to find the earlier
+versions of the patches, I'll just search for them on lore.kernel.org.
+Having --in-reply-to= for older versions of the patches can sometimes
+confuse the b4 program, and as a maintainer, I generally prefer to do
+something like this:
 
-Yes if I am doing something for me, but send patch to e2fsprog or
-whatever involve more people and I don't want make many mistakes and
-disturb others (I know you are very busy).
+     b4 am -o /tmp/m -c <message-id>
 
-I learned sometimes without manuals and is very hard. I don't mind if
-my mistakes are private. For instance, if learning something in my PC I
-made a big mistake is my problem and my time to solve it, but if I made
-a big mistake sending patches I will feel very bad because I made lost
-time to others.
+Where the -c option means, "check for newer versions of the patch
+series".  But if you have later patch series set as a reply, and
+one-line patch summaries have changed, this can sometimes confuse b4's
+automated algorithms for determining when a patch is patch of a patch
+series or not.
 
->
->> The same to send the following versions of the patch. If there isn't a
->> manual that says how to do it, I can try and I'm sure I'll make mistakes.
->
-> Would you get into the mood to become also a technical writer?
-> https://forum.linuxfoundation.org/discussion/863417/introduction-oscar-me=
-gia-lopez
->
+It's not a *disaster* if you do this; it just means more manual work
+on my part.
 
-Yes, I am interested in becoming a technical writer. I think I could be
-a good technical writer because I want to explain everything thinking
-that the people reading are newbies. Explain things in such a way that
-no one has doubts. I know it is very difficult, but I like difficult
-challenges. English is not my native language, so I will need someone
-with English as a native language to verify my documentation.
+> 
+> I apologize if I said anything that was confusing (English is not my
+> native tongue). I wanted to say that I created new branch from branch
+> for patch v1 to run git reset or whatever without modify branch patch
+> v1. If I make any mistake or something harmful I can checkout to
+> original branch for patch v1 and delete this test branch.
 
-I will surely make mistakes. I am only human.
+Sure, one of the ways that I might do things is something like this:
 
-This way I can improve my linux developer level and my English level, so
-I would like (on my limited spare time).
+    git branch topic_v2 topic
 
->
->> I know you are very busy, so I offer to add this to the documentation
->> (for newbies) if someone tells me the correct steps in any case (if the
->> same lines have been modified since the previous version, if a link
->> needs to be added to the previous version(s) or if all versions are
->> shipped each time, etc.).
->
-> How do you think about to extend another information source?
->
-> Examples:
-> * https://kernelnewbies.org/
-> * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/Documentation/
->
+and then use a command like "git checkout topic_v2 ; git rebase -i
+HEAD^^^" to edit the patches.  That is *one* way of doing things.
 
-I would like very much. I would need someone to clear up my doubts or
-correct my contributions. I think it's a good way to help the community
-that I'm so grateful for and at the same time I would learn a lot of new
-things about Linux and how to be a kernel developer. I think it's the
-best way to start and we'll see how far I can go. My wish is to become a
-kernel developer, but if I'm not good enough, I'll learn a lot of new
-things, which is good too.
 
->
->> I need all the steps to follow with the example commands.
->
-> This can be more convenient.
-> Which of your experiences can you reuse already?
->
+On the other hand, there has been times when I'll export the patches
+as a patch series, e.g:
 
-Above I wrote an example with 9 steps that I learned. I am not sure of
-them and still I have some doubts.
+    git format-patch -o /tmp/p -7
 
->
->> What I want is that nobody bothers you like me again,
->
-> We came along similar learning difficulties.
->
+and then edit the patches in /tmp/p, so I can use features like global
+search and replace on the diff files, if I want to change the name of
+a variable across multiple patches, and then reapply the patch series:
 
-Thanks. I though that I was worse than the others.
+    # origin is the branch name I typically use for the base of my patch series
+    git branch topic_v2 origin      
+    git am /tmp/p
 
->
->> and if it bothers you, you will only have to send them
->> the link with the documentation that I will create.
->
-> This sounds promising.
->
 
-Thanks.
+See?  There is no *one* way to do things.  They all have benefits and
+tradeoffs.  Editing patches in a way that you don't break them such
+that they don't apply is a bit of an advanced skill, and it's possible
+that you can break things.  But as long as you know enough git
+commands so that you are creating new branches and then modifying the
+commits on the newer branches, it's actually pretty hard to lose data
+with git.
 
-> Regards,
-> Markus
+> I apologize if I said anything that was confusing (English is not my
+> native tongue). I wanted to say that is not necessary send previous
+> patch v1 because I sent it before. For instance, if I send v20, is
+> necessary send 19 previous versions to mailing list? How usually is
+> managed? As format-patch do?, sending only last version with links to
+> previous versions? Sorry for my question, but I think that send again
+> the previous versions is not necessary and will saturate the mailing
+> list, but it is only my modest opinion, the important thing is how it is
+> usually done.
 
---=20
-Regards
-Oscar Megia L=C3=B3pez
+So in *general* it's pretty rare that you'll need to send that many
+versions of the patch series to the list.  If you are getting to v20,
+it may be a sign that you have too many patches in a patch series.  In
+general, it's hard for people to maintain enough concentation to
+review more than 6 to 10 patches in a patch series.  So see if you can
+break up your patch series into smaller chunks.  An additional benefit
+is if you're going in the wrong direction, you can course course
+correct that much easier.
+
+Most of the time, for complex patches, the cover letter will have
+something like this at the end of the letter:
+
+    v4
+      * list of changes since V3
+      * more changes
+    v3
+      * list of changes since v2
+      * lorem ipsum...
+    v2
+      * list of changes since v1
+      * ...
+
+That's mostly because people are copying the cover letter from the
+previous version and then editing it, and it's a bit eaisier to just
+to add the list of changes since the last version, and it's extra
+effort to delete the previous changes, so why not?
+
+						- Ted
