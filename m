@@ -2,158 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 453D8768A5C
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 05:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903A2769196
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 11:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjGaDfA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 30 Jul 2023 23:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S232198AbjGaJXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jul 2023 05:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGaDfA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 30 Jul 2023 23:35:00 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DA919A
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a1c2d69709so7299763b6e.1
-        for <linux-ext4@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
+        with ESMTP id S231576AbjGaJWI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 05:22:08 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C36118C
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jul 2023 02:20:07 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a4875e65a3so2906390b6e.2
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jul 2023 02:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690795205; x=1691400005;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8jBdzLQJ+ZLP+jbMf7tETdvXCRLEIi7fVyBcUhx2BTg=;
+        b=Bdwz9Y0wQHMxVwXK8xqcL/6Pvj2xREuvLjJFXw3ups7PK8CbWbTNGqo3q2D8SLd9/C
+         3MmAzNxyVnAZQe2wkyICVIrZLvqQYKHn/LSzDiDDEwxHXmYY7oGdbL/TCqO5cWTVztuS
+         h6X6z8X7Wn+eeTnScPZoK0MhNvqtwGWMai85kRPuNfR18qrvpzFs4ngIopkQy/kcrYve
+         wzOXoUxl2XlXVK2nIEB8qL+tiRHnMNLSIUwOqVvDor1zwhBxU+7XBvsnR3ZcqHWDfeET
+         O56b+aAVVzA22ujZ4gm4D5clU9GkGKurjGFo+DdF1QkpJPAxJOGH3spzmQQhr8tid0lP
+         qlNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690774497; x=1691379297;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20221208; t=1690795205; x=1691400005;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=eNn46kxg48m+Q5oWGr+r8mpJ1OOx1r1wF8Gt6l4ZDzw=;
-        b=KoM+J1Yg4r15HQ8vYTeMhZvWiiuwOYvDOJMtO/RZaQHH0XXi5YWvCHFtbDMdh6Lt1s
-         ZdYSLDAmpnr95f0aylMDKh0FCu52ZKCtqWcxulMTXZe3V5TKHBgzDMjoSWY2fIfaV2Td
-         Bg1O6WdcRigmnkogj8PewZ61w5YpLxbg/LDE4gXEgK9cw0kr5OQEtVN9xVLQ45rcSktV
-         PdyXkQs87pgI6HLShqkv4eRkgkrZj1v3ZKK6LuXXDzL6HoMgh20aA/ChJuctbc9bBgeb
-         yIWZ5Yn9TqaHnrjFFFKFKeCKEBMCVd7najCaLaqGjzGN+c2bQknw39txmPXiIBk+7Xc9
-         ep7Q==
-X-Gm-Message-State: ABy/qLZ+xRO8RcH7NHfiKoH9ortjHvx0SJEOiOVYrlceMJNerHAlOBVk
-        WHss8Xjz+RCjE4VfQa5VXRN+O7al/87+yrbP8MQMiz6o+EMV
-X-Google-Smtp-Source: APBJJlEZebHKiiADqjSYSifoPxsJOxzd9K6nGEmHSsFY8PSZQvn/2D2VpKn+ESfRoYFYgPIMFC4LcL0doQYHFZBfAR+leFnYYTEG
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:158c:b0:3a4:1f25:7508 with SMTP id
- t12-20020a056808158c00b003a41f257508mr17127033oiw.0.1690774497775; Sun, 30
- Jul 2023 20:34:57 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 20:34:57 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000055d5e90601c01dee@google.com>
-Subject: [syzbot] [ext4?] WARNING: locking bug in ext4_xattr_inode_update_ref (2)
-From:   syzbot <syzbot+6699abaff302165de416@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        bh=8jBdzLQJ+ZLP+jbMf7tETdvXCRLEIi7fVyBcUhx2BTg=;
+        b=MyaPb1wQz1789IhHzdKZ+UFJR0181J0oY50MCqnOLbb4QPd0UjUU0aEsxrUnAXz5oA
+         zi2Hx89uA8uhly0DSsaCi9jr7hwRK2kYhjPl2DfofmPZ4rIcqVjfYZgPIqRtrCvtkxQc
+         ASCgSuYnHdGtkQS8OPGWGB/zh0ghHxA0J2i2Q13i4m2WkvzAmh0kl62xdJvtWDWgyKe+
+         atNmmuIFMMuabiyqtSusI6EVi6DjKROx2fjHYeaYd4BKBMEHmFrTkMy6uTiYjgtXEi67
+         nTzPQ3bB7t3/xpxRXI9DkhmvLjvznhn5o6JA27DA5YvDVWHRubVB5IgzUon83HOaBfur
+         wp0g==
+X-Gm-Message-State: ABy/qLYYvJuHo8dK+PNlHfdxB466Xu3Xr8MBv7GoD9i3gIg7tG0iGYXO
+        PYGQqfXKs/Nz7fNhW2DNv54=
+X-Google-Smtp-Source: APBJJlEk5M23CN9YxU1VX5sV8lrXUObPRDezT83G8kARrN5tPDSyW43qESfQk0xBpdPwYiFFoCxtvw==
+X-Received: by 2002:a05:6808:220d:b0:3a7:1962:d7ff with SMTP id bd13-20020a056808220d00b003a71962d7ffmr4935469oib.57.1690795204734;
+        Mon, 31 Jul 2023 02:20:04 -0700 (PDT)
+Received: from dw-tp ([129.41.58.23])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a19c900b00267c49d74e8sm8193010pjj.42.2023.07.31.02.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 02:20:04 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 14:49:56 +0530
+Message-Id: <87y1iwwi83.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Wang Jianjian <wangjianjian0@foxmail.com>,
+        linux-ext4@vger.kernel.org
+Cc:     wangjianjian0@foxmail.com
+Subject: Re: [PATCH] jbd2: Remove unused t_handle_lock
+In-Reply-To: <tencent_DBB7534F4FC71E2788D13206DA966281D806@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+Wang Jianjian <wangjianjian0@foxmail.com> writes:
 
-syzbot found the following issue on:
+> Since commit f7f497cb7024 ("jbd2: kill t_handle_lock
+> transaction spinlock"), this lock has been no use.
+>
+Thanks for catching it. We should add fixes tag too.
 
-HEAD commit:    0ba5d0720577 Add linux-next specific files for 20230726
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1747a881a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f33fb77ef67a25e1
-dashboard link: https://syzkaller.appspot.com/bug?extid=6699abaff302165de416
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1217c65ea80000
+Fixes: f7f497cb7024 ("jbd2: kill t_handle_lock transaction spinlock")
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2fa09c6312ae/disk-0ba5d072.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7361000a4380/vmlinux-0ba5d072.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48a015458a58/bzImage-0ba5d072.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/405ee39c557d/mount_0.gz
+With that feel free to add - 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6699abaff302165de416@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-Looking for class "&ea_inode->i_rwsem" with key ext4_fs_type, but found a different class "&sb->s_type->i_mutex_key" with the same key
-WARNING: CPU: 0 PID: 5364 at kernel/locking/lockdep.c:940 look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
-Modules linked in:
-CPU: 0 PID: 5364 Comm: syz-executor.3 Not tainted 6.5.0-rc3-next-20230726-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
-Code: 59 49 8b 14 24 48 81 fa a0 d9 49 90 74 4c 80 3d 43 17 60 04 00 75 43 48 c7 c7 00 82 6c 8a c6 05 33 17 60 04 01 e8 03 f2 16 f7 <0f> 0b eb 2c 89 74 24 04 e8 36 ae e7 f9 8b 74 24 04 48 c7 c7 40 81
-RSP: 0018:ffffc90004a4f008 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: ffffffff918a53c0 RCX: 0000000000000000
-RDX: ffff88802a8ebb80 RSI: ffffffff814d5b56 RDI: 0000000000000001
-RBP: ffffffff8cc46c78 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff888066815e00
-R13: ffff888066815e00 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f046301d6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020002000 CR3: 000000002a7c9000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- register_lock_class+0xbd/0x1320 kernel/locking/lockdep.c:1292
- __lock_acquire+0x13c/0x5de0 kernel/locking/lockdep.c:5021
- lock_acquire kernel/locking/lockdep.c:5761 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
- down_write+0x93/0x200 kernel/locking/rwsem.c:1573
- inode_lock include/linux/fs.h:771 [inline]
- ext4_xattr_inode_update_ref+0xa6/0x5c0 fs/ext4/xattr.c:1042
- ext4_xattr_inode_inc_ref fs/ext4/xattr.c:1088 [inline]
- ext4_xattr_inode_inc_ref_all fs/ext4/xattr.c:1115 [inline]
- ext4_xattr_block_set+0x2305/0x30e0 fs/ext4/xattr.c:2159
- ext4_xattr_set_handle+0xd6e/0x1420 fs/ext4/xattr.c:2456
- ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
- __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
- __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
- vfs_setxattr+0x146/0x350 fs/xattr.c:322
- do_setxattr+0x142/0x170 fs/xattr.c:630
- setxattr+0x159/0x170 fs/xattr.c:653
- path_setxattr+0x1a3/0x1d0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xc4/0x160 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f046c07cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f046301d0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 00007f046c19c050 RCX: 00007f046c07cb29
-RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 00000000200000c0
-RBP: 00007f046c0c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000002000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f046c19c050 R15: 00007ffd0e4f6698
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-ritesh
