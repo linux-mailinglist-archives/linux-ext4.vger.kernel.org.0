@@ -2,137 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509437699F9
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 16:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE946769AF5
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 17:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbjGaOqH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jul 2023 10:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        id S231831AbjGaPli (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jul 2023 11:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjGaOqG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 10:46:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A665B6;
-        Mon, 31 Jul 2023 07:46:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S231510AbjGaPli (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 11:41:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77980171B;
+        Mon, 31 Jul 2023 08:41:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 199CF1F854;
-        Mon, 31 Jul 2023 14:46:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690814764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XPdIQm6lw+iMDcuyergAy0WqRBg61RsIM13C6k5yY04=;
-        b=OgD+1tFLQbf02OGazL3QZNSeqvVKobiVUeaL6F12nJxNVpRJClI4G+JKgIJ4NZVHGZtuM0
-        tIUuNWKsvNT8Uxu2ljZVUnpw7ZwXldyObS8XKIEmXlKA5sMP6R/aUEla258P0RxKiiUY2K
-        Th3bdJ97Q25pNBw4heNtI8BgtKuUQDk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690814764;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XPdIQm6lw+iMDcuyergAy0WqRBg61RsIM13C6k5yY04=;
-        b=v0B6MyyuwFONgjvOCUy4haXJjwH9hbPB01oPAIkQx6V7OojJxIGkazXChJfeQXSLXp0mTx
-        SKO/f3jSZWcflAAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AACE133F7;
-        Mon, 31 Jul 2023 14:46:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id z7+PAizJx2TBYAAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 31 Jul 2023 14:46:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 94121A069C; Mon, 31 Jul 2023 16:46:03 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 16:46:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Theodore Tso <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 7/7] buffer: Remove set_bh_page()
-Message-ID: <20230731144603.4ehtpamxbhhd7fv5@quack3>
-References: <20230713035512.4139457-1-willy@infradead.org>
- <20230713035512.4139457-8-willy@infradead.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17279611B3;
+        Mon, 31 Jul 2023 15:41:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C8BAC433C9;
+        Mon, 31 Jul 2023 15:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690818094;
+        bh=pfPkl/XcTZd6RMGu2uh5vTemrvIMiriILRyHow4+KYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lit37bnl8taUcq0x/ZnX6IWyhn/ACxWhlqLkYm57pz06QMq+FitKMIbOvp6bahXRI
+         O9nBTwtPke2LxFZahShly7hstfWFfVQeP5zVO1HB7X4wW8lmv60svVOKl06gLSbzzU
+         Ooyr2l96Srw8sA1eu1JJGYhiYF6/97cHMkDO4LqUZgi96rP+phJ4yJVW3Rf4MPB55/
+         FuvNH35z2wUjvrOjI4JTn/fHEVg6IZAUdb6gTIrEPM8hjqSKDtwnd8QhNohxUkez2b
+         NF6GPPUbehocPDE3c0fEmEIlPzhdUlSRY1WroXgMFWkB93bQITmMxh81JiP59Xkq49
+         TraiyEWY+cRsA==
+Date:   Mon, 31 Jul 2023 08:41:33 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     zhangshida <starzhangzsd@gmail.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn
+Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
+Message-ID: <20230731154133.GA11332@frogsfrogsfrogs>
+References: <20230731010104.1781335-1-zhangshida@kylinos.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713035512.4139457-8-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230731010104.1781335-1-zhangshida@kylinos.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 13-07-23 04:55:12, Matthew Wilcox (Oracle) wrote:
-> With all users converted to folio_set_bh(), remove this function.
+On Mon, Jul 31, 2023 at 09:01:04AM +0800, zhangshida wrote:
+> From: Shida Zhang <zhangshida@kylinos.cn>
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> a problem occurred when more than 13 million files were directly created
+> under a directory:
+> 
+> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
+> 
+> When enough files are created, the fake_dirent->reclen will be 0xffff.
+> it doesn't equal to the blocksize 65536, i.e. 0x10000.
+> 
+> But it is not the same condition when blocksize equals to 4k.
+> when enough file are created, the fake_dirent->reclen will be 0x1000.
+> it equals to the blocksize 4k, i.e. 0x1000.
+> 
+> The problem seems to be related to the limitation of the 16-bit field
+> when the blocksize is set to 64k. To address this, Modify the check so
+> as to handle it properly.
 
-Sure. Feel free to add:
+urughghahrhrhr<shudder>
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Sorry that I missed that rec_len is an encoded number, not a plain le16
+integer...
 
-								Honza
-
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
 > ---
->  fs/buffer.c                 | 15 ---------------
->  include/linux/buffer_head.h |  2 --
->  2 files changed, 17 deletions(-)
+> v1->v2:
+>   Use a better way to check the condition, as suggested by Andreas.
 > 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 587e4d4af9de..f0563ebae75f 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -1539,21 +1539,6 @@ void invalidate_bh_lrus_cpu(void)
->  	bh_lru_unlock();
->  }
+>  fs/ext4/namei.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 0caf6c730ce3..fffed95f8531 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
+>  	struct ext4_dir_entry *dp;
+>  	struct dx_root_info *root;
+>  	int count_offset;
+> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
 >  
-> -void set_bh_page(struct buffer_head *bh,
-> -		struct page *page, unsigned long offset)
-> -{
-> -	bh->b_page = page;
-> -	BUG_ON(offset >= PAGE_SIZE);
-> -	if (PageHighMem(page))
-> -		/*
-> -		 * This catches illegal uses and preserves the offset:
-> -		 */
-> -		bh->b_data = (char *)(0 + offset);
-> -	else
-> -		bh->b_data = page_address(page) + offset;
-> -}
-> -EXPORT_SYMBOL(set_bh_page);
-> -
->  void folio_set_bh(struct buffer_head *bh, struct folio *folio,
->  		  unsigned long offset)
->  {
-> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-> index a7377877ff4e..06566aee94ca 100644
-> --- a/include/linux/buffer_head.h
-> +++ b/include/linux/buffer_head.h
-> @@ -194,8 +194,6 @@ void buffer_check_dirty_writeback(struct folio *folio,
->  void mark_buffer_dirty(struct buffer_head *bh);
->  void mark_buffer_write_io_error(struct buffer_head *bh);
->  void touch_buffer(struct buffer_head *bh);
-> -void set_bh_page(struct buffer_head *bh,
-> -		struct page *page, unsigned long offset);
->  void folio_set_bh(struct buffer_head *bh, struct folio *folio,
->  		  unsigned long offset);
->  bool try_to_free_buffers(struct folio *);
+> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
+> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
+>  		count_offset = 8;
+>  	else if (le16_to_cpu(dirent->rec_len) == 12) {
+
+...but what about all the other le16_to_cpu(ext4_dir_entry{,_2}.rec_len)
+accesses in this file?  Don't those also need to be converted to
+ext4_rec_len_from_disk calls?
+
+Also,
+Fixes: dbe89444042ab ("ext4: Calculate and verify checksums for htree nodes")
+
+--D
+
+>  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
 > -- 
-> 2.39.2
+> 2.27.0
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
