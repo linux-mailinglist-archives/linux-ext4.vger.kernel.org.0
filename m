@@ -2,48 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB51769655
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 14:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD417696CB
+	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 14:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjGaMa1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jul 2023 08:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S230085AbjGaMwU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jul 2023 08:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjGaMa0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 08:30:26 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31818B2;
-        Mon, 31 Jul 2023 05:30:25 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RDyD04VMjzNmcQ;
-        Mon, 31 Jul 2023 20:26:56 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 31 Jul 2023 20:30:21 +0800
-Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
-To:     zhangshida <starzhangzsd@gmail.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhangshida@kylinos.cn>
-References: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <558eed4b-3817-671e-48f1-3f9933486876@huawei.com>
-Date:   Mon, 31 Jul 2023 20:30:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S229669AbjGaMwT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 08:52:19 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60106E46
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jul 2023 05:52:18 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-403e7db1e96so10918531cf.0
+        for <linux-ext4@vger.kernel.org>; Mon, 31 Jul 2023 05:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690807937; x=1691412737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1q4RU+jcc8rY/tzWr+eTjZHyit/9dZraZT0AokBeR0A=;
+        b=PqGAavr3HytB6jbqYh5/YE0/nC7+AtSzi7Iz6d4DF2b+5r2bX7AyBzKCUdhZ3KptA7
+         HXe9uq2BxcP2MUKAqNmQ6ZWYOyKOHdZQi2njSWArXFzdFBkDEEIUgqO3GcBZsO21LjLA
+         mBCdHt/vpc5kphpZ4xh6qlvedTgCK/TuuP2EuvbHTf3pnYF1HRtkNli6jpNEdMtBIg79
+         NuaVfkQqYceiP80gI9pLFUUtfnglebIbiGKXeWb0lJ+lNyjycPuHwp7lQ2BTx6mZIijr
+         7iTvIfgMVEi5plYvtX7ySa4WKEgOc9bSbGm0RABS/zUPDUeIotQsuY2DcmgZtfQplDBd
+         7KzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690807937; x=1691412737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1q4RU+jcc8rY/tzWr+eTjZHyit/9dZraZT0AokBeR0A=;
+        b=HRhQcEScREDnhDOeI7lC/+9MgnMjNACWyj2IjaPYXf0zm6hqs6DGrAQ6IUjNxXfiDr
+         4uqvvF2FXlExkEmcD6aXrCy574Jq14uBGEjcnj7h6ZTKqFcpyMiBEZTwAhcCO0NihZTb
+         9uLBKIGOWT6j2GkOR+ELWMv9A+Gub4Y/53srMA5vNHYssBbz/W04jAFqY7z6ySvsFrhc
+         VgEhrMV0i3unHvX7GqHDht7zSat0Gb1GK24UmlLN+ftTmBtWL1rXP0ekBRlxNTetgGlL
+         SRC6GlnNV1oCV4oje1aftVvXjAb8SxgxscGKT0Nx0UTU3UH8l7UtFDy1UDULlnOBvAsi
+         Hndw==
+X-Gm-Message-State: ABy/qLYyro3W0RUWX+QmbL/c8U5LXuTw+y3i6IEJ2rBvD2uF0h918iE9
+        BhRXlkyRU5BUSckJLMHBPUNQb1fJ/3b6q0pxvL0nxg==
+X-Google-Smtp-Source: APBJJlGfio3r0JSORA53QEaV2Tm8k8v+feUfyN/g7bVJkXRI9eFhiegwqKRQMq/3NZs9Hr/WCEA9uazVlO65hDamqHA=
+X-Received: by 2002:a05:622a:19a6:b0:40e:b4f2:b523 with SMTP id
+ u38-20020a05622a19a600b0040eb4f2b523mr5040304qtc.6.1690807937477; Mon, 31 Jul
+ 2023 05:52:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.34]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230725121848.26865-1-changfengnan@bytedance.com> <810f6c3a-89a1-837f-fd79-46f1fd32bbe7@linux.dev>
+In-Reply-To: <810f6c3a-89a1-837f-fd79-46f1fd32bbe7@linux.dev>
+From:   Fengnan Chang <changfengnan@bytedance.com>
+Date:   Mon, 31 Jul 2023 20:52:06 +0800
+Message-ID: <CAPFOzZurP23oCENeP57f7Kj-4uCf9bN9ERZQTbdZJh_d5rUEwg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3] ext4: improve trim efficiency
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     adilger.kernel@dilger.ca, tytso@mit.edu,
+        linux-ext4@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,54 +69,151 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/7/31 9:01, zhangshida wrote:
-> From: Shida Zhang <zhangshida@kylinos.cn>
-> 
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
-> 
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-> 
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
-> 
-> But it is not the same condition when blocksize equals to 4k.
-> when enough file are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
-> 
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k. To address this, Modify the check so
-> as to handle it properly.
-> 
+Hi Ted, Andreas:
+    Any comments ?
 
-Thanks for the patch. It works and looks good to me.
+Thanks.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> ---
-> v1->v2:
->   Use a better way to check the condition, as suggested by Andreas.
-> 
->  fs/ext4/namei.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..fffed95f8531 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
->  	struct ext4_dir_entry *dp;
->  	struct dx_root_info *root;
->  	int count_offset;
-> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
->  
-> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
->  		count_offset = 8;
->  	else if (le16_to_cpu(dirent->rec_len) == 12) {
->  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> 
+Guoqing Jiang <guoqing.jiang@linux.dev> =E4=BA=8E2023=E5=B9=B47=E6=9C=8831=
+=E6=97=A5=E5=91=A8=E4=B8=80 10:27=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 7/25/23 20:18, Fengnan Chang wrote:
+> > In commit a015434480dc("ext4: send parallel discards on commit
+> > completions"), issue all discard commands in parallel make all
+> > bios could merged into one request, so lowlevel drive can issue
+> > multi segments in one time which is more efficiency, but commit
+> > 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
+> > seems broke this way, let's fix it.
+> > In my test:
+> > 1. create 10 normal files, each file size is 10G.
+> > 2. deallocate file, punch a 16k holes every 32k.
+> > 3. trim all fs.
+> >
+> > the time of fstrim fs reduce from 6.7s to 1.3s.
+> >
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Closes: https://lore.kernel.org/oe-lkp/202307171455.ee68ef8b-oliver.san=
+g@intel.com
+> > Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
+> > ---
+> >   fs/ext4/mballoc.c | 49 +++++++++++++++++++++++++++++++++++++++++-----=
+-
+> >   1 file changed, 43 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > index a2475b8c9fb5..b75ca1df0d30 100644
+> > --- a/fs/ext4/mballoc.c
+> > +++ b/fs/ext4/mballoc.c
+> > @@ -6790,7 +6790,8 @@ int ext4_group_add_blocks(handle_t *handle, struc=
+t super_block *sb,
+> >    * be called with under the group lock.
+> >    */
+> >   static int ext4_trim_extent(struct super_block *sb,
+> > -             int start, int count, struct ext4_buddy *e4b)
+> > +             int start, int count, bool noalloc, struct ext4_buddy *e4=
+b,
+> > +             struct bio **biop, struct ext4_free_data **entryp)
+> >   __releases(bitlock)
+> >   __acquires(bitlock)
+> >   {
+> > @@ -6812,9 +6813,16 @@ __acquires(bitlock)
+> >        */
+> >       mb_mark_used(e4b, &ex);
+> >       ext4_unlock_group(sb, group);
+> > -     ret =3D ext4_issue_discard(sb, group, start, count, NULL);
+> > +     ret =3D ext4_issue_discard(sb, group, start, count, biop);
+> > +     if (!ret && !noalloc) {
+> > +             struct ext4_free_data *entry =3D kmem_cache_alloc(ext4_fr=
+ee_data_cachep,
+> > +                             GFP_NOFS|__GFP_NOFAIL);
+> > +             entry->efd_start_cluster =3D start;
+> > +             entry->efd_count =3D count;
+> > +             *entryp  =3D entry;
+> > +     }
+> > +
+> >       ext4_lock_group(sb, group);
+> > -     mb_free_blocks(NULL, e4b, start, ex.fe_len);
+> >       return ret;
+> >   }
+> >
+> > @@ -6824,26 +6832,40 @@ static int ext4_try_to_trim_range(struct super_=
+block *sb,
+> >   __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+> >   __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+> >   {
+> > -     ext4_grpblk_t next, count, free_count;
+> > +     ext4_grpblk_t next, count, free_count, bak;
+> >       void *bitmap;
+> > +     struct ext4_free_data *entry =3D NULL, *fd, *nfd;
+> > +     struct list_head discard_data_list;
+> > +     struct bio *discard_bio =3D NULL;
+> > +     struct blk_plug plug;
+> > +     bool noalloc =3D false;
+> > +
+> > +     INIT_LIST_HEAD(&discard_data_list);
+> >
+> >       bitmap =3D e4b->bd_bitmap;
+> >       start =3D (e4b->bd_info->bb_first_free > start) ?
+> >               e4b->bd_info->bb_first_free : start;
+> >       count =3D 0;
+> >       free_count =3D 0;
+> > +     bak =3D start;
+> >
+> > +     blk_start_plug(&plug);
+> >       while (start <=3D max) {
+> >               start =3D mb_find_next_zero_bit(bitmap, max + 1, start);
+> >               if (start > max)
+> >                       break;
+> >               next =3D mb_find_next_bit(bitmap, max + 1, start);
+> > +             /* when only one segment, there is no need to alloc entry=
+ */
+> > +             noalloc =3D (free_count =3D=3D 0) && (next >=3D max);
+> >
+> >               if ((next - start) >=3D minblocks) {
+> > -                     int ret =3D ext4_trim_extent(sb, start, next - st=
+art, e4b);
+> > +                     int ret =3D ext4_trim_extent(sb, start, next - st=
+art, noalloc, e4b,
+> > +                                                     &discard_bio, &en=
+try);
+> >
+> > -                     if (ret && ret !=3D -EOPNOTSUPP)
+> > +                     if (ret < 0)
+> >                               break;
+> > +                     if (entry)
+> > +                             list_add_tail(&entry->efd_list, &discard_=
+data_list);
+> >                       count +=3D next - start;
+> >               }
+> >               free_count +=3D next - start;
+> > @@ -6863,6 +6885,21 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group=
+))
+> >               if ((e4b->bd_info->bb_free - free_count) < minblocks)
+> >                       break;
+> >       }
+> > +     if (discard_bio) {
+> > +             ext4_unlock_group(sb, e4b->bd_group);
+> > +             submit_bio_wait(discard_bio);
+> > +             bio_put(discard_bio);
+> > +             ext4_lock_group(sb, e4b->bd_group);
+> > +     }
+> > +     blk_finish_plug(&plug);
+> > +
+> > +     if (noalloc)
+> > +             mb_free_blocks(NULL, e4b, bak, free_count);
+> > +
+> > +     list_for_each_entry_safe(fd, nfd, &discard_data_list, efd_list) {
+> > +             mb_free_blocks(NULL, e4b, fd->efd_start_cluster, fd->efd_=
+count);
+> > +             kmem_cache_free(ext4_free_data_cachep, fd);
+> > +     }
+> >
+> >       return count;
+> >   }
+>
+> With the new version, I don't see big difference from my test.
+>
+> Thanks,
+> Guoqing
