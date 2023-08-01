@@ -2,103 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FCE76A924
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 08:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5298E76A91E
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 08:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjHAGb6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Aug 2023 02:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S231461AbjHAGby (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Aug 2023 02:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjHAGbx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 02:31:53 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E9F114;
-        Mon, 31 Jul 2023 23:31:51 -0700 (PDT)
+        with ESMTP id S229959AbjHAGbw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 02:31:52 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EFEE7;
+        Mon, 31 Jul 2023 23:31:50 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFQHh5X9sz4f3lXm;
-        Tue,  1 Aug 2023 14:31:44 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFQHk69Bvz4f3lfk;
+        Tue,  1 Aug 2023 14:31:46 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDnjOrQpshkMcvqPA--.21719S2;
-        Tue, 01 Aug 2023 14:31:46 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDnjOrQpshkMcvqPA--.21719S3;
+        Tue, 01 Aug 2023 14:31:47 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
         ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v3 00/10] A few fixes and cleanups to mballoc
-Date:   Tue,  1 Aug 2023 22:31:54 +0800
-Message-Id: <20230801143204.2284343-1-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 01/10] ext4: correct grp validation in ext4_mb_good_group
+Date:   Tue,  1 Aug 2023 22:31:55 +0800
+Message-Id: <20230801143204.2284343-2-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20230801143204.2284343-1-shikemeng@huaweicloud.com>
+References: <20230801143204.2284343-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDnjOrQpshkMcvqPA--.21719S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF4xAr1xAw18Kr1xXFy7ZFb_yoW8Xw13pr
-        ZxGry3K34ftr17JFZxCa1Fq3WrWws7Ar1UXF1ag34kAry7CrykZ3ZrKF18ZFyUAFWDGF15
-        XrnxZF48C3WUC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
-        x2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0p
-        RQo7tUUUUU=
+X-CM-TRANSID: Syh0CgDnjOrQpshkMcvqPA--.21719S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF13ZFW5Aw1UKw1xJF45GFg_yoWfArb_GF
+        yDAr48AFWfJ340k3WIvwsayrW0qF4xXr45Xa93tr43ZF45WF48Aa4kJry3AFs7W3y2yFy5
+        Aa43JrWUtrWS9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb6kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
+        A2jI8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28C
+        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI
+        8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
+        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvj
+        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I
+        1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWU
+        JVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7V
+        AKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42
+        IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRZOzsUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-v2->v3:
--Correct comment of patch 10 on top of [1]. Remove the RVB from patch
-10 as it changed.
--Collect RVG from Ritesh to Patch 1.
-v1->v2:
-Collect review-by from Ritesh and do improve as Ritesh suggested:
--Keep checks inside unlikely() in patch 1
--Add missed fixes tags in patch 1, 2 and 10
--Fix typo, fix conflic and kill one more return in patch 5
+Group corruption check will access memory of grp and will trigger kernel
+crash if grp is NULL. So do NULL check before corruption check.
+
+Fixes: 5354b2af3406 ("ext4: allow ext4_get_group_info() to fail")
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 3e34e37392fb..556b7cd27f76 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2553,7 +2553,7 @@ static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
  
-Hi all, this series contains some random fixes and cleanups to mballoc
-which include correct grp validation, fix data overflow and so on.
-More details can be found in respective patches.
-Besides, 'kvm-xfstest smoke' runs successfully without error.
-
-Thanks!
-
-[1] https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
-
-Kemeng Shi (10):
-  ext4: correct grp validation in ext4_mb_good_group
-  ext4: avoid potential data overflow in next_linear_group
-  ext4: return found group directly in
-    ext4_mb_choose_next_group_p2_aligned
-  ext4: use is_power_of_2 helper in ext4_mb_regular_allocator
-  ext4: remove unnecessary return for void function
-  ext4: replace the traditional ternary conditional operator with with
-    max()/min()
-  ext4: remove unused ext4_{set}/{clear}_bit_atomic
-  ext4: return found group directly in
-    ext4_mb_choose_next_group_goal_fast
-  ext4: return found group directly in
-    ext4_mb_choose_next_group_best_avail
-  ext4: correct some stale comment of criteria
-
- fs/ext4/ext4.h    |  2 --
- fs/ext4/mballoc.c | 89 ++++++++++++++++++-----------------------------
- 2 files changed, 33 insertions(+), 58 deletions(-)
-
+ 	BUG_ON(cr < CR_POWER2_ALIGNED || cr >= EXT4_MB_NUM_CRS);
+ 
+-	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp) || !grp))
++	if (unlikely(!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+ 		return false;
+ 
+ 	free = grp->bb_free;
 -- 
 2.30.0
 
