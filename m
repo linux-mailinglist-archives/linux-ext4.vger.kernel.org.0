@@ -2,42 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFDE76A925
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 08:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1FC76A926
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 08:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjHAGb7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Aug 2023 02:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        id S231631AbjHAGcA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Aug 2023 02:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjHAGbx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 02:31:53 -0400
+        with ESMTP id S231474AbjHAGby (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 02:31:54 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A99E48;
-        Mon, 31 Jul 2023 23:31:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F1AE7;
+        Mon, 31 Jul 2023 23:31:53 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFQHk6zKpz4f3lY5;
-        Tue,  1 Aug 2023 14:31:46 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFQHl2ZN1z4f3lw2;
+        Tue,  1 Aug 2023 14:31:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDnjOrQpshkMcvqPA--.21719S8;
-        Tue, 01 Aug 2023 14:31:49 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDnjOrQpshkMcvqPA--.21719S9;
+        Tue, 01 Aug 2023 14:31:50 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
         ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v3 06/10] ext4: replace the traditional ternary conditional operator with with max()/min()
-Date:   Tue,  1 Aug 2023 22:32:00 +0800
-Message-Id: <20230801143204.2284343-7-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 07/10] ext4: remove unused ext4_{set}/{clear}_bit_atomic
+Date:   Tue,  1 Aug 2023 22:32:01 +0800
+Message-Id: <20230801143204.2284343-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230801143204.2284343-1-shikemeng@huaweicloud.com>
 References: <20230801143204.2284343-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDnjOrQpshkMcvqPA--.21719S8
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF45XryxZrW8uFW8JF4kXrb_yoWDtrb_Ga
-        4UAr18Gry3GrWFkry0qrsYvr48uan5try5WrWUtFW8XFyjq3yFvw1DZr43CF4xuFWjyrsF
-        ywn3uFn7GF1IgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbDxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+X-CM-TRANSID: Syh0CgDnjOrQpshkMcvqPA--.21719S9
+X-Coremail-Antispam: 1UD129KBjvdXoWruFyUXr1kGF45Wr4xXFy8AFb_yoWfuFX_J3
+        4IvF4kGryYk3Z7KFs5u3WkJF1ktrnxtr18uFyrJr1ruFyaqan8Ar4kAryjvw1rWr4UXFy0
+        yrn7tr1YqFykXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbDkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
         M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
@@ -48,9 +48,9 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7GF45XryxZrW8uFW8JF4kXrb_yoWDtrb_Ga
         8v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
         xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrx
         kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v2
-        6r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJw
-        CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRKfOwUUUU
-        U
+        6F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr
+        1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRiVbyDUU
+        UUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -63,38 +63,30 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Replace the traditional ternary conditional operator with with max()/min()
+Remove ext4_set_bit_atomic and ext4_clear_bit_atomic which are defined but not
+used.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- fs/ext4/mballoc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/ext4/ext4.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 2f26a91595ca..35b7a0ba25a3 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6820,8 +6820,7 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 	void *bitmap;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index ea87850c1bb6..a9b1eeb6bf09 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1249,10 +1249,8 @@ struct ext4_inode_info {
  
- 	bitmap = e4b->bd_bitmap;
--	start = (e4b->bd_info->bb_first_free > start) ?
--		e4b->bd_info->bb_first_free : start;
-+	start = max(e4b->bd_info->bb_first_free, start);
- 	count = 0;
- 	free_count = 0;
- 
-@@ -7038,8 +7037,7 @@ ext4_mballoc_query_range(
- 
- 	ext4_lock_group(sb, group);
- 
--	start = (e4b.bd_info->bb_first_free > start) ?
--		e4b.bd_info->bb_first_free : start;
-+	start = max(e4b.bd_info->bb_first_free, start);
- 	if (end >= EXT4_CLUSTERS_PER_GROUP(sb))
- 		end = EXT4_CLUSTERS_PER_GROUP(sb) - 1;
- 
+ #define ext4_test_and_set_bit		__test_and_set_bit_le
+ #define ext4_set_bit			__set_bit_le
+-#define ext4_set_bit_atomic		ext2_set_bit_atomic
+ #define ext4_test_and_clear_bit		__test_and_clear_bit_le
+ #define ext4_clear_bit			__clear_bit_le
+-#define ext4_clear_bit_atomic		ext2_clear_bit_atomic
+ #define ext4_test_bit			test_bit_le
+ #define ext4_find_next_zero_bit		find_next_zero_bit_le
+ #define ext4_find_next_bit		find_next_bit_le
 -- 
 2.30.0
 
