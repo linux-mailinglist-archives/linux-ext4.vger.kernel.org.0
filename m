@@ -2,53 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B85776B85E
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 17:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC0676B98E
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 18:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbjHAPSf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Aug 2023 11:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S229880AbjHAQTL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Aug 2023 12:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbjHAPSc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 11:18:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082182102;
-        Tue,  1 Aug 2023 08:18:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 91A2461531;
-        Tue,  1 Aug 2023 15:18:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED480C433C8;
-        Tue,  1 Aug 2023 15:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690903109;
-        bh=iR0vxFbHHnoGoKhRMvkLfrUpLYKG6Zy8MO5fgey7/WE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R33CuhpMn3/kdUcPqTebZEgIk+MbCkDnO8EGLjqZNH4Ts1Fk4d+Dv8hTjt1nKx0ig
-         NhCfBsGyTlsL7BD/334bYwz70owny1S6yOIVmEijXb5Vu5nDiMUBVMOI7bT3z5CcXt
-         6Iyr7x5mF29qn00w/iHvY7PP1dSkqDPIAF2rVXg5R83zXqR2gzgLljSqTVdwr6q0eN
-         GHHYfzI4ETWP5zvhtOTcPQriZDPNixmcU/jRui0X58uMMkp4dK6iIVZmascTP5I2VW
-         2iqvk1SwAAb0apBIA6hMdtbLLYNlOauQBJcQ5M1yPOijaTOXSOBbzJWwI4VoQfLoP4
-         lH7uP3QNUsaIw==
-Date:   Tue, 1 Aug 2023 08:18:28 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     zhangshida <starzhangzsd@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
-Message-ID: <20230801151828.GB11332@frogsfrogsfrogs>
-References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
+        with ESMTP id S229641AbjHAQTK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 12:19:10 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DE21BD3
+        for <linux-ext4@vger.kernel.org>; Tue,  1 Aug 2023 09:19:07 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-63d170a649eso38275366d6.3
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Aug 2023 09:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690906746; x=1691511546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9bO4EMps/8stuDZiI8Gpdidb8h9+MIAhmvaNg3KYj1s=;
+        b=o4UnwJgpk8yeTzZUK1FZTs65eYsnacdGTDhjwzMy+DqQRhE2jTupyokcvRFqP1MKuo
+         qAu+yNtKzWXdHC5YGT3qGXgvBJ0yvodc24S05t5lVNoUZlrjld+c3ZYg84ALagFSl5E1
+         0e1IPmRVyqT2GVIRYdARMkHo0CkuvhYNhdAmnof9UiM53aClnQ1FS5ZSzeTK2gVSd53B
+         063XdvfBsZ51WyTLXABYzSrXYL1XyijHBazCJn4+IrTGw38FuZoFnqi2U6TZNyoEfv5r
+         ytN07iG/2nB0AbEtc586oI3xWMZoIT8TzfHqCOMBm0ZBpqNjIRXHSeGMlbbE1pfY9N/D
+         MP5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690906746; x=1691511546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9bO4EMps/8stuDZiI8Gpdidb8h9+MIAhmvaNg3KYj1s=;
+        b=k5ThTQNZigc+SwjpHLVxwLRcVyPLTzdtMZEX7HFItkosBrGVwcBF6FZd6RfEJV25W/
+         U4qeN0xzIgNsWkIBv7hkhfQb+BftDPOsBYj/FPA5MxQcHkZDO7GTXs1RJ7XAW+kkZ3aT
+         o9I0sqNsc8fZyIotGv8VoBIlZXRPp/ZnJfg4lsz1JMw5TZKTUuIhe0k2gFGc0p37Ind6
+         /wg/lr/ZGKVaoh82qtjUjNZ0aOvNA2inxnBgm87y9xf38FcEsBYlcIPalAKe4qtZVLgt
+         HA8UwgNU6Hlt9H6vcHLZCM1uhZxPkWAOV1UtI8Q5SVG/Ze005JhuqeC8rTZnGQrv6q2f
+         IaFA==
+X-Gm-Message-State: ABy/qLadPyTfzjYVn+xrk+/+IB0WF8ZpaT39ZRWkCNrcLZ2eM59hX1/w
+        bhhFmC6YBj1V18zUsu0CXsUGIyl6igBvY2DcuzrF6A==
+X-Google-Smtp-Source: APBJJlExjHsbEshbD/7fM07TlWTefBlG0GYpx+aMVrkgKVZzEhxPirjTfZFjF6Rla5/eWjDqzfKNP/t4CWrr7MCsFFs=
+X-Received: by 2002:ad4:5847:0:b0:635:fa7b:6c22 with SMTP id
+ de7-20020ad45847000000b00635fa7b6c22mr10424824qvb.55.1690906745972; Tue, 01
+ Aug 2023 09:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801112337.1856215-1-zhangshida@kylinos.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230725043310.1227621-1-suhui@nfschina.com>
+In-Reply-To: <20230725043310.1227621-1-suhui@nfschina.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 09:18:55 -0700
+Message-ID: <CAKwvOdn2Qn219Ys6vyR0Xryi_32XTARBWsfmuc3zhdH8TLREWQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: mballoc: avoid garbage value from err
+To:     Su Hui <suhui@nfschina.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, nathan@kernel.org,
+        trix@redhat.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,117 +71,47 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 07:23:37PM +0800, zhangshida wrote:
-> From: Shida Zhang <zhangshida@kylinos.cn>
-> 
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
-> 
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-> 
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
-> 
-> But it is not the same condition when blocksize equals to 4k.
-> when enough files are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
-> 
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k.
-> To address this, helpers like ext4_rec_len_{from,to}_disk has already
-> been introduce to complete the conversion between the encoded and the
-> plain form of rec_len.
-> 
-> So fix this one by using the helper, and all the other
-> le16_to_cpu(ext4_dir_entry{,_2}.rec_len) accesses in this file too.
-> 
-> Cc: stable@kernel.org
-> Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
-> Suggested-by: Andreas Dilger <adilger@dilger.ca>
-> Suggested-by: Darrick J. Wong <djwong@kernel.org>
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+On Mon, Jul 24, 2023 at 9:34=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
+>
+> clang's static analysis warning: fs/ext4/mballoc.c
+> line 4178, column 6, Branch condition evaluates to a garbage value.
+>
+> err is uninitialized and will be judged when 'len <=3D 0' or
+> it first enters the loop while the condition "!ext4_sb_block_valid()"
+> is true. Although this can't make problems now, it's better to
+> correct it.
+>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
 > ---
-> v1->v2:
->  Use the existing helper to covert the rec_len, as suggested by Andreas.
-> v2->v3:
->  1,Covert all the other rec_len if necessary, as suggested by Darrick.
->  2,Rephrase the commit message.
-> 
->  fs/ext4/namei.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..8cb377b8ad86 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -346,14 +346,14 @@ static struct ext4_dir_entry_tail *get_dirent_tail(struct inode *inode,
->  
->  #ifdef PARANOID
->  	struct ext4_dir_entry *d, *top;
-> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
->  
->  	d = (struct ext4_dir_entry *)bh->b_data;
->  	top = (struct ext4_dir_entry *)(bh->b_data +
-> -		(EXT4_BLOCK_SIZE(inode->i_sb) -
-> -		 sizeof(struct ext4_dir_entry_tail)));
-> -	while (d < top && d->rec_len)
-> +		(blocksize - sizeof(struct ext4_dir_entry_tail)));
-> +	while (d < top && ext4_rec_len_from_disk(d->rec_len, blocksize))
->  		d = (struct ext4_dir_entry *)(((void *)d) +
-> -		    le16_to_cpu(d->rec_len));
-> +		    ext4_rec_len_from_disk(d->rec_len, blocksize));
->  
->  	if (d != top)
->  		return NULL;
+> v2:
+>  - modify commit message
+>
+>  fs/ext4/mballoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 21b903fe546e..769000c970b0 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4084,7 +4084,7 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_f=
+sblk_t block,
+>         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+>         ext4_group_t group;
+>         ext4_grpblk_t blkoff;
+> -       int i, err;
+> +       int i, err =3D 0;
+>         int already;
+>         unsigned int clen, clen_changed, thisgrp_len;
+>
+> --
+> 2.30.2
+>
 
-This is sitll missing some pieces; what about this clause at line 367:
 
-	if (t->det_reserved_zero1 ||
-	    le16_to_cpu(t->det_rec_len) != sizeof(struct ext4_dir_entry_tail) ||
-	    t->det_reserved_zero2 ||
-	    t->det_reserved_ft != EXT4_FT_DIR_CSUM)
-		return NULL;
-
-> @@ -445,13 +445,13 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
->  	struct ext4_dir_entry *dp;
->  	struct dx_root_info *root;
->  	int count_offset;
-> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
->  
-> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
->  		count_offset = 8;
-> -	else if (le16_to_cpu(dirent->rec_len) == 12) {
-> +	else if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == 12) {
-
-Why not lift this ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ to a
-local variable?  @dirent doesn't change, right?
-
->  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> -		if (le16_to_cpu(dp->rec_len) !=
-> -		    EXT4_BLOCK_SIZE(inode->i_sb) - 12)
-> +		if (ext4_rec_len_from_disk(dp->rec_len, blocksize) != blocksize - 12)
->  			return NULL;
->  		root = (struct dx_root_info *)(((void *)dp + 12));
->  		if (root->reserved_zero ||
-
-What about dx_make_map?
-
-Here's all the opencoded access I could find:
-
-$ git grep le16.*rec_len fs/ext4/
-fs/ext4/namei.c:356:                le16_to_cpu(d->rec_len));
-fs/ext4/namei.c:367:        le16_to_cpu(t->det_rec_len) != sizeof(struct ext4_dir_entry_tail) ||
-fs/ext4/namei.c:449:    if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-fs/ext4/namei.c:451:    else if (le16_to_cpu(dirent->rec_len) == 12) {
-fs/ext4/namei.c:453:            if (le16_to_cpu(dp->rec_len) !=
-fs/ext4/namei.c:1338:                   map_tail->size = le16_to_cpu(de->rec_len);
-
---D
-
-> -- 
-> 2.27.0
-> 
+--=20
+Thanks,
+~Nick Desaulniers
