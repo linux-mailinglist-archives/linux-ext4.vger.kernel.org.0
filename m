@@ -2,148 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E95A5769C0E
-	for <lists+linux-ext4@lfdr.de>; Mon, 31 Jul 2023 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A9276A6F0
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Aug 2023 04:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbjGaQPE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 31 Jul 2023 12:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        id S229437AbjHAC1d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 31 Jul 2023 22:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbjGaQPD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 12:15:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9458DA7
-        for <linux-ext4@vger.kernel.org>; Mon, 31 Jul 2023 09:15:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 539C51F74C;
-        Mon, 31 Jul 2023 16:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690820101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SGuud7a7aLdlXTTjWteXYdue7LAtwq6mK5VCy+sYByY=;
-        b=jcYp75DfC0CRpBJnK4N7V//lJECmWehxScHZoU1IR3RkSPonJirlI/mHnvre8256moKJnL
-        6eVlVbGFRmpMvF1a6hUsnY8xw2zP8hBni6Hg7kjsuhy2g1vVaGaL/g+ow6MlY2CdhZiEr0
-        e4gaDgxAzPqH8g/rrOCz/kBEne4bwYk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690820101;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SGuud7a7aLdlXTTjWteXYdue7LAtwq6mK5VCy+sYByY=;
-        b=iRnIMK1QoqI5doY1tjx9jiZie8OqIeiqRY2d6lvX460Vw58ZzgKifEFtcJoIZSV11hA+HG
-        J+iDVMSBhHLiprDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 442361322C;
-        Mon, 31 Jul 2023 16:15:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NHeVEAXex2TlDQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 31 Jul 2023 16:15:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C1BB6A075D; Mon, 31 Jul 2023 18:15:00 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 18:15:00 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yang.lee@linux.alibaba.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH 2/3] jbd2: Check 'jh->b_transaction' before remove it
- from checkpoint
-Message-ID: <20230731161500.dm7nf3kpxbvfxa5y@quack3>
-References: <20230714025528.564988-1-yi.zhang@huaweicloud.com>
- <20230714025528.564988-3-yi.zhang@huaweicloud.com>
+        with ESMTP id S229807AbjHAC1d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 31 Jul 2023 22:27:33 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524661BEB;
+        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40fcc91258fso6159251cf.1;
+        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690856851; x=1691461651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
+        b=h3zOGs2nwMAFflIW+d+RAac8jI3gm3anyQw+AZUM+tFnbQVN6xveU+nCF9wbeOgg8g
+         4tihPpj9lHfVDjtsbHuBYBNrapBMrTgKtIprVlcJfMf0aOnVCNgbj15mQbNrGPXunXHu
+         NLebQ3SybsZgBr373ypfDFFymz55RazrfenDbV3o2dx88m4hsmv40X8k6Bg2s5E1/WzT
+         cbcoAzjwOO+LedfK/KoddJcRHo+wZ8cCHJmLwd8LiaRdSf3wu109gECOQztN+anSVgf7
+         0CLlSPAWMNsY2WfsniuD6/vrzvnQx9bKbLBPjd7zvQhcmViK6NfisWeFa/VhPpTPIDzr
+         L0bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690856851; x=1691461651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
+        b=ZRoJSxfveM5JGGcUh9d/siKDeMqeln1lWBRjuIWgmerDuAwE3yJ4e0lq82wP7KCOFN
+         IWD+mAUd6TxTjNO3pDGmX2zqe2fNVB8BuqnA3PrbgqnJevSxM44Tx711fyVykvq5LVy4
+         HqqycXst1MurEuRxkBITZHOm50fjxkDkuTD2ZF9L4CK3NRW5LMeVbe/rQhmuGLagSHJX
+         zNAFYrgD/Kv4yHTmQi9Zj6HohRU3vDlsdW35gHmxrDmU5fBrc+D8XTAYOAUv4SNXVcxW
+         PLeifeMj/duSqpf8scYiBDhmZm80Q3tp11/1bLp0wD6V2xqSnm9RibFJWOb4sIEByH71
+         PDuw==
+X-Gm-Message-State: ABy/qLYicTExb3sscgEt0p4b0m30s/M5nkTKZDuQTd4bvsmPV8VptXW6
+        EklYHKovXrP31VSK3kcDbMbQcovtjE3CpjwNhv1bQY0b8HE=
+X-Google-Smtp-Source: APBJJlGLQ+Ui+4ixTGSUf1KsO8aiWE2TiP6DP67diE/qPfi4ppqInBaGAHwVbcFQfzXaCV1ecUH/q+mLgzAIICHn3LU=
+X-Received: by 2002:a05:622a:24b:b0:40d:b896:1f92 with SMTP id
+ c11-20020a05622a024b00b0040db8961f92mr7513815qtx.32.1690856851003; Mon, 31
+ Jul 2023 19:27:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230714025528.564988-3-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230731010104.1781335-1-zhangshida@kylinos.cn> <20230731154133.GA11332@frogsfrogsfrogs>
+In-Reply-To: <20230731154133.GA11332@frogsfrogsfrogs>
+From:   Stephen Zhang <starzhangzsd@gmail.com>
+Date:   Tue, 1 Aug 2023 10:26:55 +0800
+Message-ID: <CANubcdVMdisPOR=VD4mLyiQru4oPOZ_0oDSZXRYOu6ynTji2vA@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 14-07-23 10:55:27, Zhang Yi wrote:
-> From: Zhihao Cheng <chengzhihao1@huawei.com>
-> 
-> Following process will corrupt ext4 image:
-> Step 1:
-> jbd2_journal_commit_transaction
->  __jbd2_journal_insert_checkpoint(jh, commit_transaction)
->  // Put jh into trans1->t_checkpoint_list
->  journal->j_checkpoint_transactions = commit_transaction
->  // Put trans1 into journal->j_checkpoint_transactions
-> 
-> Step 2:
-> do_get_write_access
->  test_clear_buffer_dirty(bh) // clear buffer dirty，set jbd dirty
->  __jbd2_journal_file_buffer(jh, transaction) // jh belongs to trans2
-> 
-> Step 3:
-> drop_cache
->  journal_shrink_one_cp_list
->   jbd2_journal_try_remove_checkpoint
->    if (!trylock_buffer(bh))  // lock bh, true
->    if (buffer_dirty(bh))     // buffer is not dirty
->    __jbd2_journal_remove_checkpoint(jh)
->    // remove jh from trans1->t_checkpoint_list
-> 
-> Step 4:
-> jbd2_log_do_checkpoint
->  trans1 = journal->j_checkpoint_transactions
->  // jh is not in trans1->t_checkpoint_list
->  jbd2_cleanup_journal_tail(journal)  // trans1 is done
-> 
-> Step 5: Power cut, trans2 is not committed, jh is lost in next mounting.
-> 
-> Fix it by checking 'jh->b_transaction' before remove it from checkpoint.
-> 
-> Fixes: 46f881b5b175 ("jbd2: fix a race when checking checkpoint buffer busy")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Darrick J. Wong <djwong@kernel.org> =E4=BA=8E2023=E5=B9=B47=E6=9C=8831=E6=
+=97=A5=E5=91=A8=E4=B8=80 23:41=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Jul 31, 2023 at 09:01:04AM +0800, zhangshida wrote:
+> > From: Shida Zhang <zhangshida@kylinos.cn>
+> >
+> > With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> > a problem occurred when more than 13 million files were directly create=
+d
+> > under a directory:
+> >
+> > EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxx=
+x: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm x=
+xxxx: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
+xxxxx: Directory index failed checksum
+> >
+> > When enough files are created, the fake_dirent->reclen will be 0xffff.
+> > it doesn't equal to the blocksize 65536, i.e. 0x10000.
+> >
+> > But it is not the same condition when blocksize equals to 4k.
+> > when enough file are created, the fake_dirent->reclen will be 0x1000.
+> > it equals to the blocksize 4k, i.e. 0x1000.
+> >
+> > The problem seems to be related to the limitation of the 16-bit field
+> > when the blocksize is set to 64k. To address this, Modify the check so
+> > as to handle it properly.
+>
+> urughghahrhrhr<shudder>
+>
+> Sorry that I missed that rec_len is an encoded number, not a plain le16
+> integer...
+>
 
-Indeed! I've missed this difference between __cp_buffer_busy() and
-jbd2_journal_try_remove_checkpoint() during my review of 46f881b5b175. The
-fix looks good. Feel free to add:
+Yep, that's really a point that is easy to forget...
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> > ---
+> > v1->v2:
+> >   Use a better way to check the condition, as suggested by Andreas.
+> >
+> >  fs/ext4/namei.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> > index 0caf6c730ce3..fffed95f8531 100644
+> > --- a/fs/ext4/namei.c
+> > +++ b/fs/ext4/namei.c
+> > @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(stru=
+ct inode *inode,
+> >       struct ext4_dir_entry *dp;
+> >       struct dx_root_info *root;
+> >       int count_offset;
+> > +     int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
+> >
+> > -     if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOCK_SIZE(inode->i_=
+sb))
+> > +     if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blo=
+cksize)
+> >               count_offset =3D 8;
+> >       else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
+>
+> ...but what about all the other le16_to_cpu(ext4_dir_entry{,_2}.rec_len)
+> accesses in this file?  Don't those also need to be converted to
+> ext4_rec_len_from_disk calls?
+>
+> Also,
+> Fixes: dbe89444042ab ("ext4: Calculate and verify checksums for htree nod=
+es")
+>
 
-								Honza
+Thanks for your suggestion, I will try to add all the other conversion
+in this file for the next v3.
 
-> ---
->  fs/jbd2/checkpoint.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index 936c6d758a65..f033ac807013 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -639,6 +639,8 @@ int jbd2_journal_try_remove_checkpoint(struct journal_head *jh)
->  {
->  	struct buffer_head *bh = jh2bh(jh);
->  
-> +	if (jh->b_transaction)
-> +		return -EBUSY;
->  	if (!trylock_buffer(bh))
->  		return -EBUSY;
->  	if (buffer_dirty(bh)) {
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cheers,
+Shida
+
+
+
+
+
+> --D
+>
+> >               dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
+> > --
+> > 2.27.0
+> >
