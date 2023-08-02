@@ -2,64 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F6876C205
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 03:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF7F76C214
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 03:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjHBBRp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Aug 2023 21:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S230308AbjHBBS7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Aug 2023 21:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjHBBRo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 21:17:44 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2265C1FD6;
-        Tue,  1 Aug 2023 18:17:43 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4039a42467fso39542281cf.3;
-        Tue, 01 Aug 2023 18:17:43 -0700 (PDT)
+        with ESMTP id S230155AbjHBBS6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 21:18:58 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1151FEE;
+        Tue,  1 Aug 2023 18:18:57 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso3708783a91.2;
+        Tue, 01 Aug 2023 18:18:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690939062; x=1691543862;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQrwIXD5dDDpJmHwDNXT7LmVeplj3HZJ96SaM0Uz30w=;
-        b=gIacevkryuRhr3Q5CxOfkxyGZNYAi3A6JsOpy5l5uAjH9gx7w98/vJ3U0yQKEGltai
-         nObvQo/CiCnYQmVITE2VKTKBeE5gGfIG6SBipuIGuazuP/j5Ubos5pvC+hUvm56RRoM0
-         MYEP+BQQxgmJRw1X7QS+BxHjqMGlJjlWrMLJoFn5B+kaeTjZeeaFqKNi7OLoncAZ+NcF
-         +K6hrWMqsiRQKlpMQmLLNT4yA1QOSRDVmPi833OfQFOA8B9f7Jjo65qMMPTlxOJYpygX
-         /wYTtY8k+H3WuMXTf7Xlw5Pz+a/hQwiGizemw+DHD9Bvc4ySlQmMq/bpyhcWGjJCsuzB
-         B/Hw==
+        d=gmail.com; s=20221208; t=1690939137; x=1691543937;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C9gsGeQ/LoJ7llZZGLwajHjT5nPFz20stmvofsT7eEA=;
+        b=hnpOzrgKD3dQuM4yqYvt4tt6Ek4eSllhDzfOwXlcWc8TqgDQM1sYqM2yVUl/X057+o
+         kgxbSxQnmLzZErVjfDyWaR/vvUWsv5h2fncNBb7ywm2YoWPex0Z/ls9QgCL5YYCBq+Hx
+         LPVzCIh0eOYWfCkO/B7oPHs1gJjFKfXubHoD9Z/BWhjgDuJL/1v3fQ8Rt3jpfNyOepE+
+         3PEtdxTW/lTviSTPD7ePAekCh9h/GbsllHrim4nsFFFwulPwOAcIw+zN2wgAtuiFm2fa
+         SB0Rul9bEsu1rHGCIgg6lS3Q4UNO04XeynaQuVa7U5rEwenxqcS08mEiGYR6FQF79PDZ
+         3g2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690939062; x=1691543862;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QQrwIXD5dDDpJmHwDNXT7LmVeplj3HZJ96SaM0Uz30w=;
-        b=VTTKwzKP0XMIunSSlIVIyGJvYPEJ2okFbCV4lybpPBFYib7060wEkQPR7wkO/wwnnk
-         6Kk6SS3n5zipj6DHCDYdU2bNbdUJxHi9UyHCY4psGZKbOcNu176vG/0N3RgkjATv5th7
-         ModHI/Ha4f+DB3RmauIhexGM1vLbT3RNvwVznldwsAlvtnvcnnWOIQI1aI0H8MwAhc3L
-         qK3Mc7yQhL7DBqKlTm2qtLgEvoGusD6DDkpYwfGOV9qU9Vknm6/TsDD5tWckYUYxD2MU
-         3BpzrbV7b6YW+9bN8f8DnqHt7mzjLt/Lkp+M6RNuHUab3OeMeWQq3Je72cmfLHjWLEcH
-         NlWQ==
-X-Gm-Message-State: ABy/qLaN+DEoGsW6fZPm6JT5lRb9LyCzZ9YYG8jxIc/wMDTHxm0hq8x2
-        Qy+85rb+jhQwTDyIgb6T+X2B/n2vGtYKJpW33L0=
-X-Google-Smtp-Source: APBJJlFMg0FmHg3iwIk519p5at2sihrjdSJvqExK5yB8wbEh+sb+2A2aCebpYXjFh2HVH594SpOvNJcR4A0bIdEWELk=
-X-Received: by 2002:a05:622a:1109:b0:403:1d93:b210 with SMTP id
- e9-20020a05622a110900b004031d93b210mr18963271qty.59.1690939061959; Tue, 01
- Aug 2023 18:17:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801112337.1856215-1-zhangshida@kylinos.cn> <20230801151828.GB11332@frogsfrogsfrogs>
-In-Reply-To: <20230801151828.GB11332@frogsfrogsfrogs>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Wed, 2 Aug 2023 09:17:05 +0800
-Message-ID: <CANubcdX2-T1QpDRmvddL-9bme4ZeFvre4N_nsw=gursx9zSQhg@mail.gmail.com>
-Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20221208; t=1690939137; x=1691543937;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C9gsGeQ/LoJ7llZZGLwajHjT5nPFz20stmvofsT7eEA=;
+        b=h/10yr55gzplYUqy0c/VXFXNR3MWg+cB2LMDouu8QHcVswi30W7hfUlo6TWBp0FY8r
+         aPwGXX9avrou9h7t2mi7Z1az9I+biHFdc+1EN6P9TYKEMhQqcG5XI770NMN1Qauz6Nqz
+         syT02typsTUwLYBeEMQpieAc2nt4BvE947/A5emyYT+GHtphwLj2wZYJyGtA7Tuk7FD+
+         1l/ZE3WYWZrRAyLrwnIksmq5aKUDvTkvBvFsDZ0viCyx0vPzqR17p1yMQrRMMb72xCMJ
+         G7f/yavVfmDVB/GIxz3f8JrPyUekVfof2Gwc1XUREBLFt2dMk7naYvpTnukg61wNJ+kO
+         obaQ==
+X-Gm-Message-State: ABy/qLYmKQpRZgmTDsCQan3DRDiLxRimpgmAma/fBcqxEa0dXrxWS3kN
+        EFcnWlzfRsHq+4m2dMXz+Wo=
+X-Google-Smtp-Source: APBJJlGpPVwc7ynSZAI6vPxs2mlQtplvGO8izFBz9z+1eRRoSy/ljEQzYXnR17cHvgcHUHEN/UGXhA==
+X-Received: by 2002:a17:90b:1c84:b0:268:557e:1848 with SMTP id oo4-20020a17090b1c8400b00268557e1848mr12667735pjb.2.1690939137055;
+        Tue, 01 Aug 2023 18:18:57 -0700 (PDT)
+Received: from dw-tp ([49.207.232.207])
+        by smtp.gmail.com with ESMTPSA id c8-20020a17090abf0800b0026814d83a5asm104773pjs.26.2023.08.01.18.18.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 18:18:56 -0700 (PDT)
+Date:   Wed, 02 Aug 2023 06:48:52 +0530
+Message-Id: <87v8dyw8ar.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: Re: [PATCH v3 10/10] ext4: correct some stale comment of criteria
+In-Reply-To: <20230801143204.2284343-11-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,87 +66,42 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Darrick J. Wong <djwong@kernel.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=881=E6=97=
-=A5=E5=91=A8=E4=BA=8C 23:18=E5=86=99=E9=81=93=EF=BC=9A
->
->
-> This is sitll missing some pieces; what about this clause at line 367:
->
->         if (t->det_reserved_zero1 ||
->             le16_to_cpu(t->det_rec_len) !=3D sizeof(struct ext4_dir_entry=
-_tail) ||
->             t->det_reserved_zero2 ||
->             t->det_reserved_ft !=3D EXT4_FT_DIR_CSUM)
->                 return NULL;
->
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-Yeah...
-
-> > @@ -445,13 +445,13 @@ static struct dx_countlimit *get_dx_countlimit(st=
-ruct inode *inode,
-> >       struct ext4_dir_entry *dp;
-> >       struct dx_root_info *root;
-> >       int count_offset;
-> > +     int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
-> >
-> > -     if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOCK_SIZE(inode->i_=
-sb))
-> > +     if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blo=
-cksize)
-> >               count_offset =3D 8;
-> > -     else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
-> > +     else if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=
-=3D 12) {
+> We named criteria with CR_XXX, correct stale comment to criteria with
+> raw number.
 >
-> Why not lift this ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ to a
-> local variable?  @dirent doesn't change, right?
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index bfaab173a3f4..1e8ce0ece47a 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2782,8 +2782,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  
+>  	/*
+>  	 * ac->ac_2order is set only if the fe_len is a power of 2
+> -	 * if ac->ac_2order is set we also set criteria to 0 so that we
+> -	 * try exact allocation using buddy.
+> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
+> +	 * so that we try exact allocation using buddy.
+>  	 */
+>  	i = fls(ac->ac_g_ex.fe_len);
+>  	ac->ac_2order = 0;
+> @@ -2840,8 +2840,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  			/*
+>  			 * Batch reads of the block allocation bitmaps
+>  			 * to get multiple READs in flight; limit
+> -			 * prefetching at cr=0/1, otherwise mballoc can
+> -			 * spend a lot of time loading imperfect groups
+> +			 * prefetching at inexpensive CR, otherwise mballoc
+> +			 * can spend a lot of time loading imperfect groups
+>  			 */
+>  			if ((prefetch_grp == group) &&
+>  			    (ext4_mb_cr_expensive(cr) ||
+Is this function defined at any place ^^^
 
-Will do.
-
-> >               dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> > -             if (le16_to_cpu(dp->rec_len) !=3D
-> > -                 EXT4_BLOCK_SIZE(inode->i_sb) - 12)
-> > +             if (ext4_rec_len_from_disk(dp->rec_len, blocksize) !=3D b=
-locksize - 12)
-> >                       return NULL;
-> >               root =3D (struct dx_root_info *)(((void *)dp + 12));
-> >               if (root->reserved_zero ||
->
-> What about dx_make_map?
->
-
-dx_make_map(
-     ....
-     map_tail->size =3D le16_to_cpu(de->rec_len);
-
-That might be a questionable one...
-map_tail->size is 16 bit, while the key reason we want ext4_rec_len_from_di=
-sk
-is converting 16-bit rec_len disk form to a in-memory form consisting of li=
-ke 17
-bits...i.e. 0x10000.
-
-Cheers,
-Shida
-
-
-> Here's all the opencoded access I could find:
->
-> $ git grep le16.*rec_len fs/ext4/
-> fs/ext4/namei.c:356:                le16_to_cpu(d->rec_len));
-> fs/ext4/namei.c:367:        le16_to_cpu(t->det_rec_len) !=3D sizeof(struc=
-t ext4_dir_entry_tail) ||
-> fs/ext4/namei.c:449:    if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOC=
-K_SIZE(inode->i_sb))
-> fs/ext4/namei.c:451:    else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) =
-{
-> fs/ext4/namei.c:453:            if (le16_to_cpu(dp->rec_len) !=3D
-> fs/ext4/namei.c:1338:                   map_tail->size =3D le16_to_cpu(de=
-->rec_len);
->
-> --D
->
-> > --
-> > 2.27.0
-> >
+-ritesh
