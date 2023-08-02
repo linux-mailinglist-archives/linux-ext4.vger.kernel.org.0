@@ -2,111 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBA476D3AA
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 18:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AB476D3B2
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 18:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbjHBQaP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Aug 2023 12:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S232226AbjHBQcW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Aug 2023 12:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbjHBQaN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 12:30:13 -0400
-X-Greylist: delayed 78 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 09:30:07 PDT
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A31210D
-        for <linux-ext4@vger.kernel.org>; Wed,  2 Aug 2023 09:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1690993800;
-        bh=WzOjdU1RA1VtzD8KEuZ4qGc1a8nuyxKg2Tq2LgQLeCI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=wy6KRDwGIMEleXAp5ZWSNZORE9koqkasufv50LaMULyYVsPyT3R0AZ+dy6rC1aE8N
-         whIqJJ70u6p2/gQETQwL37g6/8ZTSHzob6s6vyL6NHh++R/LHVAJHxMmQh/Hj4MDME
-         zvXWZ3KB3WNT911Hq4/GlutNhTmfgaTWmpM5m7hM=
-Received: from [IPV6:2409:8a00:2577:9740:9ca5:5f74:38db:4c67] ([2409:8a00:2577:9740:9ca5:5f74:38db:4c67])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 77A9BC8C; Thu, 03 Aug 2023 00:29:58 +0800
-X-QQ-mid: xmsmtpt1690993798t9c1m2sqn
-Message-ID: <tencent_798118A8D3600FCC5E0E08EEB2341A8EE206@qq.com>
-X-QQ-XMAILINFO: NQR8mRxMnur9/9vdW8nlMOLtAjutKo/PA6BuwwIMYAkD4PZDOt/pWrh5YICi3b
-         I++WSJ2U+EYT4UVj78HiLVF84EOprpr63cGQns31N1miU5Ra3Crvwvvr40gaF9sAzkfwi549Cr4c
-         JmBUSILzILQ/+CfgLTThfCEnibTrdy2zNYYTTuJj1ki77fek4a4l2+M+3G0cTl37P8qCP/uicMi7
-         E25G6kTM9yzGn071hTAtTQ0VojK6BC2E8WT8s6cyHq/dSOuuRvOLzmnRmsRnEkuTl37H5guLU3Xv
-         G8xZ7EPe9EiCYNycUlCiIRI3PncDhSy7YkCL1K42Pc0UUtpUvDSpFkVEApAQn3SSRhdNq9M7oC/f
-         vGRcsCCZs5k7LL137cNirvZ/SHfQVOaY1C6UEdJGgd8QYxK9c5ogOlBTwEvReLcntZc7hdbK/Zka
-         A44j3q4dAmASlxLCwuo6h67jJWp4UP5NEVrYtPMEA7B82UibP5Zk78s8XGo3hnjmWtbm/zO8497C
-         l1vDkM1w+y1FXhDorCtdq1WLCkJiUWNHAyXuJBqqtTG+1fUjsaZnEiRRSyZ/7/WJvNWeF69oYh+e
-         bFUWbcC1mSEX6cIHgTPo0yAFcpc2WtUwrOv+vABhQEpbIqmshtOeR5NqNmf18G3K3vj3RQEvYpd4
-         J9t62Lf3+0KTAiwwL0TjqYIuZqn0QcdUDsgTR1xaE2wG/Sx+Ilg7DjWjCGjKf3ehEQ24PeOHnEx+
-         D0dEDv24LKXbg46Y7y8USkT08UiEp3YpHG8d0IRLqrs4t+ybI4XwOTh8X7OsX4xk2JHU/K2F54HA
-         Ep9rI+TLVwYHYUoZQDp4SoVcvnRxWL1/JrWspDFy+Q6SSy9R10JnqNPN/bx5tuQNuFoilVi3GQ/2
-         yAYyRfgnfsT0htJR+Goy4Xz4iimGlP1DVEHx2+W54jduwJtrOe8L/NJLxCe8PkALrwoNLluqXLSm
-         MLSZ8iO9TNV4DIXfjzNo/rV9b9Z3cyuh24cnwteaq4lPEU+EJcIQ==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-X-OQ-MSGID: <fd44a224-3c86-a8ac-2696-830f9b473d3d@foxmail.com>
-Date:   Thu, 3 Aug 2023 00:29:58 +0800
+        with ESMTP id S230352AbjHBQcV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 12:32:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02091FFA;
+        Wed,  2 Aug 2023 09:32:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5041761A0D;
+        Wed,  2 Aug 2023 16:32:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB7D9C433C8;
+        Wed,  2 Aug 2023 16:32:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690993939;
+        bh=GcVu5AKxQx3Xueu/J47RQ71hv6d/lK6wYIHHmRfGqaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wtd/B0tT5WFKMlZ4FcUuBOY403mH8jUVkWi+G6Rc6yRr8xqjh9e6QJP4M5cVaQZjl
+         RdSRk087/R+zJKvlBUY6iflSrQVduZHiM7vhrntHc8ykJ5MZ3CsTWNydd8G60nAjjB
+         xsTI+0r8XJWzqubQJge2bfArwRHdY+O0Fl3cJpBpiRZiCeObWknsnSeiOIYUNNlQ5n
+         gF1Wsh0ENOOBgf0aIBZa5zNVBIhSdH4vc5MXOCvbYSInOKhXU+6gtVD2ABSpP8k6sE
+         GxKNKflCh1H01pQA/zivBFr3jCjg3b+DK9HkonEjcCq0iyGozH4qOncit0g9T89zgx
+         DasFxOweGYc3Q==
+Date:   Wed, 2 Aug 2023 09:32:19 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 11/12] xfs: drop s_umount over opening the log and RT
+ devices
+Message-ID: <20230802163219.GW11352@frogsfrogsfrogs>
+References: <20230802154131.2221419-1-hch@lst.de>
+ <20230802154131.2221419-12-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] ext4: Add correct group descriptors and reserved GDT
- blocks to system zone
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <tencent_4A474CC049B9E77D0F172468991EED5B9105@qq.com>
- <20230604034559.GG1128744@mit.edu>
-From:   Wang Jianjian <wangjianjian0@foxmail.com>
-In-Reply-To: <20230604034559.GG1128744@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802154131.2221419-12-hch@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Ted, I send a new fix. Please help review.
+On Wed, Aug 02, 2023 at 05:41:30PM +0200, Christoph Hellwig wrote:
+> Just like get_tree_bdev needs to drop s_umount when opening the main
+> device, we need to do the same for the xfs log and RT devices to avoid a
+> potential lock order reversal with s_unmount for the mark_dead path.
+> 
+> It might be preferable to just drop s_umount over ->fill_super entirely,
+> but that will require a fairly massive audit first, so we'll do the easy
+> version here first.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/xfs/xfs_super.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 8185102431301d..d5042419ed9997 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -448,17 +448,21 @@ STATIC int
+>  xfs_open_devices(
+>  	struct xfs_mount	*mp)
+>  {
+> -	struct block_device	*ddev = mp->m_super->s_bdev;
+> +	struct super_block	*sb = mp->m_super;
+> +	struct block_device	*ddev = sb->s_bdev;
+>  	struct block_device	*logdev = NULL, *rtdev = NULL;
+>  	int			error;
+>  
+> +	/* see get_tree_bdev why this is needed and safe */
 
-On 6/4/23 11:45, Theodore Ts'o wrote:
->> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
->> index 5504f72bbbbe..5df357763975 100644
->> --- a/fs/ext4/block_validity.c
->> +++ b/fs/ext4/block_validity.c
->> @@ -224,11 +223,14 @@ int ext4_setup_system_zone(struct super_block *sb)
->>   
->>   	for (i=0; i < ngroups; i++) {
->>   		cond_resched();
->> -		if (ext4_bg_has_super(sb, i) &&
->> -		    ((i < 5) || ((i % flex_size) == 0))) {
->> +		unsigned int sb_num = ext4_bg_has_super(sb, i);
->> +		unsigned long gdb_num = ext4_bg_num_gdb(sb, i);
->> +		unsigned int rsvd_gdt = le16_to_cpu(sbi->es->s_reserved_gdt_blocks);
->> +
->> +		if (sb_num != 0 || gdb_num != 0) {
->>   			ret = add_system_zone(system_blks,
->>   					ext4_group_first_block_no(sb, i),
->> -					ext4_bg_num_gdb(sb, i) + 1, 0);
->> +					sb_num + gdb_num + rsvd_gdt, 0);
->>   			if (ret)
->>   				goto err;
->>   		}
-> 
-> 
-> How the reserved GDT blocks should be added to the system zone are not
-> handled correctly in this patch.   It can't be unconditionally added to
-> all block groups.
-> 
-> See the logic in ext4_num_base_meta_clusters() in fs/ext4/balloc.c ---
-> without the EXT4_NUM_B2C() at the end of the function, since the
-> system zone tracking is done at the block level, not the cluster
-> level.
-> 
-> 					- Ted
-> 
+Which part of get_tree_bdev?  Is it this?
 
+		/*
+		 * s_umount nests inside open_mutex during
+		 * __invalidate_device().  blkdev_put() acquires
+		 * open_mutex and can't be called under s_umount.  Drop
+		 * s_umount temporarily.  This is safe as we're
+		 * holding an active reference.
+		 */
+		up_write(&s->s_umount);
+		blkdev_put(bdev, fc->fs_type);
+		down_write(&s->s_umount);
+
+<confused>
+
+> +	up_write(&sb->s_umount);
+> +
+>  	/*
+>  	 * Open real time and log devices - order is important.
+>  	 */
+>  	if (mp->m_logname) {
+>  		error = xfs_blkdev_get(mp, mp->m_logname, &logdev);
+>  		if (error)
+> -			return error;
+> +			goto out_unlock;
+>  	}
+>  
+>  	if (mp->m_rtname) {
+> @@ -496,7 +500,10 @@ xfs_open_devices(
+>  		mp->m_logdev_targp = mp->m_ddev_targp;
+>  	}
+>  
+> -	return 0;
+> +	error = 0;
+> +out_unlock:
+> +	down_write(&sb->s_umount);
+
+Isn't down_write taking s_umount?  I think the label should be
+out_relock or something less misleading.
+
+--D
+
+> +	return error;
+>  
+>   out_free_rtdev_targ:
+>  	if (mp->m_rtdev_targp)
+> @@ -508,7 +515,7 @@ xfs_open_devices(
+>   out_close_logdev:
+>  	if (logdev && logdev != ddev)
+>  		xfs_blkdev_put(mp, logdev);
+> -	return error;
+> +	goto out_unlock;
+>  }
+>  
+>  /*
+> -- 
+> 2.39.2
+> 
