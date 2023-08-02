@@ -2,101 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A32076CB07
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 12:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069DF76D061
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 16:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjHBKii (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Aug 2023 06:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        id S234151AbjHBOou (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Aug 2023 10:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbjHBKiM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 06:38:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2254682;
-        Wed,  2 Aug 2023 03:34:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S233665AbjHBOot (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 10:44:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1F52D4C
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Aug 2023 07:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690987440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Lfsx7YMT1/nkAsgMqwMqDMIEJirhc7YJPrz4OW1nZfo=;
+        b=VxIurLA4qrQ+wbPu0x+guajx0AHZCKQC4h+wWsnO62d7qaQL8ruOxIXGiM4tmwL7P+4ir3
+        CjnO8C2SfFN+A0Nn4cXxRdF1ZmEv/7ErJ1EZKG7ZOiQdxKkTXyvjo8FtOrCLwvM9VgwSAp
+        HWa3PDjF65s74OyX+fscA5kXcE0VkU8=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-574-mTic3aWOO7WXjzYQIN77zA-1; Wed, 02 Aug 2023 10:43:57 -0400
+X-MC-Unique: mTic3aWOO7WXjzYQIN77zA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 764A41F747;
-        Wed,  2 Aug 2023 10:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690972463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MR58NMBglJtxUxpSgzfkjnZorzDEMsBbaguIyc3mpKs=;
-        b=TmbFmgfwfLg9UiwJyY4spbAzOMrXavHMXBOiqxAIOwPFBgpM+LJm0+qmZCaBUIZGCDTGrE
-        fRg903IGUjPcrRFNtuZGT0D6u3CFXvgSqDTTPtmfR20P33YAX5EhhQgEwLKGstRMxY8IYP
-        /WQZ2vIFg4FibpaKv4AS/V3BxxqhZxE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690972463;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MR58NMBglJtxUxpSgzfkjnZorzDEMsBbaguIyc3mpKs=;
-        b=ErQJZxwi/4DRe4LY5xycNVKcu6lQanAV3vJzTxo1eJ/06fLw6ANa8v4Z0yYYiLNgvvT/f4
-        Ns5BsunpYqjDacCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6847113919;
-        Wed,  2 Aug 2023 10:34:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id V9VqGS8xymSDCgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 02 Aug 2023 10:34:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EAB7CA076B; Wed,  2 Aug 2023 12:34:22 +0200 (CEST)
-Date:   Wed, 2 Aug 2023 12:34:22 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH] ext4: fix the time handling macros when ext4 is using
- small inodes
-Message-ID: <20230802103422.lzgb7yyksfbpw4rh@quack3>
-References: <20230718-ctime-v1-1-24e2f96dcdf3@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E5A73806705;
+        Wed,  2 Aug 2023 14:43:56 +0000 (UTC)
+Received: from pasta.redhat.com (unknown [10.45.225.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 019401121325;
+        Wed,  2 Aug 2023 14:43:54 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, Theodore Tso <tytso@mit.edu>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH] highmem: memcpy_{from,to}_folio() fix
+Date:   Wed,  2 Aug 2023 16:43:54 +0200
+Message-Id: <20230802144354.1023099-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718-ctime-v1-1-24e2f96dcdf3@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 18-07-23 13:31:59, Jeff Layton wrote:
-> If ext4 is using small on-disk inodes, then it may not be able to store
-> fine grained timestamps. It also can't store the i_crtime at all in that
-> case since that fully lives in the extended part of the inode.
-> 
-> 979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
-> still store the tv_sec field of the i_crtime into the raw_inode, even
-> when they were small, corrupting adjacent memory.
-> 
-> This fixes those macros to skip setting anything in the raw_inode if the
-> tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
-> the raw_inode doesn't support it.
-> 
-> Cc: Jan Kara <jack@suse.cz>
-> Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+memcpy_to_folio() and memcpy_from_folio() compute the size of the chunk
+of memory they can copy for each page, but then they don't use the chunk
+size in the actual memcpy.  Fix that.
 
-I've seen Christian has already folded this fixup so I just want to say:
-Thanks for fixing this up while I was away!
+Also, git rid of superfluous parentheses in these two functions.
 
-								Honza
+Fixes: 520a10fe2d72 ("highmem: add memcpy_to_folio() and memcpy_from_folio()")
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
+ include/linux/highmem.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 0280f57d4744..99c474de800d 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -445,13 +445,13 @@ static inline void memcpy_from_folio(char *to, struct folio *folio,
+ 	VM_BUG_ON(offset + len > folio_size(folio));
+ 
+ 	do {
+-		char *from = kmap_local_folio(folio, offset);
++		const char *from = kmap_local_folio(folio, offset);
+ 		size_t chunk = len;
+ 
+ 		if (folio_test_highmem(folio) &&
+-		    (chunk > (PAGE_SIZE - offset_in_page(offset))))
++		    chunk > PAGE_SIZE - offset_in_page(offset))
+ 			chunk = PAGE_SIZE - offset_in_page(offset);
+-		memcpy(to, from, len);
++		memcpy(to, from, chunk);
+ 		kunmap_local(from);
+ 
+ 		from += chunk;
+@@ -470,9 +470,9 @@ static inline void memcpy_to_folio(struct folio *folio, size_t offset,
+ 		size_t chunk = len;
+ 
+ 		if (folio_test_highmem(folio) &&
+-		    (chunk > (PAGE_SIZE - offset_in_page(offset))))
++		    chunk > PAGE_SIZE - offset_in_page(offset))
+ 			chunk = PAGE_SIZE - offset_in_page(offset);
+-		memcpy(to, from, len);
++		memcpy(to, from, chunk);
+ 		kunmap_local(to);
+ 
+ 		from += chunk;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.1
+
