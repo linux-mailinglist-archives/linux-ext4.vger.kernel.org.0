@@ -2,123 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A8376C86A
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 10:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EC676C9D1
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 11:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjHBIhP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Aug 2023 04:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
+        id S231703AbjHBJti (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Aug 2023 05:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbjHBIhP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 04:37:15 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAB2173A
-        for <linux-ext4@vger.kernel.org>; Wed,  2 Aug 2023 01:37:13 -0700 (PDT)
-Received: from dggpeml500016.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RG4y15y0PzNmcC;
-        Wed,  2 Aug 2023 16:33:45 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500016.china.huawei.com
- (7.185.36.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 16:37:11 +0800
-From:   zhanchengbin <zhanchengbin1@huawei.com>
-To:     <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>, <louhongxiang@huawei.com>,
-        <linfeilong@huawei.com>, <yi.zhang@huawei.com>,
-        <yebin10@huawei.com>, <liuzhiqiang26@huawei.com>,
-        zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [RFC PATCH 2/2] ext4: ioctl add EXT4_IOC_SUPERBLOCK_KEY_S_ERRORS
-Date:   Wed, 2 Aug 2023 16:34:02 +0800
-Message-ID: <20230802083402.515570-3-zhanchengbin1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230802083402.515570-1-zhanchengbin1@huawei.com>
-References: <20230802083402.515570-1-zhanchengbin1@huawei.com>
+        with ESMTP id S230396AbjHBJth (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 05:49:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF8FE57;
+        Wed,  2 Aug 2023 02:49:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5F9C51F749;
+        Wed,  2 Aug 2023 09:49:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690969775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oG99N9wn1Zwsv4UxpgLJDybTYUZ52WwqDECex34X2Ok=;
+        b=1jYsc+Xy79TkLiVn8FyhO/kCudhhFlmkevXic8bQl4pI+sEVJzTa3j5QpCtwOF4vWXNci5
+        ycr/pF6rZEggWoev1UZWk4lp8ZVcy7hRYujImA6kHsfHNkNMfUiGAiWdwMdtUiYjlW5374
+        JWL1c+dngQvLpEOHaydpH+yOrfT03j0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690969775;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oG99N9wn1Zwsv4UxpgLJDybTYUZ52WwqDECex34X2Ok=;
+        b=53er0okG6zAS0kRbBncgS1qtXng3Y93tUmR9bxJXqjXIilpziX+PEA5fSnqfQ/b+DnPjcS
+        ckvf68sWHKpFBACw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E48FB13909;
+        Wed,  2 Aug 2023 09:49:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fpPoNK4mymRycAAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Wed, 02 Aug 2023 09:49:34 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id a355a2d3;
+        Wed, 2 Aug 2023 09:49:34 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH v2] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+Date:   Wed,  2 Aug 2023 10:49:31 +0100
+Message-Id: <20230802094931.18215-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Added modifications to s_errors in the modification framework of
-superblock's attrs. There is no lock protection when the user mode
-operates on the same block, so I modify the s_errors by the modification
-framework of superblock's attrs.
+If casefolding the filename fails, we'll be leaking fscrypt_buf name.
+Make sure we free it in the error paths of ext4_fname_setup_filename() and
+ext4_fname_prepare_lookup() functions.
 
-The parameters passed in from the user mode will be checked by
-sb_attr_errors_check first, if the check is passed, It will call
-buffer_lock in ext4_update_superblocks_fn and use sb_attr_errors_set, so
-it can ensure the atomicity of a modification.
-
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Fixes: 1ae98e295fa2 ("ext4: optimize match for casefolded encrypted dirs")
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
 ---
- fs/ext4/ioctl.c           | 22 ++++++++++++++++++++++
- include/uapi/linux/ext4.h |  4 +++-
- 2 files changed, 25 insertions(+), 1 deletion(-)
+Changes since v1:
+- Include fix to ext4_fname_prepare_lookup() as well
+- Add 'Fixes:' tag
 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 76653d855073..81cb403bacf7 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -30,10 +30,32 @@
- typedef void ext4_update_sb_callback(struct ext4_super_block *es,
- 				       const void *arg);
- 
-+int sb_attr_errors_check(struct ext4_sbattr *p_sbattr)
-+{
-+	__u16 error_behavior = *(__u16 *)(p_sbattr->sba_value);
-+
-+	if (p_sbattr->sba_len != EXT4_IOC_SUPERBLOCK_LEN_S_ERRORS)
-+		return -EINVAL;
-+
-+	if (error_behavior < EXT4_ERRORS_CONTINUE ||
-+	    error_behavior > EXT4_ERRORS_PANIC)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+void sb_attr_errors_set(struct ext4_super_block *es, const void *arg)
-+{
-+	struct ext4_sbattr *p_sbattr = (struct ext4_sbattr *)arg;
-+
-+	es->s_errors = cpu_to_le16(*(__u16 *)p_sbattr->sba_value);
-+}
-+
- /*
-  * Check and modify functions for each superblock variable
-  */
- struct ext4_sbattr_operation ext4_sbattr_ops[] = {
-+	{EXT4_IOC_SUPERBLOCK_KEY_S_ERRORS, sb_attr_errors_check, sb_attr_errors_set},
- 	{EXT4_IOC_SUPERBLOCK_KEY_MAX, NULL, NULL},
- };
- 
-diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
-index a9f33a0399e8..aad2de6528dd 100644
---- a/include/uapi/linux/ext4.h
-+++ b/include/uapi/linux/ext4.h
-@@ -90,8 +90,10 @@ struct ext4_sbattr {
- };
- 
- enum ext4_ioc_superblock_key {
--	EXT4_IOC_SUPERBLOCK_KEY_MAX = 0,
-+	EXT4_IOC_SUPERBLOCK_KEY_S_ERRORS = 0,
-+	EXT4_IOC_SUPERBLOCK_KEY_MAX,
- };
-+#define EXT4_IOC_SUPERBLOCK_LEN_S_ERRORS	2
- 
- #define EXT4_SBATTR_MAX_COUNT	20
- 
--- 
-2.31.1
+ fs/ext4/crypto.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
+index e20ac0654b3f..3c05c7f3415b 100644
+--- a/fs/ext4/crypto.c
++++ b/fs/ext4/crypto.c
+@@ -33,6 +33,8 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ 	err = ext4_fname_setup_ci_filename(dir, iname, fname);
++	if (err)
++		fscrypt_free_filename(&name);
+ #endif
+ 	return err;
+ }
+@@ -51,6 +53,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ 	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
++	if (err)
++		fscrypt_free_filename(&name);
+ #endif
+ 	return err;
+ }
