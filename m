@@ -2,74 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB5D76C228
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 03:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B7676C22D
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 03:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHBBZ1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Aug 2023 21:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
+        id S230139AbjHBB0D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Aug 2023 21:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHBBZ1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 21:25:27 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00771BFD;
-        Tue,  1 Aug 2023 18:25:26 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so4770105a12.1;
-        Tue, 01 Aug 2023 18:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690939526; x=1691544326;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BxNJlgj61wAL83WKuXKHyWeqhkRYePIZP/mMM4t8+5M=;
-        b=N70MdiCBzAWSrBPXWejxCvDNVVadWhBfdwqyyrdTpqdrHb7IFc6lD/YBaalbKE2xDv
-         n4UZu/eUlZf+e3JiXGa1rvIXZDr88r2bsffBRUl41digc8t2HBMNElxkUdnIsw9V7+dp
-         u26VeI2F8rUw/GabKjCdJJKJotxb/IlkhNICN1PYxLE18oLEK0bfkzCj6zyvnrWGUMPS
-         YEsKYZgzIF5jpR+ZNrlwoiSKJbkQFM/4gKOjvPzYnhqPtnhJmvxnhx0D83UlY9zS5bhK
-         1qHYCJSvPPdRpHePBZ0agTjZQKQFXCnBMj5qcPfhyQAwmZmE7A803PUt73AfhOYzbpBQ
-         NERQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690939526; x=1691544326;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BxNJlgj61wAL83WKuXKHyWeqhkRYePIZP/mMM4t8+5M=;
-        b=HC9hmEC9AjRTKeDng9FxTVH8Jm2zAOazNpl3PRBbwX9SvVbB0xAZLx8L9QJNZiqhrY
-         l28YcxtpqgrF8DUkTa8GWQNn3KVgXoRWFIZSKEEztXAHtsv9MUepuPQY+Xd4neEw8GRM
-         26Pd2STpawBSoR20IcxFifO4KIqf2xTamlCBzwl1XJ93TJzqkN6cHnPljZIeen/qQBVl
-         Ncd8502wOg1MjLJMbjDIH5wIrS9fPyu6kl5lxeC98jXirU3+TXndBd2w71Mym/Ykcp9o
-         HroE2WSKnLwKBh3zoDY1ui4kI1tbyIz6o8U1Mfzmf8Upi70L+VNQ9ZYNEd1av2ZCYcK7
-         OwMQ==
-X-Gm-Message-State: ABy/qLaccsWTcS6cmoSLyCmmxpbMlpiujbL7KJSDeF+gIwbcUazCLB2d
-        0H1aS8dVQzGO+UBhVW1kFqg=
-X-Google-Smtp-Source: APBJJlHIvu5PSU4JoVq+ynuIVA4p4cApLpvnFCJqUjoSQjMJRAH1bqNnfDtzqamgr5DCp9rqIvo1Ng==
-X-Received: by 2002:a05:6a21:a103:b0:134:5c75:3d23 with SMTP id aq3-20020a056a21a10300b001345c753d23mr13848009pzc.18.1690939525840;
-        Tue, 01 Aug 2023 18:25:25 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902ceca00b001b9df74ba5asm11015171plg.210.2023.08.01.18.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 18:25:25 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 06:55:21 +0530
-Message-Id: <87sf92w7zy.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        with ESMTP id S230080AbjHBB0C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Aug 2023 21:26:02 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF7C2736;
+        Tue,  1 Aug 2023 18:25:49 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFvS73z9Hz4f3lw4;
+        Wed,  2 Aug 2023 09:25:43 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgB3V9WXsMlkL9coPQ--.12109S2;
+        Wed, 02 Aug 2023 09:25:44 +0800 (CST)
+Subject: Re: [PATCH v3 10/10] ext4: correct some stale comment of criteria
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH v3 10/10] ext4: correct some stale comment of criteria
+References: <87v8dyw8ar.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <b04b471c-cda1-2247-196f-5e5d3725bc7d@huaweicloud.com>
+Date:   Wed, 2 Aug 2023 09:25:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
+MIME-Version: 1.0
 In-Reply-To: <87v8dyw8ar.fsf@doe.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgB3V9WXsMlkL9coPQ--.12109S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1UGrW7Zr1kJw15tw1UJrb_yoW8AF4Dpr
+        43KFyxCF1fXr1UCF47u3WkWw1qgw4fWFyUJryFqw1FvrZxJryxuanrtr1ruFyxZrs7Jw1Y
+        vrZIvFyxCa4DC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
+
+on 8/2/2023 9:18 AM, Ritesh Harjani wrote:
 > Kemeng Shi <shikemeng@huaweicloud.com> writes:
->
+> 
 >> We named criteria with CR_XXX, correct stale comment to criteria with
 >> raw number.
 >>
@@ -105,18 +101,14 @@ Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 >>  			if ((prefetch_grp == group) &&
 >>  			    (ext4_mb_cr_expensive(cr) ||
 > Is this function defined at any place ^^^
-
-aah ok got it. Here [1]
-
-...which you have also mentioned in your cover letetr. So your patch series
-currently is depenedent of above patch [1]
-
-[1]: https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
-
-
-Feel free to add - 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
->
+> 
 > -ritesh
+> 
+Hi Ritesh, sorry for the bother. I actually menthioned this in v2->v3 change in cover
+letter that patch 10 is on top of [1] which has reviewed before.
+
+[1] https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
+-- 
+Best wishes
+Kemeng Shi
+
