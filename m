@@ -2,116 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EA276D2B3
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 17:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9815F76D3A7
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Aug 2023 18:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjHBPou (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Aug 2023 11:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
+        id S231426AbjHBQ3w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Aug 2023 12:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbjHBPmf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 11:42:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4627D2695;
-        Wed,  2 Aug 2023 08:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=i4RVxh7cqcfhStKnrFuIVUqPlurNIlyMZ1NDN212nv0=; b=m9OaeC94Czmbb5hPBahN8SXBqI
-        HNi7Mt4xq8QD0KfNROKtIz4cWo24dWSBz7X8e50X0RB4sQ5tkio4jz+r4r8ZXafkW2ww175yxfozT
-        NCUZO2qzsSFjl3BFFlIRN3Wfa2mzIAi3PGZkD8Cd957ycv8VcxS6B+Gl86ETq6tCRKfhACSRqvwK7
-        ZdYNXIQB/XHcCPAEwZsU/ppTsd8l/Kd7bPks6ODFCghe5WMh0L9iLVh6NfcG8q01AnZzhLKiyX/4B
-        4MY4Wr/7eVJVJE1UTa4EMeC4cbXZti0JxzrFZGHMr43Ix5mWyHHev/cZbWwF9pp4HCsk18N+iH6el
-        wjXcrqPw==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRDzN-005GOT-0f;
-        Wed, 02 Aug 2023 15:42:17 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH 12/12] xfs use fs_holder_ops for the log and RT devices
-Date:   Wed,  2 Aug 2023 17:41:31 +0200
-Message-Id: <20230802154131.2221419-13-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230802154131.2221419-1-hch@lst.de>
-References: <20230802154131.2221419-1-hch@lst.de>
+        with ESMTP id S229892AbjHBQ3v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 12:29:51 -0400
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFC11FFA
+        for <linux-ext4@vger.kernel.org>; Wed,  2 Aug 2023 09:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1690993788;
+        bh=CDRekWm6pd30PmXsiJ3YCcP2YoiZynmJooiM6qXd9ZQ=;
+        h=From:To:Cc:Subject:Date;
+        b=kCxmLk8x0dkMeXzq+NVfJxr3vJrPp82L7eREd2N8CBW5OLpG/xsTUR/kUikHs691s
+         EdKv6L+AD5k3/LXI4wQk85/ASYhEUXfBG/JhzsCxG8DCpsg4ginUR0OWmSYYTTMbAP
+         aM30CJpQPwzOZZ80IUEDV+VUop8ekwdb6zxrWCJ0=
+Received: from fedora.. ([2409:8a00:2577:9740:9ca5:5f74:38db:4c67])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id 72B1AE0F; Thu, 03 Aug 2023 00:28:43 +0800
+X-QQ-mid: xmsmtpt1690993723tmh2kf69l
+Message-ID: <tencent_21AF0D446A9916ED5C51492CC6C9A0A77B05@qq.com>
+X-QQ-XMAILINFO: NnYhxYSyuBnLO8hH8FyElRv9gO97SjxRlUY4JItgBYfGvblIkJbQHv9DqJFCId
+         ci021TXSWY24vG9CvxYHLxKkgXaA4UCYwqYZV0wxEy0nG2LZ6Ngrt1zDtRXQXWnBCGaIN13SIy2s
+         DJ6jsJBF1xSrparQCu/LIb5MfkkNrwLdbYNtn2HTnFd7b1cPw0eDEd0FX1bg2QgI+kwk4CK6/oU5
+         HtlLBvHdcgdZrD8fgdiw0L6Pm8biJiQvRxHkRnTM4R3u5QpF4C0ocn/l7yiZHPDjZHhCm21/wOw8
+         mD6/5ZMmReHxL/phdjZ5inm+Xo0cV/bhNZqTT3bNS4ukYBTi3lUc33GEEpHpeuE8FdNChnrW8afd
+         P/RYOnNbg5IUUviFxOvG/V/E3k3gC86Wo6GZpujAax3GAx981/xSqo0yik67MUC5VD1dT70+KcW4
+         zwSoDlHGscR6tADKw3kQuMVWtguljs5OW0xNz1mNcRBCdITLZG3NHJnTID4+51k11pv7vXcb5wZo
+         5BMlydpcxzqkjXLupkO7l95T7abOEVFXjygShEVgJd1KgfHDz5PeOqr68QqtDBYyA9B2qAuMvmTL
+         TlWEBkdUg2gfQj5NZmDR8n9JgWQPICG+mFgQ5Enpe1uqFZ1gM/90J041nyg64GN/Ce77i4RNGBez
+         pQjOXqWLqeuSFBpi4knvB/EeMm6sqTfYXXipKo1GG00g8cGbJiL0RJSBTmkaEoqYsc3n3Fs9oK/t
+         RdP01i0f960zc2B/j/+wzJVEApkhJPRAqbD2C4hEmMdn9dlp3+IhagF2pILGZvxP82ANs2Pqsvsp
+         U8dKkuA6fDAjmn595WtWeQuOyJ4uK+7HxKuA7VYEs/beIrJU0TNIYv+BYV4ZVi0Ak/+TmBBX1mKP
+         7uj6KEy1fnYhwzSV4FULy0YtujBF9afeFc2udzufHpzaF/qKLzJVQPiBxwba+zKczNjvBL2DGFV0
+         v2R42r7eB81Q6AUNjWjT1yN/YstDSW4RLH5kriKyfmFKEjY2urF67JhfrXl0qB7RIV5AE5IgQEtJ
+         q0vXBOwsUiVIDb2ke/6vvSrpdic9QaVEwwnAhQ/lyfb7wlY5vV
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From:   Wang Jianjian <wangjianjian0@foxmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Wang Jianjian <wangjianjian0@foxmail.com>
+Subject: [PATCH 1/2] ext4: Ractor one helper ext4_num_base_meta_blocks
+Date:   Thu,  3 Aug 2023 00:28:39 +0800
+X-OQ-MSGID: <20230802162840.331385-1-wangjianjian0@foxmail.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Use the generic fs_holder_ops to shut down the file system when the
-log or RT device goes away instead of duplicating the logic.
+Factor one helper ext4_num_base_meta_blocks and use it in next change.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Wang Jianjian <wangjianjian0@foxmail.com>
 ---
- fs/xfs/xfs_super.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ fs/ext4/balloc.c | 15 +++++++++++----
+ fs/ext4/ext4.h   |  2 ++
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index d5042419ed9997..338eba71ff8667 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -377,17 +377,6 @@ xfs_setup_dax_always(
- 	return 0;
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 1f72f977c6db..000056d05ce4 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -913,11 +913,11 @@ unsigned long ext4_bg_num_gdb(struct super_block *sb, ext4_group_t group)
  }
  
--static void
--xfs_bdev_mark_dead(
--	struct block_device	*bdev)
--{
--	xfs_force_shutdown(bdev->bd_holder, SHUTDOWN_DEVICE_REMOVED);
--}
--
--static const struct blk_holder_ops xfs_holder_ops = {
--	.mark_dead		= xfs_bdev_mark_dead,
--};
--
- STATIC int
- xfs_blkdev_get(
- 	xfs_mount_t		*mp,
-@@ -396,8 +385,8 @@ xfs_blkdev_get(
+ /*
+- * This function returns the number of file system metadata clusters at
++ * This function returns the number of file system metadata blocks at
+  * the beginning of a block group, including the reserved gdt blocks.
+  */
+-static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
+-				     ext4_group_t block_group)
++unsigned ext4_num_base_meta_blocks(struct super_block *sb,
++				   ext4_group_t block_group)
  {
- 	int			error = 0;
- 
--	*bdevp = blkdev_get_by_path(name, BLK_OPEN_READ | BLK_OPEN_WRITE, mp,
--				    &xfs_holder_ops);
-+	*bdevp = blkdev_get_by_path(name, BLK_OPEN_READ | BLK_OPEN_WRITE,
-+				    mp->m_super, &fs_holder_ops);
- 	if (IS_ERR(*bdevp)) {
- 		error = PTR_ERR(*bdevp);
- 		xfs_warn(mp, "Invalid device [%s], error=%d", name, error);
-@@ -412,7 +401,7 @@ xfs_blkdev_put(
- 	struct block_device	*bdev)
- {
- 	if (bdev)
--		blkdev_put(bdev, mp);
-+		blkdev_put(bdev, mp->m_super);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	unsigned num;
+@@ -935,8 +935,15 @@ static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
+ 	} else { /* For META_BG_BLOCK_GROUPS */
+ 		num += ext4_bg_num_gdb_meta(sb, block_group);
+ 	}
+-	return EXT4_NUM_B2C(sbi, num);
++	return num;
++}
++
++static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
++					    ext4_group_t block_group)
++{
++	return EXT4_NUM_B2C(EXT4_SB(sb), ext4_num_base_meta_blocks(sb, block_group));
  }
++
+ /**
+  *	ext4_inode_to_goal_block - return a hint for block allocation
+  *	@inode: inode for block allocation
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0a2d55faa095..f9f329e1118e 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3084,6 +3084,8 @@ extern const char *ext4_decode_error(struct super_block *sb, int errno,
+ extern void ext4_mark_group_bitmap_corrupted(struct super_block *sb,
+ 					     ext4_group_t block_group,
+ 					     unsigned int flags);
++unsigned ext4_num_base_meta_blocks(struct super_block *sb,
++				   ext4_group_t block_group);
  
- STATIC void
+ extern __printf(7, 8)
+ void __ext4_error(struct super_block *, const char *, unsigned int, bool,
 -- 
-2.39.2
+2.34.3
 
