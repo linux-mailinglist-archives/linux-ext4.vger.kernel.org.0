@@ -2,71 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D17376F0C6
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 19:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC33176F16D
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 20:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbjHCRh5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 13:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S231868AbjHCSGS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 14:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235117AbjHCRhv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 13:37:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E552F10B;
-        Thu,  3 Aug 2023 10:37:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S231493AbjHCSGC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 14:06:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FAC4EE1;
+        Thu,  3 Aug 2023 11:04:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9BDF3218EB;
-        Thu,  3 Aug 2023 17:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691084267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nUrIcCgKfn8Ln+psoMSqthh4paG1THVbdii5u1kozU8=;
-        b=OGxF/Y/oYJ1fU84+6F/RoPLLg35d4x0oZCxn7NJYfsPYaWyvnRyXHf4DpYhnHIw3AkH3PX
-        BJZstYEbB8LUqRjqLjnTpX/TyqqePgq5GT48C61y8Lb4rZ9K2dtS1h0Smt0EYdOu76tQNZ
-        CvchZify8FuYF5UYOBMlpefOsxln22g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691084267;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nUrIcCgKfn8Ln+psoMSqthh4paG1THVbdii5u1kozU8=;
-        b=ho8JvdBvLvswROYHxKBwf9LRoHGI9RbaY2o/N43xAICwJABGHb/t2edJT1Nkm29HchCy3L
-        qOnMv5JMwYiyM3CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DDA3134B0;
-        Thu,  3 Aug 2023 17:37:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CX3WEOvly2R3fQAAMHmgww
-        (envelope-from <krisman@suse.de>); Thu, 03 Aug 2023 17:37:47 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5543261E3E;
+        Thu,  3 Aug 2023 18:04:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC28DC433C7;
+        Thu,  3 Aug 2023 18:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691085874;
+        bh=eCLuzrspl2iA9AJzB2yLuYbX5hhAX4e4sNYlXnEkxWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dl7ePWst+Fn/zB+vTBNyZ407Av71NETccv5s5eg1ogo6vQAFVqCGX2QEDriBXA9la
+         h2aslHTXX2U2bsrocTVsZ1nmjo4B6UBq2h91Gx2vahiPi4QQ78UmzOI8LXbNUflrDL
+         FAPNfKTTR1fZ0j6/+PdOIbgJ66CpgAdLA76gvCOEtrpv7EtMMR+ReL9GxeLci5PfKd
+         P9uXqdRuUap6ECaZ1XEHmFvLYlyxeOd/uUKnWx2wJpCmXSIjDwP0TsCg/27xnBkTRk
+         R9xAA/eehNcaM8eGXyancfI9Oj6aRKq8jTXGn9A39bXCqYJ7/awLi7s6Iyj1xU7PWz
+         dl2fOfiODVuqQ==
+Date:   Thu, 3 Aug 2023 20:04:28 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v4 3/7] libfs: Validate negative dentries in
- case-insensitive directories
-Organization: SUSE
-References: <20230727172843.20542-1-krisman@suse.de>
-        <20230727172843.20542-4-krisman@suse.de>
-        <20230729042048.GB4171@sol.localdomain>
-Date:   Thu, 03 Aug 2023 13:37:45 -0400
-In-Reply-To: <20230729042048.GB4171@sol.localdomain> (Eric Biggers's message
-        of "Fri, 28 Jul 2023 21:20:48 -0700")
-Message-ID: <875y5w10ye.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 01/12] fs: export setup_bdev_super
+Message-ID: <20230803-decken-lernen-3939eb320283@brauner>
+References: <20230802154131.2221419-1-hch@lst.de>
+ <20230802154131.2221419-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230802154131.2221419-2-hch@lst.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,41 +64,11 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Wed, Aug 02, 2023 at 05:41:20PM +0200, Christoph Hellwig wrote:
+> We'll want to use setup_bdev_super instead of duplicating it in nilfs2.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-> On Thu, Jul 27, 2023 at 01:28:39PM -0400, Gabriel Krisman Bertazi wrote:
->>   - In __lookup_slow, either the parent inode is read locked by the
->>     caller (lookup_slow), or it is called with no flags (lookup_one*).
->>     The read lock suffices to prevent ->d_name modifications, with the
->>     exception of one case: __d_unalias, will call __d_move to fix a
->>     directory accessible from multiple dentries, which effectively swaps
->>     ->d_name while holding only the shared read lock.  This happens
->>     through this flow:
->> 
->>     lookup_slow()  //LOOKUP_CREATE
->>       d_lookup()
->>         ->d_lookup()
->>           d_splice_alias()
->>             __d_unalias()
->>               __d_move()
->> 
->>     Nevertheless, this case is not a problem because negative dentries
->>     are not allowed to be moved with __d_move.
->
-> Isn't it possible for a negative dentry to become a positive one concurrently?
-
-Do you mean d_splice_alias racing with a dentry instantiation and
-__d_move being called on a negative dentry that is turning positive?
-
-It is not possible for __d_move to be called with a negative dentry for
-d_splice_alias, since the inode->i_lock is locked during __d_find_alias,
-so it can't race with __d_instantiate or d_add. Then, __d_find_alias
-can't find negative dentries in the first place, so we either have a
-positive dentry, in which case __d_move is fine with regard to
-d_revalidate_name, or we don't have any aliases and don't call
-__d_move.
-
-Can you clarify what problem you see here?
-
--- 
-Gabriel Krisman Bertazi
+Looks good to me,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
