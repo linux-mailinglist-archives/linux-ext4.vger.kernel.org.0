@@ -2,70 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF9A76F5BD
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 00:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C7276F5BF
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 00:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHCWcI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 18:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S229494AbjHCWeH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 18:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjHCWcG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 18:32:06 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3A41BF1
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Aug 2023 15:32:04 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so1110994b3a.0
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Aug 2023 15:32:04 -0700 (PDT)
+        with ESMTP id S229882AbjHCWeH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 18:34:07 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC3235A8
+        for <linux-ext4@vger.kernel.org>; Thu,  3 Aug 2023 15:34:05 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a38953c928so1140719b6e.1
+        for <linux-ext4@vger.kernel.org>; Thu, 03 Aug 2023 15:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1691101924; x=1691706724;
+        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1691102045; x=1691706845;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Vh3g/mZtI3P1AmGgsxIxFG74hBV29vr537qpKGiHak=;
-        b=gNEM/ltA0euuymKSdIvCKIkP6UgUJRtDNP2HqgF1t1HxW2ALKCSOv7n63q5n50f0Uw
-         MyD0d4KaRpZ+KuvhSnNSLJ2ofwiw5AUN0NW6wZhnW2ReYa6J20Dp9/vaS8nYCCv1mWB/
-         JdZeeOmT2vJF0OmqXwCFTTP4b+9+Vi2I0ACvBhp3NkzBmOqGBuDPjU+o0kguKS2ykQP9
-         i03Q3IAeNYw9jxqFDMRI/klunfocjz1yUg5A53On50FFGdwOkoHHxF/ldS7EHc8Co+u5
-         ToZO/mzM+BCOtKUTMFEdcmlvIIBk3BcdriMEdhgewmhbrXVM25hWbpFxHb8HNxhBSTQq
-         29xQ==
+        bh=Il7sF5m7oHPCYbM1sIW0/Ql0c7lH57Ga/1AsJBYpWMk=;
+        b=wxeR9Pee7rdbNHisS3bhVrmlEQu8BpPF+I66d0+CCBD+66bmQTprUZaGUaWh63vw2/
+         WoMVb85QPXM9d0zBt8Nv2jSE7tsOeHVXWS37Ls+OPyJ5gk7K6UVXS2+wMIWBvBHqfe7M
+         pNYnbe7M3N62Cw1rUUz/0M65jFStCKr9tWkAlb55bvnUVmoo+2t50/sgJ+sFR16aG1QD
+         Sk4smJE3JOMt3LAIDf9i/Y6XEIphXtXv4nS9OZElctuCJsnXpUr6PCcudatomp0++/qZ
+         MJxBsJrDApsCA4OoGjtT9AIIMDX/7WwB8QtIWs/wV32aCphX+omjP5b5E9CnSCkfXD3Z
+         mIMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691101924; x=1691706724;
+        d=1e100.net; s=20221208; t=1691102045; x=1691706845;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Vh3g/mZtI3P1AmGgsxIxFG74hBV29vr537qpKGiHak=;
-        b=EQl6I4Ocz24epvUKrXML1qPp+jE9ERnPJfQXyimwBCxJEdpyrpfRCGcmdN6QoMM6gB
-         5+UoGzUMgbUe4suDlUUkym5ljRukm2aJwMYfZk01972phNEJZZ5lwrSYnpd3ehpuGuqr
-         yxjCt9sJ5vkL0xe8WuLxl/WFJxCk5FIl49sGtadz/ESN0akAF0afP3LPjjK5pIzFHa5J
-         nf0TKoiReaNocDAj+rTqZeKbNuORic187QuUboGrJvzbNT+oAR/eqp4Yxl3ixOLqwEdx
-         HHBPhlig6w6ztkPo1liJ/ZxS/ljKF5Ep17vFGPHhc/eCEmfVwYFkIQP7eLP2dcPjRxsm
-         yIgA==
-X-Gm-Message-State: AOJu0YxR4oLsz4bsqGfwkLIySaFfiTR+xDDqS3c5uQC18DHN7NG+DHrg
-        KYfG8aCeMpTBgkagUocu+PNs7Q==
-X-Google-Smtp-Source: AGHT+IGvzapL6JLmHfFYYHTjobQEbdAi1vvRGb1dzCFmAwECGd7FxU8kYpHz2Sk1ijMY6MleJiYl/A==
-X-Received: by 2002:a05:6a00:2d13:b0:67e:e019:3a28 with SMTP id fa19-20020a056a002d1300b0067ee0193a28mr16108pfb.16.1691101924077;
-        Thu, 03 Aug 2023 15:32:04 -0700 (PDT)
+        bh=Il7sF5m7oHPCYbM1sIW0/Ql0c7lH57Ga/1AsJBYpWMk=;
+        b=cEsKWuwIUjitsN/+/+YGUtf/KkGQ3ZUFaFuc5UHe7g9pszR9nv/YkJip1QkqZBvq04
+         5kskBl8CBtZtfVrAH2sQ0n7b4nEAi3dlJx7LPtnV2p0oHXBWS+DstGGnLwO59mnTBuQP
+         djvGTBqkK7o3ceJ0lQyv80AHcencyiwyM4X+bl6TyvAPCYE41+5MhoWprOJwXpkd53yS
+         g6bj/qOVirpUp92Bo88fIXsQe4Xx6AUWS47yHguZcvhfJDivTlJA6XChsRfgdk/LNf0o
+         3m3D17Jd0mQhtfs75uHykgVxpJa2xCGrXXeETe1Z1xc7AW3+479JiI2ZfreDlv+CnODQ
+         L9Zw==
+X-Gm-Message-State: AOJu0YxM/ExCBd26+EVTlLt9i+nHtuLzShP7nYIqSS9lFgTt2zLF6QeU
+        /wLUkZp3QNDFEpTxQw4EKToRCw==
+X-Google-Smtp-Source: AGHT+IH+LHaygAelFy7PSG0dGkpYt99Q2zFOkLKufIdpZk7vjGLzunBz16NwVvHBtuiHLqlqoJQNBw==
+X-Received: by 2002:a05:6358:8a7:b0:139:d5b9:87d3 with SMTP id m39-20020a05635808a700b00139d5b987d3mr62523rwj.5.1691102044911;
+        Thu, 03 Aug 2023 15:34:04 -0700 (PDT)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id ey14-20020a056a0038ce00b0067738f65039sm322821pfb.83.2023.08.03.15.32.02
+        by smtp.gmail.com with ESMTPSA id a15-20020a63704f000000b005649cee408fsm316556pgn.0.2023.08.03.15.34.03
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 15:32:03 -0700 (PDT)
+        Thu, 03 Aug 2023 15:34:04 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <30B88888-4652-45B9-974F-C06468D30AD5@dilger.ca>
+Message-Id: <12CFFD6D-ED0E-4D36-A7B7-ACCFB698A177@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_BCBD2BCA-DFEC-4788-AC3F-A884CD878BEB";
+ boundary="Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v4] ext4: Fix rec_len verify error
-Date:   Thu, 3 Aug 2023 16:31:59 -0600
-In-Reply-To: <20230803060938.1929759-1-zhangshida@kylinos.cn>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
+Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
+Date:   Thu, 3 Aug 2023 16:34:02 -0600
+In-Reply-To: <20230803030903.GK11377@frogsfrogsfrogs>
+Cc:     Stephen Zhang <starzhangzsd@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         zhangshida@kylinos.cn, stable@kernel.org
-To:     zhangshida <starzhangzsd@gmail.com>
-References: <20230803060938.1929759-1-zhangshida@kylinos.cn>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
+ <20230801151828.GB11332@frogsfrogsfrogs>
+ <A9ECDF14-95A1-4B1E-A815-4B6ABF4916C6@dilger.ca>
+ <CANubcdUsDfiuGimNXjzoAF5ki8waCoFW31mg4vjpm073rS6+dw@mail.gmail.com>
+ <20230803030903.GK11377@frogsfrogsfrogs>
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,163 +78,117 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_BCBD2BCA-DFEC-4788-AC3F-A884CD878BEB
+--Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
-	charset=us-ascii
+	charset=utf-8
 
-On Aug 3, 2023, at 12:09 AM, zhangshida <starzhangzsd@gmail.com> wrote:
+On Aug 2, 2023, at 9:09 PM, Darrick J. Wong <djwong@kernel.org> wrote:
 >=20
-> From: Shida Zhang <zhangshida@kylinos.cn>
->=20
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly =
-created
-> under a directory:
->=20
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm =
-xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm =
-xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
-xxxxx: Directory index failed checksum
->=20
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
->=20
-> But it is not the same condition when blocksize equals to 4k.
-> when enough files are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
->=20
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k.
-> To address this, helpers like ext4_rec_len_{from,to}_disk has already
-> been introduced to complete the conversion between the encoded and the
-> plain form of rec_len.
->=20
-> So fix this one by using the helper, and all the other in this file =
-too.
->=20
-> Cc: stable@kernel.org
-> Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree =
-nodes")
-> Suggested-by: Andreas Dilger <adilger@dilger.ca>
-> Suggested-by: Darrick J. Wong <djwong@kernel.org>
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> On Thu, Aug 03, 2023 at 09:52:53AM +0800, Stephen Zhang wrote:
+>> Andreas Dilger <adilger@dilger.ca> =E4=BA=8E2023=E5=B9=B48=E6=9C=882=E6=
+=97=A5=E5=91=A8=E4=B8=89 14:07=E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>> Not all of these cases are actual bugs.  The =
+ext4_rec_len_from_disk()
+>>> function is only different for rec_len >=3D 2^16, so if it is =
+comparing
+>>> rec_len against "12" or "sizeof(struct ...)" then the inequality =
+will
+>>> be correct regardless of how it is decoded.
+>>>=20
+>>> That said, it makes sense to use ext4_rec_len_from_disk() to access
+>>> rec_len consistently throughout the code, since that avoids =
+potential
+>>> bugs in the future.  We know the code will eventually will be copied
+>>> some place where rec_len >=3D 2^16 is actually important, and we may =
+as
+>>> well avoid that bug before it happens.
+>>>=20
+>>>=20
+>>> One thing this discussion *does* expose is that =
+ext4_rec_len_from_disk()
+>>> is hard-coded at compile time to differentiate between PAGE_SIZE > =
+64k
+>>> and PAGE_SIZE =3D 4K, because it was never possible to have =
+blocksize >
+>>> PAGE_SIZE, so only ARM/PPC ever had filesystems with blocksize=3D64KiB=
 
-Thanks for the updated patch.  You can add:
+>>> (and the Fujitsu Fugaku SPARC system with blocksize=3D256KiB).
+>>>=20
+>>> However, with the recent advent of the VM and IO layers allowing
+>>> blocksize > PAGE_SIZE this function will need to be changed to allow
+>>> the same on x86 PAGE_SIZE=3D4KiB systems.  Instead of checking
+>>>=20
+>>>  #if PAGE_SIZE >=3D 65536
+>>>=20
+>>> it should handle this based on the filesystem blocksize at runtime:
+>>>=20
+>>> static inline
+>>> unsigned int ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
+>>> {
+>>>        unsigned len =3D le16_to_cpu(dlen);
+>>>=20
+>>>        if (blocksize < 65536)
+>>>                return len;
+>>>=20
+>>>        if (len =3D=3D EXT4_MAX_REC_LEN || len =3D=3D 0)
+>>>                return blocksize;
+>>>=20
+>>>        return (len & 65532) | ((len & 3) << 16);
+>>> }
+>>>=20
+>>> Strictly speaking, ((len & 65532) | ((len & 3) << 16) should equal =
+"len"
+>>> for any filesystem with blocksize < 65536, but IMHO it is more clear =
+if
+>>> the code is written this way.
+>>>=20
+>>> Similarly, the encoding needs to be changed to handle large records =
+at
+>>> runtime for when we eventually allow ext4 with blocksize > =
+PAGE_SIZE.
+>>>=20
+>>> static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned =
+blocksize)
+>>> {
+>>>        BUG_ON(len > blocksize);
+>>>        BUG_ON(blocksize > (1 << 18));
+>>>        BUG_ON(len & 3);
+>>>=20
+>>>        if (len < 65536) /* always true for blocksize < 65536 */
+>>>                return cpu_to_le16(len);
+>>>=20
+>>>        if (len =3D=3D blocksize) {
+>>>                if (blocksize =3D=3D 65536)
+>>>                        return cpu_to_le16(EXT4_MAX_REC_LEN);
+>>>=20
+>>>                return cpu_to_le16(0);
+>>>        }
+>>>=20
+>>>        return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
+>>> }
+>>>=20
+>>=20
+>> Hmm, at least it sounds reasonable to me based on my limited
+>> knowledge. However, I am not sure whether you want me to incorporate
+>> these changes into this particular commit or another patch within =
+this
+>> submission.
+>>=20
+>> By default, I will simply leave it for further discussion. Please let
+>> me know if you have any ideas.
+>=20
+> ext4 doesn't support blocksize > PAGE_SIZE yet.  Don't worry about =
+this
+> for now.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+I agree it doesn't need to be merged into the current patch.
 
-> ---
-> v3->v4:
-> 1,Convert all the other rec_len, litrerally.
-> 2,Lift a helper output to a local variable.
-> --Suggested by Darrick.
-> v2->v3:
-> 1,Convert all the other rec_len if necessary, as suggested by Darrick.
-> 2,Rephrase the commit message.
-> v1->v2:
-> Use the existing helper to covert the rec_len, as suggested by =
-Andreas.
->=20
-> fs/ext4/namei.c | 26 +++++++++++++++-----------
-> 1 file changed, 15 insertions(+), 11 deletions(-)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..34fb2d1e66aa 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -343,17 +343,17 @@ static struct ext4_dir_entry_tail =
-*get_dirent_tail(struct inode *inode,
-> 						   struct buffer_head =
-*bh)
-> {
-> 	struct ext4_dir_entry_tail *t;
-> +	int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
->=20
-> #ifdef PARANOID
-> 	struct ext4_dir_entry *d, *top;
->=20
-> 	d =3D (struct ext4_dir_entry *)bh->b_data;
-> 	top =3D (struct ext4_dir_entry *)(bh->b_data +
-> -		(EXT4_BLOCK_SIZE(inode->i_sb) -
-> -		 sizeof(struct ext4_dir_entry_tail)));
-> -	while (d < top && d->rec_len)
-> +		(blocksize - sizeof(struct ext4_dir_entry_tail)));
-> +	while (d < top && ext4_rec_len_from_disk(d->rec_len, blocksize))
-> 		d =3D (struct ext4_dir_entry *)(((void *)d) +
-> -		    le16_to_cpu(d->rec_len));
-> +		    ext4_rec_len_from_disk(d->rec_len, blocksize));
->=20
-> 	if (d !=3D top)
-> 		return NULL;
-> @@ -364,7 +364,8 @@ static struct ext4_dir_entry_tail =
-*get_dirent_tail(struct inode *inode,
-> #endif
->=20
-> 	if (t->det_reserved_zero1 ||
-> -	    le16_to_cpu(t->det_rec_len) !=3D sizeof(struct =
-ext4_dir_entry_tail) ||
-> +	    (ext4_rec_len_from_disk(t->det_rec_len, blocksize) !=3D
-> +	     sizeof(struct ext4_dir_entry_tail)) ||
-> 	    t->det_reserved_zero2 ||
-> 	    t->det_reserved_ft !=3D EXT4_FT_DIR_CSUM)
-> 		return NULL;
-> @@ -445,13 +446,14 @@ static struct dx_countlimit =
-*get_dx_countlimit(struct inode *inode,
-> 	struct ext4_dir_entry *dp;
-> 	struct dx_root_info *root;
-> 	int count_offset;
-> +	int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
-> +	unsigned int rlen =3D ext4_rec_len_from_disk(dirent->rec_len, =
-blocksize);
->=20
-> -	if (le16_to_cpu(dirent->rec_len) =3D=3D =
-EXT4_BLOCK_SIZE(inode->i_sb))
-> +	if (rlen =3D=3D blocksize)
-> 		count_offset =3D 8;
-> -	else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
-> +	else if (rlen =3D=3D 12) {
-> 		dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> -		if (le16_to_cpu(dp->rec_len) !=3D
-> -		    EXT4_BLOCK_SIZE(inode->i_sb) - 12)
-> +		if (ext4_rec_len_from_disk(dp->rec_len, blocksize) !=3D =
-blocksize - 12)
-> 			return NULL;
-> 		root =3D (struct dx_root_info *)(((void *)dp + 12));
-> 		if (root->reserved_zero ||
-> @@ -1315,6 +1317,7 @@ static int dx_make_map(struct inode *dir, struct =
-buffer_head *bh,
-> 	unsigned int buflen =3D bh->b_size;
-> 	char *base =3D bh->b_data;
-> 	struct dx_hash_info h =3D *hinfo;
-> +	int blocksize =3D EXT4_BLOCK_SIZE(dir->i_sb);
->=20
-> 	if (ext4_has_metadata_csum(dir->i_sb))
-> 		buflen -=3D sizeof(struct ext4_dir_entry_tail);
-> @@ -1335,11 +1338,12 @@ static int dx_make_map(struct inode *dir, =
-struct buffer_head *bh,
-> 			map_tail--;
-> 			map_tail->hash =3D h.hash;
-> 			map_tail->offs =3D ((char *) de - base)>>2;
-> -			map_tail->size =3D le16_to_cpu(de->rec_len);
-> +			map_tail->size =3D =
-ext4_rec_len_from_disk(de->rec_len,
-> +								=
-blocksize);
-> 			count++;
-> 			cond_resched();
-> 		}
-> -		de =3D ext4_next_entry(de, dir->i_sb->s_blocksize);
-> +		de =3D ext4_next_entry(de, blocksize);
-> 	}
-> 	return count;
-> }
-> --
-> 2.27.0
->=20
-
+It's something that could be fixed in a follow-on patch, to have one =
+less
+bug to fix in the future when ext4 *does* support blocksize > PAGE_SIZE,
+which isn't so far away anymore.
 
 Cheers, Andreas
 
@@ -239,7 +197,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_BCBD2BCA-DFEC-4788-AC3F-A884CD878BEB
+--Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -250,19 +208,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTMKuAACgkQcqXauRfM
-H+A/SQ/+NrsBmjmaav/mrEZNilO98NLuMfQBUAi7CKfDeOR5uQQ7Xj4upzEoqEf6
-Wcb2p41ImLBAAKxqRnJurCkPcmOXQlHDFs7m7xQ4thqHeQo1aTIFnyUuosxmJ2SO
-LK9fQfn/7lexTiI6zVNbRTfkIE+sAPnHJFd1A3gzvSGbiiJhyNoUNmY1jKsV5jvp
-zQdUVijPfhYLZyBCrIHFgMtNPkhsFSVuyj0FH74MKQhC48XLSzAxlbje1Js7jwSJ
-srLxvk4t6jFw5H/T9fqh3S2Mz+QNCBLBEzwkuc4EVXMwrNiky0TwsbW6P9COp5U5
-MosmyKe7hrf/TyZPh3fOJItKJ3KF1XIMCAR1zx+e8hNUHubxNtmRVXkgDEFNTZAs
-/oPDOjEk5cJB83jRyCx3vdVOwMjpFtaw8Gf9SZNh/cibSVgShebIwP/UPh95U3Cl
-dWi9YYTDoRurUTDpIbGvLQRukomh/Bs/qAPg564sjGpRrL3SL/A8/pJHlIUCj/xE
-eIjN7SKB+kxG/jCQPwxNrFI+W3Vc90RG3s/QwpXUDzxcelSXS6EA6bE3bIxUwjJC
-OjGr9qRE3D4qv/xnZYOtvgdFD/QRNH9/hYAQPfcm0IeRXWp4agnVVf1TYiqe0upX
-e8kpsbqMtB76UbNJ8gIwjjuHEUE//ImllyIFeP/dcv/zYGJAwew=
-=ynvs
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTMK1oACgkQcqXauRfM
+H+A7sBAAhXmLZ/oDD73vpfMHTdJmdWe0rB/SirU1fQ/f7WZsmyMqMN9gqMI7Fhpq
+sxjn2ML1P9cLUgyjTCf5usJ743ewZX77Jv8y0+J3T6yd5/aFB0e4rqHR9coxN4L9
+sO/3j9r0f+ZPJ4Wl7QHlPr2COjAAEDz0O4KtSKMk/+doGvsitB2oiB9x8Vj/BPBD
+xU6a8OjmLotHzpR99pgVYb1whGTUeG5tFQTPBxAj9NBPQ3mr5wYZ5TfdkOtgpDAh
+DeuKWGc6X1ByrLajuwybSTlxpNcKZr5aOmNuVPPkydBT89U6GdKXtCNYO6KS6ri0
+Zv6LCPeL0A/cVApQ9KXLwJv6ckqMXnjJPoQZ7gceiSNR9kd0kTMGODPyITlo2pM5
+CAcT778lWGWKiC6QyS/iewFXgrcaAyURclIwnckIrgzcEBvP6BLDkQXtQXeCx5D3
+UIwM+MDHec0dTQXt25hVNr5sT6VUWVXGBJVCNt+cPhM5TIqecEYGYHuLS5p+AQhY
+9VF2lisZTuUz/MThYGyzWY7j/kJfFYP1C3aN18VeA5xKLG8I7tHTC1ToWMIgrRk2
+ci5kRUhbpL0ofioFSLSKN/kMNPJqlGoYps3KnC6nLnmlojwRUh9xp/VnxXBO44jd
+gcTPcxOHAR09OiyQqkGMgq78+7zv05VMAIRKmySgpkbWxN1bWdo=
+=1rAp
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_BCBD2BCA-DFEC-4788-AC3F-A884CD878BEB--
+--Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1--
