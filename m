@@ -2,69 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AACB76EB55
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 15:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B6176EB59
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 15:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbjHCN6t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 09:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S236109AbjHCN65 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 09:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236377AbjHCN6n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 09:58:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85709171D;
-        Thu,  3 Aug 2023 06:58:42 -0700 (PDT)
+        with ESMTP id S234863AbjHCN64 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 09:58:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A52170D;
+        Thu,  3 Aug 2023 06:58:54 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2DE0C1F45F;
-        Thu,  3 Aug 2023 13:58:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6661621980;
+        Thu,  3 Aug 2023 13:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691071121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1691071133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=d01RP3i18IXF4FZKDRE94E/YmeTO0k9D4PcJR2I6SjE=;
-        b=VZo5dtpydQlEgjpW20dMabiQnevXdUVmYE8mamo6ele0aTPxB06V0pBg3sNu/2dKYpPns4
-        zWE6iiwC7F7aB4TB48CqWSF7B5mec+eRd5cPFlruNWwAS1ReXdJnF0qlmJMQK8KQuPUT+k
-        TutsJcDysx8OfH6K4lrBrIclBK86gGc=
+        bh=DTJxvWqtu7HdvmCpxlA8gxx5nXWxZFSZ+fc8SOhAj9s=;
+        b=ttLo30NEZEAkZo+GKcUUBPX+disFG6lUUkR0EYZYYa8hYqnuRPq6sLr2SU4uoKfmROp5Ev
+        EWT2MrQ44nOyQbVt1lyUN88DW9p2dyf8QbjsoL7yNMFIxSHZ9OfVNilRe+0d8yfkTwce2g
+        s9L6Jonw9+JxUJDFDr8a3W3Ma4VRe2E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691071121;
+        s=susede2_ed25519; t=1691071133;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=d01RP3i18IXF4FZKDRE94E/YmeTO0k9D4PcJR2I6SjE=;
-        b=Im4ls460HFAZsMMI1rsDEecV9WCM+cLxG0PVw6DRsPfeVn/4eqF+E6m7lA5eN9X5zaVkNM
-        nQw8GucY2BShD1Cw==
+        bh=DTJxvWqtu7HdvmCpxlA8gxx5nXWxZFSZ+fc8SOhAj9s=;
+        b=aowPEysjLXHqI0SvQT+3OCldkwdMtF9HPEooMKE1Q9JfGO4jSqr+/6aAQzv4N1OgExSdjN
+        O9Ao9qJhusJ5pIDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19B641333C;
-        Thu,  3 Aug 2023 13:58:41 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5756F1333C;
+        Thu,  3 Aug 2023 13:58:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id fv1CBpGyy2RKAQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 03 Aug 2023 13:58:41 +0000
+        id tdRSFZ2yy2RjAQAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 03 Aug 2023 13:58:53 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id ACBD9A076B; Thu,  3 Aug 2023 15:58:40 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 15:58:40 +0200
+        id EEF92A076B; Thu,  3 Aug 2023 15:58:52 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 15:58:52 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Baokun Li <libaokun1@huawei.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
         adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
         ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-        stable@kernel.org
-Subject: Re: [PATCH v2 2/3] ext4: fix BUG in ext4_mb_new_inode_pa() due to
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 3/3] ext4: avoid overlapping preallocations due to
  overflow
-Message-ID: <20230803135840.hmz2ibnwvodqluk5@quack3>
+Message-ID: <20230803135852.w7rfvw6veyi2abxy@quack3>
 References: <20230724121059.11834-1-libaokun1@huawei.com>
- <20230724121059.11834-3-libaokun1@huawei.com>
+ <20230724121059.11834-4-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724121059.11834-3-libaokun1@huawei.com>
+In-Reply-To: <20230724121059.11834-4-libaokun1@huawei.com>
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -75,51 +74,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 24-07-23 20:10:58, Baokun Li wrote:
-> When we calculate the end position of ext4_free_extent, this position may
-> be exactly where ext4_lblk_t (i.e. uint) overflows. For example, if
-> ac_g_ex.fe_logical is 4294965248 and ac_orig_goal_len is 2048, then the
-> computed end is 0x100000000, which is 0. If ac->ac_o_ex.fe_logical is not
-> the first case of adjusting the best extent, that is, new_bex_end > 0, the
-> following BUG_ON will be triggered:
+On Mon 24-07-23 20:10:59, Baokun Li wrote:
+> Let's say we want to allocate 2 blocks starting from 4294966386, after
+> predicting the file size, start is aligned to 4294965248, len is changed
+> to 2048, then end = start + size = 0x100000000. Since end is of
+> type ext4_lblk_t, i.e. uint, end is truncated to 0.
 > 
-> =========================================================
-> kernel BUG at fs/ext4/mballoc.c:5116!
-> invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 673 Comm: xfs_io Tainted: G E 6.5.0-rc1+ #279
-> RIP: 0010:ext4_mb_new_inode_pa+0xc5/0x430
-> Call Trace:
->  <TASK>
->  ext4_mb_use_best_found+0x203/0x2f0
->  ext4_mb_try_best_found+0x163/0x240
->  ext4_mb_regular_allocator+0x158/0x1550
->  ext4_mb_new_blocks+0x86a/0xe10
->  ext4_ext_map_blocks+0xb0c/0x13a0
->  ext4_map_blocks+0x2cd/0x8f0
->  ext4_iomap_begin+0x27b/0x400
->  iomap_iter+0x222/0x3d0
->  __iomap_dio_rw+0x243/0xcb0
->  iomap_dio_rw+0x16/0x80
-> =========================================================
+> This causes (pa->pa_lstart >= end) to always hold when checking if the
+> current extent to be allocated crosses already preallocated blocks, so the
+> resulting ac_g_ex may cross already preallocated blocks. Hence we convert
+> the end type to loff_t and use pa_logical_end() to avoid overflow.
 > 
-> A simple reproducer demonstrating the problem:
-> 
-> 	mkfs.ext4 -F /dev/sda -b 4096 100M
-> 	mount /dev/sda /tmp/test
-> 	fallocate -l1M /tmp/test/tmp
-> 	fallocate -l10M /tmp/test/file
-> 	fallocate -i -o 1M -l16777203M /tmp/test/file
-> 	fsstress -d /tmp/test -l 0 -n 100000 -p 8 &
-> 	sleep 10 && killall -9 fsstress
-> 	rm -f /tmp/test/tmp
-> 	xfs_io -c "open -ad /tmp/test/file" -c "pwrite -S 0xff 0 8192"
-> 
-> We simply refactor the logic for adjusting the best extent by adding
-> a temporary ext4_free_extent ex and use extent_logical_end() to avoid
-> overflow, which also simplifies the code.
-> 
-> Cc: stable@kernel.org # 6.4
-> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
 Looks good to me. Feel free to add:
@@ -129,66 +94,85 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  fs/ext4/mballoc.c | 31 ++++++++++++++-----------------
->  1 file changed, 14 insertions(+), 17 deletions(-)
+>  fs/ext4/mballoc.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
 > 
 > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 4cb13b3e41b3..86bce870dc5a 100644
+> index 86bce870dc5a..78a4a24e2f57 100644
 > --- a/fs/ext4/mballoc.c
 > +++ b/fs/ext4/mballoc.c
-> @@ -5177,8 +5177,11 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  	pa = ac->ac_pa;
+> @@ -4222,12 +4222,13 @@ ext4_mb_pa_rb_next_iter(ext4_lblk_t new_start, ext4_lblk_t cur_start, struct rb_
 >  
->  	if (ac->ac_b_ex.fe_len < ac->ac_orig_goal_len) {
-> -		int new_bex_start;
-> -		int new_bex_end;
-> +		struct ext4_free_extent ex = {
-> +			.fe_logical = ac->ac_g_ex.fe_logical,
-> +			.fe_len = ac->ac_orig_goal_len,
-> +		};
-> +		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
+>  static inline void
+>  ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+> -			  ext4_lblk_t start, ext4_lblk_t end)
+> +			  ext4_lblk_t start, loff_t end)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+>  	struct ext4_prealloc_space *tmp_pa;
+> -	ext4_lblk_t tmp_pa_start, tmp_pa_end;
+> +	ext4_lblk_t tmp_pa_start;
+> +	loff_t tmp_pa_end;
+>  	struct rb_node *iter;
 >  
->  		/* we can't allocate as much as normalizer wants.
->  		 * so, found space must get proper lstart
-> @@ -5197,29 +5200,23 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
->  		 *    still cover original start
->  		 * 3. Else, keep the best ex at start of original request.
->  		 */
-> -		new_bex_end = ac->ac_g_ex.fe_logical +
-> -			EXT4_C2B(sbi, ac->ac_orig_goal_len);
-> -		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-> -		if (ac->ac_o_ex.fe_logical >= new_bex_start)
-> -			goto adjust_bex;
-> +		ex.fe_len = ac->ac_b_ex.fe_len;
+>  	read_lock(&ei->i_prealloc_lock);
+> @@ -4236,7 +4237,7 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+>  		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
+>  				  pa_node.inode_node);
+>  		tmp_pa_start = tmp_pa->pa_lstart;
+> -		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
+> +		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
 >  
-> -		new_bex_start = ac->ac_g_ex.fe_logical;
-> -		new_bex_end =
-> -			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-> -		if (ac->ac_o_ex.fe_logical < new_bex_end)
-> +		ex.fe_logical = orig_goal_end - EXT4_C2B(sbi, ex.fe_len);
-> +		if (ac->ac_o_ex.fe_logical >= ex.fe_logical)
->  			goto adjust_bex;
+>  		spin_lock(&tmp_pa->pa_lock);
+>  		if (tmp_pa->pa_deleted == 0)
+> @@ -4258,14 +4259,14 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+>   */
+>  static inline void
+>  ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
+> -			  ext4_lblk_t *start, ext4_lblk_t *end)
+> +			  ext4_lblk_t *start, loff_t *end)
+>  {
+>  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+>  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>  	struct ext4_prealloc_space *tmp_pa = NULL, *left_pa = NULL, *right_pa = NULL;
+>  	struct rb_node *iter;
+> -	ext4_lblk_t new_start, new_end;
+> -	ext4_lblk_t tmp_pa_start, tmp_pa_end, left_pa_end = -1, right_pa_start = -1;
+> +	ext4_lblk_t new_start, tmp_pa_start, right_pa_start = -1;
+> +	loff_t new_end, tmp_pa_end, left_pa_end = -1;
 >  
-> -		new_bex_start = ac->ac_o_ex.fe_logical;
-> -		new_bex_end =
-> -			new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-> +		ex.fe_logical = ac->ac_g_ex.fe_logical;
-> +		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-> +			goto adjust_bex;
+>  	new_start = *start;
+>  	new_end = *end;
+> @@ -4284,7 +4285,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
+>  		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
+>  				  pa_node.inode_node);
+>  		tmp_pa_start = tmp_pa->pa_lstart;
+> -		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
+> +		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
 >  
-> +		ex.fe_logical = ac->ac_o_ex.fe_logical;
->  adjust_bex:
-> -		ac->ac_b_ex.fe_logical = new_bex_start;
-> +		ac->ac_b_ex.fe_logical = ex.fe_logical;
->  
->  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
->  		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-> -		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
-> -				      EXT4_C2B(sbi, ac->ac_orig_goal_len)));
-> +		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
+>  		/* PA must not overlap original request */
+>  		spin_lock(&tmp_pa->pa_lock);
+> @@ -4364,8 +4365,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
 >  	}
 >  
->  	pa->pa_lstart = ac->ac_b_ex.fe_logical;
+>  	if (left_pa) {
+> -		left_pa_end =
+> -			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
+> +		left_pa_end = pa_logical_end(sbi, left_pa);
+>  		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
+>  	}
+>  
+> @@ -4404,8 +4404,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>  	struct ext4_super_block *es = sbi->s_es;
+>  	int bsbits, max;
+> -	ext4_lblk_t end;
+> -	loff_t size, start_off;
+> +	loff_t size, start_off, end;
+>  	loff_t orig_size __maybe_unused;
+>  	ext4_lblk_t start;
+>  
 > -- 
 > 2.31.1
 > 
