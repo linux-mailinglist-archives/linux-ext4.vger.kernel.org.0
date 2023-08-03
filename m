@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A39A76EA28
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 15:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F02C76EAC6
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbjHCN0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 09:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
+        id S234795AbjHCNim (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 09:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjHCN0P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 09:26:15 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0161526B0;
-        Thu,  3 Aug 2023 06:26:13 -0700 (PDT)
+        with ESMTP id S233758AbjHCNhg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 09:37:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E60149D7;
+        Thu,  3 Aug 2023 06:33:33 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B946021940;
-        Thu,  3 Aug 2023 13:26:12 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0427421905;
+        Thu,  3 Aug 2023 13:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691069172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1691069611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=czrjJnN2HxRC7i/fG8IN5ZkPGObJTznqSzeqzEFMAfI=;
-        b=wq91WWpvnSedYJdGwxyAHRuhULngL4TW+QxyjlQSIgOm9vzoIijZL+fuXgGH27SgDGDcHV
-        FoeCFq/0aiqhvder0VM5024ioXOum9rplassX+LEAzRT3adw+Xf1v0nNIhphuKiBV/N2l+
-        L3SYhOBPBF6HKsy54g0r11BfGvDb168=
+        bh=du0Z70X155ISlaXGxW4wp6Y48mig4odO4voIGMDl2xk=;
+        b=WSThLGh5TEJlC2zqxUr829BXGh9BB964D/DpAf80OivGVyDFjKi8qi3yL2jZmX2XVxeHql
+        0TKeSDcOHnYIT4J24RhGZYydOnwkzEiWP2/UykyXLONZlsOKV3dQWpzTpXbJZJZ88qyNor
+        7GCVNVcrD3BsRADBFqYCtXRYyEu/TnI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691069172;
+        s=susede2_ed25519; t=1691069611;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=czrjJnN2HxRC7i/fG8IN5ZkPGObJTznqSzeqzEFMAfI=;
-        b=n8k+znUSFN07XPPJXmlt2RR0X8ZEt40U6FtziK4ImHIaG9rsYzEY9lfUUW8vYHrWf7+dQ6
-        UeiGqgm46X8GZ0DQ==
+        bh=du0Z70X155ISlaXGxW4wp6Y48mig4odO4voIGMDl2xk=;
+        b=bFFXY2fQpz4y83Dou+dieZJmMgc/fDw9xHqvionrKHFPePEk3QgCOGG9fcv6pv8LVaYKVs
+        6FTlW6XPrhE8WQAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EB7F134B0;
-        Thu,  3 Aug 2023 13:26:12 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E52E2134B0;
+        Thu,  3 Aug 2023 13:33:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Xiy9JvSqy2QpbwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 03 Aug 2023 13:26:12 +0000
+        id lOHrN6qsy2QWcwAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 03 Aug 2023 13:33:30 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 38424A076B; Thu,  3 Aug 2023 15:26:12 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 15:26:12 +0200
+        id 80941A076B; Thu,  3 Aug 2023 15:33:30 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 15:33:30 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>,
@@ -64,17 +64,19 @@ Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/12] ext4: use fs_holder_ops for the log device
-Message-ID: <20230803132612.xyy34buhujno42ia@quack3>
+Subject: Re: [PATCH 06/12] fs: use the super_block as holder when mounting
+ file systems
+Message-ID: <20230803133330.dstks7aogjogqdd5@quack3>
 References: <20230802154131.2221419-1-hch@lst.de>
- <20230802154131.2221419-11-hch@lst.de>
+ <20230802154131.2221419-7-hch@lst.de>
+ <20230803115131.w6hbhjvvkqnv4qbq@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802154131.2221419-11-hch@lst.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230803115131.w6hbhjvvkqnv4qbq@quack3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,54 +84,25 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 02-08-23 17:41:29, Christoph Hellwig wrote:
-> Use the generic fs_holder_ops to shut down the file system when the
-> log device goes away instead of duplicating the logic.
+On Thu 03-08-23 13:51:31, Jan Kara wrote:
+> On Wed 02-08-23 17:41:25, Christoph Hellwig wrote:
+> > The file system type is not a very useful holder as it doesn't allow us
+> > to go back to the actual file system instance.  Pass the super_block instead
+> > which is useful when passed back to the file system driver.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Nice, this is what I also wanted to eventually do :). Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+As a side note, after this patch we can also remove bdev->bd_super and
+transition the two real users (mark_buffer_write_io_error() and two places
+in ocfs2) to use bd_holder. Ext4 also uses bd_super but there it is really
+pointless as we have the superblock directly available in that function
+anyway.
 
 								Honza
-
-> ---
->  fs/ext4/super.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 2ccb19d345c6dd..063832e2d12a8e 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1096,15 +1096,6 @@ void ext4_update_dynamic_rev(struct super_block *sb)
->  	 */
->  }
->  
-> -static void ext4_bdev_mark_dead(struct block_device *bdev)
-> -{
-> -	ext4_force_shutdown(bdev->bd_holder, EXT4_GOING_FLAGS_NOLOGFLUSH);
-> -}
-> -
-> -static const struct blk_holder_ops ext4_holder_ops = {
-> -	.mark_dead		= ext4_bdev_mark_dead,
-> -};
-> -
->  /*
->   * Open the external journal device
->   */
-> @@ -1113,7 +1104,7 @@ static struct block_device *ext4_blkdev_get(dev_t dev, struct super_block *sb)
->  	struct block_device *bdev;
->  
->  	bdev = blkdev_get_by_dev(dev, BLK_OPEN_READ | BLK_OPEN_WRITE, sb,
-> -				 &ext4_holder_ops);
-> +				 &fs_holder_ops);
->  	if (IS_ERR(bdev))
->  		goto fail;
->  	return bdev;
-> -- 
-> 2.39.2
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
