@@ -2,624 +2,242 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D123976DB66
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 01:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C93676DD43
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 03:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjHBXR1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Aug 2023 19:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58972 "EHLO
+        id S231895AbjHCBfR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Aug 2023 21:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjHBXRX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 19:17:23 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2991FED
-        for <linux-ext4@vger.kernel.org>; Wed,  2 Aug 2023 16:16:50 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bc9de53ee2so362527a34.2
-        for <linux-ext4@vger.kernel.org>; Wed, 02 Aug 2023 16:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1691018209; x=1691623009;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=krDJeQS41Nk6fuWYzP2NFQhqjYNG3cqxOEfauSbAbWY=;
-        b=oaYt4iRgvBqglG2WnGBnQ1bOiVrENqcbSEdJKKZrOZdCbXmdY4567Rnsi9NmTREZ6L
-         u0Ao9wKqfVeSYASKyZIZvSlrE/jEbtfoXJy80OmuG1LMbrE3yU4KIiui8MwG/V/MYhzZ
-         HlccT/yuZE7YnJX96m7rc+g/ZyUmiw7A8xFl4b70SW+DTyYfBaxZ674UaBE7OsEYfTex
-         jaBpWDrqwtW3q5tKNQpKCHTpfMYY4N8k9oW09Qfvx7jBhvNvVG3hZ2LyD/3ezVPSTmND
-         mRBUxOuuS/q3p/f/cltKPIco4t1eQzvAfmQD0c4UROVHHXgH0hDM/QT3FeEkmPb8twFm
-         jfmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691018209; x=1691623009;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=krDJeQS41Nk6fuWYzP2NFQhqjYNG3cqxOEfauSbAbWY=;
-        b=FP8uetMGwM25kLN0b+doG0/Px3233l98kDmACWP/yDLU2raMMca5y9APr7i9FP7XXR
-         ZA0BNjmb6fy5AqUM7hSRM9cpXTmGjpgAbBLK9vtnywC9Ltb3ae47QmtSpXVxPBcNnCYR
-         lTCjB62OGtUwc+nzoVnGO/KhmopFYVsQ9ugm92xANI+ur1UiQelP9gebzzFbquuaC8yB
-         iHDesCF6hF8jYz/JK1RDFdEclTpzVWEAGkHcufgm+5jp+aGD7PTJOi0073TsMwvDRFSp
-         ikhzPwN78Dd8OxMqZUz8aSUgLrr1a8IEWJyVTrl3GAE9dDMw259Bmz8k0FcOAcGSHYsT
-         dFxw==
-X-Gm-Message-State: ABy/qLYWTk7OAKK8GauXYU733bf86fBr3M82U1oxOipBDHs93xHmVeY9
-        TUObBM+PMuCgIRmr4YJf8QfsxA==
-X-Google-Smtp-Source: APBJJlE6fMUZ5ISX5Q+0J1ohoKR+0R+3lDdf+P3tK6idZLsnnwi0oFnAjyDyssxmSF8pEHu9eRbUWA==
-X-Received: by 2002:a05:6830:14d8:b0:6bc:c542:6f75 with SMTP id t24-20020a05683014d800b006bcc5426f75mr1014519otq.0.1691018209106;
-        Wed, 02 Aug 2023 16:16:49 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id z136-20020a63338e000000b0056001f43726sm11974436pgz.92.2023.08.02.16.16.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Aug 2023 16:16:48 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8059282C-0191-4F78-B58D-761C5AD09D02@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_7CE6C640-C232-4BB9-90DF-43C64BE9D107";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/2] ext4: optimize metadata allocation for hybrid LUNs
-Date:   Wed, 2 Aug 2023 17:16:45 -0600
-In-Reply-To: <OS3P286MB056789DF4EBAA7363A4346B5AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Bobi Jam <bobijam@hotmail.com>,
-        Roberto Ragusa <mail@robertoragusa.it>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>
-References: <OS3P286MB056789DF4EBAA7363A4346B5AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229883AbjHCBfP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Aug 2023 21:35:15 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4B410FB;
+        Wed,  2 Aug 2023 18:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691026513; x=1722562513;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=+Jo4moCstqnMMLcCEV7MW9CxCdxeBEl/2hU9RIsmM0E=;
+  b=DrFaJUtcny73Si7SkmgCnwr7FCpOTLOf7ggAaPkn8b65E8qdgvaH1r3w
+   zE7MTQ8hWScmLYobJzzMVrTDNvT4EjOVy4tmjF7mkD073NDpYYUybmVRn
+   y+78s2uYaiAjCgqLZoiffQKqNJaxObz/3dBzrNFj/2Kox8X51MIa3fOPF
+   ++ujaIvdO9kNVVR1jFW3JToEfyn8zhLZS2TX5mIdIjASHYqbPWJHzj1X1
+   zeBK87yE1h6w9ZSv5WOnuavYF/gW63TvcIXevb1osjFTT9ikMZ30JBRtM
+   VtxxnZ6k2/YGLngXrTXB3A1sNSPivL5bW+rcIuMOM+wXTQ6yhcPvX4y/b
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359784272"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="359784272"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:35:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706372724"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="706372724"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 18:35:12 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:12 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:11 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:35:11 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.44) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T0ZmMcpHxCmvDZArRTDHqGwgIuLiE4ILAeZSIbgQGQI6PrenHhrfUxiTaM8UYqbdvE0vdDJw3dFT75c2XU9Kcw+NWxjoRq+ZrSk+VBhKGj/w/GfaOSfY3fwUBcnVFmtQMDt6X441x9HZ/Tq8/ci4luN0GxxBq196WIjIZ4E6euvf3iY5jtFf6a5+fTsHOJoitUY8IvNxCLEZ8Vh5XiH4Jl9Z1E1+20XZrWl0w/JgTcNFvI8N1wEmmAH+1Kh4Z1Wy3KRp8NvnZp7HrlAGsM1Owv+qjZFEL1gDKKxeWJf9+HcvYTZnqswoy4TjaMc+jnTqt5kHvysHfD3sTcYd2oLxtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vbEFRkufuU45ml77arN4jPweUqK7EIUPpE3+5Sw6/gk=;
+ b=fRXLsBmuBHAS0gApb3W54w3Vihh7Gwz6MiZ3w0x5sOa7TVMw1wMuGMm7gLeLGs14CThqAYh4V1YlKv3iae8Ffb8lZbRm+w1sEeKtlgdJ6v3GhOZ5e/68ys2C3LB9ur5Hs2cM89IPATLoIkrWq86PRupB84ZeKW9LALXTHwGEpjOz5X+3dgoSMa92ivVwyC3kMGo2Ivi4oHmXHyr2XE5Lbc8Os+I8ILW2zx91t6QI73LGbnXWdOG5AEC+XrF+875TYOkJ36m3FoRQctHeKq8r8/SdtE1MdFCbg2CGg8MmcakvEiHyt3+5xbtRSwmhwrouKmIdBH8+nZ57iHOQnjf2Wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by CY8PR11MB7797.namprd11.prod.outlook.com (2603:10b6:930:76::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
+ 2023 01:35:10 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::34c:f9c:28bd:e642]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::34c:f9c:28bd:e642%4]) with mapi id 15.20.6631.045; Thu, 3 Aug 2023
+ 01:35:09 +0000
+Date:   Thu, 3 Aug 2023 09:37:30 +0800
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>
+CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
+        <tytso@mit.edu>, <heng.su@intel.com>, <pengfei.xu@intel.com>,
+        <bfoster@redhat.com>
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_file_write_iter
+Message-ID: <ZMsE2q9VX2sQFh/g@xpf.sh.intel.com>
+References: <0000000000007faf0005fe4f14b9@google.com>
+ <000000000000a3f45805ffcbb21f@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <000000000000a3f45805ffcbb21f@google.com>
+X-ClientProxiedBy: SI1PR02CA0028.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::6) To PH0PR11MB4839.namprd11.prod.outlook.com
+ (2603:10b6:510:42::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|CY8PR11MB7797:EE_
+X-MS-Office365-Filtering-Correlation-Id: b576b997-b87f-4564-dc17-08db93c1df9f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gI6e6e2/egt+tcSoF7ynBZE8GUDaoS7H5XDCz8GkEDjaVp1Nn1VW9e7kQ1StiQIi71u3kKvo9EuLyqwc49pvGKjrkv5CWa9vjnzvBDwSi98X95Y9r99KawhEmD92SBDKMWY88TGALMD3NjvGVOMGOzaNNceb0jGT2dLpKw+8ZbwibJBYkVRt1MmiitscGEiYKnDTdWvI8ShCHvqwD6NSnfsTxglxtc5Bz+sRiwLh3oT8nYAMtDNx0xqSBHQR4CZE+Jrms7dgbU2oYIoY7pclsE3/2WA4oCVR1iYnLUZmX+WZ0XkwAdDLQtPlOqSenLuuHcc2tDuqY43vVlNrta2EpuOOOGV2wl4bVAUB1DafNZtjbmazIumUDwvstRBZ6oT0QDWf7wKqyVx5MqypYRttGVwDNizShOTFdiDVtENxZJKVqW+re7n5FGh72lC3Uk0nJ9XNlF+7ObvaNgIxhx0KN6WCeVLLqXTvBk0tLM9GiHl5xNFu6Zntd+4pr+hRLWn8axpQsPLwrG2G95EZmFu3sPfnk2/k0c1BeuKZx8z5+bug4Y8PkO7tZN6wdT476DIvBDx5MTAR0PeNCNK0plhXXtzUsFKY3XE6MiSAp0JYvHyj45pS/xpbLzw3fDh+sZy+D+QtEBmHe1Wi+eSiggYXaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4839.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(346002)(39860400002)(366004)(376002)(451199021)(53546011)(6506007)(83380400001)(26005)(186003)(316002)(2906002)(66946007)(4326008)(66476007)(66556008)(5660300002)(44832011)(41300700001)(8676002)(8936002)(6666004)(6486002)(966005)(6512007)(45080400002)(478600001)(38100700002)(82960400001)(86362001)(99710200001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jk+Q87FGbQhSaHV2NTxA+NwvzSvHstLjO6Jv7G5aymVHte4Ag+B8If2dr7Hh?=
+ =?us-ascii?Q?NIG94ZKWmJziFTJ3B9iE4xtfg9YPf3kugMeCyNoN938gGjt8FLvQaFHx9MEX?=
+ =?us-ascii?Q?esQU07wB1FKCCSWcB4dehufOSEr6Eg2hKxgVoD50oZFBEK4ieck8SxSapygH?=
+ =?us-ascii?Q?CAXKMd1cIOwRCQW9qy7SDc2eqoqgg8424GmJ92YS8NwVwNhEAlZEu/PfoEom?=
+ =?us-ascii?Q?aU+txU76TbbBlcL917znaN8m7zRCttoX+fNdwz6U+a9w9pe+a/GQJEz8cQ7m?=
+ =?us-ascii?Q?zEf1kaO6QeYt1JgdPGCJslhgHTVFLMSmZuAoucBBGM0NOE3NIuM5hmYjVIM3?=
+ =?us-ascii?Q?nGp+vLwnWmBjNnSY0Y9BZ1YlLQ1ZWU2QFicCgJTWRIY4zG5HnEhh1F8qX8/E?=
+ =?us-ascii?Q?H2WmJ0dZUMJNIXZXEXPgm7hbTYf40qlzxKUvyjEgxRo29vhx4bQGe4Ix3UPo?=
+ =?us-ascii?Q?wtdNC1kBUop5OZn9ZPyeRBDy2jKbbmhLOc0Bvb3rFGTTSOvlDIBPuP+p8UK4?=
+ =?us-ascii?Q?c9CpHViqsBCvVxNUpYu6UApFSV7dEr2i7bDGk/f2YCKVEElqh3FmkRIjwfTV?=
+ =?us-ascii?Q?U/WCqGkCjmjTe4FPVrqb3mkEOrvuwkjFBqRlnAqc5RXvuFDLP0c1Epb+omjy?=
+ =?us-ascii?Q?yxTzYCh3uLLGbbms5eN1P4OKeKB1qXebt6fMCNboNNUEJR75vl8DdmQPISQF?=
+ =?us-ascii?Q?K/tFiubphxg+aOVcgzLMiTyd2KKI53eCfprkkGwhbmhUr2sMVLuEFn5+Qs0a?=
+ =?us-ascii?Q?HqzjsdjUKLG97RvRFw0fyizxTyBZ8DQdXIYtLhk638NGYz9J/yC+VLXWesZJ?=
+ =?us-ascii?Q?WiOmTM49kh9U/iAHdr5AppqcW9CMrMDfp6cnO6adhEvKaqqfDr+RyPUtFWEr?=
+ =?us-ascii?Q?fX2w/lJZBcCugaaeU78p7MmrEKN7MtJ9SwWQarKs4acNnOW7Gp85i1g9DH1Q?=
+ =?us-ascii?Q?ozKiU/YDyUSgcPTml2mD2G65MYKwBe9KBKvc/t/Gc7sPHdMObg0MPICmcCvt?=
+ =?us-ascii?Q?UHgJ2fse15bwBKpfjjYwkVN88Ac+C2R/d6NhwiTcLAWBjHpcdTL+gm/LqEok?=
+ =?us-ascii?Q?4Jp46xsXj23LaBFfmmyIh0OXKoMLSOhK13OeKhnI/jvVWxY3T6xrIOQGPQwg?=
+ =?us-ascii?Q?CYJ0k6uyL34y3fP8KqO0Cstx4/PyudiuVNk3iJpb1Yi1FmbLGZh2F31pnfKp?=
+ =?us-ascii?Q?L7lhbpkxUGVPfjvZh4C2YXcePebEOCmAt6P7z4A3/Zz3qRxuTyAIWYzHFeEN?=
+ =?us-ascii?Q?05p3x9yVX9annKmIHBi+f+fhs+KWZChgbqEzDYCXWTcx131YUl1a96NOUQDb?=
+ =?us-ascii?Q?7PxSYyJ4nwAhw2QmR7lViGWEQDmKpY6+kQRYTGCxBDhwOOKLf4QKRnF2gwxF?=
+ =?us-ascii?Q?ycdFe/ESIcl26qXa1pn/m7lPTfyF5MEBqChyF3nYFBNuw9LehmfydQJf7l2J?=
+ =?us-ascii?Q?4Gl877PsDHG5NqFoVs0CzE9YTQGFZoccVAKaMzYp/HmkOgnZaE7beyOpeUDz?=
+ =?us-ascii?Q?RAFdNUsXYH8uoHZA6iTurIeiNDSAPlzLbpOjjtDwPQr/c7/2mg3Ok95MhbrB?=
+ =?us-ascii?Q?jetimNlaAFMg2CxWXDqU+fC8w+uBAGxM5t0nJJ13?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b576b997-b87f-4564-dc17-08db93c1df9f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:35:09.4174
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4eO+X9z3zDe1xYFBwwtneUcza7vvcqkbOT3nKtPVdis9mEujDkII+RsEuMhl9ToT/+ac8lDmHSIn3lp9HAVHbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7797
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 2023-07-05 at 23:33:43 -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    6843306689af Merge tag 'net-6.5-rc1' of git://git.kernel.o..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114522aca80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102cb190a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c49d90a80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/5c3fa1329201/vmlinux-68433066.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> Modules linked in:
+> CPU: 1 PID: 5382 Comm: syz-executor288 Not tainted 6.4.0-syzkaller-11989-g6843306689af #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+> RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 5d 5a 5b ff 85 db 0f 85 d5 fc ff ff e8 30 5e 5b ff <0f> 0b e9 c9 fc ff ff e8 24 5e 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
+> RSP: 0018:ffffc9000522fc30 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff8880277a3b80 RSI: ffffffff82298140 RDI: 0000000000000005
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832a60
+> R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
+> FS:  00007f154db95700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f154db74718 CR3: 000000006bcc7000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  call_write_iter include/linux/fs.h:1871 [inline]
+>  new_sync_write fs/read_write.c:491 [inline]
+>  vfs_write+0x981/0xda0 fs/read_write.c:584
+>  ksys_write+0x122/0x250 fs/read_write.c:637
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f154dc094f9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f154db952f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 00007f154dc924f0 RCX: 00007f154dc094f9
+> RDX: 0000000000248800 RSI: 0000000020000000 RDI: 0000000000000006
+> RBP: 00007f154dc5f628 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 652e79726f6d656d
+> R13: 656c6c616b7a7973 R14: 6465646165726874 R15: 00007f154dc924f8
+>  </TASK>
+> 
 
---Apple-Mail=_7CE6C640-C232-4BB9-90DF-43C64BE9D107
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Above issue in dmesg is:
+"WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
 
-On Jul 27, 2023, at 5:45 PM, Bobi Jam <bobijam@hotmail.com> wrote:
->=20
-> With LVM it is possible to create an LV with SSD storage at the
-> beginning of the LV and HDD storage at the end of the LV, and use that
-> to separate ext4 metadata allocations (that need small random IOs)
-> from data allocations (that are better suited for large sequential
-> IOs) depending on the type of underlying storage.  Between 0.5-1.0% of
-> the filesystem capacity would need to be high-IOPS storage in order to
-> hold all of the internal metadata.
->=20
-> This would improve performance for inode and other metadata access,
-> such as ls, find, e2fsck, and in general improve file access latency,
-> modification, truncate, unlink, transaction commit, etc.
->=20
-> This patch split largest free order group lists and average fragment
-> size lists into other two lists for IOPS/fast storage groups, and
-> cr 0 / cr 1 group scanning for metadata block allocation in following
-> order:
->=20
-> cr 0 on largest free order IOPS group list
-> cr 1 on average fragment size IOPS group list
-> cr 0 on largest free order non-IOPS group list
-> cr 1 on average fragment size non-IOPS group list
-> cr >=3D 2 perform the linear search as before
->=20
-> Non-metadata block allocation does not allocate from the IOPS groups.
->=20
-> Add for mke2fs an option to mark which blocks are in the IOPS region
-> of storage at format time:
->=20
->  -E iops=3D0-1024G,4096-8192G
->=20
-> so the ext4 mballoc code can then use the EXT4_BG_IOPS flag in the
-> group descriptors to decide which groups to allocate dynamic =
-filesystem
-> metadata.
+I found the similar behavior issue:
+"WARNING: CPU: 0 PID: 182134 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
+repro.report shows similar details.
 
-Ted, Ritesh, Ojaswin,
-I would appreciate your review and comments on these two patches.
+Updated the bisect info for the above similar issue:
+Bisected and the problem commit was:
+"
+310ee0902b8d9d0a13a5a13e94688a5863fa29c2: ext4: allow concurrent unaligned dio overwrites
+"
+After reverted the commit on top of v6.5-rc3, this issue was gone.
 
-They are a followup to the discussion about hybrid LVM devices  a few
-weeks ago in https://www.spinics.net/lists/linux-ext4/msg90237.html
-"packed_meta_blocks=3D1 incompatible with resize2fs?".
+All information: https://github.com/xupengfe/syzkaller_logs/tree/main/230730_134501_ext4_file_write_iter
+Reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.c
+repro.prog(syscall reproduced steps): https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.prog
+repro.report: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.report
+Bisect log: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/bisect_info.log
+Kconfig: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/kconfig_origin
+Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/6eaae198076080886b9e7d57f4ae06fa782f90ef_dmesg.log
 
-The 2/2 patch adds an option to mke2fs to mark groups on the SSD/NVMe
-storage with the "EXT4_BG_IOPS" flag.  Together with mke2fs using the
-existing sparse_super2, flex_bg, and packed_meta_blocks, this would
-allocate all static metadata to the start of the device.  The 1/2 patch
-changes mballoc to keep two separate allocation lists/trees based on
-the IOPS flag on each group.
+Best Regards,
+Thanks!
 
-This has the dual benefit that all filesystem metadata (typically 4KiB
-fragmented allocation/read/write) is on fast storage, and these blocks
-also do not interfere with (usually larger) data allocation/read/write
-(both in terms of allocation fragmentation and contending IOPS/seeks).
-This should help both normal IO usage, as well as e2fsck significantly
-(virtually all e2fsck IO would go to the SSD/NVMe storage).
-
-
-The implementation is relatively simple as you can see.  Currently it
-has a flag in the superblock to indicate that IOPS groups are available
-during block allocation, but even that is not strictly needed (it could
-be detected at GDT reading time).  Metadata allocations prefer to use
-the IOPS groups (if available), otherwise fall back to regular groups.
-
-For our usage, this is a "soft" feature that does not affect =
-compatibility.
-It would be mostly harmless if the filesystem was mounted with an older
-kernel.  At worst some performance loss that would disappear again over
-time, but this would happen rarely I think.
-
-
-This doesn't *directly* address filesystem resize that Roberto was =
-asking
-about, but having IOPS groups used only for metadata would make it =
-easier
-to resize later (if only adding HDD capacity).  Alternately, because the
-individual groups are marked with the IOPS flag, a second (third, =
-fourth)
-flash region could be added at the end of the current filesystem to hold
-the new bitmaps and inode tables would be relatively straight forward to
-add on top of this.  There might be some work needed for mke2fs to honor
-the "resize" option with packed_meta_blocks, but maybe not much more.
-
-We basically never resize filesystems, so this is not of any interest to
-implement at this point.
-
-Cheers, Andreas
-
-> Signed-off-by: Bobi Jam <bobijam@hotmail.com>
+> 
 > ---
-> fs/ext4/balloc.c  |   2 +-
-> fs/ext4/ext4.h    |  12 +++++
-> fs/ext4/mballoc.c | 154 =
-++++++++++++++++++++++++++++++++++++++++++------------
-> 3 files changed, 134 insertions(+), 34 deletions(-)
->=20
-> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-> index c1edde8..7b1b3ec 100644
-> --- a/fs/ext4/balloc.c
-> +++ b/fs/ext4/balloc.c
-> @@ -739,7 +739,7 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t =
-*handle, struct inode *inode,
-> 	ar.inode =3D inode;
-> 	ar.goal =3D goal;
-> 	ar.len =3D count ? *count : 1;
-> -	ar.flags =3D flags;
-> +	ar.flags =3D flags | EXT4_MB_HINT_METADATA;
->=20
-> 	ret =3D ext4_mb_new_blocks(handle, &ar, errp);
-> 	if (count)
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 8104a21..3444b6e 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -382,6 +382,7 @@ struct flex_groups {
-> #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use =
-*/
-> #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
-> #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to =
-zero */
-> +#define EXT4_BG_IOPS		0x0010 /* In IOPS/fast storage */
->=20
-> /*
->  * Macro-instructions used to manage group descriptors
-> @@ -1112,6 +1113,8 @@ struct ext4_inode_info {
-> #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in =
-use */
-> #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test =
-development code */
->=20
-> +#define EXT2_FLAGS_HAS_IOPS		0x0080	/* has IOPS storage */
-> +
-> /*
->  * Mount flags set via mount options or defaults
->  */
-> @@ -1514,8 +1517,12 @@ struct ext4_sb_info {
-> 	atomic_t s_retry_alloc_pending;
-> 	struct list_head *s_mb_avg_fragment_size;
-> 	rwlock_t *s_mb_avg_fragment_size_locks;
-> +	struct list_head *s_avg_fragment_size_list_iops;  /* =
-avg_frament_size for IOPS groups */
-> +	rwlock_t *s_avg_fragment_size_locks_iops;
-> 	struct list_head *s_mb_largest_free_orders;
-> 	rwlock_t *s_mb_largest_free_orders_locks;
-> +	struct list_head *s_largest_free_orders_list_iops; /* =
-largest_free_orders for IOPS grps */
-> +	rwlock_t *s_largest_free_orders_locks_iops;
->=20
-> 	/* tunables */
-> 	unsigned long s_stripe;
-> @@ -3366,6 +3373,7 @@ struct ext4_group_info {
-> #define EXT4_GROUP_INFO_IBITMAP_CORRUPT		\
-> 	(1 << EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT)
-> #define EXT4_GROUP_INFO_BBITMAP_READ_BIT	4
-> +#define EXT4_GROUP_INFO_IOPS_BIT		5
->=20
-> #define EXT4_MB_GRP_NEED_INIT(grp)	\
-> 	(test_bit(EXT4_GROUP_INFO_NEED_INIT_BIT, &((grp)->bb_state)))
-> @@ -3382,6 +3390,10 @@ struct ext4_group_info {
-> 	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
-> #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
-> 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, =
-&((grp)->bb_state)))
-> +#define EXT4_MB_GRP_TEST_IOPS(grp)	\
-> +	(test_bit(EXT4_GROUP_INFO_IOPS_BIT, &((grp)->bb_state)))
-> +#define EXT4_MB_GRP_SET_IOPS(grp)	\
-> +	(set_bit(EXT4_GROUP_INFO_IOPS_BIT, &((grp)->bb_state)))
->=20
-> #define EXT4_MAX_CONTENTION		8
-> #define EXT4_CONTENTION_THRESHOLD	2
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 20f67a2..6d218af 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -828,6 +828,8 @@ static int mb_avg_fragment_size_order(struct =
-super_block *sb, ext4_grpblk_t len)
-> mb_update_avg_fragment_size(struct super_block *sb, struct =
-ext4_group_info *grp)
-> {
-> 	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> +	rwlock_t *afs_locks;
-> +	struct list_head *afs_list;
-> 	int new_order;
->=20
-> 	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_free =3D=3D 0)
-> @@ -838,20 +840,23 @@ static int mb_avg_fragment_size_order(struct =
-super_block *sb, ext4_grpblk_t len)
-> 	if (new_order =3D=3D grp->bb_avg_fragment_size_order)
-> 		return;
->=20
-> +	if (EXT4_MB_GRP_TEST_IOPS(grp)) {
-> +		afs_locks =3D sbi->s_avg_fragment_size_locks_iops;
-> +		afs_list =3D sbi->s_avg_fragment_size_list_iops;
-> +	} else {
-> +		afs_locks =3D sbi->s_mb_avg_fragment_size_locks;
-> +		afs_list =3D sbi->s_mb_avg_fragment_size;
-> +	}
-> +
-> 	if (grp->bb_avg_fragment_size_order !=3D -1) {
-> -		write_lock(&sbi->s_mb_avg_fragment_size_locks[
-> -					=
-grp->bb_avg_fragment_size_order]);
-> +		write_lock(&afs_locks[grp->bb_avg_fragment_size_order]);
-> 		list_del(&grp->bb_avg_fragment_size_node);
-> -		write_unlock(&sbi->s_mb_avg_fragment_size_locks[
-> -					=
-grp->bb_avg_fragment_size_order]);
-> +		=
-write_unlock(&afs_locks[grp->bb_avg_fragment_size_order]);
-> 	}
-> 	grp->bb_avg_fragment_size_order =3D new_order;
-> -	write_lock(&sbi->s_mb_avg_fragment_size_locks[
-> -					=
-grp->bb_avg_fragment_size_order]);
-> -	list_add_tail(&grp->bb_avg_fragment_size_node,
-> -		=
-&sbi->s_mb_avg_fragment_size[grp->bb_avg_fragment_size_order]);
-> -	write_unlock(&sbi->s_mb_avg_fragment_size_locks[
-> -					=
-grp->bb_avg_fragment_size_order]);
-> +	write_lock(&afs_locks[new_order]);
-> +	list_add_tail(&grp->bb_avg_fragment_size_node, =
-&afs_list[new_order]);
-> +	write_unlock(&afs_locks[new_order]);
-> }
->=20
-> /*
-> @@ -863,6 +868,10 @@ static void ext4_mb_choose_next_group_cr0(struct =
-ext4_allocation_context *ac,
-> {
-> 	struct ext4_sb_info *sbi =3D EXT4_SB(ac->ac_sb);
-> 	struct ext4_group_info *iter, *grp;
-> +	bool iops =3D ac->ac_flags & EXT4_MB_HINT_METADATA &&
-> +		    ac->ac_sb->s_flags & EXT2_FLAGS_HAS_IOPS;
-> +	rwlock_t *lfo_locks;
-> +	struct list_head *lfo_list;
-> 	int i;
->=20
-> 	if (ac->ac_status =3D=3D AC_STATUS_FOUND)
-> @@ -871,17 +880,25 @@ static void ext4_mb_choose_next_group_cr0(struct =
-ext4_allocation_context *ac,
-> 	if (unlikely(sbi->s_mb_stats && ac->ac_flags & =
-EXT4_MB_CR0_OPTIMIZED))
-> 		atomic_inc(&sbi->s_bal_cr0_bad_suggestions);
->=20
-> +	if (iops) {
-> +		lfo_locks =3D sbi->s_largest_free_orders_locks_iops;
-> +		lfo_list =3D sbi->s_largest_free_orders_list_iops;
-> +	} else {
-> +		lfo_locks =3D sbi->s_mb_largest_free_orders_locks;
-> +		lfo_list =3D sbi->s_mb_largest_free_orders;
-> +	}
-> +
-> 	grp =3D NULL;
-> 	for (i =3D ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
-> -		if (list_empty(&sbi->s_mb_largest_free_orders[i]))
-> +		if (list_empty(&lfo_list[i]))
-> 			continue;
-> -		read_lock(&sbi->s_mb_largest_free_orders_locks[i]);
-> -		if (list_empty(&sbi->s_mb_largest_free_orders[i])) {
-> -			=
-read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-> +		read_lock(&lfo_locks[i]);
-> +		if (list_empty(&lfo_list[i])) {
-> +			read_unlock(&lfo_locks[i]);
-> 			continue;
-> 		}
-> 		grp =3D NULL;
-> -		list_for_each_entry(iter, =
-&sbi->s_mb_largest_free_orders[i],
-> +		list_for_each_entry(iter, &lfo_list[i],
-> 				    bb_largest_free_order_node) {
-> 			if (sbi->s_mb_stats)
-> 				=
-atomic64_inc(&sbi->s_bal_cX_groups_considered[0]);
-> @@ -890,7 +907,7 @@ static void ext4_mb_choose_next_group_cr0(struct =
-ext4_allocation_context *ac,
-> 				break;
-> 			}
-> 		}
-> -		read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
-> +		read_unlock(&lfo_locks[i]);
-> 		if (grp)
-> 			break;
-> 	}
-> @@ -913,6 +930,10 @@ static void ext4_mb_choose_next_group_cr1(struct =
-ext4_allocation_context *ac,
-> {
-> 	struct ext4_sb_info *sbi =3D EXT4_SB(ac->ac_sb);
-> 	struct ext4_group_info *grp =3D NULL, *iter;
-> +	bool iops =3D ac->ac_flags & EXT4_MB_HINT_METADATA &&
-> +		    ac->ac_sb->s_flags & EXT2_FLAGS_HAS_IOPS;
-> +	rwlock_t *afs_locks;
-> +	struct list_head *afs_list;
-> 	int i;
->=20
-> 	if (unlikely(ac->ac_flags & EXT4_MB_CR1_OPTIMIZED)) {
-> @@ -920,16 +941,24 @@ static void ext4_mb_choose_next_group_cr1(struct =
-ext4_allocation_context *ac,
-> 			atomic_inc(&sbi->s_bal_cr1_bad_suggestions);
-> 	}
->=20
-> +	if (iops) {
-> +		afs_locks =3D sbi->s_avg_fragment_size_locks_iops;
-> +		afs_list =3D sbi->s_avg_fragment_size_list_iops;
-> +	} else {
-> +		afs_locks =3D sbi->s_mb_avg_fragment_size_locks;
-> +		afs_list =3D sbi->s_mb_avg_fragment_size;
-> +	}
-> +
-> 	for (i =3D mb_avg_fragment_size_order(ac->ac_sb, =
-ac->ac_g_ex.fe_len);
-> 	     i < MB_NUM_ORDERS(ac->ac_sb); i++) {
-> -		if (list_empty(&sbi->s_mb_avg_fragment_size[i]))
-> +		if (list_empty(&afs_list[i]))
-> 			continue;
-> -		read_lock(&sbi->s_mb_avg_fragment_size_locks[i]);
-> -		if (list_empty(&sbi->s_mb_avg_fragment_size[i])) {
-> -			=
-read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
-> +		read_lock(&afs_locks[i]);
-> +		if (list_empty(&afs_list[i])) {
-> +			read_unlock(&afs_locks[i]);
-> 			continue;
-> 		}
-> -		list_for_each_entry(iter, =
-&sbi->s_mb_avg_fragment_size[i],
-> +		list_for_each_entry(iter, &afs_list[i],
-> 				    bb_avg_fragment_size_node) {
-> 			if (sbi->s_mb_stats)
-> 				=
-atomic64_inc(&sbi->s_bal_cX_groups_considered[1]);
-> @@ -938,7 +967,7 @@ static void ext4_mb_choose_next_group_cr1(struct =
-ext4_allocation_context *ac,
-> 				break;
-> 			}
-> 		}
-> -		read_unlock(&sbi->s_mb_avg_fragment_size_locks[i]);
-> +		read_unlock(&afs_locks[i]);
-> 		if (grp)
-> 			break;
-> 	}
-> @@ -947,7 +976,15 @@ static void ext4_mb_choose_next_group_cr1(struct =
-ext4_allocation_context *ac,
-> 		*group =3D grp->bb_group;
-> 		ac->ac_flags |=3D EXT4_MB_CR1_OPTIMIZED;
-> 	} else {
-> -		*new_cr =3D 2;
-> +		if (iops) {
-> +			/* cannot find proper group in IOPS storage,
-> +			 * fall back to cr0 for non-IOPS groups.
-> +			 */
-> +			ac->ac_flags &=3D ~EXT4_MB_HINT_METADATA;
-> +			*new_cr =3D 0;
-> +		} else {
-> +			*new_cr =3D 2;
-> +		}
-> 	}
-> }
->=20
-> @@ -1030,6 +1067,8 @@ static void ext4_mb_choose_next_group(struct =
-ext4_allocation_context *ac,
-> mb_set_largest_free_order(struct super_block *sb, struct =
-ext4_group_info *grp)
-> {
-> 	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> +	rwlock_t *lfo_locks;
-> +	struct list_head *lfo_list;
-> 	int i;
->=20
-> 	for (i =3D MB_NUM_ORDERS(sb) - 1; i >=3D 0; i--)
-> @@ -1042,21 +1081,24 @@ static void ext4_mb_choose_next_group(struct =
-ext4_allocation_context *ac,
-> 		return;
-> 	}
->=20
-> +	if (EXT4_MB_GRP_TEST_IOPS(grp)) {
-> +		lfo_locks =3D sbi->s_largest_free_orders_locks_iops;
-> +		lfo_list =3D sbi->s_largest_free_orders_list_iops;
-> +	} else {
-> +		lfo_locks =3D sbi->s_mb_largest_free_orders_locks;
-> +		lfo_list =3D sbi->s_mb_largest_free_orders;
-> +	}
-> +
-> 	if (grp->bb_largest_free_order >=3D 0) {
-> -		write_lock(&sbi->s_mb_largest_free_orders_locks[
-> -					      =
-grp->bb_largest_free_order]);
-> +		write_lock(&lfo_locks[grp->bb_largest_free_order]);
-> 		list_del_init(&grp->bb_largest_free_order_node);
-> -		write_unlock(&sbi->s_mb_largest_free_orders_locks[
-> -					      =
-grp->bb_largest_free_order]);
-> +		write_unlock(&lfo_locks[grp->bb_largest_free_order]);
-> 	}
-> 	grp->bb_largest_free_order =3D i;
-> 	if (grp->bb_largest_free_order >=3D 0 && grp->bb_free) {
-> -		write_lock(&sbi->s_mb_largest_free_orders_locks[
-> -					      =
-grp->bb_largest_free_order]);
-> -		list_add_tail(&grp->bb_largest_free_order_node,
-> -		      =
-&sbi->s_mb_largest_free_orders[grp->bb_largest_free_order]);
-> -		write_unlock(&sbi->s_mb_largest_free_orders_locks[
-> -					      =
-grp->bb_largest_free_order]);
-> +		write_lock(&lfo_locks[i]);
-> +		list_add_tail(&grp->bb_largest_free_order_node, =
-&lfo_list[i]);
-> +		write_unlock(&lfo_locks[i]);
-> 	}
-> }
->=20
-> @@ -3150,6 +3192,8 @@ int ext4_mb_add_groupinfo(struct super_block =
-*sb, ext4_group_t group,
-> 	INIT_LIST_HEAD(&meta_group_info[i]->bb_prealloc_list);
-> 	init_rwsem(&meta_group_info[i]->alloc_sem);
-> 	meta_group_info[i]->bb_free_root =3D RB_ROOT;
-> +	if (desc->bg_flags & EXT4_BG_IOPS)
-> +		EXT4_MB_GRP_SET_IOPS(meta_group_info[i]);
-> 	INIT_LIST_HEAD(&meta_group_info[i]->bb_largest_free_order_node);
-> 	INIT_LIST_HEAD(&meta_group_info[i]->bb_avg_fragment_size_node);
-> 	meta_group_info[i]->bb_largest_free_order =3D -1;  /* uninit */
-> @@ -3423,6 +3467,24 @@ int ext4_mb_init(struct super_block *sb)
-> 		INIT_LIST_HEAD(&sbi->s_mb_avg_fragment_size[i]);
-> 		rwlock_init(&sbi->s_mb_avg_fragment_size_locks[i]);
-> 	}
-> +	sbi->s_avg_fragment_size_list_iops =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct =
-list_head),
-> +			      GFP_KERNEL);
-> +	if (!sbi->s_avg_fragment_size_list_iops) {
-> +		ret =3D -ENOMEM;
-> +		goto out;
-> +	}
-> +	sbi->s_avg_fragment_size_locks_iops =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
-> +			      GFP_KERNEL);
-> +	if (!sbi->s_avg_fragment_size_locks_iops) {
-> +		ret =3D -ENOMEM;
-> +		goto out;
-> +	}
-> +	for (i =3D 0; i < MB_NUM_ORDERS(sb); i++) {
-> +		INIT_LIST_HEAD(&sbi->s_avg_fragment_size_list_iops[i]);
-> +		rwlock_init(&sbi->s_avg_fragment_size_locks_iops[i]);
-> +	}
-> 	sbi->s_mb_largest_free_orders =3D
-> 		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct =
-list_head),
-> 			GFP_KERNEL);
-> @@ -3441,6 +3503,24 @@ int ext4_mb_init(struct super_block *sb)
-> 		INIT_LIST_HEAD(&sbi->s_mb_largest_free_orders[i]);
-> 		rwlock_init(&sbi->s_mb_largest_free_orders_locks[i]);
-> 	}
-> +	sbi->s_largest_free_orders_list_iops =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(struct =
-list_head),
-> +			      GFP_KERNEL);
-> +	if (!sbi->s_largest_free_orders_list_iops) {
-> +		ret =3D -ENOMEM;
-> +		goto out;
-> +	}
-> +	sbi->s_largest_free_orders_locks_iops =3D
-> +		kmalloc_array(MB_NUM_ORDERS(sb), sizeof(rwlock_t),
-> +			      GFP_KERNEL);
-> +	if (!sbi->s_largest_free_orders_locks_iops) {
-> +		ret =3D -ENOMEM;
-> +		goto out;
-> +	}
-> +	for (i =3D 0; i < MB_NUM_ORDERS(sb); i++) {
-> +		=
-INIT_LIST_HEAD(&sbi->s_largest_free_orders_list_iops[i]);
-> +		rwlock_init(&sbi->s_largest_free_orders_locks_iops[i]);
-> +	}
->=20
-> 	spin_lock_init(&sbi->s_md_lock);
-> 	sbi->s_mb_free_pending =3D 0;
-> @@ -3512,8 +3592,12 @@ int ext4_mb_init(struct super_block *sb)
-> out:
-> 	kfree(sbi->s_mb_avg_fragment_size);
-> 	kfree(sbi->s_mb_avg_fragment_size_locks);
-> +	kfree(sbi->s_avg_fragment_size_list_iops);
-> +	kfree(sbi->s_avg_fragment_size_locks_iops);
-> 	kfree(sbi->s_mb_largest_free_orders);
-> 	kfree(sbi->s_mb_largest_free_orders_locks);
-> +	kfree(sbi->s_largest_free_orders_list_iops);
-> +	kfree(sbi->s_largest_free_orders_locks_iops);
-> 	kfree(sbi->s_mb_offsets);
-> 	sbi->s_mb_offsets =3D NULL;
-> 	kfree(sbi->s_mb_maxs);
-> @@ -3582,8 +3666,12 @@ int ext4_mb_release(struct super_block *sb)
-> 	}
-> 	kfree(sbi->s_mb_avg_fragment_size);
-> 	kfree(sbi->s_mb_avg_fragment_size_locks);
-> +	kfree(sbi->s_avg_fragment_size_list_iops);
-> +	kfree(sbi->s_avg_fragment_size_locks_iops);
-> 	kfree(sbi->s_mb_largest_free_orders);
-> 	kfree(sbi->s_mb_largest_free_orders_locks);
-> +	kfree(sbi->s_largest_free_orders_list_iops);
-> +	kfree(sbi->s_largest_free_orders_locks_iops);
-> 	kfree(sbi->s_mb_offsets);
-> 	kfree(sbi->s_mb_maxs);
-> 	iput(sbi->s_buddy_cache);
-> --
-> 1.8.3.1
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_7CE6C640-C232-4BB9-90DF-43C64BE9D107
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTK490ACgkQcqXauRfM
-H+AqMQ//ZANU99yY4s4YTzt24uy13ndobY2aq3t4Q45LxD8v5PcAPohNjVU2iEoJ
-DTDtCVnLfOtk0c2RN2bFKTEChShbX2wJJN1oKFB0opf8pb4QyX/lA6YPtMGMHyoX
-eQdFMNnKelp1c49ESLu5/tu+w3loC5XFABiFQf3jfNpRLKzLw6pHlTIpB2ZdB+nC
-1o40cH6Gd6YWSHCd5tN87oPo5JVe6aeqIJmFyBlj4Uw6kzdrTIiJ+/tFcz7vJ0YJ
-tnYhnuQgcW9LO1eWi4hOqBDekYVnuuI7ezpIY6wVJkIR5Gx1qgVaZUCHohqlxp0t
-6M8joaoYFnBrerAwCL1rNfTihYcXlQE4svNr6ZSgOUghV3fPqfP2XxjJ/8T55qxU
-qkHNANAe40aev+zQOeNdefDCR8jfw7g7hgmgguXEet4zRd5ys+FWq0YKaTdF3NuI
-wNZx9Hb5q4i61utEl5FUZJVrE7bagZU2RlDg2VRRVbycrdkh3M0tVTJzw3vqYsgK
-1o1LeueB2rtXJd8JSfRh5hwl5XITvF3pI/+AdiLZqfSpOqJtwj8mRtqbu9eF+e79
-AuA9jgBJk1Sj66dNWmww69OD899xnCScuzqFMcBUOBesUxNdyo/SEutC12xmGCJ3
-z+B6Zw3UIMITqW7Vc09S9CicIg27XtFn5EjdwqKVDtUzGQvJFLg=
-=YZM/
------END PGP SIGNATURE-----
-
---Apple-Mail=_7CE6C640-C232-4BB9-90DF-43C64BE9D107--
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
