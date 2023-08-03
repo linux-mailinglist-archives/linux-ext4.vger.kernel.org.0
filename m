@@ -2,50 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0B076F029
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 18:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D17376F0C6
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Aug 2023 19:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbjHCQ5X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 12:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        id S235101AbjHCRh5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 13:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234281AbjHCQ5I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 12:57:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0674C4227;
-        Thu,  3 Aug 2023 09:56:17 -0700 (PDT)
+        with ESMTP id S235117AbjHCRhv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 13:37:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E552F10B;
+        Thu,  3 Aug 2023 10:37:48 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 412A72190C;
-        Thu,  3 Aug 2023 16:56:15 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9BDF3218EB;
+        Thu,  3 Aug 2023 17:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691081775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1691084267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8jmGqv5VrNNN6mYDaT468r0ysSqZdLXbTiuCY1iyBvU=;
-        b=TxLd0HeM/26VTzN2RSiMjSK4UA3aEVWxf4yVMDutyM05qIwSgDCqDgsa4pgtOeWDs8bpE7
-        9EQ/OYgGQZ9VHx8Z8vLkWVfbp9OSxthffiYgt4wEM0On5oXqPGKEaaO7IW4faSykVkUTPT
-        846xrgWZ0KteXI9VCUKtPOuQyi8VRy0=
+        bh=nUrIcCgKfn8Ln+psoMSqthh4paG1THVbdii5u1kozU8=;
+        b=OGxF/Y/oYJ1fU84+6F/RoPLLg35d4x0oZCxn7NJYfsPYaWyvnRyXHf4DpYhnHIw3AkH3PX
+        BJZstYEbB8LUqRjqLjnTpX/TyqqePgq5GT48C61y8Lb4rZ9K2dtS1h0Smt0EYdOu76tQNZ
+        CvchZify8FuYF5UYOBMlpefOsxln22g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691081775;
+        s=susede2_ed25519; t=1691084267;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8jmGqv5VrNNN6mYDaT468r0ysSqZdLXbTiuCY1iyBvU=;
-        b=pcPBq4k4ZIU5vU52Pylta0bS+0mjQ8UQdrzUfpsvtxc3eFTqdyVquXgDMV3ksWRn7STD08
-        pVxc2SYgy1TUyMAA==
+        bh=nUrIcCgKfn8Ln+psoMSqthh4paG1THVbdii5u1kozU8=;
+        b=ho8JvdBvLvswROYHxKBwf9LRoHGI9RbaY2o/N43xAICwJABGHb/t2edJT1Nkm29HchCy3L
+        qOnMv5JMwYiyM3CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 090E01333C;
-        Thu,  3 Aug 2023 16:56:14 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DDA3134B0;
+        Thu,  3 Aug 2023 17:37:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id xScbOC7cy2SpVwAAMHmgww
-        (envelope-from <krisman@suse.de>); Thu, 03 Aug 2023 16:56:14 +0000
+        id CX3WEOvly2R3fQAAMHmgww
+        (envelope-from <krisman@suse.de>); Thu, 03 Aug 2023 17:37:47 +0000
 From:   Gabriel Krisman Bertazi <krisman@suse.de>
 To:     Eric Biggers <ebiggers@kernel.org>
 Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
@@ -57,18 +57,18 @@ Subject: Re: [PATCH v4 3/7] libfs: Validate negative dentries in
 Organization: SUSE
 References: <20230727172843.20542-1-krisman@suse.de>
         <20230727172843.20542-4-krisman@suse.de>
-        <20230729045156.GD4171@sol.localdomain>
-Date:   Thu, 03 Aug 2023 12:56:13 -0400
-In-Reply-To: <20230729045156.GD4171@sol.localdomain> (Eric Biggers's message
-        of "Fri, 28 Jul 2023 21:51:56 -0700")
-Message-ID: <87bkfo12vm.fsf@suse.de>
+        <20230729042048.GB4171@sol.localdomain>
+Date:   Thu, 03 Aug 2023 13:37:45 -0400
+In-Reply-To: <20230729042048.GB4171@sol.localdomain> (Eric Biggers's message
+        of "Fri, 28 Jul 2023 21:20:48 -0700")
+Message-ID: <875y5w10ye.fsf@suse.de>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,30 +78,38 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 Eric Biggers <ebiggers@kernel.org> writes:
 
 > On Thu, Jul 27, 2023 at 01:28:39PM -0400, Gabriel Krisman Bertazi wrote:
->> dentry->d_name is only checked by the case-insensitive d_revalidate hook
->> in the LOOKUP_CREATE/LOOKUP_RENAME_TARGET case since, for these cases,
->> d_revalidate is always called with the parent inode read-locked, and
->> therefore the name cannot change from under us.
+>>   - In __lookup_slow, either the parent inode is read locked by the
+>>     caller (lookup_slow), or it is called with no flags (lookup_one*).
+>>     The read lock suffices to prevent ->d_name modifications, with the
+>>     exception of one case: __d_unalias, will call __d_move to fix a
+>>     directory accessible from multiple dentries, which effectively swaps
+>>     ->d_name while holding only the shared read lock.  This happens
+>>     through this flow:
+>> 
+>>     lookup_slow()  //LOOKUP_CREATE
+>>       d_lookup()
+>>         ->d_lookup()
+>>           d_splice_alias()
+>>             __d_unalias()
+>>               __d_move()
+>> 
+>>     Nevertheless, this case is not a problem because negative dentries
+>>     are not allowed to be moved with __d_move.
 >
-> "at least read-locked"?  Or do you actually mean write-locked?
+> Isn't it possible for a negative dentry to become a positive one concurrently?
 
-No. I mean read-locked, as in holding the read-part of the inode lock.
-This is the case for lookup_slow, which is safe, despite the d_add_ci
-case we discussed in the previous iteration.  I'll reword to say "at
-least read-locked and mention it is the case in lookup_slow".
+Do you mean d_splice_alias racing with a dentry instantiation and
+__d_move being called on a negative dentry that is turning positive?
 
->> +static inline int generic_ci_d_revalidate(struct dentry *dentry,
->> +					  const struct qstr *name,
->> +					  unsigned int flags)
->
-> No need for inline here.
+It is not possible for __d_move to be called with a negative dentry for
+d_splice_alias, since the inode->i_lock is locked during __d_find_alias,
+so it can't race with __d_instantiate or d_add. Then, __d_find_alias
+can't find negative dentries in the first place, so we either have a
+positive dentry, in which case __d_move is fine with regard to
+d_revalidate_name, or we don't have any aliases and don't call
+__d_move.
 
-sorry, I missed the inline from your previuos review.  Will fix it up
-for this one.
-
-
->
-> - Eric
+Can you clarify what problem you see here?
 
 -- 
 Gabriel Krisman Bertazi
