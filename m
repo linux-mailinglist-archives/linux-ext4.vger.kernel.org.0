@@ -2,79 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D73770A2B
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 22:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB562770A91
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 23:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjHDU6T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Aug 2023 16:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S231274AbjHDVJy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Aug 2023 17:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjHDU6Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Aug 2023 16:58:16 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E266A4C37
-        for <linux-ext4@vger.kernel.org>; Fri,  4 Aug 2023 13:58:14 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-112-100.bstnma.fios.verizon.net [173.48.112.100])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 374Kw9OR004360
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 4 Aug 2023 16:58:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1691182691; bh=wnz7KnRIhkpMytoqzV6suJ10Lc2cAo8AUMf81bGzEw8=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=fH7igL+X/iAt4rEjjN+DyfEGbx9bq5RVBLG0k2hUqlZ6NGR2pRRem0GyIGpJjAREp
-         mwzd+irEvvN15Mrx+bRmBDTUlVt+cWmPFR6OCyE86/kcHiDx5cYKKNDaOwvo2F6m8f
-         vvYSdFcYHJD4dxwLXUpWieQ5S8Lnv+gBJiby7aUguz6gCuihz1f66viVROUlGpGL0X
-         kFd5ow1+NhhbYA7MgQWftqBWpAvagNVBsDd8v0mr4yd53VOHTkxRcWJUDmBi34Qvgx
-         clJpuWHi6d94H3w0u6M4mIyPn2LlTUhHCVc/2Ma0cKB35UU3Lvc4xUBiffGKEs4D7F
-         kYqwzZ8rz+zgg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9D80315C04F1; Fri,  4 Aug 2023 16:58:09 -0400 (EDT)
-Date:   Fri, 4 Aug 2023 16:58:09 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Vitaliy Kuznetsov <vk.en.mail@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, adilger@dilger.ca
-Subject: Re: [PATCH] ext4: Add periodic superblock update check
-Message-ID: <20230804205809.GE903325@mit.edu>
-References: <20230731122526.30158-1-vk.en.mail@gmail.com>
+        with ESMTP id S230502AbjHDVJf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Aug 2023 17:09:35 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828754ED7
+        for <linux-ext4@vger.kernel.org>; Fri,  4 Aug 2023 14:08:36 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-486519e5da0so732417e0c.2
+        for <linux-ext4@vger.kernel.org>; Fri, 04 Aug 2023 14:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691183306; x=1691788106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CVz5LOd7rFNebtEp0PzxoQs26sxvmIdzCmYSzMm7FxE=;
+        b=KsbTLP2r5B1Ip7gQd7ivaKr/7l8+hfTDIl+lx6U6uYM/4/HV0a+vCdcDyn8iE/t6V+
+         bg8Y3yJ/bUwwPf4MTzojKp8SnUkZwYshmcqFVT499N0Ndma0HhfuIQ/bzXaGn2pFoLX8
+         eayrMN/w9Cd+rOq2XagJZJT+khhqN7Tod2IiY1zFIkB+fw6+0t58u66PwtoJmTVgPpOd
+         p//II1NnrkPTMiNYZ/kvdSYaF8Y+Hmo61f+Gr5z0arDIlMZtkROIuQ8NNcd6sd7zDIFt
+         ybdDQmbLqtnXQGPB1iHZNAwuOeBAvdLKC0JUg7c+Ul86w01JYI0xQ7DX8Wsm6zWM2q0q
+         ltpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691183306; x=1691788106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CVz5LOd7rFNebtEp0PzxoQs26sxvmIdzCmYSzMm7FxE=;
+        b=kBGf6ri0xBhfmMEn9P6Fa+0/rXFjtbKQY0IiME1+0nqX9I26BzOWoTcPZdGVqWHUwA
+         8hX6lvR78iQ6UaIQcLJPcqkHMw/ZnnH71yxwZIAFSNDRmfNs2McZDC1H1CHHmKbZurgY
+         GAl2uEXSzZKovqypmAypevn5C6lsr8sy4lvNDThmCgqUx0gW9znLUYopgn70lQxmgrfB
+         uOf8mP+Xgzo2xxNj/9TspBmb4SAQE6TV8BG201TTjtjV1iv9Nikb9M7D+K+oscFM6Jo9
+         WcBFP/PtENatckHeShtCdz0ejCcEfjvC01SGIuCXIEMQxVZikMZnVddvKg/T1/Ziofdg
+         9tgw==
+X-Gm-Message-State: AOJu0Yxt0DdzYGPz+1kJPs7b8v24wz+AD+nrISVBB+sAWRvrziye1dWJ
+        hobfrQ6cclPTeSLIFulOPJ1za0iNH3Vtg0qmtn4k5T0StWdS3g==
+X-Google-Smtp-Source: AGHT+IHD7nW3H+MMkRzQLgvxuvBe4t9aTUNU0YK3dilWOUpr86C7qulqhKPCt8Ko0ib/ImOCnDOvgIUL5iDyr2HJbMc=
+X-Received: by 2002:a1f:3f11:0:b0:487:11ba:45fc with SMTP id
+ m17-20020a1f3f11000000b0048711ba45fcmr1630690vka.13.1691183306272; Fri, 04
+ Aug 2023 14:08:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731122526.30158-1-vk.en.mail@gmail.com>
+References: <CAKbZUD01uR5kfP4=SSfQ111jKsfKi8ojfDZs5CStLD_h5qb5GQ@mail.gmail.com>
+ <20230628045206.GA1908@sol.localdomain> <20230628185832.GK11467@frogsfrogsfrogs>
+ <20230703194850.GF1194@sol.localdomain>
+In-Reply-To: <20230703194850.GF1194@sol.localdomain>
+From:   Pedro Falcato <pedro.falcato@gmail.com>
+Date:   Fri, 4 Aug 2023 22:08:13 +0100
+Message-ID: <CAKbZUD0ModY66yJ+ieAs=XYecMHc-X2=Sanxcv8wmSf0T=BSzQ@mail.gmail.com>
+Subject: Re: Question regarding the use of CRC32c for checksumming
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 04:25:26PM +0400, Vitaliy Kuznetsov wrote:
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 6d332dff79dd..9f334de4f636 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -515,7 +515,8 @@ static const struct kobj_type ext4_feat_ktype = {
-> 
->  void ext4_notify_error_sysfs(struct ext4_sb_info *sbi)
->  {
-> -	sysfs_notify(&sbi->s_kobj, NULL, "errors_count");
-> +	if (sbi->s_add_error_count > 0)
-> +		sysfs_notify(&sbi->s_kobj, NULL, "errors_count");
->  }
+On Mon, Jul 3, 2023 at 8:48=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> w=
+rote:
+>
 
-The problem is that ext4_notify_error_sysfs() is called in
-flush_stashed_error_work() **after** that function calls
-ext4_update_super() --- and ext4_update_super will zero out
-s_add_error_count.  So this will result in the sysfs_notify call
-*never* getting called, which would be a regression.  So
-unfortunately, I can't accept this patch as currently written.
+Hi folks, really sorry for the big delay, this thread really slipped my min=
+d :)
 
-Fortunately, only flush_stashed_error_work() calls
-ext4_notify_error_sysfs(), so it should be easy enough to sample
-s_add_error_count before calling ext4_update_super(), and then
-conditionally call sysfs_notify() if it is non-zero.
+> IMO the best API for CRC's is like zlib's where you pass in 0 to start th=
+e CRC
+> and it does both the pre and post inversions for you.  Note, "updates" st=
+ill
+> work as expected, since two inversions cancel each other out.
 
-	      	   		     	   - Ted
+I agree, I did that when adding CRC32c to EFI. u32
+calculate_crc32c(const void *buf, size_t len, u32 initial) with
+inversions on initial and the result is pretty simple and effective.
+
+> Unfortunately, many but not all of the CRC APIs in Linux decided to go wi=
+th the
+> other convention, which is to leave the inversions entirely to the caller=
+.
+>
+> I think the kernel should also make the architecture-specific CRC
+> implementations accessible directly via a library API, similar to what's =
+done
+> for Blake2s and ChaCha20.  There should be no need to go through shash at=
+ all...
+>
+> >
+> > This misuse could be fixed, but you'd have to burn an incompat flag to
+> > do it.  I'm less smart about crc32* than I was back in 2008, so I also
+> > don't have the skills to figure out if the correction is worth the cost=
+.
+> >
+> > --D
+>
+> No, it's not worth changing the ext4 on-disk format for this.
+
+I don't think we'd need to change the on-disk format for this? Or for
+any other hash algorithm change (as long as the resulting digest is
+32-bit), right? Given we have s_checksum_type.
+Or do existing tools dangerously assume CRC32c at the moment?
+
+In any case, thank you both for the background on this, I'll try to
+submit a patch to the docs to clarify this point.
+
+--=20
+Pedro
