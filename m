@@ -2,77 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF0C76F762
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 04:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D2976F7AC
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 04:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbjHDCB7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Aug 2023 22:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        id S233766AbjHDCOD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Aug 2023 22:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbjHDCB7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 22:01:59 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306E544A1;
-        Thu,  3 Aug 2023 19:01:57 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-447684c4283so673822137.2;
-        Thu, 03 Aug 2023 19:01:57 -0700 (PDT)
+        with ESMTP id S233806AbjHDCNf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Aug 2023 22:13:35 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EF54C02;
+        Thu,  3 Aug 2023 19:12:39 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so54960239f.3;
+        Thu, 03 Aug 2023 19:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691114516; x=1691719316;
+        d=gmail.com; s=20221208; t=1691115127; x=1691719927;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
-        b=MoVB1XjmMagsHZzn9G8ftY6HWJZOUd3UQbdoUZGHvxiTrJtRhQmKpY5hMXxXdiDzuq
-         zQBrBD4AM2yCz+AjuuOypK1qRVFL8If5W+fTO+cw9XBWSGuM7Hrx2k1cmlpjp62wiDDF
-         xmsVPYq08ScKsEB2acJFU2fLVkjAs3OQk4kUojzHHGQtCjQau8BO/IfSPhWz7s7RoG+F
-         ObfsdVyd9J6qFm5iu3TH8pCH6XZy+vWbCGwACVvcWshSg7B1v3rxfId451mLVIpY2bVi
-         GasCyfXQI0s3z46olnWXSpFmLflSUgwZZScpT/KeG4Ra5OVORJFyNsdv2rD2oRuBkEtE
-         dKlA==
+        bh=UyGs7pDnf6uBT1t/66Ot0OwEahPTOFqgXdug+F04H8Y=;
+        b=SO1hDhmmlVyVF1SLjy217wDUN6oQZyLQTUlgP+cJ0ScoZnuyX5waT8LaFCxLBzk9Oc
+         qcrM6k5eDHzxcyMdqaauR0vrVzu/mWOIL/moszoT9970oByeNGKXEbo/n4EO3pt1WOz1
+         r/EdU8pEKCR2XrC3uaY4NgCC1VPQqnlH9eugfjlPxuRjuz0xaJ9zdfkpukKR/PCwc2Gl
+         XQm2zogt+ea8gdlOxVu1YwfIo5xyyqXqMCPD0qeuMCgY5uHhuLRl005bXZbWWt0xAsXJ
+         Bc660UsmCcHkJXw+q4MY3Yrc66F7rIpUdi7pepmd5D/MNpPKMLT9gvO6BULirH3BvSWz
+         I5Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691114516; x=1691719316;
+        d=1e100.net; s=20221208; t=1691115127; x=1691719927;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
-        b=AHwHs1RDHmSRRmMjEQdp+RoWkigg69QbSEujxAVrY8D9ipzJ60Ju0TJHasS2oa2qcp
-         QbDA3n8BWOjcDu7YmnYL80StdtYdCcaJS+9TwoUiYpuxqzZt7IPnjwf0A6ImjihI7ljx
-         Rz+3hsVYQo3vef1JPaB/jl0TW3sVPCr5wgfXf91SkP92D74ssmF2C15Ah/LhHFgD6OrZ
-         Dr/G81p/groWSONlBM9e2z1WG6HPPfD3YAjCK6lfKGyxNfKaWUwVKXJL35T1lR9phjzH
-         c2uCC3MK43cARq8goc0EWtvy/EVUyEM1JWP2C5M0YA7UrRdxGcPsM3YyfBYcevdmUcOR
-         rlMw==
-X-Gm-Message-State: AOJu0YyZGsTcfdCada2Pv0UMonW1QldD/e237rGQQSMnfF7ynhVuJ9H/
-        Gm3gH9iSKS6EsN42ApoOrz+Xc1/wNT+tEcOslw0=
-X-Google-Smtp-Source: AGHT+IHATFbengwvPlZLXwXXl9tdvm/xeC68n6I1h9PJY7Qw0FOEZCU8f3gigNz/0f8AxRF04Qwf1gS0iLv+NBKaP4k=
-X-Received: by 2002:a05:6102:a35:b0:443:7635:34d with SMTP id
- 21-20020a0561020a3500b004437635034dmr329869vsb.30.1691114516008; Thu, 03 Aug
- 2023 19:01:56 -0700 (PDT)
+        bh=UyGs7pDnf6uBT1t/66Ot0OwEahPTOFqgXdug+F04H8Y=;
+        b=Y9kbTE/Q/7hNoklQ0aQHAO8LV/8D/wvGYm0ro/cAPt1/+ZqliCJKamDZ6/khkoPw6z
+         8veFn0UphvVD6U006IkZkVoFZFTtfGmVThkxC7KhDcx6uWJ5cAepZFlIlN2CyiIKRUHu
+         U8W7BcZE9Jv91CCfoklSSyd4aZwRzBtIC3bl5B4yK9ytadYJucC02Ozbqt0ABwymaWAN
+         um/pbXL8JwQ+4CZk+8IM7TBtHXii3YMcwarhs0aiwQEc8xsIU7T6Ez5MDI/UMLGQi+k+
+         SQpd78XokYAYd9pLkWWNXyczBPjyibEdjOqIBAaqO6Ul+d55p6dcz31UpxMHbpWQQ7fJ
+         F67A==
+X-Gm-Message-State: AOJu0Ywb1QsDExh/bADml8u1rWb1s+7K5WUzs4HQ/XhCFxiMXjlsw02X
+        FN4suTX6WxLUKvl+Dw5aJPVJ90Z5Qz6wLK4uiOFObK8c9y+ByXn/
+X-Google-Smtp-Source: AGHT+IG8RLfvqEfnVXV2XhJT0AebZO+FwN68ngJKeFDdkpeiR3RdipSqjBS28QBX3/DSYE1f29DwD7MPLlAf+uB4cHg=
+X-Received: by 2002:ac8:5c90:0:b0:400:aa4d:7a5d with SMTP id
+ r16-20020ac85c90000000b00400aa4d7a5dmr784601qta.24.1691115106200; Thu, 03 Aug
+ 2023 19:11:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802154131.2221419-1-hch@lst.de> <20230802154131.2221419-3-hch@lst.de>
- <20230803114651.ihtqqgthbdjjgxev@quack3>
-In-Reply-To: <20230803114651.ihtqqgthbdjjgxev@quack3>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri, 4 Aug 2023 11:01:39 +0900
-Message-ID: <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
-Subject: Re: [PATCH 02/12] nilfs2: use setup_bdev_super to de-duplicate the
- mount code
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
+ <20230801151828.GB11332@frogsfrogsfrogs> <A9ECDF14-95A1-4B1E-A815-4B6ABF4916C6@dilger.ca>
+ <CANubcdUsDfiuGimNXjzoAF5ki8waCoFW31mg4vjpm073rS6+dw@mail.gmail.com>
+ <20230803030903.GK11377@frogsfrogsfrogs> <12CFFD6D-ED0E-4D36-A7B7-ACCFB698A177@dilger.ca>
+In-Reply-To: <12CFFD6D-ED0E-4D36-A7B7-ACCFB698A177@dilger.ca>
+From:   Stephen Zhang <starzhangzsd@gmail.com>
+Date:   Fri, 4 Aug 2023 10:11:10 +0800
+Message-ID: <CANubcdXYm9dxx6WSECWmjrF9C_8bhsiUSC-xDe-Pz3Mvy0nFmw@mail.gmail.com>
+Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        zhangshida@kylinos.cn, stable@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,97 +74,120 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 8:46=E2=80=AFPM Jan Kara wrote:
+Andreas Dilger <adilger@dilger.ca> =E4=BA=8E2023=E5=B9=B48=E6=9C=884=E6=97=
+=A5=E5=91=A8=E4=BA=94 06:34=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Wed 02-08-23 17:41:21, Christoph Hellwig wrote:
-> > Use the generic setup_bdev_super helper to open the main block device
-> > and do various bits of superblock setup instead of duplicating the
-> > logic.  This includes moving to the new scheme implemented in common
-> > code that only opens the block device after the superblock has allocate=
-d.
+> On Aug 2, 2023, at 9:09 PM, Darrick J. Wong <djwong@kernel.org> wrote:
 > >
-> > It does not yet convert nilfs2 to the new mount API, but doing so will
-> > become a bit simpler after this first step.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
->
-> AFAICS nilfs2 could *almost* use mount_bdev() directly and then just do i=
-ts
-
-> snapshot thing after mount_bdev() returns. But it has this weird logic
-> that: "if the superblock is already mounted but we can shrink the whole
-> dcache, then do remount instead of ignoring mount options". Firstly, this
-> looks racy - what prevents someone from say opening a file on the sb just
-> after nilfs_tree_is_busy() shrinks dcache? Secondly, it is inconsistent
-> with any other filesystem so it's going to surprise sysadmins not
-> intimately knowing nilfs2. Thirdly, from userspace you cannot tell what
-> your mount call is going to do. Last but not least, what is it really goo=
-d
-> for? Ryusuke, can you explain please?
->
->                                                                 Honza
-
-I think you are referring to the following part:
-
->        if (!s->s_root) {
-...
->        } else if (!sd.cno) {
->                if (nilfs_tree_is_busy(s->s_root)) {
->                        if ((flags ^ s->s_flags) & SB_RDONLY) {
->                                nilfs_err(s,
->                                          "the device already has a %s mou=
-nt.",
->                                          sb_rdonly(s) ? "read-only" : "re=
-ad/write");
->                                err =3D -EBUSY;
->                                goto failed_super;
->                        }
->                } else {
->                        /*
->                         * Try remount to setup mount states if the curren=
+> > On Thu, Aug 03, 2023 at 09:52:53AM +0800, Stephen Zhang wrote:
+> >> Andreas Dilger <adilger@dilger.ca> =E4=BA=8E2023=E5=B9=B48=E6=9C=882=
+=E6=97=A5=E5=91=A8=E4=B8=89 14:07=E5=86=99=E9=81=93=EF=BC=9A
+> >>>
+> >>> Not all of these cases are actual bugs.  The ext4_rec_len_from_disk()
+> >>> function is only different for rec_len >=3D 2^16, so if it is compari=
+ng
+> >>> rec_len against "12" or "sizeof(struct ...)" then the inequality will
+> >>> be correct regardless of how it is decoded.
+> >>>
+> >>> That said, it makes sense to use ext4_rec_len_from_disk() to access
+> >>> rec_len consistently throughout the code, since that avoids potential
+> >>> bugs in the future.  We know the code will eventually will be copied
+> >>> some place where rec_len >=3D 2^16 is actually important, and we may =
+as
+> >>> well avoid that bug before it happens.
+> >>>
+> >>>
+> >>> One thing this discussion *does* expose is that ext4_rec_len_from_dis=
+k()
+> >>> is hard-coded at compile time to differentiate between PAGE_SIZE > 64=
+k
+> >>> and PAGE_SIZE =3D 4K, because it was never possible to have blocksize=
+ >
+> >>> PAGE_SIZE, so only ARM/PPC ever had filesystems with blocksize=3D64Ki=
+B
+> >>> (and the Fujitsu Fugaku SPARC system with blocksize=3D256KiB).
+> >>>
+> >>> However, with the recent advent of the VM and IO layers allowing
+> >>> blocksize > PAGE_SIZE this function will need to be changed to allow
+> >>> the same on x86 PAGE_SIZE=3D4KiB systems.  Instead of checking
+> >>>
+> >>>  #if PAGE_SIZE >=3D 65536
+> >>>
+> >>> it should handle this based on the filesystem blocksize at runtime:
+> >>>
+> >>> static inline
+> >>> unsigned int ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
+> >>> {
+> >>>        unsigned len =3D le16_to_cpu(dlen);
+> >>>
+> >>>        if (blocksize < 65536)
+> >>>                return len;
+> >>>
+> >>>        if (len =3D=3D EXT4_MAX_REC_LEN || len =3D=3D 0)
+> >>>                return blocksize;
+> >>>
+> >>>        return (len & 65532) | ((len & 3) << 16);
+> >>> }
+> >>>
+> >>> Strictly speaking, ((len & 65532) | ((len & 3) << 16) should equal "l=
+en"
+> >>> for any filesystem with blocksize < 65536, but IMHO it is more clear =
+if
+> >>> the code is written this way.
+> >>>
+> >>> Similarly, the encoding needs to be changed to handle large records a=
 t
->                         * tree is not mounted and only snapshots use this=
- sb.
->                         */
->                        err =3D nilfs_remount(s, &flags, data);
->                        if (err)
->                                goto failed_super;
->                }
->        }
+> >>> runtime for when we eventually allow ext4 with blocksize > PAGE_SIZE.
+> >>>
+> >>> static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned bloc=
+ksize)
+> >>> {
+> >>>        BUG_ON(len > blocksize);
+> >>>        BUG_ON(blocksize > (1 << 18));
+> >>>        BUG_ON(len & 3);
+> >>>
+> >>>        if (len < 65536) /* always true for blocksize < 65536 */
+> >>>                return cpu_to_le16(len);
+> >>>
+> >>>        if (len =3D=3D blocksize) {
+> >>>                if (blocksize =3D=3D 65536)
+> >>>                        return cpu_to_le16(EXT4_MAX_REC_LEN);
+> >>>
+> >>>                return cpu_to_le16(0);
+> >>>        }
+> >>>
+> >>>        return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
+> >>> }
+> >>>
+> >>
+> >> Hmm, at least it sounds reasonable to me based on my limited
+> >> knowledge. However, I am not sure whether you want me to incorporate
+> >> these changes into this particular commit or another patch within this
+> >> submission.
+> >>
+> >> By default, I will simply leave it for further discussion. Please let
+> >> me know if you have any ideas.
+> >
+> > ext4 doesn't support blocksize > PAGE_SIZE yet.  Don't worry about this
+> > for now.
+>
+> I agree it doesn't need to be merged into the current patch.
+>
+> It's something that could be fixed in a follow-on patch, to have one less
+> bug to fix in the future when ext4 *does* support blocksize > PAGE_SIZE,
+> which isn't so far away anymore.
+>
 
-What this logic is trying to do is, if there is already a nilfs2 mount
-instance for the device, and are trying to mounting the current tree
-(sd.cno is 0, so this is not a snapshot mount), then will switch
-depending on whether the current tree has a mount:
+Okay, I will attempt to submit another follow-on patch based on this discus=
+sion
+after this one.
 
-- If the current tree is mounted, it's just like a normal filesystem.
-(A read-only mount and a read/write mount can't coexist, so check
-that, and reuse the instance if possible)
-- Otherwise, i.e. for snapshot mounts only, do whatever is necessary
-to add a new current mount, such as starting a log writer.
-   Since it does the same thing that nilfs_remount does, so
-nilfs_remount() is used there.
+Cheers,
+Shida
 
-Whether or not there is a current tree mount can be determined by
-d_count(s->s_root) > 1 as nilfs_tree_is_busy() does.
-Where s->s_root is always the root dentry of the current tree, not
-that of the mounted snapshot.
-
-I remember that calling shrink_dcache_parent() before this test was to
-do the test correctly if there was garbage left in the dcache from the
-past current mount.
-
-If the current tree isn't mounted, it just cleans up the garbage, and
-the reference count wouldn't have incremented in parallel.
-
-If the current tree is mounted, d_count(s->s_root) will not decrease
-to 1, so it's not a problem.
-However, this will cause unexpected dcache shrinkage for the in-use
-tree, so it's not a good idea, as you pointed out.  If there is
-another way of judging without this side effect, it should be
-replaced.
-
-I will reply here once.
-
-Regards,
-Ryusuke Konishi
+> Cheers, Andreas
+>
+>
+>
+>
+>
