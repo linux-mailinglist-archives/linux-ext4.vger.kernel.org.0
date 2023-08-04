@@ -2,129 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6977704FE
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 17:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2307707FE
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Aug 2023 20:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjHDPjp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 4 Aug 2023 11:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S231314AbjHDSa4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 4 Aug 2023 14:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjHDPjn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Aug 2023 11:39:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F82249C1;
-        Fri,  4 Aug 2023 08:39:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        with ESMTP id S231345AbjHDSaO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 4 Aug 2023 14:30:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC69D6182
+        for <linux-ext4@vger.kernel.org>; Fri,  4 Aug 2023 11:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691173610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Buhu2Q8CcLtbdXqwBiObmG7nmTt19qZgkG/RC5XdQr4=;
+        b=L24O5Cki5Zfrv9sx8UC9I0lcvireSSZICPswPbxMRTsIah5Nq1rZHalqaoMdJORpv7/YTp
+        AK6xvAhFcs0/gUKqWt7/3FPhMsyHiybpxTlKnrNBVklMxB8PFbsBsFUtNARaXp5T2VJh9m
+        nzhcgRATpvn35+ILKrg7ejo9NLrlQ88=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-91-J1TXwZSZOJe-z-_ZnfL0Lg-1; Fri, 04 Aug 2023 14:26:47 -0400
+X-MC-Unique: J1TXwZSZOJe-z-_ZnfL0Lg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 061246202B;
-        Fri,  4 Aug 2023 15:39:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31522C433C9;
-        Fri,  4 Aug 2023 15:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691163570;
-        bh=WBKOiXxNnEcmIAXLd9bFnF2KFmCPgIBMmS+a6ZOzWKY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=guM3dTEfPj9gzW4hZVBn+/1D3e6V0oGJa3WQkuaCaRJm+YEkO/j0g28vpLcq+8KPx
-         00I5JDimR9O6GRpM1sCbRoDBeqI3dA0US5iDcvRFH1wRzLZGMG/AKi+37CHK3OiKfl
-         Pd3WUGjQp78CvSWurtOz9TKUp2R8T9+xWekamZzkpVJreEREn7gcZJVUpwDMtQgJPa
-         oNlJ1Fd+Wv/UAECk8iLUJUaVzEv4k+34Xo4z1QJAK3CSDmvC6vv3w+O4TwoqgSUVxv
-         yOZLQQe40+3upkBEjN2TRg8dq8CL62TzVM9oUzcd7edWypJQ/9r8RDeBu3CtctpdP3
-         S7Paz1gf4bygw==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: more blkdev_get and holder work
-Date:   Fri,  4 Aug 2023 17:39:20 +0200
-Message-Id: <20230804-wegelagerei-nagel-e5ba7e7cedd5@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230802154131.2221419-1-hch@lst.de>
-References: <20230802154131.2221419-1-hch@lst.de>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2103856F66;
+        Fri,  4 Aug 2023 18:26:46 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.16.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B2276C5796B;
+        Fri,  4 Aug 2023 18:26:46 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Ritesh Harjani <ritesh.list@gmail.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: drop dio overwrite only flag and associated warning
+Date:   Fri,  4 Aug 2023 14:29:52 -0400
+Message-ID: <20230804182952.477247-1-bfoster@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3062; i=brauner@kernel.org; h=from:subject:message-id; bh=7FNUYW+x5CSjf6yCNgXxulkGn+cMsTW366YHSfu1h4A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSclU4X5tucveB9lDl37gJ9jlmvFGN+KNg9TprAwbY/er8W 31PtjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIncNWf4K3Hkgdv/npvLfSQ798adms 9ScvSZ2rptQtc471tqdUeIZzMyHOPQmly1SzxZ11D73stJc0XjnmfPNpO6vb5+SlL6wynWPAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 02 Aug 2023 17:41:19 +0200, Christoph Hellwig wrote:
-> this series sits on top of the vfs.super branch in the VFS tree and does a
-> few closely related things:
-> 
->   1) it also converts nilfs2 and btrfs to the new scheme where the file system
->      only opens the block devices after we know that a new super_block was
->      allocated.
->   2) it then makes sure that for all file system openers the super_block is
->      stored in bd_holder, and makes use of that fact in the mark_dead method
->      so that it doesn't have to fall get_super and thus can also work on
->      block devices that sb->s_bdev doesn't point to
->   3) it then drops the fs-specific holder ops in ext4 and xfs and uses the
->      generic fs_holder_ops there
-> 
-> [...]
+The commit referenced below opened up concurrent unaligned dio under
+shared locking for pure overwrites. In doing so, it enabled use of
+the IOMAP_DIO_OVERWRITE_ONLY flag and added a warning on unexpected
+-EAGAIN returns as an extra precaution, since ext4 does not retry
+writes in such cases. The flag itself is advisory in this case since
+ext4 checks for unaligned I/Os and uses appropriate locking up
+front, rather than on a retry in response to -EAGAIN.
 
-Let's pick this up now so it still has ample time in -next even though
-we're still missing a nod from the btrfs people. The nilfs to
-mount_bdev() conversion is probably not super urgent but if wanted a
-follow-up patch won't be frowned upon.
+As it turns out, the warning check is susceptible to false positives
+because there are scenarios where -EAGAIN is expected from the
+storage layer without necessarily having IOCB_NOWAIT set on the
+iocb. For example, io_uring can set IOCB_HIPRI, which the iomap/dio
+layer turns into REQ_POLLED|REQ_NOWAIT on the bio, which then can
+result in an -EAGAIN result if the block layer is unable to allocate
+a request, etc. syzbot has also reported an instance of this warning
+and while the source of the -EAGAIN in that case is not currently
+known, it is confirmed that the iomap dio overwrite flag is also not
+set.
 
+Since this flag is precautionary, avoid the false positive warning
+and future whack-a-mole games with -EAGAIN returns by removing it
+and the associated warning. Update the comments to document when
+concurrent unaligned dio writes are allowed and why the associated
+flag is not used.
+
+Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
+Signed-off-by: Brian Foster <bfoster@redhat.com>
 ---
 
-Applied to the vfs.super branch of the vfs/vfs.git tree.
-Patches in the vfs.super branch should appear in linux-next soon.
+Hi all,
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+This addresses some false positives associated with the warning for the
+recently merged patch. I considered leaving the flag and more tightly
+associating the warning to it (instead of IOCB_NOWAIT), but ISTM that is
+still flakey and I'd rather not play whack-a-mole when the assumption is
+shown to be wrong.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+I'm still waiting on a syzbot test of this patch, but local tests look
+Ok and I'm away for a few days after today so wanted to get this on the
+list. Thoughts, reviews, flames appreciated.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+Brian
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.super
+ fs/ext4/file.c | 25 ++++++++++---------------
+ 1 file changed, 10 insertions(+), 15 deletions(-)
 
-[01/12] fs: export setup_bdev_super
-        https://git.kernel.org/vfs/vfs/c/71c00ec51d83
-[02/12] nilfs2: use setup_bdev_super to de-duplicate the mount code
-        https://git.kernel.org/vfs/vfs/c/c820df38784a
-[03/12] btrfs: always open the device read-only in btrfs_scan_one_device
-        https://git.kernel.org/vfs/vfs/c/75029e14cea6
-[04/12] btrfs: open block devices after superblock creation
-        https://git.kernel.org/vfs/vfs/c/364820697dbb
-[05/12] ext4: make the IS_EXT2_SB/IS_EXT3_SB checks more robust
-        https://git.kernel.org/vfs/vfs/c/4cf66c030db1
-[06/12] fs: use the super_block as holder when mounting file systems
-        https://git.kernel.org/vfs/vfs/c/c0188baf8f7e
-[07/12] fs: stop using get_super in fs_mark_dead
-        https://git.kernel.org/vfs/vfs/c/2a8402f9db25
-[08/12] fs: export fs_holder_ops
-        https://git.kernel.org/vfs/vfs/c/ee62b0ec9ff8
-[09/12] ext4: drop s_umount over opening the log device
-        https://git.kernel.org/vfs/vfs/c/644ab8c64a12
-[10/12] ext4: use fs_holder_ops for the log device
-        https://git.kernel.org/vfs/vfs/c/fba3de1aad77
-[11/12] xfs: drop s_umount over opening the log and RT devices
-        https://git.kernel.org/vfs/vfs/c/9470514a171c
-[12/12] xfs use fs_holder_ops for the log and RT devices
-        https://git.kernel.org/vfs/vfs/c/c6fb2ed736e3
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index c457c8517f0f..73a4b711be02 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -476,6 +476,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+ 	 * required to change security info in file_modified(), for extending
+ 	 * I/O, any form of non-overwrite I/O, and unaligned I/O to unwritten
+ 	 * extents (as partial block zeroing may be required).
++	 *
++	 * Note that unaligned writes are allowed under shared lock so long as
++	 * they are pure overwrites. Otherwise, concurrent unaligned writes risk
++	 * data corruption due to partial block zeroing in the dio layer, and so
++	 * the I/O must occur exclusively.
+ 	 */
+ 	if (*ilock_shared &&
+ 	    ((!IS_NOSEC(inode) || *extend || !overwrite ||
+@@ -492,21 +497,12 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+ 
+ 	/*
+ 	 * Now that locking is settled, determine dio flags and exclusivity
+-	 * requirements. Unaligned writes are allowed under shared lock so long
+-	 * as they are pure overwrites. Set the iomap overwrite only flag as an
+-	 * added precaution in this case. Even though this is unnecessary, we
+-	 * can detect and warn on unexpected -EAGAIN if an unsafe unaligned
+-	 * write is ever submitted.
+-	 *
+-	 * Otherwise, concurrent unaligned writes risk data corruption due to
+-	 * partial block zeroing in the dio layer, and so the I/O must occur
+-	 * exclusively. The inode lock is already held exclusive if the write is
+-	 * non-overwrite or extending, so drain all outstanding dio and set the
+-	 * force wait dio flag.
++	 * requirements. We don't use DIO_OVERWRITE_ONLY because we enforce
++	 * behavior already. The inode lock is already held exclusive if the
++	 * write is non-overwrite or extending, so drain all outstanding dio and
++	 * set the force wait dio flag.
+ 	 */
+-	if (*ilock_shared && unaligned_io) {
+-		*dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
+-	} else if (!*ilock_shared && (unaligned_io || *extend)) {
++	if (!*ilock_shared && (unaligned_io || *extend)) {
+ 		if (iocb->ki_flags & IOCB_NOWAIT) {
+ 			ret = -EAGAIN;
+ 			goto out;
+@@ -608,7 +604,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		iomap_ops = &ext4_iomap_overwrite_ops;
+ 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+ 			   dio_flags, NULL, 0);
+-	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
+ 	if (ret == -ENOTBLK)
+ 		ret = 0;
+ 
+-- 
+2.41.0
+
