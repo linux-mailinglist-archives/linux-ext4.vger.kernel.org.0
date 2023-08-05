@@ -2,106 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E75770F4D
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Aug 2023 12:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EFC770F92
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Aug 2023 14:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjHEKj1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 5 Aug 2023 06:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S229767AbjHEMUq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 5 Aug 2023 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEKj0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Aug 2023 06:39:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF2A10C4;
-        Sat,  5 Aug 2023 03:39:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A6B060C63;
-        Sat,  5 Aug 2023 10:39:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9DD0C433C7;
-        Sat,  5 Aug 2023 10:39:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691231964;
-        bh=uXGWtXBnq0nfa/jBhSY841c7zuCmhgyQEv0tqvbShRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gcYazOn/niIWgO8RAq86Wd0rf6mY5HFyG8HgKYgI+uBhiJcOa1iN7eHEwWVbAcqFb
-         5XIJBVbVVoMXgQkQiYsI582grCtIP5eESCBkMFP2HJtSXo84sAac2RzSv75h991bTw
-         DlhvR7swkECQCUNJ0aVzgU1Y6/CLhGJcMtH+agnVqKKciIHJRKsst4uRWzNWqfcH/S
-         4Z5gPIEd6TmqOwMkNTU2g/kveG9q6Rla8oYlgbxLN/F6Ht72xR0/n8EjkY0FHeNts+
-         T/IgH7Tx7FR6m1gG2NYvDi0EBc0UAhmoFZi7m3tQ+5R3RXve3Uu+iNx/GDcEcrNUGm
-         nFhvs+f54VGWQ==
-Date:   Sat, 5 Aug 2023 12:39:12 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 11/12] xfs: drop s_umount over opening the log and RT
- devices
-Message-ID: <20230805-galaabend-diskreditieren-27943ea3c10e@brauner>
-References: <20230802154131.2221419-1-hch@lst.de>
- <20230802154131.2221419-12-hch@lst.de>
- <20230802163219.GW11352@frogsfrogsfrogs>
- <20230805083239.GA29780@lst.de>
+        with ESMTP id S229506AbjHEMUp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 5 Aug 2023 08:20:45 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFB544BD
+        for <linux-ext4@vger.kernel.org>; Sat,  5 Aug 2023 05:20:44 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-112-100.bstnma.fios.verizon.net [173.48.112.100])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 375CKVrX027553
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 5 Aug 2023 08:20:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1691238033; bh=eYb2O0IuXmf6IAFBpyM9vHqkTVB4ZgGCAGWOPW1z0h0=;
+        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=ZY2yisKMU0yHb1/kCsKiDCDsQsEn660in3xvdlb2WQk3zPH76vea1fx51ChilGeQL
+         rTTOCLXGq6aSfrjIS7XwhePnbC3IwWovsS/ILiFSAsk85/U3tcI88fzk+IMIPI+j6B
+         74u3/fEBO2iDNCzSKH5m6BOm+zGidr8br7FO8noipuOHLTJck5AE8JwVyyw11PC9cN
+         EFcgem/DqZfeb0a7P8NceygvA7Yh3jJYDofhSZZ8PK2EhMYwBSiaBc/hZdGaq5Uhp9
+         5kkix/Woi/tkIPt8s6PFG14pluz5bB71glHJT92XOgCoOEl1D8X2lUz9rvH0PJiPDb
+         QRSXS+QbgUTAw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 525B815C04F1; Sat,  5 Aug 2023 08:20:31 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+Date:   Sat,  5 Aug 2023 08:20:24 -0400
+Message-Id: <169123801881.1434487.6868481309254151521.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230803091713.13239-1-lhenriques@suse.de>
+References: <20230803091713.13239-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230805083239.GA29780@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 10:32:39AM +0200, Christoph Hellwig wrote:
-> On Wed, Aug 02, 2023 at 09:32:19AM -0700, Darrick J. Wong wrote:
-> > > +	/* see get_tree_bdev why this is needed and safe */
-> > 
-> > Which part of get_tree_bdev?  Is it this?
-> > 
-> > 		/*
-> > 		 * s_umount nests inside open_mutex during
-> > 		 * __invalidate_device().  blkdev_put() acquires
-> > 		 * open_mutex and can't be called under s_umount.  Drop
-> > 		 * s_umount temporarily.  This is safe as we're
-> > 		 * holding an active reference.
-> > 		 */
-> > 		up_write(&s->s_umount);
-> > 		blkdev_put(bdev, fc->fs_type);
-> > 		down_write(&s->s_umount);
-> 
-> Yes.  With the refactoring earlier in the series get_tree_bdev should
-> be trivial enough to not need a more specific reference.  If you
-> think there's a better way to refer to it I can update the comment,
-> though.
-> 
-> > >  		mp->m_logdev_targp = mp->m_ddev_targp;
-> > >  	}
-> > >  
-> > > -	return 0;
-> > > +	error = 0;
-> > > +out_unlock:
-> > > +	down_write(&sb->s_umount);
-> > 
-> > Isn't down_write taking s_umount?  I think the label should be
-> > out_relock or something less misleading.
-> 
-> Agreed.  Christian, can you just change this in your branch, or should
-> I send an incremental patch?
 
-No need to send an incremental patch. I just s/out_unlock/out_relock/g
-in-tree. Thanks!
+On Thu, 03 Aug 2023 10:17:13 +0100, Luís Henriques wrote:
+> If the filename casefolding fails, we'll be leaking memory from the
+> fscrypt_name struct, namely from the 'crypto_buf.name' member.
+> 
+> Make sure we free it in the error path on both ext4_fname_setup_filename()
+> and ext4_fname_prepare_lookup() functions.
+> 
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+      commit: 7ca4b085f430f3774c3838b3da569ceccd6a0177
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
