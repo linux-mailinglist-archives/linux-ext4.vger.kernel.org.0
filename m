@@ -2,185 +2,472 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFF4771F06
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8BD771F72
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 13:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjHGK7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Aug 2023 06:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S229824AbjHGLKb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Aug 2023 07:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjHGK7K (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Aug 2023 06:59:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D9910FA
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 03:59:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 02147210DF;
-        Mon,  7 Aug 2023 10:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691405947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pFDX2ZiiMKxL1zxLUHyybYafS/LlZSaxZhEVXewgov0=;
-        b=NH4lYmi5+SzVBMAM85Mj7bmTaAGtPFan+KpjkTz6gb2I/NKtDm3HHT/aEKdVLk1u/OKxkP
-        JVgm9I9DH3maEKpKbUgH/BmyUVTYqCW+kyx5LEBkhwpaJcq3ZNMJooNzXvuRUMoC+YEJ0D
-        qRJFyn0Hr0PsbsB+IFGeGKTZhIkIRzI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691405947;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pFDX2ZiiMKxL1zxLUHyybYafS/LlZSaxZhEVXewgov0=;
-        b=CcogD0y1fte0svdgE503B0u1yAxJ9iTxp7Um+GMhWs+hMf8Z+kPlRzLxogDnxq+W86qYGn
-        akZVdE/KCtwJTuAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E71FE13910;
-        Mon,  7 Aug 2023 10:59:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yHhgOHrO0GROUAAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 07 Aug 2023 10:59:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 8798CA076C; Mon,  7 Aug 2023 12:59:06 +0200 (CEST)
-Date:   Mon, 7 Aug 2023 12:59:06 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        Ritesh Harjani <ritesh.list@gmail.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] ext4: drop dio overwrite only flag and associated warning
-Message-ID: <20230807105906.teovthvnwrpbmx7n@quack3>
-References: <20230804182952.477247-1-bfoster@redhat.com>
+        with ESMTP id S231852AbjHGLK1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Aug 2023 07:10:27 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780C3171E
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 04:09:57 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-268663fb09cso630372a91.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Aug 2023 04:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691406597; x=1692011397;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IUFroX+K29vocKlwNJzs/neGWgohuFaGhfTkMV8vShc=;
+        b=VgaeXhz1xsi1DvY0mdHG5w6GDNOVQV4G915G2okvAB9QZ0UmJ9gvIJ6asoYIB210RG
+         Ey93kt9KOPOZ3l4nhlHXgtdSy6FjYflv77vSCILUklupME+r3C8zNVLYXpLlDcRqUM0e
+         lfUAl5POG7wx94wNJAfUoDsPXulpyHktrCbv8gD1x/O2p9qeRsFSiX6gwTwjM13k8Ul9
+         /rnH/O+MrYpDiSizTF8aNQeTO7XJ0dle1SDOCfUCACCM/+nHgHo/Meo1/jTJjDUt3SZw
+         15CpfTIt4xPVx9oBnNw2YwnlJP6BsajGK0nqKNQy5sLb5tHNDmV00nrqq2mUlfhGa7do
+         /28Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691406597; x=1692011397;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IUFroX+K29vocKlwNJzs/neGWgohuFaGhfTkMV8vShc=;
+        b=azpAOwgmc+yz9UB/0ir7lFwsY7BTWNnfcnDNccfjipkox6c3muNypVba5bKxApjism
+         CrOR3/K6Y2joi5L1tEdyMyXAsVOyh7F7YA3V00y4GnqxdN3ZJobFdfolRjzDr2HCNOuN
+         2j6pZ1gwWJXRny5pA53BDvyqCta6tPV4hBvvjitplucEP0amsO8sNfOWBO/06r0QvDjK
+         Se207LLFUXYwUg+4L/4kHWe44SnVb04FAiGBrLw583NQtI5HAOBmgHcIwTgEXdpbu8gl
+         6/9G7bILRnmPdw7oRAROZpkWhrW1/awOPpYMjx76tXYxVYTBApy2JK6MXdAEOc3+h9z0
+         pYRA==
+X-Gm-Message-State: AOJu0YzeY+YXEsjAd8vxIfsLMHR8XFOKTrjTPfw9sDDfTXA8/WR0hue4
+        2LT7YIbhq7gHLFJ05VqRmSKOsg==
+X-Google-Smtp-Source: AGHT+IE6Hkf3zCZO4yTHBCI4U2PxahDBEY93d/z4hx9RjtxF2e4b3lAVTQiaQWVBs1sivCsjN/GRXg==
+X-Received: by 2002:a17:90a:6701:b0:269:32c7:24dc with SMTP id n1-20020a17090a670100b0026932c724dcmr6023585pjj.0.1691406596583;
+        Mon, 07 Aug 2023 04:09:56 -0700 (PDT)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 04:09:56 -0700 (PDT)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, simon.horman@corigine.com,
+        dlemoal@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 00/48] use refcount+RCU method to implement lockless slab shrink
+Date:   Mon,  7 Aug 2023 19:08:48 +0800
+Message-Id: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804182952.477247-1-bfoster@redhat.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 04-08-23 14:29:52, Brian Foster wrote:
-> The commit referenced below opened up concurrent unaligned dio under
-> shared locking for pure overwrites. In doing so, it enabled use of
-> the IOMAP_DIO_OVERWRITE_ONLY flag and added a warning on unexpected
-> -EAGAIN returns as an extra precaution, since ext4 does not retry
-> writes in such cases. The flag itself is advisory in this case since
-> ext4 checks for unaligned I/Os and uses appropriate locking up
-> front, rather than on a retry in response to -EAGAIN.
-> 
-> As it turns out, the warning check is susceptible to false positives
-> because there are scenarios where -EAGAIN is expected from the
-> storage layer without necessarily having IOCB_NOWAIT set on the
-> iocb. For example, io_uring can set IOCB_HIPRI, which the iomap/dio
-> layer turns into REQ_POLLED|REQ_NOWAIT on the bio, which then can
-> result in an -EAGAIN result if the block layer is unable to allocate
-> a request, etc. syzbot has also reported an instance of this warning
-> and while the source of the -EAGAIN in that case is not currently
-> known, it is confirmed that the iomap dio overwrite flag is also not
-> set.
-> 
-> Since this flag is precautionary, avoid the false positive warning
-> and future whack-a-mole games with -EAGAIN returns by removing it
-> and the associated warning. Update the comments to document when
-> concurrent unaligned dio writes are allowed and why the associated
-> flag is not used.
-> 
-> Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
-> Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
+Hi all,
 
-So if I understand right, you're trying to say that if iomap_dio_rw()
-returns -EAGAIN, the caller of ext4_file_write_iter() and not
-ext4_file_write_iter() itself is expected to deal with it (like with
-IOCB_NOWAIT or other ways that can trigger similar behavior). That sounds
-good to me and the patch looks also fine. Feel free to add:
+1. Background
+=============
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+We used to implement the lockless slab shrink with SRCU [1], but then kernel
+test robot reported -88.8% regression in stress-ng.ramfs.ops_per_sec test
+case [2], so we reverted it [3].
 
-								Honza
-> ---
-> 
-> Hi all,
-> 
-> This addresses some false positives associated with the warning for the
-> recently merged patch. I considered leaving the flag and more tightly
-> associating the warning to it (instead of IOCB_NOWAIT), but ISTM that is
-> still flakey and I'd rather not play whack-a-mole when the assumption is
-> shown to be wrong.
-> 
-> I'm still waiting on a syzbot test of this patch, but local tests look
-> Ok and I'm away for a few days after today so wanted to get this on the
-> list. Thoughts, reviews, flames appreciated.
-> 
-> Brian
-> 
->  fs/ext4/file.c | 25 ++++++++++---------------
->  1 file changed, 10 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index c457c8517f0f..73a4b711be02 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -476,6 +476,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
->  	 * required to change security info in file_modified(), for extending
->  	 * I/O, any form of non-overwrite I/O, and unaligned I/O to unwritten
->  	 * extents (as partial block zeroing may be required).
-> +	 *
-> +	 * Note that unaligned writes are allowed under shared lock so long as
-> +	 * they are pure overwrites. Otherwise, concurrent unaligned writes risk
-> +	 * data corruption due to partial block zeroing in the dio layer, and so
-> +	 * the I/O must occur exclusively.
->  	 */
->  	if (*ilock_shared &&
->  	    ((!IS_NOSEC(inode) || *extend || !overwrite ||
-> @@ -492,21 +497,12 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
->  
->  	/*
->  	 * Now that locking is settled, determine dio flags and exclusivity
-> -	 * requirements. Unaligned writes are allowed under shared lock so long
-> -	 * as they are pure overwrites. Set the iomap overwrite only flag as an
-> -	 * added precaution in this case. Even though this is unnecessary, we
-> -	 * can detect and warn on unexpected -EAGAIN if an unsafe unaligned
-> -	 * write is ever submitted.
-> -	 *
-> -	 * Otherwise, concurrent unaligned writes risk data corruption due to
-> -	 * partial block zeroing in the dio layer, and so the I/O must occur
-> -	 * exclusively. The inode lock is already held exclusive if the write is
-> -	 * non-overwrite or extending, so drain all outstanding dio and set the
-> -	 * force wait dio flag.
-> +	 * requirements. We don't use DIO_OVERWRITE_ONLY because we enforce
-> +	 * behavior already. The inode lock is already held exclusive if the
-> +	 * write is non-overwrite or extending, so drain all outstanding dio and
-> +	 * set the force wait dio flag.
->  	 */
-> -	if (*ilock_shared && unaligned_io) {
-> -		*dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
-> -	} else if (!*ilock_shared && (unaligned_io || *extend)) {
-> +	if (!*ilock_shared && (unaligned_io || *extend)) {
->  		if (iocb->ki_flags & IOCB_NOWAIT) {
->  			ret = -EAGAIN;
->  			goto out;
-> @@ -608,7 +604,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		iomap_ops = &ext4_iomap_overwrite_ops;
->  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->  			   dio_flags, NULL, 0);
-> -	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
->  	if (ret == -ENOTBLK)
->  		ret = 0;
->  
-> -- 
-> 2.41.0
-> 
+This patch series aims to re-implement the lockless slab shrink using the
+refcount+RCU method proposed by Dave Chinner [4].
+
+[1]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
+[2]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
+[3]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
+[4]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
+
+2. Implementation
+=================
+
+Currently, the shrinker instances can be divided into the following three types:
+
+a) global shrinker instance statically defined in the kernel, such as
+   workingset_shadow_shrinker.
+
+b) global shrinker instance statically defined in the kernel modules, such as
+   mmu_shrinker in x86.
+
+c) shrinker instance embedded in other structures.
+
+For case a, the memory of shrinker instance is never freed. For case b, the
+memory of shrinker instance will be freed after synchronize_rcu() when the
+module is unloaded. For case c, the memory of shrinker instance will be freed
+along with the structure it is embedded in.
+
+In preparation for implementing lockless slab shrink, we need to dynamically
+allocate those shrinker instances in case c, then the memory can be dynamically
+freed alone by calling kfree_rcu().
+
+This patchset adds the following new APIs for dynamically allocating shrinker,
+and add a private_data field to struct shrinker to record and get the original
+embedded structure.
+
+1. shrinker_alloc()
+2. shrinker_register()
+3. shrinker_free()
+
+In order to simplify shrinker-related APIs and make shrinker more independent of
+other kernel mechanisms, this patchset uses the above APIs to convert all
+shrinkers (including case a and b) to dynamically allocated, and then remove all
+existing APIs. This will also have another advantage mentioned by Dave Chinner:
+
+```
+The other advantage of this is that it will break all the existing out of tree
+code and third party modules using the old API and will no longer work with a
+kernel using lockless slab shrinkers. They need to break (both at the source and
+binary levels) to stop bad things from happening due to using uncoverted
+shrinkers in the new setup.
+```
+
+Then we free the shrinker by calling call_rcu(), and use rcu_read_{lock,unlock}()
+to ensure that the shrinker instance is valid. And the shrinker::refcount
+mechanism ensures that the shrinker instance will not be run again after
+unregistration. So the structure that records the pointer of shrinker instance
+can be safely freed without waiting for the RCU read-side critical section.
+
+In this way, while we implement the lockless slab shrink, we don't need to be
+blocked in unregister_shrinker() to wait RCU read-side critical section.
+
+PATCH 1: fix memory leak in binder_init()
+PATCH 2: move some shrinker-related function declarations to mm/internal.h
+PATCH 3: move shrinker-related code into a separate file
+PATCH 4: remove redundant shrinker_rwsem in debugfs operations
+PATCH 5: add infrastructure for dynamically allocating shrinker
+PATCH 6 ~ 23: dynamically allocate the shrinker instances in case a and b
+PATCH 24 ~ 42: dynamically allocate the shrinker instances in case c
+PATCH 43: remove old APIs
+PATCH 44: introduce pool_shrink_rwsem to implement private synchronize_shrinkers()
+PATCH 45: add a secondary array for shrinker_info::{map, nr_deferred}
+PATCH 46 ~ 47: implement the lockless slab shrink
+PATCH 48 ~ 49: convert shrinker_rwsem to mutex
+
+3. Testing
+==========
+
+3.1 slab shrink stress test
+---------------------------
+
+We can reproduce the down_read_trylock() hotspot through the following script:
+
+```
+
+DIR="/root/shrinker/memcg/mnt"
+
+do_create()
+{
+    mkdir -p /sys/fs/cgroup/memory/test
+    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
+    for i in `seq 0 $1`;
+    do
+        mkdir -p /sys/fs/cgroup/memory/test/$i;
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        mkdir -p $DIR/$i;
+    done
+}
+
+do_mount()
+{
+    for i in `seq $1 $2`;
+    do
+        mount -t tmpfs $i $DIR/$i;
+    done
+}
+
+do_touch()
+{
+    for i in `seq $1 $2`;
+    do
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
+    done
+}
+
+case "$1" in
+  touch)
+    do_touch $2 $3
+    ;;
+  test)
+    do_create 4000
+    do_mount 0 4000
+    do_touch 0 3000
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+```
+
+Save the above script, then run test and touch commands. Then we can use the
+following perf command to view hotspots:
+
+perf top -U -F 999
+
+1) Before applying this patchset:
+
+  40.44%  [kernel]            [k] down_read_trylock
+  17.59%  [kernel]            [k] up_read
+  13.64%  [kernel]            [k] pv_native_safe_halt
+  11.90%  [kernel]            [k] shrink_slab
+   8.21%  [kernel]            [k] idr_find
+   2.71%  [kernel]            [k] _find_next_bit
+   1.36%  [kernel]            [k] shrink_node
+   0.81%  [kernel]            [k] shrink_lruvec
+   0.80%  [kernel]            [k] __radix_tree_lookup
+   0.50%  [kernel]            [k] do_shrink_slab
+   0.21%  [kernel]            [k] list_lru_count_one
+   0.16%  [kernel]            [k] mem_cgroup_iter
+
+2) After applying this patchset:
+
+  60.17%  [kernel]           [k] shrink_slab
+  20.42%  [kernel]           [k] pv_native_safe_halt
+   3.03%  [kernel]           [k] do_shrink_slab
+   2.73%  [kernel]           [k] shrink_node
+   2.27%  [kernel]           [k] shrink_lruvec
+   2.00%  [kernel]           [k] __rcu_read_unlock
+   1.92%  [kernel]           [k] mem_cgroup_iter
+   0.98%  [kernel]           [k] __rcu_read_lock
+   0.91%  [kernel]           [k] osq_lock
+   0.63%  [kernel]           [k] mem_cgroup_calculate_protection
+   0.55%  [kernel]           [k] shrinker_put
+   0.46%  [kernel]           [k] list_lru_count_one
+
+We can see that the first perf hotspot becomes shrink_slab, which is what we
+expect.
+
+3.2 registeration and unregisteration stress test
+-------------------------------------------------
+
+Run the command below to test:
+
+stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+
+1) Before applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            735238     60.00     12.37    363.70     12253.05        1955.08
+for a 60.01s run time:
+   1440.27s available CPU time
+     12.36s user time   (  0.86%)
+    363.70s system time ( 25.25%)
+    376.06s total time  ( 26.11%)
+load average: 10.79 4.47 1.69
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+2) After applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            746698     60.00     12.45    376.16     12444.02        1921.47
+for a 60.01s run time:
+   1440.28s available CPU time
+     12.44s user time   (  0.86%)
+    376.16s system time ( 26.12%)
+    388.60s total time  ( 26.98%)
+load average: 9.01 3.85 1.49
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+We can see that the ops/s has hardly changed.
+
+This series is based on next-20230807.
+
+Comments and suggestions are welcome.
+
+Thanks,
+Qi
+
+Changelog in v3 -> v4:
+ - [PATCH v3 01/49] has been merged, so discard it.
+ - fix wrong return value in patch v3 15\16\22\27\28\29\34\40.
+   (pointed by Damien Le Moal)
+ - fix uninitialized variable in [PATCH v3 04/49]
+   (pointed by Simon Horman)
+ - fix typo in [PATCH v3 05/49] (pointed by Simon Horman)
+ - rebase onto the next-20230807.
+
+Changelog in v2 -> v3:
+ - add the patch that [PATCH v3 07/49] depends on
+ - move some shrinker-related function declarations to mm/internal.h
+   (suggested by Muchun Song)
+ - combine shrinker_free_non_registered() and shrinker_unregister() into
+   shrinker_free() (suggested by Dave Chinner)
+ - add missing __init and fix return value in bch_btree_cache_alloc()
+   (pointed by Muchun Song)
+ - remove unnecessary WARN_ON() (pointed by Steven Price)
+ - go back to use completion to implement lockless slab shrink
+   (pointed by Dave Chinner)
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20230726.
+
+Changelog in v1 -> v2:
+ - implement the new APIs and convert all shrinkers to use it.
+   (suggested by Dave Chinner)
+ - fix UAF in PATCH [05/29] (pointed by Steven Price)
+ - add a secondary array for shrinker_info::{map, nr_deferred}
+ - re-implement the lockless slab shrink
+   (Since unifying the processing of global and memcg slab shrink needs to
+    modify the startup sequence (As I mentioned in https://lore.kernel.org/lkml/38b14080-4ce5-d300-8a0a-c630bca6806b@bytedance.com/),
+    I finally choose to process them separately.)
+ - collect Acked-bys
+
+Qi Zheng (48):
+  mm: move some shrinker-related function declarations to mm/internal.h
+  mm: vmscan: move shrinker-related code into a separate file
+  mm: shrinker: remove redundant shrinker_rwsem in debugfs operations
+  mm: shrinker: add infrastructure for dynamically allocating shrinker
+  kvm: mmu: dynamically allocate the x86-mmu shrinker
+  binder: dynamically allocate the android-binder shrinker
+  drm/ttm: dynamically allocate the drm-ttm_pool shrinker
+  xenbus/backend: dynamically allocate the xen-backend shrinker
+  erofs: dynamically allocate the erofs-shrinker
+  f2fs: dynamically allocate the f2fs-shrinker
+  gfs2: dynamically allocate the gfs2-glock shrinker
+  gfs2: dynamically allocate the gfs2-qd shrinker
+  NFSv4.2: dynamically allocate the nfs-xattr shrinkers
+  nfs: dynamically allocate the nfs-acl shrinker
+  nfsd: dynamically allocate the nfsd-filecache shrinker
+  quota: dynamically allocate the dquota-cache shrinker
+  ubifs: dynamically allocate the ubifs-slab shrinker
+  rcu: dynamically allocate the rcu-lazy shrinker
+  rcu: dynamically allocate the rcu-kfree shrinker
+  mm: thp: dynamically allocate the thp-related shrinkers
+  sunrpc: dynamically allocate the sunrpc_cred shrinker
+  mm: workingset: dynamically allocate the mm-shadow shrinker
+  drm/i915: dynamically allocate the i915_gem_mm shrinker
+  drm/msm: dynamically allocate the drm-msm_gem shrinker
+  drm/panfrost: dynamically allocate the drm-panfrost shrinker
+  dm: dynamically allocate the dm-bufio shrinker
+  dm zoned: dynamically allocate the dm-zoned-meta shrinker
+  md/raid5: dynamically allocate the md-raid5 shrinker
+  bcache: dynamically allocate the md-bcache shrinker
+  vmw_balloon: dynamically allocate the vmw-balloon shrinker
+  virtio_balloon: dynamically allocate the virtio-balloon shrinker
+  mbcache: dynamically allocate the mbcache shrinker
+  ext4: dynamically allocate the ext4-es shrinker
+  jbd2,ext4: dynamically allocate the jbd2-journal shrinker
+  nfsd: dynamically allocate the nfsd-client shrinker
+  nfsd: dynamically allocate the nfsd-reply shrinker
+  xfs: dynamically allocate the xfs-buf shrinker
+  xfs: dynamically allocate the xfs-inodegc shrinker
+  xfs: dynamically allocate the xfs-qm shrinker
+  zsmalloc: dynamically allocate the mm-zspool shrinker
+  fs: super: dynamically allocate the s_shrink
+  mm: shrinker: remove old APIs
+  drm/ttm: introduce pool_shrink_rwsem
+  mm: shrinker: add a secondary array for shrinker_info::{map,
+    nr_deferred}
+  mm: shrinker: make global slab shrink lockless
+  mm: shrinker: make memcg slab shrink lockless
+  mm: shrinker: hold write lock to reparent shrinker nr_deferred
+  mm: shrinker: convert shrinker_rwsem to mutex
+
+ arch/x86/kvm/mmu/mmu.c                        |  18 +-
+ drivers/android/binder_alloc.c                |  31 +-
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  30 +-
+ drivers/gpu/drm/i915/i915_drv.h               |   2 +-
+ drivers/gpu/drm/msm/msm_drv.c                 |   4 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |   4 +-
+ drivers/gpu/drm/msm/msm_gem_shrinker.c        |  34 +-
+ drivers/gpu/drm/panfrost/panfrost_device.h    |   2 +-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |   6 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.h       |   2 +-
+ .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  30 +-
+ drivers/gpu/drm/ttm/ttm_pool.c                |  38 +-
+ drivers/md/bcache/bcache.h                    |   2 +-
+ drivers/md/bcache/btree.c                     |  27 +-
+ drivers/md/bcache/sysfs.c                     |   3 +-
+ drivers/md/dm-bufio.c                         |  28 +-
+ drivers/md/dm-cache-metadata.c                |   2 +-
+ drivers/md/dm-zoned-metadata.c                |  29 +-
+ drivers/md/raid5.c                            |  26 +-
+ drivers/md/raid5.h                            |   2 +-
+ drivers/misc/vmw_balloon.c                    |  38 +-
+ drivers/virtio/virtio_balloon.c               |  25 +-
+ drivers/xen/xenbus/xenbus_probe_backend.c     |  18 +-
+ fs/btrfs/super.c                              |   2 +-
+ fs/erofs/utils.c                              |  20 +-
+ fs/ext4/ext4.h                                |   2 +-
+ fs/ext4/extents_status.c                      |  24 +-
+ fs/f2fs/super.c                               |  32 +-
+ fs/gfs2/glock.c                               |  20 +-
+ fs/gfs2/main.c                                |   6 +-
+ fs/gfs2/quota.c                               |  26 +-
+ fs/gfs2/quota.h                               |   3 +-
+ fs/jbd2/journal.c                             |  27 +-
+ fs/kernfs/mount.c                             |   2 +-
+ fs/mbcache.c                                  |  23 +-
+ fs/nfs/nfs42xattr.c                           |  87 +-
+ fs/nfs/super.c                                |  22 +-
+ fs/nfsd/filecache.c                           |  23 +-
+ fs/nfsd/netns.h                               |   4 +-
+ fs/nfsd/nfs4state.c                           |  20 +-
+ fs/nfsd/nfscache.c                            |  31 +-
+ fs/proc/root.c                                |   2 +-
+ fs/quota/dquot.c                              |  18 +-
+ fs/super.c                                    |  36 +-
+ fs/ubifs/super.c                              |  22 +-
+ fs/xfs/xfs_buf.c                              |  25 +-
+ fs/xfs/xfs_buf.h                              |   2 +-
+ fs/xfs/xfs_icache.c                           |  26 +-
+ fs/xfs/xfs_mount.c                            |   4 +-
+ fs/xfs/xfs_mount.h                            |   2 +-
+ fs/xfs/xfs_qm.c                               |  28 +-
+ fs/xfs/xfs_qm.h                               |   2 +-
+ include/linux/fs.h                            |   2 +-
+ include/linux/jbd2.h                          |   2 +-
+ include/linux/memcontrol.h                    |  12 +-
+ include/linux/shrinker.h                      |  67 +-
+ kernel/rcu/tree.c                             |  22 +-
+ kernel/rcu/tree_nocb.h                        |  20 +-
+ mm/Makefile                                   |   4 +-
+ mm/huge_memory.c                              |  69 +-
+ mm/internal.h                                 |  41 +
+ mm/shrinker.c                                 | 770 ++++++++++++++++++
+ mm/shrinker_debug.c                           |  47 +-
+ mm/vmscan.c                                   | 701 ----------------
+ mm/workingset.c                               |  27 +-
+ mm/zsmalloc.c                                 |  28 +-
+ net/sunrpc/auth.c                             |  21 +-
+ 67 files changed, 1540 insertions(+), 1235 deletions(-)
+ create mode 100644 mm/shrinker.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.30.2
+
