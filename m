@@ -2,485 +2,328 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC0A7717FF
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 03:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897E9771859
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 04:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjHGBqW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 6 Aug 2023 21:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S229781AbjHGCct (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 6 Aug 2023 22:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjHGBqU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Aug 2023 21:46:20 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848311713;
-        Sun,  6 Aug 2023 18:46:18 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RJzgV53Lzz4f3xsV;
-        Mon,  7 Aug 2023 09:46:14 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgD3GG3lTNBkWMF0AA--.35218S2;
-        Mon, 07 Aug 2023 09:46:15 +0800 (CST)
-Subject: Re: [PATCH v5 8/8] ext4: add first unit test for
- ext4_mb_new_blocks_simple in mballoc
-To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <87jzucw5l7.fsf@doe.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <fa68f2a4-e8f1-8856-0a99-736b70de0c52@huaweicloud.com>
-Date:   Mon, 7 Aug 2023 09:46:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S229459AbjHGCcs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Aug 2023 22:32:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C2A97;
+        Sun,  6 Aug 2023 19:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691375566; x=1722911566;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=onC7K8NB1Xczq7BMmDrmK0HAm266VBasqP/X31w6yM0=;
+  b=k4BPDXl4CSsGdjAI/5aAJEqLOjUvLG5GaCjTIDVJ0iaIX89vjBkgV3lE
+   fqJUh1pqFsqAqR+vHITtvFv2zIOnrTBsnM0SUWGYGKRCCtjgGpCyOYXxA
+   MsOv14hZBJJWoVoaNhMiqBkZhWID5piw7ahWQ6BrScVSLv7zNlWMI0ZoM
+   K6Y7py4D1I/aB7Z7DvoW6rVk7tHypzgKVr7BHpBz1ZhyQPQiv/PIsLlIw
+   KelguutMHZofNHdeyC5z/C17vN6qWsef8f2BTkG+GVKea/zLhrX94fvFh
+   pC0jkA8MmGZ0ZRjjSn48dcGfawZEwsszSsRYWmwB8su99D7nLhr8ki6LA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="373192109"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="373192109"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 19:32:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="707691437"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="707691437"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 06 Aug 2023 19:32:28 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 6 Aug 2023 19:32:27 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Sun, 6 Aug 2023 19:32:27 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Sun, 6 Aug 2023 19:32:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mkuQHHhMlX/UdKqFYUY3/zXHYMy2lb+iVYSyqOEr9vrQwqYmRmBZGyXtqKsQdMVcLx0PKUIDXIeMGEy3J0GaUpuiWrSpjUAN1MUpRsRQOMmfbk8LjVR4EI1VQp3GV5k/nnsceZw3mpCnArmDsj4ALvMxP302qRyqA4FXYHRqZVWwZMVZFwiw+BcPPxsGBNHYpfsmFw0Uhprzl6Mo8NtsS4O1MzJ2E9zGkBirwGieuxHLe8pqKBM0OBZQNLzwuem+9yh5z82Xp1lrFUhgsUVAQvbwrl13vvJsmSRsQ7MeIUqo3uXGtaCst9p31bH53/Dj3AjnoyRqoPOZXMgJBEZzlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1TTdyNBcMpXLJYn7ywc3l0zAzBIl7+K+kbYdBf3jDa8=;
+ b=EdUQsM7PTGeVraohB3q+trnFu6guaTggJITe1pkp/LLo9EO/O/TWR1GdanKVnCekalKFo3EFLJ+9lgTfVrT3Is09+lzrxh1af5OPIuXhIKoa4h55jF31+XzpecXoE9Xze6UP2rGCAIpJgEFjrFDnkOvFqSwJkNDeNvXGK0zMYBABePU54pw4HzD5LPos0PRnvj4iy06MgOj+O9Xv+JNYNhdtfx4VlARVkiMoxAO1EqHGH69GHlVenRLnL7Cl7X02G/kiwn7KgoL/TCCEFnbOLi+bdMccpXBtgVZ2UvTPpTVCarl+u+L1uw2gLS4IB1O6GUmLGiQ5/1duoGDi/vbsWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by LV3PR11MB8483.namprd11.prod.outlook.com (2603:10b6:408:1b0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
+ 2023 02:32:25 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::38b4:292a:6bad:7775]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::38b4:292a:6bad:7775%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
+ 02:32:25 +0000
+Date:   Mon, 7 Aug 2023 10:34:50 +0800
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     Brian Foster <bfoster@redhat.com>
+CC:     syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>,
+        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
+        <tytso@mit.edu>, <heng.su@intel.com>
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_file_write_iter
+Message-ID: <ZNBYSso27S6L3sgS@xpf.sh.intel.com>
+References: <0000000000007faf0005fe4f14b9@google.com>
+ <000000000000a3f45805ffcbb21f@google.com>
+ <ZMsE2q9VX2sQFh/g@xpf.sh.intel.com>
+ <ZM0Aj6sBk/5TPdLS@bfoster>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZM0Aj6sBk/5TPdLS@bfoster>
+X-ClientProxiedBy: SG2PR02CA0051.apcprd02.prod.outlook.com
+ (2603:1096:4:54::15) To PH0PR11MB4839.namprd11.prod.outlook.com
+ (2603:10b6:510:42::18)
 MIME-Version: 1.0
-In-Reply-To: <87jzucw5l7.fsf@doe.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgD3GG3lTNBkWMF0AA--.35218S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfGF15tr1UZF17JF1Utw1DWrg_yoW8Jw4DCo
-        WxtF1xJa1xXrWUtrZ3A3s5X34Du3yDGF1UJw45urZxXF1ak3WY9F42kw47WF4xW3W8Cr12
-        yas7Xa45AF48ursxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUU5R7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
-        7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|LV3PR11MB8483:EE_
+X-MS-Office365-Filtering-Correlation-Id: f2d1d3a1-772e-476c-5bcd-08db96ee8936
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gXp85wkgJyPR/pOp8t08VKwMDhNIZO7iSNwcVyPJTbEbh7sVePJTF35jIc6MHhoZsK1Rx97VU4TovKs8+WC+tMF+y6YTBQVJNG5OYumtpmV6yT21RTqSVAD3XLAHQ2AhBMG9NCUm93Pfjb6miR82LnVFQ/bRGDne1PHooRkqGVGOQZLUBjX//zTNYSl09/svp/Pw487S6gp0z0LteVA2Pn/innw6r/AOZPFEJHnWNHmOG5SnjKhQMzBgzoQQi8yBqC+GIOubutyLMSPsDaYrzrcWNeKaSh3v979QwggXSmDoNf9VphQWm3GfGJHT4LwtnH4JqzbPLZiByyt+4sDfgPZAFeRiY4HeToYKAz5H6sQtXJQeocfcKXvw6s5hhpU1tZh8tRsyL+rNBxkkEdCJFVTo6+bEm4PxK31vsJOU0Ak7evYoAaeqnl5e7JAGBpx27/dvLg8U6XlRo3eBkM7li0iJHEL6Lwc85rYWKcrXigyJIFKkiMo3SzQr48Wy9nlsqWOV4GUNsH2nOpDIrOEYQi2tHa9q0wOIuQzVOuZIRQUj3kplDu8C841gRVpCGjVWxQTKeS8NOoui8YOBGVYbIpxuArMB32oZGMWyKi1Zko5FtkZMUnuJMo2q2bZPQfmIKkBBk4Ph6KkImas1oQVyCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4839.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(376002)(346002)(136003)(451199021)(1800799003)(186006)(2906002)(83380400001)(5660300002)(6666004)(38100700002)(6486002)(66476007)(66556008)(6916009)(66946007)(966005)(6512007)(82960400001)(45080400002)(4326008)(316002)(41300700001)(86362001)(44832011)(107886003)(8936002)(8676002)(26005)(6506007)(478600001)(53546011)(99710200001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MHOgbZbKCVCULdlvFyT1OU1QbqAgt00pfIvt1u4wpu2+aullwepEq7cBLtjr?=
+ =?us-ascii?Q?X3t+waiMp7ZaTRles4KeYpxIdFk2f30V0mRSyGV7jNqLA6GinVNi49vxW7Wf?=
+ =?us-ascii?Q?ikqH+O3uCDTwA4XgwoqH5oHeemuYv+OGI21AtZ/ty2rkdr3ED1Q4ECMApRBj?=
+ =?us-ascii?Q?tMdvEqYW8vHJ4i56b1qMu6spg07e9c+Clw7F8xJ5yY4h1iiw5Gnd+Qm6Ab9r?=
+ =?us-ascii?Q?kq1WQLyjR/YWR0rVot2LDijZll/dpZlDK/VE66qotwgZ9wUP9Q3xiG9d0bET?=
+ =?us-ascii?Q?eCu20ctQVihRdAgTYcXQbSf6OlGmkF19CgbdBgPBlsh0lnf46dQ4XUTIdRNf?=
+ =?us-ascii?Q?8nwEau889Qr+XFvBAOFhgKaq8pztiuoRuz1BcFVlYRHO8psRVTj3wGqi1VvF?=
+ =?us-ascii?Q?Qh8/NQCxHXP7Z4fnGjLnyhkQAPDSb2vhXuWkqrfu9a411oWWWgmhJNWJ9Upg?=
+ =?us-ascii?Q?BATHPQmoXmM0vu9/UrYpW6MSQ73cgUJcUUbFdoFrhrkEHhU3286hEhvAeRk/?=
+ =?us-ascii?Q?OhErYZqBYUSyfmYdhQdZIP4q6mWhA8DIYhYLMQpAP2298OtVmrqgWotO9L7D?=
+ =?us-ascii?Q?46Gc7qjnCNBd7cD1cI6iIxGbACgETjh+8NAYngQgsGH/ZPldPti4pFihBi89?=
+ =?us-ascii?Q?DDp+kzs36DOTxM0KRCo9kVPT0Jwr15CpQEQ2MUtrmSnfXgQ4yoc6Z5ucIuuj?=
+ =?us-ascii?Q?yW7Y8sRjP/N1RHKb81YfPNCWa6OOe1srjOQ+lrZwqcRO4tjfS2wbJka8Cj+R?=
+ =?us-ascii?Q?SD5edbTg8A0Zu3FLfuP719IOP6O0IOtYwnso653rpC3FrplXxVF/K1dPztIe?=
+ =?us-ascii?Q?6lAZ65Cu5MyE3nmRBddAKkDzikvHjBwcMziOqFcQgNbIkmCPDy8Vb+1rbajj?=
+ =?us-ascii?Q?DD2O/XwB19miTfiqbOaHa8Xuu+2RrnUsUGAwhLK/6pHS4LRh27JccCbrnnas?=
+ =?us-ascii?Q?GWLDhcdUQlrF9EeITtcES+8RDCkYKZyKrMTZS2uuvBgOYgZ6pqtMZ/wQAxea?=
+ =?us-ascii?Q?b5Ho4Mpv61ndmQxPpNOXyPElPcEU1KzJzMfqCSYIl0mcwV0Zo0AtLl0I2XVL?=
+ =?us-ascii?Q?B3BScJFe+Tm5W29WNglOJAfMKBl14d2511ZdbhBkr2GM7AOw8CW2B00Jp6EF?=
+ =?us-ascii?Q?+wiHqhRg2JctcoNV8N4aKUmJaIvjNeHDwO1FvpnBe/6ZxvNQJaPyMbPfQQai?=
+ =?us-ascii?Q?YmxqB5kmTN8Bj6cUM72fh4KNwbMp8vaCjXHR3lSpTQhWTBK9AvglCVvY+xQO?=
+ =?us-ascii?Q?FnmIjQHt6t5R+vQbJqmJoUZQy199eWrKkExNPfzP09nBJ4Q0ruXgiaLdS4Rb?=
+ =?us-ascii?Q?G3NENa/b1NHBtg0ABqPQjHD7P2Oc2dAzH8JZaKGX0Whs8oplnTUUVA0r6Ibu?=
+ =?us-ascii?Q?rjmyLxWroY5dMM17lmT8jnp2KqdoPI0eGfN8vPFkEgjxPBYcJxxNq/3H8Lhx?=
+ =?us-ascii?Q?sRIKCQEYmKCfU/4vi6dwWjrfi5g3Ap0oy7vD2XviFOY4qwAmzW2VnBpLaHAl?=
+ =?us-ascii?Q?DsqkVBLXHNPwk6Re2k4WW305zRZaBrvHBCPMmkcn317a+vyHF+4QyRxwZ37N?=
+ =?us-ascii?Q?tKExUVD8QaXQslnVNEnjD6IPYLxEAkyeO+j+JTX0?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2d1d3a1-772e-476c-5bcd-08db96ee8936
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 02:32:25.2794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F3bRbPmOvPc9Qokc1oav8Eo3uGQm97t0xq1gsVA5y+17N5UIgt0Pp+dMjg9NqXp02IDO7Ox8P8XqISw55FvJnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8483
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi Brian,
 
+On 2023-08-04 at 09:43:43 -0400, Brian Foster wrote:
+> On Thu, Aug 03, 2023 at 09:37:30AM +0800, Pengfei Xu wrote:
+> > On 2023-07-05 at 23:33:43 -0700, syzbot wrote:
+> > > syzbot has found a reproducer for the following issue on:
+> > > 
+> > > HEAD commit:    6843306689af Merge tag 'net-6.5-rc1' of git://git.kernel.o..
+> > > git tree:       net
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=114522aca80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102cb190a80000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c49d90a80000
+> > > 
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/5c3fa1329201/vmlinux-68433066.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+> > > 
+> > > ------------[ cut here ]------------
+> > > WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> > > WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> > > Modules linked in:
+> > > CPU: 1 PID: 5382 Comm: syz-executor288 Not tainted 6.4.0-syzkaller-11989-g6843306689af #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+> > > RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> > > RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> > > Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 5d 5a 5b ff 85 db 0f 85 d5 fc ff ff e8 30 5e 5b ff <0f> 0b e9 c9 fc ff ff e8 24 5e 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
+> > > RSP: 0018:ffffc9000522fc30 EFLAGS: 00010293
+> > > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > RDX: ffff8880277a3b80 RSI: ffffffff82298140 RDI: 0000000000000005
+> > > RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832a60
+> > > R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
+> > > FS:  00007f154db95700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00007f154db74718 CR3: 000000006bcc7000 CR4: 00000000003506e0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > Call Trace:
+> > >  <TASK>
+> > >  call_write_iter include/linux/fs.h:1871 [inline]
+> > >  new_sync_write fs/read_write.c:491 [inline]
+> > >  vfs_write+0x981/0xda0 fs/read_write.c:584
+> > >  ksys_write+0x122/0x250 fs/read_write.c:637
+> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > RIP: 0033:0x7f154dc094f9
+> > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > > RSP: 002b:00007f154db952f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > > RAX: ffffffffffffffda RBX: 00007f154dc924f0 RCX: 00007f154dc094f9
+> > > RDX: 0000000000248800 RSI: 0000000020000000 RDI: 0000000000000006
+> > > RBP: 00007f154dc5f628 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 652e79726f6d656d
+> > > R13: 656c6c616b7a7973 R14: 6465646165726874 R15: 00007f154dc924f8
+> > >  </TASK>
+> > > 
+> > 
+> > Above issue in dmesg is:
+> > "WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
+> > 
+> > I found the similar behavior issue:
+> > "WARNING: CPU: 0 PID: 182134 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
+> > repro.report shows similar details.
+> > 
+> > Updated the bisect info for the above similar issue:
+> > Bisected and the problem commit was:
+> > "
+> > 310ee0902b8d9d0a13a5a13e94688a5863fa29c2: ext4: allow concurrent unaligned dio overwrites
+> > "
+> > After reverted the commit on top of v6.5-rc3, this issue was gone.
+> > 
+> 
+> Hi Pengfei,
+> 
+> Thanks for narrowing this down (and sorry for missing the earlier
+> report). Unfortunately I've not been able to reproduce this locally
+> using the generated reproducer. I tried both running the test program on
+> a local test vm as well as booting the generated disk image directly.
+> 
+> That said, I have received another report of this warning that happens
+> to be related to io_uring. The cause in that particular case is that
+> io_uring sets IOCB_HIPRI, which iomap dio turns into
+> REQ_POLLED|REQ_NOWAIT on the bio without necessarily having IOCB_NOWAIT
+> set on the request. This means we can expect -EAGAIN returns from the
+> storage layer without necessarily passing DIO_OVERWRITE_ONLY to iomap,
+> which in turn basically means that the warning added by this commit is
+> wrong.
+> 
+> I did submit the test patch at the link [1] referenced below to syzbot
+> to see if the OVERWRITE_ONLY flag is set and the results I got this
+> morning only showed the original !IOCB_NOWAIT warning. So while I still
+> do not know the source of the -EAGAIN in the syzbot test (and I would
+> like to), this shows that the overwrite flag is not involved and thus
+> the -EAGAIN is presumably unrelated to that logic.
+> 
+> So in summary I think the right fix is to just remove the overwrite flag
+> and warning from this ext4 codepath. It was always intended as an extra
+> precaution to support the warning, and the latter is clearly wrong. I'll
+> submit another test change in a separate mail just to see if syzbot
+> finds anything else and plan to send a proper patch to the list. In the
+> meantime, if you have any suggestions to help reproduce via the
+> generated program, I'm still interested in trying to grok where that
+> particular -EAGAIN comes from.. Thanks.
 
-on 8/3/2023 10:41 PM, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
-> 
->> Here are prepared work:
->> 1. Include mballoc-test.c to mballoc.c to be able test static function
->> in mballoc.c.
->> 2. Implement static stub to avoid read IO to disk.
->> 3. Construct fake super_block. Only partial members are set, more members
->> will be set when more functions are tested.
->> Then unit test for ext4_mb_new_blocks_simple is added.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/mballoc-test.c | 323 +++++++++++++++++++++++++++++++++++++++++
->>  fs/ext4/mballoc.c      |   4 +
->>  2 files changed, 327 insertions(+)
->>  create mode 100644 fs/ext4/mballoc-test.c
->>
->> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
->> new file mode 100644
->> index 000000000000..184e6cb2070f
->> --- /dev/null
->> +++ b/fs/ext4/mballoc-test.c
->> @@ -0,0 +1,323 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * KUnit test of ext4 multiblocks allocation.
->> + */
->> +
->> +#include <kunit/test.h>
->> +#include <kunit/static_stub.h>
->> +
->> +#include "ext4.h"
->> +
->> +struct mb_grp_ctx {
->> +	struct buffer_head bitmap_bh;
->> +	struct ext4_group_desc desc;
->> +	/* one group descriptor for each group descriptor for simplicity */
->> +	struct buffer_head gd_bh;
->> +};
-> 
-> I suppose desc and gd_bh are just the place holders so that
-> ext4_mb_new_blocks_simple() doesn't fail right? Is there any other use
-> of this? Because I don't see we initializing these.
-> 
->> +
->> +struct mb_ctx {
->> +	struct mb_grp_ctx *grp_ctx;
->> +};
->> +
->> +struct fake_super_block {
->> +	struct super_block sb;
->> +	struct mb_ctx mb_ctx;
->> +};
->> +
->> +#define MB_CTX(_sb) (&(container_of((_sb), struct fake_super_block, sb)->mb_ctx))
->> +#define MB_GRP_CTX(_sb, _group) (&MB_CTX(_sb)->grp_ctx[_group])
->> +
->> +static struct super_block *alloc_fake_super_block(void)
->> +{
->> +	struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
->> +	struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
->> +	struct fake_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
->> +
->> +	if (fsb == NULL || sbi == NULL || es == NULL)
->> +		goto out;
->> +
->> +	sbi->s_es = es;
->> +	fsb->sb.s_fs_info = sbi;
->> +	return &fsb->sb;
->> +
->> +out:
->> +	kfree(fsb);
->> +	kfree(sbi);
->> +	kfree(es);
->> +	return NULL;
->> +}
->> +
->> +static void free_fake_super_block(struct super_block *sb)
->> +{
->> +	struct fake_super_block *fsb = container_of(sb, struct fake_super_block, sb);
->> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> +
->> +	kfree(sbi->s_es);
->> +	kfree(sbi);
->> +	kfree(fsb);
->> +}
->> +
->> +struct ext4_block_layout {
->> +	unsigned char blocksize_bits;
->> +	unsigned int cluster_bits;
->> +	unsigned long blocks_per_group;
->> +	ext4_group_t group_count;
->> +	unsigned long desc_size;
->> +};
->> +
->> +static void init_sb_layout(struct super_block *sb,
->> +			  struct ext4_block_layout *layout)
->> +{
->> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> +	struct ext4_super_block *es = sbi->s_es;
->> +
->> +	sb->s_blocksize = 1UL << layout->blocksize_bits;
->> +	sb->s_blocksize_bits = layout->blocksize_bits;
->> +
->> +	sbi->s_groups_count = layout->group_count;
->> +	sbi->s_blocks_per_group = layout->blocks_per_group;
->> +	sbi->s_cluster_bits = layout->cluster_bits;
->> +	sbi->s_cluster_ratio = 1U << layout->cluster_bits;
->> +	sbi->s_clusters_per_group = layout->blocks_per_group >>
->> +				    layout->cluster_bits;
->> +	sbi->s_desc_size = layout->desc_size;
->> +
->> +	es->s_first_data_block = cpu_to_le32(0);
->> +	es->s_blocks_count_lo = cpu_to_le32(layout->blocks_per_group *
->> +					    layout->group_count);
->> +}
->> +
->> +static int mb_grp_ctx_init(struct super_block *sb,
->> +			   struct mb_grp_ctx *grp_ctx)
->> +{
->> +	grp_ctx->bitmap_bh.b_data = kzalloc(EXT4_BLOCK_SIZE(sb), GFP_KERNEL);
->> +	if (grp_ctx->bitmap_bh.b_data == NULL)
->> +		return -ENOMEM;
->> +
->> +	get_bh(&grp_ctx->bitmap_bh);
->> +	get_bh(&grp_ctx->gd_bh);
->> +	return 0;
->> +}
->> +
->> +static void mb_grp_ctx_release(struct mb_grp_ctx *grp_ctx)
->> +{
->> +	kfree(grp_ctx->bitmap_bh.b_data);
->> +	grp_ctx->bitmap_bh.b_data = NULL;
-> 
-> No brelse() here?
->>> +}
->> +
->> +static void mb_ctx_mark_used(struct super_block *sb, ext4_group_t group,
->> +			     unsigned int start, unsigned int len)
->> +{
->> +	struct mb_grp_ctx *grp_ctx = MB_GRP_CTX(sb, group);
->> +
->> +	mb_set_bits(grp_ctx->bitmap_bh.b_data, start, len);
->> +}
->> +
->> +/* called after init_sb_layout */
->> +static int mb_ctx_init(struct super_block *sb)
->> +{
->> +	struct mb_ctx *ctx = MB_CTX(sb);
->> +	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
->> +
->> +	ctx->grp_ctx = kcalloc(ngroups, sizeof(struct mb_grp_ctx),
->> +			       GFP_KERNEL);
->> +	if (ctx->grp_ctx == NULL)
->> +		return -ENOMEM;
->> +
->> +	for (i = 0; i < ngroups; i++)
->> +		if (mb_grp_ctx_init(sb, &ctx->grp_ctx[i]))
->> +			goto out;
->> +
->> +	/*
->> +	 * first data block(first cluster in first group) is used by
->> +	 * metadata, mark it used to avoid to alloc data block at first
->> +	 * block which will fail ext4_sb_block_valid check.
->> +	 */
->> +	mb_set_bits(ctx->grp_ctx[0].bitmap_bh.b_data, 0, 1);
->> +
->> +	return 0;
->> +out:
->> +	while (i-- > 0)
->> +		mb_grp_ctx_release(&ctx->grp_ctx[i]);
->> +	kfree(ctx->grp_ctx);
->> +	return -ENOMEM;
->> +}
->> +
->> +static void mb_ctx_release(struct super_block *sb)
->> +{
->> +	struct mb_ctx *ctx = MB_CTX(sb);
->> +	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
->> +
->> +	for (i = 0; i < ngroups; i++)
->> +		mb_grp_ctx_release(&ctx->grp_ctx[i]);
->> +	kfree(ctx->grp_ctx);
->> +}
->> +
->> +static struct buffer_head *
->> +ext4_read_block_bitmap_nowait_stub(struct super_block *sb, ext4_group_t block_group,
->> +				   bool ignore_locked)
->> +{
->> +	struct mb_grp_ctx *grp_ctx = MB_GRP_CTX(sb, block_group);
->> +
->> +	get_bh(&grp_ctx->bitmap_bh);
-> 
-> I don't know how will you call brelse() for this?
-> It should be ok anyways since it's not a real buffer_head. But may be it
-> will be good to add a comment about it.
-> 
-Sure, but I'm considering to simply remove all get_bh for fake buffer_heador.
-And comments will be added if these get_bhs are kept for some unkonw limitation.
->> +	return &grp_ctx->bitmap_bh;
->> +}
->> +
->> +static int ext4_wait_block_bitmap_stub(struct super_block *sb,
->> +				ext4_group_t block_group,
->> +				struct buffer_head *bh)
->> +{
->> +	return 0;
->> +}
->> +
->> +static struct ext4_group_desc *
->> +ext4_get_group_desc_stub(struct super_block *sb, ext4_group_t block_group,
->> +			 struct buffer_head **bh)
->> +{
->> +	struct mb_grp_ctx *grp_ctx = MB_GRP_CTX(sb, block_group);
->> +
->> +	if (bh != NULL)
->> +		*bh = &grp_ctx->gd_bh;
->> +
->> +	return &grp_ctx->desc;
->> +}
->> +
->> +static int ext4_mb_mark_group_bb_stub(struct ext4_mark_context *mc,
->> +			       ext4_group_t group, ext4_grpblk_t blkoff,
->> +			       ext4_grpblk_t len, int flags)
->> +{
->> +	struct mb_grp_ctx *grp_ctx = MB_GRP_CTX(mc->sb, group);
->> +	struct buffer_head *bitmap_bh = &grp_ctx->bitmap_bh;
->> +
->> +	if (mc->state)
->> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
->> +	else
->> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
->> +
->> +	return 0;
->> +}
->> +
->> +#define TEST_BLOCKSIZE_BITS 10
->> +#define TEST_CLUSTER_BITS 3
->> +#define TEST_BLOCKS_PER_GROUP 8192
->> +#define TEST_GROUP_COUNT 4
->> +#define TEST_DESC_SIZE 64
->> +#define TEST_GOAL_GROUP 1
-> 
-> Rather then defining this statically, can we add a test for testing
-> different options. like for e.g. bs=1k, 4k, and 64k to be tested in a
-> loop or something with maybe diffrent group_count values to start with? 
-> 
-Yes, it looks better in this way. I will add several configures to test.
-> At a high level, I went over the code and this looks like a good
-> first start to me. One suggestion is to prefix the mballoc kunit tests
-> with some string to differentiate what is kunit related and what is
-> actual ext4/mballoc calls. Once this kunit test grows, I am sure it will
-> be difficult to make out the differece between test related APIs and
-> actual kernel APIs.
-> 
-> maybe something like mbt_
-> 
-> so mb_grp_ctx -> mbt_grp_ctx
-> mb_ctx -> mbt_ctx
-> fake_super_block -> mbt_ext4_super_block
-> alloc/free_fake_super_block -> mbt_ext4_alloc/free_super_block
-> 
-> ext4_block_layout -> mbt_ext4_block_layout
-> 
-> init_sb_layout -> mbt_init_sb_layout
-> 
-> mb_grp_ctx_init/release -> mbt_grp_ctx_init/release
-> mb_ctx_mark_used -> mbt_ctx_mark_used
-> 
-> mballoc_test_init -> mbt_kunit_init
-> ext4_mballoc_test_cases -> mbt_test_cases 
-> 
-Sure, prefix mbt just looks good to me.
-> funtions with _stub looks ok to me, as we can clearly differentiate them
-> from actual functions. 
-> 
-> 
-> -ritesh
-> 
-Thanks for all advices!
-> 
->> +static int mballoc_test_init(struct kunit *test)
->> +{
->> +	struct ext4_block_layout layout = {
->> +		.blocksize_bits = TEST_BLOCKSIZE_BITS,
->> +		.cluster_bits = TEST_CLUSTER_BITS,
->> +		.blocks_per_group = TEST_BLOCKS_PER_GROUP,
->> +		.group_count = TEST_GROUP_COUNT,
->> +		.desc_size = TEST_DESC_SIZE,
->> +	};
->> +	struct super_block *sb;
->> +	int ret;
->> +
->> +	sb = alloc_fake_super_block();
->> +	if (sb == NULL)
->> +		return -ENOMEM;
->> +
->> +	init_sb_layout(sb, &layout);
->> +
->> +	ret = mb_ctx_init(sb);
->> +	if (ret != 0) {
->> +		free_fake_super_block(sb);
->> +		return ret;
->> +	}
->> +
->> +	test->priv = sb;
->> +	kunit_activate_static_stub(test,
->> +				   ext4_read_block_bitmap_nowait,
->> +				   ext4_read_block_bitmap_nowait_stub);
->> +	kunit_activate_static_stub(test,
->> +				   ext4_wait_block_bitmap,
->> +				   ext4_wait_block_bitmap_stub);
->> +	kunit_activate_static_stub(test,
->> +				   ext4_get_group_desc,
->> +				   ext4_get_group_desc_stub);
->> +	kunit_activate_static_stub(test,
->> +				   ext4_mb_mark_group_bb,
->> +				   ext4_mb_mark_group_bb_stub);
->> +	return 0;
->> +}
->> +
->> +static void mballoc_test_exit(struct kunit *test)
->> +{
->> +	struct super_block *sb = (struct super_block *)test->priv;
->> +
->> +	mb_ctx_release(sb);
->> +	free_fake_super_block(sb);
->> +}
->> +
->> +static void test_new_blocks_simple(struct kunit *test)
->> +{
->> +	struct super_block *sb = (struct super_block *)test->priv;
->> +	struct inode inode = { .i_sb = sb, };
->> +	struct ext4_allocation_request ar;
->> +	ext4_group_t i, goal_group = TEST_GOAL_GROUP;
->> +	int err = 0;
->> +	ext4_fsblk_t found;
->> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> +
->> +	ar.inode = &inode;
->> +
->> +	/* get block at goal */
->> +	ar.goal = ext4_group_first_block_no(sb, goal_group);
->> +	found = ext4_mb_new_blocks_simple(&ar, &err);
->> +	KUNIT_ASSERT_EQ_MSG(test, ar.goal, found,
->> +		"failed to alloc block at goal, expected %llu found %llu",
->> +		ar.goal, found);
->> +
->> +	/* get block after goal in goal group */
->> +	ar.goal = ext4_group_first_block_no(sb, goal_group);
->> +	found = ext4_mb_new_blocks_simple(&ar, &err);
->> +	KUNIT_ASSERT_EQ_MSG(test, ar.goal + EXT4_C2B(sbi, 1), found,
->> +		"failed to alloc block after goal in goal group, expected %llu found %llu",
->> +		ar.goal + 1, found);
->> +
->> +	/* get block after goal group */
->> +	mb_ctx_mark_used(sb, goal_group, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->> +	ar.goal = ext4_group_first_block_no(sb, goal_group);
->> +	found = ext4_mb_new_blocks_simple(&ar, &err);
->> +	KUNIT_ASSERT_EQ_MSG(test,
->> +		ext4_group_first_block_no(sb, goal_group + 1), found,
->> +		"failed to alloc block after goal group, expected %llu found %llu",
->> +		ext4_group_first_block_no(sb, goal_group + 1), found);
->> +
->> +	/* get block before goal group */
->> +	for (i = goal_group; i < ext4_get_groups_count(sb); i++)
->> +		mb_ctx_mark_used(sb, i, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->> +	ar.goal = ext4_group_first_block_no(sb, goal_group);
->> +	found = ext4_mb_new_blocks_simple(&ar, &err);
->> +	KUNIT_ASSERT_EQ_MSG(test,
->> +		ext4_group_first_block_no(sb, 0) + EXT4_C2B(sbi, 1), found,
->> +		"failed to alloc block before goal group, expected %llu found %llu",
->> +		ext4_group_first_block_no(sb, 0 + EXT4_C2B(sbi, 1)), found);
->> +
->> +	/* no block available, fail to allocate block */
->> +	for (i = 0; i < ext4_get_groups_count(sb); i++)
->> +		mb_ctx_mark_used(sb, i, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->> +	ar.goal = ext4_group_first_block_no(sb, goal_group);
->> +	found = ext4_mb_new_blocks_simple(&ar, &err);
->> +	KUNIT_ASSERT_NE_MSG(test, err, 0,
->> +		"unexpectedly get block when no block is available");
->> +}
->> +
->> +
->> +static struct kunit_case ext4_mballoc_test_cases[] = {
->> +	KUNIT_CASE(test_new_blocks_simple),
->> +	{}
->> +};
->> +
->> +static struct kunit_suite ext4_mballoc_test_suite = {
->> +	.name = "ext4_mballoc_test",
->> +	.init = mballoc_test_init,
->> +	.exit = mballoc_test_exit,
->> +	.test_cases = ext4_mballoc_test_cases,
->> +};
->> +
->> +kunit_test_suites(&ext4_mballoc_test_suite);
->> +
->> +MODULE_LICENSE("GPL");
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index dd2fc0546c0b..b6b963412cdc 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -6954,3 +6954,7 @@ ext4_mballoc_query_range(
->>  
->>  	return error;
->>  }
->> +
->> +#ifdef CONFIG_EXT4_KUNIT_TESTS
->> +#include "mballoc-test.c"
->> +#endif
->> -- 
->> 2.30.0
-> 
+Thanks for your patch! I'm glad it's helpful.
 
--- 
-Best wishes
-Kemeng Shi
+It could not be reproduced immediately and it takes more than 200s to
+reproduce this issue, anyway here is my reproduced steps.
+As following link info for example, it's not my reproduced environment and it's
+alsmost the same for issue reproducing:
+https://lore.kernel.org/all/0000000000007faf0005fe4f14b9@google.com/T/#mf1678f17b7b7c4b3cc73abef436aac68787397ae
+  -> disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
+  -> kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
 
+I used below simple script to boot up vm:
+"
+#!/bin/bash
+
+bzimage=$1
+
+[[ -z "$bzimage" ]] && bzimage="./bzImage-68433066"
+qemu-system-x86_64 \
+        -m 2G \
+        -smp 2 \
+        -kernel $bzimage \
+        -append "console=ttyS0 root=/dev/sda1 earlyprintk=serial net.ifnames=0 thunderbolt.dyndbg" \
+        -drive file=./disk-68433066.raw,format=raw \
+        -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10023-:22 \
+        -cpu host \
+        -net nic,model=e1000 \
+        -enable-kvm \
+        -nographic \
+        2>&1 | tee vmd.log
+"
+
+gcc -pthread -o repro repro.c
+scp -P 10023 repro root@localhost:/root/
+
+And then access to above vm and execute the reproduced binary to reproduce.
+Sometimes it takes some time to reproduce the problem.
+Hope the above information helps you to reproduce the problem next time.
+
+I saw syzbot already verified your latest patch and it's passed.
+https://syzkaller.appspot.com/x/log.txt?x=17939bc1a80000
+
+Best Regards,
+Thanks!
+
+> 
+> Brian
+> 
+> [1] https://syzkaller.appspot.com/x/patch.diff?x=109a7c96a80000
+> 
+> > All information: https://github.com/xupengfe/syzkaller_logs/tree/main/230730_134501_ext4_file_write_iter
+> > Reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.c
+> > repro.prog(syscall reproduced steps): https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.prog
+> > repro.report: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.report
+> > Bisect log: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/bisect_info.log
+> > Kconfig: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/kconfig_origin
+> > Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/6eaae198076080886b9e7d57f4ae06fa782f90ef_dmesg.log
+> > 
+> > Best Regards,
+> > Thanks!
+> > 
+> > > 
+> > > ---
+> > > If you want syzbot to run the reproducer, reply with:
+> > > #syz test: git://repo/address.git branch-or-commit-hash
+> > > If you attach or paste a git patch, syzbot will apply it before testing.
+> > 
+> 
