@@ -2,163 +2,185 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CED771EE2
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 12:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFF4771F06
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Aug 2023 12:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjHGKxa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Aug 2023 06:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S231614AbjHGK7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Aug 2023 06:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjHGKx3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Aug 2023 06:53:29 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D22B10FA
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 03:53:28 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RKCpn5nCbz4f403k
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 18:53:21 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-        by APP4 (Coremail) with SMTP id gCh0CgBH16kVzdBkZvGTAA--.56258S3;
-        Mon, 07 Aug 2023 18:53:24 +0800 (CST)
-Subject: Re: [PATCH 07/12] jbd2: add fast_commit space check
-To:     Jan Kara <jack@suse.cz>
+        with ESMTP id S229870AbjHGK7K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Aug 2023 06:59:10 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D9910FA
+        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 03:59:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 02147210DF;
+        Mon,  7 Aug 2023 10:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691405947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pFDX2ZiiMKxL1zxLUHyybYafS/LlZSaxZhEVXewgov0=;
+        b=NH4lYmi5+SzVBMAM85Mj7bmTaAGtPFan+KpjkTz6gb2I/NKtDm3HHT/aEKdVLk1u/OKxkP
+        JVgm9I9DH3maEKpKbUgH/BmyUVTYqCW+kyx5LEBkhwpaJcq3ZNMJooNzXvuRUMoC+YEJ0D
+        qRJFyn0Hr0PsbsB+IFGeGKTZhIkIRzI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691405947;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pFDX2ZiiMKxL1zxLUHyybYafS/LlZSaxZhEVXewgov0=;
+        b=CcogD0y1fte0svdgE503B0u1yAxJ9iTxp7Um+GMhWs+hMf8Z+kPlRzLxogDnxq+W86qYGn
+        akZVdE/KCtwJTuAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E71FE13910;
+        Mon,  7 Aug 2023 10:59:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yHhgOHrO0GROUAAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 07 Aug 2023 10:59:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 8798CA076C; Mon,  7 Aug 2023 12:59:06 +0200 (CEST)
+Date:   Mon, 7 Aug 2023 12:59:06 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Brian Foster <bfoster@redhat.com>
 Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20230704134233.110812-1-yi.zhang@huaweicloud.com>
- <20230704134233.110812-8-yi.zhang@huaweicloud.com>
- <20230803143825.f364hmpsgqbzvjwo@quack3>
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <d23c42ce-32d1-79c3-63b2-0bfbc3af924c@huaweicloud.com>
-Date:   Mon, 7 Aug 2023 18:53:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Ritesh Harjani <ritesh.list@gmail.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: drop dio overwrite only flag and associated warning
+Message-ID: <20230807105906.teovthvnwrpbmx7n@quack3>
+References: <20230804182952.477247-1-bfoster@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20230803143825.f364hmpsgqbzvjwo@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgBH16kVzdBkZvGTAA--.56258S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxur48JFyrGF4kCFy3Gw17KFg_yoWrJr4fpF
-        W8JFySkrWkZrWUA3WxtF4DJFWFva4qyFWUGrn2k3savw15trn3Kw4vqF13JF1DAw1q93y8
-        XFnrt347Cw10ka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804182952.477247-1-bfoster@redhat.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/8/3 22:38, Jan Kara wrote:
-> On Tue 04-07-23 21:42:28, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> If JBD2_FEATURE_INCOMPAT_FAST_COMMIT bit is set, it means the journal
->> have fast commit records need to recover, so the fast commit size
->> should not be zero, and also the leftover normal journal size should
->> never less than JBD2_MIN_JOURNAL_BLOCKS. Add a check into the
->> journal_check_superblock() and drop the pointless branch when
->> initializing in-memory fastcommit parameters.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+On Fri 04-08-23 14:29:52, Brian Foster wrote:
+> The commit referenced below opened up concurrent unaligned dio under
+> shared locking for pure overwrites. In doing so, it enabled use of
+> the IOMAP_DIO_OVERWRITE_ONLY flag and added a warning on unexpected
+> -EAGAIN returns as an extra precaution, since ext4 does not retry
+> writes in such cases. The flag itself is advisory in this case since
+> ext4 checks for unaligned I/Os and uses appropriate locking up
+> front, rather than on a retry in response to -EAGAIN.
 > 
-> Some comments below.
+> As it turns out, the warning check is susceptible to false positives
+> because there are scenarios where -EAGAIN is expected from the
+> storage layer without necessarily having IOCB_NOWAIT set on the
+> iocb. For example, io_uring can set IOCB_HIPRI, which the iomap/dio
+> layer turns into REQ_POLLED|REQ_NOWAIT on the bio, which then can
+> result in an -EAGAIN result if the block layer is unable to allocate
+> a request, etc. syzbot has also reported an instance of this warning
+> and while the source of the -EAGAIN in that case is not currently
+> known, it is confirmed that the iomap dio overwrite flag is also not
+> set.
 > 
+> Since this flag is precautionary, avoid the false positive warning
+> and future whack-a-mole games with -EAGAIN returns by removing it
+> and the associated warning. Update the comments to document when
+> concurrent unaligned dio writes are allowed and why the associated
+> flag is not used.
 > 
->> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
->> index efdb8db3c06e..210b532a3673 100644
->> --- a/fs/jbd2/journal.c
->> +++ b/fs/jbd2/journal.c
->> @@ -1392,6 +1392,18 @@ static int journal_check_superblock(journal_t *journal)
->>  		return err;
->>  	}
->>  
->> +	if (jbd2_has_feature_fast_commit(journal)) {
->> +		int num_fc_blks = be32_to_cpu(sb->s_num_fc_blks);
->> +
->> +		if (!num_fc_blks ||
->> +		    (be32_to_cpu(sb->s_maxlen) - num_fc_blks <
->> +		     JBD2_MIN_JOURNAL_BLOCKS)) {
->> +			printk(KERN_ERR "JBD2: Invalid fast commit size %d\n",
->> +			       num_fc_blks);
->> +			return err;
->> +		}
+> Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+> Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
+
+So if I understand right, you're trying to say that if iomap_dio_rw()
+returns -EAGAIN, the caller of ext4_file_write_iter() and not
+ext4_file_write_iter() itself is expected to deal with it (like with
+IOCB_NOWAIT or other ways that can trigger similar behavior). That sounds
+good to me and the patch looks also fine. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+> ---
 > 
-> This is wrong sb->s_num_fc_blks == 0 means that the fast-commit area should
-> have the default size of 256 blocks. At least that's how it behaves
-> currently and we should not change the behavior.
-
-Thanks for the review and correcting me. I missed the fc_debug_force
-mount option, this option enable fast commit feature without init
-sb->s_num_fc_blks to disk, so it could left over an unclean image with
-fast_commit feature but sb->s_num_fc_blks is still zero. And the mke2fs
-could also set sb->s_num_fc_blks to 0.
-
+> Hi all,
 > 
-> Similarly if the number of fastcommit blocks was too big (i.e. there was
-> not enough space left for ordinary journal), we effectively silently
-> disable fastcommit and you break this behavior in this patch.
+> This addresses some false positives associated with the warning for the
+> recently merged patch. I considered leaving the flag and more tightly
+> associating the warning to it (instead of IOCB_NOWAIT), but ISTM that is
+> still flakey and I'd rather not play whack-a-mole when the assumption is
+> shown to be wrong.
 > 
-
-If the fastcommit is too big, jbd2_journal_initialize_fast_commit()
-will detect this corruption and refuse to mount.
-
-[ 1213.810719] JBD2: Cannot enable fast commits.
-[ 1213.812282] EXT4-fs (pmem1): Failed to set fast commit journal feature
-
-It only silently disable fastcommit while recovering the journal, but it
-doesn't seem to make much sense, because the journal->j_last is likely to
-be wrong (not point to the correct end of normal journal range) and will
-probably lead to incorrect recovery. It seems better to report the error
-and exit as early as possible. So I suppose we could keep this "too big"
-check in journal_check_superblock(). How does that sound ?
-
-Thanks,
-Yi.
-
+> I'm still waiting on a syzbot test of this patch, but local tests look
+> Ok and I'm away for a few days after today so wanted to get this on the
+> list. Thoughts, reviews, flames appreciated.
 > 
->> +	}
->> +
->>  	if (jbd2_has_feature_csum2(journal) &&
->>  	    jbd2_has_feature_csum3(journal)) {
->>  		/* Can't have checksum v2 and v3 at the same time! */
->> @@ -1460,7 +1472,6 @@ static int journal_load_superblock(journal_t *journal)
->>  	int err;
->>  	struct buffer_head *bh;
->>  	journal_superblock_t *sb;
->> -	int num_fc_blocks;
->>  
->>  	bh = getblk_unmovable(journal->j_dev, journal->j_blk_offset,
->>  			      journal->j_blocksize);
->> @@ -1498,9 +1509,8 @@ static int journal_load_superblock(journal_t *journal)
->>  
->>  	if (jbd2_has_feature_fast_commit(journal)) {
->>  		journal->j_fc_last = be32_to_cpu(sb->s_maxlen);
->> -		num_fc_blocks = jbd2_journal_get_num_fc_blks(sb);
->> -		if (journal->j_last - num_fc_blocks >= JBD2_MIN_JOURNAL_BLOCKS)
->> -			journal->j_last = journal->j_fc_last - num_fc_blocks;
->> +		journal->j_last = journal->j_fc_last -
->> +				  be32_to_cpu(sb->s_num_fc_blks);
->>  		journal->j_fc_first = journal->j_last + 1;
->>  		journal->j_fc_off = 0;
->>  	}
->> -- 
->> 2.39.2
->>
-
+> Brian
+> 
+>  fs/ext4/file.c | 25 ++++++++++---------------
+>  1 file changed, 10 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index c457c8517f0f..73a4b711be02 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -476,6 +476,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>  	 * required to change security info in file_modified(), for extending
+>  	 * I/O, any form of non-overwrite I/O, and unaligned I/O to unwritten
+>  	 * extents (as partial block zeroing may be required).
+> +	 *
+> +	 * Note that unaligned writes are allowed under shared lock so long as
+> +	 * they are pure overwrites. Otherwise, concurrent unaligned writes risk
+> +	 * data corruption due to partial block zeroing in the dio layer, and so
+> +	 * the I/O must occur exclusively.
+>  	 */
+>  	if (*ilock_shared &&
+>  	    ((!IS_NOSEC(inode) || *extend || !overwrite ||
+> @@ -492,21 +497,12 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>  
+>  	/*
+>  	 * Now that locking is settled, determine dio flags and exclusivity
+> -	 * requirements. Unaligned writes are allowed under shared lock so long
+> -	 * as they are pure overwrites. Set the iomap overwrite only flag as an
+> -	 * added precaution in this case. Even though this is unnecessary, we
+> -	 * can detect and warn on unexpected -EAGAIN if an unsafe unaligned
+> -	 * write is ever submitted.
+> -	 *
+> -	 * Otherwise, concurrent unaligned writes risk data corruption due to
+> -	 * partial block zeroing in the dio layer, and so the I/O must occur
+> -	 * exclusively. The inode lock is already held exclusive if the write is
+> -	 * non-overwrite or extending, so drain all outstanding dio and set the
+> -	 * force wait dio flag.
+> +	 * requirements. We don't use DIO_OVERWRITE_ONLY because we enforce
+> +	 * behavior already. The inode lock is already held exclusive if the
+> +	 * write is non-overwrite or extending, so drain all outstanding dio and
+> +	 * set the force wait dio flag.
+>  	 */
+> -	if (*ilock_shared && unaligned_io) {
+> -		*dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
+> -	} else if (!*ilock_shared && (unaligned_io || *extend)) {
+> +	if (!*ilock_shared && (unaligned_io || *extend)) {
+>  		if (iocb->ki_flags & IOCB_NOWAIT) {
+>  			ret = -EAGAIN;
+>  			goto out;
+> @@ -608,7 +604,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		iomap_ops = &ext4_iomap_overwrite_ops;
+>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+>  			   dio_flags, NULL, 0);
+> -	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
+>  	if (ret == -ENOTBLK)
+>  		ret = 0;
+>  
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
