@@ -2,174 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23E77747D8
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 21:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3D577499A
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 21:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbjHHTVA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Aug 2023 15:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S231394AbjHHT6y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Aug 2023 15:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236027AbjHHTUl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Aug 2023 15:20:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F210510817A;
-        Tue,  8 Aug 2023 09:44:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 32CD41F381;
-        Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691487422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
-        b=xNkmZedHCH4JfPl5aI/7jFcoHvCmU2Ei7iO7owXcuJIhPHMXaR9JIDbudRkrv+OpRvBT78
-        QcY9S7zG3KilNTQJsdlbMzoPhbFYNRjSDo58qiEL/KKnRHAz06+KLjpoPEh0KdB8jKpl0d
-        Paghc7ScJ479EYrBJsHB5zKlYU4EE1o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691487422;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
-        b=C9mvCUPaAa2cOnSGsmSgpsXVt5ts05YWI0vruOwxYGEk08U30pxAruMbAfjG0JtSrXhSu+
-        h+OsL5aeMUqW5DAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E00A13451;
-        Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JlhMB74M0mRkHQAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:37:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9F88DA0769; Tue,  8 Aug 2023 11:37:01 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:37:01 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
+        with ESMTP id S234601AbjHHT5C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Aug 2023 15:57:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028DC1BACA;
+        Tue,  8 Aug 2023 11:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=bJxgIoR4mJQUg5rLnZqrYlT5xT1x+GwLxo5eAVskIAQ=; b=OHuO8Wh/1Q0P/1nF6gcUMbFQod
+        5LDs5mgcANOxNCq0J3IZZlQoDbqurokslJv5aV7vgb5wdZXBYUqawpWm00FUa/uPb02aaSVb4wI5g
+        rnCkGWvpHMwutgEFJIyE5/sBuoiFVhJo7NyGL9dOIDqkQAzPlSG1hJ0nKYjwWmAzgUHr8WKbj6YPL
+        SqOrhQza8PU1DgJrj+sXMT3/PrNpObo8Q2k8AC0XixhL1WHDOUqVAWIktwgfmggi1B9Ka3wYnfIL5
+        UU7mPiBIs3lje/6PilCNjLgTb5WM4BFOuiJzPfWVzS6/3Qwt7X4FAqkSozzcDNGTUOsRMKVnmbjYB
+        4x5fl+PQ==;
+Received: from [4.28.11.157] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTPNJ-002vao-0x;
+        Tue, 08 Aug 2023 16:16:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
         Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
         Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
- inode_update_timestamps
-Message-ID: <20230808093701.ggyj7tyqonivl7tb@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: s_fs_info and ->kill_sb revisited
+Date:   Tue,  8 Aug 2023 09:15:47 -0700
+Message-Id: <20230808161600.1099516-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 07-08-23 15:38:37, Jeff Layton wrote:
-> In later patches, we're going to drop the "now" parameter from the
-> update_time operation. Prepare ubifs for this, by having it use the new
-> inode_update_timestamps helper.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Hi all,
 
-One comment below:
+this series is against the VFS vfs.super branch does two slightly
+related things:
 
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index df9086b19cd0..2d0178922e19 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
->  		return err;
->  
->  	mutex_lock(&ui->ui_mutex);
-> -	if (flags & S_ATIME)
-> -		inode->i_atime = *time;
-> -	if (flags & S_CTIME)
-> -		inode_set_ctime_to_ts(inode, *time);
-> -	if (flags & S_MTIME)
-> -		inode->i_mtime = *time;
-> -
-> -	release = ui->dirty;
-> +	inode_update_timestamps(inode, flags);
->  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
-> +	release = ui->dirty;
->  	mutex_unlock(&ui->ui_mutex);
+ - move closing of the external devices in ext4 and xfs from ->put_super
+   into ->kill_sb so that this isn't done under s_umount which creates
+   lock ordere reversal
+ - move freeing the private dta in s_fs_info into ->kill_sb for file systems
+   that pass it in through the fs_context, as otherwise we could leak it
+   before fill_super is called (this is something new on the vfs.super
+   branch because of the changed place where blkdev_get is called)
 
-I think this is wrong. You need to keep sampling ui->dirty before calling
-__mark_inode_dirty(). Otherwise you could release budget for inode update
-you really need...
-
->  	if (release)
->  		ubifs_release_budget(c, &req);
-
-									Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Diffstat:
+ exfat/exfat_fs.h |    2 -
+ exfat/super.c    |   39 +++++++++++++-------------
+ ext4/super.c     |   50 +++++++++++++++++-----------------
+ ntfs3/super.c    |   33 ++++++++++------------
+ xfs/xfs_buf.c    |    7 +++-
+ xfs/xfs_super.c  |   80 +++++++++++++++++++++++++------------------------------
+ 6 files changed, 102 insertions(+), 109 deletions(-)
