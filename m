@@ -2,248 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C13FD7736F8
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 04:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C869773BA8
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbjHHCog (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 7 Aug 2023 22:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S230392AbjHHPx5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Aug 2023 11:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjHHCof (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 7 Aug 2023 22:44:35 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E961FEB
-        for <linux-ext4@vger.kernel.org>; Mon,  7 Aug 2023 19:44:15 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc8045e09dso1996785ad.0
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Aug 2023 19:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1691462655; x=1692067455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZZ3n364wJBBn5i6olC7X8xOphz5aoEwi3PPn9Humxy4=;
-        b=c9iOPpy41VC6QSzv5vLbmCPsxZB2K7hAItf8MEtryT/BAlfvdA0UPM4PAg3DtN7rr+
-         GFW2nm1AoLFEe5zmSSiqyIhn92P6iecybeuExkqa7jbnj+LEVM1LioV7SZGiR/8Kzy2+
-         mJYrJW8XMi2+dbRvP7Xg6QuSzUnp/yHkq29M7vbAYNrF1NokfShgkpn7COiSBb38dkF0
-         MWE0ZNG9ZS4LzaWgVeAy0Pmh7etHcKYaOYLW+oCVP3Q2zlcEbOnfLG0lI+GjqQwBJGqv
-         OKDqkP3u3mDYRaZI2hDArPl64kIP09oRYh791qhymi4aMBqJthtqlGcAIAw7e+Im4Q2d
-         AiTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691462655; x=1692067455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZZ3n364wJBBn5i6olC7X8xOphz5aoEwi3PPn9Humxy4=;
-        b=UqWF3IjvQzDn9nBHkp/2lLxj8baAerHAEbDdOnpE+EMSkikuZQLnNUakUs2UFgGJ8i
-         PokAx0u5s/jUG2JDNPm4/jO1FEPrGPGIvs7VFkiXzK3h6Pph9LQ3HGZpXIrKT1XtQsw9
-         yM0QhxlJ66RmEWLH5YxuehO8nZjCafNQE/E2Na6fPgZHqGSgCbIJEX1KejdYrQ+oD1d9
-         JKqK9+v12VMUL/tWBYFQAowH6BUjuBGIvx6h29IRI/1vc9bVHkGjqzqP/wjsXdCpvHme
-         R07M2C490mmVVys7N0Fph7YnnqeywtTu84ILfcI73amAj6gArfZHxfLbdUUrCsF8H1rW
-         3LOA==
-X-Gm-Message-State: AOJu0YxGbLFbqlkrBvVASN0a0lAq+O7jMUKVJtwq8Y0PyxIyB6pUMECN
-        JPJmHvdrSnZpMew/WPQ50XQHRg==
-X-Google-Smtp-Source: AGHT+IEZT2gUmOSYrkIbMjP5ySF6z1UEt5Q+o+GMN8zU98oO9pgzqqi+i8QK+swPthTlPTk4WQ36Qw==
-X-Received: by 2002:a17:902:7287:b0:1b3:f5c7:4e75 with SMTP id d7-20020a170902728700b001b3f5c74e75mr9699662pll.58.1691462654669;
-        Mon, 07 Aug 2023 19:44:14 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-166-213.pa.nsw.optusnet.com.au. [49.180.166.213])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001b893b689a0sm7632067plg.84.2023.08.07.19.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 19:44:14 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qTChf-002XBg-27;
-        Tue, 08 Aug 2023 12:44:11 +1000
-Date:   Tue, 8 Aug 2023 12:44:11 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        simon.horman@corigine.com, dlemoal@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
+        with ESMTP id S230053AbjHHPwG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Aug 2023 11:52:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2A81FFF;
+        Tue,  8 Aug 2023 08:42:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A5D3C22487;
+        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691487959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
+        b=lLrE4gVbl4Ys56f43Fm5p3Xgc+uttQq5Le5SAj/AGsdOsCPxyBSWC2O0IpSl0k3K+hnRZK
+        ZBv1ebXrfaExZ7cDvXNGrjZ6xpFGOMKiAeCI9qKY/Q/IKCJ9cx1Ukr/WgtZ76IUDmcLKuU
+        KNpTUoI2LFAiLqt+xbns1Pf6Aruyr0s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691487959;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
+        b=siRsNQ5xaJJdg8UEXv1F6ndcrBP+WFiABqKYf3mt6YpMrLfp0SJdDJiIz6//upEoYljBFS
+        Iao2lSywwi36fkCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 925BB139E9;
+        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 65qtI9cO0mTCIQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:45:59 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 07563A0769; Tue,  8 Aug 2023 11:45:59 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:45:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 46/48] mm: shrinker: make memcg slab shrink lockless
-Message-ID: <ZNGr+1orhHaBORJG@dread.disaster.area>
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-47-zhengqi.arch@bytedance.com>
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 08/13] fs: drop the timespec64 argument from
+ update_time
+Message-ID: <20230808094558.fgogaxmgtbstbij3@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807110936.21819-47-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 07:09:34PM +0800, Qi Zheng wrote:
-> Like global slab shrink, this commit also uses refcount+RCU method to make
-> memcg slab shrink lockless.
+On Mon 07-08-23 15:38:39, Jeff Layton wrote:
+> Now that all of the update_time operations are prepared for it, we can
+> drop the timespec64 argument from the update_time operation. Do that and
+> remove it from some associated functions like inode_update_time and
+> inode_needs_update_time.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-This patch does random code cleanups amongst the actual RCU changes.
-Can you please move the cleanups to a spearate patch to reduce the
-noise in this one?
+Looks good to me. Feel free to add:
 
-> diff --git a/mm/shrinker.c b/mm/shrinker.c
-> index d318f5621862..fee6f62904fb 100644
-> --- a/mm/shrinker.c
-> +++ b/mm/shrinker.c
-> @@ -107,6 +107,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
->  					 lockdep_is_held(&shrinker_rwsem));
->  }
->  
-> +static struct shrinker_info *shrinker_info_rcu(struct mem_cgroup *memcg,
-> +					       int nid)
-> +{
-> +	return rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
-> +}
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-This helper doesn't add value. It doesn't tell me that
-rcu_read_lock() needs to be held when it is called, for one....
-
->  static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
->  				    int old_size, int new_nr_max)
->  {
-> @@ -198,7 +204,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
->  		struct shrinker_info_unit *unit;
->  
->  		rcu_read_lock();
-> -		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
-> +		info = shrinker_info_rcu(memcg, nid);
-
-... whilst the original code here was obviously correct.
-
->  		unit = info->unit[shriner_id_to_index(shrinker_id)];
->  		if (!WARN_ON_ONCE(shrinker_id >= info->map_nr_max)) {
->  			/* Pairs with smp mb in shrink_slab() */
-> @@ -211,7 +217,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
->  
->  static DEFINE_IDR(shrinker_idr);
->  
-> -static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> +static int shrinker_memcg_alloc(struct shrinker *shrinker)
-
-Cleanups in a separate patch.
-
-> @@ -253,10 +258,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
->  {
->  	struct shrinker_info *info;
->  	struct shrinker_info_unit *unit;
-> +	long nr_deferred;
->  
-> -	info = shrinker_info_protected(memcg, nid);
-> +	rcu_read_lock();
-> +	info = shrinker_info_rcu(memcg, nid);
->  	unit = info->unit[shriner_id_to_index(shrinker->id)];
-> -	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
-> +	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
-> +	rcu_read_unlock();
-> +
-> +	return nr_deferred;
->  }
-
-This adds two rcu_read_lock() sections to every call to
-do_shrink_slab(). It's not at all clear ifrom any of the other code
-that do_shrink_slab() now has internal rcu_read_lock() sections....
-
-> @@ -464,18 +480,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  	if (!mem_cgroup_online(memcg))
->  		return 0;
->  
-> -	if (!down_read_trylock(&shrinker_rwsem))
-> -		return 0;
-> -
-> -	info = shrinker_info_protected(memcg, nid);
-> +again:
-> +	rcu_read_lock();
-> +	info = shrinker_info_rcu(memcg, nid);
->  	if (unlikely(!info))
->  		goto unlock;
->  
-> -	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
-> +	if (index < shriner_id_to_index(info->map_nr_max)) {
->  		struct shrinker_info_unit *unit;
->  
->  		unit = info->unit[index];
->  
-> +		/*
-> +		 * The shrinker_info_unit will not be freed, so we can
-> +		 * safely release the RCU lock here.
-> +		 */
-> +		rcu_read_unlock();
-
-Why - what guarantees that the shrinker_info_unit exists at this
-point? We hold no reference to it, we hold no reference to any
-shrinker, etc. What provides this existence guarantee?
-
-> +
->  		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
->  			struct shrink_control sc = {
->  				.gfp_mask = gfp_mask,
-> @@ -485,12 +506,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  			struct shrinker *shrinker;
->  			int shrinker_id = calc_shrinker_id(index, offset);
->  
-> +			rcu_read_lock();
->  			shrinker = idr_find(&shrinker_idr, shrinker_id);
-> -			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
-> -				if (!shrinker)
-> -					clear_bit(offset, unit->map);
-> +			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
-> +				clear_bit(offset, unit->map);
-> +				rcu_read_unlock();
->  				continue;
->  			}
-> +			rcu_read_unlock();
->  
->  			/* Call non-slab shrinkers even though kmem is disabled */
->  			if (!memcg_kmem_online() &&
-> @@ -523,15 +546,20 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  					set_shrinker_bit(memcg, nid, shrinker_id);
->  			}
->  			freed += ret;
-> -
-> -			if (rwsem_is_contended(&shrinker_rwsem)) {
-> -				freed = freed ? : 1;
-> -				goto unlock;
-> -			}
-> +			shrinker_put(shrinker);
-
-Ok, so why is this safe to call without holding the rcu read lock?
-The global shrinker has to hold the rcu_read_lock() whilst calling
-shrinker_put() to guarantee the validity of the list next pointer,
-but we don't hold off RCU here so what guarantees a racing global
-shrinker walk doesn't trip over this shrinker_put() call dropping
-the refcount to zero and freeing occuring in a different context...
-
-
-> +		/*
-> +		 * We have already exited the read-side of rcu critical section
-> +		 * before calling do_shrink_slab(), the shrinker_info may be
-> +		 * released in expand_one_shrinker_info(), so reacquire the
-> +		 * shrinker_info.
-> +		 */
-> +		index++;
-> +		goto again;
-
-With that, what makes the use of shrinker_info in
-xchg_nr_deferred_memcg() in do_shrink_slab() coherent and valid?
-
--Dave.
+								Honza
 -- 
-Dave Chinner
-david@fromorbit.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
