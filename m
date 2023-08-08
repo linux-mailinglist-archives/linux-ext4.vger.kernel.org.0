@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E247741ED
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 19:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B2B77401F
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Aug 2023 18:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbjHHRbD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Aug 2023 13:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S233886AbjHHQ7d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Aug 2023 12:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234574AbjHHRaX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Aug 2023 13:30:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D95217B9;
-        Tue,  8 Aug 2023 09:13:11 -0700 (PDT)
+        with ESMTP id S232295AbjHHQ6L (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Aug 2023 12:58:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85D524C;
+        Tue,  8 Aug 2023 08:42:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A7B1922468;
-        Tue,  8 Aug 2023 09:05:27 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F7CB21AAC;
+        Tue,  8 Aug 2023 09:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691485527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1691487544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wcZ0MvDWAvHGz+Tvz5BQspV1+Y90atrQ/21gTPDSJ5A=;
-        b=ltvgN98jUPLfVGzwkX2IMCxL1+gt7mU2eMGWerKExKXl9rFxELcQOOu6LDPvkVgELBTWMM
-        RPR+CvNDbp+v8nhbcYMs5NsoZ+s9OQ/UvQVEgQ88doFw/btLczZrQg2i1eZV1+ZBjvbv6d
-        v//UiKTWiNGL8LuYIfEW5snVicPsNCw=
+        bh=PVeErVjOshT1HL9BKit56tV7zQvJsI4KiQWED3rMFuk=;
+        b=Ih/dtuDlLjuehwLx/dl1alOHiAbINBHhQjqICxdO8QzvDNyayDD12QEIdQQqzzznj7Q14P
+        c5hv8MUHhglxrWQtTaFcAIVopxDABjqy/dP+ec5Lv+rEt0nndTNahsaoLReC2CFkrCP+64
+        W8/atfzAfsnelhickcggtSiPj4yTuJM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691485527;
+        s=susede2_ed25519; t=1691487544;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wcZ0MvDWAvHGz+Tvz5BQspV1+Y90atrQ/21gTPDSJ5A=;
-        b=NtHl8v8fs0QRleiCInWaMqHlp3B+YiNNeUD28RUprosc+RMkGA1oFQ5OJqyi3S1c2mho42
-        UGYfjYfTqGY9zJAQ==
+        bh=PVeErVjOshT1HL9BKit56tV7zQvJsI4KiQWED3rMFuk=;
+        b=j1Qrid+U1SfmOjtDLooGt12t1hCG9o0NAGXfAvVFTMysCO70VmrTAY263EbPzLWm1azsyz
+        yYZCAZd1ftjgXqAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 903E5139E9;
-        Tue,  8 Aug 2023 09:05:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECC6813451;
+        Tue,  8 Aug 2023 09:39:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id RgEgI1cF0mRWDgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:05:27 +0000
+        id Oj7GOTcN0mRIHgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:39:03 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 215FCA0769; Tue,  8 Aug 2023 11:05:27 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:05:27 +0200
+        id 732A5A0769; Tue,  8 Aug 2023 11:39:03 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:39:03 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Jeff Layton <jlayton@kernel.org>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -112,60 +112,75 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
         linux-mtd@lists.infradead.org, linux-mm@kvack.org,
         linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 01/13] fs: remove silly warning from current_time
-Message-ID: <20230808090527.nvn6vd5wdw4o5b2m@quack3>
+Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
+ timestamp
+Message-ID: <20230808093903.2cg5wwbwbvflkeph@quack3>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-1-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-1-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 07-08-23 15:38:32, Jeff Layton wrote:
-> An inode with no superblock? Unpossible!
+On Mon 07-08-23 15:38:38, Jeff Layton wrote:
+> In later patches we're going to drop the "now" parameter from the
+> update_time operation. Prepare XFS for this by reworking how it fetches
+> timestamps and sets them in the inode. Ensure that we update the ctime
+> even if only S_MTIME is set.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/xfs/xfs_iops.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 731f45391baa..72d18e7840f5 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
+>  	int			log_flags = XFS_ILOG_TIMESTAMP;
+>  	struct xfs_trans	*tp;
+>  	int			error;
+> +	struct timespec64	now = current_time(inode);
 
-Looks good. Feel free to add:
+No need to fetch current_time() here where you overwrite it just a bit
+later...
+
+> @@ -1056,12 +1057,15 @@ xfs_vn_update_time(
+>  		return error;
+>  
+>  	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *now);
+> +	if (flags & (S_CTIME|S_MTIME))
+> +		now = inode_set_ctime_current(inode);
+> +	else
+> +		now = current_time(inode);
+> +
+>  	if (flags & S_MTIME)
+> -		inode->i_mtime = *now;
+> +		inode->i_mtime = now;
+>  	if (flags & S_ATIME)
+> -		inode->i_atime = *now;
+> +		inode->i_atime = now;
+>  
+>  	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>  	xfs_trans_log_inode(tp, ip, log_flags);
+
+Otherwise the patch looks good to me so feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
-
-> ---
->  fs/inode.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index d4ab92233062..3fc251bfaf73 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2495,12 +2495,6 @@ struct timespec64 current_time(struct inode *inode)
->  	struct timespec64 now;
->  
->  	ktime_get_coarse_real_ts64(&now);
-> -
-> -	if (unlikely(!inode->i_sb)) {
-> -		WARN(1, "current_time() called with uninitialized super_block in the inode");
-> -		return now;
-> -	}
-> -
->  	return timestamp_truncate(now, inode);
->  }
->  EXPORT_SYMBOL(current_time);
-> 
-> -- 
-> 2.41.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
