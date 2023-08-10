@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C26777370
+	by mail.lfdr.de (Postfix) with ESMTP id EC27B777371
 	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 10:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjHJIys (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 04:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S233705AbjHJIyt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 04:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbjHJIyl (ORCPT
+        with ESMTP id S233729AbjHJIyl (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 04:54:41 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B8E2684
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15E52683
         for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 01:54:36 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RM12K1gt2z4f41Vl
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RM12K4953z4f3kjg
         for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 16:54:33 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP4 (Coremail) with SMTP id gCh0CgD3hqm6pdRkGjJ7AQ--.1500S14;
+        by APP4 (Coremail) with SMTP id gCh0CgD3hqm6pdRkGjJ7AQ--.1500S15;
         Thu, 10 Aug 2023 16:54:33 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
-Subject: [PATCH v2 10/12] jbd2: jbd2_journal_init_{dev,inode} return proper error return value
-Date:   Thu, 10 Aug 2023 16:54:15 +0800
-Message-Id: <20230810085417.1501293-11-yi.zhang@huaweicloud.com>
+Subject: [PATCH v2 11/12] ext4: cleanup ext4_get_dev_journal() and ext4_get_journal()
+Date:   Thu, 10 Aug 2023 16:54:16 +0800
+Message-Id: <20230810085417.1501293-12-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.34.3
 In-Reply-To: <20230810085417.1501293-1-yi.zhang@huaweicloud.com>
 References: <20230810085417.1501293-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3hqm6pdRkGjJ7AQ--.1500S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxurWxKr4xKw45ZFWfKF4kZwb_yoWrCr1fpa
-        4UGa48Cryjvr4Uuw1xZF4UXFWj9a4Ikay7Gr1kCw1vqayUJrn7tw1Utr1UZFy0yFWUGw45
-        XF1UCa1xCwnrKw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgD3hqm6pdRkGjJ7AQ--.1500S15
+X-Coremail-Antispam: 1UD129KBjvJXoW3WrWDtFWfZFy8tryDJr18Xwb_yoWxGFWUpF
+        1UCFyfZryUur1Uua18Xw4UJFWYg3W0yayUGr97uwnYyayDtrn7t3WkJF1UtFy8tFWUWw1r
+        XF4UK347Cw17K3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -62,132 +62,211 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-Current jbd2_journal_init_{dev,inode} return NULL if some error
-happens, make them to pass out proper error return value.
+Factor out a new helper form ext4_get_dev_journal() to get external
+journal bdev and check validation of this device, drop ext4_blkdev_get()
+helper, and also remove duplicate check of journal feature. It makes
+ext4_get_dev_journal() more clear than before.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/super.c    |  4 ++--
- fs/jbd2/journal.c  | 19 +++++++++----------
- fs/ocfs2/journal.c |  8 ++++----
- 3 files changed, 15 insertions(+), 16 deletions(-)
+ fs/ext4/super.c | 109 ++++++++++++++++++++++--------------------------
+ 1 file changed, 49 insertions(+), 60 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c94ebf704616..ce2e02b139af 100644
+index ce2e02b139af..2f71076f678a 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5827,7 +5827,7 @@ static journal_t *ext4_get_journal(struct super_block *sb,
- 		return NULL;
+@@ -1105,26 +1105,6 @@ static const struct blk_holder_ops ext4_holder_ops = {
+ 	.mark_dead		= ext4_bdev_mark_dead,
+ };
  
- 	journal = jbd2_journal_init_inode(journal_inode);
--	if (!journal) {
-+	if (IS_ERR(journal)) {
- 		ext4_msg(sb, KERN_ERR, "Could not load journal inode");
+-/*
+- * Open the external journal device
+- */
+-static struct block_device *ext4_blkdev_get(dev_t dev, struct super_block *sb)
+-{
+-	struct block_device *bdev;
+-
+-	bdev = blkdev_get_by_dev(dev, BLK_OPEN_READ | BLK_OPEN_WRITE, sb,
+-				 &ext4_holder_ops);
+-	if (IS_ERR(bdev))
+-		goto fail;
+-	return bdev;
+-
+-fail:
+-	ext4_msg(sb, KERN_ERR,
+-		 "failed to open journal device unknown-block(%u,%u) %ld",
+-		 MAJOR(dev), MINOR(dev), PTR_ERR(bdev));
+-	return NULL;
+-}
+-
+ /*
+  * Release the journal device
+  */
+@@ -5780,14 +5760,14 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
+ 		ext4_msg(sb, KERN_ERR, "journal inode is deleted");
+ 		return NULL;
+ 	}
+-
+-	ext4_debug("Journal inode found at %p: %lld bytes\n",
+-		  journal_inode, journal_inode->i_size);
+ 	if (!S_ISREG(journal_inode->i_mode) || IS_ENCRYPTED(journal_inode)) {
+ 		ext4_msg(sb, KERN_ERR, "invalid journal inode");
  		iput(journal_inode);
  		return NULL;
-@@ -5906,7 +5906,7 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
+ 	}
++
++	ext4_debug("Journal inode found at %p: %lld bytes\n",
++		  journal_inode, journal_inode->i_size);
+ 	return journal_inode;
+ }
  
- 	journal = jbd2_journal_init_dev(bdev, sb->s_bdev,
- 					start, len, blocksize);
--	if (!journal) {
-+	if (IS_ERR(journal)) {
+@@ -5819,9 +5799,6 @@ static journal_t *ext4_get_journal(struct super_block *sb,
+ 	struct inode *journal_inode;
+ 	journal_t *journal;
+ 
+-	if (WARN_ON_ONCE(!ext4_has_feature_journal(sb)))
+-		return NULL;
+-
+ 	journal_inode = ext4_get_journal_inode(sb, journal_inum);
+ 	if (!journal_inode)
+ 		return NULL;
+@@ -5838,25 +5815,25 @@ static journal_t *ext4_get_journal(struct super_block *sb,
+ 	return journal;
+ }
+ 
+-static journal_t *ext4_get_dev_journal(struct super_block *sb,
+-				       dev_t j_dev)
++static struct block_device *ext4_get_journal_dev(struct super_block *sb,
++					dev_t j_dev, ext4_fsblk_t *j_start,
++					ext4_fsblk_t *j_len)
+ {
+ 	struct buffer_head *bh;
+-	journal_t *journal;
+-	ext4_fsblk_t start;
+-	ext4_fsblk_t len;
++	struct block_device *bdev;
+ 	int hblock, blocksize;
+ 	ext4_fsblk_t sb_block;
+ 	unsigned long offset;
+ 	struct ext4_super_block *es;
+-	struct block_device *bdev;
+ 
+-	if (WARN_ON_ONCE(!ext4_has_feature_journal(sb)))
+-		return NULL;
+-
+-	bdev = ext4_blkdev_get(j_dev, sb);
+-	if (bdev == NULL)
++	bdev = blkdev_get_by_dev(j_dev, BLK_OPEN_READ | BLK_OPEN_WRITE, sb,
++				 &ext4_holder_ops);
++	if (IS_ERR(bdev)) {
++		ext4_msg(sb, KERN_ERR,
++			 "failed to open journal device unknown-block(%u,%u) %ld",
++			 MAJOR(j_dev), MINOR(j_dev), PTR_ERR(bdev));
+ 		return NULL;
++	}
+ 
+ 	blocksize = sb->s_blocksize;
+ 	hblock = bdev_logical_block_size(bdev);
+@@ -5869,7 +5846,8 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
+ 	sb_block = EXT4_MIN_BLOCK_SIZE / blocksize;
+ 	offset = EXT4_MIN_BLOCK_SIZE % blocksize;
+ 	set_blocksize(bdev, blocksize);
+-	if (!(bh = __bread(bdev, sb_block, blocksize))) {
++	bh = __bread(bdev, sb_block, blocksize);
++	if (!bh) {
+ 		ext4_msg(sb, KERN_ERR, "couldn't read superblock of "
+ 		       "external journal");
+ 		goto out_bdev;
+@@ -5879,56 +5857,67 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
+ 	if ((le16_to_cpu(es->s_magic) != EXT4_SUPER_MAGIC) ||
+ 	    !(le32_to_cpu(es->s_feature_incompat) &
+ 	      EXT4_FEATURE_INCOMPAT_JOURNAL_DEV)) {
+-		ext4_msg(sb, KERN_ERR, "external journal has "
+-					"bad superblock");
+-		brelse(bh);
+-		goto out_bdev;
++		ext4_msg(sb, KERN_ERR, "external journal has bad superblock");
++		goto out_bh;
+ 	}
+ 
+ 	if ((le32_to_cpu(es->s_feature_ro_compat) &
+ 	     EXT4_FEATURE_RO_COMPAT_METADATA_CSUM) &&
+ 	    es->s_checksum != ext4_superblock_csum(sb, es)) {
+-		ext4_msg(sb, KERN_ERR, "external journal has "
+-				       "corrupt superblock");
+-		brelse(bh);
+-		goto out_bdev;
++		ext4_msg(sb, KERN_ERR, "external journal has corrupt superblock");
++		goto out_bh;
+ 	}
+ 
+ 	if (memcmp(EXT4_SB(sb)->s_es->s_journal_uuid, es->s_uuid, 16)) {
+ 		ext4_msg(sb, KERN_ERR, "journal UUID does not match");
+-		brelse(bh);
+-		goto out_bdev;
++		goto out_bh;
+ 	}
+ 
+-	len = ext4_blocks_count(es);
+-	start = sb_block + 1;
+-	brelse(bh);	/* we're done with the superblock */
++	*j_start = sb_block + 1;
++	*j_len = ext4_blocks_count(es);
++	brelse(bh);
++	return bdev;
++
++out_bh:
++	brelse(bh);
++out_bdev:
++	blkdev_put(bdev, sb);
++	return NULL;
++}
++
++static journal_t *ext4_get_dev_journal(struct super_block *sb,
++				       dev_t j_dev)
++{
++	journal_t *journal;
++	ext4_fsblk_t j_start;
++	ext4_fsblk_t j_len;
++	struct block_device *journal_bdev;
++
++	journal_bdev = ext4_get_journal_dev(sb, j_dev, &j_start, &j_len);
++	if (!journal_bdev)
++		return NULL;
+ 
+-	journal = jbd2_journal_init_dev(bdev, sb->s_bdev,
+-					start, len, blocksize);
++	journal = jbd2_journal_init_dev(journal_bdev, sb->s_bdev, j_start,
++					j_len, sb->s_blocksize);
+ 	if (IS_ERR(journal)) {
  		ext4_msg(sb, KERN_ERR, "failed to create device journal");
  		goto out_bdev;
  	}
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 4a07b3a7561e..b698b94d3927 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1530,7 +1530,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+-	journal->j_private = sb;
+-	if (ext4_read_bh_lock(journal->j_sb_buffer, REQ_META | REQ_PRIO, true)) {
+-		ext4_msg(sb, KERN_ERR, "I/O error on journal device");
+-		goto out_journal;
+-	}
+ 	if (be32_to_cpu(journal->j_superblock->s_nr_users) != 1) {
+ 		ext4_msg(sb, KERN_ERR, "External journal has more than one "
+ 					"user (unsupported) - %d",
+ 			be32_to_cpu(journal->j_superblock->s_nr_users));
+ 		goto out_journal;
+ 	}
+-	EXT4_SB(sb)->s_journal_bdev = bdev;
++	journal->j_private = sb;
++	EXT4_SB(sb)->s_journal_bdev = journal_bdev;
+ 	ext4_init_journal_params(sb, journal);
+ 	return journal;
  
- 	journal = kzalloc(sizeof(*journal), GFP_KERNEL);
- 	if (!journal)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	journal->j_blocksize = blocksize;
- 	journal->j_dev = bdev;
-@@ -1575,6 +1575,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	 * journal descriptor can store up to n blocks, we need enough
- 	 * buffers to write out full descriptor block.
- 	 */
-+	err = -ENOMEM;
- 	n = journal->j_blocksize / jbd2_min_tag_size();
- 	journal->j_wbufsize = n;
- 	journal->j_fc_wbuf = NULL;
-@@ -1606,7 +1607,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	jbd2_journal_destroy_revoke(journal);
- 	journal_fail_superblock(journal);
- 	kfree(journal);
--	return NULL;
-+	return ERR_PTR(err);
+ out_journal:
+ 	jbd2_journal_destroy(journal);
+ out_bdev:
+-	blkdev_put(bdev, sb);
++	blkdev_put(journal_bdev, sb);
+ 	return NULL;
  }
- 
- /* jbd2_journal_init_dev and jbd2_journal_init_inode:
-@@ -1639,8 +1640,8 @@ journal_t *jbd2_journal_init_dev(struct block_device *bdev,
- 	journal_t *journal;
- 
- 	journal = journal_init_common(bdev, fs_dev, start, len, blocksize);
--	if (!journal)
--		return NULL;
-+	if (IS_ERR(journal))
-+		return ERR_CAST(journal);
- 
- 	snprintf(journal->j_devname, sizeof(journal->j_devname),
- 		 "%pg", journal->j_dev);
-@@ -1666,11 +1667,9 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
- 
- 	blocknr = 0;
- 	err = bmap(inode, &blocknr);
--
- 	if (err || !blocknr) {
--		pr_err("%s: Cannot locate journal superblock\n",
--			__func__);
--		return NULL;
-+		pr_err("%s: Cannot locate journal superblock\n", __func__);
-+		return err ? ERR_PTR(err) : ERR_PTR(-EINVAL);
- 	}
- 
- 	jbd2_debug(1, "JBD2: inode %s/%ld, size %lld, bits %d, blksize %ld\n",
-@@ -1680,8 +1679,8 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
- 	journal = journal_init_common(inode->i_sb->s_bdev, inode->i_sb->s_bdev,
- 			blocknr, inode->i_size >> inode->i_sb->s_blocksize_bits,
- 			inode->i_sb->s_blocksize);
--	if (!journal)
--		return NULL;
-+	if (IS_ERR(journal))
-+		return ERR_CAST(journal);
- 
- 	journal->j_inode = inode;
- 	snprintf(journal->j_devname, sizeof(journal->j_devname),
-diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-index 25d8072ccfce..f35a1bbf52e2 100644
---- a/fs/ocfs2/journal.c
-+++ b/fs/ocfs2/journal.c
-@@ -911,9 +911,9 @@ int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
- 
- 	/* call the kernels journal init function now */
- 	j_journal = jbd2_journal_init_inode(inode);
--	if (j_journal == NULL) {
-+	if (IS_ERR(j_journal)) {
- 		mlog(ML_ERROR, "Linux journal layer error\n");
--		status = -EINVAL;
-+		status = PTR_ERR(journal);
- 		goto done;
- 	}
- 
-@@ -1687,9 +1687,9 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
- 	}
- 
- 	journal = jbd2_journal_init_inode(inode);
--	if (journal == NULL) {
-+	if (IS_ERR(journal)) {
- 		mlog(ML_ERROR, "Linux journal layer error\n");
--		status = -EIO;
-+		status = PTR_ERR(journal);
- 		goto done;
- 	}
  
 -- 
 2.34.3
