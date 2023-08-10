@@ -2,285 +2,218 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B583C777A41
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 16:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10107777A94
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 16:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbjHJOPR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 10:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        id S232242AbjHJOYR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 10:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbjHJOPQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 10:15:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584A726BF
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 07:14:35 -0700 (PDT)
+        with ESMTP id S232604AbjHJOYI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 10:24:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC97D2737
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 07:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691676874;
+        s=mimecast20190719; t=1691677395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=p+VgXu9zHdw6MYQYj5s5ZtwAVixqZkUH1tUbwRC+9ig=;
-        b=b4k0IptXzSPI9P/SviP5Fgl31SWsiC3vDK8LDx4yxQ0khXuQyPk+usHuXrGBl0b+0ONq0X
-        2vb1cxdwk+rPwYHkVrNllMioV/JzfBWR7jE4ZVs+xxL0q/ksV/TiGUk6fxiZkFHvAECjNY
-        jIdhk5FaZYQCLnrRiQ/HTWZdc4EABs8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=KCAzgmjDF875IiK3PPkH+kpjKiT/+HkJrnVXtDnRrNM=;
+        b=P18SJNLhv5qDNhyndLxrnEOrg/s0/eRAQyK2VKSRp6ikJPK3tYurFSoouQE+Gq7BWXJiFT
+        LDmbfCfGA6XjO6D20ySFdhf6grSPGFBQdhQYWZ5Tf4InS0qMjcU7+S9L45Dv33NjzEXyT/
+        31tuNsgIwIHAmo4jSxNnC+jr4D4k5WM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-FMd-sFmYOfej5QD7UI7dKQ-1; Thu, 10 Aug 2023 10:14:32 -0400
-X-MC-Unique: FMd-sFmYOfej5QD7UI7dKQ-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-63d41d1542dso13246006d6.0
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 07:14:31 -0700 (PDT)
+ us-mta-295-OoXiq8GRPCKkzSftr9q3_A-1; Thu, 10 Aug 2023 10:23:14 -0400
+X-MC-Unique: OoXiq8GRPCKkzSftr9q3_A-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-76c93466e4cso111091385a.3
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 07:23:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691676871; x=1692281671;
+        d=1e100.net; s=20221208; t=1691677394; x=1692282194;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p+VgXu9zHdw6MYQYj5s5ZtwAVixqZkUH1tUbwRC+9ig=;
-        b=DLOXDukZ4aOs0Q3nQFvl1y3zNbOnDxETiP7IxcE6utPjQAUga1XO5Ch9o5r+Ehdn0A
-         cVzuYGGwFIwrKzo/pTbAbAoNIiQzlz002y2e66sSk3IGpoZ9ljkQmCPt+NXOCloTe74P
-         bS7ZvHK+glxzIpgiUp0DVHHAbkXnKOFveT614kqGS3W0M8fMR9BKi8To8WJvi4RrwkQq
-         /MoRwj3x5XWX1RDn01h88VA6gv7kkg4WzF9i3YVA6EZpme71U+M0B+9iHszc5kn8L6XZ
-         sgxd9k1WnzuvPTLtLvOi4Yk3C1RYt2YQCQBjOhMAMaln9LUa6KjwqkprMMDtvSl619he
-         WiKQ==
-X-Gm-Message-State: AOJu0YzIQ7MgrMrL4jTiFqp13NAB+lfLFD2Cd2y/0aDq1sQjFYexOdJ3
-        eZ14a3nd0CfzK/1VpMn5ehHFw1BNDGOUX2A7gFnXftf/xVbKs9XPP/tN+FXosAZQuLbeyxk2MYE
-        5qokC/lWO70iiQ8GQAvGnWw==
-X-Received: by 2002:a05:620a:4d9:b0:765:7957:1aff with SMTP id 25-20020a05620a04d900b0076579571affmr2433503qks.74.1691676871042;
-        Thu, 10 Aug 2023 07:14:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH40HaXeUOTL/wCROKamODLSNW4udoEeBR5A2VcrxAhT5svShhuQ89vJQULlm/YEUE18UCa4Q==
-X-Received: by 2002:a05:620a:4d9:b0:765:7957:1aff with SMTP id 25-20020a05620a04d900b0076579571affmr2433481qks.74.1691676870681;
-        Thu, 10 Aug 2023 07:14:30 -0700 (PDT)
+        bh=KCAzgmjDF875IiK3PPkH+kpjKiT/+HkJrnVXtDnRrNM=;
+        b=YKqo0MNwNQIl+PrpC9R0wikNWjP24j3CYwHS+ynJziQ07yOvnQOdlngs/U2pSEGNYi
+         69zSAlFJoeysbUDvGJptjOcUCqKpmoP6mkl4tpfO6R3hPmBXOjvdgPSRTUvAM4ROHNTR
+         CUwZgold9Z8e3g0bccEnLCZUhS/p6u1Npp3bgaH/9fDLH+Gp/j/yADTLoidN5rBKlXp+
+         WWckD4aLl1qSMpusfRz+oLakNuz9+GWhHvmEKx7q/C8WlZs0aXR92bKwR68CmetOOhqn
+         4pDp6eTx3kFq34zO8XlEn4EKF+xzHdhKYzjS9XRYB8QEF1oiRlotboTUf7Wm/CNDziaj
+         HuMA==
+X-Gm-Message-State: AOJu0YxkYrdL5lxr2L8K6zOvfybaYF5YNn2K+uQqmKD1FAw2ukfG5QGO
+        +zB8EE20GwB3/nNCsZ77s9eFctydACBkgy1DnDs52sbQq9+YeIS6XHLuFeIqUvBti3c5k7T/1lP
+        CbEAUp5683C6QmM3SVSTSjA==
+X-Received: by 2002:a05:620a:4415:b0:76c:5715:b45f with SMTP id v21-20020a05620a441500b0076c5715b45fmr2400515qkp.14.1691677394009;
+        Thu, 10 Aug 2023 07:23:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF9sujMxZ0oyhjhBo+BnsxRxHvKe1zJHYiQY1FZbpNFgQ/CefTWqQ2cbWAN3VzC4889CiZUDQ==
+X-Received: by 2002:a05:620a:4415:b0:76c:5715:b45f with SMTP id v21-20020a05620a441500b0076c5715b45fmr2400496qkp.14.1691677393698;
+        Thu, 10 Aug 2023 07:23:13 -0700 (PDT)
 Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id w3-20020a05620a148300b007671b599cf5sm510453qkj.40.2023.08.10.07.14.29
+        by smtp.gmail.com with ESMTPSA id m12-20020ae9e00c000000b0076ccf1a0da3sm514123qkk.75.2023.08.10.07.23.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 07:14:30 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 10:17:33 -0400
+        Thu, 10 Aug 2023 07:23:13 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 10:26:17 -0400
 From:   Brian Foster <bfoster@redhat.com>
-To:     Pengfei Xu <pengfei.xu@intel.com>
-Cc:     syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, heng.su@intel.com
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_file_write_iter
-Message-ID: <ZNTxfQ0StiqKbvWj@bfoster>
-References: <0000000000007faf0005fe4f14b9@google.com>
- <000000000000a3f45805ffcbb21f@google.com>
- <ZMsE2q9VX2sQFh/g@xpf.sh.intel.com>
- <ZM0Aj6sBk/5TPdLS@bfoster>
- <ZNBYSso27S6L3sgS@xpf.sh.intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        Ritesh Harjani <ritesh.list@gmail.com>
+Subject: Re: [PATCH] ext4: drop dio overwrite only flag and associated warning
+Message-ID: <ZNTziahrkoivEBdp@bfoster>
+References: <20230804182952.477247-1-bfoster@redhat.com>
+ <20230807105906.teovthvnwrpbmx7n@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZNBYSso27S6L3sgS@xpf.sh.intel.com>
+In-Reply-To: <20230807105906.teovthvnwrpbmx7n@quack3>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 10:34:50AM +0800, Pengfei Xu wrote:
-> Hi Brian,
-> 
-> On 2023-08-04 at 09:43:43 -0400, Brian Foster wrote:
-> > On Thu, Aug 03, 2023 at 09:37:30AM +0800, Pengfei Xu wrote:
-> > > On 2023-07-05 at 23:33:43 -0700, syzbot wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > > > 
-> > > > HEAD commit:    6843306689af Merge tag 'net-6.5-rc1' of git://git.kernel.o..
-> > > > git tree:       net
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=114522aca80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
-> > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102cb190a80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c49d90a80000
-> > > > 
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/5c3fa1329201/vmlinux-68433066.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
-> > > > 
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
-> > > > WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
-> > > > Modules linked in:
-> > > > CPU: 1 PID: 5382 Comm: syz-executor288 Not tainted 6.4.0-syzkaller-11989-g6843306689af #0
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-> > > > RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
-> > > > RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
-> > > > Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 5d 5a 5b ff 85 db 0f 85 d5 fc ff ff e8 30 5e 5b ff <0f> 0b e9 c9 fc ff ff e8 24 5e 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
-> > > > RSP: 0018:ffffc9000522fc30 EFLAGS: 00010293
-> > > > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > > > RDX: ffff8880277a3b80 RSI: ffffffff82298140 RDI: 0000000000000005
-> > > > RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> > > > R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832a60
-> > > > R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
-> > > > FS:  00007f154db95700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > CR2: 00007f154db74718 CR3: 000000006bcc7000 CR4: 00000000003506e0
-> > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > Call Trace:
-> > > >  <TASK>
-> > > >  call_write_iter include/linux/fs.h:1871 [inline]
-> > > >  new_sync_write fs/read_write.c:491 [inline]
-> > > >  vfs_write+0x981/0xda0 fs/read_write.c:584
-> > > >  ksys_write+0x122/0x250 fs/read_write.c:637
-> > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > > >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> > > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > > > RIP: 0033:0x7f154dc094f9
-> > > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> > > > RSP: 002b:00007f154db952f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > > > RAX: ffffffffffffffda RBX: 00007f154dc924f0 RCX: 00007f154dc094f9
-> > > > RDX: 0000000000248800 RSI: 0000000020000000 RDI: 0000000000000006
-> > > > RBP: 00007f154dc5f628 R08: 0000000000000000 R09: 0000000000000000
-> > > > R10: 0000000000000000 R11: 0000000000000246 R12: 652e79726f6d656d
-> > > > R13: 656c6c616b7a7973 R14: 6465646165726874 R15: 00007f154dc924f8
-> > > >  </TASK>
-> > > > 
-> > > 
-> > > Above issue in dmesg is:
-> > > "WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
-> > > 
-> > > I found the similar behavior issue:
-> > > "WARNING: CPU: 0 PID: 182134 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
-> > > repro.report shows similar details.
-> > > 
-> > > Updated the bisect info for the above similar issue:
-> > > Bisected and the problem commit was:
-> > > "
-> > > 310ee0902b8d9d0a13a5a13e94688a5863fa29c2: ext4: allow concurrent unaligned dio overwrites
-> > > "
-> > > After reverted the commit on top of v6.5-rc3, this issue was gone.
-> > > 
+On Mon, Aug 07, 2023 at 12:59:06PM +0200, Jan Kara wrote:
+> On Fri 04-08-23 14:29:52, Brian Foster wrote:
+> > The commit referenced below opened up concurrent unaligned dio under
+> > shared locking for pure overwrites. In doing so, it enabled use of
+> > the IOMAP_DIO_OVERWRITE_ONLY flag and added a warning on unexpected
+> > -EAGAIN returns as an extra precaution, since ext4 does not retry
+> > writes in such cases. The flag itself is advisory in this case since
+> > ext4 checks for unaligned I/Os and uses appropriate locking up
+> > front, rather than on a retry in response to -EAGAIN.
 > > 
-> > Hi Pengfei,
+> > As it turns out, the warning check is susceptible to false positives
+> > because there are scenarios where -EAGAIN is expected from the
+> > storage layer without necessarily having IOCB_NOWAIT set on the
+> > iocb. For example, io_uring can set IOCB_HIPRI, which the iomap/dio
+> > layer turns into REQ_POLLED|REQ_NOWAIT on the bio, which then can
+> > result in an -EAGAIN result if the block layer is unable to allocate
+> > a request, etc. syzbot has also reported an instance of this warning
+> > and while the source of the -EAGAIN in that case is not currently
+> > known, it is confirmed that the iomap dio overwrite flag is also not
+> > set.
 > > 
-> > Thanks for narrowing this down (and sorry for missing the earlier
-> > report). Unfortunately I've not been able to reproduce this locally
-> > using the generated reproducer. I tried both running the test program on
-> > a local test vm as well as booting the generated disk image directly.
+> > Since this flag is precautionary, avoid the false positive warning
+> > and future whack-a-mole games with -EAGAIN returns by removing it
+> > and the associated warning. Update the comments to document when
+> > concurrent unaligned dio writes are allowed and why the associated
+> > flag is not used.
 > > 
-> > That said, I have received another report of this warning that happens
-> > to be related to io_uring. The cause in that particular case is that
-> > io_uring sets IOCB_HIPRI, which iomap dio turns into
-> > REQ_POLLED|REQ_NOWAIT on the bio without necessarily having IOCB_NOWAIT
-> > set on the request. This means we can expect -EAGAIN returns from the
-> > storage layer without necessarily passing DIO_OVERWRITE_ONLY to iomap,
-> > which in turn basically means that the warning added by this commit is
-> > wrong.
-> > 
-> > I did submit the test patch at the link [1] referenced below to syzbot
-> > to see if the OVERWRITE_ONLY flag is set and the results I got this
-> > morning only showed the original !IOCB_NOWAIT warning. So while I still
-> > do not know the source of the -EAGAIN in the syzbot test (and I would
-> > like to), this shows that the overwrite flag is not involved and thus
-> > the -EAGAIN is presumably unrelated to that logic.
-> > 
-> > So in summary I think the right fix is to just remove the overwrite flag
-> > and warning from this ext4 codepath. It was always intended as an extra
-> > precaution to support the warning, and the latter is clearly wrong. I'll
-> > submit another test change in a separate mail just to see if syzbot
-> > finds anything else and plan to send a proper patch to the list. In the
-> > meantime, if you have any suggestions to help reproduce via the
-> > generated program, I'm still interested in trying to grok where that
-> > particular -EAGAIN comes from.. Thanks.
+> > Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+> > Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
+> > Signed-off-by: Brian Foster <bfoster@redhat.com>
 > 
-> Thanks for your patch! I'm glad it's helpful.
-> 
-> It could not be reproduced immediately and it takes more than 200s to
-> reproduce this issue, anyway here is my reproduced steps.
-> As following link info for example, it's not my reproduced environment and it's
-> alsmost the same for issue reproducing:
-> https://lore.kernel.org/all/0000000000007faf0005fe4f14b9@google.com/T/#mf1678f17b7b7c4b3cc73abef436aac68787397ae
->   -> disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
->   -> kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
-> 
-> I used below simple script to boot up vm:
-> "
-> #!/bin/bash
-> 
-> bzimage=$1
-> 
-> [[ -z "$bzimage" ]] && bzimage="./bzImage-68433066"
-> qemu-system-x86_64 \
->         -m 2G \
->         -smp 2 \
->         -kernel $bzimage \
->         -append "console=ttyS0 root=/dev/sda1 earlyprintk=serial net.ifnames=0 thunderbolt.dyndbg" \
->         -drive file=./disk-68433066.raw,format=raw \
->         -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10023-:22 \
->         -cpu host \
->         -net nic,model=e1000 \
->         -enable-kvm \
->         -nographic \
->         2>&1 | tee vmd.log
-> "
-> 
-> gcc -pthread -o repro repro.c
-> scp -P 10023 repro root@localhost:/root/
-> 
-> And then access to above vm and execute the reproduced binary to reproduce.
-> Sometimes it takes some time to reproduce the problem.
-> Hope the above information helps you to reproduce the problem next time.
+> So if I understand right, you're trying to say that if iomap_dio_rw()
+> returns -EAGAIN, the caller of ext4_file_write_iter() and not
+> ext4_file_write_iter() itself is expected to deal with it (like with
+> IOCB_NOWAIT or other ways that can trigger similar behavior). That sounds
+> good to me and the patch looks also fine. Feel free to add:
 > 
 
-Thanks! This was very useful as I've been able to reproduce fairly
-reliably using this script. I suspect something was sufficiently
-different in my guest env that made this difficult to reproduce for
-whatever reason.
+Yeah.. the TLDR is basically that there were other paths that could set
+REQ_NOWAIT on the bio (i.e. bio_set_polled()) that were unrelated to
+IOCB_NOWAIT, hence the warning was spurious.
 
-The source of the -EAGAIN in this particular case is the
-mmap_read_lock_killable() call down in __get_user_pages_locked(). I
-haven't fully characterized test behavior, but I suppose this is being
-interrupted somehow or another. From there, this only occasionally
-reproduces the ext4 warning because the iomap iteration code
-(iomap_dio_bio_iter()) only returns the error when no progress has been
-made to that point, otherwise it's a short write.
+I recently noticed this patch [1], however, that seems to untangle some
+of this logic. This patch looks like it wants to enforce IOCB_NOWAIT ->
+REQ_NOWAIT for the particular case described in the commit log (i.e.
+REQ_POLLED), which I also think would avoid the warning.
 
-So this is indeed different from the io_uring variant I described
-earlier, but is still another instance of an -EAGAIN return unrelated to
-the overwrite logic or *_NOWAIT.
+I was also finally able to reproduce the syzbot variant of the warning
+and confirmed that it is different from the io_uring/HIPRI variant, but
+still spurious wrt to IOCB_NOWAIT [2]. That one relates to GUP and doing
+a killable wait on the mmap lock. I think I'll post a v2 of this patch
+just to update the commit log with some of these details and I'll add
+your R-b as well. Thanks for the review!
 
 Brian
 
-> I saw syzbot already verified your latest patch and it's passed.
-> https://syzkaller.appspot.com/x/log.txt?x=17939bc1a80000
+[1] https://lore.kernel.org/linux-block/b655aa3a-17f6-d25a-38b1-4a02e87e2c98@kernel.dk/
+[2] https://lore.kernel.org/linux-ext4/ZNTxfQ0StiqKbvWj@bfoster/
+
+> Reviewed-by: Jan Kara <jack@suse.cz>
 > 
-> Best Regards,
-> Thanks!
-> 
+> 								Honza
+> > ---
+> > 
+> > Hi all,
+> > 
+> > This addresses some false positives associated with the warning for the
+> > recently merged patch. I considered leaving the flag and more tightly
+> > associating the warning to it (instead of IOCB_NOWAIT), but ISTM that is
+> > still flakey and I'd rather not play whack-a-mole when the assumption is
+> > shown to be wrong.
+> > 
+> > I'm still waiting on a syzbot test of this patch, but local tests look
+> > Ok and I'm away for a few days after today so wanted to get this on the
+> > list. Thoughts, reviews, flames appreciated.
 > > 
 > > Brian
 > > 
-> > [1] https://syzkaller.appspot.com/x/patch.diff?x=109a7c96a80000
+> >  fs/ext4/file.c | 25 ++++++++++---------------
+> >  1 file changed, 10 insertions(+), 15 deletions(-)
 > > 
-> > > All information: https://github.com/xupengfe/syzkaller_logs/tree/main/230730_134501_ext4_file_write_iter
-> > > Reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.c
-> > > repro.prog(syscall reproduced steps): https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.prog
-> > > repro.report: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.report
-> > > Bisect log: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/bisect_info.log
-> > > Kconfig: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/kconfig_origin
-> > > Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/6eaae198076080886b9e7d57f4ae06fa782f90ef_dmesg.log
-> > > 
-> > > Best Regards,
-> > > Thanks!
-> > > 
-> > > > 
-> > > > ---
-> > > > If you want syzbot to run the reproducer, reply with:
-> > > > #syz test: git://repo/address.git branch-or-commit-hash
-> > > > If you attach or paste a git patch, syzbot will apply it before testing.
-> > > 
+> > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> > index c457c8517f0f..73a4b711be02 100644
+> > --- a/fs/ext4/file.c
+> > +++ b/fs/ext4/file.c
+> > @@ -476,6 +476,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+> >  	 * required to change security info in file_modified(), for extending
+> >  	 * I/O, any form of non-overwrite I/O, and unaligned I/O to unwritten
+> >  	 * extents (as partial block zeroing may be required).
+> > +	 *
+> > +	 * Note that unaligned writes are allowed under shared lock so long as
+> > +	 * they are pure overwrites. Otherwise, concurrent unaligned writes risk
+> > +	 * data corruption due to partial block zeroing in the dio layer, and so
+> > +	 * the I/O must occur exclusively.
+> >  	 */
+> >  	if (*ilock_shared &&
+> >  	    ((!IS_NOSEC(inode) || *extend || !overwrite ||
+> > @@ -492,21 +497,12 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+> >  
+> >  	/*
+> >  	 * Now that locking is settled, determine dio flags and exclusivity
+> > -	 * requirements. Unaligned writes are allowed under shared lock so long
+> > -	 * as they are pure overwrites. Set the iomap overwrite only flag as an
+> > -	 * added precaution in this case. Even though this is unnecessary, we
+> > -	 * can detect and warn on unexpected -EAGAIN if an unsafe unaligned
+> > -	 * write is ever submitted.
+> > -	 *
+> > -	 * Otherwise, concurrent unaligned writes risk data corruption due to
+> > -	 * partial block zeroing in the dio layer, and so the I/O must occur
+> > -	 * exclusively. The inode lock is already held exclusive if the write is
+> > -	 * non-overwrite or extending, so drain all outstanding dio and set the
+> > -	 * force wait dio flag.
+> > +	 * requirements. We don't use DIO_OVERWRITE_ONLY because we enforce
+> > +	 * behavior already. The inode lock is already held exclusive if the
+> > +	 * write is non-overwrite or extending, so drain all outstanding dio and
+> > +	 * set the force wait dio flag.
+> >  	 */
+> > -	if (*ilock_shared && unaligned_io) {
+> > -		*dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
+> > -	} else if (!*ilock_shared && (unaligned_io || *extend)) {
+> > +	if (!*ilock_shared && (unaligned_io || *extend)) {
+> >  		if (iocb->ki_flags & IOCB_NOWAIT) {
+> >  			ret = -EAGAIN;
+> >  			goto out;
+> > @@ -608,7 +604,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> >  		iomap_ops = &ext4_iomap_overwrite_ops;
+> >  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+> >  			   dio_flags, NULL, 0);
+> > -	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
+> >  	if (ret == -ENOTBLK)
+> >  		ret = 0;
+> >  
+> > -- 
+> > 2.41.0
 > > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 > 
 
