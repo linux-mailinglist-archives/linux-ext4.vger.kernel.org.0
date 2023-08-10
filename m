@@ -2,67 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E0E777778
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 13:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AC47778FB
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 15:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjHJLsv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 07:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
+        id S234938AbjHJNBm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 09:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjHJLsu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 07:48:50 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383091
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 04:48:50 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe58faa5cfso1182874e87.3
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 04:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691668128; x=1692272928;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lMY8frrca41Vekt3XIPmeD0Lb8cpCjOB+63wKDM1sk4=;
-        b=yuwvwEWssHdcYJQa4HinMo7yhgk3OtI280P/MzEtYaRX9hELEOoyJj8zQkrN4PmSLh
-         SiEQIrwGM/cUlp2BHZSAff/8BWu9i4UFfIB8kBea+Dh1GTsSjEDPfBqYnx0GuGt2vkEV
-         EArkKUnhnOluC1F60TzIyeWi6c9+c/zn36PI0ssVaGzdF14uCbLlwbWTvXujWlTU08VV
-         ysLSmSNteK+l0yFq49mlkqhJ6Lng0BvLL7FuXdrxdTqpIIHNTjvoaeVSf71o2dtrJYPm
-         1yyCxDmKK67mKgLYh1yhueSJ1aRgkgHANLuK1l/uCEUoUz2JKsGohgb6L51CVCYN5hX1
-         EdRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691668128; x=1692272928;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lMY8frrca41Vekt3XIPmeD0Lb8cpCjOB+63wKDM1sk4=;
-        b=bgbdTQrslBofbWm9m0g/qu0yK7S+OQ/uw3jatEsAK5ysC2AZjHEqkgDUf4xijULUj1
-         03fV7uy7QjIq0+xB62/G7zRRgAoZnYPPFjWleLpX9rkKwgHBdHZgeqSZesiNX1J6oCpt
-         6v2e9Er1/mj8elfowrtCjkOGALGJ7q3pI14+U12zOSbzYBdZMnO31AVpuZoDTAQOkiVY
-         TJTwOvJgWrvFlCY8vpx6pp6JW3VcTZfXUw2gL/Pj0TY/Ln9wVf0u9fp4zT+lGYIa1r4d
-         oHHY58RSQz807MO680nc00wQryFc0s/BgUo5fun9sS5kt3rWFXtXgwcaC3HCsl9gJ9Dl
-         i5zA==
-X-Gm-Message-State: AOJu0YxqrxWEGZRoVt5h7uk1xsx1QiJrlfb7LhbddL9pQj/rIAi6nVie
-        kPSredCRYO0tv+z11OJho7YBL1/LZ2FmTretdOU=
-X-Google-Smtp-Source: AGHT+IFf5Nd4Kj6BQvvHettFkx3xvQttVGAmyrssbzvT521pULBTk2T/lpVoMMhKttJVREyUAOoXbw==
-X-Received: by 2002:a05:6512:2141:b0:4fa:6d62:9219 with SMTP id s1-20020a056512214100b004fa6d629219mr1370006lfr.62.1691668128183;
-        Thu, 10 Aug 2023 04:48:48 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003fe2f3a89d4sm1925342wma.7.2023.08.10.04.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 04:48:47 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 14:48:45 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Zhang Yi <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [bug report] ext4: convert symlink external data block mapping
- to bdev
-Message-ID: <0ff22f40-3eee-44ed-970d-8ee6af7979e4@kadam.mountain>
-References: <797feb23-f8c8-4ce7-b25c-b4f591be1387@moroto.mountain>
- <7f69ac7e-bfad-ec37-f48b-0633583838d5@huawei.com>
+        with ESMTP id S231774AbjHJNBl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 09:01:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6263F2691;
+        Thu, 10 Aug 2023 06:01:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 01DA665BB2;
+        Thu, 10 Aug 2023 13:01:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F141C433CC;
+        Thu, 10 Aug 2023 13:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691672500;
+        bh=L8v0r9doqZel/J2v7dujLyNos+92a27rf2u0qXW1J3s=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=buHrPopGvpa2PXQH2ihgGLWcE3tKpdzREf7fOef2SobndHttHp3mY7Zbo+pWmSjd2
+         KMTnXejW6RxtiMq2GmdVWrfMASOuIkFWsGWFylNvcdafpUac7PYBKCmkXvU2g62wb8
+         rM8BUTgNjphg88x1gT8UKtdTVA4JxWWEDKJN9wr7DBaWdsX/CszZDkjC6SQ/RTprXt
+         7kxeMpaYIOPZVbmujFI2QewnZtkhD6cYZAhyC/PFUYrPDYv/GpspXeiAQURb6Rzuwg
+         cbT6Ns2vdWIMXD6/0aKBc8h9zcEY7xvoVtSJHa2tZhrEbnYoLfZPZXTBqDOOpDDHWb
+         8+hyUXgwVQJwg==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1c0fa9dd74fso278977fac.3;
+        Thu, 10 Aug 2023 06:01:40 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyVIRrSKR8fyBz8TNv3lwa/oGU8Hrl2y6V1T4arRU68I/TjfUb7
+        2keRBRF/oSkzqE+k+CFrsdm5Zvv9byEVqjp/OYY=
+X-Google-Smtp-Source: AGHT+IHGXX8j5FtK2vAGECuIYYeKRL8lP5vqMAg+4bwDrvliN//5tmNM3DXELlLFKcDyM4MBXQs+Ek4XnYl/S6pN5ZI=
+X-Received: by 2002:a05:6870:239b:b0:1bf:ce5b:436 with SMTP id
+ e27-20020a056870239b00b001bfce5b0436mr2584340oap.58.1691672499477; Thu, 10
+ Aug 2023 06:01:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f69ac7e-bfad-ec37-f48b-0633583838d5@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Received: by 2002:a8a:482:0:b0:4e8:f6ff:2aab with HTTP; Thu, 10 Aug 2023
+ 06:01:38 -0700 (PDT)
+In-Reply-To: <20230809220545.1308228-10-hch@lst.de>
+References: <20230809220545.1308228-1-hch@lst.de> <20230809220545.1308228-10-hch@lst.de>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 10 Aug 2023 22:01:38 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd80rJ6v4=b-=i4XUi_0d9JNqEothmh3614FSxPg1apitA@mail.gmail.com>
+Message-ID: <CAKYAXd80rJ6v4=b-=i4XUi_0d9JNqEothmh3614FSxPg1apitA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] exfat: don't RCU-free the sbi
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,45 +70,11 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 07:25:02PM +0800, Zhang Yi wrote:
-> On 2023/8/10 18:31, Dan Carpenter wrote:
-> > Hello Zhang Yi,
-> > 
-> > The patch 6493792d3299: "ext4: convert symlink external data block
-> > mapping to bdev" from Apr 24, 2022 (linux-next), leads to the
-> > following Smatch static checker warning:
-> > 
-> > 	fs/ext4/namei.c:3353 ext4_init_symlink_block()
-> > 	error: potential NULL/IS_ERR bug 'bh'
-> > 
-> > fs/ext4/namei.c
-> >     3337 static int ext4_init_symlink_block(handle_t *handle, struct inode *inode,
-> >     3338                                    struct fscrypt_str *disk_link)
-> >     3339 {
-> >     3340         struct buffer_head *bh;
-> >     3341         char *kaddr;
-> >     3342         int err = 0;
-> >     3343 
-> >     3344         bh = ext4_bread(handle, inode, 0, EXT4_GET_BLOCKS_CREATE);
-> >     3345         if (IS_ERR(bh))
-> >     3346                 return PTR_ERR(bh);
-> > 
-> >>From reading the code, it looks like ext4_bread() can return both error
-> > pointers and NULL.  (Second return statement).
-> 
-> Hello, Dan,
-> 
-> After checking the code, we have passed in EXT4_GET_BLOCKS_CREATE to
-> ext4_bread(), the return value must be an error code or a valid
-> buffer_head, it's impossible to return NULL. So I think the warning
-> is a false positive.
-> 
+2023-08-10 7:05 GMT+09:00, Christoph Hellwig <hch@lst.de>:
+> There are no RCU critical sections for accessing any information in the
+> sbi, so drop the call_rcu indirection for freeing the sbi.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Namjae Jeon <linkinjeon@kernel.org>
 
-Yep.  You're right.  Thanks for taking a look at this.
-
-Eventually, I will get around to tracking bits set across function
-boundaries and that should silence this warning.
-
-regards,
-dan carpenter
-
+Thanks!
