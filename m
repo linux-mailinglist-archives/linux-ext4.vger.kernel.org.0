@@ -2,62 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2098777362
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 10:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A523777367
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 10:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbjHJIxa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 04:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
+        id S231365AbjHJIye (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 04:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjHJIx3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 04:53:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CE72107;
-        Thu, 10 Aug 2023 01:53:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 11009653DD;
-        Thu, 10 Aug 2023 08:53:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2DCCC433C7;
-        Thu, 10 Aug 2023 08:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691657608;
-        bh=BtL1CW/BIRsOpqWpjUouz4XhudPj2+tb6Ydw0pipp8M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rn6dFD2s8fas8mQMZfpd8BxPHu0IvFQux9ZykFzC2nO0nqOXoIO7icG247IwWkauW
-         MesT9/KdwgoOvqQLTDwjz00V6y7L8bJ1QR8noDuVY0uukV5swgzjFyoe+4IUt0lhHB
-         2ORWZaiX9P6B707DLm1Y5japtsynGQRTka95D9SztX2DF5qGz7yeySx32bzukUWhQj
-         2fhTKfzZ1ib39Zh4CTBoe7pUNmnB3m/DyXDRMYMgNeQzwS3cTz+SQLJO6BzjenwfBA
-         1WLIvkDDQCanhfibs0C5OvUYYxBXW7NxsS6pMFk0Vad6yJ9vFjHHPGjcurGSMTSD18
-         mmE/IXFIzdA2Q==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 01/13] xfs: reformat the xfs_fs_free prototype
-Date:   Thu, 10 Aug 2023 10:53:21 +0200
-Message-Id: <20230810-unmerklich-grandios-281ae311e396@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230809220545.1308228-2-hch@lst.de>
-References: <20230809220545.1308228-1-hch@lst.de> <20230809220545.1308228-2-hch@lst.de>
+        with ESMTP id S229604AbjHJIye (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 04:54:34 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839F6211E
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 01:54:33 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RM12F5Yjhz4f3jqc
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 16:54:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.170])
+        by APP4 (Coremail) with SMTP id gCh0CgD3hqm6pdRkGjJ7AQ--.1500S4;
+        Thu, 10 Aug 2023 16:54:28 +0800 (CST)
+From:   Zhang Yi <yi.zhang@huaweicloud.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
+Subject: [PATCH v2 00/12] ext4,jbd2: cleanup journal load and initialization process
+Date:   Thu, 10 Aug 2023 16:54:05 +0800
+Message-Id: <20230810085417.1501293-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2698; i=brauner@kernel.org; h=from:subject:message-id; bh=gfnX+yUmCtz6SA8c5/vj+4alYEm7L/Rv30+a/Btecrg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRcWXLyd+edQ5Kf/hsb1T3dt1BdOv/tgsv/z9k+ZjJv+s14 77JjZkcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEhJoZGTqORHf9MZrHbT3VhV/0Ok Pv1V8b5ZlvvCtgucJ1ZPUS+SCG/xEHNdn25/9/xytyrs/ijQu/Ydun7TITcs3q+jY1+Gqc4AcA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CM-TRANSID: gCh0CgD3hqm6pdRkGjJ7AQ--.1500S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4DKFy7Cw13XF43JF4Dtwb_yoW8Cw1fpF
+        43Ka4furWUC34xAF4IqF4xJFWfWw1IkFW7GrnrCwn7Aw4rZFnFqr4ktr1rJFyUGrWru3W2
+        gF4UGanxKwnYk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,72 +57,51 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 09 Aug 2023 15:05:33 -0700, Christoph Hellwig wrote:
-> The xfs_fs_free prototype formatting is a weird mix of the classic XFS
-> style and the Linux style.  Fix it up to be consistent.
-> 
-> 
+From: Zhang Yi <yi.zhang@huawei.com>
 
-I've completely reshuffled that branch now:
+v1->v2:
+ - Fix the changelog in patch 1 and 2.
+ - Simplify the comments for local functions in patch 6.
+ - Remove the incorrect zero fast_commit blocks check in patch 7.
+ - Fix a UAF problem in patch 11.
 
-(1) bd_super removal
-(2) ->kill_sb() fixes
-(3) setup_bdev_super() work (open devices after sb creation)
-(4) fs_holder_ops rework
-(5) exclusive sb creation
+Hello,
 
-I think that's the most natural order. That involved quite a bit of
-massaging, so please make sure that everything's in proper order. The
-most sensitive and error prone part of the reordering is that before the
-switch from fs_type to sb as holder took place prior to this series.
-Whereas due to the reordering the switch now takes place after this
-series. This is good though because we can't use setup_bdev_super()
-correctly anyway before we have the ->kill_sb() changes done.
+This patch set cleanup the journal load and initialization process
+(discussed and suggested by Ted in [1]). Firstly, move reading of the
+journal superblock from jbd2_journal_load() and jbd2_journal_wipe()
+early to journal_init_common(), and completely drop the kludgy call of
+journal_get_superblock() in jbd2_journal_check_used_features(). Then
+cleanup the ext4_get_journal() and ext4_get_dev_journal(), making their
+initialization process and error handling process more clear, and return
+proper errno if some bad happens. Finally rename those two functions to
+jbd2_open_{dev,inode}_journal. This patch set has passed
+'kvm-xfstests -g auto'.
 
-git rebase -i v6.5-rc1 -x "make fs/"
+[1] https://lore.kernel.org/linux-ext4/20230617185057.GA343628@mit.edu/
 
-builds cleanly. Please double check!
+Thanks,
+Yi.
 
----
+Zhang Yi (12):
+  jbd2: move load_superblock() dependent functions
+  jbd2: move load_superblock() into journal_init_common()
+  jbd2: don't load superblock in jbd2_journal_check_used_features()
+  jbd2: checking valid features early in journal_get_superblock()
+  jbd2: open code jbd2_verify_csum_type() helper
+  jbd2: cleanup load_superblock()
+  jbd2: add fast_commit space check
+  jbd2: cleanup journal_init_common()
+  jbd2: drop useless error tag in jbd2_journal_wipe()
+  jbd2: jbd2_journal_init_{dev,inode} return proper error return value
+  ext4: cleanup ext4_get_dev_journal() and ext4_get_journal()
+  ext4: ext4_get_{dev}_journal return proper error value
 
-Applied to the vfs.super branch of the vfs/vfs.git tree.
-Patches in the vfs.super branch should appear in linux-next soon.
+ fs/ext4/super.c    | 154 ++++++++-------
+ fs/jbd2/journal.c  | 465 +++++++++++++++++++++------------------------
+ fs/ocfs2/journal.c |   8 +-
+ 3 files changed, 299 insertions(+), 328 deletions(-)
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+-- 
+2.34.3
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.super
-
-[01/13] xfs: reformat the xfs_fs_free prototype
-        https://git.kernel.org/vfs/vfs/c/183f60c58f51
-[02/13] xfs: remove a superfluous s_fs_info NULL check in xfs_fs_put_super
-        https://git.kernel.org/vfs/vfs/c/94d1bb71d395
-[03/13] xfs: free the xfs_mount in ->kill_sb
-        https://git.kernel.org/vfs/vfs/c/b92fea73ce6a
-[04/13] xfs: remove xfs_blkdev_put
-        https://git.kernel.org/vfs/vfs/c/3b6c117834c2
-[05/13] xfs: close the RT and log block devices in xfs_free_buftarg
-        https://git.kernel.org/vfs/vfs/c/6d4e81f94e80
-[06/13] xfs: close the external block devices in xfs_mount_free
-        https://git.kernel.org/vfs/vfs/c/bfeb8750e6fe
-[07/13] xfs: document the invalidate_bdev call in invalidate_bdev
-        https://git.kernel.org/vfs/vfs/c/e4676171bad6
-[08/13] ext4: close the external journal device in ->kill_sb
-        https://git.kernel.org/vfs/vfs/c/e1a1b0fba97b
-[09/13] exfat: don't RCU-free the sbi
-        https://git.kernel.org/vfs/vfs/c/6a3f5dee46f6
-[10/13] exfat: free the sbi and iocharset in ->kill_sb
-        https://git.kernel.org/vfs/vfs/c/cc0313e8135e
-[11/13] ntfs3: rename put_ntfs ntfs3_free_sbi
-        https://git.kernel.org/vfs/vfs/c/34371bb44afc
-[12/13] ntfs3: don't call sync_blockdev in ntfs_put_super
-        https://git.kernel.org/vfs/vfs/c/91952e99005b
-[13/13] ntfs3: free the sbi in ->kill_sb
-        https://git.kernel.org/vfs/vfs/c/5fb25fde7dee
