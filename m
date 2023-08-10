@@ -2,56 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB9C777640
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 12:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DC777766F
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 13:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjHJKt4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 06:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S232819AbjHJLFw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 07:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjHJKtv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 06:49:51 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48FB2127;
-        Thu, 10 Aug 2023 03:49:50 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S231643AbjHJLFv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 07:05:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E8F2108;
+        Thu, 10 Aug 2023 04:05:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C2E46607226;
-        Thu, 10 Aug 2023 11:49:46 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691664589;
-        bh=2DHTnt0ykY9ysNtT/x/1b9zKTmFg8gH3BLKxpnIDOD0=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=YikP6BV5qWCfRmdN6ZPVjujftznapPz57ClZ/HXZvE1TYTx/xn7HKPSHDJ40lrj0I
-         LcyulQ/mELfZ4eMaWZDheYfI7t968zoPcv6gTOEpbaq2bxs+RkBTKaN2FMyhbdVO6N
-         ItkxKFk0Y7yP0InnhjOm4IYlFBam4iZIfyomrjMXVqZVIY45Z9WoSykBG8jxfiVje5
-         b+ifToyPACdWOKO2l+Aa99WBTRdrsy7/ejwiF+37kar8tWhbc8K6PCsbcx3KFxWiBp
-         VfYOHM+AGWRT8Qi0yYSmCx0NOb1erdcaU4oCphb7w4oNXxGigU8XJM9p8FLeXXijb2
-         zn3VUz3e4xaBQ==
-Message-ID: <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
-Date:   Thu, 10 Aug 2023 15:49:42 +0500
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5FD561F749;
+        Thu, 10 Aug 2023 11:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691665548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DFh8evqtxspjStydxXxKkjnilpW0tYumnluwrTMIZo=;
+        b=vLT7nxhsKaVB+2d6j1Yf5X8t1GLYqRuuN4g6ZutMMICOunL7y0FZNv7gLZiYXzC/l2Xomu
+        I8xmm0CPUZCp/iFMbz+eWr+/L/YJb1/utRAjSeiWYdJX1v/2EQl6s2syK6Yg4TzJfLlWXK
+        j+SruuD6SzbR8Z3B6IZKMOfh62510CU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691665548;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DFh8evqtxspjStydxXxKkjnilpW0tYumnluwrTMIZo=;
+        b=gjop8gtt3TnFXcbkSm06MHlxNzKkmd+CJQt27qbqqSRylA/dQexstbBZ/MQ0KnNaiV041a
+        Mrb6ToOuPtQHkpAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EB2E138E2;
+        Thu, 10 Aug 2023 11:05:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bLIxE4zE1GQpLAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 11:05:48 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D2565A076F; Thu, 10 Aug 2023 13:05:47 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 13:05:47 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 02/12] nilfs2: use setup_bdev_super to de-duplicate the
+ mount code
+Message-ID: <20230810110547.ks62g2flysgwpgru@quack3>
+References: <20230802154131.2221419-1-hch@lst.de>
+ <20230802154131.2221419-3-hch@lst.de>
+ <20230803114651.ihtqqgthbdjjgxev@quack3>
+ <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>
-Subject: Re: [v6.1] kernel BUG in ext4_writepages
-To:     syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-References: <00000000000081f8c905f6c24e0d@google.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <00000000000081f8c905f6c24e0d@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+In-Reply-To: <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,90 +86,85 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
-
-Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
-and provided reproducer as well.
-
-	BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
-
-I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
-next-20230809.
-
-This part of code hasn't been changed from the time it was introduced
-4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
-inlined data is being destroyed before copying it somewhere else.
-
-Please consider this a report.
-
-Regards,
-Muhammad Usama Anjum
-
-
-On 3/13/23 11:34 AM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+On Fri 04-08-23 11:01:39, Ryusuke Konishi wrote:
+> On Thu, Aug 3, 2023 at 8:46 PM Jan Kara wrote:
+> >
+> > On Wed 02-08-23 17:41:21, Christoph Hellwig wrote:
+> > > Use the generic setup_bdev_super helper to open the main block device
+> > > and do various bits of superblock setup instead of duplicating the
+> > > logic.  This includes moving to the new scheme implemented in common
+> > > code that only opens the block device after the superblock has allocated.
+> > >
+> > > It does not yet convert nilfs2 to the new mount API, but doing so will
+> > > become a bit simpler after this first step.
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >
+> > AFAICS nilfs2 could *almost* use mount_bdev() directly and then just do its
 > 
-> HEAD commit: 1cc3fcf63192 Linux 6.1.18
-> git tree: linux-6.1.y
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
-> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
-^ Kernel config
+> > snapshot thing after mount_bdev() returns. But it has this weird logic
+> > that: "if the superblock is already mounted but we can shrink the whole
+> > dcache, then do remount instead of ignoring mount options". Firstly, this
+> > looks racy - what prevents someone from say opening a file on the sb just
+> > after nilfs_tree_is_busy() shrinks dcache? Secondly, it is inconsistent
+> > with any other filesystem so it's going to surprise sysadmins not
+> > intimately knowing nilfs2. Thirdly, from userspace you cannot tell what
+> > your mount call is going to do. Last but not least, what is it really good
+> > for? Ryusuke, can you explain please?
+> >
+> >                                                                 Honza
+> 
+> I think you are referring to the following part:
+> 
+> >        if (!s->s_root) {
+> ...
+> >        } else if (!sd.cno) {
+> >                if (nilfs_tree_is_busy(s->s_root)) {
+> >                        if ((flags ^ s->s_flags) & SB_RDONLY) {
+> >                                nilfs_err(s,
+> >                                          "the device already has a %s mount.",
+> >                                          sb_rdonly(s) ? "read-only" : "read/write");
+> >                                err = -EBUSY;
+> >                                goto failed_super;
+> >                        }
+> >                } else {
+> >                        /*
+> >                         * Try remount to setup mount states if the current
+> >                         * tree is not mounted and only snapshots use this sb.
+> >                         */
+> >                        err = nilfs_remount(s, &flags, data);
+> >                        if (err)
+> >                                goto failed_super;
+> >                }
+> >        }
+> 
+> What this logic is trying to do is, if there is already a nilfs2 mount
+> instance for the device, and are trying to mounting the current tree
+> (sd.cno is 0, so this is not a snapshot mount), then will switch
+> depending on whether the current tree has a mount:
+> 
+> - If the current tree is mounted, it's just like a normal filesystem.
+> (A read-only mount and a read/write mount can't coexist, so check
+> that, and reuse the instance if possible)
+> - Otherwise, i.e. for snapshot mounts only, do whatever is necessary
+> to add a new current mount, such as starting a log writer.
+>    Since it does the same thing that nilfs_remount does, so
+> nilfs_remount() is used there.
+> 
+> Whether or not there is a current tree mount can be determined by
+> d_count(s->s_root) > 1 as nilfs_tree_is_busy() does.
+> Where s->s_root is always the root dentry of the current tree, not
+> that of the mounted snapshot.
 
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
-> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm64
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
-^ reproducers. C reproducer reproduces the bug easily.
+I see now, thanks for explanation! But one thing still is not clear to me.
+If you say have a snapshot mounted read-write and then you mount the
+current snapshot (cno == 0) read-only, you'll switch the whole superblock
+to read-only state. So also the mounted snapshot is suddently read-only
+which is unexpected and actually supposedly breaks things because you can
+still have file handles open for writing on the snapshot etc.. So how do
+you solve that?
 
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> kernel BUG at fs/ext4/inode.c:2746!
-> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-> Workqueue: writeback wb_workfn (flush-7:0)
-> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> sp : ffff800019d16d40
-> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
-> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
-> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
-> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
-> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
-> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
-> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
-> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
-> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
-> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
-> Call trace:
-> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
-> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
-> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
-> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
-> wb_do_writeback fs/fs-writeback.c:2195 [inline]
-> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
-> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
-> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
-> kthread+0x24c/0x2d4 kernel/kthread.c:376
-> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
-> ---[ end trace 0000000000000000 ]---
-> 
-> 
-
+								Honza
 -- 
-BR,
-Muhammad Usama Anjum
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
