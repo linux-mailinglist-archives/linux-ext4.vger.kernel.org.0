@@ -2,161 +2,221 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CAD777EA8
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 18:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6BC777F39
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Aug 2023 19:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbjHJQxt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Aug 2023 12:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S231802AbjHJReM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Aug 2023 13:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233168AbjHJQxs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 12:53:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED588268E
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 09:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691686380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=627YhmbhhzdkWeREayk+YJxkQHLvz3Ddr4mZUxza6Tw=;
-        b=Zbi5odm96+VJGZEtVQvNz71F+MbGmJDNU/qDy7JZM5EYPNdOE93ZIxXZIlBv8Pyx1UBEeo
-        mh0tmgoBHOtefMvsbXQtJLDocR2YnqNqymJ9V6xBlv2X6x89OTUf4fAKwQYT/PZ84MHwZ4
-        lSFHEfU7p+uH0Ah93+AaAIuODn/PyUM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-529-ujdtcV38Mei00LNCHn5yNA-1; Thu, 10 Aug 2023 12:52:54 -0400
-X-MC-Unique: ujdtcV38Mei00LNCHn5yNA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S231330AbjHJReM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Aug 2023 13:34:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4361326A0;
+        Thu, 10 Aug 2023 10:34:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4F5C88011AD;
-        Thu, 10 Aug 2023 16:52:54 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.16.99])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1119B492C3E;
-        Thu, 10 Aug 2023 16:52:54 +0000 (UTC)
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Ritesh Harjani <ritesh.list@gmail.com>,
-        Jan Kara <jack@suse.cz>, Pengfei Xu <pengfei.xu@intel.com>
-Subject: [PATCH v2] ext4: drop dio overwrite only flag and associated warning
-Date:   Thu, 10 Aug 2023 12:55:59 -0400
-Message-ID: <20230810165559.946222-1-bfoster@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F0DAF1F45B;
+        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691688849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
+        b=qZfk+9+AsELGoa0UEHYNF8E65/UqY4k14t8+0YjQ5uk4cp5+s1dQshTpTxJ1186N9J5DCo
+        ob3CQ6p+zaXtDYECeiYh++jMcmFb/qOhMwpqg3dGRQQre6Ku97hez7uH09y+4IGMcvtl+n
+        CkxWd7qGxF3tOUPfXL9ibmcEq12+KFI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691688849;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
+        b=gzGOamp0cLttdE4SGzWoZw3wKJsFW8ukWJeMF2tO5czQcMC+B2YvsV1t4R5ApUcGcPKPjV
+        0urtsX9iai2pS0AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0D0C138E2;
+        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zgrSNpEf1WQoVAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 17:34:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 732F4A076F; Thu, 10 Aug 2023 19:34:09 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 19:34:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Liu Song <liusong@linux.alibaba.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH v2] ext4: do not mark inode dirty every time in delalloc
+ append write scenario
+Message-ID: <20230810173409.pwgyiv4r7vg7snck@quack3>
+References: <20230810154333.84921-1-liusong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810154333.84921-1-liusong@linux.alibaba.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The commit referenced below opened up concurrent unaligned dio under
-shared locking for pure overwrites. In doing so, it enabled use of
-the IOMAP_DIO_OVERWRITE_ONLY flag and added a warning on unexpected
--EAGAIN returns as an extra precaution, since ext4 does not retry
-writes in such cases. The flag itself is advisory in this case since
-ext4 checks for unaligned I/Os and uses appropriate locking up
-front, rather than on a retry in response to -EAGAIN.
+On Thu 10-08-23 23:43:33, Liu Song wrote:
+> In the delalloc append write scenario, if inode's i_size is extended due
+> to buffer write, there are delalloc writes pending in the range up to
+> i_size, and no need to touch i_disksize since writeback will push
+> i_disksize up to i_size eventually. Offers significant performance
+> improvement in high-frequency append write scenarios.
+> 
+> I conducted tests in my 32-core environment by launching 32 concurrent
+> threads to append write to the same file. Each write operation had a
+> length of 1024 bytes and was repeated 100000 times. Without using this
+> patch, the test was completed in 7705 ms. However, with this patch, the
+> test was completed in 5066 ms, resulting in a performance improvement of
+> 34%.
+> 
+> Moreover, in test scenarios of Kafka version 2.6.2, using packet size of
+> 2K, with this patch resulted in a 10% performance improvement.
+> 
+> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
 
-As it turns out, the warning check is susceptible to false positives
-because there are scenarios where -EAGAIN can be expected from lower
-layers without necessarily having IOCB_NOWAIT set on the iocb. For
-example, one instance of the warning has been seen where io_uring
-sets IOCB_HIPRI, which in turn results in REQ_POLLED|REQ_NOWAIT on
-the bio. This results in -EAGAIN if the block layer is unable to
-allocate a request, etc. [Note that there is an outstanding patch to
-untangle REQ_POLLED and REQ_NOWAIT such that the latter relies on
-IOCB_NOWAIT, which would also address this instance of the warning.]
+Looks good! Feel free to add:
 
-Another instance of the warning has been reproduced by syzbot. A dio
-write is interrupted down in __get_user_pages_locked() waiting on
-the mm lock and returns -EAGAIN up the stack. If the iomap dio
-iteration layer has made no progress on the write to this point,
--EAGAIN returns up to the filesystem and triggers the warning.
-
-This use of the overwrite flag in ext4 is precautionary and
-half-baked. I.e., ext4 doesn't actually implement overwrite checking
-in the iomap callbacks when the flag is set, so the only extra
-verification it provides are i_size checks in the generic iomap dio
-layer. Combined with the tendency for false positives, the added
-verification is not worth the extra trouble. Remove the flag,
-associated warning, and update the comments to document when
-concurrent unaligned dio writes are allowed and why said flag is not
-used.
-
-Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
-Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
----
 
-v2:
-- Updated commit log description.
-- Added Review/Reported-by tags.
-v1: https://lore.kernel.org/linux-ext4/20230804182952.477247-1-bfoster@redhat.com/
+								Honza
 
- fs/ext4/file.c | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index c457c8517f0f..73a4b711be02 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -476,6 +476,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 	 * required to change security info in file_modified(), for extending
- 	 * I/O, any form of non-overwrite I/O, and unaligned I/O to unwritten
- 	 * extents (as partial block zeroing may be required).
-+	 *
-+	 * Note that unaligned writes are allowed under shared lock so long as
-+	 * they are pure overwrites. Otherwise, concurrent unaligned writes risk
-+	 * data corruption due to partial block zeroing in the dio layer, and so
-+	 * the I/O must occur exclusively.
- 	 */
- 	if (*ilock_shared &&
- 	    ((!IS_NOSEC(inode) || *extend || !overwrite ||
-@@ -492,21 +497,12 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 
- 	/*
- 	 * Now that locking is settled, determine dio flags and exclusivity
--	 * requirements. Unaligned writes are allowed under shared lock so long
--	 * as they are pure overwrites. Set the iomap overwrite only flag as an
--	 * added precaution in this case. Even though this is unnecessary, we
--	 * can detect and warn on unexpected -EAGAIN if an unsafe unaligned
--	 * write is ever submitted.
--	 *
--	 * Otherwise, concurrent unaligned writes risk data corruption due to
--	 * partial block zeroing in the dio layer, and so the I/O must occur
--	 * exclusively. The inode lock is already held exclusive if the write is
--	 * non-overwrite or extending, so drain all outstanding dio and set the
--	 * force wait dio flag.
-+	 * requirements. We don't use DIO_OVERWRITE_ONLY because we enforce
-+	 * behavior already. The inode lock is already held exclusive if the
-+	 * write is non-overwrite or extending, so drain all outstanding dio and
-+	 * set the force wait dio flag.
- 	 */
--	if (*ilock_shared && unaligned_io) {
--		*dio_flags = IOMAP_DIO_OVERWRITE_ONLY;
--	} else if (!*ilock_shared && (unaligned_io || *extend)) {
-+	if (!*ilock_shared && (unaligned_io || *extend)) {
- 		if (iocb->ki_flags & IOCB_NOWAIT) {
- 			ret = -EAGAIN;
- 			goto out;
-@@ -608,7 +604,6 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   dio_flags, NULL, 0);
--	WARN_ON_ONCE(ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT));
- 	if (ret == -ENOTBLK)
- 		ret = 0;
- 
+> ---
+>  fs/ext4/inode.c | 88 ++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 62 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 89737d5a1614..830b8e7e68cb 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -2937,14 +2937,73 @@ static int ext4_da_should_update_i_disksize(struct folio *folio,
+>  	return 1;
+>  }
+>  
+> +static int ext4_da_do_write_end(struct address_space *mapping,
+> +			loff_t pos, unsigned len, unsigned copied,
+> +			struct page *page)
+> +{
+> +	struct inode *inode = mapping->host;
+> +	loff_t old_size = inode->i_size;
+> +	bool disksize_changed = false;
+> +	loff_t new_i_size;
+> +
+> +	/*
+> +	 * block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
+> +	 * flag, which all that's needed to trigger page writeback.
+> +	 */
+> +	copied = block_write_end(NULL, mapping, pos, len, copied, page, NULL);
+> +	new_i_size = pos + copied;
+> +
+> +	/*
+> +	 * It's important to update i_size while still holding page lock,
+> +	 * because page writeout could otherwise come in and zero beyond
+> +	 * i_size.
+> +	 *
+> +	 * Since we are holding inode lock, we are sure i_disksize <=
+> +	 * i_size. We also know that if i_disksize < i_size, there are
+> +	 * delalloc writes pending in the range up to i_size. If the end of
+> +	 * the current write is <= i_size, there's no need to touch
+> +	 * i_disksize since writeback will push i_disksize up to i_size
+> +	 * eventually. If the end of the current write is > i_size and
+> +	 * inside an allocated block which ext4_da_should_update_i_disksize()
+> +	 * checked, we need to update i_disksize here as certain
+> +	 * ext4_writepages() paths not allocating blocks and update i_disksize.
+> +	 */
+> +	if (new_i_size > inode->i_size) {
+> +		unsigned long end;
+> +
+> +		i_size_write(inode, new_i_size);
+> +		end = (new_i_size - 1) & (PAGE_SIZE - 1);
+> +		if (copied && ext4_da_should_update_i_disksize(page_folio(page), end)) {
+> +			ext4_update_i_disksize(inode, new_i_size);
+> +			disksize_changed = true;
+> +		}
+> +	}
+> +
+> +	unlock_page(page);
+> +	put_page(page);
+> +
+> +	if (old_size < pos)
+> +		pagecache_isize_extended(inode, old_size, pos);
+> +
+> +	if (disksize_changed) {
+> +		handle_t *handle;
+> +
+> +		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> +		if (IS_ERR(handle))
+> +			return PTR_ERR(handle);
+> +		ext4_mark_inode_dirty(handle, inode);
+> +		ext4_journal_stop(handle);
+> +	}
+> +
+> +	return copied;
+> +}
+> +
+>  static int ext4_da_write_end(struct file *file,
+>  			     struct address_space *mapping,
+>  			     loff_t pos, unsigned len, unsigned copied,
+>  			     struct page *page, void *fsdata)
+>  {
+>  	struct inode *inode = mapping->host;
+> -	loff_t new_i_size;
+> -	unsigned long start, end;
+>  	int write_mode = (int)(unsigned long)fsdata;
+>  	struct folio *folio = page_folio(page);
+>  
+> @@ -2963,30 +3022,7 @@ static int ext4_da_write_end(struct file *file,
+>  	if (unlikely(copied < len) && !PageUptodate(page))
+>  		copied = 0;
+>  
+> -	start = pos & (PAGE_SIZE - 1);
+> -	end = start + copied - 1;
+> -
+> -	/*
+> -	 * Since we are holding inode lock, we are sure i_disksize <=
+> -	 * i_size. We also know that if i_disksize < i_size, there are
+> -	 * delalloc writes pending in the range upto i_size. If the end of
+> -	 * the current write is <= i_size, there's no need to touch
+> -	 * i_disksize since writeback will push i_disksize upto i_size
+> -	 * eventually. If the end of the current write is > i_size and
+> -	 * inside an allocated block (ext4_da_should_update_i_disksize()
+> -	 * check), we need to update i_disksize here as certain
+> -	 * ext4_writepages() paths not allocating blocks update i_disksize.
+> -	 *
+> -	 * Note that we defer inode dirtying to generic_write_end() /
+> -	 * ext4_da_write_inline_data_end().
+> -	 */
+> -	new_i_size = pos + copied;
+> -	if (copied && new_i_size > inode->i_size &&
+> -	    ext4_da_should_update_i_disksize(folio, end))
+> -		ext4_update_i_disksize(inode, new_i_size);
+> -
+> -	return generic_write_end(file, mapping, pos, len, copied, &folio->page,
+> -				 fsdata);
+> +	return ext4_da_do_write_end(mapping, pos, len, copied, &folio->page);
+>  }
+>  
+>  /*
+> -- 
+> 2.19.1.6.gb485710b
+> 
 -- 
-2.41.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
