@@ -2,335 +2,327 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3CE778759
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 08:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E3B77875C
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 08:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbjHKGSk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Aug 2023 02:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        id S229685AbjHKGTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Aug 2023 02:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbjHKGSj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 02:18:39 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FC12D48
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:18:34 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9c0391749so26388031fa.0
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rmuti.ac.th; s=dkim; t=1691734712; x=1692339512;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G8qs9njhcsTGLwHMVIaY70e5pVcttVrSc0JUMx0yhQk=;
-        b=AiGEg2RS2QAfxdz2WygIHYBVyUnjLuB5c26J6H/UR9YaCfU4KS3lwb0YFFLiAfntf9
-         0iqkcLwAiv3tgJDXKsfGbsF+9mzMyt1yfiguqgtqVVgvqCDRhcbq042QzKoYvKnoV9RO
-         osLPLLIXO+UiPx5THCv3kTdB007ZQQmy0DmD0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691734712; x=1692339512;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G8qs9njhcsTGLwHMVIaY70e5pVcttVrSc0JUMx0yhQk=;
-        b=cKUI10IDrmJlE2QzRgx2OE+bcMq/oqwQlw4mBMa1iFHntsQiYfQgxl8AnllMxhnAgS
-         ze/Cukmt9cQlBkFOlBPgIP8NLo1hsV22sisrRBLI+5I3SObePBMucx7fgXj6HEa1sWkH
-         bzPpV5AlSuXOsxxgqB+aNCuQvH7pFzPZUkDFFtT/HNuhYrerv7Lx+jiL1CFXkfMqI05l
-         u1+sFEPDupDr20XnZG+U6AB640npELxRYeUzE/DTPWPgxROLNIYfR31WHXv2QpZOCH2V
-         dT5aQHDTQJY91ibyaCtkLuDEm1WYa3J7ortMMVa3KgQ9hcCF7ZamGO8extaX6AzlQeBP
-         IC8g==
-X-Gm-Message-State: AOJu0YyEXOAMBtku9dLJSo0zguMBQW9hXQWTLQua9jdEcUg269Msgc5j
-        qQ+z2B8DmOyeosIz66kHOb2KvR+9dkkA6ziUjhL3sg==
-X-Google-Smtp-Source: AGHT+IFtBUWNMK2ZEuU74bOKAuKUILp78Lvd6GMtcWRk6gH/zNGSCv5FZ3JrVvu3NtHMrco9nFfi4fupg8XQvx9crio=
-X-Received: by 2002:a2e:998b:0:b0:2b2:1f2f:705f with SMTP id
- w11-20020a2e998b000000b002b21f2f705fmr917263lji.4.1691734712389; Thu, 10 Aug
- 2023 23:18:32 -0700 (PDT)
+        with ESMTP id S229537AbjHKGTZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 02:19:25 -0400
+Received: from outbound-ip7a.ess.barracuda.com (outbound-ip7a.ess.barracuda.com [209.222.82.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6260E2D48
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:19:19 -0700 (PDT)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168]) by mx-outbound13-154.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 11 Aug 2023 06:19:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e4lk1N0aLR9sg2rdlwKY3jO5wVncenCG/sS+McmMt00Vzcif3xyEacpC5cO846PppoY6uiZaYZKCRZXG43sXgRc2g90lMubqWd64Yu+3QwBkM13XAJImKFUOhYco+MAMWw8OWoMD0AF+IhNYyrwCP04bKcQmk8wgtoo5wpe9+vJjxF6pyyqz9myCuyKU3b3lkbSRU/F1ApwLq1Wcy8q677E0+htiuf4TbjRE29Ce1Pc83zKWjQBPj/lUFotAIfNjPh+Oalxp9xSI8kCwya3s3h2QtYmlXGvZ2I9YD8bOeO25GBHS+YPFkqrcECL5F+AoTOs3usOasQmmjtVAXR+BKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6mkmMjXs0W6ouV8qPZst8XZYtbvco68h3TGAFsOjTko=;
+ b=OvVm9Z6QRNy2GS/1KuhGHWEwP257Hj2+shisXzf/C6+jpXXAwtNpFUIqbuvW9Ej/e8PW4v1ev17AIOdW1pDeIcMCQxWuluY8txmJmtkRuXA2nBEjDpWcKFksVeQa3//539+Cq74A3ckYuqbtID3r4K0cGlDnnkvxvJaNUn7+kJZ34zCtGxnHi8C27sEg3kCly+FJnA6aZHW7uZiR/26C6C8iNQ2MgnrJ9LZ5tSF6XPCbLd0RsAKVawZUeQVNEFGSYyPMMVYzIHCnSVBvnY/VzGHkpolicXUTLN5/vYBmcTKupGESQh1su9mi5TdKrdKeQZ0tXKQXUvlYXpLTRRp/Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6mkmMjXs0W6ouV8qPZst8XZYtbvco68h3TGAFsOjTko=;
+ b=OBoXFaD1JF8LOXZe23Wsy5TMgvYucmvP6dxSDOfpKd8r5Tl6DC0XMVWRz/0gqy9LKtJE/O+ql78uMRBdEkozmcLlBlpg6DDFTYhk2Ch6BjHBVqNPJU0B78NUxud1/WQSDBn4xn5c5plXaxejyrx3m0SpmOxaJ0HT4g1RhM9DU2A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ddn.com;
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com (2603:10b6:8:72::19) by
+ PH7PR19MB7340.namprd19.prod.outlook.com (2603:10b6:510:27b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 11 Aug
+ 2023 06:19:14 +0000
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::3110:9950:e5d9:af44]) by DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::3110:9950:e5d9:af44%7]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
+ 06:19:14 +0000
+From:   Li Dongyang <dongyangli@ddn.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger@dilger.ca, sihara@ddn.com, wangshilong1991@gmail.com
+Subject: [PATCH 1/2] ext4: introduce EXT4_BG_TRIMMED to optimize fstrim
+Date:   Fri, 11 Aug 2023 16:19:04 +1000
+Message-ID: <20230811061905.301124-1-dongyangli@ddn.com>
+X-Mailer: git-send-email 2.41.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SY5PR01CA0007.ausprd01.prod.outlook.com
+ (2603:10c6:10:1fa::12) To DS7PR19MB5711.namprd19.prod.outlook.com
+ (2603:10b6:8:72::19)
 MIME-Version: 1.0
-Received: by 2002:ab2:c03:0:b0:1d0:9f71:3ffc with HTTP; Thu, 10 Aug 2023
- 23:18:30 -0700 (PDT)
-Reply-To: konnia4loveth@gmail.com
-From:   Amadou Benjamin <ketniyom.bu@rmuti.ac.th>
-Date:   Fri, 11 Aug 2023 06:18:30 +0000
-Message-ID: <CAEvkSuMX6TeOpG9WCM+DQV6GR1oStzD43ebq6e7wT=uOmD1s1g@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: multipart/mixed; boundary="000000000000963fff06029fae8f"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        URIBL_DBL_SPAM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: rmuti.ac.th]
-        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: rmuti.ac.th]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2a00:1450:4864:20:0:0:0:22c listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4998]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR19MB5711:EE_|PH7PR19MB7340:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7cbfa391-9585-40b5-11a7-08db9a32e22b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bnY5C01ra4WL1Pqbk+BZQcwZU9NNTwAt9NaseiRuuFSCnqXpTc8niRpbFtgVxGtSvpC6/o4+vPP5hokX5vM6cwRYMnPrq8rljyw+NOyF0+RqSab3MPAqwz1M0vW4vjyecypwxvEHda15YDZRkunFZwnDR09HMRZUXhaFBCChKbiLxEpL8sNaZ68LLFW+XlHuaojo4y6AMjh/iBbY3IftMk16ddfDspk+2Lx7pz7XH6RgBn4JRFU++NiDjJerwjhTs/G24kRigMAanAbpR0bmpd9gbaW+uSSUBwuAcmwPbEARoHLLBmSGNo9QnROefyb+uAVI5zYpko8WNKxQsDz8MEHwOW24zfXaYGktsiaOQ/WWBra6nLdW6Zb8elMlX0EZO1BkGyY7Lb18zGjR5Xzk9EqExVAUmoFhdB6uYvzUCKOtwRWlVHZ1IsRnDLPQ1/I7pgrr9zLjaOpU/UuY+1wAGnoHSGmYHMAV4vv/j+ygmmVYUZLNX696sqD0MQclFq6xKnaXpngpr6qXdYTov/inEWq+6KmTuzuq6HangblWrBXU22RM1iTSpYGmEiIsK+fi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR19MB5711.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(396003)(39850400004)(366004)(451199021)(186006)(1800799006)(6666004)(6486002)(6506007)(478600001)(55236004)(36756003)(38100700002)(26005)(1076003)(2906002)(6512007)(83380400001)(2616005)(4326008)(66476007)(66556008)(6916009)(5660300002)(8936002)(8676002)(66946007)(316002)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CQrtcShlX8DZ88anJBFdVsDyV3VmJOHayPqHC6tZnoeOp3Nf0Et9j7Iy3pBm?=
+ =?us-ascii?Q?OzjM9Pyqcq1mYJ1L2resQE+lj5jEZ7XTkpXZLbsbe4m5RRWA1vQQkWtoXjJg?=
+ =?us-ascii?Q?bSud1NBe2I8dZsNBxpbwrq1yF1QhjfCFkXV7dwgxvmsdHaFdYh2elBQowrTJ?=
+ =?us-ascii?Q?5ScNBAARXzi3MU1eCXzSng6yj+SttYOPclcPc6cjsC/Dv+/6UALXU0jHOgQ6?=
+ =?us-ascii?Q?Hx7inihPW05j6VDDmvoEUEa+8IKooW8t3iTLfBMPMTD6j/G7WIDIgG1HRRiB?=
+ =?us-ascii?Q?KZP6nOXyoHhJyu8ELcAKAiHgHYtxcm4WwOB4oT8ekLP2MpOYgF8GYqsF26bb?=
+ =?us-ascii?Q?YdmGeqgK8naLJ6//JG+bIEe1TeWHKuZKxfK1arGMO8+kqIbSIYthCFt92HDC?=
+ =?us-ascii?Q?IUBm9K7ZnW5RBTXnDTlTch2XHP2i4+5RT/i8Pmh91ue53hlr4WLTWErqiTjq?=
+ =?us-ascii?Q?bQ0arQQlPcmMaqhM4bQrjDJEQkJN4ivCBYDH9nJCMocg28eV2DTuJ7ftV3DD?=
+ =?us-ascii?Q?B+SqVIAQQc/ZcbunK9Xljx/oTcl3/PDsX32aKfJ6pYhd52bHbMuBvJ1cNIEC?=
+ =?us-ascii?Q?EBlto62Lq4nqyLLE7AbaRdkjOQkbmO9oiJMXWFwiIZYBsYELVNFhh8odHwff?=
+ =?us-ascii?Q?l0elrN20tK+C8Iu4ljpjFySJ8ureGk52KVEtYsnXcNVIC3CzYsd8Bx6DvQ/U?=
+ =?us-ascii?Q?MxrdDJ3RgJY+ru/XOVzLtfced/jd8ewCYocKzbB6okWCmcp9mU4rF83EhNhw?=
+ =?us-ascii?Q?006KMHLdh1r3HLVF1AEGJn1c0c6s4PrHSZcY4yLfmrPelmp30JbfvkzMSrhf?=
+ =?us-ascii?Q?zaKPCgfFloSkxiCdHLMy9ZoFJVTv/q47zV+Sb8cTqmicqisr1mLImoLuOOlt?=
+ =?us-ascii?Q?1VqgZHex0HQSOII2iaD+6YIjsaSPJQ10ptrS2NcniMCTkqVjylfWoXrpQV4A?=
+ =?us-ascii?Q?eeUNyfJ6zOdFfhdPXFQ3nw419eXkHR8FUssqoyOuy2v1tRJy+KQYIuFyJgyJ?=
+ =?us-ascii?Q?MEvCbLzbaitAmfwv851LjmDn+XiHnER3AFEkD4kOiKkD402Y39THNji6lpp5?=
+ =?us-ascii?Q?9nZyZHJ+mqY4bKqgMkqV11uVu1kjRgqwwEojsRm5dP6CDcn5b3QIMorvhEUU?=
+ =?us-ascii?Q?K60AYhZIa0jbBYRlzfPmwV/ZMktTD4dSdloaUg/wSQVOyBRSSZjmoi5CTqFr?=
+ =?us-ascii?Q?OxLkr7v/CTM+TXAidVnIQ+rMtX1mkRzC8wnmh7gVeZuPWuXg8T+5Szo7hgop?=
+ =?us-ascii?Q?v6m5mGPuLuotZ3mj21FR9b9oef8T8l4bQ045mH+zFFCSU/A9aF2PXkZ0uy22?=
+ =?us-ascii?Q?38Ol4DAgF7fQtHujRzU9YXB4pqnqWaZOJSP07xGweMgNbvwg/l+GpXVwdXtq?=
+ =?us-ascii?Q?zgoPhJ69lnTbYNUK/UQr9CI0XVcIUOmStMJmMy3+cJhNURAQUdzpyTEgwKn8?=
+ =?us-ascii?Q?1jHUWqa5l6iSvwDCgTsgcx7RKaqCYdN+C+386glL997KWJcAaiYHOWxHTcyt?=
+ =?us-ascii?Q?Vd89jXw5M0ukn3agytqCCMXWEHJA+iyxCCaKE2Dyb7FeGM1HaTUE/vwBJyGY?=
+ =?us-ascii?Q?1BWY+LOc+hAoasA1BS4=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: w4zKot0Rk1u7tkKPSvAvwCdpd8al5+AfIUumFYRMZ+isKizdHyXEFCk3/yywh/zfLTWPrH0n/4h1WQ4jhU6VaWkJVewqZpq8124vsWhyj1TAxfTZMHpMHuePbAArk7Dx5eu7FaLdO7k/ES+EjR4eRnCgcuq59F0kmi+upsdpkqAHFSvBAtb6IcYRa6jFtFgWpKwk9SJD4DBIqCKKfIIcjhEdmdv7WajWie01qCNjMQULdW4fPKDjBWMecNXnlutoQ1jIXuHv+2alInMLqdtjXIoWkUmQkVkuPGMPzZlaZQzECbLP91hrHTpsl0FMjol7xCdcL82m592aCDDYkXvhCyFkojjRYHTEZxZNappAfNWFKrErqEHH+J3ZR9cHTonTtOFmhuGdO8Sjy/ijG0H4Iy0r0V6lc3yBXuSD8DarYs1p1xcOQv6Rs6T0ft24GpyLmchZaUr/NxFf7+SIQbEBIU2T4WAATMRlTo9IPjjQ3VS+S2frr1ueiyaO51zWGkiBJ46FWW/UueYtHjFH88BXoIjPpkSqYCVKWcAq+kM5t96ocF17Lnlm5x6Ajvmp3xGLRZ5vzrIZx6qNJmKvb3C3EYtJY6EqW5FXuUBVD/RXheMTcts8CcPphPCY8oKBkDO+OvBBX8HlI5QpIIEcq3txsigq6fHYLNZW0xShQIVlmpOR/3qOYJzucYYagbB93lnDCpn5bDUCXFE/TNmY19KjM5ub8atNx+715MP8xaISmyU6vhumXI17ZTZiI0VLS4fm77VcPld+ypEDpYmLgUpO8U/hICX7NsWAqhW55zGhZ0nPSJUhtp5x/aApTrrBFtPmlNI4JJ209pWuz4+KYeouZGia/4mOT1z7CbuMEyESBSg=
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cbfa391-9585-40b5-11a7-08db9a32e22b
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR19MB5711.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 06:19:13.9858
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: thTknfZDPXjL2okkRwwHyvDx3qpuF3yQSLxEg8ZLw/fPuDTUpauKFPdatFD8dkV7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR19MB7340
+X-BESS-ID: 1691734757-103482-12728-84411-1
+X-BESS-VER: 2019.1_20230807.1901
+X-BESS-Apparent-Source-IP: 104.47.59.168
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVuaGhgZAVgZQMMkwKckgzdQoyS
+        zVMtky0dDCwiDRODnRzMTQODnNwCRRqTYWAB6Ow35BAAAA
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.250067 [from 
+        cloudscan18-224.us-east-2b.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 MAILTO_TO_SPAM_ADDR    META: Includes a link to a likely spammer email 
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=MAILTO_TO_SPAM_ADDR, BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status: 1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---000000000000963fff06029fae8f
-Content-Type: text/plain; charset="UTF-8"
+Currently the flag indicating block group has done fstrim is not
+persistent, and trim status will be lost after remount, as
+a result fstrim can not skip the already trimmed groups, which
+could be slow on very large devices.
 
+This patch introduces a new block group flag EXT4_BG_TRIMMED,
+we need 1 extra block group descriptor write after trimming each
+block group.
+When clearing the flag, the block group descriptor is journalled
+already so no extra overhead.
 
+Add a new super block flag EXT2_FLAGS_TRACK_TRIM, to indicate if
+we should honour EXT4_BG_TRIMMED when doing fstrim.
+The new super block flag can be turned on/off via tune2fs.
 
---000000000000963fff06029fae8f
-Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document; 
-	name="=?UTF-8?B?0K8g0L7RgtC/0YDQsNCy0LjQuyDQv9C40YHRjNC80L4g0L3QsCDQstCw0YjRgyDQv9C+0YfRgtGDLg==?=
-	=?UTF-8?B?ZG9jeA==?="
-Content-Disposition: attachment; 
-	filename="=?UTF-8?B?0K8g0L7RgtC/0YDQsNCy0LjQuyDQv9C40YHRjNC80L4g0L3QsCDQstCw0YjRgyDQv9C+0YfRgtGDLg==?=
-	=?UTF-8?B?ZG9jeA==?="
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
+Cc: Shuichi Ihara <sihara@ddn.com>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Cc: Wang Shilong <wangshilong1991@gmail.com>
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
+Signed-off-by: Li Dongyang <dongyangli@ddn.com>
+---
+ fs/ext4/ext4.h      | 10 ++------
+ fs/ext4/ext4_jbd2.h |  3 ++-
+ fs/ext4/mballoc.c   | 62 +++++++++++++++++++++++++++++++++++----------
+ 3 files changed, 52 insertions(+), 23 deletions(-)
 
-UEsDBBQABgAIAAAAIQAJJIeCgQEAAI4FAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC0
-lE1Pg0AQhu8m/geyVwPbejDGlPag9ahNrPG8LkPZyH5kZ/v17x1KS6qhpVq9kMAy7/vMCzOD0UqX
-0QI8KmtS1k96LAIjbabMLGWv08f4lkUYhMlEaQ2kbA3IRsPLi8F07QAjqjaYsiIEd8c5ygK0wMQ6
-MHSSW69FoFs/407IDzEDft3r3XBpTQAT4lBpsOHgAXIxL0M0XtHjmsRDiSy6r1+svFImnCuVFIFI
-+cJk31zirUNClZt3sFAOrwiD8VaH6uSwwbbumaLxKoNoInx4Epow+NL6jGdWzjX1kByXaeG0ea4k
-NPWVmvNWAiJlrsukOdFCmR3/QQ4M6xLw7ylq3RPt31QoxnkOkj52dx4a46rppLbYq+12gxAopFNM
-vv6CcVfouFXuRFjC+8u/UeyJd4LkNBpT8V7CCYn/MIxGuhMi0LwD31z7Z3NsZI5Z0mRMvHVI+8P/
-ou3dgqiqYxo5Bz4oaFZE24g1jrR7zu4Pqu2WQdbizTfbdPgJAAD//wMAUEsDBBQABgAIAAAAIQAe
-kRq38wAAAE4CAAALAAgCX3JlbHMvLnJlbHMgogQCKKAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJLbSgNBDIbvBd9hyH032woi0tneSKF3
-IusDhJnsAXcOzKTavr2jILpQ217m9OfLT9abg5vUO6c8Bq9hWdWg2JtgR99reG23iwdQWchbmoJn
-DUfOsGlub9YvPJGUoTyMMaui4rOGQSQ+ImYzsKNchci+VLqQHEkJU4+RzBv1jKu6vsf0VwOamaba
-WQ1pZ+9AtcdYNl/WDl03Gn4KZu/Yy4kVyAdhb9kuYipsScZyjWop9SwabDDPJZ2RYqwKNuBpotX1
-RP9fi46FLAmhCYnP83x1nANaXg902aJ5x687HyFZLBZ9e/tDg7MvaD4BAAD//wMAUEsDBBQABgAI
-AAAAIQB8O5c5IgEAALkDAAAcAAgBd29yZC9fcmVscy9kb2N1bWVudC54bWwucmVscyCiBAEooAAB
-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
-YXBwLnhtbFBLBQYAAAAADAAMAAkDAAD7LwAAAAA=
---000000000000963fff06029fae8f--
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0a2d55faa095..a990fb49b24f 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -437,6 +437,7 @@ struct flex_groups {
+ #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
+ #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
+ #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
++#define EXT4_BG_TRIMMED		0x0008 /* block group was trimmed */
+ 
+ /*
+  * Macro-instructions used to manage group descriptors
+@@ -1166,6 +1167,7 @@ struct ext4_inode_info {
+ #define EXT2_FLAGS_SIGNED_HASH		0x0001  /* Signed dirhash in use */
+ #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in use */
+ #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test development code */
++#define EXT2_FLAGS_TRACK_TRIM		0x0008  /* Track trim status in each bg */
+ 
+ /*
+  * Mount flags set via mount options or defaults
+@@ -3412,7 +3414,6 @@ struct ext4_group_info {
+ };
+ 
+ #define EXT4_GROUP_INFO_NEED_INIT_BIT		0
+-#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
+ #define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	2
+ #define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	3
+ #define EXT4_GROUP_INFO_BBITMAP_CORRUPT		\
+@@ -3427,13 +3428,6 @@ struct ext4_group_info {
+ 	(test_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+ #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)	\
+ 	(test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+-
+-#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
+-	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
+-	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
+-	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+ #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
+ 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, &((grp)->bb_state)))
+ 
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 0c77697d5e90..ce529a454b2a 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -120,7 +120,8 @@
+ #define EXT4_HT_MOVE_EXTENTS     9
+ #define EXT4_HT_XATTR           10
+ #define EXT4_HT_EXT_CONVERT     11
+-#define EXT4_HT_MAX             12
++#define EXT4_HT_FS_TRIM		12
++#define EXT4_HT_MAX             13
+ 
+ /**
+  *   struct ext4_journal_cb_entry - Base structure for callback information.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 21b903fe546e..80283be01363 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3849,15 +3849,6 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
+ 	rb_erase(&entry->efd_node, &(db->bb_free_root));
+ 	mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, entry->efd_count);
+ 
+-	/*
+-	 * Clear the trimmed flag for the group so that the next
+-	 * ext4_trim_fs can trim it.
+-	 * If the volume is mounted with -o discard, online discard
+-	 * is supported and the free blocks will be trimmed online.
+-	 */
+-	if (!test_opt(sb, DISCARD))
+-		EXT4_MB_GRP_CLEAR_TRIMMED(db);
+-
+ 	if (!db->bb_free_root.rb_node) {
+ 		/* No more items in the per group rb tree
+ 		 * balance refcounts from ext4_mb_free_metadata()
+@@ -6587,8 +6578,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+ 					 " group:%u block:%d count:%lu failed"
+ 					 " with %d", block_group, bit, count,
+ 					 err);
+-		} else
+-			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
++		}
+ 
+ 		ext4_lock_group(sb, block_group);
+ 		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+@@ -6598,6 +6588,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+ 	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+ 	ext4_free_group_clusters_set(sb, gdp, ret);
+ 	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
++	/*
++	 * Clear the trimmed flag for the group so that the next
++	 * ext4_trim_fs can trim it.
++	 * If the volume is mounted with -o discard, online discard
++	 * is supported and the free blocks will be trimmed online.
++	 */
++	if (!test_opt(sb, DISCARD))
++		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_TRIMMED);
+ 	ext4_group_desc_csum_set(sb, block_group, gdp);
+ 	ext4_unlock_group(sb, block_group);
+ 
+@@ -6995,10 +6993,19 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 		   ext4_grpblk_t minblocks, bool set_trimmed)
+ {
+ 	struct ext4_buddy e4b;
++	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
++	struct ext4_group_desc *gdp;
++	struct buffer_head *gd_bh;
+ 	int ret;
+ 
+ 	trace_ext4_trim_all_free(sb, group, start, max);
+ 
++	gdp = ext4_get_group_desc(sb, group, &gd_bh);
++	if (!gdp) {
++		ret = -EIO;
++		return ret;
++	}
++
+ 	ret = ext4_mb_load_buddy(sb, group, &e4b);
+ 	if (ret) {
+ 		ext4_warning(sb, "Error %d loading buddy information for %u",
+@@ -7008,11 +7015,10 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 
+ 	ext4_lock_group(sb, group);
+ 
+-	if (!EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) ||
++	if (!(es->s_flags & cpu_to_le16(EXT2_FLAGS_TRACK_TRIM) &&
++	      gdp->bg_flags & cpu_to_le16(EXT4_BG_TRIMMED)) ||
+ 	    minblocks < EXT4_SB(sb)->s_last_trim_minblks) {
+ 		ret = ext4_try_to_trim_range(sb, &e4b, start, max, minblocks);
+-		if (ret >= 0 && set_trimmed)
+-			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+ 	} else {
+ 		ret = 0;
+ 	}
+@@ -7020,6 +7026,34 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+ 
++	if (ret > 0 && set_trimmed) {
++		int err;
++		handle_t *handle;
++
++		handle = ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, 1);
++		if (IS_ERR(handle)) {
++			ret = PTR_ERR(handle);
++			goto out_return;
++		}
++		err = ext4_journal_get_write_access(handle, sb, gd_bh,
++						    EXT4_JTR_NONE);
++		if (err) {
++			ret = err;
++			goto out_journal;
++		}
++		ext4_lock_group(sb, group);
++		gdp->bg_flags |= cpu_to_le16(EXT4_BG_TRIMMED);
++		ext4_group_desc_csum_set(sb, group, gdp);
++		ext4_unlock_group(sb, group);
++		err = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
++		if (err)
++			ret = err;
++out_journal:
++		err = ext4_journal_stop(handle);
++		if (err)
++			ret = err;
++	}
++out_return:
+ 	ext4_debug("trimmed %d blocks in the group %d\n",
+ 		ret, group);
+ 
+-- 
+2.41.0
+
