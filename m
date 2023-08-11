@@ -2,114 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E3B77875C
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 08:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3190777875D
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 08:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjHKGTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Aug 2023 02:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S229537AbjHKGTf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Aug 2023 02:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjHKGTZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 02:19:25 -0400
+        with ESMTP id S229706AbjHKGTe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 02:19:34 -0400
 Received: from outbound-ip7a.ess.barracuda.com (outbound-ip7a.ess.barracuda.com [209.222.82.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6260E2D48
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:19:19 -0700 (PDT)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168]) by mx-outbound13-154.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 11 Aug 2023 06:19:17 +0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4582D6A
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:19:27 -0700 (PDT)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168]) by mx-outbound13-154.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 11 Aug 2023 06:19:25 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e4lk1N0aLR9sg2rdlwKY3jO5wVncenCG/sS+McmMt00Vzcif3xyEacpC5cO846PppoY6uiZaYZKCRZXG43sXgRc2g90lMubqWd64Yu+3QwBkM13XAJImKFUOhYco+MAMWw8OWoMD0AF+IhNYyrwCP04bKcQmk8wgtoo5wpe9+vJjxF6pyyqz9myCuyKU3b3lkbSRU/F1ApwLq1Wcy8q677E0+htiuf4TbjRE29Ce1Pc83zKWjQBPj/lUFotAIfNjPh+Oalxp9xSI8kCwya3s3h2QtYmlXGvZ2I9YD8bOeO25GBHS+YPFkqrcECL5F+AoTOs3usOasQmmjtVAXR+BKQ==
+ b=g8WHOV4SEjCQLJ8XJ5mswf0ZH0FG7MeySfBvzsvT2sqTPti6Z+C6XnAPz08H4YBevcWJ6ENlrJcU9309/szLEhKrWNfM8iOecAXkVPp+T9zhfsbwY/1/niI9pbBmCGcs5H6qWE3DZnGowoUq/hD7pvKvT1hdIwV0wSzXeVM5ixVStdAzEIohDyc91HulwJk0HySjh+X6LYYiPirCw6kqWeF9QTdB9lABqSMqTDNg5KInUY2w4CqmQUC2tpyUX7g/3QqV956FUXvDfuwGLulSsdgmiuzRDzrepKY6ZTAuK+nBETUkOqrEX/XUS36Xk34oqHPIO5W32x66eL+MWj7reA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6mkmMjXs0W6ouV8qPZst8XZYtbvco68h3TGAFsOjTko=;
- b=OvVm9Z6QRNy2GS/1KuhGHWEwP257Hj2+shisXzf/C6+jpXXAwtNpFUIqbuvW9Ej/e8PW4v1ev17AIOdW1pDeIcMCQxWuluY8txmJmtkRuXA2nBEjDpWcKFksVeQa3//539+Cq74A3ckYuqbtID3r4K0cGlDnnkvxvJaNUn7+kJZ34zCtGxnHi8C27sEg3kCly+FJnA6aZHW7uZiR/26C6C8iNQ2MgnrJ9LZ5tSF6XPCbLd0RsAKVawZUeQVNEFGSYyPMMVYzIHCnSVBvnY/VzGHkpolicXUTLN5/vYBmcTKupGESQh1su9mi5TdKrdKeQZ0tXKQXUvlYXpLTRRp/Cw==
+ bh=GG726rYsND1xZZmzB+q7PHpN6pf84OJeIN8DJwWUflI=;
+ b=INOBJ7WteC8YmlRs3w6v94HmahaxS4AjMXUZgUJjhhX30R4pk6DAuNFI8JATLEI3WoxbM71KGbSim/kCXjcPeCY0G/8luT3usdPxp7Nklgmv9P9SHoYf6yaCXOZHhNZ5lI8fX/WL5h4ePL2Akejf2o1t6v85tHwl1Xv7T4hEZHd48Wl48VRxG93R7n7M5SRsZuV+Z+xpY7wVFKhZ7X7E2FxkACpBuqIVZojq5RMAyd9ZSjVAFLkthOpAzXDI20O1Oc3xjHc4uE2pqFWk6xsnTMA/ec0moMkaaVb5v0oD0luptEsc+AX5javKTgPN/9tbXwBy2HKr1PwNHdLemCAT3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
  header.d=ddn.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6mkmMjXs0W6ouV8qPZst8XZYtbvco68h3TGAFsOjTko=;
- b=OBoXFaD1JF8LOXZe23Wsy5TMgvYucmvP6dxSDOfpKd8r5Tl6DC0XMVWRz/0gqy9LKtJE/O+ql78uMRBdEkozmcLlBlpg6DDFTYhk2Ch6BjHBVqNPJU0B78NUxud1/WQSDBn4xn5c5plXaxejyrx3m0SpmOxaJ0HT4g1RhM9DU2A=
+ bh=GG726rYsND1xZZmzB+q7PHpN6pf84OJeIN8DJwWUflI=;
+ b=BMd1jDNLFSqBLwsaUUaWsVHcfcMGoYHEzl1wuKQuwO11Y24dCqPXYno2KwBvjOwQMVV0QSjIBqEP/J8iXFPG7no9Z+tJbAwN8RbWWEWRcraTHDMmWbHE4eh5PbH3VF4O9G5SybskEt/8eDh/X5M13d0yvROue+5rcuyBZde85v8=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=ddn.com;
 Received: from DS7PR19MB5711.namprd19.prod.outlook.com (2603:10b6:8:72::19) by
  PH7PR19MB7340.namprd19.prod.outlook.com (2603:10b6:510:27b::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 11 Aug
- 2023 06:19:14 +0000
+ 2023 06:19:21 +0000
 Received: from DS7PR19MB5711.namprd19.prod.outlook.com
  ([fe80::3110:9950:e5d9:af44]) by DS7PR19MB5711.namprd19.prod.outlook.com
  ([fe80::3110:9950:e5d9:af44%7]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 06:19:14 +0000
+ 06:19:21 +0000
 From:   Li Dongyang <dongyangli@ddn.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     adilger@dilger.ca, sihara@ddn.com, wangshilong1991@gmail.com
-Subject: [PATCH 1/2] ext4: introduce EXT4_BG_TRIMMED to optimize fstrim
-Date:   Fri, 11 Aug 2023 16:19:04 +1000
-Message-ID: <20230811061905.301124-1-dongyangli@ddn.com>
+Subject: [PATCH 2/2] e2fsprogs: support EXT2_FLAG_BG_TRIMMED and EXT2_FLAGS_TRACK_TRIM
+Date:   Fri, 11 Aug 2023 16:19:05 +1000
+Message-ID: <20230811061905.301124-2-dongyangli@ddn.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230811061905.301124-1-dongyangli@ddn.com>
+References: <20230811061905.301124-1-dongyangli@ddn.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SY5PR01CA0007.ausprd01.prod.outlook.com
- (2603:10c6:10:1fa::12) To DS7PR19MB5711.namprd19.prod.outlook.com
+X-ClientProxiedBy: SY5PR01CA0006.ausprd01.prod.outlook.com
+ (2603:10c6:10:1fa::10) To DS7PR19MB5711.namprd19.prod.outlook.com
  (2603:10b6:8:72::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS7PR19MB5711:EE_|PH7PR19MB7340:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cbfa391-9585-40b5-11a7-08db9a32e22b
+X-MS-Office365-Filtering-Correlation-Id: 9c488404-d28c-409a-1878-08db9a32e6bb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bnY5C01ra4WL1Pqbk+BZQcwZU9NNTwAt9NaseiRuuFSCnqXpTc8niRpbFtgVxGtSvpC6/o4+vPP5hokX5vM6cwRYMnPrq8rljyw+NOyF0+RqSab3MPAqwz1M0vW4vjyecypwxvEHda15YDZRkunFZwnDR09HMRZUXhaFBCChKbiLxEpL8sNaZ68LLFW+XlHuaojo4y6AMjh/iBbY3IftMk16ddfDspk+2Lx7pz7XH6RgBn4JRFU++NiDjJerwjhTs/G24kRigMAanAbpR0bmpd9gbaW+uSSUBwuAcmwPbEARoHLLBmSGNo9QnROefyb+uAVI5zYpko8WNKxQsDz8MEHwOW24zfXaYGktsiaOQ/WWBra6nLdW6Zb8elMlX0EZO1BkGyY7Lb18zGjR5Xzk9EqExVAUmoFhdB6uYvzUCKOtwRWlVHZ1IsRnDLPQ1/I7pgrr9zLjaOpU/UuY+1wAGnoHSGmYHMAV4vv/j+ygmmVYUZLNX696sqD0MQclFq6xKnaXpngpr6qXdYTov/inEWq+6KmTuzuq6HangblWrBXU22RM1iTSpYGmEiIsK+fi
+X-Microsoft-Antispam-Message-Info: n+4wR1Yx59MMwaoyizSes0FE66byqQuEqxMn3FM2BzXTVeb29smNGxwYv79LvsfZAyMJsrmnE0LpEfHkj69MwYdT2Xxg+xgxheu9c+mAt9pNauCdS4yiQfgc2Fbeoenz1KjA+4yRP2PcOmXIEqyY8M7Z3PvkzLPmHqL1s8O/oe23KkPH7PdJjnwxIgkFxbL6cgnINECmY0JobmsmPP/XViUOF8/V3YF3SnBAPkb9eorNxHiuf2S6BzviGVoX2WqzhvkFpQ/38UGpPJxc79IDPVrGkJLKrT4rVOVRPFkhHPLVGNf4jCj7vVZR3jhMt07s3EN47XixA6GTY3hSbE//wz4RmSObMrvW2jHj7nx2ySMG8WkSJraZF2OKfCq2yv/UhajeTimyVZU+9v+Ry4fKLN9JHj6lYKt41HvUAOeXfThXso0uZZfT/vLuhychsMxClCdMy1nFNQkRUdnJFO2aqLuf7hf1XgYyYbHEStfOphkUCD+S7SORxS6KXAUZTJb6vJG+GOQmir+7lbyIZ5Irqg9nLYy2znUXiuxSZg8jsxIEH3WGnieYALnMa5MxQbgA
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR19MB5711.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(396003)(39850400004)(366004)(451199021)(186006)(1800799006)(6666004)(6486002)(6506007)(478600001)(55236004)(36756003)(38100700002)(26005)(1076003)(2906002)(6512007)(83380400001)(2616005)(4326008)(66476007)(66556008)(6916009)(5660300002)(8936002)(8676002)(66946007)(316002)(41300700001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CQrtcShlX8DZ88anJBFdVsDyV3VmJOHayPqHC6tZnoeOp3Nf0Et9j7Iy3pBm?=
- =?us-ascii?Q?OzjM9Pyqcq1mYJ1L2resQE+lj5jEZ7XTkpXZLbsbe4m5RRWA1vQQkWtoXjJg?=
- =?us-ascii?Q?bSud1NBe2I8dZsNBxpbwrq1yF1QhjfCFkXV7dwgxvmsdHaFdYh2elBQowrTJ?=
- =?us-ascii?Q?5ScNBAARXzi3MU1eCXzSng6yj+SttYOPclcPc6cjsC/Dv+/6UALXU0jHOgQ6?=
- =?us-ascii?Q?Hx7inihPW05j6VDDmvoEUEa+8IKooW8t3iTLfBMPMTD6j/G7WIDIgG1HRRiB?=
- =?us-ascii?Q?KZP6nOXyoHhJyu8ELcAKAiHgHYtxcm4WwOB4oT8ekLP2MpOYgF8GYqsF26bb?=
- =?us-ascii?Q?YdmGeqgK8naLJ6//JG+bIEe1TeWHKuZKxfK1arGMO8+kqIbSIYthCFt92HDC?=
- =?us-ascii?Q?IUBm9K7ZnW5RBTXnDTlTch2XHP2i4+5RT/i8Pmh91ue53hlr4WLTWErqiTjq?=
- =?us-ascii?Q?bQ0arQQlPcmMaqhM4bQrjDJEQkJN4ivCBYDH9nJCMocg28eV2DTuJ7ftV3DD?=
- =?us-ascii?Q?B+SqVIAQQc/ZcbunK9Xljx/oTcl3/PDsX32aKfJ6pYhd52bHbMuBvJ1cNIEC?=
- =?us-ascii?Q?EBlto62Lq4nqyLLE7AbaRdkjOQkbmO9oiJMXWFwiIZYBsYELVNFhh8odHwff?=
- =?us-ascii?Q?l0elrN20tK+C8Iu4ljpjFySJ8ureGk52KVEtYsnXcNVIC3CzYsd8Bx6DvQ/U?=
- =?us-ascii?Q?MxrdDJ3RgJY+ru/XOVzLtfced/jd8ewCYocKzbB6okWCmcp9mU4rF83EhNhw?=
- =?us-ascii?Q?006KMHLdh1r3HLVF1AEGJn1c0c6s4PrHSZcY4yLfmrPelmp30JbfvkzMSrhf?=
- =?us-ascii?Q?zaKPCgfFloSkxiCdHLMy9ZoFJVTv/q47zV+Sb8cTqmicqisr1mLImoLuOOlt?=
- =?us-ascii?Q?1VqgZHex0HQSOII2iaD+6YIjsaSPJQ10ptrS2NcniMCTkqVjylfWoXrpQV4A?=
- =?us-ascii?Q?eeUNyfJ6zOdFfhdPXFQ3nw419eXkHR8FUssqoyOuy2v1tRJy+KQYIuFyJgyJ?=
- =?us-ascii?Q?MEvCbLzbaitAmfwv851LjmDn+XiHnER3AFEkD4kOiKkD402Y39THNji6lpp5?=
- =?us-ascii?Q?9nZyZHJ+mqY4bKqgMkqV11uVu1kjRgqwwEojsRm5dP6CDcn5b3QIMorvhEUU?=
- =?us-ascii?Q?K60AYhZIa0jbBYRlzfPmwV/ZMktTD4dSdloaUg/wSQVOyBRSSZjmoi5CTqFr?=
- =?us-ascii?Q?OxLkr7v/CTM+TXAidVnIQ+rMtX1mkRzC8wnmh7gVeZuPWuXg8T+5Szo7hgop?=
- =?us-ascii?Q?v6m5mGPuLuotZ3mj21FR9b9oef8T8l4bQ045mH+zFFCSU/A9aF2PXkZ0uy22?=
- =?us-ascii?Q?38Ol4DAgF7fQtHujRzU9YXB4pqnqWaZOJSP07xGweMgNbvwg/l+GpXVwdXtq?=
- =?us-ascii?Q?zgoPhJ69lnTbYNUK/UQr9CI0XVcIUOmStMJmMy3+cJhNURAQUdzpyTEgwKn8?=
- =?us-ascii?Q?1jHUWqa5l6iSvwDCgTsgcx7RKaqCYdN+C+386glL997KWJcAaiYHOWxHTcyt?=
- =?us-ascii?Q?Vd89jXw5M0ukn3agytqCCMXWEHJA+iyxCCaKE2Dyb7FeGM1HaTUE/vwBJyGY?=
- =?us-ascii?Q?1BWY+LOc+hAoasA1BS4=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?D7BXtn+kWbS7KssJ8flqNoY+gr/f1vISS+JGGxfztjuwbsj60qHamc3+wPs/?=
+ =?us-ascii?Q?8sOYfJt5zTlZr/OdMTD16J9CdyJYvmEP+ZJY58lKT9biMLRdvofcmSUYc9hO?=
+ =?us-ascii?Q?9+OW2NigZtceDgLw8hq9iJyuzDCVliZe4fLyIWqHG3jMFQ4ELWuNSOml0UpT?=
+ =?us-ascii?Q?rgDinOvebPHJB5j9Cb4oYJ4BJR033AsfxHunvYHSyIU+SABbNJ5kLkN067ZH?=
+ =?us-ascii?Q?7lquJdNUV/f1uy79Byw7+DAgj403UowxjfkZ8DNFYThuD1Gwx8soXPuZ7aX5?=
+ =?us-ascii?Q?ZbsF/E1X0pZz5jDRtmBsQojYjGs7gfT/8QWUtVeHmBAVzseDftUhK5agMcEk?=
+ =?us-ascii?Q?vU6Yk1H0yISSE8OvFyS6sd4bI72hOLAKPjVuIeCFnCWePVLRiiLJd+G/nRTd?=
+ =?us-ascii?Q?i8XXG3pPER7Ee540Qf/15dHs8Z+7VYqyU0duJR8JuzuJIsDWEHKAmETyuH62?=
+ =?us-ascii?Q?/eLJwtR/lS8CqEeDC1d6Wuz3S4MRQbqsDQIKcbyBcW/K/UUKMIgpJiP/wfBo?=
+ =?us-ascii?Q?HiwchzD31ODBSSkyM+7RkRHR0if4BzAqMFmY8KoMQUFchV2rOLk/UAXBoJ5B?=
+ =?us-ascii?Q?ALZEfI5+u2ZeJYpNPGVIKlgF4dd0ObnlWtAjGfLXpi+AZIeD2AgIwOatvCWk?=
+ =?us-ascii?Q?1mBhgPhMhNLZbkyjj/K5zVXcQuhKV083KITu7mhLSt6fBjhQ5Ads1Bqvrnzt?=
+ =?us-ascii?Q?mBLIB7pSjf9D+VOOhFt+Y/nVtDzY7uoc8p6FW0HWdVhVNnEQHR8imx6p21EC?=
+ =?us-ascii?Q?XT47APbiSpPOhBn031di4btXAGqbOfy0yaVay3ZIg8+cC62jAnQdVstpRD8Y?=
+ =?us-ascii?Q?/XZs+B6GXSrTV5QxPWw105BO1mx8Q2ehAANd73QFI2NdE7Bx3XkulJPOKuwu?=
+ =?us-ascii?Q?sfqs/gxf/HNmDEcEgNeq6MqLYU9/eIeqyMNNYqevjLGsyYMkULYiZLfKcrnJ?=
+ =?us-ascii?Q?98lrkPyjtzIWKhiViGVQzwDuoOLFfwvVy7ckeCT9V/UOAnHDxO8kBvCgtvHs?=
+ =?us-ascii?Q?aXP7q4V2t8AZXCd4yuygIUmOPNh6TClMWSDCOXtKNwEIJGs9VaLxpeYtXC+J?=
+ =?us-ascii?Q?LWkVl5NSn7clQ8K5Ic1EfHk+vK8dJpp4vjsUOMteWchnX9kolcueUYIeNAhx?=
+ =?us-ascii?Q?u9vyKL5B55H9++eMfNsAq5dtfyYdKK8cWoVmDnd9NNxP0YFz4aY+PPwwpt1l?=
+ =?us-ascii?Q?57LCsmz13OxN5Mkxw8151AOCbImV4wN+DSj7Cow4+PlgvT8H1h1ZZCGNrF8Q?=
+ =?us-ascii?Q?R0REAR8ArJK2bPsyLDr5UESxgnNsFscq/u+RPM4dT3DSuiB78uJ112LLcQtz?=
+ =?us-ascii?Q?UAUCOv6gCU3ezDTyZwgViT37F6BhCpYVtS8Q1JohuvNERCQZUrkLDbHHwlUi?=
+ =?us-ascii?Q?HFSZqhvHIvn9s8G5N2s757nos9yd4U+9kDtuYmZHOcCya7g5syJAQWgrVOwD?=
+ =?us-ascii?Q?leKQjZrPrUVz1O+v1cc5yjGDs1e1wVXY1s7du1LRnn66uPq3NYicdXM6/8RX?=
+ =?us-ascii?Q?skIZOLSewqUjw7AniBIzToNE3Dit/ej29x1pmrEWq1o4bhxgLa9q5mJQbZ8X?=
+ =?us-ascii?Q?GpQvQDS3djAUH9eth64=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: w4zKot0Rk1u7tkKPSvAvwCdpd8al5+AfIUumFYRMZ+isKizdHyXEFCk3/yywh/zfLTWPrH0n/4h1WQ4jhU6VaWkJVewqZpq8124vsWhyj1TAxfTZMHpMHuePbAArk7Dx5eu7FaLdO7k/ES+EjR4eRnCgcuq59F0kmi+upsdpkqAHFSvBAtb6IcYRa6jFtFgWpKwk9SJD4DBIqCKKfIIcjhEdmdv7WajWie01qCNjMQULdW4fPKDjBWMecNXnlutoQ1jIXuHv+2alInMLqdtjXIoWkUmQkVkuPGMPzZlaZQzECbLP91hrHTpsl0FMjol7xCdcL82m592aCDDYkXvhCyFkojjRYHTEZxZNappAfNWFKrErqEHH+J3ZR9cHTonTtOFmhuGdO8Sjy/ijG0H4Iy0r0V6lc3yBXuSD8DarYs1p1xcOQv6Rs6T0ft24GpyLmchZaUr/NxFf7+SIQbEBIU2T4WAATMRlTo9IPjjQ3VS+S2frr1ueiyaO51zWGkiBJ46FWW/UueYtHjFH88BXoIjPpkSqYCVKWcAq+kM5t96ocF17Lnlm5x6Ajvmp3xGLRZ5vzrIZx6qNJmKvb3C3EYtJY6EqW5FXuUBVD/RXheMTcts8CcPphPCY8oKBkDO+OvBBX8HlI5QpIIEcq3txsigq6fHYLNZW0xShQIVlmpOR/3qOYJzucYYagbB93lnDCpn5bDUCXFE/TNmY19KjM5ub8atNx+715MP8xaISmyU6vhumXI17ZTZiI0VLS4fm77VcPld+ypEDpYmLgUpO8U/hICX7NsWAqhW55zGhZ0nPSJUhtp5x/aApTrrBFtPmlNI4JJ209pWuz4+KYeouZGia/4mOT1z7CbuMEyESBSg=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 2L0emxUbX7irqONTyF5AsZafwzskApcCpvKyykNTamRxnomrMNACbVS0sF2LOEEaIQREu9xCF/IomxlIB5Lv63ULQP1K6GHWTkAldvEwy6TSLkRdSDMuOitshowMbCGpKmb+6lBxf2Aqa2akU1RZapt4aKP0MfeeNxtHg2TcDXidELwYJvHyA8712fkso3wH8bbgXI5qBiBREI3D3PkFVa+EKTg/U79Rmj0Tbc0GWvBC58OatRhTgzdRwuqLYPShgpOCSZM1yeTTTxqUR/tUJ7kQ3D3lRfc/0biru7E86Ah+L2But6ppDyqYWschRUWDY9C5lbS93C5I6FSKK3Mkv8GC9cF0qKfaM0ucM3UAxVgIAJeo4L06Gc/XCexAG4GQ8dsezjYRuOLX9xAGPqnE1MO0f1EAG3GGR/3KDRf4nzw1Lj+q6NhrTBJSl7BYix3fO05Oyg3EFBWzPESDXOvco68gKvfk86N8jnlWOCMAKVU0lwn1jYFsq/zq6QQ8IG3BMDwYld15GVA7s7beiKN3zeTUu4B38DAoozBeI7jLJwoNSKN2SGYzMR9DhjyS/fL3bLKYQ4euJWdQJXP0BOm8z57UIbSnV7vyKY4bHR1Jq2Xn7ECpU/VmTBKZpNyT/d/mdu61UOzvAAvweLZOfU5hbDuQJGbOXY+fv+6MjsBNikRuw2jacPxfzwwBCEUIMy+kwe1oVDZK99avKSqYVKWYlSni89cixET0PnsrwtGPozEMl6835eUrZrt0icmnS8L38u4TM12n2o0hnHOB6DVOanCeRCDlo3D9AhOdv2vzSEnMW++qTD5H71pXtiE0c63hbFQdYF9JxqRL2W78vMYO2utZsG/CuUStzQmh9a/akQI=
 X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cbfa391-9585-40b5-11a7-08db9a32e22b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c488404-d28c-409a-1878-08db9a32e6bb
 X-MS-Exchange-CrossTenant-AuthSource: DS7PR19MB5711.namprd19.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 06:19:13.9858
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 06:19:21.6131
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: thTknfZDPXjL2okkRwwHyvDx3qpuF3yQSLxEg8ZLw/fPuDTUpauKFPdatFD8dkV7
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z7JgY3LRlyRtlXyGMwR2cIM24c7Vp5u1w75GHGIVLHEuU4g1nLzoA7lVs/eoDbX0
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR19MB7340
-X-BESS-ID: 1691734757-103482-12728-84411-1
+X-BESS-ID: 1691734757-103482-12728-84411-2
 X-BESS-VER: 2019.1_20230807.1901
 X-BESS-Apparent-Source-IP: 104.47.59.168
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVuaGhgZAVgZQMMkwKckgzdQoyS
-        zVMtky0dDCwiDRODnRzMTQODnNwCRRqTYWAB6Ow35BAAAA
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVmYmBoZAVgZQ0CwtJTHVyDzVxM
+        jcNMk00cQk2SglJcUiLTXFzNgg2cxcqTYWAH+R5HBBAAAA
 X-BESS-Outbound-Spam-Score: 0.00
 X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.250067 [from 
-        cloudscan18-224.us-east-2b.ess.aws.cudaops.com]
+        cloudscan10-131.us-east-2a.ess.aws.cudaops.com]
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------
@@ -127,20 +129,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently the flag indicating block group has done fstrim is not
-persistent, and trim status will be lost after remount, as
-a result fstrim can not skip the already trimmed groups, which
-could be slow on very large devices.
+This adds EXT2_FLAG_BG_TRIMMED, which is used on block group
+descriptors during mke2fs after discard is done.
+The EXT2_FLAG_BG_TRIMMED flag is cleared on the block group when
+we free blocks.
 
-This patch introduces a new block group flag EXT4_BG_TRIMMED,
-we need 1 extra block group descriptor write after trimming each
-block group.
-When clearing the flag, the block group descriptor is journalled
-already so no extra overhead.
+Introduce EXT2_FLAGS_TRACK_TRIM, which is a new super block flag,
+to indicate whether we should honour the EXT2_FLAG_BG_TRIMMED
+set on each block group.
+EXT2_FLAGS_TRACK_TRIM itself can be turned on/off via tune2fs.
 
-Add a new super block flag EXT2_FLAGS_TRACK_TRIM, to indicate if
-we should honour EXT4_BG_TRIMMED when doing fstrim.
-The new super block flag can be turned on/off via tune2fs.
+Make dumpe2fs aware of the new flags.
 
 Cc: Shuichi Ihara <sihara@ddn.com>
 Cc: Andreas Dilger <adilger@dilger.ca>
@@ -148,181 +147,158 @@ Cc: Wang Shilong <wangshilong1991@gmail.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 ---
- fs/ext4/ext4.h      | 10 ++------
- fs/ext4/ext4_jbd2.h |  3 ++-
- fs/ext4/mballoc.c   | 62 +++++++++++++++++++++++++++++++++++----------
- 3 files changed, 52 insertions(+), 23 deletions(-)
+ lib/e2p/ls.c             |  4 ++++
+ lib/ext2fs/alloc_stats.c |  8 ++++++--
+ lib/ext2fs/ext2_fs.h     |  2 ++
+ misc/dumpe2fs.c          |  2 ++
+ misc/mke2fs.c            |  9 +++++++++
+ misc/tune2fs.8.in        |  8 ++++++++
+ misc/tune2fs.c           | 10 ++++++++++
+ 7 files changed, 41 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 0a2d55faa095..a990fb49b24f 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -437,6 +437,7 @@ struct flex_groups {
- #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
- #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
- #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
-+#define EXT4_BG_TRIMMED		0x0008 /* block group was trimmed */
+diff --git a/lib/e2p/ls.c b/lib/e2p/ls.c
+index 0b74aea2b..4b356eca6 100644
+--- a/lib/e2p/ls.c
++++ b/lib/e2p/ls.c
+@@ -162,6 +162,10 @@ static void print_super_flags(struct ext2_super_block * s, FILE *f)
+ 		fputs("test_filesystem ", f);
+ 		flags_found++;
+ 	}
++	if (s->s_flags & EXT2_FLAGS_TRACK_TRIM) {
++		fputs("track_trim ", f);
++		flags_found++;
++	}
+ 	if (flags_found)
+ 		fputs("\n", f);
+ 	else
+diff --git a/lib/ext2fs/alloc_stats.c b/lib/ext2fs/alloc_stats.c
+index 6f98bcc7c..4e03f92a4 100644
+--- a/lib/ext2fs/alloc_stats.c
++++ b/lib/ext2fs/alloc_stats.c
+@@ -70,10 +70,12 @@ void ext2fs_block_alloc_stats2(ext2_filsys fs, blk64_t blk, int inuse)
+ #endif
+ 		return;
+ 	}
+-	if (inuse > 0)
++	if (inuse > 0) {
+ 		ext2fs_mark_block_bitmap2(fs->block_map, blk);
+-	else
++	} else {
+ 		ext2fs_unmark_block_bitmap2(fs->block_map, blk);
++		ext2fs_bg_flags_clear(fs, group, EXT2_BG_TRIMMED);
++	}
+ 	ext2fs_bg_free_blocks_count_set(fs, group, ext2fs_bg_free_blocks_count(fs, group) - inuse);
+ 	ext2fs_bg_flags_clear(fs, group, EXT2_BG_BLOCK_UNINIT);
+ 	ext2fs_group_desc_csum_set(fs, group);
+@@ -139,6 +141,8 @@ void ext2fs_block_alloc_stats_range(ext2_filsys fs, blk64_t blk,
+ 			ext2fs_bg_free_blocks_count(fs, group) -
+ 			inuse*n/EXT2FS_CLUSTER_RATIO(fs));
+ 		ext2fs_bg_flags_clear(fs, group, EXT2_BG_BLOCK_UNINIT);
++		if (inuse < 0)
++			ext2fs_bg_flags_clear(fs, group, EXT2_BG_TRIMMED);
+ 		ext2fs_group_desc_csum_set(fs, group);
+ 		ext2fs_free_blocks_count_add(fs->super, -inuse * (blk64_t) n);
+ 		blk += n;
+diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
+index 0fc9c09a5..88e1114c9 100644
+--- a/lib/ext2fs/ext2_fs.h
++++ b/lib/ext2fs/ext2_fs.h
+@@ -223,6 +223,7 @@ struct ext4_group_desc
+ #define EXT2_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not initialized */
+ #define EXT2_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not initialized */
+ #define EXT2_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
++#define EXT2_BG_TRIMMED		0x0008 /* Block group was trimmed */
  
  /*
-  * Macro-instructions used to manage group descriptors
-@@ -1166,6 +1167,7 @@ struct ext4_inode_info {
+  * Data structures used by the directory indexing feature
+@@ -563,6 +564,7 @@ struct ext2_inode *EXT2_INODE(struct ext2_inode_large *large_inode)
  #define EXT2_FLAGS_SIGNED_HASH		0x0001  /* Signed dirhash in use */
  #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in use */
- #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test development code */
-+#define EXT2_FLAGS_TRACK_TRIM		0x0008  /* Track trim status in each bg */
- 
- /*
-  * Mount flags set via mount options or defaults
-@@ -3412,7 +3414,6 @@ struct ext4_group_info {
- };
- 
- #define EXT4_GROUP_INFO_NEED_INIT_BIT		0
--#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
- #define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	2
- #define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	3
- #define EXT4_GROUP_INFO_BBITMAP_CORRUPT		\
-@@ -3427,13 +3428,6 @@ struct ext4_group_info {
- 	(test_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
- #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)	\
- 	(test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
--
--#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
--	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
--#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
--	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
--#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
--	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
- #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
- 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, &((grp)->bb_state)))
- 
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 0c77697d5e90..ce529a454b2a 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -120,7 +120,8 @@
- #define EXT4_HT_MOVE_EXTENTS     9
- #define EXT4_HT_XATTR           10
- #define EXT4_HT_EXT_CONVERT     11
--#define EXT4_HT_MAX             12
-+#define EXT4_HT_FS_TRIM		12
-+#define EXT4_HT_MAX             13
- 
- /**
-  *   struct ext4_journal_cb_entry - Base structure for callback information.
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 21b903fe546e..80283be01363 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3849,15 +3849,6 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
- 	rb_erase(&entry->efd_node, &(db->bb_free_root));
- 	mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, entry->efd_count);
- 
--	/*
--	 * Clear the trimmed flag for the group so that the next
--	 * ext4_trim_fs can trim it.
--	 * If the volume is mounted with -o discard, online discard
--	 * is supported and the free blocks will be trimmed online.
--	 */
--	if (!test_opt(sb, DISCARD))
--		EXT4_MB_GRP_CLEAR_TRIMMED(db);
--
- 	if (!db->bb_free_root.rb_node) {
- 		/* No more items in the per group rb tree
- 		 * balance refcounts from ext4_mb_free_metadata()
-@@ -6587,8 +6578,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
- 					 " group:%u block:%d count:%lu failed"
- 					 " with %d", block_group, bit, count,
- 					 err);
--		} else
--			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
-+		}
- 
- 		ext4_lock_group(sb, block_group);
- 		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
-@@ -6598,6 +6588,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
- 	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
- 	ext4_free_group_clusters_set(sb, gdp, ret);
- 	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-+	/*
-+	 * Clear the trimmed flag for the group so that the next
-+	 * ext4_trim_fs can trim it.
-+	 * If the volume is mounted with -o discard, online discard
-+	 * is supported and the free blocks will be trimmed online.
-+	 */
-+	if (!test_opt(sb, DISCARD))
-+		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_TRIMMED);
- 	ext4_group_desc_csum_set(sb, block_group, gdp);
- 	ext4_unlock_group(sb, block_group);
- 
-@@ -6995,10 +6993,19 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
- 		   ext4_grpblk_t minblocks, bool set_trimmed)
- {
- 	struct ext4_buddy e4b;
-+	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-+	struct ext4_group_desc *gdp;
-+	struct buffer_head *gd_bh;
- 	int ret;
- 
- 	trace_ext4_trim_all_free(sb, group, start, max);
- 
-+	gdp = ext4_get_group_desc(sb, group, &gd_bh);
-+	if (!gdp) {
-+		ret = -EIO;
-+		return ret;
-+	}
+ #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* OK for use on development code */
++#define EXT2_FLAGS_TRACK_TRIM		0x0008	/* Track trim status in each bg */
+ #define EXT2_FLAGS_IS_SNAPSHOT		0x0010	/* This is a snapshot image */
+ #define EXT2_FLAGS_FIX_SNAPSHOT		0x0020	/* Snapshot inodes corrupted */
+ #define EXT2_FLAGS_FIX_EXCLUDE		0x0040	/* Exclude bitmaps corrupted */
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index 7c080ed9f..afe569dff 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -131,6 +131,8 @@ static void print_bg_opts(ext2_filsys fs, dgrp_t i)
+  		     &first);
+ 	print_bg_opt(bg_flags, EXT2_BG_INODE_ZEROED, "ITABLE_ZEROED",
+  		     &first);
++	print_bg_opt(bg_flags, EXT2_BG_TRIMMED, "TRIMMED",
++		     &first);
+ 	if (!first)
+ 		fputc(']', stdout);
+ 	fputc('\n', stdout);
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 4a9c1b092..bbfcde478 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -3154,6 +3154,15 @@ int main (int argc, char *argv[])
+ 	/* Can't undo discard ... */
+ 	if (!noaction && discard && dev_size && (io_ptr != undo_io_manager)) {
+ 		retval = mke2fs_discard_device(fs);
++		if (!retval) {
++			dgrp_t i;
 +
- 	ret = ext4_mb_load_buddy(sb, group, &e4b);
- 	if (ret) {
- 		ext4_warning(sb, "Error %d loading buddy information for %u",
-@@ -7008,11 +7015,10 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
- 
- 	ext4_lock_group(sb, group);
- 
--	if (!EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) ||
-+	if (!(es->s_flags & cpu_to_le16(EXT2_FLAGS_TRACK_TRIM) &&
-+	      gdp->bg_flags & cpu_to_le16(EXT4_BG_TRIMMED)) ||
- 	    minblocks < EXT4_SB(sb)->s_last_trim_minblks) {
- 		ret = ext4_try_to_trim_range(sb, &e4b, start, max, minblocks);
--		if (ret >= 0 && set_trimmed)
--			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
- 	} else {
- 		ret = 0;
- 	}
-@@ -7020,6 +7026,34 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
- 	ext4_unlock_group(sb, group);
- 	ext4_mb_unload_buddy(&e4b);
- 
-+	if (ret > 0 && set_trimmed) {
-+		int err;
-+		handle_t *handle;
-+
-+		handle = ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, 1);
-+		if (IS_ERR(handle)) {
-+			ret = PTR_ERR(handle);
-+			goto out_return;
++			fs->super->s_flags |= EXT2_FLAGS_TRACK_TRIM;
++			for (i = 0; i < fs->group_desc_count; i++) {
++				ext2fs_bg_flags_set(fs, i, EXT2_BG_TRIMMED);
++				ext2fs_group_desc_csum_set(fs, i);
++			}
 +		}
-+		err = ext4_journal_get_write_access(handle, sb, gd_bh,
-+						    EXT4_JTR_NONE);
-+		if (err) {
-+			ret = err;
-+			goto out_journal;
-+		}
-+		ext4_lock_group(sb, group);
-+		gdp->bg_flags |= cpu_to_le16(EXT4_BG_TRIMMED);
-+		ext4_group_desc_csum_set(sb, group, gdp);
-+		ext4_unlock_group(sb, group);
-+		err = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-+		if (err)
-+			ret = err;
-+out_journal:
-+		err = ext4_journal_stop(handle);
-+		if (err)
-+			ret = err;
-+	}
-+out_return:
- 	ext4_debug("trimmed %d blocks in the group %d\n",
- 		ret, group);
- 
+ 		if (!retval && io_channel_discard_zeroes_data(fs->io)) {
+ 			if (verbose)
+ 				printf("%s",
+diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
+index dcf108c1f..2eb7e88ed 100644
+--- a/misc/tune2fs.8.in
++++ b/misc/tune2fs.8.in
+@@ -273,6 +273,14 @@ mounted using experimental kernel code, such as the ext4dev file system.
+ .B ^test_fs
+ Clear the test_fs flag, indicating the file system should only be mounted
+ using production-level file system code.
++.TP
++.B track_trim
++Set a flag in the file system superblock to make fstrim save the trim status
++in each block group and skip the block groups already been trimmed.
++.TP
++.B ^track_trim
++Clear the track_trim flag to make fstrim ignore the trim status saved in
++each block group, and trim every block group.
+ .RE
+ .TP
+ .B \-f
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 458f7cf6a..dd9e8eab0 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -2312,6 +2312,14 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
+ 			sb->s_flags &= ~EXT2_FLAGS_TEST_FILESYS;
+ 			printf("Clearing test filesystem flag\n");
+ 			ext2fs_mark_super_dirty(fs);
++		} else if (!strcmp(token, "track_trim")) {
++			sb->s_flags |= EXT2_FLAGS_TRACK_TRIM;
++			printf("Setting track_trim flag\n");
++			ext2fs_mark_super_dirty(fs);
++		} else if (!strcmp(token, "^track_trim")) {
++			sb->s_flags &= ~EXT2_FLAGS_TRACK_TRIM;
++			printf("Clearing track_trim flag\n");
++			ext2fs_mark_super_dirty(fs);
+ 		} else if (strcmp(token, "stride") == 0) {
+ 			if (!arg) {
+ 				r_usage++;
+@@ -2458,6 +2466,8 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
+ 			"\tforce_fsck\n"
+ 			"\ttest_fs\n"
+ 			"\t^test_fs\n"
++			"\ttrack_trim\n"
++			"\t^track_trim\n"
+ 			"\tencoding=<encoding>\n"
+ 			"\tencoding_flags=<flags>\n"));
+ 		free(buf);
 -- 
 2.41.0
 
