@@ -2,253 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E3F77878D
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 08:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC787787F6
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 09:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbjHKGgl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Aug 2023 02:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
+        id S231196AbjHKHPy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Aug 2023 03:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232757AbjHKGgc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 02:36:32 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90BF2D41
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Aug 2023 23:36:31 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RMYwX1pK5z4f3rP7
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Aug 2023 14:36:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.170])
-        by APP4 (Coremail) with SMTP id gCh0CgA3x6na1tVkKEbDAQ--.35746S16;
-        Fri, 11 Aug 2023 14:36:28 +0800 (CST)
-From:   Zhang Yi <yi.zhang@huaweicloud.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yukuai3@huawei.com
-Subject: [PATCH v3 12/12] ext4: ext4_get_{dev}_journal return proper error value
-Date:   Fri, 11 Aug 2023 14:36:10 +0800
-Message-Id: <20230811063610.2980059-13-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.34.3
-In-Reply-To: <20230811063610.2980059-1-yi.zhang@huaweicloud.com>
-References: <20230811063610.2980059-1-yi.zhang@huaweicloud.com>
+        with ESMTP id S233755AbjHKHPq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 03:15:46 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F00A35B6;
+        Fri, 11 Aug 2023 00:15:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VpWb30T_1691738121;
+Received: from i85c04085.eu95sqa.tbsite.net(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0VpWb30T_1691738121)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Aug 2023 15:15:28 +0800
+From:   Hui Zhu <teawaterz@linux.alibaba.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org, jack@suse.cz,
+        willy@infradead.org, yi.zhang@huawei.com, hare@suse.de,
+        p.raghav@samsung.com, ritesh.list@gmail.com, mpatocka@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Cc:     teawater@antgroup.com, teawater@gmail.com
+Subject: [PATCH] ext4_sb_breadahead_unmovable: Change to be no-blocking
+Date:   Fri, 11 Aug 2023 07:15:19 +0000
+Message-Id: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3x6na1tVkKEbDAQ--.35746S16
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4ktr4Dur1kAr4UXrW7twb_yoWxJF47pF
-        15GFyfZrWj9r1Du3yxJr4UZFWYg3WIyay8Gr97uwnYyayDtrn2qF1DJr1jqFy8tFWUGw13
-        JF1UJ3W7Cw17K37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Hui Zhu <teawater@antgroup.com>
 
-ext4_get_journal() and ext4_get_dev_journal() return NULL if they failed
-to init journal, making them return proper error value instead, also
-rename them to ext4_open_{inode,dev}_journal().
+This version fix the gfp flags in the callers instead of working this
+new "bool" flag through the buffer head layers according to the comments
+from Matthew Wilcox.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Encountered an issue where a large number of filesystem reads and writes
+occurred suddenly within a container.  At the same time, other tasks on
+the same host that were performing filesystem read and write operations
+became blocked.  It was observed that many of the blocked tasks were
+blocked on the ext4 journal lock. For example:
+PID: 171453 TASK: ffff926566c9440 CPU: 54 COMMAND: "Thread"
+0 [] __schedule at xxxxxxxxxxxxxxx
+1 [] schedule at xxxxxxxxxxxxxxx
+2 [] wait_transaction_locked at xxxxxxxxxxxxxxx
+3 [] add_transaction_credits at xxxxxxxxxxxxxxx
+4 [] start_this_handle at xxxxxxxxxxxxxxx
+5 [] jbd2__journal_start at xxxxxxxxxxxxxxx
+6 [] ext4_journal_start_sb at xxxxxxxxxxxxxxx
+7 [] ext4_dirty_inode at xxxxxxxxxxxxxxx
+8 [] mark_inode_dirty at xxxxxxxxxxxxxxx
+9 [] generic_update_time at xxxxxxxxxxxxxxx
+
+Meanwhile, it was observed that the task holding the ext4 journal lock
+was blocked for an extended period of time on "shrink_page_list" due to
+"ext4_sb_breadahead_unmovable".
+0 [] __schedule at xxxxxxxxxxxxxxx
+1 [] _cond_resched at xxxxxxxxxxxxxxx
+2 [] shrink_page_list at xxxxxxxxxxxxxxx
+3 [] shrink_inactive_list at xxxxxxxxxxxxxxx
+4 [] shrink_lruvec at xxxxxxxxxxxxxxx
+5 [] shrink_node_memcgs at xxxxxxxxxxxxxxx
+6 [] shrink_node at xxxxxxxxxxxxxxx
+7 [] shrink_zones at xxxxxxxxxxxxxxx
+8 [] do_try_to_free_pages at xxxxxxxxxxxxxxx
+9 [] try_to_free_mem_cgroup_pages at xxxxxxxxxxxxxxx
+10 [] try_charge at xxxxxxxxxxxxxxx
+11 [] mem_cgroup_charge at xxxxxxxxxxxxxxx
+12 [] __add_to_page_cache_locked at xxxxxxxxxxxxxxx
+13 [] add_to_page_cache_lru at xxxxxxxxxxxxxxx
+14 [] pagecache_get_page at xxxxxxxxxxxxxxx
+15 [] grow_dev_page at xxxxxxxxxxxxxxx
+16 [] __getblk_slow at xxxxxxxxxxxxxxx
+17 [] ext4_sb_breadahead_unmovable at xxxxxxxxxxxxxxx
+18 [] __ext4_get_inode_loc at xxxxxxxxxxxxxxx
+19 [] ext4_get_inode_loc at xxxxxxxxxxxxxxx
+20 [] ext4_reserve_inode_write at xxxxxxxxxxxxxxx
+21 [] __ext4_mark_inode_dirty at xxxxxxxxxxxxxxx
+22 [] add_dirent_to_buf at xxxxxxxxxxxxxxx
+23 [] ext4_add_entry at xxxxxxxxxxxxxxx
+24 [] ext4_add_nondir at xxxxxxxxxxxxxxx
+25 [] ext4_create at xxxxxxxxxxxxxxx
+26 [] vfs_create at xxxxxxxxxxxxxxx
+
+The function "grow_dev_page" increased the gfp mask with "__GFP_NOFAIL",
+causing longer blocking times.
+	/*
+	 * XXX: __getblk_slow() can not really deal with failure and
+	 * will endlessly loop on improvised global reclaim.  Prefer
+	 * looping in the allocator rather than here, at least that
+	 * code knows what it's doing.
+	 */
+	gfp_mask |= __GFP_NOFAIL;
+However, "ext4_sb_breadahead_unmovable" is a prefetch function and
+failures are acceptable.
+
+Therefore, this commit changes "ext4_sb_breadahead_unmovable" to be
+non-blocking.
+Change gfp to ~__GFP_DIRECT_RECLAIM when ext4_sb_breadahead_unmovable
+calls sb_getblk_gfp.
+Modify grow_dev_page to will not be blocked by the allocation of folio
+if gfp is ~__GFP_DIRECT_RECLAIM.
+
+Signed-off-by: Hui Zhu <teawater@antgroup.com>
 ---
- fs/ext4/super.c | 51 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+ fs/buffer.c     | 27 +++++++++++++++++++--------
+ fs/ext4/super.c |  3 ++-
+ 2 files changed, 21 insertions(+), 9 deletions(-)
 
+diff --git a/fs/buffer.c b/fs/buffer.c
+index bd091329026c..330cf19c77b1 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1038,6 +1038,7 @@ static sector_t folio_init_buffers(struct folio *folio,
+  * Create the page-cache page that contains the requested block.
+  *
+  * This is used purely for blockdev mappings.
++ * Will not blocking by allocate folio if gfp is ~__GFP_DIRECT_RECLAIM.
+  */
+ static int
+ grow_dev_page(struct block_device *bdev, sector_t block,
+@@ -1050,18 +1051,27 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ 	int ret = 0;
+ 	gfp_t gfp_mask;
+ 
+-	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp;
++	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS);
++	if (gfp == ~__GFP_DIRECT_RECLAIM)
++		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
++	else {
++		gfp_mask |= gfp;
+ 
+-	/*
+-	 * XXX: __getblk_slow() can not really deal with failure and
+-	 * will endlessly loop on improvised global reclaim.  Prefer
+-	 * looping in the allocator rather than here, at least that
+-	 * code knows what it's doing.
+-	 */
+-	gfp_mask |= __GFP_NOFAIL;
++		/*
++		 * XXX: __getblk_slow() can not really deal with failure and
++		 * will endlessly loop on improvised global reclaim.  Prefer
++		 * looping in the allocator rather than here, at least that
++		 * code knows what it's doing.
++		 */
++		gfp_mask |= __GFP_NOFAIL;
++	}
+ 
+ 	folio = __filemap_get_folio(inode->i_mapping, index,
+ 			FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp_mask);
++	if (IS_ERR(folio)) {
++		ret = PTR_ERR(folio);
++		goto out;
++	}
+ 
+ 	bh = folio_buffers(folio);
+ 	if (bh) {
+@@ -1091,6 +1101,7 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ failed:
+ 	folio_unlock(folio);
+ 	folio_put(folio);
++out:
+ 	return ret;
+ }
+ 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index af44cc825d00..b0c764e8943a 100644
+index c94ebf704616..6a529509b83b 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5752,18 +5752,18 @@ static struct inode *ext4_get_journal_inode(struct super_block *sb,
- 	journal_inode = ext4_iget(sb, journal_inum, EXT4_IGET_SPECIAL);
- 	if (IS_ERR(journal_inode)) {
- 		ext4_msg(sb, KERN_ERR, "no journal found");
--		return NULL;
-+		return ERR_CAST(journal_inode);
- 	}
- 	if (!journal_inode->i_nlink) {
- 		make_bad_inode(journal_inode);
- 		iput(journal_inode);
- 		ext4_msg(sb, KERN_ERR, "journal inode is deleted");
--		return NULL;
-+		return ERR_PTR(-EFSCORRUPTED);
- 	}
- 	if (!S_ISREG(journal_inode->i_mode) || IS_ENCRYPTED(journal_inode)) {
- 		ext4_msg(sb, KERN_ERR, "invalid journal inode");
- 		iput(journal_inode);
--		return NULL;
-+		return ERR_PTR(-EFSCORRUPTED);
- 	}
+@@ -254,7 +254,8 @@ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
  
- 	ext4_debug("Journal inode found at %p: %lld bytes\n",
-@@ -5793,21 +5793,21 @@ static int ext4_journal_bmap(journal_t *journal, sector_t *block)
- 	return 0;
- }
- 
--static journal_t *ext4_get_journal(struct super_block *sb,
--				   unsigned int journal_inum)
-+static journal_t *ext4_open_inode_journal(struct super_block *sb,
-+					  unsigned int journal_inum)
+ void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
  {
- 	struct inode *journal_inode;
- 	journal_t *journal;
+-	struct buffer_head *bh = sb_getblk_gfp(sb, block, 0);
++	struct buffer_head *bh = sb_getblk_gfp(sb, block,
++					       ~__GFP_DIRECT_RECLAIM);
  
- 	journal_inode = ext4_get_journal_inode(sb, journal_inum);
--	if (!journal_inode)
--		return NULL;
-+	if (IS_ERR(journal_inode))
-+		return ERR_CAST(journal_inode);
- 
- 	journal = jbd2_journal_init_inode(journal_inode);
- 	if (IS_ERR(journal)) {
- 		ext4_msg(sb, KERN_ERR, "Could not load journal inode");
- 		iput(journal_inode);
--		return NULL;
-+		return ERR_CAST(journal);
- 	}
- 	journal->j_private = sb;
- 	journal->j_bmap = ext4_journal_bmap;
-@@ -5825,6 +5825,7 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	ext4_fsblk_t sb_block;
- 	unsigned long offset;
- 	struct ext4_super_block *es;
-+	int errno;
- 
- 	bdev = blkdev_get_by_dev(j_dev, BLK_OPEN_READ | BLK_OPEN_WRITE, sb,
- 				 &ext4_holder_ops);
-@@ -5832,7 +5833,7 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 		ext4_msg(sb, KERN_ERR,
- 			 "failed to open journal device unknown-block(%u,%u) %ld",
- 			 MAJOR(j_dev), MINOR(j_dev), PTR_ERR(bdev));
--		return NULL;
-+		return ERR_CAST(bdev);
- 	}
- 
- 	blocksize = sb->s_blocksize;
-@@ -5840,6 +5841,7 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	if (blocksize < hblock) {
- 		ext4_msg(sb, KERN_ERR,
- 			"blocksize too small for journal device");
-+		errno = -EINVAL;
- 		goto out_bdev;
- 	}
- 
-@@ -5850,6 +5852,7 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	if (!bh) {
- 		ext4_msg(sb, KERN_ERR, "couldn't read superblock of "
- 		       "external journal");
-+		errno = -EINVAL;
- 		goto out_bdev;
- 	}
- 
-@@ -5858,6 +5861,7 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	    !(le32_to_cpu(es->s_feature_incompat) &
- 	      EXT4_FEATURE_INCOMPAT_JOURNAL_DEV)) {
- 		ext4_msg(sb, KERN_ERR, "external journal has bad superblock");
-+		errno = -EFSCORRUPTED;
- 		goto out_bh;
- 	}
- 
-@@ -5865,11 +5869,13 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	     EXT4_FEATURE_RO_COMPAT_METADATA_CSUM) &&
- 	    es->s_checksum != ext4_superblock_csum(sb, es)) {
- 		ext4_msg(sb, KERN_ERR, "external journal has corrupt superblock");
-+		errno = -EFSCORRUPTED;
- 		goto out_bh;
- 	}
- 
- 	if (memcmp(EXT4_SB(sb)->s_es->s_journal_uuid, es->s_uuid, 16)) {
- 		ext4_msg(sb, KERN_ERR, "journal UUID does not match");
-+		errno = -EFSCORRUPTED;
- 		goto out_bh;
- 	}
- 
-@@ -5882,31 +5888,34 @@ static struct block_device *ext4_get_journal_blkdev(struct super_block *sb,
- 	brelse(bh);
- out_bdev:
- 	blkdev_put(bdev, sb);
--	return NULL;
-+	return ERR_PTR(errno);
- }
- 
--static journal_t *ext4_get_dev_journal(struct super_block *sb,
--				       dev_t j_dev)
-+static journal_t *ext4_open_dev_journal(struct super_block *sb,
-+					dev_t j_dev)
- {
- 	journal_t *journal;
- 	ext4_fsblk_t j_start;
- 	ext4_fsblk_t j_len;
- 	struct block_device *journal_bdev;
-+	int errno = 0;
- 
- 	journal_bdev = ext4_get_journal_blkdev(sb, j_dev, &j_start, &j_len);
--	if (!journal_bdev)
--		return NULL;
-+	if (IS_ERR(journal_bdev))
-+		return ERR_CAST(journal_bdev);
- 
- 	journal = jbd2_journal_init_dev(journal_bdev, sb->s_bdev, j_start,
- 					j_len, sb->s_blocksize);
- 	if (IS_ERR(journal)) {
- 		ext4_msg(sb, KERN_ERR, "failed to create device journal");
-+		errno = PTR_ERR(journal);
- 		goto out_bdev;
- 	}
- 	if (be32_to_cpu(journal->j_superblock->s_nr_users) != 1) {
- 		ext4_msg(sb, KERN_ERR, "External journal has more than one "
- 					"user (unsupported) - %d",
- 			be32_to_cpu(journal->j_superblock->s_nr_users));
-+		errno = -EINVAL;
- 		goto out_journal;
- 	}
- 	journal->j_private = sb;
-@@ -5918,7 +5927,7 @@ static journal_t *ext4_get_dev_journal(struct super_block *sb,
- 	jbd2_journal_destroy(journal);
- out_bdev:
- 	blkdev_put(journal_bdev, sb);
--	return NULL;
-+	return ERR_PTR(errno);
- }
- 
- static int ext4_load_journal(struct super_block *sb,
-@@ -5950,13 +5959,13 @@ static int ext4_load_journal(struct super_block *sb,
- 	}
- 
- 	if (journal_inum) {
--		journal = ext4_get_journal(sb, journal_inum);
--		if (!journal)
--			return -EINVAL;
-+		journal = ext4_open_inode_journal(sb, journal_inum);
-+		if (IS_ERR(journal))
-+			return PTR_ERR(journal);
- 	} else {
--		journal = ext4_get_dev_journal(sb, journal_dev);
--		if (!journal)
--			return -EINVAL;
-+		journal = ext4_open_dev_journal(sb, journal_dev);
-+		if (IS_ERR(journal))
-+			return PTR_ERR(journal);
- 	}
- 
- 	journal_dev_ro = bdev_read_only(journal->j_dev);
+ 	if (likely(bh)) {
+ 		if (trylock_buffer(bh))
 -- 
-2.34.3
+2.19.1.6.gb485710b
 
