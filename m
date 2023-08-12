@@ -2,70 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879427797AC
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Aug 2023 21:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BE8779BF9
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Aug 2023 02:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233273AbjHKTXT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Aug 2023 15:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
+        id S237047AbjHLAl7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Aug 2023 20:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHKTXS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 15:23:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280C0120;
-        Fri, 11 Aug 2023 12:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SCjfE0ihVcOKQWLIcU8GEL15xW0kjppT5rqoPuDlnqU=; b=GzoTSGKJWneXfmwmwJytS9bRLm
-        yuwJ6wSD5oilzUyqu9EYqjwALMw3krzY9689khfPDLvDqU8cdWrTWkcwzU6+/ghc4sp/5ZTrrwke6
-        I8EaRWP3PJKgKNw0BDEur913Z0/1OAWthjSBwj0jcCPHN3elDWqiVmt2129ugispTm+GTPjdMsN/A
-        gE16a1FOese/e1VWbqNfd1Qk+jmCXtehmwtNnyAsRaULoNOwBRux8lAvxptPOaRxMtAzvpscsIMDz
-        o1lMBoysZ53LM9o1znL/Beq4BjsS+wyFdk65021lvKyjORnouttYzMgwZihSqfsZpsNZsfQ/Nm9SM
-        2+oJAZzw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qUXj7-002vvW-41; Fri, 11 Aug 2023 19:23:13 +0000
-Date:   Fri, 11 Aug 2023 20:23:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     akpm@linux-foundation.org
-Cc:     Hui Zhu <teawater@antgroup.com>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH 4/3] buffer: Use bdev_getblk() in __breadahead()
-Message-ID: <ZNaKoWbYyOveesVc@casper.infradead.org>
-References: <20230811161528.506437-1-willy@infradead.org>
+        with ESMTP id S236946AbjHLAl5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Aug 2023 20:41:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45A7A6;
+        Fri, 11 Aug 2023 17:41:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4D913218E0;
+        Sat, 12 Aug 2023 00:41:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691800914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Xrrpw3+HUsiXWHTjXG7RJBvNwihn1GUBNy+js8Leqss=;
+        b=xZte8DD6iXDn04AdGNE5WpVyjAnG3v60jjUBMm2KJXecrvUkNEalSpFu2CN8AO5ZjzEtI2
+        vFChXHP3Jnb1jIzk8peU70MsY5p/o6LLouUHce1CLZDTUKh4Tpz/cizVwwhRCyuLpzQjDe
+        EuBiq95BCBTRMTR2sxg20LAMNEGVhBI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691800914;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Xrrpw3+HUsiXWHTjXG7RJBvNwihn1GUBNy+js8Leqss=;
+        b=oYAsTjgtsHVDwEXGreH2/pXTVq6R0/U9/EYlX9xHjsi2gQ1kx2w8ymLSVDJYKClJNT/jHM
+        oKP9h5RpYzaOchCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1214A13592;
+        Sat, 12 Aug 2023 00:41:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id io6fOlHV1mT/DwAAMHmgww
+        (envelope-from <krisman@suse.de>); Sat, 12 Aug 2023 00:41:53 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        ebiggers@kernel.org, jaegeuk@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: [PATCH v5 00/10] Support negative dentries on case-insensitive ext4 and f2fs
+Date:   Fri, 11 Aug 2023 20:41:36 -0400
+Message-ID: <20230812004146.30980-1-krisman@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811161528.506437-1-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi,
 
-It occurs to me that this would also be useful and I'll include it in
-the next version:
+This is the v5 of this patchset.  Thanks Christian and Eric for you
+review.
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 122b7d16befb..b551a5b1196b 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1470,7 +1470,9 @@ EXPORT_SYMBOL(__getblk_gfp);
-  */
- void __breadahead(struct block_device *bdev, sector_t block, unsigned size)
- {
--       struct buffer_head *bh = __getblk(bdev, block, size);
-+       struct buffer_head *bh = bdev_getblk(bdev, block, size,
-+                       GFP_NOWAIT | __GFP_MOVABLE | __GFP_ACCOUNT);
-+
-        if (likely(bh)) {
-                bh_readahead(bh, REQ_RAHEAD);
-                brelse(bh);
+In this version, the patchset grew a bit because it adds:
 
+  - a preparation patch to merge d_revalidate_name and d_revalidate,
+  attending Christian's request.  The original patch is now touching
+  several filesystems to update the hook signature, so it has grown
+  quite a bit. But, all of that was autogenerated with coccinelle and
+  tested with allyesconfig only.
 
+  - A new patch to expose a helper from libfs that I use in ecryptfs.
+
+  - Code to prevent ecryptfs from mounting on top of casefolded
+  directories. Also following on Christian's review.
+
+Other than these, there are some minor fixes, listed in each patch
+changelog, and more clarifications on the locking, thanks to the
+excellent feedback from Eric.
+
+Eric, I believe I have covered the cases where instantiation can happen
+and I don't think it is possible for a dentry to become positive amidst
+the d_revalidation, since we are holding the inode parent lock to
+synchronize with creations.  Please let me know if you find anything
+else.
+
+Finally, I've dropped the r-b tags from patch "fs: Expose name under
+lookup to d_revalidate hooks", because it changed too much since
+the time of review.
+
+Regarding testing, I verified it doesn't regress fstests for f2fs and
+ext4, verified building all filesystems work fine with allyesconfig,
+even with variation of CONFIG_FS_ENCRYPTION and CONFIG_UNICODE, and,
+finally, I checked I wasn't able to mount or lookup casefolded
+directories with ecryptfs and overlayfs.
+
+Thanks,
+
+Gabriel Krisman Bertazi (10):
+  fs: Expose helper to check if a directory needs casefolding
+  ecryptfs: Reject casefold directory inodes
+  9p: Split ->weak_revalidate from ->revalidate
+  fs: Expose name under lookup to d_revalidate hooks
+  fs: Add DCACHE_CASEFOLDED_NAME flag
+  libfs: Validate negative dentries in case-insensitive directories
+  libfs: Chain encryption checks after case-insensitive revalidation
+  libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+  ext4: Enable negative dentries on case-insensitive lookup
+  f2fs: Enable negative dentries on case-insensitive lookup
+
+ Documentation/filesystems/locking.rst |   3 +-
+ Documentation/filesystems/vfs.rst     |  11 ++-
+ fs/9p/vfs_dentry.c                    |  11 ++-
+ fs/afs/dir.c                          |   6 +-
+ fs/afs/dynroot.c                      |   4 +-
+ fs/ceph/dir.c                         |   3 +-
+ fs/coda/dir.c                         |   3 +-
+ fs/crypto/fname.c                     |   3 +-
+ fs/dcache.c                           |   8 ++
+ fs/ecryptfs/dentry.c                  |   5 +-
+ fs/ecryptfs/inode.c                   |   8 ++
+ fs/exfat/namei.c                      |   3 +-
+ fs/ext4/namei.c                       |  35 +-------
+ fs/f2fs/namei.c                       |  25 +-----
+ fs/fat/namei_vfat.c                   |   6 +-
+ fs/fuse/dir.c                         |   3 +-
+ fs/gfs2/dentry.c                      |   3 +-
+ fs/hfs/sysdep.c                       |   3 +-
+ fs/jfs/namei.c                        |   3 +-
+ fs/kernfs/dir.c                       |   3 +-
+ fs/libfs.c                            | 124 +++++++++++++++++---------
+ fs/namei.c                            |  18 ++--
+ fs/nfs/dir.c                          |   9 +-
+ fs/ocfs2/dcache.c                     |   4 +-
+ fs/orangefs/dcache.c                  |   3 +-
+ fs/overlayfs/super.c                  |  20 +++--
+ fs/proc/base.c                        |   6 +-
+ fs/proc/fd.c                          |   3 +-
+ fs/proc/generic.c                     |   6 +-
+ fs/proc/proc_sysctl.c                 |   3 +-
+ fs/reiserfs/xattr.c                   |   3 +-
+ fs/smb/client/dir.c                   |   3 +-
+ fs/vboxsf/dir.c                       |   4 +-
+ include/linux/dcache.h                |  10 ++-
+ include/linux/fs.h                    |  21 +++++
+ include/linux/fscrypt.h               |   4 +-
+ 36 files changed, 242 insertions(+), 148 deletions(-)
+
+-- 
+2.41.0
 
