@@ -2,37 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D21E77B733
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Aug 2023 12:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3503777B74E
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Aug 2023 13:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbjHNK7Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Aug 2023 06:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
+        id S233707AbjHNLF5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Aug 2023 07:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbjHNK7H (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Aug 2023 06:59:07 -0400
+        with ESMTP id S229623AbjHNLF2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Aug 2023 07:05:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9698AF4;
-        Mon, 14 Aug 2023 03:59:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F19A1B5;
+        Mon, 14 Aug 2023 04:05:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B8BD64D8C;
-        Mon, 14 Aug 2023 10:59:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9056C433C7;
-        Mon, 14 Aug 2023 10:58:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9505F63C48;
+        Mon, 14 Aug 2023 11:05:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8AAC433C7;
+        Mon, 14 Aug 2023 11:05:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692010745;
-        bh=M68BqgspvfU5HkD8cXrXN5XkVUNTnVosqqKv0zCZIIk=;
+        s=k20201202; t=1692011127;
+        bh=o2GX9ktf7XmPbMjQ9eJQ/RJAYkU4u146tdoCQwdGLb0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ada7zEq7w0DjLuBrqXHOSajouseLbVl17YndMQxL3QeWejlDOozfOtF82B8qmwNTA
-         7dCpOY37afZc8cxdIIJJwmBSOgHOlJ5bzVUO6YcRgJH+7pnIhpv17Z3Q7hJ1yX3twJ
-         KOO+HncXhvEEEB5YKNR1RNqUW0wvB6HisyJDUZ2DOA+IADPGNKO10AJfDgGjU5mnji
-         lXLQIy2a5AFWaKwNNAprmmH0HYbwbydTi3s7Ro3RoQTRznof5bS6Qjip6IN9hQwrw3
-         FNMGM+A0F4aRNoGmLxg9R2TwJH+atdw5/KmEhxfDPY/tZ0k7M77GLPNf0+NgB9l4gG
-         Vu2X2xHwSn73A==
-Date:   Mon, 14 Aug 2023 12:58:56 +0200
+        b=bIay++Zk8I7jdq3aa314BvqvMSwSTvUrpfQ7qiM3lFepfXfKvkyxKw+ScOHOeNAeF
+         swv1N35AaYHTsafue1ph47qRvF4v7/WNS4m6C/vyxo5D8YlSLO7aA3cWTsuhPBBc5n
+         LB+rxQtjAurAl+RNPoAAUTKinsrT3dSVXbCaXI4wxEsLhMQzqaX9UtRxoIsUj5gxfY
+         +H3DHAZWgwJJoUhMVb9xrAz/MBkCw+eE9/jjoA6eBhWtNlCNXNEfgNI/4TVQRrEk3+
+         iMkeR/oOvgPUnvMrLBKF2FjWxg11L6xc3ZZzJ4Tt6uXZBsaEqVGQza9pz0gzmiarsL
+         wVtCOM+YmdytQ==
+Date:   Mon, 14 Aug 2023 13:05:19 +0200
 From:   Carlos Maiolino <cem@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>,
@@ -49,7 +49,7 @@ Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
 Subject: Re: [PATCH 12/12] xfs use fs_holder_ops for the log and RT devices
-Message-ID: <20230814105856.pudqvixopjh3hmtn@andromeda>
+Message-ID: <20230814110519.i4vjdomisjrez3r3@andromeda>
 References: <20230802154131.2221419-1-hch@lst.de>
  <GiAHRRU8GiDH6Pv5bBBlwPA3hI_9kRXKZCNl7-CoadP8Bf7DiWIUnUt9bG1gBU92q5OuJ4Uy1Negt6JqJWxpeg==@protonmail.internalid>
  <20230802154131.2221419-13-hch@lst.de>
@@ -71,15 +71,14 @@ On Wed, Aug 02, 2023 at 05:41:31PM +0200, Christoph Hellwig wrote:
 > log or RT device goes away instead of duplicating the logic.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/xfs/xfs_super.c | 17 +++--------------
->  1 file changed, 3 insertions(+), 14 deletions(-)
-
-Looks good:
 
 Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
 
 Carlos
+
+> ---
+>  fs/xfs/xfs_super.c | 17 +++--------------
+>  1 file changed, 3 insertions(+), 14 deletions(-)
 > 
 > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
 > index d5042419ed9997..338eba71ff8667 100644
