@@ -2,233 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F5377B702
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Aug 2023 12:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D21E77B733
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Aug 2023 12:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjHNKqA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 14 Aug 2023 06:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        id S233093AbjHNK7Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 14 Aug 2023 06:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233530AbjHNKpu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Aug 2023 06:45:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE139D2;
-        Mon, 14 Aug 2023 03:45:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S233958AbjHNK7H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 14 Aug 2023 06:59:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9698AF4;
+        Mon, 14 Aug 2023 03:59:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 85EA121983;
-        Mon, 14 Aug 2023 10:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692009947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SEvFlfURKPeX91uVKJ/YjGiS8OtY7OV2NakQ6oQmBA=;
-        b=xNbNWoIx36iaGBYyT/c+jfd/jJBTba3rhjqwdX6D83IU79So7BERj1rwh0yNdcIzbCAlhv
-        FvzuMe1n6csZx7derfxaY13kCIPtIdZ7x9vz4huU0YGYVg46D5fJiJQBvo5XD7p8uQSJXJ
-        IsbkpsfgjsAQhqhLC+bkibLvmi3EfrE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692009947;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SEvFlfURKPeX91uVKJ/YjGiS8OtY7OV2NakQ6oQmBA=;
-        b=/at3qJL4Zq93iAbTmqIEMQdbo/NheFunTuKeMmanZqsKI9Q/ESz/7uTdLCPVv027pKAuZa
-        tMR9ZjHxWg/L51Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70D42138E2;
-        Mon, 14 Aug 2023 10:45:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SnGDG9sF2mTdEQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 14 Aug 2023 10:45:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D69DBA0769; Mon, 14 Aug 2023 12:45:46 +0200 (CEST)
-Date:   Mon, 14 Aug 2023 12:45:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com,
-        Yikebaer Aizezi <yikebaer61@gmail.com>
-Subject: Re: [PATCH] ext4: fix slab-use-after-free in ext4_es_insert_extent()
-Message-ID: <20230814104546.xtjuoxu7jn3bysk3@quack3>
-References: <20230814074351.96741-1-libaokun1@huawei.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B8BD64D8C;
+        Mon, 14 Aug 2023 10:59:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9056C433C7;
+        Mon, 14 Aug 2023 10:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692010745;
+        bh=M68BqgspvfU5HkD8cXrXN5XkVUNTnVosqqKv0zCZIIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ada7zEq7w0DjLuBrqXHOSajouseLbVl17YndMQxL3QeWejlDOozfOtF82B8qmwNTA
+         7dCpOY37afZc8cxdIIJJwmBSOgHOlJ5bzVUO6YcRgJH+7pnIhpv17Z3Q7hJ1yX3twJ
+         KOO+HncXhvEEEB5YKNR1RNqUW0wvB6HisyJDUZ2DOA+IADPGNKO10AJfDgGjU5mnji
+         lXLQIy2a5AFWaKwNNAprmmH0HYbwbydTi3s7Ro3RoQTRznof5bS6Qjip6IN9hQwrw3
+         FNMGM+A0F4aRNoGmLxg9R2TwJH+atdw5/KmEhxfDPY/tZ0k7M77GLPNf0+NgB9l4gG
+         Vu2X2xHwSn73A==
+Date:   Mon, 14 Aug 2023 12:58:56 +0200
+From:   Carlos Maiolino <cem@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 12/12] xfs use fs_holder_ops for the log and RT devices
+Message-ID: <20230814105856.pudqvixopjh3hmtn@andromeda>
+References: <20230802154131.2221419-1-hch@lst.de>
+ <GiAHRRU8GiDH6Pv5bBBlwPA3hI_9kRXKZCNl7-CoadP8Bf7DiWIUnUt9bG1gBU92q5OuJ4Uy1Negt6JqJWxpeg==@protonmail.internalid>
+ <20230802154131.2221419-13-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230814074351.96741-1-libaokun1@huawei.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230802154131.2221419-13-hch@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 14-08-23 15:43:51, Baokun Li wrote:
-> Yikebaer reported an issue:
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in ext4_es_insert_extent+0xc68/0xcb0
-> fs/ext4/extents_status.c:894
-> Read of size 4 at addr ffff888112ecc1a4 by task syz-executor/8438
+On Wed, Aug 02, 2023 at 05:41:31PM +0200, Christoph Hellwig wrote:
+> Use the generic fs_holder_ops to shut down the file system when the
+> log or RT device goes away instead of duplicating the logic.
 > 
-> CPU: 1 PID: 8438 Comm: syz-executor Not tainted 6.5.0-rc5 #1
-> Call Trace:
->  [...]
->  kasan_report+0xba/0xf0 mm/kasan/report.c:588
->  ext4_es_insert_extent+0xc68/0xcb0 fs/ext4/extents_status.c:894
->  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
->  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
->  ext4_zero_range fs/ext4/extents.c:4622 [inline]
->  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
->  [...]
-> 
-> Allocated by task 8438:
->  [...]
->  kmem_cache_zalloc include/linux/slab.h:693 [inline]
->  __es_alloc_extent fs/ext4/extents_status.c:469 [inline]
->  ext4_es_insert_extent+0x672/0xcb0 fs/ext4/extents_status.c:873
->  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
->  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
->  ext4_zero_range fs/ext4/extents.c:4622 [inline]
->  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
->  [...]
-> 
-> Freed by task 8438:
->  [...]
->  kmem_cache_free+0xec/0x490 mm/slub.c:3823
->  ext4_es_try_to_merge_right fs/ext4/extents_status.c:593 [inline]
->  __es_insert_extent+0x9f4/0x1440 fs/ext4/extents_status.c:802
->  ext4_es_insert_extent+0x2ca/0xcb0 fs/ext4/extents_status.c:882
->  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
->  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
->  ext4_zero_range fs/ext4/extents.c:4622 [inline]
->  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
->  [...]
-> ==================================================================
-> 
-> The flow of issue triggering is as follows:
-> 1. remove es
->       raw es               es  removed  es1
-> |-------------------| -> |----|.......|------|
-> 
-> 2. insert es
->   es   insert   es1      merge with es  es1     merge with es and free es1
-> |----|.......|------| -> |------------|------| -> |-------------------|
-> 
-> es merges with newes, then merges with es1, frees es1, then determines
-> if es1->es_len is 0 and triggers a UAF.
-> 
-> The code flow is as follows:
-> ext4_es_insert_extent
->   es1 = __es_alloc_extent(true);
->   es2 = __es_alloc_extent(true);
->   __es_remove_extent(inode, lblk, end, NULL, es1)
->     __es_insert_extent(inode, &newes, es1) ---> insert es1 to es tree
->   __es_insert_extent(inode, &newes, es2)
->     ext4_es_try_to_merge_right
->       ext4_es_free_extent(inode, es1) --->  es1 is freed
->   if (es1 && !es1->es_len)
->     // Trigger UAF by determining if es1 is used.
-> 
-> We determine whether es1 or es2 is used immediately after calling
-> __es_remove_extent() or __es_insert_extent() to avoid triggering a
-> UAF if es1 or es2 is freed.
-> 
-> Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
-> Closes: https://lore.kernel.org/lkml/CALcu4raD4h9coiyEBL4Bm0zjDwxC2CyPiTwsP3zFuhot6y9Beg@mail.gmail.com
-> Fixes: 2a69c450083d ("ext4: using nofail preallocation in ext4_es_insert_extent()")
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/xfs/xfs_super.c | 17 +++--------------
+>  1 file changed, 3 insertions(+), 14 deletions(-)
 
-Good spotting!
+Looks good:
 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index 9b5b8951afb4..cceac517265f 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -878,23 +878,21 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->  	err1 = __es_remove_extent(inode, lblk, end, NULL, es1);
->  	if (err1 != 0)
->  		goto error;
-> +	if (es1 && !es1->es_len)
-> +		__es_free_extent(es1);
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
 
-I'd prefer if you also set es1 to NULL after freeing es1. Something like:
-
-	/* Free preallocated extent if it didn't get used. */
-	if (es1) {
-		if (!es1->es_len)
-			__es_free_extent(es1);
-		es1 = NULL;
-	}
-
-Currently I don't think there's a realistic case how we could trigger the
-retry loop after we've once decided to preallocate entries but it just
-makes the code more obvously correct. Similarly below for es2 and for the
-cases in ext4_es_insert_delayed_block(). Thanks!
-
-								Honza
-
->  
->  	err2 = __es_insert_extent(inode, &newes, es2);
->  	if (err2 == -ENOMEM && !ext4_es_must_keep(&newes))
->  		err2 = 0;
->  	if (err2 != 0)
->  		goto error;
-> +	if (es2 && !es2->es_len)
-> +		__es_free_extent(es2);
->  
->  	if (sbi->s_cluster_ratio > 1 && test_opt(inode->i_sb, DELALLOC) &&
->  	    (status & EXTENT_STATUS_WRITTEN ||
->  	     status & EXTENT_STATUS_UNWRITTEN))
->  		__revise_pending(inode, lblk, len);
+Carlos
+> 
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index d5042419ed9997..338eba71ff8667 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -377,17 +377,6 @@ xfs_setup_dax_always(
+>  	return 0;
+>  }
+> 
+> -static void
+> -xfs_bdev_mark_dead(
+> -	struct block_device	*bdev)
+> -{
+> -	xfs_force_shutdown(bdev->bd_holder, SHUTDOWN_DEVICE_REMOVED);
+> -}
 > -
-> -	/* es is pre-allocated but not used, free it. */
-> -	if (es1 && !es1->es_len)
-> -		__es_free_extent(es1);
-> -	if (es2 && !es2->es_len)
-> -		__es_free_extent(es2);
->  error:
->  	write_unlock(&EXT4_I(inode)->i_es_lock);
->  	if (err1 || err2)
-> @@ -2047,19 +2045,17 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
->  	err1 = __es_remove_extent(inode, lblk, lblk, NULL, es1);
->  	if (err1 != 0)
->  		goto error;
-> +	if (es1 && !es1->es_len)
-> +		__es_free_extent(es1);
-
-The same 
-
->  
->  	err2 = __es_insert_extent(inode, &newes, es2);
->  	if (err2 != 0)
->  		goto error;
-> +	if (es2 && !es2->es_len)
-> +		__es_free_extent(es2);
->  
->  	if (allocated)
->  		__insert_pending(inode, lblk);
+> -static const struct blk_holder_ops xfs_holder_ops = {
+> -	.mark_dead		= xfs_bdev_mark_dead,
+> -};
 > -
-> -	/* es is pre-allocated but not used, free it. */
-> -	if (es1 && !es1->es_len)
-> -		__es_free_extent(es1);
-> -	if (es2 && !es2->es_len)
-> -		__es_free_extent(es2);
->  error:
->  	write_unlock(&EXT4_I(inode)->i_es_lock);
->  	if (err1 || err2)
-> -- 
-> 2.31.1
+>  STATIC int
+>  xfs_blkdev_get(
+>  	xfs_mount_t		*mp,
+> @@ -396,8 +385,8 @@ xfs_blkdev_get(
+>  {
+>  	int			error = 0;
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> -	*bdevp = blkdev_get_by_path(name, BLK_OPEN_READ | BLK_OPEN_WRITE, mp,
+> -				    &xfs_holder_ops);
+> +	*bdevp = blkdev_get_by_path(name, BLK_OPEN_READ | BLK_OPEN_WRITE,
+> +				    mp->m_super, &fs_holder_ops);
+>  	if (IS_ERR(*bdevp)) {
+>  		error = PTR_ERR(*bdevp);
+>  		xfs_warn(mp, "Invalid device [%s], error=%d", name, error);
+> @@ -412,7 +401,7 @@ xfs_blkdev_put(
+>  	struct block_device	*bdev)
+>  {
+>  	if (bdev)
+> -		blkdev_put(bdev, mp);
+> +		blkdev_put(bdev, mp->m_super);
+>  }
+> 
+>  STATIC void
+> --
+> 2.39.2
+> 
