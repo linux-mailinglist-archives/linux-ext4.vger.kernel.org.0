@@ -2,98 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4D177D046
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0701277D15C
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 19:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238507AbjHOQpD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 12:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
+        id S238959AbjHORuz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 13:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238563AbjHOQo5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 12:44:57 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CBE1B5;
-        Tue, 15 Aug 2023 09:44:52 -0700 (PDT)
-Received: from p200300cf17418700333267be2b9ea1d1.dip0.t-ipconnect.de ([2003:cf:1741:8700:3332:67be:2b9e:a1d1]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qVx9v-0000wM-7d; Tue, 15 Aug 2023 18:44:43 +0200
-Message-ID: <0d6d7b2d-fc01-0e78-8492-e460cce9f6a7@leemhuis.info>
-Date:   Tue, 15 Aug 2023 18:44:40 +0200
+        with ESMTP id S239044AbjHORuu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 13:50:50 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F621BFC;
+        Tue, 15 Aug 2023 10:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=0uxZXt/3Zkui8A9kyK+TZyZRF0Naf2So+pMYW6yTbqA=; b=c5lrxrd62N4p5vr8AvYqmG8NnL
+        FzvevgscZ+5EqM8/w2Y1RvgRLJeYE9t4cyPD/h6YkyQeMIINQOTnasGIQbiFWtISpPqosNd//F9jm
+        4+MlxLVcR3N1Vk+5A0Z+5SjP+5V9GqypjJV+EEwk0Vb68FDlbryRRwyxOGe5TIyVnwHcuB8B6d+NA
+        zhqrKH+UmeOUO7Nu8h0qrbJaf6bTQ0R0pC+L9hLIma1f9qtqbxMqzHyRqjadHS0x9Y6XNU+vU4C+M
+        UuvKiJju8F9DqVo4y+dq1AGx0ZCvx24uy3IJGnJ/VYTLsrtyx55h+NKEVT2HEE5J8buKQEEIG4DgZ
+        Y4VGjRyg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qVyBf-00768e-4i; Tue, 15 Aug 2023 17:50:35 +0000
+Date:   Tue, 15 Aug 2023 17:50:35 +0000
+From:   "Dr. David Alan Gilbert" <dave@treblig.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <ZNu668KGiNcwCSVe@gallifrey>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+ <20230815125146.GA1508930@mit.edu>
+ <ZNt11WbPn7LCXPvB@gallifrey>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v6.1] kernel BUG in ext4_writepages
-Content-Language: en-US, de-DE
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Cc:     syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>,
-        regressions@lists.linux.dev, Baokun Li <libaokun1@huawei.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>
-References: <00000000000081f8c905f6c24e0d@google.com>
- <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
- <4637f58c-1cf3-0691-4fc1-6fbc38ec47ce@collabora.com>
- <0fc2546b-da7c-aac4-b402-3ef4970a1789@collabora.com>
- <20230814220536.GE2247938@mit.edu>
- <1fa9ba26-d6f7-04e7-efb8-c85645857c7f@collabora.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <1fa9ba26-d6f7-04e7-efb8-c85645857c7f@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1692117893;48bb5312;
-X-HE-SMSGID: 1qVx9v-0000wM-7d
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <ZNt11WbPn7LCXPvB@gallifrey>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 17:46:28 up 40 days,  3:18,  1 user,  load average: 0.01, 0.00, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 15.08.23 18:31, Muhammad Usama Anjum wrote:
-> Thank you for looking at the email.
+* Dr. David Alan Gilbert (dave@treblig.org) wrote:
+> * Theodore Ts'o (tytso@mit.edu) wrote:
+> > On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
+> > > dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
+> > > 
+> > > [root@dalek dg]# cat /proc/29594/stack 
+> > > [<0>] md_super_wait+0xa2/0xe0
+> > > [<0>] md_bitmap_unplug+0xd2/0x120
+> > > [<0>] flush_bio_list+0xf3/0x100 [raid1]
+> > > [<0>] raid1_unplug+0x3b/0xb0 [raid1]
+> > > [<0>] __blk_flush_plug+0xd7/0x150
+> > > [<0>] blk_finish_plug+0x29/0x40
+> > > [<0>] ext4_do_writepages+0x401/0xc90
+> > > [<0>] ext4_writepages+0xad/0x180
+> > 
+> > If you want a few seconds and try grabbing cat /proc/29594/stack
+> > again, what does the stack trace stay consistent as above?
 > 
-> On 8/15/23 3:05 AM, Theodore Ts'o wrote:
->> On Mon, Aug 14, 2023 at 10:35:57AM +0500, Muhammad Usama Anjum wrote:
->>>> The last refactoring was done by 4e7ea81db53465 on this code in 2013. The
->>>> code segment in question is present from even before that. It means that
->>>> this bug is present for several years. 4.14 is the most old kernel being
->>>> maintained today. So it affects all current LTS and mainline kernels. I'll
->>>> report 4e7ea81db53465 with regzbot for proper tracking. Thus probably the
->>>> bug report will get associated with all LTS kernels as well.
->>>>
->>>> #regzbot title: Race condition between buffer write and page_mkwrite
->>>
->>> #regzbot title: ext4: Race condition between buffer write and page_mkwrite
->>
->> If it's a long-standing bug, then it's really not something I consider
->> a regression.  That being said, you're assuming that the refactoring
->> is what has introduced the bug; that's not necessarily case.
-> The bug was introduced by the following patch:
-> 9c3569b50f12 ("ext4: add delalloc support for inline data")
+> I'll get back to that and retry it.
 
-Which was v3.8-rc1 afaics.
+Yeh, the stack is consistent; this time around it's an 'ar' in a kernel
+build:
 
-> https://lore.kernel.org/all/1351047338-4963-7-git-send-email-tm@tao.ma/
-> The bug is in the inline data feature addition patches itself.
+[root@dalek dg]# cat /proc/17970/stack
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_unplug+0xad/0x120
+[<0>] flush_bio_list+0xf3/0x100 [raid1]
+[<0>] raid1_unplug+0x3b/0xb0 [raid1]
+[<0>] __blk_flush_plug+0xd7/0x150
+[<0>] blk_finish_plug+0x29/0x40
+[<0>] ext4_do_writepages+0x401/0xc90
+[<0>] ext4_writepages+0xad/0x180
+[<0>] do_writepages+0xd2/0x1e0
+[<0>] filemap_fdatawrite_wbc+0x63/0x90
+[<0>] __filemap_fdatawrite_range+0x5c/0x80
+[<0>] ext4_release_file+0x74/0xb0
+[<0>] __fput+0xf5/0x2a0
+[<0>] task_work_run+0x5d/0x90
+[<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
+[<0>] syscall_exit_to_user_mode+0x1b/0x40
+[<0>] do_syscall_64+0x6c/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[root@dalek dg]# cat /proc/17970/stack
+[<0>] md_super_wait+0xa2/0xe0
+[<0>] md_bitmap_unplug+0xad/0x120
+[<0>] flush_bio_list+0xf3/0x100 [raid1]
+[<0>] raid1_unplug+0x3b/0xb0 [raid1]
+[<0>] __blk_flush_plug+0xd7/0x150
+[<0>] blk_finish_plug+0x29/0x40
+[<0>] ext4_do_writepages+0x401/0xc90
+[<0>] ext4_writepages+0xad/0x180
+[<0>] do_writepages+0xd2/0x1e0
+[<0>] filemap_fdatawrite_wbc+0x63/0x90
+[<0>] __filemap_fdatawrite_range+0x5c/0x80
+[<0>] ext4_release_file+0x74/0xb0
+[<0>] __fput+0xf5/0x2a0
+[<0>] task_work_run+0x5d/0x90
+[<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
+[<0>] syscall_exit_to_user_mode+0x1b/0x40
+[<0>] do_syscall_64+0x6c/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+> > Also, if you have iostat installed (usually part of the sysstat
+> > package), does "iostat 1" show any I/O activity on the md device?
+
+iostat is showing something odd, most devices are at 0,
+except for 3 of the dm's that are stuck at 100% utilisation with
+apparently nothing going on:
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.06    0.00    0.03   53.06    0.00   46.84
+
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+...
+dm-16            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
+dm-17            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
+dm-18            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+dm-19            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+dm-2             0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+dm-20            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
+....
+
+dm-20 is the /dev/mapper/main-more which is the RAID on which the
+fs runs, 16 and 17 are main-more_rmeta_0 and main-more_rimage_0
+so something screwy is going on there.
+
+Dave
+
+
+> > What about the underying block dvices used by the md device?  If the
+> > md device is attached to HDD's where you can see the activity light,
+> > can you see (or hear) any disk activity?
 > 
-> Should I remove this regression from regzbot marking it as not regression
-> and only a long-standing bug?
-
-Let me do that:
-
-#regzbot inconclusive: regression from the 3.8 days, tracking doesn't
-really gain us anything
-
-To explain: not sure how Linus sees it, but if the culprit was merged
-that long ago there is not much worth in tracking it, as there is no
-easy way to fix it with a revert or something anyway. Sure, the issue
-nevertheless should not remain unfixed, but lets trust Ted here that
-he'll sooner or later take care of it when he sees fit.
-
-Ciao, Thorsten
+> It's spinning rust, and I hear them go quiet when the hang happens.
+> 
+> Dave
+> 
+> > This sure seems like either the I/O driver isn't processing requests,
+> > or some kind of hang in the md layer....
+> > 
+> > 				- Ted
+> -- 
+>  -----Open up your eyes, open up your mind, open up your code -------   
+> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+> \        dave @ treblig.org |                               | In Hex /
+>  \ _________________________|_____ http://www.treblig.org   |_______/
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
