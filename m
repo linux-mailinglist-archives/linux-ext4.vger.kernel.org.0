@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 349B077CBBA
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 13:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D4277CBBF
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 13:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbjHOLaC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 07:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S236719AbjHOLaH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 07:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236774AbjHOL3v (ORCPT
+        with ESMTP id S236776AbjHOL3v (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 07:29:51 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF821984;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101201BE8;
         Tue, 15 Aug 2023 04:29:40 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RQ8CR4lk4z1GDW4;
-        Tue, 15 Aug 2023 19:28:19 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RQ8CS09wyz1GDW8;
+        Tue, 15 Aug 2023 19:28:20 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
@@ -24,9 +24,9 @@ Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
 From:   Ye Bin <yebin10@huawei.com>
 To:     <jack@suse.cz>, <linux-ext4@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v2 2/4] ext2: introduce flag argument for ext2_new_blocks()
-Date:   Tue, 15 Aug 2023 19:26:10 +0800
-Message-ID: <20230815112612.221145-3-yebin10@huawei.com>
+Subject: [PATCH v2 3/4] ext2: fix race between setxattr and write back
+Date:   Tue, 15 Aug 2023 19:26:11 +0800
+Message-ID: <20230815112612.221145-4-yebin10@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230815112612.221145-1-yebin10@huawei.com>
 References: <20230815112612.221145-1-yebin10@huawei.com>
@@ -45,86 +45,106 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch introduce introduce flag argument for ext2_new_blocks(), and also
-introduce EXT2_ALLOC_NORESERVE flags.
+There's a issue as follows:
+Block Allocation Reservation Windows Map (ext2_try_to_allocate_with_rsv):
+reservation window 0x000000006f105382 start: 0, end: 0
+reservation window 0x000000008fd1a555 start: 1044, end: 1059
+Window map complete.
+kernel BUG at fs/ext2/balloc.c:1158!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+RIP: 0010:ext2_try_to_allocate_with_rsv.isra.0+0x15c4/0x1800
+Call Trace:
+ <TASK>
+ ext2_new_blocks+0x935/0x1690
+ ext2_new_block+0x73/0xa0
+ ext2_xattr_set2+0x74f/0x1730
+ ext2_xattr_set+0x12b6/0x2260
+ ext2_xattr_user_set+0x9c/0x110
+ __vfs_setxattr+0x139/0x1d0
+ __vfs_setxattr_noperm+0xfc/0x370
+ __vfs_setxattr_locked+0x205/0x2c0
+ vfs_setxattr+0x19d/0x3b0
+ do_setxattr+0xff/0x220
+ setxattr+0x123/0x150
+ path_setxattr+0x193/0x1e0
+ __x64_sys_setxattr+0xc8/0x170
+ do_syscall_64+0x35/0x80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Above issue may happens as follows:
+        setxattr                             write back
+ext2_xattr_set
+  ext2_xattr_set2
+    ext2_new_block
+      ext2_new_blocks
+        ext2_try_to_allocate_with_rsv
+          alloc_new_reservation
+          --> group=0 [0, 1023] rsv [1016, 1023]
+                                        do_writepages
+                                          mpage_writepages
+                                            write_cache_pages
+                                              __mpage_writepage
+                                                ext2_get_block
+                                                  ext2_get_blocks
+                                                   ext2_alloc_branch
+                                                    ext2_new_blocks
+                                                     ext2_try_to_allocate_with_rsv
+                                                       alloc_new_reservation
+                                     -->group=1 [1024, 2047] rsv [1044, 1059]
+          if ((my_rsv->rsv_start > group_last_block) ||
+              (my_rsv->rsv_end < group_first_block)
+              rsv_window_dump
+              BUG();
+Now ext2 mkwrite delay allocate new blocks. So there maybe allocate blocks when
+do write back. However, there is no concurrent protection between
+ext2_xattr_set() and do_writepages().
+To solve about issue don't use reservation window when allocate block for xattr.
 
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext2/balloc.c | 3 ++-
- fs/ext2/ext2.h   | 7 ++++++-
- fs/ext2/inode.c  | 2 +-
- fs/ext2/xattr.c  | 2 +-
- 4 files changed, 10 insertions(+), 4 deletions(-)
+ fs/ext2/balloc.c | 15 +++++++++------
+ fs/ext2/xattr.c  |  4 ++--
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index c8515fc501ec..99a19f2ecd6f 100644
+index 99a19f2ecd6f..4ff1d831bb80 100644
 --- a/fs/ext2/balloc.c
 +++ b/fs/ext2/balloc.c
-@@ -1193,6 +1193,7 @@ int ext2_data_block_valid(struct ext2_sb_info *sbi, ext2_fsblk_t start_blk,
-  * @goal:		given target block(filesystem wide)
-  * @count:		target number of blocks to allocate
-  * @errp:		error code
-+ * @flag                allocate flags
-  *
-  * ext2_new_blocks uses a goal block to assist allocation.  If the goal is
-  * free, or there is a free block within 32 blocks of the goal, that block
-@@ -1202,7 +1203,7 @@ int ext2_data_block_valid(struct ext2_sb_info *sbi, ext2_fsblk_t start_blk,
-  * This function also updates quota and i_blocks field.
-  */
- ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
--		    unsigned long *count, int *errp)
-+		    unsigned long *count, int *errp, unsigned int flag)
- {
- 	struct buffer_head *bitmap_bh = NULL;
- 	struct buffer_head *gdp_bh;
-diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index 954fb82ab22c..36c8ed5dd0a0 100644
---- a/fs/ext2/ext2.h
-+++ b/fs/ext2/ext2.h
-@@ -398,6 +398,11 @@ struct ext2_inode {
- #define EXT2_ERRORS_PANIC		3	/* Panic */
- #define EXT2_ERRORS_DEFAULT		EXT2_ERRORS_CONTINUE
+@@ -1247,13 +1247,16 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 	 * it's a regular file, and
+ 	 * the desired window size is greater than 0 (One could use ioctl
+ 	 * command EXT2_IOC_SETRSVSZ to set the window size to 0 to turn off
+-	 * reservation on that particular file)
++	 * reservation on that particular file), and unspecified Do not use
++	 * reservation window.
+ 	 */
+-	block_i = EXT2_I(inode)->i_block_alloc_info;
+-	if (block_i) {
+-		windowsz = block_i->rsv_window_node.rsv_goal_size;
+-		if (windowsz > 0)
+-			my_rsv = &block_i->rsv_window_node;
++	if (!(flag & EXT2_ALLOC_NORESERVE)) {
++		block_i = EXT2_I(inode)->i_block_alloc_info;
++		if (block_i) {
++			windowsz = block_i->rsv_window_node.rsv_goal_size;
++			if (windowsz > 0)
++				my_rsv = &block_i->rsv_window_node;
++		}
+ 	}
  
-+/*
-+ * Behaviour if use reservation window in ext2_new_blocks()
-+ */
-+#define EXT2_ALLOC_NORESERVE            0x1
-+
- /*
-  * Structure of the super block
-  */
-@@ -696,7 +701,7 @@ static inline struct ext2_inode_info *EXT2_I(struct inode *inode)
- extern int ext2_bg_has_super(struct super_block *sb, int group);
- extern unsigned long ext2_bg_num_gdb(struct super_block *sb, int group);
- extern ext2_fsblk_t ext2_new_blocks(struct inode *, unsigned long,
--				unsigned long *, int *);
-+				unsigned long *, int *, unsigned int);
- extern int ext2_data_block_valid(struct ext2_sb_info *sbi, ext2_fsblk_t start_blk,
- 				 unsigned int count);
- extern void ext2_free_blocks (struct inode *, unsigned long,
-diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-index acbab27fe957..462b4e873dc7 100644
---- a/fs/ext2/inode.c
-+++ b/fs/ext2/inode.c
-@@ -415,7 +415,7 @@ static int ext2_alloc_blocks(struct inode *inode,
- 	while (1) {
- 		count = target;
- 		/* allocating blocks for indirect blocks and direct blocks */
--		current_block = ext2_new_blocks(inode,goal,&count,err);
-+		current_block = ext2_new_blocks(inode, goal, &count, err, 0);
- 		if (*err)
- 			goto failed_out;
- 
+ 	if (!ext2_has_free_blocks(sbi)) {
 diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index e9546cc65db2..e076386a26f4 100644
+index e076386a26f4..21725b8d04c8 100644
 --- a/fs/ext2/xattr.c
 +++ b/fs/ext2/xattr.c
-@@ -744,7 +744,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+@@ -743,8 +743,8 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+ 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
  						EXT2_I(inode)->i_block_group);
  			unsigned long count = 1;
- 			int block = ext2_new_blocks(inode, goal, &count,
--						    &error);
-+						    &error, 0);
+-			int block = ext2_new_blocks(inode, goal, &count,
+-						    &error, 0);
++			int block = ext2_new_blocks(inode, goal, &count, &error,
++						    EXT2_ALLOC_NORESERVE);
  			if (error)
  				goto cleanup;
  			ea_idebug(inode, "creating block %d", block);
