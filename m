@@ -2,67 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F3C77C6AD
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 06:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523D377C6BC
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 06:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjHOEQD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 00:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        id S234286AbjHOEci (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 00:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234642AbjHOEMX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 00:12:23 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DE5171F
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Aug 2023 21:10:11 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bd0911c95dso4548816a34.3
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Aug 2023 21:10:11 -0700 (PDT)
+        with ESMTP id S231424AbjHOEcH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 00:32:07 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85088BB
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Aug 2023 21:32:04 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bc73a2b0easo32294355ad.0
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Aug 2023 21:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1692072610; x=1692677410;
+        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1692073924; x=1692678724;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0XekWSlNIMJA0Yurb+9+cWUybUA9oVXte/EYshLDfQI=;
-        b=Q+nIBK7vWDB95dHSNoj1ZzUiaZYj2v3WGSsIrx/Gwyyb6Mrsmazrnue0rTDVkQEi2X
-         a9vjoRJt4XW6R3BQu2MaFeDiteBPwocHabY8CkXW/xjtwgaSNU31m6IGKTh+le5XX1Sm
-         MMhrxUx1QOIYhnlOgnb8T5vgpYrSQE+66o2ObDYuicCtrGT/q4arWCRHX5V14OQVnuQ6
-         b89MTBTcoBJHESR0yGbFDAZQky663x/RlSz1zbGwPXIytB9CmcUJamC7JWST/v/neQ4x
-         8rUTl6DmiffeOFN0GfWGCnss1aGC/mTRw+1oUYLEOW+TAElEoXScmyGysnQaYOiHvChj
-         w0Eg==
+        bh=f8P5nWTwrERnMb9sz1tb57Keeo64MCjaB9ZGtxO3GC8=;
+        b=ImBQFjRirCCf28tFdVUlIjXkwk+Nud/H7wlK4wQvpw4hd6ESRvxdxrYvC1MyrE27rX
+         cofAyv8Gb6D9SJoURqzGldR2UTr30haHF7aPB9I/iI8YdLMAHOYa49NjpRLozjl9V1r/
+         diyuPzV+QevOa12ZP3pL/lT2CGL7W6AhwB/Y09tm/hvL5kRow8eJz5u00gRTM7IxJsh7
+         GOtLSoFvgny1k/MQAV6y34omL6tvFqgZWyAlZCxtS7VQkAKwlOKyRexByyFuVvY+QqXS
+         E1tTHph2tvm79K5q0OlaYB8NR8tIL3s0Mh8gKHQ62OZnnMguFC0TbqFoPtXf0yKVRqXr
+         IghA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692072610; x=1692677410;
+        d=1e100.net; s=20221208; t=1692073924; x=1692678724;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0XekWSlNIMJA0Yurb+9+cWUybUA9oVXte/EYshLDfQI=;
-        b=CbetCWeWHEbAUptbBom48+lY5002JsW30I4CtB5lKqHfJxRTZtNoVJJ9GCyQm++k6A
-         j3LxRf5ewRZt73upPDlANPYHVTuWlk9uq0gmc0RX9d33k32IMtxRxnAk+jG4MzGe1VXI
-         M7NE645qiWxbREdSIn0BegpdoEPWXZxsY1q88Xj8kpbyd09AkitIXj0fDKgfsTkPIXzU
-         84I157wlDheHiLwkLhBQ701nf4++LLQSbdKWAQRX1069C3nyx6WVQh5+bdxiyVC/PTHk
-         fEe+JaanEQcvF65v7vlRMLtX1M4yU3G9si1wUnSbyDPtTSckAo03J21LIPJAB1/R0gdb
-         IVbg==
-X-Gm-Message-State: AOJu0YzkkpLMBj6IbeQGkj+8DrXgMGvKBBNYm9NcL22+cOGEY+Yl0nEg
-        ww4C46jzGW54eyhdzTUPizGTKLFdZhMjeFkktAs=
-X-Google-Smtp-Source: AGHT+IG1z9LK1yAS6A/nUyLaW7b99JowCUR8mFCZHfmgNkTvsUdmRzqNF4fIdSRHRC+xFLNhafaIqw==
-X-Received: by 2002:a05:6830:4b0:b0:6b5:8a98:f593 with SMTP id l16-20020a05683004b000b006b58a98f593mr11263194otd.8.1692072610137;
-        Mon, 14 Aug 2023 21:10:10 -0700 (PDT)
+        bh=f8P5nWTwrERnMb9sz1tb57Keeo64MCjaB9ZGtxO3GC8=;
+        b=Rj/ylAgY6pxynxJ6TAvmJouEE2eE/7+FOdW6IYoL/0z3SsFNSlLyGufE9mdCoLkYKZ
+         Z5XBFhpvOoKHXSr0i8kOcVNyHfELbK+swJ7cUIARDJ+EdrhDI3lZ990v9jt/VLRMXJ+d
+         zCe4Azel2UdVAkhIOPWdqesMCPg1EjcLRFat4H6QY6OsXf14fZ4G1C1BChgyxJn9qzJX
+         yhhX7NGmzRYYYSeTYwA/DhAHX1Ld+xfSp3DPutS+6pNT6kSqF+ruQlCQc2MIBHzevq0d
+         8Vf9yT+5+Cb0OGtKt/xI78LwMuRJp8EoxWav76sfY9mRCiMHc+lkOJy73AfL909MVnI3
+         2Nkg==
+X-Gm-Message-State: AOJu0YygVUOqtI6H9bmiDTPiWdxDVRw3KiHut+YkNIgH5BSdEB3jROna
+        0CRdK0lGND+AFi7EsinIhP2QCA==
+X-Google-Smtp-Source: AGHT+IEDc7/2ChCc54/jXXQwZS/fiG/LE0CcaD6wAg7b/4xnqBoYZF07Qj+pgdjfOZEORshjOgcRLQ==
+X-Received: by 2002:a17:902:8c8c:b0:1b8:9b90:e2bc with SMTP id t12-20020a1709028c8c00b001b89b90e2bcmr8581436plo.52.1692073923896;
+        Mon, 14 Aug 2023 21:32:03 -0700 (PDT)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id om14-20020a17090b3a8e00b00268b439a0cbsm527929pjb.23.2023.08.14.21.10.09
+        by smtp.gmail.com with ESMTPSA id kx14-20020a170902f94e00b001b8a3dd5a4asm388456plb.283.2023.08.14.21.32.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Aug 2023 21:10:09 -0700 (PDT)
+        Mon, 14 Aug 2023 21:32:03 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8AF0F706-B25F-4365-B9F2-8CA1BB336EC3@dilger.ca>
+Message-Id: <E1C33FC3-CEF7-458E-AC1F-FAA3223D2CBB@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_9F3DBAD2-58B2-4790-9BA3-033EB7A74001";
+ boundary="Apple-Mail=_126CC69E-B366-4056-BAD7-C21538F0AB3E";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/2] ext4: optimize metadata allocation for hybrid LUNs
-Date:   Mon, 14 Aug 2023 22:10:05 -0600
-In-Reply-To: <87msz8wcm4.fsf@doe.com>
-Cc:     Bobi Jam <bobijam@hotmail.com>, linux-ext4@vger.kernel.org
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-References: <87msz8wcm4.fsf@doe.com>
+Subject: Re: [PATCH 1/2] ext4: introduce EXT4_BG_TRIMMED to optimize fstrim
+Date:   Mon, 14 Aug 2023 22:32:00 -0600
+In-Reply-To: <20230811183558.GA1528742@mit.edu>
+Cc:     Li Dongyang <dongyangli@ddn.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Shuichi Ihara <sihara@ddn.com>, wangshilong1991@gmail.com
+To:     Theodore Ts'o <tytso@mit.edu>
+References: <20230811061905.301124-1-dongyangli@ddn.com>
+ <20230811183558.GA1528742@mit.edu>
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,166 +73,100 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_9F3DBAD2-58B2-4790-9BA3-033EB7A74001
+--Apple-Mail=_126CC69E-B366-4056-BAD7-C21538F0AB3E
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Aug 3, 2023, at 6:10 AM, Ritesh Harjani (IBM) <ritesh.list@gmail.com> =
-wrote:
+On Aug 11, 2023, at 12:35 PM, Theodore Ts'o <tytso@mit.edu> wrote:
 >=20
-> Bobi Jam <bobijam@hotmail.com> writes:
+> On Fri, Aug 11, 2023 at 04:19:04PM +1000, Li Dongyang wrote:
+>> Currently the flag indicating block group has done fstrim is not
+>> persistent, and trim status will be lost after remount, as
+>> a result fstrim can not skip the already trimmed groups, which
+>> could be slow on very large devices.
+>>=20
+>> This patch introduces a new block group flag EXT4_BG_TRIMMED,
+>> we need 1 extra block group descriptor write after trimming each
+>> block group.
+>> When clearing the flag, the block group descriptor is journalled
+>> already so no extra overhead.
 >=20
->> With LVM it is possible to create an LV with SSD storage at the
->> beginning of the LV and HDD storage at the end of the LV, and use =
-that
->> to separate ext4 metadata allocations (that need small random IOs)
->> from data allocations (that are better suited for large sequential
->> IOs) depending on the type of underlying storage.  Between 0.5-1.0% =
-of
->> the filesystem capacity would need to be high-IOPS storage in order =
-to
->> hold all of the internal metadata.
->>=20
->> This would improve performance for inode and other metadata access,
->> such as ls, find, e2fsck, and in general improve file access latency,
->> modification, truncate, unlink, transaction commit, etc.
->>=20
->> This patch split largest free order group lists and average fragment
->> size lists into other two lists for IOPS/fast storage groups, and
->> cr 0 / cr 1 group scanning for metadata block allocation in following
->> order:
->>=20
->> cr 0 on largest free order IOPS group list
->> cr 1 on average fragment size IOPS group list
->> cr 0 on largest free order non-IOPS group list
->> cr 1 on average fragment size non-IOPS group list
->> cr >=3D 2 perform the linear search as before
+> If we journalling is enabled (and it normally is enabled) then there
+> is also writes to the journalling.  Updating the block group
+> descriptor is also a random 4k write, which is not nothing.  So if we
+> are going to do this, then we should not try to set the flag if the
+> block group is unitialized, and we should actually send the discard in
+> that case, since presumably the blocks in question were discard when
+> the file system was mkfs'ed.
 
-Hi Ritesh,
-thanks for the review and the discussion about the patch.
+Sorry Ted, I'm not sure I understand your comment here.  If the device
+is trimmed at mke2fs time, then the BG_TRIMMED flags are set in the
+group descriptors, so if the flag is still set then no need to TRIM
+those groups later.
 
-> Yes. The implementation looks straight forward to me.
+The comment about "no extra overhead" is in the case of clearing the
+BG_TRIMMED flag when freeing blocks.  In that case, the group =
+descriptors
+are already being updated with the new blocks count, so there is no
+overhead to clear the BG_TRIMMED flag at the same time.
+
+Definitely there is an extra GDT write after TRIM to set the BG_TRIMMED
+flag, but since fstrim is done sequentially for groups it is likely that
+multiple groups in a single GDT block would be updated at the same time,
+so the overhead is relatively small.
+
+>> Add a new super block flag EXT2_FLAGS_TRACK_TRIM, to indicate if
+>> we should honour EXT4_BG_TRIMMED when doing fstrim.
+>> The new super block flag can be turned on/off via tune2fs.
 >=20
+> I don't see the point of having the superblock flag.  It seems to me
+> that either we should either do this via a proper feature flag, which
+> means that older kernels (and grub bootloaders that get release
+> updates at a super-lackadasical pace) won't touch file systems that
+> have the feature flag set --- or we don't have any kind of flag at
+> all, and kernels and userspace utilities which are EXT4_BG_TRIMMED
+> enlightened will honor and set/clear the flag.
 
->> Non-metadata block allocation does not allocate from the IOPS groups.
->>=20
->> Add for mke2fs an option to mark which blocks are in the IOPS region
->> of storage at format time:
->>=20
->>  -E iops=3D0-1024G,4096-8192G
->=20
+In the previous email thread about the persistent BG_TRIMMED flag,
+you were requesting a superblock flag and not a full feature, to avoid
+the incompatibility issues with a new feature for this:
 
-> However few things to discuss here are -
+=
+https://patchwork.ozlabs.org/project/linux-ext4/patch/1592831677-13945-1-g=
+it-send-email-wangshilong1991@gmail.com/#2502168
 
-As Ted requested on the call, this should be done as two separate calls
-to the allocator, rather than embedding the policy in mballoc group
-selection itself.  Presumably this would be in ext4_mb_new_blocks()
-calling ext4_mb_regular_allocator() twice with different allocation
-flags (first with EXT4_MB_HINT_METADATA, then without, though I don't
-actually see this was used anywhere in the code before this patch?)
+   "So what I was thinking was we could define a new flag which
+    would be set in es->s_flags in the on-disk superblock:
 
-Metadata allocations should try only IOPS groups on the first call,
-but would go through all allocation phases.  If IOPS allocation fails,
-then the allocator should do a full second pass to allocate from the
-non-IOPS groups.  Non-metadata allocations would only allocate from
-non-IOPS groups.
+    #define EXT2_FLAGS_PERSISTENT_TRIM_TRACKING 0x0008
 
-> 1. What happens when the hdd space for data gets fully exhausted? =
-AFAICS,
-> the allocation for data blocks will still succeed, however we won't be
-> able to make use of optimized scanning any more. Because we search =
-within
-> iops lists only when EXT4_MB_HINT_METADATA is set in ac->ac_flags.
+    If this flag is set, then the EXT4_BG_WAS_TRIMMED flags will
+    be honored; otherwise, they will be ignored when FITRIM is
+    executed and the block group will be unconditionally trimmed.
 
-The intention for our usage is that data allocations should *only* come
-from the HDD region of the device, and *not* from the IOPS (flash) =
-region
-of the device.  The IOPS region will be comparatively small (0.5-1.0% of
-the total device size) so using or not using this space will be mostly
-meaningless to the overall filesystem usage, especially with a 1-5%
-reserved blocks percentage that is the default for new filesystems.
+    The advantage of doing it this way is that we don't need to
+    allocate a new feature bit, and older versions of e2fsck won't
+    have heartburn over seeing a feature bit it doesn't understand.
+    I also suspect this is something that the system administrator
+    will either always want enabled or disabled, so it's better to
+    make it be a tunable to be set via tune2fs."
 
-As you mentioned on the call, it seems this is a defect in the current
-patch, that non-metadata allocations may eventually fall back to scan
-all block groups for free space including IOPS groups.  They need to
-explicitly skip groups that have the IOPS flags set.
+> This risk if we go down that path is that if we have a file system
+> which is normally used by a kernel that has support for this feature,
+> and that file system is mounted by an older kernel which doesn't have
+> this flag, there might be cases where the file system would be trimmed
+> without setting these flags, or blocks might get released on a block
+> group without clearing the flag.  Fortunately, trim is advisory, so if
+> we trim a block group that doesn't need it, or we don't trim a block
+> group where discard might be useful, it's not the end of the world.
+> And we could always have "e2fsck -E discard" ignore the
+> EXT4_BG_TRIMMED flag, and just trim all the blocks[1].
 
-> 2. Similarly what happens when the ssd space for metadata gets full?
-> In this case we keep falling back to cr2 for allocation and we don't
-> utilize optimize_scanning to find the block groups from hdd space to
-> allocate from.
-
-In the case when the IOPS groups are full then the metadata allocations
-should fall back to using non-IOPS groups.  That avoids ENOSPC when the
-metadata space is accidentally formatted too small, or unexpected usage
-such as large xattrs or many directories are consuming more IOPS space.
-
-> 3. So it seems after a period of time, these iops lists can have block
-> groups belonging to differnt ssds. Could this cause the metadata
-> allocation of related inodes to come from different ssds.
-> Will this be optimal? Checking on this...
->     ...On checking further on this, we start with a goal group and we
-> at least scan s_mb_max_linear_groups (4) linearly. So it's unlikely =
-that
-> we frequently allocate metadata blocks from different SSDs.
-
-In our usage will typically be only a single IOPS region at the start of
-the device, but the ability to allow multiple IOPS regions was added for
-completeness and flexibility in the future (e.g. resize of filesystem).
-In our case, the IOPS region would itself be RAIDed, so "different SSDs"
-is not really a concern.
-
-> 4. Ok looking into this, do we even require the iops lists for =
-metadata
-> allocations? Do we allocate more than 1 blocks for metadata? If not =
-then
-> maintaining these iops lists for metadata allocation isn't really
-> helpful. On the other hand it does make sense to maintain it when we
-> allow data allocations from these ssds when hdds gets full.
-
-I don't think we *need* to use the same mballoc code for IOPS allocation
-in most cases, though large xattr inode allocations should also be using
-the IOPS groups for allocating blocks, and these might be up to 64KB.
-I don't think that is actually implemented properly in this patch yet.
-
-Also, the mballoc list/array make it easy to find groups with free space
-in a full filesystem instead of having to scan for them, even if we
-don't need the full "allocate order-N" functionality.  Having one list
-of free groups or order-N lists doesn't make it more expensive (and it
-actually improves scalability to have multiple list heads).
-
-One of the future enhancements might be to allow small files (of some
-configurable size) to also be allocated from the IOPS groups, so it is
-probably easier IMHO to just stick with the same allocator for both.
-
-> 5. Did we run any benchmarks with this yet? What kind of gains we are
-> looking for? Do we have any numbers for this?
-
-We're working on that.  I just wanted to get the initial patches out for
-review sooner rather than later, both to get feedback on implementation
-(like this, thanks), and also to reserve the EXT4_BG_IOPS field so it
-doesn't get used in a conflicting manner.
-
-> 6. I couldn't stop but start to think of...
-> Should there also be a provision from the user to pass hot/cold data
-> types which we can use as a hint within the filesystem to allocate =
-from
-> ssd v/s hdd? Does it even make sense to think in this direction?
-
-Yes, I also had the same idea, but then left it out of my email to avoid
-getting distracted from the initial goal.  There are a number of =
-possible
-improvements that could be done with a mechanism like this:
-- have fast/slow regions within a single HDD (i.e. last 20% of spindle =
-is
-  in "slow" region due to reduced linear velocity/bandwidth on inner =
-tracks)
-  to avoid using the slow region unless the fast region is (mostly) full
-- have several regions across an HDD to *intentionally* allocate some
-  extents in the "slow" groups to reduce *peak* bandwidth but keep
-  *average* bandwidth higher as the disk becomes more full since there
-  would still be free space in the faster groups.
+I'm OK with the superblock flag.  Since TRIM is advisory you aren't
+going to lose data or corrupt the filesystem if the flags are wrong.
+At worst, some TRIM will be skipped until upgrading to a new kernel
+or the flag is disabled in the superblock, but this is a corner case.
 
 Cheers, Andreas
 
@@ -238,7 +175,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_9F3DBAD2-58B2-4790-9BA3-033EB7A74001
+--Apple-Mail=_126CC69E-B366-4056-BAD7-C21538F0AB3E
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -249,19 +186,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTa+p0ACgkQcqXauRfM
-H+BaOQ//YlR2qA/iwDgUZgJNRh5C7iBFguPrKyC1IdbNWoXBbKUse1OulnZiYgPE
-Y0OiDVGjcGTsTSs+1h6hBQDj3U7/5xOB2IOlxI7xX5Fejy9Ip15xnVYTGsLMN/qB
-4CJ0yd0Si3/PHhL96Lk6B3xNjqqG3Lzsw2msLzE74KdgJHSM70Sm/k/q4ItR9x3g
-Cey5TbDnNw++Z/mLilqhxpHdvF63MNm4iQovxMkVc4vEgfSyYe0LHKON65cDEvtK
-0J7BDzS5U6HmW5NsTXmUmIC0NAHLNZqCgzOi/n7xpB7ofUUUdzLLPjHPqbXOyrYA
-MBy6i+yDggkq0Baoe0UY02tv5fLS4X9QdFQul4wSw+JV+uOSivzZEurElN93uo9p
-5Xn4YOwQXY8kqkMzw1CAqSzP1p+uaOQ4G0E3XESVtjqUQbYd1ML0Yf3XazZQlBw+
-OHt3B/ox1WJz+gjxq4P7IEktbJ/DeOBsGq/nSJY9ISrCITRb4DFBL6Ze347vzDkD
-usFb5v01sNYDaiJqn2/iQgs2HihAkWJM9mOUz/cGvzgYdM5FSP/LFfsd+YdcUf6H
-6JV3LCMR6fExCBTVGeO3dXLg6rm2TKEBp8Siphp+r2FvF+tQKnG241rRB7z0GFCP
-TN71rkTas/R7dD1E22a3UnvAUNHgmF0yZiTfGu97e261hWlotTE=
-=h5FV
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTa/8EACgkQcqXauRfM
+H+Ay5RAAhojsGAXDIVBOFdAmuSxfHaqKXYU8E8MSeZoxn0tlyrZOi1Ia5h5oZfpD
+Vg200hI3wvqZKCGLso1QJ70yVxzaImGDwz08N9kKQZOZdUZClcKo745no6z47A0V
+BVKizH5A1u4/RHEWgDmwVL/4fP5BZ/+jtPMW4LGOhIUi3Z6xkI6gpEOoLqZjoQnM
+25dp2c8STaGWwmX/eRsUpwNQDGy0Kh4HNiuhHbt1lU+ZzznBWDFtMwmwzWmfJIEr
+9z0FdMF4KKNiug2PApKhJ/BPtwMet1bLhq/r6CNNL1hf11c7uN9AznIEq4QCdxvY
+FSNIYD/uH4xq9ZT2a5hJ9ukXcTqyYf5t1U0WHmGB9biQZNsDoKT1A+OzmYbj9j/B
+shoaIRzx3EgjNN0/FTKrVQhTC/0Uc72UJ+Czt5mtuGSX22lJIeCD12XSaVTM8ZCB
+DLnCQEIEBplBN3hBOESFnm/dCbD8ePxPKagWlt3XUI30DCm8h96DaBVgrIgvZcVn
+I0Ci17ag1O9StZhFUwopEZ0Ya+BH/XeRQrxksFOXA/dDLZ+ew1FxBSV5ZUs0lrBe
+aINX3EFOTImKuPpWVOpdo0tWSCXWLef0CeCRiZSeUe0PXbUWgH2ctssJ43pZdj2S
+O819M5FflS2kBxDLSAgYnvpiqLXpaOscY/dZbA0wlhttlEI/Q74=
+=AXAJ
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_9F3DBAD2-58B2-4790-9BA3-033EB7A74001--
+--Apple-Mail=_126CC69E-B366-4056-BAD7-C21538F0AB3E--
