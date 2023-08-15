@@ -2,55 +2,42 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0701277D15C
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 19:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0523F77D16D
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 19:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238959AbjHORuz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 13:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        id S239006AbjHOR5x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 13:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239044AbjHORuu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 13:50:50 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F621BFC;
-        Tue, 15 Aug 2023 10:50:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=0uxZXt/3Zkui8A9kyK+TZyZRF0Naf2So+pMYW6yTbqA=; b=c5lrxrd62N4p5vr8AvYqmG8NnL
-        FzvevgscZ+5EqM8/w2Y1RvgRLJeYE9t4cyPD/h6YkyQeMIINQOTnasGIQbiFWtISpPqosNd//F9jm
-        4+MlxLVcR3N1Vk+5A0Z+5SjP+5V9GqypjJV+EEwk0Vb68FDlbryRRwyxOGe5TIyVnwHcuB8B6d+NA
-        zhqrKH+UmeOUO7Nu8h0qrbJaf6bTQ0R0pC+L9hLIma1f9qtqbxMqzHyRqjadHS0x9Y6XNU+vU4C+M
-        UuvKiJju8F9DqVo4y+dq1AGx0ZCvx24uy3IJGnJ/VYTLsrtyx55h+NKEVT2HEE5J8buKQEEIG4DgZ
-        Y4VGjRyg==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qVyBf-00768e-4i; Tue, 15 Aug 2023 17:50:35 +0000
-Date:   Tue, 15 Aug 2023 17:50:35 +0000
-From:   "Dr. David Alan Gilbert" <dave@treblig.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, song@kernel.org,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <ZNu668KGiNcwCSVe@gallifrey>
-References: <ZNqWfQPTScJDkmpX@gallifrey>
- <20230815125146.GA1508930@mit.edu>
- <ZNt11WbPn7LCXPvB@gallifrey>
+        with ESMTP id S239014AbjHOR5i (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 13:57:38 -0400
+Received: from fulda116.server4you.de (mister-muffin.de [144.76.155.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C958F1BDB
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 10:57:34 -0700 (PDT)
+Received: from localhost (ip2504e722.dynamic.kabel-deutschland.de [37.4.231.34])
+        by mister-muffin.de (Postfix) with ESMTPSA id 2871D16C;
+        Tue, 15 Aug 2023 19:57:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+        s=mail; t=1692122253;
+        bh=p9p7SZOeZEGuSGGyRDlLrGlx5RTnaTS5p6bjcKgmN0s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aLd+/dG0Jrt0eSx0jqA6lkQp3zhB5B+wntRU22eyzpeJRb/i95a6lXnRWAaXQNyg9
+         gj060RqfXfDseogHPphuIziwreEFNIwFEkF824peWbLQ0ZhUdpIjdid/0yCBM7CYq6
+         El1ggm9zqORliIlWHWgwLaF4n0ee3+D7Es+t46FU=
+From:   Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+To:     linux-ext4@vger.kernel.org
+Cc:     Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+Subject: [PATCH v3 0/1] mke2fs: the -d option can now handle tarball input
+Date:   Tue, 15 Aug 2023 19:57:16 +0200
+Message-Id: <20230815175717.781425-1-josch@mister-muffin.de>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <1FD4874D-0E9C-442C-9FC1-AC35DCFD0A3C@dilger.ca>
+References: <1FD4874D-0E9C-442C-9FC1-AC35DCFD0A3C@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <ZNt11WbPn7LCXPvB@gallifrey>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 17:46:28 up 40 days,  3:18,  1 user,  load average: 0.01, 0.00, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,114 +45,103 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Dr. David Alan Gilbert (dave@treblig.org) wrote:
-> * Theodore Ts'o (tytso@mit.edu) wrote:
-> > On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
-> > > dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
-> > > 
-> > > [root@dalek dg]# cat /proc/29594/stack 
-> > > [<0>] md_super_wait+0xa2/0xe0
-> > > [<0>] md_bitmap_unplug+0xd2/0x120
-> > > [<0>] flush_bio_list+0xf3/0x100 [raid1]
-> > > [<0>] raid1_unplug+0x3b/0xb0 [raid1]
-> > > [<0>] __blk_flush_plug+0xd7/0x150
-> > > [<0>] blk_finish_plug+0x29/0x40
-> > > [<0>] ext4_do_writepages+0x401/0xc90
-> > > [<0>] ext4_writepages+0xad/0x180
-> > 
-> > If you want a few seconds and try grabbing cat /proc/29594/stack
-> > again, what does the stack trace stay consistent as above?
-> 
-> I'll get back to that and retry it.
+Hi Andreas,
 
-Yeh, the stack is consistent; this time around it's an 'ar' in a kernel
-build:
+thanks a lot for your second review!! :)
 
-[root@dalek dg]# cat /proc/17970/stack
-[<0>] md_super_wait+0xa2/0xe0
-[<0>] md_bitmap_unplug+0xad/0x120
-[<0>] flush_bio_list+0xf3/0x100 [raid1]
-[<0>] raid1_unplug+0x3b/0xb0 [raid1]
-[<0>] __blk_flush_plug+0xd7/0x150
-[<0>] blk_finish_plug+0x29/0x40
-[<0>] ext4_do_writepages+0x401/0xc90
-[<0>] ext4_writepages+0xad/0x180
-[<0>] do_writepages+0xd2/0x1e0
-[<0>] filemap_fdatawrite_wbc+0x63/0x90
-[<0>] __filemap_fdatawrite_range+0x5c/0x80
-[<0>] ext4_release_file+0x74/0xb0
-[<0>] __fput+0xf5/0x2a0
-[<0>] task_work_run+0x5d/0x90
-[<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
-[<0>] syscall_exit_to_user_mode+0x1b/0x40
-[<0>] do_syscall_64+0x6c/0x90
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[root@dalek dg]# cat /proc/17970/stack
-[<0>] md_super_wait+0xa2/0xe0
-[<0>] md_bitmap_unplug+0xad/0x120
-[<0>] flush_bio_list+0xf3/0x100 [raid1]
-[<0>] raid1_unplug+0x3b/0xb0 [raid1]
-[<0>] __blk_flush_plug+0xd7/0x150
-[<0>] blk_finish_plug+0x29/0x40
-[<0>] ext4_do_writepages+0x401/0xc90
-[<0>] ext4_writepages+0xad/0x180
-[<0>] do_writepages+0xd2/0x1e0
-[<0>] filemap_fdatawrite_wbc+0x63/0x90
-[<0>] __filemap_fdatawrite_range+0x5c/0x80
-[<0>] ext4_release_file+0x74/0xb0
-[<0>] __fput+0xf5/0x2a0
-[<0>] task_work_run+0x5d/0x90
-[<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
-[<0>] syscall_exit_to_user_mode+0x1b/0x40
-[<0>] do_syscall_64+0x6c/0x90
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> The big question is whether Ted will accept it.
 
-> > Also, if you have iostat installed (usually part of the sysstat
-> > package), does "iostat 1" show any I/O activity on the md device?
+My hope rests in the fact that Ted did not (yet) absolutely refuse to add such
+a feature in their comments to the github pull request [1]. XD
 
-iostat is showing something odd, most devices are at 0,
-except for 3 of the dm's that are stuck at 100% utilisation with
-apparently nothing going on:
+[1] https://github.com/tytso/e2fsprogs/pull/118
 
-avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-           0.06    0.00    0.03   53.06    0.00   46.84
+> These parts of the change is specific to your system and should probably
+> be removed from the patch.
 
-Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
-...
-dm-16            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-dm-17            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-dm-18            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-dm-19            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-dm-2             0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-dm-20            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-....
+Ah thank you for that clarification. I was a bit puzzled that you have a
+generated file tracked by git and was unsure what the policy is for updating
+it. This should be fixed now.
 
-dm-20 is the /dev/mapper/main-more which is the RAID on which the
-fs runs, 16 and 17 are main-more_rmeta_0 and main-more_rimage_0
-so something screwy is going on there.
+> Rather than having an inline #ifdef here, this could be structured like
+> the following in create_file_libarchive.c:
 
-Dave
+I now see that you already tried to tell me how you'd like to see this in an
+earlier mail but I didn't understand what you wanted to tell me. Thank you for
+spelling it out for me. I hope my changes now look as you expected. I agree
+that it looks much better now.
+
+> If we expect larger files, having a 1MB or 16MB buffer is not outrageous
+> these days, and would probably improve the performance noticeably.
+
+In my own use-case I want to convert tarballs containing chroot
+environments into an ext4 image. I'm on a fairly limited system (ARM
+Cortex A53 @ 1.5 GHz and 4 GB RAM) and loading up a YouTube video in
+Firefox takes about half a minute until it starts playing. So I'd expect
+that if buffer size has any meaningful impact it would show up as a
+significant difference on my system with its limited resources. So I
+converted a chroot tarball of 429 MB to an ext4 image 10 times for each
+buffer size and averaged the runtime as well as recorded the fastest of
+the 10 runs. These are the results:
+
+COPY_FILE_BUFLEN  time in s  min in s
+65536             145.576    14.240
+1048576           144.866    14.098
+16777216          147.142    14.317
+
+What else can I test? It seems that a 1 MB buffer is slightly fastest.
+But I still didn't finish that part of the patch because I'm not sure
+whether my benchmark should be improved or whether it looks different on
+other platforms.
+
+Thanks!
+
+cheers, josch
 
 
-> > What about the underying block dvices used by the md device?  If the
-> > md device is attached to HDD's where you can see the activity light,
-> > can you see (or hear) any disk activity?
-> 
-> It's spinning rust, and I hear them go quiet when the hang happens.
-> 
-> Dave
-> 
-> > This sure seems like either the I/O driver isn't processing requests,
-> > or some kind of hang in the md layer....
-> > 
-> > 				- Ted
-> -- 
->  -----Open up your eyes, open up your mind, open up your code -------   
-> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-> \        dave @ treblig.org |                               | In Hex /
->  \ _________________________|_____ http://www.treblig.org   |_______/
+
+Johannes Schauer Marin Rodrigues (1):
+  mke2fs: the -d option can now handle tarball input
+
+ MCONFIG.in                     |   1 +
+ configure                      |  52 +++
+ configure.ac                   |   9 +
+ debugfs/Makefile.in            |  25 +-
+ lib/config.h.in                |   3 +
+ lib/ext2fs/Makefile.in         |  25 +-
+ misc/Makefile.in               |  17 +-
+ misc/create_inode.c            |  45 ++-
+ misc/create_inode.h            |  10 +
+ misc/create_inode_libarchive.c | 699 +++++++++++++++++++++++++++++++++
+ misc/create_inode_libarchive.h |  10 +
+ misc/mke2fs.8.in               |  10 +-
+ misc/mke2fs.c                  |  12 +-
+ tests/m_rootgnutar/expect      | 141 +++++++
+ tests/m_rootgnutar/output.sed  |   5 +
+ tests/m_rootgnutar/script      | 125 ++++++
+ tests/m_rootpaxtar/expect      |  87 ++++
+ tests/m_rootpaxtar/mkpaxtar.pl |  69 ++++
+ tests/m_rootpaxtar/output.sed  |   5 +
+ tests/m_rootpaxtar/script      |  44 +++
+ tests/m_roottar/expect         | 208 ++++++++++
+ tests/m_roottar/mktar.pl       |  62 +++
+ tests/m_roottar/output.sed     |   5 +
+ tests/m_roottar/script         |  57 +++
+ 24 files changed, 1691 insertions(+), 35 deletions(-)
+ create mode 100644 misc/create_inode_libarchive.c
+ create mode 100644 misc/create_inode_libarchive.h
+ create mode 100644 tests/m_rootgnutar/expect
+ create mode 100644 tests/m_rootgnutar/output.sed
+ create mode 100644 tests/m_rootgnutar/script
+ create mode 100644 tests/m_rootpaxtar/expect
+ create mode 100644 tests/m_rootpaxtar/mkpaxtar.pl
+ create mode 100644 tests/m_rootpaxtar/output.sed
+ create mode 100644 tests/m_rootpaxtar/script
+ create mode 100644 tests/m_roottar/expect
+ create mode 100644 tests/m_roottar/mktar.pl
+ create mode 100644 tests/m_roottar/output.sed
+ create mode 100644 tests/m_roottar/script
+
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+2.40.0
+
