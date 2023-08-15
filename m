@@ -2,163 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E3277CA2A
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 11:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EDB77CAB3
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 11:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbjHOJPn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 05:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47106 "EHLO
+        id S236209AbjHOJqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 05:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235939AbjHOJPE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 05:15:04 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227FC10C
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 02:15:02 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bba9539a23so9041405ad.1
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 02:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692090901; x=1692695701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
-        b=B4NWnukFtWBpBFBooLjjX+4xRi6cYrfaI8iegReeVzLQWKPXXt1CxHdKL4/tZ0fNPM
-         0UExtQR6YZe58qkKHpbXtHQV0uPapic2RYOUTB+6Pi7LdOE1C7GEcaF7+zgpTtYtD/de
-         UlP+/TDXrfMVghqI9OT3wDmB4f+60Ecld4ptmi3g4OGE44+/xTS+dFaCetp2KrysicqF
-         +aYy3xTBT6yAIsFwZB/EdPqMFUGo82MatiM8ko8K8L/pW/bDYDRzwOeVlfM6AvdWPq+b
-         HcGAAnq5GXzxPWbDmjMNdTVLUEtTfSjxZmvfFI4JrMMNezs7y6COdvHcs3klmaxHW6vC
-         FHlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692090901; x=1692695701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
-        b=eDUGR/p6PJcJWU1NK7+BNRBOqYSZEGGFNpyGV/k2+Jxre/5qky0dvzaWZC9sOcFBgh
-         QDqSMLKYloanEpgP8SwmKaZ0/erWmp7ZCzyWYWMO6CfO+vQCxoWSQLFGS5WCcAT0+fkq
-         UKm+zzza4LNl8t94qURcSj7eWivTb1Zg1lew5X0Vhy9TMrwoMLU6JkKOZAceVIuSLpbC
-         Xb26yXHtfPdpdPVOKsA/4rIBsTDzVdrzag/Qtcst6jynzxm8DoYUdz1cmfUwWdVZWfHW
-         qb6jJ7n0byEgcPGTEcIQC5XdWvxqmFU0W1J8xouNULLIexmDREop85KY6g5zjmtlHbgi
-         Ny0g==
-X-Gm-Message-State: AOJu0YzJQmRp1m9Dsww3QS3fSvsqAz6GcOBFcDI7yQmSdDy/iwSYkAmf
-        0bRejLpVBhUWrNWtSsDEvfXwVA==
-X-Google-Smtp-Source: AGHT+IGKaQyK0d17VyjHV7p/Fr8yAF+2JMAJsl65uoihXD9UcmAUSi1eF134pFnOBdZUKl9ThFMr5Q==
-X-Received: by 2002:a17:902:e5c8:b0:1bb:83ec:832 with SMTP id u8-20020a170902e5c800b001bb83ec0832mr13866844plf.2.1692090901535;
-        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
-        by smtp.gmail.com with ESMTPSA id io13-20020a17090312cd00b001b39ffff838sm10630843plb.25.2023.08.15.02.14.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
-Message-ID: <4f64cd2d-90e8-7902-7ef7-1ac58d51b2a8@bytedance.com>
-Date:   Tue, 15 Aug 2023 17:14:40 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 01/48] mm: move some shrinker-related function
- declarations to mm/internal.h
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
-        simon.horman@corigine.com, dlemoal@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-2-zhengqi.arch@bytedance.com>
- <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236249AbjHOJqN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 05:46:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68EA127;
+        Tue, 15 Aug 2023 02:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
+ s=s31663417; t=1692092762; x=1692697562; i=g.ottinger@gmx.at;
+ bh=Gpp5wVOly18jXg5JkgsCDiSsaBtHz5ZmdyfKk925lNo=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=WVGZgbH1JrOtdjqc4wHVJi1wf43jtfFYMsjLN38m4SGlAtOIaPHFJp5cl5GhuajglNMxj3c
+ e4OeSZSkgDmBYV52Sz0+zG7Nwu4mN/lEw6/6bhWJTi5th31K3DMvzR3BvMoA1XSA1ach7U802
+ dxKMLVv5mqBNuWtO2azPWEEsnieBQtCcwYWBWgJqBjYP6Y0rCnLUCqt8za6HHzYVT/6CwEzP6
+ qLS8t6SaMrm3JYYFmH3DEZynGSoZiYHLuHowq/9OxzNinl5ESRyKut1Xti3TejwVR+LZ0ohBi
+ VO2rK8J2ZxYd7GJ93EY74vaMVeVU0CLLQiz9FO3ibnySwQinQ+8w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from f15h-Latitude-E5450.lan ([89.144.221.190]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MtOGa-1pdT5I2IyE-00utuL; Tue, 15 Aug 2023 11:46:02 +0200
+From:   Georg Ottinger <g.ottinger@gmx.at>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        g.ottinger@gmx.at
+Subject: [PATCH] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Tue, 15 Aug 2023 11:45:57 +0200
+Message-Id: <20230815094557.19940-1-g.ottinger@gmx.at>
+X-Mailer: git-send-email 2.17.1
+X-Provags-ID: V03:K1:fnwD2vatic2mVIE5NYIWabGSOoRnNYQ714fNZNTts7lI6p2JipU
+ Tg2jRRDL+LzhivGhjSoF+pnZJNKv3ZulAgoG0lnn4fqc8cvMdByOHQ1Nk0XQIqsYd4FUh57
+ ctJ6APcASVXEWPPXosMxBdmoJYRLuktAn+uWp6nhkbiM574Jw+c5qXKW8GouvdAmcBZmoQ8
+ L5EJAKIoINO2BoZ03ERZg==
+UI-OutboundReport: notjunk:1;M01:P0:cSRbbpTuyEM=;1rE9PZkZt3z4c7IAe6AU5zjrSSk
+ MAbGg9Vt5PslkzpGDETkvb70uFjfWcBlq29xbyI0NIV7hEJ0EpvcPU5KRsJnzvNIFLhdMqXNl
+ gvhpFonLutKlPPJZP1VfIOz6hFhP81S/kujLMFbA4m+O3iE+I/otSAsROx0n94iKY9lwpqAW8
+ PTUa8TWkBSF4LZP9vWvkZgaHb1AVEcLI9vuaPB9GGjvB4fSgTKXG/mxnimvBtGbiYjJZ8Y2Nt
+ QRoFbaaoQk+QpDhJbanZkgDB7+3YdO1mk8H1L4cQ2E6QlEdFtzs0KH27KFLfvFwv7rOce58oV
+ bdBo3uhKPxVeeJ0ihsRTfwP5M1a5YnfArgnihpl7GhINOAyDuCaHlh9PJXKteZcPhQRtXWglG
+ PT+7VKGm0aHGNyf0mkUA4N/dwspf3FCV50pbk0PHdXmV1pyUO5gdWg/wYHRjSEmo8aAR7zmQ2
+ 6DzGXLaqG4cQu1bmmP6dlT/MZ1aJ0U5TVpU0PBpi3CGaDF33hfdSZcHV/hDzwr/CJkkqvlkK2
+ +SI/DnwGKeSbnHTidsrXZyu1aQD0r3ako3gzH6TcIjc7HDzdr5d8MMz4mCUYS48xAx0Hko4hd
+ /dybgnZuQ7oCkzKN3HaHhcebqe95MiLNeZdWaSc6QNObfk30Pj1+GDxm3YdqYM7Momqw3kAii
+ 7qQzkDgb3m1m5zdMXOVvou3NK7hxPY97tKw0L1ahMYqw9SIpmYmxyqy+Iv5ASCUlAaz/eDDvo
+ ElOEkdU80fTH6OC+xfHFSyVuqq62ykBUHf+RtdX01BPdJDAzEw8jD9uDLu6EolrGiMGzT5yTj
+ PqW17drJ9b5+dU+69gOXqZ79V0lYNIlkS5WKtj4XJw954JXLRnSmuojd2bl3gkdFiNiv/u3pR
+ 8SMdqKhFZO1T+DvDcFJFfiEWdf1yd6sv275Iw9kJ+8POwdVLiWpJdQ5MlYjpCD4r8nG64/Lk+
+ 49zjMClXPX7rBcflA2cRnLSN+rc=
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block =3D 18446744071529317386, count =3D 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+=2D--
+ fs/ext2/xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2023/8/15 16:36, Muchun Song wrote:
-> 
-> 
->> On Aug 7, 2023, at 19:08, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->>
->> The following functions are only used inside the mm subsystem, so it's
->> better to move their declarations to the mm/internal.h file.
->>
->> 1. shrinker_debugfs_add()
->> 2. shrinker_debugfs_detach()
->> 3. shrinker_debugfs_remove()
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> One nit bellow.
-> 
-> [...]
-> 
->> +
->> +/*
->> + * shrinker related functions
->> + */
-> 
-> This is a multi-comment format. "/* shrinker related functions. */" is
-> the right one-line format of comment.
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 8906ba479..5e13f7ea1 100644
+=2D-- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -742,7 +742,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_hea=
+d *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal =3D ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block =3D ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block =3D ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+ 			ea_idebug(inode, "creating block %d", block);
+=2D-
+2.17.1
 
-Will do.
-
-Thanks,
-Qi
-
-> 
->> +
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +extern int shrinker_debugfs_add(struct shrinker *shrinker);
->> +extern struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
->> +      int *debugfs_id);
->> +extern void shrinker_debugfs_remove(struct dentry *debugfs_entry,
->> +    int debugfs_id);
->> +#else /* CONFIG_SHRINKER_DEBUG */
->> +static inline int shrinker_debugfs_add(struct shrinker *shrinker)
->> +{
->> +	return 0;
->> +}
->> +static inline struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
->> +     int *debugfs_id)
->> +{
->> +	*debugfs_id = -1;
->> +	return NULL;
->> +}
->> +static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
->> +	int debugfs_id)
->> +{
->> +}
->> +#endif /* CONFIG_SHRINKER_DEBUG */
->> +
->> #endif /* __MM_INTERNAL_H */
->> -- 
->> 2.30.2
->>
-> 
