@@ -2,59 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EDB77CAB3
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 11:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7140877CAEA
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Aug 2023 12:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236209AbjHOJqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 05:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        id S236338AbjHOKD4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 06:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236249AbjHOJqN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 05:46:13 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68EA127;
-        Tue, 15 Aug 2023 02:46:05 -0700 (PDT)
+        with ESMTP id S236342AbjHOKDt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 06:03:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D47E65;
+        Tue, 15 Aug 2023 03:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
- s=s31663417; t=1692092762; x=1692697562; i=g.ottinger@gmx.at;
+ s=s31663417; t=1692093824; x=1692698624; i=g.ottinger@gmx.at;
  bh=Gpp5wVOly18jXg5JkgsCDiSsaBtHz5ZmdyfKk925lNo=;
  h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=WVGZgbH1JrOtdjqc4wHVJi1wf43jtfFYMsjLN38m4SGlAtOIaPHFJp5cl5GhuajglNMxj3c
- e4OeSZSkgDmBYV52Sz0+zG7Nwu4mN/lEw6/6bhWJTi5th31K3DMvzR3BvMoA1XSA1ach7U802
- dxKMLVv5mqBNuWtO2azPWEEsnieBQtCcwYWBWgJqBjYP6Y0rCnLUCqt8za6HHzYVT/6CwEzP6
- qLS8t6SaMrm3JYYFmH3DEZynGSoZiYHLuHowq/9OxzNinl5ESRyKut1Xti3TejwVR+LZ0ohBi
- VO2rK8J2ZxYd7GJ93EY74vaMVeVU0CLLQiz9FO3ibnySwQinQ+8w==
+ b=U1PTONsmaTUEJKfLQ8rqQAfZfqw2x7PpUo0DlE/zIHn1kYaui6+gfJCjLHyYQrGLEPGt0Ud
+ bf9OSj2ZC5ihUsmaFUOk5ELUkebzOF8cSe2AVNiXGpz9qg6xyKhzX08Ns5IzlBd6pIzigSsF2
+ c1b5z+FNP5sMzCik6u2epdVlPswhT+M2rnAspFfYIp0w1kBAk0TT2o/dpu3RF3MgDBj+YDOWt
+ 6RFNw7g8er3r22VrrMdhsO5gvP02pC0FHD9EotxBhyiVT1tz7j8SopNw8SMBGfpftA9lTLsIJ
+ piYYxBOAyjafSywQQuzBFtR1p/wXRsaPMWLjfCmIaSATbQG2V5rw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from f15h-Latitude-E5450.lan ([89.144.221.190]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MtOGa-1pdT5I2IyE-00utuL; Tue, 15 Aug 2023 11:46:02 +0200
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MLR1f-1qDMRf21x5-00IWJR; Tue, 15 Aug 2023 12:03:44 +0200
 From:   Georg Ottinger <g.ottinger@gmx.at>
 To:     jack@suse.com
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         g.ottinger@gmx.at
-Subject: [PATCH] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Tue, 15 Aug 2023 11:45:57 +0200
-Message-Id: <20230815094557.19940-1-g.ottinger@gmx.at>
+Subject: [PATCH v1] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Tue, 15 Aug 2023 12:03:40 +0200
+Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
 X-Mailer: git-send-email 2.17.1
-X-Provags-ID: V03:K1:fnwD2vatic2mVIE5NYIWabGSOoRnNYQ714fNZNTts7lI6p2JipU
- Tg2jRRDL+LzhivGhjSoF+pnZJNKv3ZulAgoG0lnn4fqc8cvMdByOHQ1Nk0XQIqsYd4FUh57
- ctJ6APcASVXEWPPXosMxBdmoJYRLuktAn+uWp6nhkbiM574Jw+c5qXKW8GouvdAmcBZmoQ8
- L5EJAKIoINO2BoZ03ERZg==
-UI-OutboundReport: notjunk:1;M01:P0:cSRbbpTuyEM=;1rE9PZkZt3z4c7IAe6AU5zjrSSk
- MAbGg9Vt5PslkzpGDETkvb70uFjfWcBlq29xbyI0NIV7hEJ0EpvcPU5KRsJnzvNIFLhdMqXNl
- gvhpFonLutKlPPJZP1VfIOz6hFhP81S/kujLMFbA4m+O3iE+I/otSAsROx0n94iKY9lwpqAW8
- PTUa8TWkBSF4LZP9vWvkZgaHb1AVEcLI9vuaPB9GGjvB4fSgTKXG/mxnimvBtGbiYjJZ8Y2Nt
- QRoFbaaoQk+QpDhJbanZkgDB7+3YdO1mk8H1L4cQ2E6QlEdFtzs0KH27KFLfvFwv7rOce58oV
- bdBo3uhKPxVeeJ0ihsRTfwP5M1a5YnfArgnihpl7GhINOAyDuCaHlh9PJXKteZcPhQRtXWglG
- PT+7VKGm0aHGNyf0mkUA4N/dwspf3FCV50pbk0PHdXmV1pyUO5gdWg/wYHRjSEmo8aAR7zmQ2
- 6DzGXLaqG4cQu1bmmP6dlT/MZ1aJ0U5TVpU0PBpi3CGaDF33hfdSZcHV/hDzwr/CJkkqvlkK2
- +SI/DnwGKeSbnHTidsrXZyu1aQD0r3ako3gzH6TcIjc7HDzdr5d8MMz4mCUYS48xAx0Hko4hd
- /dybgnZuQ7oCkzKN3HaHhcebqe95MiLNeZdWaSc6QNObfk30Pj1+GDxm3YdqYM7Momqw3kAii
- 7qQzkDgb3m1m5zdMXOVvou3NK7hxPY97tKw0L1ahMYqw9SIpmYmxyqy+Iv5ASCUlAaz/eDDvo
- ElOEkdU80fTH6OC+xfHFSyVuqq62ykBUHf+RtdX01BPdJDAzEw8jD9uDLu6EolrGiMGzT5yTj
- PqW17drJ9b5+dU+69gOXqZ79V0lYNIlkS5WKtj4XJw954JXLRnSmuojd2bl3gkdFiNiv/u3pR
- 8SMdqKhFZO1T+DvDcFJFfiEWdf1yd6sv275Iw9kJ+8POwdVLiWpJdQ5MlYjpCD4r8nG64/Lk+
- 49zjMClXPX7rBcflA2cRnLSN+rc=
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T1LK1ieoPzemzU0rSY5G2e0MN0shE+MLQ6+I7jI5YJdFpP2be4/
+ T8eAMx1hYst2cQCaN9QTn/zFUd8ElxPHr5VtHunR1ufnPS5rubF2zUKnHsQ8nuu9QLSGa+j
+ U6bMTI56nzas+5WX/QQSO3LExb23+j7oedg7Zex3s3c0keOSHxLorx1w5XiEBInk2SqtpZy
+ Ux7qNFYNY7p/4wMepZTbw==
+UI-OutboundReport: notjunk:1;M01:P0:Dd36tFD1sA8=;MvASvI96fsVNc2pZ+7RfZxZwp2Y
+ WI3S1BhrR3Xz5PM4gyOVROc2jqiUvwHhgstojdEvuHqeC/FprUCA4t2nWcbOn0uqsfFRLg00K
+ srPVTaDYAHyYTnOJc3eayor6uH9JEfdNCbNL4F+8e3rMap2l846pAy/itHJ1QuAhgnT77hQHy
+ q/RzdLthpv3wkoRT3AzSc7lBc0PuJrOQ3h8W1kETVJNdq7WDlfkIQT1qqnvNftlKOo/oayU0y
+ VdvXlq44AC9FwnQqueRpPeOj2Yb2Kw8/UOEwg642JVViIc1lZU0fOpy9JC/ZEoi906JAdJO6u
+ Udvxpme1pIjNyC4lNwv5s1AzPnh+E/m+Q+QYFlK6tFyKdXth356EJK3wJaHK6JdQd9EtFQR7h
+ g9R9Zy6Z6orpH7yBk6Cu5rj87rDXs+DUfuBHP+iieBCbza2nOn6CYg+g2OdReKUf58qKXw9o2
+ UcLjGteDlDP3tCXQ61VvzVMpAxFdBDcpKFeBkLdc0JVaXv+ASfVORPVqppsnztp0byHHQSrke
+ qIXbxsx8we7KC256xOAoqSnbEmevD2+EuLd32hGmHWBz9k6RSr0nfpLGesmm5byrkmYE6XtX1
+ ovk0CMxmr2abTiWUEdWeMNz22R5baX4GLl9NF8htO0a2G9SiyMD9p0lgId7jRC591EqTxrfY0
+ V3f4+vaOmoQ/5c4a4UI1qsHT9/QZit3/0DfApkHiatdknsUuQYBZSUyinEtTYg3cviijteb7A
+ Q4ZzZPqbSu1JQLdqXOse2i5nQowai/TN1suEizWfYiTxG2eoMEb7dMBLuGZ9Lc0eleb/tzKIA
+ IIk6ul4is61ruYJzsTIab1mploIcebW93Gjl6VV1W0AyluR3D36IBjq0rEqSX9lp7QF2sOIQ3
+ ZtSu1ofSZEE0SFH2V7AMJ4hLMINuD5o8jBlFPoUg4fJ6F2yxPx8lf8XIKgchEukGEf8tL9Dkk
+ soe2hQKi9Tix07ZI9cNjWVwpdjM=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
