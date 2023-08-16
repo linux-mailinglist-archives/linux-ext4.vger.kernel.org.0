@@ -2,257 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FB177ED70
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 00:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F29E77EDD3
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 01:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347041AbjHPWxh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Aug 2023 18:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S1347167AbjHPX1y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Aug 2023 19:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347040AbjHPWxO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 18:53:14 -0400
-Received: from smtp-fw-9103.amazon.com (smtp-fw-9103.amazon.com [207.171.188.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726F8E5F;
-        Wed, 16 Aug 2023 15:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1692226392; x=1723762392;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=oM7PbGseE9W1qmqEpY5fs4eY5EoU5z9dGP0AeqfSDwE=;
-  b=X6hC4Ft8xYJrjvhDFnQMFj7u6DTh0qUnqr9F/Qtg1gv6zUSVpijYQclJ
-   kbu1SKshMp5Paj8krajt3oBKVSYlXcVTzbDN0q0Ll2AYU4kgUjt0AWY35
-   1whh7kdyjGWBVmuxHkRuV9xsozWE96rDkUYNsda2vpL+De/yvuOBGR0pu
-   w=;
-X-IronPort-AV: E=Sophos;i="6.01,178,1684800000"; 
-   d="scan'208";a="1148912148"
-Subject: Re: Tasks stuck jbd2 for a long time
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 22:53:09 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com (Postfix) with ESMTPS id 0445F80437;
-        Wed, 16 Aug 2023 22:53:07 +0000 (UTC)
-Received: from EX19D002UWC004.ant.amazon.com (10.13.138.186) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 16 Aug 2023 22:53:07 +0000
-Received: from [10.94.35.220] (10.94.35.220) by EX19D002UWC004.ant.amazon.com
- (10.13.138.186) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 16 Aug
- 2023 22:53:06 +0000
-Message-ID: <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
-Date:   Wed, 16 Aug 2023 15:53:05 -0700
+        with ESMTP id S1347175AbjHPX1t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 19:27:49 -0400
+Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9B92720
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
+Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-5646868b9e7so7602345a12.3
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692228467; x=1692833267;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PAODHEKlkohyVW4SPU/mzzjLtNTRD9df5tm0JKFVRoM=;
+        b=FBEXGxgVd7cMSdOp96ANyE6E1vdetctImwzbh8qo6J+MGuireF2gVVBKwGHZ1VrqAV
+         F6/0+QRMuuj1jcSUCHyTZ+u3cjadjsgoNDbGDcSPbAI7CbElaEF8K2UvWd8YxfXe0XfT
+         n5TnHdZEAAifjZQwz0WpKkIfBYs/q3EKpzkOcSg1XV0WQP0+15sSvhyI5ips8AGCX2QY
+         slTkYAJbpIhZcmhP5pNafSDx7i/1ja1RJjBWueH/YNx7WzM2jL5KsC3cvOLtxWhi1oXx
+         lXuea7rEEP/6PSoSA7wHg5ZJjPG4YKzVv3JToT5AHruEUHGsWVsf8XssfcxlSaGdstfc
+         +mgQ==
+X-Gm-Message-State: AOJu0YyMa3n83x4EfLiQwDlf1LMC7q3BCABQTt3Cc5etvLFKjUIFaq4q
+        uhZutEjLdNy1eo4G0wR7n2bRU7PYmIQUwJWmWfan9DfNIDWr
+X-Google-Smtp-Source: AGHT+IEVKJaNYWhsLc8jTBq2cwXfDEnAiIer4Ho7bobQt0yn5iTbUe7aSmJ6XKe0ibJTzIG5RgoIruxRyMGV2FDmDHgDfLBB37dR
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     Theodore Ts'o <tytso@mit.edu>, <jack@suse.com>,
-        <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
- <20230816022851.GH2247938@mit.edu>
- <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
- <20230816145310.giogco2nbzedgak2@quack3>
- <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
- <20230816215227.jlvmqasfbc73asi4@quack3>
-From:   "Bhatnagar, Rishabh" <risbhat@amazon.com>
-In-Reply-To: <20230816215227.jlvmqasfbc73asi4@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.94.35.220]
-X-ClientProxiedBy: EX19D041UWB004.ant.amazon.com (10.13.139.143) To
- EX19D002UWC004.ant.amazon.com (10.13.138.186)
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:2302:b0:1bf:794:9e8f with SMTP id
+ d2-20020a170903230200b001bf07949e8fmr564090plh.7.1692228467435; Wed, 16 Aug
+ 2023 16:27:47 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 16:27:47 -0700
+In-Reply-To: <000000000000f59fa505fe48748f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ae2d46060312a494@google.com>
+Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
+From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-On 8/16/23 2:52 PM, Jan Kara wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Wed 16-08-23 11:32:47, Bhatnagar, Rishabh wrote:
->> On 8/16/23 7:53 AM, Jan Kara wrote:
->>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>> On Tue 15-08-23 20:57:14, Bhatnagar, Rishabh wrote:
->>>> On 8/15/23 7:28 PM, Theodore Ts'o wrote:
->>>>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>>>>
->>>>>
->>>>>
->>>>> It would be helpful if you can translate address in the stack trace to
->>>>> line numbers.  See [1] and the script in
->>>>> ./scripts/decode_stacktrace.sh in the kernel sources.  (It is
->>>>> referenced in the web page at [1].)
->>>>>
->>>>> [1] https://docs.kernel.org/admin-guide/bug-hunting.html
->>>>>
->>>>> Of course, in order to interpret the line numbers, we'll need a
->>>>> pointer to the git repo of your kernel sources and the git commit ID
->>>>> you were using that presumably corresponds to 5.10.184-175.731.amzn2.x86_64.
->>>>>
->>>>> The stack trace for which I am particularly interested is the one for
->>>>> the jbd2/md0-8 task, e.g.:
->>>> Thanks for checking Ted.
->>>>
->>>> We don't have fast_commit feature enabled. So it should correspond to this
->>>> line:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/jbd2/commit.c?h=linux-5.10.y#n496
->>>>
->>>>>>          Not tainted 5.10.184-175.731.amzn2.x86_64 #1
->>>>>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->>>>>> task:jbd2/md0-8      state:D stack:    0 pid: 8068 ppid:     2
->>>>>> flags:0x00004080
->>>>>> Call Trace:
->>>>>> __schedule+0x1f9/0x660
->>>>>>     schedule+0x46/0xb0
->>>>>>     jbd2_journal_commit_transaction+0x35d/0x1880 [jbd2]  <--------- line #?
->>>>>>     ? update_load_avg+0x7a/0x5d0
->>>>>>     ? add_wait_queue_exclusive+0x70/0x70
->>>>>>     ? lock_timer_base+0x61/0x80
->>>>>>     ? kjournald2+0xcf/0x360 [jbd2]
->>>>>>     kjournald2+0xcf/0x360 [jbd2]
->>>>> Most of the other stack traces you refenced are tasks that are waiting
->>>>> for the transaction commit to complete so they can proceed with some
->>>>> file system operation.  The stack traces which have
->>>>> start_this_handle() in them are examples of this going on.  Stack
->>>>> traces of tasks that do *not* have start_this_handle() would be
->>>>> specially interesting.
->>>> I see all other stacks apart from kjournald have "start_this_handle".
->>> That would be strange. Can you post full output of "echo w
->>>> /proc/sysrq-trigger" to dmesg, ideally passed through scripts/faddr2line as
->>> Ted suggests. Thanks!
->> Sure i'll try to collect that. The system freezes when such a situation
->> happens and i'm not able
->> to collect much information. I'll try to crash the kernel and collect kdump
->> and see if i can get that info.
-> Thanks!
+HEAD commit:    4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=178eb2efa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
 
-I collected dump and looked at some processes that were stuck in 
-uninterruptible sleep.These are from upstream stable tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-5.10.y 
-(5.10.191)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fef982ba26aa/disk-4853c74b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/633875549882/vmlinux-4853c74b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a1d2d81c82f6/bzImage-4853c74b.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/45ecbb86ca49/mount_4.gz
 
-One of them is the journal thread that is waiting for some other thread 
-to close transaction handle.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
 
-PID: 10642  TASK: ffff9768823f4000  CPU: 37  COMMAND: "jbd2/md0-8"
-  #0 [ffffbd6c40c17c60] __schedule+617 at ffffffffbb912df9
-  #1 [ffffbd6c40c17cf8] schedule+60 at ffffffffbb91330c
-  #2 [ffffbd6c40c17d08] jbd2_journal_commit_transaction+877 at 
-ffffffffc016b90d [jbd2] (/home/ec2-user/linux/fs/jbd2/commit.c:497)
-  #3 [ffffbd6c40c17ea0] kjournald2+282 at ffffffffc01723ba [jbd2] 
-(/home/ec2-user/linux/fs/jbd2/journal.c:214)
-  #4 [ffffbd6c40c17f10] kthread+279 at ffffffffbb0b9167
-  #5 [ffffbd6c40c17f50] ret_from_fork+34 at ffffffffbb003802
+INFO: task syz-executor359:5018 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor359 state:D stack:27216 pid:5018  ppid:5015   flags:0x00004002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6710
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6786
+ wb_wait_for_completion+0x1ae/0x270 fs/fs-writeback.c:192
+ __writeback_inodes_sb_nr+0x1d8/0x270 fs/fs-writeback.c:2650
+ sync_filesystem fs/sync.c:54 [inline]
+ sync_filesystem+0xb6/0x280 fs/sync.c:30
+ generic_shutdown_super+0x74/0x480 fs/super.c:472
+ kill_block_super+0x64/0xb0 fs/super.c:1417
+ deactivate_locked_super+0x9a/0x170 fs/super.c:330
+ deactivate_super+0xde/0x100 fs/super.c:361
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ ptrace_notify+0x10c/0x130 kernel/signal.c:2376
+ ptrace_report_syscall include/linux/ptrace.h:411 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
+ syscall_exit_work kernel/entry/common.c:252 [inline]
+ syscall_exit_to_user_mode_prepare+0x120/0x220 kernel/entry/common.c:279
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
+ syscall_exit_to_user_mode+0xd/0x50 kernel/entry/common.c:297
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f497ef65487
+RSP: 002b:00007ffdd57d4148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f497ef65487
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffdd57d4200
+RBP: 00007ffdd57d4200 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffdd57d5270
+R13: 00005555566da6c0 R14: 431bde82d7b634db R15: 00007ffdd57d5290
+ </TASK>
 
-One of threads that have started the handle and waiting for journal to 
-commit and unlock the current transaction. This stack only shows 
-ext4lazyinit but with lazyinit disabled we have seen other threads stuck 
-in same place.
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8c9a67f0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8c9a64f0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/27:
+ #0: ffffffff8c9a7400 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6615
+3 locks held by kworker/u4:2/34:
+2 locks held by getty/4774:
+ #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015c02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfcb/0x1480 drivers/tty/n_tty.c:2187
+1 lock held by syz-executor359/5018:
+ #0: ffff88807b0e80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd6/0x100 fs/super.c:360
 
-PID: 10644  TASK: ffff976901010000  CPU: 37  COMMAND: "ext4lazyinit"
-  #0 [ffffbd6c40c1fbe0] __schedule+617 at ffffffffbb912df9
-  #1 [ffffbd6c40c1fc78] schedule+60 at ffffffffbb91330c
-  #2 [ffffbd6c40c1fc88] wait_transaction_locked+137 at ffffffffc0168089 
-[jbd2] (/home/ec2-user/linux/fs/jbd2/transaction.c:184)
-  #3 [ffffbd6c40c1fcd8] add_transaction_credits+62 at ffffffffc016813e 
-[jbd2] (/home/ec2-user/linux/fs/jbd2/transaction.c:241)
-  #4 [ffffbd6c40c1fd30] start_this_handle+533 at ffffffffc0168615 [jbd2] 
-(/home/ec2-user/linux/fs/jbd2/transaction.c:416)
-  #5 [ffffbd6c40c1fdc0] jbd2__journal_start+244 at ffffffffc0168dc4 [jbd2]
-  #6 [ffffbd6c40c1fe00] __ext4_journal_start_sb+250 at ffffffffc02ef65a 
-[ext4]
-  #7 [ffffbd6c40c1fe40] ext4_init_inode_table+190 at ffffffffc0302ace [ext4]
-  #8 [ffffbd6c40c1feb0] ext4_lazyinit_thread+906 at ffffffffc033ec9a [ext4]
-  #9 [ffffbd6c40c1ff10] kthread+279 at ffffffffbb0b9167
-#10 [ffffbd6c40c1ff50] ret_from_fork+34 at ffffffffbb003802
+=============================================
 
-To replicate the download scenario i'm just using dd to copy random data 
-to disk. I launch a bunch of threads and try to stress the system. Many 
-of those threads seem to be stuck in balance_dirty_pages_ratelimited as 
-can be seen below.
+NMI backtrace for cpu 1
+CPU: 1 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x2ac/0x310 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xf29/0x11b0 kernel/hung_task.c:379
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 34 Comm: kworker/u4:2 Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
+Code: a6 27 99 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 dd b0 7d 7e 89 c1 48 8b 34 24 81 e1 00 01 00
+RSP: 0018:ffffc90000ab74e8 EFLAGS: 00000206
+RAX: 0000000000000000 RBX: ffffea0001c90174 RCX: ffffffff81fa92f9
+RDX: ffff8880136fbb80 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000003 R11: 1ffffffff1936441 R12: 0000000000000003
+R13: 0000000000000200 R14: 0000000000000003 R15: ffffea0001c90140
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055fded888928 CR3: 0000000028191000 CR4: 0000000000350ef0
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
+ page_ref_dec_and_test include/linux/page_ref.h:210 [inline]
+ put_page_testzero include/linux/mm.h:1028 [inline]
+ folio_put_testzero include/linux/mm.h:1033 [inline]
+ folio_put include/linux/mm.h:1439 [inline]
+ grow_dev_page fs/buffer.c:1093 [inline]
+ grow_buffers fs/buffer.c:1123 [inline]
+ __getblk_slow+0x4b7/0x720 fs/buffer.c:1150
+ __getblk_gfp fs/buffer.c:1445 [inline]
+ __bread_gfp+0x215/0x310 fs/buffer.c:1479
+ sb_bread include/linux/buffer_head.h:351 [inline]
+ exfat_get_dentry_set+0x283/0xc10 fs/exfat/dir.c:878
+ __exfat_write_inode+0x2c0/0x9e0 fs/exfat/inode.c:45
+ exfat_write_inode+0xad/0x130 fs/exfat/inode.c:94
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
+ writeback_sb_inodes+0x599/0x1010 fs/fs-writeback.c:1894
+ wb_writeback+0x2a5/0xa90 fs/fs-writeback.c:2070
+ wb_do_writeback fs/fs-writeback.c:2217 [inline]
+ wb_workfn+0x29c/0xfd0 fs/fs-writeback.c:2257
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.463 msecs
 
-PID: 10709  TASK: ffff9769016f8000  CPU: 25  COMMAND: "dd"
-  #0 [ffffbd6c40dafa48] __schedule+617 at ffffffffbb912df9
-  #1 [ffffbd6c40dafae0] schedule+60 at ffffffffbb91330c
-  #2 [ffffbd6c40dafaf0] schedule_timeout+570 at ffffffffbb916a7a
-  #3 [ffffbd6c40dafb68] io_schedule_timeout+25 at ffffffffbb913619 
-((inlined by) io_schedule_finish at 
-/home/ec2-user/linux/kernel/sched/core.c:6274)
-  #4 [ffffbd6c40dafb80] balance_dirty_pages+654 at ffffffffbb2367ce  
-(/home/ec2-user/linux/mm/page-writeback.c:1799)
-  #5 [ffffbd6c40dafcf0] balance_dirty_pages_ratelimited+763 at 
-ffffffffbb23752b  (/home/ec2-user/linux/mm/page-writeback.c:1926)
-  #6 [ffffbd6c40dafd18] generic_perform_write+308 at ffffffffbb22af44 
-(/home/ec2-user/linux/mm/filemap.c:3370)
-  #7 [ffffbd6c40dafd88] ext4_buffered_write_iter+161 at ffffffffc02fcba1 
-[ext4] (/home/ec2-user/linux/fs/ext4/file.c:273)
-  #8 [ffffbd6c40dafdb8] ext4_file_write_iter+96 at ffffffffc02fccf0 [ext4]
-  #9 [ffffbd6c40dafe40] new_sync_write+287 at ffffffffbb2e0c0f
-#10 [ffffbd6c40dafec8] vfs_write+481 at ffffffffbb2e3161
-#11 [ffffbd6c40daff00] ksys_write+165 at ffffffffbb2e3385
-#12 [ffffbd6c40daff40] do_syscall_64+51 at ffffffffbb906213
-#13 [ffffbd6c40daff50] entry_SYSCALL_64_after_hwframe+103 at 
-ffffffffbba000df
 
-There are other dd threads that are trying to read and are handling page 
-fault. These are in runnable state and not uninterruptible sleep.
-
-PID: 14581  TASK: ffff97c3cfdbc000  CPU: 29  COMMAND: "dd"
-  #0 [ffffbd6c4a1d3598] __schedule+617 at ffffffffbb912df9
-  #1 [ffffbd6c4a1d3630] _cond_resched+38 at ffffffffbb9133e6
-  #2 [ffffbd6c4a1d3638] shrink_page_list+126 at ffffffffbb2412fe
-  #3 [ffffbd6c4a1d36c8] shrink_inactive_list+478 at ffffffffbb24441e
-  #4 [ffffbd6c4a1d3768] shrink_lruvec+957 at ffffffffbb244e3d
-  #5 [ffffbd6c4a1d3870] shrink_node+552 at ffffffffbb2452a8
-  #6 [ffffbd6c4a1d38f0] do_try_to_free_pages+201 at ffffffffbb245829
-  #7 [ffffbd6c4a1d3940] try_to_free_pages+239 at ffffffffbb246c0f
-  #8 [ffffbd6c4a1d39d8] __alloc_pages_slowpath.constprop.114+913 at 
-ffffffffbb28d741
-  #9 [ffffbd6c4a1d3ab8] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
-#10 [ffffbd6c4a1d3b28] alloc_pages_vma+124 at ffffffffbb2a734c
-#11 [ffffbd6c4a1d3b68] handle_mm_fault+3999 at ffffffffbb26de2f
-#12 [ffffbd6c4a1d3c28] exc_page_fault+708 at ffffffffbb909c84
-#13 [ffffbd6c4a1d3c80] asm_exc_page_fault+30 at ffffffffbba00b4e
-  #14 [ffffbd6c4a1d3d30] copyout+28 at ffffffffbb5160bc
-#15 [ffffbd6c4a1d3d38] _copy_to_iter+158 at ffffffffbb5188de
-#16 [ffffbd6c4a1d3d98] get_random_bytes_user+136 at ffffffffbb644608
-#17 [ffffbd6c4a1d3e48] new_sync_read+284 at ffffffffbb2e0a5c
-#18 [ffffbd6c4a1d3ed0] vfs_read+353 at ffffffffbb2e2f51
-#19 [ffffbd6c4a1d3f00] ksys_read+165 at ffffffffbb2e3265
-#20 [ffffbd6c4a1d3f40] do_syscall_64+51 at ffffffffbb906213
-#21 [ffffbd6c4a1d3f50] entry_SYSCALL_64_after_hwframe+103 at 
-ffffffffbba000df
-
->
->> Can low available memory be a reason for a thread to not be able to close
->> the transaction handle for a long time?
->> Maybe some writeback thread starts the handle but is not able to complete
->> writeback?
-> Well, even that would be a bug but low memory conditions are certainly some
-> of less tested paths so it is possible there's a bug lurking there.
-Amongst the things we have tested 2 things seem to give good improvements.
-
-One is disabling journalling. We don't see any stuck tasks. System 
-becomes slow but eventually recovers. But its not something we want to 
-disable.
-
-Other is enabling swap memory. Adding some swap memory also avoids 
-system going into low memory state and system doesn't freeze.
-
->
->                                                                  Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
