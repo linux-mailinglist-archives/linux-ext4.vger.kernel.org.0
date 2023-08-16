@@ -2,81 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8D077D8FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Aug 2023 05:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3118477D8FF
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Aug 2023 05:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241479AbjHPDW5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Aug 2023 23:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S241443AbjHPDW6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 15 Aug 2023 23:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241443AbjHPDWZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 23:22:25 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FDA2135
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 20:22:24 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37G3MC32010591
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 23:22:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692156134; bh=2YCC1NcwmWW7Qb/h+7kZZXiWFa2gKiyFGvH9ROIIpCE=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=W2qLASmjBfwbAOL1rSCHm5GJYc9roCcq754bDgbbx9CVUS4FPw0z3KLLvQVK6lR5m
-         3g0dTG5zH+5ieZoXOGuXTLEe1wsSfwKC8YlIi4oaz49lEv5q8cdHG+JyYva856r+6f
-         3+wlWm71VVmMYKzgFSP8laBA07nW8Y4O3FQbEfVms9bh78S6uhYfEH4u0XIvZa3/tF
-         WLwd/HZnvB+qGwkRLBTzgMgTdQ0JBZauDe4UOYf4S41/omUGrvaIfDlX8s2+VOnuyh
-         EGlEi6zHo0xR4//q2DFuCOIVRZ/dHmWdxXwm1GNmd38z3alkVPEZNfL4LE9etBcjJm
-         Cb7972xVNcr8g==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7D52C15C0292; Tue, 15 Aug 2023 23:22:12 -0400 (EDT)
-Date:   Tue, 15 Aug 2023 23:22:12 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/13] ext4: calculate free_clusters_count in cluster
- unit in verify_group_input
-Message-ID: <20230816032212.GP2247938@mit.edu>
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-9-shikemeng@huaweicloud.com>
+        with ESMTP id S241582AbjHPDWe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 15 Aug 2023 23:22:34 -0400
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F3626A5
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 20:22:32 -0700 (PDT)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-565ea69bb0cso1136792a12.0
+        for <linux-ext4@vger.kernel.org>; Tue, 15 Aug 2023 20:22:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692156151; x=1692760951;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ooGNY7qKQQrjisOoBTNramsab3weG3fX3Z2Pk0O7aY8=;
+        b=h8nI9FctEODhqa47qJH3r3nnaIg58Sqvg4/tdDzcCASGs27aK1p7yewdLXKTmQTqpr
+         tqXvn75vzHpL2NK42kpt6VRYH6nlcXvrU/VSitBRR6X/hdAiW9Md37Zz0wPE+uFQrcLN
+         aQOTAuyOOkmHTfq841ZZ2YJgGTFmKG3ff6wjd1kVtji2b+SEiQmWE5L9IUlhbLNnKk8s
+         6E6wqm6em3R+g3d6zZH9kLn522tRcR3CIwuA/Jd48tkHjD8EPF1VFVLAXjVR1NINp+IF
+         /etxN3LuF0n06VGl6iXy9ueuxQZTLs8Fmf193VeDfEsN9ms5A1MyvTL8EHYeQiQP6mEK
+         zuxA==
+X-Gm-Message-State: AOJu0YwfHdJ6inCckZrRxNlt4GHE3U5KmiiYljCW/CrcxAYT+fXEfsCh
+        uVkO48qtpNLVamhrtSVx/J7Q7X88Br86yekQtdrucAZ4E6C0
+X-Google-Smtp-Source: AGHT+IGzBr6H5KaPX1XvTBWzFlq1MEiZGuRTXVrXmq3Vs6XNPA0xc9PqfBi64qRdEdDn4KjRzrBadwS3aIRuRhpGwtD3IivJoeSd
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230629120044.1261968-9-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:af50:0:b0:565:ea31:5c5c with SMTP id
+ s16-20020a63af50000000b00565ea315c5cmr116967pgo.7.1692156151629; Tue, 15 Aug
+ 2023 20:22:31 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 20:22:31 -0700
+In-Reply-To: <000000000000f1a9d205f909f327@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000528ff0060301ce79@google.com>
+Subject: Re: [syzbot] [ext4?] possible deadlock in quotactl_fd
+From:   syzbot <syzbot+cdcd444e4d3a256ada13@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, brauner@kernel.org, jack@suse.com,
+        jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 29, 2023 at 08:00:39PM +0800, Kemeng Shi wrote:
-> We treat free_clusters_count in cluster unit while free_blocks_count is
-> in block unit. Convert free_blocks_count to cluster unit to match the
-> unit.
-> Currently, verify_group_input is only called from ext4_ioctl_group_add
-> which does not support bigalloc yet. The dismatch is easily ingored
-> when we try to support bigalloc in ext4_ioctl_group_add (ext4_resize_fs
-> already supports resize with bigalloc enabled). Just fix this in
-> advance.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+syzbot suspects this issue was fixed by commit:
 
-I'd rewrite the commit description a bit:
+commit 949f95ff39bf188e594e7ecd8e29b82eb108f5bf
+Author: Jan Kara <jack@suse.cz>
+Date:   Tue Apr 11 12:10:19 2023 +0000
 
-The field free_cluster_count in struct ext4_new_group_data should be
-in units of clusters.  In verify_group_input() this field is being
-filled in units of blocks.  Fortunately, we don't support online
-resizing of bigalloc file systems, and for non-bigalloc file systems,
-the cluster size == block size.  But fix this in case we do support
-online resizing of bigalloc file systems in the future.
+    ext4: fix lockdep warning when enabling MMP
 
-Other than that:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a06a65a80000
+start commit:   1dc3731daf1f Merge tag 'for-6.4-rc1-tag' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8bc832f563d8bf38
+dashboard link: https://syzkaller.appspot.com/bug?extid=cdcd444e4d3a256ada13
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cc2a92280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dc5fa6280000
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+If the result looks correct, please mark the issue as fixed by replying with:
 
-						- Ted
+#syz fix: ext4: fix lockdep warning when enabling MMP
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
