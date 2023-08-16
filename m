@@ -2,110 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3048977E520
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Aug 2023 17:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED2A77E530
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Aug 2023 17:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbjHPP2H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Aug 2023 11:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S1344081AbjHPPb0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Aug 2023 11:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344144AbjHPP16 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 11:27:58 -0400
-Received: from out203-205-251-27.mail.qq.com (out203-205-251-27.mail.qq.com [203.205.251.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D3F1BE7
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 08:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692199672;
-        bh=zbF8fMAIruRY+5EDhN5dKlKjIZ/LrmHaiop+HK7FHDo=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=kE7vWtHMgt3d+8wIq+M02o41JUeeLI5bWEgl4z9rna8HReTIbWBklo1cZYdOLCdnM
-         nEcMHMIfilUk3mX64dwS8xtQX10HPUEE++MRe+XwFNfPpnbnc31XZtvzAQmRoTjNa3
-         /WkKNHNr8btDLyVIdM3rGseaB7fZuCwdl1wuistk=
-Received: from [IPV6:2409:8a00:257c:3c10:acee:d1ea:2796:2974] ([2409:8a00:257c:3c10:acee:d1ea:2796:2974])
-        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
-        id 6F39A402; Wed, 16 Aug 2023 23:27:51 +0800
-X-QQ-mid: xmsmtpt1692199671turf9b6sq
-Message-ID: <tencent_C6168D4951510CC689A5A7750F17446DD905@qq.com>
-X-QQ-XMAILINFO: NKv2G1wnhDBnTOn8+ItzKbE7t0/z9Z7o3kStYLWJzOrYgGKua3I82pnIvXKq4n
-         NAZBuj5OsrEahGyWGEXSm4d11nPjO3E7mcMq/XtKZ6M6Fi9HqISlKOS536EU/IXxrCnPomeYpACu
-         Ddw9s1hoVtnlR0kaQH0UwYXhj8obTd7ALKZ98bBQCFeHVWKroT4YWrdJFNZWoSlfqwQCdk/l8iBV
-         CEqLxI0RPz/OYKzrkgHHYQpdKXex91KMPu3xCu0F9nGYmaO0b83X5OMYkmMzC8d32nwIcaOHJqAj
-         q2VQfJFe9gIn9b/tGEoaUeky077sLS31MV7vXRGrNf2qVB1NF44w2xLYkNIkPa628c/j55J0TyFO
-         dN9IQVROw6n67q+38nxnr9EBXV0g18ueGfpoequrzFt+dhOA1o51e2Ot0vBuSgY961FWdmZjEJ+w
-         Tu6AxP+79vV1y+XEi0ZUGfVrmYXbVYQibwrcgmHmyfW0DJ+HQub119Lkm7YgF7HXnR4CxwpH/vFc
-         xI5YroU2A+w0HQpwN4aqJtEr7hjkpAxMKxf9QIWbLFs4hmjDYecJnv3A0Wf/pXtjs64V42BjHJa0
-         X15OvOEB/oNlR/BkP+ckueWAz/RLTKf4QKyCXQ5+sdSdcDiSV6pxVud8+OrZhfz6wbnrZjPX/ZSt
-         jnjl2wtdHwE/6XAYBZIZL4dvcP8WZTRC8ZgM5Qo+/cqU9aHWR+IYJARbgScJ6Lsnt0cnvWNVd1UJ
-         4vr7hvV7DvyAvKesSSPVIqhYx2SJU/70i2eYKfhQFmBjWVwiYhobaZiO4z+c8AXVBjvqeyPZfqJw
-         2gdQNvvQUTTOJt2CMopyAxR5IOZMyB8uhP7daJ9OpX+a0t249IYwHQiyx/x+oG/OpxZhubmEfBzA
-         KciuLXwetwWV+jfqmcZ7Bpw4WcH4OvUE1Ae7Iw0xpf113kgW3aPrLCdpnw6+WYjzZ/uBJuS+5Yvc
-         fKQQrdjhBnJlIvZk+L23lww+MGzfctsL4FJ/RdTgM=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-OQ-MSGID: <1bc68f43-a96e-5369-3c3e-475e8f0631c2@foxmail.com>
-Date:   Wed, 16 Aug 2023 23:27:51 +0800
+        with ESMTP id S1344087AbjHPPa6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 11:30:58 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFEA2102
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 08:30:56 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bdb3ecd20dso8742505ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 08:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692199856; x=1692804656;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8FAroCm/x/V+kCSERRsXoQnOWxNJEuoINbdKbSDokX0=;
+        b=N997JOw8RanRWoU/w4WqlW5HHkU6YTHzuSXsY9VPhj0kozw7LvhdbDWwFOIjxIl8sc
+         dHu3epc4ZGArHgJUh1niGoKCXHolAEnl0Pi3F0P5XjDbA8hV8kTOyjbs4sNo0WqwlZgY
+         ky2T6FGMUIRIPEjSVVIFfkEvogzeTAKoJHYHoKHn/+sf5WWJGy0C+QB/rHPBNIyRv0b8
+         2Dpe+grhiE5AnFT1yT8fvJPrFD/MF/W1ac6KA7Yj67h94kn3D/2TyiuARTTogE2NKvH7
+         9MrrO/qaWHbVwIqwskakgOwaHPXqP1MyGYktqhvFmOMQDC/nKYwwBKaY8UbogGC2DAGd
+         AdWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692199856; x=1692804656;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8FAroCm/x/V+kCSERRsXoQnOWxNJEuoINbdKbSDokX0=;
+        b=cQSUPGST6ocJmm1UEArPcEm6JXzleV/Cuw84GPDEswbyJ2UEDzGEcTOXIEo4CL+oes
+         I1eoZq4HjXlMPDYIUQ/tFlo9blHXSzuOYuTElaia/SIDFefurlMEv7dZ5/HsjWxZAZPm
+         aakxcS3RF12SdHyJsvSMq7vnzENHYTA5WnVyOKngT5QtSR3KUnkJJvI3ET7+m6ZGP7ei
+         MMgQVVMC4T9sSNoh6eysNC+Z9hbKkjpZbTHvNlMiDNpESEAVEtsbnWjN6+EpuXKKrFhz
+         57IDEavgDwAOQBfd4JT91uIic+7bgTPvpgumK3s7ISZq0jI1EL2CDhaisNYeqApsiTrd
+         48xg==
+X-Gm-Message-State: AOJu0YxmuRzhzbE+Cu+TEtgtWIxRMH9uqSvjhFjxWKZwBiisxAV/UWkE
+        /zpNjvQnalH7p7UKqgOA4oFaLw==
+X-Google-Smtp-Source: AGHT+IH5RUhyB9ZLzvA+kszEEebVshT+QZzQ+UeEWfqPTJD+ti5AAkxFboEWjXeu0PY40WQp5XJMVg==
+X-Received: by 2002:a17:902:d48e:b0:1b1:9272:55e2 with SMTP id c14-20020a170902d48e00b001b1927255e2mr2594377plg.3.1692199855792;
+        Wed, 16 Aug 2023 08:30:55 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902d50100b001bc445e249asm13278741plg.124.2023.08.16.08.30.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 08:30:55 -0700 (PDT)
+Message-ID: <f9074f2c-9d31-4ead-a99f-4c4b6ae5a24d@kernel.dk>
+Date:   Wed, 16 Aug 2023 09:30:53 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 2/2] ext4: Add correct group descriptors and reserved GDT
- blocks to system zone
+User-Agent: Mozilla Thunderbird
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
 Content-Language: en-US
-To:     linux-ext4@vger.kernel.org
-References: <20230802162840.331385-1-wangjianjian0@foxmail.com>
- <tencent_D744D1450CC169AEA77FCF0A64719909ED05@qq.com>
-From:   Wang Jianjian <wangjianjian0@foxmail.com>
-In-Reply-To: <tencent_D744D1450CC169AEA77FCF0A64719909ED05@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
+        adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+References: <ZNqWfQPTScJDkmpX@gallifrey> <20230815125146.GA1508930@mit.edu>
+ <ZNt11WbPn7LCXPvB@gallifrey> <ZNu668KGiNcwCSVe@gallifrey>
+ <ZNwm7Mo9yv7uIkno@gallifrey> <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
+ <ZNzg1/zhxYV2EkBX@gallifrey> <ZNzl2Sq9UJ3FiTgV@gallifrey>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <ZNzl2Sq9UJ3FiTgV@gallifrey>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi all,
-Any comments?
+On 8/16/23 9:06 AM, Dr. David Alan Gilbert wrote:
+>>> Can you try and pull in:
+>>>
+>>> https://git.kernel.dk/cgit/linux/commit/?h=block-6.5&id=5ff3213a5387e076af2b87f796f94b36965e8c3a
+>>>
+>>> and see if that helps?
+>>
+>> <testing....>
+> 
+> Yes it seems to fix it - thanks!
 
-On 8/3/23 00:28, Wang Jianjian wrote:
-> When setup_system_zone, flex_bg is not initialzied so it is always 1.
-> ext4_num_base_meta_blocks() returns the meta blocks in this group
-> including reserved GDT blocks, so let's use this helper.
-> 
-> Signed-off-by: Wang Jianjian <wangjianjian0@foxmail.com>
-> ---
->   fs/ext4/block_validity.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-> index 5504f72bbbbe..558e487a0b53 100644
-> --- a/fs/ext4/block_validity.c
-> +++ b/fs/ext4/block_validity.c
-> @@ -215,7 +215,6 @@ int ext4_setup_system_zone(struct super_block *sb)
->   	struct ext4_system_blocks *system_blks;
->   	struct ext4_group_desc *gdp;
->   	ext4_group_t i;
-> -	int flex_size = ext4_flex_bg_size(sbi);
->   	int ret;
->   
->   	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
-> @@ -224,11 +223,11 @@ int ext4_setup_system_zone(struct super_block *sb)
->   
->   	for (i=0; i < ngroups; i++) {
->   		cond_resched();
-> -		if (ext4_bg_has_super(sb, i) &&
-> -		    ((i < 5) || ((i % flex_size) == 0))) {
-> +		unsigned int meta_blks = ext4_num_base_meta_blocks(sb, i);
-> +		if (meta_blks != 0) {
->   			ret = add_system_zone(system_blks,
->   					ext4_group_first_block_no(sb, i),
-> -					ext4_bg_num_gdb(sb, i) + 1, 0);
-> +					meta_blks, 0);
->   			if (ret)
->   				goto err;
->   		}
-> 
+OK good, it'll be going upstream before the next -rc.
+
+-- 
+Jens Axboe
 
