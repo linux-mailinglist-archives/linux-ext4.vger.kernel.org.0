@@ -2,141 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5116977F2F1
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 11:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6103277F478
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 12:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349478AbjHQJOC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 05:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        id S1349994AbjHQKtj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Aug 2023 06:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349366AbjHQJN3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 05:13:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A103B8;
-        Thu, 17 Aug 2023 02:13:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692263608; x=1723799608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4z/FYGQdd8TUJLtwj7tIzG3gTwFirQUpcAAlf+5kjMw=;
-  b=JQOS9kqwLKBIIN/1vtvcICYICYsf135OOnzSCZc2T4Nx32C/1fDj295T
-   hw2ggrRZH49g4GW17ZOVY3OoSq+EkA2WrVyAmpGRsZ4roYQg+5lfkJ3jF
-   xY+/GWQc6nsTtY102bu8wybP8SiC/tipV8sGTez4uqenGGrcirOWup8xc
-   uKD2R9p8YzPwKRFEJ5NpI2Kce5L/cw+PLM0l8xQvkfrArbcm6HqeBXfjz
-   GxX/uN+P8eDnQtWd7K3G+tTP7+MaUGwMw5hB/IbzqZP3UukH/BCgtMOoE
-   pvAKvQ2FmwJ5UzqbemmmF0A7rER7wxy3tDclPcP9OkqxKcmygnrhzXTkF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="370225028"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="370225028"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 02:13:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="737630385"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="737630385"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Aug 2023 02:13:22 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWZ4D-0000zb-2N;
-        Thu, 17 Aug 2023 09:13:21 +0000
-Date:   Thu, 17 Aug 2023 17:12:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, tytso@mit.edu, ebiggers@kernel.org,
-        jaegeuk@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Gabriel Krisman Bertazi <krisman@suse.de>
-Subject: Re: [PATCH v5 04/10] fs: Expose name under lookup to d_revalidate
- hooks
-Message-ID: <202308171740.0u9DuWtr-lkp@intel.com>
-References: <20230812004146.30980-5-krisman@suse.de>
+        with ESMTP id S1350070AbjHQKt0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 06:49:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59FF2D7B;
+        Thu, 17 Aug 2023 03:49:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 88CAD2185F;
+        Thu, 17 Aug 2023 10:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692269358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/2jR3966UAmEkiljJ8BmMvXxwqDOF6vPbL8fI/TYXYY=;
+        b=x3PRZkUr5abRvgFEsScC9hV1UZxoqH/g5Yqt/Z11vIVMeEWNp8xukxczpaCs5zHRe4J4x8
+        TKrH69hfvt6X8mrlCekRiCsLzAqrcKlQxmT9wHY0lgt3ziJVkEmJ9jdI6iWbum58n0Ob1r
+        vGfxIxWPgUZpMpPDacKc4t5kpf+14rY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692269358;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/2jR3966UAmEkiljJ8BmMvXxwqDOF6vPbL8fI/TYXYY=;
+        b=usOi04jWiaqSIBPldqD0wsJZHrMBLInFy1EVUjrcswrzwk/QStcE1g5Ut0E4gIOrckaHn6
+        03yRB2Ks8jyrP/Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 794261392B;
+        Thu, 17 Aug 2023 10:49:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HfSSHS773WQKJgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 17 Aug 2023 10:49:18 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 00062A0769; Thu, 17 Aug 2023 12:49:17 +0200 (CEST)
+Date:   Thu, 17 Aug 2023 12:49:17 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        jack@suse.com, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Subject: Re: Tasks stuck jbd2 for a long time
+Message-ID: <20230817104917.bs46doo6duo7utlm@quack3>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230812004146.30980-5-krisman@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Gabriel,
+On Wed 16-08-23 15:53:05, Bhatnagar, Rishabh wrote:
+> I collected dump and looked at some processes that were stuck in
+> uninterruptible sleep.These are from upstream stable tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-5.10.y
+> (5.10.191)
+> 
+> One of them is the journal thread that is waiting for some other thread to
+> close transaction handle.
+> 
+> PID: 10642  TASK: ffff9768823f4000  CPU: 37  COMMAND: "jbd2/md0-8"
+>  #0 [ffffbd6c40c17c60] __schedule+617 at ffffffffbb912df9
+>  #1 [ffffbd6c40c17cf8] schedule+60 at ffffffffbb91330c
+>  #2 [ffffbd6c40c17d08] jbd2_journal_commit_transaction+877 at
+> ffffffffc016b90d [jbd2] (/home/ec2-user/linux/fs/jbd2/commit.c:497)
+>  #3 [ffffbd6c40c17ea0] kjournald2+282 at ffffffffc01723ba [jbd2]
+> (/home/ec2-user/linux/fs/jbd2/journal.c:214)
+>  #4 [ffffbd6c40c17f10] kthread+279 at ffffffffbb0b9167
+>  #5 [ffffbd6c40c17f50] ret_from_fork+34 at ffffffffbb003802
 
-kernel test robot noticed the following build warnings:
+Yes, correct. This is waiting for transaction->t_updates to drop to 0.
 
-[auto build test WARNING on tytso-ext4/dev]
-[also build test WARNING on linus/master]
-[cannot apply to tyhicks-ecryptfs/next ericvh-v9fs/for-next viro-vfs/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> One of threads that have started the handle and waiting for journal to
+> commit and unlock the current transaction. This stack only shows
+> ext4lazyinit but with lazyinit disabled we have seen other threads stuck in
+> same place.
+> 
+> PID: 10644  TASK: ffff976901010000  CPU: 37  COMMAND: "ext4lazyinit"
+>  #0 [ffffbd6c40c1fbe0] __schedule+617 at ffffffffbb912df9
+>  #1 [ffffbd6c40c1fc78] schedule+60 at ffffffffbb91330c
+>  #2 [ffffbd6c40c1fc88] wait_transaction_locked+137 at ffffffffc0168089
+> [jbd2] (/home/ec2-user/linux/fs/jbd2/transaction.c:184)
+>  #3 [ffffbd6c40c1fcd8] add_transaction_credits+62 at ffffffffc016813e [jbd2]
+> (/home/ec2-user/linux/fs/jbd2/transaction.c:241)
+>  #4 [ffffbd6c40c1fd30] start_this_handle+533 at ffffffffc0168615 [jbd2]
+> (/home/ec2-user/linux/fs/jbd2/transaction.c:416)
+>  #5 [ffffbd6c40c1fdc0] jbd2__journal_start+244 at ffffffffc0168dc4 [jbd2]
+>  #6 [ffffbd6c40c1fe00] __ext4_journal_start_sb+250 at ffffffffc02ef65a
+> [ext4]
+>  #7 [ffffbd6c40c1fe40] ext4_init_inode_table+190 at ffffffffc0302ace [ext4]
+>  #8 [ffffbd6c40c1feb0] ext4_lazyinit_thread+906 at ffffffffc033ec9a [ext4]
+>  #9 [ffffbd6c40c1ff10] kthread+279 at ffffffffbb0b9167
+> #10 [ffffbd6c40c1ff50] ret_from_fork+34 at ffffffffbb003802
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gabriel-Krisman-Bertazi/fs-Expose-helper-to-check-if-a-directory-needs-casefolding/20230812-084506
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/20230812004146.30980-5-krisman%40suse.de
-patch subject: [PATCH v5 04/10] fs: Expose name under lookup to d_revalidate hooks
-config: x86_64-randconfig-x012-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171740.0u9DuWtr-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171740.0u9DuWtr-lkp@intel.com/reproduce)
+This thread actually didn't start a transaction. It is *trying* to start a
+transaction but it has failed and we are now waiting for transaction commit
+to proceed (i.e., for jbd2/md0-8 process). So this isn't the process jbd2
+is waiting for.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171740.0u9DuWtr-lkp@intel.com/
+> To replicate the download scenario i'm just using dd to copy random data to
+> disk. I launch a bunch of threads and try to stress the system. Many of
+> those threads seem to be stuck in balance_dirty_pages_ratelimited as can be
+> seen below.
+> 
+> PID: 10709  TASK: ffff9769016f8000  CPU: 25  COMMAND: "dd"
+>  #0 [ffffbd6c40dafa48] __schedule+617 at ffffffffbb912df9
+>  #1 [ffffbd6c40dafae0] schedule+60 at ffffffffbb91330c
+>  #2 [ffffbd6c40dafaf0] schedule_timeout+570 at ffffffffbb916a7a
+>  #3 [ffffbd6c40dafb68] io_schedule_timeout+25 at ffffffffbb913619 ((inlined
+> by) io_schedule_finish at /home/ec2-user/linux/kernel/sched/core.c:6274)
+>  #4 [ffffbd6c40dafb80] balance_dirty_pages+654 at ffffffffbb2367ce 
+> (/home/ec2-user/linux/mm/page-writeback.c:1799)
+>  #5 [ffffbd6c40dafcf0] balance_dirty_pages_ratelimited+763 at
+> ffffffffbb23752b  (/home/ec2-user/linux/mm/page-writeback.c:1926)
+>  #6 [ffffbd6c40dafd18] generic_perform_write+308 at ffffffffbb22af44
+> (/home/ec2-user/linux/mm/filemap.c:3370)
+>  #7 [ffffbd6c40dafd88] ext4_buffered_write_iter+161 at ffffffffc02fcba1
+> [ext4] (/home/ec2-user/linux/fs/ext4/file.c:273)
+>  #8 [ffffbd6c40dafdb8] ext4_file_write_iter+96 at ffffffffc02fccf0 [ext4]
+>  #9 [ffffbd6c40dafe40] new_sync_write+287 at ffffffffbb2e0c0f
+> #10 [ffffbd6c40dafec8] vfs_write+481 at ffffffffbb2e3161
+> #11 [ffffbd6c40daff00] ksys_write+165 at ffffffffbb2e3385
+> #12 [ffffbd6c40daff40] do_syscall_64+51 at ffffffffbb906213
+> #13 [ffffbd6c40daff50] entry_SYSCALL_64_after_hwframe+103 at
+> ffffffffbba000df
 
-All warnings (new ones prefixed by >>):
+Yes, this is waiting for page writeback to reduce amount of dirty pages in
+the pagecache. We are not holding transaction handle during this wait so
+this is also not the task jbd2 is waiting for.
 
->> fs/ecryptfs/dentry.c:33: warning: Function parameter or member 'name' not described in 'ecryptfs_d_revalidate'
+> There are other dd threads that are trying to read and are handling page
+> fault. These are in runnable state and not uninterruptible sleep.
+> 
+> PID: 14581  TASK: ffff97c3cfdbc000  CPU: 29  COMMAND: "dd"
+>  #0 [ffffbd6c4a1d3598] __schedule+617 at ffffffffbb912df9
+>  #1 [ffffbd6c4a1d3630] _cond_resched+38 at ffffffffbb9133e6
+>  #2 [ffffbd6c4a1d3638] shrink_page_list+126 at ffffffffbb2412fe
+>  #3 [ffffbd6c4a1d36c8] shrink_inactive_list+478 at ffffffffbb24441e
+>  #4 [ffffbd6c4a1d3768] shrink_lruvec+957 at ffffffffbb244e3d
+>  #5 [ffffbd6c4a1d3870] shrink_node+552 at ffffffffbb2452a8
+>  #6 [ffffbd6c4a1d38f0] do_try_to_free_pages+201 at ffffffffbb245829
+>  #7 [ffffbd6c4a1d3940] try_to_free_pages+239 at ffffffffbb246c0f
+>  #8 [ffffbd6c4a1d39d8] __alloc_pages_slowpath.constprop.114+913 at
+> ffffffffbb28d741
+>  #9 [ffffbd6c4a1d3ab8] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
+> #10 [ffffbd6c4a1d3b28] alloc_pages_vma+124 at ffffffffbb2a734c
+> #11 [ffffbd6c4a1d3b68] handle_mm_fault+3999 at ffffffffbb26de2f
+> #12 [ffffbd6c4a1d3c28] exc_page_fault+708 at ffffffffbb909c84
+> #13 [ffffbd6c4a1d3c80] asm_exc_page_fault+30 at ffffffffbba00b4e
+>  #14 [ffffbd6c4a1d3d30] copyout+28 at ffffffffbb5160bc
+> #15 [ffffbd6c4a1d3d38] _copy_to_iter+158 at ffffffffbb5188de
+> #16 [ffffbd6c4a1d3d98] get_random_bytes_user+136 at ffffffffbb644608
+> #17 [ffffbd6c4a1d3e48] new_sync_read+284 at ffffffffbb2e0a5c
+> #18 [ffffbd6c4a1d3ed0] vfs_read+353 at ffffffffbb2e2f51
+> #19 [ffffbd6c4a1d3f00] ksys_read+165 at ffffffffbb2e3265
+> #20 [ffffbd6c4a1d3f40] do_syscall_64+51 at ffffffffbb906213
+> #21 [ffffbd6c4a1d3f50] entry_SYSCALL_64_after_hwframe+103 at
+> ffffffffbba000df
 
+This process is in direct reclaim trying to free more memory. It doesn't
+have transaction handle started so jbd2 also isn't waiting for this
+process.
 
-vim +33 fs/ecryptfs/dentry.c
+> > > Can low available memory be a reason for a thread to not be able to close
+> > > the transaction handle for a long time?
+> > > Maybe some writeback thread starts the handle but is not able to complete
+> > > writeback?
+> > Well, even that would be a bug but low memory conditions are certainly some
+> > of less tested paths so it is possible there's a bug lurking there.
+> Amongst the things we have tested 2 things seem to give good improvements.
+> 
+> One is disabling journalling. We don't see any stuck tasks. System becomes
+> slow but eventually recovers. But its not something we want to disable.
+> 
+> Other is enabling swap memory. Adding some swap memory also avoids system
+> going into low memory state and system doesn't freeze.
 
-237fead619984c Michael Halcrow         2006-10-04  17  
-237fead619984c Michael Halcrow         2006-10-04  18  /**
-237fead619984c Michael Halcrow         2006-10-04  19   * ecryptfs_d_revalidate - revalidate an ecryptfs dentry
-237fead619984c Michael Halcrow         2006-10-04  20   * @dentry: The ecryptfs dentry
-0b728e1911cbe6 Al Viro                 2012-06-10  21   * @flags: lookup flags
-237fead619984c Michael Halcrow         2006-10-04  22   *
-237fead619984c Michael Halcrow         2006-10-04  23   * Called when the VFS needs to revalidate a dentry. This
-237fead619984c Michael Halcrow         2006-10-04  24   * is called whenever a name lookup finds a dentry in the
-237fead619984c Michael Halcrow         2006-10-04  25   * dcache. Most filesystems leave this as NULL, because all their
-237fead619984c Michael Halcrow         2006-10-04  26   * dentries in the dcache are valid.
-237fead619984c Michael Halcrow         2006-10-04  27   *
-237fead619984c Michael Halcrow         2006-10-04  28   * Returns 1 if valid, 0 otherwise.
-237fead619984c Michael Halcrow         2006-10-04  29   *
-237fead619984c Michael Halcrow         2006-10-04  30   */
-0838ae103beaf6 Gabriel Krisman Bertazi 2023-08-11  31  static int ecryptfs_d_revalidate(struct dentry *dentry,
-0838ae103beaf6 Gabriel Krisman Bertazi 2023-08-11  32  				 const struct qstr *name, unsigned int flags)
-237fead619984c Michael Halcrow         2006-10-04 @33  {
-2edbfbf1c1ab0a Al Viro                 2013-09-15  34  	struct dentry *lower_dentry = ecryptfs_dentry_to_lower(dentry);
-5556e7e6d30e8e Tyler Hicks             2015-08-05  35  	int rc = 1;
-237fead619984c Michael Halcrow         2006-10-04  36  
-0b728e1911cbe6 Al Viro                 2012-06-10  37  	if (flags & LOOKUP_RCU)
-34286d6662308d Nicholas Piggin         2011-01-07  38  		return -ECHILD;
-34286d6662308d Nicholas Piggin         2011-01-07  39  
-5556e7e6d30e8e Tyler Hicks             2015-08-05  40  	if (lower_dentry->d_flags & DCACHE_OP_REVALIDATE)
-0838ae103beaf6 Gabriel Krisman Bertazi 2023-08-11  41  		rc = lower_dentry->d_op->d_revalidate(lower_dentry, name, flags);
-5556e7e6d30e8e Tyler Hicks             2015-08-05  42  
-2b0143b5c986be David Howells           2015-03-17  43  	if (d_really_is_positive(dentry)) {
-5556e7e6d30e8e Tyler Hicks             2015-08-05  44  		struct inode *inode = d_inode(dentry);
-ae56fb16337c88 Michael Halcrow         2006-11-16  45  
-5556e7e6d30e8e Tyler Hicks             2015-08-05  46  		fsstack_copy_attr_all(inode, ecryptfs_inode_to_lower(inode));
-5556e7e6d30e8e Tyler Hicks             2015-08-05  47  		if (!inode->i_nlink)
-5556e7e6d30e8e Tyler Hicks             2015-08-05  48  			return 0;
-ae56fb16337c88 Michael Halcrow         2006-11-16  49  	}
-237fead619984c Michael Halcrow         2006-10-04  50  	return rc;
-237fead619984c Michael Halcrow         2006-10-04  51  }
-237fead619984c Michael Halcrow         2006-10-04  52  
+OK, these are just workarounds. The question really is which process holds
+the transaction handle jbd2 thread is waiting for. It is none of the
+processes you have shown above. Since you have the crashdump, you can also
+search all the processes and find those which have non-zero
+task->journal_info. And from these processes you can select those where
+task->journal_info points to an object from jbd2_handle_cache and then you
+can verify whether the handles indeed point (through handle->h_transaction)
+to the transaction jbd2 thread is trying to commit. After you've identified
+such task it is interesting to see what is it doing...
 
+								Honza
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
