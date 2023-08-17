@@ -2,200 +2,331 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F29E77EDD3
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 01:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753BC77EE5C
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 02:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347167AbjHPX1y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Aug 2023 19:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S1347306AbjHQAgt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Aug 2023 20:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347175AbjHPX1t (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 19:27:49 -0400
-Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9B92720
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
-Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-5646868b9e7so7602345a12.3
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692228467; x=1692833267;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PAODHEKlkohyVW4SPU/mzzjLtNTRD9df5tm0JKFVRoM=;
-        b=FBEXGxgVd7cMSdOp96ANyE6E1vdetctImwzbh8qo6J+MGuireF2gVVBKwGHZ1VrqAV
-         F6/0+QRMuuj1jcSUCHyTZ+u3cjadjsgoNDbGDcSPbAI7CbElaEF8K2UvWd8YxfXe0XfT
-         n5TnHdZEAAifjZQwz0WpKkIfBYs/q3EKpzkOcSg1XV0WQP0+15sSvhyI5ips8AGCX2QY
-         slTkYAJbpIhZcmhP5pNafSDx7i/1ja1RJjBWueH/YNx7WzM2jL5KsC3cvOLtxWhi1oXx
-         lXuea7rEEP/6PSoSA7wHg5ZJjPG4YKzVv3JToT5AHruEUHGsWVsf8XssfcxlSaGdstfc
-         +mgQ==
-X-Gm-Message-State: AOJu0YyMa3n83x4EfLiQwDlf1LMC7q3BCABQTt3Cc5etvLFKjUIFaq4q
-        uhZutEjLdNy1eo4G0wR7n2bRU7PYmIQUwJWmWfan9DfNIDWr
-X-Google-Smtp-Source: AGHT+IEVKJaNYWhsLc8jTBq2cwXfDEnAiIer4Ho7bobQt0yn5iTbUe7aSmJ6XKe0ibJTzIG5RgoIruxRyMGV2FDmDHgDfLBB37dR
+        with ESMTP id S1347528AbjHQAgs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Aug 2023 20:36:48 -0400
+Received: from outbound-ip7b.ess.barracuda.com (outbound-ip7b.ess.barracuda.com [209.222.82.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719E12D56
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Aug 2023 17:36:14 -0700 (PDT)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172]) by mx-outbound21-84.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 17 Aug 2023 00:35:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k2ET5BkEezZZem/d7AEpGkfSR/QzN+HdLmcfu4i92TwCfvBWjO/HUij0412YIco6Vpu/X0EmSVSvsvsexsY+gP4Epcqfaw+BOcIJTF7fkJYF0CPfCyVbxy3v+ADl+ZG3whwS7Xpxvmx0NI5vXdUWTHxYw1BS/eexfqwCRdWx4JrQMUVxLmhb/NNUOJYPgqO18Rv1uLGSLUjLSWoNrjrDNDyBBjOercKP7LvoCeXAu12WOOOiG/zcGnZRcN+BqguIouz6/u+HHpJm9RdPaK7Ac22tUqQmosdtMYJAfVk71lGXDt55HlZ7g8p7EEPtTGNnBVcLeD5QttjLh2rSHXQIjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5XMSjIZKwlzdqjVuZS1x8xJfaq/Vaspt6PF7MA3lJvo=;
+ b=RilBkUVe+IQC2nAT3yaGl5moSvOyyWEwCleCNY44zdn6WKtJwB/2DOwPLb6eercz8v5kAy4vu+QltrbeGTylliJOjsGYVJtNdmz4g2AHZToluFGYDVn0tBPOPPOcf9nbP22EUIz59IHaL6EaFE7tu/c61jrcSp2hKp+spKgBq7bbjiF0PYZ7iF4I/3rguOF1xlxzTJxhr8aiIwnltn4aEh6Vibknl6KUCjac6LkgexklpD+Bi9mK9SQylnW3vbGgJU1639HEgw+8sP/afqVVzoTeNdZ9OpmyqpHwIVT9qe7huhjAQHcbbdmtLPejLpXE0JiRA0S2CerMYUHNhGcB4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5XMSjIZKwlzdqjVuZS1x8xJfaq/Vaspt6PF7MA3lJvo=;
+ b=g6xUfv75nVtIAummCdqY6jL3KJEPORm8uqatJnFH4HSQE8JWkztSixiITHvs49SjofW9gMi8OvLEpLT0qj1sJmxT5N37WoG4X28LGjSkiJJ0EsHUP4dryhwxvg9T4FImEARVSfJxLfdMhw0aVuaCLLS78vAUJovDKY9YQleuH8k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ddn.com;
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com (2603:10b6:8:72::19) by
+ DS0PR19MB7648.namprd19.prod.outlook.com (2603:10b6:8:f7::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6678.30; Thu, 17 Aug 2023 00:35:18 +0000
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::3110:9950:e5d9:af44]) by DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::3110:9950:e5d9:af44%7]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 00:35:18 +0000
+From:   Li Dongyang <dongyangli@ddn.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger@dilger.ca, sihara@ddn.com, wangshilong1991@gmail.com
+Subject: [PATCH V2] ext4: introduce EXT4_BG_TRIMMED to optimize fstrim
+Date:   Thu, 17 Aug 2023 10:35:04 +1000
+Message-ID: <20230817003504.458920-1-dongyangli@ddn.com>
+X-Mailer: git-send-email 2.41.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SY5PR01CA0063.ausprd01.prod.outlook.com
+ (2603:10c6:10:1f4::15) To DS7PR19MB5711.namprd19.prod.outlook.com
+ (2603:10b6:8:72::19)
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2302:b0:1bf:794:9e8f with SMTP id
- d2-20020a170903230200b001bf07949e8fmr564090plh.7.1692228467435; Wed, 16 Aug
- 2023 16:27:47 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 16:27:47 -0700
-In-Reply-To: <000000000000f59fa505fe48748f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae2d46060312a494@google.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
-From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR19MB5711:EE_|DS0PR19MB7648:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8a177bc6-2d61-49f7-604b-08db9eb9d4e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LsTWaLdtUJw4eQUib4NgnVVjPCg6M9x1FiW9SGylinBDE9iXoubrtTEQPZyZeY10rcDs4oP08UVb8krJ2QGjYFOJIf9fehzZ53Y44o1RQhMUmZYyDNOdq+hwgNWBRleja7fYIdfecrWTZwrHGQWmaW7EHWz7DJkl8i9Lv+5gKZs3x7NWQo4b8QPFa5aVMkbzTl6xfC2qX3sobDVf/Pst1qXm+y1lJXaBsGhF+8rbjnhgunkKco9DT6up5yQB/MGlFkQRo+zyNUZxsrDFzywHpblzpUF8iISOSg209qawHEBKHp23ncJnqyag8nJTUTIE5e4ijNK0wPwhJaGphkehcZ2o+PjvIRSLcxOXnhh+asZ4FVHcaCMoAOe+HnzaY3gNJIZSVPt2zr4i+i3qKGBM5inGvU777cqys4anED5km/VMgZhbGeCv9rVYLgA8md7cVemWx2V/b+f9oUWSgFTFcuxABeeRUZmOV0/zzTuy1g93sibz351yt4ltayMwN3BpBt9+lzTb/Ti+zCNwGqdvRQRAFKrJ2FU/v2b5Q+sLY+XrM37lPd8sFrQIc0kaxxNn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR19MB5711.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39850400004)(376002)(366004)(346002)(1800799009)(186009)(451199024)(2906002)(2616005)(1076003)(26005)(55236004)(6512007)(36756003)(6486002)(6666004)(6506007)(38100700002)(83380400001)(478600001)(66556008)(66476007)(66946007)(6916009)(8676002)(316002)(8936002)(4326008)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hV3MhR/RKFAJztoieaHL5WnoGuiQbFE8iL8/pJB89xZJmHhXk3N20e0FuvmH?=
+ =?us-ascii?Q?CTlDg3+regFm+cQ3EdN3a3+3JBRyt7jb3Jjo8VXV+9OxnWzdt3kq4rwOd31G?=
+ =?us-ascii?Q?CC7mWptcl10fxQ3KrQGmX3WURzE7c2icFuGVOnCIIWrXnjgP1G3JoAV3G/kR?=
+ =?us-ascii?Q?iGqelKAURYBEw3SMHcs20ydQJ3WjZHEDQA85WzOmmH5h9XIGfHuGQCYMKdWA?=
+ =?us-ascii?Q?CStxJ7kNrsV5IZ/wKeuDzd3YKXleDW/35J7oWaRTloLsJ5rOvW/EZdBxj3Zs?=
+ =?us-ascii?Q?kr+5WVHRxzGGOjUMl0xg6kC9mMhRa6acN4eurm6K4IApbokexXWKxVlAm1rx?=
+ =?us-ascii?Q?3PcJkLhmIINRV8i7oSexye5WLRSVpj1e1mSYLh3+qLaa54CGqGbdADfnsdqm?=
+ =?us-ascii?Q?RZz6giwQ3GrpBYJJHA4hEys7erNN6SFOy3Lmx3BWllDOxQdEVSpjT1STYMew?=
+ =?us-ascii?Q?RPsSxOjj/fpd2z1otEJWr410NchCq5YbV1JxRYAi48XitAhBhUvRPGKICYsX?=
+ =?us-ascii?Q?sahgxmqNFSDk3A510PlepGO8HdbEUNJIZSR7+7d9ARj4Lu8QZ7k6NuG+UvDi?=
+ =?us-ascii?Q?K0bqdG1fQWhhHBusPQucD2sWOBH45mOSp3le1aN2vKaaDnhXeMU5w3zxeYHg?=
+ =?us-ascii?Q?LGq9i3e8Os52CH3tjR28TPnBehnwuob2BmUeXalO80obBBD/jVfkrkDbHXgV?=
+ =?us-ascii?Q?vqgs5DwpYedz9TPkfisJjd9BuwPUC+HfM+pT+ul+qtyCoOmEPMlyW+jkFaH6?=
+ =?us-ascii?Q?GIxVXUBm7Yuo0eTMYRa0G/dYkrcWcj8Yd5RCfrjdtES8Vbrsd2jcbN4Raa0Z?=
+ =?us-ascii?Q?eLHIwqxQDy2jScAab86IBFFb5pJJVyCZ+DW282PYW0VBGZhh5F/+zz0EZaBz?=
+ =?us-ascii?Q?xFD1+t7/Dtxo8RQ8kvBJQ/g1WxcOrQuvzJGBL0N6AHy8BMZqrtJyFY8dpfve?=
+ =?us-ascii?Q?1ifrtwHvq2lPwwAs2ClkGjtYcWliN5/gYB3fs5uhm9ubSUVa+4tvXsPy8bSn?=
+ =?us-ascii?Q?HNLyUhTFFEruDuoLEB4rOVaVLYoAOTFw3bhLxma01Ijomwq6JT4So2ZeHPiC?=
+ =?us-ascii?Q?BltiePYPaQMcTVrtLefWWVBo0zVRQaxa6bXgOCSkeX3hGVTDDgOG8yckb5Mm?=
+ =?us-ascii?Q?d4sBPJkx9FKcpN2O6Mb7zrnNB5/wum9Rxceg0kfUqfBJ43u923pd7d8l6KpM?=
+ =?us-ascii?Q?PY6PIgw6cFcxFhb5JX84oGZABvzDhadiWldkzUDYRxOXqp7RAh68UOIPZENu?=
+ =?us-ascii?Q?w6hZi486gI0Ri6OpdZvWbgSZ3NVLtQ7JPWIaAWHXykblRvhotuaeJPjNqKCW?=
+ =?us-ascii?Q?+Ak/KJbZbzpGreClOdew+K8iopv0HHYLbm96z1Ct9Wb1xKQrS9qeNF1YaPim?=
+ =?us-ascii?Q?VCEzi5ugm7qVr4LXFXE4P3JF5sM4cstcqH2qQl4PaUGOy6O8fWnSlGtMibqh?=
+ =?us-ascii?Q?3Df22vLZlHpToP999f4MlRjQKyTAapb+5HqQY6tmPXNctBU0UH74E+yV6UgK?=
+ =?us-ascii?Q?u1Xvum71XG03lQZh0RBPlazCFn7RHu0aMpSXcX1HeZEgtk7XF17hBp5kJLO5?=
+ =?us-ascii?Q?WksBLOPtOvxUWKeveIM=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 6OdJ4HfyTcfK7YHi4PI18S5Y61S7ht1adDdhnS/Niptni1gtJBT9Jr68PfcEBADSo95O7UQPfRNLPz6+9kX9fVPP48jqIyrF8qT9blwyT4sGebpqjyMiCSYrwLyqx3/8OqLoprllpW6NrXYm4g5s/uUF2U4LDDfYiaUvMrF8ECJTBsQUNQGcUvD3itESKgAF3ob7w7IPHHCwGcclhhf9mF2JA17GCg6IIK0A7U2iGG47EzGX7CGWX505zAD5k8GgdD44hvq1HrG/8r29VRfenaV5YPLonq3CPYHbH/dOdKcQEDuW8miANfya9rhOFJjtUsCinmGIB7+jM0fyfLhr7pbSRZemkVC+3gUrrzA/JO8u8gkoVr7csOsDPf2gVuYyvgOuWTAon1arEIDlso5Qcy/lXh5JnV+LvW/9v/3z6jcEJ7E6niafmzgr+JOg0CsjhblT1JBaaLWXbDOXRmO8x1dR9LfopP4hodKKwT8jBB0KHOEF+edyJekg/ywVyeCQ4uZKF7lPJLHZg3UmJmR4kbcTrcBcxDYrGlyhkKii5vDoJ12F/8H5HCrb8dEFaVgfMGijRjl9eMXBHfd1uNrA5vsLicMLfqrEcZcn0jI0gMPiJU+hkyIgKggfY9D4D5KbfZnqXPuqT7FNM4y/j8qtSCSeBMMRL/mjNID3yOuqOfdr/zjg+HutGC/NrfLpxY6BfqIwAr5JpZnTeQkpcO7OOmuE856pWIDKpum0fwQD1Qf0qbFznvs2tXxCJEMr4l+whB2ZvQfnzxyaCu/maprdx1ScZaq4ygGvhBNIv9PDZl5LvTkXW95xt/LD+hbTwnJw05BvHmf4KdYgP5QO9q0a7Hi0BBsJxZioEd/eepf+Yk4=
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a177bc6-2d61-49f7-604b-08db9eb9d4e2
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR19MB5711.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 00:35:18.4542
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wg7LfLEQLiQ8ZvCpCHALfveLhp56AT3yD82xWslZjRakhDLz+vPqwVkw7zxnHEwL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR19MB7648
+X-BESS-ID: 1692232520-105460-12299-13445-1
+X-BESS-VER: 2019.1_20230816.1637
+X-BESS-Apparent-Source-IP: 104.47.55.172
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVuZGlmZAVgZQMDXV0CjFwDLJ3C
+        LZMNnU2CIxNdHIwNTC0sDU2MAyOdFSqTYWAABORHNBAAAA
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.250193 [from 
+        cloudscan17-178.us-east-2b.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 MAILTO_TO_SPAM_ADDR    META: Includes a link to a likely spammer email 
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=MAILTO_TO_SPAM_ADDR, BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status: 1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Currently the flag indicating block group has done fstrim is not
+persistent, and trim status will be lost after remount, as
+a result fstrim can not skip the already trimmed groups, which
+could be slow on very large devices.
 
-HEAD commit:    4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=178eb2efa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
+This patch introduces a new block group flag EXT4_BG_TRIMMED,
+we need 1 extra block group descriptor write after trimming each
+block group.
+When clearing the flag, the block group descriptor is journalled
+already so no extra overhead.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fef982ba26aa/disk-4853c74b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/633875549882/vmlinux-4853c74b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a1d2d81c82f6/bzImage-4853c74b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/45ecbb86ca49/mount_4.gz
+Add a new super block flag EXT2_FLAGS_TRACK_TRIM, to indicate if
+we should honour and set EXT4_BG_TRIMMED when doing fstrim.
+The new super block flag can be turned on/off via tune2fs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
-
-INFO: task syz-executor359:5018 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor359 state:D stack:27216 pid:5018  ppid:5015   flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0xee1/0x59f0 kernel/sched/core.c:6710
- schedule+0xe7/0x1b0 kernel/sched/core.c:6786
- wb_wait_for_completion+0x1ae/0x270 fs/fs-writeback.c:192
- __writeback_inodes_sb_nr+0x1d8/0x270 fs/fs-writeback.c:2650
- sync_filesystem fs/sync.c:54 [inline]
- sync_filesystem+0xb6/0x280 fs/sync.c:30
- generic_shutdown_super+0x74/0x480 fs/super.c:472
- kill_block_super+0x64/0xb0 fs/super.c:1417
- deactivate_locked_super+0x9a/0x170 fs/super.c:330
- deactivate_super+0xde/0x100 fs/super.c:361
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- ptrace_notify+0x10c/0x130 kernel/signal.c:2376
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:252 [inline]
- syscall_exit_to_user_mode_prepare+0x120/0x220 kernel/entry/common.c:279
- __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
- syscall_exit_to_user_mode+0xd/0x50 kernel/entry/common.c:297
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f497ef65487
-RSP: 002b:00007ffdd57d4148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f497ef65487
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffdd57d4200
-RBP: 00007ffdd57d4200 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffdd57d5270
-R13: 00005555566da6c0 R14: 431bde82d7b634db R15: 00007ffdd57d5290
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8c9a67f0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8c9a64f0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/27:
- #0: ffffffff8c9a7400 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6615
-3 locks held by kworker/u4:2/34:
-2 locks held by getty/4774:
- #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015c02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfcb/0x1480 drivers/tty/n_tty.c:2187
-1 lock held by syz-executor359/5018:
- #0: ffff88807b0e80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd6/0x100 fs/super.c:360
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x2ac/0x310 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf29/0x11b0 kernel/hung_task.c:379
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 34 Comm: kworker/u4:2 Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: writeback wb_workfn (flush-7:0)
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
-Code: a6 27 99 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 dd b0 7d 7e 89 c1 48 8b 34 24 81 e1 00 01 00
-RSP: 0018:ffffc90000ab74e8 EFLAGS: 00000206
-RAX: 0000000000000000 RBX: ffffea0001c90174 RCX: ffffffff81fa92f9
-RDX: ffff8880136fbb80 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000003 R11: 1ffffffff1936441 R12: 0000000000000003
-R13: 0000000000000200 R14: 0000000000000003 R15: ffffea0001c90140
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055fded888928 CR3: 0000000028191000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
- page_ref_dec_and_test include/linux/page_ref.h:210 [inline]
- put_page_testzero include/linux/mm.h:1028 [inline]
- folio_put_testzero include/linux/mm.h:1033 [inline]
- folio_put include/linux/mm.h:1439 [inline]
- grow_dev_page fs/buffer.c:1093 [inline]
- grow_buffers fs/buffer.c:1123 [inline]
- __getblk_slow+0x4b7/0x720 fs/buffer.c:1150
- __getblk_gfp fs/buffer.c:1445 [inline]
- __bread_gfp+0x215/0x310 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:351 [inline]
- exfat_get_dentry_set+0x283/0xc10 fs/exfat/dir.c:878
- __exfat_write_inode+0x2c0/0x9e0 fs/exfat/inode.c:45
- exfat_write_inode+0xad/0x130 fs/exfat/inode.c:94
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
- writeback_sb_inodes+0x599/0x1010 fs/fs-writeback.c:1894
- wb_writeback+0x2a5/0xa90 fs/fs-writeback.c:2070
- wb_do_writeback fs/fs-writeback.c:2217 [inline]
- wb_workfn+0x29c/0xfd0 fs/fs-writeback.c:2257
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.463 msecs
-
-
+Cc: Shuichi Ihara <sihara@ddn.com>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Cc: Wang Shilong <wangshilong1991@gmail.com>
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
+Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+v1->v2:
+use cpu_to_le32() with the new super flag.
+do not record BG_TRIMMED if TRACK_TRIM is not set in super block.
+---
+ fs/ext4/ext4.h      | 10 ++-----
+ fs/ext4/ext4_jbd2.h |  3 ++-
+ fs/ext4/mballoc.c   | 63 +++++++++++++++++++++++++++++++++++----------
+ 3 files changed, 53 insertions(+), 23 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0a2d55faa095..a990fb49b24f 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -437,6 +437,7 @@ struct flex_groups {
+ #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
+ #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
+ #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
++#define EXT4_BG_TRIMMED		0x0008 /* block group was trimmed */
+ 
+ /*
+  * Macro-instructions used to manage group descriptors
+@@ -1166,6 +1167,7 @@ struct ext4_inode_info {
+ #define EXT2_FLAGS_SIGNED_HASH		0x0001  /* Signed dirhash in use */
+ #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in use */
+ #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test development code */
++#define EXT2_FLAGS_TRACK_TRIM		0x0008  /* Track trim status in each bg */
+ 
+ /*
+  * Mount flags set via mount options or defaults
+@@ -3412,7 +3414,6 @@ struct ext4_group_info {
+ };
+ 
+ #define EXT4_GROUP_INFO_NEED_INIT_BIT		0
+-#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
+ #define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	2
+ #define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	3
+ #define EXT4_GROUP_INFO_BBITMAP_CORRUPT		\
+@@ -3427,13 +3428,6 @@ struct ext4_group_info {
+ 	(test_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+ #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)	\
+ 	(test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &((grp)->bb_state)))
+-
+-#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
+-	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
+-	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+-#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
+-	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
+ #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
+ 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, &((grp)->bb_state)))
+ 
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 0c77697d5e90..ce529a454b2a 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -120,7 +120,8 @@
+ #define EXT4_HT_MOVE_EXTENTS     9
+ #define EXT4_HT_XATTR           10
+ #define EXT4_HT_EXT_CONVERT     11
+-#define EXT4_HT_MAX             12
++#define EXT4_HT_FS_TRIM		12
++#define EXT4_HT_MAX             13
+ 
+ /**
+  *   struct ext4_journal_cb_entry - Base structure for callback information.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 21b903fe546e..d537bcdf121d 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3849,15 +3849,6 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
+ 	rb_erase(&entry->efd_node, &(db->bb_free_root));
+ 	mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, entry->efd_count);
+ 
+-	/*
+-	 * Clear the trimmed flag for the group so that the next
+-	 * ext4_trim_fs can trim it.
+-	 * If the volume is mounted with -o discard, online discard
+-	 * is supported and the free blocks will be trimmed online.
+-	 */
+-	if (!test_opt(sb, DISCARD))
+-		EXT4_MB_GRP_CLEAR_TRIMMED(db);
+-
+ 	if (!db->bb_free_root.rb_node) {
+ 		/* No more items in the per group rb tree
+ 		 * balance refcounts from ext4_mb_free_metadata()
+@@ -6587,8 +6578,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+ 					 " group:%u block:%d count:%lu failed"
+ 					 " with %d", block_group, bit, count,
+ 					 err);
+-		} else
+-			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
++		}
+ 
+ 		ext4_lock_group(sb, block_group);
+ 		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+@@ -6598,6 +6588,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+ 	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+ 	ext4_free_group_clusters_set(sb, gdp, ret);
+ 	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
++	/*
++	 * Clear the trimmed flag for the group so that the next
++	 * ext4_trim_fs can trim it.
++	 * If the volume is mounted with -o discard, online discard
++	 * is supported and the free blocks will be trimmed online.
++	 */
++	if (!test_opt(sb, DISCARD))
++		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_TRIMMED);
+ 	ext4_group_desc_csum_set(sb, block_group, gdp);
+ 	ext4_unlock_group(sb, block_group);
+ 
+@@ -6995,10 +6993,19 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 		   ext4_grpblk_t minblocks, bool set_trimmed)
+ {
+ 	struct ext4_buddy e4b;
++	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
++	struct ext4_group_desc *gdp;
++	struct buffer_head *gd_bh;
+ 	int ret;
+ 
+ 	trace_ext4_trim_all_free(sb, group, start, max);
+ 
++	gdp = ext4_get_group_desc(sb, group, &gd_bh);
++	if (!gdp) {
++		ret = -EIO;
++		return ret;
++	}
++
+ 	ret = ext4_mb_load_buddy(sb, group, &e4b);
+ 	if (ret) {
+ 		ext4_warning(sb, "Error %d loading buddy information for %u",
+@@ -7008,11 +7015,10 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 
+ 	ext4_lock_group(sb, group);
+ 
+-	if (!EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) ||
++	if (!(es->s_flags & cpu_to_le32(EXT2_FLAGS_TRACK_TRIM) &&
++	      gdp->bg_flags & cpu_to_le16(EXT4_BG_TRIMMED)) ||
+ 	    minblocks < EXT4_SB(sb)->s_last_trim_minblks) {
+ 		ret = ext4_try_to_trim_range(sb, &e4b, start, max, minblocks);
+-		if (ret >= 0 && set_trimmed)
+-			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
+ 	} else {
+ 		ret = 0;
+ 	}
+@@ -7020,6 +7026,35 @@ ext4_trim_all_free(struct super_block *sb, ext4_group_t group,
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+ 
++	if (ret > 0 && set_trimmed &&
++	    es->s_flags & cpu_to_le32(EXT2_FLAGS_TRACK_TRIM)) {
++		int err;
++		handle_t *handle;
++
++		handle = ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, 1);
++		if (IS_ERR(handle)) {
++			ret = PTR_ERR(handle);
++			goto out_return;
++		}
++		err = ext4_journal_get_write_access(handle, sb, gd_bh,
++						    EXT4_JTR_NONE);
++		if (err) {
++			ret = err;
++			goto out_journal;
++		}
++		ext4_lock_group(sb, group);
++		gdp->bg_flags |= cpu_to_le16(EXT4_BG_TRIMMED);
++		ext4_group_desc_csum_set(sb, group, gdp);
++		ext4_unlock_group(sb, group);
++		err = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
++		if (err)
++			ret = err;
++out_journal:
++		err = ext4_journal_stop(handle);
++		if (err)
++			ret = err;
++	}
++out_return:
+ 	ext4_debug("trimmed %d blocks in the group %d\n",
+ 		ret, group);
+ 
+-- 
+2.41.0
+
