@@ -2,44 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 084CD77F99F
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 16:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC3377F99D
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 16:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352257AbjHQOsv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 10:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S1352247AbjHQOsu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Aug 2023 10:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352294AbjHQOs1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 10:48:27 -0400
+        with ESMTP id S1352367AbjHQOsk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 10:48:40 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E1E2D7D
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 07:48:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F4A10E
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 07:48:25 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37HEltoa012292
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37HEltQp012291
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 17 Aug 2023 10:47:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692283676; bh=UsueoxVdJSJznvjwpjWS/rQ6dS+XyfwsPbldjps5BT0=;
+        t=1692283677; bh=HJTer2z5/DnhmsdkIuJxf9HaKJdfL78gXkI1LxMt2B0=;
         h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=h3oX0Sez9CDt1XIUumsTrqyr6lUgeUgo8BM2Wt6534LJVy724UmC5nqZjcv0wsMvm
-         mhX9RS+je2PuX/AyqlIcoWBa4wquWG4xWrEvQybqWiw7hu3nCADHmIR/lP+3jtdWxY
-         Rvu/BrtiG1pkMnD/Hx1xZDMZFZ/e1rkz4MIUQWU+7uEnwpRXe9Q555kXEzyYGIJ+E+
-         olOI1lbOcFWyxyMQvJ7OiPmzat82G3vCE3SGLfWZZmq1xGIDiDWsJNDpt472OrDqmk
-         442v7oIaErAsSKvwVerbwDvRI6Mm58+FDYabRp6qIreoJjbCpZ0jPIY821AdmsIoVT
-         24Nldbrx9wgGw==
+        b=S/PlR6beFqEr5kCdv01hpCgQ3usl3XGm2FgyMHuvBmpYr98UhXCvznsF/Bgmjbrbl
+         YsfiNJ32d0VKTVs/k8V7H+DCegn3BESXT9Sf3FKEzJfU2WmfMCXlip4ELx8gPzYOTu
+         Tn25+vPBwA9+CaKTiHoVkMSFKa3T6uM9h2abFW1yoaSvhI5sC49ONGg2wptU37fY3N
+         z6lbjDeDExPQ2XdaE3h2gEbVbh49H8wYB/4M3mKhE53piWSwwZ0wr8g+FIYY6QU/fp
+         yNusmqJyzwQdvtJbeoRSu6yFvr0CuzgI96TGo5RKVbt7YCRumwO1C4AZ4Yj1pch6JW
+         TtWX13GEbHy3w==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2539615C0501; Thu, 17 Aug 2023 10:47:55 -0400 (EDT)
+        id 267D915C0502; Thu, 17 Aug 2023 10:47:55 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Eric Whitney <enwlinux@gmail.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH] e2fsprogs: modify dumpe2fs to report free block ranges for bigalloc
-Date:   Thu, 17 Aug 2023 10:47:52 -0400
-Message-Id: <169228359791.3428939.11893985617025273328.b4-ty@mit.edu>
+To:     linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v3 00/12] ext4,jbd2: cleanup journal load and initialization process
+Date:   Thu, 17 Aug 2023 10:47:53 -0400
+Message-Id: <169228359792.3428939.4459127626146442938.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230721185506.1020225-1-enwlinux@gmail.com>
-References: <20230721185506.1020225-1-enwlinux@gmail.com>
+In-Reply-To: <20230811063610.2980059-1-yi.zhang@huaweicloud.com>
+References: <20230811063610.2980059-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,22 +54,44 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Fri, 21 Jul 2023 14:55:06 -0400, Eric Whitney wrote:
-> dumpe2fs has never been modified to correctly report block ranges
-> corresponding to free clusters in block allocation bitmaps from bigalloc
-> file systems.  Rather than reporting block ranges covering all the
-> blocks in free clusters found in a block bitmap, it either reports just
-> the first block number in a cluster for a single free cluster, or a
-> range beginning with the first block number in the first cluster in a
-> series of free clusters, and ending with the first block number in the
-> last cluster in that series.
+On Fri, 11 Aug 2023 14:35:58 +0800, Zhang Yi wrote:
+> v2->v3:
+>  - Fix the potential overflow on journal space check in patch 7.
+>  - Rename ext4_get_journal_dev() to ext4_get_journal_blkdev() in patch 11.
+> v1->v2:
+>  - Fix the changelog in patch 1 and 2.
+>  - Simplify the comments for local functions in patch 6.
+>  - Remove the incorrect zero fast_commit blocks check in patch 7.
+>  - Fix a UAF problem in patch 11.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] e2fsprogs: modify dumpe2fs to report free block ranges for bigalloc
-      commit: b9df2bcb4d8a4d2f3985f3d2f9d85292b826cc8b
+[01/12] jbd2: move load_superblock() dependent functions
+        commit: 29a511e49f33426c8d24700db4842234a84678b2
+[02/12] jbd2: move load_superblock() into journal_init_common()
+        commit: c30713084ba5b6fa343129613ec349ea91f0c458
+[03/12] jbd2: don't load superblock in jbd2_journal_check_used_features()
+        commit: 9600f3e5cfd0360b10c271149032c77917baedc5
+[04/12] jbd2: checking valid features early in journal_get_superblock()
+        commit: e4adf8b837087b5bb57fff6827e10ec877a50f64
+[05/12] jbd2: open code jbd2_verify_csum_type() helper
+        commit: 18dad509e7bd3189ac1e7f7904faf1561a908871
+[06/12] jbd2: cleanup load_superblock()
+        commit: 054d9c8fef14d476f1a9c6434de86813c5990052
+[07/12] jbd2: add fast_commit space check
+        commit: 0dbc759ae9971568af24def1b01d5b1aa87bd546
+[08/12] jbd2: cleanup journal_init_common()
+        commit: 49887e47a5262cc7b87d547de57a21a072c6ea5e
+[09/12] jbd2: drop useless error tag in jbd2_journal_wipe()
+        commit: d9a45496019a73c240bd22912ae18a04b8496364
+[10/12] jbd2: jbd2_journal_init_{dev,inode} return proper error return value
+        commit: c279913275eb9fcab79fe713925dcf9b037070cf
+[11/12] ext4: cleanup ext4_get_dev_journal() and ext4_get_journal()
+        commit: e89c6fc9b191318238c2e211ee02be2fe943a69d
+[12/12] ext4: ext4_get_{dev}_journal return proper error value
+        commit: 99d6c5d892bfff3be40f83ec34d91d562125afd4
 
 Best regards,
 -- 
