@@ -2,222 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6103277F478
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 12:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5D977F7EB
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Aug 2023 15:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349994AbjHQKtj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 06:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S1351395AbjHQNkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Aug 2023 09:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350070AbjHQKt0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 06:49:26 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59FF2D7B;
-        Thu, 17 Aug 2023 03:49:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 88CAD2185F;
-        Thu, 17 Aug 2023 10:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692269358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/2jR3966UAmEkiljJ8BmMvXxwqDOF6vPbL8fI/TYXYY=;
-        b=x3PRZkUr5abRvgFEsScC9hV1UZxoqH/g5Yqt/Z11vIVMeEWNp8xukxczpaCs5zHRe4J4x8
-        TKrH69hfvt6X8mrlCekRiCsLzAqrcKlQxmT9wHY0lgt3ziJVkEmJ9jdI6iWbum58n0Ob1r
-        vGfxIxWPgUZpMpPDacKc4t5kpf+14rY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692269358;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/2jR3966UAmEkiljJ8BmMvXxwqDOF6vPbL8fI/TYXYY=;
-        b=usOi04jWiaqSIBPldqD0wsJZHrMBLInFy1EVUjrcswrzwk/QStcE1g5Ut0E4gIOrckaHn6
-        03yRB2Ks8jyrP/Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 794261392B;
-        Thu, 17 Aug 2023 10:49:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HfSSHS773WQKJgAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 17 Aug 2023 10:49:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 00062A0769; Thu, 17 Aug 2023 12:49:17 +0200 (CEST)
-Date:   Thu, 17 Aug 2023 12:49:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
-Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        jack@suse.com, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-Subject: Re: Tasks stuck jbd2 for a long time
-Message-ID: <20230817104917.bs46doo6duo7utlm@quack3>
-References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
- <20230816022851.GH2247938@mit.edu>
- <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
- <20230816145310.giogco2nbzedgak2@quack3>
- <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
- <20230816215227.jlvmqasfbc73asi4@quack3>
- <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+        with ESMTP id S1351602AbjHQNkK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 09:40:10 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D269530E1
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 06:40:05 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1bdeadd1b0cso48016805ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 06:40:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692279605; x=1692884405;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jKM3mqTlgT079nisdnjY2RvkrLED2w8Eo9ddvQKyDq0=;
+        b=BKjoZfT2wKvP90zzj+ViEBYinKAxSJJYFInpT9mUncDSgODF+LNrRKWpq/PHPksV3h
+         pw7aQ1W7ZL6KaBpNrHvwJ1mMCv6n5inz8Ttn2VYkGxkVvkRiH04fRqycfq86vEjSdkfZ
+         2gF419c1k7jVv7j9oTsKA+n6rfvY8IEDE/BwAo/J+Exn2w09RPdv2wyAsKyy6z3Myrb+
+         +Zs1Yy+aw/hPt9q1dEswFl2ppqKmdG69jdGgicH7FcFUXuOusjQ9v7+F8uOqWI2bcDex
+         TkQOC22Hupy4cgA8JSIfycjbzE3E/Ng5Cbe60UPq8y0e4S7JrK9TIvEGJbkg/qI27IBH
+         4aZA==
+X-Gm-Message-State: AOJu0YxOArnux8DYSoXZLC6f14wIkRH8JUxluWWrR3zOy4RhXN9kbsjD
+        SG6b7igIYt9jjOm+U67+9QflvFXF5Em5Vpt9Kee+VjlwyIa9
+X-Google-Smtp-Source: AGHT+IF9XIQq87Cbj1GxerhAfoAV3YFZOXuHglz/+2osaYmfsMGyG/4fpHgKgJFEKeWolLJ/eRAJBXy9Z4DeX5goZCLPUoMR43Cc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:da88:b0:1b8:a555:7615 with SMTP id
+ j8-20020a170902da8800b001b8a5557615mr1994144plx.9.1692279605391; Thu, 17 Aug
+ 2023 06:40:05 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 06:40:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bd78e706031e8c02@google.com>
+Subject: [syzbot] [ext4?] memory leak in __es_insert_extent
+From:   syzbot <syzbot+f3d40299952f55df8614@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 16-08-23 15:53:05, Bhatnagar, Rishabh wrote:
-> I collected dump and looked at some processes that were stuck in
-> uninterruptible sleep.These are from upstream stable tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-5.10.y
-> (5.10.191)
-> 
-> One of them is the journal thread that is waiting for some other thread to
-> close transaction handle.
-> 
-> PID: 10642  TASK: ffff9768823f4000  CPU: 37  COMMAND: "jbd2/md0-8"
->  #0 [ffffbd6c40c17c60] __schedule+617 at ffffffffbb912df9
->  #1 [ffffbd6c40c17cf8] schedule+60 at ffffffffbb91330c
->  #2 [ffffbd6c40c17d08] jbd2_journal_commit_transaction+877 at
-> ffffffffc016b90d [jbd2] (/home/ec2-user/linux/fs/jbd2/commit.c:497)
->  #3 [ffffbd6c40c17ea0] kjournald2+282 at ffffffffc01723ba [jbd2]
-> (/home/ec2-user/linux/fs/jbd2/journal.c:214)
->  #4 [ffffbd6c40c17f10] kthread+279 at ffffffffbb0b9167
->  #5 [ffffbd6c40c17f50] ret_from_fork+34 at ffffffffbb003802
+Hello,
 
-Yes, correct. This is waiting for transaction->t_updates to drop to 0.
+syzbot found the following issue on:
 
-> One of threads that have started the handle and waiting for journal to
-> commit and unlock the current transaction. This stack only shows
-> ext4lazyinit but with lazyinit disabled we have seen other threads stuck in
-> same place.
-> 
-> PID: 10644  TASK: ffff976901010000  CPU: 37  COMMAND: "ext4lazyinit"
->  #0 [ffffbd6c40c1fbe0] __schedule+617 at ffffffffbb912df9
->  #1 [ffffbd6c40c1fc78] schedule+60 at ffffffffbb91330c
->  #2 [ffffbd6c40c1fc88] wait_transaction_locked+137 at ffffffffc0168089
-> [jbd2] (/home/ec2-user/linux/fs/jbd2/transaction.c:184)
->  #3 [ffffbd6c40c1fcd8] add_transaction_credits+62 at ffffffffc016813e [jbd2]
-> (/home/ec2-user/linux/fs/jbd2/transaction.c:241)
->  #4 [ffffbd6c40c1fd30] start_this_handle+533 at ffffffffc0168615 [jbd2]
-> (/home/ec2-user/linux/fs/jbd2/transaction.c:416)
->  #5 [ffffbd6c40c1fdc0] jbd2__journal_start+244 at ffffffffc0168dc4 [jbd2]
->  #6 [ffffbd6c40c1fe00] __ext4_journal_start_sb+250 at ffffffffc02ef65a
-> [ext4]
->  #7 [ffffbd6c40c1fe40] ext4_init_inode_table+190 at ffffffffc0302ace [ext4]
->  #8 [ffffbd6c40c1feb0] ext4_lazyinit_thread+906 at ffffffffc033ec9a [ext4]
->  #9 [ffffbd6c40c1ff10] kthread+279 at ffffffffbb0b9167
-> #10 [ffffbd6c40c1ff50] ret_from_fork+34 at ffffffffbb003802
+HEAD commit:    a785fd28d31f Merge tag 'for-6.5-rc5-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=141ddd73a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
+dashboard link: https://syzkaller.appspot.com/bug?extid=f3d40299952f55df8614
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1471c04ba80000
 
-This thread actually didn't start a transaction. It is *trying* to start a
-transaction but it has failed and we are now waiting for transaction commit
-to proceed (i.e., for jbd2/md0-8 process). So this isn't the process jbd2
-is waiting for.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5b766dfb84ba/disk-a785fd28.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c3ee7bb9fc27/vmlinux-a785fd28.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ffbde03d2df8/bzImage-a785fd28.xz
 
-> To replicate the download scenario i'm just using dd to copy random data to
-> disk. I launch a bunch of threads and try to stress the system. Many of
-> those threads seem to be stuck in balance_dirty_pages_ratelimited as can be
-> seen below.
-> 
-> PID: 10709  TASK: ffff9769016f8000  CPU: 25  COMMAND: "dd"
->  #0 [ffffbd6c40dafa48] __schedule+617 at ffffffffbb912df9
->  #1 [ffffbd6c40dafae0] schedule+60 at ffffffffbb91330c
->  #2 [ffffbd6c40dafaf0] schedule_timeout+570 at ffffffffbb916a7a
->  #3 [ffffbd6c40dafb68] io_schedule_timeout+25 at ffffffffbb913619 ((inlined
-> by) io_schedule_finish at /home/ec2-user/linux/kernel/sched/core.c:6274)
->  #4 [ffffbd6c40dafb80] balance_dirty_pages+654 at ffffffffbb2367ce 
-> (/home/ec2-user/linux/mm/page-writeback.c:1799)
->  #5 [ffffbd6c40dafcf0] balance_dirty_pages_ratelimited+763 at
-> ffffffffbb23752b  (/home/ec2-user/linux/mm/page-writeback.c:1926)
->  #6 [ffffbd6c40dafd18] generic_perform_write+308 at ffffffffbb22af44
-> (/home/ec2-user/linux/mm/filemap.c:3370)
->  #7 [ffffbd6c40dafd88] ext4_buffered_write_iter+161 at ffffffffc02fcba1
-> [ext4] (/home/ec2-user/linux/fs/ext4/file.c:273)
->  #8 [ffffbd6c40dafdb8] ext4_file_write_iter+96 at ffffffffc02fccf0 [ext4]
->  #9 [ffffbd6c40dafe40] new_sync_write+287 at ffffffffbb2e0c0f
-> #10 [ffffbd6c40dafec8] vfs_write+481 at ffffffffbb2e3161
-> #11 [ffffbd6c40daff00] ksys_write+165 at ffffffffbb2e3385
-> #12 [ffffbd6c40daff40] do_syscall_64+51 at ffffffffbb906213
-> #13 [ffffbd6c40daff50] entry_SYSCALL_64_after_hwframe+103 at
-> ffffffffbba000df
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f3d40299952f55df8614@syzkaller.appspotmail.com
 
-Yes, this is waiting for page writeback to reduce amount of dirty pages in
-the pagecache. We are not holding transaction handle during this wait so
-this is also not the task jbd2 is waiting for.
+BUG: memory leak
+unreferenced object 0xffff888131b41000 (size 40):
+  comm "syz-executor.2", pid 17149, jiffies 4294966508 (age 33.030s)
+  hex dump (first 32 bytes):
+    29 ff b6 31 81 88 ff ff 00 00 00 00 00 00 00 00  )..1............
+    00 00 00 00 00 00 00 00 0b 0c 00 00 09 00 00 00  ................
+  backtrace:
+    [<ffffffff81824c5a>] __es_alloc_extent fs/ext4/extents_status.c:467 [inline]
+    [<ffffffff81824c5a>] __es_alloc_extent fs/ext4/extents_status.c:464 [inline]
+    [<ffffffff81824c5a>] __es_insert_extent+0x28a/0x540 fs/ext4/extents_status.c:815
+    [<ffffffff81826ef0>] ext4_es_insert_extent+0x1e0/0x890 fs/ext4/extents_status.c:882
+    [<ffffffff81842145>] ext4_map_blocks+0x575/0xad0 fs/ext4/inode.c:680
+    [<ffffffff81842790>] _ext4_get_block+0xf0/0x1a0 fs/ext4/inode.c:763
+    [<ffffffff8183ead6>] ext4_block_write_begin+0x216/0x730 fs/ext4/inode.c:1043
+    [<ffffffff8184b4e0>] ext4_write_begin+0x2a0/0x7c0 fs/ext4/inode.c:1183
+    [<ffffffff8184bada>] ext4_da_write_begin+0xda/0x3c0 fs/ext4/inode.c:2867
+    [<ffffffff814fcf36>] generic_perform_write+0x116/0x2e0 mm/filemap.c:3923
+    [<ffffffff81829f20>] ext4_buffered_write_iter+0xa0/0x1a0 fs/ext4/file.c:299
+    [<ffffffff8182a0d2>] ext4_file_write_iter+0xb2/0xde0 fs/ext4/file.c:722
+    [<ffffffff81665edd>] __kernel_write_iter+0x10d/0x370 fs/read_write.c:517
+    [<ffffffff8173cc81>] dump_emit_page fs/coredump.c:888 [inline]
+    [<ffffffff8173cc81>] dump_user_range+0x141/0x3a0 fs/coredump.c:915
+    [<ffffffff8172d344>] elf_core_dump+0x10c4/0x1570 fs/binfmt_elf.c:2142
+    [<ffffffff8173c4c8>] do_coredump+0x19b8/0x2030 fs/coredump.c:764
+    [<ffffffff812a2f92>] get_signal+0xf52/0xfb0 kernel/signal.c:2867
+    [<ffffffff81132f69>] arch_do_signal_or_restart+0x39/0x280 arch/x86/kernel/signal.c:308
 
-> There are other dd threads that are trying to read and are handling page
-> fault. These are in runnable state and not uninterruptible sleep.
-> 
-> PID: 14581  TASK: ffff97c3cfdbc000  CPU: 29  COMMAND: "dd"
->  #0 [ffffbd6c4a1d3598] __schedule+617 at ffffffffbb912df9
->  #1 [ffffbd6c4a1d3630] _cond_resched+38 at ffffffffbb9133e6
->  #2 [ffffbd6c4a1d3638] shrink_page_list+126 at ffffffffbb2412fe
->  #3 [ffffbd6c4a1d36c8] shrink_inactive_list+478 at ffffffffbb24441e
->  #4 [ffffbd6c4a1d3768] shrink_lruvec+957 at ffffffffbb244e3d
->  #5 [ffffbd6c4a1d3870] shrink_node+552 at ffffffffbb2452a8
->  #6 [ffffbd6c4a1d38f0] do_try_to_free_pages+201 at ffffffffbb245829
->  #7 [ffffbd6c4a1d3940] try_to_free_pages+239 at ffffffffbb246c0f
->  #8 [ffffbd6c4a1d39d8] __alloc_pages_slowpath.constprop.114+913 at
-> ffffffffbb28d741
->  #9 [ffffbd6c4a1d3ab8] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
-> #10 [ffffbd6c4a1d3b28] alloc_pages_vma+124 at ffffffffbb2a734c
-> #11 [ffffbd6c4a1d3b68] handle_mm_fault+3999 at ffffffffbb26de2f
-> #12 [ffffbd6c4a1d3c28] exc_page_fault+708 at ffffffffbb909c84
-> #13 [ffffbd6c4a1d3c80] asm_exc_page_fault+30 at ffffffffbba00b4e
->  #14 [ffffbd6c4a1d3d30] copyout+28 at ffffffffbb5160bc
-> #15 [ffffbd6c4a1d3d38] _copy_to_iter+158 at ffffffffbb5188de
-> #16 [ffffbd6c4a1d3d98] get_random_bytes_user+136 at ffffffffbb644608
-> #17 [ffffbd6c4a1d3e48] new_sync_read+284 at ffffffffbb2e0a5c
-> #18 [ffffbd6c4a1d3ed0] vfs_read+353 at ffffffffbb2e2f51
-> #19 [ffffbd6c4a1d3f00] ksys_read+165 at ffffffffbb2e3265
-> #20 [ffffbd6c4a1d3f40] do_syscall_64+51 at ffffffffbb906213
-> #21 [ffffbd6c4a1d3f50] entry_SYSCALL_64_after_hwframe+103 at
-> ffffffffbba000df
 
-This process is in direct reclaim trying to free more memory. It doesn't
-have transaction handle started so jbd2 also isn't waiting for this
-process.
 
-> > > Can low available memory be a reason for a thread to not be able to close
-> > > the transaction handle for a long time?
-> > > Maybe some writeback thread starts the handle but is not able to complete
-> > > writeback?
-> > Well, even that would be a bug but low memory conditions are certainly some
-> > of less tested paths so it is possible there's a bug lurking there.
-> Amongst the things we have tested 2 things seem to give good improvements.
-> 
-> One is disabling journalling. We don't see any stuck tasks. System becomes
-> slow but eventually recovers. But its not something we want to disable.
-> 
-> Other is enabling swap memory. Adding some swap memory also avoids system
-> going into low memory state and system doesn't freeze.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-OK, these are just workarounds. The question really is which process holds
-the transaction handle jbd2 thread is waiting for. It is none of the
-processes you have shown above. Since you have the crashdump, you can also
-search all the processes and find those which have non-zero
-task->journal_info. And from these processes you can select those where
-task->journal_info points to an object from jbd2_handle_cache and then you
-can verify whether the handles indeed point (through handle->h_transaction)
-to the transaction jbd2 thread is trying to commit. After you've identified
-such task it is interesting to see what is it doing...
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
