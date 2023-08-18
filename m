@@ -2,142 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6307803CF
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 04:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C10E7803E6
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 04:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357240AbjHRCaI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 22:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
+        id S1357291AbjHRCmc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Aug 2023 22:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357250AbjHRCaB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 22:30:01 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FFB114;
-        Thu, 17 Aug 2023 19:29:59 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRm6q0sM4z4f3k6D;
-        Fri, 18 Aug 2023 10:29:55 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgDndqmg195kR9zkAw--.45216S2;
-        Fri, 18 Aug 2023 10:29:54 +0800 (CST)
-Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
- add_new_gdb_meta_bg to support non first group
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-12-shikemeng@huaweicloud.com>
- <20230816034543.GS2247938@mit.edu>
- <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
- <20230817140328.GY2247938@mit.edu>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
-Date:   Fri, 18 Aug 2023 10:29:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S1349855AbjHRCl7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 22:41:59 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE43A8B
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 19:41:56 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I2fi98000358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 22:41:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692326507; bh=wcvFnkK5aWq3B2Q+mIk8ZNcuAvZ+L3tBbVrbY4B6Tmw=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=BC0kQHJMA40g1Ic4Q2RzplEU26dnJtUVYFGVjz0wZyyLeukzFpXYhCx6m6I3CHUb5
+         G4PjIACs6WCU76dNUwJ+qyWzopjmp+C5lRZNfUb97nd1WHQf/MQ4f+oQXx6XYRjV4X
+         UbvvGl/a012qPYtDL5mQiNS8LqJl0iWNXBys5TTTnZsplkfU16Lf7+wcjfPIeTTTrP
+         e1xzJhcd6Sam2kvbqFFTLOwEAFtp2ymei00U4aNsiDzYRKgB8VDQYMa5gvqKava7qx
+         n8d5jXIV20aFHDI9+G590bRJqFehXxj3sJjxe3jCZ00yvhUgAfQ61NmPBfohtpyNkZ
+         ZBHokxjjE5D8g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A9AE715C0501; Thu, 17 Aug 2023 22:41:44 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 22:41:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Lu, Davina" <davinalu@amazon.com>
+Cc:     "Bhatnagar, Rishabh" <risbhat@amazon.com>, Jan Kara <jack@suse.cz>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Subject: Re: Tasks stuck jbd2 for a long time
+Message-ID: <20230818024144.GD3464136@mit.edu>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+ <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+ <d82df68eb8514951a7f7acc923132796@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20230817140328.GY2247938@mit.edu>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgDndqmg195kR9zkAw--.45216S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF47AF47ZF1xKry8ZF4Dtwb_yoW5KF1rpF
-        WkJF93tFZ5JrW0k3Z2y3y0grZYkw48G3y5Xry5Gry8Cwn8Wwn3Krs2qFyFvF9xuF4fXr1Y
-        qr45Z3srCr1UurDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d82df68eb8514951a7f7acc923132796@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, Aug 18, 2023 at 01:31:35AM +0000, Lu, Davina wrote:
+> 
+> Looks like this is a similar issue I saw before with fio test (buffered IO with 100 threads), it is also shows "ext4-rsv-conversion" work queue takes lots CPU and make journal update every stuck.
 
+Given the stack traces, it is very much a different problem.
 
-on 8/17/2023 10:03 PM, Theodore Ts'o wrote:
-> On Thu, Aug 17, 2023 at 11:38:34AM +0800, Kemeng Shi wrote:
->>
->>
->> on 8/16/2023 11:45 AM, Theodore Ts'o wrote:
->>> On Thu, Jun 29, 2023 at 08:00:42PM +0800, Kemeng Shi wrote:
->>>> In add_new_gdb_meta_bg, we assume that group could be non first
->>>> group in meta block group as we call ext4_meta_bg_first_block_no
->>>> to get first block of meta block group rather than call
->>>> ext4_group_first_block_no for passed group directly. Then ext4_bg_has_super
->>>> should be called with first group in meta group rather than new added
->>>> group. Or we can call ext4_group_first_block_no instead of
->>>> ext4_meta_bg_first_block_no to assume only first group of
->>>> meta group will be passed.
->>>> Either way, ext4_meta_bg_first_block_no will be useless and
->>>> could be removed.
->>>
->>> Unfortunately, I spent more time trying to understand the commit
->>> description than the C code.  Perhaps this might be a better way of
->>> describing the situation?
->>>
->> Sorry for my poor language again, :( I will try to improve this.
->>> The ext4_new descs() function calls ext4_meta_bg_first_block_no() with
->>> the group paramter when the group is the first group of a meta_bg
->>> (e.g., when (group % EXT4_DESC_PER_BLOCK) is zero.  So we can simplify
->>> things a bit by removing ext4_meta_bg_first_block_no() and an open
->>> coding its logic.
->>>
->>> Does this make more sense to tou?
->>>
->> This patch tries to correct gdbblock calculation in add_new_gdb_meta_bg
->> in case group from caller is not the first group of meta_bg which is
->> supposed to be handled by add_new_gdb_meta_bg.
->> We should call ext4_bg_has_super with first group in meta_bg instead
->> of group which could be non first group in meta_bg to calculate gdb
->> of meta_bg.
->> Fortunately, the only caller ext4_add_new_descs always call
->> add_new_gdb_meta_bg with first group of meta_bg and no real issue
->> will happen.
-> 
-> To be clear, this doesn't have a functional change given how the code
-> is going to be used, right?  It's really more of a cleanup with a goal
-> of making the code easier to understand.  If so, we should make this
-> explicit at the beginning of the commit description, as opposed to
-> putting it at the end.
-> 
-Actually, there seems a functional change to add_new_gdb_meta_bg.
-Assume 'group' is the new added group, 'first_group' is the first group
-of meta_bg which contains 'group',
-Original way to calculate gdbblock:
-gdbblock = group_first_block('first_group') + bg_has_super(*'group'*)
-New ay to calculate gdbblock
-gdbblock = group_first_block('first_group') + bg_has_super(*'first_group'*)
-If new added group is not the first group of meta_bg, add_new_gdb_meta_bg
-get a wrong gdbblock.
-Maybe it's more of a bugfix to as add_new_gdb_meta_bg treats group
-as any group of meta_bg instead of first group of meta_bg. And it's
-more of a cleanup as only first group is passed from caller.
-> In journalism this is referred to as "burying the lede"[1], where the
-> "lede" the most important/key piece of information.  In general, it is
-> desirable not to "bury the lede".  That is, the most important
-> information, including why people should care, and what this is doing,
-> at the beginning of the commit description (or article in the case of
-> journalsm).
-> 
-> [1] https://www.masterclass.com/articles/bury-the-lede-explained
-> 
-> 					- Ted
-> 
-Thanks for this information. But I'm little confused weather a cleanup
-or a bugfix I should mention at the beginning. Any more advise is
-appreciated!
+> There is a patch and see if this is the same issue? this is not the
+> finial patch since there may have some issue from Ted. I will
+> forward that email to you in a different loop. I didn't continue on
+> this patch that time since we thought is might not be the real case
+> in RDS.
 
+The patch which you've included is dangerous and can cause file system
+corruption.  See my reply at [1], and your corrected patch which
+addressed my concern at [2].  If folks want to try a patch, please use
+the one at [2], and not the one you quoted in this thread, since it's
+missing critically needed locking.
+
+[1] https://lore.kernel.org/r/YzTMZ26AfioIbl27@mit.edu
+[2] https://lore.kernel.org/r/53153bdf0cce4675b09bc2ee6483409f@amazon.com
+
+The reason why we never pursued it is because (a) at one of our weekly
+ext4 video chats, I was informed by Oleg Kiselev that the performance
+issue was addressed in a different way, and (b) I'd want to reproduce
+the issue on a machine under my control so I could understand what was
+was going on and so we could examine the dynamics of what was
+happening with and without the patch.  So I'd would have needed to
+know how many CPU's what kind of storage device (HDD?, SSD?  md-raid?
+etc.) was in use, in addition to the fio recipe.
+
+Finally, I'm a bit nervous about setting the internal __WQ_ORDERED
+flag with max_active > 1.  What was that all about, anyway?
+
+     	  	       	   	    - Ted
