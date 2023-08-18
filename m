@@ -2,372 +2,185 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4008678029C
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 02:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CB77802FE
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 03:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239258AbjHRAOA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 20:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
+        id S1350591AbjHRBUJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Aug 2023 21:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356661AbjHRAN3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 20:13:29 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9128F1FC3
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 17:13:02 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6887c3aac15so313218b3a.2
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 17:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1692317581; x=1692922381;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YFTQ893nTZHRwndUJ5tsNGU8gnCaw+t+1zbu1MM5AV0=;
-        b=J75ChfgCsGv7DGBS6kdAECKFBWYDJfQx3FaUzehdlJsS406PxDcK4DE17Wb3pNF+V2
-         7/vjhlxl68QmXEtsgHUgZjVJw968bmjBWm0UVRyCn2av7i4rg8pJTYWeRa/g0ZA1mUXm
-         53SEO/pSSaT7vsW2H9mWPcaZi3vxv5DmDdTGREJ3Y2IDQYTI1jIS0ZebXMCuPhCdze6x
-         GLJzEjcrU67b/myVC/ud8dJNJtMfiCO4y4Il/o0CBG+YJ2Ev3XkdAkVzFtG2MjIRCmay
-         Hg3kAhvsZlYWtkAoj76hZegO41UNCj9yD3yS1XHcgHdKhv+Ym/SDLOZXroSA8XONz1XT
-         lUXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317581; x=1692922381;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YFTQ893nTZHRwndUJ5tsNGU8gnCaw+t+1zbu1MM5AV0=;
-        b=U2yhydd5zQGbWShx2uRPuyF7eA2stZY3RaIrLRsCdbJIXKDF+dTyUJvmSvuIcNyUS3
-         TigMNmUyY+lJ1gSsp1PR5FevZqPDe9ibhPWA84jrWO+fVMyRIGZ+xm9dOqLlnks5xUhl
-         8pFrid2QMAnSBh/V2A/nshdp0Qyh+ylFoC9pP0jcje7fk3Dt82S3eyhw2BKa628sXN3f
-         +nOVfxOu1lqBUhi9XsXUK9My+31U0uD20uC7crAveelBmCnG+eVRy7lSrjP20PBqS0nr
-         A21M+s9UMrxALqRE8aQjlXeJKpmavfyFOXavWBOBSWpMY7bGvCOspHsbApfe/S2blgDe
-         ckfA==
-X-Gm-Message-State: AOJu0YzkmdQkYW8dpXHDiPzNdVbJXwk+xE9xWZIWeTe8/zYfTtMrvWKe
-        ZUbu57VQq6Q0SAwzLE4+CklAVfObGJZ//MVSbAg=
-X-Google-Smtp-Source: AGHT+IFfblIUZjip6vvGYIcQJXHgFDNG2dvnZf77HdJFhkRqocMEB+fuIzS6fPg3WrjjSBmuUs636Q==
-X-Received: by 2002:a05:6a20:3209:b0:132:8620:8d21 with SMTP id hl9-20020a056a20320900b0013286208d21mr1180873pzc.58.1692317580733;
-        Thu, 17 Aug 2023 17:13:00 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id jj10-20020a170903048a00b001bdb073a830sm342270plb.162.2023.08.17.17.12.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Aug 2023 17:12:59 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <1352865D-2799-4E5F-A053-E0E3AFC6ACDE@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_DC62B409-3E9C-4F68-B426-33E20DC757C8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH V2] ext4: introduce EXT4_BG_TRIMMED to optimize fstrim
-Date:   Thu, 17 Aug 2023 18:12:57 -0600
-In-Reply-To: <20230817003504.458920-1-dongyangli@ddn.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Shuichi Ihara <sihara@ddn.com>, wangshilong1991@gmail.com
-To:     Li Dongyang <dongyangli@ddn.com>
-References: <20230817003504.458920-1-dongyangli@ddn.com>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S1356852AbjHRBTv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 21:19:51 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF70A3A99
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 18:19:49 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I1JbFP031025
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 21:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692321579; bh=N9xq8ez1R4EYiLuS925H02h8PtkhiCpRuEH5JezPpjU=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=Vy6XAfC2pLW4p2NCVrbi/0ffp54RIr9cx+fikDdMnSuYQvNZeBRUc2Qd8LyaauyW9
+         4RCk8nv1E5bvO2fdPmkcBo+y9CdTN9o8R0S1s7wz9rSYIF/JhuysZfY2w4LEAtrDpW
+         NvBG73U+BclKH3L4jzKhits/7loHmPpuviMemy0T98LSHj7saR1gp1yc0yFMJJUn9O
+         62A9i8Cnzqo6VS3opXexP4s5MzdepxuwPjZv9Iob8uNk0Pao7zqcw826jawT9RZpcf
+         9oamIZefUq10n9TzAO/HXoI6RYr99Uh6HAjzrCetyVRwuMF8D2YgYF8BNT1S8+qbCU
+         q9KPIhO17yg7A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 22C4515C0501; Thu, 17 Aug 2023 21:19:37 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 21:19:37 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Cc:     Jan Kara <jack@suse.cz>, jack@suse.com, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Subject: Re: Tasks stuck jbd2 for a long time
+Message-ID: <20230818011937.GA3464136@mit.edu>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+ <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Aug 17, 2023 at 11:59:03AM -0700, Bhatnagar, Rishabh wrote:
+> 
+> I think I found the thread that is holding the transaction handle. It seems
+> to be in runnable state though.
 
---Apple-Mail=_DC62B409-3E9C-4F68-B426-33E20DC757C8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+This looks like it's case of livelock...
 
-On Aug 16, 2023, at 6:35 PM, Li Dongyang <dongyangli@ddn.com> wrote:
->=20
-> Currently the flag indicating block group has done fstrim is not
-> persistent, and trim status will be lost after remount, as
-> a result fstrim can not skip the already trimmed groups, which
-> could be slow on very large devices.
->=20
-> This patch introduces a new block group flag EXT4_BG_TRIMMED,
-> we need 1 extra block group descriptor write after trimming each
-> block group.
-> When clearing the flag, the block group descriptor is journalled
-> already so no extra overhead.
->=20
-> Add a new super block flag EXT2_FLAGS_TRACK_TRIM, to indicate if
-> we should honour and set EXT4_BG_TRIMMED when doing fstrim.
-> The new super block flag can be turned on/off via tune2fs.
+> It has the journal_info set to the journal handle that has the matching
+> transaction as the journal's running transaction.
+> Here is the associated stack trace. It is converting unwritten extents to
+> extents.
+> 
+> PID: 287    TASK: ffff976801890000  CPU: 20  COMMAND: "kworker/u96:35"
+>  #0 [ffffbd6c40b3f498] __schedule+617 at ffffffffbb912df9
+>  #1 [ffffbd6c40b3f530] _cond_resched+38 at ffffffffbb9133e6
+>  #2 [ffffbd6c40b3f538] shrink_lruvec+670 at ffffffffbb244d1e
+>  #3 [ffffbd6c40b3f640] _cond_resched+21 at ffffffffbb9133d5
+>  #4 [ffffbd6c40b3f648] shrink_node+552 at ffffffffbb2452a8
+>  #5 [ffffbd6c40b3f6c8] do_try_to_free_pages+201 at ffffffffbb245829
+>  #6 [ffffbd6c40b3f718] try_to_free_pages+239 at ffffffffbb246c0f
+>  #7 [ffffbd6c40b3f7b0] __alloc_pages_slowpath.constprop.114+913 at
+> ffffffffbb28d741
+>  #8 [ffffbd6c40b3f890] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
+>  #9 [ffffbd6c40b3f900] allocate_slab+726 at ffffffffbb2b0886
+> #10 [ffffbd6c40b3f958] ___slab_alloc+1173 at ffffffffbb2b3ff5
+> #11 [ffffbd6c40b3f988] insert_revoke_hash+37 at ffffffffc016f435 [jbd2] 
+> (/home/ec2-user/linux/fs/jbd2/revoke.c:146)
 
-We discussed this patch on the ext4 developer concall again today,
-and Ted agreed the EXT4_FLAGS_TRACK_TRIM flag was OK, and should be
-enabled by default in mke2fs (as it already is), otherwise most users
-will not benefit from this feature.  Being able to turn this off in
-case of problems is still convenient.
+insert_revoke_hash is trying to do a memory allocation of a 48 byte
+structure using kmem_cache_alloc() with the __GFP_NOFAIL bit set.  (We
+use GFP_NOFAIL because if the memory allocation fails, the only
+recourse we can have is to shut down the journal and force the file
+system to be read-only --- or crash the system, of course.)
 
-There was some discussion about whether the BG_TRIMMED flag should be
-set on groups with BLOCK_UNINIT, because the loading of the block
-bitmap during trim would initialize the bitmap itself and clear the
-BLOCK_UNINIT flag.
+Since we have set __GFP_NOFAIL, the memory allocator is apparently not
+able to find even a single free page for the slab allocator, and so
+it's apparently trying and trying to free memory --- and failing
+miserably.
 
-Ted's comment on the previous review was:
->> This patch introduces a new block group flag EXT4_BG_TRIMMED,
->> we need 1 extra block group descriptor write after trimming each
->> block group. When clearing the flag, the block group descriptor
->> is journaled already so no extra overhead.
->=20
-> ... we should not try to set the flag if the
-> block group is unitialized, and we should actually send the discard in
-> that case, since presumably the blocks in question were discard when
-> the file system was mkfs'ed.
+Hmm... something that might be worth trying is to see if running the
+job in a memcg, since how the kernel handles OOM, and how it will
+handle OOM kills will differ depending whether is getting constrained
+by container memory or by completely running out of memory.
 
-For newly-formatted filesystems with the BG_TRIMMED support, the flag
-is already set at mke2fs on every group after a successful full device
-discard, so nothing further is needed I think.
+I wonder why this version of the 5.10 kernel isn't solving the problem
+performing an OOM kill to free memory.  We're running a 5.10 based
+kernel in our data centers at $WORK, and normally the OOM killer is
+quite free to make memory available by killing as necessasry deal with
+these situations.  (As Spock once said, "The needs of the many
+outweighs the needs of the few --- or the one."  And sometimes the
+best way to keep the system running is to sacrifice one of the
+userspace processes.)  Do you by any chance have all or most of the
+user processes exempted from the OOM killer?
 
-If EXT2_FLAGS_TRACK_TRIM is enabled on an existing filesystem *after*
-it is already used, then previous fstrim calls would likely have already
-loaded the block bitmap and trimmed the groups so setting BG_TRIMMED
-in this case should be fine, regardless of whether BLOCK_UNINIT.
+> #16 [ffffbd6c40b3faa0] __ext4_forget+338 at ffffffffc02efb32 [ext4] 
+> (/home/ec2-user/linux/fs/ext4/ext4_jbd2.c:298)
+> #17 [ffffbd6c40b3fae0] ext4_free_blocks+2437 at ffffffffc031fd55 [ext4]
+> (/home/ec2-user/linux/fs/ext4/mballoc.c:5709 (discriminator 2))
+> #18 [ffffbd6c40b3fbb0] ext4_ext_handle_unwritten_extents+596 at
+> ffffffffc02f56a4 [ext4] ((inlined by) ext4_ext_handle_unwritten_extents at
+> /home/ec2-user/linux/fs/ext4/extents.c:3892)
 
-Cheers, Andreas
+This part of the stack trace is weird.  I don't see what callees of
+ext4_ext_handle_unwritten_extents() would result in ext4_free_blocks()
+getting called.  Unfortunately, the code is very heavily inlined, and
+we only see the first level of inlining.  My best guess is that it was
+in some error handling code, such as this:
 
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
-> Signed-off-by: Li Dongyang <dongyangli@ddn.com>
-> ---
-> v1->v2:
-> use cpu_to_le32() with the new super flag.
-> do not record BG_TRIMMED if TRACK_TRIM is not set in super block.
-> ---
-> fs/ext4/ext4.h      | 10 ++-----
-> fs/ext4/ext4_jbd2.h |  3 ++-
-> fs/ext4/mballoc.c   | 63 +++++++++++++++++++++++++++++++++++----------
-> 3 files changed, 53 insertions(+), 23 deletions(-)
->=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 0a2d55faa095..a990fb49b24f 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -437,6 +437,7 @@ struct flex_groups {
-> #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use =
-*/
-> #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
-> #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to =
-zero */
-> +#define EXT4_BG_TRIMMED		0x0008 /* block group was =
-trimmed */
->=20
-> /*
->  * Macro-instructions used to manage group descriptors
-> @@ -1166,6 +1167,7 @@ struct ext4_inode_info {
-> #define EXT2_FLAGS_SIGNED_HASH		0x0001  /* Signed =
-dirhash in use */
-> #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in =
-use */
-> #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test =
-development code */
-> +#define EXT2_FLAGS_TRACK_TRIM		0x0008  /* Track trim =
-status in each bg */
->=20
-> /*
->  * Mount flags set via mount options or defaults
-> @@ -3412,7 +3414,6 @@ struct ext4_group_info {
-> };
->=20
-> #define EXT4_GROUP_INFO_NEED_INIT_BIT		0
-> -#define EXT4_GROUP_INFO_WAS_TRIMMED_BIT		1
-> #define EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT	2
-> #define EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT	3
-> #define EXT4_GROUP_INFO_BBITMAP_CORRUPT		\
-> @@ -3427,13 +3428,6 @@ struct ext4_group_info {
-> 	(test_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, =
-&((grp)->bb_state)))
-> #define EXT4_MB_GRP_IBITMAP_CORRUPT(grp)	\
-> 	(test_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, =
-&((grp)->bb_state)))
-> -
-> -#define EXT4_MB_GRP_WAS_TRIMMED(grp)	\
-> -	(test_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
-> -#define EXT4_MB_GRP_SET_TRIMMED(grp)	\
-> -	(set_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
-> -#define EXT4_MB_GRP_CLEAR_TRIMMED(grp)	\
-> -	(clear_bit(EXT4_GROUP_INFO_WAS_TRIMMED_BIT, &((grp)->bb_state)))
-> #define EXT4_MB_GRP_TEST_AND_SET_READ(grp)	\
-> 	(test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_READ_BIT, =
-&((grp)->bb_state)))
->=20
-> diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-> index 0c77697d5e90..ce529a454b2a 100644
-> --- a/fs/ext4/ext4_jbd2.h
-> +++ b/fs/ext4/ext4_jbd2.h
-> @@ -120,7 +120,8 @@
-> #define EXT4_HT_MOVE_EXTENTS     9
-> #define EXT4_HT_XATTR           10
-> #define EXT4_HT_EXT_CONVERT     11
-> -#define EXT4_HT_MAX             12
-> +#define EXT4_HT_FS_TRIM		12
-> +#define EXT4_HT_MAX             13
->=20
-> /**
->  *   struct ext4_journal_cb_entry - Base structure for callback =
-information.
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 21b903fe546e..d537bcdf121d 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3849,15 +3849,6 @@ static void ext4_free_data_in_buddy(struct =
-super_block *sb,
-> 	rb_erase(&entry->efd_node, &(db->bb_free_root));
-> 	mb_free_blocks(NULL, &e4b, entry->efd_start_cluster, =
-entry->efd_count);
->=20
-> -	/*
-> -	 * Clear the trimmed flag for the group so that the next
-> -	 * ext4_trim_fs can trim it.
-> -	 * If the volume is mounted with -o discard, online discard
-> -	 * is supported and the free blocks will be trimmed online.
-> -	 */
-> -	if (!test_opt(sb, DISCARD))
-> -		EXT4_MB_GRP_CLEAR_TRIMMED(db);
-> -
-> 	if (!db->bb_free_root.rb_node) {
-> 		/* No more items in the per group rb tree
-> 		 * balance refcounts from ext4_mb_free_metadata()
-> @@ -6587,8 +6578,7 @@ static void ext4_mb_clear_bb(handle_t *handle, =
-struct inode *inode,
-> 					 " group:%u block:%d count:%lu =
-failed"
-> 					 " with %d", block_group, bit, =
-count,
-> 					 err);
-> -		} else
-> -			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
-> +		}
->=20
-> 		ext4_lock_group(sb, block_group);
-> 		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
-> @@ -6598,6 +6588,14 @@ static void ext4_mb_clear_bb(handle_t *handle, =
-struct inode *inode,
-> 	ret =3D ext4_free_group_clusters(sb, gdp) + count_clusters;
-> 	ext4_free_group_clusters_set(sb, gdp, ret);
-> 	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> +	/*
-> +	 * Clear the trimmed flag for the group so that the next
-> +	 * ext4_trim_fs can trim it.
-> +	 * If the volume is mounted with -o discard, online discard
-> +	 * is supported and the free blocks will be trimmed online.
-> +	 */
-> +	if (!test_opt(sb, DISCARD))
-> +		gdp->bg_flags &=3D cpu_to_le16(~EXT4_BG_TRIMMED);
-> 	ext4_group_desc_csum_set(sb, block_group, gdp);
-> 	ext4_unlock_group(sb, block_group);
->=20
-> @@ -6995,10 +6993,19 @@ ext4_trim_all_free(struct super_block *sb, =
-ext4_group_t group,
-> 		   ext4_grpblk_t minblocks, bool set_trimmed)
-> {
-> 	struct ext4_buddy e4b;
-> +	struct ext4_super_block *es =3D EXT4_SB(sb)->s_es;
-> +	struct ext4_group_desc *gdp;
-> +	struct buffer_head *gd_bh;
-> 	int ret;
->=20
-> 	trace_ext4_trim_all_free(sb, group, start, max);
->=20
-> +	gdp =3D ext4_get_group_desc(sb, group, &gd_bh);
-> +	if (!gdp) {
-> +		ret =3D -EIO;
-> +		return ret;
-> +	}
-> +
-> 	ret =3D ext4_mb_load_buddy(sb, group, &e4b);
-> 	if (ret) {
-> 		ext4_warning(sb, "Error %d loading buddy information for =
-%u",
-> @@ -7008,11 +7015,10 @@ ext4_trim_all_free(struct super_block *sb, =
-ext4_group_t group,
->=20
-> 	ext4_lock_group(sb, group);
->=20
-> -	if (!EXT4_MB_GRP_WAS_TRIMMED(e4b.bd_info) ||
-> +	if (!(es->s_flags & cpu_to_le32(EXT2_FLAGS_TRACK_TRIM) &&
-> +	      gdp->bg_flags & cpu_to_le16(EXT4_BG_TRIMMED)) ||
-> 	    minblocks < EXT4_SB(sb)->s_last_trim_minblks) {
-> 		ret =3D ext4_try_to_trim_range(sb, &e4b, start, max, =
-minblocks);
-> -		if (ret >=3D 0 && set_trimmed)
-> -			EXT4_MB_GRP_SET_TRIMMED(e4b.bd_info);
-> 	} else {
-> 		ret =3D 0;
-> 	}
-> @@ -7020,6 +7026,35 @@ ext4_trim_all_free(struct super_block *sb, =
-ext4_group_t group,
-> 	ext4_unlock_group(sb, group);
-> 	ext4_mb_unload_buddy(&e4b);
->=20
-> +	if (ret > 0 && set_trimmed &&
-> +	    es->s_flags & cpu_to_le32(EXT2_FLAGS_TRACK_TRIM)) {
-> +		int err;
-> +		handle_t *handle;
-> +
-> +		handle =3D ext4_journal_start_sb(sb, EXT4_HT_FS_TRIM, =
-1);
-> +		if (IS_ERR(handle)) {
-> +			ret =3D PTR_ERR(handle);
-> +			goto out_return;
-> +		}
-> +		err =3D ext4_journal_get_write_access(handle, sb, gd_bh,
-> +						    EXT4_JTR_NONE);
-> +		if (err) {
-> +			ret =3D err;
-> +			goto out_journal;
-> +		}
-> +		ext4_lock_group(sb, group);
-> +		gdp->bg_flags |=3D cpu_to_le16(EXT4_BG_TRIMMED);
-> +		ext4_group_desc_csum_set(sb, group, gdp);
-> +		ext4_unlock_group(sb, group);
-> +		err =3D ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-> +		if (err)
-> +			ret =3D err;
-> +out_journal:
-> +		err =3D ext4_journal_stop(handle);
-> +		if (err)
-> +			ret =3D err;
-> +	}
-> +out_return:
-> 	ext4_debug("trimmed %d blocks in the group %d\n",
-> 		ret, group);
->=20
-> --
-> 2.41.0
->=20
+	if (err) {
+		/* free all allocated blocks in error case */
+		for (i = 0; i < depth; i++) {
+			if (!ablocks[i])
+				continue;
+			ext4_free_blocks(handle, inode, NULL, ablocks[i], 1,
+					 EXT4_FREE_BLOCKS_METADATA);
+		}
+	}
+
+... and this call to ext4_free_blocks() resulted in the call to
+__ext4_forget, which in turn tried to create a journal revoke record.
+
+And the cause of the error may very well have been caused by some
+other memory allocation, if the system was so desperately low on
+memory.
 
 
-Cheers, Andreas
+Anyway, the big question is why the system allowed the system to get
+so low in memory in the first place.  In addition to OOM killing
+processes, one of the things that Linux is supposed to do is "write
+throttling", where if a process is dirtying too many pages, to put the
+guilty processes to sleep so that page cleaning can have a chance to
+catch up.
 
+Quoting from section 14.1.5 (Writeback) from [1]:
 
+    As applications write to files, the pagecache becomes dirty and
+    the buffercache may become dirty. When the amount of dirty memory
+    reaches a specified number of pages in bytes
+    (vm.dirty_background_bytes), or when the amount of dirty memory
+    reaches a specific ratio to total memory
+    (vm.dirty_background_ratio), or when the pages have been dirty for
+    longer than a specified amount of time
+    (vm.dirty_expire_centisecs), the kernel begins writeback of pages
+    starting with files that had the pages dirtied first. The
+    background bytes and ratios are mutually exclusive and setting one
+    will overwrite the other. Flusher threads perform writeback in the
+    background and allow applications to continue running. If the I/O
+    cannot keep up with applications dirtying pagecache, and dirty
+    data reaches a critical setting (vm.dirty_bytes or
+    vm.dirty_ratio), then applications begin to be throttled to
+    prevent dirty data exceeding this threshold.
 
+[1] https://documentation.suse.com/sles/15-SP3/html/SLES-all/cha-tuning-memory.html
 
+So it might be worth looking at if your system has non-default values
+for /proc/sys/vm/{dirty_bytes,dirty_ratio,dirty_background_bytes,etc.}.
 
+Cheers,
 
---Apple-Mail=_DC62B409-3E9C-4F68-B426-33E20DC757C8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTet4kACgkQcqXauRfM
-H+Ca+Q/+LYqqgMRYaFYpmdXBYcHYclVx9fmHb6zOLBD06yNV7BL9Nfq65dzZT/f8
-ITMyncFmHr3w1SpQ9PLu71wNOcBrTkl3Z9tFc9GPlj/cLBNPEX371Ebv83C92TXo
-pWdD5e33cHC7wewPTJQGvzRkc+5jzGySRrJhBvYqNEj9TPYpBxOUWWXJxSapjOVr
-Yn3AkZFUsjnwUxp0+cQnrCIFMLH5xerVXzttQpkT0671fFwfFZvKwMnE8mEKMcA/
-d94iTz1ihVlAUp1aNwlfUMy7k1m8E+oYbTdIuUWbpwvq2Xz+Oh4rE9JJrIKYsKGf
-02NoQQ61XuwOPgT8dv1EvqiHoLggAJJk4qmksOyg5DqTIOWWn21+06cyS380rIFm
-m0xsV7CEd43mOOgnHRa7WcwIv3t+mcHSjtd5LrEwtAazlhlzVcIw0MMTOm/AYnb7
-LM2J1oO6dhM23N/S2H1ksAFVAYTrHTgRqBe+Prl5N/ndJnhjnad9/4ff3htzDx1X
-+YZPFXQ7VeeWX7b3ZC86xhdsTd5QLgDOYw7H0AWCPv277mcd9HW5HM8c0jBt9mcY
-T1qvI74B0LVF/FtXlDoNOtSbYnQATYoyIAdZvl+CgQGlrZYo08g5a2qFUrFdCJdh
-r0Lebh/mqb6lSywteKOabE8eFRBr71u1FHSIOpnYOax9fuGeGng=
-=mB8S
------END PGP SIGNATURE-----
-
---Apple-Mail=_DC62B409-3E9C-4F68-B426-33E20DC757C8--
+					- Ted
