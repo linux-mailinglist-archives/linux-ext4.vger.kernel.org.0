@@ -2,118 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72692780625
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 09:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC37D780634
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 09:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352426AbjHRHKJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Aug 2023 03:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S237839AbjHRHPS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Aug 2023 03:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237838AbjHRHJm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 03:09:42 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7641330D1;
-        Fri, 18 Aug 2023 00:09:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRtKW6vpQz4f3lVf;
-        Fri, 18 Aug 2023 15:09:35 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgCnF2wvGd9kaMTsAw--.41833S2;
-        Fri, 18 Aug 2023 15:09:37 +0800 (CST)
-Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
- add_new_gdb_meta_bg to support non first group
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-12-shikemeng@huaweicloud.com>
- <20230816034543.GS2247938@mit.edu>
- <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
- <20230817140328.GY2247938@mit.edu>
- <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
- <20230818040751.GF3464136@mit.edu>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <797c2dff-1858-9e4b-bda7-d6106d5ff844@huaweicloud.com>
-Date:   Fri, 18 Aug 2023 15:09:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S1358095AbjHRHPL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 03:15:11 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA7730D6
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 00:14:45 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76d34c010d6so5335585a.0
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 00:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692342885; x=1692947685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=97w6PmCpXMu5QBKjRi2llw3MfoCmM7xB6BoKBXyhagw=;
+        b=KNmjMgupOML3+sbKcozxhhSifTk3JbQEFJcJE3Ex1vq1b/HRfPWmMx56dJpIsT+x9p
+         sgw5qkX7j205iqX94RjP2gCmiK9RY98An6Io8cUaBO2RHylNsQpLHZBFzmO1lNJLZRtf
+         3n3IhPawT6nFYR3Eily8Ab7AuXNwinsvtWnbe026w6wsUPPIPkdPtUpmHdFIJ1R6bf7x
+         UqRIBhwNZSOsdGQojs6BZXk7wOIPMN68Y3xL3zLHvD7s/didKrjQHHX/BmvU7dzg5kiM
+         kis9S8KNQHfrfHDKnJH/qHNXC4EXnUZMBN1cMh8p6PI9Yg98XnQtOS4HHLjkFtZ/b3de
+         LgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692342885; x=1692947685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=97w6PmCpXMu5QBKjRi2llw3MfoCmM7xB6BoKBXyhagw=;
+        b=Ka+IhWhrQkNjgggPp7SOf5zHrRQiG+vlqhtd0gngB3oWNMtGDUJ8ds8piccNpbC7Ur
+         Gh/n2qm+wBkOp7TCmDWP+GfchDqg9iog89x0nTIZgX/izir0hwf77z0obosSPgAgCVpY
+         4RwDgt6jCUph5VqpsE8gWNRS6d9/HVMIUV1uWxsDUAxBPAdJMr3gCFKM0hai72DQYMPG
+         73R7XyZdmweThF9cC0CsZV4Vvn96yIgj+L6UuQhDTH7PFWmngBxx3yoR6oGLneH5+pyl
+         8EUaWjx4kEge0fOPSKssxh7OG7QFFuI97uC76VHvU5FHCVuXUviY+i+luSjw3FT2KWGx
+         5I0w==
+X-Gm-Message-State: AOJu0YwU0M/8njFauXn+Bvr0/KZeK5i2gThYmo2y3pA0LDqeLc7ZiREC
+        cfpRNxIB9Wez3W+VvBgXfbEBWa8J+CIcl1jQeFU4S2WIBYP27rmMq8g=
+X-Google-Smtp-Source: AGHT+IE3WEdgECX5yL75uMRwX5mXwB8rwybKDq2/ftvyrcnvn73E/ELw7n2imkf2nbYfGAfB5gJGhBYvr/H8u5OAujk=
+X-Received: by 2002:a05:622a:1998:b0:40c:8ba5:33e0 with SMTP id
+ u24-20020a05622a199800b0040c8ba533e0mr2105235qtc.3.1692342885155; Fri, 18 Aug
+ 2023 00:14:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230818040751.GF3464136@mit.edu>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgCnF2wvGd9kaMTsAw--.41833S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWrZrWrCw1rtryxGryrtFb_yoW8Kr4fpF
-        s5Kr95trWDGry5Xas7A3yIgrWrCw4rJ3y8AryUJryUC3sxWFnagrZ2yF1fta47uFs3t34j
-        qFy5Zr9rC3Z8ZrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230725121848.26865-1-changfengnan@bytedance.com> <20230818034330.GE3464136@mit.edu>
+In-Reply-To: <20230818034330.GE3464136@mit.edu>
+From:   Fengnan Chang <changfengnan@bytedance.com>
+Date:   Fri, 18 Aug 2023 15:14:34 +0800
+Message-ID: <CAPFOzZvwvSioyiCW8K7sDpzB7Grq==5-9i-wODGKw0E_4DFaPQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3] ext4: improve trim efficiency
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, guoqing.jiang@linux.dev,
+        linux-ext4@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-on 8/18/2023 12:07 PM, Theodore Ts'o wrote:
-> On Fri, Aug 18, 2023 at 10:29:52AM +0800, Kemeng Shi wrote:
->> Actually, there seems a functional change to add_new_gdb_meta_bg.
->> Assume 'group' is the new added group, 'first_group' is the first group
->> of meta_bg which contains 'group',
->> Original way to calculate gdbblock:
->> gdbblock = group_first_block('first_group') + bg_has_super(*'group'*)
->> New ay to calculate gdbblock
->> gdbblock = group_first_block('first_group') + bg_has_super(*'first_group'*)
->> If new added group is not the first group of meta_bg, add_new_gdb_meta_bg
->> get a wrong gdbblock.
-> 
-> If you look at the ext4_add_new_descs() function,
-> add_new_gdb_meta_bg() is only called when the group is a multiple of
-> EXT4_DESC_PER_BLOCK --- that is, when group % EXT4_DESC_PER_BLOCK == 0.
+Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2023=E5=B9=B48=E6=9C=8818=E6=97=A5=
+=E5=91=A8=E4=BA=94 11:43=E5=86=99=E9=81=93=EF=BC=9A
 >
-> As such, it is only called when with group is the first group in the
-> meta_bg.  So there is no bug here.  The code is bit confusing, I agree
-> --- I myself got confused because it's been years since I last looked
-> at the code, and it's not particularly commented well, which is my fault.
-> 
-Yes, add_new_gdb_meta_bg is only called with first group of mebg and no real
-bug here.
-> This also makes the commit description "... to support non-first
-> group" incorrect, since it never gets called as with a "non-first
-> group".
-> 
-Ah, what I want to say is "support non-frist group in fulture". And if there
-is definely no need in fulture, it's more intuitive just treat group from caller
-as first group in meta_bg.
-> The patch makes things a little simpler, but the commit description
-> would confuse anyone who looked at it while doing code archeology.
-> The change is fine, although at this point, given how we both
-> misunderstood how the code worked without doing some deep mind-melds
-> with the C code in question, it's clear that we need some better
-> comments in the code.
-> 
-> For example, the comment "add_new_gdb_meta_bg is the sister of
-> add_new_gdb" is clearly insufficient.
-> Is following comment looks good to you:
-When all reserved primary blocks are consumed, we create meta_bg group and
-allocate new primary block at first block or block after backup superblock
-(if exsiting) in first group of meta_bg group.
-This function is only called when first group of meta_bg is added.
-> 						- Ted
-> 
+> On Tue, Jul 25, 2023 at 08:18:48PM +0800, Fengnan Chang wrote:
+> > In commit a015434480dc("ext4: send parallel discards on commit
+> > completions"), issue all discard commands in parallel make all
+> > bios could merged into one request, so lowlevel drive can issue
+> > multi segments in one time which is more efficiency, but commit
+> > 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
+> > seems broke this way, let's fix it.
+>
+> Thanks for the patch.  A few things that I'd like to see changed.
+>
+> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > index a2475b8c9fb5..b75ca1df0d30 100644
+> > --- a/fs/ext4/mballoc.c
+> > +++ b/fs/ext4/mballoc.c
+> > @@ -6790,7 +6790,8 @@ int ext4_group_add_blocks(handle_t *handle, struc=
+t super_block *sb,
+> >   * be called with under the group lock.
+> >   */
+> >  static int ext4_trim_extent(struct super_block *sb,
+> > -             int start, int count, struct ext4_buddy *e4b)
+> > +             int start, int count, bool noalloc, struct ext4_buddy *e4=
+b,
+> > +             struct bio **biop, struct ext4_free_data **entryp)
+>
+> The function ext4_trim_extent() is used in one place, by
+> ext4_try_to_trim_range().  So instead of adding the new parameters
+> noalloc and extryp...
+>
+> > @@ -6812,9 +6813,16 @@ __acquires(bitlock)
+> >        */
+> >       mb_mark_used(e4b, &ex);
+> >       ext4_unlock_group(sb, group);
+> > -     ret =3D ext4_issue_discard(sb, group, start, count, NULL);
+> > +     ret =3D ext4_issue_discard(sb, group, start, count, biop);
+> > +     if (!ret && !noalloc) {
+> > +             struct ext4_free_data *entry =3D kmem_cache_alloc(ext4_fr=
+ee_data_cachep,
+> > +                             GFP_NOFS|__GFP_NOFAIL);
+> > +             entry->efd_start_cluster =3D start;
+> > +             entry->efd_count =3D count;
+> > +             *entryp  =3D entry;
+> > +     }
+> > +
+>
+> ... I think it might be better to move the allocation and
+> initialization the ext4_free_data structure to ext4_trim_extent()'s
+> caller.
+If we move the allocation and initialization the ext4_free_data
+structure to ext4_try_to_trim_range, we need move
+ext4_lock_group too, because we can't do alloc memory when
+hold lock in ioctl context.
+How about just remove ext4_trim_extent, and do all work in
+ext4_try_to_trim_range?  it will be easier to read.
 
+>
+> In the current patch, we are adding the entry to the linked list, and
+> we actually *use* the linked list in ext4_try_to_trim_range().  By
+> move the code which allocates the entry to the same place, we
+> eliminate some extra variables added to the ext4_trim_extent()
+> function, and it makes the code easier to read.
+>
+> In fact, given that ext4_trim_extent() is used only once by its
+> caller, we could just inline the code (which isn't actually all that
+> much) into ext4_Try_to_trim_range().  That would eliminate the need
+> for the __acquires(bitlock) and __release(bitlock) sparse annotations,
+> as well as the "assert_spin_locked()".
+>
+> That also keeps the mb_mark_used() and mb_free_blocks() calls in the
+> same function, which again improves code readability.
+>
+> Thanks,
+>
+>                                                 - Ted
