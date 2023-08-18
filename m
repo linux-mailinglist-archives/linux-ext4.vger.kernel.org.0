@@ -2,125 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52598780FBC
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 18:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92CE7810D9
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 18:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378381AbjHRQBU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Aug 2023 12:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
+        id S1378832AbjHRQrU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Aug 2023 12:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355209AbjHRQAz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 12:00:55 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AEF1BB
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 09:00:52 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IG0cj2027529
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 12:00:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692374440; bh=erXmcdQ1KNay9clvH0vrxMVcc8mv/hyvtygv6MA0HQQ=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=MX0VX5azL5th5g1QwH3Uz+cp0CDRzBNoSr3kQb/SkOuAjIMyixOl1Q3kRUhZslotV
-         GGatnZWiFcQkL/Kfk/R6pNe71I0zbhomfXi3OOBx/V0UmOMTm+rZK2lgYathaZ9u0E
-         4eYzP/TmTBzgVR+UjrjkXsQO6t/wGS6k6mPN7U1gIv/wrcNDz/YbDe/ANf9zzq1yM+
-         SaVmEZCDW0RWVpBbpYfeQ4RGg9BFzyjI+hC+lM6WDRa8BgluJPfiFxL2QTYX87HiTC
-         NQIs2NoLpZEJge8XuktV+uPJSWr2urCPR7GsEkIlDFlo+uZYr0qONCfvgovtKidiKG
-         3ax7jvjhz0y8w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7BCCF15C0501; Fri, 18 Aug 2023 12:00:38 -0400 (EDT)
-Date:   Fri, 18 Aug 2023 12:00:38 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
- multiple update_backups in ext4_flex_group_add
-Message-ID: <20230818160038.GA3515079@mit.edu>
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-13-shikemeng@huaweicloud.com>
- <20230816034730.GT2247938@mit.edu>
- <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
- <20230817141112.GZ2247938@mit.edu>
- <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
- <20230818050036.GG3464136@mit.edu>
- <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+        with ESMTP id S1378881AbjHRQrN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 12:47:13 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB41123
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 09:47:11 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so1325e9.0
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 09:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692377230; x=1692982030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vcYBK4IDMWdZXBUH9qUpJWq6mMj5wrlrL6q6rkCUyi0=;
+        b=DZchxW7NW3WIGfXMnGboGBURwzn7WFGdeJG+sgmIXEimzDVc8m75Y/skORcrUBqh43
+         xFsQQf5kHDGo2tSO8fvROhiiNwe3/aGiD4kAb0eOXgzVLpbplYd2Ph33tJzQBNrI6YaH
+         BeOf1H6b5FTqKuZrVwD7lBj60By+89vFgf4hUL96Lsic+URcqAXpkfHHvZG5HG7+nM72
+         skJJRmCrsNeyZccYYVrqYg5XIhswhK+MDK0C24bdsjB2D0fzGSafmLO8kdwDGMTXCraR
+         HlptcFEE5XjwTmPRnA2+FWhioo/IKtiFifqVDmAKubMyGxg9a2lNcc7r9nrB5/1qS1BM
+         oydg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692377230; x=1692982030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vcYBK4IDMWdZXBUH9qUpJWq6mMj5wrlrL6q6rkCUyi0=;
+        b=a2DnvB73siFgSBSQY+5E+GoVKsP8nws7Y9w3cFjFAPPEPasLtMbcMbh3M2zA5T+l4e
+         1+Ai1ViTmZ/JgOHu36oxUwHgfXn3bNECx8r1vrJhQlSj1i+kDX7qxMHrSkxScVet3B1T
+         O+oaAe4p9iHt2u3XQTWRuAiMyd9DUOspBPPqgWzRlT01kndbiV8lHppW8OSyPSpm2XUq
+         7v0UiIF5vepkNf79ZPIQbWTMWHCkTruy0Dn7h7m1RSEKQQ67ajnccU1vdzSuK4bm/C2P
+         8s7D+H3agXOjkB8wVBkwnV+iWA8wqZvg9QPBDnuGAEcGepNEsLqeM0QhBqHjrUK1bFZ9
+         nvHw==
+X-Gm-Message-State: AOJu0YymhDSqeOOtC55EXy/SzuNXkKAeG3gVB8ytpDl08Xq9Xhigyspn
+        ri8f5bGtgH1ypMq9zNsJFQb1LVRRCnj7udv69hu83Q==
+X-Google-Smtp-Source: AGHT+IHONJU+ctmsr9aVMkdjHd8jipE/NT/Q0+Z+iy7ah9jBa7kpTKIKB44dhx/A+QLF7kEmMzhGxMlCIOAlBtWCi/w=
+X-Received: by 2002:a05:600c:3b0c:b0:3fd:e47:39c7 with SMTP id
+ m12-20020a05600c3b0c00b003fd0e4739c7mr119961wms.4.1692377229649; Fri, 18 Aug
+ 2023 09:47:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000530e0d060312199e@google.com> <20230817142103.GA2247938@mit.edu>
+ <CANp29Y7jbcOw_rS5vbfWNo7Y+ySYhYS-AWC356QN=JRVOm9B8w@mail.gmail.com>
+ <20230817144505.GB2247938@mit.edu> <CANp29Y4HGnp6LJ7jw2hrXNFd7S4+MKfjdpjOGZALUuGK1L3wPA@mail.gmail.com>
+In-Reply-To: <CANp29Y4HGnp6LJ7jw2hrXNFd7S4+MKfjdpjOGZALUuGK1L3wPA@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 18 Aug 2023 18:46:57 +0200
+Message-ID: <CANp29Y6JE-HyYL6XZfBy8QvE2CwLHw-HdtVsYxAGMhfy9qT=RQ@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
-> > s_group_desc[] is initialized in ext4_group_desc_init() in
-> > fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
-> > is defined in fs/ext4.h.  
-> I plan to add comment in fs/ext4.h as following:
-> struct ext4_sb_info {
-> 	...
-> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
-> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
-> keep the buffer_heads for the block group descriptor blocks in memory
-> and it contains primary gdb block is a coincidence that we only modify
-> primary block in kernel.
+On Fri, Aug 18, 2023 at 1:43=E2=80=AFPM Aleksandr Nogikh <nogikh@google.com=
+> wrote:
+>
+> I've taken a closer look at the issue.
+>
+> Documentation/filesystems/ext4.txt says that the "errors=3D" mount
+> parameter "override the errors behavior specified in the superblock".
+> So syzbot can prevent it by passing "errors=3Dcontinue" as a mount
+> argument and there's no need to filter out such reports.
+>
+> Syzkaller actually already does that in the C reproducer. It just
+> seems that this time the tool has mutated the mount options so much
+> that the simple patching no longer worked (most likely because of \0
+> characters in between). I'll update the syz_mount_image() code.
 
-In general, the terminology that ext4 developers have used is "block
-group descriptors" and "backup block group descriptors".  The kernel
-never *uses* the backup block group users; and with the sparse_super2
-feature, the "backup superblocks" and "backup block group descriptors"
-are optional.
+Ah, it's a bit trickier -- the syz_mount_image() code is fine. The
+reproducer first mounts an ext4 image via syz_mount_image(), which
+appends "errors=3Dcontinue" to the options and it doesn't lead to the
+panic. But then the reproducer does a direct mount() call for the loop
+device previously created in syz_mount_image(), this time _without_
+mount options.
 
-They are used by e2fsck if we need to recover a trashed superblock and
-block group descriptors, which is why code that is resizing the file
-system, or updating the label or the UUID need to update the backup
-superblocks and/or backup block group descriptors so that we can
-better recover disaster.
+I've sent https://github.com/google/syzkaller/pull/4143 to sanitize
+plain mount() calls.
 
-So I'd just suggest changing the comment above to "array of bh's for
-the block group descriptors".
-
-Cheers,
-
-							- Ted
-
-> Besides, I plan to go through the resize code again in fulture and
-> add some comments to make it easy for anyone starting read this
-> or make it easy to maintain. Please let me if you disklike it.
-
-P.S.
-
-BTW, a useful test program to add is one that checks to make sure that
-the "static" parts of the superblock and block group descriptors
-(i.e., the parts that don't get changed under normal operation while
-the file system is mounted when the kernel *isn't* trying to do a
-resize or change the label, UUID, or in the future, the new ioctl's to
-update the parts of the superblock that can get modified by tune2fs),
-and to make sure that all of the backup superblock and block group
-descriptors have gotten updated.
-
-Some of the bugs that you found may have resulted in some of the
-backup bg descriptors not getting updataed, which we wouldn't
-necessarily notice unless we had a test program that explicitly
-checked for them.
-
-And truth to tell, the only backup superblock and block group
-descriptor that actually gets used to recover the file system is the
-first one, since that's the one e2fsck will fall back to
-automatically.  An expert might try to use one of the other backup
-block groups as a desperate measure, and there might be some automated
-programs that might be smart enough to use the backup block groups
-when trying to recover the location of the partition table when the
-file system and partition table is very badly damaged --- so that's
-one of the reasons why with sparse_super2, the number of backup block
-group descriptors can be limited to (for example) one located in the
-first block group, and one located in the very last block group.
-
+>
+>
+> On Thu, Aug 17, 2023 at 4:45=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wro=
+te:
+> >
+> > On Thu, Aug 17, 2023 at 04:28:33PM +0200, Aleksandr Nogikh wrote:
+> > > The console log has the following line:
+> > >
+> > > [   60.708717][ T5061] Kernel panic - not syncing: EXT4-fs (device
+> > > loop0): panic forced after error
+> > >
+> > > Can we consider a "panic forced after error" line to be a reliable
+> > > indicator that syzbot must ignore the report?
+> >
+> > Yes.  And the file system image that generated this bug should be
+> > discarded, because otherwise successive mutations will generate a
+> > large number of crashes that syzbot will then need to ignore, thus
+> > consuming syzbot resources.
+> >
+> > Alternatively, you can do the moral equivalent of "tune2fs -e continue
+> > foo.img" on any mutated file system seed, which will clear the "panic
+> > on error".
+> >
+> > (The other alternative is "tune2fs -e remount-ro", but given syzbot's
+> > desire to find kernel crashes, "tune2fs -e continue" is more likely
+> > find ways in which the kernel will find itself into trouble.  Some
+> > sysadmins will want to chose "remount-ro", however, since that is more
+> > likely to limit file system damage once the file system is discovered
+> > to be corrupted.)
+> >
+> >                                         - Ted
+> >
