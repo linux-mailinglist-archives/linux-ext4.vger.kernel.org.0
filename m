@@ -2,81 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78606780C52
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 15:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22DA780DFF
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 16:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376992AbjHRNLF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Aug 2023 09:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
+        id S1348084AbjHRO03 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Aug 2023 10:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377055AbjHRNKr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 09:10:47 -0400
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344182D50
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 06:10:42 -0700 (PDT)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bf24089e4eso13753095ad.1
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 06:10:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692364241; x=1692969041;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sIkwbNN9kL4K3EmOVENi42yRk0RdTpQaFB+jp7VFpcY=;
-        b=XTbQ8o/NDroUoVqA0TaPFaeWI5klUG1fq3TLn+0ou8MQOPtwRurHHN7sYazrgSJIbT
-         too952/lwwc6HmYQQw8QSH6KiRF0zOfSN01sltX90UTOLK47jG74/RpLDD6SHc1St3z+
-         dRi3ly9Slg5ShaEpKs5SlGpeNp1L+RB4UYqpcqFDZ7q5+CAEPhJ/1GOhq3uwmVkuKGA6
-         MUnWm/yadGkZvXcpsEj7SqxKwNNpic5DSOJzh3xVimCBFcu3rxsIp4NSHfpX6qOyMdtf
-         ggLsy+GUPUFBHh/I/0TgGTJUgDyb8L+QslroAVyLn4FOtvzSxA8p4P1e7e7QLPqBMfB8
-         KfOA==
-X-Gm-Message-State: AOJu0YwvAPUPpjKdDKhi2rHFZv5rUclG2SkrcW6UljIfz2WOT8ZtNhEt
-        5TjErQ58pmoS/zBt0o1dECfVY5FKoFL2DlAAK7ZEDWfLQ3DC
-X-Google-Smtp-Source: AGHT+IGpCXUIc9w+uvEXJYohpoa0yAG32ipeDyRzs6JO1gwVuVP5xEoJNHaWqGpnCqxtXCNeBWPfHWCROLgsoQItBYkHZ3P2CVI9
+        with ESMTP id S1377096AbjHRO0U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 10:26:20 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651382D4A
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 07:26:17 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IEPi9R008983
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 10:25:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692368747; bh=mr78n3qsUgsgPJgzwDA3ALe/I5P61WM2l6xoqGgEaxk=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=ifckXAgyqVrtSRdqKrD9L/Sz32XDzO9iBLPsAWc3woHvB45OxXeNyyurXmSdK/1Ou
+         5KrKw2StHw3SqGZ9hQfuuurrTylF99RTMEjbg1BoPT0Wgv2fQdlcpQwJPLQHAARscK
+         dpbRs8QuHAdrRIDP/w0gqOHY3q7kB4cfmLxmNrjWviMT3OOkR24h+TOwGfPw/URuEJ
+         Hf4euGVDyeGXRWC1h/VHzvTy5ZgsYKrGn4Te+QHg/AKHU7FRBCvFvRFra0eHXBYB8t
+         C0Uz4b6+d0cbMlUOfF8/Bwj06gL80gl/kq1u4vuQdEQuoezh5ZBjhLWmnS2Y/9s/cE
+         AcNNVB0ajSlFw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A684315C0501; Fri, 18 Aug 2023 10:25:44 -0400 (EDT)
+Date:   Fri, 18 Aug 2023 10:25:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     sandeen@redhat.com,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230818142544.GA3513305@mit.edu>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+ <20230817161118.GC2247938@mit.edu>
+ <20230817164739.GC1483@sol.localdomain>
+ <20230818021038.GC3464136@mit.edu>
+ <20230818025255.GA2175@sol.localdomain>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f353:b0:1b5:147f:d8d1 with SMTP id
- q19-20020a170902f35300b001b5147fd8d1mr746652ple.3.1692364241770; Fri, 18 Aug
- 2023 06:10:41 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 06:10:41 -0700
-In-Reply-To: <000000000000f59fa505fe48748f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000761f5f0603324129@google.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
-From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
-        rafael.j.wysocki@intel.com, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu,
-        wendy.wang@intel.com, yu.c.chen@intel.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818025255.GA2175@sol.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Thu, Aug 17, 2023 at 07:52:55PM -0700, Eric Biggers wrote:
+> Obviously it's up to the system administrator; that should have been clear since
+> I suggested a sysctl.  Sorry if I wasn't clear.  The point is that there are
+> certain conventions for what is allowed to break the safety guarantees that the
+> kernel provides to userspace, which includes causing a kernel panic.  Panics on
+> various problems are configured by /proc/sys/kernel/panic_*.  So having to
+> opt-in to panic-on-error, or at least being able to opt-out, by setting a sysctl
+> seems natural.  Whereas having mount() being able to automatically panic the
+> kernel with no way to opt-out seems like a violation of broader kernel
+> conventions, even if it happens to be "working as intended" in the ext4 context.
 
-commit 5904de0d735bbb3b4afe9375c5b4f9748f882945
-Author: Chen Yu <yu.c.chen@intel.com>
-Date:   Fri Apr 14 12:10:42 2023 +0000
+The reason why a sysctl isn't really great is because the system
+administrator might want to configure the behavior on a per-file
+system basis.  And you *can* configure it as a mount option, via
+"mount -o errors=continue" or "mount -o "errors=panic".  The
+superblock setting is just the default if something isn't explicitly
+specified as a mount option (either on the command line or in
+/etc/fstab).
 
-    PM: hibernate: Do not get block device exclusively in test_resume mode
+So mount does not "automatically" panic the kernel, and there are
+*plenty* of ways to opt-out.  You can use the mount option; you can
+run "tune2fs -e continue"; you can just !@#!?! run fsck.ext4 before
+mounting the file system.  There are all ways of "opting out."  Some
+of them, such as the last, is even considered best practice --- just
+as picking up a USB stick, or worse, a firewire drive, in a parking
+lot, and *not* plugging it into your laptop is considered best practice.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1275be4ba80000
-start commit:   4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1175be4ba80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1675be4ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
-
-Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
-Fixes: 5904de0d735b ("PM: hibernate: Do not get block device exclusively in test_resume mode")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+	     	  	    	      	       - Ted
