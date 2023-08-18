@@ -2,48 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96927804EA
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 05:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A18E780503
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 06:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242007AbjHRDoN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Aug 2023 23:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        id S244123AbjHREIc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Aug 2023 00:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357759AbjHRDoB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Aug 2023 23:44:01 -0400
+        with ESMTP id S1357790AbjHREIG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 00:08:06 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2770E358E
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 20:43:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883EB210D
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Aug 2023 21:08:04 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I3hUQd025964
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I47pWN003600
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 23:43:31 -0400
+        Fri, 18 Aug 2023 00:07:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692330212; bh=6qFJq0mymitaeOHznSmVbaME+4I05RZS378bdsMEjRI=;
+        t=1692331674; bh=AiNT7QOGDY9+Zpz8OEhMFokxY4nSOC+WNx+itR1GTXg=;
         h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=avEIlt8u4S8hH7Rl+FY2stU7xmBiE8yxVd/K87wzK4TuNtDMrl0zwMpkKSnvXGtdI
-         1s1RFaLBa+dzjW0O+nqFkwAmjDSGqYiDaBsLRllHZsOkJ9FRtazxzc582i5zWKG+w6
-         0PFHx1a+qiP5VCkkNIWKZjjYxDWsabAutQlIcdrxHtmLzPgn7sSg/2Ct0cS9yWnPDZ
-         KTJByPb2q+pPm4cvY5n+9z4ZXOT9a4R6698qfy6yUhgAyvafLVeNvMI0jsdOdnsoe3
-         Gb/zY1EZej+FYUCZhxkUJTQsPjVnKyQUIooCyj8p5d8fuxcQROX73v9advNIf1O8Ny
-         XVrBGtmmYe7QA==
+        b=lZE6EuTKaAHS3iqoDeL8+J/sX7vYv2C6HNbU//T9Id/Cn49Kq/8f6jFCoM8JrOcL4
+         9q7p/9ZwxdGkd4ayPZbaw5hsdLVh+LmX2H6LjVrSpeQgkhRbDVtb/NOPeb5xrkYm9W
+         ngRS5r2relFGi9dEl475j9lLPnfz/1JF8AiDY1yVmioM++EF0vSgMhF20H1gvhG8eA
+         deWmadsMs62a7sqPnSNjF7UqFNRqYQ1XoFPl9v1gNQt/YkcekxobLKwm+0DQ61/BA+
+         VCRcGRY4Cu/2VN+MUpGAwvo5vPZ06o+8S3A/oO2fS+KtysrXSaZIiYsBGE8Jaalunq
+         w9WrKdx/le3CQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 154E215C0501; Thu, 17 Aug 2023 23:43:30 -0400 (EDT)
-Date:   Thu, 17 Aug 2023 23:43:30 -0400
+        id 7232E15C0501; Fri, 18 Aug 2023 00:07:51 -0400 (EDT)
+Date:   Fri, 18 Aug 2023 00:07:51 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Fengnan Chang <changfengnan@bytedance.com>
-Cc:     adilger.kernel@dilger.ca, guoqing.jiang@linux.dev,
-        linux-ext4@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v3] ext4: improve trim efficiency
-Message-ID: <20230818034330.GE3464136@mit.edu>
-References: <20230725121848.26865-1-changfengnan@bytedance.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
+ add_new_gdb_meta_bg to support non first group
+Message-ID: <20230818040751.GF3464136@mit.edu>
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-12-shikemeng@huaweicloud.com>
+ <20230816034543.GS2247938@mit.edu>
+ <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
+ <20230817140328.GY2247938@mit.edu>
+ <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725121848.26865-1-changfengnan@bytedance.com>
+In-Reply-To: <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -53,66 +58,38 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:18:48PM +0800, Fengnan Chang wrote:
-> In commit a015434480dc("ext4: send parallel discards on commit
-> completions"), issue all discard commands in parallel make all
-> bios could merged into one request, so lowlevel drive can issue
-> multi segments in one time which is more efficiency, but commit
-> 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
-> seems broke this way, let's fix it.
+On Fri, Aug 18, 2023 at 10:29:52AM +0800, Kemeng Shi wrote:
+> Actually, there seems a functional change to add_new_gdb_meta_bg.
+> Assume 'group' is the new added group, 'first_group' is the first group
+> of meta_bg which contains 'group',
+> Original way to calculate gdbblock:
+> gdbblock = group_first_block('first_group') + bg_has_super(*'group'*)
+> New ay to calculate gdbblock
+> gdbblock = group_first_block('first_group') + bg_has_super(*'first_group'*)
+> If new added group is not the first group of meta_bg, add_new_gdb_meta_bg
+> get a wrong gdbblock.
 
-Thanks for the patch.  A few things that I'd like to see changed.
+If you look at the ext4_add_new_descs() function,
+add_new_gdb_meta_bg() is only called when the group is a multiple of
+EXT4_DESC_PER_BLOCK --- that is, when group % EXT4_DESC_PER_BLOCK == 0.
 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a2475b8c9fb5..b75ca1df0d30 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6790,7 +6790,8 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
->   * be called with under the group lock.
->   */
->  static int ext4_trim_extent(struct super_block *sb,
-> -		int start, int count, struct ext4_buddy *e4b)
-> +		int start, int count, bool noalloc, struct ext4_buddy *e4b,
-> +		struct bio **biop, struct ext4_free_data **entryp)
+As such, it is only called when with group is the first group in the
+meta_bg.  So there is no bug here.  The code is bit confusing, I agree
+--- I myself got confused because it's been years since I last looked
+at the code, and it's not particularly commented well, which is my fault.
 
-The function ext4_trim_extent() is used in one place, by
-ext4_try_to_trim_range().  So instead of adding the new parameters
-noalloc and extryp...
+This also makes the commit description "... to support non-first
+group" incorrect, since it never gets called as with a "non-first
+group".
 
-> @@ -6812,9 +6813,16 @@ __acquires(bitlock)
->  	 */
->  	mb_mark_used(e4b, &ex);
->  	ext4_unlock_group(sb, group);
-> -	ret = ext4_issue_discard(sb, group, start, count, NULL);
-> +	ret = ext4_issue_discard(sb, group, start, count, biop);
-> +	if (!ret && !noalloc) {
-> +		struct ext4_free_data *entry = kmem_cache_alloc(ext4_free_data_cachep,
-> +				GFP_NOFS|__GFP_NOFAIL);
-> +		entry->efd_start_cluster = start;
-> +		entry->efd_count = count;
-> +		*entryp  = entry;
-> +	}
-> +
+The patch makes things a little simpler, but the commit description
+would confuse anyone who looked at it while doing code archeology.
+The change is fine, although at this point, given how we both
+misunderstood how the code worked without doing some deep mind-melds
+with the C code in question, it's clear that we need some better
+comments in the code.
 
-... I think it might be better to move the allocation and
-initialization the ext4_free_data structure to ext4_trim_extent()'s
-caller.
-
-In the current patch, we are adding the entry to the linked list, and
-we actually *use* the linked list in ext4_try_to_trim_range().  By
-move the code which allocates the entry to the same place, we
-eliminate some extra variables added to the ext4_trim_extent()
-function, and it makes the code easier to read.
-
-In fact, given that ext4_trim_extent() is used only once by its
-caller, we could just inline the code (which isn't actually all that
-much) into ext4_Try_to_trim_range().  That would eliminate the need
-for the __acquires(bitlock) and __release(bitlock) sparse annotations,
-as well as the "assert_spin_locked()".
-
-That also keeps the mb_mark_used() and mb_free_blocks() calls in the
-same function, which again improves code readability.
-
-Thanks,
+For example, the comment "add_new_gdb_meta_bg is the sister of
+add_new_gdb" is clearly insufficient.
 
 						- Ted
