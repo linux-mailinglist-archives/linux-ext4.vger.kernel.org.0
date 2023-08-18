@@ -2,92 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D22DA780DFF
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 16:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52598780FBC
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Aug 2023 18:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348084AbjHRO03 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Aug 2023 10:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S1378381AbjHRQBU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Aug 2023 12:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377096AbjHRO0U (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 10:26:20 -0400
+        with ESMTP id S1355209AbjHRQAz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Aug 2023 12:00:55 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651382D4A
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 07:26:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AEF1BB
+        for <linux-ext4@vger.kernel.org>; Fri, 18 Aug 2023 09:00:52 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IEPi9R008983
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IG0cj2027529
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 10:25:45 -0400
+        Fri, 18 Aug 2023 12:00:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692368747; bh=mr78n3qsUgsgPJgzwDA3ALe/I5P61WM2l6xoqGgEaxk=;
+        t=1692374440; bh=erXmcdQ1KNay9clvH0vrxMVcc8mv/hyvtygv6MA0HQQ=;
         h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=ifckXAgyqVrtSRdqKrD9L/Sz32XDzO9iBLPsAWc3woHvB45OxXeNyyurXmSdK/1Ou
-         5KrKw2StHw3SqGZ9hQfuuurrTylF99RTMEjbg1BoPT0Wgv2fQdlcpQwJPLQHAARscK
-         dpbRs8QuHAdrRIDP/w0gqOHY3q7kB4cfmLxmNrjWviMT3OOkR24h+TOwGfPw/URuEJ
-         Hf4euGVDyeGXRWC1h/VHzvTy5ZgsYKrGn4Te+QHg/AKHU7FRBCvFvRFra0eHXBYB8t
-         C0Uz4b6+d0cbMlUOfF8/Bwj06gL80gl/kq1u4vuQdEQuoezh5ZBjhLWmnS2Y/9s/cE
-         AcNNVB0ajSlFw==
+        b=MX0VX5azL5th5g1QwH3Uz+cp0CDRzBNoSr3kQb/SkOuAjIMyixOl1Q3kRUhZslotV
+         GGatnZWiFcQkL/Kfk/R6pNe71I0zbhomfXi3OOBx/V0UmOMTm+rZK2lgYathaZ9u0E
+         4eYzP/TmTBzgVR+UjrjkXsQO6t/wGS6k6mPN7U1gIv/wrcNDz/YbDe/ANf9zzq1yM+
+         SaVmEZCDW0RWVpBbpYfeQ4RGg9BFzyjI+hC+lM6WDRa8BgluJPfiFxL2QTYX87HiTC
+         NQIs2NoLpZEJge8XuktV+uPJSWr2urCPR7GsEkIlDFlo+uZYr0qONCfvgovtKidiKG
+         3ax7jvjhz0y8w==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A684315C0501; Fri, 18 Aug 2023 10:25:44 -0400 (EDT)
-Date:   Fri, 18 Aug 2023 10:25:44 -0400
+        id 7BCCF15C0501; Fri, 18 Aug 2023 12:00:38 -0400 (EDT)
+Date:   Fri, 18 Aug 2023 12:00:38 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     sandeen@redhat.com,
-        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
- forced after error (3)
-Message-ID: <20230818142544.GA3513305@mit.edu>
-References: <000000000000530e0d060312199e@google.com>
- <20230817142103.GA2247938@mit.edu>
- <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
- <20230817161118.GC2247938@mit.edu>
- <20230817164739.GC1483@sol.localdomain>
- <20230818021038.GC3464136@mit.edu>
- <20230818025255.GA2175@sol.localdomain>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
+ multiple update_backups in ext4_flex_group_add
+Message-ID: <20230818160038.GA3515079@mit.edu>
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230816034730.GT2247938@mit.edu>
+ <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
+ <20230817141112.GZ2247938@mit.edu>
+ <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
+ <20230818050036.GG3464136@mit.edu>
+ <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230818025255.GA2175@sol.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 07:52:55PM -0700, Eric Biggers wrote:
-> Obviously it's up to the system administrator; that should have been clear since
-> I suggested a sysctl.  Sorry if I wasn't clear.  The point is that there are
-> certain conventions for what is allowed to break the safety guarantees that the
-> kernel provides to userspace, which includes causing a kernel panic.  Panics on
-> various problems are configured by /proc/sys/kernel/panic_*.  So having to
-> opt-in to panic-on-error, or at least being able to opt-out, by setting a sysctl
-> seems natural.  Whereas having mount() being able to automatically panic the
-> kernel with no way to opt-out seems like a violation of broader kernel
-> conventions, even if it happens to be "working as intended" in the ext4 context.
+On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
+> > s_group_desc[] is initialized in ext4_group_desc_init() in
+> > fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
+> > is defined in fs/ext4.h.  
+> I plan to add comment in fs/ext4.h as following:
+> struct ext4_sb_info {
+> 	...
+> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
+> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
+> keep the buffer_heads for the block group descriptor blocks in memory
+> and it contains primary gdb block is a coincidence that we only modify
+> primary block in kernel.
 
-The reason why a sysctl isn't really great is because the system
-administrator might want to configure the behavior on a per-file
-system basis.  And you *can* configure it as a mount option, via
-"mount -o errors=continue" or "mount -o "errors=panic".  The
-superblock setting is just the default if something isn't explicitly
-specified as a mount option (either on the command line or in
-/etc/fstab).
+In general, the terminology that ext4 developers have used is "block
+group descriptors" and "backup block group descriptors".  The kernel
+never *uses* the backup block group users; and with the sparse_super2
+feature, the "backup superblocks" and "backup block group descriptors"
+are optional.
 
-So mount does not "automatically" panic the kernel, and there are
-*plenty* of ways to opt-out.  You can use the mount option; you can
-run "tune2fs -e continue"; you can just !@#!?! run fsck.ext4 before
-mounting the file system.  There are all ways of "opting out."  Some
-of them, such as the last, is even considered best practice --- just
-as picking up a USB stick, or worse, a firewire drive, in a parking
-lot, and *not* plugging it into your laptop is considered best practice.
+They are used by e2fsck if we need to recover a trashed superblock and
+block group descriptors, which is why code that is resizing the file
+system, or updating the label or the UUID need to update the backup
+superblocks and/or backup block group descriptors so that we can
+better recover disaster.
 
-	     	  	    	      	       - Ted
+So I'd just suggest changing the comment above to "array of bh's for
+the block group descriptors".
+
+Cheers,
+
+							- Ted
+
+> Besides, I plan to go through the resize code again in fulture and
+> add some comments to make it easy for anyone starting read this
+> or make it easy to maintain. Please let me if you disklike it.
+
+P.S.
+
+BTW, a useful test program to add is one that checks to make sure that
+the "static" parts of the superblock and block group descriptors
+(i.e., the parts that don't get changed under normal operation while
+the file system is mounted when the kernel *isn't* trying to do a
+resize or change the label, UUID, or in the future, the new ioctl's to
+update the parts of the superblock that can get modified by tune2fs),
+and to make sure that all of the backup superblock and block group
+descriptors have gotten updated.
+
+Some of the bugs that you found may have resulted in some of the
+backup bg descriptors not getting updataed, which we wouldn't
+necessarily notice unless we had a test program that explicitly
+checked for them.
+
+And truth to tell, the only backup superblock and block group
+descriptor that actually gets used to recover the file system is the
+first one, since that's the one e2fsck will fall back to
+automatically.  An expert might try to use one of the other backup
+block groups as a desperate measure, and there might be some automated
+programs that might be smart enough to use the backup block groups
+when trying to recover the location of the partition table when the
+file system and partition table is very badly damaged --- so that's
+one of the reasons why with sparse_super2, the number of backup block
+group descriptors can be limited to (for example) one located in the
+first block group, and one located in the very last block group.
+
