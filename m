@@ -2,99 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D175C7828E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Aug 2023 14:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53334782D93
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Aug 2023 17:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbjHUMVM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Aug 2023 08:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
+        id S234866AbjHUPwo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Aug 2023 11:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbjHUMVL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Aug 2023 08:21:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33784E2;
-        Mon, 21 Aug 2023 05:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5IiWcS1pGUM8RhlF+xFAzuOei17PLjfs94NmDiNvo6g=; b=MR/QHwNqCgmOxVS7c6EPkcvTOM
-        ewCAH+I5VyIrZrxJzwYfZLZdCgL8s90TQvZ+npslaTk64GCHlebjy/zTEFSP1XKvpvz0F1mp04dGb
-        Q4Mw4xNqTcDxevU3YZo9ZuZG7u7901KOLFAZQFBrfJj6DTvFoLmKqeOrbe9EGAWJD80G+5oUvjC9E
-        GE7/tDN7WYGjkchDeLjeoEXqx63p+j9VqmffpAwOVP34B8h7G2NH+m2Ijbr5WZl9m60lEmymGlSTH
-        3KMB/ugwe8njVx8yVWKJI7O8kZmYJA5QdxgWpCri1u728bx/fA3oJh+UCaWAdHAzd3/DRUeZhFvtJ
-        MESTOvHA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qY3tZ-00A7pc-KQ; Mon, 21 Aug 2023 12:20:33 +0000
-Date:   Mon, 21 Aug 2023 13:20:33 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Xueshi Hu <xueshi.hu@smartx.com>, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com,
-        jayalk@intworks.biz, daniel@ffwll.ch, deller@gmx.de,
-        bcrl@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        jack@suse.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-        miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev,
-        djwong@kernel.org, akpm@linux-foundation.org, hughd@google.com,
-        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] fs: clean up usage of noop_dirty_folio
-Message-ID: <ZONWka8NpDVGzI8h@casper.infradead.org>
-References: <20230819124225.1703147-1-xueshi.hu@smartx.com>
- <20230821111643.5vxtktznjqk42cak@quack3>
+        with ESMTP id S236450AbjHUPwo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Aug 2023 11:52:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF624A1;
+        Mon, 21 Aug 2023 08:52:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8550B63C9A;
+        Mon, 21 Aug 2023 15:52:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F0BC433C7;
+        Mon, 21 Aug 2023 15:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692633161;
+        bh=/vUBGyYP6VPO4JH3SmEIBCefV7FnpLZ3SJcwW8GIf5c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H6V0CaqMpxTdaO+LJv26M2zy4Tz566Z18dEQrMZ6FPcYyqiNZmvzPfasyNf0FID6B
+         FoKWyGF8R+5ykhtbAaGhCfbioayjQht+ErRCbM7gBDDpuKpIMWpTfLkgQGgEh2+Wva
+         nOt4CDfmxJf3VK3ZpfnNIHeXYhxDDdm6B3brvPQ18zyHrbAfOgOrlze7YBQLqA2eka
+         u71Ryd9q6SHFQnUDkfSkrIOxrPnvrHBlarNfjNKuu/Jj3t/B3F7lw3nivGEDoy1sC6
+         /Mkq9jxm+qwono3i/ffFQfhUnJgl0DODxSzeRk1xw2lIbKJ4BsVPB9HZyaLyZ6Whmr
+         MvSmZ3ylZBGEw==
+Date:   Mon, 21 Aug 2023 17:52:37 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
+        tytso@mit.edu, jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v6 0/9] Support negative dentries on case-insensitive
+ ext4 and f2fs
+Message-ID: <20230821-derart-serienweise-3506611e576d@brauner>
+References: <20230816050803.15660-1-krisman@suse.de>
+ <20230817170658.GD1483@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230821111643.5vxtktznjqk42cak@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230817170658.GD1483@sol.localdomain>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 01:16:43PM +0200, Jan Kara wrote:
-> On Sat 19-08-23 20:42:25, Xueshi Hu wrote:
-> > In folio_mark_dirty(), it will automatically fallback to
-> > noop_dirty_folio() if a_ops->dirty_folio is not registered.
+On Thu, Aug 17, 2023 at 10:06:58AM -0700, Eric Biggers wrote:
+> On Wed, Aug 16, 2023 at 01:07:54AM -0400, Gabriel Krisman Bertazi wrote:
+> > Hi,
 > > 
-> > As anon_aops, dev_dax_aops and fb_deferred_io_aops becames empty, remove
-> > them too.
+> > This is v6 of the negative dentry on case-insensitive directories.
+> > Thanks Eric for the review of the last iteration.  This version
+> > drops the patch to expose the helper to check casefolding directories,
+> > since it is not necessary in ecryptfs and it might be going away.  It
+> > also addresses some documentation details, fix a build bot error and
+> > simplifies the commit messages.  See the changelog in each patch for
+> > more details.
 > > 
-> > Signed-off-by: Xueshi Hu <xueshi.hu@smartx.com>
+> > Thanks,
+> > 
+> > ---
+> > 
+> > Gabriel Krisman Bertazi (9):
+> >   ecryptfs: Reject casefold directory inodes
+> >   9p: Split ->weak_revalidate from ->revalidate
+> >   fs: Expose name under lookup to d_revalidate hooks
+> >   fs: Add DCACHE_CASEFOLDED_NAME flag
+> >   libfs: Validate negative dentries in case-insensitive directories
+> >   libfs: Chain encryption checks after case-insensitive revalidation
+> >   libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+> >   ext4: Enable negative dentries on case-insensitive lookup
+> >   f2fs: Enable negative dentries on case-insensitive lookup
+> > 
 > 
-> Yeah, looks sensible to me but for some callbacks we are oscilating between
-> all users having to provide some callback and providing some default
-> behavior for NULL callback. I don't have a strong opinion either way so
-> feel free to add:
+> Looks good,
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> But I guess let's see what Matthew thinks about this and what plans he has
-> so that we don't switch back again in the near future. Matthew?
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-I was hoping Christoph would weigh in ;-)  I don't have a strong
-feeling here, but it seems to me that a NULL ->dirty_folio() should mean
-"do the noop thing" rather than "do the buffer_head thing" or "do the
-filemap thing".  In 0af573780b0b, the buffer_head default was removed.
-I think enough time has passed that we're OK to change what a NULL
-->dirty_folio means (plus we also changed the name of ->set_page_dirty()
-to ->dirty_folio())
-
-So Ack to the concept.  One minor change I'd request:
-
--bool noop_dirty_folio(struct address_space *mapping, struct folio *folio)
-+static bool noop_dirty_folio(struct address_space *mapping, struct folio *folio)
- {
- 	if (!folio_test_dirty(folio))
- 		return !folio_test_set_dirty(folio);
- 	return false;
- }
--EXPORT_SYMBOL(noop_dirty_folio);
-
-Please inline this into folio_mark_dirty() instead of calling it.
+Thanks! We're a bit too late for v6.6 with this given that this hasn't
+even been in -next. So this will be up for v6.7.
