@@ -2,223 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 088E778379A
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Aug 2023 03:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE187837DC
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Aug 2023 04:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjHVBv4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Aug 2023 21:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
+        id S231989AbjHVCVr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Aug 2023 22:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjHVBvy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Aug 2023 21:51:54 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB26180
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Aug 2023 18:51:45 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf11a7cf9fso5830315ad.1
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Aug 2023 18:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692669104; x=1693273904;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dq8+16J+7kBShZHlF/4m8nKebVlvwcTg5Lf01E/TI9U=;
-        b=WbXqmR7oiY/c3gvlwqSYkrXLRfG4jX9/ekDjOe8MaATcHDyPUUGOcYq8Ae8rnUYMO4
-         fvlfnIfVixtTl5ttxi7T1rM3QXayywJWx0/TbwCNk8NMy0sNCc97E+VDhfNNZlscXG6j
-         oNBc4bQ0NxZjAEmEj2t7e0y0LW9flIqvPmm6yivnOGsFSHRFPzxIdbHJUOXeiIQL+yZz
-         xlPZwzP8BnVyaOCgAfEXrs/3jrMUNLKMZ8209a/qen6+dx6q2htLstVPaqwIqjA9c7zj
-         cQ6fR4R2Q9KVZno9kxlKzRHe8m+JXTZcxvEhWuueznjPXTIrlxJiTmcRmx5rBZprUkaU
-         Smfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692669104; x=1693273904;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dq8+16J+7kBShZHlF/4m8nKebVlvwcTg5Lf01E/TI9U=;
-        b=hOtihZEq9VBAf458/1O4VzzGIzo4aAC63KXRH3GzEZ+0QvH4t2yNNf6RinMYWhS6tH
-         aLJyMWfOonSzkfNrLRUmtGNB6FjZ21eX2g0SgKKy9zsN47uFmJDQaxFjiD/46Zxu9Msm
-         Gu7Wei3F4lUgKN9cUpCk5swy6KdZLDKcC2/IE3u1Ag7YsMeFoupNXdPm4g8DzYZAVieD
-         XuxLc1UDR8MbNSs9FRsKWWUzmg2N5NRUa/c73IhZK1iPP7t4llNLO/6Tmdl+LmzGihlY
-         Faje/yQ6WasGW73RqzqhFAur1/ynHbR2HQmxmvqrzVM3UumiL7jtEVSKz/Dkoypz3nay
-         lVuA==
-X-Gm-Message-State: AOJu0YwGkNBWrOq+aYCDL7cHZoqSUma48w6JBbiZXgJ9WWZOLXdr1b0j
-        1axs83q613GxhtBPXbcVacBMLw==
-X-Google-Smtp-Source: AGHT+IGj7NpAYXLu16OQV4GD3lzW4YVYPXHiygcGbgHwTD9ERmMsAO0HagNyTKSTCGpUN65cI/HrkQ==
-X-Received: by 2002:a05:6a21:6da5:b0:13d:d5bd:758f with SMTP id wl37-20020a056a216da500b0013dd5bd758fmr11385975pzb.6.1692669104378;
-        Mon, 21 Aug 2023 18:51:44 -0700 (PDT)
-Received: from HTW5T2C6VL.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id j4-20020aa783c4000000b0068892c40253sm6694943pfn.216.2023.08.21.18.51.40
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 21 Aug 2023 18:51:44 -0700 (PDT)
-From:   Fengnan Chang <changfengnan@bytedance.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        Fengnan Chang <changfengnan@bytedance.com>
-Subject: [PATCH v4] ext4: improve trim efficiency
-Date:   Tue, 22 Aug 2023 09:51:35 +0800
-Message-Id: <20230822015135.50579-1-changfengnan@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        with ESMTP id S231311AbjHVCVr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Aug 2023 22:21:47 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF4EFD;
+        Mon, 21 Aug 2023 19:21:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RVClT4hZqz4f3k6k;
+        Tue, 22 Aug 2023 10:21:41 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgDndqm0G+Rk4JQlBQ--.39660S2;
+        Tue, 22 Aug 2023 10:21:42 +0800 (CST)
+Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
+ multiple update_backups in ext4_flex_group_add
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230816034730.GT2247938@mit.edu>
+ <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
+ <20230817141112.GZ2247938@mit.edu>
+ <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
+ <20230818050036.GG3464136@mit.edu>
+ <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+ <20230818160038.GA3515079@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <7dafe2b7-d78e-ec99-18f9-2830d614d01b@huaweicloud.com>
+Date:   Tue, 22 Aug 2023 10:21:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230818160038.GA3515079@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgDndqm0G+Rk4JQlBQ--.39660S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1DGF47KryUtw48ZFW3GFg_yoW5KryUp3
+        98Aa90krn8Gr4fZ3W8J340va4Fkws7AFs8Jry3Xw15G39xKr4Iqr9rKr1YyFWqqFs7uw1j
+        vF10yry3Cw4q9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In commit a015434480dc("ext4: send parallel discards on commit
-completions"), issue all discard commands in parallel make all
-bios could merged into one request, so lowlevel drive can issue
-multi segments in one time which is more efficiency, but commit
-55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
-seems broke this way, let's fix it.
-In my test:
-1. create 10 normal files, each file size is 10G.
-2. deallocate file, punch a 16k holes every 32k.
-3. trim all fs.
 
-the time of fstrim fs reduce from 6.7s to 1.3s.
 
-Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
----
- fs/ext4/mballoc.c | 95 +++++++++++++++++++++++++----------------------
- 1 file changed, 51 insertions(+), 44 deletions(-)
+on 8/19/2023 12:00 AM, Theodore Ts'o wrote:
+> On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
+>>> s_group_desc[] is initialized in ext4_group_desc_init() in
+>>> fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
+>>> is defined in fs/ext4.h.  
+>> I plan to add comment in fs/ext4.h as following:
+>> struct ext4_sb_info {
+>> 	...
+>> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
+>> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
+>> keep the buffer_heads for the block group descriptor blocks in memory
+>> and it contains primary gdb block is a coincidence that we only modify
+>> primary block in kernel.
+> 
+> In general, the terminology that ext4 developers have used is "block
+> group descriptors" and "backup block group descriptors".  The kernel
+> never *uses* the backup block group users; and with the sparse_super2
+> feature, the "backup superblocks" and "backup block group descriptors"
+> are optional.
+> 
+Sure.
+> They are used by e2fsck if we need to recover a trashed superblock and
+> block group descriptors, which is why code that is resizing the file
+> system, or updating the label or the UUID need to update the backup
+> superblocks and/or backup block group descriptors so that we can
+> better recover disaster.
+OK, kernel updates backup blocks and userspace tool recovers from backup
+in case that blocks used by kernel is corrupted.
+> 
+> So I'd just suggest changing the comment above to "array of bh's for
+> the block group descriptors".
+> 
+Sure, I will do this in next version.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 1e4c667812a9..4fe832ff0e4b 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6874,70 +6874,61 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 	return err;
- }
- 
--/**
-- * ext4_trim_extent -- function to TRIM one single free extent in the group
-- * @sb:		super block for the file system
-- * @start:	starting block of the free extent in the alloc. group
-- * @count:	number of blocks to TRIM
-- * @e4b:	ext4 buddy for the group
-- *
-- * Trim "count" blocks starting at "start" in the "group". To assure that no
-- * one will allocate those blocks, mark it as used in buddy bitmap. This must
-- * be called with under the group lock.
-- */
--static int ext4_trim_extent(struct super_block *sb,
--		int start, int count, struct ext4_buddy *e4b)
--__releases(bitlock)
--__acquires(bitlock)
--{
--	struct ext4_free_extent ex;
--	ext4_group_t group = e4b->bd_group;
--	int ret = 0;
--
--	trace_ext4_trim_extent(sb, group, start, count);
--
--	assert_spin_locked(ext4_group_lock_ptr(sb, group));
--
--	ex.fe_start = start;
--	ex.fe_group = group;
--	ex.fe_len = count;
--
--	/*
--	 * Mark blocks used, so no one can reuse them while
--	 * being trimmed.
--	 */
--	mb_mark_used(e4b, &ex);
--	ext4_unlock_group(sb, group);
--	ret = ext4_issue_discard(sb, group, start, count, NULL);
--	ext4_lock_group(sb, group);
--	mb_free_blocks(NULL, e4b, start, ex.fe_len);
--	return ret;
--}
--
- static int ext4_try_to_trim_range(struct super_block *sb,
- 		struct ext4_buddy *e4b, ext4_grpblk_t start,
- 		ext4_grpblk_t max, ext4_grpblk_t minblocks)
- __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
- __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- {
--	ext4_grpblk_t next, count, free_count;
-+	ext4_grpblk_t next, count, free_count, bak;
- 	void *bitmap;
-+	struct ext4_free_data *entry = NULL, *fd, *nfd;
-+	struct list_head discard_data_list;
-+	struct bio *discard_bio = NULL;
-+	struct blk_plug plug;
-+	ext4_group_t group = e4b->bd_group;
-+	struct ext4_free_extent ex;
-+	bool noalloc = false;
-+	int ret = 0;
-+
-+	INIT_LIST_HEAD(&discard_data_list);
- 
- 	bitmap = e4b->bd_bitmap;
- 	start = max(e4b->bd_info->bb_first_free, start);
- 	count = 0;
- 	free_count = 0;
- 
-+	blk_start_plug(&plug);
- 	while (start <= max) {
- 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
- 		if (start > max)
- 			break;
-+		bak = start;
- 		next = mb_find_next_bit(bitmap, max + 1, start);
-+		/* when only one segment, there is no need to alloc entry */
-+		noalloc = (free_count == 0) && (next >= max);
- 
- 		if ((next - start) >= minblocks) {
--			int ret = ext4_trim_extent(sb, start, next - start, e4b);
--
--			if (ret && ret != -EOPNOTSUPP)
-+			trace_ext4_trim_extent(sb, group, start, next - start);
-+			ex.fe_start = start;
-+			ex.fe_group = group;
-+			ex.fe_len = next - start;
-+			/*
-+			 * Mark blocks used, so no one can reuse them while
-+			 * being trimmed.
-+			 */
-+			mb_mark_used(e4b, &ex);
-+			ext4_unlock_group(sb, group);
-+			ret = ext4_issue_discard(sb, group, start, next - start, &discard_bio);
-+			if (!noalloc) {
-+				entry = kmem_cache_alloc(ext4_free_data_cachep,
-+							GFP_NOFS|__GFP_NOFAIL);
-+				entry->efd_start_cluster = start;
-+				entry->efd_count = next - start;
-+				list_add_tail(&entry->efd_list, &discard_data_list);
-+			}
-+			ext4_lock_group(sb, group);
-+			if (ret < 0)
- 				break;
- 			count += next - start;
- 		}
-@@ -6959,6 +6950,22 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 			break;
- 	}
- 
-+	if (discard_bio) {
-+		ext4_unlock_group(sb, e4b->bd_group);
-+		submit_bio_wait(discard_bio);
-+		bio_put(discard_bio);
-+		ext4_lock_group(sb, e4b->bd_group);
-+	}
-+	blk_finish_plug(&plug);
-+
-+	if (noalloc)
-+		mb_free_blocks(NULL, e4b, bak, free_count);
-+
-+	list_for_each_entry_safe(fd, nfd, &discard_data_list, efd_list) {
-+		mb_free_blocks(NULL, e4b, fd->efd_start_cluster, fd->efd_count);
-+		kmem_cache_free(ext4_free_data_cachep, fd);
-+	}
-+
- 	return count;
- }
- 
--- 
-2.20.1
+Besides, what about the check this patch tries to remove. Would you
+prefer to keep it or remove it with better git description. Both
+ways are acceptable to me. Thanks.
+
+> Cheers,
+> 
+> 							- Ted
+> 
+>> Besides, I plan to go through the resize code again in fulture and
+>> add some comments to make it easy for anyone starting read this
+>> or make it easy to maintain. Please let me if you disklike it.
+> 
+> P.S.
+> 
+> BTW, a useful test program to add is one that checks to make sure that
+> the "static" parts of the superblock and block group descriptors
+> (i.e., the parts that don't get changed under normal operation while
+> the file system is mounted when the kernel *isn't* trying to do a
+> resize or change the label, UUID, or in the future, the new ioctl's to
+> update the parts of the superblock that can get modified by tune2fs),
+> and to make sure that all of the backup superblock and block group
+> descriptors have gotten updated>
+> Some of the bugs that you found may have resulted in some of the
+> backup bg descriptors not getting updataed, which we wouldn't
+> necessarily notice unless we had a test program that explicitly
+> checked for them.
+> 
+> And truth to tell, the only backup superblock and block group
+> descriptor that actually gets used to recover the file system is the
+> first one, since that's the one e2fsck will fall back to
+> automatically.  An expert might try to use one of the other backup
+> block groups as a desperate measure, and there might be some automated
+> programs that might be smart enough to use the backup block groups
+> when trying to recover the location of the partition table when the
+> file system and partition table is very badly damaged --- so that's
+> one of the reasons why with sparse_super2, the number of backup block
+> group descriptors can be limited to (for example) one located in the
+> first block group, and one located in the very last block group.
+> 
+> Thanks for let me know and I do have no knowldge about how backup is used
+in usersapce.
 
