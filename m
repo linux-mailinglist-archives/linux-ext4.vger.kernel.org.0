@@ -2,150 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 418A1785E0E
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Aug 2023 19:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4BA785F3E
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Aug 2023 20:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbjHWRFf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Aug 2023 13:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S238036AbjHWSIt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Aug 2023 14:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236995AbjHWRFe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Aug 2023 13:05:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8295E6D
-        for <linux-ext4@vger.kernel.org>; Wed, 23 Aug 2023 10:05:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A871520981;
-        Wed, 23 Aug 2023 17:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692810325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJvzLIw1M+dhnQSwUSq3hqcwmJdwBpJplC69lFvisck=;
-        b=KHvdouPAK89WgO4HIzw9kp+2LqkIeTfEL2kSv3t/B9Dh0RjBPFBMiHmbLgQhPoEbA8DnKu
-        6LWAF+hRG6cQobvMOpUS5Md2rF0JJ3/SBuFJxZxI7PA/A3rm7rKl4LVal3QkhZ+bnO8HWB
-        dZ5bQ7KtpypRl+Sn6/FMzBJH84+zoeA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692810325;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJvzLIw1M+dhnQSwUSq3hqcwmJdwBpJplC69lFvisck=;
-        b=+3Ysw1Wiru2b5Jb8or9992SOYChWPozrgMHxkVv9Hgb0+8yV26NoszgXWa+Z/I1YmQYYIO
-        LThr7lDvt5AtAYAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C74A1351F;
-        Wed, 23 Aug 2023 17:05:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id snNAIlU85mT5VAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 23 Aug 2023 17:05:25 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A3918A0774; Wed, 23 Aug 2023 19:05:24 +0200 (CEST)
-Date:   Wed, 23 Aug 2023 19:05:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jack@suse.cz, darrick.wong@oracle.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
-Message-ID: <20230823170524.xox66gceoqrigtyo@quack3>
-References: <20230817081828.934259-1-libaokun1@huawei.com>
+        with ESMTP id S238048AbjHWSIs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Aug 2023 14:08:48 -0400
+Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88527E59
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Aug 2023 11:08:45 -0700 (PDT)
+Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-56357814339so6557505a12.3
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Aug 2023 11:08:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692814125; x=1693418925;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f6TFYzbe+aItdEHV02B+YSmc25pOCMrU53WsD56T7Io=;
+        b=ZZR9bzQzqPc9EWVzp0eGZoG79B1FdkYFLJZZJ4ypTd9Wi7Jt0BkIip3NXpnmT+idDH
+         MhP2kV0AnZuonS8Cz27lmYO545AG7Diz2UXdQdbGppgEVYnRlIGFWh9EpCnb6NmJcb/1
+         1oCe04e7bcrD2mp95J9jDtdRQJWDUQG+6l/w4q2Zs7BuroxPSZ3P9Igesh9bBbP8MGi7
+         b1+b6D29HkaLLmtbeOiSSgI7cHoM/3H8TYMB+/3elcQD4KTjiQgL3jvaTEYmBgeyJWtI
+         eI+LlRsh79YnUsujRb7LUlqif53R0yrkYUAqOJLLKkFuEz16ymn0gYVDACpX9zRIrhPD
+         WlWA==
+X-Gm-Message-State: AOJu0Yzs3fkoHCHI29ZRDFK++cpbTW+J0aYVqBFS6P515UewucXmw8gL
+        ataMHCaiDZf+bcfWgZsz38z2zMfL6PMEXXxAW4xBJbN+WLEC
+X-Google-Smtp-Source: AGHT+IEJhI9fec1i4ZYACCZLBzgyCh11MSzkTLvunUv2a7UbGaZvosC7SAqCCqtfBkWsLXl3UjWdGM86TC62dfv9r88Bwgkx4qwv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230817081828.934259-1-libaokun1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a63:778a:0:b0:56a:164b:c6ec with SMTP id
+ s132-20020a63778a000000b0056a164bc6ecmr1985913pgc.7.1692814125013; Wed, 23
+ Aug 2023 11:08:45 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 11:08:44 -0700
+In-Reply-To: <0000000000000126ec05ffd5a528@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000097a8e606039b001f@google.com>
+Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_enable_quotas
+From:   syzbot <syzbot+693985588d7a5e439483@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 17-08-23 16:18:28, Baokun Li wrote:
-> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
-> inodes"), we load all the quotas before we process the orphaned inodes,
-> and when we load the quotas, we check the checsum of the bbitmap for each
-> group. If one of the bbitmap checksums is wrong, the following error will
-> be reported:
-> 
-> “Error initializing quota context in support library:
->  Block bitmap checksum does not match bitmap”
-> 
-> But loading quotas comes before checking the current superblock for the
-> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
-> image that contains orphan inodes and has the wrong bbitmap checksum.
-> So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
-> the above problem.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+syzbot has found a reproducer for the following issue on:
 
-This certainly looks better but I wonder if there still isn't a problem if
-the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
-rather move the initialization of the quota files after the call to
-e2fsck_read_bitmaps()?
+HEAD commit:    89bf6209cad6 Merge tag 'devicetree-fixes-for-6.5-2' of git..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=120c47f7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ba1fefa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636640fa80000
 
-								Honza
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/57b9a06bad82/disk-89bf6209.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a5bb3483e19d/vmlinux-89bf6209.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/905ebaa6ecf8/bzImage-89bf6209.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/20b0f7175bae/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/eda4e74724f3/mount_1.gz
 
-> ---
->  e2fsck/super.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
-> 
-> diff --git a/e2fsck/super.c b/e2fsck/super.c
-> index 9495e029..b1aaaed6 100644
-> --- a/e2fsck/super.c
-> +++ b/e2fsck/super.c
-> @@ -503,15 +503,6 @@ static int release_orphan_inodes(e2fsck_t ctx)
->  	    !ext2fs_has_feature_orphan_present(fs->super))
->  		return 0;
->  
-> -	clear_problem_context(&pctx);
-> -	ino = fs->super->s_last_orphan;
-> -	pctx.ino = ino;
-> -	pctx.errcode = e2fsck_read_all_quotas(ctx);
-> -	if (pctx.errcode) {
-> -		fix_problem(ctx, PR_0_QUOTA_INIT_CTX, &pctx);
-> -		return 1;
-> -	}
-> -
->  	/*
->  	 * Win or lose, we won't be using the head of the orphan inode
->  	 * list again.
-> @@ -525,10 +516,16 @@ static int release_orphan_inodes(e2fsck_t ctx)
->  	 * be running a full e2fsck run anyway... We clear orphan file contents
->  	 * after filesystem is checked to avoid clearing someone else's data.
->  	 */
-> -	if (fs->super->s_state & EXT2_ERROR_FS) {
-> -		if (ctx->qctx)
-> -			quota_release_context(&ctx->qctx);
-> +	if (fs->super->s_state & EXT2_ERROR_FS)
->  		return 0;
-> +
-> +	clear_problem_context(&pctx);
-> +	ino = fs->super->s_last_orphan;
-> +	pctx.ino = ino;
-> +	pctx.errcode = e2fsck_read_all_quotas(ctx);
-> +	if (pctx.errcode) {
-> +		fix_problem(ctx, PR_0_QUOTA_INIT_CTX, &pctx);
-> +		return 1;
->  	}
->  
->  	if (ino && ((ino < EXT2_FIRST_INODE(fs->super)) ||
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+693985588d7a5e439483@syzkaller.appspotmail.com
+
+kernel BUG at fs/ext4/super.c:7010!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5086 Comm: syz-executor143 Not tainted 6.5.0-rc7-syzkaller-00018-g89bf6209cad6 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:ext4_quota_enable fs/ext4/super.c:7010 [inline]
+RIP: 0010:ext4_enable_quotas+0xb7a/0xb90 fs/ext4/super.c:7057
+Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 3a f7 ff ff 49 89 d6 48 89 df e8 13 07 99 ff 4c 89 f2 e9 27 f7 ff ff e8 36 35 40 ff <0f> 0b e8 2f 35 40 ff 0f 0b e8 e8 4d 71 08 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc90003d7f880 EFLAGS: 00010293
+RAX: ffffffff824b82fa RBX: 0000000000000000 RCX: ffff88802cd08000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90003d7fa50 R08: ffffffff824b7bf4 R09: 1ffff1100eadb457
+R10: dffffc0000000000 R11: ffffed100eadb458 R12: 0000000000000001
+R13: 0000000000000001 R14: ffff88801675d464 R15: dffffc0000000000
+FS:  00007fc13f7ec6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc13f8b86c0 CR3: 000000001635a000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __ext4_fill_super fs/ext4/super.c:5562 [inline]
+ ext4_fill_super+0x6157/0x6ce0 fs/ext4/super.c:5696
+ get_tree_bdev+0x468/0x6c0 fs/super.c:1318
+ vfs_get_tree+0x8c/0x270 fs/super.c:1519
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fc13f83111a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc13f7ec088 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fc13f83111a
+RDX: 00000000200005c0 RSI: 0000000020000000 RDI: 00007fc13f7ec0a0
+RBP: 00007fc13f7ec0a0 R08: 00007fc13f7ec0e0 R09: 00000000000004d4
+R10: 0000000000200810 R11: 0000000000000206 R12: 00007fc13f7ec0e0
+R13: 0000000000200810 R14: 0000000000000003 R15: 0000000000040000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_quota_enable fs/ext4/super.c:7010 [inline]
+RIP: 0010:ext4_enable_quotas+0xb7a/0xb90 fs/ext4/super.c:7057
+Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 3a f7 ff ff 49 89 d6 48 89 df e8 13 07 99 ff 4c 89 f2 e9 27 f7 ff ff e8 36 35 40 ff <0f> 0b e8 2f 35 40 ff 0f 0b e8 e8 4d 71 08 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc90003d7f880 EFLAGS: 00010293
+RAX: ffffffff824b82fa RBX: 0000000000000000 RCX: ffff88802cd08000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90003d7fa50 R08: ffffffff824b7bf4 R09: 1ffff1100eadb457
+R10: dffffc0000000000 R11: ffffed100eadb458 R12: 0000000000000001
+R13: 0000000000000001 R14: ffff88801675d464 R15: dffffc0000000000
+FS:  00007fc13f7ec6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555556776778 CR3: 000000001635a000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
