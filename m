@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B45786BEB
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947A3786BEF
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239433AbjHXJa6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 05:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S240704AbjHXJbF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 05:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240792AbjHXJav (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 05:30:51 -0400
+        with ESMTP id S240790AbjHXJat (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 05:30:49 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F44610FA
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 02:30:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8921D10F9
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 02:30:47 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWd9b0N26z4f41S8
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 17:30:43 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWd9c12Vsz4f3q39
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 17:30:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S14;
+        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S15;
         Thu, 24 Aug 2023 17:30:44 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
         chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: [RFC PATCH 10/16] ext4: reserve meta blocks in ext4_da_reserve_space()
-Date:   Thu, 24 Aug 2023 17:26:13 +0800
-Message-Id: <20230824092619.1327976-11-yi.zhang@huaweicloud.com>
+Subject: [RFC PATCH 11/16] ext4: factor out common part of ext4_da_{release|update_reserve}_space()
+Date:   Thu, 24 Aug 2023 17:26:14 +0800
+Message-Id: <20230824092619.1327976-12-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 References: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw18ZFWDtr15uF4UAw47urg_yoWrCryrpF
-        n8AFy3W348W34kWFWfZr47Zr4fua4IgFWUtFZrWF1xZFy5J3WSgr1DtF1YvF1YyrZ3Gw1D
-        Xa45W34ru3WUWaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S15
+X-Coremail-Antispam: 1UD129KBjvJXoWxZrWrXF1xJryxtry3Cr1rZwb_yoW5tF17pr
+        y3CFW3Wa48WrykuFWfXr4UZr1F9aySqFWUtrZ7WFnrZrW5Ga4Sgr18tF1FvF1YkrZ3Jr4j
+        qa45G34ru3WDArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -62,126 +62,101 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-Prepare to reserve metadata blocks for delay allocation in
-ext4_da_reserve_space(), claim reserved space from the global
-sbi->s_dirtyclusters_counter, and also updating tracepoints to show the
-new reserved metadata blocks. This patch is just a preparation, the
-reserved ext_len is always zero.
+The reserve blocks updating part in ext4_da_release_space() and
+ext4_da_update_reserve_space() are almost the same, so factor them out
+to a common helper.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/inode.c             | 28 ++++++++++++++++------------
- include/trace/events/ext4.h | 10 ++++++++--
- 2 files changed, 24 insertions(+), 14 deletions(-)
+ fs/ext4/inode.c | 60 +++++++++++++++++++++----------------------------
+ 1 file changed, 25 insertions(+), 35 deletions(-)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index dda17b3340ce..a189009d20fa 100644
+index a189009d20fa..13036cecbcc0 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -1439,31 +1439,37 @@ static int ext4_journalled_write_end(struct file *file,
+@@ -325,6 +325,27 @@ qsize_t *ext4_get_reserved_space(struct inode *inode)
  }
+ #endif
  
- /*
-- * Reserve space for a single cluster
-+ * Reserve space for a 'rsv_dlen' data blocks/clusters and 'rsv_extlen'
-+ * extent metadata blocks.
-  */
--static int ext4_da_reserve_space(struct inode *inode)
-+static int ext4_da_reserve_space(struct inode *inode, unsigned int rsv_dlen,
-+				 unsigned int rsv_extlen)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 	int ret;
- 
-+	if (!rsv_dlen && !rsv_extlen)
-+		return 0;
++static void __ext4_da_update_reserve_space(const char *where,
++					   struct inode *inode,
++					   int data_len)
++{
++	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
++	struct ext4_inode_info *ei = EXT4_I(inode);
 +
- 	/*
- 	 * We will charge metadata quota at writeout time; this saves
- 	 * us from metadata over-estimation, though we may go over by
- 	 * a small amount in the end.  Here we just reserve for data.
- 	 */
--	ret = dquot_reserve_block(inode, EXT4_C2B(sbi, 1));
-+	ret = dquot_reserve_block(inode, EXT4_C2B(sbi, rsv_dlen));
- 	if (ret)
- 		return ret;
++	if (unlikely(data_len > ei->i_reserved_data_blocks)) {
++		ext4_warning(inode->i_sb, "%s: ino %lu, clear %d "
++			     "with only %d reserved data blocks",
++			     where, inode->i_ino, data_len,
++			     ei->i_reserved_data_blocks);
++		WARN_ON(1);
++		data_len = ei->i_reserved_data_blocks;
++	}
++
++	/* Update per-inode reservations */
++	ei->i_reserved_data_blocks -= data_len;
++	percpu_counter_sub(&sbi->s_dirtyclusters_counter, data_len);
++}
++
+ /*
+  * Called with i_data_sem down, which is important since we can call
+  * ext4_discard_preallocations() from here.
+@@ -340,19 +361,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
  
  	spin_lock(&ei->i_block_reservation_lock);
--	if (ext4_claim_free_clusters(sbi, 1, 0)) {
-+	if (ext4_claim_free_clusters(sbi, rsv_dlen + rsv_extlen, 0)) {
- 		spin_unlock(&ei->i_block_reservation_lock);
--		dquot_release_reservation_block(inode, EXT4_C2B(sbi, 1));
-+		dquot_release_reservation_block(inode, EXT4_C2B(sbi, rsv_dlen));
- 		return -ENOSPC;
- 	}
--	ei->i_reserved_data_blocks++;
--	trace_ext4_da_reserve_space(inode);
-+	ei->i_reserved_data_blocks += rsv_dlen;
-+	ei->i_reserved_ext_blocks += rsv_extlen;
-+	trace_ext4_da_reserve_space(inode, rsv_dlen, rsv_extlen);
+ 	trace_ext4_da_update_reserve_space(inode, used, quota_claim);
+-	if (unlikely(used > ei->i_reserved_data_blocks)) {
+-		ext4_warning(inode->i_sb, "%s: ino %lu, used %d "
+-			 "with only %d reserved data blocks",
+-			 __func__, inode->i_ino, used,
+-			 ei->i_reserved_data_blocks);
+-		WARN_ON(1);
+-		used = ei->i_reserved_data_blocks;
+-	}
+-
+-	/* Update per-inode reservations */
+-	ei->i_reserved_data_blocks -= used;
+-	percpu_counter_sub(&sbi->s_dirtyclusters_counter, used);
+-
++	__ext4_da_update_reserve_space(__func__, inode, used);
  	spin_unlock(&ei->i_block_reservation_lock);
  
- 	return 0;       /* success */
-@@ -1659,11 +1665,9 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
- 		}
- 	}
+ 	/* Update quota subsystem for data blocks */
+@@ -1483,29 +1492,10 @@ void ext4_da_release_space(struct inode *inode, int to_free)
+ 	if (!to_free)
+ 		return;		/* Nothing to release, exit */
  
--	if (rsv_dlen > 0) {
--		ret = ext4_da_reserve_space(inode);
--		if (ret)   /* ENOSPC */
--			return ret;
+-	spin_lock(&EXT4_I(inode)->i_block_reservation_lock);
+-
++	spin_lock(&ei->i_block_reservation_lock);
+ 	trace_ext4_da_release_space(inode, to_free);
+-	if (unlikely(to_free > ei->i_reserved_data_blocks)) {
+-		/*
+-		 * if there aren't enough reserved blocks, then the
+-		 * counter is messed up somewhere.  Since this
+-		 * function is called from invalidate page, it's
+-		 * harmless to return without any action.
+-		 */
+-		ext4_warning(inode->i_sb, "ext4_da_release_space: "
+-			 "ino %lu, to_free %d with only %d reserved "
+-			 "data blocks", inode->i_ino, to_free,
+-			 ei->i_reserved_data_blocks);
+-		WARN_ON(1);
+-		to_free = ei->i_reserved_data_blocks;
 -	}
-+	ret = ext4_da_reserve_space(inode, rsv_dlen, 0);
-+	if (ret)   /* ENOSPC */
-+		return ret;
+-	ei->i_reserved_data_blocks -= to_free;
+-
+-	/* update fs dirty data blocks counter */
+-	percpu_counter_sub(&sbi->s_dirtyclusters_counter, to_free);
+-
+-	spin_unlock(&EXT4_I(inode)->i_block_reservation_lock);
++	__ext4_da_update_reserve_space(__func__, inode, to_free);
++	spin_unlock(&ei->i_block_reservation_lock);
  
- 	ext4_es_insert_delayed_block(inode, lblk, allocated);
- 	return 0;
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 115f96f444ff..7a9839f2d681 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -1251,14 +1251,16 @@ TRACE_EVENT(ext4_da_update_reserve_space,
- );
- 
- TRACE_EVENT(ext4_da_reserve_space,
--	TP_PROTO(struct inode *inode),
-+	TP_PROTO(struct inode *inode, int data_blocks, int meta_blocks),
- 
--	TP_ARGS(inode),
-+	TP_ARGS(inode, data_blocks, meta_blocks),
- 
- 	TP_STRUCT__entry(
- 		__field(	dev_t,	dev			)
- 		__field(	ino_t,	ino			)
- 		__field(	__u64,	i_blocks		)
-+		__field(	int,	data_blocks		)
-+		__field(	int,	meta_blocks		)
- 		__field(	int,	reserved_data_blocks	)
- 		__field(	int,	reserved_ext_blocks	)
- 		__field(	__u16,  mode			)
-@@ -1268,16 +1270,20 @@ TRACE_EVENT(ext4_da_reserve_space,
- 		__entry->dev	= inode->i_sb->s_dev;
- 		__entry->ino	= inode->i_ino;
- 		__entry->i_blocks = inode->i_blocks;
-+		__entry->data_blocks = data_blocks;
-+		__entry->meta_blocks = meta_blocks;
- 		__entry->reserved_data_blocks = EXT4_I(inode)->i_reserved_data_blocks;
- 		__entry->reserved_ext_blocks = EXT4_I(inode)->i_reserved_ext_blocks;
- 		__entry->mode	= inode->i_mode;
- 	),
- 
- 	TP_printk("dev %d,%d ino %lu mode 0%o i_blocks %llu "
-+		  "data_blocks %d meta_blocks %d "
- 		  "reserved_data_blocks %d reserved_ext_blocks %d",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  (unsigned long) __entry->ino,
- 		  __entry->mode, __entry->i_blocks,
-+		  __entry->data_blocks, __entry->meta_blocks,
- 		  __entry->reserved_data_blocks,
- 		  __entry->reserved_ext_blocks)
- );
+ 	dquot_release_reservation_block(inode, EXT4_C2B(sbi, to_free));
+ }
 -- 
 2.39.2
 
