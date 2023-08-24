@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3966786BED
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9CF786BF5
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240331AbjHXJbA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 05:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S240739AbjHXJbH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 05:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240784AbjHXJas (ORCPT
+        with ESMTP id S240786AbjHXJas (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 05:30:48 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0364519A0
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 02:30:45 -0700 (PDT)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDE110F
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 02:30:46 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RWd9W68pXz4f3lK3
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 17:30:39 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWd9Z2Dnzz4f41Gv
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 17:30:42 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S11;
+        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S12;
         Thu, 24 Aug 2023 17:30:43 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
         chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: [RFC PATCH 07/16] ext4: count inode's total delalloc data blocks into ext4_es_tree
-Date:   Thu, 24 Aug 2023 17:26:10 +0800
-Message-Id: <20230824092619.1327976-8-yi.zhang@huaweicloud.com>
+Subject: [RFC PATCH 08/16] ext4: refactor delalloc space reservation
+Date:   Thu, 24 Aug 2023 17:26:11 +0800
+Message-Id: <20230824092619.1327976-9-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 References: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWDWrW7JrWkGr1rKw47twb_yoW5Gw13pa
-        s3A3WUGr4fXw1kWayxXr4UZr1fta48Gay7GrWftr1IkFyUAryftF10yFWjvFyYqrW8Jw45
-        XF48tw1UGa13KaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S12
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy7uw1xGFykWw4xXF13Jwb_yoW8Cw4Upr
+        W3CFsrKr4xW3s2kF4SqrnrXF1rKa92qrWUJFW29w1fZry3XFyfKF1qyF15ZF1fKrW8XF4Y
+        qFWUJ34Uua1jka7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9C14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -52,9 +52,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXrWDWrW7JrWkGr1rKw47twb_yoW5Gw13pa
         0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQSdkUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,87 +62,73 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-Add a parameter in struct ext4_es_tree to count per-inode's total
-delalloc data blocks number, it will be used to calculate reserved
-meta blocks when creating a new delalloc extent entry, or mapping a
-delalloc entry to a real one or releasing a delalloc entry.
+Cleanup the delalloc reserve space calling, split it from the bigalloc
+checks, call ext4_da_reserve_space() if it have unmapped block need to
+reserve, no logical changes.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/extents_status.c | 19 +++++++++++++++++++
- fs/ext4/extents_status.h |  1 +
- 2 files changed, 20 insertions(+)
+ fs/ext4/inode.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index 34164c2827f2..b098c3316189 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -178,6 +178,7 @@ void ext4_es_init_tree(struct ext4_es_tree *tree)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 546a3b09fd0a..861602903b4d 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1623,8 +1623,9 @@ static void ext4_print_free_blocks(struct inode *inode)
+ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
  {
- 	tree->root = RB_ROOT;
- 	tree->cache_es = NULL;
-+	tree->da_es_len = 0;
- }
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+-	int ret;
++	unsigned int rsv_dlen = 1;
+ 	bool allocated = false;
++	int ret;
  
- #ifdef ES_DEBUG__
-@@ -787,6 +788,20 @@ static inline void ext4_es_insert_extent_check(struct inode *inode,
- }
- #endif
- 
-+/*
-+ * Update total delay allocated extent length.
-+ */
-+static inline void ext4_es_update_da_block(struct inode *inode, long es_len)
-+{
-+	struct ext4_es_tree *tree = &EXT4_I(inode)->i_es_tree;
-+
-+	if (!es_len)
-+		return;
-+
-+	tree->da_es_len += es_len;
-+	es_debug("update da blocks %ld, to %u\n", es_len, tree->da_es_len);
-+}
-+
- static int __es_insert_extent(struct inode *inode, struct extent_status *newes,
- 			      struct extent_status *prealloc)
- {
-@@ -915,6 +930,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
- 			__es_free_extent(es1);
- 		es1 = NULL;
- 	}
-+	ext4_es_update_da_block(inode, -rinfo.ndelonly_blk);
- 
- 	err2 = __es_insert_extent(inode, &newes, es2);
- 	if (err2 == -ENOMEM && !ext4_es_must_keep(&newes))
-@@ -1571,6 +1587,7 @@ void ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
- 			__es_free_extent(es);
- 		es = NULL;
- 	}
-+	ext4_es_update_da_block(inode, -rinfo.ndelonly_blk);
- 	write_unlock(&EXT4_I(inode)->i_es_lock);
- 	if (err)
- 		goto retry;
-@@ -2161,6 +2178,8 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
- 			pr = NULL;
+ 	/*
+ 	 * If the cluster containing lblk is shared with a delayed,
+@@ -1637,11 +1638,8 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 	 * it's necessary to examine the extent tree if a search of the
+ 	 * extents status tree doesn't get a match.
+ 	 */
+-	if (sbi->s_cluster_ratio == 1) {
+-		ret = ext4_da_reserve_space(inode);
+-		if (ret != 0)   /* ENOSPC */
+-			return ret;
+-	} else {   /* bigalloc */
++	if (sbi->s_cluster_ratio > 1) {
++		rsv_dlen = 0;
+ 		if (!ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk)) {
+ 			if (!ext4_es_scan_clu(inode,
+ 					      &ext4_es_is_mapped, lblk)) {
+@@ -1649,19 +1647,22 @@ static int ext4_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk)
+ 						      EXT4_B2C(sbi, lblk));
+ 				if (ret < 0)
+ 					return ret;
+-				if (ret == 0) {
+-					ret = ext4_da_reserve_space(inode);
+-					if (ret != 0)   /* ENOSPC */
+-						return ret;
+-				} else {
++				if (ret == 0)
++					rsv_dlen = 1;
++				else
+ 					allocated = true;
+-				}
+ 			} else {
+ 				allocated = true;
+ 			}
  		}
  	}
-+
-+	ext4_es_update_da_block(inode, newes.es_len);
- error:
- 	write_unlock(&EXT4_I(inode)->i_es_lock);
- 	if (err1 || err2 || err3 < 0)
-diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
-index 7344667eb2cd..ee873b305210 100644
---- a/fs/ext4/extents_status.h
-+++ b/fs/ext4/extents_status.h
-@@ -66,6 +66,7 @@ struct extent_status {
- struct ext4_es_tree {
- 	struct rb_root root;
- 	struct extent_status *cache_es;	/* recently accessed extent */
-+	ext4_lblk_t da_es_len;	/* total delalloc len */
- };
  
- struct ext4_es_stats {
++	if (rsv_dlen > 0) {
++		ret = ext4_da_reserve_space(inode);
++		if (ret)   /* ENOSPC */
++			return ret;
++	}
++
+ 	ext4_es_insert_delayed_block(inode, lblk, allocated);
+ 	return 0;
+ }
 -- 
 2.39.2
 
