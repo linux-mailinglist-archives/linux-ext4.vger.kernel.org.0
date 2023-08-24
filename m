@@ -2,49 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B330786554
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 04:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F29D7865C6
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 05:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbjHXC2H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Aug 2023 22:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        id S236829AbjHXDTS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Aug 2023 23:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239521AbjHXC1v (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Aug 2023 22:27:51 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85031AD
-        for <linux-ext4@vger.kernel.org>; Wed, 23 Aug 2023 19:27:49 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RWRk20J2JzLp59;
-        Thu, 24 Aug 2023 10:24:42 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 24 Aug 2023 10:27:47 +0800
-Message-ID: <c03c97b6-1a04-737f-c17b-8e35564f32df@huawei.com>
-Date:   Thu, 24 Aug 2023 10:27:46 +0800
+        with ESMTP id S230413AbjHXDSz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Aug 2023 23:18:55 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DC510E5
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Aug 2023 20:18:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RWSwP0l0gz4f3nqH
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 11:18:45 +0800 (CST)
+Received: from [10.174.179.189] (unknown [10.174.179.189])
+        by APP2 (Coremail) with SMTP id Syh0CgAHKW0WzOZkkSG7BQ--.1532S2;
+        Thu, 24 Aug 2023 11:18:48 +0800 (CST)
+Message-ID: <3e37ecba-df09-2d1d-4ee0-84707d23f994@huaweicloud.com>
+Date:   Thu, 24 Aug 2023 11:18:46 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
+ Thunderbird/102.7.0
+Subject: Re: [PATCH v2] ext4: Adds helpers for s_mount_state
 Content-Language: en-US
 To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <darrick.wong@oracle.com>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20230817081828.934259-1-libaokun1@huawei.com>
- <20230823170524.xox66gceoqrigtyo@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230823170524.xox66gceoqrigtyo@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, wubo40@huawei.com
+References: <1692103002-37994-1-git-send-email-wubo@huaweicloud.com>
+ <20230823165109.r5d4g2fuvgd5njjf@quack3>
+From:   Wu Bo <wubo@huaweicloud.com>
+In-Reply-To: <20230823165109.r5d4g2fuvgd5njjf@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgAHKW0WzOZkkSG7BQ--.1532S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfuw1rtrW8urWDWr4xtr47Arb_yoW8uF13to
+        W8tF17Jr4fGFy3KayxCryxtryj93yDGanrJr45ua9rJr1av34Duw129w13XFy7Aa1rGrWU
+        C3sxGa10ya1kGwsxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUU5R7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+        CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+        AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: pzxe0q5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,52 +63,514 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello, Jan!
 
-On 2023/8/24 1:05, Jan Kara wrote:
-> On Thu 17-08-23 16:18:28, Baokun Li wrote:
->> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
->> inodes"), we load all the quotas before we process the orphaned inodes,
->> and when we load the quotas, we check the checsum of the bbitmap for each
->> group. If one of the bbitmap checksums is wrong, the following error will
->> be reported:
+On 2023/8/24 0:51, Jan Kara wrote:
+> On Tue 15-08-23 20:36:42, Wu Bo wrote:
+>> From: Wu Bo <wubo40@huawei.com>
 >>
->> “Error initializing quota context in support library:
->>   Block bitmap checksum does not match bitmap”
+>> This patch adds helpers for s_mount_state to replace open code.
 >>
->> But loading quotas comes before checking the current superblock for the
->> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
->> image that contains orphan inodes and has the wrong bbitmap checksum.
->> So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
->> the above problem.
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> This certainly looks better but I wonder if there still isn't a problem if
-> the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
-> rather move the initialization of the quota files after the call to
-> e2fsck_read_bitmaps()?
+>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> The patch looks correct but why did you decide to create these helpers in
+> the first place? If the helper is trivial as in this case, I don't think it
+> really adds much value...
 >
 > 								Honza
-When the bitmap checksums are wrong but EXT2_ERROR_FS is not set, we must
-have lost some data (error flag or group descriptor or bitmap), so there is
-something wrong with the kernel at this time, so I don't think we should 
-fix the
-image directly, but rather let the user realize that something is wrong 
-with the
-filesystem logic.
+Um, for no particular reason, the same code exists in many places,
+Just trying to wrap a helper function for readability, nothing more.
 
-Moreover, if we don't care how this happened, but just want to fix the 
-image,
-we only need to run "e2fsck -a" twice. After merging in the current 
-patch, we
-always empty the orphan list before loading the quotas, and EXT2_ERROR_FS
-is set when loading the quotas fails, so this will be fixed the second 
-time you
-run e2fsck. It will not happen that every e2fsck will fail like it did 
-before.
+Thanks, Wu.
+>> ---
+>>   fs/ext4/balloc.c         |  2 +-
+>>   fs/ext4/ext4.h           | 14 ++++++++++++++
+>>   fs/ext4/ext4_jbd2.c      |  2 +-
+>>   fs/ext4/extents_status.c | 16 ++++++++--------
+>>   fs/ext4/fast_commit.c    |  6 +++---
+>>   fs/ext4/ialloc.c         | 14 +++++++-------
+>>   fs/ext4/inode.c          | 12 ++++++------
+>>   fs/ext4/mballoc.c        |  8 ++++----
+>>   fs/ext4/namei.c          |  4 ++--
+>>   fs/ext4/orphan.c         |  7 ++++---
+>>   fs/ext4/resize.c         |  4 ++--
+>>   fs/ext4/super.c          | 20 ++++++++++----------
+>>   12 files changed, 62 insertions(+), 47 deletions(-)
+>>
+>> diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+>> index 1f72f977c6db..9baa88cacbe0 100644
+>> --- a/fs/ext4/balloc.c
+>> +++ b/fs/ext4/balloc.c
+>> @@ -402,7 +402,7 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
+>>   	ext4_fsblk_t	blk;
+>>   	struct ext4_group_info *grp;
+>>   
+>> -	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		return 0;
+>>   
+>>   	grp = ext4_get_group_info(sb, block_group);
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 0a2d55faa095..5b1995986704 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -1817,6 +1817,20 @@ static inline int ext4_test_mount_flag(struct super_block *sb, int bit)
+>>   	return test_bit(bit, &EXT4_SB(sb)->s_mount_flags);
+>>   }
+>>   
+>> +static inline void ext4_set_mount_state(struct super_block *sb, int state)
+>> +{
+>> +	EXT4_SB(sb)->s_mount_state |= state;
+>> +}
+>> +
+>> +static inline void ext4_clear_mount_state(struct super_block *sb, int state)
+>> +{
+>> +	EXT4_SB(sb)->s_mount_state &= ~state;
+>> +}
+>> +
+>> +static inline int ext4_test_mount_state(struct super_block *sb, int state)
+>> +{
+>> +	return EXT4_SB(sb)->s_mount_state & state;
+>> +}
+>>   
+>>   /*
+>>    * Simulate_fail codes
+>> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+>> index 77f318ec8abb..6ba75ae2c188 100644
+>> --- a/fs/ext4/ext4_jbd2.c
+>> +++ b/fs/ext4/ext4_jbd2.c
+>> @@ -106,7 +106,7 @@ handle_t *__ext4_journal_start_sb(struct inode *inode,
+>>   		return ERR_PTR(err);
+>>   
+>>   	journal = EXT4_SB(sb)->s_journal;
+>> -	if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+>> +	if (!journal || ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		return ext4_get_nojournal();
+>>   	return jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds,
+>>   				   GFP_NOFS, type, line);
+>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+>> index 9b5b8951afb4..b37b9c29c9fa 100644
+>> --- a/fs/ext4/extents_status.c
+>> +++ b/fs/ext4/extents_status.c
+>> @@ -309,7 +309,7 @@ void ext4_es_find_extent_range(struct inode *inode,
+>>   			       ext4_lblk_t lblk, ext4_lblk_t end,
+>>   			       struct extent_status *es)
+>>   {
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	trace_ext4_es_find_extent_range_enter(inode, lblk);
+>> @@ -362,7 +362,7 @@ bool ext4_es_scan_range(struct inode *inode,
+>>   {
+>>   	bool ret;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return false;
+>>   
+>>   	read_lock(&EXT4_I(inode)->i_es_lock);
+>> @@ -408,7 +408,7 @@ bool ext4_es_scan_clu(struct inode *inode,
+>>   {
+>>   	bool ret;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return false;
+>>   
+>>   	read_lock(&EXT4_I(inode)->i_es_lock);
+>> @@ -842,7 +842,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   	struct extent_status *es1 = NULL;
+>>   	struct extent_status *es2 = NULL;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	es_debug("add [%u/%u) %llu %x to extent status tree of inode %lu\n",
+>> @@ -917,7 +917,7 @@ void ext4_es_cache_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   	struct extent_status newes;
+>>   	ext4_lblk_t end = lblk + len - 1;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	newes.es_lblk = lblk;
+>> @@ -955,7 +955,7 @@ int ext4_es_lookup_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   	struct rb_node *node;
+>>   	int found = 0;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return 0;
+>>   
+>>   	trace_ext4_es_lookup_extent_enter(inode, lblk);
+>> @@ -1468,7 +1468,7 @@ void ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>>   	int reserved = 0;
+>>   	struct extent_status *es = NULL;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	trace_ext4_es_remove_extent(inode, lblk, len);
+>> @@ -2024,7 +2024,7 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+>>   	struct extent_status *es1 = NULL;
+>>   	struct extent_status *es2 = NULL;
+>>   
+>> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	es_debug("add [%u/1) delayed to extent status tree of inode %lu\n",
+>> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+>> index b06de728b3b6..023e13ec9fdc 100644
+>> --- a/fs/ext4/fast_commit.c
+>> +++ b/fs/ext4/fast_commit.c
+>> @@ -232,7 +232,7 @@ __releases(&EXT4_SB(inode->i_sb)->s_fc_lock)
+>>   static bool ext4_fc_disabled(struct super_block *sb)
+>>   {
+>>   	return (!test_opt2(sb, JOURNAL_FAST_COMMIT) ||
+>> -		(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY));
+>> +		ext4_test_mount_state(sb, EXT4_FC_REPLAY));
+>>   }
+>>   
+>>   /*
+>> @@ -1975,7 +1975,7 @@ void ext4_fc_replay_cleanup(struct super_block *sb)
+>>   {
+>>   	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>>   
+>> -	sbi->s_mount_state &= ~EXT4_FC_REPLAY;
+>> +	ext4_clear_mount_state(sb, EXT4_FC_REPLAY);
+>>   	kfree(sbi->s_fc_replay_state.fc_regions);
+>>   	kfree(sbi->s_fc_replay_state.fc_modified_inodes);
+>>   }
+>> @@ -2165,7 +2165,7 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
+>>   
+>>   	if (state->fc_current_pass != pass) {
+>>   		state->fc_current_pass = pass;
+>> -		sbi->s_mount_state |= EXT4_FC_REPLAY;
+>> +		ext4_set_mount_state(sb, EXT4_FC_REPLAY);
+>>   	}
+>>   	if (!sbi->s_fc_replay_state.fc_replay_num_tags) {
+>>   		ext4_debug("Replay stops\n");
+>> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+>> index 754f961cd9fd..09ec20b2e761 100644
+>> --- a/fs/ext4/ialloc.c
+>> +++ b/fs/ext4/ialloc.c
+>> @@ -84,7 +84,7 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
+>>   	ext4_fsblk_t	blk;
+>>   	struct ext4_group_info *grp;
+>>   
+>> -	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		return 0;
+>>   
+>>   	grp = ext4_get_group_info(sb, block_group);
+>> @@ -291,7 +291,7 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
+>>   		bitmap_bh = NULL;
+>>   		goto error_return;
+>>   	}
+>> -	if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
+>> +	if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY)) {
+>>   		grp = ext4_get_group_info(sb, block_group);
+>>   		if (!grp || unlikely(EXT4_MB_GRP_IBITMAP_CORRUPT(grp))) {
+>>   			fatal = -EFSCORRUPTED;
+>> @@ -1040,7 +1040,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+>>   		if (ext4_free_inodes_count(sb, gdp) == 0)
+>>   			goto next_group;
+>>   
+>> -		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY)) {
+>>   			grp = ext4_get_group_info(sb, group);
+>>   			/*
+>>   			 * Skip groups with already-known suspicious inode
+>> @@ -1053,7 +1053,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+>>   		brelse(inode_bitmap_bh);
+>>   		inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
+>>   		/* Skip groups with suspicious inode tables */
+>> -		if (((!(sbi->s_mount_state & EXT4_FC_REPLAY))
+>> +		if (((!ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		     && EXT4_MB_GRP_IBITMAP_CORRUPT(grp)) ||
+>>   		    IS_ERR(inode_bitmap_bh)) {
+>>   			inode_bitmap_bh = NULL;
+>> @@ -1073,7 +1073,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+>>   			goto next_group;
+>>   		}
+>>   
+>> -		if ((!(sbi->s_mount_state & EXT4_FC_REPLAY)) && !handle) {
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY) && !handle) {
+>>   			BUG_ON(nblocks <= 0);
+>>   			handle = __ext4_journal_start_sb(NULL, dir->i_sb,
+>>   				 line_no, handle_type, nblocks, 0,
+>> @@ -1181,7 +1181,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+>>   		int free;
+>>   		struct ext4_group_info *grp = NULL;
+>>   
+>> -		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY)) {
+>>   			grp = ext4_get_group_info(sb, group);
+>>   			if (!grp) {
+>>   				err = -EFSCORRUPTED;
+>> @@ -1207,7 +1207,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+>>   		if (ino > free)
+>>   			ext4_itable_unused_set(sb, gdp,
+>>   					(EXT4_INODES_PER_GROUP(sb) - ino));
+>> -		if (!(sbi->s_mount_state & EXT4_FC_REPLAY))
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   			up_read(&grp->alloc_sem);
+>>   	} else {
+>>   		ext4_lock_group(sb, group);
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 43775a6ca505..b830a13ca651 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -502,7 +502,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>>   		return -EFSCORRUPTED;
+>>   
+>>   	/* Lookup extent status tree firstly */
+>> -	if (!(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) &&
+>> +	if (!(ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY)) &&
+>>   	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+>>   		if (ext4_es_is_written(&es) || ext4_es_is_unwritten(&es)) {
+>>   			map->m_pblk = ext4_es_pblock(&es) +
+>> @@ -810,7 +810,7 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+>>   	bool nowait = map_flags & EXT4_GET_BLOCKS_CACHED_NOWAIT;
+>>   	int err;
+>>   
+>> -	ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	ASSERT(ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY)
+>>   		    || handle != NULL || create == 0);
+>>   	ASSERT(create == 0 || !nowait);
+>>   
+>> @@ -831,7 +831,7 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+>>   		return ERR_PTR(-ENOMEM);
+>>   	if (map.m_flags & EXT4_MAP_NEW) {
+>>   		ASSERT(create != 0);
+>> -		ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +		ASSERT(ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY)
+>>   			    || (handle != NULL));
+>>   
+>>   		/*
+>> @@ -4723,7 +4723,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>>   
+>>   	if ((!ext4_inode_csum_verify(inode, raw_inode, ei) ||
+>>   	    ext4_simulate_fail(sb, EXT4_SIM_INODE_CRC)) &&
+>> -	     (!(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))) {
+>> +	     (!ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))) {
+>>   		ext4_error_inode_err(inode, function, line, 0,
+>>   				EFSBADCRC, "iget: checksum invalid");
+>>   		ret = -EFSBADCRC;
+>> @@ -4760,7 +4760,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>>   	 */
+>>   	if (inode->i_nlink == 0) {
+>>   		if ((inode->i_mode == 0 || flags & EXT4_IGET_SPECIAL ||
+>> -		     !(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_ORPHAN_FS)) &&
+>> +		     !ext4_test_mount_state(inode->i_sb, EXT4_ORPHAN_FS)) &&
+>>   		    ino != EXT4_BOOT_LOADER_INO) {
+>>   			/* this inode is deleted or unallocated */
+>>   			if (flags & EXT4_IGET_SPECIAL) {
+>> @@ -4884,7 +4884,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>>   		goto bad_inode;
+>>   	} else if (!ext4_has_inline_data(inode)) {
+>>   		/* validate the block references in the inode */
+>> -		if (!(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY) &&
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY) &&
+>>   			(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
+>>   			(S_ISLNK(inode->i_mode) &&
+>>   			!ext4_inode_is_fast_symlink(inode)))) {
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 21b903fe546e..920b03a5cb7a 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1911,7 +1911,7 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   
+>>   		blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
+>>   		blocknr += EXT4_C2B(sbi, block);
+>> -		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
+>> +		if (!ext4_test_mount_state(sb, EXT4_FC_REPLAY)) {
+>>   			ext4_grp_locked_error(sb, e4b->bd_group,
+>>   					      inode ? inode->i_ino : 0,
+>>   					      blocknr,
+>> @@ -5538,7 +5538,7 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
+>>   		return;
+>>   	}
+>>   
+>> -	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		return;
+>>   
+>>   	mb_debug(sb, "discard preallocation for inode %lu\n",
+>> @@ -6175,7 +6175,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+>>   	sbi = EXT4_SB(sb);
+>>   
+>>   	trace_ext4_request_blocks(ar);
+>> -	if (sbi->s_mount_state & EXT4_FC_REPLAY)
+>> +	if (ext4_test_mount_state(sb, EXT4_FC_REPLAY))
+>>   		return ext4_mb_new_blocks_simple(ar, errp);
+>>   
+>>   	/* Allow to use superuser reservation for quota file */
+>> @@ -6672,7 +6672,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>>   			block = bh->b_blocknr;
+>>   	}
+>>   
+>> -	if (sbi->s_mount_state & EXT4_FC_REPLAY) {
+>> +	if (ext4_test_mount_state(sb, EXT4_FC_REPLAY)) {
+>>   		ext4_free_blocks_simple(inode, block, EXT4_NUM_B2C(sbi, count));
+>>   		return;
+>>   	}
+>> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+>> index 0caf6c730ce3..01e00f8a9c7a 100644
+>> --- a/fs/ext4/namei.c
+>> +++ b/fs/ext4/namei.c
+>> @@ -3251,7 +3251,7 @@ int __ext4_unlink(struct inode *dir, const struct qstr *d_name,
+>>   		 * the inode. That's because it might have gotten
+>>   		 * renamed to a different inode number
+>>   		 */
+>> -		if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>> +		if (ext4_test_mount_state(inode->i_sb, EXT4_FC_REPLAY))
+>>   			skip_remove_dentry = 1;
+>>   		else
+>>   			goto out_bh;
+>> @@ -3996,7 +3996,7 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+>>   		if (new.inode)
+>>   			ext4_fc_track_unlink(handle, new.dentry);
+>>   		if (test_opt2(sb, JOURNAL_FAST_COMMIT) &&
+>> -		    !(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY) &&
+>> +		    !(ext4_test_mount_state(sb, EXT4_FC_REPLAY)) &&
+>>   		    !(ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE))) {
+>>   			__ext4_fc_track_link(handle, old.inode, new.dentry);
+>>   			__ext4_fc_track_unlink(handle, old.inode, old.dentry);
+>> diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
+>> index e5b47dda3317..f663e41c20bd 100644
+>> --- a/fs/ext4/orphan.c
+>> +++ b/fs/ext4/orphan.c
+>> @@ -233,7 +233,8 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
+>>   	struct ext4_iloc iloc;
+>>   	int err = 0;
+>>   
+>> -	if (!sbi->s_journal && !(sbi->s_mount_state & EXT4_ORPHAN_FS))
+>> +	if (!sbi->s_journal &&
+>> +	    !ext4_test_mount_state(inode->i_sb, EXT4_ORPHAN_FS))
+>>   		return 0;
+>>   
+>>   	WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
+>> @@ -408,7 +409,7 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
+>>   		return;
+>>   	}
+>>   
+>> -	if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+>> +	if (ext4_test_mount_state(sb, EXT4_ERROR_FS)) {
+>>   		/* don't clear list on RO mount w/ errors */
+>>   		if (es->s_last_orphan && !(s_flags & SB_RDONLY)) {
+>>   			ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
+>> @@ -458,7 +459,7 @@ void ext4_orphan_cleanup(struct super_block *sb, struct ext4_super_block *es)
+>>   		 * We may have encountered an error during cleanup; if
+>>   		 * so, skip the rest.
+>>   		 */
+>> -		if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+>> +		if (ext4_test_mount_state(sb, EXT4_ERROR_FS)) {
+>>   			ext4_debug("Skipping orphan recovery on fs with errors.\n");
+>>   			es->s_last_orphan = 0;
+>>   			break;
+>> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+>> index 0361c20910de..f656a8fcc0c2 100644
+>> --- a/fs/ext4/resize.c
+>> +++ b/fs/ext4/resize.c
+>> @@ -79,7 +79,7 @@ int ext4_resize_begin(struct super_block *sb)
+>>   	 * We are not allowed to do online-resizing on a filesystem mounted
+>>   	 * with error, because it can destroy the filesystem easily.
+>>   	 */
+>> -	if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
+>> +	if (ext4_test_mount_state(sb, EXT4_ERROR_FS)) {
+>>   		ext4_warning(sb, "There are errors in the filesystem, "
+>>   			     "so online resizing is not allowed");
+>>   		return -EPERM;
+>> @@ -1230,7 +1230,7 @@ static void update_backups(struct super_block *sb, sector_t blk_off, char *data,
+>>   	if (err) {
+>>   		ext4_warning(sb, "can't update backup for group %u (err %d), "
+>>   			     "forcing fsck on next reboot", group, err);
+>> -		sbi->s_mount_state &= ~EXT4_VALID_FS;
+>> +		ext4_clear_mount_state(sb, EXT4_VALID_FS);
+>>   		sbi->s_es->s_state &= cpu_to_le16(~EXT4_VALID_FS);
+>>   		mark_buffer_dirty(sbi->s_sbh);
+>>   	}
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index c94ebf704616..c88ad66644d9 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -652,7 +652,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+>>   	journal_t *journal = EXT4_SB(sb)->s_journal;
+>>   	bool continue_fs = !force_ro && test_opt(sb, ERRORS_CONT);
+>>   
+>> -	EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+>> +	ext4_set_mount_state(sb, EXT4_ERROR_FS);
+>>   	if (test_opt(sb, WARN_ON_ERROR))
+>>   		WARN_ON_ONCE(1);
+>>   
+>> @@ -1014,7 +1014,7 @@ __acquires(bitlock)
+>>   	if (test_opt(sb, ERRORS_CONT)) {
+>>   		if (test_opt(sb, WARN_ON_ERROR))
+>>   			WARN_ON_ONCE(1);
+>> -		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+>> +		ext4_set_mount_state(sb, EXT4_ERROR_FS);
+>>   		if (!bdev_read_only(sb->s_bdev)) {
+>>   			save_error_info(sb, EFSCORRUPTED, ino, block, function,
+>>   					line);
+>> @@ -3090,10 +3090,10 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
+>>   	}
+>>   	if (read_only)
+>>   		goto done;
+>> -	if (!(sbi->s_mount_state & EXT4_VALID_FS))
+>> +	if (!ext4_test_mount_state(sb, EXT4_VALID_FS))
+>>   		ext4_msg(sb, KERN_WARNING, "warning: mounting unchecked fs, "
+>>   			 "running e2fsck is recommended");
+>> -	else if (sbi->s_mount_state & EXT4_ERROR_FS)
+>> +	else if (ext4_test_mount_state(sb, EXT4_ERROR_FS))
+>>   		ext4_msg(sb, KERN_WARNING,
+>>   			 "warning: mounting fs with errors, "
+>>   			 "running e2fsck is recommended");
+>> @@ -5573,9 +5573,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>>   	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+>>   				 &sbi->s_bdev_wb_err);
+>>   	sb->s_bdev->bd_super = sb;
+>> -	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+>> +	ext4_set_mount_state(sb, EXT4_ORPHAN_FS);
+>>   	ext4_orphan_cleanup(sb, es);
+>> -	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+>> +	ext4_clear_mount_state(sb, EXT4_ORPHAN_FS);
+>>   	/*
+>>   	 * Update the checksum after updating free space/inode counters and
+>>   	 * ext4_orphan_cleanup. Otherwise the superblock can have an incorrect
+>> @@ -6023,8 +6023,8 @@ static int ext4_load_journal(struct super_block *sb,
+>>   		}
+>>   		kfree(save);
+>>   		orig_state = es->s_state;
+>> -		es->s_state |= cpu_to_le16(EXT4_SB(sb)->s_mount_state &
+>> -					   EXT4_ERROR_FS);
+>> +		es->s_state |= cpu_to_le16(ext4_test_mount_state(sb,
+>> +					   EXT4_ERROR_FS));
+>>   		if (orig_state != es->s_state)
+>>   			changed = true;
+>>   		/* Write out restored error information to the superblock */
+>> @@ -6263,7 +6263,7 @@ static int ext4_clear_journal_err(struct super_block *sb,
+>>   		ext4_warning(sb, "Filesystem error recorded "
+>>   			     "from previous mount: %s", errstr);
+>>   
+>> -		EXT4_SB(sb)->s_mount_state |= EXT4_ERROR_FS;
+>> +		ext4_set_mount_state(sb, EXT4_ERROR_FS);
+>>   		es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
+>>   		j_errno = ext4_commit_super(sb);
+>>   		if (j_errno)
+>> @@ -6544,7 +6544,7 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+>>   			 * mark the partition as valid again.
+>>   			 */
+>>   			if (!(es->s_state & cpu_to_le16(EXT4_VALID_FS)) &&
+>> -			    (sbi->s_mount_state & EXT4_VALID_FS))
+>> +			    (ext4_test_mount_state(sb, EXT4_VALID_FS)))
+>>   				es->s_state = cpu_to_le16(sbi->s_mount_state);
+>>   
+>>   			if (sbi->s_journal) {
+>> -- 
+>> 2.33.0
+>>
 
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
