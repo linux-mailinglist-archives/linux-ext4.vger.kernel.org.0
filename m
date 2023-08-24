@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 150F4786BFA
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF41786BEE
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 11:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240781AbjHXJbK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 05:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S240397AbjHXJbC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 05:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240791AbjHXJau (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 05:30:50 -0400
+        with ESMTP id S240793AbjHXJav (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 05:30:51 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020D610F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2B2172D
         for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 02:30:48 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWd9c3brNz4f3kjk
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RWd9c0mCGz4f41SJ
         for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 17:30:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S16;
-        Thu, 24 Aug 2023 17:30:44 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAHl6kzI+dkL1rbBQ--.46575S17;
+        Thu, 24 Aug 2023 17:30:45 +0800 (CST)
 From:   Zhang Yi <yi.zhang@huaweicloud.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
         yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
         chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: [RFC PATCH 12/16] ext4: update reserved meta blocks in ext4_da_{release|update_reserve}_space()
-Date:   Thu, 24 Aug 2023 17:26:15 +0800
-Message-Id: <20230824092619.1327976-13-yi.zhang@huaweicloud.com>
+Subject: [RFC PATCH 13/16] ext4: calculate the worst extent blocks needed of a delalloc es entry
+Date:   Thu, 24 Aug 2023 17:26:16 +0800
+Message-Id: <20230824092619.1327976-14-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 References: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S16
-X-Coremail-Antispam: 1UD129KBjvJXoWxtw15Gr1Utr1rGr4UWr1xXwb_yoWfWF4kpF
-        15CFy5Ka4rWr1kua1fZr47Zr4S9a40gFWUtFs7WFy7Zry5J3WIgF1DtF1SvFyYkrs3Gw1q
-        qa45u34rZa1UWFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHl6kzI+dkL1rbBQ--.46575S17
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1fury3Jr1DurW3uF45ZFb_yoW5WF1Dpr
+        9xZr15Gr43Ww129ayfCw48Zr1Fg3WxGrWUXrWfGryYqFW8Jr1xKFn8tFW2qFy0qFWfXa12
+        vF45tryUGw4Y9FDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9E14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -62,234 +62,85 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-The same to ext4_da_reserve_space(), we also need to update reserved
-metadata blocks when we release and convert a delalloc space range in
-ext4_da_release_space() and ext4_da_update_reserve_space(). So also
-prepare to reserve metadata blocks in these two functions, the
-reservation logic are the same to data blocks. This patch is just a
-preparation, the reserved ext_len is always zero.
+Add a new helper to calculate the worst case of extent blocks that
+needed while mapping a new delalloc extent_status entry. In the worst
+case, one delay data block consumes one extent enrty, the worst extent
+blocks should be 'leaf blocks + index blocks + (max depth - depth
+increasing costs)'. The detailed calculation formula is:
+
+        / DIV_ROUND_UP(da_blocks, ext_per_block);  (i = 0)
+ f(i) =
+        \ DIV_ROUND_UP(f(i-1), idx_per_block);     (0 < i < max_depth)
+
+ SUM = f(0) + .. + f(n) + max_depth - n - 1;  (0 <= n < max_depth, f(n) > 0)
+
+For example:
+On the default 4k block size, the default ext_per_block and
+idx_per_block are 340. (1) If we map 50 length of blocks, the worst
+entent block is DIV_ROUND_UP(50, 340) + EXT4_MAX_EXTENT_DEPTH - 1 = 5,
+(2) if we map 500 length of blocks, the worst extent block is
+DIV_ROUND_UP(500, 340) + DIV_ROUND_UP(DIV_ROUND_UP(500, 340), 340) +
+EXT4_MAX_EXTENT_DEPTH - 2 = 6, and so on. It is a preparation for
+reserving meta blocks of delalloc.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/ext4.h              |  4 ++--
- fs/ext4/inode.c             | 47 +++++++++++++++++++++----------------
- include/trace/events/ext4.h | 28 ++++++++++++++--------
- 3 files changed, 47 insertions(+), 32 deletions(-)
+ fs/ext4/ext4.h    |  2 ++
+ fs/ext4/extents.c | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index ee2dbbde176e..3e0a39653469 100644
+index 3e0a39653469..11813382fbcc 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -2998,9 +2998,9 @@ extern int ext4_zero_partial_blocks(handle_t *handle, struct inode *inode,
- extern vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf);
- extern qsize_t *ext4_get_reserved_space(struct inode *inode);
- extern int ext4_get_projid(struct inode *inode, kprojid_t *projid);
--extern void ext4_da_release_space(struct inode *inode, int to_free);
-+extern void ext4_da_release_space(struct inode *inode, unsigned int data_len);
- extern void ext4_da_update_reserve_space(struct inode *inode,
--					int used, int quota_claim);
-+					unsigned int data_len, int quota_claim);
- extern int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk,
- 			      ext4_fsblk_t pblk, ext4_lblk_t len);
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 13036cecbcc0..38c47ce1333b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -327,53 +327,59 @@ qsize_t *ext4_get_reserved_space(struct inode *inode)
- 
- static void __ext4_da_update_reserve_space(const char *where,
- 					   struct inode *inode,
--					   int data_len)
-+					   unsigned int data_len, int ext_len)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 
--	if (unlikely(data_len > ei->i_reserved_data_blocks)) {
--		ext4_warning(inode->i_sb, "%s: ino %lu, clear %d "
--			     "with only %d reserved data blocks",
--			     where, inode->i_ino, data_len,
--			     ei->i_reserved_data_blocks);
-+	if (unlikely(data_len > ei->i_reserved_data_blocks ||
-+		     ext_len > (long)ei->i_reserved_ext_blocks)) {
-+		ext4_warning(inode->i_sb, "%s: ino %lu, clear %d,%d "
-+			     "with only %d,%d reserved data blocks",
-+			     where, inode->i_ino, data_len, ext_len,
-+			     ei->i_reserved_data_blocks,
-+			     ei->i_reserved_ext_blocks);
- 		WARN_ON(1);
--		data_len = ei->i_reserved_data_blocks;
-+		data_len = min(data_len, ei->i_reserved_data_blocks);
-+		ext_len = min_t(unsigned int, ext_len, ei->i_reserved_ext_blocks);
- 	}
- 
- 	/* Update per-inode reservations */
- 	ei->i_reserved_data_blocks -= data_len;
--	percpu_counter_sub(&sbi->s_dirtyclusters_counter, data_len);
-+	ei->i_reserved_ext_blocks -= ext_len;
-+	percpu_counter_sub(&sbi->s_dirtyclusters_counter, (s64)data_len + ext_len);
+@@ -3699,6 +3699,8 @@ extern int ext4_swap_extents(handle_t *handle, struct inode *inode1,
+ 			     ext4_lblk_t lblk2,  ext4_lblk_t count,
+ 			     int mark_unwritten,int *err);
+ extern int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu);
++extern unsigned int ext4_map_worst_ext_blocks(struct inode *inode,
++					      unsigned int len);
+ extern int ext4_datasem_ensure_credits(handle_t *handle, struct inode *inode,
+ 				       int check_cred, int restart_cred,
+ 				       int revoke_cred);
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 592383effe80..43c251a42144 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5797,6 +5797,34 @@ int ext4_clu_mapped(struct inode *inode, ext4_lblk_t lclu)
+ 	return err ? err : mapped;
  }
  
++/*
++ * Calculate the worst case of extents blocks needed while mapping 'len'
++ * data blocks.
++ */
++unsigned int ext4_map_worst_ext_blocks(struct inode *inode, unsigned int len)
++{
++	unsigned int ext_blocks = 0;
++	int max_entries;
++	int depth, max_depth;
++
++	if (!len)
++		return 0;
++
++	max_entries = ext4_ext_space_block(inode, 0);
++	max_depth = EXT4_MAX_EXTENT_DEPTH;
++
++	for (depth = 0; depth < max_depth; depth++) {
++		len = DIV_ROUND_UP(len, max_entries);
++		ext_blocks += len;
++		if (len == 1)
++			break;
++		if (depth == 0)
++			max_entries = ext4_ext_space_block_idx(inode, 0);
++	}
++
++	return ext_blocks + max_depth - depth - 1;
++}
++
  /*
-  * Called with i_data_sem down, which is important since we can call
-  * ext4_discard_preallocations() from here.
-  */
--void ext4_da_update_reserve_space(struct inode *inode,
--				  int used, int quota_claim)
-+void ext4_da_update_reserve_space(struct inode *inode, unsigned int data_len,
-+				  int quota_claim)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct ext4_inode_info *ei = EXT4_I(inode);
-+	int ext_len = 0;
- 
--	if (!used)
-+	if (!data_len)
- 		return;
- 
- 	spin_lock(&ei->i_block_reservation_lock);
--	trace_ext4_da_update_reserve_space(inode, used, quota_claim);
--	__ext4_da_update_reserve_space(__func__, inode, used);
-+	trace_ext4_da_update_reserve_space(inode, data_len, ext_len,
-+					   quota_claim);
-+	__ext4_da_update_reserve_space(__func__, inode, data_len, ext_len);
- 	spin_unlock(&ei->i_block_reservation_lock);
- 
- 	/* Update quota subsystem for data blocks */
- 	if (quota_claim)
--		dquot_claim_block(inode, EXT4_C2B(sbi, used));
-+		dquot_claim_block(inode, EXT4_C2B(sbi, data_len));
- 	else {
- 		/*
- 		 * We did fallocate with an offset that is already delayed
- 		 * allocated. So on delayed allocated writeback we should
- 		 * not re-claim the quota for fallocated blocks.
- 		 */
--		dquot_release_reservation_block(inode, EXT4_C2B(sbi, used));
-+		dquot_release_reservation_block(inode, EXT4_C2B(sbi, data_len));
- 	}
- 
- 	/*
-@@ -1484,20 +1490,21 @@ static int ext4_da_reserve_space(struct inode *inode, unsigned int rsv_dlen,
- 	return 0;       /* success */
- }
- 
--void ext4_da_release_space(struct inode *inode, int to_free)
-+void ext4_da_release_space(struct inode *inode, unsigned int data_len)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct ext4_inode_info *ei = EXT4_I(inode);
-+	int ext_len = 0;
- 
--	if (!to_free)
-+	if (!data_len)
- 		return;		/* Nothing to release, exit */
- 
- 	spin_lock(&ei->i_block_reservation_lock);
--	trace_ext4_da_release_space(inode, to_free);
--	__ext4_da_update_reserve_space(__func__, inode, to_free);
-+	trace_ext4_da_release_space(inode, data_len, ext_len);
-+	__ext4_da_update_reserve_space(__func__, inode, data_len, ext_len);
- 	spin_unlock(&ei->i_block_reservation_lock);
- 
--	dquot_release_reservation_block(inode, EXT4_C2B(sbi, to_free));
-+	dquot_release_reservation_block(inode, EXT4_C2B(sbi, data_len));
- }
- 
- /*
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 7a9839f2d681..e1e9d7ead20f 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -1214,15 +1214,19 @@ TRACE_EVENT(ext4_forget,
- );
- 
- TRACE_EVENT(ext4_da_update_reserve_space,
--	TP_PROTO(struct inode *inode, int used_blocks, int quota_claim),
-+	TP_PROTO(struct inode *inode,
-+		 int data_blocks,
-+		 int meta_blocks,
-+		 int quota_claim),
- 
--	TP_ARGS(inode, used_blocks, quota_claim),
-+	TP_ARGS(inode, data_blocks, meta_blocks, quota_claim),
- 
- 	TP_STRUCT__entry(
- 		__field(	dev_t,	dev			)
- 		__field(	ino_t,	ino			)
- 		__field(	__u64,	i_blocks		)
--		__field(	int,	used_blocks		)
-+		__field(	int,	data_blocks		)
-+		__field(	int,	meta_blocks		)
- 		__field(	int,	reserved_data_blocks	)
- 		__field(	int,	reserved_ext_blocks	)
- 		__field(	int,	quota_claim		)
-@@ -1233,19 +1237,20 @@ TRACE_EVENT(ext4_da_update_reserve_space,
- 		__entry->dev	= inode->i_sb->s_dev;
- 		__entry->ino	= inode->i_ino;
- 		__entry->i_blocks = inode->i_blocks;
--		__entry->used_blocks = used_blocks;
-+		__entry->data_blocks = data_blocks;
-+		__entry->meta_blocks = meta_blocks;
- 		__entry->reserved_data_blocks = EXT4_I(inode)->i_reserved_data_blocks;
- 		__entry->reserved_ext_blocks = EXT4_I(inode)->i_reserved_ext_blocks;
- 		__entry->quota_claim = quota_claim;
- 		__entry->mode	= inode->i_mode;
- 	),
- 
--	TP_printk("dev %d,%d ino %lu mode 0%o i_blocks %llu used_blocks %d "
-+	TP_printk("dev %d,%d ino %lu mode 0%o i_blocks %llu data_blocks %d meta_blocks %d "
- 		  "reserved_data_blocks %d reserved_ext_blocks %d quota_claim %d",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  (unsigned long) __entry->ino,
- 		  __entry->mode, __entry->i_blocks,
--		  __entry->used_blocks,
-+		  __entry->data_blocks, __entry->meta_blocks,
- 		  __entry->reserved_data_blocks, __entry->reserved_ext_blocks,
- 		  __entry->quota_claim)
- );
-@@ -1289,15 +1294,16 @@ TRACE_EVENT(ext4_da_reserve_space,
- );
- 
- TRACE_EVENT(ext4_da_release_space,
--	TP_PROTO(struct inode *inode, int freed_blocks),
-+	TP_PROTO(struct inode *inode, int freed_blocks, int meta_blocks),
- 
--	TP_ARGS(inode, freed_blocks),
-+	TP_ARGS(inode, freed_blocks, meta_blocks),
- 
- 	TP_STRUCT__entry(
- 		__field(	dev_t,	dev			)
- 		__field(	ino_t,	ino			)
- 		__field(	__u64,	i_blocks		)
- 		__field(	int,	freed_blocks		)
-+		__field(	int,	meta_blocks		)
- 		__field(	int,	reserved_data_blocks	)
- 		__field(	int,	reserved_ext_blocks	)
- 		__field(	__u16,  mode			)
-@@ -1308,17 +1314,19 @@ TRACE_EVENT(ext4_da_release_space,
- 		__entry->ino	= inode->i_ino;
- 		__entry->i_blocks = inode->i_blocks;
- 		__entry->freed_blocks = freed_blocks;
-+		__entry->meta_blocks = meta_blocks;
- 		__entry->reserved_data_blocks = EXT4_I(inode)->i_reserved_data_blocks;
- 		__entry->reserved_ext_blocks = EXT4_I(inode)->i_reserved_ext_blocks;
- 		__entry->mode	= inode->i_mode;
- 	),
- 
--	TP_printk("dev %d,%d ino %lu mode 0%o i_blocks %llu freed_blocks %d "
-+	TP_printk("dev %d,%d ino %lu mode 0%o i_blocks %llu "
-+		  "freed_blocks %d meta_blocks %d"
- 		  "reserved_data_blocks %d reserved_ext_blocks %d",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  (unsigned long) __entry->ino,
- 		  __entry->mode, __entry->i_blocks,
--		  __entry->freed_blocks,
-+		  __entry->freed_blocks, __entry->meta_blocks,
- 		  __entry->reserved_data_blocks,
- 		  __entry->reserved_ext_blocks)
- );
+  * Updates physical block address and unwritten status of extent
+  * starting at lblk start and of len. If such an extent doesn't exist,
 -- 
 2.39.2
 
