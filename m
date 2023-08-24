@@ -2,131 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A9E7874B3
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 17:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEFF7878C2
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Aug 2023 21:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242174AbjHXP4w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 11:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
+        id S243265AbjHXTiK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 15:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240359AbjHXP4m (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 11:56:42 -0400
-Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4481993
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 08:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692892595;
-        bh=fwUjvnxzVnmsEiAOrfjB+FNh7kAdG9BB9yUg6zBi0eg=;
-        h=From:To:Cc:Subject:Date;
-        b=ZgrBnhUR9jmG9n7esCLYa0mn1VXZzdKiH9nC/zcJBPdLkngjXIS7MSsRpRzhbg2A+
-         QbbPMh2HP5KN3QkpEifZT8Rrc6fYeRZQ59L+DBasEkU8jRxGZ0NP5iUfpRL9tED6QP
-         e6xf8M+EkcW0dRRhN0oZDbECsxZ5lU/fuonPmCCo=
-Received: from fedora.. ([120.244.20.128])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id E219D627; Thu, 24 Aug 2023 23:56:33 +0800
-X-QQ-mid: xmsmtpt1692892593tzqvb6la5
-Message-ID: <tencent_53CBCB1668358AE862684E453DF37B722008@qq.com>
-X-QQ-XMAILINFO: NafziRg7Bx69fHH+fNjXM4UQRtPHld0MsHOcY9ui6Lx/hLF+54I3UzFv9Am+rO
-         wFsIfah3VgecQuvhOsTkJPcCBEW5BCoXISVuCrEN4EDsKz/eSGWmd86YaD3dolG5gDtf6r6sHKqi
-         m5HldYljmGDUvQ/BDionK0DyA3rK1fb517j/+O+0JgY3q9SFntRehW+M1ODzYzs9+7KZEozQ/LUC
-         Za9C8GpeySnGx5PNwyaEA8wvPWK2O+uQyofaxhIDiKC6AbKJwtomMvB1T33PEv3TCB5qyhFV66ml
-         7EJbOK4FuxcVfTCWBk1RSILdOI6JrapajGcQR15YuuDux/lHh6DRg4vP14bw6xpuRNkxsBlIknAR
-         cD02/MiYRKXVi78oM+BKMr5WM+NqndblrWVU0rAZKXciyUS0XXx4wofYA1ed6s2g8+C4+SX0+17t
-         3V0P+cNfzQJAJ7hVi9gcMHJ2XYndPFfXh+kykpe2prDd+fcrnuzIOhaSsNsxFZHWe8/qDzEsa0e+
-         F+gU6zxIUBPFriNG/dfsghNBc/c38SZWtuvHAE4dwnYdo6IEFT5W1tFE+z7Z9JLAnMbd3zFQ1qXc
-         FOJFeHMKlt2aXJnjqlRcVWla562yTCBHs3qkdM+zHMCXQhV5xZZsU7kOayvYH5iRo8kqPzklSLHf
-         1NIGzVla56W12frc+IR30fIfJiaaXWbpAgpF4Nu4H2KtgpjUd0ow0mxPvSk0mBpdskkKNbD4QlCY
-         zKywcLHhbXa5XbdgOJ6guImZZ+eCxKjhLD9d8So84n8NPTuEldfC0/FtU5BBrPEMB10z7VY5rFhJ
-         wuRXza8s8hWPlD0b4MlIKetW7u4ttxE9jyVTQa9r5ftMSBXKyFYQDhDLpPbqDH9uHGHFpgUs6XCR
-         p7Y6rJV/Ufcp4VRpru1IGZxwSMhxInr0mAqbD8bZgpTCc6ksCtQJjB8am8qktDHrEeaUaAK2GHOM
-         399bPxuFCIMojLk3NFVi/SjMcOFMIx4hKeIHYLBD/j3VCArP1JvDzR6tLF2RowNSjPEY4iqt8=
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From:   Wang Jianjian <wangjianjian0@foxmail.com>
-To:     linux-ext4@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com
-Cc:     Wang Jianjian <wangjianjian0@foxmail.com>
-Subject: [PATCH] ext4/mballoc: No need to generate from free list
-Date:   Thu, 24 Aug 2023 23:56:31 +0800
-X-OQ-MSGID: <20230824155631.20895-1-wangjianjian0@foxmail.com>
-X-Mailer: git-send-email 2.34.3
+        with ESMTP id S243300AbjHXThn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 15:37:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51671BEF
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 12:37:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6AE3B227E9;
+        Thu, 24 Aug 2023 19:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692905860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f/fvniBqjGfIujOFwlI1nSAf7lwHS5+z7Bx9fYrFl0Q=;
+        b=iDsKsJBbWnQ0MGmfctEDUXrMmj4tx+Z5kx9ziIEdddcAnErYOj8BaDcFSWP6yzo1lRXT6b
+        Lc6a3GvQsB8GdYypM5vruT4Y22S8dLg7veUsuV2CKdc4DWWwdMVRhPZ0CbdXFrzZdomlQ5
+        BzL2PuklPuwvvW8SJ7CzzfeiXK6ROPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692905860;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f/fvniBqjGfIujOFwlI1nSAf7lwHS5+z7Bx9fYrFl0Q=;
+        b=Dr4phkn70y21ov8wWywWy9ZP7wq9Ek0Jfsui/SiATWNzSKLLtteNS0uTbeHAxfXCK7wYaR
+        pXnDUEd6uDFC3BCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DE261336F;
+        Thu, 24 Aug 2023 19:37:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2pTjFoSx52RULQAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 24 Aug 2023 19:37:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D517EA0774; Thu, 24 Aug 2023 21:37:39 +0200 (CEST)
+Date:   Thu, 24 Aug 2023 21:37:39 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
+Message-ID: <20230824193739.4k6kjsohbggoiu4n@quack3>
+References: <20230817081828.934259-1-libaokun1@huawei.com>
+ <20230823170524.xox66gceoqrigtyo@quack3>
+ <c03c97b6-1a04-737f-c17b-8e35564f32df@huawei.com>
+ <20230824100804.l6dxfdztigdrw7m7@quack3>
+ <b922a960-fc17-5595-17b3-06b8348f7fb1@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <b922a960-fc17-5595-17b3-06b8348f7fb1@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Commit 7a2fcbf7f85('ext4: don't use blocks freed but
-not yet committed in buddy cache init) walk the rbtree of
-freed data and mark them free in buddy to avoid reuse them
-before journal committing them, However, it is unnecessary to
-do that, because we have extra page references to buddy and bitmap
-pages, they will be released iff journal has committed and after
-process freed data.
+On Thu 24-08-23 20:56:14, Baokun Li wrote:
+> On 2023/8/24 18:08, Jan Kara wrote:
+> > On Thu 24-08-23 10:27:46, Baokun Li wrote:
+> > > Hello, Jan!
+> > > 
+> > > On 2023/8/24 1:05, Jan Kara wrote:
+> > > > On Thu 17-08-23 16:18:28, Baokun Li wrote:
+> > > > > After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
+> > > > > inodes"), we load all the quotas before we process the orphaned inodes,
+> > > > > and when we load the quotas, we check the checsum of the bbitmap for each
+> > > > > group. If one of the bbitmap checksums is wrong, the following error will
+> > > > > be reported:
+> > > > > 
+> > > > > “Error initializing quota context in support library:
+> > > > >    Block bitmap checksum does not match bitmap”
+> > > > > 
+> > > > > But loading quotas comes before checking the current superblock for the
+> > > > > EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
+> > > > > image that contains orphan inodes and has the wrong bbitmap checksum.
+> > > > > So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
+> > > > > the above problem.
+> > > > > 
+> > > > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > > > This certainly looks better but I wonder if there still isn't a problem if
+> > > > the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
+> > > > rather move the initialization of the quota files after the call to
+> > > > e2fsck_read_bitmaps()?
+> > > > 
+> > > > 								Honza
+> > > When the bitmap checksums are wrong but EXT2_ERROR_FS is not set, we must
+> > > have lost some data (error flag or group descriptor or bitmap), so there
+> > > is something wrong with the kernel at this time, so I don't think we
+> > > should fix the image directly, but rather let the user realize that
+> > > something is wrong with the filesystem logic.
+> > I agree it means there is a problem somewhere (the storage, the kernel, or
+> > similar). But just ignoring bitmap checksums in release_orphan_inodes() is
+> > exactly how e2fsck behaves on filesystems without quota feature so I see no
+> > reason for quota feature to change that because the inconsistency has
+> > nothing to do with quotas...
+> > 
+> > > Moreover, if we don't care how this happened, but just want to fix the
+> > > image, we only need to run "e2fsck -a" twice. After merging in the
+> > > current patch, we always empty the orphan list before loading the quotas,
+> > > and EXT2_ERROR_FS is set when loading the quotas fails, so this will be
+> > > fixed the second time you run e2fsck. It will not happen that every
+> > > e2fsck will fail like it did before.
+> > I see, you're right so it isn't as bad as I originally thought but still my
+> > argument above holds - IMO e2fsck should treat wrong bitmap checksums the
+> > same way with and without the quota feature.
+> > 
+> > 								Honza
+> The original flow that went wrong here is as follows：
+> e2fsck
+>  e2fsck_run_ext3_journal
+>  check_super_block
+>   release_orphan_inodes
+>    e2fsck_read_all_quotas
+>     quota_read_all_dquots
+>      quota_file_open
+>       ext2fs_read_bitmaps
+>        ext2fs_rw_bitmaps
+>         read_bitmaps_range
+>          read_bitmaps_range_start
+>           ext2fs_block_bitmap_csum_verify
+>            !!! error
+>  e2fsck_run
+> 
+> Yes, the inconsistency has nothing to do with quota, but quota is loaded
+> here to keep track of space changes during the normal processing of
+> orphan list. If quota was not loaded, we would not have read and check
+> bitmaps until Pass5, and we had already done a lot of checking and
+> tweaking of inodes, blocks, and dirs before Pass5, and the bitmaps
+> inconsistency may have been fixed during that time.
 
-Fixes: 7a2fcbf7f85('ext4: don't use blocks freed but not yet committed in buddy cache init')
-Signed-off-by: Wang Jianjian <wangjianjian0@foxmail.com>
----
- fs/ext4/mballoc.c | 27 ---------------------------
- 1 file changed, 27 deletions(-)
+This is not true. release_orphan_inodes() calls e2fsck_read_bitmaps() which
+loads all the bitmaps while ignoring checksum failures. This is needed so
+that blocks released during orphan cleanup are properly tracked as free.
+All I want to do is to move the call to e2fsck_read_all_quotas() a bit
+further than you moved it to a place after the e2fsck_read_bitmaps()
+call...
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 5b2ae37a8b80..b512a134a5fb 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -404,8 +404,6 @@ static const char * const ext4_groupinfo_slab_names[NR_GRPINFO_CACHES] = {
- 
- static void ext4_mb_generate_from_pa(struct super_block *sb, void *bitmap,
- 					ext4_group_t group);
--static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
--						ext4_group_t group);
- static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
- 
- static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
-@@ -1274,7 +1272,6 @@ static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
- 
- 			/* mark all preallocated blks used in in-core bitmap */
- 			ext4_mb_generate_from_pa(sb, data, group);
--			ext4_mb_generate_from_freelist(sb, data, group);
- 			ext4_unlock_group(sb, group);
- 
- 			/* set incore so that the buddy information can be
-@@ -4440,30 +4437,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	return false;
- }
- 
--/*
-- * the function goes through all block freed in the group
-- * but not yet committed and marks them used in in-core bitmap.
-- * buddy must be generated from this bitmap
-- * Need to be called with the ext4 group lock held
-- */
--static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
--						ext4_group_t group)
--{
--	struct rb_node *n;
--	struct ext4_group_info *grp;
--	struct ext4_free_data *entry;
--
--	grp = ext4_get_group_info(sb, group);
--	n = rb_first(&(grp->bb_free_root));
--
--	while (n) {
--		entry = rb_entry(n, struct ext4_free_data, efd_node);
--		mb_set_bits(bitmap, entry->efd_start_cluster, entry->efd_count);
--		n = rb_next(n);
--	}
--	return;
--}
--
- /*
-  * the function goes through all preallocation in this group and marks them
-  * used in in-core bitmap. buddy must be generated from this bitmap
+								Honza
 -- 
-2.34.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
