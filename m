@@ -2,121 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2559D787D68
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 03:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A998F787D8B
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 04:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240198AbjHYB71 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 21:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
+        id S238193AbjHYCIc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 22:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjHYB6z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 21:58:55 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A012B1BD1;
-        Thu, 24 Aug 2023 18:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GqmLor0hgV4H3x7IuvuyaB/m3hDiUm8Yzrd7b9keFg8=; b=bxxlNJ96rsx4L2kKszQ8LF6ai5
-        iNtBNOQ6lzvCMPjrA8d2B5SKpMA8ehWy3QlKX8FPouK+kPzVIEZKx+nUetaQRW5JSdDZgZ40B7sUp
-        hz637OO4Su1eEUgn8Gl/dIA4NQM5w6cHamU5x0h4uc+j+8uZ5OMjiX5dOjWaEByfsbwcty7NjoKFy
-        3XYbSKjy+5wYC+oyCRnyAV7fQupk+8Mu6cgtvaubPBjXdneuinMhpNkKRGbKhUYZMh2pnc+qlSq3t
-        /phSE0e2tky2IO5H3c5MgeU2/J9SsgCPwQOsXy7U4/wxiV2850iLaIsQdHEKmyDTGxCmoecJk/YQG
-        iXEtALAQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qZM5z-000dvR-0M;
-        Fri, 25 Aug 2023 01:58:43 +0000
-Date:   Fri, 25 Aug 2023 02:58:43 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <20230825015843.GB95084@ZenIV>
-References: <20230810171429.31759-1-jack@suse.cz>
+        with ESMTP id S229537AbjHYCIX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 22:08:23 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323421BD1
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 19:08:21 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RX3F340grzJrpb;
+        Fri, 25 Aug 2023 10:05:11 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 10:08:17 +0800
+Message-ID: <da065145-442c-a497-e236-f70359fa7b6c@huawei.com>
+Date:   Fri, 25 Aug 2023 10:08:17 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810171429.31759-1-jack@suse.cz>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <darrick.wong@oracle.com>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20230817081828.934259-1-libaokun1@huawei.com>
+ <20230823170524.xox66gceoqrigtyo@quack3>
+ <c03c97b6-1a04-737f-c17b-8e35564f32df@huawei.com>
+ <20230824100804.l6dxfdztigdrw7m7@quack3>
+ <b922a960-fc17-5595-17b3-06b8348f7fb1@huawei.com>
+ <20230824193739.4k6kjsohbggoiu4n@quack3>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230824193739.4k6kjsohbggoiu4n@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:04:31PM +0200, Jan Kara wrote:
-> Hello,
-> 
-> this is a v2 of the patch series which implements the idea of blkdev_get_by_*()
-> calls returning bdev_handle which is then passed to blkdev_put() [1]. This
-> makes the get and put calls for bdevs more obviously matching and allows us to
-> propagate context from get to put without having to modify all the users
-> (again!).  In particular I need to propagate used open flags to blkdev_put() to
-> be able count writeable opens and add support for blocking writes to mounted
-> block devices. I'll send that series separately.
-> 
-> The series is based on Christian's vfs tree as of yesterday as there is quite
-> some overlap. Patches have passed some reasonable testing - I've tested block
-> changes, md, dm, bcache, xfs, btrfs, ext4, swap. This obviously doesn't cover
-> everything so I'd like to ask respective maintainers to review / test their
-> changes. Thanks! I've pushed out the full branch to:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
-> 
-> to ease review / testing.
+On 2023/8/25 3:37, Jan Kara wrote:
+> On Thu 24-08-23 20:56:14, Baokun Li wrote:
+>> On 2023/8/24 18:08, Jan Kara wrote:
+>>> On Thu 24-08-23 10:27:46, Baokun Li wrote:
+>>>> Hello, Jan!
+>>>>
+>>>> On 2023/8/24 1:05, Jan Kara wrote:
+>>>>> On Thu 17-08-23 16:18:28, Baokun Li wrote:
+>>>>>> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
+>>>>>> inodes"), we load all the quotas before we process the orphaned inodes,
+>>>>>> and when we load the quotas, we check the checsum of the bbitmap for each
+>>>>>> group. If one of the bbitmap checksums is wrong, the following error will
+>>>>>> be reported:
+>>>>>>
+>>>>>> “Error initializing quota context in support library:
+>>>>>>     Block bitmap checksum does not match bitmap”
+>>>>>>
+>>>>>> But loading quotas comes before checking the current superblock for the
+>>>>>> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
+>>>>>> image that contains orphan inodes and has the wrong bbitmap checksum.
+>>>>>> So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
+>>>>>> the above problem.
+>>>>>>
+>>>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>>>> This certainly looks better but I wonder if there still isn't a problem if
+>>>>> the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
+>>>>> rather move the initialization of the quota files after the call to
+>>>>> e2fsck_read_bitmaps()?
+>>>>>
+>>>>> 								Honza
+>>>> When the bitmap checksums are wrong but EXT2_ERROR_FS is not set, we must
+>>>> have lost some data (error flag or group descriptor or bitmap), so there
+>>>> is something wrong with the kernel at this time, so I don't think we
+>>>> should fix the image directly, but rather let the user realize that
+>>>> something is wrong with the filesystem logic.
+>>> I agree it means there is a problem somewhere (the storage, the kernel, or
+>>> similar). But just ignoring bitmap checksums in release_orphan_inodes() is
+>>> exactly how e2fsck behaves on filesystems without quota feature so I see no
+>>> reason for quota feature to change that because the inconsistency has
+>>> nothing to do with quotas...
+>>>
+>>>> Moreover, if we don't care how this happened, but just want to fix the
+>>>> image, we only need to run "e2fsck -a" twice. After merging in the
+>>>> current patch, we always empty the orphan list before loading the quotas,
+>>>> and EXT2_ERROR_FS is set when loading the quotas fails, so this will be
+>>>> fixed the second time you run e2fsck. It will not happen that every
+>>>> e2fsck will fail like it did before.
+>>> I see, you're right so it isn't as bad as I originally thought but still my
+>>> argument above holds - IMO e2fsck should treat wrong bitmap checksums the
+>>> same way with and without the quota feature.
+>>>
+>>> 								Honza
+>> The original flow that went wrong here is as follows：
+>> e2fsck
+>>   e2fsck_run_ext3_journal
+>>   check_super_block
+>>    release_orphan_inodes
+>>     e2fsck_read_all_quotas
+>>      quota_read_all_dquots
+>>       quota_file_open
+>>        ext2fs_read_bitmaps
+>>         ext2fs_rw_bitmaps
+>>          read_bitmaps_range
+>>           read_bitmaps_range_start
+>>            ext2fs_block_bitmap_csum_verify
+>>             !!! error
+>>   e2fsck_run
+>>
+>> Yes, the inconsistency has nothing to do with quota, but quota is loaded
+>> here to keep track of space changes during the normal processing of
+>> orphan list. If quota was not loaded, we would not have read and check
+>> bitmaps until Pass5, and we had already done a lot of checking and
+>> tweaking of inodes, blocks, and dirs before Pass5, and the bitmaps
+>> inconsistency may have been fixed during that time.
+> This is not true. release_orphan_inodes() calls e2fsck_read_bitmaps() which
+> loads all the bitmaps while ignoring checksum failures. This is needed so
+> that blocks released during orphan cleanup are properly tracked as free.
+> All I want to do is to move the call to e2fsck_read_all_quotas() a bit
+> further than you moved it to a place after the e2fsck_read_bitmaps()
+> call...
+>
+> 								Honza
+Yes, e2fsck_read_bitmaps() ignores checksum errors for reading bitmaps, 
+which
+prevents us from exiting e2fsck due to checksum error in 
+release_orphan_inodes(),
+but in the case of the previously mentioned checksum error but EXT2_ERROR_FS
+is not set, when we execute "e2fsck -a", since checksum is ignored, the 
+filesystem
+is considered clean, so it exits e2fsck without performing a force 
+check, but the
+error is still there.
 
-Hmm...  Completely Insane Idea(tm): how about turning that thing inside out and
-having your bdev_open_by... return an actual opened struct file?
+                                            Baokun
 
-After all, we do that for sockets and pipes just fine and that's a whole lot
-hotter area.
-
-Suppose we leave blkdev_open()/blkdev_release() as-is.  No need to mess with
-what we have for normal opened files for block devices.  And have block_open_by_dev()
-that would find bdev, etc., same yours does and shove it into anon file.
-
-Paired with plain fput() - no need to bother with new primitives for closing.
-With a helper returning I_BDEV(bdev_file_inode(file)) to get from those to bdev.
-
-NOTE: I'm not suggesting replacing ->s_bdev with struct file * if we do that -
-we want that value cached, obviously.  Just store both...
-
-Not saying it's a good idea, but... might be interesting to look into.
-Comments?
+-- 
+With Best Regards,
+Baokun Li
+.
