@@ -2,201 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E795788410
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 11:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DF7788669
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 13:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbjHYJtU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Aug 2023 05:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
+        id S244465AbjHYLyS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Aug 2023 07:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234035AbjHYJs5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Aug 2023 05:48:57 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0666F1FD5
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 02:48:55 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6b9ef9cd887so847883a34.0
-        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 02:48:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692956934; x=1693561734;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BFJif4QDdWSfgk5/2e0e9FOP2xlthhr5LjObem+qeTA=;
-        b=K//aBAGC1jyo4h8rRfds+uNAPn+gEpOop/7SOwepP58IeSvUBkPz3OZD7uQdGtBaJG
-         9xWdR0eMzqxIqs/OJx9WM/zYSY2Jjj0FifkYhdzYKHC0KsH9NUdg8eKyXOMlG3uO+4OM
-         h/xVM9ldFc6nlDmjdgd9z8nfeHkd7BhxdShgrSfhixMlMvU3Gkx3Oo24H/iX2uKqnGrt
-         NFPIBhdAFlivtUWU0Rx6AIjIRgmz8qr0JUVI15DcuWTRRqhd5C6QlAGugKQmnTA6tq1v
-         TiETlKr0IwCmlUp8I/WUXptSyKhOc9S52dhflWAsINhJV8Qs/g1BBMvlapGaZ9at/z3d
-         /urA==
-X-Gm-Message-State: AOJu0Yxbohn/Lt3MFzxgdG1ia0MogT9sQx4glpgvpQ3xCgJzrvZ4y/f6
-        1zYkEaM8AFYntzKq7VVAfiz23SY0XjfunSL3b+YmB3Dc2+xO
-X-Google-Smtp-Source: AGHT+IFffqOpQlow6RHRZJVP8RmFpLckBBaH8EwZWfUG5r88xpDg+lmaZp8PdpaoHGWBHpe9q8AsSDwWrStLeH6BNuvgAWGmisCR
+        with ESMTP id S244446AbjHYLyN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Aug 2023 07:54:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C685310FF
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 04:54:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D8011F7AB;
+        Fri, 25 Aug 2023 11:54:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692964450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4wMKy/OX8up4EMhWi/hNRkPEPb2Rvi9BVS43yosZbAo=;
+        b=YCH+1KtJQUTM8snqfFDCQReUPv6wpSwgvEfzTo0TMae5QDd7wyHugP6qWQOrBo4XG+goHf
+        xAlcIMd9SrbG4uqY1PVmkJOGjYW+goSR898/lGzv3lR0ipVrwife6C8/EOMGFUTXTOJ2gJ
+        sjKZWYQasKR8StIPNJkSKu7k66efSeQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692964450;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4wMKy/OX8up4EMhWi/hNRkPEPb2Rvi9BVS43yosZbAo=;
+        b=nSJbjPUsZwjMDH2eOUTMZxC6VVpTAkm9e09SxjiKMBQr1e+dfGf+dtYtz/T6a02QgYjVUE
+        p3S3NGrKTSgXsjAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6ED19138F9;
+        Fri, 25 Aug 2023 11:54:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ReUDG2KW6GSoSAAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 25 Aug 2023 11:54:10 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 0CB77A0774; Fri, 25 Aug 2023 13:54:10 +0200 (CEST)
+Date:   Fri, 25 Aug 2023 13:54:10 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/11] ext4: Cleanup read-only and fs aborted checks
+Message-ID: <20230825115410.rvjmreiac6hclucm@quack3>
+References: <20230616164553.1090-1-jack@suse.cz>
+ <169107341682.1086009.5390893702477027431.b4-ty@mit.edu>
+ <CAOQ4uxh-HCE+Fwat8SyAGF3fcFg-xa_tH9jsxCe8=qPfx73K0g@mail.gmail.com>
+ <CAOQ4uxiAJ8_zsmUCjFzVOOZi0XQoak8+D4GFp1ADW-+EyL1Jtw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:628a:0:b0:6bc:ac3d:2b77 with SMTP id
- x10-20020a9d628a000000b006bcac3d2b77mr356281otk.2.1692956934355; Fri, 25 Aug
- 2023 02:48:54 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 02:48:54 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1426e0603bc40b6@google.com>
-Subject: [syzbot] [ext4?] BUG: unable to handle kernel paging request in ext4_calculate_overhead
-From:   syzbot <syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu,
-        yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxiAJ8_zsmUCjFzVOOZi0XQoak8+D4GFp1ADW-+EyL1Jtw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri 25-08-23 10:24:52, Amir Goldstein wrote:
+> On Fri, Aug 25, 2023 at 10:15 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > On Thu, Aug 3, 2023 at 6:23 PM Theodore Ts'o <tytso@mit.edu> wrote:
+> > >
+> > >
+> > > On Fri, 16 Jun 2023 18:50:46 +0200, Jan Kara wrote:
+> > > > This series arised from me trying to fix races when the ext4 filesystem gets
+> > > > remounted read-write and users can race in writes before quota subsystem is
+> > > > prepared to take them. This particular problem got fixed in VFS in the end
+> > > > but the cleanups are still good in my opinion so I'm submitting them. They
+> > > > get rid of EXT4_MF_ABORTED flag and cleanup some sb_rdonly() checks.
+> > > >
+> > > > Honza
+> > > >
+> > > > [...]
+> > >
+> > > Applied, thanks!
+> > >
+> > > [01/11] ext4: Remove pointless sb_rdonly() checks from freezing code
+> > >         commit: 98175720c9ed3bac857b0364321517cc2d695a3f
+> > > [02/11] ext4: Use sb_rdonly() helper for checking read-only flag
+> > >         commit: d5d020b3294b69eaf3b8985e7a37ba237849c390
+> > > [03/11] ext4: Make ext4_forced_shutdown() take struct super_block
+> > >         commit: eb8ab4443aec5ffe923a471b337568a8158cd32b
+> > > [04/11] ext4: Make 'abort' mount option handling standard
+> > >         commit: 22b8d707b07e6e06f50fe1d9ca8756e1f894eb0d
+> > > [05/11] ext4: Drop EXT4_MF_FS_ABORTED flag
+> > >         commit: 95257987a6387f02970eda707e55a06cce734e18
+> > > [06/11] ext4: Avoid starting transaction on read-only fs in ext4_quota_off()
+> > >         commit: e0e985f3f8941438a66ab8abb94cb011b9fb39a7
+> > > [07/11] ext4: Warn on read-only filesystem in ext4_journal_check_start()
+> > >         commit: e7fc2b31e04c46c9e2098bba710c9951c6b968af
+> > > [08/11] ext4: Drop read-only check in ext4_init_inode_table()
+> > >         commit: ffb6844e28ef6b9d76bee378774d7afbc3db6da9
+> > > [09/11] ext4: Drop read-only check in ext4_write_inode()
+> > >         commit: f1128084b40e520bea8bb32b3ff4d03745ab7e64
+> > > [10/11] ext4: Drop read-only check from ext4_force_commit()
+> > >         commit: 889860e452d7436ca72018b8a03cbd89c38d6384
+> > > [11/11] ext4: Replace read-only check for shutdown check in mmp code
+> > >         commit: 1e1566b9c85fbd6150657ea17f50fd42b9166d31
+> > >
+> > > Best regards,
+> > > --
+> > > Theodore Ts'o <tytso@mit.edu>
+> >
+> > Hi Jan,
+> >
+> > Yesterday I ran fanotify LTP tests on linux-next and noticed a regression
+> > with fanotify22 which tests the FAN_FS_ERROR event on ext4.
+> > It's 100% reproducible on my machine (see below).
+> >
+> > I've bisected the regression down to this series.
+> 
+> Forgot to say that the good baseline for the test is Christian's vfs.all
+> branch merged into Linus' master and the regression is after merging
+> commit 1e1566b9c85 from Ted's tree.
 
-syzbot found the following issue on:
+Thanks for report! I had a look and it is the LTP test that is problematic.
 
-HEAD commit:    47d9bb711707 Add linux-next specific files for 20230821
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=124d6a4ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20999f779fa96017
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3123e6d9842e526de39
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110f9c0fa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b8867fa80000
+1) It has four testcases, each of which ends up triggering more or less
+fatal error on this filesystem. However the filesystem is not unmounted &
+mounted again between testcases so it assumes that we continue reporting
+further errors after fatal filesystem shutdown. This is a wrong assumption
+as after such fatal error it isn't really defined what succeeds and what
+not.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ffbe03c733b7/disk-47d9bb71.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a61a31d6caf9/vmlinux-47d9bb71.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/37e6f882b2d9/bzImage-47d9bb71.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/bf27f1330349/mount_0.gz
+2) The patchset in ext4 tree slightly changed the behavior of the 'abort'
+mount option by unifying it with the filesystem shutdown functionality
+because having two different ways to abort a filesystem led to places
+checking one but not the other. As a result once the filesystem is
+shutdown using the 'abort' mount option, we don't report any more errors
+because it's kind of pointless noise - things are expected to fail on
+shutdown filesystem. And this upsets the test.
 
-The issue was bisected to:
+I'll fix the test.
 
-commit 99d6c5d892bfff3be40f83ec34d91d562125afd4
-Author: Zhang Yi <yi.zhang@huawei.com>
-Date:   Fri Aug 11 06:36:10 2023 +0000
-
-    ext4: ext4_get_{dev}_journal return proper error value
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a381cfa80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=106381cfa80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a381cfa80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com
-Fixes: 99d6c5d892bf ("ext4: ext4_get_{dev}_journal return proper error value")
-
-EXT4-fs (loop0): ext4_check_descriptors: Checksum for group 0 failed (394!=20869)
-EXT4-fs error (device loop0): ext4_get_journal_inode:5719: comm syz-executor999: inode #33: comm syz-executor999: iget: illegal inode #
-EXT4-fs (loop0): no journal found
-BUG: unable to handle page fault for address: ffffffffffffffdb
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD c979067 P4D c979067 PUD c97b067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5041 Comm: syz-executor999 Not tainted 6.5.0-rc7-next-20230821-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
-Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
-RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
-RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
-R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
-FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __ext4_fill_super fs/ext4/super.c:5391 [inline]
- ext4_fill_super+0x85e3/0xade0 fs/ext4/super.c:5643
- get_tree_bdev+0x390/0x630 fs/super.c:1351
- vfs_get_tree+0x88/0x350 fs/super.c:1524
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f73494babba
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffae0148e8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fffae0148f0 RCX: 00007f73494babba
-RDX: 00000000200000c0 RSI: 0000000020000040 RDI: 00007fffae0148f0
-RBP: 0000000000000004 R08: 00007fffae014930 R09: 00007fffae014930
-R10: 0000000001000403 R11: 0000000000000202 R12: 00007fffae014930
-R13: 0000000000000003 R14: 0000000000080000 R15: 0000000000000001
- </TASK>
-Modules linked in:
-CR2: ffffffffffffffdb
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_calculate_overhead+0xfd2/0x1380 fs/ext4/super.c:4182
-Code: 7b 50 48 89 fa 48 c1 ea 03 44 0f b6 60 14 48 b8 00 00 00 00 00 fc ff df 80 3c 02 00 0f 85 72 03 00 00 44 89 e6 bf 3f 00 00 00 <48> 8b 6b 50 e8 95 20 43 ff 41 80 fc 3f 0f 87 cb 20 ef 07 e8 56 25
-RSP: 0018:ffffc9000399fa00 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffffffffff8b RCX: 0000000000000000
-RDX: 1ffffffffffffffb RSI: 000000000000000a RDI: 000000000000003f
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: 000000000000000a
-R13: ffff888020936000 R14: dffffc0000000000 R15: ffff8880242a4000
-FS:  0000555555f06380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffdb CR3: 0000000074f9b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	7b 50                	jnp    0x52
-   2:	48 89 fa             	mov    %rdi,%rdx
-   5:	48 c1 ea 03          	shr    $0x3,%rdx
-   9:	44 0f b6 60 14       	movzbl 0x14(%rax),%r12d
-   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  15:	fc ff df
-  18:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-  1c:	0f 85 72 03 00 00    	jne    0x394
-  22:	44 89 e6             	mov    %r12d,%esi
-  25:	bf 3f 00 00 00       	mov    $0x3f,%edi
-* 2a:	48 8b 6b 50          	mov    0x50(%rbx),%rbp <-- trapping instruction
-  2e:	e8 95 20 43 ff       	call   0xff4320c8
-  33:	41 80 fc 3f          	cmp    $0x3f,%r12b
-  37:	0f 87 cb 20 ef 07    	ja     0x7ef2108
-  3d:	e8                   	.byte 0xe8
-  3e:	56                   	push   %rsi
-  3f:	25                   	.byte 0x25
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
