@@ -2,159 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD0F787C59
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 02:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7371787D10
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 03:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbjHYAA0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 20:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S231157AbjHYBUz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Aug 2023 21:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242181AbjHYAAA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 20:00:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C1A1FE4
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 16:59:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4336C62503
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 23:59:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E33C433C8;
-        Thu, 24 Aug 2023 23:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692921576;
-        bh=sD4BYinDPC6Q+0py9qQohW4kgnXP+Dr1S/9j8Oc1ZI0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AXvmvfDW46Gm8mcoIslC2w6bwaLEzfBwQYPs9nXizTfFyKy8NA9eQR0hlvffcUR6p
-         bbWPPq35PwBxnn45wxlSTzX8+E72oBj1bmFIDujmrg495GKXShLuEhxdYJkok7zr2T
-         bnIsZvDcJVDxrMrYIJKcc6l7fpaRuzDoqa0zC/oD/noQAWekbvy+j+xop+EykuN2Hb
-         IeHacIGbTT6/NEN3cjU0wEdIvUmHE47+a1EjzI99i4pM8TOzkYmrdR6mZ27csaJKH7
-         gwmjR3le6RCrFm+5hDutPNcjwMScVd2a+96xxtek1K3k3jGfQlKnmermGEtvmXclaD
-         ni1o8mSsVwW1Q==
-Date:   Thu, 24 Aug 2023 16:59:36 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [PATCH] e2fsprogs: don't allow udisks to automount ext4 filesystems
- with no prompt
-Message-ID: <20230824235936.GA17891@frogsfrogsfrogs>
+        with ESMTP id S230234AbjHYBUZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 21:20:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD72919A0
+        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 18:20:21 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RX28y0NlsztRbF;
+        Fri, 25 Aug 2023 09:16:34 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 25 Aug 2023 09:20:19 +0800
+Message-ID: <23a61231-c0b7-629a-328f-898f1e1d03e1@huawei.com>
+Date:   Fri, 25 Aug 2023 09:20:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
+Content-Language: en-US
+To:     Andreas Dilger <adilger@dilger.ca>
+CC:     Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Zhang Yi <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20230817081828.934259-1-libaokun1@huawei.com>
+ <20230823170524.xox66gceoqrigtyo@quack3>
+ <c03c97b6-1a04-737f-c17b-8e35564f32df@huawei.com>
+ <900CFAF0-71BE-416B-834B-576DD7B18863@dilger.ca>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <900CFAF0-71BE-416B-834B-576DD7B18863@dilger.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+On 2023/8/25 3:49, Andreas Dilger wrote:
+> On Aug 23, 2023, at 8:27 PM, Baokun Li <libaokun1@huawei.com> wrote:
+>> On 2023/8/24 1:05, Jan Kara wrote:
+>>> On Thu 17-08-23 16:18:28, Baokun Li wrote:
+>>>> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
+>>>> inodes"), we load all the quotas before we process the orphaned inodes,
+>>>> and when we load the quotas, we check the checsum of the bbitmap for each
+>>>> group. If one of the bbitmap checksums is wrong, the following error will
+>>>> be reported:
+>>>>
+>>>> “Error initializing quota context in support library:
+>>>>   Block bitmap checksum does not match bitmap”
+>>>>
+>>>> But loading quotas comes before checking the current superblock for the
+>>>> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
+>>>> image that contains orphan inodes and has the wrong bbitmap checksum.
+>>>> So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
+>>>> the above problem.
+>>>>
+>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>> This certainly looks better but I wonder if there still isn't a problem if
+>>> the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
+>>> rather move the initialization of the quota files after the call to
+>>> e2fsck_read_bitmaps()?
+>> When the bitmap checksums are wrong but EXT2_ERROR_FS is not set, we must
+>> have lost some data (error flag or group descriptor or bitmap), so there is
+>> something wrong with the kernel at this time, so I don't think we should
+>> fix the image directly, but rather let the user realize that something is
+>> wrong with the filesystem logic.
+>>
+>> Moreover, if we don't care how this happened, but just want to fix the image,
+>> we only need to run "e2fsck -a" twice. After merging in the current patch, we
+>> always empty the orphan list before loading the quotas, and EXT2_ERROR_FS
+>> is set when loading the quotas fails, so this will be fixed the second time
+>> you run e2fsck. It will not happen that every e2fsck will fail like it did
+>> before.
+> I recall that Ted prefers e2fsck to fix everything in a single pass, or at
+> worst if a fatal problem hit during the run it should restart itself so
+> that it will fix all of the problems before exiting.
+>
+> Cheers, Andreas
+>
+>
+As mentioned earlier, when a bitmap checksums error occurs but EXT2_ERROR_FS
+is not set, something may be wrong, so we should stop and tell the 
+developer what
+may be wrong, rather than just fixing it to hide the possible problem, 
+which can
+make it harder to locate some of the issues.
 
-The unending stream of syzbot bug reports and overwrought filing of CVEs
-for corner case handling (i.e. things that distract from actual user
-complaints) in ext4 has generated all sorts of of overheated rhetoric
-about how every bug is a Serious Security Issue(tm) because anyone can
-craft a malicious filesystem on a USB stick, insert the stick into a
-victim machine, and mount will trigger a bug in the kernel driver that
-leads to some compromise or DoS or something.
-
-I thought that nobody would be foolish enough to automount an ext4
-filesystem.  What a fool I was!  It turns out that udisks can be told
-that it's okay to automount things, and then GNOME will do exactly that.
-Including mounting mangled ext4 filesystems!
-
-<delete angry rant about poor decisionmaking and armchair fs developers
-blasting us on X while not actually doing any of the work>
-
-Turn off /this/ idiocy by adding a udev rule to tell udisks not to
-automount ext4 filesystems.
-
-This will not stop a logged in user from unwittingly inserting a
-malicious storage device and pressing [mount] and getting breached.
-This is not a substitute for a thorough audit of all codebases.  This is
-not a substitute for lklfuse.  This does not solve the general problem
-of in-kernel fs drivers being a huge attack surface.  I just want a
-vacation from the sh*tstorm of bad ideas and threat models that I never
-agreed to support.
-
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- scrub/Makefile.in   |   12 ++++++++++--
- scrub/ext4.rules.in |   13 +++++++++++++
- 2 files changed, 23 insertions(+), 2 deletions(-)
- create mode 100644 scrub/ext4.rules.in
-
-diff --git a/scrub/Makefile.in b/scrub/Makefile.in
-index 387f6504..d0c5c11b 100644
---- a/scrub/Makefile.in
-+++ b/scrub/Makefile.in
-@@ -18,6 +18,7 @@ CONFFILES=	e2scrub.conf
- 
- ifeq ($(HAVE_UDEV),yes)
- UDEV_RULES	= e2scrub.rules
-+UDISKS_RULES	= ext4.rules
- INSTALLDIRS_TGT	+= installdirs-udev
- INSTALL_TGT	+= install-udev
- UNINSTALL_TGT	+= uninstall-udev
-@@ -39,7 +40,7 @@ INSTALL_TGT	+= install-systemd install-libprogs
- UNINSTALL_TGT	+= uninstall-systemd uninstall-libprogs
- endif
- 
--all:: $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
-+all:: $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(UDISKS_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
- 
- e2scrub: $(DEP_SUBSTITUTE) e2scrub.in
- 	$(E) "	SUBST $@"
-@@ -111,6 +112,10 @@ install-udev: installdirs-udev
- 		$(ES) "	INSTALL $(UDEV_RULES_DIR)/$$i"; \
- 		$(INSTALL_DATA) $$i $(DESTDIR)$(UDEV_RULES_DIR)/96-$$i; \
- 	done
-+	$(Q) for i in $(UDISKS_RULES); do \
-+		$(ES) "	INSTALL $(UDEV_RULES_DIR)/$$i"; \
-+		$(INSTALL_DATA) $$i $(DESTDIR)$(UDEV_RULES_DIR)/64-$$i; \
-+	done
- 
- install-crond: installdirs-crond
- 	$(Q) if test -n "$(CRONTABS)" ; then \
-@@ -153,6 +158,9 @@ uninstall-udev:
- 	for i in $(UDEV_RULES); do \
- 		$(RM) -f $(DESTDIR)$(UDEV_RULES_DIR)/96-$$i; \
- 	done
-+	for i in $(UDISKS_RULES); do \
-+		$(RM) -f $(DESTDIR)$(UDEV_RULES_DIR)/64-$$i; \
-+	done
- 
- uninstall-crond:
- 	if test -n "$(CRONTABS)" ; then \
-@@ -181,7 +189,7 @@ uninstall: $(UNINSTALL_TGT)
- 	done
- 
- clean::
--	$(RM) -f $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
-+	$(RM) -f $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(UDISKS_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
- 
- mostlyclean: clean
- distclean: clean
-diff --git a/scrub/ext4.rules.in b/scrub/ext4.rules.in
-new file mode 100644
-index 00000000..6fe5a7a8
---- /dev/null
-+++ b/scrub/ext4.rules.in
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (C) 2023 Oracle.  All rights reserved.
-+# Author: Darrick J. Wong <djwong@kernel.org>
-+#
-+# Don't let udisks automount ext4 filesystems without even asking a user.
-+# This doesn't eliminate filesystems as an attack surface; it only prevents
-+# evil maid attacks when all sessions are locked.
-+#
-+# According to http://storaged.org/doc/udisks2-api/latest/udisks.8.html,
-+# supplying UDISKS_AUTO=0 here changes the HintAuto property of the block
-+# device abstraction to mean "do not automatically start" (e.g. mount).
-+SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="ext2|ext3|ext4|ext4dev|jbd", ENV{UDISKS_AUTO}="0"
+Cheers!
+-- 
+With Best Regards,
+Baokun Li
+.
