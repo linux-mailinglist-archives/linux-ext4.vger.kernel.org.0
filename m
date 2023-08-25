@@ -2,38 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ABF788C31
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 17:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F857789088
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 23:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbjHYPL1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Aug 2023 11:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S231452AbjHYVjX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Aug 2023 17:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjHYPLT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Aug 2023 11:11:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD010212E;
-        Fri, 25 Aug 2023 08:11:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DC3962EC1;
-        Fri, 25 Aug 2023 15:11:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A51CFC433C7;
-        Fri, 25 Aug 2023 15:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692976275;
-        bh=Yk82zBo/CO5JhPqCebob30ONG4lnlvLUkORIUTY0ODE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYYVRerqYqnGpLF8blJdmxVpMOEPQLv0528BjC5vvBFsZNAz6HSSGB0+0FSTqmw/7
-         Db7P0mmTsJO1oNY1/ZHWu8NyzK9JrsOCasrcwziq7v3vDEDceQvRopW668kANjqE5f
-         XtN676xYCoJvkIHN5kf251pR26YpJ9SQiBSWWbB3qvKX/kVrAeNfp0cfhulI06kGyS
-         rDA+euytpnrfPPjqUYcEaqjX12Vj0EdMyf1Oo7A6QZMfrIIcEUaHvGZ8srUTvsTFVz
-         en/rpIYHaZ7zIlQRk5TaAyXVnqxQP9imT2Z+zB9eRFWghRFbDct0Qujy/WQpJcsiaU
-         Wx3ea7l8r3I0w==
-Date:   Fri, 25 Aug 2023 08:11:15 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        with ESMTP id S231470AbjHYVjU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Aug 2023 17:39:20 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E05526AF
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 14:39:17 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a4bcf8a97so1069030b3a.1
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 14:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1692999556; x=1693604356;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
+        b=SlHW1FHh55Miyt5dC5YbHFzbz8/Ww6dpIRyxo6vWvL1BUT9wpnYc90O8W3sh6jbVDI
+         8VSN/Xe7i/NpqgfmZUfGif/OWVY4CvO1XNCApsJ0gTKpBFDUVISAdbUZIXX0AL7Ymm4P
+         GTcb7wyrBEoupwm2T77MgFldNvL555iN8Gi3uYCzgcocNv0xnFj+WWlwbcbOTqmgKZI+
+         MLGEhJoBOR8ij98DujYJDG8/ErJs1WTRaajOZxKdaJWii5ir39jpSlGIz75MH3BFujgn
+         75aCRb2KJIpxhwlYFJHEvUeGNqpylJdIJf8XyyAJR0UoHIDg5wblyZNVqnwV4VZyvNd5
+         jfAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692999556; x=1693604356;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
+        b=IToL8fE5Ss3ibKzjvrkZwmEhgLV+P0nK4O0aAAYx5sSJP/Q8Z+CnIvHqPqotDrMFYi
+         y1kvxSdZS81lA9o56Q06FDbghy8b1OQPGnMGYrEc5oXNuNSV/L4hIcHfe4WiipISeLTi
+         XruLpoda4yNrl/nNBvtXqCHpiSTS4KLi38cdnb22l0nkSMBUF7sXNO8hbG0o1WuxBbrz
+         gneX6a+AhjFBxdr9WJdIctqgDExsEWaoSNwi/Q1x3XHwotodr8CZzglqGWPkmt5KRvsM
+         hdNU74Perd/WhFjRZ8tstgU6UX25L/w5mQg1zzqakT0zhpUQ9yWJ/WxV/psIo4HfUbI5
+         iSkw==
+X-Gm-Message-State: AOJu0Ywja1x9FaP2QpLeNrYB/uMbuF8SgcPE8FqLEvE5iMv/FcgXaKwS
+        Dmkzu6F0Wz2meqQ7r9C+vlfWDA==
+X-Google-Smtp-Source: AGHT+IFGwDu4J6IE5hfbjc7KSF4OfJEndquVBvBoV5vhWuIhyGy4zoBWcpcC8Lokr19GaOsT0RulfQ==
+X-Received: by 2002:a05:6a20:7fa0:b0:140:324c:124c with SMTP id d32-20020a056a207fa000b00140324c124cmr22387249pzj.62.1692999556447;
+        Fri, 25 Aug 2023 14:39:16 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id a14-20020a62bd0e000000b006875df4773fsm1997221pff.163.2023.08.25.14.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 14:39:15 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qZeWO-006Uvd-0J;
+        Sat, 26 Aug 2023 07:39:12 +1000
+Date:   Sat, 26 Aug 2023 07:39:12 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Hao Xu <hao.xu@linux.dev>
 Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Dominique Martinet <asmadeus@codewreck.org>,
@@ -41,7 +61,7 @@ Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christian Brauner <brauner@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
         linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
         ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
@@ -54,233 +74,159 @@ Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
         Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH RFC v5 00/29] io_uring getdents
-Message-ID: <20230825151115.GB17891@frogsfrogsfrogs>
+Subject: Re: [PATCH 02/29] xfs: rename XBF_TRYLOCK to XBF_NOWAIT
+Message-ID: <ZOkfgBlWKVmGN84i@dread.disaster.area>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
+ <20230825135431.1317785-3-hao.xu@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230825135431.1317785-3-hao.xu@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:54:02PM +0800, Hao Xu wrote:
+On Fri, Aug 25, 2023 at 09:54:04PM +0800, Hao Xu wrote:
 > From: Hao Xu <howeyxu@tencent.com>
 > 
-> This series introduce getdents64 to io_uring, the code logic is similar
-> with the snychronized version's. It first try nowait issue, and offload
-> it to io-wq threads if the first try fails.
+> XBF_TRYLOCK means we need lock but don't block on it,
 
-NAK on the entire series until Jens actually writes down what NOWAIT
-does, so that we can check that the *existing* nowait code branches
-actually behave how he says it should.
+Yes.
 
-https://lore.kernel.org/all/e2d8e5f1-f794-38eb-cecf-ed30c571206b@kernel.dk/
 
---D
+> we can use it to
+> stand for not waiting for memory allcation. Rename XBF_TRYLOCK to
+> XBF_NOWAIT, which is more generic.
 
-> 
-> Patch1 and Patch2 are some preparation
-> Patch3 supports nowait for xfs getdents code
-> Patch4-11 are vfs change, include adding helpers and trylock for locks
-> Patch12-29 supports nowait for involved xfs journal stuff
-> note, Patch24 and 27 are actually two questions, might be removed later.
-> an xfs test may come later.
-> 
-> Tests I've done:
-> a liburing test case for functional test:
-> https://github.com/HowHsu/liburing/commit/39dc9a8e19c06a8cebf8c2301b85320eb45c061e?diff=unified
-> 
-> xfstests:
->     test/generic: 1 fails and 171 not run
->     test/xfs: 72 fails and 156 not run
-> run the code before without this patchset, same result.
-> I'll try to make the environment more right to run more tests here.
-> 
-> 
-> Tested it with a liburing performance test:
-> https://github.com/HowHsu/liburing/blob/getdents/test/getdents2.c
-> 
-> The test is controlled by the below script[2] which runs getdents2.t 100
-> times and calulate the avg.
-> The result show that io_uring version is about 2.6% faster:
-> 
-> note:
-> [1] the number of getdents call/request in io_uring and normal sync version
-> are made sure to be same beforehand.
-> 
-> [2] run_getdents.py
-> 
-> ```python3
-> 
-> import subprocess
-> 
-> N = 100
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "sync"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of sync:", average)
-> 
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "iouring"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of iouring:", average)
-> 
-> ```
-> 
-> v4->v5:
->  - move atime update to the beginning of getdents operation
->  - trylock for i_rwsem
->  - nowait semantics for involved xfs journal stuff
-> 
-> v3->v4:
->  - add Dave's xfs nowait code and fix a deadlock problem, with some code
->    style tweak.
->  - disable fixed file to avoid a race problem for now
->  - add a test program.
-> 
-> v2->v3:
->  - removed the kernfs patches
->  - add f_pos_lock logic
->  - remove the "reduce last EOF getdents try" optimization since
->    Dominique reports that doesn't make difference
->  - remove the rewind logic, I think the right way is to introduce lseek
->    to io_uring not to patch this logic to getdents.
->  - add Singed-off-by of Stefan Roesch for patch 1 since checkpatch
->    complained that Co-developed-by someone should be accompanied with
->    Signed-off-by same person, I can remove them if Stefan thinks that's
->    not proper.
-> 
-> 
-> Dominique Martinet (1):
->   fs: split off vfs_getdents function of getdents64 syscall
-> 
-> Hao Xu (28):
->   xfs: rename XBF_TRYLOCK to XBF_NOWAIT
->   xfs: add NOWAIT semantics for readdir
->   vfs: add nowait flag for struct dir_context
->   vfs: add a vfs helper for io_uring file pos lock
->   vfs: add file_pos_unlock() for io_uring usage
->   vfs: add a nowait parameter for touch_atime()
->   vfs: add nowait parameter for file_accessed()
->   vfs: move file_accessed() to the beginning of iterate_dir()
->   vfs: add S_NOWAIT for nowait time update
->   vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
->   xfs: enforce GFP_NOIO implicitly during nowait time update
->   xfs: make xfs_trans_alloc() support nowait semantics
->   xfs: support nowait for xfs_log_reserve()
->   xfs: don't wait for free space in xlog_grant_head_check() in nowait
->     case
->   xfs: add nowait parameter for xfs_inode_item_init()
->   xfs: make xfs_trans_ijoin() error out -EAGAIN
->   xfs: set XBF_NOWAIT for xfs_buf_read_map if necessary
->   xfs: support nowait memory allocation in _xfs_buf_alloc()
->   xfs: distinguish error type of memory allocation failure for nowait
->     case
->   xfs: return -EAGAIN when bulk memory allocation fails in nowait case
->   xfs: comment page allocation for nowait case in xfs_buf_find_insert()
->   xfs: don't print warn info for -EAGAIN error in  xfs_buf_get_map()
->   xfs: support nowait for xfs_buf_read_map()
->   xfs: support nowait for xfs_buf_item_init()
->   xfs: return -EAGAIN when nowait meets sync in transaction commit
->   xfs: add a comment for xlog_kvmalloc()
->   xfs: support nowait semantics for xc_ctx_lock in xlog_cil_commit()
->   io_uring: add support for getdents
-> 
->  arch/s390/hypfs/inode.c         |  2 +-
->  block/fops.c                    |  2 +-
->  fs/btrfs/file.c                 |  2 +-
->  fs/btrfs/inode.c                |  2 +-
->  fs/cachefiles/namei.c           |  2 +-
->  fs/coda/dir.c                   |  4 +--
->  fs/ecryptfs/file.c              |  4 +--
->  fs/ext2/file.c                  |  4 +--
->  fs/ext4/file.c                  |  6 ++--
->  fs/f2fs/file.c                  |  4 +--
->  fs/file.c                       | 13 +++++++
->  fs/fuse/dax.c                   |  2 +-
->  fs/fuse/file.c                  |  4 +--
->  fs/gfs2/file.c                  |  2 +-
->  fs/hugetlbfs/inode.c            |  2 +-
->  fs/inode.c                      | 10 +++---
->  fs/internal.h                   |  8 +++++
->  fs/namei.c                      |  4 +--
->  fs/nfsd/vfs.c                   |  2 +-
->  fs/nilfs2/file.c                |  2 +-
->  fs/orangefs/file.c              |  2 +-
->  fs/orangefs/inode.c             |  2 +-
->  fs/overlayfs/file.c             |  2 +-
->  fs/overlayfs/inode.c            |  2 +-
->  fs/pipe.c                       |  2 +-
->  fs/ramfs/file-nommu.c           |  2 +-
->  fs/readdir.c                    | 61 +++++++++++++++++++++++++--------
->  fs/smb/client/cifsfs.c          |  2 +-
->  fs/splice.c                     |  2 +-
->  fs/stat.c                       |  2 +-
->  fs/ubifs/file.c                 |  2 +-
->  fs/udf/file.c                   |  2 +-
->  fs/xfs/libxfs/xfs_alloc.c       |  2 +-
->  fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
->  fs/xfs/libxfs/xfs_btree.c       |  2 +-
->  fs/xfs/libxfs/xfs_da_btree.c    | 16 +++++++++
->  fs/xfs/libxfs/xfs_da_btree.h    |  1 +
->  fs/xfs/libxfs/xfs_dir2_block.c  |  7 ++--
->  fs/xfs/libxfs/xfs_dir2_priv.h   |  2 +-
->  fs/xfs/libxfs/xfs_shared.h      |  2 ++
->  fs/xfs/libxfs/xfs_trans_inode.c | 12 +++++--
->  fs/xfs/scrub/dir.c              |  2 +-
->  fs/xfs/scrub/readdir.c          |  2 +-
->  fs/xfs/scrub/repair.c           |  2 +-
->  fs/xfs/xfs_buf.c                | 43 +++++++++++++++++------
->  fs/xfs/xfs_buf.h                |  4 +--
->  fs/xfs/xfs_buf_item.c           |  9 +++--
->  fs/xfs/xfs_buf_item.h           |  2 +-
->  fs/xfs/xfs_buf_item_recover.c   |  2 +-
->  fs/xfs/xfs_dir2_readdir.c       | 49 ++++++++++++++++++++------
->  fs/xfs/xfs_dquot.c              |  2 +-
->  fs/xfs/xfs_file.c               |  6 ++--
->  fs/xfs/xfs_inode.c              | 27 +++++++++++++++
->  fs/xfs/xfs_inode.h              | 17 +++++----
->  fs/xfs/xfs_inode_item.c         | 12 ++++---
->  fs/xfs/xfs_inode_item.h         |  3 +-
->  fs/xfs/xfs_iops.c               | 31 ++++++++++++++---
->  fs/xfs/xfs_log.c                | 33 ++++++++++++------
->  fs/xfs/xfs_log.h                |  5 +--
->  fs/xfs/xfs_log_cil.c            | 17 +++++++--
->  fs/xfs/xfs_log_priv.h           |  4 +--
->  fs/xfs/xfs_trans.c              | 44 ++++++++++++++++++++----
->  fs/xfs/xfs_trans.h              |  2 +-
->  fs/xfs/xfs_trans_buf.c          | 18 ++++++++--
->  fs/zonefs/file.c                |  4 +--
->  include/linux/file.h            |  7 ++++
->  include/linux/fs.h              | 16 +++++++--
->  include/uapi/linux/io_uring.h   |  1 +
->  io_uring/fs.c                   | 53 ++++++++++++++++++++++++++++
->  io_uring/fs.h                   |  3 ++
->  io_uring/opdef.c                |  8 +++++
->  kernel/bpf/inode.c              |  4 +--
->  mm/filemap.c                    |  8 ++---
->  mm/shmem.c                      |  6 ++--
->  net/unix/af_unix.c              |  4 +--
->  75 files changed, 499 insertions(+), 161 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+No.
+
+Not only can XBF_TRYLOCK require memory allocation, it can require
+IO to be issued. We use TRYLOCK for -readahead- and so we *must* be
+able to allocate memory and issue IO under TRYLOCK caller
+conditions.
+
+[...]
+
+> diff --git a/fs/xfs/libxfs/xfs_attr_remote.c b/fs/xfs/libxfs/xfs_attr_remote.c
+> index d440393b40eb..2ccb0867824c 100644
+> --- a/fs/xfs/libxfs/xfs_attr_remote.c
+> +++ b/fs/xfs/libxfs/xfs_attr_remote.c
+> @@ -661,7 +661,7 @@ xfs_attr_rmtval_invalidate(
+>  			return error;
+>  		if (XFS_IS_CORRUPT(args->dp->i_mount, nmap != 1))
+>  			return -EFSCORRUPTED;
+> -		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_TRYLOCK);
+> +		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_NOWAIT);
+>  		if (error)
+>  			return error;
+
+XBF_INCORE | XBF_NOWAIT makes no real sense. I mean, XBF_INCORE is
+exactly "find a cached buffer or fail" - it's not going to do any
+memory allocation or IO so NOWAIT smeantics don't make any sense
+here. It's the buffer lock that this lookup is explicitly
+avoiding, and so TRYLOCK describes exactly the semantics we want
+from this incore lookup.
+
+Indeed, this is a deadlock avoidance mechanism as the transaction
+may already have the buffer locked and so we don't want the
+xfs_buf_incore() lookup to try to lock the buffer again. TRYLOCK
+documents this pretty clearly - NOWAIT loses that context....
+
+> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
+> index 6a6503ab0cd7..77c4f1d83475 100644
+> --- a/fs/xfs/libxfs/xfs_btree.c
+> +++ b/fs/xfs/libxfs/xfs_btree.c
+> @@ -1343,7 +1343,7 @@ xfs_btree_read_buf_block(
+>  	int			error;
+>  
+>  	/* need to sort out how callers deal with failures first */
+> -	ASSERT(!(flags & XBF_TRYLOCK));
+> +	ASSERT(!(flags & XBF_NOWAIT));
+>  
+>  	error = xfs_btree_ptr_to_daddr(cur, ptr, &d);
+>  	if (error)
+> diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
+> index ac6d8803e660..9312cf3b20e2 100644
+> --- a/fs/xfs/scrub/repair.c
+> +++ b/fs/xfs/scrub/repair.c
+> @@ -460,7 +460,7 @@ xrep_invalidate_block(
+>  
+>  	error = xfs_buf_incore(sc->mp->m_ddev_targp,
+>  			XFS_FSB_TO_DADDR(sc->mp, fsbno),
+> -			XFS_FSB_TO_BB(sc->mp, 1), XBF_TRYLOCK, &bp);
+> +			XFS_FSB_TO_BB(sc->mp, 1), XBF_NOWAIT, &bp);
+
+My point exactly.
+
+xfs_buf_incore() is simply a lookup with XBF_INCORE set. (XBF_INCORE
+| XBF_TRYLOCK) has the exactly semantics of "return the buffer only
+if it is cached and we can lock it without blocking.
+
+It will not instantiate a new buffer (i.e. do memory allocation) or
+do IO because the if it is under IO the buffer lock will be held.
+
+So, essentially, this "NOWAIT" semantic you want is already supplied
+by (XBF_INCORE | XBF_TRYLOCK) buffer lookups.
+
+>  	if (error)
+>  		return 0;
+>  
+> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> index 15d1e5a7c2d3..9f84bc3b802c 100644
+> --- a/fs/xfs/xfs_buf.c
+> +++ b/fs/xfs/xfs_buf.c
+> @@ -228,7 +228,7 @@ _xfs_buf_alloc(
+>  	 * We don't want certain flags to appear in b_flags unless they are
+>  	 * specifically set by later operations on the buffer.
+>  	 */
+> -	flags &= ~(XBF_UNMAPPED | XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD);
+> +	flags &= ~(XBF_UNMAPPED | XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD);
+>  
+>  	atomic_set(&bp->b_hold, 1);
+>  	atomic_set(&bp->b_lru_ref, 1);
+> @@ -543,7 +543,7 @@ xfs_buf_find_lock(
+>  	struct xfs_buf          *bp,
+>  	xfs_buf_flags_t		flags)
+>  {
+> -	if (flags & XBF_TRYLOCK) {
+> +	if (flags & XBF_NOWAIT) {
+>  		if (!xfs_buf_trylock(bp)) {
+>  			XFS_STATS_INC(bp->b_mount, xb_busy_locked);
+>  			return -EAGAIN;
+> @@ -886,7 +886,7 @@ xfs_buf_readahead_map(
+>  	struct xfs_buf		*bp;
+>  
+>  	xfs_buf_read_map(target, map, nmaps,
+> -		     XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
+> +		     XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
+>  		     __this_address);
+
+That will break readahead (which we use extensively in getdents
+operations) if we can't allocate buffers and issue IO under NOWAIT
+conditions.
+
+>  }
+>  
+> diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
+> index 549c60942208..8cd307626939 100644
+> --- a/fs/xfs/xfs_buf.h
+> +++ b/fs/xfs/xfs_buf.h
+> @@ -45,7 +45,7 @@ struct xfs_buf;
+>  
+>  /* flags used only as arguments to access routines */
+>  #define XBF_INCORE	 (1u << 29)/* lookup only, return if found in cache */
+> -#define XBF_TRYLOCK	 (1u << 30)/* lock requested, but do not wait */
+> +#define XBF_NOWAIT	 (1u << 30)/* mem/lock requested, but do not wait */
+
+That's now a really poor comment. It doesn't describe the semantics
+or constraints that NOWAIT might imply.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
