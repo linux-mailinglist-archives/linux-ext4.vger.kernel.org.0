@@ -2,52 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A998F787D8B
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 04:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7937880BD
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Aug 2023 09:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238193AbjHYCIc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Aug 2023 22:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S232333AbjHYHQF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Aug 2023 03:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjHYCIX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Aug 2023 22:08:23 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323421BD1
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Aug 2023 19:08:21 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RX3F340grzJrpb;
-        Fri, 25 Aug 2023 10:05:11 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 25 Aug 2023 10:08:17 +0800
-Message-ID: <da065145-442c-a497-e236-f70359fa7b6c@huawei.com>
-Date:   Fri, 25 Aug 2023 10:08:17 +0800
+        with ESMTP id S243014AbjHYHP7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 25 Aug 2023 03:15:59 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798E519A5
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 00:15:57 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-44d3a5cd2f9so288915137.3
+        for <linux-ext4@vger.kernel.org>; Fri, 25 Aug 2023 00:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692947756; x=1693552556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+CqOruoBEg3hGKNDhP2qrc6KcaOjA5R/MebUKrzld9k=;
+        b=Yr5PYxt9vozawI4pmTSATQhtbT5JV2hhid0v/Dctmi3mUTCHDkoWxlDL1LKqZrd59G
+         wmmrUm0Cr9MsyXID2hLsP3qBnp7j7R7CEz9UZ7ca6oI+QZxGwhETgxVNh8wfiB+p8iZ/
+         GcBDPWoE736HXRGH815QIGQEg66vxM5+O14Ha4G/6OhJDajZGF/bFhEHnNclusqRTuu6
+         YxpIhma+zF0G0jcr6nNM12U47fMUeFw+MY9WmLmEZihR+oBbTd8iJWllVAJjEmqHJ+8s
+         GdrBu2Lj2Qg5DXDhkCtR+BcC3168zbWzj+uPErmlK10rxTOx1FCLJUe7evyx1/EYD9qW
+         oFNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692947756; x=1693552556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+CqOruoBEg3hGKNDhP2qrc6KcaOjA5R/MebUKrzld9k=;
+        b=kgU9pumUKT6Bxg1ofqcxM9IVM7wIyocobbq5K5NfsS4kAUfDa54iUShdu4YUheoHsQ
+         xcxSD3C+olw6KguAvpg7UwJ5mfDDL/2sAaYMGpJeCrDiHF57017LMeqWkd5tt79FmsZH
+         hQjBWr46lZPYUMM6cuhl2lp6ZnM2NjLzRCXZIWE1R5c+01l26A937Zi/BTDjU5yRfxlN
+         Kpasi6g3v3wLaamnE9B0G5mJY9lABAS2w4HDa+3H0hPxpyRblN32qym8WpdzAsjNdY9a
+         OsQwu165bYhHhehUpl4FX6kgV2NtDXfQCHf71W9iUcl+k3d/YSLF4metA0lN1Fryr7ca
+         r/1w==
+X-Gm-Message-State: AOJu0YymOtlrfBzolT74Q/c2SJnmRzS9MCjiq11eXI4EUb5HVdoucB4m
+        GJxjpT48XJAgaepdocPJ1Mrevpw/MTxBdFcy28Y=
+X-Google-Smtp-Source: AGHT+IFvBkaAPaMtMLPjMmUjw5+3ZtUhUxBQ6CsJ4yXKAsP7unxsAK6BMdT4TZ04mF2oALfC2VHsAaBVr2oWbOP1zAo=
+X-Received: by 2002:a67:b101:0:b0:44d:4d7f:bcc4 with SMTP id
+ w1-20020a67b101000000b0044d4d7fbcc4mr13725411vsl.5.1692947756487; Fri, 25 Aug
+ 2023 00:15:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] e2fsck: delay quotas loading in release_orphan_inodes()
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <darrick.wong@oracle.com>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20230817081828.934259-1-libaokun1@huawei.com>
- <20230823170524.xox66gceoqrigtyo@quack3>
- <c03c97b6-1a04-737f-c17b-8e35564f32df@huawei.com>
- <20230824100804.l6dxfdztigdrw7m7@quack3>
- <b922a960-fc17-5595-17b3-06b8348f7fb1@huawei.com>
- <20230824193739.4k6kjsohbggoiu4n@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20230824193739.4k6kjsohbggoiu4n@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20230616164553.1090-1-jack@suse.cz> <169107341682.1086009.5390893702477027431.b4-ty@mit.edu>
+In-Reply-To: <169107341682.1086009.5390893702477027431.b4-ty@mit.edu>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 25 Aug 2023 10:15:45 +0300
+Message-ID: <CAOQ4uxh-HCE+Fwat8SyAGF3fcFg-xa_tH9jsxCe8=qPfx73K0g@mail.gmail.com>
+Subject: Re: [PATCH 0/11] ext4: Cleanup read-only and fs aborted checks
+To:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,102 +67,102 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/8/25 3:37, Jan Kara wrote:
-> On Thu 24-08-23 20:56:14, Baokun Li wrote:
->> On 2023/8/24 18:08, Jan Kara wrote:
->>> On Thu 24-08-23 10:27:46, Baokun Li wrote:
->>>> Hello, Jan!
->>>>
->>>> On 2023/8/24 1:05, Jan Kara wrote:
->>>>> On Thu 17-08-23 16:18:28, Baokun Li wrote:
->>>>>> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
->>>>>> inodes"), we load all the quotas before we process the orphaned inodes,
->>>>>> and when we load the quotas, we check the checsum of the bbitmap for each
->>>>>> group. If one of the bbitmap checksums is wrong, the following error will
->>>>>> be reported:
->>>>>>
->>>>>> “Error initializing quota context in support library:
->>>>>>     Block bitmap checksum does not match bitmap”
->>>>>>
->>>>>> But loading quotas comes before checking the current superblock for the
->>>>>> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
->>>>>> image that contains orphan inodes and has the wrong bbitmap checksum.
->>>>>> So delaying quota loading until after the EXT2_ERROR_FS judgment avoids
->>>>>> the above problem.
->>>>>>
->>>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>>>> This certainly looks better but I wonder if there still isn't a problem if
->>>>> the bitmap checksums are wrong but EXT2_ERROR_FS is not set. Shouldn't we
->>>>> rather move the initialization of the quota files after the call to
->>>>> e2fsck_read_bitmaps()?
->>>>>
->>>>> 								Honza
->>>> When the bitmap checksums are wrong but EXT2_ERROR_FS is not set, we must
->>>> have lost some data (error flag or group descriptor or bitmap), so there
->>>> is something wrong with the kernel at this time, so I don't think we
->>>> should fix the image directly, but rather let the user realize that
->>>> something is wrong with the filesystem logic.
->>> I agree it means there is a problem somewhere (the storage, the kernel, or
->>> similar). But just ignoring bitmap checksums in release_orphan_inodes() is
->>> exactly how e2fsck behaves on filesystems without quota feature so I see no
->>> reason for quota feature to change that because the inconsistency has
->>> nothing to do with quotas...
->>>
->>>> Moreover, if we don't care how this happened, but just want to fix the
->>>> image, we only need to run "e2fsck -a" twice. After merging in the
->>>> current patch, we always empty the orphan list before loading the quotas,
->>>> and EXT2_ERROR_FS is set when loading the quotas fails, so this will be
->>>> fixed the second time you run e2fsck. It will not happen that every
->>>> e2fsck will fail like it did before.
->>> I see, you're right so it isn't as bad as I originally thought but still my
->>> argument above holds - IMO e2fsck should treat wrong bitmap checksums the
->>> same way with and without the quota feature.
->>>
->>> 								Honza
->> The original flow that went wrong here is as follows：
->> e2fsck
->>   e2fsck_run_ext3_journal
->>   check_super_block
->>    release_orphan_inodes
->>     e2fsck_read_all_quotas
->>      quota_read_all_dquots
->>       quota_file_open
->>        ext2fs_read_bitmaps
->>         ext2fs_rw_bitmaps
->>          read_bitmaps_range
->>           read_bitmaps_range_start
->>            ext2fs_block_bitmap_csum_verify
->>             !!! error
->>   e2fsck_run
->>
->> Yes, the inconsistency has nothing to do with quota, but quota is loaded
->> here to keep track of space changes during the normal processing of
->> orphan list. If quota was not loaded, we would not have read and check
->> bitmaps until Pass5, and we had already done a lot of checking and
->> tweaking of inodes, blocks, and dirs before Pass5, and the bitmaps
->> inconsistency may have been fixed during that time.
-> This is not true. release_orphan_inodes() calls e2fsck_read_bitmaps() which
-> loads all the bitmaps while ignoring checksum failures. This is needed so
-> that blocks released during orphan cleanup are properly tracked as free.
-> All I want to do is to move the call to e2fsck_read_all_quotas() a bit
-> further than you moved it to a place after the e2fsck_read_bitmaps()
-> call...
+On Thu, Aug 3, 2023 at 6:23=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote:
 >
-> 								Honza
-Yes, e2fsck_read_bitmaps() ignores checksum errors for reading bitmaps, 
-which
-prevents us from exiting e2fsck due to checksum error in 
-release_orphan_inodes(),
-but in the case of the previously mentioned checksum error but EXT2_ERROR_FS
-is not set, when we execute "e2fsck -a", since checksum is ignored, the 
-filesystem
-is considered clean, so it exits e2fsck without performing a force 
-check, but the
-error is still there.
+>
+> On Fri, 16 Jun 2023 18:50:46 +0200, Jan Kara wrote:
+> > This series arised from me trying to fix races when the ext4 filesystem=
+ gets
+> > remounted read-write and users can race in writes before quota subsyste=
+m is
+> > prepared to take them. This particular problem got fixed in VFS in the =
+end
+> > but the cleanups are still good in my opinion so I'm submitting them. T=
+hey
+> > get rid of EXT4_MF_ABORTED flag and cleanup some sb_rdonly() checks.
+> >
+> > Honza
+> >
+> > [...]
+>
+> Applied, thanks!
+>
+> [01/11] ext4: Remove pointless sb_rdonly() checks from freezing code
+>         commit: 98175720c9ed3bac857b0364321517cc2d695a3f
+> [02/11] ext4: Use sb_rdonly() helper for checking read-only flag
+>         commit: d5d020b3294b69eaf3b8985e7a37ba237849c390
+> [03/11] ext4: Make ext4_forced_shutdown() take struct super_block
+>         commit: eb8ab4443aec5ffe923a471b337568a8158cd32b
+> [04/11] ext4: Make 'abort' mount option handling standard
+>         commit: 22b8d707b07e6e06f50fe1d9ca8756e1f894eb0d
+> [05/11] ext4: Drop EXT4_MF_FS_ABORTED flag
+>         commit: 95257987a6387f02970eda707e55a06cce734e18
+> [06/11] ext4: Avoid starting transaction on read-only fs in ext4_quota_of=
+f()
+>         commit: e0e985f3f8941438a66ab8abb94cb011b9fb39a7
+> [07/11] ext4: Warn on read-only filesystem in ext4_journal_check_start()
+>         commit: e7fc2b31e04c46c9e2098bba710c9951c6b968af
+> [08/11] ext4: Drop read-only check in ext4_init_inode_table()
+>         commit: ffb6844e28ef6b9d76bee378774d7afbc3db6da9
+> [09/11] ext4: Drop read-only check in ext4_write_inode()
+>         commit: f1128084b40e520bea8bb32b3ff4d03745ab7e64
+> [10/11] ext4: Drop read-only check from ext4_force_commit()
+>         commit: 889860e452d7436ca72018b8a03cbd89c38d6384
+> [11/11] ext4: Replace read-only check for shutdown check in mmp code
+>         commit: 1e1566b9c85fbd6150657ea17f50fd42b9166d31
+>
+> Best regards,
+> --
+> Theodore Ts'o <tytso@mit.edu>
 
-                                            Baokun
+Hi Jan,
 
--- 
-With Best Regards,
-Baokun Li
-.
+Yesterday I ran fanotify LTP tests on linux-next and noticed a regression
+with fanotify22 which tests the FAN_FS_ERROR event on ext4.
+It's 100% reproducible on my machine (see below).
+
+I've bisected the regression down to this series.
+Not sure if this is an acute regression or just the test needs to be adjust=
+ed.
+
+Thanks,
+Amir.
+
+# ./fanotify/fanotify22
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+[   29.672163] loop0: detected capacity change from 0 to 614400
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.5 (30-Dec-2021)
+[   30.169795] operation not supported error, dev loop0, sector 614272
+op 0x9:(WRITE_ZEROES) flags 0x8000800 phys_seg 0 prio class 2
+[   30.172411] operation not supported error, dev loop0, sector 586 op
+0x9:(WRITE_ZEROES) flags 0x8000800 phys_seg 0 prio class 2
+[   30.176215] operation not supported error, dev loop0, sector 15792
+op 0x9:(WRITE_ZEROES) flags 0x8000800 phys_seg 0 prio class 2
+[   30.189827] operation not supported error, dev loop0, sector 278530
+op 0x9:(WRITE_ZEROES) flags 0x8000800 phys_seg 0 prio class 2
+[   30.247427] EXT4-fs (loop0): mounted filesystem
+a2b5d123-2a7a-44cc-96d4-47119b66a9a9 r/w with ordered data mode. Quota
+mode: none.
+tst_test.c:1558: TINFO: Timeout per run is 0h 00m 30s
+fanotify.h:129: TINFO: fid(test_mnt/internal_dir/bad_dir) =3D
+32966134.65ed1cb1.7e82.a4cd38.0...
+[   30.275088] EXT4-fs (loop0): unmounting filesystem
+a2b5d123-2a7a-44cc-96d4-47119b66a9a9.
+debugfs 1.46.5 (30-Dec-2021)
+[   30.339363] EXT4-fs (loop0): mounted filesystem
+a2b5d123-2a7a-44cc-96d4-47119b66a9a9 r/w with ordered data mode. Quota
+mode: none.
+fanotify.h:129: TINFO: fid(test_mnt) =3D 32966134.65ed1cb1.2.0.0...
+[   30.346145] EXT4-fs error (device loop0): __ext4_remount:6465: comm
+fanotify22: Abort forced by user
+[   30.348788] Aborting journal on device loop0-8.
+[   30.350608] EXT4-fs (loop0): Remounting filesystem read-only
+[   30.352403] EXT4-fs (loop0): re-mounted
+a2b5d123-2a7a-44cc-96d4-47119b66a9a9 ro. Quota mode: none.
+fanotify22.c:232: TPASS: Successfully received: Trigger abort
+Test timeouted, sending SIGKILL!
+tst_test.c:1612: TINFO: If you are running on slow machine, try
+exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1614: TBROK: Test killed! (timeout?)
