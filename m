@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E576E78954B
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Aug 2023 11:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06ED0789545
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Aug 2023 11:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbjHZJih (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 26 Aug 2023 05:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
+        id S232331AbjHZJid (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 26 Aug 2023 05:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbjHZJiI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Aug 2023 05:38:08 -0400
+        with ESMTP id S232328AbjHZJiG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Aug 2023 05:38:06 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA33E7A;
-        Sat, 26 Aug 2023 02:38:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FC92719;
+        Sat, 26 Aug 2023 02:37:54 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RXsDt31R9z4f3lfv;
-        Sat, 26 Aug 2023 17:37:50 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RXsDv3HQhz4f3k6P;
+        Sat, 26 Aug 2023 17:37:51 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgA3E6bqx+lkNx57Bg--.59420S12;
+        by APP4 (Coremail) with SMTP id gCh0CgA3E6bqx+lkNx57Bg--.59420S13;
         Sat, 26 Aug 2023 17:37:51 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/13] ext4: use saved local variable sbi instead of EXT4_SB(sb)
-Date:   Sun, 27 Aug 2023 01:37:32 +0800
-Message-Id: <20230826173735.4023594-11-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 11/13] ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
+Date:   Sun, 27 Aug 2023 01:37:33 +0800
+Message-Id: <20230826173735.4023594-12-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230826173735.4023594-1-shikemeng@huaweicloud.com>
 References: <20230826173735.4023594-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3E6bqx+lkNx57Bg--.59420S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFW3Jr17XF43Wr45AFyrWFg_yoW8ZFWrpF
-        W3AF15GFWIkF1DuF43Gr4DXr109w40y3WjgFWfZFyUXrW5J3ZxCF97ta45WF4UKrW5Jw1f
-        Xa9xKrWUAr1DX37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgA3E6bqx+lkNx57Bg--.59420S13
+X-Coremail-Antispam: 1UD129KBjvJXoW7WrWkAF48trW5uFyxuF15Jwb_yoW8uFy3pa
+        n7AF1rCr95GFyDuayxA3y0grn3Cw1xGry8JryfJ348Cr9xGr1kWF93tFyFyFyjgFW3tr12
+        qr15Ary7Ar1kG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -59,59 +59,58 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We save EXT4_SB(sb) to local variable sbi at beginning of function
-ext4_resize_begin. Use sbi directly instead of EXT4_SB(sb) to
-remove unnecessary pointer dereference.
+We always call add_new_gdb_meta_bg with first group in mete_bg. Remove the
+unnecessary ext4_meta_bg_first_group conversion to simplify the gdbblock
+calculation.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/resize.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/ext4/resize.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index d4ab2cde0a03..e2c81b589de8 100644
+index e2c81b589de8..4dc68400ba19 100644
 --- a/fs/ext4/resize.c
 +++ b/fs/ext4/resize.c
-@@ -55,7 +55,7 @@ int ext4_resize_begin(struct super_block *sb)
- 	 * If the reserved GDT blocks is non-zero, the resize_inode feature
- 	 * should always be set.
- 	 */
--	if (EXT4_SB(sb)->s_es->s_reserved_gdt_blocks &&
-+	if (sbi->s_es->s_reserved_gdt_blocks &&
- 	    !ext4_has_feature_resize_inode(sb)) {
- 		ext4_error(sb, "resize_inode disabled but reserved GDT blocks non-zero");
- 		return -EFSCORRUPTED;
-@@ -67,9 +67,9 @@ int ext4_resize_begin(struct super_block *sb)
-          * bad time to do it anyways.
-          */
- 	if (EXT4_B2C(sbi, sbi->s_sbh->b_blocknr) !=
--	    le32_to_cpu(EXT4_SB(sb)->s_es->s_first_data_block)) {
-+	    le32_to_cpu(sbi->s_es->s_first_data_block)) {
- 		ext4_warning(sb, "won't resize using backup superblock at %llu",
--			(unsigned long long)EXT4_SB(sb)->s_sbh->b_blocknr);
-+			(unsigned long long)sbi->s_sbh->b_blocknr);
- 		return -EPERM;
- 	}
+@@ -110,12 +110,6 @@ static ext4_group_t ext4_meta_bg_first_group(struct super_block *sb,
+ 	       EXT4_DESC_PER_BLOCK_BITS(sb);
+ }
  
-@@ -77,7 +77,7 @@ int ext4_resize_begin(struct super_block *sb)
- 	 * We are not allowed to do online-resizing on a filesystem mounted
- 	 * with error, because it can destroy the filesystem easily.
- 	 */
--	if (EXT4_SB(sb)->s_mount_state & EXT4_ERROR_FS) {
-+	if (sbi->s_mount_state & EXT4_ERROR_FS) {
- 		ext4_warning(sb, "There are errors in the filesystem, "
- 			     "so online resizing is not allowed");
- 		return -EPERM;
-@@ -89,7 +89,7 @@ int ext4_resize_begin(struct super_block *sb)
- 	}
+-static ext4_fsblk_t ext4_meta_bg_first_block_no(struct super_block *sb,
+-					     ext4_group_t group) {
+-	group = ext4_meta_bg_first_group(sb, group);
+-	return ext4_group_first_block_no(sb, group);
+-}
+-
+ static ext4_grpblk_t ext4_group_overhead_blocks(struct super_block *sb,
+ 						ext4_group_t group) {
+ 	ext4_grpblk_t overhead;
+@@ -944,7 +938,13 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
+ }
  
- 	if (test_and_set_bit_lock(EXT4_FLAGS_RESIZING,
--				  &EXT4_SB(sb)->s_ext4_flags))
-+				  &sbi->s_ext4_flags))
- 		ret = -EBUSY;
+ /*
+- * add_new_gdb_meta_bg is the sister of add_new_gdb.
++ * If there is no available space in the existing block group descriptors for
++ * the new block group and there are no reserved block group descriptors, then
++ * the meta_bg feature will get enabled, and es->s_first_meta_bg will get set
++ * to the first block group that is managed using meta_bg and s_first_meta_bg
++ * must be a multiple of EXT4_DESC_PER_BLOCK(sb).
++ * This function will be called when first group of meta_bg is added to bring
++ * new group descriptors block of new added meta_bg.
+  */
+ static int add_new_gdb_meta_bg(struct super_block *sb,
+ 			       handle_t *handle, ext4_group_t group) {
+@@ -954,8 +954,8 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
+ 	unsigned long gdb_num = group / EXT4_DESC_PER_BLOCK(sb);
+ 	int err;
  
- 	return ret;
+-	gdblock = ext4_meta_bg_first_block_no(sb, group) +
+-		   ext4_bg_has_super(sb, group);
++	gdblock = ext4_group_first_block_no(sb, group) +
++		  ext4_bg_has_super(sb, group);
+ 	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
+ 	if (IS_ERR(gdb_bh))
+ 		return PTR_ERR(gdb_bh);
 -- 
 2.30.0
 
