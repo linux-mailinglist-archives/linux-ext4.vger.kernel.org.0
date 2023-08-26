@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C6C789481
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Aug 2023 09:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F2E789473
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Aug 2023 09:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjHZHvZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 26 Aug 2023 03:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
+        id S232031AbjHZHvT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 26 Aug 2023 03:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjHZHuv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Aug 2023 03:50:51 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083971FF0;
-        Sat, 26 Aug 2023 00:50:48 -0700 (PDT)
+        with ESMTP id S232018AbjHZHut (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Aug 2023 03:50:49 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809A226A6;
+        Sat, 26 Aug 2023 00:50:46 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RXpsD2xJzz4f3jXr;
-        Sat, 26 Aug 2023 15:50:40 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgDXZajPrulkChN1Bg--.43571S10;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RXpsH3r2Jz4f3jq3;
         Sat, 26 Aug 2023 15:50:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgDXZajPrulkChN1Bg--.43571S11;
+        Sat, 26 Aug 2023 15:50:44 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 08/11] ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
-Date:   Sat, 26 Aug 2023 23:50:25 +0800
-Message-Id: <20230826155028.4019470-9-shikemeng@huaweicloud.com>
+Subject: [PATCH v6 09/11] ext4: add some kunit stub for mballoc kunit test
+Date:   Sat, 26 Aug 2023 23:50:26 +0800
+Message-Id: <20230826155028.4019470-10-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230826155028.4019470-1-shikemeng@huaweicloud.com>
 References: <20230826155028.4019470-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDXZajPrulkChN1Bg--.43571S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxGry5Cry5uw43Xr15tw45trb_yoWrtw1fpr
-        nIyFnrCryrGrnruF48Aa4jq3WrKw48C3W7WrW3CryfCFy2yFn3CF97tFnY9FWDtFZ7ZFnr
-        Xw1Y9348ursxW37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgDXZajPrulkChN1Bg--.43571S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFW8Xw15JFWDZryUGrW3KFg_yoW5Jw4rp3
+        ZrAF1DGr43Ww1q9F4Ika40q3WxGw1xKF1UJryfur13uFW7JrnxuFWktFn0yF4YvFsxZFsr
+        X3W5Zry3Cr1fW3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -51,158 +51,89 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxGry5Cry5uw43Xr15tw45trb_yoWrtw1fpr
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Call ext4_mb_mark_context in ext4_group_add_blocks() to remove repeat code.
+Multiblocks allocation will read and write block bitmap and group
+descriptor which reside on disk. Add kunit stub to function
+ext4_get_group_desc, ext4_read_block_bitmap_nowait, ext4_wait_block_bitmap
+and ext4_mb_mark_context to avoid real IO to disk.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 84 +++++++----------------------------------------
- 1 file changed, 12 insertions(+), 72 deletions(-)
+ fs/ext4/balloc.c  | 10 ++++++++++
+ fs/ext4/mballoc.c |  4 ++++
+ 2 files changed, 14 insertions(+)
 
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 79b20d6ae39e..b0bf255b159f 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -22,6 +22,7 @@
+ #include "mballoc.h"
+ 
+ #include <trace/events/ext4.h>
++#include <kunit/static_stub.h>
+ 
+ static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
+ 					    ext4_group_t block_group);
+@@ -274,6 +275,9 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct buffer_head *bh_p;
+ 
++	KUNIT_STATIC_STUB_REDIRECT(ext4_get_group_desc,
++				   sb, block_group, bh);
++
+ 	if (block_group >= ngroups) {
+ 		ext4_error(sb, "block_group >= groups_count - block_group = %u,"
+ 			   " groups_count = %u", block_group, ngroups);
+@@ -468,6 +472,9 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group,
+ 	ext4_fsblk_t bitmap_blk;
+ 	int err;
+ 
++	KUNIT_STATIC_STUB_REDIRECT(ext4_read_block_bitmap_nowait,
++				   sb, block_group, ignore_locked);
++
+ 	desc = ext4_get_group_desc(sb, block_group, NULL);
+ 	if (!desc)
+ 		return ERR_PTR(-EFSCORRUPTED);
+@@ -563,6 +570,9 @@ int ext4_wait_block_bitmap(struct super_block *sb, ext4_group_t block_group,
+ {
+ 	struct ext4_group_desc *desc;
+ 
++	KUNIT_STATIC_STUB_REDIRECT(ext4_wait_block_bitmap,
++				   sb, block_group, bh);
++
+ 	if (!buffer_new(bh))
+ 		return 0;
+ 	desc = ext4_get_group_desc(sb, block_group, NULL);
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index bb08a71a6e61..fdffa3b40bcd 100644
+index fdffa3b40bcd..5961b08ae7df 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -6681,25 +6681,22 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 			 ext4_fsblk_t block, unsigned long count)
- {
--	struct buffer_head *bitmap_bh = NULL;
--	struct buffer_head *gd_bh;
-+	struct ext4_mark_context mc;
- 	ext4_group_t block_group;
- 	ext4_grpblk_t bit;
--	unsigned int i;
--	struct ext4_group_desc *desc;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_buddy e4b;
--	int err = 0, ret, free_clusters_count;
--	ext4_grpblk_t clusters_freed;
-+	int err = 0;
- 	ext4_fsblk_t first_cluster = EXT4_B2C(sbi, block);
- 	ext4_fsblk_t last_cluster = EXT4_B2C(sbi, block + count - 1);
- 	unsigned long cluster_count = last_cluster - first_cluster + 1;
+@@ -17,6 +17,7 @@
+ #include <linux/nospec.h>
+ #include <linux/backing-dev.h>
+ #include <trace/events/ext4.h>
++#include <kunit/static_stub.h>
  
- 	ext4_debug("Adding block(s) %llu-%llu\n", block, block + count - 1);
+ /*
+  * MUSTDO:
+@@ -3990,6 +3991,9 @@ ext4_mb_mark_context(struct ext4_mark_context *mc, ext4_group_t group,
+ 	int err;
+ 	unsigned int i, already, changed = len;
  
--	if (count == 0)
-+	if (cluster_count == 0)
- 		return 0;
- 
-+	ext4_mb_prepare_mark_context(&mc, handle, sb, 0);
- 	ext4_get_group_no_and_offset(sb, block, &block_group, &bit);
- 	/*
- 	 * Check to see if we are freeing blocks across a group
-@@ -6712,19 +6709,6 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 		goto error_return;
- 	}
- 
--	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
--	if (IS_ERR(bitmap_bh)) {
--		err = PTR_ERR(bitmap_bh);
--		bitmap_bh = NULL;
--		goto error_return;
--	}
--
--	desc = ext4_get_group_desc(sb, block_group, &gd_bh);
--	if (!desc) {
--		err = -EIO;
--		goto error_return;
--	}
--
- 	if (!ext4_sb_block_valid(sb, NULL, block, count)) {
- 		ext4_error(sb, "Adding blocks in system zones - "
- 			   "Block = %llu, count = %lu",
-@@ -6733,74 +6717,30 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 		goto error_return;
- 	}
- 
--	BUFFER_TRACE(bitmap_bh, "getting write access");
--	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
--					    EXT4_JTR_NONE);
-+	err = ext4_mb_load_buddy(sb, block_group, &e4b);
- 	if (err)
- 		goto error_return;
- 
--	/*
--	 * We are about to modify some metadata.  Call the journal APIs
--	 * to unshare ->b_data if a currently-committing transaction is
--	 * using it
--	 */
--	BUFFER_TRACE(gd_bh, "get_write_access");
--	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
--	if (err)
-+	err = ext4_mb_mark_context(&mc, block_group, bit, cluster_count,
-+				   EXT4_MB_BITMAP_MARKED_CHECK);
-+	if (err && mc.changed == 0) {
-+		ext4_mb_unload_buddy(&e4b);
- 		goto error_return;
--
--	for (i = 0, clusters_freed = 0; i < cluster_count; i++) {
--		BUFFER_TRACE(bitmap_bh, "clear bit");
--		if (!mb_test_bit(bit + i, bitmap_bh->b_data)) {
--			ext4_error(sb, "bit already cleared for block %llu",
--				   (ext4_fsblk_t)(block + i));
--			BUFFER_TRACE(bitmap_bh, "bit already cleared");
--		} else {
--			clusters_freed++;
--		}
- 	}
- 
--	err = ext4_mb_load_buddy(sb, block_group, &e4b);
--	if (err)
--		goto error_return;
--
--	ext4_lock_group(sb, block_group);
--	mb_clear_bits(bitmap_bh->b_data, bit, cluster_count);
--	free_clusters_count = clusters_freed +
--		ext4_free_group_clusters(sb, desc);
--	ext4_free_group_clusters_set(sb, desc, free_clusters_count);
--	ext4_block_bitmap_csum_set(sb, desc, bitmap_bh);
--	ext4_group_desc_csum_set(sb, block_group, desc);
--	ext4_unlock_group(sb, block_group);
-+	if (mc.changed != cluster_count)
-+		ext4_error(sb, "bit already cleared in group %u", block_group);
- 
- 	ext4_lock_group(sb, block_group);
- 	mb_free_blocks(NULL, &e4b, bit, cluster_count);
- 	ext4_unlock_group(sb, block_group);
- 
- 	percpu_counter_add(&sbi->s_freeclusters_counter,
--			   clusters_freed);
--
--	if (sbi->s_log_groups_per_flex) {
--		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
--		atomic64_add(clusters_freed,
--			     &sbi_array_rcu_deref(sbi, s_flex_groups,
--						  flex_group)->free_clusters);
--	}
-+			   mc.changed);
- 
- 	ext4_mb_unload_buddy(&e4b);
- 
--	/* We dirtied the bitmap block */
--	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
--	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
--
--	/* And the group descriptor block */
--	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
--	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
--	if (!err)
--		err = ret;
--
- error_return:
--	brelse(bitmap_bh);
- 	ext4_std_error(sb, err);
- 	return err;
- }
++	KUNIT_STATIC_STUB_REDIRECT(ext4_mb_mark_context,
++				   mc, group, blkoff, len, flags);
++
+ 	mc->changed = 0;
+ 	bitmap_bh = ext4_read_block_bitmap(sb, group);
+ 	if (IS_ERR(bitmap_bh))
 -- 
 2.30.0
 
