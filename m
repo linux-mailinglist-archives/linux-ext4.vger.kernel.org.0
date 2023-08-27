@@ -2,69 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15109789FF7
-	for <lists+linux-ext4@lfdr.de>; Sun, 27 Aug 2023 17:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31F278A141
+	for <lists+linux-ext4@lfdr.de>; Sun, 27 Aug 2023 21:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjH0P3S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 27 Aug 2023 11:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
+        id S230123AbjH0Tmb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 27 Aug 2023 15:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjH0P2v (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 27 Aug 2023 11:28:51 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF8CEC
-        for <linux-ext4@vger.kernel.org>; Sun, 27 Aug 2023 08:28:49 -0700 (PDT)
-Received: from letrec.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37RFRp8k009067
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Aug 2023 11:27:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1693150076; bh=Pm51TImySKF9TxwbcWFK0CDibPV/z2o26+h2hlm1fac=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=I6AxpnUDJ1gZXxfJRpxM76cTteyn072xR/407tnUWqeS0FR3Ic4spIx9XRbqf9FFk
-         1JXLqJ5vUZ1nE/4oS9RAKyR2kmcyASOUWDAqUUewpmB0nnuUZZATnOz0nyZCzHDcBn
-         9GF2mcMJCvSSiD4gCudrKNXfW8T+BUfnZ8yFpN74ZIjXyTrAwFuSD1MB+MCiuRoyC6
-         3YcQ3noHeYSKN996JaHF4VfC2sW4/cCM4L4Epmh7DnehPViMmxZ+nnyiMVMD3JXYyC
-         p6fAP4vn10WMM8bgzqJi0US6E6pOltUqbbpugpmlRXiWaEkwT9WjCq6mEEW8eR5ofJ
-         QwvvYWApIy3hA==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 6F2A68C024A; Sun, 27 Aug 2023 11:27:51 -0400 (EDT)
-Date:   Sun, 27 Aug 2023 11:27:51 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zhang Yi <yi.zhang@huaweicloud.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH] ext4: correct error handling of ext4_get_journal_inode()
-Message-ID: <ZOtrd/YVOuOuQPQF@mit.edu>
-References: <20230826011029.2023140-1-yi.zhang@huaweicloud.com>
+        with ESMTP id S230046AbjH0Tl5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 27 Aug 2023 15:41:57 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8AD12E;
+        Sun, 27 Aug 2023 12:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=684ZmibV0iRA7W1nKgqEgsL3aMIsGcfp6Zpl3WdJ4DU=; b=MC2inegbdk323giCAEH+EfdYar
+        4kXwfSwyy2upf/dK+53+T+qrKyewF5s7dkck4Fy8HiN43ivhIJelmFUnVBY8gTnpZi1xWKTWuXIKw
+        PMxisq0e3KNF97DWVe6B6NWvtgyUOe2N5H03vNuXGmN7U3J3s/iHPYzfZnHTYEtijbR38gB7y6yM+
+        f7ACCYsTkBZjsnjijsZxvBLbNGKP/mTU09fHGjxl78/It44EuuASOQ2dnSIavl4Uy9jNvEkCB6Mv6
+        wSB2x3czu7lrhAFvslc5eM2xpF0ak84dfAdNaJZPWXabaeFkiWOblNYIYyhnd8Q9EJERXc2PyYNn0
+        cSxlywzw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qaLdS-001NqG-1T;
+        Sun, 27 Aug 2023 19:41:22 +0000
+Date:   Sun, 27 Aug 2023 20:41:22 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH 03/12] filemap: update ki_pos in generic_perform_write
+Message-ID: <20230827194122.GA325446@ZenIV>
+References: <20230601145904.1385409-1-hch@lst.de>
+ <20230601145904.1385409-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230826011029.2023140-1-yi.zhang@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230601145904.1385409-4-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 09:10:29AM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Commit '99d6c5d892bf ("ext4: ext4_get_{dev}_journal return proper error
-> value")' changed ext4_get_journal_inode() to return error return value
-> when something bad happened, but missed to modify the caller
-> ext4_calculate_overhead(), so fix it.
-> 
-> Reported-by: syzbot+b3123e6d9842e526de39@syzkaller.appspotmail.com
-> Fixes: 99d6c5d892bf ("ext4: ext4_get_{dev}_journal return proper error value")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+On Thu, Jun 01, 2023 at 04:58:55PM +0200, Christoph Hellwig wrote:
+> All callers of generic_perform_write need to updated ki_pos, move it into
+> common code.
 
-Thanks, I've folded this into the commit "ext4: ext4_get_{dev}_journal
-return proper error value".
+> @@ -4034,7 +4037,6 @@ ssize_t __generic_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		endbyte = pos + status - 1;
+>  		err = filemap_write_and_wait_range(mapping, pos, endbyte);
+>  		if (err == 0) {
+> -			iocb->ki_pos = endbyte + 1;
+>  			written += status;
+>  			invalidate_mapping_pages(mapping,
+>  						 pos >> PAGE_SHIFT,
+> @@ -4047,8 +4049,6 @@ ssize_t __generic_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		}
+>  	} else {
+>  		written = generic_perform_write(iocb, from);
+> -		if (likely(written > 0))
+> -			iocb->ki_pos += written;
+>  	}
+>  out:
+>  	return written ? written : err;
 
-						- Ted
+[another late reply, sorry]
+
+That part is somewhat fishy - there's a case where you return a positive value
+and advance ->ki_pos by more than that amount.  I really wonder if all callers
+of ->write_iter() are OK with that.  Consider e.g. this:
+
+ssize_t ksys_write(unsigned int fd, const char __user *buf, size_t count)
+{
+        struct fd f = fdget_pos(fd);
+        ssize_t ret = -EBADF;
+
+        if (f.file) {
+                loff_t pos, *ppos = file_ppos(f.file);
+                if (ppos) {
+                        pos = *ppos;   
+                        ppos = &pos;
+                }
+                ret = vfs_write(f.file, buf, count, ppos);
+                if (ret >= 0 && ppos)
+                        f.file->f_pos = pos;
+                fdput_pos(f);
+        }
+
+        return ret;
+}
+
+ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
+{
+        ssize_t ret;
+
+        if (!(file->f_mode & FMODE_WRITE))
+                return -EBADF;
+        if (!(file->f_mode & FMODE_CAN_WRITE))
+                return -EINVAL;
+        if (unlikely(!access_ok(buf, count)))
+                return -EFAULT;
+
+        ret = rw_verify_area(WRITE, file, pos, count);
+        if (ret)
+                return ret;
+        if (count > MAX_RW_COUNT)
+                count =  MAX_RW_COUNT;
+        file_start_write(file);
+        if (file->f_op->write)
+                ret = file->f_op->write(file, buf, count, pos);
+        else if (file->f_op->write_iter)
+                ret = new_sync_write(file, buf, count, pos);
+        else   
+                ret = -EINVAL;
+        if (ret > 0) {
+                fsnotify_modify(file);
+                add_wchar(current, ret);
+        }
+        inc_syscw(current);
+        file_end_write(file);
+        return ret;
+}
+
+static ssize_t new_sync_write(struct file *filp, const char __user *buf, size_t len, loff_t *ppos)
+{
+        struct kiocb kiocb;
+        struct iov_iter iter;
+        ssize_t ret; 
+
+        init_sync_kiocb(&kiocb, filp);
+        kiocb.ki_pos = (ppos ? *ppos : 0);
+        iov_iter_ubuf(&iter, ITER_SOURCE, (void __user *)buf, len);
+
+        ret = call_write_iter(filp, &kiocb, &iter);
+        BUG_ON(ret == -EIOCBQUEUED);
+        if (ret > 0 && ppos)
+                *ppos = kiocb.ki_pos;
+        return ret;
+} 
+
+Suppose ->write_iter() ends up doing returning a positive value smaller than
+the increment of kiocb.ki_pos.  What do we get?  ret is positive, so
+kiocb.ki_pos gets copied into *ppos, which is ksys_write's pos and there
+we copy it into file->f_pos.
+
+Is it really OK to have write() return 4096 and advance the file position
+by 16K?  AFAICS, userland wouldn't get any indication of something
+odd going on - just a short write to a regular file, with followup write
+of remaining 12K getting quietly written in the range 16K..28K.
+
+I don't remember what POSIX says about that, but it would qualify as
+nasty surprise for any userland program - sure, one can check fsync()
+results before closing the sucker and see if everything looks fine,
+but the way it's usually discussed could easily lead to assumption that
+(synchronous) O_DIRECT writes would not be affected by anything of that
+sort.
