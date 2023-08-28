@@ -2,97 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B2A78B189
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 15:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5E778B24B
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 15:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjH1NVa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Aug 2023 09:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        id S229487AbjH1Nx3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Aug 2023 09:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjH1NVH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 09:21:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95217122;
-        Mon, 28 Aug 2023 06:21:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 26B0562964;
-        Mon, 28 Aug 2023 13:21:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6569C433C8;
-        Mon, 28 Aug 2023 13:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693228864;
-        bh=QtirhpZ6M4wRBs0PcZuQKaZInNnIQCord7zI9oR3eYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dGzUUvJG87+eWzsz6xzROYCBNDl7W5LTOJNZSdrdj6kC4UZhu/D9tYCBTY1kzrQPe
-         x7WILXB1VLYusnI7i57xbkDNp7AlezoIITxDEYtPZbpKeaRaDjmpnSpx19pqxTzCO1
-         eHWv5jG6Kk405k0HzfGlQ5FnGrphH6RQF/qbsChQZpHtUi1E5k/RJY2W8E0veW1Pw4
-         WmlHIAC8kSpEcFeEGWLjHX2ee4G742ubGUZGwha6A7RHD325wN5SUYbEQ3omUMFDG/
-         CM1aA/cNlMXqkEYlHa/Phek8pvPKy4SQPmUA3IhuobWAQwG6yFUbEhG6jgGYrQO+H2
-         J9dq9/E4F2ZeQ==
-Date:   Mon, 28 Aug 2023 15:20:47 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <20230828-durften-hauswand-67319ee0c17c@brauner>
-References: <20230810171429.31759-1-jack@suse.cz>
- <20230825015843.GB95084@ZenIV>
- <20230825134756.o3wpq6bogndukn53@quack3>
+        with ESMTP id S230396AbjH1NxD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 09:53:03 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABCEE3;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a6f6a66e1so2272021b3a.2;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693230780; x=1693835580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6FmnTH4U9OSJhGxAibPkRaPpwtt5dIptHO+rY27erzo=;
+        b=Mjom9tYhcWSUwzV14X18el+3OX+n9997CG0Ii5zZODB2SvTtK/ybTzdMj7+7K47RA3
+         wSPtzFE9il4sbnIb/ecIBzvlne0dEg56jQG5k4ZUjCmA4vRsJ2yBrUiJM0c+4izjfG+u
+         DOdvJn1WY8SMK/s+f6onEID3W+OM59OEmdkM3N9WDjNJUfcX5MEuAsPDubDfw4KsHHWx
+         SnNecqcp4jOMYU+PVUP3jhMujRohsqvkJvA3Vg2+Swylxs9/IiOS1VQ8bIhfyRohGZmm
+         4S/BnfgdQ7EGJrPRUVgilPg4db048/eqxKmR4XVFqaUgL8blGgeSDorc0/em51YcIAH5
+         RQcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693230780; x=1693835580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FmnTH4U9OSJhGxAibPkRaPpwtt5dIptHO+rY27erzo=;
+        b=IMXQVkO19HWEEVPHUX/jnzPwU3cJMGQrlpCvAawxQLo0OihF/SuTfZY8DYW3m91EWf
+         wZMlj1mtt2kDdcJrKXkzQORGJh6BpMeVBGTcx1XVKAnpJi5a0OObv1UIC3jeszaMXR2D
+         jDxy1OWZh6g8eeRN8v768ja89V6EULIPwkcvyjutOjFfs7D802piT7P3jsv6Uxzb5D2n
+         m37fioaBU1SP0PdELApRjRLsY4khLuI9Tp0UX4caBmvGKZ23iaIfAGxLDWczypLTQUF3
+         a3wC5NPMBMSQXfvl3fVF0FOvOUnELGU+acnZJyuMi8655gqXZkkbAKCrmVhutbIw+L4W
+         JLZQ==
+X-Gm-Message-State: AOJu0Yz4RQHlcfUqJKunrgDdMGatT6Nuy8eKlUhj1swzwgrcUy0qpYCx
+        61LpztJly82r8ryH3PSENwYAlv2EVhM=
+X-Google-Smtp-Source: AGHT+IGwe6fMpNwLXLqG9W9bii5SM9SpBYM153qClnV57jqRshve66AaWDXjUK10BPKKg0JBE957Cw==
+X-Received: by 2002:a05:6a00:b8e:b0:68a:530d:a39b with SMTP id g14-20020a056a000b8e00b0068a530da39bmr20706157pfj.8.1693230780198;
+        Mon, 28 Aug 2023 06:53:00 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id j12-20020aa7800c000000b00687dde8ae5dsm6650080pfi.154.2023.08.28.06.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 06:52:58 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id BF47A9ED5C53; Mon, 28 Aug 2023 20:52:54 +0700 (WIB)
+Date:   Mon, 28 Aug 2023 20:52:54 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
+        adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <ZOymtgiZYGQ6QlxN@debian.me>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+ <20230815125146.GA1508930@mit.edu>
+ <ZNt11WbPn7LCXPvB@gallifrey>
+ <ZNu668KGiNcwCSVe@gallifrey>
+ <ZNwm7Mo9yv7uIkno@gallifrey>
+ <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
+ <ZNzg1/zhxYV2EkBX@gallifrey>
+ <ZNzl2Sq9UJ3FiTgV@gallifrey>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Iq+/xu6Yd8z1UumD"
 Content-Disposition: inline
-In-Reply-To: <20230825134756.o3wpq6bogndukn53@quack3>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNzl2Sq9UJ3FiTgV@gallifrey>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> So besides my last fput() worry about I think this could work and would be
-> probably a bit nicer than what I have. But before going and redoing the whole
-> series let me gather some more feedback so that we don't go back and forth.
-> Christoph, Christian, Jens, any opinion?
 
-I'll be a bit under water for the next few days, I expect but I'll get
-back to this. I think not making you redo this whole thing from scratch
-is what I'd prefer unless there's really clear advantages. But I don't
-want to offer a haphazard opinion in the middle of the merge window.
+--Iq+/xu6Yd8z1UumD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 16, 2023 at 03:06:01PM +0000, Dr. David Alan Gilbert wrote:
+> > > Can you try and pull in:
+> > >=20
+> > > https://git.kernel.dk/cgit/linux/commit/?h=3Dblock-6.5&id=3D5ff3213a5=
+387e076af2b87f796f94b36965e8c3a
+> > >=20
+> > > and see if that helps?
+> >=20
+> > <testing....>
+>=20
+> Yes it seems to fix it - thanks!
+>=20
+
+#regzbot fix: 5ff3213a5387e076af2b87f796f94b36965e8c3a
+
+Yet, I don't see that fix commit on v6.5 release...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--Iq+/xu6Yd8z1UumD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOymrgAKCRD2uYlJVVFO
+oxazAP9NpxTwVV8bQ0KBj16fxHi9bhqrOUF6EQpBC5d/SRa/4gD+LVhHGbh71kaq
+grxoLg4y8ejZXf4+uKYHP3w7avGIJAU=
+=yJub
+-----END PGP SIGNATURE-----
+
+--Iq+/xu6Yd8z1UumD--
