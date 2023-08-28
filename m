@@ -2,100 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD6F78A8EE
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 11:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41EE78A95E
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 11:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjH1J3L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Aug 2023 05:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
+        id S229930AbjH1Jye (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Aug 2023 05:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjH1J2v (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 05:28:51 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0DF100
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Aug 2023 02:28:48 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-49059b1ca83so210631e0c.2
-        for <linux-ext4@vger.kernel.org>; Mon, 28 Aug 2023 02:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693214927; x=1693819727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1pVYVQsFRl94FUBcafCId1bvkM5MyupvZsk+Ew4P9kg=;
-        b=ke3eT8Dr5yM6fyTOZKfDU1j8x+freG4DafWi58C5ulo+3jfz0mFnC0QItbF7z3p3xu
-         WBR02ZJcNTHZvRCNz2eFNaMqXBKS9bjx7YbAWMOYi9uuAcOYp+ZDP8WesR8csENt3d6X
-         0SWUD5YzF8m05y90Qm2YiTgHIt0tH6EVUdIclqTu1/0SVQ5CsPvhRzdluw/Cyrx0m4H1
-         Yy2xxdKuD83C4TxgYXpiTXQM8hDRhnN+IMXy1bTrt9ftGDXfJ2Rm42bMipeiiFjOkyn3
-         0G/fviaA7k5QsvGnGK7giKS/qbmY5fdxvRrAS13ZMpWw/wbyW0UJnutiLad+i9iOR6dv
-         xK9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693214927; x=1693819727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1pVYVQsFRl94FUBcafCId1bvkM5MyupvZsk+Ew4P9kg=;
-        b=jMpDoXT+7d2odK4PANLJyFlgnRxFPq0XPdqJna9ULceedTBdI0ej01JxFjAec0Gu4U
-         AJXGCK+VjonK+i7QaMZfajAuwNgCiNbhfiEDJ32wg61w9NH9qQXQ4aG3RVy6xU79zynZ
-         LPWTiOxF+S4SOuhC4tj3PIP6audhkWU3s7yGknYvAUDcqvbe/8EJc3TkZ4fXndShXCXT
-         8+iSWdXfcHsSRZK93EF9ofZrQc0D0GX9JI5StYg15IwPT8JdS+rrIkpFwFoq+h+CavLg
-         q6tK1WjiZYs8KBN3JXyMMnEtS75DFEATQUemXj+ZhUGj+y7AcVauJhnO0Jt0ji5hwti/
-         8IIw==
-X-Gm-Message-State: AOJu0Yxn/vT+Hm8E6fJI8BaUUCM7hZ1+RfCtniHShloPO7Q06hudoYoN
-        +Cv9skysoTDuhaRPNgTlTZKkFzXlKlqRCw==
-X-Google-Smtp-Source: AGHT+IGxTC6KUb/U5hNV52jvKLTj+EDcXf4pqiIlVAf7mlAyqgsVlE98GCIpuP2OXb06lCol+Wvbeg==
-X-Received: by 2002:a05:6102:3a72:b0:447:6cf0:7119 with SMTP id bf18-20020a0561023a7200b004476cf07119mr22577189vsb.30.1693214926975;
-        Mon, 28 Aug 2023 02:28:46 -0700 (PDT)
-Received: from localhost.localdomain ([143.92.127.238])
-        by smtp.gmail.com with ESMTPSA id mg24-20020a17090b371800b002630c9d78aasm6699052pjb.5.2023.08.28.02.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 02:28:46 -0700 (PDT)
-From:   Haibo Liu <haiboliu6@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Haibo Liu <haiboliu6@gmail.com>
-Subject: ext4/super.c : Fix a goto label
-Date:   Mon, 28 Aug 2023 17:27:26 +0800
-Message-Id: <20230828092726.19400-1-haiboliu6@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230176AbjH1JyK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 05:54:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C50C6
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Aug 2023 02:54:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DBDB1F38A;
+        Mon, 28 Aug 2023 09:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693216444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gHlFLrvwyaozvG6Co+cbZa/4VzoN0FLBhAFI7XorIeQ=;
+        b=R/lBXcb6BmZRKm39fOnwuqjosPRvlQvMPYAZthfEbzqJTDQLDc61jIQjeqH9usBtjCblbv
+        VRfuqGjfoPLS1NtiyHe2aPeUiVFe+3eCo9pZoOrJ5KR1CZC9n11qYSyb6rteQIg3fPNKpH
+        X/9EJ8cuPzfjpLxhxed9Ze8/qjvCkLg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693216444;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gHlFLrvwyaozvG6Co+cbZa/4VzoN0FLBhAFI7XorIeQ=;
+        b=UldidxThsl+VVGFReLpd/C9NBeKHfuf3cTyVnRtPa0XN6NnwqIwV/aGZL3H5AMFiCUdo0r
+        fI4Qs0c3kA1tgBDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ACB3139CC;
+        Mon, 28 Aug 2023 09:54:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tOIpErxu7GTjQQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 09:54:04 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id BD052A0774; Mon, 28 Aug 2023 11:54:03 +0200 (CEST)
+Date:   Mon, 28 Aug 2023 11:54:03 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, darrick.wong@oracle.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2] e2fsck: delay quotas loading in
+ release_orphan_inodes()
+Message-ID: <20230828095403.ypnstkl55ouxr6e4@quack3>
+References: <20230825132237.2869251-1-libaokun1@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230825132237.2869251-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There are 9 goto labels in ext4_init_fs: out,out05,out1,out2,out3,out4,out5,out6,out7. So I feel that replacing out5 with out0 may be better. 
+On Fri 25-08-23 21:22:37, Baokun Li wrote:
+> After 7d79b40b ("e2fsck: adjust quota counters when clearing orphaned
+> inodes"), we load all the quotas before we process the orphaned inodes,
+> and when we load the quotas, we check the checsum of the bbitmap for each
+> group. If one of the bbitmap checksums is wrong, the following error will
+> be reported:
+> 
+> “Error initializing quota context in support library:
+>  Block bitmap checksum does not match bitmap”
+> 
+> But loading quotas comes before checking the current superblock for the
+> EXT2_ERROR_FS flag, which makes it impossible to use e2fsck to repair any
+> image that contains orphan inodes and has the wrong bbitmap checksum. So
+> delaying quota loading until after the EXT2_ERROR_FS judgment avoids the
+> above problem. Moreover, since we don't care if the bitmap checksum is
+> wrong before Pass5, e2fsck_read_bitmaps() is called before loading the
+> quota to avoid bitmap checksum errors that would cause e2fsck to exit.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+> 	Add e2fsck_read_bitmaps() to avoid bitmap checksum errors causing
+> 	e2fsck to exit.
 
-Signed-off-by: Haibo Liu <haiboliu6@gmail.com>
----
- fs/ext4/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Looks good, just one nit below:
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 03373471131c..115bbbd95a7b 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6696,7 +6696,7 @@ static int __init ext4_init_fs(void)
- 
- 	err = ext4_fc_init_dentry_cache();
- 	if (err)
--		goto out05;
-+		goto out0;
- 
- 	register_as_ext3();
- 	register_as_ext2();
-@@ -6708,7 +6708,7 @@ static int __init ext4_init_fs(void)
- out:
- 	unregister_as_ext2();
- 	unregister_as_ext3();
--out05:
-+out0:
- 	destroy_inodecache();
- out1:
- 	ext4_exit_mballoc();
+> @@ -525,10 +516,18 @@ static int release_orphan_inodes(e2fsck_t ctx)
+>  	 * be running a full e2fsck run anyway... We clear orphan file contents
+>  	 * after filesystem is checked to avoid clearing someone else's data.
+>  	 */
+> -	if (fs->super->s_state & EXT2_ERROR_FS) {
+> -		if (ctx->qctx)
+> -			quota_release_context(&ctx->qctx);
+> +	if (fs->super->s_state & EXT2_ERROR_FS)
+>  		return 0;
+> +
+> +	e2fsck_read_bitmaps(ctx);
+> +
+> +	clear_problem_context(&pctx);
+> +	ino = fs->super->s_last_orphan;
+> +	pctx.ino = ino;
+> +	pctx.errcode = e2fsck_read_all_quotas(ctx);
+> +	if (pctx.errcode) {
+> +		fix_problem(ctx, PR_0_QUOTA_INIT_CTX, &pctx);
+> +		return 1;
+>  	}
+>  
+>  	if (ino && ((ino < EXT2_FIRST_INODE(fs->super)) ||
+
+Just a few lines below this place is another call to e2fsck_read_bitmaps()
+so you can just delete it when you are adding one here. Otherwise feel free
+to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
 -- 
-2.34.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
