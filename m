@@ -2,85 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2720778B274
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 16:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4560878B277
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 16:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjH1OCm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Aug 2023 10:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S231208AbjH1OCo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Aug 2023 10:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbjH1OCX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 10:02:23 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D183BBA;
-        Mon, 28 Aug 2023 07:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EoGjlAqIr84+dzTRIVSh6MnXuXBwrPpcJyhAY3N5ock=; b=Cys3/JAywwflbjKeLLbxLR4Pml
-        1ZIuH88594x0nLpO6iJLXX9l6sI1h8ZkRVdCon46JySP7xwVSIy6uJlVUPCBG0I1jMUBp/0W9K9uT
-        GCXP/OFE+JrmC3Pa+vZcLym98yS0JgfF9SpK8F8b18qNPjfvCtYSzNZ2k1S35WDywJTHF23uRdIPl
-        X360jIARja8/zh1+SEIlBXc4nXvwCf4DxcPHjnlmChlDL/j2yB9CBDj1MRvDfFoTePW35BIjZXSeZ
-        oEnIi346oyjWFuEc9Uk6usuZ2p/gFgmA/OPtZ8mAicao0VPMQqLBW8+t2E5sM608aGZst3O1yE7EK
-        cxVGuQGg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qacoc-001ZYo-2Z;
-        Mon, 28 Aug 2023 14:02:03 +0000
-Date:   Mon, 28 Aug 2023 15:02:02 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 03/12] filemap: update ki_pos in generic_perform_write
-Message-ID: <20230828140202.GX3390869@ZenIV>
-References: <20230601145904.1385409-1-hch@lst.de>
- <20230601145904.1385409-4-hch@lst.de>
- <20230827194122.GA325446@ZenIV>
- <20230828123023.GA11084@lst.de>
+        with ESMTP id S231476AbjH1OCg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 10:02:36 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F9FBA;
+        Mon, 28 Aug 2023 07:02:33 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68bed2c786eso2153296b3a.0;
+        Mon, 28 Aug 2023 07:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693231353; x=1693836153;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gX4q9X0XjPcxu8xergag9cpneazuWyiZmw+yPoALHVk=;
+        b=lQTmuSgIoZvf0GQp2gsAPvlbwnluh0ktknRtcMWafnUSr0SXXet6j5EZaivHIfAT+j
+         2e9ttRgPTLEyp1xJKkTgJzovo7Is3I0ErG3J24YeocOUzbGx4ZnJJQPOoiSeZTw6QWe4
+         rfSC4/9m3NAPEMSR9908sGP3HSsIJihmKGEz1Q/UIyXkSI7LK9mIBMVVWAaXxb//caks
+         82O/IEqKk7p6Z9qGJhsOCc4IT0bGRqEjR8vSpVznSHIULMyCJg7bEAWS7ZuPaDQCaSSN
+         pp52ytxvMnAX4hVJfZD79xw5yO63s856vNVXvBdIVBmSC3icVlakoW3LMECIbZ0Edc9J
+         MxDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693231353; x=1693836153;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gX4q9X0XjPcxu8xergag9cpneazuWyiZmw+yPoALHVk=;
+        b=HhMzPZ6SxGzV8entHBum3dKacqPf4ZzpB3VrneK2/Zw4yQ09bthlPUAqbcajHe+f2A
+         HP5XItRqWVUztRZxIcerBP8zJEJBit77nFeR0XDKWKSaEz1QiXL/49Eium8ffq7UcYJj
+         ci+VkB1roVto7kmqBclXJs6auJ+CJSq2GpxjEUeWvnjVDy/W5lgMjh9FChnG3viWwtwu
+         4sTpgb7QQM/CrkgK5gDggkq2xh4sRBq6kKMWg0PD7RN4vC1qosfhaFxfx338U/ZoN8OV
+         DRvr/SuW0iXSJoV0AgGTasLnLTVxgyhwoJ+pY6vTl4i6rSZxm3hmutNSbDiaLxFXDk07
+         lNFg==
+X-Gm-Message-State: AOJu0Yx9ZE88gRh/qZsvLfStGq6pbRaINbHorgsk5rU8J+OsTySYuSYb
+        QVxdKljGAKzDCO6ppj4uL68=
+X-Google-Smtp-Source: AGHT+IHEtGzXWLbHoBoIHQK7jtKPa1moH17URc4//fuNNbzkO5bzmoZVGtMhAws2Ir92jNbtc8To7w==
+X-Received: by 2002:a05:6a00:1a15:b0:68a:6746:fecb with SMTP id g21-20020a056a001a1500b0068a6746fecbmr17729689pfv.5.1693231353209;
+        Mon, 28 Aug 2023 07:02:33 -0700 (PDT)
+Received: from [192.168.0.105] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id x18-20020aa79192000000b00682669dc19bsm6672095pfa.201.2023.08.28.07.02.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 07:02:32 -0700 (PDT)
+Message-ID: <f9a37c55-32f3-15d2-a370-286716dde2f2@gmail.com>
+Date:   Mon, 28 Aug 2023 21:02:27 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230828123023.GA11084@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+To:     Jens Axboe <axboe@kernel.dk>,
+        "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
+        adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+References: <ZNqWfQPTScJDkmpX@gallifrey> <20230815125146.GA1508930@mit.edu>
+ <ZNt11WbPn7LCXPvB@gallifrey> <ZNu668KGiNcwCSVe@gallifrey>
+ <ZNwm7Mo9yv7uIkno@gallifrey> <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
+ <ZNzg1/zhxYV2EkBX@gallifrey> <ZNzl2Sq9UJ3FiTgV@gallifrey>
+ <ZOymtgiZYGQ6QlxN@debian.me> <285df093-dd85-4d5f-8151-6d9f54a994b5@kernel.dk>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <285df093-dd85-4d5f-8151-6d9f54a994b5@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 02:30:23PM +0200, Christoph Hellwig wrote:
-> On Sun, Aug 27, 2023 at 08:41:22PM +0100, Al Viro wrote:
-> > That part is somewhat fishy - there's a case where you return a positive value
-> > and advance ->ki_pos by more than that amount.  I really wonder if all callers
-> > of ->write_iter() are OK with that.  Consider e.g. this:
+On 28/08/2023 20:55, Jens Axboe wrote:
+>> #regzbot fix: 5ff3213a5387e076af2b87f796f94b36965e8c3a
+>>
+>> Yet, I don't see that fix commit on v6.5 release...
 > 
-> This should not exist in the latest version merged by Jens.  Can you
-> check if you still  see issues in the version in the block tree or
-> linux-next.
+> That's because it's e5c0ca13659e9d18f53368d651ed7e6e433ec1cf
+> 
 
-Still does - the problem has migrated into direct_write_fallback(), but
-that hadn't changed the situation.  We are still left with ->ki_pos bumped
-by generic_perform_write() (evaluated as an argument of direct_write_fallback()
-now) and *not* retraced in case when direct_write_fallback() decides to
-discard the buffered write result.  Both in -next and in mainline (since
-6.5-rc1).
+OK then:
+
+#regzbot fix: e5c0ca13659e9d18f53368d651ed7e6e433ec1cf
+
+Sorry for inconvenience.
+
+-- 
+An old man doll... just what I always wanted! - Clara
+
