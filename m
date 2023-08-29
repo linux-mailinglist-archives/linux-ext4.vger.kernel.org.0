@@ -2,34 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF5378CFA4
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Aug 2023 00:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645CD78CFC8
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Aug 2023 00:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbjH2WrX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Aug 2023 18:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        id S240461AbjH2W7Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Aug 2023 18:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239944AbjH2WrF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Aug 2023 18:47:05 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872BFCDC;
-        Tue, 29 Aug 2023 15:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XGuBrJRA9Fd4AduQK/hSseIFrv8V5F+R7owbTsvIznw=; b=q1V5fHa/AXkRLdmnc9TtDTItxb
-        sjv5FpbdJarUSWDm8h5uqmHXkHTGtBOUlKVK5U/4PExCLqpYcowYZaV/PvP/kk1bfsDWLvRZIDMi6
-        J4YRKXkMJOy3sqhHWZHu4Fl1bfB/qtOHn3XYeh3dGmGOC0qbSQkD2Y+wYSoEusMnNBuy4+VyYQnkY
-        Lc4KlaQORaxPNCRh9pBUGO98Ft5v23nvU0WQJiozkEiistd3znn+J2fx0QgNh+u6E23YopsyfOSpr
-        Rmce2YRpGqgEixjkKJHtsYkWfKbeh3RTX6XJKjEhssGOmTvrkXGjl1f8Qxu8W6gub1Ziw1YBVxlnq
-        0FDl8ZIQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb7SA-001wYO-34;
-        Tue, 29 Aug 2023 22:44:55 +0000
-Date:   Tue, 29 Aug 2023 23:44:54 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
+        with ESMTP id S240656AbjH2W67 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Aug 2023 18:58:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3102FD7;
+        Tue, 29 Aug 2023 15:58:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C2A37635CE;
+        Tue, 29 Aug 2023 22:58:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9FABC433C7;
+        Tue, 29 Aug 2023 22:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693349935;
+        bh=rn2r8LG5beXDEpNUXXmAsWk7K7Z6B0SkbbGrSUfCikA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UJJSRKRH7LTjcnDdUPp7RtBE/dB7QJhjeEB1YQbMKrKaYzMACob4EBI4SsR0sy5Ye
+         mt7wmIqsOOWPvL2AjZ5YQtEhH9AU5fAVtL4UeL7OEXz9q6ZHDNk6+YIdzODX8+wqil
+         jlsqG5Nirzs8oHVVRgwIrBWk+tU4uj4vEMyBjQFrJmh/cCsnnPwHApt0qQlEh4VPoV
+         fx7tHB0NGyHo231wK83vtI9suH/0L3cn9cyGLY9db8p4Yc0AKTTsIBFPHCXTIrOvy6
+         YzP3/2IXTyd/Lvsgr1kAOQEzWJjTRoatnNjA657yXZ2FiJLFoy7sfB1K1HWwMGB4Ek
+         xBWdtuLvgMoog==
+Message-ID: <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
         Latchesar Ionkov <lucho@ionkov.net>,
         Dominique Martinet <asmadeus@codewreck.org>,
@@ -89,39 +95,49 @@ Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
         linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-Message-ID: <20230829224454.GA461907@ZenIV>
+Date:   Tue, 29 Aug 2023 18:58:47 -0400
+In-Reply-To: <20230829224454.GA461907@ZenIV>
 References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+         <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+         <20230829224454.GA461907@ZenIV>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
-> generic_fillattr just fills in the entire stat struct indiscriminately
-> today, copying data from the inode. There is at least one attribute
-> (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> and we're looking at adding more with the addition of multigrain
-> timestamps.
-> 
-> Add a request_mask argument to generic_fillattr and have most callers
-> just pass in the value that is passed to getattr. Have other callers
-> (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> STATX_CHANGE_COOKIE into generic_fillattr.
+On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
+> On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
+> > generic_fillattr just fills in the entire stat struct indiscriminately
+> > today, copying data from the inode. There is at least one attribute
+> > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> > and we're looking at adding more with the addition of multigrain
+> > timestamps.
+> >=20
+> > Add a request_mask argument to generic_fillattr and have most callers
+> > just pass in the value that is passed to getattr. Have other callers
+> > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> > STATX_CHANGE_COOKIE into generic_fillattr.
+>=20
+> Out of curiosity - how much PITA would it be to put request_mask into
+> kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
+> on smbd side) and don't bother with that kind of propagation boilerplate
+> - just have generic_fillattr() pick it there...
+>=20
+> Reduces the patchset size quite a bit...
 
-Out of curiosity - how much PITA would it be to put request_mask into
-kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
-on smbd side) and don't bother with that kind of propagation boilerplate
-- just have generic_fillattr() pick it there...
+It could be done. To do that right, I think we'd want to drop
+request_mask from the ->getattr prototype as well and just have
+everything use the mask in the kstat.
 
-Reduces the patchset size quite a bit...
+I don't think it'd reduce the size of the patchset in any meaningful
+way, but it might make for a more sensible API over the long haul.
+--=20
+Jeff Layton <jlayton@kernel.org>
