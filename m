@@ -2,143 +2,353 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC36578B60D
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Aug 2023 19:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A939C78BD69
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Aug 2023 06:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjH1RKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 28 Aug 2023 13:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S231200AbjH2EB1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Aug 2023 00:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjH1RJp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 28 Aug 2023 13:09:45 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3655FE4F;
-        Mon, 28 Aug 2023 10:09:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 873FB1F37E;
-        Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693242465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
-        b=qVtknFwaytxobpauxbbKFuuIVi6tPH4Iq6U6De70imbcWuGOxhftHNb/4FbPSlc5GK5oK7
-        GshsV6S1hXqpxSKPutaEa7H9BjX/0wslT8a/D4qnl6I13zhL54OxmZm3biLLUgjj3B0284
-        RPao+ZPH1kv8DfDq9EfFHRPOBMpXacI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693242465;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
-        b=R3UkEJ5CJtN+ADS2q+nxkKoBRTSfFifpdVN9hgBj3Kx2evg21jSoeC6uq7LeWXoMGsRfiN
-        pZDyCc1pRe5jtEDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A42A139CC;
-        Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id scxcGWHU7GQMNQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 17:07:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id CE101A0774; Mon, 28 Aug 2023 19:07:44 +0200 (CEST)
-Date:   Mon, 28 Aug 2023 19:07:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <20230828170744.iifdmaw732cfiauf@quack3>
-References: <20230818123232.2269-1-jack@suse.cz>
- <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
+        with ESMTP id S232953AbjH2EBZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Aug 2023 00:01:25 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6876AF9
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Aug 2023 21:01:21 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 98e67ed59e1d1-268bc714ce0so3342743a91.0
+        for <linux-ext4@vger.kernel.org>; Mon, 28 Aug 2023 21:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20221208.gappssmtp.com; s=20221208; t=1693281681; x=1693886481;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vW2xZrgOBf7/lcfCHTYPKJqiFUoci6FDNrP7hA/F5mY=;
+        b=N4OjkWgHlNm2j+1sJQ/VfYSaViy1jFytlyQldIKp/1RVYyqLDfa9yHV/jsQU3l6nom
+         07Xnja18i+9oKhTgew9NY6am5zPtY0ZrMNPwbn9xv/Ko26wleErRFr//r1j6kxWQrZD+
+         elhQbaBTb2bWEPTgQn3v8SMtBpn+g9zI66kOZ6BmqO8K05ivfOwNmW+XgLSLzwPY2buE
+         NqCUSbLHQc7hrruuE/j73gdu1OQNy7QcobHfCbFFAlcuob3B4wrPbvotw144wSOlEbH/
+         vvDtZVJvU1oLwpc1w0TLiFNrE0qFzMXEM6DSDJZJnasJbGv4YLu5KUs0XMZMJQPDb0FX
+         JRMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693281681; x=1693886481;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vW2xZrgOBf7/lcfCHTYPKJqiFUoci6FDNrP7hA/F5mY=;
+        b=iALh/wadkGpY6uZFawwEWoobpbckHcB8we5pX92mxdT9Rx8JHWESOb1UZCt+hqVmGZ
+         oDxdSnufFbTrBmYJ5vIQmvjOw/YiE6hQKit1eWOzi/7TdooPXc2VbacwwF9qyPrtxCro
+         QiT6b0HxhlqjerpOGjip1eyout02mbjwg4ZrkOzgWLoknU6vlWW9yhHY1BIOm9bpweDC
+         KFQOrV+jt0o6IRlE8sKHyraxRK5q2JtCI/Pk13ldsUbA3toxuxKW3jvrkkTrkWrkBa+F
+         p2Fh4kJ+wWPUAIXWlOTHVeUtbn007W4xcg9AV+P4Dh8/rDAb4c3to1m6OzMBVqJ23RwG
+         zqcA==
+X-Gm-Message-State: AOJu0Yx2FBHG2FDpIeczTRYfnI5n1X6m481goLWFclHKjrOZfcGTHgl7
+        tzDbLGX6BQTdxuqP2Qzek2dWAg==
+X-Google-Smtp-Source: AGHT+IGWoGnsHFtszBF+Q8YxqB32W7pP7GM/+pMqWGPpzcZTlPbv9SDSMuD+nBTjjNKxZd3XIUYTZg==
+X-Received: by 2002:a17:90a:e2ce:b0:269:3757:54bb with SMTP id fr14-20020a17090ae2ce00b00269375754bbmr2123024pjb.11.1693281680391;
+        Mon, 28 Aug 2023 21:01:20 -0700 (PDT)
+Received: from nixos.tailf4e9e.ts.net ([8.210.91.195])
+        by smtp.googlemail.com with ESMTPSA id a6-20020a17090a008600b00268188ea4b9sm8551079pja.19.2023.08.28.21.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 21:01:20 -0700 (PDT)
+From:   Xueshi Hu <xueshi.hu@smartx.com>
+To:     hch@infradead.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, dave.jiang@intel.com,
+        jayalk@intworks.biz, daniel@ffwll.ch, deller@gmx.de,
+        bcrl@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        jack@suse.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev,
+        djwong@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+        hughd@google.com
+Cc:     nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Xueshi Hu <xueshi.hu@smartx.com>, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v3] fs: clean up usage of noop_dirty_folio
+Date:   Tue, 29 Aug 2023 12:00:29 +0800
+Message-Id: <20230829040029.473810-1-xueshi.hu@smartx.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 25-08-23 15:32:47, Christian Brauner wrote:
-> On Wed, Aug 23, 2023 at 12:48:11PM +0200, Jan Kara wrote:
-> > Hello,
-> > 
-> > this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
-> > calls returning bdev_handle which is then passed to blkdev_put() [1]. This
-> > makes the get and put calls for bdevs more obviously matching and allows us to
-> > propagate context from get to put without having to modify all the users
-> > (again!). In particular I need to propagate used open flags to blkdev_put() to
-> > be able count writeable opens and add support for blocking writes to mounted
-> > block devices. I'll send that series separately.
-> > 
-> > The series is based on Christian's vfs tree as of today as there is quite
-> > some overlap. Patches have passed some reasonable testing - I've tested block
-> > changes, md, dm, bcache, xfs, btrfs, ext4, swap. More testing or review is
-> > always welcome. Thanks! I've pushed out the full branch to:
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
-> > 
-> > to ease review / testing. Since there were not many comments for v2 and
-> > Christoph has acked the series I think we should start discussing how to merge
-> > the series. Most collisions with this series seem to happen in the filesystems
-> > area so VFS tree would seem as the least painful way to merge this. Jens,
-> 
-> I really do like this series especially struct bdev_handle and moving
-> the mode bits in there. I'll happily take this. So far there have only
-> been minor things that can easily be fixed.
+In folio_mark_dirty(), it can automatically fallback to
+noop_dirty_folio() if a_ops->dirty_folio is not registered.
 
-Thanks. Since Al is fine with just doing a potential conversion to 'struct
-file' as a handle on top of this series (it will be dumb Coccinelle
-replacement) I think we can go ahead with the series as is. As you said
-there will be some conflicts in btrfs and I've learned about f2fs conflicts
-as well so I can rebase & repost the series on top of rc1 to make life
-easier for you.
+In anon_aops, dev_dax_aops and fb_deferred_io_aops, replacing .dirty_folio
+with NULL makes them identical to default (empty_aops) and since we never
+compare ->a_ops pointer with either of those, we can remove them
+completely.
 
-								Honza
+Acked-by: Al Viro <viro@zeniv.linux.org.uk>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Xueshi Hu <xueshi.hu@smartx.com>
+---
+Changes in v3:
+- correct the rationale of removal three empty aops
+- v2: https://lore.kernel.org/linux-mm/20230828144242.GZ3390869@ZenIV/T/#t
+
+Changes in v2:
+- make noop_dirty_folio() inline as suggested by Matthew
+- v1: https://lore.kernel.org/linux-mm/ZOxAfrz9etoVUfLQ@infradead.org/T/#m073d45909b1df03ff09f382557dc4e84d0607c49
+
+ drivers/dax/device.c                |  5 -----
+ drivers/video/fbdev/core/fb_defio.c |  5 -----
+ fs/aio.c                            |  1 -
+ fs/ext2/inode.c                     |  1 -
+ fs/ext4/inode.c                     |  1 -
+ fs/fuse/dax.c                       |  1 -
+ fs/hugetlbfs/inode.c                |  1 -
+ fs/libfs.c                          |  5 -----
+ fs/xfs/xfs_aops.c                   |  1 -
+ include/linux/pagemap.h             |  1 -
+ mm/page-writeback.c                 | 18 +++++-------------
+ mm/secretmem.c                      |  1 -
+ mm/shmem.c                          |  1 -
+ mm/swap_state.c                     |  1 -
+ 14 files changed, 5 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+index 30665a3ff6ea..018aa9f88ec7 100644
+--- a/drivers/dax/device.c
++++ b/drivers/dax/device.c
+@@ -345,10 +345,6 @@ static unsigned long dax_get_unmapped_area(struct file *filp,
+ 	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
+ }
+ 
+-static const struct address_space_operations dev_dax_aops = {
+-	.dirty_folio	= noop_dirty_folio,
+-};
+-
+ static int dax_open(struct inode *inode, struct file *filp)
+ {
+ 	struct dax_device *dax_dev = inode_dax(inode);
+@@ -358,7 +354,6 @@ static int dax_open(struct inode *inode, struct file *filp)
+ 	dev_dbg(&dev_dax->dev, "trace\n");
+ 	inode->i_mapping = __dax_inode->i_mapping;
+ 	inode->i_mapping->host = __dax_inode;
+-	inode->i_mapping->a_ops = &dev_dax_aops;
+ 	filp->f_mapping = inode->i_mapping;
+ 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
+ 	filp->f_sb_err = file_sample_sb_err(filp);
+diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+index 274f5d0fa247..08be3592281f 100644
+--- a/drivers/video/fbdev/core/fb_defio.c
++++ b/drivers/video/fbdev/core/fb_defio.c
+@@ -221,10 +221,6 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
+ 	.page_mkwrite	= fb_deferred_io_mkwrite,
+ };
+ 
+-static const struct address_space_operations fb_deferred_io_aops = {
+-	.dirty_folio	= noop_dirty_folio,
+-};
+-
+ int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+ {
+ 	vma->vm_ops = &fb_deferred_io_vm_ops;
+@@ -307,7 +303,6 @@ void fb_deferred_io_open(struct fb_info *info,
+ {
+ 	struct fb_deferred_io *fbdefio = info->fbdefio;
+ 
+-	file->f_mapping->a_ops = &fb_deferred_io_aops;
+ 	fbdefio->open_count++;
+ }
+ EXPORT_SYMBOL_GPL(fb_deferred_io_open);
+diff --git a/fs/aio.c b/fs/aio.c
+index 77e33619de40..4cf386f9cb1c 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -484,7 +484,6 @@ static int aio_migrate_folio(struct address_space *mapping, struct folio *dst,
+ #endif
+ 
+ static const struct address_space_operations aio_ctx_aops = {
+-	.dirty_folio	= noop_dirty_folio,
+ 	.migrate_folio	= aio_migrate_folio,
+ };
+ 
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index 75983215c7a1..ce191bdf1c78 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -971,7 +971,6 @@ const struct address_space_operations ext2_aops = {
+ static const struct address_space_operations ext2_dax_aops = {
+ 	.writepages		= ext2_dax_writepages,
+ 	.direct_IO		= noop_direct_IO,
+-	.dirty_folio		= noop_dirty_folio,
+ };
+ 
+ /*
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 43775a6ca505..67c1710c01b0 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3561,7 +3561,6 @@ static const struct address_space_operations ext4_da_aops = {
+ static const struct address_space_operations ext4_dax_aops = {
+ 	.writepages		= ext4_dax_writepages,
+ 	.direct_IO		= noop_direct_IO,
+-	.dirty_folio		= noop_dirty_folio,
+ 	.bmap			= ext4_bmap,
+ 	.swap_activate		= ext4_iomap_swap_activate,
+ };
+diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
+index 8e74f278a3f6..50ca767cbd5e 100644
+--- a/fs/fuse/dax.c
++++ b/fs/fuse/dax.c
+@@ -1326,7 +1326,6 @@ bool fuse_dax_inode_alloc(struct super_block *sb, struct fuse_inode *fi)
+ static const struct address_space_operations fuse_dax_file_aops  = {
+ 	.writepages	= fuse_dax_writepages,
+ 	.direct_IO	= noop_direct_IO,
+-	.dirty_folio	= noop_dirty_folio,
+ };
+ 
+ static bool fuse_should_enable_dax(struct inode *inode, unsigned int flags)
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 7b17ccfa039d..5404286f0c13 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -1266,7 +1266,6 @@ static void hugetlbfs_destroy_inode(struct inode *inode)
+ static const struct address_space_operations hugetlbfs_aops = {
+ 	.write_begin	= hugetlbfs_write_begin,
+ 	.write_end	= hugetlbfs_write_end,
+-	.dirty_folio	= noop_dirty_folio,
+ 	.migrate_folio  = hugetlbfs_migrate_folio,
+ 	.error_remove_page	= hugetlbfs_error_remove_page,
+ };
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 5b851315eeed..982f220a9ee3 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -627,7 +627,6 @@ const struct address_space_operations ram_aops = {
+ 	.read_folio	= simple_read_folio,
+ 	.write_begin	= simple_write_begin,
+ 	.write_end	= simple_write_end,
+-	.dirty_folio	= noop_dirty_folio,
+ };
+ EXPORT_SYMBOL(ram_aops);
+ 
+@@ -1231,16 +1230,12 @@ EXPORT_SYMBOL(kfree_link);
+ 
+ struct inode *alloc_anon_inode(struct super_block *s)
+ {
+-	static const struct address_space_operations anon_aops = {
+-		.dirty_folio	= noop_dirty_folio,
+-	};
+ 	struct inode *inode = new_inode_pseudo(s);
+ 
+ 	if (!inode)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	inode->i_ino = get_next_ino();
+-	inode->i_mapping->a_ops = &anon_aops;
+ 
+ 	/*
+ 	 * Mark the inode dirty from the very beginning,
+diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+index 451942fb38ec..300acea9ee63 100644
+--- a/fs/xfs/xfs_aops.c
++++ b/fs/xfs/xfs_aops.c
+@@ -590,6 +590,5 @@ const struct address_space_operations xfs_address_space_operations = {
+ 
+ const struct address_space_operations xfs_dax_aops = {
+ 	.writepages		= xfs_dax_writepages,
+-	.dirty_folio		= noop_dirty_folio,
+ 	.swap_activate		= xfs_iomap_swapfile_activate,
+ };
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 716953ee1ebd..9de3be51dee2 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -1074,7 +1074,6 @@ bool folio_clear_dirty_for_io(struct folio *folio);
+ bool clear_page_dirty_for_io(struct page *page);
+ void folio_invalidate(struct folio *folio, size_t offset, size_t length);
+ int __set_page_dirty_nobuffers(struct page *page);
+-bool noop_dirty_folio(struct address_space *mapping, struct folio *folio);
+ 
+ #ifdef CONFIG_MIGRATION
+ int filemap_migrate_folio(struct address_space *mapping, struct folio *dst,
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index d3f42009bb70..d2d739109bfe 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2585,17 +2585,6 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
+ 	return ret;
+ }
+ 
+-/*
+- * For address_spaces which do not use buffers nor write back.
+- */
+-bool noop_dirty_folio(struct address_space *mapping, struct folio *folio)
+-{
+-	if (!folio_test_dirty(folio))
+-		return !folio_test_set_dirty(folio);
+-	return false;
+-}
+-EXPORT_SYMBOL(noop_dirty_folio);
+-
+ /*
+  * Helper function for set_page_dirty family.
+  *
+@@ -2799,10 +2788,13 @@ bool folio_mark_dirty(struct folio *folio)
+ 		 */
+ 		if (folio_test_reclaim(folio))
+ 			folio_clear_reclaim(folio);
+-		return mapping->a_ops->dirty_folio(mapping, folio);
++		if (mapping->a_ops->dirty_folio)
++			return mapping->a_ops->dirty_folio(mapping, folio);
+ 	}
+ 
+-	return noop_dirty_folio(mapping, folio);
++	if (!folio_test_dirty(folio))
++		return !folio_test_set_dirty(folio);
++	return false;
+ }
+ EXPORT_SYMBOL(folio_mark_dirty);
+ 
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index 86442a15d12f..3fe1c35f9c8d 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -157,7 +157,6 @@ static void secretmem_free_folio(struct folio *folio)
+ }
+ 
+ const struct address_space_operations secretmem_aops = {
+-	.dirty_folio	= noop_dirty_folio,
+ 	.free_folio	= secretmem_free_folio,
+ 	.migrate_folio	= secretmem_migrate_folio,
+ };
+diff --git a/mm/shmem.c b/mm/shmem.c
+index d963c747dabc..9bdef68a088a 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -4090,7 +4090,6 @@ static int shmem_error_remove_page(struct address_space *mapping,
+ 
+ const struct address_space_operations shmem_aops = {
+ 	.writepage	= shmem_writepage,
+-	.dirty_folio	= noop_dirty_folio,
+ #ifdef CONFIG_TMPFS
+ 	.write_begin	= shmem_write_begin,
+ 	.write_end	= shmem_write_end,
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index f8ea7015bad4..3666439487db 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -30,7 +30,6 @@
+  */
+ static const struct address_space_operations swap_aops = {
+ 	.writepage	= swap_writepage,
+-	.dirty_folio	= noop_dirty_folio,
+ #ifdef CONFIG_MIGRATION
+ 	.migrate_folio	= migrate_folio,
+ #endif
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.1
+
