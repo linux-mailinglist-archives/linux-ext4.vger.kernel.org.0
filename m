@@ -2,166 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92D978D1B9
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Aug 2023 03:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3290F78D330
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Aug 2023 08:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241475AbjH3BYm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Aug 2023 21:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        id S238384AbjH3GMh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Aug 2023 02:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237222AbjH3BY3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Aug 2023 21:24:29 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42FE0;
-        Tue, 29 Aug 2023 18:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UGL8Hs7wie/83TbDi9sHxBsPaDb/+1IP8lK74uZbCKw=; b=VMCLMK1iXxNHLo2tyoSLb1HI/I
-        ygrNcHqe5LWzcSOicXKiXv7+aZW1BJ7dB0vjqMCV0MnziRQDnoZOz3XgmiNQiiDnA13PUlmOVrxc4
-        WpSk9x7uA8R3KciGWN7qJ88utnJ3QSHSvYKWfoJJvhO0U1H1/cqwYZYmtvld8BDA8iqcXv8CBaGId
-        erqQdPcYkjIFz/hBJqwMuB/rDK2BOMTdgnlCwnIMFpdDxv6wkG8Wn7rLsnAYsC5D7sc1BRtVulXjw
-        RcKjf3m9ODmy0yW/y+LgeKEyGIU6PCqX4XrC83Co4MtcnJcvY9SuxDXgB2k0Ps8NGdX3ExJB41/fI
-        ibsynONQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb9v5-001yGw-2Z;
-        Wed, 30 Aug 2023 01:22:55 +0000
-Date:   Wed, 30 Aug 2023 02:22:55 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
+        with ESMTP id S239797AbjH3GMM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Aug 2023 02:12:12 -0400
+Received: from out-244.mta0.migadu.com (out-244.mta0.migadu.com [IPv6:2001:41d0:1004:224b::f4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A5ACD2
+        for <linux-ext4@vger.kernel.org>; Tue, 29 Aug 2023 23:12:01 -0700 (PDT)
+Message-ID: <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693375918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JMzOvVHk770qYz+7D4bRM3eiaC0WBb12Z/fuZleaQ2g=;
+        b=n8qZNKHDJ8ZkQN8s6YCFhUc5vlrIehXvAzssrfT4lOFAEgM70y7j9ccF+kTN544/il9mhv
+        /Qwyv0zoAHdwAPeCdmanHqcxV7A/7XcL4G5u9c/o5+tWUqR2xZIKUSlHotdEAwwwHhjWvg
+        KLK2CGyPGmGk32bcLUct3rbhOUMJhk8=
+Date:   Wed, 30 Aug 2023 14:11:31 +0800
+MIME-Version: 1.0
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
         Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
         Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-Message-ID: <20230830012255.GC3390869@ZenIV>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
- <20230829224454.GA461907@ZenIV>
- <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
- <20230830000221.GB3390869@ZenIV>
- <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Hao Xu <hao.xu@linux.dev>
+In-Reply-To: <ZO3cI+DkotHQo3md@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 08:43:31PM -0400, Jeff Layton wrote:
-> On Wed, 2023-08-30 at 01:02 +0100, Al Viro wrote:
-> > On Tue, Aug 29, 2023 at 06:58:47PM -0400, Jeff Layton wrote:
-> > > On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
-> > > > On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
-> > > > > generic_fillattr just fills in the entire stat struct indiscriminately
-> > > > > today, copying data from the inode. There is at least one attribute
-> > > > > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> > > > > and we're looking at adding more with the addition of multigrain
-> > > > > timestamps.
-> > > > > 
-> > > > > Add a request_mask argument to generic_fillattr and have most callers
-> > > > > just pass in the value that is passed to getattr. Have other callers
-> > > > > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> > > > > STATX_CHANGE_COOKIE into generic_fillattr.
-> > > > 
-> > > > Out of curiosity - how much PITA would it be to put request_mask into
-> > > > kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
-> > > > on smbd side) and don't bother with that kind of propagation boilerplate
-> > > > - just have generic_fillattr() pick it there...
-> > > > 
-> > > > Reduces the patchset size quite a bit...
-> > > 
-> > > It could be done. To do that right, I think we'd want to drop
-> > > request_mask from the ->getattr prototype as well and just have
-> > > everything use the mask in the kstat.
-> > > 
-> > > I don't think it'd reduce the size of the patchset in any meaningful
-> > > way, but it might make for a more sensible API over the long haul.
-> > 
-> > ->getattr() prototype change would be decoupled from that - for your
-> > patchset you'd only need the field addition + setting in vfs_getattr_nosec()
-> > (and possibly in ksmbd), with the remainders of both series being
-> > independent from each other.
-> > 
-> > What I suggest is
-> > 
-> > branchpoint -> field addition (trivial commit) -> argument removal
-> > 		|
-> > 		V
-> > your series, starting with "use stat->request_mask in generic_fillattr()"
-> > 
-> > Total size would be about the same, but it would be easier to follow
-> > the less trivial part of that.  Nothing in your branch downstream of
-> > that touches any ->getattr() instances, so it should have no
-> > conflicts with the argument removal side of things.
+On 8/29/23 19:53, Matthew Wilcox wrote:
+> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+>> On 8/28/23 05:32, Matthew Wilcox wrote:
+>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+>>>> From: Hao Xu <howeyxu@tencent.com>
+>>>>
+>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
+>>>> Currently it is true only with io_uring as its initial caller.
+>>>
+>>> So why do we need to do this as part of this series?  Apparently it
+>>> hasn't caused any problems for filemap_read().
+>>>
+>>
+>> We need this parameter to indicate if nowait semantics should be enforced in
+>> touch_atime(), There are locks and maybe IOs in it.
 > 
-> The only problem with this plan is that Linus has already merged this.
-> I've no issue with adding the request_mask to the kstat and removing it
-> as a separate parameter elsewhere, but I think we'll need to do it on
-> top of what's already been merged.
+> That's not my point.  We currently call file_accessed() and
+> touch_atime() for nowait reads and nowait writes.  You haven't done
+> anything to fix those.
+> 
+> I suspect you can trim this patchset down significantly by avoiding
+> fixing the file_accessed() problem.  And then come back with a later
+> patchset that fixes it for all nowait i/o.  Or do a separate prep series
 
-D'oh...  My apologies; I'll do a branch on top of that (and rebase on
-top of -rc1 once the window closes).
+I'm ok to do that.
+
+> first that fixes it for the existing nowait users, and then a second
+> series to do all the directory stuff.
+> 
+> I'd do the first thing.  Just ignore the problem.  Directory atime
+> updates cause I/O so rarely that you can afford to ignore it.  Almost
+> everyone uses relatime or nodiratime.
+
+Hi Matthew,
+The previous discussion shows this does cause issues in real
+producations: 
+https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+
+
+
+
