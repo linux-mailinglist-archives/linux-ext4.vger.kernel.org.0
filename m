@@ -2,135 +2,213 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAA178EFAF
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Aug 2023 16:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEAB78EFE6
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Aug 2023 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238200AbjHaOkg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Aug 2023 10:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S237468AbjHaPCK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Aug 2023 11:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236294AbjHaOkg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 10:40:36 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CA61B1
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 07:40:30 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dc77fd024so58609685a.3
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 07:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693492830; x=1694097630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NfhEWQoq5dZCj0mxonBcgZmBQ97cTWQFJRkBOAVLN4w=;
-        b=V1LcgGck71AY9+Nagd1KWf5fw87m9I5udJFMd78jnb6GXZJP0m747DfsOxKpPePHsd
-         GPvvbzqxIiOUAmliLuBjiXg2qsVPE49/3PvOfKoZVk1TtLApzf5AxcgXYSOHWPBRA9QL
-         lEds9phpZ2xHAvzIxfsdZ274UIRqt2Zolns3gfRDIkJd0AhfBlTSSHgpXCnOR/h6cP4E
-         YmWMBKvVKQLcfljSJNlMi94Vobt/FLVJtIdagvKlJdG2J0cXa7DvqSUfKzzjA+GhDuOF
-         1aIm+AiTqTZboh8yrXjsZOFahXVJn8IBUr/IWvG8xrCzf44rp/R4T9VgKBXq9akyJrd6
-         UlaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693492830; x=1694097630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NfhEWQoq5dZCj0mxonBcgZmBQ97cTWQFJRkBOAVLN4w=;
-        b=VOTuNqzPLC6L3+mAElv3lu+91L1k+ZmrTdkDKtT1xx0QpgJQ0S9hNkwYSau7VEpHGG
-         kupxGJvx4CAcNWapFW9Ec6AQvvysNDR5wcsvSj+a0bJKjTeflHj1JgXzYRkRyhceWAgA
-         8jis6SM1M639cCEYAesOhVOJ/wQw5DquMmSC9Kn5yVNjeej37hf3anci2MG8kt5+/3Rg
-         iI3irjQMbpUQAsYd7gdVaCeY94LePEg7nrleNbZ4RbxKnI/j6jtVqHcVIMXDd2FKW44q
-         PCx/G+KfZeKDIPl+h3F3EmNAGA/a/t9vqtClwRAtOOEide1e5PxiNbMeirz9PUQn44tP
-         ooig==
-X-Gm-Message-State: AOJu0YxAm+WwYmDIM6Sa6FbfvDK/dAirjFGNFrNAeArKhf0aTRytetnv
-        87PQZi02jNeu04CNySQXBRBgDanNbYk=
-X-Google-Smtp-Source: AGHT+IFK2HPdcqdxubN6tEHZaU3AE/azjtdMdn8ZtvEm43Dnsw04NhO6F1f4/3rt8Q1EmkuNGol5uQ==
-X-Received: by 2002:a05:620a:a17:b0:75b:23a0:deca with SMTP id i23-20020a05620a0a1700b0075b23a0decamr2721249qka.72.1693492829810;
-        Thu, 31 Aug 2023 07:40:29 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id w27-20020a05620a149b00b0076ef3e6e6a4sm651875qkj.42.2023.08.31.07.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 07:40:29 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 10:40:21 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Eric Whitney <enwlinux@gmail.com>
-Subject: Re: [PATCH] libext2fs: don't truncate the orphan file inode if it is
- newly allocated
-Message-ID: <ZPCmVcqiTr6YlZY8@debian-BULLSEYE-live-builder-AMD64>
-References: <20230825214551.136149-1-tytso@mit.edu>
+        with ESMTP id S229605AbjHaPCJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 11:02:09 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9096CC5
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 08:02:02 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-116-73.bstnma.fios.verizon.net [173.48.116.73])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37VF1u7T023115
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 11:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1693494117; bh=9dV+QS6TSR5ffl+Ay7p8/ER3RyMk7NaB6eV+bCBDktg=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=dSRnGd4c2tQ5lbqKSeMyQdX4nGco15Ib7f4pky+pulVQJZwPWDzv5vApKmyhOiAJJ
+         R9PCZ4kqtkZ5opqQTH0by9rzrKQ98oVay1WAqDt28U+JQrU5hoO5rJ65NsTEVFULgO
+         iAdHruvjMczrCQkLgBrcDV7r2LuijuK5urX4fh3ayASMdjpQh4Xl9t+uuRIaY1wFnp
+         92Y3vbUMmH7eKd7siG6oBH+R2iwBcd36U6OTXcFVzLxqt49lF/8TCGCw854rnLy4J0
+         zBMASFTKYawJFY/H+MOdW9Njpu0WfwHKrSOsBCrr/aWRpwyqqwqLbppNUrXY45P6jg
+         1uHhXXgaEzwFg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id DDE8315C023A; Thu, 31 Aug 2023 11:01:55 -0400 (EDT)
+Date:   Thu, 31 Aug 2023 11:01:55 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: [GIT PULL] Ext4 updates for 6.6
+Message-ID: <20230831150155.GA364946@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230825214551.136149-1-tytso@mit.edu>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Theodore Ts'o <tytso@mit.edu>:
-> In ext2fs_create_orphan_file(), don't try truncating inode for the
-> orphan file if ext2fs_create_orphan_file() allocated the inode.  This
-> avoids problems where the newly allocated inode in the inode table
-> might contain garbage; if the metadata checksum feature is enabled,
-> this will generally result in the function failing with a checksum
-> invalid error, but this can cause mke2fs (which calls
-> ext2fs_create_orphan_file) to fail.
-> 
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  lib/ext2fs/orphan.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
-> 
-> diff --git a/lib/ext2fs/orphan.c b/lib/ext2fs/orphan.c
-> index e25f20ca2..c2f83567f 100644
-> --- a/lib/ext2fs/orphan.c
-> +++ b/lib/ext2fs/orphan.c
-> @@ -127,22 +127,21 @@ errcode_t ext2fs_create_orphan_file(ext2_filsys fs, blk_t num_blocks)
->  	struct mkorphan_info oi;
->  	struct ext4_orphan_block_tail *ob_tail;
->  
-> -	if (!ino) {
-> +	if (ino) {
-> +		err = ext2fs_read_inode(fs, ino, &inode);
-> +		if (err)
-> +			return err;
-> +		if (EXT2_I_SIZE(&inode)) {
-> +			err = ext2fs_truncate_orphan_file(fs);
-> +			if (err)
-> +				return err;
-> +		}
-> +	} else {
->  		err = ext2fs_new_inode(fs, EXT2_ROOT_INO, LINUX_S_IFREG | 0600,
->  				       0, &ino);
->  		if (err)
->  			return err;
->  		ext2fs_inode_alloc_stats2(fs, ino, +1, 0);
-> -		ext2fs_mark_ib_dirty(fs);
-> -	}
-> -
-> -	err = ext2fs_read_inode(fs, ino, &inode);
-> -	if (err)
-> -		return err;
-> -	if (EXT2_I_SIZE(&inode)) {
-> -		err = ext2fs_truncate_orphan_file(fs);
-> -		if (err)
-> -			return err;
->  	}
->  
->  	memset(&inode, 0, sizeof(struct ext2_inode));
-> -- 
-> 2.31.0
-> 
+Hi Linus,
 
-With this patch to mke2fs, I ran ext4/049 on a 6.5 kernel using kvm-xfstests'
-4k test scenario.  It passed 110/110 trials.  Without the patch, it fails
-100% of the time.  So, it addresses the failures I've been seeing.
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-Thanks!
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
-Tested-by: Eric Whitney <enwlinux@gmail.com>
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.6-rc1
+
+for you to fetch changes up to 768d612f79822d30a1e7d132a4d4b05337ce42ec:
+
+  ext4: fix slab-use-after-free in ext4_es_insert_extent() (2023-08-27 11:27:13 -0400)
+
+Note that there are a merge conflict with Cristoph's fs_holder_ops
+patches.  The resolution is a bit complicated, but can be seen here:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_merge_resolution
+
+The merge resolution can also be seen in the linux-next tree.
+
+These changes were fully tested using "gce-xfstests -c ext4/all -g
+auto", and there were no regressions.
+
+----------------------------------------------------------------
+Many ext4 and jbd2 cleanups and bug fixes for v6.6-rc1.
+
+  * Cleanups in the ext4 remount code when going to and from read-only
+  * Cleanups in ext4's multiblock allocator
+  * Cleanups in the jbd2 setup/mounting code paths
+  * Performance improvements when appending to a delayed allocation file
+  * Miscenallenous syzbot and other bug fixes
+
+----------------------------------------------------------------
+Baokun Li (4):
+      ext4: add two helper functions extent_logical_end() and pa_logical_end()
+      ext4: fix BUG in ext4_mb_new_inode_pa() due to overflow
+      ext4: avoid overlapping preallocations due to overflow
+      ext4: fix slab-use-after-free in ext4_es_insert_extent()
+
+Brian Foster (1):
+      ext4: drop dio overwrite only flag and associated warning
+
+Cai Xinchen (1):
+      ext4: remove unused function declaration
+
+Eric Biggers (3):
+      ext4: reject casefold inode flag without casefold feature
+      ext4: remove redundant checks of s_encoding
+      libfs: remove redundant checks of s_encoding
+
+Guoqing Cai (1):
+      fs: jbd2: fix an incorrect warn log
+
+Jan Kara (11):
+      ext4: remove pointless sb_rdonly() checks from freezing code
+      ext4: use sb_rdonly() helper for checking read-only flag
+      ext4: make ext4_forced_shutdown() take struct super_block
+      ext4: make 'abort' mount option handling standard
+      ext4: drop EXT4_MF_FS_ABORTED flag
+      ext4: avoid starting transaction on read-only fs in ext4_quota_off()
+      ext4: warn on read-only filesystem in ext4_journal_check_start()
+      ext4: drop read-only check in ext4_init_inode_table()
+      ext4: drop read-only check in ext4_write_inode()
+      ext4: drop read-only check from ext4_force_commit()
+      ext4: replace read-only check for shutdown check in mmp code
+
+Kemeng Shi (10):
+      ext4: correct grp validation in ext4_mb_good_group
+      ext4: avoid potential data overflow in next_linear_group
+      ext4: return found group directly in ext4_mb_choose_next_group_p2_aligned
+      ext4: use is_power_of_2 helper in ext4_mb_regular_allocator
+      ext4: remove unnecessary return for void function
+      ext4: replace the traditional ternary conditional operator with with max()/min()
+      ext4: remove unused ext4_{set}/{clear}_bit_atomic
+      ext4: return found group directly in ext4_mb_choose_next_group_goal_fast
+      ext4: return found group directly in ext4_mb_choose_next_group_best_avail
+      ext4: correct some stale comment of criteria
+
+Liu Song (1):
+      ext4: do not mark inode dirty every time when appending using delalloc
+
+Lu Hongfei (2):
+      ext4: change the type of blocksize in ext4_mb_init_cache()
+      ext4: use sbi instead of EXT4_SB(sb) in ext4_mb_new_blocks_simple()
+
+Luís Henriques (1):
+      ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+
+Ojaswin Mujoo (1):
+      ext4: replace CR_FAST macro with inline function for readability
+
+Ritesh Harjani (1):
+      ext4: don't use CR_BEST_AVAIL_LEN for non-regular files
+
+Ruan Jinjie (1):
+      ext4: use LIST_HEAD() to initialize the list_head in mballoc.c
+
+Su Hui (1):
+      ext4: mballoc: avoid garbage value from err
+
+Theodore Ts'o (1):
+      ext4: rename s_error_work to s_sb_upd_work
+
+Vitaliy Kuznetsov (1):
+      ext4: add periodic superblock update check
+
+Wang Jianjian (2):
+      jbd2: remove unused t_handle_lock
+      ext4: add correct group descriptors and reserved GDT blocks to system zone
+
+Yang Li (1):
+      jbd2: remove unused function '__cp_buffer_busy'
+
+Zhang Yi (14):
+      jbd2: fix checkpoint cleanup performance regression
+      jbd2: move load_superblock() dependent functions
+      jbd2: move load_superblock() into journal_init_common()
+      jbd2: don't load superblock in jbd2_journal_check_used_features()
+      jbd2: checking valid features early in journal_get_superblock()
+      jbd2: open code jbd2_verify_csum_type() helper
+      jbd2: cleanup load_superblock()
+      jbd2: add fast_commit space check
+      jbd2: cleanup journal_init_common()
+      jbd2: drop useless error tag in jbd2_journal_wipe()
+      jbd2: jbd2_journal_init_{dev,inode} return proper error return value
+      ext4: cleanup ext4_get_dev_journal() and ext4_get_journal()
+      ext4: ext4_get_{dev}_journal return proper error value
+      jbd2: correct the end of the journal recovery scan range
+
+Zhihao Cheng (2):
+      jbd2: check 'jh->b_transaction' before removing it from checkpoint
+      ext4: fix unttached inode after power cut with orphan file feature enabled
+
+ fs/ext4/balloc.c         |  15 ++-
+ fs/ext4/block_validity.c |   8 +-
+ fs/ext4/crypto.c         |   4 +
+ fs/ext4/ext4.h           |  32 +++--
+ fs/ext4/ext4_jbd2.c      |   5 +-
+ fs/ext4/extents_status.c |  44 +++++--
+ fs/ext4/file.c           |  38 +++---
+ fs/ext4/fsync.c          |   9 +-
+ fs/ext4/hash.c           |   2 +-
+ fs/ext4/ialloc.c         |   8 +-
+ fs/ext4/inline.c         |   2 +-
+ fs/ext4/inode.c          | 124 +++++++++++-------
+ fs/ext4/ioctl.c          |   2 +-
+ fs/ext4/mballoc.c        | 200 +++++++++++++----------------
+ fs/ext4/mballoc.h        |  14 ++
+ fs/ext4/mmp.c            |   2 +-
+ fs/ext4/namei.c          |  17 ++-
+ fs/ext4/page-io.c        |   2 +-
+ fs/ext4/super.c          | 308 +++++++++++++++++++++++++-------------------
+ fs/ext4/xattr.c          |   2 +-
+ fs/jbd2/checkpoint.c     |  34 +++--
+ fs/jbd2/journal.c        | 484 +++++++++++++++++++++++++++++++++-------------------------------------
+ fs/jbd2/recovery.c       |  12 +-
+ fs/libfs.c               |  14 +-
+ fs/ocfs2/journal.c       |   8 +-
+ include/linux/jbd2.h     |   5 -
+ 26 files changed, 717 insertions(+), 678 deletions(-)
