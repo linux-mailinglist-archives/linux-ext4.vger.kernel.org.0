@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F5778EF8B
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Aug 2023 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007E678EF9E
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Aug 2023 16:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbjHaOZh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Aug 2023 10:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
+        id S239965AbjHaOfn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Aug 2023 10:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjHaOZh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 10:25:37 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15520CF;
-        Thu, 31 Aug 2023 07:25:33 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so733469b3a.0;
-        Thu, 31 Aug 2023 07:25:33 -0700 (PDT)
+        with ESMTP id S237068AbjHaOfn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 10:35:43 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCAB1B1;
+        Thu, 31 Aug 2023 07:35:40 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68bed2c786eso722284b3a.0;
+        Thu, 31 Aug 2023 07:35:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693491932; x=1694096732; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693492539; x=1694097339; darn=vger.kernel.org;
         h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cs5Smo3QLeW2HAIH1ZIf/t0Tm8fHGvK+Q5R/+Rj3aIU=;
-        b=iFlZtBfgYgXKLyQcvH2D8K1YBOnAR9+mh0aPxZHQF6JY+SCUrB98p8nxc2W84F0xRD
-         toxKygwt5XxubxyBqmTKJnB5wyuozmq8b62sN/tcJxZKPjvFIr2fUosZpQFdi6Ho8Xfq
-         Nd0VJHQBmy0jq/0IuVDsh54tKgGQ8ZZcevVFLJyx0b9o1PUY8pNl3+TVaOKvRiy+e1b8
-         /RaeP0eRJRFkD9GrVvHHWXxniPUMxbY8PR3OA5XkLxuBDbcyj214btl+9J/T8qReaiKz
-         2v6GeGe0uDDcwNg/uJ8MSPEISadw1T5jUj6KgjAw4UiV6mI107OKOFz7FK3Tu45BY7Qa
-         dDsg==
+        bh=FCVGuZJFjGiSusw+0qmRf+39DSazJywnKT4fxkeSTLY=;
+        b=C/fhDC9mYzKffPhao0DkeBozqPz490JRj5oupFdxuD3k7YCklre7EzfXF+ibl8nJKn
+         r5x2q27c50P+ls2O1vviLq/JCwARB1yh1qjooLVAI+qVZwzIe8BcAWIA32QGcNRw4jK8
+         o0vZsWF5lTOe4R4+1g4cTCRAObQ6+jAWw+uAi5c9cRCi8uEOWd/+psFEOTUO3DidXKEm
+         aFNr8pEHvsARgIlNF/IMJByxDjyabrLOYwpEbOHGfZlFXVS7sXbSVNOEyBI30eHktwst
+         RITr/RVRHOeOySAIpkWmqQMQg+87sYb784pOMa8EHybX3Sl94hojClsQS0zMfFIV+49w
+         7l4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693491932; x=1694096732;
+        d=1e100.net; s=20221208; t=1693492539; x=1694097339;
         h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Cs5Smo3QLeW2HAIH1ZIf/t0Tm8fHGvK+Q5R/+Rj3aIU=;
-        b=ew2V4FyzDK0M9VBaufhpWt11OTzs74/M+7oQdsaCA8ZVtqPQsJleA+8SFK1Ck9GDRH
-         F99v/lm31cEw3JeNdqdyUuThzWwB+ubojwyYlVRxlaGsle3dVNqTwicBCR33GgSscqir
-         L90yIwvYi0RWH8J+O7VcBqNQ9PSACH55euLRb3yyfDqeBcdOHHW2PgcQ8h67UNvU/fBU
-         WJYJNzMpwleGq9xMdVfZ0hNi4LAPUSAwHXuA1rcCZJDJgz1Vql0YpkXFfFr9Ej0G3J9K
-         iANR77gTtlqnRpz3ZvOOxG9UgBLQxE57Es7NRyDYd0xZVmsxuIdAVqzfnAa89Oca4aBy
-         9KXA==
-X-Gm-Message-State: AOJu0YwVNJnYINCBlN9Wkl7YuCH5nvOERtYFbrq8gFPzwixJ5oq9LMJ8
-        nRsIGPeyCuap0tsD4nMRs6KJyGeaeh8=
-X-Google-Smtp-Source: AGHT+IEvSd/oR1pqgQD+Dk9OaruNmblEC8LGIV9f/sbJIeCDkWh1gqoR40TShpl9pRubsYYWdwyHxg==
-X-Received: by 2002:a05:6a20:2585:b0:132:bdba:5500 with SMTP id k5-20020a056a20258500b00132bdba5500mr6146013pzd.39.1693491931891;
-        Thu, 31 Aug 2023 07:25:31 -0700 (PDT)
+        bh=FCVGuZJFjGiSusw+0qmRf+39DSazJywnKT4fxkeSTLY=;
+        b=KDaCcWK1Hx/8p2uv0JUQ9srN8tnqKqLiqKhZKH+OTwtMdWFK+D4f5NUvMwgFAvGM8q
+         H8hq+qrLZNWjN3LlxCH9Jg02iHjF0K3Ve0GUL6OWohalC0MSzLYiRyH5mMAKBQ763oak
+         A5KcrPoQS2PomkwZgsoJJkZ8uGfsNW9IqtPsshNB4euwl7+4j4R6qPw8oEHDDBmXlV7k
+         PaEs3ue4yxwtMbuDd6Bbpud/1cxZunLdj/nxBCm9rmtrJKSe9aoYNHsnWKnzQX8RICGN
+         sq+5UvWkYQqfHSO8sVT/qxstfKIU0Euo58iJpR9FuAV9zv+P7WEBEfZhR0y1igYk93oq
+         Ruew==
+X-Gm-Message-State: AOJu0Yw/42uuCDBmi1NOLndHJ1a0MwENg622af3XlbubpTmjjxp1TbXV
+        zmt8VJzROFNT90HodBugTuluNtweH2E=
+X-Google-Smtp-Source: AGHT+IGJ4yZQKVl5a7y8dwUaviX74mCrEAmaMyeZi9ERxuWVUkuKPmXiWVQZyA5TX38a0/mZJnYbrg==
+X-Received: by 2002:a05:6a00:218a:b0:68c:70f:ee3f with SMTP id h10-20020a056a00218a00b0068c070fee3fmr6103526pfi.13.1693492539534;
+        Thu, 31 Aug 2023 07:35:39 -0700 (PDT)
 Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id a22-20020a637f16000000b005697e8cc5f3sm1407544pgd.22.2023.08.31.07.25.29
+        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b0068aca503b9fsm1395446pff.114.2023.08.31.07.35.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 07:25:31 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 19:55:27 +0530
-Message-Id: <87jztb8f1k.fsf@doe.com>
+        Thu, 31 Aug 2023 07:35:38 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 20:05:35 +0530
+Message-Id: <87h6of8eko.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 02/11] ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
-In-Reply-To: <20230826155028.4019470-3-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH v6 00/11] cleanups and unit test for mballoc
+In-Reply-To: <c92574b5-1441-645c-4824-723545e45845@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,79 +67,33 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> call ext4_mb_mark_context in ext4_free_blocks_simple to:
-> 1. remove repeat code
-> 2. pair update of free_clusters in ext4_mb_new_blocks_simple.
-> 3. add missing ext4_lock_group/ext4_unlock_group protection.
+> on 8/30/2023 3:02 AM, Ritesh Harjani wrote:
+>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+>> 
+>>> v5-v6:
+>>>
+>> 
+>> Hi Kemeng,
+>> 
+>> Sorry for the delay in getting started on this. I am going through the
+>> series now.
+>> 
+>>> 1. Separate block bitmap and buddy bitmap freeing in individual patch
+>>> and rewrite the descriptions.
+>>> 2. Remove #ifdef around KUNIT_STATIC_STUB_REDIRECT which should be
+>>> only defined when CONFIG_KUNIT is enabled after fix [7] which was merged
+>>> into kunit-next/kunit
+> Hi ritesh, thanks for feedback. I think the compilation problem below is
+> relevant to this change which relie on fix [7]. I'm not sure if I need to
+> include fix [7] in this set to fix the compilation error. Would like to
+> hear any advise!
 >
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 35 +++--------------------------------
->  1 file changed, 3 insertions(+), 32 deletions(-)
 
-Looks good to me. Please feel free to add - 
+No, we need not include [7] in this series. I should have noticed that
+in your above updates. I generally also provide a separate note or at
+the top section about which branch and/or changes are requried for
+testing the patch series, hence I overlooked it.
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Thanks for pointing out.
 
-(One small comment below for previous patch)
-
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e2be572deb75..c803f74aaf63 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6414,43 +6414,14 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
->  static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
->  					unsigned long count)
->  {
-> -	struct buffer_head *bitmap_bh;
-> +	struct ext4_mark_context mc;
->  	struct super_block *sb = inode->i_sb;
-> -	struct ext4_group_desc *gdp;
-> -	struct buffer_head *gdp_bh;
->  	ext4_group_t group;
->  	ext4_grpblk_t blkoff;
-> -	int already_freed = 0, err, i;
->  
-> +	ext4_mb_prepare_mark_context(&mc, sb, 0);
-
-It looks like we always use 0 or 1 as the state for struct
-ext4_mark_context. In that case we can keep state member of this struct
-as bool instead of int. 
-
-
->  	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
-> -	bitmap_bh = ext4_read_block_bitmap(sb, group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		pr_warn("Failed to read block bitmap\n");
-> -		return;
-> -	}
-> -	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
-> -	if (!gdp)
-> -		goto err_out;
-> -
-> -	for (i = 0; i < count; i++) {
-> -		if (!mb_test_bit(blkoff + i, bitmap_bh->b_data))
-> -			already_freed++;
-> -	}
-> -	mb_clear_bits(bitmap_bh->b_data, blkoff, count);
-> -	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-> -	if (err)
-> -		goto err_out;
-> -	ext4_free_group_clusters_set(
-> -		sb, gdp, ext4_free_group_clusters(sb, gdp) +
-> -		count - already_freed);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, group, gdp);
-> -	ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-> -	sync_dirty_buffer(bitmap_bh);
-> -	sync_dirty_buffer(gdp_bh);
-> -
-> -err_out:
-> -	brelse(bitmap_bh);
-> +	ext4_mb_mark_context(&mc, group, blkoff, count);
->  }
->  
->  /**
-> -- 
-> 2.30.0
+-ritesh
