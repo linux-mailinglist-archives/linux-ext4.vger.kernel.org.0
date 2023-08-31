@@ -2,62 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B0678F094
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Aug 2023 17:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A4B78F556
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 00:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbjHaPvJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Aug 2023 11:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S232103AbjHaWWQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Aug 2023 18:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbjHaPvJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 11:51:09 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DBB1A3;
-        Thu, 31 Aug 2023 08:51:06 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a41035828so742289b3a.1;
-        Thu, 31 Aug 2023 08:51:06 -0700 (PDT)
+        with ESMTP id S229933AbjHaWWQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 18:22:16 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E68F9C
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 15:22:13 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500b66f8b27so2554374e87.3
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 15:22:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693497065; x=1694101865; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qdwr7+BCtSdvPxCRL9mZngIpfkQTZa7hs6/YpPSAEPw=;
-        b=j7KOoGOpw+4VmMjrRZnd8u98Qmp/Bm4CQjc0hCHZTG+OqjUR9EmRdpXW+3JM1jumxn
-         eBmBL3vEVMzEce/6gKjhHjX66WUJABmeKg50oeuzlqwhyN9JLqJg44ik8Ojqj1M4ws8G
-         h4gQxx+slHntGrEnTlEnAVRng4VJFnKRiNizJ/Woc6HZUemviaQS5RHTNNKZj2EZ8uIw
-         kIv5zt9R0y6cha619HkS/ao+ViPXpCLmpzBzHYXatXhy+lqoxV3g1t1GYKfDrx9ir40R
-         lnJf0Fp6VI6fGSrkLiYUnru2LBkFZ5Gd2EcJzEbeCjsoJqruTqqwIovgoTflMOEwaWOf
-         7onQ==
+        d=linux-foundation.org; s=google; t=1693520531; x=1694125331; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6PBikJYb7xQXhgePqx77WnTwF8snc03B9lP8paS8tQ=;
+        b=QaHAjkyelskzK7Bhd3DooPVVfBxxPEXCeY3mNrWbMgEck1HgVrfU4IdkSf1dw+k5Qz
+         3qVeNvnXxAV590zFIHkGHwrbDdva0pppiEoJlGAYl5cs707i7GJFK9I0dOMJw3xNs/S4
+         pm916RIWuLLxLmOcq5WCxae02y03wnXDUVPHA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693497065; x=1694101865;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Qdwr7+BCtSdvPxCRL9mZngIpfkQTZa7hs6/YpPSAEPw=;
-        b=hJwa2Je2KFGJhVLAcfz2sNePniypLLfDe5HWv9PLHViCcBNnSzic00zuYqPBPl/MDj
-         ePOpU/SqeQJwAWb0pYwCRM1xJpN/G0lYDJI3+N+u2qjShJ1rK8VRl5VF36QBVb+TIFbV
-         BkrPsfMyb6NyWbdHsBkBZcdU/duVdoVcWg5THed7gTfnDLlDJa2rbfYi8lvQ591odEk3
-         LZmjR3pu5NqtLPqwgzOlxD05pdbxaEkIRNQMqx2abdjoKpY9X/liY7TKwCU1bFoHVlHj
-         YVETBQ/pb60lcIok6+7aAagOAFqlp45MnSaUoPkozWsQSFINKUMa+lygPODqSkZYh+zb
-         ms2A==
-X-Gm-Message-State: AOJu0YwwmhgHdod6FEAaAiuhsC8hqyKYr8dB5nQCzLzm0nTAABT6/ij0
-        vgM/ZEtgnQve4OXqRHIllnQ1XCglTCQ=
-X-Google-Smtp-Source: AGHT+IHAnG1X05ZxWJzTarPOu0+Ao3hB2xzUp8JPnRbWaQZ37RL503J/dls6Jzb1Du5IMvSCYLsVBw==
-X-Received: by 2002:a05:6a20:158e:b0:13e:9dba:ea52 with SMTP id h14-20020a056a20158e00b0013e9dbaea52mr88481pzj.13.1693497065432;
-        Thu, 31 Aug 2023 08:51:05 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id i3-20020aa787c3000000b0063f00898245sm1521520pfo.146.2023.08.31.08.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 08:51:04 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 21:21:00 +0530
-Message-Id: <87edjj8b2z.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 03/11] ext4: extent ext4_mb_mark_context to support allocation under journal
-In-Reply-To: <20230826155028.4019470-4-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20221208; t=1693520531; x=1694125331;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R6PBikJYb7xQXhgePqx77WnTwF8snc03B9lP8paS8tQ=;
+        b=iRaGGGFKOdLs31eisZI5/uPhaaaDQsiwsr74Jw0kM/VFYRZodswA6Dkuc1v96Fbsdf
+         R0dWhojKpA8T/YNu6F5fGikjF6LZQ9Jd+pbwoV7rAmZn/7WjK7hE/j0+7hAxM1xr4qer
+         gIRjv0utlGxTGsNDqlEIby9g4A51hBYK5Uv1c0ylYtTjPKDU+UjDXgQyc/8BjbtmiwGd
+         I91tqQlEWyYHR2vtaAAIyIcMSsefC+9Bqx1ypoG0JgRtHpEz1N2ScdmVQEDIb9L/gS9I
+         sXGjE9MdDDgnkj51gtvUgHw6dKkemkWMHotldaVYl+zymVqhfQBYFuPmMWJ8QishVrBp
+         zJJA==
+X-Gm-Message-State: AOJu0Yy5l1AWkVy0PJQQyI/PmGYy5ZgOOu1k6+XGjsnHFFhCxsadO9mH
+        FU3aXsbAbk1Vwgpo6gpDzCZE6MefqPLLzl3oxBfZuG0w
+X-Google-Smtp-Source: AGHT+IFVH6EBrWBQVz/mSDW3WlV0DFM+2jTjXrcfy+fj66WtGv6e4z7AcFNwkaSDH6Ak28AK0+I8Zg==
+X-Received: by 2002:a05:6512:2210:b0:500:7e70:ddee with SMTP id h16-20020a056512221000b005007e70ddeemr451200lfu.8.1693520531277;
+        Thu, 31 Aug 2023 15:22:11 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id l15-20020ac2554f000000b005009f7d9401sm434691lfk.64.2023.08.31.15.22.10
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 15:22:10 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-500913779f5so2552708e87.2
+        for <linux-ext4@vger.kernel.org>; Thu, 31 Aug 2023 15:22:10 -0700 (PDT)
+X-Received: by 2002:a05:6512:3c85:b0:500:be7e:e84d with SMTP id
+ h5-20020a0565123c8500b00500be7ee84dmr450789lfv.61.1693520530153; Thu, 31 Aug
+ 2023 15:22:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230831150155.GA364946@mit.edu>
+In-Reply-To: <20230831150155.GA364946@mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 31 Aug 2023 15:21:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgD-QfNUxqbvg5wLBnBCd4aBCR-Z7uuNSDHa+seNm4--Q@mail.gmail.com>
+Message-ID: <CAHk-=wgD-QfNUxqbvg5wLBnBCd4aBCR-Z7uuNSDHa+seNm4--Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Ext4 updates for 6.6
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,39 +73,11 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-commit: extent ext4_mb_mark_context to support allocation under journal
-        ^^^ extend
-
-> Previously, ext4_mb_mark_context is only called under fast commit
-> replay path, so there is no valid handle when we update block bitmap
-> and group descriptor. This patch try to extent ext4_mb_mark_context
-
-                                          ^^^^ extend
-
-> to be used by code under journal. There are several improves:
-                                                       ^^^ improvement:            
-> 1. add "handle_t *handle" to struct ext4_mark_context to accept handle
-> to journal block bitmap and group descriptor update inside
-> ext4_mb_mark_context (the added journal caode is based on journal
-                                          ^^^ code
-                            (we can remove the next "journal code in")
-
-> code in ext4_mb_mark_diskspace_used where ext4_mb_mark_context
-> is going to be used.)
-> 2. add EXT4_MB_BITMAP_MARKED_CHECK flag to control check if bits in block
-> bitmap are already marked as allocation code under journal asserts that
-> all bits to be changed are not marked before.
-> 3. add "ext4_grpblk_t changed" to struct ext4_mark_context to notify number
-> of bits in block bitmap has changed.
+On Thu, 31 Aug 2023 at 08:02, Theodore Ts'o <tytso@mit.edu> wrote:
 >
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>   * Miscenallenous syzbot and other bug fixes
 
-The patch functionally looks good to me. Please feel free to add - 
+.. and this is why we write that word as just "Misc". Because pretty
+much everybody gets it wrong after the first four or five letters.
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
--ritesh
+             Linus
