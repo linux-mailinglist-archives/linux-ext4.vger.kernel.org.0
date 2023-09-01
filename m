@@ -2,222 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE68C78FAD1
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 11:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BB778FAE2
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 11:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbjIAJ35 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Sep 2023 05:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S230185AbjIAJe2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Sep 2023 05:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236132AbjIAJ34 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Sep 2023 05:29:56 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8941994
-        for <linux-ext4@vger.kernel.org>; Fri,  1 Sep 2023 02:29:00 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68a32506e90so389454b3a.1
-        for <linux-ext4@vger.kernel.org>; Fri, 01 Sep 2023 02:29:00 -0700 (PDT)
+        with ESMTP id S229783AbjIAJe2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Sep 2023 05:34:28 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57836C0;
+        Fri,  1 Sep 2023 02:34:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so19953915ad.0;
+        Fri, 01 Sep 2023 02:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693560539; x=1694165339; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bDLg4qecyETzRFnq6OGrPIT3o/YZXnsJjRMiowFzU0g=;
-        b=Eao5+f7PkLmcOKm2923uZLy/KU2o674NZbcpDG7Yd0U+ZSWTMFWKhz8BIvKA4xxKAd
-         fA0x1DNWYjBBQocA0OO1RAHMt/TIB1Snty94NjCFaBPN/mUkVhMX2jrc8ZYXbTMicyjl
-         73Obu17iMdAGlTtMltP1cMOQysUZv2i34I/9Zy/gHtD/VfAjUEYidq9v6QnAswOchonI
-         k/Lk1ZxpJP/0KUR8IosYNt14Jqe5b8vfKG1L0D/HHO7KbzjPIfp2RTqO8IBa6QtubErH
-         c+N4bBGn+DvthQ9zPVSwdsq0GMjE/xyeuMF0Aobuqgc1mbC9wXnUDaxVcjwuMa2XAm3S
-         dtqw==
+        d=gmail.com; s=20221208; t=1693560863; x=1694165663; darn=vger.kernel.org;
+        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CO+uLLw2FHoLsIQUr29swe3Fix3Sx8cUyODUzWW8lnk=;
+        b=OxX2d4erYQY6wDRWmD0GGdNqIFIrwr5RrPRyK21oY6qbGrryP/GqxAy2YTz3EfY9kE
+         WGkf4cguJveb+0prVMtFwRs8yDb5Pvk6T92M3UG8xT65+9Vm6a9xTfUwKoZY03HxRrTb
+         7JuN1TcAXEwZ0lK3wixifiZDx5V6OlEkyu8nMGlL54wkZiwuc6bhP1wbrd0P8d1w/tUv
+         qvK13dVfr58+vkgAvY9z24o1yS95ZuCTcWimmeqOeDX/kxw/1J7KdVxifcbkWUMZbkNM
+         zv8QVHKfqvcnfJKVhK9lp7yA7TBX513rx2opr4RMnYLPc/AWECa0AQMIGKtUarP/doYY
+         sc6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560539; x=1694165339;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bDLg4qecyETzRFnq6OGrPIT3o/YZXnsJjRMiowFzU0g=;
-        b=SnBmQyNAPIEywMTRjGXM5UDk44sVg8bizsYeuqWcGHTGQzBF5gslnaCWLmmdlHSPNt
-         SbIA3KxTWsGznBSjFOxdE5wUmzFkZ7D+oT8c/+5m5/SXpS4OLX/nGuQ74hb3Sdl15ewa
-         W99EW4YCL6+DecZCT9bsGbDiVQhITV/HFczjhcj+A8dIObpvN7VgmdLBm/p9HpU9QRA4
-         QPUokd49qWLgfaG2DAUQatE2ezGdLqnfDG3lXdB3cLRWqqVyCUNznStSeyASQWPBvbPS
-         HmaHo+LwRyGR7PLYOD24UdzMoaNGC9EAU3p0nMYBYUZ+ty7b2I5MB+gudJmp8HASemQh
-         imUw==
-X-Gm-Message-State: AOJu0Yzcqz1aZxNj/5tr3bYm7JTv6DZq50BgleRpactPbosaEE8vu3i0
-        EQ3+DI+XEue1hSGCFlAJbZ80efgVcYg7pc8XAIQ=
-X-Google-Smtp-Source: AGHT+IEVnZ+a17FY39kkpRQisESxKcYqNTUYoMe3IUCl9HQDyKTcRzQg6p8hIn3s0N6GUJH3QLUWyQ==
-X-Received: by 2002:a17:902:e80a:b0:1b8:a469:53d8 with SMTP id u10-20020a170902e80a00b001b8a46953d8mr2400860plg.0.1693560539303;
-        Fri, 01 Sep 2023 02:28:59 -0700 (PDT)
-Received: from HTW5T2C6VL.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b001b8b2b95068sm2623862pln.204.2023.09.01.02.28.56
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 01 Sep 2023 02:28:58 -0700 (PDT)
-From:   Fengnan Chang <changfengnan@bytedance.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        Fengnan Chang <changfengnan@bytedance.com>
-Subject: [PATCH v6] ext4: improve trim efficiency
-Date:   Fri,  1 Sep 2023 17:28:20 +0800
-Message-Id: <20230901092820.33757-1-changfengnan@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1693560863; x=1694165663;
+        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=CO+uLLw2FHoLsIQUr29swe3Fix3Sx8cUyODUzWW8lnk=;
+        b=DZ3wKNMAeXgnIOjPetJydtI/fOALJc56ggOdOD1jXEmJUDmzAKV0uO4TqXjJeX5Vbf
+         Ly20WE9MIf87U+L725aM/lLrPw7ftDHTZBDuMMSQEI9D5/3Kwnr4VfBibIBOWerp7oGL
+         uj2q17hAnjVYiSfWioMPtSMoKOm/mBJOdGiYFexPBzR8dhU0gbGfQs8mppw+XW4yXQgs
+         y4WBw5qeHAI6Sc5Wbp79Z+7RokLcpnumhbXvLfkkJGOdp8hpOXFR55b7ocghVHxuv215
+         FpRQBUjARoGBfquRyNE7judMHWqQ3y0wl2BgPHDkoGgYat5hlO7z9BwsbA9bgbeQhWpT
+         nGnQ==
+X-Gm-Message-State: AOJu0YzqaRnd/5b5+ELM1tXDGyT/v0NTigI5xlUim+cP8SnxWX6Etfqz
+        fKuujEIFJYCegoR0yAin2IZfBzAwoAg=
+X-Google-Smtp-Source: AGHT+IF7xj33exuGQhZV1p4yxb8iD7LQgCTYQUTIuaMZWe4KWtrPEZiPoiM1IKY0nrlK6MmU/9suwg==
+X-Received: by 2002:a17:90b:4a83:b0:26b:4e40:7be6 with SMTP id lp3-20020a17090b4a8300b0026b4e407be6mr2634951pjb.20.1693560863094;
+        Fri, 01 Sep 2023 02:34:23 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id a12-20020a17090a740c00b00262fc3d911esm4216239pjg.28.2023.09.01.02.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 02:34:22 -0700 (PDT)
+Date:   Fri, 01 Sep 2023 15:04:18 +0530
+Message-Id: <878r9q8cf9.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 05/11] ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
+In-Reply-To: <20230826155028.4019470-6-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In commit a015434480dc("ext4: send parallel discards on commit
-completions"), issue all discard commands in parallel make all
-bios could merged into one request, so lowlevel drive can issue
-multi segments in one time which is more efficiency, but commit
-55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
-seems broke this way, let's fix it.
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-In my test:
-1. create 10 normal files, each file size is 10G.
-2. deallocate file, punch a 16k holes every 32k.
-3. trim all fs.
-the time of fstrim fs reduce from 6.7s to 1.3s.
+> This patch separates block bitmap and buddy bitmap freeing in order to
+> udpate block bitmap with ext4_mb_mark_context in following patch.
+^^^ update.
 
-Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
----
- fs/ext4/mballoc.c | 95 +++++++++++++++++++++++++----------------------
- 1 file changed, 51 insertions(+), 44 deletions(-)
+>
+> Separated freeing is safe with concurrent allocation as long as:
+> 1. Firstly allocate block in buddy bitmap, and then in block bitmap.
+> 2. Firstly free block in block bitmap, and then buddy bitmap.
+> Then freed block will only be available to allocation when both buddy
+> bitmap and block bitmap are updated by freeing.
+> Allocation obeys rule 1 already, just do sperated freeing with rule 2.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 1e4c667812a9..9fc69a92c496 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6874,70 +6874,61 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 	return err;
- }
- 
--/**
-- * ext4_trim_extent -- function to TRIM one single free extent in the group
-- * @sb:		super block for the file system
-- * @start:	starting block of the free extent in the alloc. group
-- * @count:	number of blocks to TRIM
-- * @e4b:	ext4 buddy for the group
-- *
-- * Trim "count" blocks starting at "start" in the "group". To assure that no
-- * one will allocate those blocks, mark it as used in buddy bitmap. This must
-- * be called with under the group lock.
-- */
--static int ext4_trim_extent(struct super_block *sb,
--		int start, int count, struct ext4_buddy *e4b)
--__releases(bitlock)
--__acquires(bitlock)
--{
--	struct ext4_free_extent ex;
--	ext4_group_t group = e4b->bd_group;
--	int ret = 0;
--
--	trace_ext4_trim_extent(sb, group, start, count);
--
--	assert_spin_locked(ext4_group_lock_ptr(sb, group));
--
--	ex.fe_start = start;
--	ex.fe_group = group;
--	ex.fe_len = count;
--
--	/*
--	 * Mark blocks used, so no one can reuse them while
--	 * being trimmed.
--	 */
--	mb_mark_used(e4b, &ex);
--	ext4_unlock_group(sb, group);
--	ret = ext4_issue_discard(sb, group, start, count, NULL);
--	ext4_lock_group(sb, group);
--	mb_free_blocks(NULL, e4b, start, ex.fe_len);
--	return ret;
--}
--
- static int ext4_try_to_trim_range(struct super_block *sb,
- 		struct ext4_buddy *e4b, ext4_grpblk_t start,
- 		ext4_grpblk_t max, ext4_grpblk_t minblocks)
- __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
- __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- {
--	ext4_grpblk_t next, count, free_count;
-+	ext4_grpblk_t next, count, free_count, bak;
- 	void *bitmap;
-+	struct ext4_free_data *entry = NULL, *fd, *nfd;
-+	struct list_head discard_data_list;
-+	struct bio *discard_bio = NULL;
-+	struct blk_plug plug;
-+	ext4_group_t group = e4b->bd_group;
-+	struct ext4_free_extent ex;
-+	bool noalloc = false;
-+	int ret = 0;
-+
-+	INIT_LIST_HEAD(&discard_data_list);
- 
- 	bitmap = e4b->bd_bitmap;
- 	start = max(e4b->bd_info->bb_first_free, start);
- 	count = 0;
- 	free_count = 0;
- 
-+	blk_start_plug(&plug);
- 	while (start <= max) {
- 		start = mb_find_next_zero_bit(bitmap, max + 1, start);
- 		if (start > max)
- 			break;
-+		bak = start;
- 		next = mb_find_next_bit(bitmap, max + 1, start);
--
- 		if ((next - start) >= minblocks) {
--			int ret = ext4_trim_extent(sb, start, next - start, e4b);
-+			/* when only one segment, there is no need to alloc entry */
-+			noalloc = (free_count == 0) && (next >= max);
- 
--			if (ret && ret != -EOPNOTSUPP)
-+			trace_ext4_trim_extent(sb, group, start, next - start);
-+			ex.fe_start = start;
-+			ex.fe_group = group;
-+			ex.fe_len = next - start;
-+			/*
-+			 * Mark blocks used, so no one can reuse them while
-+			 * being trimmed.
-+			 */
-+			mb_mark_used(e4b, &ex);
-+			ext4_unlock_group(sb, group);
-+			ret = ext4_issue_discard(sb, group, start, next - start, &discard_bio);
-+			if (!noalloc) {
-+				entry = kmem_cache_alloc(ext4_free_data_cachep,
-+							GFP_NOFS|__GFP_NOFAIL);
-+				entry->efd_start_cluster = start;
-+				entry->efd_count = next - start;
-+				list_add_tail(&entry->efd_list, &discard_data_list);
-+			}
-+			ext4_lock_group(sb, group);
-+			if (ret < 0)
- 				break;
- 			count += next - start;
- 		}
-@@ -6959,6 +6950,22 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 			break;
- 	}
- 
-+	if (discard_bio) {
-+		ext4_unlock_group(sb, e4b->bd_group);
-+		submit_bio_wait(discard_bio);
-+		bio_put(discard_bio);
-+		ext4_lock_group(sb, e4b->bd_group);
-+	}
-+	blk_finish_plug(&plug);
-+
-+	if (noalloc && free_count)
-+		mb_free_blocks(NULL, e4b, bak, free_count);
-+
-+	list_for_each_entry_safe(fd, nfd, &discard_data_list, efd_list) {
-+		mb_free_blocks(NULL, e4b, fd->efd_start_cluster, fd->efd_count);
-+		kmem_cache_free(ext4_free_data_cachep, fd);
-+	}
-+
- 	return count;
- }
- 
--- 
-2.20.1
+So we also don't need ext4_load_buddy_gfp() before freeing on-disk
+bitmap right. Continue below...
 
+>
+> Separated freeing has no race with generate_buddy as:
+> Once ext4_mb_load_buddy_gfp is executed successfully, the update-to-date
+> buddy page can be found in sbi->s_buddy_cache and no more buddy
+> initialization of the buddy page will be executed concurrently until
+> buddy page is unloaded. As we always do free in "load buddy, free,
+> unload buddy" sequence, separated freeing has no race with generate_buddy.
+>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index e650eac22237..01ad36a1cc96 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -6519,6 +6519,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>  	if (err)
+>  		goto error_return;
+
+
+Let me add the a piece of code before the added changes and continue...
+
+	err = ext4_mb_load_buddy_gfp(sb, block_group, &e4b,
+				     GFP_NOFS|__GFP_NOFAIL);
+	if (err)
+		goto error_return;
+>  
+> +	ext4_lock_group(sb, block_group);
+> +	mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+> +	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+> +	ext4_free_group_clusters_set(sb, gdp, ret);
+> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+> +	ext4_group_desc_csum_set(sb, block_group, gdp);
+> +	ext4_unlock_group(sb, block_group);
+> +
+
+...Is it required for ext4_mb_load_buddy_gfp() to be called before
+freeing on-disk bitmap blocks? Can you explain why please?
+At least it is not very clear to me that why do we need
+ext4_mb_load_buddy_gfp() before clearing of bitmap blocks. If it's not
+needed then I think we should separate out bitmap freeing logic and
+buddy freeing logic even further.
+
+Thoughts?
+
+>  	/*
+>  	 * We need to make sure we don't reuse the freed block until after the
+>  	 * transaction is committed. We make an exception if the inode is to be
+> @@ -6541,13 +6549,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>  		new_entry->efd_tid = handle->h_transaction->t_tid;
+>  
+>  		ext4_lock_group(sb, block_group);
+> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>  		ext4_mb_free_metadata(handle, &e4b, new_entry);
+>  	} else {
+> -		/* need to update group_info->bb_free and bitmap
+> -		 * with group lock held. generate_buddy look at
+> -		 * them with group lock_held
+> -		 */
+>  		if (test_opt(sb, DISCARD)) {
+>  			err = ext4_issue_discard(sb, block_group, bit,
+>  						 count_clusters, NULL);
+> @@ -6560,14 +6563,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+>  
+>  		ext4_lock_group(sb, block_group);
+> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>  		mb_free_blocks(inode, &e4b, bit, count_clusters);
+>  	}
+>  
+> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+> -	ext4_free_group_clusters_set(sb, gdp, ret);
+> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+> -	ext4_group_desc_csum_set(sb, block_group, gdp);
+>  	ext4_unlock_group(sb, block_group);
+>  
+>  	if (sbi->s_log_groups_per_flex) {
+
+
+Adding piece of code here...
+
+	if (sbi->s_log_groups_per_flex) {
+		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
+		atomic64_add(count_clusters,
+			     &sbi_array_rcu_deref(sbi, s_flex_groups,
+						  flex_group)->free_clusters);
+	}
+
+<...>
+
+	/* We dirtied the bitmap block */
+	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
+	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+	/* And the group descriptor block */
+	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
+	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
+	if (!err)
+		err = ret;
+
+I was thinking even this can go around bitmap freeing logic above. So
+the next patch becomes very clear that all of the bitmap freeing logic
+is just simply moved into ext4_mb_mark_context() function.
+
+-ritesh
