@@ -2,162 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF4978FF4C
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 16:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F1C78FFFD
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 17:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344299AbjIAOgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Sep 2023 10:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S232818AbjIAPe4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Sep 2023 11:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243538AbjIAOge (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Sep 2023 10:36:34 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED3DA4;
-        Fri,  1 Sep 2023 07:36:31 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34ca1bcb48fso6428365ab.2;
-        Fri, 01 Sep 2023 07:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693578990; x=1694183790; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KHXbbveoHZR0tcPVV1tc/c3Ir5HWQidOEcLG9DliTh4=;
-        b=EZVxumen8Qd0dhAoYIm2QtdU/yCBVENIWbRYjw08ttFBWrKmQtwTNx+QqFArMCghQI
-         7pMor1OHQhrIRCQJUlywndatKF0gkpvVtIsvef6kgDd708hTIWq8IgesaSHXvxM7Plgv
-         zeE2ahZnOFVLt7IM3YSzNZkEDB7Wbn2JOy7b7cbg+m1uZs0qeQqEZ2GucBw9+4BcNAWV
-         DUdqWQDNY/6joaK/mtwox9dvVwmH5Bqs8DgC4+cnATrsl96IMedrhM92oBcFLUwP7uDv
-         tuI8A8ZtsXWA1DCPqd+fCMVLY34H21hc5oF+XgoArDFvUrqgZKzoi1oZD0VsOnh94JdU
-         OgFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693578990; x=1694183790;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KHXbbveoHZR0tcPVV1tc/c3Ir5HWQidOEcLG9DliTh4=;
-        b=TBkQgNEMajTKlOd8Gx6R6HoghcTnMdaZRRBoIbRNO74htB4KIPg7TgzzMCGQ2MHJyO
-         zPZcKdRcqSakR/9Qq7ujcok0V8Zr/qc1eAtC2Z/BvwtBE/2lzJjhjSsoRuL9QMYECV4o
-         AraX0Ic6t5FYyobZCOl5eUeY2ZHlaI5BaZfPgg0Fqy9HMUEd/+7tSZ+zKwBgTnY4Ohw7
-         rZcsIy6aUgMXXSXyA3Q/bK6YGb0QT7K4SbTYKjvfRHhsyE2fKfrFVlsoa6Bpts7iJJwN
-         oWUJbXfzS7DMDG86CyV07czZ2QrNEHyj9Nw80yz9sj+qaUN1ximJasRDh3QaHFtZdX0f
-         Bpvg==
-X-Gm-Message-State: AOJu0YyESa7gcXWbZTd1j0VD3l7R/WRz2ege+bzRUxURl1fw/Fpt+ZJv
-        XGHQFrbEESSO1JkERJOnRG+m5DEjEXQ=
-X-Google-Smtp-Source: AGHT+IHnkcG7PjX/zv/zi4t6XQDUb3xhZFUuyC/yhIk2Tk0L/pu6HAMCBrFkEPNRxUOGvryYlk43YA==
-X-Received: by 2002:a05:6e02:1071:b0:34c:b943:d170 with SMTP id q17-20020a056e02107100b0034cb943d170mr2781226ilj.18.1693578990210;
-        Fri, 01 Sep 2023 07:36:30 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id i11-20020a63b30b000000b005579f12a238sm2611803pgf.86.2023.09.01.07.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 07:36:29 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 20:06:22 +0530
-Message-Id: <87msy6kljt.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 11/11] ext4: run mballoc test with different layouts setting
-In-Reply-To: <20230826155028.4019470-12-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S242249AbjIAPe4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Sep 2023 11:34:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A5410CF
+        for <linux-ext4@vger.kernel.org>; Fri,  1 Sep 2023 08:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693582493; x=1725118493;
+  h=date:from:to:cc:subject:message-id;
+  bh=G9wm++DjIg6p/5y0Lc3lgyHD3xnpF5yKuPn9McJLxFI=;
+  b=B4teoUqJOZnKx9EqfLKoQ9TDzsxchWtw6Mjt1m0hDLKKf1MKrc00kPqp
+   kbn0fztCbYf8/gxMwwzVIJbjdxTaq3v+Wvu6RQ7grNfT/af54wdXpmuI+
+   WVbTgsapZn9uaqVyIHXhA9LKRs/IBVLzwp7dg4HcI3og/DSbXorNR+g49
+   xCR+DJzOde3yG8Eh0aqzaTioOzjBppYGKPh0Uw8hGfs08HthwgsZxUY6r
+   gApbiQmPJtOG2tVBAR48PxZq9G0RhTQXSLcQccwMwPM8f8Ztw7hmxkwF6
+   8/SdiiuQjuzqsjwe0i7mYfAncqBAME5Ltojs/6d7nxUcDsD/8xjAcWorA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440216104"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="440216104"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 08:34:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="739968413"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="739968413"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 01 Sep 2023 08:34:44 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qc6AU-0001PV-1b;
+        Fri, 01 Sep 2023 15:34:42 +0000
+Date:   Fri, 01 Sep 2023 23:33:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:ext4_merge_resolution] BUILD SUCCESS
+ e677865a661c1801ae701235727bca8e357984e1
+Message-ID: <202309012348.cfjDsdQj-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git ext4_merge_resolution
+branch HEAD: e677865a661c1801ae701235727bca8e357984e1  Merge branch 'dev' into test
 
-> Use KUNIT_CASE_PARAM to run mbalaloc test with different layouts setting.
-                              ^^^ mballoc
-small nit below
-  
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc-test.c | 52 ++++++++++++++++++++++++++++++------------
->  1 file changed, 38 insertions(+), 14 deletions(-)
->
-> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-> index d643c56ac003..af48a39c8ba2 100644
-> --- a/fs/ext4/mballoc-test.c
-> +++ b/fs/ext4/mballoc-test.c
-> @@ -196,21 +196,11 @@ static int ext4_mb_mark_context_stub(struct ext4_mark_context *mc,
->  	return 0;
->  }
->  
-> -#define TEST_BLOCKSIZE_BITS 10
-> -#define TEST_CLUSTER_BITS 3
-> -#define TEST_BLOCKS_PER_GROUP 8192
-> -#define TEST_GROUP_COUNT 4
-> -#define TEST_DESC_SIZE 64
->  #define TEST_GOAL_GROUP 1
->  static int mbt_kunit_init(struct kunit *test)
->  {
-> -	struct mbt_ext4_block_layout layout = {
-> -		.blocksize_bits = TEST_BLOCKSIZE_BITS,
-> -		.cluster_bits = TEST_CLUSTER_BITS,
-> -		.blocks_per_group = TEST_BLOCKS_PER_GROUP,
-> -		.group_count = TEST_GROUP_COUNT,
-> -		.desc_size = TEST_DESC_SIZE,
-> -	};
-> +	struct mbt_ext4_block_layout *layout =
-> +		(struct mbt_ext4_block_layout *)(test->param_value);
->  	struct super_block *sb;
->  	int ret;
->  
-> @@ -218,7 +208,7 @@ static int mbt_kunit_init(struct kunit *test)
->  	if (sb == NULL)
->  		return -ENOMEM;
->  
-> -	mbt_init_sb_layout(sb, &layout);
-> +	mbt_init_sb_layout(sb, layout);
->  
->  	ret = mbt_ctx_init(sb);
->  	if (ret != 0) {
-> @@ -304,9 +294,43 @@ static void test_new_blocks_simple(struct kunit *test)
->  		"unexpectedly get block when no block is available");
->  }
->  
-> +static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
-> +	{
-> +		.blocksize_bits = 10,
-> +		.cluster_bits = 3,
-> +		.blocks_per_group = 8192,
-> +		.group_count = 4,
-> +		.desc_size = 64,
-> +	},
-> +	{
-> +		.blocksize_bits = 12,
-> +		.cluster_bits = 3,
-> +		.blocks_per_group = 8192,
-> +		.group_count = 4,
-> +		.desc_size = 64,
-> +	},
-> +	{
-> +		.blocksize_bits = 18,
+elapsed time: 1339m
 
-64k blocksize is more common due to platforms with 64k pagesize like
-Power and sometimes arm64. I would rather make it 16 here.
+configs tested: 161
+configs skipped: 2
 
-I tested it on Power - 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[    2.546687][    T1] KTAP version 1
-[    2.547123][    T1] 1..2
-[    2.547447][    T1]     KTAP version 1
-[    2.547927][    T1]     # Subtest: ext4_mballoc_test
-[    2.548562][    T1]     1..1
-[    2.548933][    T1]         KTAP version 1
-[    2.549457][    T1]         # Subtest: test_new_blocks_simple
-[    2.549550][  T108] kunit_try_catch (108) used greatest stack depth: 14512 bytes left
-[    2.549644][    T1]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    2.552780][  T110] kunit_try_catch (110) used greatest stack depth: 14464 bytes left
-[    2.552882][    T1]         ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    2.555909][    T1]         ok 3 block_bits=18 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    2.557184][    T1]     # test_new_blocks_simple: pass:3 fail:0 skip:0 total:3
-[    2.557186][    T1]     ok 1 test_new_blocks_simple
-[    2.558083][    T1] # Totals: pass:3 fail:0 skip:0 total:3
-[    2.558688][    T1] ok 1 ext4_mballoc_test
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r002-20230901   gcc  
+alpha                randconfig-r016-20230901   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230901   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20230901   clang
+arm                  randconfig-r026-20230901   clang
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r001-20230901   clang
+arm64                randconfig-r031-20230901   clang
+arm64                randconfig-r036-20230901   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon               randconfig-001-20230901   clang
+hexagon               randconfig-002-20230901   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230901   clang
+i386         buildonly-randconfig-002-20230901   clang
+i386         buildonly-randconfig-003-20230901   clang
+i386         buildonly-randconfig-004-20230901   clang
+i386         buildonly-randconfig-005-20230901   clang
+i386         buildonly-randconfig-006-20230901   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230901   clang
+i386                  randconfig-002-20230901   clang
+i386                  randconfig-003-20230901   clang
+i386                  randconfig-004-20230901   clang
+i386                  randconfig-005-20230901   clang
+i386                  randconfig-006-20230901   clang
+i386                  randconfig-011-20230901   gcc  
+i386                  randconfig-012-20230901   gcc  
+i386                  randconfig-013-20230901   gcc  
+i386                  randconfig-014-20230901   gcc  
+i386                  randconfig-015-20230901   gcc  
+i386                  randconfig-016-20230901   gcc  
+i386                 randconfig-r014-20230901   gcc  
+i386                 randconfig-r021-20230901   gcc  
+i386                 randconfig-r032-20230901   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230901   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r023-20230901   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc             randconfig-r003-20230901   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r004-20230901   gcc  
+parisc               randconfig-r012-20230901   gcc  
+parisc               randconfig-r013-20230901   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc              randconfig-r005-20230901   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230901   clang
+riscv                randconfig-r006-20230901   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230901   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                   randconfig-r033-20230901   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r011-20230901   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64              randconfig-r025-20230901   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r015-20230901   clang
+um                   randconfig-r022-20230901   clang
+um                   randconfig-r034-20230901   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230901   clang
+x86_64       buildonly-randconfig-002-20230901   clang
+x86_64       buildonly-randconfig-003-20230901   clang
+x86_64       buildonly-randconfig-004-20230901   clang
+x86_64       buildonly-randconfig-005-20230901   clang
+x86_64       buildonly-randconfig-006-20230901   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230901   gcc  
+x86_64                randconfig-002-20230901   gcc  
+x86_64                randconfig-003-20230901   gcc  
+x86_64                randconfig-004-20230901   gcc  
+x86_64                randconfig-005-20230901   gcc  
+x86_64                randconfig-006-20230901   gcc  
+x86_64                randconfig-011-20230901   clang
+x86_64                randconfig-012-20230901   clang
+x86_64                randconfig-013-20230901   clang
+x86_64                randconfig-014-20230901   clang
+x86_64                randconfig-015-20230901   clang
+x86_64                randconfig-016-20230901   clang
+x86_64                randconfig-071-20230901   clang
+x86_64                randconfig-072-20230901   clang
+x86_64                randconfig-073-20230901   clang
+x86_64                randconfig-074-20230901   clang
+x86_64                randconfig-075-20230901   clang
+x86_64                randconfig-076-20230901   clang
+x86_64               randconfig-r024-20230901   gcc  
+x86_64               randconfig-r035-20230901   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
-Looks good to me. Feel free to add -
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
