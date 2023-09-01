@@ -2,231 +2,248 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BA078F78B
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 05:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB1978F9FB
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Sep 2023 10:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344948AbjIADvp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Aug 2023 23:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S234029AbjIAIcb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Sep 2023 04:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjIADvo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Aug 2023 23:51:44 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB73F18C;
-        Thu, 31 Aug 2023 20:51:41 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bd045336c6so1196218a34.2;
-        Thu, 31 Aug 2023 20:51:41 -0700 (PDT)
+        with ESMTP id S232145AbjIAIc2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Sep 2023 04:32:28 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F319E
+        for <linux-ext4@vger.kernel.org>; Fri,  1 Sep 2023 01:32:02 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76eecd12abbso36931585a.0
+        for <linux-ext4@vger.kernel.org>; Fri, 01 Sep 2023 01:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693540300; x=1694145100; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1693557121; x=1694161921; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JM3JKX7Dav71VnKYpce9CXueqnYfgS+zkQbBLMQsBhI=;
-        b=cTEmN+ic5EAzdrBZU5GwTHT/OpwpE4Ka+/04aKWoVBRxRy/khsqJ0Q+uuISBPWnzwq
-         7ymukAlP3FFiX8MUHUpjpdJis+3g0FgXrpJg0zmZxlCeqnKi0yLXSIzc9mZW7zilulul
-         y7IymCe7NeH/4cemcTdMM2o2H8x5j87bjQrR23FPZ46+/3gyox9pYlllwr5IxFUuM8CQ
-         Py6OLrlvzq3dFRYx4SsmpRIiKZYVpoAEG9XyN+S+dchDW3/CMiUngtLQHVgET+wuesBD
-         8ydAW3/MDyhslgwFUydfgEX1wzgVlcVWKKjTrlXF2Lo8adlu30rlxqSc0SGvmmZz/x78
-         KFyQ==
+        bh=EbpMyQ29dC1MA1RQHor5J9Oahj6ESL2AFyW72pjA8io=;
+        b=PnNBOQQszYqZRx8HHeTcUA3EYTD3vB7cbGlsaxdPR1qeSBKh8TdZOqCWQsHKA7zAL6
+         9AAkmcpwvGXqp3SYFZhLKHcAQoU27MTc2yhi21jC9nlP4oqBbFhL1S+lvp+e4f/JzEVt
+         WpeKgc8P5s2SBvc9yBLUxdSMXVdI2+OyM1M9iDJLlpMKjF/Bc3BFbeKugi14gZsM0Hw9
+         ZRegaqs0fxo7Qh9QuaqSaYQn8tQkoXKrjUPdJIEUTUovdNg4jwiz1E2NrzBEgJFN0AxU
+         UtY36K12ZAPL8HldRsdWLo0nQ7OtzkcRcLApj1llzYkludhF+sZEpqMp3xhUz2477zu0
+         omsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693540300; x=1694145100;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=JM3JKX7Dav71VnKYpce9CXueqnYfgS+zkQbBLMQsBhI=;
-        b=ZrZo49kbkwv0XCrY1SUvaF4SRluTH3KOFkOM9RS2z54bf3EiSJA23fOQLZocmzK5so
-         Ao9bB8+txbvDFkzAAcb3Rn1SfsvbXhpt82XuQaxg8amU+2gUIBHy2WoKw+mJj85+b13z
-         yeCrOQEOGVJzpXHxIgUa44qzPi8mTX/BDKMJp3CWGM5aAnamtVoEsdMShdd6w005V4cE
-         6PhwD8hqj7ARTYo8++/qh6vI2vFHVKFEIj+jhO63GyKtTVapU2LRcei9TNjsFmlN+gWK
-         uTyT9PW8KndKLFbncE5m4eWoy2PvEclc6ksUVkNp61P63OJWXacY8vMzIV4jn+Y6qacL
-         COPQ==
-X-Gm-Message-State: AOJu0YzS+XSHoKhod0AV+4W69N0KoOnt9qa0g4qwsVgh3FQOyar3XCB/
-        HHajNblzQTSMp+zUBwtc3soBHjMYd+A=
-X-Google-Smtp-Source: AGHT+IE2Xme2k3sHrFKZMsIT1gwPX2mU/eeqMeA2GVWOzt2fCljglWWqPepRP66sGJ8BjissGkGZmg==
-X-Received: by 2002:a05:6870:c0cc:b0:1bb:8b8a:2b1b with SMTP id e12-20020a056870c0cc00b001bb8b8a2b1bmr1541000oad.54.1693540300563;
-        Thu, 31 Aug 2023 20:51:40 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id j23-20020a17090ae61700b00268238583acsm3637468pjy.32.2023.08.31.20.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 20:51:39 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 09:21:36 +0530
-Message-Id: <87bkem8saf.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 04/11] ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
-In-Reply-To: <20230826155028.4019470-5-shikemeng@huaweicloud.com>
+        d=1e100.net; s=20221208; t=1693557121; x=1694161921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EbpMyQ29dC1MA1RQHor5J9Oahj6ESL2AFyW72pjA8io=;
+        b=eFrs9DoJfuVBxMngaU1rNzUyFaDVPFKf0k48ITBDEjej1a0UGFdr0JKv6wXY4nugX3
+         U2Lj5lVYIlzHugO97sFTmMi9MR6C0FDNwHs0OpYzO7txUIRoCUl7o5cUlhOycI/cIk76
+         MxUcqBhXy5Sv+qgXfHXCva1NM48caeJE9xn8nU1pKA8wErtV2FhNIS7PcDWRt+ISTc+a
+         96bIbmrcWT/Oh8/t4sH3NJ2WvgusrlFtPGa6MyoNHv7Ybw7rheDYjlNwTWQYIiTuiuFU
+         4NQfnlAZjtwT7G8To7TF4iWJyx0ZEp0IWw56Tw1ys6tet5VELU0nmUB6cAzqWBJMIBbk
+         AhbA==
+X-Gm-Message-State: AOJu0YxCQy7SzbIEb724/ooSkvoHnY/LCSBI/8IeFFNc0u3NtlsA+ZJV
+        BUXOG6YtyDJHS4j7/4L3fnYKCi3Fy+4gEcn5fV5ymaNnV+y+BT+powo=
+X-Google-Smtp-Source: AGHT+IEEIq8V1YmoVjUX3Jseki7r7qnfdoeD8hwpJ1rXOAgQypphxq1AvdAm41NZKWvKsDlg16B8bVErE0OQrMers7o=
+X-Received: by 2002:a05:622a:1a9b:b0:410:88c6:cf22 with SMTP id
+ s27-20020a05622a1a9b00b0041088c6cf22mr2082193qtc.3.1693557121084; Fri, 01 Sep
+ 2023 01:32:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230824062129.36346-1-changfengnan@bytedance.com>
+In-Reply-To: <20230824062129.36346-1-changfengnan@bytedance.com>
+From:   Fengnan Chang <changfengnan@bytedance.com>
+Date:   Fri, 1 Sep 2023 16:31:50 +0800
+Message-ID: <CAPFOzZtbst7XuaEWe=H8G2tpPDBDHbFuR3PR064pMbyDEzkyJg@mail.gmail.com>
+Subject: Re: [PATCH v5] ext4: improve trim efficiency
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> call ext4_mb_mark_context in ext4_mb_mark_diskspace_used to:
-> 1. remove repeat code to normally update bitmap and group descriptor
-> on disk.
-> 2. call ext4_mb_mark_context instead of only setting bits in block bitmap
-> to fix the bitmap. Function ext4_mb_mark_context will also update
-> checksum of bitmap and other counter along with the bit change to keep
-> the cosistent with bit change or block bitmap will be marked corrupted as
-> checksum of bitmap is in inconsistent state.
+Fengnan Chang <changfengnan@bytedance.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=88=
+24=E6=97=A5=E5=91=A8=E5=9B=9B 14:21=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> In commit a015434480dc("ext4: send parallel discards on commit
+> completions"), issue all discard commands in parallel make all
+> bios could merged into one request, so lowlevel drive can issue
+> multi segments in one time which is more efficiency, but commit
+> 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
+> seems broke this way, let's fix it.
+> In my test:
+> 1. create 10 normal files, each file size is 10G.
+> 2. deallocate file, punch a 16k holes every 32k.
+> 3. trim all fs.
+>
+> the time of fstrim fs reduce from 6.7s to 1.3s.
+>
+> Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
 > ---
->  fs/ext4/mballoc.c | 86 +++++++++++------------------------------------
->  1 file changed, 20 insertions(+), 66 deletions(-)
-
-I was wondering whether checking for !ext4_inode_block_valid() can also
-be part of ext4_mb_mark_context() by passing EXT4_MB_METABLOCKS_VALID_CHECK
-flag.
-
-But as for this patch. It looks good to me. Please feel free to add - 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
-
+>  fs/ext4/mballoc.c | 95 +++++++++++++++++++++++++----------------------
+>  1 file changed, 51 insertions(+), 44 deletions(-)
 >
 > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index b066ee018cdb..e650eac22237 100644
+> index 1e4c667812a9..86857b22c4bc 100644
 > --- a/fs/ext4/mballoc.c
 > +++ b/fs/ext4/mballoc.c
-> @@ -4084,46 +4084,28 @@ static noinline_for_stack int
->  ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
->  				handle_t *handle, unsigned int reserv_clstrs)
->  {
-> -	struct buffer_head *bitmap_bh = NULL;
-> +	struct ext4_mark_context mc;
->  	struct ext4_group_desc *gdp;
-> -	struct buffer_head *gdp_bh;
->  	struct ext4_sb_info *sbi;
->  	struct super_block *sb;
->  	ext4_fsblk_t block;
->  	int err, len;
-> +	int flags = 0;
->  
->  	BUG_ON(ac->ac_status != AC_STATUS_FOUND);
->  	BUG_ON(ac->ac_b_ex.fe_len <= 0);
->  
->  	sb = ac->ac_sb;
->  	sbi = EXT4_SB(sb);
-> +	ext4_mb_prepare_mark_context(&mc, handle, sb, 1);
->  
-> -	bitmap_bh = ext4_read_block_bitmap(sb, ac->ac_b_ex.fe_group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		return PTR_ERR(bitmap_bh);
-> -	}
-> -
-> -	BUFFER_TRACE(bitmap_bh, "getting write access");
-> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-> -					    EXT4_JTR_NONE);
-> -	if (err)
-> -		goto out_err;
-> -
-> -	err = -EIO;
-> -	gdp = ext4_get_group_desc(sb, ac->ac_b_ex.fe_group, &gdp_bh);
-> +	gdp = ext4_get_group_desc(sb, ac->ac_b_ex.fe_group, NULL);
->  	if (!gdp)
-> -		goto out_err;
-> -
-> +		return -EIO;
->  	ext4_debug("using block group %u(%d)\n", ac->ac_b_ex.fe_group,
->  			ext4_free_group_clusters(sb, gdp));
->  
-> -	BUFFER_TRACE(gdp_bh, "get_write_access");
-> -	err = ext4_journal_get_write_access(handle, sb, gdp_bh, EXT4_JTR_NONE);
-> -	if (err)
-> -		goto out_err;
-> -
->  	block = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
-> -
->  	len = EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
->  	if (!ext4_inode_block_valid(ac->ac_inode, block, len)) {
->  		ext4_error(sb, "Allocating blocks %llu-%llu which overlap "
-> @@ -4132,41 +4114,28 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
->  		 * Fix the bitmap and return EFSCORRUPTED
->  		 * We leak some of the blocks here.
->  		 */
-> -		ext4_lock_group(sb, ac->ac_b_ex.fe_group);
-> -		mb_set_bits(bitmap_bh->b_data, ac->ac_b_ex.fe_start,
-> -			      ac->ac_b_ex.fe_len);
-> -		ext4_unlock_group(sb, ac->ac_b_ex.fe_group);
-> -		err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> +		err = ext4_mb_mark_context(&mc, ac->ac_b_ex.fe_group,
-> +					   ac->ac_b_ex.fe_start,
-> +					   ac->ac_b_ex.fe_len,
-> +					   0);
->  		if (!err)
->  			err = -EFSCORRUPTED;
-> -		goto out_err;
-> +		return err;
->  	}
->  
-> -	ext4_lock_group(sb, ac->ac_b_ex.fe_group);
->  #ifdef AGGRESSIVE_CHECK
-> -	{
-> -		int i;
-> -		for (i = 0; i < ac->ac_b_ex.fe_len; i++) {
-> -			BUG_ON(mb_test_bit(ac->ac_b_ex.fe_start + i,
-> -						bitmap_bh->b_data));
-> -		}
-> -	}
-> +	flags |= EXT4_MB_BITMAP_MARKED_CHECK;
->  #endif
-> -	mb_set_bits(bitmap_bh->b_data, ac->ac_b_ex.fe_start,
-> -		      ac->ac_b_ex.fe_len);
-> -	if (ext4_has_group_desc_csum(sb) &&
-> -	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-> -		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
-> -		ext4_free_group_clusters_set(sb, gdp,
-> -					     ext4_free_clusters_after_init(sb,
-> -						ac->ac_b_ex.fe_group, gdp));
-> -	}
-> -	len = ext4_free_group_clusters(sb, gdp) - ac->ac_b_ex.fe_len;
-> -	ext4_free_group_clusters_set(sb, gdp, len);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, ac->ac_b_ex.fe_group, gdp);
-> +	err = ext4_mb_mark_context(&mc, ac->ac_b_ex.fe_group,
-> +				   ac->ac_b_ex.fe_start, ac->ac_b_ex.fe_len,
-> +				   flags);
-> +
-> +	if (err && mc.changed == 0)
-> +		return err;
->  
-> -	ext4_unlock_group(sb, ac->ac_b_ex.fe_group);
-> +#ifdef AGGRESSIVE_CHECK
-> +	BUG_ON(mc.changed != ac->ac_b_ex.fe_len);
-> +#endif
->  	percpu_counter_sub(&sbi->s_freeclusters_counter, ac->ac_b_ex.fe_len);
->  	/*
->  	 * Now reduce the dirty block count also. Should not go negative
-> @@ -4176,21 +4145,6 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
->  		percpu_counter_sub(&sbi->s_dirtyclusters_counter,
->  				   reserv_clstrs);
->  
-> -	if (sbi->s_log_groups_per_flex) {
-> -		ext4_group_t flex_group = ext4_flex_group(sbi,
-> -							  ac->ac_b_ex.fe_group);
-> -		atomic64_sub(ac->ac_b_ex.fe_len,
-> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-> -						  flex_group)->free_clusters);
-> -	}
-> -
-> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> -	if (err)
-> -		goto out_err;
-> -	err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
-> -
-> -out_err:
-> -	brelse(bitmap_bh);
->  	return err;
+> @@ -6874,70 +6874,61 @@ int ext4_group_add_blocks(handle_t *handle, struc=
+t super_block *sb,
+>         return err;
 >  }
->  
-> -- 
-> 2.30.0
+>
+> -/**
+> - * ext4_trim_extent -- function to TRIM one single free extent in the gr=
+oup
+> - * @sb:                super block for the file system
+> - * @start:     starting block of the free extent in the alloc. group
+> - * @count:     number of blocks to TRIM
+> - * @e4b:       ext4 buddy for the group
+> - *
+> - * Trim "count" blocks starting at "start" in the "group". To assure tha=
+t no
+> - * one will allocate those blocks, mark it as used in buddy bitmap. This=
+ must
+> - * be called with under the group lock.
+> - */
+> -static int ext4_trim_extent(struct super_block *sb,
+> -               int start, int count, struct ext4_buddy *e4b)
+> -__releases(bitlock)
+> -__acquires(bitlock)
+> -{
+> -       struct ext4_free_extent ex;
+> -       ext4_group_t group =3D e4b->bd_group;
+> -       int ret =3D 0;
+> -
+> -       trace_ext4_trim_extent(sb, group, start, count);
+> -
+> -       assert_spin_locked(ext4_group_lock_ptr(sb, group));
+> -
+> -       ex.fe_start =3D start;
+> -       ex.fe_group =3D group;
+> -       ex.fe_len =3D count;
+> -
+> -       /*
+> -        * Mark blocks used, so no one can reuse them while
+> -        * being trimmed.
+> -        */
+> -       mb_mark_used(e4b, &ex);
+> -       ext4_unlock_group(sb, group);
+> -       ret =3D ext4_issue_discard(sb, group, start, count, NULL);
+> -       ext4_lock_group(sb, group);
+> -       mb_free_blocks(NULL, e4b, start, ex.fe_len);
+> -       return ret;
+> -}
+> -
+>  static int ext4_try_to_trim_range(struct super_block *sb,
+>                 struct ext4_buddy *e4b, ext4_grpblk_t start,
+>                 ext4_grpblk_t max, ext4_grpblk_t minblocks)
+>  __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+>  __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>  {
+> -       ext4_grpblk_t next, count, free_count;
+> +       ext4_grpblk_t next, count, free_count, bak;
+>         void *bitmap;
+> +       struct ext4_free_data *entry =3D NULL, *fd, *nfd;
+> +       struct list_head discard_data_list;
+> +       struct bio *discard_bio =3D NULL;
+> +       struct blk_plug plug;
+> +       ext4_group_t group =3D e4b->bd_group;
+> +       struct ext4_free_extent ex;
+> +       bool noalloc =3D false;
+> +       int ret =3D 0;
+> +
+> +       INIT_LIST_HEAD(&discard_data_list);
+>
+>         bitmap =3D e4b->bd_bitmap;
+>         start =3D max(e4b->bd_info->bb_first_free, start);
+>         count =3D 0;
+>         free_count =3D 0;
+>
+> +       blk_start_plug(&plug);
+>         while (start <=3D max) {
+>                 start =3D mb_find_next_zero_bit(bitmap, max + 1, start);
+>                 if (start > max)
+>                         break;
+> +               bak =3D start;
+>                 next =3D mb_find_next_bit(bitmap, max + 1, start);
+> -
+>                 if ((next - start) >=3D minblocks) {
+> -                       int ret =3D ext4_trim_extent(sb, start, next - st=
+art, e4b);
+> +                       /* when only one segment, there is no need to all=
+oc entry */
+> +                       noalloc =3D (free_count =3D=3D 0) && (next >=3D m=
+ax);
+>
+> -                       if (ret && ret !=3D -EOPNOTSUPP)
+In old way, when the device not support discard, it still continue the loop=
+.
+I modified this logic and let it break the loop in this patch, but it may c=
+ause
+free_count =3D 0, and cause a wan log in mb_free_blocks, I'll fix this in t=
+he
+next version.
+
+Thanks.
+
+> +                       trace_ext4_trim_extent(sb, group, start, next - s=
+tart);
+> +                       ex.fe_start =3D start;
+> +                       ex.fe_group =3D group;
+> +                       ex.fe_len =3D next - start;
+> +                       /*
+> +                        * Mark blocks used, so no one can reuse them whi=
+le
+> +                        * being trimmed.
+> +                        */
+> +                       mb_mark_used(e4b, &ex);
+> +                       ext4_unlock_group(sb, group);
+> +                       ret =3D ext4_issue_discard(sb, group, start, next=
+ - start, &discard_bio);
+> +                       if (!noalloc) {
+> +                               entry =3D kmem_cache_alloc(ext4_free_data=
+_cachep,
+> +                                                       GFP_NOFS|__GFP_NO=
+FAIL);
+> +                               entry->efd_start_cluster =3D start;
+> +                               entry->efd_count =3D next - start;
+> +                               list_add_tail(&entry->efd_list, &discard_=
+data_list);
+> +                       }
+> +                       ext4_lock_group(sb, group);
+> +                       if (ret < 0)
+>                                 break;
+>                         count +=3D next - start;
+>                 }
+> @@ -6959,6 +6950,22 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>                         break;
+>         }
+>
+> +       if (discard_bio) {
+> +               ext4_unlock_group(sb, e4b->bd_group);
+> +               submit_bio_wait(discard_bio);
+> +               bio_put(discard_bio);
+> +               ext4_lock_group(sb, e4b->bd_group);
+> +       }
+> +       blk_finish_plug(&plug);
+> +
+> +       if (noalloc)
+> +               mb_free_blocks(NULL, e4b, bak, free_count);
+> +
+> +       list_for_each_entry_safe(fd, nfd, &discard_data_list, efd_list) {
+> +               mb_free_blocks(NULL, e4b, fd->efd_start_cluster, fd->efd_=
+count);
+> +               kmem_cache_free(ext4_free_data_cachep, fd);
+> +       }
+> +
+>         return count;
+>  }
+>
+> --
+> 2.20.1
+>
