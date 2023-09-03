@@ -2,151 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 476DD790DEA
-	for <lists+linux-ext4@lfdr.de>; Sun,  3 Sep 2023 22:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AA6790EF0
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 00:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbjICUk2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 3 Sep 2023 16:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        id S1348490AbjICWbF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 3 Sep 2023 18:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242477AbjICUk1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Sep 2023 16:40:27 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B790D103
-        for <linux-ext4@vger.kernel.org>; Sun,  3 Sep 2023 13:40:24 -0700 (PDT)
-Received: from letrec.thunk.org (pool-173-48-116-73.bstnma.fios.verizon.net [173.48.116.73])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 383Ke1oC004437
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 3 Sep 2023 16:40:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1693773603; bh=Ppr8KeJeHsorQrVaGp9vsaGRferjzXALJp6n2MSlTSY=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=NuQxVZ9mclBiwaN7p4ANjPYWQNpqTpGtI8FNJ5u85Jv/3mpwTxcAb29K7n+Kna8C/
-         4vI4MvqtUa4MgoeAF/xkGyWINR5UD3Ncjpfw0mEAkiW9LkFX4ctP3xS5cKfMvAGgJS
-         90iGpbU7cHuoe7141EeQnEy74+fZXryjMe78sGlOw67jTfqKOMJ058BxwaGwk2ICWH
-         J1lYxuwjpuEreXNGUSPY2daWoB/qGVkGejcIuhrGggVC65+o1dCkrLaKFcoHAKRDYB
-         GKCGc3vNkwfFbY05T/dTtO7tMEYZdLLrfvULFg4b9pavzqH0HTCLRS9A0/mZKdCl93
-         SGw/ApcX/Ch9A==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id 9BEC28C026E; Sun,  3 Sep 2023 16:40:01 -0400 (EDT)
-Date:   Sun, 3 Sep 2023 16:40:01 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Zorro Lang <zlang@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
-        regressions@lists.linux.dev
-Subject: Re: [fstests generic/388, 455, 475, 482 ...] Ext4 journal recovery
- test fails
-Message-ID: <ZPTvIb6hwIjY7T2M@mit.edu>
-References: <20230903120001.qjv5uva2zaqthgk2@zlang-mailbox>
+        with ESMTP id S1345818AbjICWa7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Sep 2023 18:30:59 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C403FFD
+        for <linux-ext4@vger.kernel.org>; Sun,  3 Sep 2023 15:30:55 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1d4e0c2901bso213918fac.0
+        for <linux-ext4@vger.kernel.org>; Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693780255; x=1694385055; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
+        b=eLvFMZ6HweV3i75Mje3KyiQMHp72f3fVYJp4X8QBR1sUoWt5LbUe2oYe6gz7J03xSV
+         aHsv7iDil4KTnD32vRddboJhyW5dIQThpWZBfmdQlNdU/+SQKnZqTkI+8YNmhDFqSNM4
+         M/5uOEBZigGEpPC3vmfjiwnDFOd47IixsMl044OpUX7QG234XdFYwtba/jPyi6PCo/kZ
+         okP+nX6zzbLjyilv/Ocy1qCe5aC4gkdgDOfyh92JWGe8bVg+DmwjlPuuV3kM/V8mAkRG
+         YMrGVWwsvVs5uRT8A9BN8JD3DAOcyXyqtn49LxBGuGru+09OFjvSzk6tINPlQnplnbJD
+         r/Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693780255; x=1694385055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
+        b=ffUxTaMKkz1JzOapujLmAw4ZnzhJ57N7bvC5FJ7IOvnm1uIKgQ1hWOa3TGHafSfE87
+         6qCicNUsl/H5jah2Y0Q72bagcG6R1n8KDkt6PzejhCrhGQYBllErUVqxwCGEnTqoIhcY
+         IRvXDdYdu2hvl46WN0byXH74baHVfYmlJOQmKAv85A8nenzJz6c+ZoD6yHEc6sEB5xQV
+         mb27ZCvVjGwHh+omLSkf8l306PaVgplSpqLOlZG11sqLpc5ISscDpwIyfJRfocPla2np
+         oOSkwteSUWpyoTcd+5puG2bU8BnSVVXD0GC1eClULyYcTsdCuysTnKyieY4p4chtbI+3
+         zhjg==
+X-Gm-Message-State: AOJu0Yz2SUjlWjjCnraM2s2OgUDyLtcpDOm+QM+aYPcndASEBpQ6zZo4
+        MShxJ915C9PKfMK8XrbO2aGG1Q==
+X-Google-Smtp-Source: AGHT+IGLu9Ypqvz2HQH6Ke2apJHDtGTD5ZHmV6+9u1MT+8XuCmbNG2jkA6AQg79Zc5mY+kWQOWShIA==
+X-Received: by 2002:a05:6870:568d:b0:1be:c8e2:3ec3 with SMTP id p13-20020a056870568d00b001bec8e23ec3mr11536784oao.14.1693780255066;
+        Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id i15-20020a63bf4f000000b00565e96d9874sm5648132pgo.89.2023.09.03.15.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 15:30:54 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qcvcK-00ASFy-0F;
+        Mon, 04 Sep 2023 08:30:52 +1000
+Date:   Mon, 4 Sep 2023 08:30:52 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230903120001.qjv5uva2zaqthgk2@zlang-mailbox>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 08:00:01PM +0800, Zorro Lang wrote:
-> Hi ext4 folks,
+On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+> On 8/29/23 19:53, Matthew Wilcox wrote:
+> > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+> > > On 8/28/23 05:32, Matthew Wilcox wrote:
+> > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> > > > > From: Hao Xu <howeyxu@tencent.com>
+> > > > > 
+> > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
+> > > > > Currently it is true only with io_uring as its initial caller.
+> > > > 
+> > > > So why do we need to do this as part of this series?  Apparently it
+> > > > hasn't caused any problems for filemap_read().
+> > > > 
+> > > 
+> > > We need this parameter to indicate if nowait semantics should be enforced in
+> > > touch_atime(), There are locks and maybe IOs in it.
+> > 
+> > That's not my point.  We currently call file_accessed() and
+> > touch_atime() for nowait reads and nowait writes.  You haven't done
+> > anything to fix those.
+> > 
+> > I suspect you can trim this patchset down significantly by avoiding
+> > fixing the file_accessed() problem.  And then come back with a later
+> > patchset that fixes it for all nowait i/o.  Or do a separate prep series
 > 
-> Recently I found lots of fstests cases which belong to "recoveryloop" (e.g.
-> g/388 [1], g/455 [2], g/475 [3] and g/482 [4]) or does fs shutdown/resize test
-> (e.g. ext4/059 [5], g/530 [6]) failed ext4 with 1k blocksize, the kernel is
-> linux v6.6-rc0+ (HEAD=b84acc11b1c9).
+> I'm ok to do that.
 > 
-> I tested with MKFS_OPTIONS="-b 1024", no specific MOUNT_OPTIONS. I hit these
-> failure several times, and I didn't hit them on my last regression test on
-> v6.5-rc7+. So I think this might be a regression problem. And I didn't hit
-> this failures on xfs. If this's a known issue will be fixed soon, feel free
-> to tell me.
+> > first that fixes it for the existing nowait users, and then a second
+> > series to do all the directory stuff.
+> > 
+> > I'd do the first thing.  Just ignore the problem.  Directory atime
+> > updates cause I/O so rarely that you can afford to ignore it.  Almost
+> > everyone uses relatime or nodiratime.
+> 
+> Hi Matthew,
+> The previous discussion shows this does cause issues in real
+> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+> 
 
-TL;DR: there definitely seenms to be something going on with g/455 and
-g/482 with the ext4/1k blocksize case in Linus's latest upstream tree,
-although it wasn't there in the ext4 branch which I sent to Linus to
-pull.
+Then separate it out into it's own patch set so we can have a
+discussion on the merits of requiring using noatime, relatime or
+lazytime for really latency sensitive IO applications. Changing code
+is not always the right solution...
 
-
-Unfortunately, generic/475 is a known failure, especially in the 1k
-block size case.  The rate seems to change a bit over time.  For
-example from 6.2:
-
-ext4/1k: 522 tests, 2 failures, 45 skipped, 6153 seconds
-  Flaky: generic/051: 40% (2/5)   generic/475: 60% (3/5)
-
-and from 6.1.0-rc4:
-
-ext4/1k: 522 tests, 2 failures, 45 skipped, 5660 seconds
-  Flaky: generic/051: 60% (3/5)   generic/475: 40% (2/5)
-
-In 6.5-rc3, it looks like the rate has gotten worse:
-
-ext4/1k: 30 tests, 29 failures, 2402 seconds
-  Flaky: generic/475: 97% (29/30)
-
-Alas, finding a root cause for generic/475 has been challenging.  I
-suspect that it happens when we crash while doing a large truncate on
-a highly fragmented file system, such as that the truncate has to span
-multiple truncates, with the inode on the orphan list so the kernel
-can complete the truncate if we trash mid-truncate when we clean up
-the orphan list.  However, that's just a theory, and I don't yet have
-hard evidence.
-
-
-The generic/388 test is very different.  It uses the shutdown ioctl,
-and that's something that ext4 has never completely handled correctly.
-Doing it right would require adding some locks in hot paths, so it's
-one which I've suppressed for all of my ext4 tests[1].
-
-[1] https://github.com/tytso/xfstests-bld/blob/master/test-appliance/files/root/fs/ext4/exclude
-
-
-The generic/455 and generic/482 tests work by using dm-log-writes, and
-that was *not* failing on the branch (v6.5.0-rc3-60-g768d612f7982) for
-which I sent a pull request to Linus:
-
-ext4/1k: 10 tests, 63 seconds
-  generic/455  Pass     4s
-  generic/482  Pass     8s
-  generic/455  Pass     5s
-  generic/482  Pass     8s
-  generic/455  Pass     5s
-  generic/482  Pass     7s
-  generic/455  Pass     5s
-  generic/482  Pass     8s
-  generic/455  Pass     5s
-  generic/482  Pass     8s
-Totals: 10 tests, 0 skipped, 0 failures, 0 errors, 63s
-
-... but I can confirm that it's failing on Linus's upstream (I tested
-commit 708283abf896):
-
-ext4/1k: 2 tests, 2 failures, 31 seconds
-  generic/455  Failed   4s
-  generic/455  Failed   2s
-  generic/455  Pass     5s
-  generic/455  Failed   3s
-  generic/455  Failed   2s
-  generic/482  Failed   2s
-  generic/482  Failed   3s
-  generic/482  Failed   1s
-  generic/482  Failed   3s
-  generic/482  Failed   4s
-Totals: 10 tests, 0 skipped, 9 failures, 0 errors, 29s
-
-						- Ted
-
-
-P.S.  After doing some digging, it appears generic/455 does have some
-failures on 6.4 (20%) and 6.5-rc3 (5%) on the ext4/1k blocksize test
-config.  But *something* is definitely causing a much greater failure
-rate in Linus's upstream.  The good news is that should make it
-relatively easy to bisect.  I'll look into it.  Thanks for flagging
-this.
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
