@@ -2,184 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA7D791372
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 10:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A99791384
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 10:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbjIDIat (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Sep 2023 04:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S1352573AbjIDId5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Sep 2023 04:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIDIar (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 04:30:47 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F77594;
-        Mon,  4 Sep 2023 01:30:42 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68bedc0c268so995397b3a.0;
-        Mon, 04 Sep 2023 01:30:42 -0700 (PDT)
+        with ESMTP id S1345473AbjIDId5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 04:33:57 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77977CDB
+        for <linux-ext4@vger.kernel.org>; Mon,  4 Sep 2023 01:33:45 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf7423ef3eso4796725ad.3
+        for <linux-ext4@vger.kernel.org>; Mon, 04 Sep 2023 01:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693816241; x=1694421041; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uZ/UamNa2WAGrvZVIew9GnOqWCLV8c0b7yCMONPExh0=;
-        b=RNF0KLWH7ldNEy/QA0LK3Zpxc6RWCc0olulH9ghpnSX+ovLmOLPz/7hyV8fZKFaTfF
-         JwryOoHB8YOekcd5BKnZD3Q34exxzr/5ycbo41XVCDL/uIwLQ5lwXdQ/sN8UMrNvC68/
-         mOZHX8hXDCm3+ym/N5PYy4AcsSbRbmJwsnLLyoV/aduUiLDpT6RCVDgiA/Ny3IA2C4OF
-         yV+fBiBu3Jjyv059E+4QYbUQN11s6yJT0NKkwb4b87a5v9Hq6V0x+v9yp37uKSSGRe8e
-         R3AUX7GLCUYUXPEU8SU4nd7KJYFV1NiRqmeRolCUd0wyOQd2cXxrUxw/v5tJ8x3cvg/G
-         ryXA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693816425; x=1694421225; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MDxq47lH4J+ZR6XRwDVJfrN/aEh66horqS8Q0LZlj/Y=;
+        b=jHDoXqGY9gRfpJMPzXqWSsH41D2SACS9E3O7KaNjwpxtyV4g+1cg/H5wpj9+QTeVra
+         L3veVnhsmRWR8Cj06OExdWruUlXs6pU91FhiZnAdlm3Sz/aNjVPR+CQWPXGMSNaecQYe
+         ko1SCQKvDRyXaAnHqgTUD96vQgzh5j7+2SyG1gE97eI/siKhjWeFJVeJ+fd00V5TIBV1
+         6En8HlLtoaoWIu62RSeLZJoczjl4hrfwt4Evv2Xtnr3IH4ukrARlaw/53S8KanKJ2G76
+         556guymSh32HKnmuA6t4SH6shJ0SjD7CdnewroqQ8dDU2fFn2p1H6jG5ZMyheBRt3qcI
+         oM7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693816241; x=1694421041;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=uZ/UamNa2WAGrvZVIew9GnOqWCLV8c0b7yCMONPExh0=;
-        b=DIMDKdDWIhrDIsD8bxHwFWSG+/VKCiosJDgxz9Zcebpdt4S4qByxtGrsw9WTsIT2CD
-         arYRSWi2dkDOivrlFlRZSfFVWvoV9D9QzfWvTim4AUj504Ld3dc1tyLHjI+atuesa+XL
-         FBgHCBhSkdz4rKi8YN6mU9MglWUECK4IuC3oRM35YwH1SHFik7DiZhU2YRGatFddxrkI
-         ppSJZEUTxk9R+NWm1FLkJbpuVHC31s9JQB3LixDe7o0yOEi1fnStsxRcexV3T8tUE2sd
-         OaYsATILla9crqI9DU0DJSa/CH15HvgvN0UCEVibc9ZC2ALVOGzL+XZYAXFIfmDO9IkZ
-         halw==
-X-Gm-Message-State: AOJu0YzCP126yI5ShmJCTzERvEHmcWj/rU0J71JLK3KXaxuVSTsFe6wW
-        158hJWdXudt0XazuttaptHECosEC9Ko=
-X-Google-Smtp-Source: AGHT+IF7vtvRapNuxad44dIIVZAxlaWLhAthOx5nIxM1lGlqianBIWgt3xQVh15RSLDH2Dk10DZr0g==
-X-Received: by 2002:a05:6a20:4295:b0:14a:b444:dcce with SMTP id o21-20020a056a20429500b0014ab444dccemr13718160pzj.4.1693816240848;
-        Mon, 04 Sep 2023 01:30:40 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id j15-20020aa78d0f000000b0068c97a4eb0dsm6831334pfe.191.2023.09.04.01.30.38
+        d=1e100.net; s=20221208; t=1693816425; x=1694421225;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MDxq47lH4J+ZR6XRwDVJfrN/aEh66horqS8Q0LZlj/Y=;
+        b=FeAK2GS1ybCMjs7TzYJpw1VN3SJmNSIUlyjlPPhhntEJDZAZJWZXoJMs7pX+PB3t9M
+         2h0J+uJxu8mIkTsDk06ZREx/bd2N+wqq2uE3Zqk2ukTxgJAtUqtTT/91gFL/cQnNb3hJ
+         DiNetq0+xXCWVY1PEcctQ4o2LcOjtJ7YlFuIWGlAOM/r9llf+q8HY3N40uBubJLC4wfk
+         f1tQuUqKnNvuf73JzUQVZOgGHS8c0EWE7HgtXoJeYySFIKC55NB3N0bi5x4939F5oWmr
+         y8kzgfhb6Lfo7Uh+cONNJzC88wREkxuum6JlPOrPj8T7fv6egtHJ87WsAGgE7A35E5M2
+         wkcA==
+X-Gm-Message-State: AOJu0YxU51woFzfcH65TnmK1NbaomQjHWvQrQezbjrL2v4wsb0s3eYHz
+        6/pf5fWGd9oajAxIYmT7vE0Psg==
+X-Google-Smtp-Source: AGHT+IFuLko3syhAxHbcZ/yTXMg91Gpq3n/9bGTpOnxZtJRpzZtVFlK/HE8nPar+ChyaqrvrAomZ5g==
+X-Received: by 2002:a17:902:76c3:b0:1bc:2c83:f770 with SMTP id j3-20020a17090276c300b001bc2c83f770mr6455033plt.45.1693816424756;
+        Mon, 04 Sep 2023 01:33:44 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id f21-20020a170902e99500b001bdd7579b5dsm7041065plb.240.2023.09.04.01.33.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 01:30:40 -0700 (PDT)
-Date:   Mon, 04 Sep 2023 14:00:31 +0530
-Message-Id: <87zg222vdk.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/11] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
-In-Reply-To: <881e7e86-2300-929e-d8c5-504a68c1a419@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 04 Sep 2023 01:33:44 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qd51h-00Adiy-0S;
+        Mon, 04 Sep 2023 18:33:41 +1000
+Date:   Mon, 4 Sep 2023 18:33:41 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, djwong@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+        yukuai3@huawei.com, zhang_shurong@foxmail.com,
+        linux-block@vger.kernel.org, axboe@kernel.dk, hch@lst.de
+Subject: Re: [syzbot] [xfs?] [ext4?] kernel BUG in __block_write_begin_int
+Message-ID: <ZPWWZeWliX7RhOAZ@dread.disaster.area>
+References: <000000000000e76944060483798d@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000e76944060483798d@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+[cc linux-block, Christoph]
 
-> on 8/31/2023 10:07 PM, Ritesh Harjani wrote:
->> Kemeng Shi <shikemeng@huaweicloud.com> writes:
->> 
->>> on 8/31/2023 8:33 PM, Ritesh Harjani wrote:
->>>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
->>>>
->>>> Hello Kemeng,
->>>>
->>>>> There are several reasons to add a general function to update block
->>>>> bitmap and group descriptor on disk:
->>>>
->>>> ... named ext4_mb_mark_context(<params>)
->>>>
->>>>> 1. pair behavior of alloc/free bits. For example,
->>>>> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
->>>>> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
->>>>> 2. remove repeat code to read from disk, update and write back to disk.
->>>>> 3. reduce future unit test mocks to catch real IO to update structure
->>>>> on disk.
->>>>>
->>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>>>> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->>>>> ---
->>>>>  fs/ext4/mballoc.c | 169 +++++++++++++++++++++++++++-------------------
->>>>>  1 file changed, 99 insertions(+), 70 deletions(-)
->>>>>
->>>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->>>>> index c91db9f57524..e2be572deb75 100644
->>>>> --- a/fs/ext4/mballoc.c
->>>>> +++ b/fs/ext4/mballoc.c
->>>>> @@ -3952,6 +3952,100 @@ void ext4_exit_mballoc(void)
->>>>>  	ext4_groupinfo_destroy_slabs();
->>>>>  }
->>>>>  
->>>>> +/*
->>>>> + * Collect global setting to reduce the number of variable passing to
->>>>> + * ext4_mb_mark_context. Pass target group blocks range directly to
->>>>> + * reuse the prepared global setting for multiple block ranges and
->>>>> + * to show clearly the specific block range will be marked.
->>>>> + */
->>>>> +struct ext4_mark_context {
->>>>> +	struct super_block *sb;
->>>>> +	int state;
->>>>> +};
->>>>
->>>> This structure definition does not reflect of it's naming.
->>>> Why can't we also add cblk & clen, flags to it?
->>>>
->>>> I think the idea of defining a new function named
->>>> ext4_mb_prepare_mark_context() was that we can prepare "struct ext4_mark_context"
->>>> with different cblk, clen & flags arguments for cases where we might
->>>> have to call ext4_mb_mark_context() more than once in the same function
->>>> or call ext4_mb_mark_context() anywhere but at the start of the function.
->>>>
->>>> As I see it in the current series, we are calling
->>>> ext4_mb_prepare_mark_context() at the start of every function. Just for
->>>> this purpose we don't need an extra function, right? That we can directly do
->>>> at the time of declaring a structure variable itself (like how you did
->>>> in previous version)
->>>>
->>> Hi Ritesh, thanks for reply. The ext4_mark_context structure aims to reduce
->>> variable passing to ext4_mb_mark_context. If we have to prepare a lot
->>> member in ext4_mb_prepare_mark_context, then too many variables issue occurs
->>> in ext4_mb_prepare_mark_context.
->>> The name of ext4_mark_context maybe not proper. Actually I want a structure
->>> to collect information which is not strongly relevant to mark blk bits. In
->>> this way, we can initialize them at beginning of function, then there is no
->>> need to pay attention to them or to pass them respectively in each call to
->>> ext4_mb_mark_context. Instead, we foucus on the useful information called
->>> with ext4_mb_mark_context.
->>> This design also achive the goal to define ext4_mb_mark_context once for
->>> multiple use in the same function as ext4_mark_context unlikely changes
->>> after initialization at beginning.
->>>> What do you think of the approach where we add cblk, clen & flags
->>>> variables to ext4_mark_context()? Do you see any problems/difficulties
->>>> with that design?
->>>>
->>> The providing desgin looks good to me. Please let me konw if you still
->>> perfre this and I will do this in next version. Thanks!
->>>
->> 
->> I would have still preferred, the block and len arguments inside struct
->> ext4_mark_context, because that better explains the use and definition of
->> structure and it's prepare function.
->> However, since this is not any functionality change, I am fine if you
->> prefer the current design(as you mentioned above).
->> We can always discuss & change it later too :) 
->> 
-> Thanks for the reivew. Since more improvement is needed, I would like to
-> define ext4_mark_context as you suggested in previous version:
->     ext4_mark_context {
->         ext4_group_t mc_group;          /* block group */
->         ext4_grpblk_t mc_clblk;	    /* block in cluster units */
->         ext4_grpblk_t mc_cllen;	    /* len in cluster units */
->         ext4_grpblk_t mc_clupdates;     /* number of clusters marked/unmarked */
->         unsigned int mc_flags;          /* flags ... */
->         bool mc_state;                  /* to set or unset state */
->     };
-> And super_block and handle are passed as arguments.
->
-> Besides, as we will pass a lot arguments in prepare function anyway. What
-> about simply passing all arguments to ext4_mb_prepare_mark_context
-> directly:
-> static inline void ext4_mb_mark_context(handle_t *handle,
->                                                 struct super_block *sb,
->                                                 int state,
->                                                 ext4_group_t group,
->                                                 ext4_grpblk_t blkoff,
->                                                 ext4_grpblk_t len,
->                                                 int flags,
->                                                 ext4_grpblk_t *changed)
-> Look forward to your reply. Thanks!
+On Mon, Sep 04, 2023 at 12:29:52AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0468be89b3fa Merge tag 'iommu-updates-v6.6' of git://git.k..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11145910680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d78b3780d210e21
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4a08ffdf3667b36650a1
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164f7a57a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143b0298680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/f3914b539822/disk-0468be89.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/6128b0644784/vmlinux-0468be89.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/349d98668c3a/bzImage-0468be89.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/75bd68910fd4/mount_0.gz
+> 
+> The issue was bisected to:
+> 
+> commit 8b0472b50bcf0f19a5119b00a53b63579c8e1e4d
+> Author: Zhang Shurong <zhang_shurong@foxmail.com>
+> Date:   Sat Jul 22 07:53:53 2023 +0000
+> 
+>     md: raid1: fix potential OOB in raid1_remove_disk()
 
-Sounds good to me. Thanks
+Bisect is broken. That has nothing to do with the block device
+conversion to use iomap that triggered this.
 
--ritesh
+The commit that made this change was 487c607df790 ("block: use iomap
+for writes to block devices"), and that's why we're getting a
+BUG_ON() being triggered in iomap_to_bh()....
+
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e52577a80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15e52577a80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11e52577a80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com
+> Fixes: 8b0472b50bcf ("md: raid1: fix potential OOB in raid1_remove_disk()")
+> 
+> ------------[ cut here ]------------
+> kernel BUG at fs/buffer.c:2028!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 5187 Comm: syz-executor424 Not tainted 6.5.0-syzkaller-10885-g0468be89b3fa #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:iomap_to_bh fs/buffer.c:2028 [inline]
+> RIP: 0010:__block_write_begin_int+0x18f7/0x1a40 fs/buffer.c:2111
+> Code: af 0d 85 ff 48 8b 7c 24 08 48 c7 c6 20 22 18 8b e8 6e 8b c6 ff 0f 0b e8 97 0d 85 ff eb 13 e8 90 0d 85 ff eb c7 e8 89 0d 85 ff <0f> 0b e8 82 0d 85 ff 48 8b 7c 24 08 48 c7 c6 20 22 18 8b e8 41 8b
+> RSP: 0018:ffffc9000418f520 EFLAGS: 00010293
+> RAX: ffffffff82087b37 RBX: 0000000000040000 RCX: ffff888078093b80
+> RDX: 0000000000000000 RSI: 0000000000040000 RDI: 00000000000d0000
+> RBP: ffffc9000418f6b0 R08: ffffffff82086ba2 R09: 1ffff1100f27203a
+> R10: dffffc0000000000 R11: ffffed100f27203b R12: 00000000000d0000
+> R13: 0000000000000400 R14: 0000000000000000 R15: ffff8880793901d0
+> FS:  00007f0623ec56c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020040000 CR3: 0000000067478000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  iomap_write_begin+0xaf6/0x1f00 fs/iomap/buffered-io.c:772
+>  iomap_write_iter fs/iomap/buffered-io.c:907 [inline]
+>  iomap_file_buffered_write+0x587/0x1020 fs/iomap/buffered-io.c:968
+>  blkdev_buffered_write block/fops.c:634 [inline]
+>  blkdev_write_iter+0x41d/0x5c0 block/fops.c:688
+>  call_write_iter include/linux/fs.h:1985 [inline]
+>  new_sync_write fs/read_write.c:491 [inline]
+>  vfs_write+0x782/0xaf0 fs/read_write.c:584
+>  ksys_write+0x1a0/0x2c0 fs/read_write.c:637
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+It appears that 0010:__block_write_begin_int() has iterated beyond
+the iomap that was passed in, triggering the BUG_ON() check in
+iomap_to_bh().
+
+Definitely not an XFS problem. Most likely not an ext4 problem.
+It appears to be related to syzbot trying to modify the block device
+under a mounted ext4 filesystem given the reproducer involves
+mounting an ext4 filesystem, then the process that mounted the ext4
+filesystem hits a BUG_ON trying to write to a block device.
+
+Certainly seems like a block device problem, though, given
+the new iomap write path in the block device merged in the 6.6-rc1 window.
+
+#syz set subsystems: block
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
