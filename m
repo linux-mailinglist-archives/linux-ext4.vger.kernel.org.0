@@ -2,56 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68990791C61
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 20:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B17E791C6E
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 20:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbjIDSLO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Sep 2023 14:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        id S1353363AbjIDSLS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Sep 2023 14:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjIDSLN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 14:11:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A589197;
-        Mon,  4 Sep 2023 11:11:10 -0700 (PDT)
+        with ESMTP id S1353434AbjIDSLQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 14:11:16 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34017199;
+        Mon,  4 Sep 2023 11:11:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D34676160E;
-        Mon,  4 Sep 2023 18:11:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A55FC433BD;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 89DB2CE0F95;
+        Mon,  4 Sep 2023 18:11:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5532FC116A3;
         Mon,  4 Sep 2023 18:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693851069;
-        bh=6PRC2IiXOaVQ74rsqcqlaidhvNsvQl6gN6anNwKmH0Q=;
+        bh=kDblhT9YU6Z13oCtuFpW2rqTqYaBtsASH9dKHi3/gS0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sM5gXvVxBTbLKXM4zeMrnhi3wGLIX+kAeewNYN0MFxtWVI7SEPDf2wFxs2s3Pwnth
-         yqpnH5JHbAWIcRhtwNZhAZhMJ6MGeIaJoTstJ/tkvt3FZyQwzMV6cOgUSocRSaXUz1
-         5w2aLgeG4KUnKPBPu6QATkd85nxxzXS6zoEDB+lw/OsBRaR7mvQAXba6y69P9sLeXt
-         54OZnTSjbSK6qDO2x8fsJEnQFSmpOhamIEqCAxEmXE4oydL6Ybr7AaH/fijRxsy8Yt
-         ilvyJOum2raf9GBdSKVlAU4PraDAaMxQICKPMioyjy7UN6z9UHS0VAqZOWcJM35VOv
-         nhY+rzU7Nh3wA==
+        b=KCIPdf7Q0FJfi462+L+9hLlIq0BX3t5I5nU+KyC3JUzPxLXnAhbxymMCPphIjkZk2
+         nAsEm8alo/h9yzDnwp6A8LVb7rfbQMxy2RfjbpRRrEaQ/eBashGE75ZiLRId6mtGSt
+         n174WOpZJUMdgC0EjnVVC2vm5+7uig8ReNTtltsXQsPxwJ4Heo6W2elu0nWCCAFa+P
+         IPwUZr1zyeD6ymPLFhgxMaBz9kyOb8bPnob2+yLx+ge2NU+glqZFicKWUrFr0q5nEO
+         oYTUotqMOD89YLI/lMJVg/6rp/a47wySfbJ7iLUnBpXB+H2O664scK9VXRyIFBHpkL
+         AGY3UbxOXs2Pw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 090F6C04DD9;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F4B9C0C3FD;
         Mon,  4 Sep 2023 18:11:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH 0/3] Simplify rejection of unexpected casefold
- inode flag
+Subject: Re: [f2fs-dev] [PATCH 0/2] fsverity: simplify initcall and move sysctl
+ registration
 From:   patchwork-bot+f2fs@kernel.org
-Message-Id: <169385106903.19669.6849396083145416463.git-patchwork-notify@kernel.org>
+Message-Id: <169385106912.19669.17692351155547248889.git-patchwork-notify@kernel.org>
 Date:   Mon, 04 Sep 2023 18:11:09 +0000
-References: <20230814182903.37267-1-ebiggers@kernel.org>
-In-Reply-To: <20230814182903.37267-1-ebiggers@kernel.org>
+References: <20230705212743.42180-1-ebiggers@kernel.org>
+In-Reply-To: <20230705212743.42180-1-ebiggers@kernel.org>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
-        linux-fsdevel@vger.kernel.org, krisman@suse.de,
-        linux-f2fs-devel@lists.sourceforge.net
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Cc:     fsverity@lists.linux.dev, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,26 +61,24 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 Hello:
 
 This series was applied to jaegeuk/f2fs.git (dev)
-by Theodore Ts'o <tytso@mit.edu>:
+by Eric Biggers <ebiggers@google.com>:
 
-On Mon, 14 Aug 2023 11:29:00 -0700 you wrote:
-> This series makes unexpected casefold flags on inodes be consistently
-> rejected early on so that additional validation isn't needed later on
-> during random filesystem operations.  For additional context, refer to
-> the discussion on patch 1 of
-> https://lore.kernel.org/linux-fsdevel/20230812004146.30980-1-krisman@suse.de/T/#u
+On Wed,  5 Jul 2023 14:27:41 -0700 you wrote:
+> This series simplifies handling of errors during the fsverity_init()
+> initcall, and moves the sysctl registration out of signature.c so that
+> it is not unnecessarily tied to the builtin signature feature.
 > 
-> Applies to v6.5-rc6
+> Eric Biggers (2):
+>   fsverity: simplify handling of errors during initcall
+>   fsverity: move sysctl registration out of signature.c
 > 
 > [...]
 
 Here is the summary with links:
-  - [f2fs-dev,1/3] ext4: reject casefold inode flag without casefold feature
-    https://git.kernel.org/jaegeuk/f2fs/c/8216776ccff6
-  - [f2fs-dev,2/3] ext4: remove redundant checks of s_encoding
-    https://git.kernel.org/jaegeuk/f2fs/c/b81427939590
-  - [f2fs-dev,3/3] libfs: remove redundant checks of s_encoding
-    https://git.kernel.org/jaegeuk/f2fs/c/af494af38580
+  - [f2fs-dev,1/2] fsverity: simplify handling of errors during initcall
+    https://git.kernel.org/jaegeuk/f2fs/c/e77000ccc531
+  - [f2fs-dev,2/2] fsverity: move sysctl registration out of signature.c
+    https://git.kernel.org/jaegeuk/f2fs/c/456ae5fe9b44
 
 You are awesome, thank you!
 -- 
