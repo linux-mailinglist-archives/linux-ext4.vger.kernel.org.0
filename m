@@ -2,109 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192F9791C68
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 20:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01EB79248E
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Sep 2023 17:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353427AbjIDSLQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Sep 2023 14:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
+        id S231720AbjIEP7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Sep 2023 11:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236221AbjIDSLN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 14:11:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C55199;
-        Mon,  4 Sep 2023 11:11:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E283616E4;
-        Mon,  4 Sep 2023 18:11:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 33EE4C433BC;
-        Mon,  4 Sep 2023 18:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693851069;
-        bh=IbVZF2DzXUAo2USMUCstH3jPxauU/LW0IcO2K6LFI4c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ia58bjh4p1fO0/CGw8J5Rs1Vo1j5XfRVWItHIwgeFn8rfWurveiBV3yEbnmuuMJ6P
-         0dX1mVg7Y6gTEzMa5Whxk59KrCLCTfB/PrZ0B0WolmEq4yaon1/tV+WLLLtJWG/xY0
-         dy6lOtzzaLf+Z8WVNjmVninPcHYRo12hw6zL2O/c4cmCpp6u16HlD9D5vcqdrB2v+e
-         G6QjlvbFoe94sLMMbEFQYkCueLzwZr9JAP+5uBddOS46Vz5NEj71bugNLgoSMI1ZvJ
-         oNh6Ld267EMxOtUHbtgOPq4KvFjwoTafZWVGD0Gm74c6TV4c+RltqlDafHZDDmUn00
-         hWR7BwYjNDGYg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1461BC04E26;
-        Mon,  4 Sep 2023 18:11:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1354075AbjIEJfA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Sep 2023 05:35:00 -0400
+X-Greylist: delayed 4350 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 02:34:57 PDT
+Received: from mail.equinoxrise.pl (mail.equinoxrise.pl [217.61.112.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5F61A7
+        for <linux-ext4@vger.kernel.org>; Tue,  5 Sep 2023 02:34:57 -0700 (PDT)
+Received: by mail.equinoxrise.pl (Postfix, from userid 1002)
+        id 4754E832AA; Mon,  4 Sep 2023 09:41:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=equinoxrise.pl;
+        s=mail; t=1693813380;
+        bh=v6OgBfK5dN7P5dQ0wCu59rOfZaiqziJeLNblJ8dOcGI=;
+        h=Date:From:To:Subject:From;
+        b=vI5d/t97b4QQSwKi+1V6YKNcYOZMw4zBVI95fKG6gl7sU9wWjB0RAkovL7jNErp4V
+         EederBt8Izw0lDAF3GR70XgCdRz+Pa47evMDMjdu4Odh6I7DljQtHHO/rGuZew33MY
+         HJ/vKyFZW7kUzt4f9OG/FCp7UPBAz1UV6Y9pLk5buTXeVRTbP0zRAmWZ0gaeYIBXvH
+         hUJApiIDSFZqQgd3DWUyIQsGL10Stp8Hfso5d3zYQJ0oH3uxBTrGnRllNx7Vnfhv5F
+         ahKNHFrexFRICNfB8tMHSw8vUXHaV/kIkXEi5uFKjyqf5oBlrAeQm8wC9Vm6iJIpbn
+         iU0JDBkjVuqlg==
+Received: by mail.equinoxrise.pl for <linux-ext4@vger.kernel.org>; Mon,  4 Sep 2023 07:40:34 GMT
+Message-ID: <20230904084500-0.1.7.rjy.0.9jgbamal3j@equinoxrise.pl>
+Date:   Mon,  4 Sep 2023 07:40:34 GMT
+From:   "Mateusz Talaga" <mateusz.talaga@equinoxrise.pl>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.equinoxrise.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH 01/12] fs: export setup_bdev_super
-From:   patchwork-bot+f2fs@kernel.org
-Message-Id: <169385106908.19669.10487789391922478483.git-patchwork-notify@kernel.org>
-Date:   Mon, 04 Sep 2023 18:11:09 +0000
-References: <20230802154131.2221419-2-hch@lst.de>
-In-Reply-To: <20230802154131.2221419-2-hch@lst.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        jack@suse.cz, linux-fsdevel@vger.kernel.org, djwong@kernel.org,
-        josef@toxicpanda.com, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, clm@fb.com, adilger.kernel@dilger.ca,
-        jaegeuk@kernel.org, dsterba@suse.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, konishi.ryusuke@gmail.com,
-        linux-btrfs@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello:
+Dzie=C5=84 dobry!
 
-This series was applied to jaegeuk/f2fs.git (dev)
-by Christian Brauner <brauner@kernel.org>:
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-On Wed,  2 Aug 2023 17:41:20 +0200 you wrote:
-> We'll want to use setup_bdev_super instead of duplicating it in nilfs2.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/super.c                 | 3 ++-
->  include/linux/fs_context.h | 2 ++
->  2 files changed, 4 insertions(+), 1 deletion(-)
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-Here is the summary with links:
-  - [f2fs-dev,01/12] fs: export setup_bdev_super
-    https://git.kernel.org/jaegeuk/f2fs/c/cf6da236c27a
-  - [f2fs-dev,02/12] nilfs2: use setup_bdev_super to de-duplicate the mount code
-    https://git.kernel.org/jaegeuk/f2fs/c/c1e012ea9e83
-  - [f2fs-dev,03/12] btrfs: always open the device read-only in btrfs_scan_one_device
-    (no matching commit)
-  - [f2fs-dev,04/12] btrfs: open block devices after superblock creation
-    (no matching commit)
-  - [f2fs-dev,05/12] ext4: make the IS_EXT2_SB/IS_EXT3_SB checks more robust
-    https://git.kernel.org/jaegeuk/f2fs/c/4b41828be268
-  - [f2fs-dev,06/12] fs: use the super_block as holder when mounting file systems
-    (no matching commit)
-  - [f2fs-dev,07/12] fs: stop using get_super in fs_mark_dead
-    https://git.kernel.org/jaegeuk/f2fs/c/9c09a7cf6220
-  - [f2fs-dev,08/12] fs: export fs_holder_ops
-    https://git.kernel.org/jaegeuk/f2fs/c/7ecd0b6f5100
-  - [f2fs-dev,09/12] ext4: drop s_umount over opening the log device
-    https://git.kernel.org/jaegeuk/f2fs/c/6f5fc7de9885
-  - [f2fs-dev,10/12] ext4: use fs_holder_ops for the log device
-    https://git.kernel.org/jaegeuk/f2fs/c/8bed1783751f
-  - [f2fs-dev,11/12] xfs: drop s_umount over opening the log and RT devices
-    (no matching commit)
-  - [f2fs-dev,12/12] xfs use fs_holder_ops for the log and RT devices
-    (no matching commit)
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
 
 
+Pozdrawiam
+Mateusz Talaga
