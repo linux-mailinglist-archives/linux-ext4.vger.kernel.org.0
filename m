@@ -2,176 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A99791384
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 10:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8797913C7
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Sep 2023 10:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352573AbjIDId5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Sep 2023 04:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+        id S1350312AbjIDIpk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Sep 2023 04:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345473AbjIDId5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 04:33:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77977CDB
-        for <linux-ext4@vger.kernel.org>; Mon,  4 Sep 2023 01:33:45 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf7423ef3eso4796725ad.3
-        for <linux-ext4@vger.kernel.org>; Mon, 04 Sep 2023 01:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693816425; x=1694421225; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MDxq47lH4J+ZR6XRwDVJfrN/aEh66horqS8Q0LZlj/Y=;
-        b=jHDoXqGY9gRfpJMPzXqWSsH41D2SACS9E3O7KaNjwpxtyV4g+1cg/H5wpj9+QTeVra
-         L3veVnhsmRWR8Cj06OExdWruUlXs6pU91FhiZnAdlm3Sz/aNjVPR+CQWPXGMSNaecQYe
-         ko1SCQKvDRyXaAnHqgTUD96vQgzh5j7+2SyG1gE97eI/siKhjWeFJVeJ+fd00V5TIBV1
-         6En8HlLtoaoWIu62RSeLZJoczjl4hrfwt4Evv2Xtnr3IH4ukrARlaw/53S8KanKJ2G76
-         556guymSh32HKnmuA6t4SH6shJ0SjD7CdnewroqQ8dDU2fFn2p1H6jG5ZMyheBRt3qcI
-         oM7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693816425; x=1694421225;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MDxq47lH4J+ZR6XRwDVJfrN/aEh66horqS8Q0LZlj/Y=;
-        b=FeAK2GS1ybCMjs7TzYJpw1VN3SJmNSIUlyjlPPhhntEJDZAZJWZXoJMs7pX+PB3t9M
-         2h0J+uJxu8mIkTsDk06ZREx/bd2N+wqq2uE3Zqk2ukTxgJAtUqtTT/91gFL/cQnNb3hJ
-         DiNetq0+xXCWVY1PEcctQ4o2LcOjtJ7YlFuIWGlAOM/r9llf+q8HY3N40uBubJLC4wfk
-         f1tQuUqKnNvuf73JzUQVZOgGHS8c0EWE7HgtXoJeYySFIKC55NB3N0bi5x4939F5oWmr
-         y8kzgfhb6Lfo7Uh+cONNJzC88wREkxuum6JlPOrPj8T7fv6egtHJ87WsAGgE7A35E5M2
-         wkcA==
-X-Gm-Message-State: AOJu0YxU51woFzfcH65TnmK1NbaomQjHWvQrQezbjrL2v4wsb0s3eYHz
-        6/pf5fWGd9oajAxIYmT7vE0Psg==
-X-Google-Smtp-Source: AGHT+IFuLko3syhAxHbcZ/yTXMg91Gpq3n/9bGTpOnxZtJRpzZtVFlK/HE8nPar+ChyaqrvrAomZ5g==
-X-Received: by 2002:a17:902:76c3:b0:1bc:2c83:f770 with SMTP id j3-20020a17090276c300b001bc2c83f770mr6455033plt.45.1693816424756;
-        Mon, 04 Sep 2023 01:33:44 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id f21-20020a170902e99500b001bdd7579b5dsm7041065plb.240.2023.09.04.01.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 01:33:44 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qd51h-00Adiy-0S;
-        Mon, 04 Sep 2023 18:33:41 +1000
-Date:   Mon, 4 Sep 2023 18:33:41 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, djwong@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        song@kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
-        yukuai3@huawei.com, zhang_shurong@foxmail.com,
-        linux-block@vger.kernel.org, axboe@kernel.dk, hch@lst.de
-Subject: Re: [syzbot] [xfs?] [ext4?] kernel BUG in __block_write_begin_int
-Message-ID: <ZPWWZeWliX7RhOAZ@dread.disaster.area>
-References: <000000000000e76944060483798d@google.com>
+        with ESMTP id S234105AbjIDIpk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Sep 2023 04:45:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC16127;
+        Mon,  4 Sep 2023 01:45:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B047D21887;
+        Mon,  4 Sep 2023 08:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693817134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5OhoWevbiAW8FGdaKSKfCg9RefoNqol+3lejj7QXGFU=;
+        b=V3D+9qWCWcL9Tn2REATiO3aZgHMo/ppk9jC0mRvQjwz1283wg7MFXK6jD0qFqW493IcMGM
+        RXDvQVCFXtOlI/ZWP+gIVX8qijRRFJ8I+PSoqZ6YjHrdr7xFiJ/K5WrrO/kr8QPtlAGw1Q
+        VeHtIFHx+kxDDMIqirTxEp7x1OlHfr4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693817134;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5OhoWevbiAW8FGdaKSKfCg9RefoNqol+3lejj7QXGFU=;
+        b=dm0CHtarQgoKPSXYTwbqqjQ8vj2KPu5Ur9Sp9Ba/8qaNPm/UGITUNaf8rJZSefMUi0j81D
+        9NeCs/npGF0pOGAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C9B41358B;
+        Mon,  4 Sep 2023 08:45:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GbwyJi6Z9WRWZgAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 04 Sep 2023 08:45:34 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B3370A0776; Mon,  4 Sep 2023 10:45:33 +0200 (CEST)
+Date:   Mon, 4 Sep 2023 10:45:33 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH 1/2] JBD2: print io_block if check data block checksum
+ failed when do recovery
+Message-ID: <20230904084533.a6xyfuaijjnnhews@quack3>
+References: <20230904011021.3884879-1-yebin10@huawei.com>
+ <20230904011021.3884879-2-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000e76944060483798d@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230904011021.3884879-2-yebin10@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[cc linux-block, Christoph]
-
-On Mon, Sep 04, 2023 at 12:29:52AM -0700, syzbot wrote:
-> Hello,
+On Mon 04-09-23 09:10:20, Ye Bin wrote:
+> Now, if check data block checksum failed only print data's block number
+> then skip write data. However, one data block may in more than one transaction.
+> In some scenarios, offline analysis is inconvenient. As a result, it is
+> difficult to locate the areas where data is faulty.
+> So print 'io_block' if check data block checksum failed.
 > 
-> syzbot found the following issue on:
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/jbd2/recovery.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> HEAD commit:    0468be89b3fa Merge tag 'iommu-updates-v6.6' of git://git.k..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11145910680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d78b3780d210e21
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4a08ffdf3667b36650a1
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164f7a57a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143b0298680000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/f3914b539822/disk-0468be89.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6128b0644784/vmlinux-0468be89.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/349d98668c3a/bzImage-0468be89.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/75bd68910fd4/mount_0.gz
-> 
-> The issue was bisected to:
-> 
-> commit 8b0472b50bcf0f19a5119b00a53b63579c8e1e4d
-> Author: Zhang Shurong <zhang_shurong@foxmail.com>
-> Date:   Sat Jul 22 07:53:53 2023 +0000
-> 
->     md: raid1: fix potential OOB in raid1_remove_disk()
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index c269a7d29a46..a2e2bdaed9f8 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -661,7 +661,8 @@ static int do_one_pass(journal_t *journal,
+>  						printk(KERN_ERR "JBD2: Invalid "
+>  						       "checksum recovering "
+>  						       "data block %llu in "
+> -						       "log\n", blocknr);
+> +						       "log %lu\n", blocknr,
 
-Bisect is broken. That has nothing to do with the block device
-conversion to use iomap that triggered this.
+I'd make the message "...in journal block %lu\n". Otherwise the patch looks
+good so feel free to add:
 
-The commit that made this change was 487c607df790 ("block: use iomap
-for writes to block devices"), and that's why we're getting a
-BUG_ON() being triggered in iomap_to_bh()....
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e52577a80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15e52577a80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11e52577a80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com
-> Fixes: 8b0472b50bcf ("md: raid1: fix potential OOB in raid1_remove_disk()")
-> 
-> ------------[ cut here ]------------
-> kernel BUG at fs/buffer.c:2028!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 5187 Comm: syz-executor424 Not tainted 6.5.0-syzkaller-10885-g0468be89b3fa #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-> RIP: 0010:iomap_to_bh fs/buffer.c:2028 [inline]
-> RIP: 0010:__block_write_begin_int+0x18f7/0x1a40 fs/buffer.c:2111
-> Code: af 0d 85 ff 48 8b 7c 24 08 48 c7 c6 20 22 18 8b e8 6e 8b c6 ff 0f 0b e8 97 0d 85 ff eb 13 e8 90 0d 85 ff eb c7 e8 89 0d 85 ff <0f> 0b e8 82 0d 85 ff 48 8b 7c 24 08 48 c7 c6 20 22 18 8b e8 41 8b
-> RSP: 0018:ffffc9000418f520 EFLAGS: 00010293
-> RAX: ffffffff82087b37 RBX: 0000000000040000 RCX: ffff888078093b80
-> RDX: 0000000000000000 RSI: 0000000000040000 RDI: 00000000000d0000
-> RBP: ffffc9000418f6b0 R08: ffffffff82086ba2 R09: 1ffff1100f27203a
-> R10: dffffc0000000000 R11: ffffed100f27203b R12: 00000000000d0000
-> R13: 0000000000000400 R14: 0000000000000000 R15: ffff8880793901d0
-> FS:  00007f0623ec56c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020040000 CR3: 0000000067478000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  iomap_write_begin+0xaf6/0x1f00 fs/iomap/buffered-io.c:772
->  iomap_write_iter fs/iomap/buffered-io.c:907 [inline]
->  iomap_file_buffered_write+0x587/0x1020 fs/iomap/buffered-io.c:968
->  blkdev_buffered_write block/fops.c:634 [inline]
->  blkdev_write_iter+0x41d/0x5c0 block/fops.c:688
->  call_write_iter include/linux/fs.h:1985 [inline]
->  new_sync_write fs/read_write.c:491 [inline]
->  vfs_write+0x782/0xaf0 fs/read_write.c:584
->  ksys_write+0x1a0/0x2c0 fs/read_write.c:637
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-It appears that 0010:__block_write_begin_int() has iterated beyond
-the iomap that was passed in, triggering the BUG_ON() check in
-iomap_to_bh().
-
-Definitely not an XFS problem. Most likely not an ext4 problem.
-It appears to be related to syzbot trying to modify the block device
-under a mounted ext4 filesystem given the reproducer involves
-mounting an ext4 filesystem, then the process that mounted the ext4
-filesystem hits a BUG_ON trying to write to a block device.
-
-Certainly seems like a block device problem, though, given
-the new iomap write path in the block device merged in the 6.6-rc1 window.
-
-#syz set subsystems: block
-
--Dave.
+								Honza
 -- 
-Dave Chinner
-david@fromorbit.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
