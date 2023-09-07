@@ -2,31 +2,31 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BBB79778A
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Sep 2023 18:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2FB79774C
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Sep 2023 18:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237113AbjIGQ1C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Sep 2023 12:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S241540AbjIGQYN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Sep 2023 12:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjIGQ0C (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Sep 2023 12:26:02 -0400
+        with ESMTP id S244264AbjIGQX1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Sep 2023 12:23:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3EF3AAD;
-        Thu,  7 Sep 2023 09:21:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE78C32775;
-        Thu,  7 Sep 2023 13:54:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F777EF3;
+        Thu,  7 Sep 2023 09:13:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B04F5C433C9;
+        Thu,  7 Sep 2023 15:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694094849;
-        bh=EIpNSgNgC6LNjnAD//F7CyvaVZ/tPj26U/cNJ/JhfpQ=;
+        s=k20201202; t=1694101800;
+        bh=ogud9LayuNxA5epVuVZz59vt/VQoyZTG7PTl81uTp8g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tSr9CwoOVN61H0+dopAxtJ1Zg4QF//neTXKzZHc0IRNVVq5Lo9X+TNU7rEo3ABg+B
-         kW5xMjwYKAs01eBuhsi/0v+lz8qJwlr/1JzrwRQkKqi5lrvT8SifyeODtZ7VpE0Ib4
-         25qn28FDHXw6R2HkcngROF6gokwRLmnxicmbZCo4rjr0p2L/U/XVbCUtvt4iG3Tbke
-         XiUhGzAeJVSjJ6VfIJTo5T3f7Vl0qBxlDp/1Cmo4lI3ueO5Ferfa2DFBQkaHNbau5o
-         aIpqeIKGio8HsskAe/LbMe5oueC8iQhrI64agLHo5e85uxXnjdE5K5tZGfgPE79poi
-         LzwccPKAQyLow==
-Date:   Thu, 7 Sep 2023 15:54:04 +0200
+        b=nUgap7cWFuKCa4PzjEmfD7qA5bEg4ToR1RgTOSE+0anALQLA8rb0aoaa3HkXVFJ5O
+         LDB+OVa6mYfYspsYNajmp2hazKUJujr7/ujwdKBxCQO9xzQjcUhed3cKKf7or7kVJQ
+         zEaJHLUzIkrN4dVjplI5gvrGQy1JSFgJ289/eNpe3MI2GuE1ujn2jmG5HE5qt8gYVM
+         Lo423kUOLaO7NzTBlkgos06S3xuR9Rqn3KUzcBxuyDYaiA4kZFUISaBw5VbRdqqBmw
+         jFSohpUZokXHmNQaJ+RZ126vvjlbM85JLeatZeu1dTGenf0kuzVxOXIAPHhw4MpVME
+         uHd7r0J3NIWsw==
+Date:   Thu, 7 Sep 2023 17:49:54 +0200
 From:   Christian Brauner <brauner@kernel.org>
 To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
@@ -39,14 +39,16 @@ Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
 Subject: Re: [PATCH 13/13] ntfs3: free the sbi in ->kill_sb
-Message-ID: <20230907-lektion-organismus-f223e15828d9@brauner>
+Message-ID: <20230907-liebgeworden-leidwesen-331fc399f71e@brauner>
 References: <20230809220545.1308228-1-hch@lst.de>
  <20230809220545.1308228-14-hch@lst.de>
  <56f72849-178a-4cb7-b2e1-b7fc6695a6ef@roeck-us.net>
+ <20230907-lektion-organismus-f223e15828d9@brauner>
+ <dc4b7b2c-89c0-d16f-43e2-0aec5c9b8e1b@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="qhjgiapx27p2h6ha"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <56f72849-178a-4cb7-b2e1-b7fc6695a6ef@roeck-us.net>
+In-Reply-To: <dc4b7b2c-89c0-d16f-43e2-0aec5c9b8e1b@roeck-us.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,96 +59,33 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---qhjgiapx27p2h6ha
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On Thu, Sep 07, 2023 at 06:05:40AM -0700, Guenter Roeck wrote:
-> On Wed, Aug 09, 2023 at 03:05:45PM -0700, Christoph Hellwig wrote:
-> > As a rule of thumb everything allocated to the fs_context and moved into
-> > the super_block should be freed by ->kill_sb so that the teardown
-> > handling doesn't need to be duplicated between the fill_super error
-> > path and put_super.  Implement an ntfs3-specific kill_sb method to do
-> > that.
+On Thu, Sep 07, 2023 at 08:23:09AM -0700, Guenter Roeck wrote:
+> On 9/7/23 06:54, Christian Brauner wrote:
+> > On Thu, Sep 07, 2023 at 06:05:40AM -0700, Guenter Roeck wrote:
+> > > On Wed, Aug 09, 2023 at 03:05:45PM -0700, Christoph Hellwig wrote:
+> > > > As a rule of thumb everything allocated to the fs_context and moved into
+> > > > the super_block should be freed by ->kill_sb so that the teardown
+> > > > handling doesn't need to be duplicated between the fill_super error
+> > > > path and put_super.  Implement an ntfs3-specific kill_sb method to do
+> > > > that.
+> > > > 
+> > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > > Reviewed-by: Christian Brauner <brauner@kernel.org>
+> > > 
+> > > This patch results in:
 > > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > Reviewed-by: Christian Brauner <brauner@kernel.org>
+> > The appended patch should fix this. Are you able to test it?
+> > I will as well.
 > 
-> This patch results in:
+> Yes, this patch restores the previous behavior (no more backtrace or crash).
 
-The appended patch should fix this. Are you able to test it?
-I will as well.
+Great, I'll get this fixed in upstream.
 
---qhjgiapx27p2h6ha
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment;
-	filename="0001-ntfs3-put-inodes-in-ntfs3_put_super.patch"
+> 
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> I say "restore previous behavior" because my simple "recursive copy; partially
+> remove copied files" test still fails. That problem apparently existed since
+> ntfs3 has been introduced (I see it as far back as v5.15).
 
-From 55d5075cd668eda6a08aaf6569cbc556db8a952b Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Thu, 7 Sep 2023 15:52:28 +0200
-Subject: [PATCH] ntfs3: put inodes in ntfs3_put_super()
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- fs/ntfs3/super.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 5fffddea554f..4c73afd935e7 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -571,12 +571,8 @@ static void init_once(void *foo)
- /*
-  * Noinline to reduce binary size.
-  */
--static noinline void ntfs3_free_sbi(struct ntfs_sb_info *sbi)
-+static noinline void ntfs3_put_sbi(struct ntfs_sb_info *sbi)
- {
--	kfree(sbi->new_rec);
--	kvfree(ntfs_put_shared(sbi->upcase));
--	kfree(sbi->def_table);
--
- 	wnd_close(&sbi->mft.bitmap);
- 	wnd_close(&sbi->used.bitmap);
- 
-@@ -601,6 +597,13 @@ static noinline void ntfs3_free_sbi(struct ntfs_sb_info *sbi)
- 	indx_clear(&sbi->security.index_sdh);
- 	indx_clear(&sbi->reparse.index_r);
- 	indx_clear(&sbi->objid.index_o);
-+}
-+
-+static noinline void ntfs3_free_sbi(struct ntfs_sb_info *sbi)
-+{
-+	kfree(sbi->new_rec);
-+	kvfree(ntfs_put_shared(sbi->upcase));
-+	kfree(sbi->def_table);
- 	kfree(sbi->compress.lznt);
- #ifdef CONFIG_NTFS3_LZX_XPRESS
- 	xpress_free_decompressor(sbi->compress.xpress);
-@@ -625,6 +628,7 @@ static void ntfs_put_super(struct super_block *sb)
- 
- 	/* Mark rw ntfs as clear, if possible. */
- 	ntfs_set_state(sbi, NTFS_DIRTY_CLEAR);
-+	ntfs3_put_sbi(sbi);
- }
- 
- static int ntfs_statfs(struct dentry *dentry, struct kstatfs *buf)
-@@ -1644,8 +1648,10 @@ static void ntfs_fs_free(struct fs_context *fc)
- 	struct ntfs_mount_options *opts = fc->fs_private;
- 	struct ntfs_sb_info *sbi = fc->s_fs_info;
- 
--	if (sbi)
-+	if (sbi) {
-+		ntfs3_put_sbi(sbi);
- 		ntfs3_free_sbi(sbi);
-+	}
- 
- 	if (opts)
- 		put_mount_options(opts);
--- 
-2.34.1
-
-
---qhjgiapx27p2h6ha--
+I don't think anyone finds that surprising.
