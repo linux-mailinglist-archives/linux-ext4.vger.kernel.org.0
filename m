@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C02798F81
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 21:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C432798FFC
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 21:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344904AbjIHTc4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Sep 2023 15:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        id S233180AbjIHTge (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Sep 2023 15:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIHTcy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 15:32:54 -0400
+        with ESMTP id S231347AbjIHTg0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 15:36:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2A0CCA;
-        Fri,  8 Sep 2023 12:32:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8F6C433C9;
-        Fri,  8 Sep 2023 19:31:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010F5213A;
+        Fri,  8 Sep 2023 12:36:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAB18C116A3;
+        Fri,  8 Sep 2023 19:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201500;
-        bh=2ymu0h75QDYuoxIwmPdn9W2smvr5mgfdmUUoX3TZl0g=;
+        s=k20201202; t=1694201728;
+        bh=ydV0pdId7PyaKziiQx+bqsObtd8tjWCwcSVRJSSTx5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmwhtZFHFLvW6PBelhEO7sO7l2MoQrJM9xvJRf+/2rSFRNNW+1xKPLhANM06CYXS9
-         r4al7jfeZTXYiJnhCusZ8gVgjlINJ5kuUfS5MDJv6N/vcDSBLb9nIFrlVLxVliVuFY
-         WmP5c+wJgETnP1DIjLSfYHfbbEcqVeNrSOe7EYEuO7lBVqeI6qK/NpPg4IJEp4alT2
-         vYIWtcrCuEk6+pkLuPW4bCx2Hm/l9NvYSkMVDoc7zqV7QKw/N9m/8viShLQcsxdNnv
-         YDzGnfwxOeaJdcsWMdjAazO2kVecOKmaGtqqiCye/VwYZzzo3jDilvPHp+Jsi9esXD
-         rPETNXo7+FmUw==
+        b=YKnCrJshLz6pVkCepcrBFchdBZTpEQSpvtWnBcw0lnCh1WR38bIm5jZ0XU2kowZTA
+         uGPPEUowo8wZZCq9LFfqST5wVh6ZKxuqcJ4El3wol4UXLANDwODjYb3JhEroDmGV8q
+         B01UpcXBnfzVbJ4muTieRaZij8jWhnJdtI36iLnSXWwyffnvUofpZXdZFh9sYi782F
+         SYKLA1/nN/202GnhskXUENPcw2iaZWTv5hOsuchh3wRQcgLbLNGso0RPKmSf7fPAPa
+         YmuBi0rpI6OZ4ixVidOagiZWe0F7MdQj/aCGeibFyreZhCFqrZCB2DPReso/dyFDW8
+         ze6GlIyAzGhlw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jack@suse.com,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 33/36] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:28:44 -0400
-Message-Id: <20230908192848.3462476-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 22/22] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Fri,  8 Sep 2023 15:34:06 -0400
+Message-Id: <20230908193407.3463368-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
-References: <20230908192848.3462476-1-sashal@kernel.org>
+In-Reply-To: <20230908193407.3463368-1-sashal@kernel.org>
+References: <20230908193407.3463368-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.1.52
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -82,10 +82,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 8906ba479aafb..89517937d36c4 100644
+index 641abfa4b718a..2f89b1073307b 100644
 --- a/fs/ext2/xattr.c
 +++ b/fs/ext2/xattr.c
-@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+@@ -744,10 +744,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
  			/* We need to allocate a new block */
  			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
  						EXT2_I(inode)->i_block_group);
