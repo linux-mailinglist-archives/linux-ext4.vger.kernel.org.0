@@ -2,147 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA51798758
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 14:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C02798F81
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 21:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjIHMsf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Sep 2023 08:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S1344904AbjIHTc4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Sep 2023 15:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjIHMsf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 08:48:35 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988741FC9
-        for <linux-ext4@vger.kernel.org>; Fri,  8 Sep 2023 05:48:25 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rhwpc6Xrpz1M99S;
-        Fri,  8 Sep 2023 20:46:32 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 8 Sep
- 2023 20:48:22 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <chengzhihao1@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v2] ext4: Fix potential data lost in recovering journal raced with synchronizing fs bdev
-Date:   Fri, 8 Sep 2023 20:43:17 +0800
-Message-ID: <20230908124317.2955345-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S229699AbjIHTcy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 15:32:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2A0CCA;
+        Fri,  8 Sep 2023 12:32:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8F6C433C9;
+        Fri,  8 Sep 2023 19:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694201500;
+        bh=2ymu0h75QDYuoxIwmPdn9W2smvr5mgfdmUUoX3TZl0g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gmwhtZFHFLvW6PBelhEO7sO7l2MoQrJM9xvJRf+/2rSFRNNW+1xKPLhANM06CYXS9
+         r4al7jfeZTXYiJnhCusZ8gVgjlINJ5kuUfS5MDJv6N/vcDSBLb9nIFrlVLxVliVuFY
+         WmP5c+wJgETnP1DIjLSfYHfbbEcqVeNrSOe7EYEuO7lBVqeI6qK/NpPg4IJEp4alT2
+         vYIWtcrCuEk6+pkLuPW4bCx2Hm/l9NvYSkMVDoc7zqV7QKw/N9m/8viShLQcsxdNnv
+         YDzGnfwxOeaJdcsWMdjAazO2kVecOKmaGtqqiCye/VwYZzzo3jDilvPHp+Jsi9esXD
+         rPETNXo7+FmUw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 33/36] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Fri,  8 Sep 2023 15:28:44 -0400
+Message-Id: <20230908192848.3462476-33-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
+References: <20230908192848.3462476-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-JBD2 makes sure journal data is fallen on fs device by sync_blockdev(),
-however, other process could intercept the EIO information from bdev's
-mapping, which leads journal recovering successful even EIO occurs during
-data written back to fs device.
+From: Georg Ottinger <g.ottinger@gmx.at>
 
-We found this problem in our product, iscsi + multipath is chosen for block
-device of ext4. Unstable network may trigger kpartx to rescan partitions in
-device mapper layer. Detailed process is shown as following:
+[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
 
-  mount          kpartx          irq
-jbd2_journal_recover
- do_one_pass
-  memcpy(nbh->b_data, obh->b_data) // copy data to fs dev from journal
-  mark_buffer_dirty // mark bh dirty
-         vfs_read
-	  generic_file_read_iter // dio
-	   filemap_write_and_wait_range
-	    __filemap_fdatawrite_range
-	     do_writepages
-	      block_write_full_folio
-	       submit_bh_wbc
-	            >>  EIO occurs in disk  <<
-	                     end_buffer_async_write
-			      mark_buffer_write_io_error
-			       mapping_set_error
-			        set_bit(AS_EIO, &mapping->flags) // set!
-	    filemap_check_errors
-	     test_and_clear_bit(AS_EIO, &mapping->flags) // clear!
- err2 = sync_blockdev
-  filemap_write_and_wait
-   filemap_check_errors
-    test_and_clear_bit(AS_EIO, &mapping->flags) // false
- err2 = 0
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block = 18446744071529317386, count = 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
-Filesystem is mounted successfully even data from journal is failed written
-into disk, and ext4 could become corrupted.
-
-Fix it by comparing 'sbi->s_bdev_wb_err' before loading journal and after
-loading journal.
-
-Fetch a reproducer in [Link].
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217888
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- v1->v2: Checks wb_err from block device only in ext4.
- fs/ext4/super.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ fs/ext2/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 38217422f938..4dcaad2403be 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4907,6 +4907,14 @@ static int ext4_load_and_init_journal(struct super_block *sb,
- 	if (err)
- 		return err;
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 8906ba479aafb..89517937d36c4 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block = ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+-			ea_idebug(inode, "creating block %d", block);
++			ea_idebug(inode, "creating block %lu", block);
  
-+	err = errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
-+				       &sbi->s_bdev_wb_err);
-+	if (err) {
-+		ext4_msg(sb, KERN_ERR, "Background error %d when loading journal",
-+			 err);
-+		goto out;
-+	}
-+
- 	if (ext4_has_feature_64bit(sb) &&
- 	    !jbd2_journal_set_features(EXT4_SB(sb)->s_journal, 0, 0,
- 				       JBD2_FEATURE_INCOMPAT_64BIT)) {
-@@ -5365,6 +5373,13 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 			goto failed_mount3a;
- 	}
- 
-+	/*
-+	 * Save the original bdev mapping's wb_err value which could be
-+	 * used to detect the metadata async write error.
-+	 */
-+	spin_lock_init(&sbi->s_bdev_wb_lock);
-+	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
-+				 &sbi->s_bdev_wb_err);
- 	err = -EINVAL;
- 	/*
- 	 * The first inode we look at is the journal inode.  Don't try
-@@ -5571,13 +5586,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	}
- #endif  /* CONFIG_QUOTA */
- 
--	/*
--	 * Save the original bdev mapping's wb_err value which could be
--	 * used to detect the metadata async write error.
--	 */
--	spin_lock_init(&sbi->s_bdev_wb_lock);
--	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
--				 &sbi->s_bdev_wb_err);
- 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
- 	ext4_orphan_cleanup(sb, es);
- 	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+ 			new_bh = sb_getblk(sb, block);
+ 			if (unlikely(!new_bh)) {
 -- 
-2.39.2
+2.40.1
 
