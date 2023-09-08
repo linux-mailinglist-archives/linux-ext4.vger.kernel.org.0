@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 234D8799040
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 21:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553A779904E
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Sep 2023 21:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbjIHTiP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Sep 2023 15:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S229451AbjIHTih (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Sep 2023 15:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345359AbjIHTiC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 15:38:02 -0400
+        with ESMTP id S235311AbjIHTiN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 15:38:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD272717;
-        Fri,  8 Sep 2023 12:37:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3CEC116A7;
-        Fri,  8 Sep 2023 19:36:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CB419C;
+        Fri,  8 Sep 2023 12:37:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 268F4C116B2;
+        Fri,  8 Sep 2023 19:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201768;
+        s=k20201202; t=1694201799;
         bh=BKko6t0Gp5lfbnkQjFzPwy/lDdNXxhszLpjXgkWVJPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6xTDolq9Qq8r2JBqsA3sPDr9FW+1yKtHdJB+0m+7MatBUBFoqtehBu9b97Wr20rt
-         VnsxWNNsTQlLM9Ga0Uhxlr2FWsrGUF8wo9GJI/nNg59/89jjqWtAVAybSPLnFRqE9F
-         cKTN+/nk4jnjLU1zQ7G5CgyZ9seJYmD1jKCFEfwaci0IctM/LfkTvHGOWTg96N2Cl9
-         eBS3+uUvjhOcAZW53m1XPQ5A3ks4V3xt/cr/dW6BSDmPlB5pBAUH4vSGcdH2OgRKlj
-         mf79Q43jw7D0znKdT/o/QAVNngf4hmz7RzNBDya/CvbsdYCWoe87ts94g+5Z7m36X+
-         WB5bly7Ohp6tg==
+        b=b8p/5IgmOw2A0IU9tXmqaApRzcA1QcUBRXmNmHj/A4xynU/SWBd35LkXPiEuzPTWS
+         bOoJlKRbzSHZhcsrppD/5UaOMm3bYtIs3gYdvuEJsb54FjEl/zkRZV3jQp9WHgWfTW
+         14bDqNx2sY8sUM2jrLLWDcp3RtbkBK9E/Rig2dzgyEspOLeJ+B4e5oOTbLsogYZgPw
+         PCJIFjLotDe+TmdhptSpZOtEFMBcl0DnPuL2hcsh0xw5Os+I6RWM8HFgspUw8fa6kV
+         HDGbI1XhpgpZdzfMeNtAKD0MLrFAMzMhPPs6lw3LtCj1ehRR1+0kUH26I+1WPtW8Yz
+         Os0DSC+EeMSDQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jack@suse.com,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/13] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:35:29 -0400
-Message-Id: <20230908193530.3463647-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 9/9] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Fri,  8 Sep 2023 15:36:10 -0400
+Message-Id: <20230908193611.3463821-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908193530.3463647-1-sashal@kernel.org>
-References: <20230908193530.3463647-1-sashal@kernel.org>
+In-Reply-To: <20230908193611.3463821-1-sashal@kernel.org>
+References: <20230908193611.3463821-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.131
+X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
