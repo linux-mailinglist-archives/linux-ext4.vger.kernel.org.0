@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D83E179934B
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Sep 2023 02:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BD679934F
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Sep 2023 02:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243195AbjIIAYS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Sep 2023 20:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S1345456AbjIIAYX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Sep 2023 20:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236561AbjIIAYS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 20:24:18 -0400
+        with ESMTP id S1345446AbjIIAYT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 20:24:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9ED2701;
-        Fri,  8 Sep 2023 17:23:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C149C43395;
-        Sat,  9 Sep 2023 00:22:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2422135;
+        Fri,  8 Sep 2023 17:23:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3366C433CD;
+        Sat,  9 Sep 2023 00:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218964;
-        bh=ZA/e0MAH9mZATSqxXXeafejAjPriY00Z3TYHUGkJp7s=;
+        s=k20201202; t=1694218965;
+        bh=CPTp+VSDvg3Xfr/v0b+rpwwljDH5hGkjnZj0/8O5iPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bvZCNwqxenPA0xt17Rx+lVAWIOUVRokfu5j+u4/dNzlmf41br1EsLrIeZFSR1bvZi
-         xw0+li3X1UgcQMYywgXmLWFp1ZejbXiS+FlhNDoDvColp4mzPHUPOMdlwxWaTpnmEk
-         4mq5Snq9q7VBhUc0E2xON9ldazO5/XQFe0JYuzXWyq66aMeQqDsL2L6GvCiWlJl4nM
-         MV8PktKBXKPNEa8fWv3gB1gwjLX7FWYOjmzXMgFA7s+lURrLsx+oDX3OuG7wB481OZ
-         whJODbVecTTj93gHuTcQoZk9/q2JLhTDYfUgj2QGuqSATSfIQyzgVlF4olL4qN/KMo
-         ZDrAt+UHxagIg==
+        b=Ldf2nSOPUHrtwUBRjqhVW+pxvgS6i+H3CpACwNnDU3QGupuVwtkSZyni/sN/6k2R/
+         uPhNwvFXb92oqVZNTieNhAxZotmLwdEYf56WXG06Z9dqlgB84TN4AFS0bIRmdq0j2S
+         0GLnA6+SrXDCtvuEAR1M+ntmjPtadDA6VZMO3xvYQoNI6app8WY6Fftp8la8meKco8
+         zW4tM4qzoXDQKUuGqMv03zEM3Bxwe1vlaU6FtPZFLz8xsGPCDfk8CyJdRBE9USDIOI
+         uXbfFGbYryW3X6/8qOwSu/pcWmBYOJQr2RGchM8bPtXGYjA3b7GRC04l64D8xwJPuD
+         OiFZ7pcS5Qkig==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Baokun Li <libaokun1@huawei.com>,
         Ritesh Harjani <ritesh.list@gmail.com>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 04/11] ext4: add two helper functions extent_logical_end() and pa_logical_end()
-Date:   Fri,  8 Sep 2023 20:22:24 -0400
-Message-Id: <20230909002233.3578213-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 05/11] ext4: avoid overlapping preallocations due to overflow
+Date:   Fri,  8 Sep 2023 20:22:25 -0400
+Message-Id: <20230909002233.3578213-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002233.3578213-1-sashal@kernel.org>
 References: <20230909002233.3578213-1-sashal@kernel.org>
@@ -55,92 +55,103 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 43bbddc067883d94de7a43d5756a295439fbe37d ]
+[ Upstream commit bedc5d34632c21b5adb8ca7143d4c1f794507e4c ]
 
-When we use lstart + len to calculate the end of free extent or prealloc
-space, it may exceed the maximum value of 4294967295(0xffffffff) supported
-by ext4_lblk_t and cause overflow, which may lead to various problems.
+Let's say we want to allocate 2 blocks starting from 4294966386, after
+predicting the file size, start is aligned to 4294965248, len is changed
+to 2048, then end = start + size = 0x100000000. Since end is of
+type ext4_lblk_t, i.e. uint, end is truncated to 0.
 
-Therefore, we add two helper functions, extent_logical_end() and
-pa_logical_end(), to limit the type of end to loff_t, and also convert
-lstart to loff_t for calculation to avoid overflow.
+This causes (pa->pa_lstart >= end) to always hold when checking if the
+current extent to be allocated crosses already preallocated blocks, so the
+resulting ac_g_ex may cross already preallocated blocks. Hence we convert
+the end type to loff_t and use pa_logical_end() to avoid overflow.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Link: https://lore.kernel.org/r/20230724121059.11834-2-libaokun1@huawei.com
+Link: https://lore.kernel.org/r/20230724121059.11834-4-libaokun1@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c |  9 +++------
- fs/ext4/mballoc.h | 14 ++++++++++++++
- 2 files changed, 17 insertions(+), 6 deletions(-)
+ fs/ext4/mballoc.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 3fa5de892d89d..f17c1573c2a65 100644
+index f17c1573c2a65..6e88f58ec6bb8 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -4246,7 +4246,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+@@ -4036,12 +4036,13 @@ ext4_mb_pa_rb_next_iter(ext4_lblk_t new_start, ext4_lblk_t cur_start, struct rb_
  
- 	/* first, let's learn actual file size
- 	 * given current request is allocated */
--	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
-+	size = extent_logical_end(sbi, &ac->ac_o_ex);
- 	size = size << bsbits;
- 	if (size < i_size_read(ac->ac_inode))
- 		size = i_size_read(ac->ac_inode);
-@@ -4570,7 +4570,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+ static inline void
+ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+-			  ext4_lblk_t start, ext4_lblk_t end)
++			  ext4_lblk_t start, loff_t end)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
  	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_locality_group *lg;
- 	struct ext4_prealloc_space *tmp_pa = NULL, *cpa = NULL;
--	loff_t tmp_pa_end;
+ 	struct ext4_prealloc_space *tmp_pa;
+-	ext4_lblk_t tmp_pa_start, tmp_pa_end;
++	ext4_lblk_t tmp_pa_start;
++	loff_t tmp_pa_end;
  	struct rb_node *iter;
- 	ext4_fsblk_t goal_block;
  
-@@ -4666,9 +4665,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	 * pa can possibly satisfy the request hence check if it overlaps
- 	 * original logical start and stop searching if it doesn't.
- 	 */
--	tmp_pa_end = (loff_t)tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
--
--	if (ac->ac_o_ex.fe_logical >= tmp_pa_end) {
-+	if (ac->ac_o_ex.fe_logical >= pa_logical_end(sbi, tmp_pa)) {
- 		spin_unlock(&tmp_pa->pa_lock);
- 		goto try_group_pa;
+ 	read_lock(&ei->i_prealloc_lock);
+@@ -4050,7 +4051,7 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+ 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
+ 				  pa_node.inode_node);
+ 		tmp_pa_start = tmp_pa->pa_lstart;
+-		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
++		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
+ 
+ 		spin_lock(&tmp_pa->pa_lock);
+ 		if (tmp_pa->pa_deleted == 0)
+@@ -4072,14 +4073,14 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
+  */
+ static inline void
+ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
+-			  ext4_lblk_t *start, ext4_lblk_t *end)
++			  ext4_lblk_t *start, loff_t *end)
+ {
+ 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+ 	struct ext4_prealloc_space *tmp_pa = NULL, *left_pa = NULL, *right_pa = NULL;
+ 	struct rb_node *iter;
+-	ext4_lblk_t new_start, new_end;
+-	ext4_lblk_t tmp_pa_start, tmp_pa_end, left_pa_end = -1, right_pa_start = -1;
++	ext4_lblk_t new_start, tmp_pa_start, right_pa_start = -1;
++	loff_t new_end, tmp_pa_end, left_pa_end = -1;
+ 
+ 	new_start = *start;
+ 	new_end = *end;
+@@ -4098,7 +4099,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
+ 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
+ 				  pa_node.inode_node);
+ 		tmp_pa_start = tmp_pa->pa_lstart;
+-		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
++		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
+ 
+ 		/* PA must not overlap original request */
+ 		spin_lock(&tmp_pa->pa_lock);
+@@ -4178,8 +4179,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
  	}
-@@ -5573,7 +5570,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
  
- 	group_pa_eligible = sbi->s_mb_group_prealloc > 0;
- 	inode_pa_eligible = true;
--	size = ac->ac_o_ex.fe_logical + EXT4_C2B(sbi, ac->ac_o_ex.fe_len);
-+	size = extent_logical_end(sbi, &ac->ac_o_ex);
- 	isize = (i_size_read(ac->ac_inode) + ac->ac_sb->s_blocksize - 1)
- 		>> bsbits;
+ 	if (left_pa) {
+-		left_pa_end =
+-			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
++		left_pa_end = pa_logical_end(sbi, left_pa);
+ 		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
+ 	}
  
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index 6d85ee8674a64..f2b1d4fd98693 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -219,6 +219,20 @@ static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
- 		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
- }
+@@ -4218,8 +4218,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+ 	struct ext4_super_block *es = sbi->s_es;
+ 	int bsbits, max;
+-	ext4_lblk_t end;
+-	loff_t size, start_off;
++	loff_t size, start_off, end;
+ 	loff_t orig_size __maybe_unused;
+ 	ext4_lblk_t start;
  
-+static inline loff_t extent_logical_end(struct ext4_sb_info *sbi,
-+					struct ext4_free_extent *fex)
-+{
-+	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
-+	return (loff_t)fex->fe_logical + EXT4_C2B(sbi, fex->fe_len);
-+}
-+
-+static inline loff_t pa_logical_end(struct ext4_sb_info *sbi,
-+				    struct ext4_prealloc_space *pa)
-+{
-+	/* Use loff_t to avoid end exceeding ext4_lblk_t max. */
-+	return (loff_t)pa->pa_lstart + EXT4_C2B(sbi, pa->pa_len);
-+}
-+
- typedef int (*ext4_mballoc_query_range_fn)(
- 	struct super_block		*sb,
- 	ext4_group_t			agno,
 -- 
 2.40.1
 
