@@ -2,156 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BD679934F
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Sep 2023 02:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F290799627
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Sep 2023 05:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345456AbjIIAYX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Sep 2023 20:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        id S233414AbjIIDlU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Sep 2023 23:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345446AbjIIAYT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 20:24:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2422135;
-        Fri,  8 Sep 2023 17:23:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3366C433CD;
-        Sat,  9 Sep 2023 00:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218965;
-        bh=CPTp+VSDvg3Xfr/v0b+rpwwljDH5hGkjnZj0/8O5iPY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ldf2nSOPUHrtwUBRjqhVW+pxvgS6i+H3CpACwNnDU3QGupuVwtkSZyni/sN/6k2R/
-         uPhNwvFXb92oqVZNTieNhAxZotmLwdEYf56WXG06Z9dqlgB84TN4AFS0bIRmdq0j2S
-         0GLnA6+SrXDCtvuEAR1M+ntmjPtadDA6VZMO3xvYQoNI6app8WY6Fftp8la8meKco8
-         zW4tM4qzoXDQKUuGqMv03zEM3Bxwe1vlaU6FtPZFLz8xsGPCDfk8CyJdRBE9USDIOI
-         uXbfFGbYryW3X6/8qOwSu/pcWmBYOJQr2RGchM8bPtXGYjA3b7GRC04l64D8xwJPuD
-         OiFZ7pcS5Qkig==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Baokun Li <libaokun1@huawei.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 05/11] ext4: avoid overlapping preallocations due to overflow
-Date:   Fri,  8 Sep 2023 20:22:25 -0400
-Message-Id: <20230909002233.3578213-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909002233.3578213-1-sashal@kernel.org>
-References: <20230909002233.3578213-1-sashal@kernel.org>
+        with ESMTP id S232021AbjIIDlT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Sep 2023 23:41:19 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046251FE3
+        for <linux-ext4@vger.kernel.org>; Fri,  8 Sep 2023 20:41:14 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RjJbq1lmbzVk3Y;
+        Sat,  9 Sep 2023 11:38:31 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 9 Sep 2023 11:41:12 +0800
+Subject: Re: [PATCH v2] ext4: Fix potential data lost in recovering journal
+ raced with synchronizing fs bdev
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, <tytso@mit.edu>,
+        <jack@suse.com>
+CC:     <linux-ext4@vger.kernel.org>
+References: <20230908124317.2955345-1-chengzhihao1@huawei.com>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <2b2718a4-7d8b-e0bc-c045-59fe7562392d@huawei.com>
+Date:   Sat, 9 Sep 2023 11:41:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.15
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230908124317.2955345-1-chengzhihao1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Baokun Li <libaokun1@huawei.com>
+Hello!
 
-[ Upstream commit bedc5d34632c21b5adb8ca7143d4c1f794507e4c ]
+On 2023/9/8 20:43, Zhihao Cheng wrote:
+> JBD2 makes sure journal data is fallen on fs device by sync_blockdev(),
+> however, other process could intercept the EIO information from bdev's
+> mapping, which leads journal recovering successful even EIO occurs during
+> data written back to fs device.
+> 
+> We found this problem in our product, iscsi + multipath is chosen for block
+> device of ext4. Unstable network may trigger kpartx to rescan partitions in
+> device mapper layer. Detailed process is shown as following:
+> 
+>   mount          kpartx          irq
+> jbd2_journal_recover
+>  do_one_pass
+>   memcpy(nbh->b_data, obh->b_data) // copy data to fs dev from journal
+>   mark_buffer_dirty // mark bh dirty
+>          vfs_read
+> 	  generic_file_read_iter // dio
+> 	   filemap_write_and_wait_range
+> 	    __filemap_fdatawrite_range
+> 	     do_writepages
+> 	      block_write_full_folio
+> 	       submit_bh_wbc
+> 	            >>  EIO occurs in disk  <<
+> 	                     end_buffer_async_write
+> 			      mark_buffer_write_io_error
+> 			       mapping_set_error
+> 			        set_bit(AS_EIO, &mapping->flags) // set!
+> 	    filemap_check_errors
+> 	     test_and_clear_bit(AS_EIO, &mapping->flags) // clear!
+>  err2 = sync_blockdev
+>   filemap_write_and_wait
+>    filemap_check_errors
+>     test_and_clear_bit(AS_EIO, &mapping->flags) // false
+>  err2 = 0
+> 
+> Filesystem is mounted successfully even data from journal is failed written
+> into disk, and ext4 could become corrupted.
+> 
+> Fix it by comparing 'sbi->s_bdev_wb_err' before loading journal and after
+> loading journal.
+> 
+> Fetch a reproducer in [Link].
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217888
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  v1->v2: Checks wb_err from block device only in ext4.
+>  fs/ext4/super.c | 22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 38217422f938..4dcaad2403be 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4907,6 +4907,14 @@ static int ext4_load_and_init_journal(struct super_block *sb,
+>  	if (err)
+>  		return err;
+>  
+> +	err = errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+> +				       &sbi->s_bdev_wb_err);
+> +	if (err) {
+> +		ext4_msg(sb, KERN_ERR, "Background error %d when loading journal",
+> +			 err);
+> +		goto out;
+> +	}
+> +
 
-Let's say we want to allocate 2 blocks starting from 4294966386, after
-predicting the file size, start is aligned to 4294965248, len is changed
-to 2048, then end = start + size = 0x100000000. Since end is of
-type ext4_lblk_t, i.e. uint, end is truncated to 0.
+This solution cannot solve the problem, because the journal tail is
+still updated in journal_reset() even if we detect the writeback error
+and refuse to mount the ext4 filesystem here. So I suppose we have to
+check the I/O error by jbd2 module itself like v1 does.
 
-This causes (pa->pa_lstart >= end) to always hold when checking if the
-current extent to be allocated crosses already preallocated blocks, so the
-resulting ac_g_ex may cross already preallocated blocks. Hence we convert
-the end type to loff_t and use pa_logical_end() to avoid overflow.
+Thanks,
+Yi.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Link: https://lore.kernel.org/r/20230724121059.11834-4-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/mballoc.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f17c1573c2a65..6e88f58ec6bb8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4036,12 +4036,13 @@ ext4_mb_pa_rb_next_iter(ext4_lblk_t new_start, ext4_lblk_t cur_start, struct rb_
- 
- static inline void
- ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t start, ext4_lblk_t end)
-+			  ext4_lblk_t start, loff_t end)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_prealloc_space *tmp_pa;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end;
-+	ext4_lblk_t tmp_pa_start;
-+	loff_t tmp_pa_end;
- 	struct rb_node *iter;
- 
- 	read_lock(&ei->i_prealloc_lock);
-@@ -4050,7 +4051,7 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
- 
- 		spin_lock(&tmp_pa->pa_lock);
- 		if (tmp_pa->pa_deleted == 0)
-@@ -4072,14 +4073,14 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
-  */
- static inline void
- ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t *start, ext4_lblk_t *end)
-+			  ext4_lblk_t *start, loff_t *end)
- {
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_prealloc_space *tmp_pa = NULL, *left_pa = NULL, *right_pa = NULL;
- 	struct rb_node *iter;
--	ext4_lblk_t new_start, new_end;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end, left_pa_end = -1, right_pa_start = -1;
-+	ext4_lblk_t new_start, tmp_pa_start, right_pa_start = -1;
-+	loff_t new_end, tmp_pa_end, left_pa_end = -1;
- 
- 	new_start = *start;
- 	new_end = *end;
-@@ -4098,7 +4099,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
- 
- 		/* PA must not overlap original request */
- 		spin_lock(&tmp_pa->pa_lock);
-@@ -4178,8 +4179,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 	}
- 
- 	if (left_pa) {
--		left_pa_end =
--			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
-+		left_pa_end = pa_logical_end(sbi, left_pa);
- 		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
- 	}
- 
-@@ -4218,8 +4218,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	int bsbits, max;
--	ext4_lblk_t end;
--	loff_t size, start_off;
-+	loff_t size, start_off, end;
- 	loff_t orig_size __maybe_unused;
- 	ext4_lblk_t start;
- 
--- 
-2.40.1
-
+>  	if (ext4_has_feature_64bit(sb) &&
+>  	    !jbd2_journal_set_features(EXT4_SB(sb)->s_journal, 0, 0,
+>  				       JBD2_FEATURE_INCOMPAT_64BIT)) {
+> @@ -5365,6 +5373,13 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  			goto failed_mount3a;
+>  	}
+>  
+> +	/*
+> +	 * Save the original bdev mapping's wb_err value which could be
+> +	 * used to detect the metadata async write error.
+> +	 */
+> +	spin_lock_init(&sbi->s_bdev_wb_lock);
+> +	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+> +				 &sbi->s_bdev_wb_err);
+>  	err = -EINVAL;
+>  	/*
+>  	 * The first inode we look at is the journal inode.  Don't try
+> @@ -5571,13 +5586,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  	}
+>  #endif  /* CONFIG_QUOTA */
+>  
+> -	/*
+> -	 * Save the original bdev mapping's wb_err value which could be
+> -	 * used to detect the metadata async write error.
+> -	 */
+> -	spin_lock_init(&sbi->s_bdev_wb_lock);
+> -	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+> -				 &sbi->s_bdev_wb_err);
+>  	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+>  	ext4_orphan_cleanup(sb, es);
+>  	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+> 
