@@ -2,85 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DF37999C7
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Sep 2023 18:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430F1799D7D
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 Sep 2023 11:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjIIQZm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 Sep 2023 12:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S241570AbjIJJ0R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 10 Sep 2023 05:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346745AbjIIQOq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 9 Sep 2023 12:14:46 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 09 Sep 2023 09:14:42 PDT
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86107197
-        for <linux-ext4@vger.kernel.org>; Sat,  9 Sep 2023 09:14:42 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id f0UBqPpdGlD5tf0UCqzuca; Sat, 09 Sep 2023 18:07:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694275630;
-        bh=M9hyEFFDEMxxrx1+9It4RWlADeh61fRaXNc2/8F9oGU=;
-        h=From:To:Cc:Subject:Date;
-        b=H1kBQ1HrwcdInkRmHnzdOZ75JPnmDdIoR7TL3xoOw3MpJBojN563dgCQGXEeU8LBY
-         wms5cu3/os9G/8qftVre1W4aabxP2zWDYSzIPaB/tdpdXsqjCiIwrQrmjcC7inQJvM
-         lY6eRlkox4L0W16sBPGaEU1MIIQCcc9yWdKaWE2eX2Ya6jruwFMRra3bY086U9aUbj
-         9+uy1KkwwsN9FuOqUZnVKZpW7ANPEF2PghMKlep6KCoyaY7DZs6NFA2ncmZSCfqQxK
-         M77Me8ky4BIEH7LprZRLZe355DeE1xZewEOpnL/keOpXXwlOLGu/86uJrOVBJHYJKd
-         39Yz0EaiaRTQw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 09 Sep 2023 18:07:10 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Dave Kleikamp <shaggy@austin.ibm.com>,
-        Andrew Morton <akpm@osdl.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH] ext4: Fix a test in ext4_decode_error()
-Date:   Sat,  9 Sep 2023 18:07:02 +0200
-Message-Id: <2c0edffd8557807c6cd6d55111482c5cad7c8f2f.1694275603.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S239000AbjIJJ0R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 10 Sep 2023 05:26:17 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F8719E;
+        Sun, 10 Sep 2023 02:26:12 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qfGhg-0007eD-Dk; Sun, 10 Sep 2023 11:26:04 +0200
+Message-ID: <eb707c22-b64a-4b08-9cf9-fcbeb1ddf16c@leemhuis.info>
+Date:   Sun, 10 Sep 2023 11:26:00 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [fstests generic/388, 455, 475, 482 ...] Ext4 journal recovery
+ test fails
+Content-Language: en-US, de-DE
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Zorro Lang <zlang@kernel.org>,
+        linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
+        regressions@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>
+References: <87o7ie2fmm.fsf@doe.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <87o7ie2fmm.fsf@doe.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694337972;f5d47b2e;
+X-HE-SMSGID: 1qfGhg-0007eD-Dk
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The doc of snprintf() states that "If the return is greater than or equal
-to @size, the resulting string is truncated".
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-So in order to "Check for truncated error codes...", we must check that the
-returned value is < 16.
+On 07.09.23 16:59, Ritesh Harjani (IBM) wrote:
+> Matthew Wilcox <willy@infradead.org> writes:
+> 
+>> On Thu, Sep 07, 2023 at 07:05:38PM +0530, Ritesh Harjani wrote:
+>>> Thanks Matthew for proposing the final changes using folio.
+>>> (there were just some minor change required for fs/reiserfs/ for unused variables)
+>>> Pasting the final patch below (you as the author with my Signed-off-by &
+>>> Tested-by), which I have tested it on my system with "ext4/1k -g auto"
+>>
+>> I'd rather split that patch up a bit -- I don't think the reiserfs
+>> part fixes any actual problem.  I've pushed out
+>> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/bh-fixes
+>>
+>> or git clone git://git.infradead.org/users/willy/pagecache.git
+>>
+>> I credited you as the author on the second two since I just tidied up
+>> your proposed fixes.
+>>
+>> I've also checked ocfs2 as the other user of JBD2 and I don't see any
+>> problems there.
+> 
+> Thanks Matthew! :) 
 
-Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#regzbot fix: jbd2: Remove page size assumptions
+#regzbot ignore-activity
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 38217422f938..f58fc7cc6f81 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -941,7 +941,7 @@ const char *ext4_decode_error(struct super_block *sb, int errno,
- 		 * NULL. */
- 		if (nbuf) {
- 			/* Check for truncated error codes... */
--			if (snprintf(nbuf, 16, "error %d", -errno) >= 0)
-+			if (snprintf(nbuf, 16, "error %d", -errno) < 16)
- 				errstr = nbuf;
- 		}
- 		break;
--- 
-2.34.1
+(fix can currently be found in
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/bh-fixes
+as
+https://git.infradead.org/users/willy/pagecache.git/commit/fc0a6fa4a2c7b434665f087801a06c544b16f085
+)
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
