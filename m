@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1112A79AFC7
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Sep 2023 01:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9153079B187
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Sep 2023 01:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242777AbjIKVVM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Sep 2023 17:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
+        id S244007AbjIKVVH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Sep 2023 17:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235638AbjIKJOf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Sep 2023 05:14:35 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2224FCCD;
-        Mon, 11 Sep 2023 02:14:31 -0700 (PDT)
+        with ESMTP id S235705AbjIKJZX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Sep 2023 05:25:23 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D155ECD3;
+        Mon, 11 Sep 2023 02:25:18 -0700 (PDT)
 Received: from localhost.localdomain (unknown [59.103.218.185])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D6FB06607186;
-        Mon, 11 Sep 2023 10:14:25 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 339F366072EE;
+        Mon, 11 Sep 2023 10:25:14 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694423669;
+        s=mail; t=1694424317;
         bh=9wEA6kj/8qL09liKb87plaPguZEAHq2kFG8kWKL8ugk=;
         h=From:To:Cc:Subject:Date:From;
-        b=onT3hW2nuSZ+Llw31Ags4TTIrqfFFb7HPREmgpc985AZJ93ChdJGtJX38PPv9X4Qt
-         On1ZuDtOGbUmb9NUIRiSm2GSzUHC/M6hndGMERADezsogGx9Hi+tyD0/KR8//7yZkO
-         SR7YxRL4a+VT3UnkXRNfL94VGhkuslODCcep473JNopjjSN0jocx96CjhEWe3ToSmv
-         2ikbpjxHZK5rnEyHLqmNolnh1JKWgbqGxoPPCqTEZ0cinpUt5rJuSXQOmr6Yr0Omhm
-         6WhsvVEffoTRMR6xrC7/2fOH9IhCDxEqVp9MsJos7mfpBcIBiadJisGCQ0Fl0MORBF
-         a67rTdugS8dlA==
+        b=g6cyi+l3p+hseuUSou0jYQPkZXTIadufJl7IaQgUWWpwt5Ab5Y/Uo71MWpKh4FF6n
+         e2jMzXLQQMlhTcCPL1/VBriOClgZpZEEXp58o6IURJw0ZNwtaC/bCOwaklmeZLIW8r
+         bgzIL0h7j4BjSQC55gEkiunqUvQ3oRg7Zh9Hr3MLFPyvdW/DqZ/Z8AZdQSdhR0zc55
+         3O6McOeSplTsUjU1yULKsHdV8IlNvY+tOOOdAZ5VPQ+p6Do4+T5mdRjyPjSXT7Yh0a
+         H9gppZ8912chGTdaI+yvB/acLKV+XaNDu72FB8HKihIKEe06FqNA+VuBKKxtew2sgz
+         zv5L7o/1UvQBw==
 From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
 To:     "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -39,9 +39,9 @@ Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
         kernel@collabora.com, stable@vger.kernel.org,
         syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] ext4: don't' remove already removed extent
-Date:   Mon, 11 Sep 2023 14:13:58 +0500
-Message-Id: <20230911091358.3528530-1-usama.anjum@collabora.com>
+Subject: [RFC] ext4: don't remove already removed extent
+Date:   Mon, 11 Sep 2023 14:24:53 +0500
+Message-Id: <20230911092454.3558231-1-usama.anjum@collabora.com>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
