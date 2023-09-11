@@ -2,130 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5D879AC8E
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Sep 2023 01:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1112A79AFC7
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Sep 2023 01:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345546AbjIKVVP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Sep 2023 17:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
+        id S242777AbjIKVVM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Sep 2023 17:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235510AbjIKIts (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Sep 2023 04:49:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3741A1;
-        Mon, 11 Sep 2023 01:49:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S235638AbjIKJOf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Sep 2023 05:14:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2224FCCD;
+        Mon, 11 Sep 2023 02:14:31 -0700 (PDT)
+Received: from localhost.localdomain (unknown [59.103.218.185])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CF7B71F8A3;
-        Mon, 11 Sep 2023 08:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694422181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmYheAFnFcMTM/McW9Ep/uL3q2cEMPpomtvxbGF+EAI=;
-        b=WtVdusmZ7JUt3hyqzvuM5ictCVmCriRbf5spYlWQ8ys+cGL5f0dTUxFRHV8JoOrEp9cqd1
-        DlU2z2El4p4hVL5yjBk5s629I7cc/0Fyl6AsHUQhiJ+dm4x0SZtZHDfa0dp7L308wzadL0
-        DcSo18hnLALwv9oXa9O/ureE8A3Ay1o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694422181;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmYheAFnFcMTM/McW9Ep/uL3q2cEMPpomtvxbGF+EAI=;
-        b=/dqQO7uUGy1v5Yq7eIUjnqripMEXCxV3NGPKcGHZ/sy7FcebjbIlPRV7N1Ylg/mkBBskFE
-        OgrI/7WmGOVf0wBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C074B13780;
-        Mon, 11 Sep 2023 08:49:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id az3sLqXU/mShEwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 11 Sep 2023 08:49:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 4576AA077E; Mon, 11 Sep 2023 10:49:41 +0200 (CEST)
-Date:   Mon, 11 Sep 2023 10:49:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Li Zetao <lizetao1@huawei.com>
-Cc:     tytso@mit.edu, jack@suse.com, yi.zhang@huawei.com,
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D6FB06607186;
+        Mon, 11 Sep 2023 10:14:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694423669;
+        bh=9wEA6kj/8qL09liKb87plaPguZEAHq2kFG8kWKL8ugk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=onT3hW2nuSZ+Llw31Ags4TTIrqfFFb7HPREmgpc985AZJ93ChdJGtJX38PPv9X4Qt
+         On1ZuDtOGbUmb9NUIRiSm2GSzUHC/M6hndGMERADezsogGx9Hi+tyD0/KR8//7yZkO
+         SR7YxRL4a+VT3UnkXRNfL94VGhkuslODCcep473JNopjjSN0jocx96CjhEWe3ToSmv
+         2ikbpjxHZK5rnEyHLqmNolnh1JKWgbqGxoPPCqTEZ0cinpUt5rJuSXQOmr6Yr0Omhm
+         6WhsvVEffoTRMR6xrC7/2fOH9IhCDxEqVp9MsJos7mfpBcIBiadJisGCQ0Fl0MORBF
+         a67rTdugS8dlA==
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Allison Henderson <achender@linux.vnet.ibm.com>
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        kernel@collabora.com, stable@vger.kernel.org,
+        syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: Fix memory leak in journal_init_common()
-Message-ID: <20230911084941.hlptflu2d3s3gjle@quack3>
-References: <20230911025138.983101-1-lizetao1@huawei.com>
+Subject: [RFC] ext4: don't' remove already removed extent
+Date:   Mon, 11 Sep 2023 14:13:58 +0500
+Message-Id: <20230911091358.3528530-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911025138.983101-1-lizetao1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 11-09-23 10:51:38, Li Zetao wrote:
-> There is a memory leak reported by kmemleak:
-> 
->   unreferenced object 0xff11000105903b80 (size 64):
->     comm "mount", pid 3382, jiffies 4295032021 (age 27.826s)
->     hex dump (first 32 bytes):
->       04 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
->       ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     backtrace:
->       [<ffffffffae86ac40>] __kmalloc_node+0x50/0x160
->       [<ffffffffaf2486d8>] crypto_alloc_tfmmem.isra.0+0x38/0x110
->       [<ffffffffaf2498e5>] crypto_create_tfm_node+0x85/0x2f0
->       [<ffffffffaf24a92c>] crypto_alloc_tfm_node+0xfc/0x210
->       [<ffffffffaedde777>] journal_init_common+0x727/0x1ad0
->       [<ffffffffaede1715>] jbd2_journal_init_inode+0x2b5/0x500
->       [<ffffffffaed786b5>] ext4_load_and_init_journal+0x255/0x2440
->       [<ffffffffaed8b423>] ext4_fill_super+0x8823/0xa330
->       ...
-> 
-> The root cause was traced to an error handing path in journal_init_common()
-> when malloc memory failed in register_shrinker(). The checksum driver is
-> used to reference to checksum algorithm via cryptoapi and the user should
-> release the memory when the driver is no longer needed or the journal
-> initialization failed.
-> 
-> Fix it by calling crypto_free_shash() on the "err_cleanup" error handing
-> path in journal_init_common().
-> 
-> Fixes: c30713084ba5 ("jbd2: move load_superblock() into journal_init_common()")
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+Syzbot has hit the following bug on current and all older kernels:
+BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
+BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
+Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
 
-Thanks for the fixup! Looks good to me. Feel free to add:
+On investigation, I've found that eh->eh_entries is zero, ex is
+referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
+Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
+buffer read.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+element: FFFF8882F8F0D06C       <----- ex
+element: FFFF8882F8F0D060
+element: FFFF8882F8F0D054
+element: FFFF8882F8F0D048
+element: FFFF8882F8F0D03C
+element: FFFF8882F8F0D030
+element: FFFF8882F8F0D024
+element: FFFF8882F8F0D018
+element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
+header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
 
-								Honza
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
+Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
+Fixes: d583fb87a3ff ("ext4: punch out extents")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+This patch is only fixing the local issue. There may be bigger bug. Why
+is ex set to last entry if the eh->eh_entries is 0. If any ext4
+developer want to look at the bug, please don't hesitate.
+---
+ fs/ext4/extents.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  fs/jbd2/journal.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 768fa05bcbed..30dec2bd2ecc 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1601,6 +1601,8 @@ static journal_t *journal_init_common(struct block_device *bdev,
->  
->  err_cleanup:
->  	percpu_counter_destroy(&journal->j_checkpoint_jh_count);
-> +	if (journal->j_chksum_driver)
-> +		crypto_free_shash(journal->j_chksum_driver);
->  	kfree(journal->j_wbuf);
->  	jbd2_journal_destroy_revoke(journal);
->  	journal_fail_superblock(journal);
-> -- 
-> 2.34.1
-> 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index e4115d338f101..7b7779b4cb87f 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+ 		 * If the extent was completely released,
+ 		 * we need to remove it from the leaf
+ 		 */
+-		if (num == 0) {
++		if (num == 0 && eh->eh_entries) {
+ 			if (end != EXT_MAX_BLOCKS - 1) {
+ 				/*
+ 				 * For hole punching, we need to scoot all the
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.1
+
