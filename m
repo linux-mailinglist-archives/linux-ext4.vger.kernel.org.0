@@ -2,80 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0C479DCDC
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 01:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259DE79DE19
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 04:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbjILXuw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Sep 2023 19:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S229543AbjIMCMP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Sep 2023 22:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjILXuw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Sep 2023 19:50:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4468C10FE;
-        Tue, 12 Sep 2023 16:50:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19F6C433C8;
-        Tue, 12 Sep 2023 23:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694562647;
-        bh=k9G6ap+gAojN8vHcoXUXnk1y3u37/KrMImRD4njbitA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EMI6XRnSLULEYMPl2XUw2mLkL61xLLN2+ZU6uu5jdT44JmvwtbciGn67BdFmg2qng
-         /T1TwuJx89Oh9WYHFD9HPvFXKDdf/RnAiDgXjQff11qLManmXs5Eyeby6QSIHLya3T
-         czl232v4CF8cXVf7JD8B2z8vbmcRgLhNchABk3ekYMx3BZ66JwBn3hOquTR/uszmoU
-         HDfoMCgWGjfl861Atk0TBVwUylhoowgTWALnT4TPhUYAgShXnnre1dDFIRZtrVGEol
-         m8DcWvJXetMrV3itRZdoEn+PYgtxkGBPxBLfbX/Q8Rom2fZnemxTS1BOfseuaukFaE
-         OB1wjqGVawyYQ==
-Date:   Tue, 12 Sep 2023 16:50:47 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>
-Subject: Re: general protection fault in ext4_update_overhead
-Message-ID: <20230912235047.GA11463@frogsfrogsfrogs>
-References: <BL0PR11MB31066DF3F30927A7F82F22FEE1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
- <20230912234112.GA1294595@mit.edu>
+        with ESMTP id S238128AbjIMCMO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Sep 2023 22:12:14 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB07170B
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:12:10 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-655de2a5121so22612446d6.1
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:12:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694571130; x=1695175930; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h5lDV9LjddUeh7Xv3bK22WOy8oqI4Udt1N/7UqzzxWk=;
+        b=oULliiqU6MlAbYtyWIli3RCYS7H4K38rE8eMFqg89vH7QknQNRD/adIx7VVchM2UDi
+         bl5FrODgsDgZox85MWfPhB4k+XHQdqwziTpaO2TIXnDCS/BZtgR6gB+rRQOUsQlHFUn/
+         F9Ugzj/+vvDF/ZxrQWykJ4lM0f6YNNzt3b/+2IjAS2UMqZewcqbCn2KqTt+1tQvySIYi
+         1v2GUyrPQ+2BKNyPzjP9Um9FuJv/MbM2+A1fk48ZNvdpTL3xAVb2N8ugGW2qTknEFpJO
+         BbNv4jrQFTeH9mJAuXQmkhby/lTC6e+kKMxSvlEbhx+0RoS5FtXd0SUKdq3ctctvK+NU
+         GlJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694571130; x=1695175930;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h5lDV9LjddUeh7Xv3bK22WOy8oqI4Udt1N/7UqzzxWk=;
+        b=v3CltzRf4EvRndBd0SSrbNoKY6CEePR7sB95bS59Mwnp6aGjYmJW8LOUGwzTBp6C8S
+         6BWL8vVOxulhI5ndRNyHs9EeKN8L9xPBzM7QPtsfOms9g2RGNnITODbSVZq89TtD+KUf
+         HmVAnI1CyyqWMkp/Km+vPQred6U66W6WWEXA2FI7ga2jebMqqCP32k24S85zUhhKM9Mu
+         Ey/oGOX8T5ZnJZqzAXkmT5l/kqaoo3VAz6/yzRF9s/sJUTygz6hOpLpC7UK1SoOCMLw/
+         sWMSMKwJMZmFvzovrhFdYI8w4ZUTjxN99cXQq4PnqpnSFFPt4kzc5LekWhLMpYnA+3LA
+         pnKA==
+X-Gm-Message-State: AOJu0YzGMxakh6iNDEXr6OqZXoaKnv6EIgdF0FGeWm/x3bSUbNfWcHT4
+        UCUpAYvf9qT1reujQNVTpqcoxk9siP4=
+X-Google-Smtp-Source: AGHT+IExwTKW5Cbgwi2co+bXUIP13FgOJDjf5IJ0Mjbq4Crq+AAA3pgq1zmUvs4US5Pyy1glatMbMw==
+X-Received: by 2002:ad4:5bc8:0:b0:64f:60ec:1102 with SMTP id t8-20020ad45bc8000000b0064f60ec1102mr1603319qvt.33.1694571129580;
+        Tue, 12 Sep 2023 19:12:09 -0700 (PDT)
+Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id c8-20020a0cf2c8000000b0064f778c8165sm4016055qvm.64.2023.09.12.19.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 19:12:09 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH 0/6] improve cluster and block removal code
+Date:   Tue, 12 Sep 2023 22:11:42 -0400
+Message-Id: <20230913021148.1181646-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912234112.GA1294595@mit.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 07:41:12PM -0400, Theodore Ts'o wrote:
-> On Tue, Sep 12, 2023 at 11:02:35PM +0000, Sanan Hasanov wrote:
-> > Good day, dear maintainers,
-> > 
-> > We found a bug using a modified kernel configuration file used by syzbot.
-> > 
-> > We enhanced the coverage of the configuration file using our tool, klocalizer.
-> > 
-> > Kernel Branch: 6.3.0-next-20230426
+This patch series cleans up and rewrites parts of the code used to free
+clusters or blocks when space is removed from a file.  The intent is to
+improve the readability, clarity, and efficiency of that code.  These
+changes do not fix any known bugs.
 
-Also this was from            ^^^^^^^^ four months ago.
+Eric Whitney (6):
+  ext4: consolidate code used to free clusters
+  ext4: rework partial cluster definition and related tracepoints
+  ext4: rework partial cluster handling to use lblk more consistently
+  ext4: consolidate partial cluster initialization
+  ext4: simplify and improve efficiency of cluster removal code
+  ext4: remove mballoc's NOFREE flags
 
-Why are you wasting Ted and everyone else's time with this?
+ fs/ext4/ext4.h              |   4 +-
+ fs/ext4/ext4_extents.h      |  19 +-
+ fs/ext4/extents.c           | 371 ++++++++++++++++++------------------
+ fs/ext4/mballoc.c           |  25 +--
+ include/trace/events/ext4.h | 123 ++++++++----
+ 5 files changed, 287 insertions(+), 255 deletions(-)
 
---D
+-- 
+2.30.2
 
-> > Kernel Config: https://drive.google.com/file/d/1xpe7qMUUYvHQFzqZGUzcco9jF97EwTqQ/view?usp=sharing
-> > Reproducer: https://drive.google.com/file/d/1Q8ix6EiWrzx0bWLyoGTHP721KE4Ei3qf/view?usp=sharing
-> 
-> The reproducer is a zero-length file.  So I can do nothing with this
-> report.
-> 
-> Note that the official syzbot instance will do automatic bisection,
-> and will allow us to test patches.  The official syzbot instance also
-> processes the console output so that the stack trace has line numbers
-> and clickable links to the kernel sources.
-> 
-> This report is **much** less useful than the syzbot report, so please
-> don't be surprised if people treat this at a significantly lower
-> priority.  (Even if the reproducer wasn't a zero length file.  :-P  )
-> 
-> 	   	    		   	  - Ted
