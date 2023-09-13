@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BEF79DE1C
+	by mail.lfdr.de (Postfix) with ESMTP id 0C62679DE1B
 	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 04:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjIMCNP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Sep 2023 22:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        id S238129AbjIMCNU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Sep 2023 22:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235284AbjIMCNO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Sep 2023 22:13:14 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816D4170A
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:13:10 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-414e78cdc11so45169561cf.0
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:13:10 -0700 (PDT)
+        with ESMTP id S235284AbjIMCNT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 12 Sep 2023 22:13:19 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63045170A
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:13:15 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-64a5bc53646so39073036d6.2
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Sep 2023 19:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694571189; x=1695175989; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694571194; x=1695175994; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OapwWx/t3lT2N+8gp3EblGetgQPjPbXlcwuuYoaFp/c=;
-        b=rKG/2tJ+gQrMyzT+truPVuJ3maTjmn5bj5cjSB9iAdVzw9702JBOse4YGtWJhqNVZY
-         5PkbH83Hq5zAd08b/JcJwTJJmnxbo80Lvb2ZtojKuVfqP7/I9+k9katjpY2zusXFEjJi
-         WKVZfbhQSjNM1n2PN73n+74fgsUJAKXyrs5Ms9hE1Xw2y0xgBZtALxno/I+uW1ur9DAW
-         FbkFLY6VPYAYIRQFeYdu8wm2pd2N05GsusJ7Kz2fsP492kGpsUViOv+08vnp5SqyF09t
-         PV/+BB5lpt9EHB2e+4xWYf3KOJOJX2xHdUWQcs6ck7xesJmU42V2w3wmRp0cXraptYnf
-         WZYg==
+        bh=5c0srBTHnIt364VZybNxfWbIBlVY+m4+LTt6UDorVH4=;
+        b=q6osPttgvLlWMLh/x3SUhf70P5Z/bXpSnM1fHhP/R6QwvfktIUvmTEB2kuJQmSJXa2
+         p2FXxU6bGnBHAjguMOuTZezrqKLxHM9LXr6zswKpcM1DbZRj54AgIE1NlDs9CgqwrNUf
+         Oeiei1UCvxs4M4Z9eEYBzjuLaPY712sEHT1xVdEBHmMbAbh4jgxUB57Zs+JzfmyUm1H1
+         lwgF+trE/nETYVjMnfkY7hOe/OF/+7QiGr3KLzKRYDPIfEtbnkqpyTf1ZO0KJJYsm9tC
+         qORtyaockVVLAeMdDFWxn0ZWKgG1+ACQt2bs6khuUfVeNtmT8rBrsTWSYT+dQ3zd+J0c
+         jUWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694571189; x=1695175989;
+        d=1e100.net; s=20230601; t=1694571194; x=1695175994;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OapwWx/t3lT2N+8gp3EblGetgQPjPbXlcwuuYoaFp/c=;
-        b=QunQKOCY0VlYd5fylaCYNaigiS7W+RfRAWZzZJ1s8Xlj0iwLBEV++VBWgy399/aAiE
-         VwuiPx91PyjII3cQQuheasAXBYn5SoV1aKgLizZJKJ+7EycSKsZF55rOWkrbS5Tb8wmm
-         awL0dvyYuptUNyP/0WngaUjNEN+enC9v/feCccj3v9irjCRv2wOk7qVU4klnv81azRWr
-         tPaFdQYwIheBTFkxdlys3gw1FhC08EJQ9xYh5gTpgn1iDW6vTekIJBq15i++3PrZzmhj
-         2t2tyI/G0gMGqyjEmy1F3tuq/9rqotOSzGNDYDpPJqIWrA5p/SjW1xOd7RRQeWcgi4qM
-         5dcQ==
-X-Gm-Message-State: AOJu0Yy5ioOGG94g6KKr7ZqDxXHysyluVeheBWREYdBOrHItoglIo2aX
-        1osP19c8py959UdzRtw1npNaOCPXunY=
-X-Google-Smtp-Source: AGHT+IGa6Hq3pPUVdcb6ooAU1cM9RAUyaE5D8r+jRGePxE+eCyspCPRGJNqapym4XjyGq7eijVTWqg==
-X-Received: by 2002:a0c:fd45:0:b0:64a:87c8:6376 with SMTP id j5-20020a0cfd45000000b0064a87c86376mr1056074qvs.33.1694571189456;
-        Tue, 12 Sep 2023 19:13:09 -0700 (PDT)
+        bh=5c0srBTHnIt364VZybNxfWbIBlVY+m4+LTt6UDorVH4=;
+        b=TEzCjBeiECuBh9K30BvFYYjiXaoGSkwfp/peh6g2zcBqBB3EsPPNtWvMfBAQxskMwU
+         mLbL62HONcddVxQdDHXWIfTPFtIIGMo8A/IX2cSStbC6rgzyNaGvyEXH3hpNI1+Wdpmy
+         ocOOEXQt8nIdTDEbdlLY81UwCk3DA9Oe5KR4uqDVaTmkn7ZWKpq6FbmYjbBLOCJ1kYZX
+         SK+3MRVw9ffAoPceQd6S2/oasZwZff03SMS52aFUh4r+1BZOm6pO/b+Qkqvj6DW92YFX
+         nKhvunJz1CVLCWYa4wLn+c/OS7zfFIh5jEV+GJtF295MAzW1GKstIo42G42KwBHyUTr/
+         xrdw==
+X-Gm-Message-State: AOJu0YwU0Da2/CnkuKL1kCdkKxSUehhgQHnkgyDg6MMEGKtSSVqO/Jpx
+        Xa87sZFz2fhk+lJkOtIQcchNs96v2wA=
+X-Google-Smtp-Source: AGHT+IHmE/c3fLu8/51CZiqZM1qtlKYsZbrhB30JcKRzZxSNU+FArdMa8AWWi/BFlgvKeTJewfi4Dw==
+X-Received: by 2002:a0c:f594:0:b0:647:14eb:f99c with SMTP id k20-20020a0cf594000000b0064714ebf99cmr1381074qvm.14.1694571194210;
+        Tue, 12 Sep 2023 19:13:14 -0700 (PDT)
 Received: from localhost.localdomain (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id c8-20020a0cf2c8000000b0064f778c8165sm4016055qvm.64.2023.09.12.19.13.08
+        by smtp.gmail.com with ESMTPSA id c8-20020a0cf2c8000000b0064f778c8165sm4016055qvm.64.2023.09.12.19.13.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 19:13:09 -0700 (PDT)
+        Tue, 12 Sep 2023 19:13:13 -0700 (PDT)
 From:   Eric Whitney <enwlinux@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH 1/6] ext4: consolidate code used to free clusters
-Date:   Tue, 12 Sep 2023 22:11:43 -0400
-Message-Id: <20230913021148.1181646-2-enwlinux@gmail.com>
+Subject: [PATCH 2/6] ext4: rework partial cluster definition and related tracepoints
+Date:   Tue, 12 Sep 2023 22:11:44 -0400
+Message-Id: <20230913021148.1181646-3-enwlinux@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230913021148.1181646-1-enwlinux@gmail.com>
 References: <20230913021148.1181646-1-enwlinux@gmail.com>
@@ -64,234 +64,435 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The code used to free clusters when removing a block range from an extent
-tree belonging to a bigalloc file system is duplicated in several places.
-Collect it into a single function for improved readability.  Fold
-ext4_rereserve_cluster into that function, as it has only one call site
-after consolidation and contains a small amount of code.  Improve comments
-where clusters are freed and clean up the header for ext4_ext_rm_leaf().
+Rework the partial cluster definition to use more obvious state values
+and document the relationship between states and valid lblk and pclu
+values.  Add entries for the first and last clusters delimiting the
+space to be removed to enable optimizations in future patches.  Rework
+the tracepoints containing partial clusters to produce a more readable
+output format.  Add a tracepoint for free_partial_cluster().
 
 Signed-off-by: Eric Whitney <enwlinux@gmail.com>
 ---
- fs/ext4/extents.c | 146 ++++++++++++++++++++--------------------------
- 1 file changed, 64 insertions(+), 82 deletions(-)
+ fs/ext4/ext4_extents.h      |  19 ++++--
+ fs/ext4/extents.c           |  50 +++++++--------
+ include/trace/events/ext4.h | 119 ++++++++++++++++++++++++++----------
+ 3 files changed, 125 insertions(+), 63 deletions(-)
 
+diff --git a/fs/ext4/ext4_extents.h b/fs/ext4/ext4_extents.h
+index 26435f3a3094..06c2ce31dbcd 100644
+--- a/fs/ext4/ext4_extents.h
++++ b/fs/ext4/ext4_extents.h
+@@ -121,15 +121,22 @@ struct ext4_ext_path {
+ 
+ /*
+  * Used to record a portion of a cluster found at the beginning or end
+- * of an extent while traversing the extent tree during space removal.
+- * A partial cluster may be removed if it does not contain blocks shared
+- * with extents that aren't being deleted (tofree state).  Otherwise,
+- * it cannot be removed (nofree state).
++ * of an extent while traversing the extent tree when removing space.
++ * In the "none" state, no partial cluster is being tracked and both
++ * lblk and pclu values are invalid.
++ * In the "free" state, a partial cluster that is a possible candidate
++ * to be freed is being tracked, and both lblk and pclu values are valid.
++ * In the "keep" state, a partial cluster that must not be freed is being
++ * tracked, the lblk value is valid and the pclu value is not valid.
++ * start_lclu and end_lclu are the logical clusters at the start and end
++ * of the space to be removed.
+  */
+ struct partial_cluster {
+-	ext4_fsblk_t pclu;  /* physical cluster number */
++	enum {none, free, keep} state;
+ 	ext4_lblk_t lblk;   /* logical block number within logical cluster */
+-	enum {initial, tofree, nofree} state;
++	ext4_fsblk_t pclu;  /* physical cluster number */
++	ext4_lblk_t start_lclu;
++	ext4_lblk_t end_lclu;
+ };
+ 
+ /*
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 202c76996b62..9470502b886a 100644
+index 9470502b886a..0c52218fb171 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -2420,35 +2420,46 @@ static inline int get_default_free_blocks_flags(struct inode *inode)
- 	return 0;
- }
- 
--/*
-- * ext4_rereserve_cluster - increment the reserved cluster count when
-- *                          freeing a cluster with a pending reservation
-- *
-- * @inode - file containing the cluster
-- * @lblk - logical block in cluster to be reserved
-+/**
-+ * free_partial_cluster() - frees all the allocated blocks contained in a
-+ *                          partial cluster and rereserves space for delayed
-+ *                          allocated blocks it contains
-  *
-- * Increments the reserved cluster count and adjusts quota in a bigalloc
-- * file system when freeing a partial cluster containing at least one
-- * delayed and unwritten block.  A partial cluster meeting that
-- * requirement will have a pending reservation.  If so, the
-- * RERESERVE_CLUSTER flag is used when calling ext4_free_blocks() to
-- * defer reserved and allocated space accounting to a subsequent call
-- * to this function.
-+ * @handle: journal handle for current transaction
-+ * @inode: file containing the partial cluster
-+ * @partial: partial cluster to be freed
-  */
--static void ext4_rereserve_cluster(struct inode *inode, ext4_lblk_t lblk)
-+static void free_partial_cluster(handle_t *handle, struct inode *inode,
-+				 struct partial_cluster *partial)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+@@ -2436,6 +2436,8 @@ static void free_partial_cluster(handle_t *handle, struct inode *inode,
  	struct ext4_inode_info *ei = EXT4_I(inode);
-+	int flags = get_default_free_blocks_flags(inode);
+ 	int flags = get_default_free_blocks_flags(inode);
+ 
++	trace_free_partial_cluster(inode, partial);
 +
-+	/*
-+	 * When the partial cluster contains at least one delayed and
-+	 * unwritten block (has pending reservation), the RERESERVE_CLUSTER
-+	 * flag forces ext4_free_blocks() to defer reserved and allocated
-+	 * space accounting to this function.  This avoids potential difficult
-+	 * to handle ENOSPC conditions when the file system is near exhaustion.
-+	 */
-+	if (ext4_is_pending(inode, partial->lblk))
-+		flags |= EXT4_FREE_BLOCKS_RERESERVE_CLUSTER;
-+
-+	ext4_free_blocks(handle, inode, NULL, EXT4_C2B(sbi, partial->pclu),
-+			 sbi->s_cluster_ratio, flags);
- 
--	dquot_reclaim_block(inode, EXT4_C2B(sbi, 1));
-+	if (flags & EXT4_FREE_BLOCKS_RERESERVE_CLUSTER) {
-+		dquot_reclaim_block(inode, EXT4_C2B(sbi, 1));
- 
--	spin_lock(&ei->i_block_reservation_lock);
--	ei->i_reserved_data_blocks++;
--	percpu_counter_add(&sbi->s_dirtyclusters_counter, 1);
--	spin_unlock(&ei->i_block_reservation_lock);
-+		spin_lock(&ei->i_block_reservation_lock);
-+		ei->i_reserved_data_blocks++;
-+		percpu_counter_add(&sbi->s_dirtyclusters_counter, 1);
-+		spin_unlock(&ei->i_block_reservation_lock);
- 
--	percpu_counter_add(&sbi->s_freeclusters_counter, 1);
--	ext4_remove_pending(inode, lblk);
-+		percpu_counter_add(&sbi->s_freeclusters_counter, 1);
-+		ext4_remove_pending(inode, partial->lblk);
-+	}
- }
- 
- static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
-@@ -2491,19 +2502,10 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+ 	/*
+ 	 * When the partial cluster contains at least one delayed and
+ 	 * unwritten block (has pending reservation), the RERESERVE_CLUSTER
+@@ -2502,11 +2504,11 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
  	 * cluster of the last block in the extent, we free it
  	 */
  	last_pblk = ext4_ext_pblock(ex) + ee_len - 1;
--
- 	if (partial->state != initial &&
+-	if (partial->state != initial &&
++	if (partial->state != none &&
  	    partial->pclu != EXT4_B2C(sbi, last_pblk)) {
--		if (partial->state == tofree) {
--			flags = get_default_free_blocks_flags(inode);
--			if (ext4_is_pending(inode, partial->lblk))
--				flags |= EXT4_FREE_BLOCKS_RERESERVE_CLUSTER;
--			ext4_free_blocks(handle, inode, NULL,
--					 EXT4_C2B(sbi, partial->pclu),
--					 sbi->s_cluster_ratio, flags);
--			if (flags & EXT4_FREE_BLOCKS_RERESERVE_CLUSTER)
--				ext4_rereserve_cluster(inode, partial->lblk);
--		}
-+		if (partial->state == tofree)
-+			free_partial_cluster(handle, inode, partial);
- 		partial->state = initial;
+-		if (partial->state == tofree)
++		if (partial->state == free)
+ 			free_partial_cluster(handle, inode, partial);
+-		partial->state = initial;
++		partial->state = none;
  	}
  
-@@ -2516,23 +2518,21 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
- 	 * state is nofree).  If a partial cluster exists here, it must be
+ 	num = le32_to_cpu(ex->ee_block) + ee_len - from;
+@@ -2515,21 +2517,21 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+ 	/*
+ 	 * We free the partial cluster at the end of the extent (if any),
+ 	 * unless the cluster is used by another extent (partial_cluster
+-	 * state is nofree).  If a partial cluster exists here, it must be
++	 * state is keep).  If a partial cluster exists here, it must be
  	 * shared with the last block in the extent.
  	 */
--	flags = get_default_free_blocks_flags(inode);
  
  	/* partial, left end cluster aligned, right end unaligned */
  	if ((EXT4_LBLK_COFF(sbi, to) != sbi->s_cluster_ratio - 1) &&
  	    (EXT4_LBLK_CMASK(sbi, to) >= from) &&
- 	    (partial->state != nofree)) {
--		if (ext4_is_pending(inode, to))
--			flags |= EXT4_FREE_BLOCKS_RERESERVE_CLUSTER;
--		ext4_free_blocks(handle, inode, NULL,
--				 EXT4_PBLK_CMASK(sbi, last_pblk),
--				 sbi->s_cluster_ratio, flags);
--		if (flags & EXT4_FREE_BLOCKS_RERESERVE_CLUSTER)
--			ext4_rereserve_cluster(inode, to);
-+		if (partial->state == initial) {
-+			partial->pclu = EXT4_B2C(sbi, last_pblk);
-+			partial->lblk = to;
-+			partial->state = tofree;
-+		}
-+		free_partial_cluster(handle, inode, partial);
- 		partial->state = initial;
--		flags = get_default_free_blocks_flags(inode);
+-	    (partial->state != nofree)) {
+-		if (partial->state == initial) {
++	    (partial->state != keep)) {
++		if (partial->state == none) {
+ 			partial->pclu = EXT4_B2C(sbi, last_pblk);
+ 			partial->lblk = to;
+-			partial->state = tofree;
++			partial->state = free;
+ 		}
+ 		free_partial_cluster(handle, inode, partial);
+-		partial->state = initial;
++		partial->state = none;
  	}
  
-+	flags = get_default_free_blocks_flags(inode);
- 	flags |= EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER;
+ 	flags = get_default_free_blocks_flags(inode);
+@@ -2545,8 +2547,8 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+ 	ext4_free_blocks(handle, inode, NULL, pblk, num, flags);
+ 
+ 	/* reset the partial cluster if we've freed past it */
+-	if (partial->state != initial && partial->pclu != EXT4_B2C(sbi, pblk))
+-		partial->state = initial;
++	if (partial->state != none && partial->pclu != EXT4_B2C(sbi, pblk))
++		partial->state = none;
  
  	/*
-@@ -2571,20 +2571,17 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+ 	 * If we've freed the entire extent but the beginning is not left
+@@ -2559,13 +2561,13 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+ 	 * extent is left cluster aligned.
+ 	 */
+ 	if (EXT4_LBLK_COFF(sbi, from) && num == ee_len) {
+-		if (partial->state == initial) {
++		if (partial->state == none) {
+ 			partial->pclu = EXT4_B2C(sbi, pblk);
+ 			partial->lblk = from;
+-			partial->state = tofree;
++			partial->state = free;
+ 		}
+ 	} else {
+-		partial->state = initial;
++		partial->state = none;
+ 	}
+ 
  	return 0;
- }
- 
--/*
-- * ext4_ext_rm_leaf() Removes the extents associated with the
-- * blocks appearing between "start" and "end".  Both "start"
-- * and "end" must appear in the same extent or EIO is returned.
-+/**
-+ * ext4_ext_rm_leaf() - Removes the extents associated with the blocks
-+ *                      appearing between "start" and "end"
-  *
-  * @handle: The journal handle
-- * @inode:  The files inode
-- * @path:   The path to the leaf
-- * @partial_cluster: The cluster which we'll have to free if all extents
-- *                   has been released from it.  However, if this value is
-- *                   negative, it's a cluster just to the right of the
-- *                   punched region and it must not be freed.
-- * @start:  The first block to remove
-- * @end:   The last block to remove
-+ * @inode: The file's inode
-+ * @path:  The path to the leaf
-+ * @partial: Information used to determine whether a cluster in a bigalloc
-+ *           file system should be freed as extents are removed
-+ * @start: The first block to remove
-+ * @end: The last block to remove
-  */
- static int
- ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
-@@ -2759,24 +2756,18 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
- 
- 	/*
- 	 * If there's a partial cluster and at least one extent remains in
--	 * the leaf, free the partial cluster if it isn't shared with the
--	 * current extent.  If it is shared with the current extent
--	 * we reset the partial cluster because we've reached the start of the
--	 * truncated/punched region and we're done removing blocks.
-+	 * the leaf, free the partial if it isn't shared with the next
-+	 * extent.  Otherwise, clear it - the beginning of the space to be
-+	 * removed has been reached.  If no extent remains in the leaf,
-+	 * ext4_ext_remove_space() will always read in the next leaf (if any)
-+	 * containing the next adjacent extent, allowing this code to handle
-+	 * the case where the last block in that extent is outside the space
-+	 * to be removed but might be shared with the partial cluster.
+@@ -2649,7 +2651,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+ 			if (sbi->s_cluster_ratio > 1) {
+ 				pblk = ext4_ext_pblock(ex);
+ 				partial->pclu = EXT4_B2C(sbi, pblk);
+-				partial->state = nofree;
++				partial->state = keep;
+ 			}
+ 			ex--;
+ 			ex_ee_block = le32_to_cpu(ex->ee_block);
+@@ -2764,11 +2766,11 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+ 	 * the case where the last block in that extent is outside the space
+ 	 * to be removed but might be shared with the partial cluster.
  	 */
- 	if (partial->state == tofree && ex >= EXT_FIRST_EXTENT(eh)) {
+-	if (partial->state == tofree && ex >= EXT_FIRST_EXTENT(eh)) {
++	if (partial->state == free && ex >= EXT_FIRST_EXTENT(eh)) {
  		pblk = ext4_ext_pblock(ex) + ex_ee_len - 1;
--		if (partial->pclu != EXT4_B2C(sbi, pblk)) {
--			int flags = get_default_free_blocks_flags(inode);
--
--			if (ext4_is_pending(inode, partial->lblk))
--				flags |= EXT4_FREE_BLOCKS_RERESERVE_CLUSTER;
--			ext4_free_blocks(handle, inode, NULL,
--					 EXT4_C2B(sbi, partial->pclu),
--					 sbi->s_cluster_ratio, flags);
--			if (flags & EXT4_FREE_BLOCKS_RERESERVE_CLUSTER)
--				ext4_rereserve_cluster(inode, partial->lblk);
--		}
-+		if (partial->pclu != EXT4_B2C(sbi, pblk))
-+			free_partial_cluster(handle, inode, partial);
- 		partial->state = initial;
+ 		if (partial->pclu != EXT4_B2C(sbi, pblk))
+ 			free_partial_cluster(handle, inode, partial);
+-		partial->state = initial;
++		partial->state = none;
  	}
  
-@@ -3032,21 +3023,12 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 					 path->p_hdr->eh_entries);
+ 	/* if this leaf is free, then we should
+@@ -2813,7 +2815,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
  
- 	/*
--	 * if there's a partial cluster and we have removed the first extent
--	 * in the file, then we also free the partial cluster, if any
-+	 * if a partial cluster still remains here the extent tree has
-+	 * been traversed to the beginning of the file, so it is not
-+	 * shared with another extent
+ 	partial.pclu = 0;
+ 	partial.lblk = 0;
+-	partial.state = initial;
++	partial.state = none;
+ 
+ 	ext_debug(inode, "truncate since %u to %u\n", start, end);
+ 
+@@ -2878,7 +2880,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 			if (sbi->s_cluster_ratio > 1) {
+ 				pblk = ext4_ext_pblock(ex) + end - ee_block + 1;
+ 				partial.pclu = EXT4_B2C(sbi, pblk);
+-				partial.state = nofree;
++				partial.state = keep;
+ 			}
+ 
+ 			/*
+@@ -2893,15 +2895,15 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 				goto out;
+ 
+ 		} else if (sbi->s_cluster_ratio > 1 && end >= ex_end &&
+-			   partial.state == initial) {
++			   partial.state == none) {
+ 			/*
+ 			 * If we're punching, there's an extent to the right.
+ 			 * If the partial cluster hasn't been set, set it to
+-			 * that extent's first cluster and its state to nofree
++			 * that extent's first cluster and its state to keep
+ 			 * so it won't be freed should it contain blocks to be
+-			 * removed. If it's already set (tofree/nofree), we're
++			 * removed. If it's already set (free/keep), we're
+ 			 * retrying and keep the original partial cluster info
+-			 * so a cluster marked tofree as a result of earlier
++			 * so a cluster marked free as a result of earlier
+ 			 * extent removal is not lost.
+ 			 */
+ 			lblk = ex_end + 1;
+@@ -2911,7 +2913,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 				goto out;
+ 			if (pblk) {
+ 				partial.pclu = EXT4_B2C(sbi, pblk);
+-				partial.state = nofree;
++				partial.state = keep;
+ 			}
+ 		}
+ 	}
+@@ -3027,7 +3029,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 	 * been traversed to the beginning of the file, so it is not
+ 	 * shared with another extent
  	 */
--	if (partial.state == tofree && err == 0) {
--		int flags = get_default_free_blocks_flags(inode);
--
--		if (ext4_is_pending(inode, partial.lblk))
--			flags |= EXT4_FREE_BLOCKS_RERESERVE_CLUSTER;
--		ext4_free_blocks(handle, inode, NULL,
--				 EXT4_C2B(sbi, partial.pclu),
--				 sbi->s_cluster_ratio, flags);
--		if (flags & EXT4_FREE_BLOCKS_RERESERVE_CLUSTER)
--			ext4_rereserve_cluster(inode, partial.lblk);
--		partial.state = initial;
--	}
-+	if (partial.state == tofree && err == 0)
-+		free_partial_cluster(handle, inode, &partial);
+-	if (partial.state == tofree && err == 0)
++	if (partial.state == free && err == 0)
+ 		free_partial_cluster(handle, inode, &partial);
  
  	/* TODO: flexible tree reduction should be here */
- 	if (path->p_hdr->eh_entries == 0) {
+diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+index 65029dfb92fb..b474ded2623d 100644
+--- a/include/trace/events/ext4.h
++++ b/include/trace/events/ext4.h
+@@ -95,6 +95,16 @@ TRACE_DEFINE_ENUM(ES_REFERENCED_B);
+ 	{ FALLOC_FL_COLLAPSE_RANGE,	"COLLAPSE_RANGE"},	\
+ 	{ FALLOC_FL_ZERO_RANGE,		"ZERO_RANGE"})
+ 
++TRACE_DEFINE_ENUM(none);
++TRACE_DEFINE_ENUM(free);
++TRACE_DEFINE_ENUM(keep);
++
++#define show_partial_cluster_state(state)	\
++	__print_symbolic(state,			\
++			{ none,	"none"},	\
++			{ free,	"free"},	\
++			{ keep,	"keep"})
++
+ TRACE_DEFINE_ENUM(EXT4_FC_REASON_XATTR);
+ TRACE_DEFINE_ENUM(EXT4_FC_REASON_CROSS_RENAME);
+ TRACE_DEFINE_ENUM(EXT4_FC_REASON_JOURNAL_FLAG_CHANGE);
+@@ -1984,6 +1994,42 @@ TRACE_EVENT(ext4_ext_show_extent,
+ 		  (unsigned short) __entry->len)
+ );
+ 
++TRACE_EVENT(free_partial_cluster,
++	TP_PROTO(struct inode *inode, struct partial_cluster *pc),
++
++	TP_ARGS(inode, pc),
++
++	TP_STRUCT__entry(
++		__field(	dev_t,		dev		)
++		__field(	ino_t,		ino		)
++		__field(	int,		pc_state	)
++		__field(	ext4_lblk_t,	pc_lblk		)
++		__field(	ext4_fsblk_t,	pc_pclu		)
++		__field(	ext4_lblk_t,	pc_start_lclu	)
++		__field(	ext4_lblk_t,	pc_end_lclu	)
++	),
++
++	TP_fast_assign(
++		__entry->dev		= inode->i_sb->s_dev;
++		__entry->ino		= inode->i_ino;
++		__entry->pc_state	= pc->state;
++		__entry->pc_lblk	= pc->lblk;
++		__entry->pc_pclu	= pc->pclu;
++		__entry->pc_start_lclu	= pc->start_lclu;
++		__entry->pc_end_lclu	= pc->end_lclu;
++	),
++
++	TP_printk("dev %d,%d ino %lu partial "
++		  "[state %s lblk %u pclu %lld start_lclu %u end_lclu %u]",
++		  MAJOR(__entry->dev), MINOR(__entry->dev),
++		  (unsigned long) __entry->ino,
++		  show_partial_cluster_state(__entry->pc_state),
++		  (unsigned int) __entry->pc_lblk,
++		  (long long) __entry->pc_pclu,
++		  (unsigned int) __entry->pc_start_lclu,
++		  (unsigned int) __entry->pc_end_lclu)
++);
++
+ TRACE_EVENT(ext4_remove_blocks,
+ 	TP_PROTO(struct inode *inode, struct ext4_extent *ex,
+ 		 ext4_lblk_t from, ext4_fsblk_t to,
+@@ -1992,16 +2038,18 @@ TRACE_EVENT(ext4_remove_blocks,
+ 	TP_ARGS(inode, ex, from, to, pc),
+ 
+ 	TP_STRUCT__entry(
+-		__field(	dev_t,		dev	)
+-		__field(	ino_t,		ino	)
+-		__field(	ext4_lblk_t,	from	)
+-		__field(	ext4_lblk_t,	to	)
+-		__field(	ext4_fsblk_t,	ee_pblk	)
+-		__field(	ext4_lblk_t,	ee_lblk	)
+-		__field(	unsigned short,	ee_len	)
+-		__field(	ext4_fsblk_t,	pc_pclu	)
+-		__field(	ext4_lblk_t,	pc_lblk	)
+-		__field(	int,		pc_state)
++		__field(	dev_t,		dev		)
++		__field(	ino_t,		ino		)
++		__field(	ext4_lblk_t,	from		)
++		__field(	ext4_lblk_t,	to		)
++		__field(	ext4_fsblk_t,	ee_pblk		)
++		__field(	ext4_lblk_t,	ee_lblk		)
++		__field(	unsigned short,	ee_len		)
++		__field(	int,		pc_state	)
++		__field(	ext4_lblk_t,	pc_lblk		)
++		__field(	ext4_fsblk_t,	pc_pclu		)
++		__field(	ext4_lblk_t,	pc_start_lclu	)
++		__field(	ext4_lblk_t,	pc_end_lclu	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -2012,13 +2060,16 @@ TRACE_EVENT(ext4_remove_blocks,
+ 		__entry->ee_pblk	= ext4_ext_pblock(ex);
+ 		__entry->ee_lblk	= le32_to_cpu(ex->ee_block);
+ 		__entry->ee_len		= ext4_ext_get_actual_len(ex);
+-		__entry->pc_pclu	= pc->pclu;
+-		__entry->pc_lblk	= pc->lblk;
+ 		__entry->pc_state	= pc->state;
++		__entry->pc_lblk	= pc->lblk;
++		__entry->pc_pclu	= pc->pclu;
++		__entry->pc_start_lclu	= pc->start_lclu;
++		__entry->pc_end_lclu	= pc->end_lclu;
+ 	),
+ 
+-	TP_printk("dev %d,%d ino %lu extent [%u(%llu), %u]"
+-		  "from %u to %u partial [pclu %lld lblk %u state %d]",
++	TP_printk("dev %d,%d ino %lu extent [%u(%llu), %u] "
++		  "from %u to %u partial "
++		  "[state %s lblk %u pclu %lld start_lclu %u end_lclu %u]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  (unsigned long) __entry->ino,
+ 		  (unsigned) __entry->ee_lblk,
+@@ -2026,9 +2077,11 @@ TRACE_EVENT(ext4_remove_blocks,
+ 		  (unsigned short) __entry->ee_len,
+ 		  (unsigned) __entry->from,
+ 		  (unsigned) __entry->to,
+-		  (long long) __entry->pc_pclu,
++		  show_partial_cluster_state(__entry->pc_state),
+ 		  (unsigned int) __entry->pc_lblk,
+-		  (int) __entry->pc_state)
++		  (long long) __entry->pc_pclu,
++		  (unsigned int) __entry->pc_start_lclu,
++		  (unsigned int) __entry->pc_end_lclu)
+ );
+ 
+ TRACE_EVENT(ext4_ext_rm_leaf,
+@@ -2045,9 +2098,9 @@ TRACE_EVENT(ext4_ext_rm_leaf,
+ 		__field(	ext4_lblk_t,	ee_lblk	)
+ 		__field(	ext4_fsblk_t,	ee_pblk	)
+ 		__field(	short,		ee_len	)
+-		__field(	ext4_fsblk_t,	pc_pclu	)
+-		__field(	ext4_lblk_t,	pc_lblk	)
+ 		__field(	int,		pc_state)
++		__field(	ext4_lblk_t,	pc_lblk	)
++		__field(	ext4_fsblk_t,	pc_pclu	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -2057,22 +2110,22 @@ TRACE_EVENT(ext4_ext_rm_leaf,
+ 		__entry->ee_lblk	= le32_to_cpu(ex->ee_block);
+ 		__entry->ee_pblk	= ext4_ext_pblock(ex);
+ 		__entry->ee_len		= ext4_ext_get_actual_len(ex);
+-		__entry->pc_pclu	= pc->pclu;
+-		__entry->pc_lblk	= pc->lblk;
+ 		__entry->pc_state	= pc->state;
++		__entry->pc_lblk	= pc->lblk;
++		__entry->pc_pclu	= pc->pclu;
+ 	),
+ 
+-	TP_printk("dev %d,%d ino %lu start_lblk %u last_extent [%u(%llu), %u]"
+-		  "partial [pclu %lld lblk %u state %d]",
++	TP_printk("dev %d,%d ino %lu start_lblk %u last_extent [%u(%llu), %u] "
++		  "partial [state %s lblk %u pclu %lld]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  (unsigned long) __entry->ino,
+ 		  (unsigned) __entry->start,
+ 		  (unsigned) __entry->ee_lblk,
+ 		  (unsigned long long) __entry->ee_pblk,
+ 		  (unsigned short) __entry->ee_len,
+-		  (long long) __entry->pc_pclu,
++		  show_partial_cluster_state(__entry->pc_state),
+ 		  (unsigned int) __entry->pc_lblk,
+-		  (int) __entry->pc_state)
++		  (long long) __entry->pc_pclu)
+ );
+ 
+ TRACE_EVENT(ext4_ext_rm_idx,
+@@ -2120,7 +2173,7 @@ TRACE_EVENT(ext4_ext_remove_space,
+ 		__entry->depth	= depth;
+ 	),
+ 
+-	TP_printk("dev %d,%d ino %lu since %u end %u depth %d",
++	TP_printk("dev %d,%d ino %lu start %u end %u depth %d",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  (unsigned long) __entry->ino,
+ 		  (unsigned) __entry->start,
+@@ -2140,9 +2193,9 @@ TRACE_EVENT(ext4_ext_remove_space_done,
+ 		__field(	ext4_lblk_t,	start		)
+ 		__field(	ext4_lblk_t,	end		)
+ 		__field(	int,		depth		)
+-		__field(	ext4_fsblk_t,	pc_pclu		)
+-		__field(	ext4_lblk_t,	pc_lblk		)
+ 		__field(	int,		pc_state	)
++		__field(	ext4_lblk_t,	pc_lblk		)
++		__field(	ext4_fsblk_t,	pc_pclu		)
+ 		__field(	unsigned short,	eh_entries	)
+ 	),
+ 
+@@ -2152,23 +2205,23 @@ TRACE_EVENT(ext4_ext_remove_space_done,
+ 		__entry->start		= start;
+ 		__entry->end		= end;
+ 		__entry->depth		= depth;
+-		__entry->pc_pclu	= pc->pclu;
+-		__entry->pc_lblk	= pc->lblk;
+ 		__entry->pc_state	= pc->state;
++		__entry->pc_lblk	= pc->lblk;
++		__entry->pc_pclu	= pc->pclu;
+ 		__entry->eh_entries	= le16_to_cpu(eh_entries);
+ 	),
+ 
+-	TP_printk("dev %d,%d ino %lu since %u end %u depth %d "
+-		  "partial [pclu %lld lblk %u state %d] "
++	TP_printk("dev %d,%d ino %lu start %u end %u depth %d "
++		  "partial [state %s lblk %u pclu %lld] "
+ 		  "remaining_entries %u",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  (unsigned long) __entry->ino,
+ 		  (unsigned) __entry->start,
+ 		  (unsigned) __entry->end,
+ 		  __entry->depth,
+-		  (long long) __entry->pc_pclu,
++		  show_partial_cluster_state(__entry->pc_state),
+ 		  (unsigned int) __entry->pc_lblk,
+-		  (int) __entry->pc_state,
++		  (long long) __entry->pc_pclu,
+ 		  (unsigned short) __entry->eh_entries)
+ );
+ 
 -- 
 2.30.2
 
