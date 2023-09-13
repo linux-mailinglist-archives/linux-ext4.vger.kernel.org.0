@@ -2,55 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B5779E592
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 13:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16DA79EBF2
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239864AbjIMLAV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Sep 2023 07:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S240856AbjIMPCm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Sep 2023 11:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239798AbjIMLAU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Sep 2023 07:00:20 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A84F19AF;
-        Wed, 13 Sep 2023 04:00:16 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C3BB268AA6; Wed, 13 Sep 2023 13:00:10 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 13:00:10 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 03/12] filemap: update ki_pos in generic_perform_write
-Message-ID: <20230913110010.GA31292@lst.de>
-References: <20230601145904.1385409-1-hch@lst.de> <20230601145904.1385409-4-hch@lst.de> <20230827194122.GA325446@ZenIV> <20230827214518.GU3390869@ZenIV>
+        with ESMTP id S239071AbjIMPCm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Sep 2023 11:02:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4ADAF
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Sep 2023 08:02:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 413B9C433C7
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Sep 2023 15:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694617358;
+        bh=RMld45cpOORWbn6ZTKuz54sPg19DeBkSe2jOqyOlf50=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=Ap3vsAs9Du2fxp/9sKBKlwVaAZnFPCj+htsrhNR0+TSXSQQdZy0wo0i3FNjHkboDR
+         jAJ8xeDZix7HfkpObihPbP9RyeUAeCdzKAQcDYTH50OEMVPSKC822GOG28eSUX/D/r
+         4Ozw2aKMMVN4AbQfbvyRcgUmoZTShbWDcQbZvRFJ8EEQosDBwaoQUlzHVMehkPMZQC
+         0tqksmUrQoUp9QOAUvrjKX7TRmdYFqaSd4Gc88Tt80YMuRQtO77L4hQPZ9AEZsZYJh
+         5b4xCCXgIdSGGHM6Qg+ZFu8sC4y/SiNwTYQh7HyZUsAtHD8WuPtLI/y9dINNx9CrkC
+         OMsZS16f4r1wg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 292C5C53BCD; Wed, 13 Sep 2023 15:02:38 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 216322] Freezing of tasks failed after 60.004 seconds (1 tasks
+ refusing to freeze... task:fstrim  ext4_trim_fs - Dell XPS 13 9310
+Date:   Wed, 13 Sep 2023 15:02:37 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: jack@suse.cz
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: attachments.created
+Message-ID: <bug-216322-13602-ieQ6qjWnwn@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-216322-13602@https.bugzilla.kernel.org/>
+References: <bug-216322-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230827214518.GU3390869@ZenIV>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> direct_write_fallback(): on error revert the ->ki_pos update from buffered write
+https://bugzilla.kernel.org/show_bug.cgi?id=3D216322
 
-Al, Christian: can you send this fix on top Linus?
+--- Comment #14 from Jan Kara (jack@suse.cz) ---
+Created attachment 305102
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D305102&action=3Dedit
+[PATCH 1/2] ext4: Move setting of trimmed bit into ext4_try_to_trim_range()
 
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
