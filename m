@@ -2,71 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A63D79EE4B
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Sep 2023 18:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B8979FE00
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 10:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjIMQdW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 13 Sep 2023 12:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
+        id S236287AbjINIOy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Sep 2023 04:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIMQdW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 13 Sep 2023 12:33:22 -0400
+        with ESMTP id S235969AbjINIOx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 04:14:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425B019A7;
-        Wed, 13 Sep 2023 09:33:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C43C433C8;
-        Wed, 13 Sep 2023 16:33:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22D0CD8;
+        Thu, 14 Sep 2023 01:14:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65E8AC433C7;
+        Thu, 14 Sep 2023 08:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694622797;
-        bh=/BE0SzPSHWJUDQnPrCfnTnaEO0Ee7ixrpqIiDWWi4pg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JEIWOoDeYw0Lf9hWj/zCyZ4x/rGCa/NQnygF+m0lMZeczRYWp/+IE53tvWyCKZsG+
-         up2zc8mQP9OdLjIt3ieHpSW+DbqQjZbKoxHgYka+ox5B/duraDYwWYC2flCW6yQuBT
-         cv0SrfJZcsbNKoo8+UUGobBcO+5vSh//zaB0oCO1AkX/JNOxsSLnUA74YuG8d2qy//
-         xSekU6sH/2OHlD59lMaI3d2pMSviFkxZRQRw7TX7MfD7+om+CEtOj6/4xJ6+C+s9aW
-         E5R98PPdfp9ZT0xmFjYnC4VDDVH+LzbtHDEh8winSlhdDUVsFOEtHvfQKUUr5vKlnV
-         kky/flcyBX0+w==
-Date:   Wed, 13 Sep 2023 18:33:10 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 03/12] filemap: update ki_pos in generic_perform_write
-Message-ID: <20230913-aufgreifen-fehlleiten-204b36f3069d@brauner>
-References: <20230601145904.1385409-1-hch@lst.de>
- <20230601145904.1385409-4-hch@lst.de>
- <20230827194122.GA325446@ZenIV>
- <20230827214518.GU3390869@ZenIV>
- <20230913110010.GA31292@lst.de>
+        s=k20201202; t=1694679289;
+        bh=O/fQUB0thzVERyyDJ+e34tB6NXJCmxw8lXP18CaGKeo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XXUmuSFI3jaRP/IM3nQ4JnvyjNh2qAOhASwCfGN1IJc6eJjrXLpDuCg/3ZRK0XZIj
+         PFpUjNSLaAuzaHdHX3KqjtWOGoOw1pqq7H1hX2lo3clUMJ3Hq5Q+RZY621FubejTSP
+         Dh2Z62Cf+OwrRofnkyC/mnCGfrVcW82/pgXrN5vRE9sZCwRAPBDRIgbVnSW1AscKx0
+         qnVUR+TBx4/yQhJ4uusXzvx8wg1uyXcrRP8jIXgrEbf3eBb2dChUkeuEIJ3i44gnGV
+         dn/WYBhiU/WVI/fHFm4KWMQ+n7wCAX7LZDacnTqVfOvr354VtPtV1r2ZSb96qVxwNz
+         efUYIl8JOfimg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH v2 0/5] fscrypt: add support for data_unit_size < fs_block_size
+Date:   Thu, 14 Sep 2023 01:12:50 -0700
+Message-ID: <20230914081255.193502-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230913110010.GA31292@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 01:00:10PM +0200, Christoph Hellwig wrote:
-> > direct_write_fallback(): on error revert the ->ki_pos update from buffered write
-> 
-> Al, Christian: can you send this fix on top Linus?
+This patchset adds support for configuring the granularity of file
+contents encryption (a.k.a. the "crypto data unit size") to be less than
+the filesystem block size.  The main use case for this is to support
+inline crypto hardware that only supports a data unit size that is less
+than the FS block size being used.  Another possible use case is to
+support direct I/O on encrypted files without the FS block alignment
+restriction.  Note that decreasing the crypto data unit size decreases
+efficiency, so this feature should only be used when necessary.
 
-Wasn't aware of this, sorry. I've picked it up and placed it with
-another set of small fixes I already have.
-I'm happy to have Al take it ofc.
+For full details, see patch 5 which adds the actual feature.  Patches
+1-4 are preparatory patches.
+
+I've written an xfstest that verifies that when a sub-block data unit
+size is selected, the data on-disk is encrypted correctly with that data
+unit size.  I'll be sending that out separately.  Other testing of this
+patchset with xfstests has gone well, though it turns out a sub-block
+data unit size doesn't really work with IV_INO_LBLK_* yet (see patch 5).
+
+This patchset will cause some conflicts in the extent-based encryption
+patches that the btrfs folks are working on, as both are touching file
+contents encryption, but logically they are orthogonal features.
+
+This patchset is based on v6.6-rc1.
+
+Changed in v2:
+  - Rebased onto v6.6-rc1 and took into account CephFS's recent addition
+    of support for fscrypt
+  - Narrowed the focus somewhat by dropping the attempted support for
+    IV_INO_LBLK_32 and clearly documenting what is considered out of
+    scope for now
+  - Other cleanups
+
+Eric Biggers (5):
+  fscrypt: make it extra clear that key_prefix is deprecated
+  fscrypt: make the bounce page pool opt-in instead of opt-out
+  fscrypt: use s_maxbytes instead of filesystem lblk_bits
+  fscrypt: replace get_ino_and_lblk_bits with just has_32bit_inodes
+  fscrypt: support crypto data unit size less than filesystem block size
+
+ Documentation/filesystems/fscrypt.rst | 116 ++++++++++++++------
+ fs/ceph/crypto.c                      |   1 +
+ fs/crypto/bio.c                       |  39 ++++---
+ fs/crypto/crypto.c                    | 148 +++++++++++++++-----------
+ fs/crypto/fscrypt_private.h           |  55 ++++++++--
+ fs/crypto/inline_crypt.c              |  25 +++--
+ fs/crypto/keysetup.c                  |   3 +
+ fs/crypto/keysetup_v1.c               |   5 +-
+ fs/crypto/policy.c                    |  75 ++++++++-----
+ fs/ext4/crypto.c                      |  13 +--
+ fs/f2fs/super.c                       |  13 +--
+ fs/ubifs/crypto.c                     |   3 +-
+ include/linux/fscrypt.h               |  71 +++++++-----
+ include/uapi/linux/fscrypt.h          |   3 +-
+ 14 files changed, 364 insertions(+), 206 deletions(-)
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+2.42.0
+
