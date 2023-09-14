@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F857A085A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11097A085B
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 17:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbjINPBV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Sep 2023 11:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S240593AbjINPBY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Sep 2023 11:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240774AbjINPBU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 11:01:20 -0400
+        with ESMTP id S229568AbjINPBY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 11:01:24 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975FA1FC2
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Sep 2023 08:01:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0260A8
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Sep 2023 08:01:19 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-113-225.bstnma.fios.verizon.net [173.48.113.225])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38EF0jpt000409
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38EF0jMH000408
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 14 Sep 2023 11:00:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1694703647; bh=lrmQrJvIxyRlTUwEk2DAFIW09BK8fmo+w0FXcpX+fwo=;
+        t=1694703647; bh=6S1k2iDH9GNe9lxLjjxLjWHxbt1hlMrzeY5YzEQzWsE=;
         h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=DRrBl2gaykYyOeNDI6kPCZsGg//yU3c8kUacwsI8I2q3LoFP7nVm95MMLGfny86yK
-         GNmS/14Tu7bDlczYFFbGCdEPRijJe11Rgvf8yb1NJXGB7HXnVnYmIX0bVUcQTywbFx
-         Q4ifHqCJy64B1NNCy+E0iejZWVby6zyNzNiSF48QRYQsyAwsDym3xTmGSjQ3+yo56I
-         75AMa5aOilGMo6qKUgtzRW/GT+zPRQgLb+RjKx8Ev2PPXJg8jnPGwMBEiBxH9dT+ks
-         XxpNIX9VRAolNo3NJWWwG1/l9TTs/iHGfRztXpso9ZJ38a2AJMpVvkzSRt+bCUKZo+
-         Ggr881zVnyHtQ==
+        b=a8pECaKTx75qjuee90vCO6bWSmHlMex5dpQ4Q6jd/50H3ABDvroPEFDNFqkYm1g8o
+         eqKtcuVcLoXROG6sub7EBRpz5CU3eBAsiuFwltIswcQO6PaWYeAvILowGsbehwpjlk
+         F2W1Kkdy4m6jdhuXqwviMhDxyEZRUigFK2PwivsEPmuFkC/cQnEjhLhN9mu1qOYjkS
+         6dkwsvWnPMisNqOrZux0RILp/RWPOTM3Lf2WgvfuEBlCctlPB/Va0jXe4/Bm/wKMWb
+         mmThF6B/WaDJuZoz2oSuoPATx1Z4VzYErSDX+Eq+uAVi8arAxZJ7oJang3ldowYPgG
+         EhmE+lAn1H3Ng==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E7C8915C0266; Thu, 14 Sep 2023 11:00:44 -0400 (EDT)
+        id E94A415C0269; Thu, 14 Sep 2023 11:00:44 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
+To:     jack@suse.com, yi.zhang@huawei.com, Li Zetao <lizetao1@huawei.com>
 Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        todd.e.brandt@intel.com, lenb@kernel.org
-Subject: Re: [PATCH 0/2] ext4: Do not let fstrim block suspend
-Date:   Thu, 14 Sep 2023 11:00:42 -0400
-Message-Id: <169470363119.1407074.11495845673817769127.b4-ty@mit.edu>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jbd2: Fix memory leak in journal_init_common()
+Date:   Thu, 14 Sep 2023 11:00:43 -0400
+Message-Id: <169470363118.1407074.7189148436884246673.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230913145649.3595-1-jack@suse.cz>
-References: <20230913145649.3595-1-jack@suse.cz>
+In-Reply-To: <20230911025138.983101-1-lizetao1@huawei.com>
+References: <20230911025138.983101-1-lizetao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -49,23 +49,31 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Wed, 13 Sep 2023 17:04:53 +0200, Jan Kara wrote:
-> these two patches fix a long standing issue that long running fstrim request
-> can block a system suspend as reported by Len Brown in [1]. The solution is
-> quite simple - just report whatever we have trimmed upto now since discard
-> is an advisory call anyway. What makes things a bit more complex is handling
-> of group's TRIMMED bit - we deal with that in patch 1.
+On Mon, 11 Sep 2023 10:51:38 +0800, Li Zetao wrote:
+> There is a memory leak reported by kmemleak:
 > 
-> 								Honza
+>   unreferenced object 0xff11000105903b80 (size 64):
+>     comm "mount", pid 3382, jiffies 4295032021 (age 27.826s)
+>     hex dump (first 32 bytes):
+>       04 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
+>       ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     backtrace:
+>       [<ffffffffae86ac40>] __kmalloc_node+0x50/0x160
+>       [<ffffffffaf2486d8>] crypto_alloc_tfmmem.isra.0+0x38/0x110
+>       [<ffffffffaf2498e5>] crypto_create_tfm_node+0x85/0x2f0
+>       [<ffffffffaf24a92c>] crypto_alloc_tfm_node+0xfc/0x210
+>       [<ffffffffaedde777>] journal_init_common+0x727/0x1ad0
+>       [<ffffffffaede1715>] jbd2_journal_init_inode+0x2b5/0x500
+>       [<ffffffffaed786b5>] ext4_load_and_init_journal+0x255/0x2440
+>       [<ffffffffaed8b423>] ext4_fill_super+0x8823/0xa330
+>       ...
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] ext4: Move setting of trimmed bit into ext4_try_to_trim_range()
-      commit: 5e4a9f11b5d7cb70a4e4474f0ba25d5f1fd2a8ed
-[2/2] ext4: Do not let fstrim block system suspend
-      commit: b016ebb300e514bc46151f8fc006caae141a8bde
+[1/1] jbd2: Fix memory leak in journal_init_common()
+      commit: 414f73db6ce825b7264cacb9407581b87da60aeb
 
 Best regards,
 -- 
