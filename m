@@ -2,129 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2468F7A084E
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 17:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F857A085A
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 17:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240644AbjINPAe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Sep 2023 11:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
+        id S235244AbjINPBV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Sep 2023 11:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240640AbjINPAb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 11:00:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2C61FC7;
-        Thu, 14 Sep 2023 08:00:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=2ERUJARyhaXmh0gLnsbd3jYfQIo/z0Z13UimQ2AlYZ8=; b=UPC+2bkVu2mnbMUS8GEJgyK6eh
-        SsXSBIpSVWRXB0Q7QmZ92d91VjbqvyQkB7NcgkzCdGgOzmt+k0ehzMEoPWfGXSr0SqAghFlAeaSeO
-        IdYqeSL6uXTYhvVlMR0Zd9r/Y8mRBKW/JKlCMUfOgM26dn06qfCfB8O7vudRpcuOhLEvdjcv0YKee
-        JGS2UtIZt72x48oZlUMdboUPBdgIyz/rzYKHZxGIuH3VJGURF/U+iZzm0r4g5Sj8PMwkXpRe95PnW
-        WAYF3i718W6dAiyAVUVEtzlypGW+ziZt+2qbI8r3EVhspkhGmDVlk4PNGhDJJBXCEI7spA7P63UWV
-        ULJg63Iw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgnpG-003XOY-HN; Thu, 14 Sep 2023 15:00:14 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     akpm@linux-foundation.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hui Zhu <teawater@antgroup.com>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH v2 8/8] buffer: Remove __getblk_gfp()
-Date:   Thu, 14 Sep 2023 16:00:11 +0100
-Message-Id: <20230914150011.843330-9-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230914150011.843330-1-willy@infradead.org>
-References: <20230914150011.843330-1-willy@infradead.org>
+        with ESMTP id S240774AbjINPBU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 11:01:20 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975FA1FC2
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Sep 2023 08:01:15 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-113-225.bstnma.fios.verizon.net [173.48.113.225])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38EF0jpt000409
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:00:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1694703647; bh=lrmQrJvIxyRlTUwEk2DAFIW09BK8fmo+w0FXcpX+fwo=;
+        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=DRrBl2gaykYyOeNDI6kPCZsGg//yU3c8kUacwsI8I2q3LoFP7nVm95MMLGfny86yK
+         GNmS/14Tu7bDlczYFFbGCdEPRijJe11Rgvf8yb1NJXGB7HXnVnYmIX0bVUcQTywbFx
+         Q4ifHqCJy64B1NNCy+E0iejZWVby6zyNzNiSF48QRYQsyAwsDym3xTmGSjQ3+yo56I
+         75AMa5aOilGMo6qKUgtzRW/GT+zPRQgLb+RjKx8Ev2PPXJg8jnPGwMBEiBxH9dT+ks
+         XxpNIX9VRAolNo3NJWWwG1/l9TTs/iHGfRztXpso9ZJ38a2AJMpVvkzSRt+bCUKZo+
+         Ggr881zVnyHtQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E7C8915C0266; Thu, 14 Sep 2023 11:00:44 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        todd.e.brandt@intel.com, lenb@kernel.org
+Subject: Re: [PATCH 0/2] ext4: Do not let fstrim block suspend
+Date:   Thu, 14 Sep 2023 11:00:42 -0400
+Message-Id: <169470363119.1407074.11495845673817769127.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230913145649.3595-1-jack@suse.cz>
+References: <20230913145649.3595-1-jack@suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Inline it into __bread_gfp().
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/buffer.c                 | 36 +++++++++++-------------------------
- include/linux/buffer_head.h |  2 --
- 2 files changed, 11 insertions(+), 27 deletions(-)
+On Wed, 13 Sep 2023 17:04:53 +0200, Jan Kara wrote:
+> these two patches fix a long standing issue that long running fstrim request
+> can block a system suspend as reported by Len Brown in [1]. The solution is
+> quite simple - just report whatever we have trimmed upto now since discard
+> is an advisory call anyway. What makes things a bit more complex is handling
+> of group's TRIMMED bit - we deal with that in patch 1.
+> 
+> 								Honza
+> 
+> [...]
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 58546bfd8903..ad2526dd7cb4 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1420,9 +1420,6 @@ EXPORT_SYMBOL(__find_get_block);
-  * @size: The size of buffer_heads for this @bdev.
-  * @gfp: The memory allocation flags to use.
-  *
-- * In contrast to __getblk_gfp(), the @gfp flags must be all of the flags;
-- * they are not augmented with the mapping's GFP flags.
-- *
-  * Return: The buffer head, or NULL if memory could not be allocated.
-  */
- struct buffer_head *bdev_getblk(struct block_device *bdev, sector_t block,
-@@ -1438,27 +1435,6 @@ struct buffer_head *bdev_getblk(struct block_device *bdev, sector_t block,
- }
- EXPORT_SYMBOL(bdev_getblk);
- 
--/*
-- * __getblk_gfp() will locate (and, if necessary, create) the buffer_head
-- * which corresponds to the passed block_device, block and size. The
-- * returned buffer has its reference count incremented.
-- */
--struct buffer_head *
--__getblk_gfp(struct block_device *bdev, sector_t block,
--	     unsigned size, gfp_t gfp)
--{
--	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
--
--	/*
--	 * Prefer looping in the allocator rather than here, at least that
--	 * code knows what it's doing.
--	 */
--	gfp |= __GFP_NOFAIL;
--
--	return bdev_getblk(bdev, block, size, gfp);
--}
--EXPORT_SYMBOL(__getblk_gfp);
--
- /*
-  * Do async read-ahead on a buffer..
-  */
-@@ -1490,7 +1466,17 @@ struct buffer_head *
- __bread_gfp(struct block_device *bdev, sector_t block,
- 		   unsigned size, gfp_t gfp)
- {
--	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp);
-+	struct buffer_head *bh;
-+
-+	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
-+
-+	/*
-+	 * Prefer looping in the allocator rather than here, at least that
-+	 * code knows what it's doing.
-+	 */
-+	gfp |= __GFP_NOFAIL;
-+
-+	bh = bdev_getblk(bdev, block, size, gfp);
- 
- 	if (likely(bh) && !buffer_uptodate(bh))
- 		bh = __bread_slow(bh);
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 5372deef732e..5f9208c3fa73 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -226,8 +226,6 @@ struct buffer_head *__find_get_block(struct block_device *bdev, sector_t block,
- 			unsigned size);
- struct buffer_head *bdev_getblk(struct block_device *bdev, sector_t block,
- 		unsigned size, gfp_t gfp);
--struct buffer_head *__getblk_gfp(struct block_device *bdev, sector_t block,
--				  unsigned size, gfp_t gfp);
- void __brelse(struct buffer_head *);
- void __bforget(struct buffer_head *);
- void __breadahead(struct block_device *, sector_t block, unsigned int size);
+Applied, thanks!
+
+[1/2] ext4: Move setting of trimmed bit into ext4_try_to_trim_range()
+      commit: 5e4a9f11b5d7cb70a4e4474f0ba25d5f1fd2a8ed
+[2/2] ext4: Do not let fstrim block system suspend
+      commit: b016ebb300e514bc46151f8fc006caae141a8bde
+
+Best regards,
 -- 
-2.40.1
-
+Theodore Ts'o <tytso@mit.edu>
