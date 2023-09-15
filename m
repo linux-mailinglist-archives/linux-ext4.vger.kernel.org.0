@@ -2,79 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2697A7A0BB8
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Sep 2023 19:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DC27A121B
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Sep 2023 02:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239222AbjINR1T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Sep 2023 13:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
+        id S230384AbjIOACv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Sep 2023 20:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239146AbjINR1A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 13:27:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C0135AB;
-        Thu, 14 Sep 2023 10:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dqDv/hwF6Eczp53Duz1WARx/GLsoIfW+je4PWhL2caY=; b=v2nCBNcwGOOcphelXerTWx6E8j
-        LW19T5hhXfSy0yd/e+djrb8Vr5bgOcEv61v8A0VpXSh0qKvaQF/EL8VULTfb3kTixW+HSIriR63gK
-        F/CmEWG5VrFhqvQFDt8agFNKe5h+AJ1usqhvWW9cj7M6AN8CSzkr0ANn5s3TPGnRWwaNzvqgDldaI
-        vLzXZBxTT3MgPGxAnSo+sNq9H+h4sfB4oG8CCg0lfF18F1nCeKhiel8lm/D+E+mwjZHf3fwJirIoj
-        9inBEbAVJJNV1iS5EWrc9RFFPsi6n7TDo502SiyCCGzuMIR3Oe/REZf4v1bbjqL+GAYogV8P7qGQm
-        kEGBKbpA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgq69-004BiD-EZ; Thu, 14 Sep 2023 17:25:49 +0000
-Date:   Thu, 14 Sep 2023 18:25:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     akpm@linux-foundation.org, Hui Zhu <teawater@antgroup.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/3] buffer: Hoist GFP flags from grow_dev_page() to
- __getblk_gfp()
-Message-ID: <ZQNCHeUAtpP9EFNX@casper.infradead.org>
-References: <20230811161528.506437-1-willy@infradead.org>
- <20230811161528.506437-3-willy@infradead.org>
- <20230914091625.hjbmlanqc6sxonwi@quack3>
+        with ESMTP id S230353AbjIOACv (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Sep 2023 20:02:51 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBD72102
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Sep 2023 17:02:47 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1b728bfb372so2272580fac.2
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Sep 2023 17:02:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694736166; x=1695340966;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=DYmeXRxDrXF2XPm571iWmU1dz9/DAlsDJ/WZC/k49W8eerMrJT/uPo52AGRSbsSJ1F
+         SYSkUCc6JmWlBhkok/4ocz3L0ALD824pwQ5Qq4eNVbDqTAhcoNH1jr1rHbEwJyq3QkN4
+         iNDXEn6SaahmNHXAHrhT/quVH3qeDWsc2+L8Gd9hCxhgOv0Tucz5WBRExivqMyAlr4TY
+         ISdZSZhvqzyVjZh0clc8+K/Neti+Ju1gEpYaO29Hz4+LUKnRqn9Cgk5ORJhGdh2DDw58
+         MevGd6g/ayiEmXioYqnYhBhpwJ87C6chQxjw+cUi6R1Ykh8UrzvtZai2Q9gLcpcPLxp5
+         aJ8w==
+X-Gm-Message-State: AOJu0YwKP7ULiRqMDqgccCFoHhUhP+RKvejAVURP+f+51+rkb+2dFObm
+        reKT/GNQNjmAW+ij9aEniXoBy0lijcwv7bUgOVmU163paeDY
+X-Google-Smtp-Source: AGHT+IEoZjyeZ6CTIG7y++SgKlzykQNAg6H+0yvywZdubZ437bwRx4asTTHPb6+zOeYXI2J5lX6LWU4XPv294wX0CAqXMMPmLYm4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914091625.hjbmlanqc6sxonwi@quack3>
+X-Received: by 2002:a05:6870:5b17:b0:1c8:bae6:5305 with SMTP id
+ ds23-20020a0568705b1700b001c8bae65305mr59426oab.2.1694736166146; Thu, 14 Sep
+ 2023 17:02:46 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 17:02:46 -0700
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002bd90a06055a831d@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From:   syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:16:25AM +0200, Jan Kara wrote:
-> On Fri 11-08-23 17:15:27, Matthew Wilcox (Oracle) wrote:
-> > grow_dev_page() is only called by grow_buffers().  grow_buffers()
-> > is only called by __getblk_slow() and __getblk_slow() is only called
-> > from __getblk_gfp(), so it is safe to move the GFP flags setting
-> > all the way up.  With that done, add a new bdev_getblk() entry point
-> > that leaves the GFP flags the way the caller specified them.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> Can't we just finish this gfp parameter conversion for all the users?
-> There are five __getblk_gfp() users, three in buffer_head.h directly
-> generate gfp mask, two (__bread_gfp() and sb_getblk_gfp()) pass it from the
-> caller. All three __bread_gfp() callers are in buffer_head.h and directly
-> generate gfp mask. sb_getblk_gfp() has five callers, all in ext4 and easily
-> convertable as well.
-> 
-> This results not only in cleaner code but also just checking
-> sb_getblk_gfp() callers shows how confused they currently are about the gfp
-> argument (passing NOFS, NOFAIL and other pointless flags). Secondly, we can
-> keep using sb_getblk_gfp() from the filesystems instead of having to decide
-> between sb_getblk_gfp() and bdev_getblk().
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-I didn't do __bread_gfp() because it's basically an internal interface.
-All users call sb_bread(), sb_bread_unmovable() or __bread().
-It doesn't seem worth doing.  Now, if we start to see people actually
-using __bread_gfp() outside of those three interfaces, I'd agree we need
-to make it use GFP flags properly.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-BTW, Andrew has taken the bdev_getblk() series into the mm tree, so
-testing that tree might be a good idea for the ext4 developers (and other
-filesystems; an earlier revision of this patchset  had a bug which would
-have only affected nilfs2).
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
