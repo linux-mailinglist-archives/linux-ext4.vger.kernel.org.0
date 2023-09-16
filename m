@@ -2,76 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 029947A21F2
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Sep 2023 17:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2897A2E44
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Sep 2023 08:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235959AbjIOPIq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Sep 2023 11:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
+        id S237227AbjIPGwB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 16 Sep 2023 02:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235980AbjIOPIo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Sep 2023 11:08:44 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F61E50
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Sep 2023 08:07:20 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-113-225.bstnma.fios.verizon.net [173.48.113.225])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38FF6LsK005863
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 11:06:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1694790384; bh=qiyMpOmp/KYyKki9JvjDI4nDTPzBSQhw+7e6fLOvqjE=;
-        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=H2BshBfwZcaLur7HefT4xBBSCct2fC36Ug6s56CEJh5ohaSQzylpRGUjupkJ5NT9C
-         c5ofhzUU5hk+mdvvA7bec2ExVxw7Tf+N1uKKxc+1w/PTeAt8SB3z7Cf7wbNBOeOkgX
-         EKuSPPb3pTrMHBK/sTitAANSQdOOn09pJYSGsEeHD8Ipz6ylsYXtta1pL7nu8dnKiA
-         hPNFd5GpgZ0HMMWVqoDDU7YpM0LDUnLuY6DAxWFdptjI+teKxVsjpqURXoB65vr7Tv
-         UYYdJvUayXUw6RorJC7DXJqcu2HvBwiGIchkqWhMNxOd2f/jgSz6J9V/pSbrP6L55L
-         tn9O7XyHTl9lQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0415B15C0266; Fri, 15 Sep 2023 11:06:21 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, yi.zhang@huawei.com, djwong@kernel.org,
-        zhangshida <starzhangzsd@gmail.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhangshida@kylinos.cn,
-        stable@kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH v4] ext4: Fix rec_len verify error
-Date:   Fri, 15 Sep 2023 11:06:19 -0400
-Message-Id: <169479037020.1500633.4914927617396834377.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230803060938.1929759-1-zhangshida@kylinos.cn>
-References: <20230803060938.1929759-1-zhangshida@kylinos.cn>
+        with ESMTP id S231906AbjIPGwA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 16 Sep 2023 02:52:00 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF5FB
+        for <linux-ext4@vger.kernel.org>; Fri, 15 Sep 2023 23:51:55 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3a831831118so4472490b6e.0
+        for <linux-ext4@vger.kernel.org>; Fri, 15 Sep 2023 23:51:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694847114; x=1695451914;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EJGvlfgw7TNHd0h3ACkY6TxHvXPd27j4aXkbbUSsrkQ=;
+        b=cSFb1HBQXTIzSqO10c409j5BOTdjcVSbXf4l0gka+MSL0meclvWOPWzXRBvp3GEWE6
+         5Po7XXM7c6+4IsTufA3Xuyr9vB+/2GznKktLvEsp6uwC3YOc78ht55gzI0kWatSI60TD
+         t+ovXTYMiEvxMitq9aVeG6s3aWVXAWhJInNamvwAQBxDCuNYw+X5kS1HdCFmKBW+G0ph
+         21h479+NNXgzzUN2qv70bpEWpj17MC89+/D+PZZbl7Bl+mK98S+pPFBTSzxoZRgNoe8J
+         kM6i7cStk/lyuKmfTlv3WPVqF+PO4Vj/vD6/d1rPVGERevS2JR6L5mlruAh9V0O3uRaR
+         YjCw==
+X-Gm-Message-State: AOJu0YyE4Y9zSTXWEKFf0CCrLFp7yLttEvO9lyBGwDKQxzpjJp0n2i1K
+        mL9msHO3ONILlHMDTJrDUl3C/DpA4m5lxSrhjAc+dU4xk11G
+X-Google-Smtp-Source: AGHT+IEw9yD3FZr20zageWerz5sOz/v4+MPuxems2c8WQJNxUEJVjeGGdd3RUPCsYN3plpJPkewbzVROeMJSAz4SoMZmuuewcCJO
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2006:b0:3ac:ab4f:ee6 with SMTP id
+ q6-20020a056808200600b003acab4f0ee6mr1508692oiw.1.1694847114399; Fri, 15 Sep
+ 2023 23:51:54 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 23:51:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033d44706057458b3@google.com>
+Subject: [syzbot] [ext4?] WARNING in setattr_copy
+From:   syzbot <syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, brauner@kernel.org, jlayton@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
-On Thu, 03 Aug 2023 14:09:38 +0800, zhangshida wrote:
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
-> 
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-> 
-> [...]
+syzbot found the following issue on:
 
-Applied, thanks!
+HEAD commit:    3c13c772fc23 Add linux-next specific files for 20230912
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15b02b0c680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7149cbda1664bc5
+dashboard link: https://syzkaller.appspot.com/bug?extid=450a6d7e0a2db0d8326a
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155b32b4680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cf6028680000
 
-[1/1] ext4: Fix rec_len verify error
-      (no commit info)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/eb6fbc71f83a/disk-3c13c772.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2d671ade67d9/vmlinux-3c13c772.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b2b7190a3a61/bzImage-3c13c772.xz
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+The issue was bisected to:
+
+commit d6f106662147d78e9a439608e8deac7d046ca0fa
+Author: Jeff Layton <jlayton@kernel.org>
+Date:   Wed Aug 30 18:28:43 2023 +0000
+
+    fs: have setattr_copy handle multigrain timestamps appropriately
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1419f8d8680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1619f8d8680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1219f8d8680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com
+Fixes: d6f106662147 ("fs: have setattr_copy handle multigrain timestamps appropriately")
+
+overlayfs: fs on './file0' does not support file handles, falling back to index=off,nfs_export=off.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5042 at fs/attr.c:298 setattr_copy_mgtime fs/attr.c:298 [inline]
+WARNING: CPU: 0 PID: 5042 at fs/attr.c:298 setattr_copy+0x84c/0x950 fs/attr.c:355
+Modules linked in:
+CPU: 0 PID: 5042 Comm: syz-executor172 Not tainted 6.6.0-rc1-next-20230912-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:setattr_copy_mgtime fs/attr.c:298 [inline]
+RIP: 0010:setattr_copy+0x84c/0x950 fs/attr.c:355
+Code: 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 66 83 3c 02 00 0f 85 ff 00 00 00 4c 89 73 68 4c 89 7b 70 e9 9d fd ff ff e8 74 a8 92 ff <0f> 0b e9 91 fd ff ff 4c 89 ff e8 b5 93 e8 ff e9 69 f8 ff ff e8 ab
+RSP: 0018:ffffc900038cf268 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888076c766b0 RCX: 0000000000000000
+RDX: ffff88807926d940 RSI: ffffffff81f54afc RDI: 0000000000000005
+RBP: ffffc900038cf2a0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000030 R11: ffffffff81ddb7d3 R12: ffffc900038cf420
+R13: 0000000000000030 R14: 0000000000000000 R15: ffff888076c766d8
+FS:  00005555574de380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001000 CR3: 000000001fdba000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_setattr+0x36f/0x2990 fs/ext4/inode.c:5479
+ notify_change+0x742/0x11c0 fs/attr.c:539
+ ovl_do_notify_change fs/overlayfs/overlayfs.h:188 [inline]
+ ovl_set_timestamps.isra.0+0x168/0x1e0 fs/overlayfs/copy_up.c:345
+ ovl_set_attr.part.0+0x1c8/0x210 fs/overlayfs/copy_up.c:369
+ ovl_set_attr+0x1c9/0x200 fs/overlayfs/copy_up.c:372
+ ovl_copy_up_metadata+0x471/0x6c0 fs/overlayfs/copy_up.c:668
+ ovl_copy_up_workdir fs/overlayfs/copy_up.c:747 [inline]
+ ovl_do_copy_up fs/overlayfs/copy_up.c:905 [inline]
+ ovl_copy_up_one+0xb10/0x2f10 fs/overlayfs/copy_up.c:1091
+ ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1146
+ ovl_setattr+0x109/0x520 fs/overlayfs/inode.c:45
+ notify_change+0x742/0x11c0 fs/attr.c:539
+ chown_common+0x596/0x660 fs/open.c:783
+ do_fchownat+0x140/0x1f0 fs/open.c:814
+ __do_sys_lchown fs/open.c:839 [inline]
+ __se_sys_lchown fs/open.c:837 [inline]
+ __x64_sys_lchown+0x7e/0xc0 fs/open.c:837
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9f835ef429
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffbe3679e8 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 69662f7375622f2e RCX: 00007f9f835ef429
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200002c0
+RBP: 0079616c7265766f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffbe367bc8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
