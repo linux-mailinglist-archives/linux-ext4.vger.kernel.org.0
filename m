@@ -2,146 +2,315 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112C07A4CDA
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Sep 2023 17:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589017A543A
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Sep 2023 22:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjIRPmT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Sep 2023 11:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        id S229473AbjIRUjp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Sep 2023 16:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjIRPmM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Sep 2023 11:42:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8C8114
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 08:40:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5706021DE8;
-        Mon, 18 Sep 2023 15:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695051380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wRRq3QBzHoyyDabxX2fOpYWedZIBCX58hRDwD2SKGsE=;
-        b=pC07D0ypNc14vp5vJ/bRR9zET7HFzxs0iYszAJW4Cprmkr6bLfUkBLNDx3XllZP5JS616H
-        KiuGlN+HScGJYBzenuIimVtj07dN2DPcl4v+GVf/1trLB7DJIq5lLUFQUL6Ee6JI3iFbfd
-        5Xc5cFHbFnDwtEmhtGfGXpImV5KcWp4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695051380;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wRRq3QBzHoyyDabxX2fOpYWedZIBCX58hRDwD2SKGsE=;
-        b=2c/xj3OvFpCA+ZHbq9hrXP/OXx3rurEmR0hWCUtvL2WX0l7FCKKVLivrhswk34pCM42AsK
-        jBkj9umR6DIUe4DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B22A1358A;
-        Mon, 18 Sep 2023 15:36:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Oh1NEnRuCGUeYAAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 15:36:20 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D0A3CA0759; Mon, 18 Sep 2023 17:36:19 +0200 (CEST)
-Date:   Mon, 18 Sep 2023 17:36:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Jianjian <wangjianjian0@foxmail.com>
-Cc:     linux-ext4@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com
-Subject: Re: [PATCH] ext4/mballoc: No need to generate from free list
-Message-ID: <20230918153619.tku6d4556os5tvzj@quack3>
-References: <tencent_53CBCB1668358AE862684E453DF37B722008@qq.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_53CBCB1668358AE862684E453DF37B722008@qq.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229670AbjIRUjn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Sep 2023 16:39:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C7B6
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 13:39:37 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c44c7dbaf9so24564835ad.1
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 13:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1695069576; x=1695674376; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LRc/fFMiceZ96C3FgRd9TVOKngOthCnJgWm9mcENWPQ=;
+        b=dyDeaI9KeshCXHG1SJ8Mjl9iKAzmjIeY4UWZ/KbEmstFt9PMo3yKZ9sYZjDi974wQd
+         LYF7duIXznSkzkZYgK7pdkLzx8wVnnHaEz85iy9SwQpLzxLx8zba9OKh/Nz9tWFQFqta
+         xsn8FiSAACahoC6GsoSP1OJ/4/57IjSB9KTaBWyrGljC4TIDuqNMmueJJWto1SnxBm5k
+         DnkY3NuoUSJNWDOQ6p4IIh+dqWugunQDsPVmMO5vB6SZFMJVlzUwpl6CuMShzWAunIAS
+         sMA+w/ptCCFE3iBgp6kP5smm02+oFNKTRsIdW/zZDulNHQKNUI38jZUD5+PM7ji9NNka
+         Ez8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695069576; x=1695674376;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LRc/fFMiceZ96C3FgRd9TVOKngOthCnJgWm9mcENWPQ=;
+        b=gmXqfNJBCGlPu747J6R8wlxy13WvJ1Aii6D7G9j1HxFJ5dG2pEVbo/9+9NGQA6X700
+         fVTMWbq/pMOKccmhCt9JbdoStO4MIni8bV5OSOYj7XtPXLrLWAaOBwoEwoK01724fIGR
+         gOp20+E+2dggzE1O7l6B7c/NH5eoFKeOZMdkCS0wRrccxPJGZCl+SiCHXeS4huVWWUvY
+         4jOfhvpo1PXdcq/f4dwuIVYp1kq2jL7r/FcSP6eu3Gh0f+OWUJ8TQohHlRplC6Hrfap6
+         66I1RUAXQuSp0eCE1SZo4qS+UkwtBSmaq9fWhqwQtOiAj4m2M/czu685zG9YvfVvSnIN
+         jHWw==
+X-Gm-Message-State: AOJu0YzViw3kksMbcOF8ZtumYTfYoW49Iass985X9yxlXJTpHr33tQDg
+        g0KYGAZZ6OwO5rneX/RHMZb4ew==
+X-Google-Smtp-Source: AGHT+IGON99IPt65kIRXOjubZ5R37Xi9xOQENg+4zVxLQFo6huMq+SScnVls3UDII67fzyL8esGP8w==
+X-Received: by 2002:a17:902:a984:b0:1c5:6157:f073 with SMTP id bh4-20020a170902a98400b001c56157f073mr4117588plb.11.1695069576352;
+        Mon, 18 Sep 2023 13:39:36 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id jb4-20020a170903258400b001c0cb2aa2easm8658932plb.121.2023.09.18.13.39.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Sep 2023 13:39:35 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <130596B4-5BA6-4377-B5CE-0D59FB79878F@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4 4/8] e2fsck: add fast commit scan pass
+Date:   Mon, 18 Sep 2023 14:39:32 -0600
+In-Reply-To: <20210122054504.1498532-5-user@harshads-520.kir.corp.google.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>, tytso@mit.edu
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+References: <20210122054504.1498532-1-user@harshads-520.kir.corp.google.com>
+ <20210122054504.1498532-5-user@harshads-520.kir.corp.google.com>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 24-08-23 23:56:31, Wang Jianjian wrote:
-> Commit 7a2fcbf7f85('ext4: don't use blocks freed but
-> not yet committed in buddy cache init) walk the rbtree of
-> freed data and mark them free in buddy to avoid reuse them
-> before journal committing them, However, it is unnecessary to
-> do that, because we have extra page references to buddy and bitmap
-> pages, they will be released iff journal has committed and after
-> process freed data.
 
-So do you mean that buddy bitmap cannot be freed until the transaction that
-frees the blocks in it commits? Indeed ext4_mb_free_metadata() grabs buddy
-page references and ext4_free_data_in_buddy() drops them. 
+--Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Perhaps I'd rephrase the changelog as:
+On Jan 21, 2021, at 10:45 PM, Harshad Shirwadkar =
+<harshadshirwadkar@gmail.com> wrote:
+>=20
+> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+>=20
+> Add fast commit scan pass. Scan pass is responsible for following
+> things:
+>=20
+> * Count total number of fast commit tags that need to be replayed
+>  during the replay phase.
+>=20
+> * Validate whether the fast commit area is valid for a given
+>  transaction ID.
+>=20
+> * Verify the CRC of fast commit area.
+>=20
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Commit 7a2fcbf7f85 ("ext4: don't use blocks freed but not yet committed in
-buddy cache init") added a code to mark as used blocks in the list of not yet
-committed freed blocks during initialization of a buddy page. However
-ext4_mb_free_metadata() makes sure buddy page is already loaded and takes a
-reference to it so it cannot happen that ext4_mb_init_cache() is called
-when efd list is non-empty. Just remove the
-ext4_mb_generate_from_freelist() call.
+I was making a fix to debugfs/journal.c today to improve performance
+of the revoke hashtable, since it was performing very badly with a
+large journal and lots of revokes (separate patch to be submitted).
 
-> @@ -1274,7 +1272,6 @@ static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
->  
->  			/* mark all preallocated blks used in in-core bitmap */
->  			ext4_mb_generate_from_pa(sb, data, group);
-> -			ext4_mb_generate_from_freelist(sb, data, group);
+I noticed that e2fsck/journal.c is totally missing any of the fast
+commit handling that was added to in this patch.
 
-And just to be sure I'd add here:
+This seems dangerous since there are some cases where debugfs and =
+tune2fs
+will do journal recovery in userspace, but it appears possible that they
+would totally miss any fast commit transaction handling.
 
-			WARN_ON_ONCE(!RB_EMPTY_ROOT(&grp->bb_free_root));
+It isn't great that we have two nearly identical copies of the same code
+in e2fsprogs, but looks is difficult to make them totally identical.
+We could potentially play some tricks here (e.g. use a common variable
+name for both "ctx" and "fs" in the code, unify copies of =
+e2fsck_journal_*
+and ext2fs_journal_* into a single file, and potentially abstract out
+some of the differences (mainly from e2fsck/journal.c fixing errors
+during journal recovery) into helper functions that are no-ops on the
+debugfs/journal.c side.
 
-								Honza
+There would still be two different *builds* of the code, with a lot of
+macro expansions to hide the differences, but I think it looks possible
+to at least bring these two copies more into sync.  I have some =
+cleanups,
+but I don't know much about fast commits and what should be done there.
+
+Cheers, Andreas
+
+> ---
+> e2fsck/journal.c | 109 +++++++++++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 109 insertions(+)
+>=20
+> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+> index 2c8e3441..f1aa0fd6 100644
+> --- a/e2fsck/journal.c
+> +++ b/e2fsck/journal.c
+> @@ -278,6 +278,108 @@ static int process_journal_block(ext2_filsys fs,
+> 	return 0;
+> }
+>=20
+> +static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
+> +				int off, tid_t expected_tid)
+> +{
+> +	e2fsck_t ctx =3D j->j_fs_dev->k_ctx;
+> +	struct e2fsck_fc_replay_state *state;
+> +	int ret =3D JBD2_FC_REPLAY_CONTINUE;
+> +	struct ext4_fc_add_range *ext;
+> +	struct ext4_fc_tl *tl;
+> +	struct ext4_fc_tail *tail;
+> +	__u8 *start, *end;
+> +	struct ext4_fc_head *head;
+> +	struct ext2fs_extent ext2fs_ex;
+> +
+> +	state =3D &ctx->fc_replay_state;
+> +
+> +	start =3D (__u8 *)bh->b_data;
+> +	end =3D (__u8 *)bh->b_data + j->j_blocksize - 1;
+> +
+> +	jbd_debug(1, "Scan phase starting, expected %d", expected_tid);
+> +	if (state->fc_replay_expected_off =3D=3D 0) {
+> +		memset(state, 0, sizeof(*state));
+> +		/* Check if we can stop early */
+> +		if (le16_to_cpu(((struct ext4_fc_tl *)start)->fc_tag)
+> +			!=3D EXT4_FC_TAG_HEAD) {
+> +			jbd_debug(1, "Ending early!, not a head tag");
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	if (off !=3D state->fc_replay_expected_off) {
+> +		ret =3D -EFSCORRUPTED;
+> +		goto out_err;
+> +	}
+> +
+> +	state->fc_replay_expected_off++;
+> +	fc_for_each_tl(start, end, tl) {
+> +		jbd_debug(3, "Scan phase, tag:%s, blk %lld\n",
+> +			  tag2str(le16_to_cpu(tl->fc_tag)), =
+bh->b_blocknr);
+> +		switch (le16_to_cpu(tl->fc_tag)) {
+> +		case EXT4_FC_TAG_ADD_RANGE:
+> +			ext =3D (struct ext4_fc_add_range =
+*)ext4_fc_tag_val(tl);
+> +			ret =3D ext2fs_decode_extent(&ext2fs_ex, (void =
+*)&ext->fc_ex,
+> +						   sizeof(ext->fc_ex));
+> +			if (ret)
+> +				ret =3D JBD2_FC_REPLAY_STOP;
+> +			else
+> +				ret =3D JBD2_FC_REPLAY_CONTINUE;
+> +		case EXT4_FC_TAG_DEL_RANGE:
+> +		case EXT4_FC_TAG_LINK:
+> +		case EXT4_FC_TAG_UNLINK:
+> +		case EXT4_FC_TAG_CREAT:
+> +		case EXT4_FC_TAG_INODE:
+> +		case EXT4_FC_TAG_PAD:
+> +			state->fc_cur_tag++;
+> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
+tl,
+> +					sizeof(*tl) + =
+ext4_fc_tag_len(tl));
+> +			break;
+> +		case EXT4_FC_TAG_TAIL:
+> +			state->fc_cur_tag++;
+> +			tail =3D (struct ext4_fc_tail =
+*)ext4_fc_tag_val(tl);
+> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
+tl,
+> +						sizeof(*tl) +
+> +						offsetof(struct =
+ext4_fc_tail,
+> +						fc_crc));
+> +			jbd_debug(1, "tail tid %d, expected %d\n",
+> +					le32_to_cpu(tail->fc_tid),
+> +					expected_tid);
+> +			if (le32_to_cpu(tail->fc_tid) =3D=3D =
+expected_tid &&
+> +				le32_to_cpu(tail->fc_crc) =3D=3D =
+state->fc_crc) {
+> +				state->fc_replay_num_tags =3D =
+state->fc_cur_tag;
+> +			} else {
+> +				ret =3D state->fc_replay_num_tags ?
+> +					JBD2_FC_REPLAY_STOP : =
+-EFSBADCRC;
+> +			}
+> +			state->fc_crc =3D 0;
+> +			break;
+> +		case EXT4_FC_TAG_HEAD:
+> +			head =3D (struct ext4_fc_head =
+*)ext4_fc_tag_val(tl);
+> +			if (le32_to_cpu(head->fc_features) &
+> +				~EXT4_FC_SUPPORTED_FEATURES) {
+> +				ret =3D -EOPNOTSUPP;
+> +				break;
+> +			}
+> +			if (le32_to_cpu(head->fc_tid) !=3D expected_tid) =
+{
+> +				ret =3D -EINVAL;
+> +				break;
+> +			}
+> +			state->fc_cur_tag++;
+> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
+tl,
+> +					sizeof(*tl) + =
+ext4_fc_tag_len(tl));
+> +			break;
+> +		default:
+> +			ret =3D state->fc_replay_num_tags ?
+> +				JBD2_FC_REPLAY_STOP : -ECANCELED;
+> +		}
+> +		if (ret < 0 || ret =3D=3D JBD2_FC_REPLAY_STOP)
+> +			break;
+> +	}
+> +
+> +out_err:
+> +	return ret;
+> +}
+> /*
+>  * Main recovery path entry point. This function returns =
+JBD2_FC_REPLAY_CONTINUE
+>  * to indicate that it is expecting more fast commit blocks. It =
+returns
+> @@ -286,6 +388,13 @@ static int process_journal_block(ext2_filsys fs,
+> static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
+> 				enum passtype pass, int off, tid_t =
+expected_tid)
+> {
+> +	e2fsck_t ctx =3D journal->j_fs_dev->k_ctx;
+> +	struct e2fsck_fc_replay_state *state =3D &ctx->fc_replay_state;
+> +
+> +	if (pass =3D=3D PASS_SCAN) {
+> +		state->fc_current_pass =3D PASS_SCAN;
+> +		return ext4_fc_replay_scan(journal, bh, off, =
+expected_tid);
+> +	}
+> 	return JBD2_FC_REPLAY_STOP;
+> }
+>=20
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>=20
 
 
->  			ext4_unlock_group(sb, group);
->  
->  			/* set incore so that the buddy information can be
-> @@ -4440,30 +4437,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
->  	return false;
->  }
->  
-> -/*
-> - * the function goes through all block freed in the group
-> - * but not yet committed and marks them used in in-core bitmap.
-> - * buddy must be generated from this bitmap
-> - * Need to be called with the ext4 group lock held
-> - */
-> -static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
-> -						ext4_group_t group)
-> -{
-> -	struct rb_node *n;
-> -	struct ext4_group_info *grp;
-> -	struct ext4_free_data *entry;
-> -
-> -	grp = ext4_get_group_info(sb, group);
-> -	n = rb_first(&(grp->bb_free_root));
-> -
-> -	while (n) {
-> -		entry = rb_entry(n, struct ext4_free_data, efd_node);
-> -		mb_set_bits(bitmap, entry->efd_start_cluster, entry->efd_count);
-> -		n = rb_next(n);
-> -	}
-> -	return;
-> -}
-> -
->  /*
->   * the function goes through all preallocation in this group and marks them
->   * used in in-core bitmap. buddy must be generated from this bitmap
-> -- 
-> 2.34.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmUItYUACgkQcqXauRfM
+H+BKfw/8DvQoufdN0aJXZsdWMDVzUilPSPz7bqxkLerRebmfBTFeYUV0PMp3mhrY
+D/3KvZ8GBVmcoj6p2dUqtAyaR6iEU14oXGSBEwrcG5kJUk6FsonsX4JMN5uQExMv
++ngasmokM8TQAgyPA/jLSUaxziCpsN1kQsIqjWpa68g3+w+KlmOE61xVsJLqPL+n
+IRWbB4lM5tnVDZZU/bITZi19G/3lj54Xo4Y+0E7LG3ExM1C3Djl4e0RPD71AUVPq
+ScqS54qEyKK0Qi+kY6HIy5KDfd+XY5jSLwQQva98sB6t4i4QV11a9rKWVPTByxyC
+wCQ6XN2u0y/7X5hfi6sO/S4LcrjhgRWsn7v83Q2PllRg6PH4IAm73Vg1Cik5HTE1
+8iEZX2bNfudPTrqu7Q0tdY8LZ9NYMf6ZLsLkJ2QvdmFWpU/dnOt6fIyABRq47Mb5
+3u3L9FCYvAoEVTFO/J+2R+1uTqXoXkJd9BkH+EQQ7qzllz8b2cZ6oKkjpYL5CDVF
+7rZwWGyBMd8tlhnGIUyPBuGAIze6rAsaNwrfQVpxf6/3rRi5DWA0hDOajVULK2Jp
+bmZyCH2a6Y/cIMa+8hRvau7WMoe+wSwAcJpnYiDyhgiiK8VHFI8aKZnBgzOoct2l
+e0RP1NZOsXnZ8kmSkhq1GzGW94JB26eFLHRH0vdAPE5GZwQEmIg=
+=JZH4
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83--
