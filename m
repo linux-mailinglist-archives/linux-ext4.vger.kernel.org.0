@@ -2,64 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 589017A543A
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Sep 2023 22:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7037A54EE
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Sep 2023 23:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjIRUjp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Sep 2023 16:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S230099AbjIRVUP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Sep 2023 17:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjIRUjn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Sep 2023 16:39:43 -0400
+        with ESMTP id S230125AbjIRVUP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Sep 2023 17:20:15 -0400
 Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C7B6
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 13:39:37 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c44c7dbaf9so24564835ad.1
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 13:39:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6796D111
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 14:20:05 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c46b30a1ceso17434255ad.3
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Sep 2023 14:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1695069576; x=1695674376; darn=vger.kernel.org;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1695072005; x=1695676805; darn=vger.kernel.org;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LRc/fFMiceZ96C3FgRd9TVOKngOthCnJgWm9mcENWPQ=;
-        b=dyDeaI9KeshCXHG1SJ8Mjl9iKAzmjIeY4UWZ/KbEmstFt9PMo3yKZ9sYZjDi974wQd
-         LYF7duIXznSkzkZYgK7pdkLzx8wVnnHaEz85iy9SwQpLzxLx8zba9OKh/Nz9tWFQFqta
-         xsn8FiSAACahoC6GsoSP1OJ/4/57IjSB9KTaBWyrGljC4TIDuqNMmueJJWto1SnxBm5k
-         DnkY3NuoUSJNWDOQ6p4IIh+dqWugunQDsPVmMO5vB6SZFMJVlzUwpl6CuMShzWAunIAS
-         sMA+w/ptCCFE3iBgp6kP5smm02+oFNKTRsIdW/zZDulNHQKNUI38jZUD5+PM7ji9NNka
-         Ez8Q==
+        bh=CuuvT7tNCCFuMLpJPyHV19VEFRoGJMK+hT2OY7Q+Wo8=;
+        b=cDjebU6l+or6mHcA2RVvPEks8PBI6PUGgCpPLI0dfw5A2kFTKzutahV3b06ncRR1c3
+         rAr5KQtzdhEIEYkpe7biCjNDUgphCMyPP7eLneviAkdA+xGxTUATbpu1gb0hh2jdW827
+         Zv+H3iy1BWlrS099b+5vdhemm1PhWXWD/kDRy9jCB80bGj0EKhCTop8uqvaWk5LKhF8K
+         og/Un+py61KFPpHtzAb/hkUGEhpdeJQujd0SjpRPRO3AwBldNnC1qR/skoFobmkc5p9z
+         BBtPI8/a7MbS2QpJwTh5MravMhoMZjp14nIXWD1BY0+DGDIehHaZ3xZf9qdxJ1ONHvD1
+         hUDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695069576; x=1695674376;
+        d=1e100.net; s=20230601; t=1695072005; x=1695676805;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LRc/fFMiceZ96C3FgRd9TVOKngOthCnJgWm9mcENWPQ=;
-        b=gmXqfNJBCGlPu747J6R8wlxy13WvJ1Aii6D7G9j1HxFJ5dG2pEVbo/9+9NGQA6X700
-         fVTMWbq/pMOKccmhCt9JbdoStO4MIni8bV5OSOYj7XtPXLrLWAaOBwoEwoK01724fIGR
-         gOp20+E+2dggzE1O7l6B7c/NH5eoFKeOZMdkCS0wRrccxPJGZCl+SiCHXeS4huVWWUvY
-         4jOfhvpo1PXdcq/f4dwuIVYp1kq2jL7r/FcSP6eu3Gh0f+OWUJ8TQohHlRplC6Hrfap6
-         66I1RUAXQuSp0eCE1SZo4qS+UkwtBSmaq9fWhqwQtOiAj4m2M/czu685zG9YvfVvSnIN
-         jHWw==
-X-Gm-Message-State: AOJu0YzViw3kksMbcOF8ZtumYTfYoW49Iass985X9yxlXJTpHr33tQDg
-        g0KYGAZZ6OwO5rneX/RHMZb4ew==
-X-Google-Smtp-Source: AGHT+IGON99IPt65kIRXOjubZ5R37Xi9xOQENg+4zVxLQFo6huMq+SScnVls3UDII67fzyL8esGP8w==
-X-Received: by 2002:a17:902:a984:b0:1c5:6157:f073 with SMTP id bh4-20020a170902a98400b001c56157f073mr4117588plb.11.1695069576352;
-        Mon, 18 Sep 2023 13:39:36 -0700 (PDT)
+        bh=CuuvT7tNCCFuMLpJPyHV19VEFRoGJMK+hT2OY7Q+Wo8=;
+        b=SogxvJDwMzSgPJm3B4m87kvOcELugXPn6TKVZ+ZzUBv2ln+mf9b5XvlaOzzxeaYYTy
+         gVKfncHAmggWYNlDaeUbpyaIcovIdUh7V+W81CeuQ2dNSB5l2tnEWuivDNEPtQCJECoa
+         jy2gGdKmPK/7GKVYmWeL1Kdaq6I59d/GadWfsMv4YjedE2fyd7AeITVVhPqQqkaS6MDm
+         2bsWCJM0hLqZU5rlGdZl2JT1gtSFZmXdr74k3e8y+wqmK0B8WTZSrS8463biMN5fXQTT
+         05TP01p6TbAwy8mWnVUUdClkhSz4SzdfaS1wEGmKGM+iF7Rgxv41Zp8quJ4UEsHNqLdQ
+         3G2Q==
+X-Gm-Message-State: AOJu0Yz3WuGcmWUtFMw2Ha0VAWzav09RAfQdFZ1rh1fj06hIzkH+jp/9
+        wI954Pu/+Ied2ZBglOv/l9GmIw==
+X-Google-Smtp-Source: AGHT+IGFTCDbsh/RDAcudfQdY6HTdHJh2vp7ydjnii64aF/XH/awdR66Uf7knZryNjcIQ7xq8tJHow==
+X-Received: by 2002:a17:902:ea08:b0:1c3:73aa:618b with SMTP id s8-20020a170902ea0800b001c373aa618bmr13584800plg.9.1695072004757;
+        Mon, 18 Sep 2023 14:20:04 -0700 (PDT)
 Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id jb4-20020a170903258400b001c0cb2aa2easm8658932plb.121.2023.09.18.13.39.35
+        by smtp.gmail.com with ESMTPSA id n7-20020a170902968700b001bc675068e2sm8690484plp.111.2023.09.18.14.20.03
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Sep 2023 13:39:35 -0700 (PDT)
+        Mon, 18 Sep 2023 14:20:03 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <130596B4-5BA6-4377-B5CE-0D59FB79878F@dilger.ca>
+Message-Id: <729CDEF6-F6B3-4290-8120-F73C990B0D9F@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83";
+ boundary="Apple-Mail=_68A3AE40-B6AB-437C-A9F0-620A7F257F44";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v4 4/8] e2fsck: add fast commit scan pass
-Date:   Mon, 18 Sep 2023 14:39:32 -0600
-In-Reply-To: <20210122054504.1498532-5-user@harshads-520.kir.corp.google.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>, tytso@mit.edu
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-References: <20210122054504.1498532-1-user@harshads-520.kir.corp.google.com>
- <20210122054504.1498532-5-user@harshads-520.kir.corp.google.com>
+Subject: Re: [e2fsprogs PATCH v2] resize2fs: use directio when reading
+ superblock
+Date:   Mon, 18 Sep 2023 15:20:01 -0600
+In-Reply-To: <20230911183905.GA1960@templeofstupid.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+To:     Krister Johansen <kjlx@templeofstupid.com>
+References: <20230911183905.GA1960@templeofstupid.com>
 X-Mailer: Apple Mail (2.3273)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,213 +71,114 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83
+--Apple-Mail=_68A3AE40-B6AB-437C-A9F0-620A7F257F44
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Jan 21, 2021, at 10:45 PM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
+On Sep 11, 2023, at 12:39 PM, Krister Johansen <kjlx@templeofstupid.com> =
+wrote:
 >=20
-> From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->=20
-> Add fast commit scan pass. Scan pass is responsible for following
-> things:
->=20
-> * Count total number of fast commit tags that need to be replayed
->  during the replay phase.
->=20
-> * Validate whether the fast commit area is valid for a given
->  transaction ID.
->=20
-> * Verify the CRC of fast commit area.
->=20
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> Invocations of resize2fs intermittently report failure due to =
+superblock
+> checksum mismatches in this author's environment.  This might happen a =
+few
+> times a week.  The following script can make this happen within =
+minutes.
+> (It assumes /dev/nvme1n1 is available and not in use by anything =
+else).
 
-I was making a fix to debugfs/journal.c today to improve performance
-of the revoke hashtable, since it was performing very badly with a
-large journal and lots of revokes (separate patch to be submitted).
+Krister,
+thanks for submitting the patch.  This particular issue was already =
+fixed
+in commit v1.46.6-16-g43a498e93888, apparently based on your previous =
+report:
 
-I noticed that e2fsck/journal.c is totally missing any of the fast
-commit handling that was added to in this patch.
+    commit 43a498e938887956f393b5e45ea6ac79cc5f4b84
+    Author:     Theodore Ts'o <tytso@mit.edu>
+    AuthorDate: Thu Jun 15 00:17:01 2023 -0400
+    Commit:     Theodore Ts'o <tytso@mit.edu>
+    CommitDate: Thu Jun 15 00:17:01 2023 -0400
 
-This seems dangerous since there are some cases where debugfs and =
-tune2fs
-will do journal recovery in userspace, but it appears possible that they
-would totally miss any fast commit transaction handling.
+    resize2fs: use Direct I/O when reading the superblock for online =
+resizes
 
-It isn't great that we have two nearly identical copies of the same code
-in e2fsprogs, but looks is difficult to make them totally identical.
-We could potentially play some tricks here (e.g. use a common variable
-name for both "ctx" and "fs" in the code, unify copies of =
-e2fsck_journal_*
-and ext2fs_journal_* into a single file, and potentially abstract out
-some of the differences (mainly from e2fsck/journal.c fixing errors
-during journal recovery) into helper functions that are no-ops on the
-debugfs/journal.c side.
+    If the file system is mounted, the superblock can be changing while
+    resize2fs is trying to read the superblock, resulting in checksum
+    failures.  One way of avoiding this problem is read the superblock
+    using Direct I/O, since the kernel makes sure that what gets written
+    to disk is self-consistent.
 
-There would still be two different *builds* of the code, with a lot of
-macro expansions to hide the differences, but I think it looks possible
-to at least bring these two copies more into sync.  I have some =
-cleanups,
-but I don't know much about fast commits and what should be done there.
+    Suggested-by: Krister Johansen <kjlx@templeofstupid.com>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+So it is landed on the e2fsprogs maint branch, but there has not been a
+maintenance release since the patch was landed.
 
 Cheers, Andreas
 
+>   #!/usr/bin/bash
+>   set -euxo pipefail
+>=20
+>   while true
+>   do
+>           parted /dev/nvme1n1 mklabel gpt mkpart primary 2048s =
+2099200s
+>           sleep .5
+>           mkfs.ext4 /dev/nvme1n1p1
+>           mount -t ext4 /dev/nvme1n1p1 /mnt
+>           stress-ng --temp-path /mnt -D 4 &
+>           STRESS_PID=3D$!
+>           sleep 1
+>           growpart /dev/nvme1n1 1
+>           resize2fs /dev/nvme1n1p1
+>           kill $STRESS_PID
+>           wait $STRESS_PID
+>           umount /mnt
+>           wipefs -a /dev/nvme1n1p1
+>           wipefs -a /dev/nvme1n1
+>   done
+>=20
+> After trying a few possible solutions, adding an O_DIRECT read to the =
+open
+> path in resize2fs eliminated the occurrences on test systems. =
+ext2fs_open2
+> uses a negative count value when calling io_channel_read_blk to get =
+the
+> superblock.  According to unix_read_block, negative offsets are to be =
+read
+> direct.  However, when strace-ing a program without this fix, the
+> underlying device was opened without O_DIRECT.  Adding the flags in =
+the
+> patch ensures the device is opend with O_DIRECT and that the =
+superblock
+> read appears consistent.
+>=20
+> Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
 > ---
-> e2fsck/journal.c | 109 +++++++++++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 109 insertions(+)
+> v2:
+>  - Only set DIRECT_IO flag when resizing a mounted filesystem. =
+(Feedback from
+>    Theodore Ts'o)
+> ---
+> resize/main.c | 2 ++
+> 1 file changed, 2 insertions(+)
 >=20
-> diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-> index 2c8e3441..f1aa0fd6 100644
-> --- a/e2fsck/journal.c
-> +++ b/e2fsck/journal.c
-> @@ -278,6 +278,108 @@ static int process_journal_block(ext2_filsys fs,
-> 	return 0;
-> }
+> diff --git a/resize/main.c b/resize/main.c
+> index 94f5ec6d..f914c050 100644
+> --- a/resize/main.c
+> +++ b/resize/main.c
+> @@ -409,6 +409,8 @@ int main (int argc, char ** argv)
 >=20
-> +static int ext4_fc_replay_scan(journal_t *j, struct buffer_head *bh,
-> +				int off, tid_t expected_tid)
-> +{
-> +	e2fsck_t ctx =3D j->j_fs_dev->k_ctx;
-> +	struct e2fsck_fc_replay_state *state;
-> +	int ret =3D JBD2_FC_REPLAY_CONTINUE;
-> +	struct ext4_fc_add_range *ext;
-> +	struct ext4_fc_tl *tl;
-> +	struct ext4_fc_tail *tail;
-> +	__u8 *start, *end;
-> +	struct ext4_fc_head *head;
-> +	struct ext2fs_extent ext2fs_ex;
-> +
-> +	state =3D &ctx->fc_replay_state;
-> +
-> +	start =3D (__u8 *)bh->b_data;
-> +	end =3D (__u8 *)bh->b_data + j->j_blocksize - 1;
-> +
-> +	jbd_debug(1, "Scan phase starting, expected %d", expected_tid);
-> +	if (state->fc_replay_expected_off =3D=3D 0) {
-> +		memset(state, 0, sizeof(*state));
-> +		/* Check if we can stop early */
-> +		if (le16_to_cpu(((struct ext4_fc_tl *)start)->fc_tag)
-> +			!=3D EXT4_FC_TAG_HEAD) {
-> +			jbd_debug(1, "Ending early!, not a head tag");
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	if (off !=3D state->fc_replay_expected_off) {
-> +		ret =3D -EFSCORRUPTED;
-> +		goto out_err;
-> +	}
-> +
-> +	state->fc_replay_expected_off++;
-> +	fc_for_each_tl(start, end, tl) {
-> +		jbd_debug(3, "Scan phase, tag:%s, blk %lld\n",
-> +			  tag2str(le16_to_cpu(tl->fc_tag)), =
-bh->b_blocknr);
-> +		switch (le16_to_cpu(tl->fc_tag)) {
-> +		case EXT4_FC_TAG_ADD_RANGE:
-> +			ext =3D (struct ext4_fc_add_range =
-*)ext4_fc_tag_val(tl);
-> +			ret =3D ext2fs_decode_extent(&ext2fs_ex, (void =
-*)&ext->fc_ex,
-> +						   sizeof(ext->fc_ex));
-> +			if (ret)
-> +				ret =3D JBD2_FC_REPLAY_STOP;
-> +			else
-> +				ret =3D JBD2_FC_REPLAY_CONTINUE;
-> +		case EXT4_FC_TAG_DEL_RANGE:
-> +		case EXT4_FC_TAG_LINK:
-> +		case EXT4_FC_TAG_UNLINK:
-> +		case EXT4_FC_TAG_CREAT:
-> +		case EXT4_FC_TAG_INODE:
-> +		case EXT4_FC_TAG_PAD:
-> +			state->fc_cur_tag++;
-> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
-tl,
-> +					sizeof(*tl) + =
-ext4_fc_tag_len(tl));
-> +			break;
-> +		case EXT4_FC_TAG_TAIL:
-> +			state->fc_cur_tag++;
-> +			tail =3D (struct ext4_fc_tail =
-*)ext4_fc_tag_val(tl);
-> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
-tl,
-> +						sizeof(*tl) +
-> +						offsetof(struct =
-ext4_fc_tail,
-> +						fc_crc));
-> +			jbd_debug(1, "tail tid %d, expected %d\n",
-> +					le32_to_cpu(tail->fc_tid),
-> +					expected_tid);
-> +			if (le32_to_cpu(tail->fc_tid) =3D=3D =
-expected_tid &&
-> +				le32_to_cpu(tail->fc_crc) =3D=3D =
-state->fc_crc) {
-> +				state->fc_replay_num_tags =3D =
-state->fc_cur_tag;
-> +			} else {
-> +				ret =3D state->fc_replay_num_tags ?
-> +					JBD2_FC_REPLAY_STOP : =
--EFSBADCRC;
-> +			}
-> +			state->fc_crc =3D 0;
-> +			break;
-> +		case EXT4_FC_TAG_HEAD:
-> +			head =3D (struct ext4_fc_head =
-*)ext4_fc_tag_val(tl);
-> +			if (le32_to_cpu(head->fc_features) &
-> +				~EXT4_FC_SUPPORTED_FEATURES) {
-> +				ret =3D -EOPNOTSUPP;
-> +				break;
-> +			}
-> +			if (le32_to_cpu(head->fc_tid) !=3D expected_tid) =
-{
-> +				ret =3D -EINVAL;
-> +				break;
-> +			}
-> +			state->fc_cur_tag++;
-> +			state->fc_crc =3D jbd2_chksum(j, state->fc_crc, =
-tl,
-> +					sizeof(*tl) + =
-ext4_fc_tag_len(tl));
-> +			break;
-> +		default:
-> +			ret =3D state->fc_replay_num_tags ?
-> +				JBD2_FC_REPLAY_STOP : -ECANCELED;
-> +		}
-> +		if (ret < 0 || ret =3D=3D JBD2_FC_REPLAY_STOP)
-> +			break;
-> +	}
-> +
-> +out_err:
-> +	return ret;
-> +}
-> /*
->  * Main recovery path entry point. This function returns =
-JBD2_FC_REPLAY_CONTINUE
->  * to indicate that it is expecting more fast commit blocks. It =
-returns
-> @@ -286,6 +388,13 @@ static int process_journal_block(ext2_filsys fs,
-> static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
-> 				enum passtype pass, int off, tid_t =
-expected_tid)
-> {
-> +	e2fsck_t ctx =3D journal->j_fs_dev->k_ctx;
-> +	struct e2fsck_fc_replay_state *state =3D &ctx->fc_replay_state;
-> +
-> +	if (pass =3D=3D PASS_SCAN) {
-> +		state->fc_current_pass =3D PASS_SCAN;
-> +		return ext4_fc_replay_scan(journal, bh, off, =
-expected_tid);
-> +	}
-> 	return JBD2_FC_REPLAY_STOP;
-> }
+> 	if (!(mount_flags & EXT2_MF_MOUNTED) && !print_min_size)
+> 		io_flags =3D EXT2_FLAG_RW | EXT2_FLAG_EXCLUSIVE;
+> +	if (mount_flags & EXT2_MF_MOUNTED)
+> +		io_flags |=3D EXT2_FLAG_DIRECT_IO;
 >=20
+> 	io_flags |=3D EXT2_FLAG_64BITS | EXT2_FLAG_THREADS;
+> 	if (undo_file) {
 > --
-> 2.30.0.280.ga3ce27912f-goog
->=20
+> 2.25.1
 
 
 Cheers, Andreas
@@ -287,7 +188,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83
+--Apple-Mail=_68A3AE40-B6AB-437C-A9F0-620A7F257F44
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -298,19 +199,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmUItYUACgkQcqXauRfM
-H+BKfw/8DvQoufdN0aJXZsdWMDVzUilPSPz7bqxkLerRebmfBTFeYUV0PMp3mhrY
-D/3KvZ8GBVmcoj6p2dUqtAyaR6iEU14oXGSBEwrcG5kJUk6FsonsX4JMN5uQExMv
-+ngasmokM8TQAgyPA/jLSUaxziCpsN1kQsIqjWpa68g3+w+KlmOE61xVsJLqPL+n
-IRWbB4lM5tnVDZZU/bITZi19G/3lj54Xo4Y+0E7LG3ExM1C3Djl4e0RPD71AUVPq
-ScqS54qEyKK0Qi+kY6HIy5KDfd+XY5jSLwQQva98sB6t4i4QV11a9rKWVPTByxyC
-wCQ6XN2u0y/7X5hfi6sO/S4LcrjhgRWsn7v83Q2PllRg6PH4IAm73Vg1Cik5HTE1
-8iEZX2bNfudPTrqu7Q0tdY8LZ9NYMf6ZLsLkJ2QvdmFWpU/dnOt6fIyABRq47Mb5
-3u3L9FCYvAoEVTFO/J+2R+1uTqXoXkJd9BkH+EQQ7qzllz8b2cZ6oKkjpYL5CDVF
-7rZwWGyBMd8tlhnGIUyPBuGAIze6rAsaNwrfQVpxf6/3rRi5DWA0hDOajVULK2Jp
-bmZyCH2a6Y/cIMa+8hRvau7WMoe+wSwAcJpnYiDyhgiiK8VHFI8aKZnBgzOoct2l
-e0RP1NZOsXnZ8kmSkhq1GzGW94JB26eFLHRH0vdAPE5GZwQEmIg=
-=JZH4
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmUIvwIACgkQcqXauRfM
+H+AyCA/9Ev51deHY2Q+FZOIBr5M5nliWYUcFWx1ecaVB/tii/b77nbVoHhdIV8rW
+xZ1LsguYZnh+Sb8hngmpNyu2iXLzC6zy/y2OXStea7rtozXwq3rbrZZ5sSaJ++fF
+RCDrNj7RxveNdRcJdx8A504ag88ZfoHFCU7tJojIgLrCOJc5/IXNIq/rx/5kpVlO
+dUTywkDU/DWsFUl/N09Gj/6MCo3q5BzHwzEa6GzesO8jKWjdzNx/9nUAFOqaptjA
+GwRKgeXw5m2WbzjGscG0oRttUzSdBB9D9L1ls7f7ZuySC9tyIvMGMj9uK6SJqpS4
+wxBJC83Gs90J6rOAILuFoySkIYPUq7TSNZEwRttnGFzwi+CDX7/t/QbRnKBxprMC
+gWCvVOjHBRJnio/aZF/sFA4q7RIvNICnJ56TeFzt0Wd/oMUylZyZWRA2clIxXPms
+WCHdb7X+d7ed3+aS69rNR6CTNReUuzuxFdOy5q4oqwpX7wUbwv0z8fMEAnADGucG
+rk/bhhKa6BOhqPpurjHT9vCP7SzHJggLGb7HLH2546JsyHonEoKVYJKWZPvOlisb
+ymcPOVn69ccWK9XdTjXJBJLmTrWrCBA6X1xMjeXGWSzD0kXetJGDuI8k1P6SaFtH
+api1O2X2mSG4lw3Xl//UrXvB7/trQ29WnnYxFrME/1KjGnmWfbs=
+=J6F4
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_FF22BD80-4F5F-4BF3-B7A4-F1027C38FA83--
+--Apple-Mail=_68A3AE40-B6AB-437C-A9F0-620A7F257F44--
