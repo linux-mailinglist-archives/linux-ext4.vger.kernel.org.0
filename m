@@ -2,136 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0647A56FE
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 03:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E657A58A0
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 06:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjISBb0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Sep 2023 21:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        id S231567AbjISEvt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Sep 2023 00:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjISBbZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Sep 2023 21:31:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8775094;
-        Mon, 18 Sep 2023 18:31:17 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RqPCS4Km4ztSq2;
-        Tue, 19 Sep 2023 09:27:00 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 19 Sep
- 2023 09:31:12 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v3] jbd2: Fix potential data lost in recovering journal raced with synchronizing fs bdev
-Date:   Tue, 19 Sep 2023 09:25:25 +0800
-Message-ID: <20230919012525.1783108-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S231545AbjISEvr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 00:51:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAC811F;
+        Mon, 18 Sep 2023 21:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=awyfojKMhU8AzVa7YcEsBxlpTOVclzCuTyUo6TQYiIY=; b=Cw5LiD0vn95PKN2IeCDFvMkRoz
+        nIpR3aa2vwbEJhByXcLQUey3cSZoM0mbiK6C+/GUbOFLQ+E3zUMIvi2DG5x6byLlj0amRrNqfwcCn
+        LtMopE0Vn0VS9LVDPKOgfrGBkn29dQ9iOGK93n8Ir7Tt5XPeJl2z3mVUSITyJQ6jfKGH/LDc1qOOC
+        wDjdKBiaRCirlxe/g8scAyXXtJosfVIDgPKczCCQ5grKrjYrChyEcCzmVJhyAF33sTewGexLVVGwO
+        NbHItyH31kAC+tgaegnX0uitTTong1uJkS11wM2b20JpvHaggRs1KVl1ADobtfqliNwoOibJInErH
+        gpxaWVJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qiSi2-00FFkF-10; Tue, 19 Sep 2023 04:51:38 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: [PATCH 00/26] Finish the create_empty_buffers() transition
+Date:   Tue, 19 Sep 2023 05:51:09 +0100
+Message-Id: <20230919045135.3635437-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-JBD2 makes sure journal data is fallen on fs device by sync_blockdev(),
-however, other process could intercept the EIO information from bdev's
-mapping, which leads journal recovering successful even EIO occurs during
-data written back to fs device.
+Pankaj recently added folio_create_empty_buffers() as the folio
+equivalent to create_empty_buffers().  This patch set finishes
+the conversion by first converting all remaining filesystems
+to call folio_create_empty_buffers(), then renaming it back
+to create_empty_buffers().  I took the opportunity to make a few
+simplifications like making folio_create_empty_buffers() return the head
+buffer and extracting get_nth_bh() from nilfs2.
 
-We found this problem in our product, iscsi + multipath is chosen for block
-device of ext4. Unstable network may trigger kpartx to rescan partitions in
-device mapper layer. Detailed process is shown as following:
+A few of the patches in this series aren't directly related to
+create_empty_buffers(), but I saw them while I was working on this and
+thought they'd be easy enough to add to this series.  Compile-tested only,
+other than ext4.
 
-  mount          kpartx          irq
-jbd2_journal_recover
- do_one_pass
-  memcpy(nbh->b_data, obh->b_data) // copy data to fs dev from journal
-  mark_buffer_dirty // mark bh dirty
-         vfs_read
-	  generic_file_read_iter // dio
-	   filemap_write_and_wait_range
-	    __filemap_fdatawrite_range
-	     do_writepages
-	      block_write_full_folio
-	       submit_bh_wbc
-	            >>  EIO occurs in disk  <<
-	                     end_buffer_async_write
-			      mark_buffer_write_io_error
-			       mapping_set_error
-			        set_bit(AS_EIO, &mapping->flags) // set!
-	    filemap_check_errors
-	     test_and_clear_bit(AS_EIO, &mapping->flags) // clear!
- err2 = sync_blockdev
-  filemap_write_and_wait
-   filemap_check_errors
-    test_and_clear_bit(AS_EIO, &mapping->flags) // false
- err2 = 0
+Matthew Wilcox (Oracle) (26):
+  buffer: Make folio_create_empty_buffers() return a buffer_head
+  mpage: Convert map_buffer_to_folio() to folio_create_empty_buffers()
+  ext4: Convert to folio_create_empty_buffers
+  buffer: Add get_nth_bh()
+  gfs2: Convert inode unstuffing to use a folio
+  gfs2: Convert gfs2_getbuf() to folios
+  gfs2; Convert gfs2_getjdatabuf to use a folio
+  gfs2: Convert gfs2_write_buf_to_page() to use a folio
+  nilfs2: Convert nilfs_mdt_freeze_buffer to use a folio
+  nilfs2: Convert nilfs_grab_buffer() to use a folio
+  nilfs2: Convert nilfs_copy_page() to nilfs_copy_folio()
+  nilfs2: Convert nilfs_mdt_forget_block() to use a folio
+  nilfs2: Convert nilfs_mdt_get_frozen_buffer to use a folio
+  nilfs2: Remove nilfs_page_get_nth_block
+  nilfs2: Convert nilfs_lookup_dirty_data_buffers to use
+    folio_create_empty_buffers
+  ntfs: Convert ntfs_read_block() to use a folio
+  ntfs: Convert ntfs_writepage to use a folio
+  ntfs: Convert ntfs_prepare_pages_for_non_resident_write() to folios
+  ntfs3: Convert ntfs_zero_range() to use a folio
+  ocfs2: Convert ocfs2_map_page_blocks to use a folio
+  reiserfs: Convert writepage to use a folio
+  ufs: Add ufs_get_locked_folio and ufs_put_locked_folio
+  ufs: Use ufs_get_locked_folio() in ufs_alloc_lastblock()
+  ufs; Convert ufs_change_blocknr() to use folios
+  ufs: Remove ufs_get_locked_page()
+  buffer: Remove folio_create_empty_buffers()
 
-Filesystem is mounted successfully even data from journal is failed written
-into disk, and ext4/ocfs2 could become corrupted.
+ fs/buffer.c                 |  29 ++--
+ fs/ext4/inode.c             |  14 +-
+ fs/ext4/move_extent.c       |  11 +-
+ fs/gfs2/aops.c              |   2 +-
+ fs/gfs2/bmap.c              |  48 ++++---
+ fs/gfs2/meta_io.c           |  61 ++++-----
+ fs/gfs2/quota.c             |  37 +++---
+ fs/mpage.c                  |   3 +-
+ fs/nilfs2/mdt.c             |  66 +++++-----
+ fs/nilfs2/page.c            |  76 +++++------
+ fs/nilfs2/page.h            |  11 --
+ fs/nilfs2/segment.c         |   7 +-
+ fs/ntfs/aops.c              | 255 +++++++++++++++++-------------------
+ fs/ntfs/file.c              |  89 ++++++-------
+ fs/ntfs3/file.c             |  31 ++---
+ fs/ocfs2/aops.c             |  19 +--
+ fs/reiserfs/inode.c         |  80 +++++------
+ fs/ufs/balloc.c             |  20 ++-
+ fs/ufs/inode.c              |  25 ++--
+ fs/ufs/util.c               |  34 +++--
+ fs/ufs/util.h               |  10 +-
+ include/linux/buffer_head.h |  28 +++-
+ 22 files changed, 458 insertions(+), 498 deletions(-)
 
-Fix it by comparing the wb_err state in fs block device before recovering
-and after recovering.
-
-Fetch a reproducer in [Link].
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217888
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- v1->v3: Initialize wb_err. Untialized wb_err could be same with
-	 mapping->wb_err(eg. EIO without ERRSEQ_SEEN). When EIO
-	 occurs again, mapping->wb_err won't be changed, and wb_err
-	 is still same with mapping->wb_err.
- fs/jbd2/recovery.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index c269a7d29a46..5b771a3d8d9a 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -289,6 +289,8 @@ int jbd2_journal_recover(journal_t *journal)
- 	journal_superblock_t *	sb;
- 
- 	struct recovery_info	info;
-+	errseq_t		wb_err;
-+	struct address_space	*mapping;
- 
- 	memset(&info, 0, sizeof(info));
- 	sb = journal->j_superblock;
-@@ -306,6 +308,9 @@ int jbd2_journal_recover(journal_t *journal)
- 		return 0;
- 	}
- 
-+	wb_err = 0;
-+	mapping = journal->j_fs_dev->bd_inode->i_mapping;
-+	errseq_check_and_advance(&mapping->wb_err, &wb_err);
- 	err = do_one_pass(journal, &info, PASS_SCAN);
- 	if (!err)
- 		err = do_one_pass(journal, &info, PASS_REVOKE);
-@@ -327,6 +332,9 @@ int jbd2_journal_recover(journal_t *journal)
- 
- 	jbd2_journal_clear_revoke(journal);
- 	err2 = sync_blockdev(journal->j_fs_dev);
-+	if (!err)
-+		err = err2;
-+	err2 = errseq_check_and_advance(&mapping->wb_err, &wb_err);
- 	if (!err)
- 		err = err2;
- 	/* Make sure all replayed data is on permanent storage */
 -- 
-2.39.2
+2.40.1
 
