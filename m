@@ -2,131 +2,386 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C6F7A5C57
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 10:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C057A5D1E
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 10:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjISITZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Sep 2023 04:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        id S230465AbjISI5n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Sep 2023 04:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbjISITN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 04:19:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CBF133
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:19:05 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-402d0eda361so58505895e9.0
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695111543; x=1695716343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQ3b5XDPJFH4ZPU40U25cW209fS7oBevnKSE6H0Fn+w=;
-        b=KzoOHEfhKeHgv3tW4kwS9gSnmAtZ5Rq+pU6CPB/nWtxEUsL/EwlR9Dd03v5Z5FCR3w
-         tBHZjwTkWTKkr5hmuryTkvMnPbfUnTQcwBkWDVPVGQxyBfRYVFzIjXBWHblINS93SKte
-         DoHXm8RvZNysOQq8W+HleSyqmNje4rSGg3DiB+WVmTNAPQDB1Ffa23sEQZslg+Bs149B
-         908eW/TAKcGqJApx6IooII/tMUGE6xSasunCs4/8EPWFo3Lrh+gQQn6Il2af8n4v+QOw
-         jJsPmXw038aahZzML2ZivL1jYA7AfM6x6Eq8h76vr/kaIh9Ndn9aUNLrjrikihJkynWD
-         /GKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695111543; x=1695716343;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uQ3b5XDPJFH4ZPU40U25cW209fS7oBevnKSE6H0Fn+w=;
-        b=N+v/R1ZCcCTPLhU0QkBzhtxKDvqAwEZfFuAJs+hwRWT6ucfLtWpeiVHy/+H26MMMzp
-         JgwgO8nqjHTzouMWmKxWvoVlBNGzgrVr4RJeD3IWDxt54kHwZqf6+CmIDbgo7gys9V9p
-         P53PAWi8430BVMI5OxAZhvSX/9nndtzgQre7eKv4qE8/DoOqoRiHVT1+M+igdz4M/aBF
-         dgZpS6ujmCnyc01KrPzTo6QWVyeTAN0rz2bFu2+bACH0f6sS7b4Xk7CYfzCdprb8C29C
-         04A5Tv83kls5D2daiILVhR1vW64m8N2OFTkhS4l4syZ7bG3/1JU3MeWWLxcqQbGy5LK+
-         JocQ==
-X-Gm-Message-State: AOJu0YzVgOcibra7bZowf06rOzQo7i/kEwgmjvKHMylB3zk323ldCi3D
-        /olYEexlP3z1o6E1ANFixeRyOSgZ8GrkgOOFeoP3UA==
-X-Google-Smtp-Source: AGHT+IHklgOzUf9luSSlKnZeygLJj0Nt/0Wm4ps2AhD3B7IuMCckbwf6QblDuTUO9BIOKq3Oel6UOQ==
-X-Received: by 2002:a7b:ca4a:0:b0:401:c297:affb with SMTP id m10-20020a7bca4a000000b00401c297affbmr10412073wml.37.1695111543658;
-        Tue, 19 Sep 2023 01:19:03 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id i10-20020a5d558a000000b003141e629cb6sm14762549wrv.101.2023.09.19.01.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:19:02 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net
-Subject: [PATCH] fs: apply umask if POSIX ACL support is disabled
-Date:   Tue, 19 Sep 2023 10:18:59 +0200
-Message-Id: <20230919081900.1096840-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S230462AbjISI5m (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 04:57:42 -0400
+X-Greylist: delayed 91 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 01:57:32 PDT
+Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AC0102
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:57:32 -0700 (PDT)
+Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
+        by cmsmtp with ESMTP
+        id iE0mqXQGt6NwhiWWWqy4Ko; Tue, 19 Sep 2023 08:56:00 +0000
+Received: from webber.adilger.int ([70.77.221.9])
+        by cmsmtp with ESMTP
+        id iWWVqDGNWHFsOiWWVqzyyh; Tue, 19 Sep 2023 08:56:00 +0000
+X-Authority-Analysis: v=2.4 cv=XZqaca15 c=1 sm=1 tr=0 ts=65096220
+ a=2Y6h5+ypAxmHcsumz2f7Og==:117 a=2Y6h5+ypAxmHcsumz2f7Og==:17 a=pGLkceISAAAA:8
+ a=RPJ6JBhKAAAA:8 a=LXVQ_-qJVfS9U6ybf7IA:9 a=fa_un-3J20JGBB2Tu-mn:22
+From:   Andreas Dilger <adilger@dilger.ca>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org,
+        Alexey Lyashkov <alexey.lyashkov@gmail.com>,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH 1/7] [v2] lib: move jfs_user.h into libsupport
+Date:   Tue, 19 Sep 2023 02:55:46 -0600
+Message-Id: <20230919085552.25262-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-CMAE-Envelope: MS4xfPA7spj5ziheILMbO/ju7rkhKnsD4Lnw3sclasERsFK0+s+6aDguCtlvjYdjf83o1ZRnvs1LErU4M9jurS6eQgaoZCqnbnxZqZ3G0wylPsXVu4DHxrIA
+ UfEVeBy9Al4F2tvRPw2aYcW4ilhb7bIrDddQbQok92cNwJSPZPyubitrnIXeZdqSinmLfVyn1n/OCPhSldI3y1Si4lQth3pLYPi/OMgepeJ+CMowT3fq+4Pt
+ u8LLF3P6OLsI+eltF02EtEo0kH3l0sAbDvUM+1Fcpi06sntkQUjNjimWVoGVzMuf
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- fs/ceph/super.h           | 1 +
- fs/ext2/acl.h             | 1 +
- fs/jfs/jfs_acl.h          | 1 +
- include/linux/posix_acl.h | 1 +
- 4 files changed, 4 insertions(+)
+From: Alexey Lyashkov <alexey.lyashkov@gmail.com>
 
-diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-index 51c7f2b14f6f..e7e2f264acf4 100644
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -1194,6 +1194,7 @@ static inline void ceph_forget_all_cached_acls(struct inode *inode)
- static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
- 				     struct ceph_acl_sec_ctx *as_ctx)
- {
-+	*mode &= ~current_umask();
- 	return 0;
- }
- static inline void ceph_init_inode_acls(struct inode *inode,
-diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
-index 4a8443a2b8ec..694af789c614 100644
---- a/fs/ext2/acl.h
-+++ b/fs/ext2/acl.h
-@@ -67,6 +67,7 @@ extern int ext2_init_acl (struct inode *, struct inode *);
+The jfs_user.h header used in both debugfs and e2fsck, so
+lib/support is better place for it.
+Move a header into new place and rename to jbd2_user.h to
+avoid confusion with JFS filesystem files.
+
+Signed-off-by: Alexey Lyashkov <alexey.lyashkov@gmail.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+---
+ debugfs/Makefile.in                          | 16 +++++++---------
+ debugfs/debugfs.c                            |  2 +-
+ debugfs/journal.h                            |  2 +-
+ debugfs/logdump.c                            |  2 +-
+ e2fsck/Makefile.in                           |  8 ++++----
+ e2fsck/journal.c                             |  2 +-
+ e2fsck/recovery.c                            |  2 +-
+ e2fsck/revoke.c                              |  2 +-
+ e2fsck/unix.c                                |  2 +-
+ lib/ext2fs/Makefile.in                       | 18 ++++++++----------
+ e2fsck/jfs_user.h => lib/support/jbd2_user.h |  0
+ misc/Makefile.in                             | 12 +++++-------
+ 12 files changed, 31 insertions(+), 37 deletions(-)
+ rename e2fsck/jfs_user.h => lib/support/jbd2_user.h (100%)
+
+diff --git a/debugfs/Makefile.in b/debugfs/Makefile.in
+index 67f8d0b6..1ced0c78 100644
+--- a/debugfs/Makefile.in
++++ b/debugfs/Makefile.in
+@@ -47,9 +47,7 @@ STATIC_DEPLIBS= $(STATIC_LIBEXT2FS) $(DEPSTATIC_LIBSS) \
+ 		$(DEPSTATIC_LIBCOM_ERR) $(DEPSTATIC_LIBUUID) \
+ 		$(DEPSTATIC_LIBE2P)
  
- static inline int ext2_init_acl (struct inode *inode, struct inode *dir)
- {
-+	inode->i_mode &= ~current_umask();
- 	return 0;
- }
+-# This nastiness is needed because of jfs_user.h hackery; when we finally
+-# clean up this mess, we should be able to drop it
+-LOCAL_CFLAGS = -I$(srcdir)/../e2fsck -DDEBUGFS
++LOCAL_CFLAGS = -DDEBUGFS
+ DEPEND_CFLAGS = -I$(srcdir)
+ 
+ .c.o:
+@@ -186,7 +184,7 @@ debugfs.o: $(srcdir)/debugfs.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/e2p/e2p.h $(top_srcdir)/lib/support/quotaio.h \
+  $(top_srcdir)/lib/support/dqblk_v2.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h $(top_srcdir)/version.h \
+- $(srcdir)/../e2fsck/jfs_user.h $(top_srcdir)/lib/ext2fs/kernel-jbd.h \
++ $(top_srcdir)/lib/support/jbd2_user.h $(top_srcdir)/lib/ext2fs/kernel-jbd.h \
+  $(top_srcdir)/lib/ext2fs/jfs_compat.h $(top_srcdir)/lib/ext2fs/kernel-list.h \
+  $(top_srcdir)/lib/ext2fs/compiler.h $(top_srcdir)/lib/support/plausible.h
+ util.o: $(srcdir)/util.c $(top_builddir)/lib/config.h \
+@@ -277,7 +275,7 @@ logdump.o: $(srcdir)/logdump.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/ext2fs/bitops.h $(srcdir)/../misc/create_inode.h \
+  $(top_srcdir)/lib/e2p/e2p.h $(top_srcdir)/lib/support/quotaio.h \
+  $(top_srcdir)/lib/support/dqblk_v2.h \
+- $(top_srcdir)/lib/support/quotaio_tree.h $(srcdir)/../e2fsck/jfs_user.h \
++ $(top_srcdir)/lib/support/quotaio_tree.h $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h
+@@ -382,7 +380,7 @@ quota.o: $(srcdir)/quota.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h
+ journal.o: $(srcdir)/journal.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(srcdir)/journal.h \
+- $(srcdir)/../e2fsck/jfs_user.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
++ $(top_srcdir)/lib/support/jbd2_user.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
+  $(top_srcdir)/lib/ext2fs/ext3_extents.h $(top_srcdir)/lib/et/com_err.h \
+  $(top_srcdir)/lib/ext2fs/ext2_io.h $(top_builddir)/lib/ext2fs/ext2_err.h \
+@@ -390,7 +388,7 @@ journal.o: $(srcdir)/journal.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/ext2fs/bitops.h $(top_srcdir)/lib/ext2fs/kernel-jbd.h \
+  $(top_srcdir)/lib/ext2fs/jfs_compat.h $(top_srcdir)/lib/ext2fs/kernel-list.h \
+  $(top_srcdir)/lib/ext2fs/compiler.h
+-revoke.o: $(srcdir)/../e2fsck/revoke.c $(srcdir)/../e2fsck/jfs_user.h \
++revoke.o: $(srcdir)/../e2fsck/revoke.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(top_srcdir)/lib/ext2fs/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(top_srcdir)/lib/ext2fs/ext2fs.h $(top_srcdir)/lib/ext2fs/ext3_extents.h \
+@@ -400,7 +398,7 @@ revoke.o: $(srcdir)/../e2fsck/revoke.c $(srcdir)/../e2fsck/jfs_user.h \
+  $(top_srcdir)/lib/ext2fs/bitops.h $(top_srcdir)/lib/ext2fs/kernel-jbd.h \
+  $(top_srcdir)/lib/ext2fs/jfs_compat.h $(top_srcdir)/lib/ext2fs/kernel-list.h \
+  $(top_srcdir)/lib/ext2fs/compiler.h
+-recovery.o: $(srcdir)/../e2fsck/recovery.c $(srcdir)/../e2fsck/jfs_user.h \
++recovery.o: $(srcdir)/../e2fsck/recovery.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(top_srcdir)/lib/ext2fs/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(top_srcdir)/lib/ext2fs/ext2fs.h $(top_srcdir)/lib/ext2fs/ext3_extents.h \
+@@ -423,4 +421,4 @@ do_journal.o: $(srcdir)/do_journal.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+- $(srcdir)/journal.h $(srcdir)/../e2fsck/jfs_user.h
++ $(srcdir)/journal.h $(top_srcdir)/lib/support/jbd2_user.h
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index 9b6321dc..742bf794 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -37,7 +37,7 @@ extern char *optarg;
+ #include <ext2fs/ext2_ext_attr.h>
+ 
+ #include "../version.h"
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #include "support/plausible.h"
+ 
+ #ifndef BUFSIZ
+diff --git a/debugfs/journal.h b/debugfs/journal.h
+index 10b638eb..9c11f4f1 100644
+--- a/debugfs/journal.h
++++ b/debugfs/journal.h
+@@ -12,7 +12,7 @@
+  * any later version.
+  */
+ 
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ 
+ /* journal.c */
+ errcode_t ext2fs_open_journal(ext2_filsys fs, journal_t **j);
+diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+index 6b0133e0..908a3f35 100644
+--- a/debugfs/logdump.c
++++ b/debugfs/logdump.c
+@@ -32,7 +32,7 @@ extern char *optarg;
+ 
+ #include "debugfs.h"
+ #include "blkid/blkid.h"
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #if __GNUC_PREREQ (4, 6)
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-function"
+diff --git a/e2fsck/Makefile.in b/e2fsck/Makefile.in
+index fbb7b156..6034b91e 100644
+--- a/e2fsck/Makefile.in
++++ b/e2fsck/Makefile.in
+@@ -383,7 +383,7 @@ pass5.o: $(srcdir)/pass5.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(srcdir)/problem.h
+ journal.o: $(srcdir)/journal.c $(top_builddir)/lib/config.h \
+- $(top_builddir)/lib/dirpaths.h $(srcdir)/jfs_user.h $(srcdir)/e2fsck.h \
++ $(top_builddir)/lib/dirpaths.h $(top_srcdir)/lib/support/jbd2_user.h $(srcdir)/e2fsck.h \
+  $(top_srcdir)/lib/ext2fs/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(top_srcdir)/lib/ext2fs/ext2fs.h $(top_srcdir)/lib/ext2fs/ext3_extents.h \
+  $(top_srcdir)/lib/et/com_err.h $(top_srcdir)/lib/ext2fs/ext2_io.h \
+@@ -396,7 +396,7 @@ journal.o: $(srcdir)/journal.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h $(srcdir)/problem.h
+-recovery.o: $(srcdir)/recovery.c $(srcdir)/jfs_user.h \
++recovery.o: $(srcdir)/recovery.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/e2fsck.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
+@@ -410,7 +410,7 @@ recovery.o: $(srcdir)/recovery.c $(srcdir)/jfs_user.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h
+-revoke.o: $(srcdir)/revoke.c $(srcdir)/jfs_user.h \
++revoke.o: $(srcdir)/revoke.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/e2fsck.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
+@@ -464,7 +464,7 @@ unix.o: $(srcdir)/unix.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+- $(srcdir)/problem.h $(srcdir)/jfs_user.h \
++ $(srcdir)/problem.h $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h $(top_srcdir)/version.h
+ dirinfo.o: $(srcdir)/dirinfo.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(srcdir)/e2fsck.h \
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index 8ae89bf7..26927cde 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -23,7 +23,7 @@
  #endif
-diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
-index f892e54d0fcd..10791e97a46f 100644
---- a/fs/jfs/jfs_acl.h
-+++ b/fs/jfs/jfs_acl.h
-@@ -17,6 +17,7 @@ int jfs_init_acl(tid_t, struct inode *, struct inode *);
- static inline int jfs_init_acl(tid_t tid, struct inode *inode,
- 			       struct inode *dir)
- {
-+	inode->i_mode &= ~current_umask();
- 	return 0;
- }
  
-diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-index 0e65b3d634d9..54bc9b1061ca 100644
---- a/include/linux/posix_acl.h
-+++ b/include/linux/posix_acl.h
-@@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
- static inline int posix_acl_create(struct inode *inode, umode_t *mode,
- 		struct posix_acl **default_acl, struct posix_acl **acl)
- {
-+	*mode &= ~current_umask();
- 	*default_acl = *acl = NULL;
- 	return 0;
- }
+ #define E2FSCK_INCLUDE_INLINE_FUNCS
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #include "problem.h"
+ #include "uuid/uuid.h"
+ 
+diff --git a/e2fsck/recovery.c b/e2fsck/recovery.c
+index 8ca35271..7fff6b80 100644
+--- a/e2fsck/recovery.c
++++ b/e2fsck/recovery.c
+@@ -11,7 +11,7 @@
+  */
+ 
+ #ifndef __KERNEL__
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #else
+ #include <linux/time.h>
+ #include <linux/fs.h>
+diff --git a/e2fsck/revoke.c b/e2fsck/revoke.c
+index fa608788..77d269e3 100644
+--- a/e2fsck/revoke.c
++++ b/e2fsck/revoke.c
+@@ -78,7 +78,7 @@
+  */
+ 
+ #ifndef __KERNEL__
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #else
+ #include <linux/time.h>
+ #include <linux/fs.h>
+diff --git a/e2fsck/unix.c b/e2fsck/unix.c
+index 853eb296..947e4ffa 100644
+--- a/e2fsck/unix.c
++++ b/e2fsck/unix.c
+@@ -55,7 +55,7 @@ extern int optind;
+ #include "support/devname.h"
+ #include "e2fsck.h"
+ #include "problem.h"
+-#include "jfs_user.h"
++#include "support/jbd2_user.h"
+ #include "../version.h"
+ 
+ /* Command line options */
+diff --git a/lib/ext2fs/Makefile.in b/lib/ext2fs/Makefile.in
+index 1b6a74b8..4cee31f5 100644
+--- a/lib/ext2fs/Makefile.in
++++ b/lib/ext2fs/Makefile.in
+@@ -5,10 +5,8 @@ top_builddir = ../..
+ my_dir = lib/ext2fs
+ INSTALL = @INSTALL@
+ MKDIR_P = @MKDIR_P@
+-DEPEND_CFLAGS = -I$(top_srcdir)/debugfs -I$(srcdir)/../../e2fsck -DDEBUGFS
+-# This nastiness is needed because of jfs_user.h hackery; when we finally
+-# clean up this mess, we should be able to drop it
+-DEBUGFS_CFLAGS = -I$(srcdir)/../../e2fsck $(ALL_CFLAGS) -DDEBUGFS
++DEPEND_CFLAGS = -I$(top_srcdir)/debugfs -DDEBUGFS
++DEBUGFS_CFLAGS = $(ALL_CFLAGS) -DDEBUGFS
+ 
+ @MCONFIG@
+ 
+@@ -1229,7 +1227,7 @@ debugfs.o: $(top_srcdir)/debugfs/debugfs.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/debugfs/../misc/create_inode.h $(top_srcdir)/lib/e2p/e2p.h \
+  $(top_srcdir)/lib/support/quotaio.h $(top_srcdir)/lib/support/dqblk_v2.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h $(top_srcdir)/debugfs/../version.h \
+- $(srcdir)/../../e2fsck/jfs_user.h $(srcdir)/kernel-jbd.h \
++ $(top_srcdir)/lib/support/jbd2_user.h $(srcdir)/kernel-jbd.h \
+  $(srcdir)/jfs_compat.h $(srcdir)/kernel-list.h $(srcdir)/compiler.h \
+  $(top_srcdir)/lib/support/plausible.h
+ util.o: $(top_srcdir)/debugfs/util.c $(top_builddir)/lib/config.h \
+@@ -1319,7 +1317,7 @@ logdump.o: $(top_srcdir)/debugfs/logdump.c $(top_builddir)/lib/config.h \
+  $(srcdir)/hashmap.h $(srcdir)/bitops.h \
+  $(top_srcdir)/debugfs/../misc/create_inode.h $(top_srcdir)/lib/e2p/e2p.h \
+  $(top_srcdir)/lib/support/quotaio.h $(top_srcdir)/lib/support/dqblk_v2.h \
+- $(top_srcdir)/lib/support/quotaio_tree.h $(srcdir)/../../e2fsck/jfs_user.h \
++ $(top_srcdir)/lib/support/quotaio_tree.h $(top_srcdir)/lib/support/jbd2_user.h \
+  $(srcdir)/kernel-jbd.h $(srcdir)/jfs_compat.h $(srcdir)/kernel-list.h \
+  $(srcdir)/compiler.h $(srcdir)/fast_commit.h
+ htree.o: $(top_srcdir)/debugfs/htree.c $(top_builddir)/lib/config.h \
+@@ -1420,13 +1418,13 @@ create_inode.o: $(top_srcdir)/misc/create_inode.c \
+  $(top_srcdir)/lib/e2p/e2p.h $(top_srcdir)/lib/support/nls-enable.h
+ journal.o: $(top_srcdir)/debugfs/journal.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(top_srcdir)/debugfs/journal.h \
+- $(srcdir)/../../e2fsck/jfs_user.h $(srcdir)/ext2_fs.h \
++ $(top_srcdir)/lib/support/jbd2_user.h $(srcdir)/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(srcdir)/ext2fs.h \
+  $(srcdir)/ext3_extents.h $(top_srcdir)/lib/et/com_err.h $(srcdir)/ext2_io.h \
+  $(top_builddir)/lib/ext2fs/ext2_err.h $(srcdir)/ext2_ext_attr.h \
+  $(srcdir)/hashmap.h $(srcdir)/bitops.h $(srcdir)/kernel-jbd.h \
+  $(srcdir)/jfs_compat.h $(srcdir)/kernel-list.h $(srcdir)/compiler.h
+-revoke.o: $(top_srcdir)/e2fsck/revoke.c $(top_srcdir)/e2fsck/jfs_user.h \
++revoke.o: $(top_srcdir)/e2fsck/revoke.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(srcdir)/ext2fs.h $(srcdir)/ext3_extents.h $(top_srcdir)/lib/et/com_err.h \
+@@ -1434,7 +1432,7 @@ revoke.o: $(top_srcdir)/e2fsck/revoke.c $(top_srcdir)/e2fsck/jfs_user.h \
+  $(srcdir)/ext2_ext_attr.h $(srcdir)/hashmap.h $(srcdir)/bitops.h \
+  $(srcdir)/kernel-jbd.h $(srcdir)/jfs_compat.h $(srcdir)/kernel-list.h \
+  $(srcdir)/compiler.h
+-recovery.o: $(top_srcdir)/e2fsck/recovery.c $(top_srcdir)/e2fsck/jfs_user.h \
++recovery.o: $(top_srcdir)/e2fsck/recovery.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(srcdir)/ext2fs.h $(srcdir)/ext3_extents.h $(top_srcdir)/lib/et/com_err.h \
+@@ -1454,4 +1452,4 @@ do_journal.o: $(top_srcdir)/debugfs/do_journal.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/support/quotaio.h $(top_srcdir)/lib/support/dqblk_v2.h \
+  $(top_srcdir)/lib/support/quotaio_tree.h $(srcdir)/kernel-jbd.h \
+  $(srcdir)/jfs_compat.h $(srcdir)/kernel-list.h $(srcdir)/compiler.h \
+- $(top_srcdir)/debugfs/journal.h $(srcdir)/../../e2fsck/jfs_user.h
++ $(top_srcdir)/debugfs/journal.h $(top_srcdir)/lib/support/jbd2_user.h
+diff --git a/e2fsck/jfs_user.h b/lib/support/jbd2_user.h
+similarity index 100%
+rename from e2fsck/jfs_user.h
+rename to lib/support/jbd2_user.h
+diff --git a/misc/Makefile.in b/misc/Makefile.in
+index e5420bbd..0c725521 100644
+--- a/misc/Makefile.in
++++ b/misc/Makefile.in
+@@ -124,10 +124,8 @@ DEPLIBS_E2P= $(LIBE2P) $(DEPLIBCOM_ERR)
+ 
+ COMPILE_ET=	_ET_DIR_OVERRIDE=$(srcdir)/../lib/et/et ../lib/et/compile_et
+ 
+-# This nastiness is needed because of jfs_user.h hackery; when we finally
+-# clean up this mess, we should be able to drop it
+-JOURNAL_CFLAGS = -I$(srcdir)/../e2fsck $(ALL_CFLAGS) -DDEBUGFS
+-DEPEND_CFLAGS = -I$(top_srcdir)/e2fsck
++JOURNAL_CFLAGS = -I $(ALL_CFLAGS) -DDEBUGFS
++DEPEND_CFLAGS =
+ 
+ .c.o:
+ 	$(E) "	CC $<"
+@@ -879,7 +877,7 @@ check_fuzzer.o: $(srcdir)/check_fuzzer.c $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_srcdir)/lib/ext2fs/bitops.h
+ journal.o: $(srcdir)/../debugfs/journal.c $(top_builddir)/lib/config.h \
+  $(top_builddir)/lib/dirpaths.h $(srcdir)/../debugfs/journal.h \
+- $(top_srcdir)/e2fsck/jfs_user.h $(top_srcdir)/e2fsck/e2fsck.h \
++ $(top_srcdir)/lib/support/jbd2_user.h $(top_srcdir)/e2fsck/e2fsck.h \
+  $(top_srcdir)/lib/ext2fs/ext2_fs.h $(top_builddir)/lib/ext2fs/ext2_types.h \
+  $(top_srcdir)/lib/ext2fs/ext2fs.h $(top_srcdir)/lib/ext2fs/ext3_extents.h \
+  $(top_srcdir)/lib/et/com_err.h $(top_srcdir)/lib/ext2fs/ext2_io.h \
+@@ -892,7 +890,7 @@ journal.o: $(srcdir)/../debugfs/journal.c $(top_builddir)/lib/config.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h
+-revoke.o: $(srcdir)/../e2fsck/revoke.c $(srcdir)/../e2fsck/jfs_user.h \
++revoke.o: $(srcdir)/../e2fsck/revoke.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/../e2fsck/e2fsck.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
+@@ -906,7 +904,7 @@ revoke.o: $(srcdir)/../e2fsck/revoke.c $(srcdir)/../e2fsck/jfs_user.h \
+  $(top_srcdir)/lib/ext2fs/fast_commit.h $(top_srcdir)/lib/ext2fs/jfs_compat.h \
+  $(top_srcdir)/lib/ext2fs/kernel-list.h $(top_srcdir)/lib/ext2fs/compiler.h \
+  $(top_srcdir)/lib/ext2fs/kernel-jbd.h
+-recovery.o: $(srcdir)/../e2fsck/recovery.c $(srcdir)/../e2fsck/jfs_user.h \
++recovery.o: $(srcdir)/../e2fsck/recovery.c $(top_srcdir)/lib/support/jbd2_user.h \
+  $(top_builddir)/lib/config.h $(top_builddir)/lib/dirpaths.h \
+  $(srcdir)/../e2fsck/e2fsck.h $(top_srcdir)/lib/ext2fs/ext2_fs.h \
+  $(top_builddir)/lib/ext2fs/ext2_types.h $(top_srcdir)/lib/ext2fs/ext2fs.h \
 -- 
-2.39.2
+2.25.1
 
