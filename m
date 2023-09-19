@@ -2,154 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CC77A6265
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 14:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2847A68F5
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbjISMQb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Sep 2023 08:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
+        id S232282AbjISQbk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Sep 2023 12:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbjISMQV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 08:16:21 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8598E3;
-        Tue, 19 Sep 2023 05:16:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RqgcV43Knz4f400Y;
-        Tue, 19 Sep 2023 20:16:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAnOA0DkQllO8FpAw--.40065S14;
-        Tue, 19 Sep 2023 20:16:11 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 12/12] ext4: run mballoc test with different layouts setting
-Date:   Wed, 20 Sep 2023 04:15:32 +0800
-Message-Id: <20230919201532.310085-13-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230919201532.310085-1-shikemeng@huaweicloud.com>
-References: <20230919201532.310085-1-shikemeng@huaweicloud.com>
+        with ESMTP id S232041AbjISQbd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 12:31:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EAB1A7;
+        Tue, 19 Sep 2023 09:31:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A27C433CD;
+        Tue, 19 Sep 2023 16:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695141076;
+        bh=2YOWI6/JAFOB4t8+Jl1G0UAU2WJNOEKR+ozWrF+wCHw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NSgO9mQ/kogScKOyruXs27QKGb28KeH5iN8518jdQIxYZ9Zq8W5Yeb8HJpLNbIZ40
+         EQDdGtIWCMRwCZr+hkVhSKagEDB2fBTdAzDnNexBTyvRGH8+mWpGC7k4O3oOthSODy
+         kLPJh5RYmd+l51ixbejRXP63ZyU1UyglaFGETEGRw2BGftvafb/kUzhWZeRY/B1ibo
+         Wti21rW2JgdQmcow8/EHQlT7uWQR0pPH/ecD4lkrfORAvjqUH6xcDxBDFUTwISNY24
+         GBmtqEOt9wCW1B2y4/2rn4A5SVB2ofaAjm8Z64p+ka1gu4ZTZ9u3KdunqSf9K8+AlP
+         OJGP0iADrktsQ==
+Message-ID: <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Bruno Haible <bruno@clisp.org>, Jan Kara <jack@suse.cz>,
+        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bo b Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <l@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 19 Sep 2023 12:31:08 -0400
+In-Reply-To: <4511209.uG2h0Jr0uP@nimes>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230919110457.7fnmzo4nqsi43yqq@quack3>
+         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+         <4511209.uG2h0Jr0uP@nimes>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAnOA0DkQllO8FpAw--.40065S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4xZrWkCryrGw4rXrWrKrg_yoW5Xryfpa
-        nIkF1Fkr15WFsF93W3K3s7Zw1agw1kur18Jry7W34FyFn7Aws7JFsrtryYya40qrWkXFn0
-        vFn09r17C3y8Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-        FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
-        A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0TqcUUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Use KUNIT_CASE_PARAM to run mballoc test with different layouts setting.
+On Tue, 2023-09-19 at 16:52 +0200, Bruno Haible wrote:
+> Jeff Layton wrote:
+> > I'm not sure what we can do for this test. The nap() function is making
+> > an assumption that the timestamp granularity will be constant, and that
+> > isn't necessarily the case now.
+>=20
+> This is only of secondary importance, because the scenario by Jan Kara
+> shows a much more fundamental breakage:
+>=20
+> > > The ultimate problem is that a sequence like:
+> > >=20
+> > > write(f1)
+> > > stat(f2)
+> > > write(f2)
+> > > stat(f2)
+> > > write(f1)
+> > > stat(f1)
+> > >=20
+> > > can result in f1 timestamp to be (slightly) lower than the final f2
+> > > timestamp because the second write to f1 didn't bother updating the
+> > > timestamp. That can indeed be a bit confusing to programs if they com=
+pare
+> > > timestamps between two files. Jeff?
+> > >=20
+> >=20
+> > Basically yes.
+>=20
+> f1 was last written to *after* f2 was last written to. If the timestamp o=
+f f1
+> is then lower than the timestamp of f2, timestamps are fundamentally brok=
+en.
+>=20
+> Many things in user-space depend on timestamps, such as build system
+> centered around 'make', but also 'find ... -newer ...'.
+>=20
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/mballoc-test.c | 52 ++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 14 deletions(-)
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 120c4944d2e1..f94901fd3835 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -199,21 +199,11 @@ ext4_mb_mark_context_stub(handle_t *handle, struct super_block *sb, bool state,
- 	return 0;
- }
- 
--#define TEST_BLOCKSIZE_BITS 10
--#define TEST_CLUSTER_BITS 3
--#define TEST_BLOCKS_PER_GROUP 8192
--#define TEST_GROUP_COUNT 4
--#define TEST_DESC_SIZE 64
- #define TEST_GOAL_GROUP 1
- static int mbt_kunit_init(struct kunit *test)
- {
--	struct mbt_ext4_block_layout layout = {
--		.blocksize_bits = TEST_BLOCKSIZE_BITS,
--		.cluster_bits = TEST_CLUSTER_BITS,
--		.blocks_per_group = TEST_BLOCKS_PER_GROUP,
--		.group_count = TEST_GROUP_COUNT,
--		.desc_size = TEST_DESC_SIZE,
--	};
-+	struct mbt_ext4_block_layout *layout =
-+		(struct mbt_ext4_block_layout *)(test->param_value);
- 	struct super_block *sb;
- 	int ret;
- 
-@@ -221,7 +211,7 @@ static int mbt_kunit_init(struct kunit *test)
- 	if (sb == NULL)
- 		return -ENOMEM;
- 
--	mbt_init_sb_layout(sb, &layout);
-+	mbt_init_sb_layout(sb, layout);
- 
- 	ret = mbt_ctx_init(sb);
- 	if (ret != 0) {
-@@ -307,9 +297,43 @@ static void test_new_blocks_simple(struct kunit *test)
- 		"unexpectedly get block when no block is available");
- }
- 
-+static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
-+	{
-+		.blocksize_bits = 10,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+	{
-+		.blocksize_bits = 12,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+	{
-+		.blocksize_bits = 16,
-+		.cluster_bits = 3,
-+		.blocks_per_group = 8192,
-+		.group_count = 4,
-+		.desc_size = 64,
-+	},
-+};
-+
-+static void mbt_show_layout(const struct mbt_ext4_block_layout *layout,
-+			    char *desc)
-+{
-+	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "block_bits=%d cluster_bits=%d "
-+		 "blocks_per_group=%d group_count=%d desc_size=%d\n",
-+		 layout->blocksize_bits, layout->cluster_bits,
-+		 layout->blocks_per_group, layout->group_count,
-+		 layout->desc_size);
-+}
-+KUNIT_ARRAY_PARAM(mbt_layouts, mbt_test_layouts, mbt_show_layout);
- 
- static struct kunit_case mbt_test_cases[] = {
--	KUNIT_CASE(test_new_blocks_simple),
-+	KUNIT_CASE_PARAM(test_new_blocks_simple, mbt_layouts_gen_params),
- 	{}
- };
- 
--- 
-2.30.0
+What does breakage with make look like in this situation? The "fuzz"
+here is going to be on the order of a jiffy. The typical case for make
+timestamp comparisons is comparing source files vs. a build target. If
+those are being written nearly simultaneously, then that could be an
+issue, but is that a typical behavior? It seems like it would be hard to
+rely on that anyway, esp. given filesystems like NFS that can do lazy
+writeback.
 
+One of the operating principles with this series is that timestamps can
+be of varying granularity between different files. Note that Linux
+already violates this assumption when you're working across filesystems
+of different types.
+
+As to potential fixes if this is a real problem:
+
+I don't really want to put this behind a mount or mkfs option (a'la
+relatime, etc.), but that is one possibility.
+
+I wonder if it would be feasible to just advance the coarse-grained
+current_time whenever we end up updating a ctime with a fine-grained
+timestamp? It might produce some inode write amplification. Files that
+were written within the same jiffy could see more inode transactions
+logged, but that still might not be _too_ awful.
+
+I'll keep thinking about it for now.
+--=20
+Jeff Layton <jlayton@kernel.org>
