@@ -2,66 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB2B7A5C4E
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 10:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C6F7A5C57
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Sep 2023 10:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjISISg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Sep 2023 04:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S230384AbjISITZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Sep 2023 04:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjISISe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 04:18:34 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856FA11C
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:18:28 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so1546274f8f.1
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:18:28 -0700 (PDT)
+        with ESMTP id S231528AbjISITN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 04:19:13 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CBF133
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:19:05 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-402d0eda361so58505895e9.0
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 01:19:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695111507; x=1695716307; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1695111543; x=1695716343; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pFKz0KWwiS0pVzc4P5uzGjv0X8MPFPaaJ3s5AKyJ+TY=;
-        b=CChUMqViAk9ijFZ+Sl2Vatz6hWua9FTgOycsJhTcyibs1c8Xzz9MAN/OELcBC+GXoF
-         guqchm8GrRqi8LUrDqAJkih6qWGxjk+wl0rkZ1r1AIvl3OiAoKnadWPznvyU8Mr4L71Z
-         3Q/JkMEQ+aDUQOEQ3R+yGShFrD3lVB/jselhDoUXT3KuxTT9ky4MaUsPwoVmbinoP1du
-         WO0ubhXrw6JXwsp56VPF+KwnAksjEfj12It4P1ZtASfVd2Xh4NZT5DV3hdwcyAtatEVT
-         1xbCrKZNHQMsS5NHfv8hb/izwN6gCl500JK1pqe66ywE0Ym/2dopUaA644KCZEKDlK/d
-         jH+A==
+        bh=uQ3b5XDPJFH4ZPU40U25cW209fS7oBevnKSE6H0Fn+w=;
+        b=KzoOHEfhKeHgv3tW4kwS9gSnmAtZ5Rq+pU6CPB/nWtxEUsL/EwlR9Dd03v5Z5FCR3w
+         tBHZjwTkWTKkr5hmuryTkvMnPbfUnTQcwBkWDVPVGQxyBfRYVFzIjXBWHblINS93SKte
+         DoHXm8RvZNysOQq8W+HleSyqmNje4rSGg3DiB+WVmTNAPQDB1Ffa23sEQZslg+Bs149B
+         908eW/TAKcGqJApx6IooII/tMUGE6xSasunCs4/8EPWFo3Lrh+gQQn6Il2af8n4v+QOw
+         jJsPmXw038aahZzML2ZivL1jYA7AfM6x6Eq8h76vr/kaIh9Ndn9aUNLrjrikihJkynWD
+         /GKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695111507; x=1695716307;
+        d=1e100.net; s=20230601; t=1695111543; x=1695716343;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pFKz0KWwiS0pVzc4P5uzGjv0X8MPFPaaJ3s5AKyJ+TY=;
-        b=vumYqtpAo6Bd3Hm3yZtF4FBk3H6PB3+hkxnCG7XBJwkOB5CwEWi8QQVQgtGYU8icwa
-         5Lrk8KA4cgcK07zwbgOUj3Ympzf5/i/s2pARB0G9ofCh9LRU2y8xyQZe2VhXmqIXfkJN
-         NUZXfa456sypipE5lk8sbQ9IdsBDRoBldGpXfNDmUHa0ginOPn3/e+TH/j9C7Ejv9giW
-         0+7/bA/UgyhgibFN9oQgvrgkQkwcfSkCAeB6JoZ9lPMegJB1WQgUnfpd/D7MiBn/lp3p
-         nXV8LiQd7qQI7Dc0dseeO2qX6b1EwffnRAE9T0NYImkwEpsDpSF6eL0glleSSO16C8XV
-         MUPw==
-X-Gm-Message-State: AOJu0YyEP1li5+e/kTTyJphXKKDBHIJe9qVsUwLDjVimmhV4NgoXAm0N
-        FwgCn6nhZ1AD2TXW6TtVpT4YBQ==
-X-Google-Smtp-Source: AGHT+IFIA72JLXYLX9P45Y7TvbzUP8wCfKgwoFLVj3U0ZuxAO8wVqrE454TPVH/lN3031fnF4Cnvpw==
-X-Received: by 2002:a5d:404c:0:b0:319:7abf:d8e2 with SMTP id w12-20020a5d404c000000b003197abfd8e2mr10936570wrp.24.1695111506898;
-        Tue, 19 Sep 2023 01:18:26 -0700 (PDT)
+        bh=uQ3b5XDPJFH4ZPU40U25cW209fS7oBevnKSE6H0Fn+w=;
+        b=N+v/R1ZCcCTPLhU0QkBzhtxKDvqAwEZfFuAJs+hwRWT6ucfLtWpeiVHy/+H26MMMzp
+         JgwgO8nqjHTzouMWmKxWvoVlBNGzgrVr4RJeD3IWDxt54kHwZqf6+CmIDbgo7gys9V9p
+         P53PAWi8430BVMI5OxAZhvSX/9nndtzgQre7eKv4qE8/DoOqoRiHVT1+M+igdz4M/aBF
+         dgZpS6ujmCnyc01KrPzTo6QWVyeTAN0rz2bFu2+bACH0f6sS7b4Xk7CYfzCdprb8C29C
+         04A5Tv83kls5D2daiILVhR1vW64m8N2OFTkhS4l4syZ7bG3/1JU3MeWWLxcqQbGy5LK+
+         JocQ==
+X-Gm-Message-State: AOJu0YzVgOcibra7bZowf06rOzQo7i/kEwgmjvKHMylB3zk323ldCi3D
+        /olYEexlP3z1o6E1ANFixeRyOSgZ8GrkgOOFeoP3UA==
+X-Google-Smtp-Source: AGHT+IHklgOzUf9luSSlKnZeygLJj0Nt/0Wm4ps2AhD3B7IuMCckbwf6QblDuTUO9BIOKq3Oel6UOQ==
+X-Received: by 2002:a7b:ca4a:0:b0:401:c297:affb with SMTP id m10-20020a7bca4a000000b00401c297affbmr10412073wml.37.1695111543658;
+        Tue, 19 Sep 2023 01:19:03 -0700 (PDT)
 Received: from heron.intern.cm-ag (p200300dc6f209c00529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f20:9c00:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d560a000000b003142e438e8csm14687115wrv.26.2023.09.19.01.18.25
+        by smtp.gmail.com with ESMTPSA id i10-20020a5d558a000000b003141e629cb6sm14762549wrv.101.2023.09.19.01.19.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 01:18:26 -0700 (PDT)
+        Tue, 19 Sep 2023 01:19:02 -0700 (PDT)
 From:   Max Kellermann <max.kellermann@ionos.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
+To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>
 Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        "J . Bruce Fields" <bfields@redhat.com>, stable@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ext4/acl: apply umask if ACL support is disabled
-Date:   Tue, 19 Sep 2023 10:18:23 +0200
-Message-Id: <20230919081824.1096619-1-max.kellermann@ionos.com>
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net
+Subject: [PATCH] fs: apply umask if POSIX ACL support is disabled
+Date:   Tue, 19 Sep 2023 10:18:59 +0200
+Message-Id: <20230919081900.1096840-1-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,41 +71,62 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The function ext4_init_acl() calls posix_acl_create() which is
-responsible for applying the umask.  But without
-CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline function,
-and nobody applies the umask.
-
-This fixes a bug which causes the umask to be ignored with O_TMPFILE
-on ext4:
-
- https://github.com/MusicPlayerDaemon/MPD/issues/558
- https://bugs.gentoo.org/show_bug.cgi?id=686142#c3
- https://bugzilla.kernel.org/show_bug.cgi?id=203625
-
-Reviewed-by: J. Bruce Fields <bfields@redhat.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- fs/ext4/acl.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ceph/super.h           | 1 +
+ fs/ext2/acl.h             | 1 +
+ fs/jfs/jfs_acl.h          | 1 +
+ include/linux/posix_acl.h | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
-index 0c5a79c3b5d4..ef4c19e5f570 100644
---- a/fs/ext4/acl.h
-+++ b/fs/ext4/acl.h
-@@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *, struct inode *);
- static inline int
- ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir)
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index 51c7f2b14f6f..e7e2f264acf4 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -1194,6 +1194,7 @@ static inline void ceph_forget_all_cached_acls(struct inode *inode)
+ static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
+ 				     struct ceph_acl_sec_ctx *as_ctx)
  {
-+	/* usually, the umask is applied by posix_acl_create(), but if
-+	   ext4 ACL support is disabled at compile time, we need to do
-+	   it here, because posix_acl_create() will never be called */
-+	inode->i_mode &= ~current_umask();
-+
++	*mode &= ~current_umask();
  	return 0;
  }
- #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
+ static inline void ceph_init_inode_acls(struct inode *inode,
+diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+index 4a8443a2b8ec..694af789c614 100644
+--- a/fs/ext2/acl.h
++++ b/fs/ext2/acl.h
+@@ -67,6 +67,7 @@ extern int ext2_init_acl (struct inode *, struct inode *);
+ 
+ static inline int ext2_init_acl (struct inode *inode, struct inode *dir)
+ {
++	inode->i_mode &= ~current_umask();
+ 	return 0;
+ }
+ #endif
+diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
+index f892e54d0fcd..10791e97a46f 100644
+--- a/fs/jfs/jfs_acl.h
++++ b/fs/jfs/jfs_acl.h
+@@ -17,6 +17,7 @@ int jfs_init_acl(tid_t, struct inode *, struct inode *);
+ static inline int jfs_init_acl(tid_t tid, struct inode *inode,
+ 			       struct inode *dir)
+ {
++	inode->i_mode &= ~current_umask();
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index 0e65b3d634d9..54bc9b1061ca 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
+ static inline int posix_acl_create(struct inode *inode, umode_t *mode,
+ 		struct posix_acl **default_acl, struct posix_acl **acl)
+ {
++	*mode &= ~current_umask();
+ 	*default_acl = *acl = NULL;
+ 	return 0;
+ }
 -- 
 2.39.2
 
