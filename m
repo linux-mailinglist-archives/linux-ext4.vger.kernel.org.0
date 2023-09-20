@@ -2,100 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3487A744E
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 09:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335BA7A74E4
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbjITHhl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Sep 2023 03:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S232853AbjITHwv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Sep 2023 03:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjITHhS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 03:37:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24058FB;
-        Wed, 20 Sep 2023 00:37:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60753C433C7;
-        Wed, 20 Sep 2023 07:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695195421;
-        bh=z1dy31UeAiNB72SwXICT2TJ42xSh8mt5/7TGfDru1x0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y/66sa17bNa1qC8ThA1zSpgs9biCJH1Ajq5zq+89aqkyyGbjOYvXo/ix8Ipb4iCbJ
-         prWNMZnrLsew+TlFTLIEqYJ0sVZkH3HvclRrEsMYJVRIV4pUKy2Uz0sOWBMOQZE2hj
-         n9SC8mBlrHgeSegE0Ii4Sg9EwFJ1viOeEpJDATKEG7WHw94hPro747FW/4htGtWSO2
-         vXoQKlxD8oaN8exIdqpRKtQWTGUKpKr4c7O2XrYV42TXjlaPA1bzwi3KR2w6OMd9Ck
-         G3YBFcWZxiFlIaJJdOQEavZpDwaPVRVojE1MmeCM/4Q2GkOLHauvubw5qiw/xQhm/h
-         1XyGgUohrjsfw==
-Date:   Wed, 20 Sep 2023 00:36:59 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, krisman@collabora.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] general protection fault in utf8nlookup
-Message-ID: <20230920073659.GC2739@sol.localdomain>
-References: <0000000000001f0b970605c39a7e@google.com>
+        with ESMTP id S229988AbjITHwu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 03:52:50 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 00:52:45 PDT
+Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C2797
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Sep 2023 00:52:45 -0700 (PDT)
+Received: by mail.venturelinkage.com (Postfix, from userid 1002)
+        id 981F9827FF; Wed, 20 Sep 2023 09:46:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
+        s=mail; t=1695195993;
+        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
+        h=Date:From:To:Subject:From;
+        b=QGdkvjTyLdwVEVHAcuJNptdx6HkXyLMYj7Fr2POglBzCb2ArsI8WfdkppCWBOeXQ/
+         HV1dNIQY+6sQ+uCsqeI4InIr8jqD+f/BGnWJ+MsWyJpcjQeRcSQ6b7SG5xJEv7qs9c
+         X8HMlRj6oO/7cIyigaIky2v3TLZvU/L3FHG9ZVcdbkbNaZnTaScHNql8wftsyoYuH4
+         WT1UOxhJagRNpO/duBlG6Rx+tPScHImAwv2jpzNlnGqvl92m5L19uGd8zgK2vflHIZ
+         3k/wSdR/HZfFVyzCC11stlWbpiaTvhUx2PIvYA534XSYYd9jA1+AQkpqpDSXo9tghi
+         m5T0QWJiosPkg==
+Received: by mail.venturelinkage.com for <linux-ext4@vger.kernel.org>; Wed, 20 Sep 2023 07:46:15 GMT
+Message-ID: <20230920084500-0.1.l.1217.0.hd63k9yc7p@venturelinkage.com>
+Date:   Wed, 20 Sep 2023 07:46:15 GMT
+From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: =?UTF-8?Q?Popt=C3=A1vka?=
+X-Mailer: mail.venturelinkage.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000001f0b970605c39a7e@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
+        *      blocklist
+        *      [URIs: venturelinkage.com]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [80.211.143.151 listed in zen.spamhaus.org]
+        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
+        *      blocklist
+        *      [URIs: venturelinkage.com]
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [80.211.143.151 listed in list.dnswl.org]
+        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
+        *      [score: 0.0644]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.8 FROM_FMBLA_NEWDOM28 From domain was registered in last 14-28
+        *      days
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 10:25:22PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=179f4a38680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/14a6a5d23944/disk-e42bebf6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/98cc4c220388/vmlinux-e42bebf6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/6a1d09cf21bf/bzImage-e42bebf6.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/37e5beb24789/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/f219a9e665e9/mount_8.gz
-> 
-> The issue was bisected to:
-> 
-> commit b81427939590450172716093dafdda8ef52e020f
-> Author: Eric Biggers <ebiggers@google.com>
-> Date:   Mon Aug 14 18:29:02 2023 +0000
-> 
->     ext4: remove redundant checks of s_encoding
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10852352680000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12852352680000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14852352680000
+Dobr=C3=A9 r=C3=A1no,
 
-This report is expected for now, since the repro involves writing to the page
-cache of a mounted block device.  For more information see
-https://lore.kernel.org/linux-fsdevel/20230813001202.GE41642@sol.localdomain and
-https://lore.kernel.org/linux-fsdevel/20230814182903.37267-2-ebiggers@kernel.org.
-Also https://lore.kernel.org/linux-fsdevel/20230704122727.17096-1-jack@suse.cz
-which will ultimately be the fix for this class of issue.
+Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
+=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
 
-Note: the repro that syzkaller generated for this is very strange (even moreso
-than usual for syzkaller repros...) because it replaces its "scratch space" at
-address 0x20000000 with a different mapping, specifically a mapping for a file
-that is mounted as a filesystem via loopback.  That makes "syscalls" have weird
-side effects as a result of the repro writing parameters to the address that is
-supposed to contain its scratch space.  I don't think this should be happening,
-so I've opened https://github.com/google/syzkaller/issues/4216 for it.
+Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
+odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
 
-- Eric
+M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
+
+V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
+ anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
+
+
+Pozdravy
+Lukas Varga
