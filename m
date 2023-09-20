@@ -2,92 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335BA7A74E4
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 09:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F8C7A7557
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 10:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjITHwv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Sep 2023 03:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
+        id S231347AbjITIHo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Sep 2023 04:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjITHwu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 03:52:50 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 00:52:45 PDT
-Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C2797
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Sep 2023 00:52:45 -0700 (PDT)
-Received: by mail.venturelinkage.com (Postfix, from userid 1002)
-        id 981F9827FF; Wed, 20 Sep 2023 09:46:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
-        s=mail; t=1695195993;
-        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
-        h=Date:From:To:Subject:From;
-        b=QGdkvjTyLdwVEVHAcuJNptdx6HkXyLMYj7Fr2POglBzCb2ArsI8WfdkppCWBOeXQ/
-         HV1dNIQY+6sQ+uCsqeI4InIr8jqD+f/BGnWJ+MsWyJpcjQeRcSQ6b7SG5xJEv7qs9c
-         X8HMlRj6oO/7cIyigaIky2v3TLZvU/L3FHG9ZVcdbkbNaZnTaScHNql8wftsyoYuH4
-         WT1UOxhJagRNpO/duBlG6Rx+tPScHImAwv2jpzNlnGqvl92m5L19uGd8zgK2vflHIZ
-         3k/wSdR/HZfFVyzCC11stlWbpiaTvhUx2PIvYA534XSYYd9jA1+AQkpqpDSXo9tghi
-         m5T0QWJiosPkg==
-Received: by mail.venturelinkage.com for <linux-ext4@vger.kernel.org>; Wed, 20 Sep 2023 07:46:15 GMT
-Message-ID: <20230920084500-0.1.l.1217.0.hd63k9yc7p@venturelinkage.com>
-Date:   Wed, 20 Sep 2023 07:46:15 GMT
-From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
-To:     <linux-ext4@vger.kernel.org>
-Subject: =?UTF-8?Q?Popt=C3=A1vka?=
-X-Mailer: mail.venturelinkage.com
+        with ESMTP id S232591AbjITIHn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 04:07:43 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7682F9E;
+        Wed, 20 Sep 2023 01:07:37 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-490cd6db592so2736673e0c.1;
+        Wed, 20 Sep 2023 01:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695197256; x=1695802056; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9cH5sDHtnVKWCV3iCYyvX8z8Hs3DAvkXrfeXQp9YY8c=;
+        b=OuiXP01hUoxoUzTLFPVW9oPxBvpT1XOogxeSwwAtspy6pdhyj/s/LGbvpfopL3k8gu
+         khWOuehEHcZZcs6IC2Js3rZ5utcZLHy2Lwstt3u/C03KYU4BvPjRTKjxFcutYQrYyM9C
+         Q8drta0kRjN15QsKwa+1SNvq/zOybu8pANgEZtJ8dVd4htx8KD5n5P433SLYcr3jknuZ
+         9fnZEXvQozYw8ZKfykMzp9EocW+pBgxtfsSlmVw57SNRmN5cAqSgWNiXg4jaYY2VCi7J
+         ECJdl/Vzfs2XQQjYfyHNfeazrMe7EMVMgp2RpEYN1oLl0YYe2w8n71ku0p/e7Hgu7tUp
+         +C3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695197256; x=1695802056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9cH5sDHtnVKWCV3iCYyvX8z8Hs3DAvkXrfeXQp9YY8c=;
+        b=uY73qdB/+4aqKKX3nyhljFDazpxPlLSwMluQG/ApItrZ29gvJsUZfV49pCY8m+9N0o
+         v9TDJAtfXQ0q3GOzJd4qQz8E1kvUQpcU4IF4xr7B6yhed3MWuRkLZ7Sa9D1zwWqM1xcs
+         3xQ9ldXi0VCBhs9djhBt2zjhZ0UyIfTIyhgVsG0L+FuDuBeldUrgubk1f5zyWDmsVeED
+         zCbw1TZA8uWDBmRS8Sy9CZsklIE6tfQYtbdR7I4B5Sjg6mZ5pqPZt0oj9H/7t3NaBP0u
+         wONKNM4ws6GWB7CE6ywdgmzm/q76n9939vV17gaHm2+WNtxKf2BY2P/3Y09FZC/kHjnQ
+         4h+w==
+X-Gm-Message-State: AOJu0YyHb94eToNjulJVWztG4Qh5LZD5fJByT+Gxqznyg+U4TqXnJ9VK
+        Amf8PszfV2tIJ/6xO679Kdm3g2Ydxadkngee4LU=
+X-Google-Smtp-Source: AGHT+IFkmee8vYqiRU2MDwPCUYc12H9bxQ6dbTyVl2uMQTPK3nmmRGzDpQBcuukLJM94BaZ9yBg2NObfT5FOrPxTcNo=
+X-Received: by 2002:a1f:4c41:0:b0:48f:e0c4:1a1 with SMTP id
+ z62-20020a1f4c41000000b0048fe0c401a1mr1862870vka.12.1695197256424; Wed, 20
+ Sep 2023 01:07:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230919045135.3635437-1-willy@infradead.org> <20230919045135.3635437-14-willy@infradead.org>
+In-Reply-To: <20230919045135.3635437-14-willy@infradead.org>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Wed, 20 Sep 2023 17:07:20 +0900
+Message-ID: <CAKFNMokMe_QOPuLXsvUJf2+qZLUyi7Z_JFAKvh853N6ZV3yGyA@mail.gmail.com>
+Subject: Re: [PATCH 13/26] nilfs2: Convert nilfs_mdt_get_frozen_buffer to use
+ a folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_20,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: venturelinkage.com]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [80.211.143.151 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: venturelinkage.com]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [80.211.143.151 listed in list.dnswl.org]
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.0644]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.8 FROM_FMBLA_NEWDOM28 From domain was registered in last 14-28
-        *      days
-X-Spam-Level: ******
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+On Tue, Sep 19, 2023 at 6:25=E2=80=AFPM Matthew Wilcox (Oracle) wrote:
+>
+> Remove a number of folio->page->folio conversions.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/nilfs2/mdt.c | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
+>
+> diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
+> index 11b7cf4acc92..7b754e6494d7 100644
+> --- a/fs/nilfs2/mdt.c
+> +++ b/fs/nilfs2/mdt.c
+> @@ -592,17 +592,19 @@ nilfs_mdt_get_frozen_buffer(struct inode *inode, st=
+ruct buffer_head *bh)
+>  {
+>         struct nilfs_shadow_map *shadow =3D NILFS_MDT(inode)->mi_shadow;
+>         struct buffer_head *bh_frozen =3D NULL;
+> -       struct page *page;
+> +       struct folio *folio;
+>         int n;
+>
+> -       page =3D find_lock_page(shadow->inode->i_mapping, bh->b_folio->in=
+dex);
+> -       if (page) {
+> -               if (page_has_buffers(page)) {
+> +       folio =3D filemap_lock_folio(shadow->inode->i_mapping,
+> +                       bh->b_folio->index);
+> +       if (!IS_ERR(folio)) {
+> +               bh_frozen =3D folio_buffers(folio);
+> +               if (bh_frozen) {
+>                         n =3D bh_offset(bh) >> inode->i_blkbits;
+> -                       bh_frozen =3D nilfs_page_get_nth_block(page, n);
+> +                       bh_frozen =3D get_nth_bh(bh_frozen, n);
+>                 }
+> -               unlock_page(page);
+> -               put_page(page);
+> +               folio_unlock(folio);
+> +               folio_put(folio);
+>         }
+>         return bh_frozen;
+>  }
+> --
+> 2.40.1
+>
 
-Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
-=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
+Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 
-Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
-odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
+Looks good to me.
 
-M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
-
-V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
- anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
-
-
-Pozdravy
-Lukas Varga
+Thanks,
+Ryusuke Konishi
