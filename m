@@ -2,170 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79227A6EB5
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 00:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C937A6FEE
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 02:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbjISWfl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Sep 2023 18:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S231191AbjITAlL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Sep 2023 20:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjISWfl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 18:35:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E70C0
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 15:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695162895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eQus7xN9bGIDtrSXQ5yUpeC9VO6X9bRJrGYUnimnUlQ=;
-        b=QERE7Qs0UVnfmtfFPWir107Hqwo0Z5Ln9+k4YvxkViI8bbDSjylQDLOkN26BOTbWBHM7lV
-        +3JB+YzlaSBIlC564udIA9HaG4QF0D4z6391jlqxhnhx8gLL9Fb9JASe0WsLOx+K6Mz8uC
-        8MnhdXTVLbC15VRqFhbBNPUDWIUjyXk=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-547-rax19IInPVy2f6u7D8y3IQ-1; Tue, 19 Sep 2023 18:34:54 -0400
-X-MC-Unique: rax19IInPVy2f6u7D8y3IQ-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c5a0d9cf67so9889935ad.0
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 15:34:54 -0700 (PDT)
+        with ESMTP id S230447AbjITAlK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Sep 2023 20:41:10 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1F6AB
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 17:41:05 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76ee895a3cbso410499585a.0
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 17:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695170464; x=1695775264; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JQ+OJDO9Gpw6b3BwF7SnzNOyE85w/s1i843p0gnqUY0=;
+        b=Vr9PRyJuELhKmXqWUSpyZAr64CN4+TTnOnIaJJQlDllN3HhEKP5pSKP7mrGt+oZ/0M
+         8PtA3vy1O7zZmh9tZeUfurlKwZAL2DieKVmw4YOeiBviHYpSVnFDHcyAgSaTEfAQuAS6
+         KThHBTf8CBq4xhiXjrFj7Ei8yxKfMdN+IO5L6qHBXvyhfDOcRtrFB++fYpifltmoua3v
+         aNwB+KoYLhFF5Yso3txbTeplu34GSGgwoum878NHfUJV03wzdbDibt7jm3fPP4IyTaGl
+         UyCqvhERFqq8hBYQEkVjPr4IqxItMPnyqIIFgOuH8uaqs8gc2yZ/jSVFhpYrvtigi3BS
+         efDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695162893; x=1695767693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eQus7xN9bGIDtrSXQ5yUpeC9VO6X9bRJrGYUnimnUlQ=;
-        b=R4fMTRwW60HI9z/QEU5fw+XX1DVv44O4en5KmrbPltmPYkobyxCvIWRJLj2jFxSLUr
-         8iMNpCa6zAnnFy9WnADkc8beT9TvQbF3M9kMnTmVTApmPoqr4wROdfd5ryKVswzbVPht
-         +aTmXJPwDAViu9OKiv90mx/IzaZ6ypYLTV1ve3VyNszaHzL5K3yP7Uw4kBgTKD10LBn+
-         YXWTTf1WkRSeKeumGHSyw5Z7T2bY74efV72vlF96jqABuHHbAqwutE1RLl5O2X5koQlM
-         d6qgUw0YKS9Vtc9tO4cv453GgyJNnrSbMxrwgtrD3Woy8tXfK0T+e1h23FYOhk4UmwRl
-         CB2Q==
-X-Gm-Message-State: AOJu0YxksSYkIdHwE9w3wRxC2iXT2lqq6JMaUNk3GWqBxNCJnvno1/qB
-        58aQirZQlTIHVi/2nGLsju41c+rYGMBm3oZcBI1UDbgv/k5IpR689Ivpl/hHTAo1UnuZ/zKn9yl
-        FDVtU6mAew7cRkdiYoGu4SZk0SnTODHo7E3SjSQ==
-X-Received: by 2002:a17:902:b7c1:b0:1c5:76b6:d94f with SMTP id v1-20020a170902b7c100b001c576b6d94fmr670930plz.31.1695162893573;
-        Tue, 19 Sep 2023 15:34:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEu/S/lyzCqiFdVXm1k+F3+3GUX39OQdWtJW6vZV10el6lsOztHA7G1b8fJFoeMaNNk2ei0WeIxrr96YpLaY20=
-X-Received: by 2002:a17:902:b7c1:b0:1c5:76b6:d94f with SMTP id
- v1-20020a170902b7c100b001c576b6d94fmr670921plz.31.1695162893309; Tue, 19 Sep
- 2023 15:34:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695170464; x=1695775264;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQ+OJDO9Gpw6b3BwF7SnzNOyE85w/s1i843p0gnqUY0=;
+        b=V9HED+L3NX0lP8QiwAVe6AwV7hrZFuGg3rhiQ17V7sGprV41FCBDmfY+Q2FM+rkzFE
+         t3epEw6xljoIndMTlITDjhV4w14Dglp1Xrd4kc+uv5Hiq5CRWK45I9etTuNg0QpX3mmH
+         e1Aeg4TxBQqhryPJlgH0b7pl3JJ74s8JhFuiKO4RstXSoEHL1dlHaaiIu5g4KvVR+To0
+         tq0Yv5Zo12KKLDhJTJGGgUE73blPXLlbVm+BL7M7BhEge5ysaCSNp33/QRhhIakEoapL
+         Jh8bnVbvK+Xkdu+EdyP78c2rvkqzauan/ByyQ8W5DTaM7bnTDCUJYoJoBOmFXFYVS+L6
+         HDZw==
+X-Gm-Message-State: AOJu0YzuJFR7+LEb6WCotEuy2FduR7tl1ff6cFavv6tqUAQXPwtJYPYW
+        91OEPbI4ErCTZbQE8HcrRAU=
+X-Google-Smtp-Source: AGHT+IFBBihJbOE3cOo+Av5W9sKAQMHU/9Ttlw9bklDEKB8IfGTmbxpX4b9oQgFXKRCtQl95n38B6Q==
+X-Received: by 2002:a05:620a:2a0b:b0:76e:f2df:1585 with SMTP id o11-20020a05620a2a0b00b0076ef2df1585mr1680423qkp.56.1695170463979;
+        Tue, 19 Sep 2023 17:41:03 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id 16-20020a05620a071000b007671b599cf5sm4393348qkc.40.2023.09.19.17.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 17:41:03 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 20:41:01 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [RFC] ext4: don't remove already removed extent
+Message-ID: <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
+References: <20230911094038.3602508-1-usama.anjum@collabora.com>
 MIME-Version: 1.0
-References: <20230919045135.3635437-1-willy@infradead.org> <20230919045135.3635437-7-willy@infradead.org>
-In-Reply-To: <20230919045135.3635437-7-willy@infradead.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 20 Sep 2023 00:34:41 +0200
-Message-ID: <CAHc6FU6JasO3-8VaOm3MieLEn599OTKPnZC5BwkNUMqNoJ+meA@mail.gmail.com>
-Subject: Re: [PATCH 06/26] gfs2: Convert gfs2_getbuf() to folios
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        reiserfs-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Pankaj Raghav <p.raghav@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911094038.3602508-1-usama.anjum@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 7:00=E2=80=AFAM Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
-> Remove several folio->page->folio conversions.  Also use __GFP_NOFAIL
-> instead of calling yield() and the new get_nth_bh().
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+* Muhammad Usama Anjum <usama.anjum@collabora.com>:
+> Syzbot has hit the following bug on current and all older kernels:
+> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
+> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
+> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
+> 
+> On investigation, I've found that eh->eh_entries is zero, ex is
+> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
+> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
+> buffer read.
+> 
+> element: FFFF8882F8F0D06C       <----- ex
+> element: FFFF8882F8F0D060
+> element: FFFF8882F8F0D054
+> element: FFFF8882F8F0D048
+> element: FFFF8882F8F0D03C
+> element: FFFF8882F8F0D030
+> element: FFFF8882F8F0D024
+> element: FFFF8882F8F0D018
+> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
+> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
+> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
+> Fixes: d583fb87a3ff ("ext4: punch out extents")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 > ---
->  fs/gfs2/meta_io.c | 39 +++++++++++++++++----------------------
->  1 file changed, 17 insertions(+), 22 deletions(-)
->
-> diff --git a/fs/gfs2/meta_io.c b/fs/gfs2/meta_io.c
-> index 924361fa510b..f1fac1b45059 100644
-> --- a/fs/gfs2/meta_io.c
-> +++ b/fs/gfs2/meta_io.c
-> @@ -115,7 +115,7 @@ struct buffer_head *gfs2_getbuf(struct gfs2_glock *gl=
-, u64 blkno, int create)
->  {
->         struct address_space *mapping =3D gfs2_glock2aspace(gl);
->         struct gfs2_sbd *sdp =3D gl->gl_name.ln_sbd;
-> -       struct page *page;
-> +       struct folio *folio;
->         struct buffer_head *bh;
->         unsigned int shift;
->         unsigned long index;
-> @@ -129,36 +129,31 @@ struct buffer_head *gfs2_getbuf(struct gfs2_glock *=
-gl, u64 blkno, int create)
->         bufnum =3D blkno - (index << shift);  /* block buf index within p=
-age */
->
->         if (create) {
-> -               for (;;) {
-> -                       page =3D grab_cache_page(mapping, index);
-> -                       if (page)
-> -                               break;
-> -                       yield();
-> -               }
-> -               if (!page_has_buffers(page))
-> -                       create_empty_buffers(page, sdp->sd_sb.sb_bsize, 0=
-);
-> +               folio =3D __filemap_get_folio(mapping, index,
-> +                               FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
-> +                               mapping_gfp_mask(mapping) | __GFP_NOFAIL)=
-;
-> +               bh =3D folio_buffers(folio);
-> +               if (!bh)
-> +                       bh =3D folio_create_empty_buffers(folio,
-> +                               sdp->sd_sb.sb_bsize, 0);
->         } else {
-> -               page =3D find_get_page_flags(mapping, index,
-> -                                               FGP_LOCK|FGP_ACCESSED);
-> -               if (!page)
-> +               folio =3D __filemap_get_folio(mapping, index,
-> +                               FGP_LOCK | FGP_ACCESSED, 0);
-> +               if (IS_ERR(folio))
->                         return NULL;
-> -               if (!page_has_buffers(page)) {
-> -                       bh =3D NULL;
-> -                       goto out_unlock;
-> -               }
-> +               bh =3D folio_buffers(folio);
->         }
->
-> -       /* Locate header for our buffer within our page */
-> -       for (bh =3D page_buffers(page); bufnum--; bh =3D bh->b_this_page)
-> -               /* Do nothing */;
-> -       get_bh(bh);
-> +       if (!bh)
-> +               goto out_unlock;
->
-> +       bh =3D get_nth_bh(bh, bufnum);
->         if (!buffer_mapped(bh))
->                 map_bh(bh, sdp->sd_vfs, blkno);
->
->  out_unlock:
-> -       unlock_page(page);
-> -       put_page(page);
-> +       folio_unlock(folio);
-> +       folio_put(folio);
->
->         return bh;
->  }
-> --
+> This patch is only fixing the local issue. There may be bigger bug. Why
+> is ex set to last entry if the eh->eh_entries is 0. If any ext4
+> developer want to look at the bug, please don't hesitate.
+> ---
+>  fs/ext4/extents.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e4115d338f101..7b7779b4cb87f 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+>  		 * If the extent was completely released,
+>  		 * we need to remove it from the leaf
+>  		 */
+> -		if (num == 0) {
+> +		if (num == 0 && eh->eh_entries) {
+>  			if (end != EXT_MAX_BLOCKS - 1) {
+>  				/*
+>  				 * For hole punching, we need to scoot all the
+> -- 
 > 2.40.1
->
+> 
 
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+Hi:
+
+First, thanks for taking the time to look at this.
+
+I'm suspicious that syzbot may be fuzzing an extent header or other extent
+tree components.  As you noticed, eh_entries and ex appear to be inconsistent.
+Also, note the long series of corrupted file system reports in the console log
+occurring before the KASAN bug - ext4 had been detecting and rejecting bad
+data up to that point.  The file system on the disk image provided by sysbot
+indicates that metadata checksumming was enabled (and it fscks cleanly).
+That should have caught a corrupted extent header or inode, but perhaps
+there's a problem.
+
+The console log indicates that the problem occurred on inode #16.  Does the
+information you've provided above come from testing you did on inode #16
+(looks like the name was /bin/base64)?
+
+By any chance, have you found a simpler reproducer than what syzbot provides?
 
 Thanks,
-Andreas
+Eric
+
 
