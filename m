@@ -2,154 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3A47A87A1
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 16:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A949E7A880B
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 17:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbjITOxx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Sep 2023 10:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S235382AbjITPUO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Sep 2023 11:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbjITOxu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 10:53:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78473A9;
-        Wed, 20 Sep 2023 07:53:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10CFC433C7;
-        Wed, 20 Sep 2023 14:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695221624;
-        bh=pv/mshlnOGkJ5ebR+d6AqRiPt7G4UklH+5Y/YwatjVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hUm3CDqBbqdWl1gTcXLfMGrJ4YfO3wokaDGaQDO3xOEWDbllQ4Mfpj/KueremMgA5
-         pBL/JzWz4+0hsTX69O5jnf1yRuwKeufAxYGRi9hiZ4ho9usSCqwyLkEScujErQvTLd
-         pH8R4MxKr1CGxSHyPru+0iqA3gh7pydF57H5YT0p+7Rd0zhQBTnYL0en9hUyWFooe+
-         Mdfj3r0q5YN+5TWuL0JXteBwUKeABbsXdunQnhbthSc1EwQj0hbuY8ac5vX7VekjTf
-         fGOHz5omQ2+B/RCVrXr9woAH7FyctwMygMiv3giawQBEFR5HdvJ9UunmoJQb2brq0N
-         41leRmH4Vm1Jg==
-Date:   Wed, 20 Sep 2023 16:53:26 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>,
-        "bug-gnulib@gnu.org" <bug-gnulib@gnu.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>,
-        "coda@cs.cmu.edu" <coda@cs.cmu.edu>,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-        "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920-keine-eile-c9755b5825db@brauner>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920-raser-teehaus-029cafd5a6e4@brauner>
- <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
+        with ESMTP id S235375AbjITPUO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 11:20:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A834FAF
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Sep 2023 08:20:07 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4EF90201DD;
+        Wed, 20 Sep 2023 15:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695223206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7AzN1mLqwYDcL1y/3tm5qbuWrejAXkpwHmS1ksZcCC4=;
+        b=q3XRGLlDn1eUBVekkErC1qijau4u/yE17vkMW+PuAN0DWGjZ775ggtf9Qmio7o3zzNGXf9
+        BIjPhsdCiAxPoKRpAYuLpqaAktqnda0fxpQVylEBGaEveDifsoFiMDc8pqqo95qkIyzwNQ
+        kKUz5XK8dAZT+6NwyMftz+aBUO4S3Oo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695223206;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7AzN1mLqwYDcL1y/3tm5qbuWrejAXkpwHmS1ksZcCC4=;
+        b=j0EDtOYluXofL0TyM8mIbSpMsXmjvBSQ8Z0XrD6yu+GE5lP3ZzslmLOxaAxJ3zmKzMbx28
+        L9Ug986HdRX5oKBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41829132C7;
+        Wed, 20 Sep 2023 15:20:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8jP4D6YNC2WeQQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 15:20:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D0E10A077D; Wed, 20 Sep 2023 17:20:05 +0200 (CEST)
+Date:   Wed, 20 Sep 2023 17:20:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: [bug report] ext4 misses final i_size meta sync under O_DIRECT |
+ O_SYNC semantics after iomap DIO conversion
+Message-ID: <20230920152005.7iowrlukd5zbvp43@quack3>
+References: <20230919120532.5dg7mgdnwd5lezgz@quack3>
+ <871qet6pn8.fsf@doe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <871qet6pn8.fsf@doe.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> You could put it behind an EXPERIMENTAL Kconfig option so that the
-> code stays in and can be used by the brave or foolish while it is
-> still being refined.
+On Wed 20-09-23 17:08:19, Ritesh Harjani wrote:
+> Jan Kara <jack@suse.cz> writes:
+> 
+> > Hello!
+> >
+> > On Tue 19-09-23 14:00:04, Gao Xiang wrote:
+> >> Our consumer reports a behavior change between pre-iomap and iomap
+> >> direct io conversion:
+> >> 
+> >> If the system crashes after an appending write to a file open with
+> >> O_DIRECT | O_SYNC flag set, file i_size won't be updated even if
+> >> O_SYNC was marked before.
+> >> 
+> >> It can be reproduced by a test program in the attachment with
+> >> gcc -o repro repro.c && ./repro testfile && echo c > /proc/sysrq-trigger
+> >> 
+> >> After some analysis, we found that before iomap direct I/O conversion,
+> >> the timing was roughly (taking Linux 3.10 codebase as an example):
+> >> 
+> >> 	..
+> >> 	- ext4_file_dio_write
+> >> 	  - __generic_file_aio_write
+> >> 	      ..
+> >> 	    - ext4_direct_IO  # generic_file_direct_write
+> >> 	      - ext4_ext_direct_IO
+> >> 	        - ext4_ind_direct_IO  # final_size > inode->i_size
+> >> 	          - ..
+> >> 	          - ret = blockdev_direct_IO()
+> >> 	          - i_size_write(inode, end) # orphan && ret > 0 &&
+> >> 	                                   # end > inode->i_size
+> >> 	          - ext4_mark_inode_dirty()
+> >> 	          - ...
+> >> 	  - generic_write_sync  # handling O_SYNC
+> >> 
+> >> So the dirty inode meta will be committed into journal immediately
+> >> if O_SYNC is set.  However, After commit 569342dc2485 ("ext4: move
+> >> inode extension/truncate code out from ->iomap_end() callback"),
+> >> the new behavior seems as below:
+> >> 
+> >> 	..
+> >> 	- ext4_dio_write_iter
+> >> 	  - ext4_dio_write_checks  # extend = 1
+> >> 	  - iomap_dio_rw
+> >> 	      - __iomap_dio_rw
+> >> 	      - iomap_dio_complete
+> >> 	        - generic_write_sync
+> >> 	  - ext4_handle_inode_extension  # extend = 1
+> 
+> Yes, since ext4_handle_inode_extension() will handle inode i_disksize
+> update and mark the inode dirty, generic_write_sync() call should happen
+> after that.
+> 
+> That also means then we don't have any generic FS testcase which can
+> validate this behaviour. 
 
-Given that the discussion has now fully gone back to the drawing board
-and this is a regression the honest thing to do is to revert the five
-patches that introduce the infrastructure:
+Yeah.
 
-ffb6cf19e063 ("fs: add infrastructure for multigrain timestamps")
-d48c33972916 ("tmpfs: add support for multigrain timestamps")
-e44df2664746 ("xfs: switch to multigrain timestamps")
-0269b585868e ("ext4: switch to multigrain timestamps")
-50e9ceef1d4f ("btrfs: convert to multigrain timestamps")
+> >> So that i_size will be recorded only after generic_write_sync() is
+> >> called.  So O_SYNC won't flush the update i_size to the disk.
+> >
+> > Indeed, that looks like a bug. Thanks for report!
+> >
+> >> On the other side, after a quick look of XFS side, it will record
+> >> i_size changes in xfs_dio_write_end_io() so it seems that it doesn't
+> >> have this problem.
+> >
+> > Yes, I'm a bit hazy on the details but I think we've decided to call
+> > ext4_handle_inode_extension() directly from ext4_dio_write_iter() because
+> > from ext4_dio_write_end_io() it was difficult to test in a race-free way
+> > whether extending i_size (and i_disksize) is needed or not (we don't
+> > necessarily hold i_rwsem there).
+> 
+> We do hold i_rwsem in exclusive write mode for file extend case.
+> (ext4_dio_write_checks()).
 
-The conversion to helpers and cleanups are sane and should stay and can
-be used for any solution that gets built on top of it.
+Yes, the case I'm a bit concerned about is that for AIO overwrites we don't
+hold i_rwsem at all in iomap_dio_complete() but we will still be performing
+checks for file extension so we have to be careful they cannot have false
+positives (or some other races) in the unlocked case.
 
-I'd appreciate a look at the branch here:
-git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.ctime.revert
+> IIUC, ext4_handle_inode_extension() takes "written" and "count" as it's
+> argument. This means that "count" bytes were mapped, but only "written"
+> bytes were written. This information is used in
+> ext4_handle_inode_extension() case for truncating blocks beyond EOF. 
+> 
+> I also found this discussion here [1].
+> 
+> [1]:
+> https://lore.kernel.org/linux-ext4/20191008151238.GK5078@quack2.suse.cz/
 
-survives xfstests.
+Yeah, thanks for finding this.
+
+> From this thread it looks like we decided to move
+> ext4_handle_inode_extension() case out of ->end_io callback after v4
+> series (in v5) to handle above case. Right?
+
+Yes, the lack of original IO length in the ->end_io callback was the final
+problem that made us move the ext4_handle_inode_extension() call out of
+->end_io callback.
+
+> > I'll think how we could fix the problem you've reported.
+> >
+> 
+> 1. I was thinking why do we need to truncate those blocks which are beyond
+> EOF for DIO case? Wasn't there an argument, that for short DIO writes,
+> we can use the remaining blocks allocated to be written by buffered-io,
+> right? Do we risk exposing anything in doing so?
+> We do fallback to buffered-io for short writes in ext4_dio_write_iter().
+
+Yes, but as I mentioned in the thread you've referenced if we crash at
+unfortunate moment, we will have inodes with blocks beyond EOF which is
+not nice as we are "leaking" blocks.
+
+> 2. Either ways let's say we still would like to call truncate. Then can we
+> move ext4_truncate() logic out of ext4_handle_inode_extension() and call
+> ext4_handle_inode_extension() from within ->end_io callback. 
+> ext4_truncate() can be then done in the main routine directly i.e. in
+> ext4_dio_write_iter() where we do have both "count" and "written" information.
+
+The truncate itself is not a big deal, as you say that can happen later.
+The real question for which we need both "count" and "written" is whether
+we can remove the inode from the orphan list in ->end_io callback or not.
+For the common case of successful write, we want to do the removal from the
+orphan list in the same transaction as the i_disksize update for
+performance reasons. So that's why we have to do the decision about
+truncation at the place where we update i_disksize.
+
+But I think it shouldn't be a big deal to actually propagate the original
+IO size to iomap_dio_end() and ->end_io callback. Let's try that.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
