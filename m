@@ -2,165 +2,198 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C9B7A71FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 07:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1224F7A7208
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 07:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbjITFZ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Sep 2023 01:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S232792AbjITF1N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Sep 2023 01:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbjITFZL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 01:25:11 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFECE45
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 22:23:20 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-578a91ac815so1555907a12.1
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 22:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695187398; x=1695792198; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VHrio7RVATAeKHB1oAtWGyonHc6+8/RsLCW99Pnpoi0=;
-        b=KEw0rQyIDjq2Sc2ND9SgTp3y4yF2T830uEsUs8Ce2Ydn1rkF7bOcHBG4Br3Wf4xQ4x
-         AlOnR5MxONkwIUBIZQWxWrPKvhlPnVUixKHGs+lyXt2OmUm86MhDVLFfkuTbTyu3dgRj
-         bg3OgvaWHCDLEATG91zm5PKmJ62KWxDPzn2Vy+msMF1LNreIn1IPpaJQB060PtyfDyga
-         Fzoy8FcSp26oWPN0FHz7g+XJTqgGT3tf5SaLQNOi2mvMN2xYIBAc86hqo8kXfFhJrsYp
-         GwSVSP/INTIzXNgGJ1Z25lT+U1v3sBGLKErVEpNdM2WVvqroZzahm8vW/B4HGopahHqO
-         +J7g==
+        with ESMTP id S232444AbjITF0v (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 01:26:51 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6947DCD1
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 22:25:23 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1d64a196d4dso8688255fac.2
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Sep 2023 22:25:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695187398; x=1695792198;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1695187522; x=1695792322;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VHrio7RVATAeKHB1oAtWGyonHc6+8/RsLCW99Pnpoi0=;
-        b=BXTGMXSz4gVWaSgBR+FJ2SOMBrUVlyThQI6+CxsMzzsEOLcJUZX3NdxSAZsxvs9vUh
-         GVEPAo4YfNJrf63KxusRU6IY6S1GM/DSv31Eo2gdl6RKOGd7x3QjG8k8B7F07GfmYVpC
-         g4usi491UXP28snR2DDHL0h6i6SfHeZ9Zq29amq30w9DTf5+iYcwaOB3gQN1htG+S3Us
-         +NFMMNVAiOtygJ1dnOLUgNpgvlTTSaZNckt/1zGO3sUDpzjh/sX5JmJOVdFgVTza7d5j
-         h4cRcYFP7p8REbKUbzGVwISK9Dkf8bX1IjvzTvXvJOqRKBMED32/QeBsDPJiygSIoR3D
-         Ft/g==
-X-Gm-Message-State: AOJu0Yz3hejmhvcgGGVAuP0rmrnynBEmEPXYI+FF4gkQC9vhk9GouaEp
-        YzWbBAGqKB+LAAtVcMVZMJ4Zdw64PKI=
-X-Google-Smtp-Source: AGHT+IHpui3hgsS9NAjuiAFWw8vAdHIMUQhO/3YeHLD2x6UJrockEZMpjaIjZiRXJwLxAjTnNufxZw==
-X-Received: by 2002:a05:6a20:4293:b0:138:2fb8:6c48 with SMTP id o19-20020a056a20429300b001382fb86c48mr1774872pzj.8.1695187397894;
-        Tue, 19 Sep 2023 22:23:17 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ea8c00b001c59f23a3fesm2030126plb.251.2023.09.19.22.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 22:23:17 -0700 (PDT)
-Date:   Wed, 20 Sep 2023 10:53:14 +0530
-Message-Id: <877col770d.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Andreas Dilger <adilger@dilger.ca>, Bobi Jam <bobijam@hotmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: optimize metadata allocation for hybrid LUNs
-In-Reply-To: <9470959E-7683-4834-A4F5-34093A600F37@dilger.ca>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        bh=9KXy0AJ1mYB9AziY09pUyMt0lMzZfTdF9nxAspCdED4=;
+        b=K8uSjOUUYbc6vjxtCBhbE0KESjSFwPg36Z/4i+AqZ7r2I2ERjp+o9CvXJgjMObcD0n
+         XQEb1/Ph5PP8BjgFGnSE+tuYkJlQmI9ST62cpcazyyZVjo3JCLuNIXac7/tSeFTQGkr3
+         95hqgQUHbewXvqMHc7iOZWLPRBhEXvQJLWNSPDJu1mK9yvTq8VUSIQ+W32FJQxP/83wO
+         w6AcSUd4I3hCanNYO1M0MZ9BaT9tyMJSMSrWkqen3HCZ5OfmOG1OKN2KuxC9gQ1+CYxX
+         MwRIytyot2NTl9XIEk0lYfcO1U8e/4MESar9dfPCaybBjfy7E2/ET45Gm2ZOgmEY9PZY
+         UnHg==
+X-Gm-Message-State: AOJu0YyWH36cX04QE6y25Eoi16J9Yk4d1tlyfN9TxmDh2w/q2ec4tEZC
+        VgZw2eQcjCCHSd0TJEJHhCcXanIpHwxsvHPcowyQ49el+Fkp
+X-Google-Smtp-Source: AGHT+IEzMkNZvhI++UjBWI7bQnFSZAMLfY4s77C5sQQs68tyFvsYAQRLx9e3bpv9lwJYE4enc6Rdqj66fS5zYa/devFaZh1o/5C4
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:b7a8:b0:1d5:8fab:adf9 with SMTP id
+ ed40-20020a056870b7a800b001d58fabadf9mr597593oab.6.1695187522749; Tue, 19 Sep
+ 2023 22:25:22 -0700 (PDT)
+Date:   Tue, 19 Sep 2023 22:25:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001f0b970605c39a7e@google.com>
+Subject: [syzbot] [ext4?] general protection fault in utf8nlookup
+From:   syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, ebiggers@google.com,
+        krisman@collabora.com, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Andreas Dilger <adilger@dilger.ca> writes:
+Hello,
 
-> On Sep 12, 2023, at 12:59 AM, Bobi Jam <bobijam@hotmail.com> wrote:
->> 
->> With LVM it is possible to create an LV with SSD storage at the
->> beginning of the LV and HDD storage at the end of the LV, and use that
->> to separate ext4 metadata allocations (that need small random IOs)
->> from data allocations (that are better suited for large sequential
->> IOs) depending on the type of underlying storage.  Between 0.5-1.0% of
->> the filesystem capacity would need to be high-IOPS storage in order to
->> hold all of the internal metadata.
->> 
->> This would improve performance for inode and other metadata access,
->> such as ls, find, e2fsck, and in general improve file access latency,
->> modification, truncate, unlink, transaction commit, etc.
->> 
->> This patch split largest free order group lists and average fragment
->> size lists into other two lists for IOPS/fast storage groups, and
->> cr 0 / cr 1 group scanning for metadata block allocation in following
->> order:
->> 
->> if (allocate metadata blocks)
->>      if (cr == 0)
->>              try to find group in largest free order IOPS group list
->>      if (cr == 1)
->>              try to find group in fragment size IOPS group list
->>      if (above two find failed)
->>              fall through normal group lists as before
->> if (allocate data blocks)
->>      try to find group in normal group lists as before
->>      if (failed to find group in normal group && mb_enable_iops_data)
->>              try to find group in IOPS groups
->> 
->> Non-metadata block allocation does not allocate from the IOPS groups
->> if non-IOPS groups are not used up.
->
-> Hi Ritesh,
-> I believe this updated version of the patch addresses your original
-> request that it is possible to allocate blocks from the IOPS block
-> groups if the non-IOPS groups are full.  This is currently disabled
-> by default, because in cases where the IOPS groups make up only a
-> small fraction of the space (e.g. < 1% of total capacity) having data
-> blocks allocated from this space would not make a big improvement
-> to the end-user usage of the filesystem, but would semi-permanently
-> hurt the ability to allocate metadata into the IOPS groups.
->
-> We discussed on the ext4 concall various options to make this more
-> useful (e.g. allowing the root user to allocate from the IOPS groups
-> if the filesystem is out of space, having a heuristic to balance IOPS
-> vs. non-IOPS allocations for small files, having a BPF rule that can
-> specify which UID/GID/procname/filename/etc. can access this space,
-> but everyone was reluctant to put any complex policy into the kernel
-> to make any decision, since this eventually is wrong for some usage.
->
-> For now, there is just a simple on/off switch, and if this is enabled
-> the IOPS groups are only used when all of the non-IOPS groups are full.
-> Any more complex policy can be deferred to a separate patch, I think.
+syzbot found the following issue on:
 
-I think having a on/off switch for any user to enable/disable allocation
-of data from iops groups is good enough for now. Atleast users with
-larger iops disk space won't run out of ENOSPC if they enable with this feature.
+HEAD commit:    e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=179f4a38680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
 
-So, thanks for addressing it. I am going through the series. I will provide
-my review comments shortly. 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/14a6a5d23944/disk-e42bebf6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/98cc4c220388/vmlinux-e42bebf6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6a1d09cf21bf/bzImage-e42bebf6.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/37e5beb24789/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/f219a9e665e9/mount_8.gz
 
-Meanwhile, here is my understanding of your usecase. Can you please
-correct add your inputs to this - 
+The issue was bisected to:
 
-1. You would like to create a FS with a combination of high iops storage
-disk and non-high iops disk. With high iops disk space to be around 1 %
-of the total disk capacity. (well this is obvious as it is stated in the
-patch description itself)
+commit b81427939590450172716093dafdda8ef52e020f
+Author: Eric Biggers <ebiggers@google.com>
+Date:   Mon Aug 14 18:29:02 2023 +0000
 
-2. Since ofcourse ext4 currently does not support multi-drive, so we
-will use it using LVM and place high iops disk in front. 
+    ext4: remove redundant checks of s_encoding
 
-3. Then at the creation of the FS we will use a cmd like this
-   mkfs.ext4 -O sparse_super2 -E packed_meta_blocks,iops=0-1024G /path/to/lvm
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10852352680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12852352680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14852352680000
 
-Is this understanding right? 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com
+Fixes: b81427939590 ("ext4: remove redundant checks of s_encoding")
 
-I have few followup queries as well - 
+EXT4-fs error (device loop0): ext4_do_update_inode:5097: inode #2: comm syz-executor379: corrupted inode contents
+EXT4-fs error (device loop0): __ext4_ext_dirty:202: inode #2: comm syz-executor379: mark_inode_dirty error
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 1 PID: 5031 Comm: syz-executor379 Not tainted 6.6.0-rc1-syzkaller-00125-ge42bebf6db29 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:utf8nlookup+0x39/0xaa0 fs/unicode/utf8-norm.c:306
+Code: 89 c4 48 89 4c 24 08 48 89 14 24 89 f5 49 89 fd 49 be 00 00 00 00 00 fc ff df e8 22 a5 ea fe 49 8d 5d 18 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 c8 93 44 ff 48 8b 1b 48 83 c3 30
+RSP: 0018:ffffc90003e0f800 EFLAGS: 00010206
+RAX: 0000000000000003 RBX: 0000000000000018 RCX: ffff88801be79dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: ffffc90003e0f998 R11: fffff520007c1f36 R12: 0000000000000005
+R13: 0000000000000000 R14: dffffc0000000000 R15: ffff8880792de070
+FS:  0000555556220480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa9b1ff3870 CR3: 000000002a7f4000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ utf8byte+0x334/0x1350
+ utf8_casefold+0x125/0x220 fs/unicode/utf8-core.c:109
+ ext4_fname_setup_ci_filename+0x1b0/0x430 fs/ext4/namei.c:1458
+ ext4_fname_prepare_lookup+0x2f7/0x4e0 fs/ext4/crypto.c:55
+ ext4_lookup_entry fs/ext4/namei.c:1760 [inline]
+ ext4_lookup+0x121/0x750 fs/ext4/namei.c:1835
+ lookup_one_qstr_excl+0x11b/0x250 fs/namei.c:1608
+ filename_create+0x297/0x530 fs/namei.c:3890
+ do_mkdirat+0xb7/0x520 fs/namei.c:4135
+ __do_sys_mkdir fs/namei.c:4163 [inline]
+ __se_sys_mkdir fs/namei.c:4161 [inline]
+ __x64_sys_mkdir+0x6e/0x80 fs/namei.c:4161
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4bdc54d557
+Code: ff ff 77 07 31 c0 c3 0f 1f 40 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffbf49c838 EFLAGS: 00000286 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f4bdc54d557
+RDX: 0000000000000040 RSI: 00000000000001ff RDI: 0000000020000540
+RBP: 00007fffbf49c8d0 R08: 00000000000000fd R09: 0000000000000000
+R10: 0000000000000249 R11: 0000000000000286 R12: 0000000020000540
+R13: 00000000200000c0 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:utf8nlookup+0x39/0xaa0 fs/unicode/utf8-norm.c:306
+Code: 89 c4 48 89 4c 24 08 48 89 14 24 89 f5 49 89 fd 49 be 00 00 00 00 00 fc ff df e8 22 a5 ea fe 49 8d 5d 18 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 c8 93 44 ff 48 8b 1b 48 83 c3 30
+RSP: 0018:ffffc90003e0f800 EFLAGS: 00010206
+RAX: 0000000000000003 RBX: 0000000000000018 RCX: ffff88801be79dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: ffffc90003e0f998 R11: fffff520007c1f36 R12: 0000000000000005
+R13: 0000000000000000 R14: dffffc0000000000 R15: ffff8880792de070
+FS:  0000555556220480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005650cf4460b8 CR3: 000000002a7f4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	89 c4                	mov    %eax,%esp
+   2:	48 89 4c 24 08       	mov    %rcx,0x8(%rsp)
+   7:	48 89 14 24          	mov    %rdx,(%rsp)
+   b:	89 f5                	mov    %esi,%ebp
+   d:	49 89 fd             	mov    %rdi,%r13
+  10:	49 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%r14
+  17:	fc ff df
+  1a:	e8 22 a5 ea fe       	call   0xfeeaa541
+  1f:	49 8d 5d 18          	lea    0x18(%r13),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 c8 93 44 ff       	call   0xff449401
+  39:	48 8b 1b             	mov    (%rbx),%rbx
+  3c:	48 83 c3 30          	add    $0x30,%rbx
 
-1. What about Thin Provisioned LVM? IIUC, the space in that is
-pre-allocated, but allocation happens at the time of write and it might
-so happen that both data/metadata allocations will start to sit in
-iops/non-iops group randomly?
 
-2. Even in case of taditional LVM, the mapping of the physical blocks
-can be changed during an overwrite or discard sort of usecase right? So
-do we have a gurantee of the metadata always sitting on high iops groups
-after filesystem ages?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-3. With this options of mkfs to utilize this feature, we do loose the
-ability to resize right? I am guessing resize will be disabled with
-sparse_super2 and/or packed_meta_blocks itself?
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks!
--ritesh
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
