@@ -2,58 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F8C7A7557
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 10:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA487A7594
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Sep 2023 10:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbjITIHo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Sep 2023 04:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
+        id S233319AbjITIPb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Sep 2023 04:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232591AbjITIHn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 04:07:43 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7682F9E;
-        Wed, 20 Sep 2023 01:07:37 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-490cd6db592so2736673e0c.1;
-        Wed, 20 Sep 2023 01:07:37 -0700 (PDT)
+        with ESMTP id S232823AbjITIPb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Sep 2023 04:15:31 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719A2C2;
+        Wed, 20 Sep 2023 01:15:21 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7a52db1e4bbso2435638241.3;
+        Wed, 20 Sep 2023 01:15:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695197256; x=1695802056; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695197720; x=1695802520; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9cH5sDHtnVKWCV3iCYyvX8z8Hs3DAvkXrfeXQp9YY8c=;
-        b=OuiXP01hUoxoUzTLFPVW9oPxBvpT1XOogxeSwwAtspy6pdhyj/s/LGbvpfopL3k8gu
-         khWOuehEHcZZcs6IC2Js3rZ5utcZLHy2Lwstt3u/C03KYU4BvPjRTKjxFcutYQrYyM9C
-         Q8drta0kRjN15QsKwa+1SNvq/zOybu8pANgEZtJ8dVd4htx8KD5n5P433SLYcr3jknuZ
-         9fnZEXvQozYw8ZKfykMzp9EocW+pBgxtfsSlmVw57SNRmN5cAqSgWNiXg4jaYY2VCi7J
-         ECJdl/Vzfs2XQQjYfyHNfeazrMe7EMVMgp2RpEYN1oLl0YYe2w8n71ku0p/e7Hgu7tUp
-         +C3A==
+        bh=zJxfyTLNGZAN0qgRxWWT6/oteEKQT8o70eVgdNPEM/Q=;
+        b=W3K/TtSTcbvKR+NvbcejazPc9kT8dK63WflJYDO+b4vA7ff2tb+wPc+mlanVsMtx4y
+         cWd1rdr79v4ZqozAM4ryKxJYvJgznzK/C5XmD7OgTtly/vesk4Mq8MjeXpQUG2K69fAQ
+         Fqa4V60XBOQ2/R7W6qsNtCx1mRG4q000I0Z7GcD9Q8iqFZ0bOnPUEy38j83TKNTbQwtQ
+         nPBQOUO/O9NNS67uGIJggCeVYdt5DKhm66Cv262kUYKHwQ5hBJ8mHmS4nl5c78Yoox9Q
+         IB777So51vxiXB/ivTL9uNPUeTidvII4VDgfxAwhU83/PHJXQRvnm+GrvVINZ5fagUge
+         CWIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695197256; x=1695802056;
+        d=1e100.net; s=20230601; t=1695197720; x=1695802520;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9cH5sDHtnVKWCV3iCYyvX8z8Hs3DAvkXrfeXQp9YY8c=;
-        b=uY73qdB/+4aqKKX3nyhljFDazpxPlLSwMluQG/ApItrZ29gvJsUZfV49pCY8m+9N0o
-         v9TDJAtfXQ0q3GOzJd4qQz8E1kvUQpcU4IF4xr7B6yhed3MWuRkLZ7Sa9D1zwWqM1xcs
-         3xQ9ldXi0VCBhs9djhBt2zjhZ0UyIfTIyhgVsG0L+FuDuBeldUrgubk1f5zyWDmsVeED
-         zCbw1TZA8uWDBmRS8Sy9CZsklIE6tfQYtbdR7I4B5Sjg6mZ5pqPZt0oj9H/7t3NaBP0u
-         wONKNM4ws6GWB7CE6ywdgmzm/q76n9939vV17gaHm2+WNtxKf2BY2P/3Y09FZC/kHjnQ
-         4h+w==
-X-Gm-Message-State: AOJu0YyHb94eToNjulJVWztG4Qh5LZD5fJByT+Gxqznyg+U4TqXnJ9VK
-        Amf8PszfV2tIJ/6xO679Kdm3g2Ydxadkngee4LU=
-X-Google-Smtp-Source: AGHT+IFkmee8vYqiRU2MDwPCUYc12H9bxQ6dbTyVl2uMQTPK3nmmRGzDpQBcuukLJM94BaZ9yBg2NObfT5FOrPxTcNo=
-X-Received: by 2002:a1f:4c41:0:b0:48f:e0c4:1a1 with SMTP id
- z62-20020a1f4c41000000b0048fe0c401a1mr1862870vka.12.1695197256424; Wed, 20
- Sep 2023 01:07:36 -0700 (PDT)
+        bh=zJxfyTLNGZAN0qgRxWWT6/oteEKQT8o70eVgdNPEM/Q=;
+        b=Th1D2vSgD9oMxV/EouNswTFhJYokt6R33n67SeHvebrLUJ450JDYBaLEW+PJwSDiUI
+         TX9oxZ3NE4N4HSRhEX4Cn5YSBkPpQqeo0QrEu0Ia7ZTdx9eT7NBVCYxSHnuPa0XbRHm0
+         yn5XfyESCDjpZJyU3Kdni4cpaYjrpBxEu8tw2l7rxIFk/O4FiPJTOyeCH7q+RdLPn4nL
+         0Z3X/7uRqVkOhuCg72y5LCeT238F3ORAY1a+9ngfyJxeXeRfNhEWg6Nij100poP2Qa04
+         hgRhUHY8GcokYOPDk7QR2TRmdPi/LN8Fn1Ei96rF51CFdrXtR7ELDkhJBAoI/W0dAgd4
+         NIuw==
+X-Gm-Message-State: AOJu0YxneeLsAJ34dLcEDelSU9sYavkuzWBd6YuVi6Yaype74LR4N7ih
+        8kp2bkBCNnmawDTLWTAbigoAwKk22+qLT4w3WbE=
+X-Google-Smtp-Source: AGHT+IEsfO4EAx787RgGydCMUNs6b7OZCMZLpCKdedAcjUM4XsQ/CD9NHXWZexv599YssdpWeGgAwMzr8a3yyUbhRVE=
+X-Received: by 2002:a1f:6643:0:b0:48d:38fe:3133 with SMTP id
+ a64-20020a1f6643000000b0048d38fe3133mr1913731vkc.16.1695197720435; Wed, 20
+ Sep 2023 01:15:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230919045135.3635437-1-willy@infradead.org> <20230919045135.3635437-14-willy@infradead.org>
-In-Reply-To: <20230919045135.3635437-14-willy@infradead.org>
+References: <20230919045135.3635437-1-willy@infradead.org> <20230919045135.3635437-15-willy@infradead.org>
+In-Reply-To: <20230919045135.3635437-15-willy@infradead.org>
 From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Wed, 20 Sep 2023 17:07:20 +0900
-Message-ID: <CAKFNMokMe_QOPuLXsvUJf2+qZLUyi7Z_JFAKvh853N6ZV3yGyA@mail.gmail.com>
-Subject: Re: [PATCH 13/26] nilfs2: Convert nilfs_mdt_get_frozen_buffer to use
- a folio
+Date:   Wed, 20 Sep 2023 17:15:04 +0900
+Message-ID: <CAKFNMo=uGWNL5pe7JK7-GBKR1L6tsxmtRH5+p4mPrri=CeJXUw@mail.gmail.com>
+Subject: Re: [PATCH 14/26] nilfs2: Remove nilfs_page_get_nth_block
 To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
@@ -73,55 +72,36 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 6:25=E2=80=AFPM Matthew Wilcox (Oracle) wrote:
+On Tue, Sep 19, 2023 at 3:47=E2=80=AFPM Matthew Wilcox (Oracle) wrote:
 >
-> Remove a number of folio->page->folio conversions.
+> All users have now been converted to get_nth_block().
 >
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->  fs/nilfs2/mdt.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
+>  fs/nilfs2/page.h | 6 ------
+>  1 file changed, 6 deletions(-)
 >
-> diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
-> index 11b7cf4acc92..7b754e6494d7 100644
-> --- a/fs/nilfs2/mdt.c
-> +++ b/fs/nilfs2/mdt.c
-> @@ -592,17 +592,19 @@ nilfs_mdt_get_frozen_buffer(struct inode *inode, st=
-ruct buffer_head *bh)
->  {
->         struct nilfs_shadow_map *shadow =3D NILFS_MDT(inode)->mi_shadow;
->         struct buffer_head *bh_frozen =3D NULL;
-> -       struct page *page;
-> +       struct folio *folio;
->         int n;
+> diff --git a/fs/nilfs2/page.h b/fs/nilfs2/page.h
+> index 344d71942d36..d249ea1cefff 100644
+> --- a/fs/nilfs2/page.h
+> +++ b/fs/nilfs2/page.h
+> @@ -52,10 +52,4 @@ unsigned long nilfs_find_uncommitted_extent(struct ino=
+de *inode,
+>  #define NILFS_PAGE_BUG(page, m, a...) \
+>         do { nilfs_page_bug(page); BUG(); } while (0)
 >
-> -       page =3D find_lock_page(shadow->inode->i_mapping, bh->b_folio->in=
-dex);
-> -       if (page) {
-> -               if (page_has_buffers(page)) {
-> +       folio =3D filemap_lock_folio(shadow->inode->i_mapping,
-> +                       bh->b_folio->index);
-> +       if (!IS_ERR(folio)) {
-> +               bh_frozen =3D folio_buffers(folio);
-> +               if (bh_frozen) {
->                         n =3D bh_offset(bh) >> inode->i_blkbits;
-> -                       bh_frozen =3D nilfs_page_get_nth_block(page, n);
-> +                       bh_frozen =3D get_nth_bh(bh_frozen, n);
->                 }
-> -               unlock_page(page);
-> -               put_page(page);
-> +               folio_unlock(folio);
-> +               folio_put(folio);
->         }
->         return bh_frozen;
->  }
+> -static inline struct buffer_head *
+> -nilfs_page_get_nth_block(struct page *page, unsigned int count)
+> -{
+> -       return get_nth_bh(page_buffers(page), count);
+> -}
+> -
+>  #endif /* _NILFS_PAGE_H */
 > --
 > 2.40.1
 >
 
 Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-
-Looks good to me.
 
 Thanks,
 Ryusuke Konishi
