@@ -2,59 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2A67AB594
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 18:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158D07AB5A4
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 18:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjIVQJg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Sep 2023 12:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        id S229534AbjIVQNX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Sep 2023 12:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjIVQJf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 12:09:35 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8248B100;
-        Fri, 22 Sep 2023 09:09:29 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68bed2c786eso2095966b3a.0;
-        Fri, 22 Sep 2023 09:09:29 -0700 (PDT)
+        with ESMTP id S231604AbjIVQNW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 12:13:22 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6BA100;
+        Fri, 22 Sep 2023 09:13:16 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bdf4752c3cso18667925ad.2;
+        Fri, 22 Sep 2023 09:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695398969; x=1696003769; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695399195; x=1696003995; darn=vger.kernel.org;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=1wTX+TB06MEAjRMyvPhzSgFLCY3xJKUxyUe+GNOqMn8=;
-        b=It+e+ehkW3xrSAx0dZpoYwt0tJyXRpcC+9YdLeFqq0Yb+t1QvZoSNIndoS3r+JOxGO
-         GcwMP9wCCUO/lsicRjkS0LCnw9mD+tvdm3VHVmcR/r8iKJxoP2SzPBRS0znTtXKoVGGf
-         47tQnHTU8GuKs9/6Gbci9m1UUgniri8KMfk1AHMMVs91rwW6kfO+/33W9tiM5942UmAh
-         ZL80hS9JKbmvMjHCTTvO5vanK45bjOzybsB5dQ7TNT/EP1gQf/JJnAyDLseXEMqZEkDS
-         7xgYunsk2vyGBw/4RACy/yHJ9rZk+9KdUdu08gjgNeDdIepkc7HFfyX8xh6noe2aYmxA
-         87ZQ==
+        bh=7Tjf5r00Lqmhy/M6RVpzSsAVMaDILHAuySZ81BrNfgM=;
+        b=V/GnEe3BvuRtCNWZcFYYeE+r3ZLvSJWgghqAZtq86XdoX7gxlQQY0mdUu9RXTnbjLB
+         zoldjABnYzaPSbK7HwA83DKmIoNhB+/i6ccA7JT+8JV4Of22zu4QhiwriUtCXiJmvjgd
+         1bV5I84jg43I+hcxlvHqV3GXm0p5CcAFSfx6njNXUQIqurzi2VyYNp+CjpWXuqhjJjNp
+         L0x22nFnO0/yRD/PQ5HJANyyi58v0keS2VBIVek9Nj285LUek2kR0hqAOr+DB06Pi68+
+         SgdLu5cBQL9MH38nkyMbz+uChwPb5dW1KZqKbhp4arFR/ktxJuY/4tm/JMY2BqKPMsE6
+         rzDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695398969; x=1696003769;
+        d=1e100.net; s=20230601; t=1695399195; x=1696003995;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1wTX+TB06MEAjRMyvPhzSgFLCY3xJKUxyUe+GNOqMn8=;
-        b=kR8A0Vn3xCygBT6UMooZsNxYyzchfZwe3rGIdV3PBFT70qdDVjsSWgDJ5OY19O6/Ho
-         bnadiZ9B1mHoS+sv796yP4Dyre+zytaVfdwFptoIu+xQcxXLK6DdGTCntVCnMrQOyxXC
-         D1ceyIwmmosumI540RO3UhKVASQGXc+V25x2uquCVEM9kfjuirSiVs3R0+UUZsMiae2H
-         tMXJG9l6zGPyf6FubMmeYLW9POCBk4Rd9IvQYtP1d6CNtx5U5Vly89rBgQqRCvjf3iHl
-         vXprUokk9EQIg6u/efi9/ou/0u8YBYdUKs2uy0vhZKfXK3decBRHsEmks1AtRBrbtViZ
-         Wf5A==
-X-Gm-Message-State: AOJu0YwYcgm5TxUDo+7JxDiszsYDm0GphiD5fnZmcF/STWiorBLW1CdE
-        TbkymoU/fXUcOwnpc8B1c7iIO239bp0=
-X-Google-Smtp-Source: AGHT+IEBmJQBe2iqnQhB+X6YhSKtLmctzD6gBM1lF0kNv5FQnFTEnq8GNbdltVyvBvRctQuN+5EAaA==
-X-Received: by 2002:a05:6a20:a10e:b0:14c:e8d4:fb3e with SMTP id q14-20020a056a20a10e00b0014ce8d4fb3emr10450685pzk.43.1695398968800;
-        Fri, 22 Sep 2023 09:09:28 -0700 (PDT)
+        bh=7Tjf5r00Lqmhy/M6RVpzSsAVMaDILHAuySZ81BrNfgM=;
+        b=A1HIMeCbgOAF+r1gSgwv1Ip70SVca9sPjYB0H7ToO7G1gNVRGiapWhQVjInOkcwpxK
+         Xmft0j973Ge3+PmcngkfqCPQGfQCYvpVSbqgZZVMEFLsv89YJr8aIxdKFCuuqBAJ0omN
+         +euRBqSIWAWvVpr6lNFgXS7TdivXpJXXM5bWWaQ2AlZrAlRXIFfurq/FuwMm4UHbPhHI
+         qXgUDgiVsi2qRHBcxjOL1VOswJCkSHzFMzOqgBvRleW8x0rJG/bSM/4ZuNj1DsPkeLGr
+         tPVSHBxqf3ufitenXNYwtSL6f+t2z48Fuy+16Dj5KGc05DZbRYsFNQbHJM9SO4RR0Rls
+         vRXQ==
+X-Gm-Message-State: AOJu0Yyotx1F91Ji9jTHobhahQ5dJyZ+IYN5y4qWFgtl40vpbkE4RtMm
+        CRWnBsBX0/mAo7A1FZWl1Zc=
+X-Google-Smtp-Source: AGHT+IFTfXgpinPIJVlgEQMUcNLnWvvdFV3mnmMdcg8sHyRwWU+fnPHPwKGDHL9Ck5chxeCoLpXdrA==
+X-Received: by 2002:a17:902:d2cd:b0:1bd:fa80:103d with SMTP id n13-20020a170902d2cd00b001bdfa80103dmr9470542plc.25.1695399195555;
+        Fri, 22 Sep 2023 09:13:15 -0700 (PDT)
 Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id t19-20020a17090b019300b00274922d4b38sm3470104pjs.27.2023.09.22.09.09.26
+        by smtp.gmail.com with ESMTPSA id jk12-20020a170903330c00b001bc930d4517sm3673317plb.42.2023.09.22.09.13.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 09:09:28 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 21:39:24 +0530
-Message-Id: <87v8c25gwb.fsf@doe.com>
+        Fri, 22 Sep 2023 09:13:14 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 21:43:11 +0530
+Message-Id: <87sf765gq0.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>, fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
 Subject: Re: [PATCH] generic: Add integrity tests with synchronous directio
-In-Reply-To: <7ce321e3-3250-5627-18f8-230249fbf78f@linux.alibaba.com>
+In-Reply-To: <20230922152116.GA11380@frogsfrogsfrogs>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,11 +66,9 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Gao Xiang <hsiangkao@linux.alibaba.com> writes:
+"Darrick J. Wong" <djwong@kernel.org> writes:
 
-> Hi Ritesh,
->
-> On 2023/9/22 20:10, Ritesh Harjani (IBM) wrote:
+> On Fri, Sep 22, 2023 at 05:40:36PM +0530, Ritesh Harjani (IBM) wrote:
 >> This test covers data & metadata integrity check with directio with
 >> o_sync flag and checks the file contents & size after sudden fileystem
 >> shutdown once the directio write is completed. ext4 directio after iomap
@@ -85,11 +84,11 @@ Gao Xiang <hsiangkao@linux.alibaba.com> writes:
 >> Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 >> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 >> ---
->>   tests/generic/471     | 45 +++++++++++++++++++++++++++++++++++++++++++
->>   tests/generic/471.out |  8 ++++++++
->>   2 files changed, 53 insertions(+)
->>   create mode 100755 tests/generic/471
->>   create mode 100644 tests/generic/471.out
+>>  tests/generic/471     | 45 +++++++++++++++++++++++++++++++++++++++++++
+>>  tests/generic/471.out |  8 ++++++++
+>>  2 files changed, 53 insertions(+)
+>>  create mode 100755 tests/generic/471
+>>  create mode 100644 tests/generic/471.out
 >> 
 >> diff --git a/tests/generic/471 b/tests/generic/471
 >> new file mode 100755
@@ -131,71 +130,15 @@ Gao Xiang <hsiangkao@linux.alibaba.com> writes:
 >> +echo "Create a 1M file using O_DIRECT & O_SYNC"
 >> +xfs_io -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile > /dev/null 2>&1
 >
-> Thanks for the time on this.
->
-> I'm fine with this as it's the exact regression test to
-> my report.
->
-> Although the original issue from our guest real workload
-> is actually aio + O_SYNC, but that doesn't matter for
-> ext4 since it will serialize the whole process of DIO
-> write beyond i_size with inode lock.
+> $XFS_IO_PROG ?
 
-Yes, even if we do AIO but since it is an extending write we will pass
-IOMAP_DIO_FORCE_WAIT to iomap which means it will wait for the
-completion anyway.
-
-But on second thoughts, we can still add both synchronous direct-io
-writes and buffered-io writes to this test. The man page of "open" tells
-about O_SYNC flag, so the test should make sure that "data" and
-"metadata" gets written to disk for both buffered-io and direct-io.
-I will enhance that in second revision to cover buffered-io case as well.
+Thanks for pointing out. Will fix it in next rev.
 
 >
-> Yet if my understanding is correct, some other fses (e.g.
-> XFS) seem to be more relaxed than this, see
-> xfs_file_dio_write_aligned() and xfs_file_write_checks(),
-> so I'm not sure if we need to cover AIO cases as well,
-> anyway.
+> Otherwise looks good to me...
 
-It's O_SYNC flag of open which mandates both data and metadata
-integrity after "write" (or similar) completion. 
-So, I think it will be better to cover AIO case as well.
+Thanks. I am planning to enhance this integrity test to also cover
+synchronous dio (already added), buff-io and aiodio writes as well
+in the next revision.
 
-There are a bunch of AIO tests present. I will see if either of it can
-be enhanced to do basic aiodio writes. If not, I will add a basic
-integrity test.
-
-Thanks
 -ritesh
-
->
-> Thanks,
-> Gao Xiang
->
->> +
->> +echo "Shutdown the fs suddenly"
->> +_scratch_shutdown
->> +
->> +echo "Cycle mount"
->> +_scratch_cycle_mount
->> +
->> +echo "File contents after cycle mount"
->> +_hexdump $SCRATCH_MNT/testfile
->> +
->> +status=0
->> +exit
->> diff --git a/tests/generic/471.out b/tests/generic/471.out
->> new file mode 100644
->> index 00000000..ae279b79
->> --- /dev/null
->> +++ b/tests/generic/471.out
->> @@ -0,0 +1,8 @@
->> +QA output created by 471
->> +Create a 1M file using O_DIRECT & O_SYNC
->> +Shutdown the fs suddenly
->> +Cycle mount
->> +File contents after cycle mount
->> +000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
->> +*
->> +100000
