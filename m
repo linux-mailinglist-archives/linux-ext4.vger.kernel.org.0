@@ -2,51 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8015C7AB2B5
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 15:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2247AB4AB
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 17:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbjIVNa1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Sep 2023 09:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
+        id S232494AbjIVPVY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Sep 2023 11:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234065AbjIVNaL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 09:30:11 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0231A8;
-        Fri, 22 Sep 2023 06:30:03 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vsdceue_1695389400;
-Received: from 192.168.3.4(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vsdceue_1695389400)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Sep 2023 21:30:01 +0800
-Message-ID: <7ce321e3-3250-5627-18f8-230249fbf78f@linux.alibaba.com>
-Date:   Fri, 22 Sep 2023 21:29:59 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
+        with ESMTP id S232239AbjIVPVY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 11:21:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3B2A1;
+        Fri, 22 Sep 2023 08:21:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D2DC433C7;
+        Fri, 22 Sep 2023 15:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695396077;
+        bh=ij9sQedXywv7LVfCQIvTYStG7bDNfL6PZxTLsZZzB1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r9yDc3BjhRr/yu1b3PR4hPIdvru9iP2b+AJPBg0DxSEaKg4IMXinp529XotMQEgpk
+         cBcnqjD+v+Z0CY+NLGppouJ/jJ8UjZl7Dqc+dFrspzdyp8QTxyuFT8RM15m+PvKGjx
+         dIXt5Fn+CnB2Zr2IDjwAofuhzIjeFsokUMflvuLVM9VkwBbzjmCCuqV2aZIF4O9T0S
+         7igJCbPdOy/x4vmm/z79Taenl570xDtWtiAflgysq9toXoWPN8cT7fl0lEFoPwb6GA
+         O3gVS+18WZDyPKLhSudxzGY5xLNxNm9+nZgVFNE5xg6tSEVBVrZJ0fZBa0XIwrMAn4
+         CLOpjBhEF+fHg==
+Date:   Fri, 22 Sep 2023 08:21:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
 Subject: Re: [PATCH] generic: Add integrity tests with synchronous directio
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>
+Message-ID: <20230922152116.GA11380@frogsfrogsfrogs>
 References: <87y1gy5s9c.fsf@doe.com>
  <434beffaf18d39f898518ea9eb1cea4548e77c3a.1695383715.git.ritesh.list@gmail.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <434beffaf18d39f898518ea9eb1cea4548e77c3a.1695383715.git.ritesh.list@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ritesh,
-
-On 2023/9/22 20:10, Ritesh Harjani (IBM) wrote:
+On Fri, Sep 22, 2023 at 05:40:36PM +0530, Ritesh Harjani (IBM) wrote:
 > This test covers data & metadata integrity check with directio with
 > o_sync flag and checks the file contents & size after sudden fileystem
 > shutdown once the directio write is completed. ext4 directio after iomap
@@ -62,11 +65,11 @@ On 2023/9/22 20:10, Ritesh Harjani (IBM) wrote:
 > Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > ---
->   tests/generic/471     | 45 +++++++++++++++++++++++++++++++++++++++++++
->   tests/generic/471.out |  8 ++++++++
->   2 files changed, 53 insertions(+)
->   create mode 100755 tests/generic/471
->   create mode 100644 tests/generic/471.out
+>  tests/generic/471     | 45 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/471.out |  8 ++++++++
+>  2 files changed, 53 insertions(+)
+>  create mode 100755 tests/generic/471
+>  create mode 100644 tests/generic/471.out
 > 
 > diff --git a/tests/generic/471 b/tests/generic/471
 > new file mode 100755
@@ -108,24 +111,11 @@ On 2023/9/22 20:10, Ritesh Harjani (IBM) wrote:
 > +echo "Create a 1M file using O_DIRECT & O_SYNC"
 > +xfs_io -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile > /dev/null 2>&1
 
-Thanks for the time on this.
+$XFS_IO_PROG ?
 
-I'm fine with this as it's the exact regression test to
-my report.
+Otherwise looks good to me...
 
-Although the original issue from our guest real workload
-is actually aio + O_SYNC, but that doesn't matter for
-ext4 since it will serialize the whole process of DIO
-write beyond i_size with inode lock.
-
-Yet if my understanding is correct, some other fses (e.g.
-XFS) seem to be more relaxed than this, see
-xfs_file_dio_write_aligned() and xfs_file_write_checks(),
-so I'm not sure if we need to cover AIO cases as well,
-anyway.
-
-Thanks,
-Gao Xiang
+--D
 
 > +
 > +echo "Shutdown the fs suddenly"
@@ -153,3 +143,6 @@ Gao Xiang
 > +000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
 > +*
 > +100000
+> -- 
+> 2.41.0
+> 
