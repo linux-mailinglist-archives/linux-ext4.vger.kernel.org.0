@@ -2,422 +2,290 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF07F7AA7E2
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 06:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E37AA7F2
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Sep 2023 06:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjIVEiy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 22 Sep 2023 00:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
+        id S229639AbjIVEvx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 22 Sep 2023 00:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjIVEix (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 00:38:53 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D12122
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Sep 2023 21:38:45 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c39f2b4f5aso14013955ad.0
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Sep 2023 21:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1695357523; x=1695962323; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSpMZmMgjPlbL/qvsrX9q/gkQBC8NBxJMPdhAuj2O+c=;
-        b=hyQb3V5V3vkLZstbCVdkhEoVLJ9UQioLyK3MT7KUOgQ0fOjwucFJu626VnKHbzlhxa
-         2VPqrKroEEZ3JPS81Pr+K7HNYUlq9I70yHWqeUBavYuBpMv5MGS7Whdx6GNubg6A+t+x
-         cLoXhbu6DA/esi0YimAagdzIgp5xvihhig0iTFZkMyyuv5mKSXBqTA9rGvE3WgsyKYpy
-         RomjYmBNUDNZGYQpU2iEzfMjKsMd1wbs16lWKUWMj9qO0LX8KEwxfWz+cwt1B+NeAJuD
-         F4DCrNqdfDzdgvwd5TgI8cmpEF4naQewQxF3Te4DfdK/O/MbYenGmdgZmVK6YXqMv+m8
-         kWXQ==
+        with ESMTP id S229584AbjIVEvw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 22 Sep 2023 00:51:52 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56A618F
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Sep 2023 21:51:45 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1b0812d43a0so2932925fac.0
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Sep 2023 21:51:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695357523; x=1695962323;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSpMZmMgjPlbL/qvsrX9q/gkQBC8NBxJMPdhAuj2O+c=;
-        b=ZEPAQYgwyR45iOg8X8SsTapjKUzIGK/Y+FOdFlBaMj6LJBHnK/2q0XvhfRIMml88xj
-         titdJmwM6nPnuoQ4PV9eqdCSOMumUdDIANDKtXFeB4JlMUpJtpT+Co/2pa7qfF3c71QC
-         gm/GCaUoOBlvbvecykf12oZWw8C0NSfjvkIN5OK5JG5WGhkSq3QoDhc0/C9Y3CgQs5cV
-         HJBBXmeJUb6mnSaF82AMAuNMVb/M5WVWoxayVslfKx6Aa7bbWHsHPApzLfdBDsnm492C
-         +BQsRsB/ncaVqTqFjLcayy5jDJ/q2vv/wakWe4TGJMJ+Dswl9obGYjU4OfUgI46US2qg
-         IIpw==
-X-Gm-Message-State: AOJu0YzSJllkrjIuXLt+uBuUKLqTMiQe5NRO0YUgR46YqcKwwHSqNS4w
-        4GXNB2cpWnmI2BADsHAx5wJv/245jZJ53M2N+Sw=
-X-Google-Smtp-Source: AGHT+IHv6R7kcRKlMQFah1oGG1gc5TcqRMCoRW9qrCFwcdrF2gKcf2mmANtZzhYblTPQO1SKubsFJA==
-X-Received: by 2002:a17:903:120b:b0:1bf:70be:ca8b with SMTP id l11-20020a170903120b00b001bf70beca8bmr8057599plh.43.1695357523426;
-        Thu, 21 Sep 2023 21:38:43 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id p22-20020a170902a41600b001ae0152d280sm2396806plq.193.2023.09.21.21.38.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Sep 2023 21:38:42 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <FFAD9C6B-B0A0-4CD3-BEE8-B62D702BBEC8@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_7B21D0C6-4461-4DC8-9246-51756970F0B0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3] ext4: optimize metadata allocation for hybrid LUNs
-Date:   Thu, 21 Sep 2023 22:38:39 -0600
-In-Reply-To: <874jjp768n.fsf@doe.com>
-Cc:     Bobi Jam <bobijam@hotmail.com>, linux-ext4@vger.kernel.org
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-References: <874jjp768n.fsf@doe.com>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695358305; x=1695963105;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8qn/FrH1988scFKcjduSlmqXu2bsNtqi414x0P0dQ8I=;
+        b=hOXzaWQWVjUBCwKIpxd6QNvmr0JTu7q0sZRtGYCsu+fbTHRNeAaHSy3sjv4fsyrIwX
+         2HSWCG0PUIDOTtIhgr3yw581gIxU/PeyHsoNhZupQmSTYQsrthoAyNWMd6fBNFrW8VWC
+         V0VM9KMO4UBSanRx6aTMTCIbcnrxzkDGbzWe0TNn8BglCz7yLmYaPufQFLVs11lgTwSh
+         F0pgNKxg3Fg99X5NgYmJDgV1Ft/l8n5550eKGWqSawG6swqdBpPhgcqvPVhtfWfbqq2E
+         GbrICG0OEMGqPWCS+Hw8G7y20P5vIoEXjdg2ZFJfIbFhVmdAcT5B3YIDajIOBj8MCtc5
+         mtrw==
+X-Gm-Message-State: AOJu0YwDha1yOMZOlJOB0Q+KFpsG68R4KE3D1iZNXKbLtxM9bcH7kflA
+        cWLSTvvIJAeVSxzm2CR2kRz2nnQaI7xocjCkABoQ5VjC1Jag
+X-Google-Smtp-Source: AGHT+IF1lSM14uPdDSV4IGWUdgZdpHokDRGfRP8LnwwkAzngXlRvnTOjtPwMtDdNbhGGG/qt+yimh6c5iwpUHRA4oWDukobCmZrG
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:3e0d:b0:1dc:7909:91fa with SMTP id
+ lk13-20020a0568703e0d00b001dc790991famr724923oab.2.1695358305264; Thu, 21 Sep
+ 2023 21:51:45 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 21:51:45 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008d6a8b0605eb5dfd@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_xattr_set_handle (4)
+From:   syzbot <syzbot+ea0ba556b26f54698271@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hello,
 
---Apple-Mail=_7B21D0C6-4461-4DC8-9246-51756970F0B0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+syzbot found the following issue on:
 
-On Sep 19, 2023, at 11:39 PM, Ritesh Harjani (IBM) =
-<ritesh.list@gmail.com> wrote:
->=20
-> Bobi Jam <bobijam@hotmail.com> writes:
->=20
->> With LVM it is possible to create an LV with SSD storage at the
->> beginning of the LV and HDD storage at the end of the LV, and use =
-that
->> to separate ext4 metadata allocations (that need small random IOs)
->> from data allocations (that are better suited for large sequential
->> IOs) depending on the type of underlying storage.  Between 0.5-1.0% =
-of
->> the filesystem capacity would need to be high-IOPS storage in order =
-to
->> hold all of the internal metadata.
->>=20
->> This would improve performance for inode and other metadata access,
->> such as ls, find, e2fsck, and in general improve file access latency,
->> modification, truncate, unlink, transaction commit, etc.
->>=20
->> This patch split largest free order group lists and average fragment
->> size lists into other two lists for IOPS/fast storage groups, and
->> cr 0 / cr 1 group scanning for metadata block allocation in following
->> order:
->>=20
->> if (allocate metadata blocks)
->>      if (cr =3D=3D 0)
->>              try to find group in largest free order IOPS group list
->>      if (cr =3D=3D 1)
->>              try to find group in fragment size IOPS group list
->>      if (above two find failed)
->>              fall through normal group lists as before
->=20
-> Ok, so we are agreeing that if the iops groups are full, we will
-> fallback to non-iops group for metadata.
->=20
->=20
->> if (allocate data blocks)
->>      try to find group in normal group lists as before
->>      if (failed to find group in normal group && mb_enable_iops_data)
->>              try to find group in IOPS groups
->=20
-> same here but with mb_enable_iops_data.
+HEAD commit:    e789286468a9 Merge tag 'x86-urgent-2023-09-17' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f3cef8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9a2f141d69d34
+dashboard link: https://syzkaller.appspot.com/bug?extid=ea0ba556b26f54698271
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Hi Ritesh,
-thanks for your review.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Yes, this is in the case of allocating data blocks.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e7892864.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1429a45d2526/vmlinux-e7892864.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7b5ffe979a44/bzImage-e7892864.xz
 
->> Non-metadata block allocation does not allocate from the IOPS groups
->> if non-IOPS groups are not used up.
->=20
-> Sure. At least ENOSPC use case can be handled once mb_enable_iops_data
-> is enabled. (for users who might end up using large iops disk)
->=20
->> Add for mke2fs an option to mark which blocks are in the IOPS region
->> of storage at format time:
->>=20
->>  -E iops=3D0-1024G,4096-8192G
->>=20
->> so the ext4 mballoc code can then use the EXT4_BG_IOPS flag in the
->> group descriptors to decide which groups to allocate dynamic
->> filesystem metadata.
->>=20
->> Signed-off-by: Bobi Jam <bobijam@hotmail.com
->>=20
->> --
->> v2->v3: add sysfs mb_enable_iops_data to enable data block allocation
->>        from IOPS groups.
->> v1->v2: for metadata block allocation, search in IOPS list then =
-normal
->>        list.
->> ---
->>=20
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index 8104a21b001a..a8f21f63f5ff 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -382,6 +382,7 @@ struct flex_groups {
->> #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use =
-*/
->> #define EXT4_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not in use */
->> #define EXT4_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to =
-zero */
->> +#define EXT4_BG_IOPS		0x0010 /* In IOPS/fast storage =
-*/
->=20
-> Not related to this patch. But why not 0x0008? Is it reserved for
-> anything else?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ea0ba556b26f54698271@syzkaller.appspotmail.com
 
-That is being used by the patches to add persistent TRIM support:
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc1-syzkaller-00269-ge789286468a9 #0 Not tainted
+------------------------------------------------------
+syz-executor.2/16393 is trying to acquire lock:
+ffff88801c2532c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ffff88801c2532c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
 
-+#define EXT4_BG_TRIMMED		0x0008 /* block group was =
-trimmed */
+but task is already holding lock:
+ffff8880444e0988 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10d6/0x15e0 fs/jbd2/transaction.c:463
 
-=
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20230829054309.68453=
-0-1-dongyangli@ddn.com/ ("[V2] e2fsprogs: support EXT2_FLAG_BG_TRIMMED =
-and EXT2_FLAGS_TRACK_TRIM")
-=
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20230817003504.45892=
-0-1-dongyangli@ddn.com/ ("[V2] ext4: introduce EXT4_BG_TRIMMED to =
-optimize fstrim")
-
->> /*
->>  * Macro-instructions used to manage group descriptors
->> @@ -1112,6 +1113,8 @@ struct ext4_inode_info {
->> #define EXT2_FLAGS_UNSIGNED_HASH	0x0002  /* Unsigned dirhash in =
-use */
->> #define EXT2_FLAGS_TEST_FILESYS		0x0004	/* to test =
-development code */
->>=20
->> +#define EXT2_FLAGS_HAS_IOPS		0x0080	/* has IOPS storage */
->> +
->=20
-> same here. Are the flag values in between 0x0004 and 0x0080 are =
-reserved?
-
-+#define EXT2_FLAGS_TRACK_TRIM		0x0008  /* Track trim status in =
-bg */
-
-The 0x10/20/40 flags are reserved in e2fsprogs but are not used by ext4.
-
->> @@ -1009,11 +1108,37 @@ static void ext4_mb_choose_next_group(struct =
-ext4_allocation_context *ac,
->> 		return;
->> 	}
->>=20
->> +	if (alloc_metadata && sbi->s_es->s_flags & EXT2_FLAGS_HAS_IOPS) =
-{
->> +		if (*new_cr =3D=3D 0)
->> +			ret =3D ext4_mb_choose_next_iops_group_cr0(ac, =
-group);
->> +		if (!ret && *new_cr < 2)
->> +			ret =3D ext4_mb_choose_next_iops_group_cr1(ac, =
-group);
-
-It looks like this patch is a bit stale since Ojaswin's renaming of the
-cr0/cr1 phases to "p2_aligned" and "goal_fast" and "best_avail" names.
-
-> This is a bit confusing here. Say if *new_cr =3D 0 fails, then we =
-return
-> ret =3D false and fallback to choosing xx_iops_group_cr1(). And say if =
-we
-> were able to find a group which satisfies this allocation request we
-> return. But the caller never knows that we allocated using cr1 and not
-> cr0. Because we never updated *new_cr inside xx_iops_group_crX()
-
-I guess it is a bit messy, since updating new_cr might interfere with =
-the
-use of new_cr in the fallthrough to the non-IOPS groups below?  In the
-"1% IOPS groups" case, doing this extra scan for metadata blocks should
-be very fast, since the metadata allocations are almost always one block
-(excluding large xattrs), so the only time this would fail is if no IOPS
-blocks are free, in which case it is fast since the group lists are =
-empty.
-
-We _could_ have a separate (in effect) cr0_3 and cr0_6 phases before the
-non-IOPS group allocation starts to be able to distinguish these cases
-(i.e. skip IOPS group scans if they are full) and the fallthrough search
-is also having trouble to find a single free block for the metadata, but
-I think that is pretty unlikely.
-
->=20
->> +		if (ret)
->> +			return;
->> +		/*
->> +		 * Cannot get metadata group from IOPS storage, fall =
-through
->> +		 * to slow storage.
->> +		 */
->> +		cond_resched();
->=20
-> Not sure after you fix above case, do we still require cond_resched()
-> here. Note we already have one in the for loop which iterates over all
-> the groups for a given ac_criteria.
-
-The cond_resched() was here because it calls two "choose_next_groups()"
-functions above without returning to the outer loop.  However, you are
-right that the group search is probably not the CPU heavy part here, so
-this could probably be dropped?
-
->> +	}
->> +
->> 	if (*new_cr =3D=3D 0) {
->> 		ext4_mb_choose_next_group_cr0(ac, new_cr, group, =
-ngroups);
->> 	} else if (*new_cr =3D=3D 1) {
->> 		ext4_mb_choose_next_group_cr1(ac, new_cr, group, =
-ngroups);
->> 	} else {
->> +		/*
->> +		 * Cannot get data group from slow storage, try IOPS =
-storage
->> +		 */
->> +		if (sbi->s_es->s_flags & EXT2_FLAGS_HAS_IOPS &&
->> +		    !alloc_metadata && sbi->s_mb_enable_iops_data &&
->> +		    *new_cr =3D=3D 3) {
->> +			if (ac->ac_2order)
->> +				ret =3D =
-ext4_mb_choose_next_iops_group_cr0(ac,
->> +									 =
-group);
->> +			if (!ret)
->> +				ext4_mb_choose_next_iops_group_cr1(ac, =
-group);
->> +		}
->=20
-> We might never come here in this else case because
-> should_optimize_scan() which we check in the beginning of this =
-function
-> will return 0 and we will chose a next linear group for CR >=3D 2.
-
-Hmm, you are right.  Just off the bottom of this hunk is a "WARN_ON(1)"
-that this code block should never be entered.
-
-Really, the fallback to IOPS groups for regular files should only happen
-in case of if *new_cr >=3D CR_GOAL_ANY_FREE.  We don't want "normal" =
-block
-allocation to fill up the IOPS groups just because the filesystem is
-fragmented and low on space, but only if out of non-IOPS space.
-
->> 		/*
->> 		 * TODO: For CR=3D2, we can arrange groups in an rb tree =
-sorted by
->> 		 * bb_free. But until that happens, we should never come =
-here.
->> @@ -1030,6 +1155,8 @@ static void
->> mb_set_largest_free_order(struct super_block *sb, struct =
-ext4_group_info *grp)
->> {
->> 	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
->> +	rwlock_t *lfo_locks;
->> +	struct list_head *lfo_list;
->> 	int i;
->>=20
->> 	for (i =3D MB_NUM_ORDERS(sb) - 1; i >=3D 0; i--)
->> @@ -1042,21 +1169,25 @@ mb_set_largest_free_order(struct super_block =
-*sb, struct ext4_group_info *grp)
->> 		return;
->> 	}
->>=20
->> +	if (sbi->s_es->s_flags & EXT2_FLAGS_HAS_IOPS &&
->> +	    EXT4_MB_GRP_TEST_IOPS(grp)) {
->> +		lfo_locks =3D sbi->s_largest_free_orders_locks_iops;
->> +		lfo_list =3D sbi->s_largest_free_orders_list_iops;
->> +	} else {
->> +		lfo_locks =3D sbi->s_mb_largest_free_orders_locks;
->> +		lfo_list =3D sbi->s_mb_largest_free_orders;
->> +	}
->> +
->> 	if (grp->bb_largest_free_order >=3D 0) {
->> -		write_lock(&sbi->s_mb_largest_free_orders_locks[
->> -					      =
-grp->bb_largest_free_order]);
->> +		write_lock(&lfo_locks[grp->bb_largest_free_order]);
->> 		list_del_init(&grp->bb_largest_free_order_node);
->> -		write_unlock(&sbi->s_mb_largest_free_orders_locks[
->> -					      =
-grp->bb_largest_free_order]);
->> +		write_unlock(&lfo_locks[grp->bb_largest_free_order]);
->> 	}
->> 	grp->bb_largest_free_order =3D i;
->> 	if (grp->bb_largest_free_order >=3D 0 && grp->bb_free) {
->> -		write_lock(&sbi->s_mb_largest_free_orders_locks[
->> -					      =
-grp->bb_largest_free_order]);
->> -		list_add_tail(&grp->bb_largest_free_order_node,
->> -		      =
-&sbi->s_mb_largest_free_orders[grp->bb_largest_free_order]);
->> -		write_unlock(&sbi->s_mb_largest_free_orders_locks[
->> -					      =
-grp->bb_largest_free_order]);
->> +		write_lock(&lfo_locks[i]);
->> +		list_add_tail(&grp->bb_largest_free_order_node, =
-&lfo_list[i]);
->> +		write_unlock(&lfo_locks[i]);
->> 	}
->> }
->>=20
->> @@ -2498,6 +2629,10 @@ static int ext4_mb_good_group_nolock(struct =
-ext4_allocation_context *ac,
->> 		goto out;
->> 	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
->> 		goto out;
->> +	if (sbi->s_es->s_flags & EXT2_FLAGS_HAS_IOPS &&
->> +	    (ac->ac_flags & EXT4_MB_HINT_DATA) && =
-EXT4_MB_GRP_TEST_IOPS(grp) &&
->> +	    !sbi->s_mb_enable_iops_data)
->> +		goto out;
->=20
-> since we already have a grp information here. Then checking for =
-s_flags
-> and is redundant here right?
-
-This is intended to stop regular data allocations in IOPS groups that =
-are
-found by next_linear_group().
-
-With the change to allow regular data to be allocated in IOPS groups,
-there might need to be an extra check added here to see what allocation
-phase this is.  Should we add *higher* CR_ phases above CR_ANY_FREE to
-allow distinguishing between IOPS->regular fallback and regular->IOPS
-fallback?
+which lock already depends on the new lock.
 
 
-It seems like most of the complexity/issues here have crept in since the
-addition of the fallback for regular data allocations in IOPS groups...
-I'm not sure if we want to defer that functionality to a separate patch,
-or if you have any suggestions on how to clarify this without adding a
-lot of complexity?
+the existing dependency chain (in reverse order) is:
 
-Cheers, Andreas
+-> #2 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0x10fc/0x15e0 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x391/0x690 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x40f/0x5c0 fs/ext4/ext4_jbd2.c:112
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+       ext4_dirty_inode+0xa1/0x130 fs/ext4/inode.c:5953
+       __mark_inode_dirty+0x1e0/0xd50 fs/fs-writeback.c:2430
+       mark_inode_dirty_sync include/linux/fs.h:2271 [inline]
+       iput.part.0+0x5b/0x7a0 fs/inode.c:1798
+       iput+0x5c/0x80 fs/inode.c:1791
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x22b/0x7d0 fs/dcache.c:1201
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
+       super_cache_scan+0x31f/0x540 fs/super.c:228
+       do_shrink_slab+0x422/0xaa0 mm/vmscan.c:900
+       shrink_slab+0x17f/0x6e0 mm/vmscan.c:1060
+       shrink_one+0x4f7/0x700 mm/vmscan.c:5417
+       shrink_many mm/vmscan.c:5469 [inline]
+       lru_gen_shrink_node mm/vmscan.c:5586 [inline]
+       shrink_node+0x20d4/0x37a0 mm/vmscan.c:6526
+       kswapd_shrink_node mm/vmscan.c:7331 [inline]
+       balance_pgdat+0xa32/0x1b80 mm/vmscan.c:7521
+       kswapd+0x5be/0xbf0 mm/vmscan.c:7781
+       kthread+0x33c/0x440 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:3551 [inline]
+       fs_reclaim_acquire+0x100/0x150 mm/page_alloc.c:3565
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slab.h:709 [inline]
+       slab_alloc_node mm/slub.c:3460 [inline]
+       __kmem_cache_alloc_node+0x51/0x340 mm/slub.c:3517
+       __do_kmalloc_node mm/slab_common.c:1022 [inline]
+       __kmalloc_node+0x52/0x110 mm/slab_common.c:1030
+       kmalloc_node include/linux/slab.h:619 [inline]
+       kvmalloc_node+0x99/0x1a0 mm/util.c:607
+       kvmalloc include/linux/slab.h:737 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+       ext4_xattr_set_entry+0x1c3d/0x3ca0 fs/ext4/xattr.c:1719
+       ext4_xattr_block_set+0x678/0x30e0 fs/ext4/xattr.c:1970
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+       ext4_expand_extra_isize_ea+0x1306/0x1b20 fs/ext4/xattr.c:2834
+       __ext4_expand_extra_isize+0x342/0x470 fs/ext4/inode.c:5803
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5846 [inline]
+       __ext4_mark_inode_dirty+0x52b/0x800 fs/ext4/inode.c:5924
+       __ext4_unlink+0x630/0xc60 fs/ext4/namei.c:3296
+       ext4_unlink+0x40d/0x580 fs/ext4/namei.c:3325
+       vfs_unlink+0x2f1/0x900 fs/namei.c:4332
+       do_unlinkat+0x3da/0x6d0 fs/namei.c:4398
+       __do_sys_unlinkat fs/namei.c:4441 [inline]
+       __se_sys_unlinkat fs/namei.c:4434 [inline]
+       __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4434
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+-> #0 (&ei->xattr_sem){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+       lock_acquire kernel/locking/lockdep.c:5753 [inline]
+       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+       down_write+0x93/0x200 kernel/locking/rwsem.c:1573
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
+       ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
+       __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
+       __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
+       __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
+       vfs_setxattr+0x146/0x350 fs/xattr.c:322
+       do_setxattr+0x142/0x170 fs/xattr.c:630
+       setxattr+0x159/0x170 fs/xattr.c:653
+       __do_sys_fsetxattr fs/xattr.c:709 [inline]
+       __se_sys_fsetxattr fs/xattr.c:698 [inline]
+       __ia32_sys_fsetxattr+0x25e/0x310 fs/xattr.c:698
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ei->xattr_sem --> fs_reclaim --> jbd2_handle
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(jbd2_handle);
+                               lock(fs_reclaim);
+                               lock(jbd2_handle);
+  lock(&ei->xattr_sem);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.2/16393:
+ #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __do_sys_fsetxattr fs/xattr.c:707 [inline]
+ #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __se_sys_fsetxattr fs/xattr.c:698 [inline]
+ #0: ffff88801a440410 (sb_writers#4){.+.+}-{0:0}, at: __ia32_sys_fsetxattr+0x17a/0x310 fs/xattr.c:698
+ #1: ffff88801c253600 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ #1: ffff88801c253600 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0x123/0x350 fs/xattr.c:321
+ #2: ffff8880444e0988 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x10d6/0x15e0 fs/jbd2/transaction.c:463
+
+stack backtrace:
+CPU: 0 PID: 16393 Comm: syz-executor.2 Not tainted 6.6.0-rc1-syzkaller-00269-ge789286468a9 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+ down_write+0x93/0x200 kernel/locking/rwsem.c:1573
+ ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ ext4_xattr_set_handle+0x159/0x1420 fs/ext4/xattr.c:2371
+ ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
+ __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
+ __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
+ vfs_setxattr+0x146/0x350 fs/xattr.c:322
+ do_setxattr+0x142/0x170 fs/xattr.c:630
+ setxattr+0x159/0x170 fs/xattr.c:653
+ __do_sys_fsetxattr fs/xattr.c:709 [inline]
+ __se_sys_fsetxattr fs/xattr.c:698 [inline]
+ __ia32_sys_fsetxattr+0x25e/0x310 fs/xattr.c:698
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7fbe579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7fb95ac EFLAGS: 00000292 ORIG_RAX: 00000000000000e4
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000140
+RDX: 0000000020000180 RSI: 0000000000000015 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
---Apple-Mail=_7B21D0C6-4461-4DC8-9246-51756970F0B0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmUNGk8ACgkQcqXauRfM
-H+BjQBAAvUKF8lNpLGzQv4xRGCECTbrhpQqM6ihEutfbq92DuKitLqS43HJqfAYo
-/Pi4zDvYWtD2lWugSpzI1mggUFmBk3HmrIzu9N+pvPfDqSudQKrrmcswMUhwW0Tp
-gNlNIFCKhcm+3lDPvLxnzQatznb9Lq91/qogdyDp7ceoOgVLuexa3lfnJUjiI0kR
-tlAYmc6GmxC5LmL+2bzyS+9zc2W5posl+uu7EYOTtb2IAIufMl55vbP9/R+8zZcG
-Y1m9JWIfgFDPTBz/jLHSkFhFQhbquLhLxL53089UNfFCjVPkAzVlYE2rHFykV2gw
-UIqJ10VTpUxEofCC0zGROxfmv+bd/dQEVK7Orjg/Oqtl20Yizss/V2I+xyhpuFcH
-Cpk4uNHvCN/x2lUao0bFGsubOkhvszKRCHOVnoUvzvJZ7TaW/5DewArO2/oiXTc8
-zl266bXzZZLMMucJ6uDtsozNsTnAmSH7Xiiem3uKsv+/k4AHFGUxKgsQNvnLxfz1
-J2NfU7YwfWi361y9eIPJ4O8TS7jVFJx2IlYnBzRJAQJSb8fyj5cQ+M94VQAYdO/g
-JaxbNcibAhWVKxroPdLlcH5AjP18Kq+nmrKPH+zYV+hyZzZoNy10AWG01QagsBIU
-AYPZu3BCzvfKxtOJokcqMPKHqDNFI4xy3B0mjL9cnoWUCfWoZVw=
-=1N7w
------END PGP SIGNATURE-----
-
---Apple-Mail=_7B21D0C6-4461-4DC8-9246-51756970F0B0--
+If you want to undo deduplication, reply with:
+#syz undup
