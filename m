@@ -2,64 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBD87AC199
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Sep 2023 14:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39E67AC198
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Sep 2023 14:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjIWMAq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 23 Sep 2023 08:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        id S231387AbjIWMAs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 23 Sep 2023 08:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjIWMAp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 Sep 2023 08:00:45 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C82A136;
-        Sat, 23 Sep 2023 05:00:39 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-565e54cb93aso1973647a12.3;
-        Sat, 23 Sep 2023 05:00:39 -0700 (PDT)
+        with ESMTP id S230458AbjIWMAs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 Sep 2023 08:00:48 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D375136;
+        Sat, 23 Sep 2023 05:00:42 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c60a514f3aso249945ad.3;
+        Sat, 23 Sep 2023 05:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695470438; x=1696075238; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695470441; x=1696075241; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T7+cBpujNUS3XYFWbitFbs4F9jMbA+6Zty15gUpWh5E=;
-        b=bkQ7f5uFZvI21bm45J36jhjNiinCYA3UxXWjiimOoIfqmCCBoR1PY743Av1ydMAkww
-         poV7fH+4b7S4BUkwcFrh8X+FA/jPPCfzOkRoHZsFE88m2WE5XMbchtvSWmsZ/E0GW8gZ
-         oK9GjaGpuDdlpdcGe4D3zPNACbJKsCF6ThsRTzHgWBiaStrgVDwu8figcJ5BK+Fwyaw8
-         Ws7DzePpzYHJleJjIpeDKFXeR1UV6HyuuWIV/mk84sfAx3BgIvOFSKVMn8UljVcbWGkX
-         TaKDgGt4JTzmLZa8IHgX1Iv7IJrVxdYnKrm3Y3F9ZIw5d02CkC9goL+6D8rd/i5gCECt
-         BcDg==
+        bh=xdXXc+qT4ixe29aMOuCXUa7Ah3I7AYTAZ1f1/pEfbvA=;
+        b=fkXefUzCxcfqdF+zLKRD8qYPLzwPeJ8ufSz/G1Zw7YEeZTkabKK6ql0Tj8G469fIRB
+         OmovuEzeMbKtriyX+pr49ixoIlH0RRsijM1I6Z1LUmsot/fyWwqQpqfbSliVSRq/+pIK
+         jZ1u8R47RvzX3NhxBtIU/9acBSZOlGx+QA7RiY+RufMuxTZ0kBC/kpcwgvggpvSh2asA
+         6nxOCPnbz0MgusWU8BOHXEzbJDZGaENlCP9DVtzGqiE+HMIJkh0lpk2uGjL8NU7Lenbe
+         NIylKr/9365q3XilhFDVGMBpxl1G4PKMlLO99caCmn+sC53DM6R65lKgHM/qC+GEgiQx
+         UywQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695470438; x=1696075238;
+        d=1e100.net; s=20230601; t=1695470441; x=1696075241;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T7+cBpujNUS3XYFWbitFbs4F9jMbA+6Zty15gUpWh5E=;
-        b=GtKns5dh69inNM43VGJEtAFTBYXcAQ0kewkTq95IqDSk+Oh6b0gDatr4DwjKqs/tMG
-         fSTag3QKxjYSY58l1Prh3Yo4NqMvlqSowdiujoGlixI7redINmwgAMiYDdV0W8ZNwDcI
-         1fDNwIuO0y5kFk+a1xnVWc+FVVkl/YerT49PdHeehfALaQrVy6zKTEFZd+E2rGkRBh9m
-         8AvEKDfAePF2IwQGLxZvZHFYgMQZnmvV10HfeSxQm04V5p0jIkaIslWkjc8au+pIV1sF
-         ceMCZ/W/WZtY3SpUI37GQd9txDf/zDD11CbXbjxT2hggNwcsxFQBBUQ1VWXE/xoJWqZu
-         3HgA==
-X-Gm-Message-State: AOJu0YzK/ST4+fmJtUFecGjLBY/uTkov+TzlDti/IOr44iQ0d5R8h8c2
-        v2cJ5CFmCJtdTDJL/TO7We2+2Dt5TUc=
-X-Google-Smtp-Source: AGHT+IF/OJL5fYvto9s8bnEyaPTUC5xJB7WdWCwS9DLXhaIAwv9W9ptLhBBlBKIzYWsy7qgLuW0JNA==
-X-Received: by 2002:a05:6a20:101a:b0:14b:3681:567e with SMTP id gs26-20020a056a20101a00b0014b3681567emr1502920pzc.29.1695470438278;
-        Sat, 23 Sep 2023 05:00:38 -0700 (PDT)
+        bh=xdXXc+qT4ixe29aMOuCXUa7Ah3I7AYTAZ1f1/pEfbvA=;
+        b=CcIwPgu5X5RMMpuSe8ZONdYJOIjxkk8hhlWjVkFEKtQwjRm36RM1BRGImDkQUsDzGi
+         8EkJhd7mrEiZmRVeSn9gbXYiqKZmRT11Ig5kFgk3bvuiYHX2JllUwIm+ByIOKt7XQ+0r
+         KUAigd9MhrI04VpW9nq1TWOMIV1E4cSBFc2eQKBgYZvUUBgQp9ReUB89ar15xRxUg5k1
+         oqvG+7I3qnC29C4rcBzfW9uoI0LXrO1rYLTO1TB+jkQQpMf/8YvrQYT2QJC5gTb5JDhh
+         moUGTvyYOC2cXW9uGVSqnVzlZ5L3Xp9VPTpjXP0fjD3/Gjolzj8l0BNNUYldbD14FmBL
+         E1gQ==
+X-Gm-Message-State: AOJu0YxuLeBD3e50Skh8oSTEgAZBukVObZ8+1JevArvWJX8VH8XjqVKi
+        AoUVuavqZEPQiqXIj7D9Kz4b3X6gouE=
+X-Google-Smtp-Source: AGHT+IH9mv4znL90H67WUwuTPrcfQvsBjZj34kUno4h2Z0wnbfHAVX6B6KO5S2Hx1nBfr8jFhomA7g==
+X-Received: by 2002:a17:902:c947:b0:1c5:e060:c4d5 with SMTP id i7-20020a170902c94700b001c5e060c4d5mr2353453pla.69.1695470441196;
+        Sat, 23 Sep 2023 05:00:41 -0700 (PDT)
 Received: from dw-tp.ihost.com ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001bba669a7eesm5194981plb.52.2023.09.23.05.00.35
+        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001bba669a7eesm5194981plb.52.2023.09.23.05.00.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 05:00:37 -0700 (PDT)
+        Sat, 23 Sep 2023 05:00:40 -0700 (PDT)
 From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCHv2 1/2] aio-dio-write-verify: Add sync and noverify option
-Date:   Sat, 23 Sep 2023 17:30:23 +0530
-Message-ID: <3b86ab1f1447f0b6db88d4dfafe304fd04ae2b11.1695469920.git.ritesh.list@gmail.com>
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCHv2 2/2] generic: Add integrity tests with synchronous directio
+Date:   Sat, 23 Sep 2023 17:30:24 +0530
+Message-ID: <3c21207848460ffe8aab734b32c1c2464049296c.1695469920.git.ritesh.list@gmail.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <87y1gy5s9c.fsf@doe.com>
-References: <87y1gy5s9c.fsf@doe.com>
+In-Reply-To: <3b86ab1f1447f0b6db88d4dfafe304fd04ae2b11.1695469920.git.ritesh.list@gmail.com>
+References: <3b86ab1f1447f0b6db88d4dfafe304fd04ae2b11.1695469920.git.ritesh.list@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,88 +73,111 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds -S for O_SYNC and -N for noverify option to
-aio-dio-write-verify test. We will use this for integrity
-verification test for aio-dio.
+This test covers data & metadata integrity check with directio with
+o_sync flag and checks the file contents & size after sudden fileystem
+shutdown once the directio write is completed. ext4 directio after iomap
+conversion was broken in the sense that if the FS crashes after
+synchronous directio write, it's file size is not properly updated.
+This test adds a testcase to cover such scenario.
 
+Man page of open says that -
+O_SYNC provides synchronized I/O file integrity completion, meaning write
+operations will flush data and all associated metadata to the underlying
+hardware
+
+Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- src/aio-dio-regress/aio-dio-write-verify.c | 29 ++++++++++++++++------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ tests/generic/471     | 50 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/471.out | 22 +++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100755 tests/generic/471
+ create mode 100644 tests/generic/471.out
 
-diff --git a/src/aio-dio-regress/aio-dio-write-verify.c b/src/aio-dio-regress/aio-dio-write-verify.c
-index 302b8fe4..61519f6e 100644
---- a/src/aio-dio-regress/aio-dio-write-verify.c
-+++ b/src/aio-dio-regress/aio-dio-write-verify.c
-@@ -34,13 +34,16 @@
-
- void usage(char *progname)
- {
--	fprintf(stderr, "usage: %s [-t truncsize ] <-a size=N,off=M [-a ...]>  filename\n"
-+	fprintf(stderr, "usage: %s [-t truncsize ] <-a size=N,off=M [-a ...]>  [-S] [-N] filename\n"
- 	        "\t-t truncsize: truncate the file to a special size before AIO wirte\n"
- 	        "\t-a: specify once AIO write size and startoff, this option can be specified many times, but less than 128\n"
- 	        "\t\tsize=N: AIO write size\n"
- 	        "\t\toff=M:  AIO write startoff\n"
--	        "e.g: %s -t 4608 -a size=4096,off=512 -a size=4096,off=4608 filename\n",
--	        progname, progname);
-+			"\t-S: uses O_SYNC flag for open. By default O_SYNC is not used\n"
-+			"\t-N: no_verify: means no write verification. By default noverify is false\n"
-+	        "e.g: %s -t 4608 -a size=4096,off=512 -a size=4096,off=4608 filename\n"
-+	        "e.g: %s -t 1048576 -a size=1048576 -S -N filename\n",
-+	        progname, progname, progname);
- 	exit(1);
- }
-
-@@ -281,8 +284,10 @@ int main(int argc, char *argv[])
- 	char *filename = NULL;
- 	int num_events = 0;
- 	off_t tsize = 0;
-+	int o_sync = 0;
-+	int no_verify = 0;
-
--	while ((c = getopt(argc, argv, "a:t:")) != -1) {
-+	while ((c = getopt(argc, argv, "a:t:SN")) != -1) {
- 		char *endp;
-
- 		switch (c) {
-@@ -297,6 +302,12 @@ int main(int argc, char *argv[])
- 		case 't':
- 			tsize = strtoul(optarg, &endp, 0);
- 			break;
-+		case 'S':
-+			o_sync = O_SYNC;
-+			break;
-+		case 'N':
-+			no_verify = 1;
-+			break;
- 		default:
- 			usage(argv[0]);
- 		}
-@@ -313,7 +324,7 @@ int main(int argc, char *argv[])
- 	else
- 		usage(argv[0]);
-
--	fd = open(filename, O_DIRECT | O_CREAT | O_TRUNC | O_RDWR, 0600);
-+	fd = open(filename, O_DIRECT | O_CREAT | O_TRUNC | O_RDWR | o_sync, 0600);
- 	if (fd == -1) {
- 		perror("open");
- 		return 1;
-@@ -331,9 +342,11 @@ int main(int argc, char *argv[])
- 		return 1;
- 	}
-
--	if (io_verify(fd) != 0) {
--		fprintf(stderr, "Data verification fails\n");
--		return 1;
-+	if (no_verify == 0) {
-+		if (io_verify(fd) != 0) {
-+			fprintf(stderr, "Data verification fails\n");
-+			return 1;
-+		}
- 	}
-
- 	close(fd);
---
+diff --git a/tests/generic/471 b/tests/generic/471
+new file mode 100755
+index 00000000..218e6676
+--- /dev/null
++++ b/tests/generic/471
+@@ -0,0 +1,50 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
++#
++# FS QA Test 471
++#
++# Integrity test for O_SYNC with buff-io, dio, aio-dio with sudden shutdown
++#
++. ./common/preamble
++_begin_fstest auto quick shutdown aio
++
++# real QA test starts here
++_supported_fs generic
++_require_scratch
++_require_scratch_shutdown
++_require_odirect
++_require_aiodio aio-dio-write-verify
++
++_scratch_mkfs > $seqres.full 2>&1
++_scratch_mount
++
++echo "T-1: Create a 1M file using buff-io & O_SYNC"
++$XFS_IO_PROG -fs -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t1 > /dev/null 2>&1
++echo "T-1: Shutdown the fs suddenly"
++_scratch_shutdown
++echo "T-1: Cycle mount"
++_scratch_cycle_mount
++echo "T-1: File contents after cycle mount"
++_hexdump $SCRATCH_MNT/testfile.t1
++
++echo "T-2: Create a 1M file using O_DIRECT & O_SYNC"
++$XFS_IO_PROG -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t2 > /dev/null 2>&1
++echo "T-2: Shutdown the fs suddenly"
++_scratch_shutdown
++echo "T-2: Cycle mount"
++_scratch_cycle_mount
++echo "T-2: File contents after cycle mount"
++_hexdump $SCRATCH_MNT/testfile.t2
++
++echo "T-3: Create a 1M file using AIO-DIO & O_SYNC"
++$AIO_TEST -a size=1048576 -S -N $SCRATCH_MNT/testfile.t3 > /dev/null 2>&1
++echo "T-3: Shutdown the fs suddenly"
++_scratch_shutdown
++echo "T-3: Cycle mount"
++_scratch_cycle_mount
++echo "T-3: File contents after cycle mount"
++_hexdump $SCRATCH_MNT/testfile.t3
++
++status=0
++exit
+diff --git a/tests/generic/471.out b/tests/generic/471.out
+new file mode 100644
+index 00000000..2bfb033d
+--- /dev/null
++++ b/tests/generic/471.out
+@@ -0,0 +1,22 @@
++QA output created by 471
++T-1: Create a 1M file using buff-io & O_SYNC
++T-1: Shutdown the fs suddenly
++T-1: Cycle mount
++T-1: File contents after cycle mount
++000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
++*
++100000
++T-2: Create a 1M file using O_DIRECT & O_SYNC
++T-2: Shutdown the fs suddenly
++T-2: Cycle mount
++T-2: File contents after cycle mount
++000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
++*
++100000
++T-3: Create a 1M file using AIO-DIO & O_SYNC
++T-3: Shutdown the fs suddenly
++T-3: Cycle mount
++T-3: File contents after cycle mount
++000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
++*
++100000
+-- 
 2.41.0
 
