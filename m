@@ -2,69 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A39E67AC198
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Sep 2023 14:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E085B7ACFB2
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Sep 2023 07:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjIWMAs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 23 Sep 2023 08:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        id S232072AbjIYF7T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Sep 2023 01:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjIWMAs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 23 Sep 2023 08:00:48 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D375136;
-        Sat, 23 Sep 2023 05:00:42 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c60a514f3aso249945ad.3;
-        Sat, 23 Sep 2023 05:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695470441; x=1696075241; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xdXXc+qT4ixe29aMOuCXUa7Ah3I7AYTAZ1f1/pEfbvA=;
-        b=fkXefUzCxcfqdF+zLKRD8qYPLzwPeJ8ufSz/G1Zw7YEeZTkabKK6ql0Tj8G469fIRB
-         OmovuEzeMbKtriyX+pr49ixoIlH0RRsijM1I6Z1LUmsot/fyWwqQpqfbSliVSRq/+pIK
-         jZ1u8R47RvzX3NhxBtIU/9acBSZOlGx+QA7RiY+RufMuxTZ0kBC/kpcwgvggpvSh2asA
-         6nxOCPnbz0MgusWU8BOHXEzbJDZGaENlCP9DVtzGqiE+HMIJkh0lpk2uGjL8NU7Lenbe
-         NIylKr/9365q3XilhFDVGMBpxl1G4PKMlLO99caCmn+sC53DM6R65lKgHM/qC+GEgiQx
-         UywQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695470441; x=1696075241;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xdXXc+qT4ixe29aMOuCXUa7Ah3I7AYTAZ1f1/pEfbvA=;
-        b=CcIwPgu5X5RMMpuSe8ZONdYJOIjxkk8hhlWjVkFEKtQwjRm36RM1BRGImDkQUsDzGi
-         8EkJhd7mrEiZmRVeSn9gbXYiqKZmRT11Ig5kFgk3bvuiYHX2JllUwIm+ByIOKt7XQ+0r
-         KUAigd9MhrI04VpW9nq1TWOMIV1E4cSBFc2eQKBgYZvUUBgQp9ReUB89ar15xRxUg5k1
-         oqvG+7I3qnC29C4rcBzfW9uoI0LXrO1rYLTO1TB+jkQQpMf/8YvrQYT2QJC5gTb5JDhh
-         moUGTvyYOC2cXW9uGVSqnVzlZ5L3Xp9VPTpjXP0fjD3/Gjolzj8l0BNNUYldbD14FmBL
-         E1gQ==
-X-Gm-Message-State: AOJu0YxuLeBD3e50Skh8oSTEgAZBukVObZ8+1JevArvWJX8VH8XjqVKi
-        AoUVuavqZEPQiqXIj7D9Kz4b3X6gouE=
-X-Google-Smtp-Source: AGHT+IH9mv4znL90H67WUwuTPrcfQvsBjZj34kUno4h2Z0wnbfHAVX6B6KO5S2Hx1nBfr8jFhomA7g==
-X-Received: by 2002:a17:902:c947:b0:1c5:e060:c4d5 with SMTP id i7-20020a170902c94700b001c5e060c4d5mr2353453pla.69.1695470441196;
-        Sat, 23 Sep 2023 05:00:41 -0700 (PDT)
-Received: from dw-tp.ihost.com ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001bba669a7eesm5194981plb.52.2023.09.23.05.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 05:00:40 -0700 (PDT)
-From:   "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCHv2 2/2] generic: Add integrity tests with synchronous directio
-Date:   Sat, 23 Sep 2023 17:30:24 +0530
-Message-ID: <3c21207848460ffe8aab734b32c1c2464049296c.1695469920.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <3b86ab1f1447f0b6db88d4dfafe304fd04ae2b11.1695469920.git.ritesh.list@gmail.com>
-References: <3b86ab1f1447f0b6db88d4dfafe304fd04ae2b11.1695469920.git.ritesh.list@gmail.com>
+        with ESMTP id S232065AbjIYF7K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Sep 2023 01:59:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6E2DA;
+        Sun, 24 Sep 2023 22:58:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E30AC433C7;
+        Mon, 25 Sep 2023 05:58:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695621538;
+        bh=tCCLwxvLEvFpLMK/KOG8gn3XG5X7DHq/Kv/q5swH83k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=USnS67doJkAOwCvzzO4pxVWEqjaMKotK5QoJyyt8fjA0gw+S+R4xPcvpw24VnFDEF
+         Ypg5ZAKGGE8kNlKVbBPl3VnLafVGwWh/V+sM3pAu1SOtB6b94Pv7m6R79glQrSo7AK
+         9uvSZ0D6WCG1KR5dg+osBg4eDjkele/x3wGQO1HLWtjhs8ujnUtGRT9rFGVqZD1hOj
+         IEYdXeCFex9RhZAoUvWTKKIr9BO7UHh/psJRUf+GzYK59rDq+33qVcTyKjZzzNkivS
+         LTsx6CM+KNv5HHMxwe1olIcqIGIWpv2Uq96r8JhuKOVx7sP9iOVNuCz6b7G5cwotJS
+         QCpKAf1h09yow==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH v3 0/5] fscrypt: add support for data_unit_size < fs_block_size
+Date:   Sun, 24 Sep 2023 22:54:46 -0700
+Message-ID: <20230925055451.59499-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,111 +48,70 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This test covers data & metadata integrity check with directio with
-o_sync flag and checks the file contents & size after sudden fileystem
-shutdown once the directio write is completed. ext4 directio after iomap
-conversion was broken in the sense that if the FS crashes after
-synchronous directio write, it's file size is not properly updated.
-This test adds a testcase to cover such scenario.
+This patchset adds support for configuring the granularity of file
+contents encryption (a.k.a. the "crypto data unit size") to be less than
+the filesystem block size on ext4 and f2fs.  The main use case for this
+is to support inline crypto hardware that only supports a data unit size
+that is less than the FS block size being used.  Another possible use
+case is to support direct I/O on encrypted files without the FS block
+alignment restriction.  Note that decreasing the crypto data unit size
+decreases efficiency, so this feature should only be used when needed.
 
-Man page of open says that -
-O_SYNC provides synchronized I/O file integrity completion, meaning write
-operations will flush data and all associated metadata to the underlying
-hardware
+For full details, see patch 5 which adds the actual feature.  Patches
+1-4 are preparatory patches.
 
-Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- tests/generic/471     | 50 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/471.out | 22 +++++++++++++++++++
- 2 files changed, 72 insertions(+)
- create mode 100755 tests/generic/471
- create mode 100644 tests/generic/471.out
+I've written an xfstest that verifies that when a sub-block data unit
+size is selected, the data on-disk is encrypted correctly with that data
+unit size.  I'll be sending that out separately.  Other testing of this
+patchset with xfstests has gone well, though it turns out that some
+additional changes will be needed for a sub-block data unit size to work
+with the IV_INO_LBLK_* encryption settings.  See patch 5 for details.
+This patchset focuses on basic sub-block data unit size support first.
 
-diff --git a/tests/generic/471 b/tests/generic/471
-new file mode 100755
-index 00000000..218e6676
---- /dev/null
-+++ b/tests/generic/471
-@@ -0,0 +1,50 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 471
-+#
-+# Integrity test for O_SYNC with buff-io, dio, aio-dio with sudden shutdown
-+#
-+. ./common/preamble
-+_begin_fstest auto quick shutdown aio
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch
-+_require_scratch_shutdown
-+_require_odirect
-+_require_aiodio aio-dio-write-verify
-+
-+_scratch_mkfs > $seqres.full 2>&1
-+_scratch_mount
-+
-+echo "T-1: Create a 1M file using buff-io & O_SYNC"
-+$XFS_IO_PROG -fs -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t1 > /dev/null 2>&1
-+echo "T-1: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-1: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-1: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t1
-+
-+echo "T-2: Create a 1M file using O_DIRECT & O_SYNC"
-+$XFS_IO_PROG -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t2 > /dev/null 2>&1
-+echo "T-2: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-2: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-2: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t2
-+
-+echo "T-3: Create a 1M file using AIO-DIO & O_SYNC"
-+$AIO_TEST -a size=1048576 -S -N $SCRATCH_MNT/testfile.t3 > /dev/null 2>&1
-+echo "T-3: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-3: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-3: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t3
-+
-+status=0
-+exit
-diff --git a/tests/generic/471.out b/tests/generic/471.out
-new file mode 100644
-index 00000000..2bfb033d
---- /dev/null
-+++ b/tests/generic/471.out
-@@ -0,0 +1,22 @@
-+QA output created by 471
-+T-1: Create a 1M file using buff-io & O_SYNC
-+T-1: Shutdown the fs suddenly
-+T-1: Cycle mount
-+T-1: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
-+T-2: Create a 1M file using O_DIRECT & O_SYNC
-+T-2: Shutdown the fs suddenly
-+T-2: Cycle mount
-+T-2: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
-+T-3: Create a 1M file using AIO-DIO & O_SYNC
-+T-3: Shutdown the fs suddenly
-+T-3: Cycle mount
-+T-3: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
+This patchset will cause some conflicts in the extent-based encryption
+patches that the btrfs folks are working on, as both are touching file
+contents encryption, but logically they are orthogonal features.
+
+This patchset is based on v6.6-rc3.
+
+Changed in v3:
+  - Shortened 'legacy_key_prefix_for_backcompat' to 'legacy_key_prefix'
+  - Other miscellaneous cleanups
+  - Rebased onto v6.6-rc3
+
+Changed in v2:
+  - Rebased onto v6.6-rc1 and took into account CephFS's recent addition
+    of support for fscrypt
+  - Narrowed the focus somewhat by dropping the attempted support for
+    IV_INO_LBLK_32 and clearly documenting what is considered out of
+    scope for now
+  - Other cleanups
+
+Eric Biggers (5):
+  fscrypt: make it clearer that key_prefix is deprecated
+  fscrypt: make the bounce page pool opt-in instead of opt-out
+  fscrypt: compute max_lblk_bits from s_maxbytes and block size
+  fscrypt: replace get_ino_and_lblk_bits with just has_32bit_inodes
+  fscrypt: support crypto data unit size less than filesystem block size
+
+ Documentation/filesystems/fscrypt.rst | 117 ++++++++++++++------
+ fs/ceph/crypto.c                      |   1 +
+ fs/crypto/bio.c                       |  39 ++++---
+ fs/crypto/crypto.c                    | 148 +++++++++++++++-----------
+ fs/crypto/fscrypt_private.h           |  58 ++++++++--
+ fs/crypto/inline_crypt.c              |  19 ++--
+ fs/crypto/keysetup.c                  |   5 +
+ fs/crypto/keysetup_v1.c               |   5 +-
+ fs/crypto/policy.c                    |  73 +++++++++----
+ fs/ext4/crypto.c                      |  13 +--
+ fs/f2fs/super.c                       |  13 +--
+ fs/ubifs/crypto.c                     |   3 +-
+ include/linux/fscrypt.h               |  72 ++++++++-----
+ include/uapi/linux/fscrypt.h          |   3 +-
+ 14 files changed, 364 insertions(+), 205 deletions(-)
+
+
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
 -- 
-2.41.0
+2.42.0
 
