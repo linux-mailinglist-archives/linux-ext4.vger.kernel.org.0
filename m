@@ -2,1351 +2,318 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC877ACFC8
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Sep 2023 07:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F229A7ACFD8
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Sep 2023 08:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbjIYF76 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Sep 2023 01:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S229447AbjIYGIY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Sep 2023 02:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232119AbjIYF7T (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Sep 2023 01:59:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B0D1B7;
-        Sun, 24 Sep 2023 22:59:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9010C433C9;
-        Mon, 25 Sep 2023 05:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695621540;
-        bh=D7Nwy0zbMI1Yfu4euJD/sNBZA0byXF5N//r2wJV0wrw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFxytuXhqhr0v+0+8+GjyXBdpIzjA/vFsWoBUoAbdpj9FcanyH9XRvyNy0NyRHaSs
-         TxZVVrkUCYx0FtUEYRIVmmBJ7734AQ0byWf4TcnhtPd0bGArhrbMG79u9xak+4iXov
-         iJQE/sMx8HsZGZWH1Okhe10ZTflVRr5Ea5Nt+l83YSHTqJKROTAfsl6dbH4NUb4pIv
-         HLmbIubElSUXSQ9p9+Haes144tf/JgVyrae5zFt+iaXooO7nfVQki3laTDaZf97fst
-         QQoPcSmBOzpXCF89ghq47l9E8koK+DKFSXfoj6WQwr8M4TvvLpuKpAxctKP6fDJr/N
-         rzuY3v9L2ISdQ==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH v3 5/5] fscrypt: support crypto data unit size less than filesystem block size
-Date:   Sun, 24 Sep 2023 22:54:51 -0700
-Message-ID: <20230925055451.59499-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230925055451.59499-1-ebiggers@kernel.org>
-References: <20230925055451.59499-1-ebiggers@kernel.org>
-MIME-Version: 1.0
+        with ESMTP id S229604AbjIYGIX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Sep 2023 02:08:23 -0400
+Received: from outbound-ip7a.ess.barracuda.com (outbound-ip7a.ess.barracuda.com [209.222.82.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36CB83
+        for <linux-ext4@vger.kernel.org>; Sun, 24 Sep 2023 23:08:15 -0700 (PDT)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43]) by mx-outbound10-136.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Mon, 25 Sep 2023 06:08:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VOJhKAJ79tjKZp2YwkrviSNTB0RXfJbdyRc3mEfwlSYkUooufHdLfBULU9xxJ6k1mYK4Ccv2ZjyfD6bL5L38xRYbhpWBtMOmwDNK6hTo747iKoteHBcFy74b5jNbw3Gc93p4mvRo0srGgFz6SUcN3D95FNSeLZQFQlBZch6pxCajKVC/k3LtnfOkWqwH2Fj77LN+1/1l/F0isW8ObTDoMzlYHh2KvQMRAqUowaWCMvS33GWUDp7F4YrOGjQHfavihFsN8FJtEJa8KeGOLuYk04v4rQ41whbmsRXuqdMovUook8kyJvhlzXs68srTh7Nnx8ttI56Vuo8wklSPQfbPrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pK2jhjolLfI3hexfCk1cw7Eh0QdBGi4XJ9ulIQl1M40=;
+ b=D7ER4bn2nIz7T1/ZjTixlCRJ1tq/5pXTzM/DbVaS3OqPrn3VHAyamRhOQQ324IYiqpBSTSmaSVl4OIcJXyxKd+pXcIsxFfyr+jBIoCUE6DF04qCVpXMxIX0+ASN93UKMHjoBt8WSpZ8B48xOg3GOHRImApE+8V26k76etFfnYr6H1e4+QXIDTXNrel+gEtSMaseY6vPnBGYRwEHjhVvu6gNTVN526w8t3X6FiBBO1qRl6KXu7x4awtBhcueqEj4WcJibUJ2Dohq8z+y8mFkVNELBYXf+Z/UvtG8H4QkeC9EdJnVzsW0OqIA/4W4PqWgTQk14ZrmpXRg37TQ5AqYLEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pK2jhjolLfI3hexfCk1cw7Eh0QdBGi4XJ9ulIQl1M40=;
+ b=aJFEhsDZrfnBJdQHdeZ95lmQpr6hNtAaGxLhQZ6vLWNO1qdFsnC9kfW7cyzlxTFgd1HEZpLceU4veQX5n7nbgHWZF89hGSLFS8KdzIH9JmJ0ULHzgB2/Hki1KUnp2AN4ECrRhwICgQKl40DRj7C+/5LIUzxm8s004rHKrM31uD8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ddn.com;
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com (2603:10b6:8:72::19) by
+ PH8PR19MB7048.namprd19.prod.outlook.com (2603:10b6:510:224::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.28; Mon, 25 Sep 2023 06:08:09 +0000
+Received: from DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::e470:7b70:6ca2:4038]) by DS7PR19MB5711.namprd19.prod.outlook.com
+ ([fe80::e470:7b70:6ca2:4038%2]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
+ 06:08:08 +0000
+From:   Li Dongyang <dongyangli@ddn.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger@dilger.ca
+Subject: [PATCH 1/2] mke2fs: set free blocks accurately for groups has GDT
+Date:   Mon, 25 Sep 2023 16:08:00 +1000
+Message-ID: <20230925060801.1397581-1-dongyangli@ddn.com>
+X-Mailer: git-send-email 2.41.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SYBPR01CA0162.ausprd01.prod.outlook.com
+ (2603:10c6:10:d::30) To DS7PR19MB5711.namprd19.prod.outlook.com
+ (2603:10b6:8:72::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR19MB5711:EE_|PH8PR19MB7048:EE_
+X-MS-Office365-Filtering-Correlation-Id: f665caf8-9a82-437e-756f-08dbbd8dc9fb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: deG0RmJ+6rbfK+zudNpuvxr0Iicw/N68STq9JtjmEN7YltheZ6NvqMvDs8d35tjKmYnlTgE12+nsGd7AbJqgczy5fZle7SHquwAL9iiB3bOJQRhn/nPyzPrMwOCEVsDRvvEblNZwKoh+PdRdtFteuESdb64JFTUtat7spXr87rq9MbjtKRl+fzqUjlyGgkBvtonx45Ua0TO5axHlAeFJAiN1fdAQONAbftFBnODF8DzeQiUhpYYigItMk15/PFtnW8tnRLyyXtSoPtBLifRm926lwYSDMH7nyUOPd/RQkFYoJbvqn/v8E54h8vAOXJQVScGMDEATD47C1IZx/wCshGUJYKwZrhnCDLqOBEpHkUM+B/NnPSyFNChS8GXMQyGDfK1gFFyjlVu1i2qBX/BeQo6DAEfd7aDwtYK8sOg/eHPW1qU0iZWyl7TCBtIOHrHTvWFPa7KMfj0DEj63g4OQXWifwx2JIiIav7tzEywfD2rzKGgrxOBDHfOQN2rPfyBbZuszPUXhdchaezWfbDfU6I0KiqDprqIgAxENjDibSUmdIOJEaDroNRn95uW94kho
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR19MB5711.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(39840400004)(366004)(346002)(230922051799003)(451199024)(1800799009)(186009)(6486002)(83380400001)(26005)(36756003)(5660300002)(478600001)(8676002)(8936002)(4326008)(2906002)(6666004)(38100700002)(6916009)(316002)(66476007)(66556008)(66946007)(41300700001)(1076003)(2616005)(6506007)(6512007)(55236004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7vggAHyBBpTKjOhKJqW8yp+9QYpNHRlPjNq03gBMluGTwBvhGigkupmauHSi?=
+ =?us-ascii?Q?hk4PxB476xN4D0MHpgaLaAEF8mgnpV5ST2/XNQqaW91HzLKidG/cJTykyfef?=
+ =?us-ascii?Q?W9mIFafMZBt3jmhyig5Dk1S4uiF98epwHt8RvK4y8cl9G5DAK9BgCJnnuoYN?=
+ =?us-ascii?Q?cVWEK2x6qbMYF9BM3POqASbgUUkoU926Fwc12+10Icj2v/GvjhTWgg957mpC?=
+ =?us-ascii?Q?wGH4oyGIy6Gt3+ep138fuQFdwwrvEjU34dH+AfUZWglx7q3dH8DUf0FEPxJq?=
+ =?us-ascii?Q?GNuVVRafPspdQBtVwZt0dJ0iXbE7c5ZjPpk02ZQNpXZAU8M7BTvvRJdkHUvt?=
+ =?us-ascii?Q?huAJcuPdsE5vBpep0N3tn2cvuTzm3YFkLjaoN5nXR6iaGrI+vn24wwvFI/5r?=
+ =?us-ascii?Q?BRu/Fgvj1KraFq5AlD7jkZcXbAb2QyhaNqyq/Xr/aknBLnaAboERVYLyI901?=
+ =?us-ascii?Q?yOSy2WDv0U4mI6l76WdDo2fod1rkazDxEzCpYDddcpneZ3S8FXwsQGaugzJx?=
+ =?us-ascii?Q?ef1afonbqxtPh0MoLS9uk4WjNusYc/Vx0SCl4vIsWTDLg0K4XOj3Lg46beNJ?=
+ =?us-ascii?Q?b+0m845tBGUoBr0NpnrZU71UEueDIb2GQ9ZY3XuhJfA6YmvUCFNZ5NZx4dIm?=
+ =?us-ascii?Q?RbCVlu6vgJzh3SymdbQIOXrgY6Z2XF+I4iQFfTbr1fQ4R6reClrbuYqtuXJi?=
+ =?us-ascii?Q?S5CWwV3+W4IKpQIYoz395+8tmp6ZcNTU8rJHMpAvQr440BeMI31gJs65AtZP?=
+ =?us-ascii?Q?4x1G4QVbjICJ00QOcFQOD6knHGzATxJrQjrjaw1iaGJtiXe55unlhVycKZZw?=
+ =?us-ascii?Q?ZwbW2wpFJ+7zF1uxFCjWuwrLrIiqXUJwzxERb+mkoxlEzXgqDEfKKca6TWBO?=
+ =?us-ascii?Q?zcLd1g0crA0WqC5qJBHHskuXdXFXcelt0ju4YGMjTu//kPnqZhYGKL1puQ4A?=
+ =?us-ascii?Q?Ggszd3MWAKO1SZ9suYovFaLdLqJM2vuO0x5E8bpgEpVZml6exveesHJ4CzmC?=
+ =?us-ascii?Q?0qTT62lqy5t9cskpgpeVHTk206CeMpcxyMQ5gqmpgLQSslwZbHHTLY3aPKcR?=
+ =?us-ascii?Q?+SroeH0ahzHKXURXJCGhpzwnaNNNVEC/TGDTXsIFdS2T4q/B8x3xo3bGwTVC?=
+ =?us-ascii?Q?FR/On+eVGE9XDXMMloffS6oUTqNXMLHtBGZYuDvUilHdnIaVSSFkWPSwRBo5?=
+ =?us-ascii?Q?CK2ZYAIMcxaT0qwEkJ16JdIeFNhpqUpHKJfYwR8PVSMTZDfcgzLCVq9jpwvT?=
+ =?us-ascii?Q?uuSAddpXw2sLeALTO7hPI8mxzynAdR9UbF6cD1CU7lUaR3ExrHX0Wy0FEmej?=
+ =?us-ascii?Q?bNoK2O6+WxauP32ch50kdVGoX+D0G/q33sNWXKa9e/nIGeHshc3Q8zbxwH1d?=
+ =?us-ascii?Q?mlHcFQ5VQb8G5K6Tn3tWhsGn6dYjJ/V326thbX8Ol91UzS+n34NFgPaqaZ7S?=
+ =?us-ascii?Q?ZWUjhbxynkg8S1HJDmFDlsAlLBcMx31x0eWgMhlRnhoQDqEj/qq/8fCASShQ?=
+ =?us-ascii?Q?qY6HX0Lrnlf1EeFeZcwgmvY4ACfP/xcZHUorY9oAlQWwEQi1RVl6ZLjU459/?=
+ =?us-ascii?Q?Shms/9enorvKp3vpLH0=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: tLudLySHbJy7eKh37/bXuWWXX89WZFyQteXx3Ir+EJkzvJgUz+XwlefUEQRAIOknVGgsBMZb7z4Wg/M/Du/sxW3eGesIQrBB6AvEraLv3Xe/ZGVvVuxX96DgT79OMemfEP2wpYwEDDjgJsxIQzP8avxFi7nV2ZpybTn7uzEcnTPZRZrCsnEqh2IuuPRO1CFOz266jAn743s/ykWykgsLG3CSgXRye4USuCEeM3ihSHMS/mvxJF0OdMn908jLqgSozTU1habKFCBmb1d/+HLGQG6aQG85PzjQVX9sjkv2C7bZW2BhGH5jw1IHEXmPxcVvuogPo7BamRFqfmOYFPbxXC3dQd+qWNf9bWUCIJvIFjRzjXKHfF2c7eis3gDGcjPm8cDhi3QtACLXaOKLcHsS8KQKQKV+cVlmZDHI8w/EGZrWZBfVn0dQohbTWVS4zTlnasrxFmgXKWx4d8bIpdy6g0/10+SrpC2f+B/lZK/gTG4C2AN8GqkvAZSl7olQ8yp6FgxA8BjwVVnduKmCpvjRLDD0H3QiVAsiT0lrugWpyrB4VH2Oesn4Z3ZbVU55uiEOggTeogujqPPuSiZ4yDwxRURAkmRYbnntdJOz7niPZv6EPLh3vO/DsGqnAAoqpIiCNSO44euqx6BazFrwECplN3wiTtYDX6VK7wM/DTZ1hGop8TjSuGHofAibt1mUqPbHtTi1lA2L8lcfnkd8cePlAYzzb4qjZ8JBNwTTJ1b4WKd0LFR7vTcYDZVhrbL4E7ZIPpg5ZN7P1rd+qF2SuZpwyu9qI+wDmEbs+f1S09JcaWZFCbu4Zq8ljVtNEOaKWPoZg8nPGpxrO3GKTIMn9wo9AA==
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f665caf8-9a82-437e-756f-08dbbd8dc9fb
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR19MB5711.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 06:08:08.4002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HGqvqfG/vA10z0tV/LtqH2fsnLUv57XTgVLOmyWaYo9O1YyknGQn/nv0gGRxMK84
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR19MB7048
+X-BESS-ID: 1695622093-102696-26662-4047-1
+X-BESS-VER: 2019.1_20230913.1749
+X-BESS-Apparent-Source-IP: 104.47.66.43
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVmbGRuZAVgZQ0MDQwMIgzdws2S
+        AtJTUpKS3ZwNLM2DAxydLA1NzcwDhVqTYWAN+D9yJBAAAA
+X-BESS-Outbound-Spam-Score: 0.60
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.251066 [from 
+        cloudscan9-88.us-east-2a.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+        0.60 MARKETING_SUBJECT      META: Subject contains popular marketing words 
+X-BESS-Outbound-Spam-Status: SCORE=0.60 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, MARKETING_SUBJECT
+X-BESS-BRTS-Status: 1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+This patch is part of the preparation required to allow
+GDT blocks expand beyond a single group,
+it introduces 2 new interfaces:
+- ext2fs_count_used_blocks(), to return the blocks used
+in the bitmap range.
+- ext2fs_reserve_super_and_bgd2() to return blocks used by
+superblock/GDT blocks for every group, by looking up blocks used.
 
-Until now, fscrypt has always used the filesystem block size as the
-granularity of file contents encryption.  Two scenarios have come up
-where a sub-block granularity of contents encryption would be useful:
-
-1. Inline crypto hardware that only supports a crypto data unit size
-   that is less than the filesystem block size.
-
-2. Support for direct I/O at a granularity less than the filesystem
-   block size, for example at the block device's logical block size in
-   order to match the traditional direct I/O alignment requirement.
-
-(1) first came up with older eMMC inline crypto hardware that only
-supports a crypto data unit size of 512 bytes.  That specific case
-ultimately went away because all systems with that hardware continued
-using out of tree code and never actually upgraded to the upstream
-inline crypto framework.  But, now it's coming back in a new way: some
-current UFS controllers only support a data unit size of 4096 bytes, and
-there is a proposal to increase the filesystem block size to 16K.
-
-(2) was discussed as a "nice to have" feature, though not essential,
-when support for direct I/O on encrypted files was being upstreamed.
-
-Still, the fact that this feature has come up several times does suggest
-it would be wise to have available.  Therefore, this patch implements it
-by using one of the reserved bytes in fscrypt_policy_v2 to allow users
-to select a sub-block data unit size.  Supported data unit sizes are
-powers of 2 between 512 and the filesystem block size, inclusively.
-Support is implemented for both the FS-layer and inline crypto cases.
-
-This patch focuses on the basic support for sub-block data units.  Some
-things are out of scope for this patch but may be addressed later:
-
-- Supporting sub-block data units in combination with
-  FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64, in most cases.  Unfortunately this
-  combination usually causes data unit indices to exceed 32 bits, and
-  thus fscrypt_supported_policy() correctly disallows it.  The users who
-  potentially need this combination are using f2fs.  To support it, f2fs
-  would need to provide an option to slightly reduce its max file size.
-
-- Supporting sub-block data units in combination with
-  FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32.  This has the same problem
-  described above, but also it will need special code to make DUN
-  wraparound still happen on a FS block boundary.
-
-- Supporting use case (2) mentioned above.  The encrypted direct I/O
-  code will need to stop requiring and assuming FS block alignment.
-  This won't be hard, but it belongs in a separate patch.
-
-- Supporting this feature on filesystems other than ext4 and f2fs.
-  (Filesystems declare support for it via their fscrypt_operations.)
-  On UBIFS, sub-block data units don't make sense because UBIFS encrypts
-  variable-length blocks as a result of compression.  CephFS could
-  support it, but a bit more work would be needed to make the
-  fscrypt_*_block_inplace functions play nicely with sub-block data
-  units.  I don't think there's a use case for this on CephFS anyway.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 ---
- Documentation/filesystems/fscrypt.rst | 117 ++++++++++++++++------
- fs/crypto/bio.c                       |  39 ++++----
- fs/crypto/crypto.c                    | 139 ++++++++++++++------------
- fs/crypto/fscrypt_private.h           |  56 ++++++++---
- fs/crypto/inline_crypt.c              |  14 ++-
- fs/crypto/keysetup.c                  |   5 +
- fs/crypto/policy.c                    |  34 ++++++-
- fs/ext4/crypto.c                      |   1 +
- fs/f2fs/super.c                       |   1 +
- include/linux/fscrypt.h               |  12 +++
- include/uapi/linux/fscrypt.h          |   3 +-
- 11 files changed, 288 insertions(+), 133 deletions(-)
+ lib/ext2fs/alloc_sb.c     | 28 ++++++++++++++++++++++++++--
+ lib/ext2fs/ext2fs.h       |  6 ++++++
+ lib/ext2fs/gen_bitmap64.c | 17 +++++++++++++++--
+ lib/ext2fs/initialize.c   | 30 ++++++++++++++++++++----------
+ misc/mke2fs.c             |  2 +-
+ 5 files changed, 68 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index a624e92f2687f..28700fb41a00b 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -254,23 +254,23 @@ significant advantages to key wrapping.  In particular, currently
- there is no requirement to support unlocking a file with multiple
- alternative master keys or to support rotating master keys.  Instead,
- the master keys may be wrapped in userspace, e.g. as is done by the
- `fscrypt <https://github.com/google/fscrypt>`_ tool.
- 
- DIRECT_KEY policies
- -------------------
- 
- The Adiantum encryption mode (see `Encryption modes and usage`_) is
- suitable for both contents and filenames encryption, and it accepts
--long IVs --- long enough to hold both an 8-byte logical block number
--and a 16-byte per-file nonce.  Also, the overhead of each Adiantum key
--is greater than that of an AES-256-XTS key.
-+long IVs --- long enough to hold both an 8-byte data unit index and a
-+16-byte per-file nonce.  Also, the overhead of each Adiantum key is
-+greater than that of an AES-256-XTS key.
- 
- Therefore, to improve performance and save memory, for Adiantum a
- "direct key" configuration is supported.  When the user has enabled
- this by setting FSCRYPT_POLICY_FLAG_DIRECT_KEY in the fscrypt policy,
- per-file encryption keys are not used.  Instead, whenever any data
- (contents or filenames) is encrypted, the file's 16-byte nonce is
- included in the IV.  Moreover:
- 
- - For v1 encryption policies, the encryption is done directly with the
-   master key.  Because of this, users **must not** use the same master
-@@ -293,22 +293,22 @@ Consequently, shrinking the filesystem may not be allowed.
- 
- This format is optimized for use with inline encryption hardware
- compliant with the UFS standard, which supports only 64 IV bits per
- I/O request and may have only a small number of keyslots.
- 
- IV_INO_LBLK_32 policies
- -----------------------
- 
- IV_INO_LBLK_32 policies work like IV_INO_LBLK_64, except that for
- IV_INO_LBLK_32, the inode number is hashed with SipHash-2-4 (where the
--SipHash key is derived from the master key) and added to the file
--logical block number mod 2^32 to produce a 32-bit IV.
-+SipHash key is derived from the master key) and added to the file data
-+unit index mod 2^32 to produce a 32-bit IV.
- 
- This format is optimized for use with inline encryption hardware
- compliant with the eMMC v5.2 standard, which supports only 32 IV bits
- per I/O request and may have only a small number of keyslots.  This
- format results in some level of IV reuse, so it should only be used
- when necessary due to hardware limitations.
- 
- Key identifiers
- ---------------
- 
-@@ -444,45 +444,76 @@ fscrypt also uses HMAC-SHA512 for key derivation, so enabling SHA-512
- acceleration is recommended:
- 
- - SHA-512
-     - Recommended:
-         - arm64: CONFIG_CRYPTO_SHA512_ARM64_CE
-         - x86: CONFIG_CRYPTO_SHA512_SSSE3
- 
- Contents encryption
- -------------------
- 
--For file contents, each filesystem block is encrypted independently.
--Starting from Linux kernel 5.5, encryption of filesystems with block
--size less than system's page size is supported.
--
--Each block's IV is set to the logical block number within the file as
--a little endian number, except that:
--
--- With CBC mode encryption, ESSIV is also used.  Specifically, each IV
--  is encrypted with AES-256 where the AES-256 key is the SHA-256 hash
--  of the file's data encryption key.
--
--- With `DIRECT_KEY policies`_, the file's nonce is appended to the IV.
--  Currently this is only allowed with the Adiantum encryption mode.
--
--- With `IV_INO_LBLK_64 policies`_, the logical block number is limited
--  to 32 bits and is placed in bits 0-31 of the IV.  The inode number
--  (which is also limited to 32 bits) is placed in bits 32-63.
--
--- With `IV_INO_LBLK_32 policies`_, the logical block number is limited
--  to 32 bits and is placed in bits 0-31 of the IV.  The inode number
--  is then hashed and added mod 2^32.
--
--Note that because file logical block numbers are included in the IVs,
--filesystems must enforce that blocks are never shifted around within
--encrypted files, e.g. via "collapse range" or "insert range".
-+For contents encryption, each file's contents is divided into "data
-+units".  Each data unit is encrypted independently.  The IV for each
-+data unit incorporates the zero-based index of the data unit within
-+the file.  This ensures that each data unit within a file is encrypted
-+differently, which is essential to prevent leaking information.
-+
-+Note: the encryption depending on the offset into the file means that
-+operations like "collapse range" and "insert range" that rearrange the
-+extent mapping of files are not supported on encrypted files.
-+
-+There are two cases for the sizes of the data units:
-+
-+* Fixed-size data units.  This is how all filesystems other than UBIFS
-+  work.  A file's data units are all the same size; the last data unit
-+  is zero-padded if needed.  By default, the data unit size is equal
-+  to the filesystem block size.  On some filesystems, users can select
-+  a sub-block data unit size via the ``log2_data_unit_size`` field of
-+  the encryption policy; see `FS_IOC_SET_ENCRYPTION_POLICY`_.
-+
-+* Variable-size data units.  This is what UBIFS does.  Each "UBIFS
-+  data node" is treated as a crypto data unit.  Each contains variable
-+  length, possibly compressed data, zero-padded to the next 16-byte
-+  boundary.  Users cannot select a sub-block data unit size on UBIFS.
-+
-+In the case of compression + encryption, the compressed data is
-+encrypted.  UBIFS compression works as described above.  f2fs
-+compression works a bit differently; it compresses a number of
-+filesystem blocks into a smaller number of filesystem blocks.
-+Therefore a f2fs-compressed file still uses fixed-size data units, and
-+it is encrypted in a similar way to a file containing holes.
-+
-+As mentioned in `Key hierarchy`_, the default encryption setting uses
-+per-file keys.  In this case, the IV for each data unit is simply the
-+index of the data unit in the file.  However, users can select an
-+encryption setting that does not use per-file keys.  For these, some
-+kind of file identifier is incorporated into the IVs as follows:
-+
-+- With `DIRECT_KEY policies`_, the data unit index is placed in bits
-+  0-63 of the IV, and the file's nonce is placed in bits 64-191.
-+
-+- With `IV_INO_LBLK_64 policies`_, the data unit index is placed in
-+  bits 0-31 of the IV, and the file's inode number is placed in bits
-+  32-63.  This setting is only allowed when data unit indices and
-+  inode numbers fit in 32 bits.
-+
-+- With `IV_INO_LBLK_32 policies`_, the file's inode number is hashed
-+  and added to the data unit index.  The resulting value is truncated
-+  to 32 bits and placed in bits 0-31 of the IV.  This setting is only
-+  allowed when data unit indices and inode numbers fit in 32 bits.
-+
-+The byte order of the IV is always little endian.
-+
-+If the user selects FSCRYPT_MODE_AES_128_CBC for the contents mode, an
-+ESSIV layer is automatically included.  In this case, before the IV is
-+passed to AES-128-CBC, it is encrypted with AES-256 where the AES-256
-+key is the SHA-256 hash of the file's contents encryption key.
- 
- Filenames encryption
- --------------------
- 
- For filenames, each full filename is encrypted at once.  Because of
- the requirements to retain support for efficient directory lookups and
- filenames of up to 255 bytes, the same IV is used for every filename
- in a directory.
- 
- However, each encrypted directory still uses a unique key, or
-@@ -537,21 +568,22 @@ follows::
-     };
-     #define fscrypt_policy  fscrypt_policy_v1
- 
-     #define FSCRYPT_POLICY_V2               2
-     #define FSCRYPT_KEY_IDENTIFIER_SIZE     16
-     struct fscrypt_policy_v2 {
-             __u8 version;
-             __u8 contents_encryption_mode;
-             __u8 filenames_encryption_mode;
-             __u8 flags;
--            __u8 __reserved[4];
-+            __u8 log2_data_unit_size;
-+            __u8 __reserved[3];
-             __u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
-     };
- 
- This structure must be initialized as follows:
- 
- - ``version`` must be FSCRYPT_POLICY_V1 (0) if
-   struct fscrypt_policy_v1 is used or FSCRYPT_POLICY_V2 (2) if
-   struct fscrypt_policy_v2 is used. (Note: we refer to the original
-   policy version as "v1", though its version code is really 0.)
-   For new encrypted directories, use v2 policies.
-@@ -579,20 +611,43 @@ This structure must be initialized as follows:
-     policies`_.
-   - FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32: See `IV_INO_LBLK_32
-     policies`_.
- 
-   v1 encryption policies only support the PAD_* and DIRECT_KEY flags.
-   The other flags are only supported by v2 encryption policies.
- 
-   The DIRECT_KEY, IV_INO_LBLK_64, and IV_INO_LBLK_32 flags are
-   mutually exclusive.
- 
-+- ``log2_data_unit_size`` is the log2 of the data unit size in bytes,
-+  or 0 to select the default data unit size.  The data unit size is
-+  the granularity of file contents encryption.  For example, setting
-+  ``log2_data_unit_size`` to 12 causes file contents be passed to the
-+  underlying encryption algorithm (such as AES-256-XTS) in 4096-byte
-+  data units, each with its own IV.
-+
-+  Not all filesystems support setting ``log2_data_unit_size``.  ext4
-+  and f2fs support it since Linux v6.7.  On filesystems that support
-+  it, the supported nonzero values are 9 through the log2 of the
-+  filesystem block size, inclusively.  The default value of 0 selects
-+  the filesystem block size.
-+
-+  The main use case for ``log2_data_unit_size`` is for selecting a
-+  data unit size smaller than the filesystem block size for
-+  compatibility with inline encryption hardware that only supports
-+  smaller data unit sizes.  ``/sys/block/$disk/queue/crypto/`` may be
-+  useful for checking which data unit sizes are supported by a
-+  particular system's inline encryption hardware.
-+
-+  Leave this field zeroed unless you are certain you need it.  Using
-+  an unnecessarily small data unit size reduces performance.
-+
- - For v2 encryption policies, ``__reserved`` must be zeroed.
- 
- - For v1 encryption policies, ``master_key_descriptor`` specifies how
-   to find the master key in a keyring; see `Adding keys`_.  It is up
-   to userspace to choose a unique ``master_key_descriptor`` for each
-   master key.  The e4crypt and fscrypt tools use the first 8 bytes of
-   ``SHA-512(SHA-512(master_key))``, but this particular scheme is not
-   required.  Also, the master key need not be in the keyring yet when
-   FS_IOC_SET_ENCRYPTION_POLICY is executed.  However, it must be added
-   before any files can be created in the encrypted directory.
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 62e1a3dd83574..c8cf77065272e 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -104,41 +104,45 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * filesystem only uses a single block device, ->s_bdev.
-  *
-  * Note that since each block uses a different IV, this involves writing a
-  * different ciphertext to each block; we can't simply reuse the same one.
-  *
-  * Return: 0 on success; -errno on failure.
-  */
- int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 			  sector_t pblk, unsigned int len)
+diff --git a/lib/ext2fs/alloc_sb.c b/lib/ext2fs/alloc_sb.c
+index 8530b40f6..e92739ecc 100644
+--- a/lib/ext2fs/alloc_sb.c
++++ b/lib/ext2fs/alloc_sb.c
+@@ -46,8 +46,7 @@ int ext2fs_reserve_super_and_bgd(ext2_filsys fs,
+ 				 ext2fs_block_bitmap bmap)
  {
--	const unsigned int blockbits = inode->i_blkbits;
--	const unsigned int blocksize = 1 << blockbits;
--	const unsigned int blocks_per_page_bits = PAGE_SHIFT - blockbits;
--	const unsigned int blocks_per_page = 1 << blocks_per_page_bits;
-+	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	const unsigned int du_bits = ci->ci_data_unit_bits;
-+	const unsigned int du_size = 1U << du_bits;
-+	const unsigned int du_per_page_bits = PAGE_SHIFT - du_bits;
-+	const unsigned int du_per_page = 1U << du_per_page_bits;
-+	u64 du_index = (u64)lblk << (inode->i_blkbits - du_bits);
-+	u64 du_remaining = (u64)len << (inode->i_blkbits - du_bits);
-+	sector_t sector = pblk << (inode->i_blkbits - SECTOR_SHIFT);
- 	struct page *pages[16]; /* write up to 16 pages at a time */
- 	unsigned int nr_pages;
- 	unsigned int i;
- 	unsigned int offset;
- 	struct bio *bio;
- 	int ret, err;
+ 	blk64_t	super_blk, old_desc_blk, new_desc_blk;
+-	blk_t	used_blks;
+-	int	old_desc_blocks, num_blocks;
++	blk_t	used_blks, old_desc_blocks, num_blocks;
  
- 	if (len == 0)
- 		return 0;
+ 	ext2fs_super_and_bgd_loc2(fs, group, &super_blk,
+ 				  &old_desc_blk, &new_desc_blk, &used_blks);
+@@ -79,3 +78,28 @@ int ext2fs_reserve_super_and_bgd(ext2_filsys fs,
  
- 	if (fscrypt_inode_uses_inline_crypto(inode))
- 		return fscrypt_zeroout_range_inline_crypt(inode, lblk, pblk,
- 							  len);
+ 	return num_blocks  ;
+ }
++
++/*
++ * This function reserves the superblock and block group descriptors
++ * for a given block group and returns the number of blocks used by the
++ * super block and group descriptors by looking up the block bitmap.
++ */
++errcode_t ext2fs_reserve_super_and_bgd2(ext2_filsys fs,
++				        dgrp_t group,
++				        ext2fs_block_bitmap bmap,
++				        blk_t *desc_blocks)
++{
++	blk64_t	num_blocks;
++	errcode_t retval = 0;
++
++	ext2fs_reserve_super_and_bgd(fs, group, bmap);
++
++	retval = ext2fs_count_used_blocks(fs,
++					ext2fs_group_first_block2(fs, group),
++					ext2fs_group_last_block2(fs, group),
++					&num_blocks);
++	if (!retval)
++		*desc_blocks = num_blocks;
++
++	return retval;
++}
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 72c60d2b5..ae79a3443 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -795,6 +795,10 @@ errcode_t ext2fs_alloc_range(ext2_filsys fs, int flags, blk64_t goal,
+ extern int ext2fs_reserve_super_and_bgd(ext2_filsys fs,
+ 					dgrp_t group,
+ 					ext2fs_block_bitmap bmap);
++extern errcode_t ext2fs_reserve_super_and_bgd2(ext2_filsys fs,
++					       dgrp_t group,
++					       ext2fs_block_bitmap bmap,
++					       blk_t *desc_blocks);
+ extern void ext2fs_set_block_alloc_stats_callback(ext2_filsys fs,
+ 						  void (*func)(ext2_filsys fs,
+ 							       blk64_t blk,
+@@ -1483,6 +1487,8 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
+ 					   ext2fs_block_bitmap *bitmap);
+ errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
+ 				     blk64_t end, blk64_t *out);
++errcode_t ext2fs_count_used_blocks(ext2_filsys fs, blk64_t start,
++				   blk64_t end, blk64_t *out);
  
- 	BUILD_BUG_ON(ARRAY_SIZE(pages) > BIO_MAX_VECS);
--	nr_pages = min_t(unsigned int, ARRAY_SIZE(pages),
--			 (len + blocks_per_page - 1) >> blocks_per_page_bits);
-+	nr_pages = min_t(u64, ARRAY_SIZE(pages),
-+			 (du_remaining + du_per_page - 1) >> du_per_page_bits);
+ /* get_num_dirs.c */
+ extern errcode_t ext2fs_get_num_dirs(ext2_filsys fs, ext2_ino_t *ret_num_dirs);
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index 4289e8155..5936dcf53 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -945,8 +945,8 @@ errcode_t ext2fs_find_first_set_generic_bmap(ext2fs_generic_bitmap bitmap,
+ 	return ENOENT;
+ }
  
- 	/*
- 	 * We need at least one page for ciphertext.  Allocate the first one
- 	 * from a mempool, with __GFP_DIRECT_RECLAIM set so that it can't fail.
- 	 *
- 	 * Any additional page allocations are allowed to fail, as they only
- 	 * help performance, and waiting on the mempool for them could deadlock.
- 	 */
- 	for (i = 0; i < nr_pages; i++) {
- 		pages[i] = fscrypt_alloc_bounce_page(i == 0 ? GFP_NOFS :
-@@ -147,47 +151,48 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+-errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
+-				     blk64_t end, blk64_t *out)
++errcode_t ext2fs_count_used_blocks(ext2_filsys fs, blk64_t start,
++				   blk64_t end, blk64_t *out)
+ {
+ 	blk64_t		next;
+ 	blk64_t		tot_set = 0;
+@@ -975,6 +975,19 @@ errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
  			break;
  	}
- 	nr_pages = i;
- 	if (WARN_ON_ONCE(nr_pages <= 0))
- 		return -EINVAL;
  
- 	/* This always succeeds since __GFP_DIRECT_RECLAIM is set. */
- 	bio = bio_alloc(inode->i_sb->s_bdev, nr_pages, REQ_OP_WRITE, GFP_NOFS);
- 
- 	do {
--		bio->bi_iter.bi_sector = pblk << (blockbits - 9);
-+		bio->bi_iter.bi_sector = sector;
- 
- 		i = 0;
- 		offset = 0;
- 		do {
--			err = fscrypt_crypt_block(inode, FS_ENCRYPT, lblk,
--						  ZERO_PAGE(0), pages[i],
--						  blocksize, offset, GFP_NOFS);
-+			err = fscrypt_crypt_data_unit(ci, FS_ENCRYPT, du_index,
-+						      ZERO_PAGE(0), pages[i],
-+						      du_size, offset,
-+						      GFP_NOFS);
- 			if (err)
- 				goto out;
--			lblk++;
--			pblk++;
--			len--;
--			offset += blocksize;
--			if (offset == PAGE_SIZE || len == 0) {
-+			du_index++;
-+			sector += 1U << (du_bits - SECTOR_SHIFT);
-+			du_remaining--;
-+			offset += du_size;
-+			if (offset == PAGE_SIZE || du_remaining == 0) {
- 				ret = bio_add_page(bio, pages[i++], offset, 0);
- 				if (WARN_ON_ONCE(ret != offset)) {
- 					err = -EIO;
- 					goto out;
++	if (!retval)
++		*out = tot_set;
++	return retval;
++}
++
++errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
++				     blk64_t end, blk64_t *out)
++{
++	blk64_t		tot_set = 0;
++	errcode_t	retval = 0;
++
++	retval = ext2fs_count_used_blocks(fs, start, end, &tot_set);
++
+ 	if (!retval)
+ 		*out = EXT2FS_NUM_B2C(fs, tot_set);
+ 	return retval;
+diff --git a/lib/ext2fs/initialize.c b/lib/ext2fs/initialize.c
+index edd692bb9..90012f732 100644
+--- a/lib/ext2fs/initialize.c
++++ b/lib/ext2fs/initialize.c
+@@ -521,6 +521,15 @@ ipg_retry:
+ 	csum_flag = ext2fs_has_group_desc_csum(fs);
+ 	reserved_inos = super->s_first_ino;
+ 	for (i = 0; i < fs->group_desc_count; i++) {
++		blk_t grp_free_blocks;
++		ext2_ino_t inodes;
++
++		retval = ext2fs_reserve_super_and_bgd2(fs, i,
++						       fs->block_map,
++						       &numblocks);
++		if (retval)
++			goto cleanup;
++
+ 		/*
+ 		 * Don't set the BLOCK_UNINIT group for the last group
+ 		 * because the block bitmap needs to be padded.
+@@ -530,24 +539,25 @@ ipg_retry:
+ 				ext2fs_bg_flags_set(fs, i,
+ 						    EXT2_BG_BLOCK_UNINIT);
+ 			ext2fs_bg_flags_set(fs, i, EXT2_BG_INODE_UNINIT);
+-			numblocks = super->s_inodes_per_group;
++			inodes = super->s_inodes_per_group;
+ 			if (reserved_inos) {
+-				if (numblocks > reserved_inos) {
+-					numblocks -= reserved_inos;
++				if (inodes > reserved_inos) {
++					inodes -= reserved_inos;
+ 					reserved_inos = 0;
+ 				} else {
+-					reserved_inos -= numblocks;
+-					numblocks = 0;
++					reserved_inos -= inodes;
++					inodes = 0;
  				}
- 				offset = 0;
  			}
--		} while (i != nr_pages && len != 0);
-+		} while (i != nr_pages && du_remaining != 0);
- 
- 		err = submit_bio_wait(bio);
- 		if (err)
- 			goto out;
- 		bio_reset(bio, inode->i_sb->s_bdev, REQ_OP_WRITE);
--	} while (len != 0);
-+	} while (du_remaining != 0);
- 	err = 0;
- out:
- 	bio_put(bio);
- 	for (i = 0; i < nr_pages; i++)
- 		fscrypt_free_bounce_page(pages[i]);
- 	return err;
- }
- EXPORT_SYMBOL(fscrypt_zeroout_range);
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index aed0c5ea75781..85e2f66dd663f 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -70,148 +70,150 @@ void fscrypt_free_bounce_page(struct page *bounce_page)
- {
- 	if (!bounce_page)
- 		return;
- 	set_page_private(bounce_page, (unsigned long)NULL);
- 	ClearPagePrivate(bounce_page);
- 	mempool_free(bounce_page, fscrypt_bounce_page_pool);
- }
- EXPORT_SYMBOL(fscrypt_free_bounce_page);
- 
- /*
-- * Generate the IV for the given logical block number within the given file.
-- * For filenames encryption, lblk_num == 0.
-+ * Generate the IV for the given data unit index within the given file.
-+ * For filenames encryption, index == 0.
-  *
-  * Keep this in sync with fscrypt_limit_io_blocks().  fscrypt_limit_io_blocks()
-  * needs to know about any IV generation methods where the low bits of IV don't
-- * simply contain the lblk_num (e.g., IV_INO_LBLK_32).
-+ * simply contain the data unit index (e.g., IV_INO_LBLK_32).
-  */
--void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
-+void fscrypt_generate_iv(union fscrypt_iv *iv, u64 index,
- 			 const struct fscrypt_info *ci)
- {
- 	u8 flags = fscrypt_policy_flags(&ci->ci_policy);
- 
- 	memset(iv, 0, ci->ci_mode->ivsize);
- 
- 	if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64) {
--		WARN_ON_ONCE(lblk_num > U32_MAX);
-+		WARN_ON_ONCE(index > U32_MAX);
- 		WARN_ON_ONCE(ci->ci_inode->i_ino > U32_MAX);
--		lblk_num |= (u64)ci->ci_inode->i_ino << 32;
-+		index |= (u64)ci->ci_inode->i_ino << 32;
- 	} else if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) {
--		WARN_ON_ONCE(lblk_num > U32_MAX);
--		lblk_num = (u32)(ci->ci_hashed_ino + lblk_num);
-+		WARN_ON_ONCE(index > U32_MAX);
-+		index = (u32)(ci->ci_hashed_ino + index);
- 	} else if (flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) {
- 		memcpy(iv->nonce, ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE);
- 	}
--	iv->lblk_num = cpu_to_le64(lblk_num);
-+	iv->index = cpu_to_le64(index);
- }
- 
--/* Encrypt or decrypt a single filesystem block of file contents */
--int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
--			u64 lblk_num, struct page *src_page,
--			struct page *dest_page, unsigned int len,
--			unsigned int offs, gfp_t gfp_flags)
-+/* Encrypt or decrypt a single "data unit" of file contents. */
-+int fscrypt_crypt_data_unit(const struct fscrypt_info *ci,
-+			    fscrypt_direction_t rw, u64 index,
-+			    struct page *src_page, struct page *dest_page,
-+			    unsigned int len, unsigned int offs,
-+			    gfp_t gfp_flags)
- {
- 	union fscrypt_iv iv;
- 	struct skcipher_request *req = NULL;
- 	DECLARE_CRYPTO_WAIT(wait);
- 	struct scatterlist dst, src;
--	struct fscrypt_info *ci = inode->i_crypt_info;
- 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
- 	int res = 0;
- 
- 	if (WARN_ON_ONCE(len <= 0))
- 		return -EINVAL;
- 	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
- 		return -EINVAL;
- 
--	fscrypt_generate_iv(&iv, lblk_num, ci);
-+	fscrypt_generate_iv(&iv, index, ci);
- 
- 	req = skcipher_request_alloc(tfm, gfp_flags);
- 	if (!req)
- 		return -ENOMEM;
- 
- 	skcipher_request_set_callback(
- 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
- 		crypto_req_done, &wait);
- 
- 	sg_init_table(&dst, 1);
- 	sg_set_page(&dst, dest_page, len, offs);
- 	sg_init_table(&src, 1);
- 	sg_set_page(&src, src_page, len, offs);
- 	skcipher_request_set_crypt(req, &src, &dst, len, &iv);
- 	if (rw == FS_DECRYPT)
- 		res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
- 	else
- 		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
- 	skcipher_request_free(req);
- 	if (res) {
--		fscrypt_err(inode, "%scryption failed for block %llu: %d",
--			    (rw == FS_DECRYPT ? "De" : "En"), lblk_num, res);
-+		fscrypt_err(ci->ci_inode,
-+			    "%scryption failed for data unit %llu: %d",
-+			    (rw == FS_DECRYPT ? "De" : "En"), index, res);
- 		return res;
- 	}
- 	return 0;
- }
- 
- /**
-- * fscrypt_encrypt_pagecache_blocks() - Encrypt filesystem blocks from a
-- *					pagecache page
-- * @page:      The locked pagecache page containing the block(s) to encrypt
-- * @len:       Total size of the block(s) to encrypt.  Must be a nonzero
-- *		multiple of the filesystem's block size.
-- * @offs:      Byte offset within @page of the first block to encrypt.  Must be
-- *		a multiple of the filesystem's block size.
-- * @gfp_flags: Memory allocation flags.  See details below.
-+ * fscrypt_encrypt_pagecache_blocks() - Encrypt data from a pagecache page
-+ * @page: the locked pagecache page containing the data to encrypt
-+ * @len: size of the data to encrypt, in bytes
-+ * @offs: offset within @page of the data to encrypt, in bytes
-+ * @gfp_flags: memory allocation flags; see details below
-  *
-- * A new bounce page is allocated, and the specified block(s) are encrypted into
-- * it.  In the bounce page, the ciphertext block(s) will be located at the same
-- * offsets at which the plaintext block(s) were located in the source page; any
-- * other parts of the bounce page will be left uninitialized.  However, normally
-- * blocksize == PAGE_SIZE and the whole page is encrypted at once.
-+ * This allocates a new bounce page and encrypts the given data into it.  The
-+ * length and offset of the data must be aligned to the file's crypto data unit
-+ * size.  Alignment to the filesystem block size fulfills this requirement, as
-+ * the filesystem block size is always a multiple of the data unit size.
-+ *
-+ * In the bounce page, the ciphertext data will be located at the same offset at
-+ * which the plaintext data was located in the source page.  Any other parts of
-+ * the bounce page will be left uninitialized.
-  *
-  * This is for use by the filesystem's ->writepages() method.
-  *
-  * The bounce page allocation is mempool-backed, so it will always succeed when
-  * @gfp_flags includes __GFP_DIRECT_RECLAIM, e.g. when it's GFP_NOFS.  However,
-  * only the first page of each bio can be allocated this way.  To prevent
-  * deadlocks, for any additional pages a mask like GFP_NOWAIT must be used.
-  *
-  * Return: the new encrypted bounce page on success; an ERR_PTR() on failure
-  */
- struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
- 					      unsigned int len,
- 					      unsigned int offs,
- 					      gfp_t gfp_flags)
- 
- {
- 	const struct inode *inode = page->mapping->host;
--	const unsigned int blockbits = inode->i_blkbits;
--	const unsigned int blocksize = 1 << blockbits;
-+	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	const unsigned int du_bits = ci->ci_data_unit_bits;
-+	const unsigned int du_size = 1U << du_bits;
- 	struct page *ciphertext_page;
--	u64 lblk_num = ((u64)page->index << (PAGE_SHIFT - blockbits)) +
--		       (offs >> blockbits);
-+	u64 index = ((u64)page->index << (PAGE_SHIFT - du_bits)) +
-+		    (offs >> du_bits);
- 	unsigned int i;
- 	int err;
- 
- 	if (WARN_ON_ONCE(!PageLocked(page)))
- 		return ERR_PTR(-EINVAL);
- 
--	if (WARN_ON_ONCE(len <= 0 || !IS_ALIGNED(len | offs, blocksize)))
-+	if (WARN_ON_ONCE(len <= 0 || !IS_ALIGNED(len | offs, du_size)))
- 		return ERR_PTR(-EINVAL);
- 
- 	ciphertext_page = fscrypt_alloc_bounce_page(gfp_flags);
- 	if (!ciphertext_page)
- 		return ERR_PTR(-ENOMEM);
- 
--	for (i = offs; i < offs + len; i += blocksize, lblk_num++) {
--		err = fscrypt_crypt_block(inode, FS_ENCRYPT, lblk_num,
--					  page, ciphertext_page,
--					  blocksize, i, gfp_flags);
-+	for (i = offs; i < offs + len; i += du_size, index++) {
-+		err = fscrypt_crypt_data_unit(ci, FS_ENCRYPT, index,
-+					      page, ciphertext_page,
-+					      du_size, i, gfp_flags);
- 		if (err) {
- 			fscrypt_free_bounce_page(ciphertext_page);
- 			return ERR_PTR(err);
+-			ext2fs_bg_itable_unused_set(fs, i, numblocks);
++			ext2fs_bg_itable_unused_set(fs, i, inodes);
  		}
- 	}
- 	SetPagePrivate(ciphertext_page);
- 	set_page_private(ciphertext_page, (unsigned long)page);
- 	return ciphertext_page;
- }
- EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
-@@ -224,70 +226,74 @@ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
-  *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to encrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-  * @gfp_flags: Memory allocation flags
-  *
-  * Encrypt a possibly-compressed filesystem block that is located in an
-  * arbitrary page, not necessarily in the original pagecache page.  The @inode
-  * and @lblk_num must be specified, as they can't be determined from @page.
-  *
-+ * This is not compatible with fscrypt_operations::supports_subblock_data_units.
-+ *
-  * Return: 0 on success; -errno on failure
-  */
- int fscrypt_encrypt_block_inplace(const struct inode *inode, struct page *page,
- 				  unsigned int len, unsigned int offs,
- 				  u64 lblk_num, gfp_t gfp_flags)
- {
--	return fscrypt_crypt_block(inode, FS_ENCRYPT, lblk_num, page, page,
--				   len, offs, gfp_flags);
-+	if (WARN_ON_ONCE(inode->i_sb->s_cop->supports_subblock_data_units))
-+		return -EOPNOTSUPP;
-+	return fscrypt_crypt_data_unit(inode->i_crypt_info, FS_ENCRYPT,
-+				       lblk_num, page, page, len, offs,
-+				       gfp_flags);
- }
- EXPORT_SYMBOL(fscrypt_encrypt_block_inplace);
- 
- /**
-- * fscrypt_decrypt_pagecache_blocks() - Decrypt filesystem blocks in a
-- *					pagecache folio
-- * @folio:     The locked pagecache folio containing the block(s) to decrypt
-- * @len:       Total size of the block(s) to decrypt.  Must be a nonzero
-- *		multiple of the filesystem's block size.
-- * @offs:      Byte offset within @folio of the first block to decrypt.  Must be
-- *		a multiple of the filesystem's block size.
-+ * fscrypt_decrypt_pagecache_blocks() - Decrypt data from a pagecache folio
-+ * @folio: the pagecache folio containing the data to decrypt
-+ * @len: size of the data to decrypt, in bytes
-+ * @offs: offset within @folio of the data to decrypt, in bytes
-  *
-- * The specified block(s) are decrypted in-place within the pagecache folio,
-- * which must still be locked and not uptodate.
-- *
-- * This is for use by the filesystem's ->readahead() method.
-+ * Decrypt data that has just been read from an encrypted file.  The data must
-+ * be located in a pagecache folio that is still locked and not yet uptodate.
-+ * The length and offset of the data must be aligned to the file's crypto data
-+ * unit size.  Alignment to the filesystem block size fulfills this requirement,
-+ * as the filesystem block size is always a multiple of the data unit size.
-  *
-  * Return: 0 on success; -errno on failure
-  */
- int fscrypt_decrypt_pagecache_blocks(struct folio *folio, size_t len,
- 				     size_t offs)
- {
- 	const struct inode *inode = folio->mapping->host;
--	const unsigned int blockbits = inode->i_blkbits;
--	const unsigned int blocksize = 1 << blockbits;
--	u64 lblk_num = ((u64)folio->index << (PAGE_SHIFT - blockbits)) +
--		       (offs >> blockbits);
-+	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	const unsigned int du_bits = ci->ci_data_unit_bits;
-+	const unsigned int du_size = 1U << du_bits;
-+	u64 index = ((u64)folio->index << (PAGE_SHIFT - du_bits)) +
-+		    (offs >> du_bits);
- 	size_t i;
- 	int err;
- 
- 	if (WARN_ON_ONCE(!folio_test_locked(folio)))
- 		return -EINVAL;
- 
--	if (WARN_ON_ONCE(len <= 0 || !IS_ALIGNED(len | offs, blocksize)))
-+	if (WARN_ON_ONCE(len <= 0 || !IS_ALIGNED(len | offs, du_size)))
- 		return -EINVAL;
- 
--	for (i = offs; i < offs + len; i += blocksize, lblk_num++) {
-+	for (i = offs; i < offs + len; i += du_size, index++) {
- 		struct page *page = folio_page(folio, i >> PAGE_SHIFT);
- 
--		err = fscrypt_crypt_block(inode, FS_DECRYPT, lblk_num, page,
--					  page, blocksize, i & ~PAGE_MASK,
--					  GFP_NOFS);
-+		err = fscrypt_crypt_data_unit(ci, FS_DECRYPT, index, page,
-+					      page, du_size, i & ~PAGE_MASK,
-+					      GFP_NOFS);
- 		if (err)
- 			return err;
- 	}
- 	return 0;
- }
- EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
- 
- /**
-  * fscrypt_decrypt_block_inplace() - Decrypt a filesystem block in-place
-  * @inode:     The inode to which this block belongs
-@@ -295,28 +301,33 @@ EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
-  * @len:       Size of block to decrypt.  This must be a multiple of
-  *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to decrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-  *
-  * Decrypt a possibly-compressed filesystem block that is located in an
-  * arbitrary page, not necessarily in the original pagecache page.  The @inode
-  * and @lblk_num must be specified, as they can't be determined from @page.
-  *
-+ * This is not compatible with fscrypt_operations::supports_subblock_data_units.
-+ *
-  * Return: 0 on success; -errno on failure
-  */
- int fscrypt_decrypt_block_inplace(const struct inode *inode, struct page *page,
- 				  unsigned int len, unsigned int offs,
- 				  u64 lblk_num)
- {
--	return fscrypt_crypt_block(inode, FS_DECRYPT, lblk_num, page, page,
--				   len, offs, GFP_NOFS);
-+	if (WARN_ON_ONCE(inode->i_sb->s_cop->supports_subblock_data_units))
-+		return -EOPNOTSUPP;
-+	return fscrypt_crypt_data_unit(inode->i_crypt_info, FS_DECRYPT,
-+				       lblk_num, page, page, len, offs,
-+				       GFP_NOFS);
- }
- EXPORT_SYMBOL(fscrypt_decrypt_block_inplace);
- 
- /**
-  * fscrypt_initialize() - allocate major buffers for fs encryption.
-  * @sb: the filesystem superblock
-  *
-  * We only call this when we start accessing encrypted files, since it
-  * results in memory getting allocated that wouldn't otherwise be used.
-  *
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 4b113214b53af..9c5e83baa3f12 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -40,21 +40,22 @@ struct fscrypt_context_v1 {
- 	u8 flags;
- 	u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
- 	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
- };
- 
- struct fscrypt_context_v2 {
- 	u8 version; /* FSCRYPT_CONTEXT_V2 */
- 	u8 contents_encryption_mode;
- 	u8 filenames_encryption_mode;
- 	u8 flags;
--	u8 __reserved[4];
-+	u8 log2_data_unit_size;
-+	u8 __reserved[3];
- 	u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
- 	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
- };
- 
- /*
-  * fscrypt_context - the encryption context of an inode
-  *
-  * This is the on-disk equivalent of an fscrypt_policy, stored alongside each
-  * encrypted file usually in a hidden extended attribute.  It contains the
-  * fields from the fscrypt_policy, in order to identify the encryption algorithm
-@@ -158,20 +159,40 @@ fscrypt_policy_flags(const union fscrypt_policy *policy)
- {
- 	switch (policy->version) {
- 	case FSCRYPT_POLICY_V1:
- 		return policy->v1.flags;
- 	case FSCRYPT_POLICY_V2:
- 		return policy->v2.flags;
- 	}
- 	BUG();
- }
- 
-+static inline int
-+fscrypt_policy_v2_du_bits(const struct fscrypt_policy_v2 *policy,
-+			  const struct inode *inode)
-+{
-+	return policy->log2_data_unit_size ?: inode->i_blkbits;
-+}
+-		numblocks = ext2fs_reserve_super_and_bgd(fs, i, fs->block_map);
+-		if (fs->super->s_log_groups_per_flex)
 +
-+static inline int
-+fscrypt_policy_du_bits(const union fscrypt_policy *policy,
-+		       const struct inode *inode)
-+{
-+	switch (policy->version) {
-+	case FSCRYPT_POLICY_V1:
-+		return inode->i_blkbits;
-+	case FSCRYPT_POLICY_V2:
-+		return fscrypt_policy_v2_du_bits(&policy->v2, inode);
-+	}
-+	BUG();
-+}
-+
- /*
-  * For encrypted symlinks, the ciphertext length is stored at the beginning
-  * of the string in little-endian format.
-  */
- struct fscrypt_symlink_data {
- 	__le16 len;
- 	char encrypted_path[];
- } __packed;
++		if (!fs->super->s_log_groups_per_flex)
+ 			numblocks += 2 + fs->inode_blocks_per_group;
  
- /**
-@@ -204,20 +225,30 @@ struct fscrypt_info {
- 	bool ci_owns_key;
- 
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- 	/*
- 	 * True if this inode will use inline encryption (blk-crypto) instead of
- 	 * the traditional filesystem-layer encryption.
- 	 */
- 	bool ci_inlinecrypt;
- #endif
- 
-+	/*
-+	 * log2 of the data unit size (granularity of contents encryption) of
-+	 * this file.  This is computable from ci_policy and ci_inode but is
-+	 * cached here for efficiency.  Only used for regular files.
-+	 */
-+	u8 ci_data_unit_bits;
-+
-+	/* Cached value: log2 of number of data units per FS block */
-+	u8 ci_data_units_per_block_bits;
-+
- 	/*
- 	 * Encryption mode used for this inode.  It corresponds to either the
- 	 * contents or filenames encryption mode, depending on the inode type.
- 	 */
- 	struct fscrypt_mode *ci_mode;
- 
- 	/* Back-pointer to the inode */
- 	struct inode *ci_inode;
- 
- 	/*
-@@ -258,59 +289,60 @@ struct fscrypt_info {
- };
- 
- typedef enum {
- 	FS_DECRYPT = 0,
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
- 
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
- int fscrypt_initialize(struct super_block *sb);
--int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
--			u64 lblk_num, struct page *src_page,
--			struct page *dest_page, unsigned int len,
--			unsigned int offs, gfp_t gfp_flags);
-+int fscrypt_crypt_data_unit(const struct fscrypt_info *ci,
-+			    fscrypt_direction_t rw, u64 index,
-+			    struct page *src_page, struct page *dest_page,
-+			    unsigned int len, unsigned int offs,
-+			    gfp_t gfp_flags);
- struct page *fscrypt_alloc_bounce_page(gfp_t gfp_flags);
- 
- void __printf(3, 4) __cold
- fscrypt_msg(const struct inode *inode, const char *level, const char *fmt, ...);
- 
- #define fscrypt_warn(inode, fmt, ...)		\
- 	fscrypt_msg((inode), KERN_WARNING, fmt, ##__VA_ARGS__)
- #define fscrypt_err(inode, fmt, ...)		\
- 	fscrypt_msg((inode), KERN_ERR, fmt, ##__VA_ARGS__)
- 
- #define FSCRYPT_MAX_IV_SIZE	32
- 
- union fscrypt_iv {
- 	struct {
--		/* logical block number within the file */
--		__le64 lblk_num;
-+		/* zero-based index of data unit within the file */
-+		__le64 index;
- 
- 		/* per-file nonce; only set in DIRECT_KEY mode */
- 		u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
- 	};
- 	u8 raw[FSCRYPT_MAX_IV_SIZE];
- 	__le64 dun[FSCRYPT_MAX_IV_SIZE / sizeof(__le64)];
- };
- 
--void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
-+void fscrypt_generate_iv(union fscrypt_iv *iv, u64 index,
- 			 const struct fscrypt_info *ci);
- 
- /*
-- * Return the number of bits used by the maximum file logical block number that
-- * is possible on the given filesystem.
-+ * Return the number of bits used by the maximum file data unit index that is
-+ * possible on the given filesystem, using the given log2 data unit size.
-  */
- static inline int
--fscrypt_max_file_lblk_bits(const struct super_block *sb)
-+fscrypt_max_file_dun_bits(const struct super_block *sb, int du_bits)
- {
--	return fls64(sb->s_maxbytes - 1) - sb->s_blocksize_bits;
-+	return fls64(sb->s_maxbytes - 1) - du_bits;
- }
- 
- /* fname.c */
- bool __fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
- 				    u32 orig_len, u32 max_len,
- 				    u32 *encrypted_len_ret);
- 
- /* hkdf.c */
- struct fscrypt_hkdf {
- 	struct crypto_shash *hmac_tfm;
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 7d9f6c167de58..8c6d37d6225a8 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -36,32 +36,34 @@ static struct block_device **fscrypt_get_devices(struct super_block *sb,
- 		return ERR_PTR(-ENOMEM);
- 	devs[0] = sb->s_bdev;
- 	*num_devs = 1;
- 	return devs;
- }
- 
- static unsigned int fscrypt_get_dun_bytes(const struct fscrypt_info *ci)
- {
- 	const struct super_block *sb = ci->ci_inode->i_sb;
- 	unsigned int flags = fscrypt_policy_flags(&ci->ci_policy);
-+	int dun_bits;
- 
- 	if (flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY)
- 		return offsetofend(union fscrypt_iv, nonce);
- 
- 	if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64)
- 		return sizeof(__le64);
- 
- 	if (flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)
- 		return sizeof(__le32);
- 
--	/* Default case: IVs are just the file logical block number */
--	return DIV_ROUND_UP(fscrypt_max_file_lblk_bits(sb), 8);
-+	/* Default case: IVs are just the file data unit index */
-+	dun_bits = fscrypt_max_file_dun_bits(sb, ci->ci_data_unit_bits);
-+	return DIV_ROUND_UP(dun_bits, 8);
- }
- 
- /*
-  * Log a message when starting to use blk-crypto (native) or blk-crypto-fallback
-  * for an encryption mode for the first time.  This is the blk-crypto
-  * counterpart to the message logged when starting to use the crypto API for the
-  * first time.  A limitation is that these messages don't convey which specific
-  * filesystems or files are using each implementation.  However, *usually*
-  * systems use just one implementation per mode, which makes these messages
-  * helpful for debugging problems where the "wrong" implementation is used.
-@@ -119,21 +121,21 @@ int fscrypt_select_encryption_impl(struct fscrypt_info *ci)
- 	if ((fscrypt_policy_flags(&ci->ci_policy) &
- 	     FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32) &&
- 	    sb->s_blocksize != PAGE_SIZE)
- 		return 0;
- 
- 	/*
- 	 * On all the filesystem's block devices, blk-crypto must support the
- 	 * crypto configuration that the file would use.
- 	 */
- 	crypto_cfg.crypto_mode = ci->ci_mode->blk_crypto_mode;
--	crypto_cfg.data_unit_size = sb->s_blocksize;
-+	crypto_cfg.data_unit_size = 1U << ci->ci_data_unit_bits;
- 	crypto_cfg.dun_bytes = fscrypt_get_dun_bytes(ci);
- 
- 	devs = fscrypt_get_devices(sb, &num_devs);
- 	if (IS_ERR(devs))
- 		return PTR_ERR(devs);
- 
- 	for (i = 0; i < num_devs; i++) {
- 		if (!blk_crypto_config_supported(devs[i], &crypto_cfg))
- 			goto out_free_devs;
- 	}
-@@ -158,21 +160,22 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
- 	struct block_device **devs;
- 	unsigned int num_devs;
- 	unsigned int i;
- 	int err;
- 
- 	blk_key = kmalloc(sizeof(*blk_key), GFP_KERNEL);
- 	if (!blk_key)
- 		return -ENOMEM;
- 
- 	err = blk_crypto_init_key(blk_key, raw_key, crypto_mode,
--				  fscrypt_get_dun_bytes(ci), sb->s_blocksize);
-+				  fscrypt_get_dun_bytes(ci),
-+				  1U << ci->ci_data_unit_bits);
- 	if (err) {
- 		fscrypt_err(inode, "error %d initializing blk-crypto key", err);
- 		goto fail;
+-		free_blocks += numblocks;
+-		ext2fs_bg_free_blocks_count_set(fs, i, numblocks);
++		grp_free_blocks = ext2fs_group_blocks_count(fs, i) - numblocks;
++		free_blocks += grp_free_blocks;
++		ext2fs_bg_free_blocks_count_set(fs, i, grp_free_blocks);
+ 		ext2fs_bg_free_inodes_count_set(fs, i, fs->super->s_inodes_per_group);
+ 		ext2fs_bg_used_dirs_count_set(fs, i, 0);
+ 		ext2fs_group_desc_csum_set(fs, i);
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 4a9c1b092..72c9da12e 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -3522,7 +3522,7 @@ no_journal:
+ 			       fs->super->s_mmp_update_interval);
  	}
  
- 	/* Start using blk-crypto on all the filesystem's block devices. */
- 	devs = fscrypt_get_devices(sb, &num_devs);
- 	if (IS_ERR(devs)) {
- 		err = PTR_ERR(devs);
- 		goto fail;
-@@ -225,24 +228,25 @@ void fscrypt_destroy_inline_crypt_key(struct super_block *sb,
+-	overhead += fs->super->s_first_data_block;
++	overhead += EXT2FS_NUM_B2C(fs, fs->super->s_first_data_block);
+ 	if (!super_only)
+ 		fs->super->s_overhead_clusters = overhead;
  
- bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
- {
- 	return inode->i_crypt_info->ci_inlinecrypt;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_inode_uses_inline_crypto);
- 
- static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
- 				 u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE])
- {
-+	u64 index = lblk_num << ci->ci_data_units_per_block_bits;
- 	union fscrypt_iv iv;
- 	int i;
- 
--	fscrypt_generate_iv(&iv, lblk_num, ci);
-+	fscrypt_generate_iv(&iv, index, ci);
- 
- 	BUILD_BUG_ON(FSCRYPT_MAX_IV_SIZE > BLK_CRYPTO_MAX_IV_SIZE);
- 	memset(dun, 0, BLK_CRYPTO_MAX_IV_SIZE);
- 	for (i = 0; i < ci->ci_mode->ivsize/sizeof(dun[0]); i++)
- 		dun[i] = le64_to_cpu(iv.dun[i]);
- }
- 
- /**
-  * fscrypt_set_bio_crypt_ctx() - prepare a file contents bio for inline crypto
-  * @bio: a bio which will eventually be submitted to the file
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 361f41ef46c78..608599f8aa574 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -573,20 +573,25 @@ fscrypt_setup_encryption_info(struct inode *inode,
- 	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
- 
- 	mode = select_encryption_mode(&crypt_info->ci_policy, inode);
- 	if (IS_ERR(mode)) {
- 		res = PTR_ERR(mode);
- 		goto out;
- 	}
- 	WARN_ON_ONCE(mode->ivsize > FSCRYPT_MAX_IV_SIZE);
- 	crypt_info->ci_mode = mode;
- 
-+	crypt_info->ci_data_unit_bits =
-+		fscrypt_policy_du_bits(&crypt_info->ci_policy, inode);
-+	crypt_info->ci_data_units_per_block_bits =
-+		inode->i_blkbits - crypt_info->ci_data_unit_bits;
-+
- 	res = setup_file_encryption_key(crypt_info, need_dirhash_key, &mk);
- 	if (res)
- 		goto out;
- 
- 	/*
- 	 * For existing inodes, multiple tasks may race to set ->i_crypt_info.
- 	 * So use cmpxchg_release().  This pairs with the smp_load_acquire() in
- 	 * fscrypt_get_info().  I.e., here we publish ->i_crypt_info with a
- 	 * RELEASE barrier so that other tasks can ACQUIRE it.
- 	 */
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 32709dad9762b..2fb3f6a1258e0 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -158,24 +158,25 @@ static bool supported_iv_ino_lblk_policy(const struct fscrypt_policy_v2 *policy,
- 	 * So for now the implementation limit is 32 bits.
- 	 */
- 	if (!sb->s_cop->has_32bit_inodes) {
- 		fscrypt_warn(inode,
- 			     "Can't use %s policy on filesystem '%s' because its inode numbers are too long",
- 			     type, sb->s_id);
- 		return false;
- 	}
- 
- 	/*
--	 * IV_INO_LBLK_64 and IV_INO_LBLK_32 both require that file logical
--	 * block numbers fit in 32 bits.
-+	 * IV_INO_LBLK_64 and IV_INO_LBLK_32 both require that file data unit
-+	 * indices fit in 32 bits.
- 	 */
--	if (fscrypt_max_file_lblk_bits(sb) > 32) {
-+	if (fscrypt_max_file_dun_bits(sb,
-+			fscrypt_policy_v2_du_bits(policy, inode)) > 32) {
- 		fscrypt_warn(inode,
- 			     "Can't use %s policy on filesystem '%s' because its maximum file size is too large",
- 			     type, sb->s_id);
- 		return false;
- 	}
- 	return true;
- }
- 
- static bool fscrypt_supported_v1_policy(const struct fscrypt_policy_v1 *policy,
- 					const struct inode *inode)
-@@ -236,20 +237,45 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
- 
- 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY);
- 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64);
- 	count += !!(policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32);
- 	if (count > 1) {
- 		fscrypt_warn(inode, "Mutually exclusive encryption flags (0x%02x)",
- 			     policy->flags);
- 		return false;
- 	}
- 
-+	if (policy->log2_data_unit_size) {
-+		if (!inode->i_sb->s_cop->supports_subblock_data_units) {
-+			fscrypt_warn(inode,
-+				     "Filesystem does not support configuring crypto data unit size");
-+			return false;
-+		}
-+		if (policy->log2_data_unit_size > inode->i_blkbits ||
-+		    policy->log2_data_unit_size < SECTOR_SHIFT /* 9 */) {
-+			fscrypt_warn(inode,
-+				     "Unsupported log2_data_unit_size in encryption policy: %d",
-+				     policy->log2_data_unit_size);
-+			return false;
-+		}
-+		if (policy->log2_data_unit_size != inode->i_blkbits &&
-+		    (policy->flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) {
-+			/*
-+			 * Not safe to enable yet, as we need to ensure that DUN
-+			 * wraparound can only occur on a FS block boundary.
-+			 */
-+			fscrypt_warn(inode,
-+				     "Sub-block data units not yet supported with IV_INO_LBLK_32");
-+			return false;
-+		}
-+	}
-+
- 	if ((policy->flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY) &&
- 	    !supported_direct_key_modes(inode, policy->contents_encryption_mode,
- 					policy->filenames_encryption_mode))
- 		return false;
- 
- 	if ((policy->flags & (FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 |
- 			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) &&
- 	    !supported_iv_ino_lblk_policy(policy, inode))
- 		return false;
- 
-@@ -322,20 +348,21 @@ static int fscrypt_new_context(union fscrypt_context *ctx_u,
- 	case FSCRYPT_POLICY_V2: {
- 		const struct fscrypt_policy_v2 *policy = &policy_u->v2;
- 		struct fscrypt_context_v2 *ctx = &ctx_u->v2;
- 
- 		ctx->version = FSCRYPT_CONTEXT_V2;
- 		ctx->contents_encryption_mode =
- 			policy->contents_encryption_mode;
- 		ctx->filenames_encryption_mode =
- 			policy->filenames_encryption_mode;
- 		ctx->flags = policy->flags;
-+		ctx->log2_data_unit_size = policy->log2_data_unit_size;
- 		memcpy(ctx->master_key_identifier,
- 		       policy->master_key_identifier,
- 		       sizeof(ctx->master_key_identifier));
- 		memcpy(ctx->nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
- 		return sizeof(*ctx);
- 	}
- 	}
- 	BUG();
- }
- 
-@@ -382,20 +409,21 @@ int fscrypt_policy_from_context(union fscrypt_policy *policy_u,
- 	case FSCRYPT_CONTEXT_V2: {
- 		const struct fscrypt_context_v2 *ctx = &ctx_u->v2;
- 		struct fscrypt_policy_v2 *policy = &policy_u->v2;
- 
- 		policy->version = FSCRYPT_POLICY_V2;
- 		policy->contents_encryption_mode =
- 			ctx->contents_encryption_mode;
- 		policy->filenames_encryption_mode =
- 			ctx->filenames_encryption_mode;
- 		policy->flags = ctx->flags;
-+		policy->log2_data_unit_size = ctx->log2_data_unit_size;
- 		memcpy(policy->__reserved, ctx->__reserved,
- 		       sizeof(policy->__reserved));
- 		memcpy(policy->master_key_identifier,
- 		       ctx->master_key_identifier,
- 		       sizeof(policy->master_key_identifier));
- 		return 0;
- 	}
- 	}
- 	/* unreachable */
- 	return -EINVAL;
-diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
-index 9e36731701baa..7ae0b61258a7f 100644
---- a/fs/ext4/crypto.c
-+++ b/fs/ext4/crypto.c
-@@ -228,17 +228,18 @@ static const union fscrypt_policy *ext4_get_dummy_policy(struct super_block *sb)
- }
- 
- static bool ext4_has_stable_inodes(struct super_block *sb)
- {
- 	return ext4_has_feature_stable_inodes(sb);
- }
- 
- const struct fscrypt_operations ext4_cryptops = {
- 	.needs_bounce_pages	= 1,
- 	.has_32bit_inodes	= 1,
-+	.supports_subblock_data_units = 1,
- 	.legacy_key_prefix	= "ext4:",
- 	.get_context		= ext4_get_context,
- 	.set_context		= ext4_set_context,
- 	.get_dummy_policy	= ext4_get_dummy_policy,
- 	.empty_dir		= ext4_empty_dir,
- 	.has_stable_inodes	= ext4_has_stable_inodes,
- };
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index c449157132643..66a5bf4216b71 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3219,20 +3219,21 @@ static struct block_device **f2fs_get_devices(struct super_block *sb,
- 
- 	for (i = 0; i < sbi->s_ndevs; i++)
- 		devs[i] = FDEV(i).bdev;
- 	*num_devs = sbi->s_ndevs;
- 	return devs;
- }
- 
- static const struct fscrypt_operations f2fs_cryptops = {
- 	.needs_bounce_pages	= 1,
- 	.has_32bit_inodes	= 1,
-+	.supports_subblock_data_units = 1,
- 	.legacy_key_prefix	= "f2fs:",
- 	.get_context		= f2fs_get_context,
- 	.set_context		= f2fs_set_context,
- 	.get_dummy_policy	= f2fs_get_dummy_policy,
- 	.empty_dir		= f2fs_empty_dir,
- 	.has_stable_inodes	= f2fs_has_stable_inodes,
- 	.get_devices		= f2fs_get_devices,
- };
- #endif
- 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 09a3cacbf62ad..b559e6f777070 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -78,20 +78,32 @@ struct fscrypt_operations {
- 	 * If set, then fs/crypto/ will allow the use of encryption settings
- 	 * that assume inode numbers fit in 32 bits (i.e.
- 	 * FSCRYPT_POLICY_FLAG_IV_INO_LBLK_{32,64}), provided that the other
- 	 * prerequisites for these settings are also met.  This is only useful
- 	 * if the filesystem wants to support inline encryption hardware that is
- 	 * limited to 32-bit or 64-bit data unit numbers and where programming
- 	 * keyslots is very slow.
- 	 */
- 	unsigned int has_32bit_inodes : 1;
- 
-+	/*
-+	 * If set, then fs/crypto/ will allow users to select a crypto data unit
-+	 * size that is less than the filesystem block size.  This is done via
-+	 * the log2_data_unit_size field of the fscrypt policy.  This flag is
-+	 * not compatible with filesystems that encrypt variable-length blocks
-+	 * (i.e. blocks that aren't all equal to filesystem's block size), for
-+	 * example as a result of compression.  It's also not compatible with
-+	 * the fscrypt_encrypt_block_inplace() and
-+	 * fscrypt_decrypt_block_inplace() functions.
-+	 */
-+	unsigned int supports_subblock_data_units : 1;
-+
- 	/*
- 	 * This field exists only for backwards compatibility reasons and should
- 	 * only be set by the filesystems that are setting it already.  It
- 	 * contains the filesystem-specific key description prefix that is
- 	 * accepted for "logon" keys for v1 fscrypt policies.  This
- 	 * functionality is deprecated in favor of the generic prefix
- 	 * "fscrypt:", which itself is deprecated in favor of the filesystem
- 	 * keyring ioctls such as FS_IOC_ADD_ENCRYPTION_KEY.  Filesystems that
- 	 * are newly adding fscrypt support should not set this field.
- 	 */
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index fd1fb0d5389d3..7a8f4c2901873 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -64,21 +64,22 @@ struct fscrypt_key {
- /*
-  * New policy version with HKDF and key verification (recommended).
-  */
- #define FSCRYPT_POLICY_V2		2
- #define FSCRYPT_KEY_IDENTIFIER_SIZE	16
- struct fscrypt_policy_v2 {
- 	__u8 version;
- 	__u8 contents_encryption_mode;
- 	__u8 filenames_encryption_mode;
- 	__u8 flags;
--	__u8 __reserved[4];
-+	__u8 log2_data_unit_size;
-+	__u8 __reserved[3];
- 	__u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
- };
- 
- /* Struct passed to FS_IOC_GET_ENCRYPTION_POLICY_EX */
- struct fscrypt_get_policy_ex_arg {
- 	__u64 policy_size; /* input/output */
- 	union {
- 		__u8 version;
- 		struct fscrypt_policy_v1 v1;
- 		struct fscrypt_policy_v2 v2;
 -- 
-2.42.0
+2.41.0
 
