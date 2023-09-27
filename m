@@ -2,97 +2,190 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA14E7AFB5F
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 08:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12787AFEEE
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 10:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjI0Gvf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Sep 2023 02:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        id S229762AbjI0ItZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Sep 2023 04:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0Gve (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 02:51:34 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72593D6;
-        Tue, 26 Sep 2023 23:51:33 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RwS2573rxz4f3jXp;
-        Wed, 27 Sep 2023 14:51:25 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgBXYQbx0BNl30H1BQ--.45561S2;
-        Wed, 27 Sep 2023 14:51:30 +0800 (CST)
-Subject: Re: [PATCH v7 01/12] ext4: make state in ext4_mb_mark_bb to be bool
-To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        with ESMTP id S230000AbjI0ItY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 04:49:24 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD7A3;
+        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c3bd829b86so83289205ad.0;
+        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695804562; x=1696409362; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
+        b=OznP9QddYD/P6SLu1IihEPpKDHVvJJZCKkNpl/GsiaSwPis2NgEXljT2DBH9R9w/bi
+         WtnciHWgRRm+sZ9WLhrB98dewHCAx5gBKMNVXBsbDxqhJJPvwMjYWk06wZnJlBt7mPIE
+         gy1msnawdL5Q+8Dxdh4jDlHKc67EOgm5hGDYPf0nL3mIDLqyQEGxqh978g9um0mYT9Bj
+         hoz3FOt2oiKjNdSsP1IJ9idvDfGABNyNBRh+tk+m7SYyNH2mB3lXbwBTuWc1+KXAN49q
+         QZ4ZpEIx0/0fomoTAStWoyrZdFp1/PaiO9SjrySgjMCCkdHEmbOmN//mCVzincuUAib+
+         px4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695804562; x=1696409362;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
+        b=DOJgs8p31UaZ0jd4cYZ64NYIYn4fmAjn6ct8Avyvl8DJWWYX4TEKUjTIFyu5qBZluJ
+         vVY3VmA1OF8jeXCKlYpNvXx05BbfHDBqNHzXozU2MLW3Ck0qXFwIXPsYeqMmIQKmMi3g
+         E7QFjvoeLVLytF7EDJgECJ9SPceKPqYgpEgIywGii47JuQ20h4dTwNQs4Hp2WsiMQwG5
+         EpcBBwcoa2UGhsbVC2QpHNFih7pBSMiA2dZgg6aQzYZR56CYGD+Wq8k2oPjzuNm+j8U2
+         gk38q7FF4t6w9mXPPqcTADam3EcAghiXdlzElxzdRc+P0HW2fLMUhiSA3MXpZe2+7Hfe
+         BNew==
+X-Gm-Message-State: AOJu0Yz/cEPuzLIW7T4Q4es9V+8uMxnz6tYsfrLGfQV5s3xzJGRSHt0F
+        8s+ukaPykQTgij/Qgrcug9fYyitDr3k=
+X-Google-Smtp-Source: AGHT+IHOIvlC0VTTSD1TDqihjByVlmint/jkmEcXp1TPBsQlERqjLLSm7j2rCoIykA/lAs6dVQsmxQ==
+X-Received: by 2002:a17:902:da8c:b0:1c5:a60c:4ee with SMTP id j12-20020a170902da8c00b001c5a60c04eemr1257482plx.47.1695804562075;
+        Wed, 27 Sep 2023 01:49:22 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001bb99e188fcsm12495621plx.194.2023.09.27.01.49.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 01:49:21 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:19:17 +0530
+Message-Id: <87zg18f1bm.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca
 Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <874jjggn8l.fsf@doe.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <ec8aca6c-1e8c-3fe9-81d7-d18876cc40cb@huaweicloud.com>
-Date:   Wed, 27 Sep 2023 14:51:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
-MIME-Version: 1.0
-In-Reply-To: <874jjggn8l.fsf@doe.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgBXYQbx0BNl30H1BQ--.45561S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7XF1kZF47KF1rJw1xAw1DZFb_yoW8JryfpF
-        nxGF4rWr1vvw1q9wsrCa45XF1UK3s7KF42v3yfuw4ruFZ7t34IqFnxtF1Uu3Z8trZ7A3Wr
-        Xa1a9r95Gr4fGa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
+In-Reply-To: <20230919201532.310085-3-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
+
+> There are several reasons to add a general function ext4_mb_mark_context
+> to update block bitmap and group descriptor on disk:
+> 1. pair behavior of alloc/free bits. For example,
+> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+> 2. remove repeat code to read from disk, update and write back to disk.
+> 3. reduce future unit test mocks to catch real IO to update structure
+> on disk.
+>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
+>  1 file changed, 77 insertions(+), 70 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index cf09adfbaf11..e1320eea46e9 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
+>  	ext4_groupinfo_destroy_slabs();
+>  }
+>  
+> +static int
+> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
+> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
 
 
-on 9/27/2023 2:10 PM, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
-> 
->> As state could only be either 0 or 1, just make it bool.
-> 
-> Sure.
-> 
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/ext4.h        | 2 +-
->>  fs/ext4/fast_commit.c | 8 ++++----
->>  fs/ext4/mballoc.c     | 2 +-
->>  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> But why not convert at all places?
-Sorry for this. Will convert at all places in next version. Thanks.
-> 
-> git grep "ext4_mb_mark_bb" .
-> fs/ext4/ext4.h:extern void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
-> fs/ext4/extents.c:                                      ext4_mb_mark_bb(inode->i_sb,
-> fs/ext4/extents.c:                      ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-> fs/ext4/fast_commit.c:                  ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-> fs/ext4/fast_commit.c:                  ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-> fs/ext4/fast_commit.c:                                          ext4_mb_mark_bb(inode->i_sb,
-> fs/ext4/fast_commit.c:                          ext4_mb_mark_bb(inode->i_sb, map.m_pblk,
-> fs/ext4/mballoc.c:void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
-> fs/ext4/mballoc.c:      ext4_mb_mark_bb(sb, block, 1, 1);
-> 
-> -ritesh
-> 
+ext4_grpblk_t is defined as int.
+    /* data type for block offset of block group */
+    typedef int ext4_grpblk_t;
 
+I think len should be unsigned int (u32) here. 
+
+> +{
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	struct buffer_head *bitmap_bh = NULL;
+> +	struct ext4_group_desc *gdp;
+> +	struct buffer_head *gdp_bh;
+> +	int err;
+> +	unsigned int i, already, changed;
+> +
+> +	bitmap_bh = ext4_read_block_bitmap(sb, group);
+> +	if (IS_ERR(bitmap_bh))
+> +		return PTR_ERR(bitmap_bh);
+> +
+> +	err = -EIO;
+> +	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
+> +	if (!gdp)
+> +		goto out_err;
+> +
+> +	ext4_lock_group(sb, group);
+> +	if (ext4_has_group_desc_csum(sb) &&
+> +	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+> +		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_clusters_after_init(sb, group, gdp));
+> +	}
+> +
+> +	already = 0;
+> +	for (i = 0; i < len; i++)
+> +		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
+> +				state)
+> +			already++;
+> +	changed = len - already;
+> +
+> +	if (state) {
+> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_group_clusters(sb, gdp) - changed);
+> +	} else {
+> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_group_clusters(sb, gdp) + changed);
+> +	}
+> +
+> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+> +	ext4_group_desc_csum_set(sb, group, gdp);
+> +	ext4_unlock_group(sb, group);
+> +
+> +	if (sbi->s_log_groups_per_flex) {
+> +		ext4_group_t flex_group = ext4_flex_group(sbi, group);
+> +		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
+> +					   s_flex_groups, flex_group);
+> +
+> +		if (state)
+> +			atomic64_sub(changed, &fg->free_clusters);
+> +		else
+> +			atomic64_add(changed, &fg->free_clusters);
+> +	}
+> +
+> +	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
+> +	if (err)
+> +		goto out_err;
+> +	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
+> +	if (err)
+> +		goto out_err;
+> +
+> +	sync_dirty_buffer(bitmap_bh);
+> +	sync_dirty_buffer(gdp_bh);
+> +
+> +out_err:
+> +	brelse(bitmap_bh);
+> +	return err;
+> +}
+>  
+>  /*
+>   * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
+> @@ -4079,15 +4153,11 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+>  void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+>  		     int len, bool state)
+
+Even ext4_mb_mark_bb should take len as unsigned int IMO.
+For e.g. ext4_fc_replay_add_range() passes map.m_len which is also
+unsigned int.
+
+
+Otherwise the patch looks good to me. Feel free to add - 
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
+-ritesh
