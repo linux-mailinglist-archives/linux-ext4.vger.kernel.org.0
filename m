@@ -2,63 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1287AFEFE
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 10:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69157AFF94
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 11:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjI0Iww (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Sep 2023 04:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        id S230062AbjI0JNd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Sep 2023 05:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjI0Iwv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 04:52:51 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BE2A3;
-        Wed, 27 Sep 2023 01:52:49 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3ae5eec2a89so1112595b6e.3;
-        Wed, 27 Sep 2023 01:52:49 -0700 (PDT)
+        with ESMTP id S229750AbjI0JNc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 05:13:32 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C557297;
+        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6c4b9e09521so5421974a34.3;
+        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695804768; x=1696409568; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695806009; x=1696410809; darn=vger.kernel.org;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=bURqcdHJsNIwzVa6YJPI+rjQkbntkKFJfbgKAVXssiM=;
-        b=iRHtsaGFbIWJwG7mZVSZb6MuWbaHPTsGTinmCDIxBMXtQfUs6rJc7otW6koO1Nzhm2
-         EHA5T9z6x8u6ScxjkDTaF7nZkyaY/L2yQImDJlYUBtIGzasJdQPluzfYJPpcdpBJtf9I
-         FHjGBI5xuxUvAnn2KdzaPqCyR20YSfOi6PQs9rWS7LUq9DQpfDv9mNxXwhVosTnpWVtD
-         oi9M13Q+t9z+/arXSHeh/AI+PjP8neKa5ipyZL80wGC8onw1mMmcQUMsyZfudcaYTkEQ
-         honzrtjjPpYGdHQvkbn2rPw6rehxvAEj9NEUrp9VO2w87Ez2BA6GMfG5JjFesZwewVqq
-         Srng==
+        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
+        b=j1N+LDqYgX6WL8Zxoy2YSEjM5ivxwEz9n0LJlc7yVlKyGHy5lCDCwDhekI2Sx/YwWz
+         uVvZb504pizqQgm9ZzjiJhtM/y5eJUdAck8cXcQ6iPK1BPOscsxp+m55sHHR3Hlhk5e3
+         kGCSCXAPwtgT9TAbQM3TCWzHY2o79ITRd35pHzi8cksVBxASxCfw3ZwbFTaS9TDogj7F
+         wuSnd6RWpUTAOwI+67LPxl+iF1Wc//ZG76AE9zlMfE6kky3RDkN0Nvd8ZfkG3N/LYrWD
+         nuuHjrc+4zopsXf5T6ckqWWLmgHXM0f5PY45ycTN0RdpxJ7a+XHDJjKRvWAa0tz8IXH0
+         tZ1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804768; x=1696409568;
+        d=1e100.net; s=20230601; t=1695806009; x=1696410809;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bURqcdHJsNIwzVa6YJPI+rjQkbntkKFJfbgKAVXssiM=;
-        b=QHbBjKQ5lM+BtfyZFk/6DW0NJihRXyzFSKf3RriA0hOPozpsw5IKz+/m5oufYulkyF
-         5lH76JkzSTbFqPJ7KJWfqSgkGuH4YI1XRNzRynvHJzQIyTKDOCeNU0Yym5amOIcwdJ9W
-         hF/zWJ8h58+sjrQQWAXAMQjNUASGWvyqjW5uiB42l/VIvcxBbt8EjSf6r1kZyXs5UmtC
-         OyNM22qCKVzvnQV4IHUU3ly6UBYZdUQ7XhKGxFpY/gdvrOx/spZO+g61xydj1CFtNtrW
-         JA395JKl8p+KGIsBOi1/fjmBPFpQ/cL90tiH1tA83HPD0HdVjFckDASJXKKk66k/YeCJ
-         txjA==
-X-Gm-Message-State: AOJu0Yx/5IlMDxFjTeItya1avPox3z6HMrx3BlwXrzGtZ5cN2WszX3n4
-        3BOT1bdeR4XDUA8VJ6KO/O0uZ8jX358=
-X-Google-Smtp-Source: AGHT+IHfXYF4x2bhlaj5FqkJYnvnLh+hSJZ/V/+zrHtG282CAjL8gJ6/GcMU/dgjJ3WX/pPDdhVMoA==
-X-Received: by 2002:a05:6808:2a44:b0:3a8:5133:482d with SMTP id fa4-20020a0568082a4400b003a85133482dmr1409769oib.35.1695804768192;
-        Wed, 27 Sep 2023 01:52:48 -0700 (PDT)
+        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
+        b=hjVpkX+BSBk/ZHz6RVuDSRHvFFMaCFVOEproJ2RXWl0wdx+U0j9lf1SwkmRR1EXmnm
+         TWWHNfzICLPgVAjzV+fEYvEJLTgxoSBLwJZeeBh3vG02RfnO0//YwAfjDh7kU82Wp/Ph
+         kGbmW/47a12AhAjBVLoKbs+l8BYrZ7VmPNyyd3vUEUmIg76y2a9bYk9u3IoiM4k4r8rp
+         nCFxIFD+sbLCciojaVP2np4sT1kDTzWLO2luQ6kwfVMHe9mF/ZIbQ8/dh9WQ+tT2vNtC
+         rUO9CORUU58TytcnLzKRntnamf0qqzhZXgpfTLR7nso03nE5l2JOO1HKwj87LU+nSXPd
+         vXPQ==
+X-Gm-Message-State: AOJu0Yz3YlxPBDofdTizPEwZfcDzXSBqSd2K77dFtLoeMUJXKDWne1Ub
+        ns3k9JswLyWywa2lHUzs3AbIdecEyJU=
+X-Google-Smtp-Source: AGHT+IEgoQPlSZuEuHoIprSSsFiV+5wehZgmRH1fe1RDxFYw1tju6jM5a8nT9JRMGhHVBc0CXcbONQ==
+X-Received: by 2002:a05:6358:7e84:b0:135:47e8:76e2 with SMTP id o4-20020a0563587e8400b0013547e876e2mr1420493rwn.4.1695806009336;
+        Wed, 27 Sep 2023 02:13:29 -0700 (PDT)
 Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id i17-20020aa78b51000000b0066a4e561beesm11720242pfd.173.2023.09.27.01.52.45
+        by smtp.gmail.com with ESMTPSA id t1-20020a63b701000000b00577f8f4df6bsm9381310pgf.18.2023.09.27.02.13.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 01:52:47 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:22:43 +0530
-Message-Id: <87wmwcf15w.fsf@doe.com>
+        Wed, 27 Sep 2023 02:13:28 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:43:24 +0530
+Message-Id: <87ttrgf07f.fsf@doe.com>
 From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
         adilger.kernel@dilger.ca
 Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 03/12] ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
-In-Reply-To: <20230919201532.310085-4-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH v7 04/12] ext4: extend ext4_mb_mark_context to support allocation under journal
+In-Reply-To: <20230919201532.310085-5-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,30 +68,38 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> call ext4_mb_mark_context in ext4_free_blocks_simple to:
-> 1. remove repeat code
-> 2. pair update of free_clusters in ext4_mb_new_blocks_simple.
-> 3. add missing ext4_lock_group/ext4_unlock_group protection.
+> Previously, ext4_mb_mark_context is only called under fast commit
+> replay path, so there is no valid handle when we update block bitmap
+> and group descriptor. This patch try to extend ext4_mb_mark_context
+> to be used by code under journal. There are several improvement:
+> 1. add "handle_t *handle" to struct ext4_mark_context to journal block
+> bitmap and group descriptor update inside ext4_mb_mark_context (the
+> added journal code is based on ext4_mb_mark_diskspace_used where
+> ext4_mb_mark_context is going to be used.)
+
+> 2. add EXT4_MB_BITMAP_MARKED_CHECK flag to control check if bits in block
+> bitmap are already marked as allocation code under journal asserts that
+> all bits to be changed are not marked before.
+
+Maybe we can reword this to... 
+Adds a flag argument to ext4_mb_mark_context() which controls
+a. EXT4_MB_BITMAP_MARKED_CHECK - whether block bitmap checking is needed.
+b. EXT4_MB_SYNC_UPDATE - whether dirty buffers (bitmap and group descriptor) needs sync.
+
+
+> 3. add "ext4_grpblk_t changed" to struct ext4_mark_context to notify number
+> of bits in block bitmap has changed.
+
+We should remove above point 3 as there is no "struct ext4_mark_context"
+in this v7 series.
+
 >
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > ---
->  fs/ext4/mballoc.c | 33 +--------------------------------
->  1 file changed, 1 insertion(+), 32 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e1320eea46e9..cd2fd5dbfcdd 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6393,43 +6393,12 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
->  static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
->  					unsigned long count)
+>  fs/ext4/mballoc.c | 64 ++++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 49 insertions(+), 15 deletions(-)
 
-This might need some auditing later (need not be as part of this series)
-on why it is an unsigned long. I think it is just a left over and an
-unsigned int should be sufficient.
 
-But either ways this patch looks good to me. Feel free to add -
+The changes looks good to me. With commit msg updated, feel free to add-
 
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
