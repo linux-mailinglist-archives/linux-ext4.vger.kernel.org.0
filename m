@@ -2,104 +2,193 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E69157AFF94
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 11:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925677B003E
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 11:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjI0JNd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Sep 2023 05:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        id S230366AbjI0Jew (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Sep 2023 05:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjI0JNc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 05:13:32 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C557297;
-        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6c4b9e09521so5421974a34.3;
-        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695806009; x=1696410809; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
-        b=j1N+LDqYgX6WL8Zxoy2YSEjM5ivxwEz9n0LJlc7yVlKyGHy5lCDCwDhekI2Sx/YwWz
-         uVvZb504pizqQgm9ZzjiJhtM/y5eJUdAck8cXcQ6iPK1BPOscsxp+m55sHHR3Hlhk5e3
-         kGCSCXAPwtgT9TAbQM3TCWzHY2o79ITRd35pHzi8cksVBxASxCfw3ZwbFTaS9TDogj7F
-         wuSnd6RWpUTAOwI+67LPxl+iF1Wc//ZG76AE9zlMfE6kky3RDkN0Nvd8ZfkG3N/LYrWD
-         nuuHjrc+4zopsXf5T6ckqWWLmgHXM0f5PY45ycTN0RdpxJ7a+XHDJjKRvWAa0tz8IXH0
-         tZ1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695806009; x=1696410809;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
-        b=hjVpkX+BSBk/ZHz6RVuDSRHvFFMaCFVOEproJ2RXWl0wdx+U0j9lf1SwkmRR1EXmnm
-         TWWHNfzICLPgVAjzV+fEYvEJLTgxoSBLwJZeeBh3vG02RfnO0//YwAfjDh7kU82Wp/Ph
-         kGbmW/47a12AhAjBVLoKbs+l8BYrZ7VmPNyyd3vUEUmIg76y2a9bYk9u3IoiM4k4r8rp
-         nCFxIFD+sbLCciojaVP2np4sT1kDTzWLO2luQ6kwfVMHe9mF/ZIbQ8/dh9WQ+tT2vNtC
-         rUO9CORUU58TytcnLzKRntnamf0qqzhZXgpfTLR7nso03nE5l2JOO1HKwj87LU+nSXPd
-         vXPQ==
-X-Gm-Message-State: AOJu0Yz3YlxPBDofdTizPEwZfcDzXSBqSd2K77dFtLoeMUJXKDWne1Ub
-        ns3k9JswLyWywa2lHUzs3AbIdecEyJU=
-X-Google-Smtp-Source: AGHT+IEgoQPlSZuEuHoIprSSsFiV+5wehZgmRH1fe1RDxFYw1tju6jM5a8nT9JRMGhHVBc0CXcbONQ==
-X-Received: by 2002:a05:6358:7e84:b0:135:47e8:76e2 with SMTP id o4-20020a0563587e8400b0013547e876e2mr1420493rwn.4.1695806009336;
-        Wed, 27 Sep 2023 02:13:29 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id t1-20020a63b701000000b00577f8f4df6bsm9381310pgf.18.2023.09.27.02.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 02:13:28 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:43:24 +0530
-Message-Id: <87ttrgf07f.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 04/12] ext4: extend ext4_mb_mark_context to support allocation under journal
-In-Reply-To: <20230919201532.310085-5-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230448AbjI0Jes (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 05:34:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9157A193;
+        Wed, 27 Sep 2023 02:34:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 967601FD5E;
+        Wed, 27 Sep 2023 09:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695807283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8yq/EWr5xgyIq2expGTOm/a8E50tdoL6jyUvlCURtkA=;
+        b=AFBlD5DhZEt1NESHiYyz8SkegLzofp7eJ1WULrYqvNawr6FwYRs8YvfnxMMuueLH4oaPAr
+        4/E8CfUtgD9JCSYdgqDNPTGf3WDqWggCkDqswdM4bg88sfMPDeWHH5NIlB2Bfj+JpMt9FG
+        ZcOWlzLEUXG/bpJ8Kbaqy4vRi+qRmpA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695807283;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8yq/EWr5xgyIq2expGTOm/a8E50tdoL6jyUvlCURtkA=;
+        b=mg4W9cwL1b35dhDAXFy+IpXoqDtwwHWZKy46oqV5YDeY2A866tqG4ZHrqCDezVtTxVLjRN
+        B2SqzI+xFxiJavDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 779CF13A74;
+        Wed, 27 Sep 2023 09:34:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YqW3HDP3E2X+EgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 27 Sep 2023 09:34:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id DAA33A07C9; Wed, 27 Sep 2023 11:34:42 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
+Date:   Wed, 27 Sep 2023 11:34:06 +0200
+Message-Id: <20230818123232.2269-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3761; i=jack@suse.cz; h=from:subject:message-id; bh=szriGynEGZ/XhMNms+k06ASpRGig2ulDzrbrydRWx/Q=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlE/cIrHCVKGuvNFZzgT9xiRfuRKr6Es2Qs4om7G7p jp8k2rmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZRP3CAAKCRCcnaoHP2RA2XGWB/ 4+O+K19fPnUyIouL+A+izJvDBxQbTCWLdn5TEMu5YdIMbi0dvnwAfknt+NWIhJaTQX2oqlgt3Z+UIT peMYb+jQZabj8X4xHMMy3Sfq64tRwodJHlZby5Ux9AfTZe49zDp4M4B3yxQqarEhmz6e4FJUGDaSej vcJmLz6AuSnYuAh4QK/3jCXQrEElZRTjarZjfbunWocM/2dQ7CB+rOSwKJcRMoDpqntU8QyArxca4l q6I2pBMNjnYMgjtG+ABGSBtTrj87TuJSTB3V8qtI38sfCYjMVVEoQiJKuUm1GMh2sPOFelwVMXMCJH mKs8UbSjcFd3wsbJXc8EOKLxzYparl
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Hello,
 
-> Previously, ext4_mb_mark_context is only called under fast commit
-> replay path, so there is no valid handle when we update block bitmap
-> and group descriptor. This patch try to extend ext4_mb_mark_context
-> to be used by code under journal. There are several improvement:
-> 1. add "handle_t *handle" to struct ext4_mark_context to journal block
-> bitmap and group descriptor update inside ext4_mb_mark_context (the
-> added journal code is based on ext4_mb_mark_diskspace_used where
-> ext4_mb_mark_context is going to be used.)
+this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
+calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+makes the get and put calls for bdevs more obviously matching and allows us to
+propagate context from get to put without having to modify all the users
+(again!). In particular I need to propagate used open flags to blkdev_put() to
+be able count writeable opens and add support for blocking writes to mounted
+block devices. I'll send that series separately.
 
-> 2. add EXT4_MB_BITMAP_MARKED_CHECK flag to control check if bits in block
-> bitmap are already marked as allocation code under journal asserts that
-> all bits to be changed are not marked before.
+The series is based on Btrfs tree's for-next branch [2] as of today as the
+series depends on Christoph's changes to btrfs device handling.  Patches have
+passed some reasonable testing - I've tested block changes, md, dm, bcache,
+xfs, btrfs, ext4, swap. More testing or review is always welcome. Thanks! I've
+pushed out the full branch to:
 
-Maybe we can reword this to... 
-Adds a flag argument to ext4_mb_mark_context() which controls
-a. EXT4_MB_BITMAP_MARKED_CHECK - whether block bitmap checking is needed.
-b. EXT4_MB_SYNC_UPDATE - whether dirty buffers (bitmap and group descriptor) needs sync.
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
 
+to ease review / testing. Christian, can you pull the patches to your tree
+to get some exposure in linux-next as well? Thanks!
 
-> 3. add "ext4_grpblk_t changed" to struct ext4_mark_context to notify number
-> of bits in block bitmap has changed.
+Changes since v3:
+* Rebased on top on btrfs tree
 
-We should remove above point 3 as there is no "struct ext4_mark_context"
-in this v7 series.
+Changes since v2:
+* Rebased on top of current vfs tree
+* Added some acks
+* Reflected minor nits from Christoph
+* Added missing conversion of blkdev_put() calls in cramfs and erofs
+* Fixed possible leak of bdev handle in xfs if logdev is the same as fs dev
 
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 64 ++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 49 insertions(+), 15 deletions(-)
+Changes since v1:
+* Rebased on top of current vfs tree
+* Renamed final functions to bdev_open_by_*() and bdev_release()
+* Fixed detection of exclusive open in blkdev_ioctl() and blkdev_fallocate()
+* Fixed swap conversion to properly reinitialize swap_info->bdev_handle
+* Fixed xfs conversion to not oops with rtdev without logdev
+* Couple other minor fixups
 
+								Honza
 
-The changes looks good to me. With commit msg updated, feel free to add-
+[1] https://lore.kernel.org/all/ZJGNsVDhZx0Xgs2H@infradead.org
+[2] git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+CC: Alasdair Kergon <agk@redhat.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Anna Schumaker <anna@kernel.org>
+CC: Chao Yu <chao@kernel.org>
+CC: Christian Borntraeger <borntraeger@linux.ibm.com>
+CC: Coly Li <colyli@suse.de
+CC: "Darrick J. Wong" <djwong@kernel.org>
+CC: Dave Kleikamp <shaggy@kernel.org>
+CC: David Sterba <dsterba@suse.com>
+CC: dm-devel@redhat.com
+CC: drbd-dev@lists.linbit.com
+CC: Gao Xiang <xiang@kernel.org>
+CC: Jack Wang <jinpu.wang@ionos.com>
+CC: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: jfs-discussion@lists.sourceforge.net
+CC: Joern Engel <joern@lazybastard.org>
+CC: Joseph Qi <joseph.qi@linux.alibaba.com>
+CC: Kent Overstreet <kent.overstreet@gmail.com>
+CC: linux-bcache@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: linux-erofs@lists.ozlabs.org
+CC: <linux-ext4@vger.kernel.org>
+CC: linux-f2fs-devel@lists.sourceforge.net
+CC: linux-mm@kvack.org
+CC: linux-mtd@lists.infradead.org
+CC: linux-nfs@vger.kernel.org
+CC: linux-nilfs@vger.kernel.org
+CC: linux-nvme@lists.infradead.org
+CC: linux-pm@vger.kernel.org
+CC: linux-raid@vger.kernel.org
+CC: linux-s390@vger.kernel.org
+CC: linux-scsi@vger.kernel.org
+CC: linux-xfs@vger.kernel.org
+CC: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+CC: Mike Snitzer <snitzer@kernel.org>
+CC: Minchan Kim <minchan@kernel.org>
+CC: ocfs2-devel@oss.oracle.com
+CC: reiserfs-devel@vger.kernel.org
+CC: Sergey Senozhatsky <senozhatsky@chromium.org>
+CC: Song Liu <song@kernel.org>
+CC: Sven Schnelle <svens@linux.ibm.com>
+CC: target-devel@vger.kernel.org
+CC: Ted Tso <tytso@mit.edu>
+CC: Trond Myklebust <trond.myklebust@hammerspace.com>
+CC: xen-devel@lists.xenproject.org
+
+Previous versions:
+Link: http://lore.kernel.org/r/20230629165206.383-1-jack@suse.cz # v1
+Link: http://lore.kernel.org/r/20230810171429.31759-1-jack@suse.cz # v2
