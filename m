@@ -2,172 +2,226 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BAD7B09D8
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Sep 2023 18:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7967B1133
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Sep 2023 05:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjI0QVf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Sep 2023 12:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S229854AbjI1Dbd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Sep 2023 23:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjI0QVe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 12:21:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E702DD;
-        Wed, 27 Sep 2023 09:21:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3E3C433C7;
-        Wed, 27 Sep 2023 16:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695831690;
-        bh=5fVqTod0fsU3D85/NgpH5eX11yWtVW2s8jme29QI3SA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K+SdxwDZhx8uxbb5abeHgPolVgmwSiIBL6/AzX/eEpmg7s5Jd1TwEPpueT17Z+y1i
-         r/3aJFhGZoIRaqB+ADboLRaAQZpJm6SMvyfu5jpdUX9fmjLLqHrtdJHSnoHaBHBoNB
-         1Ras0NDOeGzjZ5rjoNJ7hj3RFSgjPFHQeOCu0doiR1ZFlmc7Dtn7+Tg4yFYE5HRxY7
-         FflbgLOEB1zCas3wjtrhbqXfzlZd6DZqKcBXDoRDLeETsNHRLxD2cXgjOH7guvx0ma
-         AufPlRnLwdi+pMqoWiBGk6SGa+Snjtz53w/pXkwTjOc2fDnSaUxFN105snuKm+T14u
-         FBsBAdYo6oMFA==
-Date:   Wed, 27 Sep 2023 18:21:19 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Joern Engel <joern@lazybastard.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Song Liu <song@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <20230927-prahlen-reintreten-93706074e58d@brauner>
-References: <20230818123232.2269-1-jack@suse.cz>
+        with ESMTP id S230017AbjI1Dbc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Sep 2023 23:31:32 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E6399;
+        Wed, 27 Sep 2023 20:31:29 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RwzXn1ZZHz4f3jJH;
+        Thu, 28 Sep 2023 11:31:21 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgCHjQKJ8xRlsnY+Bg--.12055S2;
+        Thu, 28 Sep 2023 11:31:22 +0800 (CST)
+Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap
+ and group descriptor on disk from ext4_mb_mark_bb
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <87zg18f1bm.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <309d082f-45b9-9dac-9921-6c3d44de17a7@huaweicloud.com>
+Date:   Thu, 28 Sep 2023 11:31:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87zg18f1bm.fsf@doe.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgCHjQKJ8xRlsnY+Bg--.12055S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ary8KF1ktF1fKF4xuF1ftFb_yoW7WFyrpr
+        nIyF1DGF13Jrnrur47Zw1UX3WfJw409F18GryfW34rWFZFyr95JFn7GFyFkas0kFsrXFnF
+        vF45Zrs7ur48GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 27 Sep 2023 11:34:07 +0200, Jan Kara wrote:
-> Create struct bdev_handle that contains all parameters that need to be
-> passed to blkdev_put() and provide bdev_open_* functions that return
-> this structure instead of plain bdev pointer. This will eventually allow
-> us to pass one more argument to blkdev_put() (renamed to bdev_release())
-> without too much hassle.
+
+
+on 9/27/2023 4:49 PM, Ritesh Harjani wrote:
+> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+> 
+>> There are several reasons to add a general function ext4_mb_mark_context
+>> to update block bitmap and group descriptor on disk:
+>> 1. pair behavior of alloc/free bits. For example,
+>> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+>> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+>> 2. remove repeat code to read from disk, update and write back to disk.
+>> 3. reduce future unit test mocks to catch real IO to update structure
+>> on disk.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
+>>  1 file changed, 77 insertions(+), 70 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index cf09adfbaf11..e1320eea46e9 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
+>>  	ext4_groupinfo_destroy_slabs();
+>>  }
+>>  
+>> +static int
+>> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
+>> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
 > 
 > 
-> [...]
+> ext4_grpblk_t is defined as int.
+>     /* data type for block offset of block group */
+>     typedef int ext4_grpblk_t;
+> 
+> I think len should be unsigned int (u32) here. 
+> 
+Hi Ritesh, thanks for reply and a lot suggestions to this patch and other
+patches in this series.
+I define len as ext4_grpblk_t as I think ext4_grpblk_t is supposed to fit
+block or cluster number of single group.
 
-> to ease review / testing. Christian, can you pull the patches to your tree
-> to get some exposure in linux-next as well? Thanks!
+Here are some examples save block number of group to ext4_grpblk_t:
+static ext4_fsblk_t ext4_valid_block_bitmap(...)
+{
+        ...
+        ext4_grpblk_t max_bit = EXT4_CLUSTERS_PER_GROUP(sb);
+        ...
+}
 
-Yep. So I did it slighly differently. I pulled in the btrfs prereqs and
-then applied your series on top of it so we get all the Link: tags right.
-I'm running tests right now. Please double-check.
+static ext4_fsblk_t ext4_mb_new_blocks_simple(...)
+{
+        ...
+        ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
+        ...
+}
 
----
+/* len could be group block number if group has only one fragment */
+static int mb_avg_fragment_size_order(..., ext4_grpblk_t len)
 
-Applied to the vfs.super branch of the vfs/vfs.git tree.
-Patches in the vfs.super branch should appear in linux-next soon.
+As ext4_grpblk_t is data type for block offset of block group, so
+ext4_grpblk_t fits "block number of group" - 1. If we support block
+number of group > INT_MAX + 1, ext4_grpblk_t should be unsigned int anyway.
+IMO, it's more simple just make ext4_grpblk_t data type for block number
+in a single group and make it unsigned int if block number of group is
+possible to >= INT_MAX + 1. Does this makes to you.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+>> +{
+>> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>> +	struct buffer_head *bitmap_bh = NULL;
+>> +	struct ext4_group_desc *gdp;
+>> +	struct buffer_head *gdp_bh;
+>> +	int err;
+>> +	unsigned int i, already, changed;
+>> +
+>> +	bitmap_bh = ext4_read_block_bitmap(sb, group);
+>> +	if (IS_ERR(bitmap_bh))
+>> +		return PTR_ERR(bitmap_bh);
+>> +
+>> +	err = -EIO;
+>> +	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
+>> +	if (!gdp)
+>> +		goto out_err;
+>> +
+>> +	ext4_lock_group(sb, group);
+>> +	if (ext4_has_group_desc_csum(sb) &&
+>> +	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+>> +		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+>> +		ext4_free_group_clusters_set(sb, gdp,
+>> +			ext4_free_clusters_after_init(sb, group, gdp));
+>> +	}
+>> +
+>> +	already = 0;
+>> +	for (i = 0; i < len; i++)
+>> +		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
+>> +				state)
+>> +			already++;
+>> +	changed = len - already;
+>> +
+>> +	if (state) {
+>> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
+>> +		ext4_free_group_clusters_set(sb, gdp,
+>> +			ext4_free_group_clusters(sb, gdp) - changed);
+>> +	} else {
+>> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
+>> +		ext4_free_group_clusters_set(sb, gdp,
+>> +			ext4_free_group_clusters(sb, gdp) + changed);
+>> +	}
+>> +
+>> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+>> +	ext4_group_desc_csum_set(sb, group, gdp);
+>> +	ext4_unlock_group(sb, group);
+>> +
+>> +	if (sbi->s_log_groups_per_flex) {
+>> +		ext4_group_t flex_group = ext4_flex_group(sbi, group);
+>> +		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
+>> +					   s_flex_groups, flex_group);
+>> +
+>> +		if (state)
+>> +			atomic64_sub(changed, &fg->free_clusters);
+>> +		else
+>> +			atomic64_add(changed, &fg->free_clusters);
+>> +	}
+>> +
+>> +	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
+>> +	if (err)
+>> +		goto out_err;
+>> +	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
+>> +	if (err)
+>> +		goto out_err;
+>> +
+>> +	sync_dirty_buffer(bitmap_bh);
+>> +	sync_dirty_buffer(gdp_bh);
+>> +
+>> +out_err:
+>> +	brelse(bitmap_bh);
+>> +	return err;
+>> +}
+>>  
+>>  /*
+>>   * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
+>> @@ -4079,15 +4153,11 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+>>  void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+>>  		     int len, bool state)
+> 
+> Even ext4_mb_mark_bb should take len as unsigned int IMO.
+> For e.g. ext4_fc_replay_add_range() passes map.m_len which is also
+> unsigned int.
+If we agree ext4_grpblk_t to be data type for block number in group,
+I think it's more reasonable to take len as ext4_grpblk_t too.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Look forward to you reply. Thanks!
+> 
+> 
+> Otherwise the patch looks good to me. Feel free to add - 
+> 
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> 
+> -ritesh
+> 
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.super
-
-[01/29] block: Provide bdev_open_* functions
-       https://git.kernel.org/vfs/vfs/c/b7c828aa0b3c
-[02/29] block: Use bdev_open_by_dev() in blkdev_open()
-        https://git.kernel.org/vfs/vfs/c/d4e36f27b45a
-[03/29] block: Use bdev_open_by_dev() in disk_scan_partitions() and blkdev_bszset()
-        https://git.kernel.org/vfs/vfs/c/5f9bd6764c7a
-[04/29] drdb: Convert to use bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/0220ca8e443d
-[05/29] pktcdvd: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/7af10b889789
-[06/29] rnbd-srv: Convert to use bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/3d27892a4be7
-[07/29] xen/blkback: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/26afb0ed10b3
-[08/29] zram: Convert to use bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/efc8e3f4c6dc
-[09/29] bcache: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/dc893f51d24a
-[10/29] dm: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/80c2267c6d07
-[11/29] md: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/15db36126ca6
-[12/29] mtd: block2mtd: Convert to bdev_open_by_dev/path()
-        https://git.kernel.org/vfs/vfs/c/4c27234bf3ce
-[13/29] nvmet: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/70cffddcc300
-[14/29] s390/dasd: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/5581d03457f8
-[15/29] scsi: target: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/43de7d844d47
-[16/29] PM: hibernate: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/105ea4a2fd18
-[17/29] PM: hibernate: Drop unused snapshot_test argument
-        https://git.kernel.org/vfs/vfs/c/b589a66e3688
-[18/29] mm/swap: Convert to use bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/615af8e29233
-[19/29] fs: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/5173192bcfe6
-[20/29] btrfs: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/8cf64782764f
-[21/29] erofs: Convert to use bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/4d41880bf249
-[22/29] ext4: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/f7507612395e
-[23/29] f2fs: Convert to bdev_open_by_dev/path()
-        https://git.kernel.org/vfs/vfs/c/d9ff8e3b6498
-[24/29] jfs: Convert to bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/459dc6376338
-[25/29] nfs/blocklayout: Convert to use bdev_open_by_dev/path()
-        https://git.kernel.org/vfs/vfs/c/5b1df9a40929
-[26/29] ocfs2: Convert to use bdev_open_by_dev()
-        https://git.kernel.org/vfs/vfs/c/b6b95acbd943
-[27/29] reiserfs: Convert to bdev_open_by_dev/path()
-        https://git.kernel.org/vfs/vfs/c/7e3615ff6119
-[28/29] xfs: Convert to bdev_open_by_path()
-        https://git.kernel.org/vfs/vfs/c/176ccb99e207
-[29/29] block: Remove blkdev_get_by_*() functions
-        https://git.kernel.org/vfs/vfs/c/953863a5a2ff
