@@ -2,40 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F777B1594
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Sep 2023 10:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1907B1591
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Sep 2023 10:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjI1IFE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Sep 2023 04:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S229648AbjI1IFD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Sep 2023 04:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbjI1IE4 (ORCPT
+        with ESMTP id S230372AbjI1IE4 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Sep 2023 04:04:56 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D62599;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD109F;
         Thu, 28 Sep 2023 01:04:53 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx5cK6Ph6z4f3kk6;
-        Thu, 28 Sep 2023 16:04:49 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgC3Td2eMxVlgAtdBg--.36922S6;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx5cL1NkKz4f3kkD;
         Thu, 28 Sep 2023 16:04:50 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgC3Td2eMxVlgAtdBg--.36922S7;
+        Thu, 28 Sep 2023 16:04:51 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     ritesh.list@gmail.com, tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 04/12] ext4: extend ext4_mb_mark_context to support allocation under journal
-Date:   Fri, 29 Sep 2023 00:03:59 +0800
-Message-Id: <20230928160407.142069-5-shikemeng@huaweicloud.com>
+Subject: [PATCH v8 05/12] ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
+Date:   Fri, 29 Sep 2023 00:04:00 +0800
+Message-Id: <20230928160407.142069-6-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230928160407.142069-1-shikemeng@huaweicloud.com>
 References: <20230928160407.142069-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgC3Td2eMxVlgAtdBg--.36922S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4UJw4kWFyrZF4rGFWDtwb_yoW7GF15pr
-        WqyF1qkr4fKrnxuF47C34aq3WfGw1Ikw1DGrWfG3s5ur47tr95XF4fKFyFyF4YyFsrZ3Z0
-        qF1Yy34xGr4rG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgC3Td2eMxVlgAtdBg--.36922S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxKry8Gw15tw18GF43JF15XFb_yoW7Xr1fpF
+        nxtF1UCr1fWr1DuFZ29w1DXF1rKw48G3WrJ34xGr1fuF12krZ8Aa18ta4Iya9rKFW7A3Wq
+        vF4Yya4UCr47WrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -46,7 +46,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4UJw4kWFyrZF4rGFWDtwb_yoW7GF15pr
         67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
         Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
         6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
         42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
         kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIL05UUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
@@ -60,157 +60,156 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Previously, ext4_mb_mark_context is only called under fast commit
-replay path, so there is no valid handle when we update block bitmap
-and group descriptor. This patch try to extend ext4_mb_mark_context
-to be used by code under journal. There are several improvement:
-1. Add "handle_t *handle" to struct ext4_mark_context to journal block
-bitmap and group descriptor update inside ext4_mb_mark_context (the
-added journal code is based on ext4_mb_mark_diskspace_used where
-ext4_mb_mark_context is going to be used.)
-2. Adds a flag argument to ext4_mb_mark_context() which controls
-a. EXT4_MB_BITMAP_MARKED_CHECK - whether block bitmap checking is needed.
-b. EXT4_MB_SYNC_UPDATE - whether dirty buffers (bitmap and group
-descriptor) needs sync.
+Call ext4_mb_mark_context in ext4_mb_mark_diskspace_used to:
+1. Remove repeat code to normally update bitmap and group descriptor
+on disk.
+2. Now that we have a common API for marking blocks inuse/free in block
+bitmap, use that instead of open coding it in function
+ext4_mb_mark_diskspace_used(). The current code was not updating
+checksum and other counters. ext4_mb_mark_context() should fix these
+consistency problems.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- fs/ext4/mballoc.c | 64 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 49 insertions(+), 15 deletions(-)
+ fs/ext4/mballoc.c | 86 +++++++++++------------------------------------
+ 1 file changed, 20 insertions(+), 66 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f50f6fa5e65c..b3e418c0f3d5 100644
+index b3e418c0f3d5..236540a178ff 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -3953,26 +3953,47 @@ void ext4_exit_mballoc(void)
- 	ext4_groupinfo_destroy_slabs();
- }
- 
-+#define EXT4_MB_BITMAP_MARKED_CHECK 0x0001
-+#define EXT4_MB_SYNC_UPDATE 0x0002
- static int
--ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
--		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
-+ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
-+		     ext4_group_t group, ext4_grpblk_t blkoff,
-+		     ext4_grpblk_t len, int flags, ext4_grpblk_t *ret_changed)
+@@ -4063,13 +4063,13 @@ static noinline_for_stack int
+ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+ 				handle_t *handle, unsigned int reserv_clstrs)
  {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct buffer_head *bitmap_bh = NULL;
+-	struct buffer_head *bitmap_bh = NULL;
  	struct ext4_group_desc *gdp;
- 	struct buffer_head *gdp_bh;
- 	int err;
--	unsigned int i, already, changed;
-+	unsigned int i, already, changed = len;
+-	struct buffer_head *gdp_bh;
+ 	struct ext4_sb_info *sbi;
+ 	struct super_block *sb;
+ 	ext4_fsblk_t block;
+ 	int err, len;
++	int flags = 0;
++	ext4_grpblk_t changed;
  
-+	if (ret_changed)
-+		*ret_changed = 0;
- 	bitmap_bh = ext4_read_block_bitmap(sb, group);
- 	if (IS_ERR(bitmap_bh))
- 		return PTR_ERR(bitmap_bh);
+ 	BUG_ON(ac->ac_status != AC_STATUS_FOUND);
+ 	BUG_ON(ac->ac_b_ex.fe_len <= 0);
+@@ -4077,32 +4077,13 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+ 	sb = ac->ac_sb;
+ 	sbi = EXT4_SB(sb);
  
-+	if (handle) {
-+		BUFFER_TRACE(bitmap_bh, "getting write access");
-+		err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-+						    EXT4_JTR_NONE);
-+		if (err)
-+			goto out_err;
-+	}
-+
- 	err = -EIO;
- 	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
+-	bitmap_bh = ext4_read_block_bitmap(sb, ac->ac_b_ex.fe_group);
+-	if (IS_ERR(bitmap_bh)) {
+-		return PTR_ERR(bitmap_bh);
+-	}
+-
+-	BUFFER_TRACE(bitmap_bh, "getting write access");
+-	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
+-					    EXT4_JTR_NONE);
+-	if (err)
+-		goto out_err;
+-
+-	err = -EIO;
+-	gdp = ext4_get_group_desc(sb, ac->ac_b_ex.fe_group, &gdp_bh);
++	gdp = ext4_get_group_desc(sb, ac->ac_b_ex.fe_group, NULL);
  	if (!gdp)
- 		goto out_err;
+-		goto out_err;
+-
++		return -EIO;
+ 	ext4_debug("using block group %u(%d)\n", ac->ac_b_ex.fe_group,
+ 			ext4_free_group_clusters(sb, gdp));
  
-+	if (handle) {
-+		BUFFER_TRACE(gdp_bh, "get_write_access");
-+		err = ext4_journal_get_write_access(handle, sb, gdp_bh,
-+						    EXT4_JTR_NONE);
-+		if (err)
-+			goto out_err;
-+	}
+-	BUFFER_TRACE(gdp_bh, "get_write_access");
+-	err = ext4_journal_get_write_access(handle, sb, gdp_bh, EXT4_JTR_NONE);
+-	if (err)
+-		goto out_err;
+-
+ 	block = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
+-
+ 	len = EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+ 	if (!ext4_inode_block_valid(ac->ac_inode, block, len)) {
+ 		ext4_error(sb, "Allocating blocks %llu-%llu which overlap "
+@@ -4111,41 +4092,29 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+ 		 * Fix the bitmap and return EFSCORRUPTED
+ 		 * We leak some of the blocks here.
+ 		 */
+-		ext4_lock_group(sb, ac->ac_b_ex.fe_group);
+-		mb_set_bits(bitmap_bh->b_data, ac->ac_b_ex.fe_start,
+-			      ac->ac_b_ex.fe_len);
+-		ext4_unlock_group(sb, ac->ac_b_ex.fe_group);
+-		err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
++		err = ext4_mb_mark_context(handle, sb, true,
++					   ac->ac_b_ex.fe_group,
++					   ac->ac_b_ex.fe_start,
++					   ac->ac_b_ex.fe_len,
++					   0, NULL);
+ 		if (!err)
+ 			err = -EFSCORRUPTED;
+-		goto out_err;
++		return err;
+ 	}
+ 
+-	ext4_lock_group(sb, ac->ac_b_ex.fe_group);
+ #ifdef AGGRESSIVE_CHECK
+-	{
+-		int i;
+-		for (i = 0; i < ac->ac_b_ex.fe_len; i++) {
+-			BUG_ON(mb_test_bit(ac->ac_b_ex.fe_start + i,
+-						bitmap_bh->b_data));
+-		}
+-	}
++	flags |= EXT4_MB_BITMAP_MARKED_CHECK;
+ #endif
+-	mb_set_bits(bitmap_bh->b_data, ac->ac_b_ex.fe_start,
+-		      ac->ac_b_ex.fe_len);
+-	if (ext4_has_group_desc_csum(sb) &&
+-	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+-		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+-		ext4_free_group_clusters_set(sb, gdp,
+-					     ext4_free_clusters_after_init(sb,
+-						ac->ac_b_ex.fe_group, gdp));
+-	}
+-	len = ext4_free_group_clusters(sb, gdp) - ac->ac_b_ex.fe_len;
+-	ext4_free_group_clusters_set(sb, gdp, len);
+-	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+-	ext4_group_desc_csum_set(sb, ac->ac_b_ex.fe_group, gdp);
++	err = ext4_mb_mark_context(handle, sb, true, ac->ac_b_ex.fe_group,
++				   ac->ac_b_ex.fe_start, ac->ac_b_ex.fe_len,
++				   flags, &changed);
 +
- 	ext4_lock_group(sb, group);
- 	if (ext4_has_group_desc_csum(sb) &&
- 	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-@@ -3981,12 +4002,14 @@ ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
- 			ext4_free_clusters_after_init(sb, group, gdp));
- 	}
++	if (err && changed == 0)
++		return err;
  
--	already = 0;
--	for (i = 0; i < len; i++)
--		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
--				state)
--			already++;
--	changed = len - already;
-+	if (flags & EXT4_MB_BITMAP_MARKED_CHECK) {
-+		already = 0;
-+		for (i = 0; i < len; i++)
-+			if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
-+					state)
-+				already++;
-+		changed = len - already;
-+	}
+-	ext4_unlock_group(sb, ac->ac_b_ex.fe_group);
++#ifdef AGGRESSIVE_CHECK
++	BUG_ON(changed != ac->ac_b_ex.fe_len);
++#endif
+ 	percpu_counter_sub(&sbi->s_freeclusters_counter, ac->ac_b_ex.fe_len);
+ 	/*
+ 	 * Now reduce the dirty block count also. Should not go negative
+@@ -4155,21 +4124,6 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+ 		percpu_counter_sub(&sbi->s_dirtyclusters_counter,
+ 				   reserv_clstrs);
  
- 	if (state) {
- 		mb_set_bits(bitmap_bh->b_data, blkoff, len);
-@@ -4001,6 +4024,8 @@ ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
- 	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
- 	ext4_group_desc_csum_set(sb, group, gdp);
- 	ext4_unlock_group(sb, group);
-+	if (ret_changed)
-+		*ret_changed = changed;
- 
- 	if (sbi->s_log_groups_per_flex) {
- 		ext4_group_t flex_group = ext4_flex_group(sbi, group);
-@@ -4013,15 +4038,17 @@ ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
- 			atomic64_add(changed, &fg->free_clusters);
- 	}
- 
--	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
- 	if (err)
- 		goto out_err;
--	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-+	err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
- 	if (err)
- 		goto out_err;
- 
--	sync_dirty_buffer(bitmap_bh);
--	sync_dirty_buffer(gdp_bh);
-+	if (flags & EXT4_MB_SYNC_UPDATE) {
-+		sync_dirty_buffer(bitmap_bh);
-+		sync_dirty_buffer(gdp_bh);
-+	}
- 
- out_err:
- 	brelse(bitmap_bh);
-@@ -4181,7 +4208,11 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
- 			break;
- 		}
- 
--		err = ext4_mb_mark_context(sb, state, group, blkoff, clen);
-+		err = ext4_mb_mark_context(NULL, sb, state,
-+					   group, blkoff, clen,
-+					   EXT4_MB_BITMAP_MARKED_CHECK |
-+					   EXT4_MB_SYNC_UPDATE,
-+					   NULL);
- 		if (err)
- 			break;
- 
-@@ -6398,7 +6429,10 @@ static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
- 	ext4_grpblk_t blkoff;
- 
- 	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
--	ext4_mb_mark_context(sb, false, group, blkoff, count);
-+	ext4_mb_mark_context(NULL, sb, false, group, blkoff, count,
-+			     EXT4_MB_BITMAP_MARKED_CHECK |
-+			     EXT4_MB_SYNC_UPDATE,
-+			     NULL);
+-	if (sbi->s_log_groups_per_flex) {
+-		ext4_group_t flex_group = ext4_flex_group(sbi,
+-							  ac->ac_b_ex.fe_group);
+-		atomic64_sub(ac->ac_b_ex.fe_len,
+-			     &sbi_array_rcu_deref(sbi, s_flex_groups,
+-						  flex_group)->free_clusters);
+-	}
+-
+-	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+-	if (err)
+-		goto out_err;
+-	err = ext4_handle_dirty_metadata(handle, NULL, gdp_bh);
+-
+-out_err:
+-	brelse(bitmap_bh);
+ 	return err;
  }
  
- /**
 -- 
 2.30.0
 
