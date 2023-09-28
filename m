@@ -2,178 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290097B11BD
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Sep 2023 06:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28747B153E
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Sep 2023 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjI1Evd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Sep 2023 00:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
+        id S230380AbjI1Hpq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Sep 2023 03:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbjI1Evc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Sep 2023 00:51:32 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F2F9;
-        Wed, 27 Sep 2023 21:51:30 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c453379020so93568875ad.1;
-        Wed, 27 Sep 2023 21:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695876690; x=1696481490; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=myreFmYUAC51stxeS7fbe7+oggnl1GIjqnoJwBTGn6k=;
-        b=SoS7YUdDmqKafgKREf20VSwG7aSWt/gkX25lA0kW8SEBEXI+RBKAgzHFiEIKBHgwFW
-         ArbMSH7OQuMq4hotqYBDb0zkAWCW6GdOCOapeW/jOoVFztrxM9gGd9Kep2mzsPJFwrzz
-         ufjT72zoHfnVWQhlAsWZ5TurQwWs630CC9O15Inict5uAUx7SLTqGG8szKxPOZryU4OV
-         x50/Gh0QVr0MwWsONxS483XXlGbXlpDQFNVbUVmBHZG9NkOooSwTrI2xqrllefdR9+aA
-         5ZB5H/RoaXyF18fM2nrG5uSGcV1lmzFpezA9154rKaUXd1wBnlnI793Z1GkXtM3YvP2n
-         5J1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695876690; x=1696481490;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=myreFmYUAC51stxeS7fbe7+oggnl1GIjqnoJwBTGn6k=;
-        b=e2I7Rh3+GlD9cg4aL6M7EsJqg0V2qirpB7uHeQh/YHPjV3o279PMq3kCnu8ezo9bie
-         sFtkx6guAfxXTkeF0sJVjp0tTPpTPf4ZZ9tYwSJ5SBwz+SVwIqIY4ZUHWBmwcisB7Hea
-         p5goBV9EkA5r+1nenmsvy3smS5VAA/YSn4qOTNPnRQbxZlGiipZVgySUEwjWs7fmGRCH
-         8e6ST4ehLTOvnw9YioSpahAXL8yuGIfTKDCNYTIfm6KbNY3YJC5cxAO+rvz/xt25Evba
-         GR285lwVkKYkcHv+iz5Q9xxdVyZh1JVyL/mv54cKZ0RQnx8ryDPuE1mySkwVrLi8XOuB
-         6Y5w==
-X-Gm-Message-State: AOJu0YzuUIm9cjY6wb/dkQ88saCMQzp34P5EMD0LAe1EHVWjIsZ0XyCy
-        wecREGcsohJt9SNucCI1zE4=
-X-Google-Smtp-Source: AGHT+IEcp3oIWE40t0Zf+/YtqRC63IpNNQtMaBTXICa17dscpSyUTozcSu3N+B3/P01vnn1jLpNSXQ==
-X-Received: by 2002:a17:903:2305:b0:1c6:e4b:bbeb with SMTP id d5-20020a170903230500b001c60e4bbbebmr78060plh.56.1695876690047;
-        Wed, 27 Sep 2023 21:51:30 -0700 (PDT)
-Received: from dw-tp ([129.41.58.7])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001b87bedcc6fsm13979174plh.93.2023.09.27.21.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 21:51:29 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 10:21:24 +0530
-Message-Id: <87pm22rjcj.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCHv2 2/2] generic: Add integrity tests with synchronous directio
-In-Reply-To: <20230928034204.htefxfkdobn3d5e4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229605AbjI1Hpq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Sep 2023 03:45:46 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F758F;
+        Thu, 28 Sep 2023 00:45:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx5BB36hyz4f3m76;
+        Thu, 28 Sep 2023 15:45:38 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgDHXNwiLxVlU+xbBg--.14651S2;
+        Thu, 28 Sep 2023 15:45:39 +0800 (CST)
+Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap
+ and group descriptor on disk from ext4_mb_mark_bb
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <87sf6yrjre.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <9eacc6e6-ae33-ac1e-cc7c-2defcc0517d9@huaweicloud.com>
+Date:   Thu, 28 Sep 2023 15:45:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
+MIME-Version: 1.0
+In-Reply-To: <87sf6yrjre.fsf@doe.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgDHXNwiLxVlU+xbBg--.14651S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFyxCFy7GF1fZr48uFWUtwb_yoW5Xr4Upr
+        43J3WFkr4UtrnrCr4I9w1xXr1rtw4IkF1UXr9xWw1rXFZFya4xWFZrKF1F9FyUurZ3WF1S
+        qa1YqF9F9w1Fka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Zorro Lang <zlang@redhat.com> writes:
-
-> On Sat, Sep 23, 2023 at 05:30:24PM +0530, Ritesh Harjani (IBM) wrote:
->> This test covers data & metadata integrity check with directio with
->> o_sync flag and checks the file contents & size after sudden fileystem
->> shutdown once the directio write is completed. ext4 directio after iomap
->> conversion was broken in the sense that if the FS crashes after
->> synchronous directio write, it's file size is not properly updated.
->> This test adds a testcase to cover such scenario.
->> 
->> Man page of open says that -
->> O_SYNC provides synchronized I/O file integrity completion, meaning write
->> operations will flush data and all associated metadata to the underlying
->> hardware
->
->
->
->> 
->> Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> ---
->>  tests/generic/471     | 50 +++++++++++++++++++++++++++++++++++++++++++
->>  tests/generic/471.out | 22 +++++++++++++++++++
->>  2 files changed, 72 insertions(+)
->>  create mode 100755 tests/generic/471
->>  create mode 100644 tests/generic/471.out
->> 
->> diff --git a/tests/generic/471 b/tests/generic/471
->
-> The generic/471 has been taken last week, you can choose another number.
-> Or simply use generic/999, then I'll change the 999 to a proper number.
->
->> new file mode 100755
->> index 00000000..218e6676
->> --- /dev/null
->> +++ b/tests/generic/471
->> @@ -0,0 +1,50 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
->> +#
->> +# FS QA Test 471
->> +#
->> +# Integrity test for O_SYNC with buff-io, dio, aio-dio with sudden shutdown
->> +#
->> +. ./common/preamble
->> +_begin_fstest auto quick shutdown aio
->> +
->> +# real QA test starts here
->> +_supported_fs generic
->
-> Is the bug fix be reviewed and acked now? If it is, please use _fixed_by_kernel_commit
-> at here. The commit id can be "xxxxxxxxxxxx" if it's not merged by acked.
->
-
-Hi Zorro,
-
-Yes, the patch is still being worked on. I think we can wait till then
-to not spook the distro CI testing to start reporting multiple bug
-reports using this testcase :P 
 
 
->> +_require_scratch
->> +_require_scratch_shutdown
->> +_require_odirect
->
-> Due to you add aio test in v2, so this line should be: _require_aiodio
->
+on 9/28/2023 12:42 PM, Ritesh Harjani wrote:
+> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+> 
+>> on 9/27/2023 4:49 PM, Ritesh Harjani wrote:
+>>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+>>>
+>>>> There are several reasons to add a general function ext4_mb_mark_context
+>>>> to update block bitmap and group descriptor on disk:
+>>>> 1. pair behavior of alloc/free bits. For example,
+>>>> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+>>>> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+>>>> 2. remove repeat code to read from disk, update and write back to disk.
+>>>> 3. reduce future unit test mocks to catch real IO to update structure
+>>>> on disk.
+>>>>
+>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>> ---
+>>>>  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
+>>>>  1 file changed, 77 insertions(+), 70 deletions(-)
+>>>>
+>>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>>> index cf09adfbaf11..e1320eea46e9 100644
+>>>> --- a/fs/ext4/mballoc.c
+>>>> +++ b/fs/ext4/mballoc.c
+>>>> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
+>>>>  	ext4_groupinfo_destroy_slabs();
+>>>>  }
+>>>>  
+>>>> +static int
+>>>> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
+>>>> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
+>>>
+>>>
+>>> ext4_grpblk_t is defined as int.
+>>>     /* data type for block offset of block group */
+>>>     typedef int ext4_grpblk_t;
+>>>
+>>> I think len should be unsigned int (u32) here. 
+>>>
+>> Hi Ritesh, thanks for reply and a lot suggestions to this patch and other
+>> patches in this series.
+>> I define len as ext4_grpblk_t as I think ext4_grpblk_t is supposed to fit
+>> block or cluster number of single group.
+>>
+> 
+> At different places the use of datatype for no. of blocks/clusters within
+> a group gets very confusing :(
+> > However, IMO ext4_grpblk_t should be fine for using len argument here.
+> I did respond about that while reviewing in some later patches [1]
+> 
+> [1]: https://lore.kernel.org/linux-ext4/87r0mkey45.fsf@doe.com/
+> 
+> So, I don't think we need any changes to this patch. 
+>     Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> 
+Sorry for missing this.
+> Also overall the series looks good. There are just some minor
+> changes suggested in 1st patch and some commit msg updates suggested for
+> other changes. If you send a v8, then I think that looks good to be
+> picked up :) 
+> 
+> Thanks a lot for working on it & the suggested changes!
+Thanks a lot for your suggestion and patience! I will send a v8 include
+all changes that you suggested. Thanks!
+> 
+> -ritesh
+> 
 
-Ok, I guess I can just remove this line "_require_odirect". Because in the
-next line I anyway include _require_aiodio.
-
->> +_require_aiodio aio-dio-write-verify
-
-here ^^
-
->> +
->> +_scratch_mkfs > $seqres.full 2>&1
->> +_scratch_mount
->> +
->> +echo "T-1: Create a 1M file using buff-io & O_SYNC"
->> +$XFS_IO_PROG -fs -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t1 > /dev/null 2>&1
->> +echo "T-1: Shutdown the fs suddenly"
->> +_scratch_shutdown
->> +echo "T-1: Cycle mount"
->> +_scratch_cycle_mount
->> +echo "T-1: File contents after cycle mount"
->> +_hexdump $SCRATCH_MNT/testfile.t1
->> +
->> +echo "T-2: Create a 1M file using O_DIRECT & O_SYNC"
->> +$XFS_IO_PROG -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t2 > /dev/null 2>&1
->> +echo "T-2: Shutdown the fs suddenly"
->> +_scratch_shutdown
->> +echo "T-2: Cycle mount"
->> +_scratch_cycle_mount
->> +echo "T-2: File contents after cycle mount"
->> +_hexdump $SCRATCH_MNT/testfile.t2
->> +
->> +echo "T-3: Create a 1M file using AIO-DIO & O_SYNC"
->> +$AIO_TEST -a size=1048576 -S -N $SCRATCH_MNT/testfile.t3 > /dev/null 2>&1
->
-> So you just need aio-dio-write-verify.c to do aio write. Maybe we can have aio
-> read and write support in xfs_io in one day:)
-
-Yes, someday maybe :)
-But I am not sure what plan Darrick has about it. Was there any
-history behind no aio-dio support in xfs_io? Just curious since the
-discussion came up.
-
-
-Thanks for the review!
--ritesh
