@@ -2,119 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834817B3458
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Sep 2023 16:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C1A7B34E7
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Sep 2023 16:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjI2OLM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Sep 2023 10:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        id S233272AbjI2O3W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Sep 2023 10:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233149AbjI2OLJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Sep 2023 10:11:09 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61931B2;
-        Fri, 29 Sep 2023 07:11:05 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TE9vFa031221;
-        Fri, 29 Sep 2023 14:11:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=/MJo3EBySglF0dpjswUzhDX1+E3ul8XFL5YMWvHDjOE=;
- b=ClyEUSukJLtC8MQucAef2XrzV2fJ8q+8J5uJPcHkN16d9LRJA6fIi137AkPzXT/bMl5w
- KCWBtCWUE3xJoBUAX5SUXFj8fyjO1n622C1IH/+nO4O+YozI2C24Zton7ywUOt8X6V1W
- tubiPsytmqZlQGcLCMIfmi79CWWeflaPUL4yF0uLh/G0CaBb9DDPdLWOLvtLQdB75jKn
- zWgZpNtFpI1lvMd29/eRNkEK9N5xEhy9gW80/rdRLm+ArQltVKpf8VQAA8hlj+1Gw+t5
- KskR0fi12+LdWRyiE6AchhcY9DfC7db+T/yO93DNwDBLmVRiP+y68O+hty5kNSx8zQlx fA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdw5uvyp2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 14:10:59 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38TEAxuN003610;
-        Fri, 29 Sep 2023 14:10:59 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdw5uvynp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 14:10:59 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38TCOnKK008234;
-        Fri, 29 Sep 2023 14:10:58 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabbnw47r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 14:10:58 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38TEAutc19399208
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Sep 2023 14:10:56 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 596D42004B;
-        Fri, 29 Sep 2023 14:10:56 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C46E320040;
-        Fri, 29 Sep 2023 14:10:54 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.84.228])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 29 Sep 2023 14:10:54 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: [PATCH 3/3] ext4: Skip unwritten buffers in __ext4_block_zero_page_range()
-Date:   Fri, 29 Sep 2023 19:40:45 +0530
-Message-Id: <143d41362a57e453f5a2cb00dc71e38e020c1c20.1695987265.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1695987265.git.ojaswin@linux.ibm.com>
-References: <cover.1695987265.git.ojaswin@linux.ibm.com>
+        with ESMTP id S232630AbjI2O3V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Sep 2023 10:29:21 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EE41AC
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Sep 2023 07:29:19 -0700 (PDT)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6c4b9cab821so26632499a34.0
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Sep 2023 07:29:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695997758; x=1696602558;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qLNYUvgMbabObe54YV0karBMGjsfh+7I5wYZ60IM97s=;
+        b=lNObq8KUmM1+9DoxN9DwML40yXRl9e8jeNxDH9Vu028y0/0sLTRX9vAD+s7oW+DfqL
+         sl93QioKrlEC6SNGZU+OR4vb9dULvVj359RMgXE+7behoo4H4jHIrpKBXK5DxXjxtqMp
+         TeitPrhfqgr06K46QLDlkcXaUEsv595QfrC4dppHcn1rPoJGu13T9KqUYO4CA6/+prIj
+         pBPdWTSkTZd5hBGCdlI5mI6yiNc+f+AmB+NKxF9QDniQiC2f2EAlHH4WSBpDiB6W3jed
+         wrY0KgKicEtSK9KawwxtB5NOk5necDUK8K86Z0I4sasPoTETJWmn09vLHWF0CUQ7ufAK
+         IAsw==
+X-Gm-Message-State: AOJu0Yxbz4YdfrBv2Zfmp71f2mzbN06Pj4b6W1VHeTGEI9ZBHw0KzUhr
+        mp0EbkaY5f9wysCORtMmQDT7f3WYoZMuwnxLz4yJSVLEk/t1
+X-Google-Smtp-Source: AGHT+IG9OxQod939WyJcDOMakaPerThj04UyypSfq5sPAWlD5D37uESD2tGQLWQZKBYvHdw4rTZ+6ZUDvxSn+5Ah0pz7GJKY3YKo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3cq2_C6yRHtd3NCt_JcnXW6tzwBTPs7a
-X-Proofpoint-ORIG-GUID: tlX1vHivoJaFdXqACsLF9u4Od2_qYlOg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- bulkscore=0 impostorscore=0 clxscore=1015 adultscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290120
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:6a50:0:b0:6c0:a3e0:f9e9 with SMTP id
+ h16-20020a9d6a50000000b006c0a3e0f9e9mr1165244otn.4.1695997758619; Fri, 29 Sep
+ 2023 07:29:18 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 07:29:18 -0700
+In-Reply-To: <0000000000005697bd05fe4aea49@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f147d80606803f1d@google.com>
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_iomap_begin (2)
+From:   syzbot <syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, bfoster@redhat.com, jack@suse.cz,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ritesh.list@gmail.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If the buffer is unwritten then the underlying block should already return zero
-for reads. Further, if it is not dirty then we can be sure that there is no data
-on the folio that might get written back later. Hence we skip zeroing out the
-folio and underlying block in this case.
+syzbot has bisected this issue to:
 
-Suggested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/inode.c | 4 ++++
- 1 file changed, 4 insertions(+)
+commit 310ee0902b8d9d0a13a5a13e94688a5863fa29c2
+Author: Brian Foster <bfoster@redhat.com>
+Date:   Tue Mar 14 13:07:59 2023 +0000
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index de8ea8430d30..75a951ffa3cb 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3659,6 +3659,10 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 		BUFFER_TRACE(bh, "freed: skip");
- 		goto unlock;
- 	}
-+	if (buffer_unwritten(bh) && !buffer_dirty(bh)) {
-+		BUFFER_TRACE(bh, "unwritten and non-dirty: skip");
-+		goto unlock;
-+	}
- 	if (!buffer_mapped(bh)) {
- 		BUFFER_TRACE(bh, "unmapped");
- 		ext4_get_block(inode, iblock, bh, 0);
--- 
-2.39.3
+    ext4: allow concurrent unaligned dio overwrites
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a8442a680000
+start commit:   9ed22ae6be81 Merge tag 'spi-fix-v6.6-rc3' of git://git.ker..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12a8442a680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a8442a680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
+dashboard link: https://syzkaller.appspot.com/bug?extid=307da6ca5cb0d01d581a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15eb672e680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16219bc6680000
+
+Reported-by: syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com
+Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
