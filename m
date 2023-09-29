@@ -2,198 +2,281 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ED97B380D
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Sep 2023 18:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17DD7B37EA
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Sep 2023 18:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbjI2QkQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Sep 2023 12:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
+        id S233485AbjI2Q2d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Sep 2023 12:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbjI2QkP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Sep 2023 12:40:15 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343B7BE;
-        Fri, 29 Sep 2023 09:40:13 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TGBi3H010706;
-        Fri, 29 Sep 2023 16:40:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=2kXjShDlpJr9RSoehL1cnhvrAsGX3mYCQYpUygq3BSk=;
- b=EDwhddDcCNFHBiOGKkyDjaFoPp6a2YZuC2nhobcreh4mOSLtx2B/IfQrL4ad62VLHDof
- +RBJAOeeMAVE9xcYs1VOxtzuTvxDqkdphcKsr5hwts6xEEvA8azVCot113z2LALwXma4
- mI99ed76ASX8lIqf7h1UKePtIPpSl1B6QQzjYxAViMIYTp8fAxadXUPTS+V8WsQobDCP
- eDBvuISPsJwo3Cqw8T7kuoJl+32DxtoNsgw1btRScvJBEJzspiyPOJgc1VFgKcI+U4d3
- yKXyDBD52Hxlxv9ElyARtiyu7aFv94X/xV6XXPfhh2t9hSB4wvT8A5I+zKjC5XB7HVUu uQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdyu3d9nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 16:40:03 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38TGCZG0014704;
-        Fri, 29 Sep 2023 16:40:02 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdyu3d9bm-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 16:40:02 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38TE59rX030466;
-        Fri, 29 Sep 2023 16:15:35 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tad22dc2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 16:15:35 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38TGFYd816908956
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Sep 2023 16:15:34 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 031D420043;
-        Fri, 29 Sep 2023 16:15:34 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7555620040;
-        Fri, 29 Sep 2023 16:15:32 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.64.208])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 29 Sep 2023 16:15:32 +0000 (GMT)
-Date:   Fri, 29 Sep 2023 21:45:29 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 2/3] ext4: truncate complete range in pagecache before
- calling ext4_zero_partial_blocks()
-Message-ID: <ZRb4BX8bhhyWEari@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1695987265.git.ojaswin@linux.ibm.com>
- <f7aaea4a59bc1c69f87e178dae34c38d2bcfee12.1695987265.git.ojaswin@linux.ibm.com>
+        with ESMTP id S233510AbjI2Q2c (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Sep 2023 12:28:32 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773891B0
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Sep 2023 09:28:29 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c007d6159aso224434501fa.3
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Sep 2023 09:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1696004907; x=1696609707; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=Z0ZXqQeyhvjFsLGFdms5bQ1rRGHDITWgJVsLrZocIClKn83G936srZRwO3OblMYFcA
+         HOXSQoMHywk7/GLg7UEjMqoRYh/gElznPq908MoA2UzL0RoRTXs0GGqdKmBJ0Nrh8S3t
+         r0WQ3qU56XpP2hseijSBhi6fDo5wyY/QjsE34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696004907; x=1696609707;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=jEHSN+AJq5IH5351MIskuOka5h1FD3neW4qLmvVXt565225x8opKU5OlkuIukN7qxG
+         awvmT9fcWGioiznQR4wyNxcgg4ISWgO0pguVBW/ZvEe4yNnOpdiotg+zrPCYRKQjL1fE
+         m0jh6Dm8OpwJ0m90hOMXOeOG/qAh59lrgWEW+ZrI4HXZ4nytsYNGOOToPqribs8IlKO/
+         1z6ux5V+QxfjkL7xVnmG0v65cdhsOFcz3D8mxEYlAWywLj7H3FOiBAwDdoWOsT6Lk6so
+         My1fYHmJqBSP6XS3LJrBHpx4K+a42rmvrwGAdBF6syxF/553Cvagq78Lu9gLKOnMcyYR
+         DEmw==
+X-Gm-Message-State: AOJu0YzTpunmZ2BPw1dEVAyLID5QPWvXTTD9DDPATLZdl1LKTyOLgBX1
+        IOxOZDk5t5M2tKtuluqwvYV8PXyAmM0RLUfM0a38BK2h4nI=
+X-Google-Smtp-Source: AGHT+IGy5+j+QLRrDONZh4KIlc6545e0uVPhktNQcuaa26EIBtB5pfSdf+BZSh5XTmgm+MUTTU/loQ==
+X-Received: by 2002:a2e:9f14:0:b0:2bf:f989:b8e5 with SMTP id u20-20020a2e9f14000000b002bff989b8e5mr4279753ljk.33.1696004907497;
+        Fri, 29 Sep 2023 09:28:27 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id l18-20020a2eb692000000b002b9ec22d9fasm4121647ljo.29.2023.09.29.09.28.27
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 09:28:27 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so23173131e87.2
+        for <linux-ext4@vger.kernel.org>; Fri, 29 Sep 2023 09:28:27 -0700 (PDT)
+X-Received: by 2002:a17:907:2722:b0:9a1:cdf1:ba3 with SMTP id
+ d2-20020a170907272200b009a1cdf10ba3mr4628345ejl.27.1696004552316; Fri, 29 Sep
+ 2023 09:22:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7aaea4a59bc1c69f87e178dae34c38d2bcfee12.1695987265.git.ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 2qCvwhjt3LyslbnaaqYyMP4p_gDL8ieU
-X-Proofpoint-GUID: HQkp_b2DlKuxs29qaeLkyv4bUqjMzxhd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_15,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 suspectscore=0 mlxlogscore=999 priorityscore=1501
- malwarescore=0 phishscore=0 mlxscore=0 spamscore=0 impostorscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290143
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
+ <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
+ <20230928212656.GC189345@mit.edu> <CAHk-=wjTynK9BdGbi+8eShU77nkPvipFwRxEd1TSBrw2+LiuDg@mail.gmail.com>
+ <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Sep 2023 09:22:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Mattia Dongili <malattia@linux.it>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ian Kent <raven@themaw.net>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Anders Larsen <al@alarsen.net>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, linux-efi@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 07:40:44PM +0530, Ojaswin Mujoo wrote:
-> In ext4_zero_range() and ext4_punch_hole(), the range passed could be unaligned
-> however we only zero out the pagecache range that is block aligned. These
-> functions are relying on ext4_zero_partial_blocks() ->
-> __ext4_block_zero_page_range() to take care of zeroing the unaligned edges in
-> the pageacache. However, the right thing to do is to properly zero out the whole
-> range in these functions before and not rely on a different function to do it
-> for us. Hence, modify ext4_zero_range() and ext4_punch_hole() to zero the
-> complete range.
-> 
-> This will also allow us to now exit early for unwritten buffer heads in
-> __ext4_block_zero_page_range(), in upcoming patch.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  fs/ext4/extents.c | 17 +++++++++++------
->  fs/ext4/inode.c   |  3 +--
->  2 files changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c79b4c25afc4..2dc681cab6a5 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4582,9 +4582,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
->  
->  	/* Zero range excluding the unaligned edges */
->  	if (max_blocks > 0) {
-> -		flags |= (EXT4_GET_BLOCKS_CONVERT_UNWRITTEN |
-> -			  EXT4_EX_NOCACHE);
-> -
->  		/*
->  		 * Prevent page faults from reinstantiating pages we have
->  		 * released from page cache.
-> @@ -4609,17 +4606,25 @@ static long ext4_zero_range(struct file *file, loff_t offset,
->  		 * disk in case of crash before zeroing trans is committed.
->  		 */
->  		if (ext4_should_journal_data(inode)) {
-> -			ret = filemap_write_and_wait_range(mapping, start, end - 1);
-> +			ret = filemap_write_and_wait_range(mapping, start,
-> +							   end - 1);
+On Thu, 28 Sept 2023 at 20:50, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> OTOH, it is perfectly fine if the vfs wants to stop providing sub 100ns
+> services to filesystems. It's just going to be the fs problem and the
+> preserved pre-historic/fine-grained time on existing files would only
+> need to be provided in getattr(). It does not need to be in __i_mtime.
 
-I think this accidentally creeped in, will fix it in next rev.
+Hmm. That sounds technically sane, but for one thing: if the aim is to try to do
 
-Anyways, I had some questions that might be unrelated to this patch,
-I'll add them inline:
+ (a) atomic timestamp access
 
->  			if (ret) {
->  				filemap_invalidate_unlock(mapping);
->  				goto out_mutex;
->  			}
->  		}
-> +	}
+ (b) shrink the inode
 
-So the above if (max_blocks) {...} block runs when the range spans
-multiple blocks but I think the filemap_write_and_wait_range() and
-ext4_update_disksize_before_punch() should be called when we are actually
-spanning multiple pages, since the disksize not updating issue and the 
-truncate racing with checkpoint only happen when the complete page is
-truncated. Is this understanding correct? 
+then having the filesystem maintain its own timestamp for fine-grained
+data will break both of those goals.
 
-> +
-> +	/*
-> +	 * Now truncate the pagecache and zero out non page aligned edges of the
-> +	 * range (if any)
-> +	 */
-> +	truncate_pagecache_range(inode, offset, offset + len - 1);
->  
-> -		/* Now release the pages and zero block aligned part of pages */
-> -		truncate_pagecache_range(inode, start, end - 1);
-> +	if (max_blocks > 0) {
->  		inode->i_mtime = inode->i_ctime = current_time(inode);
->  
-> +		flags |= (EXT4_GET_BLOCKS_CONVERT_UNWRITTEN | EXT4_EX_NOCACHE);
->  		ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size,
->  					     flags);
->  		filemap_invalidate_unlock(mapping);
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 6c490f05e2ba..de8ea8430d30 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3974,9 +3974,8 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
->  		ret = ext4_update_disksize_before_punch(inode, offset, length);
+Yes, we'd make 'struct inode' smaller if we pack the times into one
+64-bit entity, but if btrfs responds by adding mtime fields to "struct
+btrfs_inode", we lost the size advantage and only made things worse.
 
-In this function ext4_punch_hole() I see that we call
-filemap_write_and_wait_range() and then take the inode_lock() later.
-Doesn't this leave a window for the pages to get dirty again? 
+And if ->getattr() then reads those fields without locking (and we
+definitely don't want locking in that path), then we lost the
+atomicity thing too.
 
-For example, in ext4_zero_range(), we checkpoint using
-filemap_write_and_wait_range() in case of data=journal under
-inode_lock() but that's not the case here. Just wondering if this 
-or any other code path might still race here? 
+So no. A "but the filesystem can maintain finer granularity" model is
+not acceptable, I think.
 
-Regards,
-ojaswin
+If we do require nanoseconds for compatibility, what we could possibly
+do is say "we guarantee nanosecond values for *legacy* dates", and say
+that future dates use 100ns resolution. We'd define "legacy dates" to
+be the traditional 32-bit signed time_t.
 
->  		if (ret)
->  			goto out_dio;
-> -		truncate_pagecache_range(inode, first_block_offset,
-> -					 last_block_offset);
->  	}
-> +	truncate_pagecache_range(inode, offset, offset + length - 1);
->  
->  	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
->  		credits = ext4_writepage_trans_blocks(inode);
-> -- 
-> 2.39.3
-> 
+So with a 64-bit fstime_t, we'd have the "legacy format":
+
+ - top 32 bits are seconds, bottom 32 bits are ns
+
+which gives us that ns format.
+
+Then, because only 30 bits are needed for nanosecond resolution, we
+use the top two bits of that ns field as flags. '00' means that legacy
+format, and '01' would mean "we're not doing nanosecond resolution,
+we're doing 64ns resolution, and the low 6 bits of the ns field are
+actually bits 32-37 of the seconds field".
+
+That still gives us some extensibility (unless the multi-grain code
+still wants to use the other top bit), and it gives us 40 bits of
+seconds, which is quite a lot.
+
+And all the conversion functions will be simple bit field
+manipulations, so there are no expensive ops here.
+
+Anyway, I agree with the "let's introduce the accessor functions
+first, we can do the 'pack into one word' decisions later".
+
+                Linus
