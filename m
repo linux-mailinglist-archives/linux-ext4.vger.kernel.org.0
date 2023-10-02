@@ -2,185 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D957B577B
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Oct 2023 18:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13947B5A91
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Oct 2023 20:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237875AbjJBPzN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Oct 2023 11:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S238764AbjJBSux (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Oct 2023 14:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237798AbjJBPzM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Oct 2023 11:55:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22EC93
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 08:55:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 40446C433C7
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 15:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696262109;
-        bh=gksVJL3lAmJSQnnsXgfeGzK2Wj1joFtL41MpI4ME2rk=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=CXRHb/FVLVsYOw+Hf9c7ypBrOwabGJ5ko4e85QnYS6+RxNopbgjT27Z4q2jknfCHd
-         K/5OFHL8FjQaw+3UrS0EVDw1DZENstPCRiToCTIq6sHYOcYdQHZBcBPiVPMU7PYW3Q
-         qAvlGU3bokbTjhNmAlO4A5A9plU4ZdwfUyS5Lxdx+w9wVfhvQmJN58qjWtHVvnceyl
-         aOwPNyklaRo4hvHtajoymh8CAUQ5Myig1UvaMFJKm77KScEQXmfrnRfZRHA/NAW0fS
-         FxT1SJ1EJkKo+hF2hScOL/DhDLdHeHxNJHdTr0+0G+j+5BHKkmgYGqq/7lJAQMUn5U
-         RYRwNTqoPDnJg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 22333C53BCD; Mon,  2 Oct 2023 15:55:09 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
+        with ESMTP id S229655AbjJBSux (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Oct 2023 14:50:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EBD9B
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 11:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696272604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=e3+4+tH9WCFrmcg+whaIAx9wiaXR2zBfEd/i2+cegpQ=;
+        b=C1tugUHfesQ3qyFoJ1alhhVXqvwg6Dl8da4Yv/ZmRLP8i4Fzzo/LDq8nDJnOzSLXmyNkw1
+        AObuHQiep6edGmPfX7OuLe3KDhlBOgbXNtw8aGaw+o88OrbeHH/HkS7+A6mHPciww5GmuQ
+        AR+dNCwY4gFK+Iv7aRQBWE7ojMlBcHc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-166-RVsoGqeHNTeI8L5aLmEDww-1; Mon, 02 Oct 2023 14:50:02 -0400
+X-MC-Unique: RVsoGqeHNTeI8L5aLmEDww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2D1F811E97
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 18:50:02 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.8.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 865F82026D4B
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 18:50:02 +0000 (UTC)
+From:   Brian Foster <bfoster@redhat.com>
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date:   Mon, 02 Oct 2023 15:55:08 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: iivanich@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-QKKfb6hXF9@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
-References: <bug-217965-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Subject: [PATCH] ext4: fix racy may inline data check in dio write
+Date:   Mon,  2 Oct 2023 14:50:20 -0400
+Message-ID: <20231002185020.531537-1-bfoster@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+syzbot reports that the following warning from ext4_iomap_begin()
+triggers as of the commit referenced below:
 
---- Comment #4 from Ivan Ivanich (iivanich@gmail.com) ---
+        if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+                return -ERANGE;
 
-(In reply to Theodore Tso from comment #3)
-> What sort of information can you give about the ext4 file system where th=
-is
-> is happening?  How much free space is there?   Can you run "df" and
-> "dumpe2fs -h" on the system so we can see which file system features were
-> enabled?   Also, can you specify the kind of the block device?
->=20
-> Differential debugging would be useful.  For example, can you try is to c=
-opy
-> the file system image to a hardware, and see if you can reproduce the
-> behavior using the same kernel build workload?   What if you copy to the
-> file system image to a USB attached SSD, and see if you can reproduce the
-> behavior?   What you attach the USB attached SSD, and use a freshly
-> formatted ext4 file system?   Does it reproduce then?   If the file system
-> is nearly full, what if you delete a lot of unused space, to provide a lot
-> more free space, and see if it reproduces then?
+This occurs during a dio write, which is never expected to encounter
+an inode with inline data. To enforce this behavior,
+ext4_dio_write_iter() checks the current inline state of the inode
+and clears the MAY_INLINE_DATA state flag to either fall back to
+buffered writes, or enforce that any other writers in progress on
+the inode are not allowed to create inline data.
 
-mount |grep sdb2
-/dev/sdb2 on /mnt/sdb2 type ext4 (rw,relatime,stripe=3D32752)
+The problem is that the check for existing inline data and the state
+flag can span a lock cycle. For example, if the ilock is originally
+locked shared and subsequently upgraded to exclusive, another writer
+may have reacquired the lock and created inline data before the dio
+write task acquires the lock and proceeds.
 
-df /mnt/sdb2/
-Filesystem      1K-blocks       Used Available Use% Mounted on
-/dev/sdb2      2667140496 2125391752 539022500  80% /mnt/sdb2
+The commit referenced below loosens the lock requirements to allow
+some forms of unaligned dio writes to occur under shared lock, but
+AFAICT the inline data check was technically already racy for any
+dio write that would have involved a lock cycle. Regardless, lift
+clearing of the state bit to the same lock critical section that
+checks for preexisting inline data on the inode to close the race.
 
+Reported-by: syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com
+Fixes: 310ee0902b8d ("ext4: allow concurrent unaligned dio overwrites")
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
 
-dumpe2fs -h /dev/sdb2
-dumpe2fs 1.47.0 (5-Feb-2023)
-Filesystem volume name:   <none>
-Last mounted on:          /mnt/sdb2
-Filesystem UUID:          3bd82ee7-f08a-4a23-8e50-2df3786b0858
-Filesystem magic number:  0xEF53
-Filesystem revision #:    1 (dynamic)
-Filesystem features:      has_journal ext_attr resize_inode dir_index filet=
-ype
-needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg
-dir_nlink extra_isize
-Filesystem flags:         signed_directory_hash=20
-Default mount options:    user_xattr acl
-Filesystem state:         clean
-Errors behavior:          Continue
-Filesystem OS type:       Linux
-Inode count:              169369600
-Block count:              677467392
-Reserved block count:     677465
-Overhead clusters:        10682268
-Free blocks:              135437186
-Free inodes:              168057645
-First block:              0
-Block size:               4096
-Fragment size:            4096
-Reserved GDT blocks:      862
-Blocks per group:         32768
-Fragments per group:      32768
-Inodes per group:         8192
-Inode blocks per group:   512
-RAID stride:              32752
-Flex block group size:    16
-Filesystem created:       Wed Jun 25 13:10:17 2014
-Last mount time:          Mon Oct  2 18:46:12 2023
-Last write time:          Mon Oct  2 18:46:12 2023
-Mount count:              23
-Maximum mount count:      -1
-Last checked:             Thu Sep 28 14:37:21 2023
-Check interval:           0 (<none>)
-Lifetime writes:          84 TB
-Reserved blocks uid:      0 (user root)
-Reserved blocks gid:      0 (group root)
-First inode:              11
-Inode size:               256
-Required extra isize:     28
-Desired extra isize:      28
-Journal inode:            8
-Default directory hash:   half_md4
-Directory Hash Seed:      a90aaa2d-577c-4181-83f9-696dee7ea92d
-Journal backup:           inode blocks
-Journal features:         journal_incompat_revoke
-Total journal size:       128M
-Total journal blocks:     32768
-Max transaction length:   32768
-Fast commit length:       0
-Journal sequence:         0x002a8661
-Journal start:            9556
+Hi all,
 
-I don't have physical access to this machine so can't do any manipulations =
-to
-the hardware or attaching USB drives etc.
+Obviously there's a few different ways to address this, but this seemed
+most straightforward to me. Another option could be to push more of this
+checking down into _write_checks() to retry the should_use_dio() bits
+after a lock cycle, for example. Let me know if anybody has other
+thoughts.
 
-Device is=20
-Model Family:     Toshiba 3.5" DT01ACA... Desktop HDD
-Device Model:     TOSHIBA DT01ACA300
-Serial Number:    14KP58HGS
-LU WWN Device Id: 5 000039 ff4d7b718
-Firmware Version: MX6OABB0
-User Capacity:    3,000,592,982,016 bytes [3.00 TB]
-Sector Sizes:     512 bytes logical, 4096 bytes physical
-Rotation Rate:    7200 rpm
-Form Factor:      3.5 inches
-Device is:        In smartctl database
-ATA Version is:   ATA8-ACS T13/1699-D revision 4
-SATA Version is:  SATA 3.0, 6.0 Gb/s (current: 6.0 Gb/s)
-Local Time is:    Mon Oct  2 18:53:26 2023 EEST
-SMART support is: Available - device has SMART capability.
-SMART support is: Enabled
-AAM feature is:   Unavailable
-APM feature is:   Disabled
-Rd look-ahead is: Enabled
-Write cache is:   Enabled
-DSN feature is:   Unavailable
-ATA Security is:  Disabled, frozen [SEC2]
-Wt Cache Reorder: Enabled
+Otherwise, this addresses the syzbot report [1] (see the couple of debug
+patch test runs) and survives an fstests regression run. Thanks.
 
---=20
-You may reply to this email to add a comment.
+Brian
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+[1] https://lore.kernel.org/linux-ext4/0000000000005697bd05fe4aea49@google.com/
+
+ fs/ext4/file.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 6830ea3a6c59..747c0378122d 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -569,18 +569,20 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		return ext4_buffered_write_iter(iocb, from);
+ 	}
+ 
++	/*
++	 * Prevent inline data from being created since we are going to allocate
++	 * blocks for DIO. We know the inode does not currently have inline data
++	 * because ext4_should_use_dio() checked for it, but we have to clear
++	 * the state flag before the write checks because a lock cycle could
++	 * introduce races with other writers.
++	 */
++	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
++
+ 	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend,
+ 				    &unwritten, &dio_flags);
+ 	if (ret <= 0)
+ 		return ret;
+ 
+-	/*
+-	 * Make sure inline data cannot be created anymore since we are going
+-	 * to allocate blocks for DIO. We know the inode does not have any
+-	 * inline data now because ext4_dio_supported() checked for that.
+-	 */
+-	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+-
+ 	offset = iocb->ki_pos;
+ 	count = ret;
+ 
+-- 
+2.41.0
+
