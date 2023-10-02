@@ -2,138 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AFD7B4F7B
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Oct 2023 11:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B4A7B566D
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Oct 2023 17:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbjJBJth (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Oct 2023 05:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
+        id S237881AbjJBPWs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Oct 2023 11:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236261AbjJBJtg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Oct 2023 05:49:36 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB2183;
-        Mon,  2 Oct 2023 02:49:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 72D232185C;
-        Mon,  2 Oct 2023 09:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696240172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+NdBRB608UMGwx19cp+azxH113d9HD7eQvWbnS3E3c=;
-        b=E+VgZxU2q7CeNul975RN62i/o1qDZ41PCZ1yfpJ/5EpmyZ2G8JL3Jn7cukYgFh2niPOfWc
-        SyETRyyDPubwOSlZT1g8pQ9/vahrFzS+iL6blQ33WfjlQMvm98l8e2Juw/3AINPSSM8jtj
-        ayW3HiPv0UwgPQLGj+ef8g7/mj5okiE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696240172;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+NdBRB608UMGwx19cp+azxH113d9HD7eQvWbnS3E3c=;
-        b=iRcq7NUyaP5be6nrcnYMoyljbjqkeyYLsaQZ4eSy3U1GaWLLWqRA9usXG8xjAdPx+QUsyb
-        9DNRCd1OwrwuHgAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6381613434;
-        Mon,  2 Oct 2023 09:49:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LFFDGCySGmUkTwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 02 Oct 2023 09:49:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EEDC5A07C9; Mon,  2 Oct 2023 11:49:31 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 11:49:31 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 09/29] ext2: move ext2_xattr_handlers and
- ext2_xattr_handler_map to .rodata
-Message-ID: <20231002094931.yalzcksclq77qjvx@quack3>
-References: <20230930050033.41174-1-wedsonaf@gmail.com>
- <20230930050033.41174-10-wedsonaf@gmail.com>
+        with ESMTP id S238014AbjJBPWr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Oct 2023 11:22:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB37A6
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 08:22:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D5D0BC433C7
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 15:22:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696260163;
+        bh=3KJhKBuP/vZccSFTlOhbJYlJLqX0CJNj3DEzipjPDao=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=fQS1midvDjjTpWDqZOilq4VzTfqj0iPxB9zRY5ofFH/LHiQi20UoYB52fvRQnillK
+         KNmzsPTqDMqH6FwAQ3OAy9siYv6exRGz+DD4xIAHR8pgbMmiiwGFoqsFuG9Bvq0J6g
+         ltIj+MgGK9Qaj3djP7/7PUhDD4/QAJJRicvbZuwW1ITOng1+6Jaie0QcynSSXQPtLM
+         SpmsK4zll6VivMd91rSkl/PHmXyTCXsUPWvw7IBtcI3vgET4Mbv3dUsxmeMas6wBYd
+         gpuUWy1kKLkkkBuqjYc3pw9CWCx4vOAR7uZvY2bOutqiSDJsUB6iRsycgzFS7BcKIT
+         J65TFtvZB9zfg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id BCF1EC53BD4; Mon,  2 Oct 2023 15:22:43 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date:   Mon, 02 Oct 2023 15:22:43 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-217965-13602-IASMLk9NuT@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930050033.41174-10-wedsonaf@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 30-09-23 02:00:13, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
-> 
-> This makes it harder for accidental or malicious changes to
-> ext2_xattr_handlers or ext2_xattr_handler_map at runtime.
-> 
-> Cc: Jan Kara <jack@suse.com>
-> Cc: linux-ext4@vger.kernel.org
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-Looks good to me. Feel free to add:
+Theodore Tso (tytso@mit.edu) changed:
 
-Acked-by: Jan Kara <jack@suse.cz>
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-								Honza
+--- Comment #3 from Theodore Tso (tytso@mit.edu) ---
+What sort of information can you give about the ext4 file system where this=
+ is
+happening?  How much free space is there?   Can you run "df" and "dumpe2fs =
+-h"
+on the system so we can see which file system features were enabled?   Also,
+can you specify the kind of the block device?
 
-> ---
->  fs/ext2/xattr.c | 4 ++--
->  fs/ext2/xattr.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 8906ba479aaf..cfbe376da612 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -98,7 +98,7 @@ static struct buffer_head *ext2_xattr_cache_find(struct inode *,
->  static void ext2_xattr_rehash(struct ext2_xattr_header *,
->  			      struct ext2_xattr_entry *);
->  
-> -static const struct xattr_handler *ext2_xattr_handler_map[] = {
-> +static const struct xattr_handler * const ext2_xattr_handler_map[] = {
->  	[EXT2_XATTR_INDEX_USER]		     = &ext2_xattr_user_handler,
->  #ifdef CONFIG_EXT2_FS_POSIX_ACL
->  	[EXT2_XATTR_INDEX_POSIX_ACL_ACCESS]  = &nop_posix_acl_access,
-> @@ -110,7 +110,7 @@ static const struct xattr_handler *ext2_xattr_handler_map[] = {
->  #endif
->  };
->  
-> -const struct xattr_handler *ext2_xattr_handlers[] = {
-> +const struct xattr_handler * const ext2_xattr_handlers[] = {
->  	&ext2_xattr_user_handler,
->  	&ext2_xattr_trusted_handler,
->  #ifdef CONFIG_EXT2_FS_SECURITY
-> diff --git a/fs/ext2/xattr.h b/fs/ext2/xattr.h
-> index 7925f596e8e2..6a4966949047 100644
-> --- a/fs/ext2/xattr.h
-> +++ b/fs/ext2/xattr.h
-> @@ -72,7 +72,7 @@ extern void ext2_xattr_delete_inode(struct inode *);
->  extern struct mb_cache *ext2_xattr_create_cache(void);
->  extern void ext2_xattr_destroy_cache(struct mb_cache *cache);
->  
-> -extern const struct xattr_handler *ext2_xattr_handlers[];
-> +extern const struct xattr_handler * const ext2_xattr_handlers[];
->  
->  # else  /* CONFIG_EXT2_FS_XATTR */
->  
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Differential debugging would be useful.  For example, can you try is to copy
+the file system image to a hardware, and see if you can reproduce the behav=
+ior
+using the same kernel build workload?   What if you copy to the file system
+image to a USB attached SSD, and see if you can reproduce the behavior?   W=
+hat
+you attach the USB attached SSD, and use a freshly formatted ext4 file syst=
+em?=20
+ Does it reproduce then?   If the file system is nearly full, what if you
+delete a lot of unused space, to provide a lot more free space, and see if =
+it
+reproduces then?
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
