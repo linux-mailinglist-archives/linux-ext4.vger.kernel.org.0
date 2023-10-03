@@ -2,78 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408FA7B672B
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Oct 2023 13:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E077B685F
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Oct 2023 13:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240015AbjJCLFE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Oct 2023 07:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S240616AbjJCLzy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Oct 2023 07:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240002AbjJCLFD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Oct 2023 07:05:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53226CE
-        for <linux-ext4@vger.kernel.org>; Tue,  3 Oct 2023 04:05:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C6F87C433C8
-        for <linux-ext4@vger.kernel.org>; Tue,  3 Oct 2023 11:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696331099;
-        bh=6oZhfhwjyVW6dXw/pdw8QvsN8uQ0y1YkDJgIsj7Y0bI=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=gFCz7NRSVnm1DMx7Wjlt/F/ZKDLZuORzQKqaQAjmqmAwpdRIlni/oxrZT5pG5ZlHW
-         tDv+JtkmwDuZjIHw5BpDPYXYpLlgxsdu3SMqfO4roAiTeh2Cnxdl7NCFhY35NE8pKz
-         F2NS19L4q57vx/LXtdkGH7DbALoK1SPN6hpo3h39Mzw+slWs3s8VQh2Bx0pXtEKqRf
-         uRldRAc4siD7u4x834yV7PeviUjiovl2IcnHzBKbRPJh4R24K7kBCA91Vit+e1ZKUX
-         EQbzk2oqlRtZNwgdoHnsey2Yjji+qWFBahbPnjYpTY/3m/zjBs6fuHx5MYzfEHtY1o
-         AViQJeZwk26jA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id ACE07C53BCD; Tue,  3 Oct 2023 11:04:59 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date:   Tue, 03 Oct 2023 11:04:59 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: iivanich@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-IC94DCtm4U@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
-References: <bug-217965-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S231912AbjJCLzx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Oct 2023 07:55:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03473B3;
+        Tue,  3 Oct 2023 04:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mVhl1EFgEQiL6EvwBF97O1BN6Zsdh23wRYztd++wDpo=; b=FAOEdJEJtL1N+WoMeHhe0ZZYvB
+        imQpIOVlWl3blIVpoSIu1D9592Igo9ybneWq74SWuuVT9XXts4nNwuugYkUETTyjOfab9MX87R3/w
+        A8DJYR7Bef91gFCVcpMp1FL4pBPfGwCmd1HpZkouoMfGkUBLl8v6Etu5MExhi88xFp0WTuCvlvgfG
+        1bO8irH+YlwvMVWzb8rJqppU6SoJhTykljTWDo2QPch7sxrUewe+gVXRSLlriejG2A7Kd2Ll6g2fY
+        p184wXM+xxX1xQoBtPBwV0FGzrIyQZtd6YVi+fhOJtlzkK+67i9GwPJmURND3KSQgXR5Nn+/OZVv5
+        PMUCwczQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qne0A-00ErG1-8h; Tue, 03 Oct 2023 11:55:46 +0000
+Date:   Tue, 3 Oct 2023 12:55:46 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
+Subject: Re: [PATCH 01/10] highmem: Add folio_release_kmap()
+Message-ID: <ZRwBQkMtDShY4X8L@casper.infradead.org>
+References: <20230921200746.3303942-1-willy@infradead.org>
+ <20231003104128.75bh4y4wmwsjvfwl@quack3>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003104128.75bh4y4wmwsjvfwl@quack3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+On Tue, Oct 03, 2023 at 12:41:28PM +0200, Jan Kara wrote:
+> On Thu 21-09-23 21:07:38, Matthew Wilcox (Oracle) wrote:
+> > This is the folio equivalent of unmap_and_put_page(), which remains as
+> > a wrapper for it.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> I'm missing a patch 10/10 in this series (and a coverletter would be nice
+> as well)... What's there ;)?
 
---- Comment #7 from Ivan Ivanich (iivanich@gmail.com) ---
-Removed stripe with tune2fs -f -E stride=3D0 /dev/sdb2 and it fixed the iss=
-ue.
-Still have no clue why it was enabled.
-Thanks
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Email sucks!  https://www.infradead.org/~willy/linux/ext2-dir-20230921/
