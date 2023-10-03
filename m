@@ -2,36 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D44EF7B60FA
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Oct 2023 08:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581FD7B61ED
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Oct 2023 09:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjJCGuQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Oct 2023 02:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S239216AbjJCHAl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Oct 2023 03:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJCGuP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Oct 2023 02:50:15 -0400
+        with ESMTP id S239313AbjJCHA3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Oct 2023 03:00:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F643AC
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 23:50:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EAA89C433CA
-        for <linux-ext4@vger.kernel.org>; Tue,  3 Oct 2023 06:50:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74459CDE
+        for <linux-ext4@vger.kernel.org>; Mon,  2 Oct 2023 23:59:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D17A2C433C7
+        for <linux-ext4@vger.kernel.org>; Tue,  3 Oct 2023 06:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696315813;
-        bh=Pa7huweICdqzg+qr1Zo79huZUs41deJGtNow42HjGkg=;
+        s=k20201202; t=1696316231;
+        bh=2enFLGGwHUXHiEquc8FYpDAYNi37oMWzR/dETStK2m4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hl/lllSKJjIle74rsBe/4QDWkRMyntTsHaJyMJwxW+v/D6gxj24OmnTFSep1jACc8
-         rFtXR4iKCgrjORQHIqy4BQ+h2yS+a6R73qcLkxkIm8vfDClUkJ09cIY51aRKjaGj1I
-         OswYtVMM7Qa5cf1QeVOcxUwA5Q83paIXPff4S52cZ9yPREhzrmyY2kMuFC7QC0Ml/B
-         Q4ifAiW0p+B19tH7YAJ/NJHZZQrojyg+LSQ00OX2C0oA6KNYC8xvtMgDJxvpiO7DzD
-         Ps2a7yuAuJNB+SyoXcmewHe8vSSEB2UIbqRv2UY32tR6Rrjc/aCKAtmiFdJulEolHL
-         Gep/lzhVXo9yg==
+        b=pOzB+QGEizS8Bpqaa3wuFDbrrGzjINdBAQoOVOUm+4VI7Ab2eIU1isS38SEi7Ys+Q
+         k0LKtnWEENGDOJZ6K0WYMtsTseOIgY0vh+OwXq7BsGSxOm6sZCTCJFYbXHokJQiYp6
+         q5rLCT7NyiPSAARi+/NVLu/jjkW9QC0c0OfIAXALS57bOOfnNLBhagiUNTlOl1IZV4
+         +8zV4Uk3BaOIDri21os8QVHGrYFjTAjPRdyNc0yoJiXfqgVREsyonPCOo5OTbr0NzF
+         K+fiRMgoUQa6jQ/NVEVNrT3gq+Dl86ca19lnX5GJAMsWBD6wku+0RYVGg8JquzXfxS
+         wgHTUSIq0DEnw==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id CD7BCC53BD0; Tue,  3 Oct 2023 06:50:12 +0000 (UTC)
+        id BC001C53BCD; Tue,  3 Oct 2023 06:57:11 +0000 (UTC)
 From:   bugzilla-daemon@kernel.org
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date:   Tue, 03 Oct 2023 06:50:12 +0000
+Date:   Tue, 03 Oct 2023 06:57:11 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -40,14 +40,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: ojaswin.mujoo@ibm.com
+X-Bugzilla-Who: iivanich@gmail.com
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-217965-13602-F4YcPSodG7@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-BhEiwrGoly@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,39 +67,20 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-Ojaswin Mujoo (ojaswin.mujoo@ibm.com) changed:
+--- Comment #6 from Ivan Ivanich (iivanich@gmail.com) ---
+Hi Ojaswin,
+1. Actually I'm not passing stripe option in my fstab, seems it's added
+automatically. Could you please clarify how I can get rid of it?
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |ojaswin.mujoo@ibm.com
+corresponding fstab entry
 
---- Comment #5 from Ojaswin Mujoo (ojaswin.mujoo@ibm.com) ---
-Hi Ivan,=20
+UUID=3D3bd82ee7-f08a-4a23-8e50-2df3786b0858       /mnt/sdb2       ext4=20=
+=20=20=20=20=20=20=20=20=20=20
+defaults,user_xattr   0 2
 
-Thanks for sharing the additional information. So I can see that you are
-passing stripe=3D32752 and from the backtrace and I do see some of the func=
-tions
-in the trace that indicate that a striped allocation was taking place. There
-were some changes in the allocator in 6.5 kernel if I'm not wrong but I'll =
-need
-to try to replicate this to confirm if the issue is related to those and up=
-date
-here.
-
-Meanwhile, can you provide some more info on the following:
-
-1. I want to check if this issue is related to the striped allocation code =
-path
-or if its also seen in the usual path. To check that, will it be possible f=
-or
-you to run the same workload without passing "stripe=3D32752" option during=
- mount
-time?=20
-
-2. How often do you see this issue, is it noticeable 100% of times?=20
-
-Regards,
-ojaswin
+2. The issue is reproducible/visible 100% of times when building openwrt on=
+ the
+kernels >=3D6.5 including 6.6.
 
 --=20
 You may reply to this email to add a comment.
