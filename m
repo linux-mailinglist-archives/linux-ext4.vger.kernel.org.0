@@ -2,303 +2,268 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80897B8DBB
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Oct 2023 21:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21207B9EBA
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Oct 2023 16:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244240AbjJDT4b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Oct 2023 15:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
+        id S232828AbjJEOL3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Oct 2023 10:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243968AbjJDT41 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Oct 2023 15:56:27 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8871A6;
-        Wed,  4 Oct 2023 12:56:22 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-77432add7caso12643685a.2;
-        Wed, 04 Oct 2023 12:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696449382; x=1697054182; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sGTZeR8rqqUgXP+mUWxeR7U93m1cwe4O1CklupLq00I=;
-        b=ZrEF8gzQ7lPKFdFwyeIUUMDULQKChJZQr4et9BO/YFtrEjrZ6Ge36etev0i9t7c4Qa
-         TVfSVqUavVpqSQqd4LBQv5DnCtdq4ZL4Pb9Es7z93VtsYZQOuF0YWPSSvuTcttenttOL
-         BrkvFHxVN1la58G+eIM0qn38zrpXfRRp2oBP0NRmdCW0bo6BeN4U/CofsjWbTIJ5sZL4
-         oB4jqniyohatIU9NCEHuTfiXWCJuV5fJ6HQDT3hGy5bvwDYepEPRlHJx6SyH1X6aD3H8
-         cCnH7vrG7lTX2lypyry2c7OSbzBK9EcHN6vWqF6rTFh2cPBYohGyhSt3su96pd+6JCk2
-         blXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696449382; x=1697054182;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sGTZeR8rqqUgXP+mUWxeR7U93m1cwe4O1CklupLq00I=;
-        b=dOmFFmaVQ0GcHNnL2l/OTXSztcVcEaE8/jkxRVrLc0pyyjJwAPO9acSTvhpaG0yjrE
-         A9PdUQU6Y1zJR4BRQLo57BgS7Gmzcpkhko6qc9hKLLJdF8j6YGj284+O3arhQxl5z5ld
-         KHNFXhgejKOUzV2pCQ2N+DEGlJNKLAFrp1R+MOxZ8oZ73AHBL7MKheWAewHchA1MpRZM
-         EIu28LUz+c+GpHnyt1DSDmDBQgwwYRzXIg8NsL4UIAymzWNKyXF9WHeUua4AJDZhyOhu
-         H6q9QKA+4qT4XXc9aS+3iUwWwscf+mbRGHKwgtFTt2n0zEM2YcWsgTqZqeh8On8EGx3V
-         KXBw==
-X-Gm-Message-State: AOJu0YyUfX1MG/IHPrgTqRtD37+WDbHyyPJA2VIohJEfjpqA/2L7x2lS
-        89pEVmxB32YwzDJabDA9uCiiDL4gCg8=
-X-Google-Smtp-Source: AGHT+IHti+jOTEFYUA6WTBB0ttRuejAfdXHrjp8fgloLZ0vErV5sMsvrcpQMn2Op+7c4+ivB7/TjlA==
-X-Received: by 2002:a05:620a:4483:b0:774:16fc:65eb with SMTP id x3-20020a05620a448300b0077416fc65ebmr3668419qkp.4.1696449381737;
-        Wed, 04 Oct 2023 12:56:21 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id d1-20020a05620a140100b0076dacd14484sm1500916qkj.83.2023.10.04.12.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 12:56:21 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 15:56:19 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
-        libaokun1@huawei.com, linux-fsdevel@vger.kernel.org
-Subject: Re: probable quota bug introduced in 6.6-rc1
-Message-ID: <ZR3DY733/uZ86rAG@debian-BULLSEYE-live-builder-AMD64>
-References: <ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64>
- <20231004150019.j2nebmxoa7zttu4x@quack3>
+        with ESMTP id S233015AbjJEOJ2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Oct 2023 10:09:28 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7649ED3
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Oct 2023 02:04:56 -0700 (PDT)
+Received: from [IPV6:2405:201:0:21ea:4ff2:cbfc:a520:890d] (unknown [IPv6:2405:201:0:21ea:4ff2:cbfc:a520:890d])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EFD5C66072FC;
+        Thu,  5 Oct 2023 10:04:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696496695;
+        bh=dUWeUiPqZMpiNXP8oij1NRtBtsH1i1H9yAPl53dh8Sc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IwdzV0c0Gaca5L3q46jFPhDMXJZGn20TdximlY1GxCevNb2XOVY+u2UDfJ13Po1f4
+         JVdBoaFP1CWjC2Ev4OK3sV2/zjDnFHgyjdlsBgJ4Cb03ra6S0oBX0atvO+9JzSM0Zw
+         ZCxggalOZlRXcj+6zi1VGiub89mSGEKAVq+gv9rn7ktn1ehPjs6UHf2FbzvACXQtDK
+         0D7Kwz3DRl8nrqX5I+ymW6GxTUByScvin7a25chUy+tZAnHAjc2zW23DH0azhoNtcj
+         d+j0QAaeJYroalzruQ11093Meo4LWlbq046NtVLWlhv8m8KqH5kR3vECLTJ9NUX+BG
+         aqqc1q493+bHQ==
+Message-ID: <604bc623-a090-005b-cbfc-39805a8a7b20@collabora.com>
+Date:   Thu, 5 Oct 2023 14:34:50 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004150019.j2nebmxoa7zttu4x@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [syzbot] INFO: task hung in ext4_fallocate
+Content-Language: en-US
+To:     Andres Freund <andres@anarazel.de>, Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org,
+        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo?= <ricardo.canuelo@collabora.com>,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        groeck@google.com, zsm@google.com, garrick@google.com,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+References: <d89989ef-e53b-050e-2916-a4f06433798b@collabora.com>
+ <ZQjKOjrjDYsoXBXj@mit.edu>
+ <20231003141138.owt6qwqyf4slgqgp@alap3.anarazel.de>
+ <20231003232505.GA444157@mit.edu>
+ <20231004004247.zkswbseowwwc6vvk@alap3.anarazel.de>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+In-Reply-To: <20231004004247.zkswbseowwwc6vvk@alap3.anarazel.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Jan Kara <jack@suse.cz>:
-> On Tue 03-10-23 20:11:11, Eric Whitney wrote:
-> > When run on my test hardware, generic/270 triggers hung task timeouts when
-> > run on a 6.6-rc1 (or -rc2, -rc3, -rc4) kernel with kvm-xfstests using the
-> > nojournal test scenario.  The test always passes, but about 60% of the time
-> > the running time of the test increases by an order of magnitude or more and
-> > one or more of the hung task timeout warnings included below can be found in
-> > the log.
-> > 
-> > This does not reproduce on 6.5.  Bisection leads to this patch:
-> > 
-> > dabc8b207566 ("quota: fix dqput() to follow the guarantees dquot_srcu should
-> > provide")
-> 
-> Thanks for report! Indeed I can reproduce this. Attached patch fixes the
-> problem for me, I'll queue it up in my tree once it passes some more
-> testing.
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Hi Andres,
 
-Hi Jan:
+On 04/10/23 06:12, Andres Freund wrote:
+> Hi,
+>
+> On 2023-10-03 19:25:05 -0400, Theodore Ts'o wrote:
+>> On Tue, Oct 03, 2023 at 07:11:38AM -0700, Andres Freund wrote:
+>>> On 2023-09-18 18:07:54 -0400, Theodore Ts'o wrote:
+>>>> On Mon, Sep 18, 2023 at 08:13:30PM +0530, Shreeya Patel wrote:
+>>>>> When I tried to reproduce this issue on mainline linux kernel using the
+>>>>> reproducer provided by syzbot, I see an endless loop of following errors :-
+>>>>>
+>>>>> [   89.689751][ T3922] loop1: detected capacity change from 0 to 512
+>>>>> [   89.690514][ T3916] EXT4-fs error (device loop4): ext4_map_blocks:577:
+>>>>> inode #3: block 9: comm poc: lblock 0 mapped to illegal pblock 9 (length 1)
+>>>>> [   89.694709][ T3890] EXT4-fs error (device loop0): ext4_map_blocks:577:
+>>>> Please note that maliciously corrupted file system is considered low
+>>>> priority by ext4 developers.
+>>> FWIW, I am seeing occasional hangs in ext4_fallocate with 6.6-rc4 as well,
+>>> just doing database development on my laptop.
+>> Unless you are using a corrupted file system (e.g., there are EXT4-fs
+>> error messages in dmesg), it's likely a different issue.
+> Indeed quite possibly unrelated - the only reason that I mentioned it here was
+> the fact that so far I've only hit it in 6.6-rc*, not earlier.
 
-Thanks very much for the quick work - I ran 100 trials of generic/270 on
-the nojournal test scenario using a patched 6.6-rc1 kernel and didn't see any
-hung task timeouts.  The elapsed test runtimes are comparable to those I get
-when running on 6.5 using the same test hardware. So, your patch works for me.
+Sorry about the previous html formatted email.
 
-Eric
+Since the issue that I reported is not reproducable locally, to confirm 
+if it happens on the mainline kernel or not,
+we did a #syz test: https://github.com/torvalds/linux master
 
-> From cc557f91af0a970e731e3dc945a431271e59ce8c Mon Sep 17 00:00:00 2001
-> From: Jan Kara <jack@suse.cz>
-> Date: Wed, 4 Oct 2023 15:32:01 +0200
-> Subject: [PATCH] quota: Fix slow quotaoff
-> 
-> Eric has reported that commit dabc8b207566 ("quota: fix dqput() to
-> follow the guarantees dquot_srcu should provide") heavily increases
-> runtime of generic/270 xfstest for ext4 in nojournal mode. The reason
-> for this is that ext4 in nojournal mode leaves dquots dirty until the last
-> dqput() and thus the cleanup done in quota_release_workfn() has to write
-> them all. Due to the way quota_release_workfn() is written this results
-> in synchronize_srcu() call for each dirty dquot which makes the dquot
-> cleanup when turning quotas off extremely slow.
-> 
-> To be able to avoid synchronize_srcu() for each dirty dquot we need to
-> rework how we track dquots to be cleaned up. Instead of keeping the last
-> dquot reference while it is on releasing_dquots list, we drop it right
-> away and mark the dquot with new DQ_RELEASING_B bit instead. This way we
-> can we can remove dquot from releasing_dquots list when new reference to
-> it is acquired and thus there's no need to call synchronize_srcu() each
-> time we drop dq_list_lock.
-> 
-> References: https://lore.kernel.org/all/ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64
-> Reported-by: Eric Whitney <enwlinux@gmail.com>
-> Fixes: dabc8b207566 ("quota: fix dqput() to follow the guarantees dquot_srcu should provide")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/quota/dquot.c         | 59 ++++++++++++++++++++++------------------
->  include/linux/quota.h    |  4 ++-
->  include/linux/quotaops.h |  2 +-
->  3 files changed, 36 insertions(+), 29 deletions(-)
-> 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index 9e72bfe8bbad..f4df2420e59c 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -233,19 +233,18 @@ static void put_quota_format(struct quota_format_type *fmt)
->   * All dquots are placed to the end of inuse_list when first created, and this
->   * list is used for invalidate operation, which must look at every dquot.
->   *
-> - * When the last reference of a dquot will be dropped, the dquot will be
-> - * added to releasing_dquots. We'd then queue work item which would call
-> + * When the last reference of a dquot is dropped, the dquot is added to
-> + * releasing_dquots. We'll then queue work item which will call
->   * synchronize_srcu() and after that perform the final cleanup of all the
-> - * dquots on the list. Both releasing_dquots and free_dquots use the
-> - * dq_free list_head in the dquot struct. When a dquot is removed from
-> - * releasing_dquots, a reference count is always subtracted, and if
-> - * dq_count == 0 at that point, the dquot will be added to the free_dquots.
-> + * dquots on the list. Each cleaned up dquot is moved to free_dquots list.
-> + * Both releasing_dquots and free_dquots use the dq_free list_head in the dquot
-> + * struct.
->   *
-> - * Unused dquots (dq_count == 0) are added to the free_dquots list when freed,
-> - * and this list is searched whenever we need an available dquot.  Dquots are
-> - * removed from the list as soon as they are used again, and
-> - * dqstats.free_dquots gives the number of dquots on the list. When
-> - * dquot is invalidated it's completely released from memory.
-> + * Unused and cleaned up dquots are in the free_dquots list and this list is
-> + * searched whenever we need an available dquot. Dquots are removed from the
-> + * list as soon as they are used again and dqstats.free_dquots gives the number
-> + * of dquots on the list. When dquot is invalidated it's completely released
-> + * from memory.
->   *
->   * Dirty dquots are added to the dqi_dirty_list of quota_info when mark
->   * dirtied, and this list is searched when writing dirty dquots back to
-> @@ -321,6 +320,7 @@ static inline void put_dquot_last(struct dquot *dquot)
->  static inline void put_releasing_dquots(struct dquot *dquot)
->  {
->  	list_add_tail(&dquot->dq_free, &releasing_dquots);
-> +	set_bit(DQ_RELEASING_B, &dquot->dq_flags);
->  }
->  
->  static inline void remove_free_dquot(struct dquot *dquot)
-> @@ -328,8 +328,10 @@ static inline void remove_free_dquot(struct dquot *dquot)
->  	if (list_empty(&dquot->dq_free))
->  		return;
->  	list_del_init(&dquot->dq_free);
-> -	if (!atomic_read(&dquot->dq_count))
-> +	if (!test_bit(DQ_RELEASING_B, &dquot->dq_flags))
->  		dqstats_dec(DQST_FREE_DQUOTS);
-> +	else
-> +		clear_bit(DQ_RELEASING_B, &dquot->dq_flags);
->  }
->  
->  static inline void put_inuse(struct dquot *dquot)
-> @@ -581,12 +583,6 @@ static void invalidate_dquots(struct super_block *sb, int type)
->  			continue;
->  		/* Wait for dquot users */
->  		if (atomic_read(&dquot->dq_count)) {
-> -			/* dquot in releasing_dquots, flush and retry */
-> -			if (!list_empty(&dquot->dq_free)) {
-> -				spin_unlock(&dq_list_lock);
-> -				goto restart;
-> -			}
-> -
->  			atomic_inc(&dquot->dq_count);
->  			spin_unlock(&dq_list_lock);
->  			/*
-> @@ -605,6 +601,15 @@ static void invalidate_dquots(struct super_block *sb, int type)
->  			 * restart. */
->  			goto restart;
->  		}
-> +		/*
-> +		 * The last user already dropped its reference but dquot didn't
-> +		 * get fully cleaned up yet. Restart the scan which flushes the
-> +		 * work cleaning up released dquots.
-> +		 */
-> +		if (test_bit(DQ_RELEASING_B, &dquot->dq_flags)) {
-> +			spin_unlock(&dq_list_lock);
-> +			goto restart;
-> +		}
->  		/*
->  		 * Quota now has no users and it has been written on last
->  		 * dqput()
-> @@ -809,18 +814,18 @@ static void quota_release_workfn(struct work_struct *work)
->  	/* Exchange the list head to avoid livelock. */
->  	list_replace_init(&releasing_dquots, &rls_head);
->  	spin_unlock(&dq_list_lock);
-> +	synchronize_srcu(&dquot_srcu);
->  
->  restart:
-> -	synchronize_srcu(&dquot_srcu);
->  	spin_lock(&dq_list_lock);
->  	while (!list_empty(&rls_head)) {
->  		dquot = list_first_entry(&rls_head, struct dquot, dq_free);
-> -		/* Dquot got used again? */
-> -		if (atomic_read(&dquot->dq_count) > 1) {
-> -			remove_free_dquot(dquot);
-> -			atomic_dec(&dquot->dq_count);
-> -			continue;
-> -		}
-> +		WARN_ON_ONCE(atomic_read(&dquot->dq_count));
-> +		/*
-> +		 * Note that DQ_RELEASING_B protects us from racing with
-> +		 * invalidate_dquots() calls so we are safe to work with the
-> +		 * dquot even after we drop dq_list_lock.
-> +		 */
->  		if (dquot_dirty(dquot)) {
->  			spin_unlock(&dq_list_lock);
->  			/* Commit dquot before releasing */
-> @@ -834,7 +839,6 @@ static void quota_release_workfn(struct work_struct *work)
->  		}
->  		/* Dquot is inactive and clean, now move it to free list */
->  		remove_free_dquot(dquot);
-> -		atomic_dec(&dquot->dq_count);
->  		put_dquot_last(dquot);
->  	}
->  	spin_unlock(&dq_list_lock);
-> @@ -875,6 +879,7 @@ void dqput(struct dquot *dquot)
->  	BUG_ON(!list_empty(&dquot->dq_free));
->  #endif
->  	put_releasing_dquots(dquot);
-> +	atomic_dec(&dquot->dq_count);
->  	spin_unlock(&dq_list_lock);
->  	queue_delayed_work(system_unbound_wq, &quota_release_work, 1);
->  }
-> @@ -963,7 +968,7 @@ struct dquot *dqget(struct super_block *sb, struct kqid qid)
->  		dqstats_inc(DQST_LOOKUPS);
->  	}
->  	/* Wait for dq_lock - after this we know that either dquot_release() is
-> -	 * already finished or it will be canceled due to dq_count > 1 test */
-> +	 * already finished or it will be canceled due to dq_count > 0 test */
->  	wait_on_dquot(dquot);
->  	/* Read the dquot / allocate space in quota file */
->  	if (!dquot_active(dquot)) {
-> diff --git a/include/linux/quota.h b/include/linux/quota.h
-> index fd692b4a41d5..07071e64abf3 100644
-> --- a/include/linux/quota.h
-> +++ b/include/linux/quota.h
-> @@ -285,7 +285,9 @@ static inline void dqstats_dec(unsigned int type)
->  #define DQ_FAKE_B	3	/* no limits only usage */
->  #define DQ_READ_B	4	/* dquot was read into memory */
->  #define DQ_ACTIVE_B	5	/* dquot is active (dquot_release not called) */
-> -#define DQ_LASTSET_B	6	/* Following 6 bits (see QIF_) are reserved\
-> +#define DQ_RELEASING_B	6	/* dquot is in releasing_dquots list waiting
-> +				 * to be cleaned up */
-> +#define DQ_LASTSET_B	7	/* Following 6 bits (see QIF_) are reserved\
->  				 * for the mask of entries set via SETQUOTA\
->  				 * quotactl. They are set under dq_data_lock\
->  				 * and the quota format handling dquot can\
-> diff --git a/include/linux/quotaops.h b/include/linux/quotaops.h
-> index 11a4becff3a9..4fa4ef0a173a 100644
-> --- a/include/linux/quotaops.h
-> +++ b/include/linux/quotaops.h
-> @@ -57,7 +57,7 @@ static inline bool dquot_is_busy(struct dquot *dquot)
->  {
->  	if (test_bit(DQ_MOD_B, &dquot->dq_flags))
->  		return true;
-> -	if (atomic_read(&dquot->dq_count) > 1)
-> +	if (atomic_read(&dquot->dq_count) > 0)
->  		return true;
->  	return false;
->  }
-> -- 
-> 2.35.3
-> 
+But it wasn't reproduced on the mainline kernel so it is very unlikely 
+that the issue you are seeing is same as this one.
 
+
+Thanks,
+Shreeya Patel
+
+
+> I've since then "downgraded" to 6.5.5, without hitting the issue so far,
+> despite continuing to run a similar workload for most of the day.
+>
+> I did actually find ext4 messages in dmesg, but only during the latest boot
+> into 6.5.5, despite encountering the hang four times (resolved via reboot each
+> time).
+>
+> Oct 03 07:35:16 alap5 kernel: Linux version 6.5.5-andres-00001-g97e7c1c17aa1 (andres@alap5) (gcc (Debian 13.2.0-4) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41) #76 SMP PREEMPT_DYNAMIC Tue Oct  3 07:29:10 PDT 2023
+> Oct 03 07:35:16 alap5 kernel: Command line: BOOT_IMAGE=/vmlinuz-6.5.5-andres-00001-g97e7c1c17aa1 root=/dev/mapper/alap5-root ro apparmor=0 rd.luks.options=discard systemd.show_status=1 i915.fastboot=1 i915.modeset=1 psmouse.synaptics_intertouch=1 systemd.unified_cgroup_hierarchy nvme.poll_queues=2 nvme.write_queues=2 intel_iommu=sm_on,igfx_off iommu=pt
+> ...
+> Oct 03 07:35:17 alap5 systemd[1]: Starting systemd-fsck@dev-disk-by\x2duuid-b77a2f23\x2dbb0d\x2d48bf\x2d8c36\x2d327c73460cb8.service - File System Check on /dev/disk/by-uuid/b77a2f23-bb0d-48bf-8c36-327c73460cb8...
+> ...
+> Oct 03 07:35:17 alap5 systemd-fsck[705]: /dev/nvme1n1p1: recovering journal
+> ...
+> Oct 03 07:35:17 alap5 systemd-fsck[705]: /dev/nvme1n1p1: clean, 90863/122101760 files, 110935625/488378368 blocks
+> Oct 03 07:35:17 alap5 systemd[1]: Finished systemd-fsck@dev-disk-by\x2duuid-b77a2f23\x2dbb0d\x2d48bf\x2d8c36\x2d327c73460cb8.service - File System Check on /dev/disk/by-uuid/b77a2f23-bb0d-48bf-8c36-327c73460cb8.
+> ...
+> Oct 03 07:35:18 alap5 kernel: EXT4-fs (nvme1n1p1): mounted filesystem b77a2f23-bb0d-48bf-8c36-327c73460cb8 r/w with ordered data mode. Quota mode: none.
+> ...
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 2240, len 32000; IO logical block 2240, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 4288, len 29952; IO logical block 4288, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 6336, len 27904; IO logical block 6336, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 8384, len 25856; IO logical block 8384, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 10432, len 23808; IO logical block 10432, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 12480, len 21760; IO logical block 12480, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 14528, len 19712; IO logical block 14528, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 16576, len 17664; IO logical block 16576, len 2048
+> Oct 03 07:38:09 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984794) finished: extent logical block 18624, len 15616; IO logical block 18624, len 320
+> Oct 03 07:38:11 alap5 kernel: wl0: disconnect from AP 04:62:73:d2:2f:ff for new auth to fc:5b:39:c6:6e:9f
+> ...
+> Oct 03 07:38:11 alap5 kernel: wl0: Limiting TX power to 2 dBm as advertised by fc:5b:39:c6:6e:9f
+> Oct 03 07:38:22 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984800) finished: extent logical block 152080, len 9856; IO logical block 152080, len 2048
+> Oct 03 07:38:22 alap5 kernel: EXT4-fs warning (device nvme1n1p1): ext4_convert_unwritten_extents_endio:3743: Inode (82984800) finished: extent logical block 154128, len 7808; IO logical block 154128, len 768
+>
+> I'm somewhat surprised to see the "
+>
+>
+>> Can you give us details about (a) what kind of block device; are you
+>> using dm-crypt, or just a HDD or a SSD?  If an SSD, what kind of SSD?
+> NVMe, Samsung SSD 970 EVO Plus 2TB. No dm_crypt, raid or whatever.
+>
+> smartctl / nvme smart-log indicates no data correctness errors or such. Not
+> that that's a guarantee of anything.
+>
+> A forced fsck doesn't find any corruption, but did report a number of
+> Inode 82984754 extent tree (at level 2) could be narrower.  Optimize<y>?
+> style "issues".
+>
+>
+>> What CPU architecture is it?
+> x86-64 (i9-9880H in a ThinkPad X1 Extreme 2nd). The laptop does have a battery
+> that's not, uhm, perfect, anymore (turning off while supposedly still having
+> around 15% capacity), so there have been a few out-of-power hard "shutdowns".
+>
+>
+>> And can you send me the output of dumpe2fs -h <block device>?
+> dumpe2fs 1.47.0 (5-Feb-2023)
+> Filesystem volume name:   <none>
+> Last mounted on:          /srv
+> Filesystem UUID:          b77a2f23-bb0d-48bf-8c36-327c73460cb8
+> Filesystem magic number:  0xEF53
+> Filesystem revision #:    1 (dynamic)
+> Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent 64bit flex_bg sparse_super large_file huge_file dir_nlink extra_isize metadata_csum
+> Filesystem flags:         signed_directory_hash
+> Default mount options:    user_xattr acl
+> Filesystem state:         clean
+> Errors behavior:          Continue
+> Filesystem OS type:       Linux
+> Inode count:              122101760
+> Block count:              488378368
+> Reserved block count:     0
+> Overhead clusters:        7947216
+> Free blocks:              377442743
+> Free inodes:              122010897
+> First block:              0
+> Block size:               4096
+> Fragment size:            4096
+> Group descriptor size:    64
+> Reserved GDT blocks:      1024
+> Blocks per group:         32768
+> Fragments per group:      32768
+> Inodes per group:         8192
+> Inode blocks per group:   512
+> Flex block group size:    16
+> Filesystem created:       Thu Jan  2 20:13:09 2020
+> Last mount time:          Tue Oct  3 07:35:18 2023
+> Last write time:          Tue Oct  3 07:35:18 2023
+> Mount count:              3
+> Maximum mount count:      -1
+> Last checked:             Mon Oct  2 12:55:12 2023
+> Check interval:           0 (<none>)
+> Lifetime writes:          7662 GB
+> Reserved blocks uid:      0 (user root)
+> Reserved blocks gid:      0 (group root)
+> First inode:              11
+> Inode size:	          256
+> Required extra isize:     32
+> Desired extra isize:      32
+> Journal inode:            8
+> Default directory hash:   half_md4
+> Directory Hash Seed:      03b91d34-4d2d-44b4-ac94-0c055f696e8a
+> Journal backup:           inode blocks
+> Checksum type:            crc32c
+> Checksum:                 0xbee0f98e
+> Journal features:         journal_incompat_revoke journal_64bit journal_checksum_v3
+> Total journal size:       1024M
+> Total journal blocks:     262144
+> Max transaction length:   262144
+> Fast commit length:       0
+> Journal sequence:         0x0004f764
+> Journal start:            23369
+> Journal checksum type:    crc32c
+> Journal checksum:         0x66761981
+>
+>
+>> And while the file system is mounted, please send the contents of
+>> /proc/fs/<block-device>/options, e.g.:
+>>
+>> % cat /proc/fs/ext4/dm-0/options
+> cat /proc/fs/ext4/nvme1n1p1/options
+> rw
+> bsddf
+> nogrpid
+> block_validity
+> dioread_nolock
+> nodiscard
+> delalloc
+> nowarn_on_error
+> journal_checksum
+> barrier
+> auto_da_alloc
+> user_xattr
+> acl
+> noquota
+> resuid=0
+> resgid=0
+> errors=continue
+> commit=5
+> min_batch_time=0
+> max_batch_time=15000
+> stripe=0
+> data=ordered
+> inode_readahead_blks=32
+> init_itable=10
+> max_dir_size_kb=0
+>
+>> And finally, how full was the file system?  What is the output of "df
+>> <mountpoint>" and "df -i <mountpoint>".
+> root@alap5:/# df /srv/
+> Filesystem      1K-blocks      Used  Available Use% Mounted on
+> /dev/nvme1n1p1 1921724608 542905720 1378802504  29% /srv
+> root@alap5:/# df -i /srv/
+> Filesystem        Inodes IUsed     IFree IUse% Mounted on
+> /dev/nvme1n1p1 122101760 91292 122010468    1% /srv
+>
+>
+> However, fullness of this filesystem varies substantially over time, as I use
+> it for developing / testing postgres, albeit primarily when travelling.  I was
+> e.g. benchmarking bulk-loading of data (knowingly on a mediocre SSD) at the
+> time of the last crash, space usage during that goes up by a few hundred GB,
+> with the data being deleted afterwards.
+>
+> Greetings,
+>
+> Andres Freund
