@@ -2,146 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255287BB59D
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 12:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1C27BBE59
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 20:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbjJFKrz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Oct 2023 06:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S233165AbjJFSGm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Oct 2023 14:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbjJFKry (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 06:47:54 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B50CA
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 03:47:53 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.184.141])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 03FF66612212;
-        Fri,  6 Oct 2023 11:47:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696589272;
-        bh=7gBFf6NWqP6XqBx6y090zR5/QITvjmucqTQaatKVQyE=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=ntky7VzS7JEENGsNYcVVnOqz2QaNLmjjdZwndEUW+kYWpFfwVX4+FeMP4HifLCxxv
-         lZXXSspJl56rDat0489ZWOo6TITcEBd+y3LL7y3xetihskqtbeVliRM55MiNTm0/JZ
-         6WzcAnKk0mYV3DLpNreEa18T3odGufjKwwYGC/hMx+ZePPK8Veq3bdhUUXeaknomMT
-         T8WvXSSfT24IflKqgFd0Ujmyo/7jJQvCneCyBUCz+wKZbnVk4baH3mJB9zhdq7sAeY
-         M4fJLaZyFxeygVR8lrhePFov67d0Gncm6g6H7JwEYmUaMhYnsM4NxcKCoM1IN6G8qK
-         xPjYctq0GGQ4Q==
-Message-ID: <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
-Date:   Fri, 6 Oct 2023 15:47:46 +0500
+        with ESMTP id S233161AbjJFSGm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 14:06:42 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AE2C2
+        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 11:06:38 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-111-143.bstnma.fios.verizon.net [173.48.111.143])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 396I6XBO008024
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Oct 2023 14:06:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1696615594; bh=BrAE8iBAqoGudefq+CU0eHk5VRpk9NZ13gPIXXJuS4k=;
+        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=FTwIMzXtvNAATIx4GddyXuMw+I/GslLT00KfQqMafLAE+oWSWSc4WjJrYygofNPCk
+         zRDL5Yil23JaPjqi6JPaNft7ZTT/ykjGx7tusyqxtS2+hxVgqRlBFUI6haK9R6zNon
+         CPNQmjom0dCB1OR1KwtXyjkykl1FhskP4lBNQ8YCNbjc9XgmDwMdM9v3GUX+KX34hN
+         IQft0HHiuh13jZBRzQNvqObcR1ezrGMf630Gp+XcC2hEMfh8oWebCUn3L97LjA3Nfw
+         qPAahA4C3pYbrOCn7cNDHSPo8DXxSZW/Oka449AoGvZwzvX7SgCIuVD9456x3GILne
+         kuq3YRDvsx4xw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 196A715C0250; Fri,  6 Oct 2023 14:06:33 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org, Brian Foster <bfoster@redhat.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH] ext4: fix racy may inline data check in dio write
+Date:   Fri,  6 Oct 2023 14:06:16 -0400
+Message-Id: <169661554699.173366.13182900312377445374.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20231002185020.531537-1-bfoster@redhat.com>
+References: <20231002185020.531537-1-bfoster@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [RFC] ext4: don't remove already removed extent
-Content-Language: en-US
-To:     Eric Whitney <enwlinux@gmail.com>
-References: <20230911094038.3602508-1-usama.anjum@collabora.com>
- <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 9/20/23 5:41 AM, Eric Whitney wrote:
-> * Muhammad Usama Anjum <usama.anjum@collabora.com>:
->> Syzbot has hit the following bug on current and all older kernels:
->> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
->> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
->> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
->>
->> On investigation, I've found that eh->eh_entries is zero, ex is
->> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
->> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
->> buffer read.
->>
->> element: FFFF8882F8F0D06C       <----- ex
->> element: FFFF8882F8F0D060
->> element: FFFF8882F8F0D054
->> element: FFFF8882F8F0D048
->> element: FFFF8882F8F0D03C
->> element: FFFF8882F8F0D030
->> element: FFFF8882F8F0D024
->> element: FFFF8882F8F0D018
->> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
->> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
->>
->> Cc: stable@vger.kernel.org
->> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
->> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
->> Fixes: d583fb87a3ff ("ext4: punch out extents")
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> This patch is only fixing the local issue. There may be bigger bug. Why
->> is ex set to last entry if the eh->eh_entries is 0. If any ext4
->> developer want to look at the bug, please don't hesitate.
->> ---
->>  fs/ext4/extents.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index e4115d338f101..7b7779b4cb87f 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
->>  		 * If the extent was completely released,
->>  		 * we need to remove it from the leaf
->>  		 */
->> -		if (num == 0) {
->> +		if (num == 0 && eh->eh_entries) {
->>  			if (end != EXT_MAX_BLOCKS - 1) {
->>  				/*
->>  				 * For hole punching, we need to scoot all the
->> -- 
->> 2.40.1
->>
-> 
-> Hi:
-> 
-> First, thanks for taking the time to look at this.
-Thank you for replying and giving me pointers that I need to start looking
-at problem from first warning until the bug which can be difficult until I
-debug the problem smartly and learn at least the basics of ext4.
 
+On Mon, 02 Oct 2023 14:50:20 -0400, Brian Foster wrote:
+> syzbot reports that the following warning from ext4_iomap_begin()
+> triggers as of the commit referenced below:
 > 
-> I'm suspicious that syzbot may be fuzzing an extent header or other extent
-> tree components.  As you noticed, eh_entries and ex appear to be inconsistent.
-> Also, note the long series of corrupted file system reports in the console log
-> occurring before the KASAN bug - ext4 had been detecting and rejecting bad
-> data up to that point.  The file system on the disk image provided by sysbot
-> indicates that metadata checksumming was enabled (and it fscks cleanly).
-> That should have caught a corrupted extent header or inode, but perhaps
-> there's a problem.
+>         if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+>                 return -ERANGE;
 > 
-> The console log indicates that the problem occurred on inode #16.  Does the
-> information you've provided above come from testing you did on inode #16
-> (looks like the name was /bin/base64)?
-I couldn't analyze the problem in broad spectrum. There must be some bigger
-thing wrong here.
+> This occurs during a dio write, which is never expected to encounter
+> an inode with inline data. To enforce this behavior,
+> ext4_dio_write_iter() checks the current inline state of the inode
+> and clears the MAY_INLINE_DATA state flag to either fall back to
+> buffered writes, or enforce that any other writers in progress on
+> the inode are not allowed to create inline data.
+> 
+> [...]
 
-> 
-> By any chance, have you found a simpler reproducer than what syzbot provides?
-Not yet, this gets reproduced after a while. I'll try to come up with
-better reproducer if I can.
+Applied, thanks!
 
-> 
-> Thanks,
-> Eric
-> 
-> 
+[1/1] ext4: fix racy may inline data check in dio write
+      commit: a37d4c46392e207518deb6533768986634b193c0
 
+Best regards,
 -- 
-BR,
-Muhammad Usama Anjum
+Theodore Ts'o <tytso@mit.edu>
