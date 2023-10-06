@@ -2,46 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0517BBE68
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 20:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354E77BBE72
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 20:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjJFSHC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Oct 2023 14:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        id S233280AbjJFSHV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Oct 2023 14:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbjJFSGv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 14:06:51 -0400
+        with ESMTP id S233278AbjJFSHR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 14:07:17 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0D2DE
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 11:06:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F7C10C
+        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 11:06:53 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-111-143.bstnma.fios.verizon.net [173.48.111.143])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 396I6Z6W008106
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 396I6Z66008120
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 6 Oct 2023 14:06:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1696615597; bh=kZHChCPqxvhqqrY27I71wBCLP9O/9nv2NFTtafE5VFA=;
+        t=1696615597; bh=cVLodiHXXqwas2hf6O+mysVZWt3Td9WU1oZufvWjZa8=;
         h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=ojSVmTqmD2MfpgDucvhdqIjL5Xcfdhy1/g4SzC4j2PoGlLd6IwZgI7rj2YEb9b6w5
-         v1OFL/XQAJSyOAF2OaiOatlXXiunKiOg0RA6Hsztl5PxayugXieqWQZuINHBoej1KK
-         MOhow07LneMoC3tz0Vnmz5361yekDZnRyWCo4WvGPSjNcdxN0PMzkY7oaEuOClwkAu
-         SkJXmERoU0oRdpiUHe4dGMcaERHMj4ih8/+0DR7PhDTvNaCBUCbCNh4f/wP1n5hq+7
-         aQp8dk/tJGUP3/b6+UzDQw/JqHsyDj/wlaEYDhunkhg73HO5Zaco0D4PZ9qqzgamT3
-         UjrTqgfvphzzg==
+        b=hhUoeXZu6ItMWHLVpFkfuIq8298wnuBLrySa/seAoVpgXSmInEOciYXP8A0fOLiQ4
+         X9fJoBgecOfvd+KFAmeoMOW+7Zronj8a2yCSAaxKyAvQoSv+PB5zVdKl+OnsDCTK2T
+         0qfiYQuv3t10iu02GcEGwVC8FMkGZc2Nyo4tGrqD/Efzcq9wdiYu1IienEQSYwNSU/
+         HehsIsE2jlx/z7Y3wfI6ykXiagLXKJOyWc3rhP3TbfhvQFyMZoPoMkyB2RDSedE/J8
+         GOGXJVe8FBQ/156CVCVstIhnAtg0fYu+4fSy5br6hZ2VueotSi97yEFmWT9OteyR2S
+         vAqxIwHl/4Hiw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 285A115C0265; Fri,  6 Oct 2023 14:06:33 -0400 (EDT)
+        id 2A1FB15C026A; Fri,  6 Oct 2023 14:06:33 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     ritesh.list@gmail.com, adilger.kernel@dilger.ca,
         Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH v3 00/13] fixes and cleanups to ext4 resize
-Date:   Fri,  6 Oct 2023 14:06:24 -0400
-Message-Id: <169661554693.173366.13029736080783552496.b4-ty@mit.edu>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 00/12] cleanups and unit test for mballoc
+Date:   Fri,  6 Oct 2023 14:06:25 -0400
+Message-Id: <169661554693.173366.10425760785388964424.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20230826174712.4059355-1-shikemeng@huaweicloud.com>
-References: <20230826174712.4059355-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20230928160407.142069-1-shikemeng@huaweicloud.com>
+References: <20230928160407.142069-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,46 +55,56 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-On Sun, 27 Aug 2023 01:46:59 +0800, Kemeng Shi wrote:
-> This series contains some random cleanups and a few fixes to correct gdb
-> backup copy, fix buffer_head leak and so on. More details can be found
-> in respective log messages.
-> I run kvm-xfstest with config "ext4/all" and "-g auto" together with
-> mballoc patchset I sent before.
+On Fri, 29 Sep 2023 00:03:55 +0800, Kemeng Shi wrote:
+> v7->v8:
+> 1. Convert all ext4_mb_mark_bb to use bool in patch 1.
+> 2. Improve commit msg as Ritesh suggested.
+> 3. Collect RBs from Ritesh. A lot thanks to Ritesh!
 > 
-> v2->v3:
-> -Remove unused ext4_meta_bg_first_group defination in patch 11
+> v6->v7:
+> 1. Remove struct ext4_mark_context and call ext4_mb_mark_context with all
+> needed arguments directly.
+> 2. Add new patch to make state in ext4_mb_mark_bb bool and make state in
+> new-added function ext4_mb_mark_context bool.
+> 3. Fix typos in git messages.
+> 4. Keep on-disk bitmap marking code tight in patch separating on-disk
+> bitmap and buddy bitmap freeing.
+> 5. Test 64k blocksize instead of 256k blocksize.
+> 6. Remove RVB from Ojaswin in changed patches and collect updated RVB from
+> Ritesh.
+> 7. As there is no much functional change to initial version, "kvm-xfstest
+> smoke" test and kunit test are ran and result is good.
+> 8. Plan to add ext4_inode_block_valid in ext4_mb_mark_context in new
+> series!
 > 
 > [...]
 
 Applied, thanks!
 
-[01/13] ext4: correct offset of gdb backup in non meta_bg group to update_backups
-        commit: 31f13421c004a420c0e9d288859c9ea9259ea0cc
-[02/13] ext4: add missed brelse in update_backups
-        commit: 9adac8b01f4be28acd5838aade42b8daa4f0b642
-[03/13] ext4: correct return value of ext4_convert_meta_bg
-        commit: 48f1551592c54f7d8e2befc72a99ff4e47f7dca0
-[04/13] ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
-        commit: 40dd7953f4d606c280074f10d23046b6812708ce
-[05/13] ext4: fix typo in setup_new_flex_group_blocks
-        commit: e44fc921b84ff08a9e2fb827a146fa4021d016f3
-[06/13] ext4: remove redundant check of count
-        commit: 7d4cd3b45af025befe3bca94f87359a6603b6e95
-[07/13] ext4: remove commented code in reserve_backup_gdb
-        commit: 31458077273b5f883d99bee33a7fb295f155712d
-[08/13] ext4: calculate free_clusters_count in cluster unit in verify_group_input
-        commit: 1fc1bd2d18bbade157f7b14270f509ebbd89881b
-[09/13] ext4: remove EXT4FS_DEBUG defination in resize.c
-        commit: 95b635689b58e0ebe5197bf99c82c681eabe17ee
-[10/13] ext4: use saved local variable sbi instead of EXT4_SB(sb)
-        commit: 70cbfd257995b3f23c2408fd893cc18b61e58b4a
-[11/13] ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
-        commit: 9dca529bdaad7a7242a36d04f73cb998b817ab48
-[12/13] ext4: remove unnecessary check to avoid repeat update_backups for the same gdb
-        commit: 350bb48b84b8f4ad4ea179dbb97f568d12626188
-[13/13] ext4: remove unnecessary initialization of count2 in set_flexbg_block_bitmap
-        commit: 248b45b621a77155f81129e6b572ec833edb4cf4
+[01/12] ext4: make state in ext4_mb_mark_bb to be bool
+        commit: d2f7cf40ea89b486fb7a25f5ab9a5d3ce26fb4bb
+[02/12] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
+        commit: f9e2d95a45321857bd0397aa07ae30cc20f0988f
+[03/12] ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
+        commit: 26d0f87b9fff37f9d4a04aa49f40b0d24502d2b1
+[04/12] ext4: extend ext4_mb_mark_context to support allocation under journal
+        commit: c431d3867e0a8258d1948408eb8297cdd2400e67
+[05/12] ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
+        commit: 2f94711b098bc55285ac74aba2f2b83fd72b555f
+[06/12] ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
+        commit: 33e728c67db6b7e72fc8d09f7a38f72302b8a98d
+[07/12] ext4: call ext4_mb_mark_context in ext4_mb_clear_bb
+        commit: 38b8f70cd28c6ad21192d82f271b9e32bdcb8600
+[08/12] ext4: Separate block bitmap and buddy bitmap freeing in ext4_group_add_blocks()
+        commit: 03c7fc39a677cdeae076d8b9ecc10920dd13f6a8
+[09/12] ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
+        commit: 5c657db46d9ebc63e57be1408f1986c9b23368e1
+[10/12] ext4: add some kunit stub for mballoc kunit test
+        commit: bdefd689b7ff0eadc3b29dc6c66556617bd1ed42
+[11/12] ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
+        commit: 7c9fa399a369546c0e0375ea4b354d642a8fe501
+[12/12] ext4: run mballoc test with different layouts setting
+        commit: 28b95ee868072f1cd029245bf96cf02844322f37
 
 Best regards,
 -- 
