@@ -2,79 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C944E7BB054
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 04:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255287BB59D
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Oct 2023 12:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjJFCeG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Oct 2023 22:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S231676AbjJFKrz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Oct 2023 06:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjJFCeF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Oct 2023 22:34:05 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14734D8
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Oct 2023 19:34:02 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-143.bstnma.fios.verizon.net [173.48.111.143])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3962XUHp031098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 5 Oct 2023 22:33:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1696559612; bh=h/mVb9Qv4kArSe4i2LJvatCyufDvFmKmMHUkrDAkVu4=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=E1hMy89vQgKDPjdygpxSL4i0ysYcxKI8+a1d1LqUQxikz2dsi43/M6Jl3Y7dtE45A
-         7YRo/Nw5BWG/359cM2nIJxU3oWO2FRmd5ylL8RJQWkvDTsxQLO/wwkiv2lIgOJ/zIi
-         5HGNL6k1OQJR6egdpu9j+4bA1VQroaPEG/KhUBHZNM5ZkR3qvKAC+mM6Ev1/W5dOBL
-         pMgON0KyiLblh0V6PGZ9hxKzwI2Dgo4OLLcijQQjMI0E40bxsM2RUGru0a0OeaPXRE
-         yr8Z/RKCdkNSOtvT/5oXse7kqEfes3O+wevQ3qmTK2KuN+L6/w5te52tllIIQExzSH
-         o6RzdTg7Y8eXA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 39A7E15C0250; Thu,  5 Oct 2023 22:33:30 -0400 (EDT)
-Date:   Thu, 5 Oct 2023 22:33:30 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [RFC PATCH 02/16] ext4: make sure allocate pending entry not fail
-Message-ID: <20231006023330.GB24026@mit.edu>
-References: <20230824092619.1327976-1-yi.zhang@huaweicloud.com>
- <20230824092619.1327976-3-yi.zhang@huaweicloud.com>
- <20230830132503.6xxgb4g7xi7n6lbr@quack3>
+        with ESMTP id S231335AbjJFKry (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 06:47:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B50CA
+        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 03:47:53 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.184.141])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 03FF66612212;
+        Fri,  6 Oct 2023 11:47:50 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696589272;
+        bh=7gBFf6NWqP6XqBx6y090zR5/QITvjmucqTQaatKVQyE=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=ntky7VzS7JEENGsNYcVVnOqz2QaNLmjjdZwndEUW+kYWpFfwVX4+FeMP4HifLCxxv
+         lZXXSspJl56rDat0489ZWOo6TITcEBd+y3LL7y3xetihskqtbeVliRM55MiNTm0/JZ
+         6WzcAnKk0mYV3DLpNreEa18T3odGufjKwwYGC/hMx+ZePPK8Veq3bdhUUXeaknomMT
+         T8WvXSSfT24IflKqgFd0Ujmyo/7jJQvCneCyBUCz+wKZbnVk4baH3mJB9zhdq7sAeY
+         M4fJLaZyFxeygVR8lrhePFov67d0Gncm6g6H7JwEYmUaMhYnsM4NxcKCoM1IN6G8qK
+         xPjYctq0GGQ4Q==
+Message-ID: <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
+Date:   Fri, 6 Oct 2023 15:47:46 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830132503.6xxgb4g7xi7n6lbr@quack3>
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [RFC] ext4: don't remove already removed extent
+Content-Language: en-US
+To:     Eric Whitney <enwlinux@gmail.com>
+References: <20230911094038.3602508-1-usama.anjum@collabora.com>
+ <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 03:25:03PM +0200, Jan Kara wrote:
-> On Thu 24-08-23 17:26:05, Zhang Yi wrote:
-> > From: Zhang Yi <yi.zhang@huawei.com>
-> > 
-> > __insert_pending() allocate memory in atomic context, so the allocation
-> > could fail, but we are not handling that failure now. It could lead
-> > ext4_es_remove_extent() to get wrong reserved clusters, and the global
-> > data blocks reservation count will be incorrect. The same to
-> > extents_status entry preallocation, preallocate pending entry out of the
-> > i_es_lock with __GFP_NOFAIL, make sure __insert_pending() and
-> > __revise_pending() always succeeds.
-> > 
-> > Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+On 9/20/23 5:41 AM, Eric Whitney wrote:
+> * Muhammad Usama Anjum <usama.anjum@collabora.com>:
+>> Syzbot has hit the following bug on current and all older kernels:
+>> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
+>> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
+>> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
+>>
+>> On investigation, I've found that eh->eh_entries is zero, ex is
+>> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
+>> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
+>> buffer read.
+>>
+>> element: FFFF8882F8F0D06C       <----- ex
+>> element: FFFF8882F8F0D060
+>> element: FFFF8882F8F0D054
+>> element: FFFF8882F8F0D048
+>> element: FFFF8882F8F0D03C
+>> element: FFFF8882F8F0D030
+>> element: FFFF8882F8F0D024
+>> element: FFFF8882F8F0D018
+>> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
+>> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
+>>
+>> Cc: stable@vger.kernel.org
+>> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
+>> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
+>> Fixes: d583fb87a3ff ("ext4: punch out extents")
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> This patch is only fixing the local issue. There may be bigger bug. Why
+>> is ex set to last entry if the eh->eh_entries is 0. If any ext4
+>> developer want to look at the bug, please don't hesitate.
+>> ---
+>>  fs/ext4/extents.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index e4115d338f101..7b7779b4cb87f 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+>>  		 * If the extent was completely released,
+>>  		 * we need to remove it from the leaf
+>>  		 */
+>> -		if (num == 0) {
+>> +		if (num == 0 && eh->eh_entries) {
+>>  			if (end != EXT_MAX_BLOCKS - 1) {
+>>  				/*
+>>  				 * For hole punching, we need to scoot all the
+>> -- 
+>> 2.40.1
+>>
 > 
-> Looks sensible. Feel free to add:
+> Hi:
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> First, thanks for taking the time to look at this.
+Thank you for replying and giving me pointers that I need to start looking
+at problem from first warning until the bug which can be difficult until I
+debug the problem smartly and learn at least the basics of ext4.
 
-Thanks, I've applied the first two patches in this series, since these
-are bug fixes.  The rest of the patch series requires more analysis
-and review.
+> 
+> I'm suspicious that syzbot may be fuzzing an extent header or other extent
+> tree components.  As you noticed, eh_entries and ex appear to be inconsistent.
+> Also, note the long series of corrupted file system reports in the console log
+> occurring before the KASAN bug - ext4 had been detecting and rejecting bad
+> data up to that point.  The file system on the disk image provided by sysbot
+> indicates that metadata checksumming was enabled (and it fscks cleanly).
+> That should have caught a corrupted extent header or inode, but perhaps
+> there's a problem.
+> 
+> The console log indicates that the problem occurred on inode #16.  Does the
+> information you've provided above come from testing you did on inode #16
+> (looks like the name was /bin/base64)?
+I couldn't analyze the problem in broad spectrum. There must be some bigger
+thing wrong here.
 
-						- Ted
+> 
+> By any chance, have you found a simpler reproducer than what syzbot provides?
+Not yet, this gets reproduced after a while. I'll try to come up with
+better reproducer if I can.
+
+> 
+> Thanks,
+> Eric
+> 
+> 
+
+-- 
+BR,
+Muhammad Usama Anjum
