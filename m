@@ -2,82 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7507BC395
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Oct 2023 03:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E35D7BC3A6
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Oct 2023 03:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjJGBUv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Oct 2023 21:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S234010AbjJGB21 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Oct 2023 21:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbjJGBUu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 21:20:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58953BF
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 18:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696641603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JDPgDyc+rpy+6pDy/WUApGWgXd3+hqYtxVhpZw2Z+oU=;
-        b=XuJzK0pzZPRjWE3ARyaQdo0iLhcgKaecYuOk8XxD1aRFfW6OZwVWwqJVcY0jNv0AVW7uk/
-        +ZuD/xGn515OFdpx74VovvvH9nST/VJYr7tkSIqh1VOCxjN0l4T1YomMOIaOX3BZAjnZRS
-        LH7vq+Vq2r8xNW4LC/r4U0UA5FdbO4E=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-ryffRbIePXCxPEagC6WzDQ-1; Fri, 06 Oct 2023 21:20:01 -0400
-X-MC-Unique: ryffRbIePXCxPEagC6WzDQ-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c625d701b9so25048715ad.0
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Oct 2023 18:20:01 -0700 (PDT)
+        with ESMTP id S234019AbjJGB20 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 21:28:26 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BB2C5
+        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 18:28:24 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c874b43123so23046935ad.2
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Oct 2023 18:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696642104; x=1697246904; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sPAOchZ3lviZQWz7F/yVzJ/5u6K9fS7pELXL8VtCc9c=;
+        b=BB+jwWHPZKoC+SFdcT4TIJ0MVh4GMwMAeh9vXdKr0exaDqj/uLEU5WfLtt/OytF56U
+         cmIKL4nzncZ4Mlz/UWnu+96fR2gV33xPR1GhH+sCjipxEcrhIB2Qc1rkM505dMLdOif3
+         90XFavyzJ35MiqABFI9ylzog9/FqQvDspR9GI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696641600; x=1697246400;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDPgDyc+rpy+6pDy/WUApGWgXd3+hqYtxVhpZw2Z+oU=;
-        b=oL26E7dkl8eCQPOqoFFg3NzsSW2VJS5eUzEbTTfWNFJt668ad0x9517rL5hn/ZZ1yN
-         lNVeN6DnXiwh7wCRxvtSmXonFJkHvQz/UbMHemfwNwKKWcjOEDYFFBlAXhb21/2VcUCk
-         Y5CLBjPsvAGj8xG6eZaga/YqHNOjCE8lEckkfC8PRLHZW9WKvuK+7cd/2m9ytVEa3snm
-         XyJkjsMHSRTU+s3whrFVMm/qSiKaAOfeNv07Ua2pBi/vxy49Wil4j+2BjwkqGMM9OTve
-         MyiW+cbZ3gNz3lGGmlNSSpEMzCTmR+/II7TnGttL3LoYnjtaCvR3IJebTek6V4292jwY
-         Tf2g==
-X-Gm-Message-State: AOJu0Yx2bt0SERGBAUDPS75nTTSoPODwOzhCdVyVkDHhpKPk5KZz64wg
-        sNDUH8LOwUiittHeOPNdNNjdzXEJaf8GGOFYSUjpbskWbnc2XeNsqos/UPqq/7upc8DsfyAtlnI
-        v6PfDgq6RR94a3+WOCmOZcQ==
-X-Received: by 2002:a17:903:22cb:b0:1c4:5e9e:7865 with SMTP id y11-20020a17090322cb00b001c45e9e7865mr11138683plg.0.1696641600321;
-        Fri, 06 Oct 2023 18:20:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE27ukV5xdoxeuBFbDNnq/3SZ1mSxu4JFqOyNbj44S+UpM/DrxTnSraC3Bo0wkIV9f7/lhB9A==
-X-Received: by 2002:a17:903:22cb:b0:1c4:5e9e:7865 with SMTP id y11-20020a17090322cb00b001c45e9e7865mr11138672plg.0.1696641600005;
-        Fri, 06 Oct 2023 18:20:00 -0700 (PDT)
-Received: from [10.72.112.33] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001bdc3768ca5sm4554814plh.254.2023.10.06.18.19.56
+        d=1e100.net; s=20230601; t=1696642104; x=1697246904;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sPAOchZ3lviZQWz7F/yVzJ/5u6K9fS7pELXL8VtCc9c=;
+        b=OJVyiBzvbiW0WPZACETgy2xUG+yVc8+mM6bT5cWXC05VQZPmvfM92I/p5M8HSdvrY8
+         ClayqjjSFUIzzwzae9vCWjQt3hthdVlDfCOvzMhZM1SWB0iNQzEWgjNm0ns0wFSA35tg
+         Sp/NcKmdJmp1+7yVoobb5n+Uhtv85Vi1EFJMvlZH5HTIQ8T2YHgxNpcUBpZrIdFxQkF3
+         1UxqXWcu+WBr0gFTJofsxsOqEv+IhsuF/As8oumoaZ6ue/kI5q37zn11lNvhI3Bk4m2M
+         BcP5NkxtHjT+Kw347pbLc4+emmWUb1JHQMkqr6ZZKwZv72U2A3+7Ve45l5IlXextEFnT
+         201Q==
+X-Gm-Message-State: AOJu0Ywui93QJZpZNQDNE3rMc/uV53gDWI1NEUWJZoGKG+kaaiU9rRQ9
+        caX5hYotlBFJugXWME0DscL6YA==
+X-Google-Smtp-Source: AGHT+IF35TNd+fTvsxdLu9WMjvVSs/iB8sRAO30572Xwc92tYnfHc95l4aq5f8nH5De0gpWJSaCjww==
+X-Received: by 2002:a17:903:228f:b0:1c7:66a4:27ba with SMTP id b15-20020a170903228f00b001c766a427bamr11470478plh.48.1696642104031;
+        Fri, 06 Oct 2023 18:28:24 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:138c:8976:eb4a:a91c])
+        by smtp.gmail.com with UTF8SMTPSA id q13-20020a170902dacd00b001b8b2a6c4a4sm4575373plx.172.2023.10.06.18.28.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 18:19:59 -0700 (PDT)
-Message-ID: <880bb6a8-d641-003d-1e38-d0115d22eabc@redhat.com>
-Date:   Sat, 7 Oct 2023 09:19:54 +0800
+        Fri, 06 Oct 2023 18:28:23 -0700 (PDT)
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+To:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Sarthak Kukreti <sarthakkukreti@chromium.org>
+Subject: [PATCH v8 0/5] Introduce provisioning primitives
+Date:   Fri,  6 Oct 2023 18:28:12 -0700
+Message-ID: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] fs: apply umask if POSIX ACL support is disabled
-Content-Language: en-US
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Max Kellermann <max.kellermann@ionos.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net
-References: <20230919081900.1096840-1-max.kellermann@ionos.com>
- <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,79 +75,59 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi,
 
-On 10/3/23 23:32, Dave Kleikamp wrote:
-> I think this is sane, but the patch needs a description of why this is 
-> necessary for these specific file systems.
->
-Sounds reasonable.
+This patch series is version 8 of the patch series to introduce
+block-level provisioning mechanism (original [1]), which is useful for provisioning
+space across thinly provisioned storage architectures (loop devices
+backed by sparse files, dm-thin devices, virtio-blk). This series has
+minimal changes over v7[2].
 
-Thanks
+This patch series is rebased from the linux-dm/dm-6.5-provision-support [1] on to
+(cac405a3bfa2 Merge tag 'for-6.6-rc3-tag'). In addition, there's an
+additional patch to allow passing through an unshare intent via REQ_OP_PROVISION
+(suggested by Darrick in [4]).
 
-- Xiubo
+[1] Original: https://lore.kernel.org/lkml/20220915164826.1396245-1-sarthakkukreti@google.com/
+[2] v7 (last series): https://lore.kernel.org/linux-fsdevel/20230518223326.18744-1-sarthakkukreti@chromium.org/
+[3] linux-dm/dm-6.5-provision-suppport tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-6.5-provision-support
+(with the last two WIP patches for dm-thinpool dropped as per discussion with
+maintainers).
+[4] https://lore.kernel.org/linux-fsdevel/20230522163710.GA11607@frogsfrogsfrogs/
 
+Changes from v7:
+- Drop dm-thinpool (will be independently developed with snapshot
+  support) and dm-snapshot (will not be supported) from the series.
+- (By snitzer@kernel.org) Fixes for block device provision limits.
+- (Suggested by djwong@kernel.org) Add mechanism to pass unshare intent
+  via REQ_OP_PROVISION
 
-> Thanks,
-> Shaggy
->
-> On 9/19/23 3:18AM, Max Kellermann wrote:
->> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
->> ---
->>   fs/ceph/super.h           | 1 +
->>   fs/ext2/acl.h             | 1 +
->>   fs/jfs/jfs_acl.h          | 1 +
->>   include/linux/posix_acl.h | 1 +
->>   4 files changed, 4 insertions(+)
->>
->> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
->> index 51c7f2b14f6f..e7e2f264acf4 100644
->> --- a/fs/ceph/super.h
->> +++ b/fs/ceph/super.h
->> @@ -1194,6 +1194,7 @@ static inline void 
->> ceph_forget_all_cached_acls(struct inode *inode)
->>   static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
->>                        struct ceph_acl_sec_ctx *as_ctx)
->>   {
->> +    *mode &= ~current_umask();
->>       return 0;
->>   }
->>   static inline void ceph_init_inode_acls(struct inode *inode,
->> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
->> index 4a8443a2b8ec..694af789c614 100644
->> --- a/fs/ext2/acl.h
->> +++ b/fs/ext2/acl.h
->> @@ -67,6 +67,7 @@ extern int ext2_init_acl (struct inode *, struct 
->> inode *);
->>     static inline int ext2_init_acl (struct inode *inode, struct 
->> inode *dir)
->>   {
->> +    inode->i_mode &= ~current_umask();
->>       return 0;
->>   }
->>   #endif
->> diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
->> index f892e54d0fcd..10791e97a46f 100644
->> --- a/fs/jfs/jfs_acl.h
->> +++ b/fs/jfs/jfs_acl.h
->> @@ -17,6 +17,7 @@ int jfs_init_acl(tid_t, struct inode *, struct 
->> inode *);
->>   static inline int jfs_init_acl(tid_t tid, struct inode *inode,
->>                      struct inode *dir)
->>   {
->> +    inode->i_mode &= ~current_umask();
->>       return 0;
->>   }
->>   diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
->> index 0e65b3d634d9..54bc9b1061ca 100644
->> --- a/include/linux/posix_acl.h
->> +++ b/include/linux/posix_acl.h
->> @@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
->>   static inline int posix_acl_create(struct inode *inode, umode_t *mode,
->>           struct posix_acl **default_acl, struct posix_acl **acl)
->>   {
->> +    *mode &= ~current_umask();
->>       *default_acl = *acl = NULL;
->>       return 0;
->>   }
->
+Sarthak Kukreti (5):
+  block: Don't invalidate pagecache for invalid falloc modes
+  block: Introduce provisioning primitives
+  loop: Add support for provision requests
+  dm: Add block provisioning support
+  block: Pass unshare intent via REQ_OP_PROVISION
+
+ block/blk-core.c              |  5 +++
+ block/blk-lib.c               | 55 ++++++++++++++++++++++++++++++++
+ block/blk-merge.c             | 18 +++++++++++
+ block/blk-settings.c          | 19 +++++++++++
+ block/blk-sysfs.c             |  9 ++++++
+ block/bounce.c                |  1 +
+ block/fops.c                  | 33 ++++++++++++++++----
+ drivers/block/loop.c          | 59 ++++++++++++++++++++++++++++++++---
+ drivers/md/dm-crypt.c         |  4 ++-
+ drivers/md/dm-linear.c        |  1 +
+ drivers/md/dm-table.c         | 23 ++++++++++++++
+ drivers/md/dm.c               |  7 +++++
+ include/linux/bio.h           |  6 ++--
+ include/linux/blk_types.h     |  8 ++++-
+ include/linux/blkdev.h        | 17 ++++++++++
+ include/linux/device-mapper.h | 17 ++++++++++
+ 16 files changed, 268 insertions(+), 14 deletions(-)
+
+-- 
+2.42.0.609.gbb76f46606-goog
 
