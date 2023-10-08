@@ -2,163 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAF97BD033
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Oct 2023 23:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CDE7BD128
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Oct 2023 01:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjJHVKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Oct 2023 17:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        id S1344974AbjJHX1g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Oct 2023 19:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjJHVKM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Oct 2023 17:10:12 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983C48F
-        for <linux-ext4@vger.kernel.org>; Sun,  8 Oct 2023 14:10:10 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-65afac36b2cso20878766d6.3
-        for <linux-ext4@vger.kernel.org>; Sun, 08 Oct 2023 14:10:10 -0700 (PDT)
+        with ESMTP id S1344959AbjJHX1f (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Oct 2023 19:27:35 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F83AC
+        for <linux-ext4@vger.kernel.org>; Sun,  8 Oct 2023 16:27:32 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27760c31056so2269423a91.1
+        for <linux-ext4@vger.kernel.org>; Sun, 08 Oct 2023 16:27:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696799410; x=1697404210; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696807652; x=1697412452; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dkz0AfUaDSl+HOSH0TYrHpxGKOapfB+XAqHpuamca4k=;
-        b=Bqa7+j/6JUimKByFrIY2fbkB1+Qm+LpiI5dneOkmloHtpfeHbKWDLdndGKPg575ecV
-         1Kd+E2IMyWJ8SKZH0x5APJv69c5/pM7r4r59LVGqYzmlTDUfS4/cwx6uPjvsgKo5xeeb
-         5jqU1/B7fC3SG4k7tL0SRL8OKDhbMZgB6QdwIPo3rWV7c5ITN5YUzAysMCb1lPPF2Q9H
-         Tpr/owx4wN7Jag+aD9N2VGtcQXeUW5aABp4l1DTY9yQHMOqbJ3kco29fCbLPIc3Mgvgp
-         hvNUluiic3tPZGKUEQycSp6cZ0e6Qgl26E+SLXpbdb/+MiiGU2YnzKxDKG0dzw+t1CX1
-         vPUA==
+        bh=aS5wnORfWJ02Ic4UlNgXgG7erca/6rPk7A+dIWgu1xE=;
+        b=ar+F8kCJJYhocpH7678ttAXERmoI3yDavLymH+R8n+35dyDP58p8hJzK8gVAcQnWwh
+         RirkN49+Qt+O1zUgU1OfDzkBhTeE7796uHFvZHa0gFv1zP8QKIuNAFcbsljod+Gb60La
+         MiIgpSGI49duQ1w0jRtwOZUBq8c/h1RdDsSXqtVptZrGgUVqObEK4jKbEN+3G+hlm0ml
+         ePJVD+GKPlQoTH1agTEdIi2/BnJZj1h1L0HyVx2nEp9mWs0vsmmgb5Sk3UHSkc6v7D73
+         BYJ099PQo8RtsN0oxQog8POX7NVf/yv46dlGYNpDNeCGi8L0E4fi7PhSIhNw4HyeN8f9
+         AY/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696799410; x=1697404210;
+        d=1e100.net; s=20230601; t=1696807652; x=1697412452;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dkz0AfUaDSl+HOSH0TYrHpxGKOapfB+XAqHpuamca4k=;
-        b=vW0kdS8DiMIQrJKpOCHZLWAPGl5ifzmtPero6xOBvHAsQXtOaXpqgp0litaT7hM87q
-         T0LtYXrGkbNFkRV+fUYoeKKYjbWvJUNXCSwsaLfCjDj90THQtpI2eMFUrxCqlLj4Uc4l
-         KtmBsRYd2OITTPxrqnEfHXLhN0lQOLSR4bwROFzDn/zVmrVPDuf22Eb/voS8f7TnvlYQ
-         WHoB8hON/bq45MJPmvLzswiTdK4e1FSreKIlUrBPhHyRfeRceUmsGE/xryZITOr9XSg6
-         FxbZCfsKkEjULbPdg4aeMHmJ3Jp4y3LpP9WXCZ7qLM/7A96mHIgZUwAnMOtZH3tqPXwm
-         w6hQ==
-X-Gm-Message-State: AOJu0YzH5Y2teV0cJShzTgzT5c9XSf2WwYZ0jKUL5OysAR49/NhJiwdy
-        xXUw82ocvn6JE2feLfaZ2A4=
-X-Google-Smtp-Source: AGHT+IFzfwIITrisULn3NorTC/3ibb+WUcssUkBsjjLH7rqsUYYCLq6dZbisO8TLIsBp8pcJlVAliw==
-X-Received: by 2002:a0c:cd07:0:b0:65d:34d:8f3c with SMTP id b7-20020a0ccd07000000b0065d034d8f3cmr12720866qvm.44.1696799409659;
-        Sun, 08 Oct 2023 14:10:09 -0700 (PDT)
-Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
-        by smtp.gmail.com with ESMTPSA id c17-20020a05620a165100b0076cb3690ae7sm3026731qko.68.2023.10.08.14.10.08
+        bh=aS5wnORfWJ02Ic4UlNgXgG7erca/6rPk7A+dIWgu1xE=;
+        b=ll09hJut1nJTn7QJnAIKzN9glb593iyRibyjd/1xtBPDl6BdnJQ3l4QZ52cDDOIkVj
+         dZ5b2CexE6nO7sjexVyp1/bh00L9BzvhbQFJ4+i0lceQH0+XXD5OkmqWK6owsSSsI3Yj
+         rINMOt10PtgOtJfWmWQUahx+9L6uBsBQKPjqVO/qc54JCwhZUG6vYokQBwoGnimZsyHl
+         CPvHVj4gZX7rKePFPSRTuYJVY58pk6ZryOdfvKRzV7SNkNzv0wUmyDK2ItkOU9l0RZc0
+         BU3/Sn6RIVM//dh9SAIFVSUawpPO8g4ysSPujDsBGrAJ7Obxg38vV4Po/LOMHrKkNfk7
+         zx3A==
+X-Gm-Message-State: AOJu0YyhkaXqZiBZ5u6Xs8ts1RW2RbUuq02K1uJzIjnPco/No+6QtUtk
+        dlvyoSZRYIiTIGWPNj4lQjy6iA==
+X-Google-Smtp-Source: AGHT+IGc6rajtNnnrMTfh5c1WN82wupHs7ltG+HbFIhM8I8+f4cQIL9QXxrn5Dk/ibag1JxJfP4QTg==
+X-Received: by 2002:a17:90b:4b06:b0:273:e689:8dfc with SMTP id lx6-20020a17090b4b0600b00273e6898dfcmr11740281pjb.32.1696807652373;
+        Sun, 08 Oct 2023 16:27:32 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id az12-20020a17090b028c00b0026d4100e0e8sm6954450pjb.10.2023.10.08.16.27.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 14:10:09 -0700 (PDT)
-Date:   Sun, 8 Oct 2023 17:10:07 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: [RFC] ext4: don't remove already removed extent
-Message-ID: <ZSMar4JjHUI+/zt6@debian-BULLSEYE-live-builder-AMD64>
-References: <20230911094038.3602508-1-usama.anjum@collabora.com>
- <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
- <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
+        Sun, 08 Oct 2023 16:27:31 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qpdBI-00BHvI-0p;
+        Mon, 09 Oct 2023 10:27:28 +1100
+Date:   Mon, 9 Oct 2023 10:27:28 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v8 5/5] block: Pass unshare intent via REQ_OP_PROVISION
+Message-ID: <ZSM64EOTVyKNkc/X@dread.disaster.area>
+References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
+ <20231007012817.3052558-6-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231007012817.3052558-6-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Muhammad Usama Anjum <usama.anjum@collabora.com>:
-> On 9/20/23 5:41 AM, Eric Whitney wrote:
-> > * Muhammad Usama Anjum <usama.anjum@collabora.com>:
-> >> Syzbot has hit the following bug on current and all older kernels:
-> >> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
-> >> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
-> >> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
-> >>
-> >> On investigation, I've found that eh->eh_entries is zero, ex is
-> >> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
-> >> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
-> >> buffer read.
-> >>
-> >> element: FFFF8882F8F0D06C       <----- ex
-> >> element: FFFF8882F8F0D060
-> >> element: FFFF8882F8F0D054
-> >> element: FFFF8882F8F0D048
-> >> element: FFFF8882F8F0D03C
-> >> element: FFFF8882F8F0D030
-> >> element: FFFF8882F8F0D024
-> >> element: FFFF8882F8F0D018
-> >> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
-> >> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
-> >>
-> >> Cc: stable@vger.kernel.org
-> >> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
-> >> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
-> >> Fixes: d583fb87a3ff ("ext4: punch out extents")
-> >> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> >> ---
-> >> This patch is only fixing the local issue. There may be bigger bug. Why
-> >> is ex set to last entry if the eh->eh_entries is 0. If any ext4
-> >> developer want to look at the bug, please don't hesitate.
-> >> ---
-> >>  fs/ext4/extents.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> >> index e4115d338f101..7b7779b4cb87f 100644
-> >> --- a/fs/ext4/extents.c
-> >> +++ b/fs/ext4/extents.c
-> >> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
-> >>  		 * If the extent was completely released,
-> >>  		 * we need to remove it from the leaf
-> >>  		 */
-> >> -		if (num == 0) {
-> >> +		if (num == 0 && eh->eh_entries) {
-> >>  			if (end != EXT_MAX_BLOCKS - 1) {
-> >>  				/*
-> >>  				 * For hole punching, we need to scoot all the
-> >> -- 
-> >> 2.40.1
-> >>
-> > 
-> > Hi:
-> > 
-> > First, thanks for taking the time to look at this.
-> Thank you for replying and giving me pointers that I need to start looking
-> at problem from first warning until the bug which can be difficult until I
-> debug the problem smartly and learn at least the basics of ext4.
+On Fri, Oct 06, 2023 at 06:28:17PM -0700, Sarthak Kukreti wrote:
+> Allow REQ_OP_PROVISION to pass in an extra REQ_UNSHARE bit to
+> annotate unshare requests to underlying layers. Layers that support
+> FALLOC_FL_UNSHARE will be able to use this as an indicator of which
+> fallocate() mode to use.
 > 
-> > 
-> > I'm suspicious that syzbot may be fuzzing an extent header or other extent
-> > tree components.  As you noticed, eh_entries and ex appear to be inconsistent.
-> > Also, note the long series of corrupted file system reports in the console log
-> > occurring before the KASAN bug - ext4 had been detecting and rejecting bad
-> > data up to that point.  The file system on the disk image provided by sysbot
-> > indicates that metadata checksumming was enabled (and it fscks cleanly).
-> > That should have caught a corrupted extent header or inode, but perhaps
-> > there's a problem.
-> > 
-> > The console log indicates that the problem occurred on inode #16.  Does the
-> > information you've provided above come from testing you did on inode #16
-> > (looks like the name was /bin/base64)?
-> I couldn't analyze the problem in broad spectrum. There must be some bigger
-> thing wrong here.
-> 
-> > 
-> > By any chance, have you found a simpler reproducer than what syzbot provides?
-> Not yet, this gets reproduced after a while. I'll try to come up with
-> better reproducer if I can.
-> 
+> Suggested-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/blk-lib.c           |  6 +++++-
+>  block/fops.c              |  6 ++++--
+>  drivers/block/loop.c      | 35 +++++++++++++++++++++++++++++------
+>  include/linux/blk_types.h |  3 +++
+>  include/linux/blkdev.h    |  3 ++-
+>  5 files changed, 43 insertions(+), 10 deletions(-)
 
-My suggestion would be to first determine whether syzbot has disabled
-metadata checksumming by the point in time when the problem occurs (or
-whether temporarily modifying ext4 to make it impossible to disable
-metadata checksumming also makes it impossible to reproduce the failure).
-It may have done this as part of its test.  If so, this becomes a very low
-priority bug for ext4, and you could avoid the effort to find a reproducer.
+I have no idea how filesystems (or even userspace applications, for
+that matter) are supposed to use this - they have no idea if the
+underlying block device has shared blocks for LBA ranges it already
+has allocated and provisioned. IOWs, I don't know waht the semantics
+of this function is, it is not documented anywhere, and there is no
+use case present that tells me how it might get used.
 
-Eric
+Yes, unshare at the file level means the filesystem tries to break
+internal data extent sharing, but if the block layers or backing
+devices are doing deduplication and sharing unknown to the
+application or filesystem, how do they ever know that this operation
+might need to be performed? In what cases do we need to be able to
+unshare block device ranges, and how is that different to the
+guarantees that REQ_PROVISION is already supposed to give for
+provisioned ranges that are then subsequently shared by the block
+device (e.g. by snapshots)?
+
+Also, from an API perspective, this is an "unshare" data operation,
+not a "provision" operation. Hence I'd suggest that the API should
+be blkdev_issue_unshare() rather than optional behaviour to
+_provision() which - before this patch - had clear and well defined
+meaning....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
