@@ -2,56 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0507BC440
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Oct 2023 04:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAF97BD033
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Oct 2023 23:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbjJGCso (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Oct 2023 22:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
+        id S229649AbjJHVKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Oct 2023 17:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjJGCso (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Oct 2023 22:48:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CCCBD
-        for <linux-ext4@vger.kernel.org>; Fri,  6 Oct 2023 19:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696646923; x=1728182923;
-  h=date:from:to:cc:subject:message-id;
-  bh=EZbpkqK9tluuHzdnuJorL7zebh1tCS/g1B4sXVu6eXs=;
-  b=ZJ+rHXdIz+lp6s/3aNOlyF0TAZoesKiAIKc/zkwWdASq784Gi6J16VpI
-   bERoMbEBQsNZSZRQWG1SzDBHQLlsKOFlP3P1hf9SfhgOZZ+clXj1UNAV+
-   O+2sNNDPtADObv66ZJb9mwm3KYBBy2dleCkhd+c1OYCOlJPF5QreXNSAU
-   sU9FVRxVCzDU+nCWFk3v/M1jwN0ObBCQpnQkmZ1w+zffRUoA57VucWtuI
-   ee7JVXGBYPRy6eMDgMTjTXodK2M9jehS9eiohFTw6/UkR3jnIo98DD8Tr
-   gRayZ/UTvbEvN7scqSr7dgLLGp9k0CJcAo9tkAKFdI4q6mYgH/95ZhLr9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="364165677"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="364165677"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 19:48:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="729053885"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="729053885"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 06 Oct 2023 19:48:41 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoxMt-0003si-1f;
-        Sat, 07 Oct 2023 02:48:39 +0000
-Date:   Sat, 07 Oct 2023 10:47:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- a37d4c46392e207518deb6533768986634b193c0
-Message-ID: <202310071037.p83qvka2-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S229635AbjJHVKM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Oct 2023 17:10:12 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983C48F
+        for <linux-ext4@vger.kernel.org>; Sun,  8 Oct 2023 14:10:10 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-65afac36b2cso20878766d6.3
+        for <linux-ext4@vger.kernel.org>; Sun, 08 Oct 2023 14:10:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696799410; x=1697404210; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dkz0AfUaDSl+HOSH0TYrHpxGKOapfB+XAqHpuamca4k=;
+        b=Bqa7+j/6JUimKByFrIY2fbkB1+Qm+LpiI5dneOkmloHtpfeHbKWDLdndGKPg575ecV
+         1Kd+E2IMyWJ8SKZH0x5APJv69c5/pM7r4r59LVGqYzmlTDUfS4/cwx6uPjvsgKo5xeeb
+         5jqU1/B7fC3SG4k7tL0SRL8OKDhbMZgB6QdwIPo3rWV7c5ITN5YUzAysMCb1lPPF2Q9H
+         Tpr/owx4wN7Jag+aD9N2VGtcQXeUW5aABp4l1DTY9yQHMOqbJ3kco29fCbLPIc3Mgvgp
+         hvNUluiic3tPZGKUEQycSp6cZ0e6Qgl26E+SLXpbdb/+MiiGU2YnzKxDKG0dzw+t1CX1
+         vPUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696799410; x=1697404210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dkz0AfUaDSl+HOSH0TYrHpxGKOapfB+XAqHpuamca4k=;
+        b=vW0kdS8DiMIQrJKpOCHZLWAPGl5ifzmtPero6xOBvHAsQXtOaXpqgp0litaT7hM87q
+         T0LtYXrGkbNFkRV+fUYoeKKYjbWvJUNXCSwsaLfCjDj90THQtpI2eMFUrxCqlLj4Uc4l
+         KtmBsRYd2OITTPxrqnEfHXLhN0lQOLSR4bwROFzDn/zVmrVPDuf22Eb/voS8f7TnvlYQ
+         WHoB8hON/bq45MJPmvLzswiTdK4e1FSreKIlUrBPhHyRfeRceUmsGE/xryZITOr9XSg6
+         FxbZCfsKkEjULbPdg4aeMHmJ3Jp4y3LpP9WXCZ7qLM/7A96mHIgZUwAnMOtZH3tqPXwm
+         w6hQ==
+X-Gm-Message-State: AOJu0YzH5Y2teV0cJShzTgzT5c9XSf2WwYZ0jKUL5OysAR49/NhJiwdy
+        xXUw82ocvn6JE2feLfaZ2A4=
+X-Google-Smtp-Source: AGHT+IFzfwIITrisULn3NorTC/3ibb+WUcssUkBsjjLH7rqsUYYCLq6dZbisO8TLIsBp8pcJlVAliw==
+X-Received: by 2002:a0c:cd07:0:b0:65d:34d:8f3c with SMTP id b7-20020a0ccd07000000b0065d034d8f3cmr12720866qvm.44.1696799409659;
+        Sun, 08 Oct 2023 14:10:09 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 (h64-35-202-119.cntcnh.broadband.dynamic.tds.net. [64.35.202.119])
+        by smtp.gmail.com with ESMTPSA id c17-20020a05620a165100b0076cb3690ae7sm3026731qko.68.2023.10.08.14.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 14:10:09 -0700 (PDT)
+Date:   Sun, 8 Oct 2023 17:10:07 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: [RFC] ext4: don't remove already removed extent
+Message-ID: <ZSMar4JjHUI+/zt6@debian-BULLSEYE-live-builder-AMD64>
+References: <20230911094038.3602508-1-usama.anjum@collabora.com>
+ <ZQo/nX82Cf1xQC5i@debian-BULLSEYE-live-builder-AMD64>
+ <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a4b33c6-d27a-43ce-9d0a-8fdcc21a6448@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,118 +71,94 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: a37d4c46392e207518deb6533768986634b193c0  ext4: fix racy may inline data check in dio write
+* Muhammad Usama Anjum <usama.anjum@collabora.com>:
+> On 9/20/23 5:41 AM, Eric Whitney wrote:
+> > * Muhammad Usama Anjum <usama.anjum@collabora.com>:
+> >> Syzbot has hit the following bug on current and all older kernels:
+> >> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
+> >> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
+> >> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
+> >>
+> >> On investigation, I've found that eh->eh_entries is zero, ex is
+> >> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
+> >> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
+> >> buffer read.
+> >>
+> >> element: FFFF8882F8F0D06C       <----- ex
+> >> element: FFFF8882F8F0D060
+> >> element: FFFF8882F8F0D054
+> >> element: FFFF8882F8F0D048
+> >> element: FFFF8882F8F0D03C
+> >> element: FFFF8882F8F0D030
+> >> element: FFFF8882F8F0D024
+> >> element: FFFF8882F8F0D018
+> >> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
+> >> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
+> >>
+> >> Cc: stable@vger.kernel.org
+> >> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
+> >> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
+> >> Fixes: d583fb87a3ff ("ext4: punch out extents")
+> >> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> >> ---
+> >> This patch is only fixing the local issue. There may be bigger bug. Why
+> >> is ex set to last entry if the eh->eh_entries is 0. If any ext4
+> >> developer want to look at the bug, please don't hesitate.
+> >> ---
+> >>  fs/ext4/extents.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> >> index e4115d338f101..7b7779b4cb87f 100644
+> >> --- a/fs/ext4/extents.c
+> >> +++ b/fs/ext4/extents.c
+> >> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+> >>  		 * If the extent was completely released,
+> >>  		 * we need to remove it from the leaf
+> >>  		 */
+> >> -		if (num == 0) {
+> >> +		if (num == 0 && eh->eh_entries) {
+> >>  			if (end != EXT_MAX_BLOCKS - 1) {
+> >>  				/*
+> >>  				 * For hole punching, we need to scoot all the
+> >> -- 
+> >> 2.40.1
+> >>
+> > 
+> > Hi:
+> > 
+> > First, thanks for taking the time to look at this.
+> Thank you for replying and giving me pointers that I need to start looking
+> at problem from first warning until the bug which can be difficult until I
+> debug the problem smartly and learn at least the basics of ext4.
+> 
+> > 
+> > I'm suspicious that syzbot may be fuzzing an extent header or other extent
+> > tree components.  As you noticed, eh_entries and ex appear to be inconsistent.
+> > Also, note the long series of corrupted file system reports in the console log
+> > occurring before the KASAN bug - ext4 had been detecting and rejecting bad
+> > data up to that point.  The file system on the disk image provided by sysbot
+> > indicates that metadata checksumming was enabled (and it fscks cleanly).
+> > That should have caught a corrupted extent header or inode, but perhaps
+> > there's a problem.
+> > 
+> > The console log indicates that the problem occurred on inode #16.  Does the
+> > information you've provided above come from testing you did on inode #16
+> > (looks like the name was /bin/base64)?
+> I couldn't analyze the problem in broad spectrum. There must be some bigger
+> thing wrong here.
+> 
+> > 
+> > By any chance, have you found a simpler reproducer than what syzbot provides?
+> Not yet, this gets reproduced after a while. I'll try to come up with
+> better reproducer if I can.
+> 
 
-elapsed time: 725m
+My suggestion would be to first determine whether syzbot has disabled
+metadata checksumming by the point in time when the problem occurs (or
+whether temporarily modifying ext4 to make it impossible to disable
+metadata checksumming also makes it impossible to reproduce the failure).
+It may have done this as part of its test.  If so, this becomes a very low
+priority bug for ext4, and you could avoid the effort to find a reproducer.
 
-configs tested: 99
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231006   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231007   gcc  
-i386                  randconfig-002-20231007   gcc  
-i386                  randconfig-003-20231007   gcc  
-i386                  randconfig-004-20231007   gcc  
-i386                  randconfig-005-20231007   gcc  
-i386                  randconfig-006-20231007   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231007   gcc  
-x86_64                randconfig-002-20231007   gcc  
-x86_64                randconfig-003-20231007   gcc  
-x86_64                randconfig-004-20231007   gcc  
-x86_64                randconfig-005-20231007   gcc  
-x86_64                randconfig-006-20231007   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Eric
