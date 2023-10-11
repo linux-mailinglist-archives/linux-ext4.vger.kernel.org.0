@@ -2,315 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856227C56B3
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Oct 2023 16:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9817C580E
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Oct 2023 17:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjJKOWV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Oct 2023 10:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S232817AbjJKP1p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Oct 2023 11:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjJKOWU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 10:22:20 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04DC94
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 07:22:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2E08721861;
-        Wed, 11 Oct 2023 14:22:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697034136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ykB6EykVefp+GdwmNveIFKqB/9tIUUf/rdLyKHfVs24=;
-        b=EP8EOD0wn35HLWpqp+i76YmnLwkYg/OCFNxTWw8fomfKNhgS+ZhNBZIQCX55l2KgAoUToy
-        6eErm0is4NXvxkcEULiAVC6erzt7mbhJMrBPIa1xiGEWuPsiZGSaHYFMeow2g4MXEm8oxb
-        z4GQH28Kbcye3ok4OHzxuNIOuj5/0Rs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697034136;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ykB6EykVefp+GdwmNveIFKqB/9tIUUf/rdLyKHfVs24=;
-        b=4rvPMlYNwKC2HadW+D0Lb6b1R2Y4iVlkLCcBPcfP/W/CUsU1TsSpC9bSb5Q3NThtv6noqQ
-        3DRfl1XGGMiM0QDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FA9E134F5;
-        Wed, 11 Oct 2023 14:22:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7zmxB5ivJmVvaQAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 14:22:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9DB3EA05BC; Wed, 11 Oct 2023 16:22:15 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Properly sync file size update after O_SYNC direct IO
-Date:   Wed, 11 Oct 2023 16:21:55 +0200
-Message-Id: <20231011142155.19328-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S232760AbjJKP1o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 11:27:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2E592;
+        Wed, 11 Oct 2023 08:27:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB8CC433C7;
+        Wed, 11 Oct 2023 15:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697038063;
+        bh=7RZyiacWyfzPvWEqzLgY4Ad7VtrgFG6HkGvT4m3kmO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TaZpnSMEaI0DGU84iKsQFVVPvyC16VvEM8T5n460Au6MNQ/ww2lxz4UfQ+DA6vXFm
+         BCtrP7/qifoV3YuL88v5Z4hcMkOI/aOIq9hyegqYo11WsSBfpE1ueICf/cUBdDE9Bh
+         A+N2mupq/0QsAcz+XUx3VosdLofH9isxy1pRIIJNYMcYdcT28SYP9Ba8kkcZeNF5g0
+         ZNuBaGoPPHI6az5feLlT4O9rib8qxW48pAN9rCw9yaJHhnk2reRwFnoBTVt0Bu3F2a
+         V3k//nJlWORSya2SLRtvjvZ6ykCCdUchhQINAPcQQTeolGD+jWvQIO2+kVnB8rQERq
+         hqKdJxh8IxFnA==
+Date:   Wed, 11 Oct 2023 17:27:37 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>, Max Kellermann <max.kellermann@ionos.com>
+Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        Yang Xu <xuyang2018.jy@fujitsu.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+Message-ID: <20231011-braumeister-anrufen-62127dc64de0@brauner>
+References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
+ <20231009144340.418904-1-max.kellermann@ionos.com>
+ <20231010131125.3uyfkqbcetfcqsve@quack3>
+ <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
+ <20231011100541.sfn3prgtmp7hk2oj@quack3>
+ <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3>
+ <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7585; i=jack@suse.cz; h=from:subject; bh=ZAGtaTni8nEgnboD8PcDmvyFDuthVR7uO718HEXww9E=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlJq9wKkxAHIxNnBGIokVPLw/E+9tEOrxKXvcUSms2 ps2cOBaJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZSavcAAKCRCcnaoHP2RA2a4QB/ 4mdu6NLMwFEkKGUFVxnrhh95WY9SrChaYmvEYhWcogpOr1w6Iu6sOe3vtXeebzjlI7gmUzYT33B99j fzXdNlRhk7yFXCpc1CwnwXjr3Icy6n5/5olgIJCoO7boFiOOU7lRokMnuwIph8UGazpE2aiDV3fCSo oPyj3EYW0Az44QV/wJ0H+IT31UMbHJC5ZXJ8reCTz2YORkz+XSsNuao+R762IwaIp358tbVULTkyfQ 1c1PipZfGYvM/OmVUIoV1xaMYQgvDl372lYzu3kcjCsfk6EiHBAysUfT3HFZqhahC2K/NtYpyPk0ga EtzZzijniUWC6fKsqyKMNO5UX+XERT
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 3.40
-X-Spamd-Result: default: False [3.40 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCPT_COUNT_FIVE(0.00)[5];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         MID_CONTAINS_FROM(1.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,linux.alibaba.com,suse.cz]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231011135922.4bij3ittlg4ujkd7@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Gao Xiang has reported that on ext4 O_SYNC direct IO does not properly
-sync file size update and thus if we crash at unfortunate moment, the
-file can have smaller size although O_SYNC IO has reported successful
-completion. The problem happens because update of on-disk inode size is
-handled in ext4_dio_write_iter() *after* iomap_dio_rw() (and thus
-dio_complete() in particular) has returned and generic_file_sync() gets
-called by dio_complete(). Fix the problem by handling on-disk inode size
-update directly in our ->end_io completion handler.
+On Wed, Oct 11, 2023 at 03:59:22PM +0200, Jan Kara wrote:
+> On Wed 11-10-23 14:27:49, Max Kellermann wrote:
+> > On Wed, Oct 11, 2023 at 2:18 PM Max Kellermann <max.kellermann@ionos.com> wrote:
+> > > But without the other filesystems. I'll resend it with just the
+> > > posix_acl.h hunk.
+> > 
+> > Thinking again, I don't think this is the proper solution. This may
+> > server as a workaround so those broken filesystems don't suffer from
+> > this bug, but it's not proper.
+> > 
+> > posix_acl_create() is only supposed to appy the umask if the inode
+> > supports ACLs; if not, the VFS is supposed to do it. But if the
+> > filesystem pretends to have ACL support but the kernel does not, it's
+> > really a filesystem bug. Hacking the umask code into
+> > posix_acl_create() for that inconsistent case doesn't sound right.
+> > 
+> > A better workaround would be this patch:
+> > https://patchwork.kernel.org/project/linux-nfs/patch/151603744662.29035.4910161264124875658.stgit@rabbit.intern.cm-ag/
+> > I submitted it more than 5 years ago, it got one positive review, but
+> > was never merged.
+> > 
+> > This patch enables the VFS's umask code even if the filesystem
+> > prerents to support ACLs. This still doesn't fix the filesystem bug,
+> > but makes VFS's behavior consistent.
+> 
+> OK, that solution works for me as well. I agree it seems a tad bit cleaner.
+> Christian, which one would you prefer?
 
-References: https://lore.kernel.org/all/02d18236-26ef-09b0-90ad-030c4fe3ee20@linux.alibaba.com
-Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/file.c | 139 ++++++++++++++++++-------------------------------
- 1 file changed, 52 insertions(+), 87 deletions(-)
+So it always bugged me that POSIX ACLs push umask stripping down into
+the individual filesystems but it's hard to get rid of this. And we
+tried to improve the situation during the POSIX ACL rework by
+introducing vfs_prepare_umask().
 
-So finally I've hopefully got all the corner cases right ;) At least fstest
-pass now.
+Aside from that, the problem had been that filesystems like nfs v4
+intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
+IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 1492b1ae21f4..d0711c1a9b06 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -306,80 +306,34 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
- }
- 
- static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
--					   ssize_t written, size_t count)
-+					   ssize_t count)
- {
- 	handle_t *handle;
--	bool truncate = false;
--	u8 blkbits = inode->i_blkbits;
--	ext4_lblk_t written_blk, end_blk;
--	int ret;
--
--	/*
--	 * Note that EXT4_I(inode)->i_disksize can get extended up to
--	 * inode->i_size while the I/O was running due to writeback of delalloc
--	 * blocks. But, the code in ext4_iomap_alloc() is careful to use
--	 * zeroed/unwritten extents if this is possible; thus we won't leave
--	 * uninitialized blocks in a file even if we didn't succeed in writing
--	 * as much as we intended.
--	 */
--	WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
--	if (offset + count <= EXT4_I(inode)->i_disksize) {
--		/*
--		 * We need to ensure that the inode is removed from the orphan
--		 * list if it has been added prematurely, due to writeback of
--		 * delalloc blocks.
--		 */
--		if (!list_empty(&EXT4_I(inode)->i_orphan) && inode->i_nlink) {
--			handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--
--			if (IS_ERR(handle)) {
--				ext4_orphan_del(NULL, inode);
--				return PTR_ERR(handle);
--			}
--
--			ext4_orphan_del(handle, inode);
--			ext4_journal_stop(handle);
--		}
--
--		return written;
--	}
--
--	if (written < 0)
--		goto truncate;
- 
-+	lockdep_assert_held_write(&inode->i_rwsem);
- 	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--	if (IS_ERR(handle)) {
--		written = PTR_ERR(handle);
--		goto truncate;
--	}
-+	if (IS_ERR(handle))
-+		return PTR_ERR(handle);
- 
--	if (ext4_update_inode_size(inode, offset + written)) {
--		ret = ext4_mark_inode_dirty(handle, inode);
-+	if (ext4_update_inode_size(inode, offset + count)) {
-+		int ret = ext4_mark_inode_dirty(handle, inode);
- 		if (unlikely(ret)) {
--			written = ret;
- 			ext4_journal_stop(handle);
--			goto truncate;
-+			return ret;
- 		}
- 	}
- 
--	/*
--	 * We may need to truncate allocated but not written blocks beyond EOF.
--	 */
--	written_blk = ALIGN(offset + written, 1 << blkbits);
--	end_blk = ALIGN(offset + count, 1 << blkbits);
--	if (written_blk < end_blk && ext4_can_truncate(inode))
--		truncate = true;
--
--	/*
--	 * Remove the inode from the orphan list if it has been extended and
--	 * everything went OK.
--	 */
--	if (!truncate && inode->i_nlink)
-+	if (inode->i_nlink)
- 		ext4_orphan_del(handle, inode);
- 	ext4_journal_stop(handle);
- 
--	if (truncate) {
--truncate:
-+	return count;
-+}
-+
-+static void ext4_inode_extension_cleanup(struct inode *inode, ssize_t count)
-+{
-+	lockdep_assert_held_write(&inode->i_rwsem);
-+	if (count < 0) {
- 		ext4_truncate_failed_write(inode);
- 		/*
- 		 * If the truncate operation failed early, then the inode may
-@@ -388,9 +342,28 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
- 		 */
- 		if (inode->i_nlink)
- 			ext4_orphan_del(NULL, inode);
-+		return;
- 	}
-+	/*
-+	 * If i_disksize got extended due to writeback of delalloc blocks while
-+	 * the DIO was running we could fail to cleanup the orphan list in
-+	 * ext4_handle_inode_extension(). Do it now.
-+	 */
-+	if (!list_empty(&EXT4_I(inode)->i_orphan) && inode->i_nlink) {
-+		handle_t *handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
- 
--	return written;
-+		if (IS_ERR(handle)) {
-+			/*
-+			 * The write has successfully completed. Not much to
-+			 * do with the error here so just cleanup the orphan
-+			 * list and hope for the best.
-+			 */
-+			ext4_orphan_del(NULL, inode);
-+			return;
-+		}
-+		ext4_orphan_del(handle, inode);
-+		ext4_journal_stop(handle);
-+	}
- }
- 
- static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
-@@ -399,31 +372,22 @@ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
- 	loff_t pos = iocb->ki_pos;
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 
-+	if (!error && size && flags & IOMAP_DIO_END_UNWRITTEN)
-+		error = ext4_convert_unwritten_extents(NULL, inode, pos, size);
- 	if (error)
- 		return error;
--
--	if (size && flags & IOMAP_DIO_END_UNWRITTEN) {
--		error = ext4_convert_unwritten_extents(NULL, inode, pos, size);
--		if (error < 0)
--			return error;
--	}
- 	/*
--	 * If we are extending the file, we have to update i_size here before
--	 * page cache gets invalidated in iomap_dio_rw(). Otherwise racing
--	 * buffered reads could zero out too much from page cache pages. Update
--	 * of on-disk size will happen later in ext4_dio_write_iter() where
--	 * we have enough information to also perform orphan list handling etc.
--	 * Note that we perform all extending writes synchronously under
--	 * i_rwsem held exclusively so i_size update is safe here in that case.
--	 * If the write was not extending, we cannot see pos > i_size here
--	 * because operations reducing i_size like truncate wait for all
--	 * outstanding DIO before updating i_size.
-+	 * Note that EXT4_I(inode)->i_disksize can get extended up to
-+	 * inode->i_size while the I/O was running due to writeback of delalloc
-+	 * blocks. But the code in ext4_iomap_alloc() is careful to use
-+	 * zeroed/unwritten extents if this is possible; thus we won't leave
-+	 * uninitialized blocks in a file even if we didn't succeed in writing
-+	 * as much as we intended.
- 	 */
--	pos += size;
--	if (pos > i_size_read(inode))
--		i_size_write(inode, pos);
--
--	return 0;
-+	WARN_ON_ONCE(i_size_read(inode) < READ_ONCE(EXT4_I(inode)->i_disksize));
-+	if (pos + size <= READ_ONCE(EXT4_I(inode)->i_disksize))
-+		return 0;
-+	return ext4_handle_inode_extension(inode, pos, size);
- }
- 
- static const struct iomap_dio_ops ext4_dio_write_ops = {
-@@ -606,9 +570,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 			   dio_flags, NULL, 0);
- 	if (ret == -ENOTBLK)
- 		ret = 0;
--
- 	if (extend)
--		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-+		ext4_inode_extension_cleanup(inode, ret);
- 
- out:
- 	if (ilock_shared)
-@@ -689,8 +652,10 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- 	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
- 
--	if (extend)
--		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-+	if (extend) {
-+		ret = ext4_handle_inode_extension(inode, offset, ret);
-+		ext4_inode_extension_cleanup(inode, ret);
-+	}
- out:
- 	inode_unlock(inode);
- 	if (ret > 0)
--- 
-2.35.3
+And afaict nfs v4 has it's own thing going on how and where umasks are
+applied. However, since we now have the following commit in vfs.misc:
 
+commit f61b9bb3f8386a5e59b49bf1310f5b34f47bcef9
+Author:     Jeff Layton <jlayton@kernel.org>
+AuthorDate: Mon Sep 11 20:25:50 2023 -0400
+Commit:     Christian Brauner <brauner@kernel.org>
+CommitDate: Thu Sep 21 15:37:47 2023 +0200
+
+    fs: add a new SB_I_NOUMASK flag
+
+    SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
+    also sets this flag to prevent the VFS from applying the umask on
+    newly-created files. NFSv4 doesn't support POSIX ACLs however, which
+    causes confusion when other subsystems try to test for them.
+
+    Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
+    stripping without advertising support for POSIX ACLs. Set the new flag
+    on NFSv4 instead of SB_POSIXACL.
+
+    Also, move mode_strip_umask to namei.h and convert init_mknod and
+    init_mkdir to use it.
+
+    Signed-off-by: Jeff Layton <jlayton@kernel.org>
+    Message-Id: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
+    Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+I think it's possible to pick up the first patch linked above:
+   
+fix umask on NFS with CONFIG_FS_POSIX_ACL=n doesn't lead to any
+
+and see whether we see any regressions from this.
+
+The second patch I can't easily judge that should go through nfs if at
+all.
+
+So proposal/question: should we take the first patch into vfs.misc?
