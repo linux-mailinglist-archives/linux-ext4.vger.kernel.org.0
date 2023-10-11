@@ -2,123 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F4A7C5A2D
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Oct 2023 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683097C6052
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Oct 2023 00:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjJKR0S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Oct 2023 13:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
+        id S1376477AbjJKWYC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Oct 2023 18:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjJKR0R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 13:26:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7F78F;
-        Wed, 11 Oct 2023 10:26:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 41B8B1F88E;
-        Wed, 11 Oct 2023 17:26:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697045167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfP83Apuioc6QwrQ9hjnsK+t+FQBcuvjUeVK6xfxlsI=;
-        b=kr/n4ozJKeSRcTxUWkUDER9ANl5ysmCMwwn5jTIuXq6Nu6vMj5OGtVTIryyeXynEv0QmeO
-        Zhy+dX2NbiLj0xRMv3bNuTJxiIJCI00Tiw9klfnKBnexnxlLzGEBQtIuhmfuMsb7Thyr4o
-        /FFuqr7fTzjwGe4evj+VqWiwjBiUb1M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697045167;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfP83Apuioc6QwrQ9hjnsK+t+FQBcuvjUeVK6xfxlsI=;
-        b=vFckiP0JXcsJIYzBmUMHSKggcqEdsHzRu7vUKBWvlkifhsnhO+PiVl4DK8F327TFpVj4hK
-        kaJA6pmCJtZVKrBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D9E9138EF;
-        Wed, 11 Oct 2023 17:26:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hsYaC6/aJmWpSAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 17:26:07 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id B0F75A06B0; Wed, 11 Oct 2023 19:26:06 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 19:26:06 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Max Kellermann <max.kellermann@ionos.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        Yang Xu <xuyang2018.jy@fujitsu.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-Message-ID: <20231011172606.mztqyvclq6hq2qa2@quack3>
-References: <20231010131125.3uyfkqbcetfcqsve@quack3>
- <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
- <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
- <20231011170042.GA267994@mit.edu>
+        with ESMTP id S1376533AbjJKWYB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 18:24:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236FCC6
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 15:23:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8EE61C433C8
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 22:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697063038;
+        bh=kq2Di3ShC5ppxJS1fJ4d6FyRlIV7bHcYgsyA2/vz1Uo=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=q8VQU0OOt+bGw6c+D+nUDco7CbCaaykLP9TBPX4jib2+MrnMJZPA9vLxqRljV5uUX
+         XbGxzLr70k2oSh8Er2qWG4Xk1HfNj5CE8HoAqAbOUyjs1UDzUNDIW/jFmS7WAPw2gr
+         BsfIuo34TOkmAfB9xodUjiozdACjsCblZjq54rVg/ui+8srl0tvqsoFT+woy/xsT0R
+         h3grMqlv5kSGLu/ecE4L3OgsPsG6D3jZgiInIQQPcmnjMw6kQiQ4r4weGlqm4v4F4i
+         /3IqfCqrQOeUGLo4tawLcw5SpySwcyvNZodAQUHheqLDo+mE7Vqm1t11kSGw1VlOkg
+         TdmecTCbMOPFw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 75F33C53BD0; Wed, 11 Oct 2023 22:23:58 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date:   Wed, 11 Oct 2023 22:23:58 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: iivanich@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-eyveZU0VEG@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011170042.GA267994@mit.edu>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 11-10-23 13:00:42, Theodore Ts'o wrote:
-> On Wed, Oct 11, 2023 at 05:27:37PM +0200, Christian Brauner wrote:
-> > Aside from that, the problem had been that filesystems like nfs v4
-> > intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
-> > IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
-> > 
-> > And afaict nfs v4 has it's own thing going on how and where umasks are
-> > applied. However, since we now have the following commit in vfs.misc:
-> > 
-> >     fs: add a new SB_I_NOUMASK flag
-> 
-> To summarize, just to make sure I understand where we're going.  Since
-> normally (excepting unusual cases like NFS), it's fine to strip the
-> umask bits twice (once in the VFS, and once in the file system, for
-> those file systems that are doing it), once we have SB_I_NOUMASK and
-> NFS starts using it, then the VFS can just unconditionally strip the
-> umask bits, and then we can gradually clean up the file system umask
-> handling (which would then be harmlessly duplicative).
-> 
-> Did I get this right?
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-I don't think this is accurate. posix_acl_create() needs unmasked 'mode'
-because instead of using current_umask() for masking it wants to use
-whatever is stored in the ACLs as an umask.
+--- Comment #14 from Ivan Ivanich (iivanich@gmail.com) ---
+Not affected 6.4.16:
+iostat: https://pastebin.com/6XadeAuh
+perf:
+https://drive.google.com/file/d/1neAq73hoztfTU87NyCHWGAQhCKQfILOH/view?usp=
+=3Dsharing
+backtrace: https://pastebin.com/zdnWgx4M
+uname -a:
+Linux gentoo-desktop 6.4.16-gentoo-x86_64 #1 SMP PREEMPT_DYNAMIC Thu Oct 12
+00:09:02 EEST 2023 x86_64 Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz GenuineI=
+ntel
+GNU/Linux
 
-So I still think we need to keep umask handling in both posix_acl_create()
-and vfs_prepare_mode(). But filesystem's only obligation would be to call
-posix_acl_create() if the inode is IS_POSIXACL. No more caring about when
-to apply umask and when not based on config or mount options.
+--=20
+You may reply to this email to add a comment.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+You are receiving this mail because:
+You are watching the assignee of the bug.=
