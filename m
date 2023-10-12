@@ -2,86 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683097C6052
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Oct 2023 00:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B77C61AE
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Oct 2023 02:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376477AbjJKWYC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Oct 2023 18:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S233859AbjJLA00 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Oct 2023 20:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376533AbjJKWYB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 18:24:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236FCC6
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 15:23:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8EE61C433C8
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 22:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697063038;
-        bh=kq2Di3ShC5ppxJS1fJ4d6FyRlIV7bHcYgsyA2/vz1Uo=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=q8VQU0OOt+bGw6c+D+nUDco7CbCaaykLP9TBPX4jib2+MrnMJZPA9vLxqRljV5uUX
-         XbGxzLr70k2oSh8Er2qWG4Xk1HfNj5CE8HoAqAbOUyjs1UDzUNDIW/jFmS7WAPw2gr
-         BsfIuo34TOkmAfB9xodUjiozdACjsCblZjq54rVg/ui+8srl0tvqsoFT+woy/xsT0R
-         h3grMqlv5kSGLu/ecE4L3OgsPsG6D3jZgiInIQQPcmnjMw6kQiQ4r4weGlqm4v4F4i
-         /3IqfCqrQOeUGLo4tawLcw5SpySwcyvNZodAQUHheqLDo+mE7Vqm1t11kSGw1VlOkg
-         TdmecTCbMOPFw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 75F33C53BD0; Wed, 11 Oct 2023 22:23:58 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date:   Wed, 11 Oct 2023 22:23:58 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: iivanich@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-eyveZU0VEG@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
-References: <bug-217965-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        with ESMTP id S231381AbjJLA0Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Oct 2023 20:26:25 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01C49E
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 17:26:18 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27ceb58f7e7so308212a91.0
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Oct 2023 17:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1697070378; x=1697675178; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PC8X7y+hdUDhjEkdJNEa0sfWqzi1ayjAHCHVFeZ8H0c=;
+        b=VJRAAO6OotNatAvA5z4GKPMxrlxkwUXOl/4BIOps3s01UjkrCSdOg1K2mx88egq2tS
+         j2RGB0yD20cVL16hJ+p2xr8jcHKmFku/skYjbEi0U0RUrFhp4iqWHvFmBqO8zsemZjap
+         T/7f0fF7TRsg1QVkj2pIWg7WmO4xLAgLC0ZlY9vUm95tqU7zFfUsWEyx4W2U+AwfeOJF
+         mq5fCebJPCf5bLtNcaTRoPl/MWWaCTNmY6ykYGw284C8OwRu2oAG98XWdb8lw7ZVNGzh
+         F5Ncyxd7qD1+vI8a7WWW8n9XAoeavbtq3zTvWXerCKpnOv7dMit7GY419LN87gtl1MGb
+         Rhxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697070378; x=1697675178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PC8X7y+hdUDhjEkdJNEa0sfWqzi1ayjAHCHVFeZ8H0c=;
+        b=Ce/KTlE21TJfDMMgZsbiYdar8I8IIwgE/WcFVTE9AYkEchiIcJBtqXz6BSCLUEf8Ek
+         haBksnYUNV5eKMf/sa18aECAQiky0U4lmQMi9tRlrjS23HIQQ2WykDK4OkDRqINKRXMM
+         DWlGtYVCJYGPT39mj5KKQ3aQsXqUKyxu4nB8kBFGe/zLfi33lbIV+rkVmnqTTkNz088K
+         7K2l9d771Ojk0zhkzpkhUpdWkS8H63nr8ElTbIK77Ry9gZFYpO/ri2K6WZBwnbC7+7vF
+         0dwLl0oBZXM9QW8dUmpW++QvDxL9RZu1wmj3x4MYlyret3nox7MuOk7hnBdsoG9/+OKF
+         PBJA==
+X-Gm-Message-State: AOJu0YyfZB6+s+HNGIH5zHTECXQIjwAOAbnAEJbbwi/xn0QbRBwlY5xT
+        EYtYq2k4dYGlhO4QjNXtxJweRcUn31x6ttj1Q8I=
+X-Google-Smtp-Source: AGHT+IE7pUEwzipDeOHC0Ve4QWkBCU4HjkCRY+nQddtjta+CWTScgmHpc6qNClB0nKc08R5uXCfbvw==
+X-Received: by 2002:a17:90a:343:b0:27d:1379:6271 with SMTP id 3-20020a17090a034300b0027d13796271mr1855909pjf.46.1697070378363;
+        Wed, 11 Oct 2023 17:26:18 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id f64-20020a17090a704600b0027ce7ee8859sm596571pjk.13.2023.10.11.17.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 17:26:17 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qqjWp-00Cchk-1U;
+        Thu, 12 Oct 2023 11:26:15 +1100
+Date:   Thu, 12 Oct 2023 11:26:15 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: Re: [PATCH] ext4: Properly sync file size update after O_SYNC direct
+ IO
+Message-ID: <ZSc9J9zFChyxl1U2@dread.disaster.area>
+References: <20231011142155.19328-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011142155.19328-1-jack@suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+On Wed, Oct 11, 2023 at 04:21:55PM +0200, Jan Kara wrote:
+> Gao Xiang has reported that on ext4 O_SYNC direct IO does not properly
+> sync file size update and thus if we crash at unfortunate moment, the
+> file can have smaller size although O_SYNC IO has reported successful
+> completion. The problem happens because update of on-disk inode size is
+> handled in ext4_dio_write_iter() *after* iomap_dio_rw() (and thus
+> dio_complete() in particular) has returned and generic_file_sync() gets
+> called by dio_complete(). Fix the problem by handling on-disk inode size
+> update directly in our ->end_io completion handler.
+> 
+> References: https://lore.kernel.org/all/02d18236-26ef-09b0-90ad-030c4fe3ee20@linux.alibaba.com
+> Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/file.c | 139 ++++++++++++++++++-------------------------------
+>  1 file changed, 52 insertions(+), 87 deletions(-)
+.....
+> @@ -388,9 +342,28 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
+>  		 */
+>  		if (inode->i_nlink)
+>  			ext4_orphan_del(NULL, inode);
+> +		return;
+>  	}
+> +	/*
+> +	 * If i_disksize got extended due to writeback of delalloc blocks while
+> +	 * the DIO was running we could fail to cleanup the orphan list in
+> +	 * ext4_handle_inode_extension(). Do it now.
+> +	 */
+> +	if (!list_empty(&EXT4_I(inode)->i_orphan) && inode->i_nlink) {
+> +		handle_t *handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
 
---- Comment #14 from Ivan Ivanich (iivanich@gmail.com) ---
-Not affected 6.4.16:
-iostat: https://pastebin.com/6XadeAuh
-perf:
-https://drive.google.com/file/d/1neAq73hoztfTU87NyCHWGAQhCKQfILOH/view?usp=
-=3Dsharing
-backtrace: https://pastebin.com/zdnWgx4M
-uname -a:
-Linux gentoo-desktop 6.4.16-gentoo-x86_64 #1 SMP PREEMPT_DYNAMIC Thu Oct 12
-00:09:02 EEST 2023 x86_64 Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz GenuineI=
-ntel
-GNU/Linux
+So this has to be called after the DIO write completes and calls
+ext4_handle_inode_extension()?
 
---=20
-You may reply to this email to add a comment.
+....
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+> @@ -606,9 +570,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  			   dio_flags, NULL, 0);
+>  	if (ret == -ENOTBLK)
+>  		ret = 0;
+> -
+>  	if (extend)
+> -		ret = ext4_handle_inode_extension(inode, offset, ret, count);
+> +		ext4_inode_extension_cleanup(inode, ret);
+
+Because this doesn't wait for AIO DIO to complete and actually
+extend the file before running the cleanup code...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
