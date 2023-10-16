@@ -2,30 +2,30 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9BB7CB40B
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Oct 2023 22:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292BC7CB416
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Oct 2023 22:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbjJPUL6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Oct 2023 16:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        id S234225AbjJPUMW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Oct 2023 16:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234129AbjJPUL2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Oct 2023 16:11:28 -0400
+        with ESMTP id S234166AbjJPUL3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Oct 2023 16:11:29 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C136114;
-        Mon, 16 Oct 2023 13:11:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABCF125;
+        Mon, 16 Oct 2023 13:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=+TzVgId1jqCDDfMgeb9joeaqRyXGlOXTb427eLXo+nM=; b=ARI10CJ76QxL1jRsJIHG5ZCDeB
-        uheFpCFmr9g/LYv/NxEJd9ysDQSiosCZOUQt/iYLYHSalrRhu7vs8M/JfZP4p9UxZ6Oaglk5IACSj
-        KE1sybHOP6NcGyPTQSEdBFm77oMCS7RKOXk3Qb7R0GBF4ThuKvcQKuYzT0SR9biRp7ugcMfXlV5Ge
-        gm5yysrbN39FGTZ/I019lbl8W0fQ4Hp16NoZBjH/vDzacMyEXbIgIvWJL9yJhbQQz7j9h55IQvZqU
-        q37RxSUraAjjDWLtDyc/BJvpFxgrfLfeUEjn91i3BY3pUZ4fiEj3ybV8mwM2E+stOr365gBRzQ1Ha
-        dc9v6GcQ==;
+        bh=5zWLpgCpPdJ2OPyT7ybTpYNCwh68G15oM+bmUL5Qut4=; b=Cm2/6geygP8ZUrICSnQ8OvqL6x
+        VIA3Zg5qgrfDLu//yeF2ucQMzFl7gvU4owiaM10L4uVEb9eU/u734bScQAKRaJTsfr6x+9xOYYeFj
+        hLR54mpl1vQKk+XGT2pRrVEzPK9cWhbHcqDNc8XG1zrm3sMq2c4MU/FgkRgdZTRRuxRURoXTXPIGH
+        wtXKayQ3kcdVe38fW2sAB6je4GpBoAKQiCPSNIKUajYpnWsDIHwqfcDxP0vzo29+ikrjYO99Wn7Rf
+        fqDzW3TnjHGr3z+EE8+spbeIFkmdjkOpEKgydANNzprLs5Kajry6ouFuN4oRJZSpu8fnRMzU7Hadx
+        D3CcqJrQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qsTvp-0085aa-00; Mon, 16 Oct 2023 20:11:17 +0000
+        id 1qsTvp-0085ac-2Q; Mon, 16 Oct 2023 20:11:17 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -33,10 +33,11 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
         ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
         reiserfs-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH v2 04/27] ext4: Convert to folio_create_empty_buffers
-Date:   Mon, 16 Oct 2023 21:10:51 +0100
-Message-Id: <20231016201114.1928083-5-willy@infradead.org>
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Subject: [PATCH v2 05/27] buffer: Add get_nth_bh()
+Date:   Mon, 16 Oct 2023 21:10:52 +0100
+Message-Id: <20231016201114.1928083-6-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20231016201114.1928083-1-willy@infradead.org>
 References: <20231016201114.1928083-1-willy@infradead.org>
@@ -51,85 +52,66 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove an unnecessary folio->page->folio conversion and take advantage
-of the new return value from folio_create_empty_buffers().
+Extract this useful helper from nilfs_page_get_nth_block()
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
+Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/ext4/inode.c       | 14 +++++---------
- fs/ext4/move_extent.c | 11 +++++------
- 2 files changed, 10 insertions(+), 15 deletions(-)
+ fs/nilfs2/page.h            |  7 +------
+ include/linux/buffer_head.h | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index a6838f54ae91..31c8f2641870 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1032,10 +1032,8 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
- 	BUG_ON(from > to);
+diff --git a/fs/nilfs2/page.h b/fs/nilfs2/page.h
+index 21ddcdd4d63e..344d71942d36 100644
+--- a/fs/nilfs2/page.h
++++ b/fs/nilfs2/page.h
+@@ -55,12 +55,7 @@ unsigned long nilfs_find_uncommitted_extent(struct inode *inode,
+ static inline struct buffer_head *
+ nilfs_page_get_nth_block(struct page *page, unsigned int count)
+ {
+-	struct buffer_head *bh = page_buffers(page);
+-
+-	while (count-- > 0)
+-		bh = bh->b_this_page;
+-	get_bh(bh);
+-	return bh;
++	return get_nth_bh(page_buffers(page), count);
+ }
  
- 	head = folio_buffers(folio);
--	if (!head) {
--		create_empty_buffers(&folio->page, blocksize, 0);
--		head = folio_buffers(folio);
--	}
-+	if (!head)
-+		head = folio_create_empty_buffers(folio, blocksize, 0);
- 	bbits = ilog2(blocksize);
- 	block = (sector_t)folio->index << (PAGE_SHIFT - bbits);
+ #endif /* _NILFS_PAGE_H */
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 1001244a8941..3d85a0cf0ca5 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -457,6 +457,28 @@ __bread(struct block_device *bdev, sector_t block, unsigned size)
+ 	return __bread_gfp(bdev, block, size, __GFP_MOVABLE);
+ }
  
-@@ -1165,7 +1163,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 	 * starting the handle.
- 	 */
- 	if (!folio_buffers(folio))
--		create_empty_buffers(&folio->page, inode->i_sb->s_blocksize, 0);
-+		folio_create_empty_buffers(folio, inode->i_sb->s_blocksize, 0);
++/**
++ * get_nth_bh - Get a reference on the n'th buffer after this one.
++ * @bh: The buffer to start counting from.
++ * @count: How many buffers to skip.
++ *
++ * This is primarily useful for finding the nth buffer in a folio; in
++ * that case you pass the head buffer and the byte offset in the folio
++ * divided by the block size.  It can be used for other purposes, but
++ * it will wrap at the end of the folio rather than returning NULL or
++ * proceeding to the next folio for you.
++ *
++ * Return: The requested buffer with an elevated refcount.
++ */
++static inline __must_check
++struct buffer_head *get_nth_bh(struct buffer_head *bh, unsigned int count)
++{
++	while (count--)
++		bh = bh->b_this_page;
++	get_bh(bh);
++	return bh;
++}
++
+ bool block_dirty_folio(struct address_space *mapping, struct folio *folio);
  
- 	folio_unlock(folio);
- 
-@@ -3655,10 +3653,8 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 	iblock = index << (PAGE_SHIFT - inode->i_sb->s_blocksize_bits);
- 
- 	bh = folio_buffers(folio);
--	if (!bh) {
--		create_empty_buffers(&folio->page, blocksize, 0);
--		bh = folio_buffers(folio);
--	}
-+	if (!bh)
-+		bh = folio_create_empty_buffers(folio, blocksize, 0);
- 
- 	/* Find the buffer that contains "offset" */
- 	pos = blocksize;
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 18a9e7c47975..7fe448fb948b 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -183,10 +183,8 @@ mext_page_mkuptodate(struct folio *folio, unsigned from, unsigned to)
- 
- 	blocksize = i_blocksize(inode);
- 	head = folio_buffers(folio);
--	if (!head) {
--		create_empty_buffers(&folio->page, blocksize, 0);
--		head = folio_buffers(folio);
--	}
-+	if (!head)
-+		head = folio_create_empty_buffers(folio, blocksize, 0);
- 
- 	block = (sector_t)folio->index << (PAGE_SHIFT - inode->i_blkbits);
- 	for (bh = head, block_start = 0; bh != head || !block_start;
-@@ -380,9 +378,10 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
- 	}
- 	/* Perform all necessary steps similar write_begin()/write_end()
- 	 * but keeping in mind that i_size will not change */
--	if (!folio_buffers(folio[0]))
--		create_empty_buffers(&folio[0]->page, 1 << orig_inode->i_blkbits, 0);
- 	bh = folio_buffers(folio[0]);
-+	if (!bh)
-+		bh = folio_create_empty_buffers(folio[0],
-+				1 << orig_inode->i_blkbits, 0);
- 	for (i = 0; i < data_offset_in_page; i++)
- 		bh = bh->b_this_page;
- 	for (i = 0; i < block_len_in_page; i++) {
+ #ifdef CONFIG_BUFFER_HEAD
 -- 
 2.40.1
 
