@@ -2,125 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DEC7C9AE9
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Oct 2023 21:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A360C7CA0E8
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Oct 2023 09:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjJOTGf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Oct 2023 15:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        id S231791AbjJPHlo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Oct 2023 03:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjJOTGe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Oct 2023 15:06:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934E9C5
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Oct 2023 12:06:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3FD77C433CB
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Oct 2023 19:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697396792;
-        bh=3+hqk5hn4BpMotv9H/yuIHv2sIcrLzkaHVdVIqdAR30=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=T+vOMS4i5/HZp909pfFfUuAA+CI/5CwF/+GO4w6X3+IGch2/k28/pjOj8MMQrQBPR
-         pHyhjwfbU+8hwXgZAAFpc54q7HGzdShTFMKRbU/1zXBSVhH4yuaNs7Ll819qHQ8QOz
-         eKnoBCO75C9mcZwWmuSkl7jzNwB7Lukt9C9v1zRejOfb8Zp5HiXBWelQYB6kG0iUIx
-         rLAVhLXVAAKCry0AB/tJ5GjR0csI4P0VS9aTfgsC5tk3y29pLFOAlamLb9iXNWmZjk
-         siob2/Up7qcCbU4PLZilEcogv+yPW4PEARxBzdbSk2kNtQ4Z45lsi0RtiFN1vbpayx
-         +a3UN0tRaWpvQ==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id 25C4DC53BD2; Sun, 15 Oct 2023 19:06:32 +0000 (UTC)
-From:   bugzilla-daemon@kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 218011] ext4 root filesystem related hangs on 6.5 kernels
-Date:   Sun, 15 Oct 2023 19:06:31 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-218011-13602-6XbB1nqgps@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218011-13602@https.bugzilla.kernel.org/>
-References: <bug-218011-13602@https.bugzilla.kernel.org/>
+        with ESMTP id S229590AbjJPHln (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Oct 2023 03:41:43 -0400
+X-Greylist: delayed 544 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 Oct 2023 00:41:41 PDT
+Received: from mail.reismin.com (mail.reismin.com [217.61.105.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F177B95
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Oct 2023 00:41:41 -0700 (PDT)
+Received: by mail.reismin.com (Postfix, from userid 1002)
+        id 9D804829B1; Mon, 16 Oct 2023 09:31:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=reismin.com; s=mail;
+        t=1697441494; bh=xAcLlILL50NG5iUG5HnziOXhpPS/RymW7kJy8FCy25o=;
+        h=Date:From:To:Subject:From;
+        b=LXMQALVIEwJHpBrxHfXHkCA+QS3F1/RPugrwdCIRKXvNnRe8QOWyptwgjYGwKMOLQ
+         MvAmmYqw0oAVjF4nhx+ypYCgfeC8zI2FoOHJ/6qRuv7kYNJG6HtJDxn+Zl5bhyjJuT
+         Yk8XB/VTK50wV0Iu4azoG6hOsc4/6Pi2N0I4GUcpdE8OsS0QPNfjghmEIlr2jHzcli
+         dStFxUbZjXUVpptp4PE89DVKo54XB44YJ9w3gxshWSEbEhrhlbY+zbGY7VD+VepbzW
+         tw8de+puyVZ5lBQ3hGUrw8uaqk37o6KmngKSMePTfAyyZ85Bv5lZgv+0PDOksB3a/x
+         XWOlOGu49g88A==
+Received: by mail.reismin.com for <linux-ext4@vger.kernel.org>; Mon, 16 Oct 2023 07:30:44 GMT
+Message-ID: <20231016084500-0.1.3o.h1ki.0.xyoh93sq5e@reismin.com>
+Date:   Mon, 16 Oct 2023 07:30:44 GMT
+From:   =?UTF-8?Q? "Andrzej_Pola=C5=84ski" ?= 
+        <andrzej.polanski@reismin.com>
+To:     <linux-ext4@vger.kernel.org>
+Subject: Zapytanie ofertowe 
+X-Mailer: mail.reismin.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218011
+Dzie=C5=84 dobry,
 
-Theodore Tso (tytso@mit.edu) changed:
+Pozwoli=C5=82em sobie na kontakt, poniewa=C5=BC jestem zainteresowany wer=
+yfikacj=C4=85 mo=C5=BCliwo=C5=9Bci nawi=C4=85zania wsp=C3=B3=C5=82pracy.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+Wspieramy firmy w pozyskiwaniu nowych klient=C3=B3w biznesowych.
 
---- Comment #6 from Theodore Tso (tytso@mit.edu) ---
-It would be really nice to get a translation from the stack trace offsets to
-line numbers, but what appears to be happening is that we're starting a jou=
-rnal
-commit, and to complete the journal, since we are in the default data=3Dord=
-ered
-mode, we call ext4_journalled_submit_inode_data_buffers(), which in turn ca=
-lls
-write_cache_pages() to flush out modified data blocks associated with an in=
-ode
-which had newly allocated blocks (so that we don't accidentally expose stale
-data blocks if there is a crash, which is a guarantee of data=3Dordered mod=
-e).
+Czy mo=C5=BCemy porozmawia=C4=87 w celu przedstawienia szczeg=C3=B3=C5=82=
+owych informacji?
 
-The write_cache_pages() function is then calling some function in mm/filema=
-p.c
-(this is where a line number translation would be happy), which calls
-folio_wait_bit_common(), which presumably is waiting for some memory folio
-which is undergoing writeback, or otherwise busy, to complete.   This then
-calls io_schedule() --- because we're waiting for some I/O to complete, and
-this apparently never completes, thus stalling the jbd2 commit operation, a=
-nd
-then all of the other processes which are trying to make changes to the file
-system are waiting for the commit complete, leading to all of the other sta=
-ck
-traces.
 
-The question is why is this happening on your system?    It could be becaus=
-e of
-some kind of missed I/O completion interrupt, or some other problem in the
-block device layer or NVMe driver ---but normally if that were the case, th=
-ere
-should have been some kind of kernel log messages from those parts of the I=
-/O
-stack.   Were there any that you could see (that perhaps were excerpted out=
- in
-the bug report, since "obviously" it was assumed this was an ext4 problem, =
-as
-opposed to ext4 simply being an innocent victim of problems lower down on t=
-he
-storage stack?
-
-The other question that might be worth asking is what sort of workload does
-your server run, and how might this be different from what other users migh=
-t be
-doing, or what we exercise with out regression tests?
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Pozdrawiam
+Andrzej Pola=C5=84ski
