@@ -2,30 +2,30 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EEC7CB401
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Oct 2023 22:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12147CB403
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Oct 2023 22:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjJPULu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Oct 2023 16:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
+        id S234060AbjJPULx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Oct 2023 16:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbjJPUL1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Oct 2023 16:11:27 -0400
+        with ESMTP id S234107AbjJPUL2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Oct 2023 16:11:28 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764DE109;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDC810E;
         Mon, 16 Oct 2023 13:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=mUIK9nBwhAI9Ryy/+0vVqkN8LwxEIln+yTemaK9zJBo=; b=B+GlRioYNmeYvG4yzAvGbAV781
-        F+G7VQqsop6vEVTkB2N/9IRAC+b3I9QGtXyU3FDR6O7Op1I7/FV5sir1YuPG8ox133s3C6PYNc+Fu
-        2TS1jzq3LSyq29zz12aDl+3LZfQS++8IkDcNOo1IznSF+6OigiahHw8yFL7Zwg3zZz6YuWDaGiOPJ
-        DHg/Qy6Nq/Ajn9BVTw7QpDWYDJRi8Ev03+h9K1z4pGFqvUwuJFy08imY/iFoWk9PyLlasGh+5/226
-        +dfNLVu37Js+UunnA87mo1Jg6qmIlj8ST7V1xEpHcBDhQ1i00gGkiy8nxNjkqAFUM6nFeC4tMR3+M
-        QIAWS5bQ==;
+        bh=KTqAHAx4qqR4Q7lC+S6uqhCRiwzNekbkPxfVngkIgDU=; b=oPrQiDiDtUSjcl7PYLALSNO31D
+        tai/aAqnPkJqG9xIbE6VBzUOe9q+haAYB4LglJras5A5+bAxN3QzOzePxanCXEAlaXdeEUiJBIt7T
+        /SGZx6Vvf2oYhevTsxYwsIWPQeeRSDH/we5DiG19qhilObY32oOh8aOoYikY435BSYLvTqYL9R1EL
+        RwJfYWz8xhlJICtpDXsQL/HeteEVcd/TKwygC3YxrTHffYxLkK3NBPc0gk4L8MLv3e2+oUY5xpFhQ
+        QAc4NQ+PY3hOwkl7WC7EwWKPVx3OQ8DJKab9JK2tpc7InYDh0wb7ZOakhSBhPJ5s7Obo4bqKoc5H/
+        cq9kWq9Q==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qsTvr-0085d0-Ne; Mon, 16 Oct 2023 20:11:19 +0000
+        id 1qsTvr-0085d9-S5; Mon, 16 Oct 2023 20:11:19 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -34,9 +34,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
         reiserfs-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
         Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH v2 25/27] ufs; Convert ufs_change_blocknr() to use folios
-Date:   Mon, 16 Oct 2023 21:11:12 +0100
-Message-Id: <20231016201114.1928083-26-willy@infradead.org>
+Subject: [PATCH v2 26/27] ufs: Remove ufs_get_locked_page()
+Date:   Mon, 16 Oct 2023 21:11:13 +0100
+Message-Id: <20231016201114.1928083-27-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20231016201114.1928083-1-willy@infradead.org>
 References: <20231016201114.1928083-1-willy@infradead.org>
@@ -51,85 +51,59 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Convert the locked_page argument to a folio, then use folios throughout.
-Saves three hidden calls to compound_head().
+Both callers are now converted to ufs_get_locked_folio().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ufs/balloc.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ fs/ufs/util.c | 9 ---------
+ fs/ufs/util.h | 7 -------
+ 2 files changed, 16 deletions(-)
 
-diff --git a/fs/ufs/balloc.c b/fs/ufs/balloc.c
-index 2436e3f82147..53c11be2b2c1 100644
---- a/fs/ufs/balloc.c
-+++ b/fs/ufs/balloc.c
-@@ -240,6 +240,7 @@ static void ufs_change_blocknr(struct inode *inode, sector_t beg,
- 			       unsigned int count, sector_t oldb,
- 			       sector_t newb, struct page *locked_page)
- {
-+	struct folio *folio, *locked_folio = page_folio(locked_page);
- 	const unsigned blks_per_page =
- 		1 << (PAGE_SHIFT - inode->i_blkbits);
- 	const unsigned mask = blks_per_page - 1;
-@@ -247,42 +248,39 @@ static void ufs_change_blocknr(struct inode *inode, sector_t beg,
- 	pgoff_t index, cur_index, last_index;
- 	unsigned pos, j, lblock;
- 	sector_t end, i;
--	struct page *page;
- 	struct buffer_head *head, *bh;
- 
- 	UFSD("ENTER, ino %lu, count %u, oldb %llu, newb %llu\n",
- 	      inode->i_ino, count,
- 	     (unsigned long long)oldb, (unsigned long long)newb);
- 
--	BUG_ON(!locked_page);
--	BUG_ON(!PageLocked(locked_page));
-+	BUG_ON(!folio_test_locked(locked_folio));
- 
--	cur_index = locked_page->index;
-+	cur_index = locked_folio->index;
- 	end = count + beg;
- 	last_index = end >> (PAGE_SHIFT - inode->i_blkbits);
- 	for (i = beg; i < end; i = (i | mask) + 1) {
- 		index = i >> (PAGE_SHIFT - inode->i_blkbits);
- 
- 		if (likely(cur_index != index)) {
--			page = ufs_get_locked_page(mapping, index);
--			if (!page)/* it was truncated */
-+			folio = ufs_get_locked_folio(mapping, index);
-+			if (!folio) /* it was truncated */
- 				continue;
--			if (IS_ERR(page)) {/* or EIO */
-+			if (IS_ERR(folio)) {/* or EIO */
- 				ufs_error(inode->i_sb, __func__,
- 					  "read of page %llu failed\n",
- 					  (unsigned long long)index);
- 				continue;
- 			}
- 		} else
--			page = locked_page;
-+			folio = locked_folio;
- 
--		head = page_buffers(page);
-+		head = folio_buffers(folio);
- 		bh = head;
- 		pos = i & mask;
- 		for (j = 0; j < pos; ++j)
- 			bh = bh->b_this_page;
- 
--
- 		if (unlikely(index == last_index))
- 			lblock = end & mask;
- 		else
-@@ -313,7 +311,7 @@ static void ufs_change_blocknr(struct inode *inode, sector_t beg,
- 		} while (bh != head);
- 
- 		if (likely(cur_index != index))
--			ufs_put_locked_page(page);
-+			ufs_put_locked_folio(folio);
-  	}
- 	UFSD("EXIT\n");
+diff --git a/fs/ufs/util.c b/fs/ufs/util.c
+index 151b400cb3b6..d32de30009a0 100644
+--- a/fs/ufs/util.c
++++ b/fs/ufs/util.c
+@@ -229,15 +229,6 @@ ufs_set_inode_dev(struct super_block *sb, struct ufs_inode_info *ufsi, dev_t dev
+ 		ufsi->i_u1.i_data[0] = cpu_to_fs32(sb, fs32);
  }
+ 
+-struct page *ufs_get_locked_page(struct address_space *mapping, pgoff_t index)
+-{
+-	struct folio *folio = ufs_get_locked_folio(mapping, index);
+-
+-	if (folio)
+-		return folio_file_page(folio, index);
+-	return NULL;
+-}
+-
+ /**
+  * ufs_get_locked_folio() - locate, pin and lock a pagecache folio, if not exist
+  * read it from disk.
+diff --git a/fs/ufs/util.h b/fs/ufs/util.h
+index 62542561d150..0ecd2ed792f5 100644
+--- a/fs/ufs/util.h
++++ b/fs/ufs/util.h
+@@ -273,7 +273,6 @@ extern void _ubh_ubhcpymem_(struct ufs_sb_private_info *, unsigned char *, struc
+ extern void _ubh_memcpyubh_(struct ufs_sb_private_info *, struct ufs_buffer_head *, unsigned char *, unsigned);
+ 
+ /* This functions works with cache pages*/
+-struct page *ufs_get_locked_page(struct address_space *mapping, pgoff_t index);
+ struct folio *ufs_get_locked_folio(struct address_space *mapping, pgoff_t index);
+ static inline void ufs_put_locked_folio(struct folio *folio)
+ {
+@@ -281,12 +280,6 @@ static inline void ufs_put_locked_folio(struct folio *folio)
+        folio_put(folio);
+ }
+ 
+-static inline void ufs_put_locked_page(struct page *page)
+-{
+-	ufs_put_locked_folio(page_folio(page));
+-}
+-
+-
+ /*
+  * macros and inline function to get important structures from ufs_sb_private_info
+  */
 -- 
 2.40.1
 
