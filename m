@@ -2,100 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9D67CC4F0
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Oct 2023 15:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88617CC5BA
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Oct 2023 16:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343913AbjJQNmh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Oct 2023 09:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S233670AbjJQORB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Oct 2023 10:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343934AbjJQNmf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Oct 2023 09:42:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EF8101;
-        Tue, 17 Oct 2023 06:42:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697550154; x=1729086154;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gjMtCk5O1IeM6c/+t6RZG+BjeG3s1Xc0Z5rkRQkLbmE=;
-  b=KkgxR6FeOS5KRjUf4NgxmVf9dkPQ2zFz4+/BFuQ5QB76oE9c9syoNLB4
-   tZBZjx7cDwHb5aKN9JzRzqMcNTmtgB9D+P4/CsDCwPUkRds6BTLLZ4rig
-   K21ktsj8YRZzJ+agWgzRTkCKfYQIFRrCrjBQZOUkFafBw+aOxUIWoJrY+
-   lJOZkXv4RH7nqm5YlhHxEbLyaEBoQ/QciwBLXY2sVx2goHBZaT2HJbBfY
-   tEx/QyZSHrEVlkkK3oq+BXLdhYb1anBm+xMc5DiK0ZrNu7rjMIgp53UdO
-   u07UZCRYs428mqclwbs16GXFaaxUQXVcCtP4IJaJ8gfcYHT2B/slyz5B8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="366043295"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="366043295"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:42:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="872564472"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="872564472"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:42:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qskL7-00000006Iqi-3hMI;
-        Tue, 17 Oct 2023 16:42:29 +0300
-Date:   Tue, 17 Oct 2023 16:42:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ferry Toth <ftoth@exalondelft.nl>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZS6PRdhHRehDC+02@smile.fi.intel.com>
-References: <20230830102434.xnlh66omhs6ninet@quack3>
- <ZS5hhpG97QSvgYPf@smile.fi.intel.com>
- <ZS5iB2RafBj6K7r3@smile.fi.intel.com>
- <ZS5i1cWZF1fLurLz@smile.fi.intel.com>
- <ZS50DI8nw9oSc4Or@smile.fi.intel.com>
- <20231017133245.lvadrhbgklppnffv@quack3>
+        with ESMTP id S234998AbjJQORA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Oct 2023 10:17:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F7CFD;
+        Tue, 17 Oct 2023 07:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZrpZDwfysdaLF96tjupfAFmYhqWMtpjSOZplJCsp7DI=; b=A2XvqQfwa4LL9+gK+9c6c+t90e
+        X04jGQ5YO+KFT3QdjPV5ARmMkuNS3t2K+vO/TqdSmH7dLaxZp3wF9gy76rGMupD79KrE+2lQiRlmk
+        L4f9p7WpYHrC1oUAR/Fc3qL9+BMrIVEGcjNSxo8FhfFsba8jy3uL9f2DgIJn99CYsnrNxlqu7oVb2
+        3a1Qy004P5+Lw/pbszbyfSb2KGpTOU1JSwmqd7rE9d3frS+zpiIKOQ6D2OxjX96Ud0nQ7+dijbqc5
+        hIiKEyanq1E8zjfYZabzKcfDOFek4MGYzlrqbuj92XXtRREiYHSMYYXg/yKo45vjKOZfb9Yval5S/
+        ksfpsP2w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qsksN-0079Qq-0F;
+        Tue, 17 Oct 2023 14:16:51 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC7A7300194; Tue, 17 Oct 2023 16:16:50 +0200 (CEST)
+Date:   Tue, 17 Oct 2023 16:16:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, bsegall@google.com, dvyukov@google.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nogikh@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] possible deadlock in console_flush_all (2)
+Message-ID: <20231017141650.GC1599@noisy.programming.kicks-ass.net>
+References: <000000000000e40a2906072e9567@google.com>
+ <000000000000bc00ea0607e9359d@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017133245.lvadrhbgklppnffv@quack3>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <000000000000bc00ea0607e9359d@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 03:32:45PM +0200, Jan Kara wrote:
-> On Tue 17-10-23 14:46:20, Andy Shevchenko wrote:
-> > On Tue, Oct 17, 2023 at 01:32:53PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
-> > > > > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
-> > > > > >   Hello Linus,
-
-...
-
-> > > > > This merge commit (?) broke boot on Intel Merrifield.
-> > > > > It has earlycon enabled and only what I got is watchdog
-> > > > > trigger without a bit of information printed out.
-> > 
-> > Okay, seems false positive as with different configuration it
-> > boots. It might be related to the size of the kernel itself.
+On Tue, Oct 17, 2023 at 06:07:50AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> Ah, ok, that makes some sense.
+> HEAD commit:    213f891525c2 Merge tag 'probes-fixes-v6.6-rc6' of git://gi..
 
-I should have mentioned that it boots with the configuration say "A",
-while not with "B", where "B" = "A" + "C" and definitely the kernel
-and initrd sizes in the "B" case are bigger.
+> list_add corruption. next->prev should be prev (ffff8880b993d228), but was caff904900000000. (next=ffff8880783659f8).
 
--- 
-With Best Regards,
-Andy Shevchenko
+Urgh, I've not seen that happen before. How reliable does this trigger?
 
-
+>  __list_add_valid_or_report+0xa2/0x100 lib/list_debug.c:29
+>  __list_add_valid include/linux/list.h:88 [inline]
+>  __list_add include/linux/list.h:150 [inline]
+>  list_add include/linux/list.h:169 [inline]
+>  account_entity_enqueue kernel/sched/fair.c:3534 [inline]
+>  enqueue_entity+0x97b/0x1490 kernel/sched/fair.c:5117
+>  enqueue_task_fair+0x15b/0xbc0 kernel/sched/fair.c:6536
+>  enqueue_task kernel/sched/core.c:2102 [inline]
+>  activate_task kernel/sched/core.c:2132 [inline]
+>  ttwu_do_activate+0x214/0xd90 kernel/sched/core.c:3787
+>  ttwu_queue kernel/sched/core.c:4029 [inline]
+>  try_to_wake_up+0x8e7/0x15b0 kernel/sched/core.c:4346
+>  autoremove_wake_function+0x16/0x150 kernel/sched/wait.c:424
+>  __wake_up_common+0x140/0x5a0 kernel/sched/wait.c:107
+>  __wake_up_common_lock+0xd6/0x140 kernel/sched/wait.c:138
+>  wake_up_klogd_work_func kernel/printk/printk.c:3840 [inline]
+>  wake_up_klogd_work_func+0x90/0xa0 kernel/printk/printk.c:3829
+>  irq_work_single+0x1b5/0x260 kernel/irq_work.c:221
+>  irq_work_run_list kernel/irq_work.c:252 [inline]
+>  irq_work_run_list+0x92/0xc0 kernel/irq_work.c:235
+>  update_process_times+0x1d5/0x220 kernel/time/timer.c:2074
+>  tick_sched_handle+0x8e/0x170 kernel/time/tick-sched.c:254
+>  tick_sched_timer+0xe9/0x110 kernel/time/tick-sched.c:1492
+>  __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
+>  __hrtimer_run_queues+0x647/0xc10 kernel/time/hrtimer.c:1752
+>  hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1814
+>  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1063 [inline]
+>  __sysvec_apic_timer_interrupt+0x105/0x3f0 arch/x86/kernel/apic/apic.c:1080
+>  sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1074
+>  </IRQ>
