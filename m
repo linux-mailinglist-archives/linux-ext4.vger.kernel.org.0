@@ -2,182 +2,255 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB767CC0BB
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Oct 2023 12:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD87F7CC0E5
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Oct 2023 12:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjJQKdA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Oct 2023 06:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S234519AbjJQKpd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Oct 2023 06:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbjJQKc7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Oct 2023 06:32:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5F48E;
-        Tue, 17 Oct 2023 03:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697538777; x=1729074777;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ILoqvxBEJht4ynMLEnNIRsTYHBFXIaFS2dHMOUDBj5A=;
-  b=OAeWo284KAp/IKWa7/Oupm9QEoPhFg0C7DKUqvcq5u25ixhD8Kb/Z08n
-   loSCPw4elfo2XWOONs4FThn3COqsDPcx+b5FZCijOfihmMMHYtZHpraZj
-   9t8nSIqsUrAxLUb37zOGiYyl9X/tfRDYVLGc2TTG7lrv2/QNuOjjcyk8Z
-   Ilu74t4Iu43FeS9OeIZpZXEG/MvetTFP1izXgkUJmi+/tJrFynwVG7Bhx
-   V/s9d61dSkK/IRb0+l8YXpwNY4oKDjVDw8mRp9Zl/q6vwEbANgfj+xtmh
-   hFcC/LTadMGvfcXbkasSi7jzwnj3t6hjvBgVBz7GuA8RvZFc23OM3O3mC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365103962"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="365103962"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 03:32:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1003309913"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="1003309913"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 03:32:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qshNd-00000006FmL-21h6;
-        Tue, 17 Oct 2023 13:32:53 +0300
-Date:   Tue, 17 Oct 2023 13:32:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Jan Kara <jack@suse.cz>, Ferry Toth <ftoth@exalondelft.nl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZS5i1cWZF1fLurLz@smile.fi.intel.com>
-References: <20230830102434.xnlh66omhs6ninet@quack3>
- <ZS5hhpG97QSvgYPf@smile.fi.intel.com>
- <ZS5iB2RafBj6K7r3@smile.fi.intel.com>
+        with ESMTP id S234622AbjJQKpc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Oct 2023 06:45:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C136BB0
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Oct 2023 03:45:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D9F6C433CB
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Oct 2023 10:45:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697539530;
+        bh=LPsTEBcBhvHiqMXbon6xoZQZJ46T8W1pcet4m8HsNbs=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=i7VPnYokx+E8tI1/dXkhy9w0Tbh6AHMZY3SYJmHHMlCTVHvEHmQJLXvF7DxKXZQje
+         ms9E+vkA/4TtucFekUEnKz8xbOGDR4y+l7fSBT1J8jBdhKhlH0EVCRXuEwe2wfUqE/
+         j3dNQsZ79uYN2PWFBp5xTNsLEa+rnG7O0IR+KQre3Mbje/eqzl9E/J6X9sSphk0TbZ
+         l2c/wBykXUvVbdqB2o5V8JqDBOtoTSAbX46ax8ekWn6rAYe6XfmxY6mnXFe7TJAH13
+         b3vWq1RHuuoiij9q3ErrE6xzzFBV5/o0sigt3+xAWlD5Vqpo4EHfuBdVjX0JLwnqxR
+         SeltnqekbDtYA==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 22DB4C53BD3; Tue, 17 Oct 2023 10:45:30 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date:   Tue, 17 Oct 2023 10:45:29 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: glandvador@yahoo.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-217965-13602-A9FNXbUyFf@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS5iB2RafBj6K7r3@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_PORT autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
-> +Ferry
-> 
-> On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
-> > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
-> > >   Hello Linus,
-> > > 
-> > >   could you please pull from
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_v6.6-rc1
-> > > 
-> > > to get:
-> > > * fixes for possible use-after-free issues with quota when racing with
-> > >   chown
-> > > * fixes for ext2 crashing when xattr allocation races with another
-> > >   block allocation to the same file from page writeback code
-> > > * fix for block number overflow in ext2
-> > > * marking of reiserfs as obsolete in MAINTAINERS
-> > > * assorted minor cleanups
-> > > 
-> > > Top of the tree is df1ae36a4a0e. The full shortlog is:
-> > 
-> > This merge commit (?) broke boot on Intel Merrifield.
-> > It has earlycon enabled and only what I got is watchdog
-> > trigger without a bit of information printed out.
-> > 
-> > I tried to give a two bisects with the same result.
-> > 
-> > Try 1:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-+ Missed start of this
+Eduard Kohler (glandvador@yahoo.com) changed:
 
-git bisect start
-# status: waiting for both good and bad commits
-# good: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
-git bisect good 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-# status: waiting for bad commit, 1 good commit known
-# bad: [0bb80ecc33a8fb5a682236443c1e740d5c917d1d] Linux 6.6-rc1
-git bisect bad 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-# bad: [461f35f014466c4e26dca6be0f431f57297df3f2] Merge tag 'drm-next-2023-08-30' of git://anongit.freedesktop.org/drm/drm
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |glandvador@yahoo.com
 
+--- Comment #15 from Eduard Kohler (glandvador@yahoo.com) ---
+I encounter the same issue on a stock fedora 37 kernel
+# uname -a
+Linux xxx.net 6.4.16-100.fc37.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Sep 13 18:2=
+2:38
+UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
 
-> > git bisect bad 461f35f014466c4e26dca6be0f431f57297df3f2                                                          # good: [bd6c11bc43c496cddfc6cf603b5d45365606dbd5] Merge tag 'net-next-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-> > git bisect good bd6c11bc43c496cddfc6cf603b5d45365606dbd5
-> > # good: [ef35c7ba60410926d0501e45aad299656a83826c] Revert "Revert "drm/amdgpu/display: change pipe policy for DCN 2.0""
-> > git bisect good ef35c7ba60410926d0501e45aad299656a83826c
-> > # good: [d68b4b6f307d155475cce541f2aee938032ed22e] Merge tag 'mm-nonmm-stable-2023-08-28-22-48' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> > git bisect good d68b4b6f307d155475cce541f2aee938032ed22e
-> > # good: [87fa732dc5ff9ea6a2e75b630f7931899e845eb1] Merge tag 'x86-core-2023-08-30-v2' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-> > git bisect good 87fa732dc5ff9ea6a2e75b630f7931899e845eb1
-> > # good: [bc609f4867f6a14db0efda55a7adef4dca16762e] Merge tag 'drm-misc-next-fixes-2023-08-24' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-> > git bisect good bc609f4867f6a14db0efda55a7adef4dca16762e
-> > # good: [63580f669d7ff5aa5a1fa2e3994114770a491722] Merge tag 'ovl-update-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs
-> > git bisect good 63580f669d7ff5aa5a1fa2e3994114770a491722
-> > # good: [5221002c054376fcf2f0cea1d13f00291a90222e] Merge tag 'repair-force-rebuild-6.6_2023-08-10' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-6.6-mergeA
-> > git bisect good 5221002c054376fcf2f0cea1d13f00291a90222e
-> > # bad: [1500e7e0726e963f64b9785a0cb0a820b2587bad] Merge tag 'for_v6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-> > git bisect bad 1500e7e0726e963f64b9785a0cb0a820b2587bad
-> > # good: [7a64774add85ce673a089810fae193b02003be24] quota: use lockdep_assert_held_write in dquot_load_quota_sb
-> > git bisect good 7a64774add85ce673a089810fae193b02003be24
-> > # good: [b450159d0903b06ebea121a010ab9c424b67c408] ext2: introduce new flags argument for ext2_new_blocks()
-> > git bisect good b450159d0903b06ebea121a010ab9c424b67c408
-> > # good: [9bc6fc3304d89f19c028cb4a8d6af94f9e5faeb0] ext2: dump current reservation window info
-> > git bisect good 9bc6fc3304d89f19c028cb4a8d6af94f9e5faeb0
-> > # good: [df1ae36a4a0e92340daea12e88d43eeb2eb013b1] ext2: Fix kernel-doc warnings
-> > git bisect good df1ae36a4a0e92340daea12e88d43eeb2eb013b1
-> > # first bad commit: [1500e7e0726e963f64b9785a0cb0a820b2587bad] Merge tag 'for_v6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-> > 
-> > Try 2:
-> > 
-> > git bisect start
-> > # status: waiting for both good and bad commits
-> > # bad: [58720809f52779dc0f08e53e54b014209d13eebb] Linux 6.6-rc6
-> > git bisect bad 58720809f52779dc0f08e53e54b014209d13eebb
-> > # status: waiting for good commit(s), bad commit known
-> > # good: [5221002c054376fcf2f0cea1d13f00291a90222e] Merge tag 'repair-force-rebuild-6.6_2023-08-10' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-6.6-mergeA
-> > git bisect good 5221002c054376fcf2f0cea1d13f00291a90222e
-> > # bad: [c66403f62717e1af3be2a1873d52d2cf4724feba] Merge tag 'genpd-v6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm
-> > git bisect bad c66403f62717e1af3be2a1873d52d2cf4724feba
-> > # good: [bd6c11bc43c496cddfc6cf603b5d45365606dbd5] Merge tag 'net-next-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-> > git bisect good bd6c11bc43c496cddfc6cf603b5d45365606dbd5
-> > # good: [3698a75f5a98d0a6599e2878ab25d30a82dd836a] Merge tag 'drm-intel-next-fixes-2023-08-24' of git://anongit.freedesktop.org/drm/drm-intel into drm-next
-> > git bisect good 3698a75f5a98d0a6599e2878ab25d30a82dd836a
-> > # good: [1a35914f738c564060a14388f52a06669b09e0b3] Merge tag 'integrity-v6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity
-> > git bisect good 1a35914f738c564060a14388f52a06669b09e0b3
-> > # good: [b36e672b6b6fa4f68fc74c3b85ba9b4a615fc1d9] ASoC: tegra: merge DAI call back functions into ops
-> > git bisect good b36e672b6b6fa4f68fc74c3b85ba9b4a615fc1d9
-> > # good: [692f5510159c79bfa312a4e27a15e266232bfb4c] Merge tag 'asoc-v6.6' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound into for-linus
-> > git bisect good 692f5510159c79bfa312a4e27a15e266232bfb4c
-> > # good: [1687d8aca5488674686eb46bf49d1d908b2672a1] Merge tag 'x86_apic_for_6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-> > git bisect good 1687d8aca5488674686eb46bf49d1d908b2672a1
-> > # bad: [53ea7f624fb91074c2f9458832ed74975ee5d64c] Merge tag 'xfs-6.6-merge-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
-> > git bisect bad 53ea7f624fb91074c2f9458832ed74975ee5d64c
-> > # good: [df1ae36a4a0e92340daea12e88d43eeb2eb013b1] ext2: Fix kernel-doc warnings
-> > git bisect good df1ae36a4a0e92340daea12e88d43eeb2eb013b1
-> > # bad: [1500e7e0726e963f64b9785a0cb0a820b2587bad] Merge tag 'for_v6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-> > git bisect bad 1500e7e0726e963f64b9785a0cb0a820b2587bad
-> > # good: [b0504bfe1b8acdcfb5ef466581d930835ef3c49e] ovl: add support for unique fsid per instance
-> > git bisect good b0504bfe1b8acdcfb5ef466581d930835ef3c49e
-> > # good: [36295542969dcfe7443f8cc5247863ed06a936d5] ovl: Kconfig: introduce CONFIG_OVERLAY_FS_DEBUG
-> > git bisect good 36295542969dcfe7443f8cc5247863ed06a936d5
-> > # good: [adcd459ff805ce5e11956cfa1e9aa85471b6ae8d] ovl: validate superblock in OVL_FS()
-> > git bisect good adcd459ff805ce5e11956cfa1e9aa85471b6ae8d
-> > # good: [63580f669d7ff5aa5a1fa2e3994114770a491722] Merge tag 'ovl-update-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs
-> > git bisect good 63580f669d7ff5aa5a1fa2e3994114770a491722
-> > # first bad commit: [1500e7e0726e963f64b9785a0cb0a820b2587bad] Merge tag 'for_v6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-> > 
-> > I'm full ears on how to debug this. Note, the earlyprintk doesn't work on this
-> > platform as it has no legacy UARTs.
+The issue seems to be present also on brtfs partitions, as mentioned in
+https://bugzilla.redhat.com/show_bug.cgi?id=3D2242391
 
--- 
-With Best Regards,
-Andy Shevchenko
+In my case, I have an EXT4 partition over an mdadm raid 1 array of two HDD.
 
+# mdadm --misc --detail /dev/md0
+/dev/md0:
+           Version : 1.2
+     Creation Time : Sun Feb 24 21:40:33 2013
+        Raid Level : raid1
+        Array Size : 3906118928 (3.64 TiB 4.00 TB)
+     Used Dev Size : 3906118928 (3.64 TiB 4.00 TB)
+      Raid Devices : 2
+     Total Devices : 2
+       Persistence : Superblock is persistent
 
+       Update Time : Tue Oct 17 12:05:22 2023
+             State : clean
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 0
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              Name : xxx.net:0  (local to host xxx.net)
+              UUID : 25070e74:b2ac1695:46ee20f9:7e8d1e05
+            Events : 402440
+
+    Number   Major   Minor   RaidDevice State
+       3       8       17        0      active sync   /dev/sdb1
+       2       8       33        1      active sync   /dev/sdc1
+
+dumpe2fs -h /dev/md0p1
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   <none>
+Last mounted on:          /home
+Filesystem UUID:          4df09a03-d8ef-4cef-a64d-cefde4823fc2
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filet=
+ype
+needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg
+dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              244137984
+Block count:              976529232
+Reserved block count:     48826457
+Overhead clusters:        15373546
+Free blocks:              545717412
+Free inodes:              243040909
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      791
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+RAID stride:              32745
+Flex block group size:    16
+Filesystem created:       Sun Feb 24 22:13:52 2013
+Last mount time:          Mon Oct 16 21:06:57 2023
+Last write time:          Mon Oct 16 21:06:57 2023
+Mount count:              6
+Maximum mount count:      -1
+Last checked:             Sat Oct  7 16:27:02 2023
+Check interval:           0 (<none>)
+Lifetime writes:          238 GB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+First orphan inode:       13509593
+Default directory hash:   half_md4
+Directory Hash Seed:      af37e79f-0457-4318-9c5d-840dc2f60bce
+Journal backup:           inode blocks
+Journal features:         journal_incompat_revoke
+Total journal size:       128M
+Total journal blocks:     32768
+Max transaction length:   32768
+Fast commit length:       0
+Journal sequence:         0x003bc716
+Journal start:            1
+
+# df /dev/md0p1
+Filesystem      1K-blocks       Used  Available Use% Mounted on
+/dev/md0p1     3844622744 1661757340 1987543192  46% /home
+
+# mount |grep md0
+/dev/md0p1 on /home type ext4 (rw,relatime,seclabel,stripe=3D32745)
+
+In order to trig the 100% CPU on one core, a simple=20
+# for i in {0001..0200}; echo "some text" > "file_${i}.txt"
+is enough. This will bring the kworker/flush at 100 % for around 90 seconds.
+This time is dependent of the number of created files. Trying to delete the=
+se
+files is more or less impossible.
+
+On the same setup I have a small SSD used for system installation. The same
+test doesn't bring the kworker/flush behaviour.
+
+# dumpe2fs -h /dev/sda3
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   <none>
+Last mounted on:          /
+Filesystem UUID:          589968d6-2283-4903-8699-1b23f5c341a5
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filet=
+ype
+needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg
+dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              848640
+Block count:              3390208
+Reserved block count:     169510
+Free blocks:              1823000
+Free inodes:              735742
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      827
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8160
+Inode blocks per group:   510
+Flex block group size:    16
+Filesystem created:       Sun Apr  6 00:00:12 2014
+Last mount time:          Mon Oct 16 21:06:53 2023
+Last write time:          Mon Oct 16 21:06:47 2023
+Mount count:              437
+Maximum mount count:      -1
+Last checked:             Sun Apr  6 00:00:12 2014
+Check interval:           0 (<none>)
+Lifetime writes:          1791 GB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+First orphan inode:       130778
+Default directory hash:   half_md4
+Directory Hash Seed:      7d17214b-9585-4370-8c06-4236e449fa7f
+Journal backup:           inode blocks
+Journal features:         journal_incompat_revoke
+Total journal size:       128M
+Total journal blocks:     32768
+Max transaction length:   32768
+Fast commit length:       0
+Journal sequence:         0x0114205c
+Journal start:            8194
+
+# mount |grep sda3
+/dev/sda3 on / type ext4 (rw,noatime,seclabel)
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
