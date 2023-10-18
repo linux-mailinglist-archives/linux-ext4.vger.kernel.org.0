@@ -2,111 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B257CE50B
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Oct 2023 19:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870017CE721
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Oct 2023 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbjJRRmm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Oct 2023 13:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
+        id S229482AbjJRSqU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Oct 2023 14:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbjJRRmX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Oct 2023 13:42:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58085184;
-        Wed, 18 Oct 2023 10:41:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A73C43391;
-        Wed, 18 Oct 2023 17:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697650914;
-        bh=mMRFKHsg6CFW9vRC+qvje6I3FWhEbLE4To87FsaWYy0=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=G9KeDhGIB9FCmXVvdb8/9fxs0Vl7HqKSxTG2hqRqWmfQABwQW7pdvKOVOXxt1vp/X
-         7jm9YEVYObd5mwPlrFkNtvsuTXR6xH5Pn13g+WIqWBU+hHOt+fTXPEXY0anLihyfPV
-         N2lpWFc95eFiACPuWlr29oqQ7V4JvOv6Ls07DXNTG3JlEkbj2ZQ7xBoy5SYsS5A2bb
-         DmhFjFozl3Zi+x494NzrmMrPjsGESKGON+RztxqNbwrZ3B7HJddhjWUFBZ8L06ONWC
-         IAqsNdWapv9wZ06yAp7DwcwusRk/S8Fxe9ZUEw3SHPP3VJfZmT69ZHuZptBuaFgOVO
-         uN/SIWObsbWYQ==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Wed, 18 Oct 2023 13:41:16 -0400
-Subject: [PATCH RFC 9/9] tmpfs: add support for multigrain timestamps
+        with ESMTP id S229447AbjJRSqS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Oct 2023 14:46:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5531C114;
+        Wed, 18 Oct 2023 11:46:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 34FB71F383;
+        Wed, 18 Oct 2023 18:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697654774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Szwtnfcke0SpMIDxlSZbJqKrDwqMF6CyFTyCgfEvpI0=;
+        b=OOlMdN3ZPUx6jMv77bJrzoUDAI9vDmlO2f+WzeY5DP+RtLaAp+dwz3tCZxFAxcFDVhOXaB
+        qzth31EooNxs3Tudf9fP0UMYpjKcBzpUb6i0bOA5i6c3zEztz68qPLbR+S3ykkmQrSAIqS
+        fBheBoi3Do5+HT29SYxXZGuZ4n2k/7g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697654774;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Szwtnfcke0SpMIDxlSZbJqKrDwqMF6CyFTyCgfEvpI0=;
+        b=Mp+8zqpwTLu/y67W0FyQ3bwpvZ/Zyi9kZAHJpkKLKnxbvvtuyNTHCI0S7cuyw759R8XtSu
+        3SDgr8uWgI3GleAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2749D13915;
+        Wed, 18 Oct 2023 18:46:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id K1yPCfYnMGWZVwAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 18 Oct 2023 18:46:14 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id ACFC8A06B0; Wed, 18 Oct 2023 20:46:13 +0200 (CEST)
+Date:   Wed, 18 Oct 2023 20:46:13 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Ferry Toth <ftoth@exalondelft.nl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <20231018184613.tphd3grenbxwgy2v@quack3>
+References: <ZS5hhpG97QSvgYPf@smile.fi.intel.com>
+ <ZS5iB2RafBj6K7r3@smile.fi.intel.com>
+ <ZS5i1cWZF1fLurLz@smile.fi.intel.com>
+ <ZS50DI8nw9oSc4Or@smile.fi.intel.com>
+ <20231017133245.lvadrhbgklppnffv@quack3>
+ <ZS6PRdhHRehDC+02@smile.fi.intel.com>
+ <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
+ <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
+ <ZS6pmuofSP3uDMIo@smile.fi.intel.com>
+ <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231018-mgtime-v1-9-4a7a97b1f482@kernel.org>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-In-Reply-To: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=769; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=mMRFKHsg6CFW9vRC+qvje6I3FWhEbLE4To87FsaWYy0=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlMBjJAuF/mn4fUKEE3uiFdGeHeVKOJDDMsX28Q
- t9B3mGYu2WJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZTAYyQAKCRAADmhBGVaC
- FXeLEADGWL+XVQBwiyFQFHvIPzldy2L8awb0YKPCr28SYeSR50oiPbqPzalc6MzF1KFc+NOvzOa
- 94PHr4jh1Zd5l44XOHvzRAdilY0BBloRQ6qVfnKJd5JmSQGB02a23Qs3Omp8vBldt+xaHk4I3+B
- PmOCDiBni6Dq8zr1G3M1S/Yu8FVgigl1nkDKRhaEJsogQyoid0JLsND7c43MLWfLm9RL8sEoiFQ
- 13PHXmfhUTbvhvCwucMjvlifITgBbUzgSxLMSUBINjfVazbERk48Dg/clacnw/Lxm9g0a/H8Dqi
- gf66uPXr54fnkhwrasliLB1kNNLISNBLVfOfLILNoHn5eDBcWVStIXYRT1dyX9qsbEUbwYpvIog
- 6k4DE3M+ZiqgvUilXZB1Yd4yiFTjZeMu3E3i3F4XS9ehA2ABL0L5Auyy4/JicO9FStbE5AUqREX
- u9ySpUplJrMTQ6yGu2XcHasRW703qajO8DORPB8u9DVDkVnoAto6RSwi2W3oGVoMMU7wpt5nhlo
- rwZLb5irBLYI25FjYy9jsDgdWSE818ID2KYoV9Dt/zjZj0akGxwQBs8aalDIMiw1aD+bQU8e5Qs
- t8fdVfGjIcSYqpBPVMMkbPB82S9hiajclrg18YKi7sr5wd0+90jWiGZf00jbQvf+BfnSXbG9aE4
- IVTP54zf3BOAL2A==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -6.60
+X-Spamd-Result: default: False [-6.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_FIVE(0.00)[6];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+On Tue 17-10-23 19:02:52, Andy Shevchenko wrote:
+> On Tue, Oct 17, 2023 at 06:34:50PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 17, 2023 at 06:14:54PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Oct 17, 2023 at 05:50:10PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Oct 17, 2023 at 04:42:29PM +0300, Andy Shevchenko wrote:
+> > > > > On Tue, Oct 17, 2023 at 03:32:45PM +0200, Jan Kara wrote:
+> > > > > > On Tue 17-10-23 14:46:20, Andy Shevchenko wrote:
+> > > > > > > On Tue, Oct 17, 2023 at 01:32:53PM +0300, Andy Shevchenko wrote:
+> > > > > > > > On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
+> > > > > > > > > > >   Hello Linus,
+> 
+> ...
+> 
+> > > > > > > > > > This merge commit (?) broke boot on Intel Merrifield.
+> > > > > > > > > > It has earlycon enabled and only what I got is watchdog
+> > > > > > > > > > trigger without a bit of information printed out.
+> > > > > > > 
+> > > > > > > Okay, seems false positive as with different configuration it
+> > > > > > > boots. It might be related to the size of the kernel itself.
+> > > > > > 
+> > > > > > Ah, ok, that makes some sense.
+> > > > > 
+> > > > > I should have mentioned that it boots with the configuration say "A",
+> > > > > while not with "B", where "B" = "A" + "C" and definitely the kernel
+> > > > > and initrd sizes in the "B" case are bigger.
+> > > > 
+> > > > If it's a size (which is only grew from 13M->14M), it's weird.
+> > > > 
+> > > > Nevertheless, I reverted these in my local tree
+> > > > 
+> > > > 85515a7f0ae7 (HEAD -> topic/mrfld) Revert "defconfig: enable DEBUG_SPINLOCK"
+> > > > 786e04262621 Revert "defconfig: enable DEBUG_ATOMIC_SLEEP"
+> > > > 76ad0a0c3f2d Revert "defconfig: enable DEBUG_INFO"
+> > > > f8090166c1be Revert "defconfig: enable DEBUG_LIST && DEBUG_OBJECTS_RCU_HEAD"
+> > > > 
+> > > > and it boots again! So, after this merge something affects one of this?
+> > > > 
+> > > > I'll continuing debugging which one is a culprit, just want to share
+> > > > the intermediate findings.
+> > > 
+> > > CONFIG_DEBUG_LIST with this merge commit somehow triggers this issue.
+> > > Any ideas?
+> 
+> > Dropping CONFIG_QUOTA* helps as well.
+> 
+> More precisely it's enough to drop either from CONFIG_DEBUG_LIST and CONFIG_QUOTA
+> to make it boot again.
+> 
+> And I'm done for today.
 
-tmpfs only requires the FS_MGTIME flag.
+OK, thanks for debugging! So can you perhaps enable CONFIG_DEBUG_LIST
+permanently in your kernel config and then bisect through the quota changes
+in the merge? My guess is commit dabc8b20756 ("quota: fix dqput() to follow
+the guarantees dquot_srcu should provide") might be the culprit given your
+testing but I fail to see how given I don't expect any quotas to be used
+during boot of your platform... BTW, there's also fixup: 869b6ea160
+("quota: Fix slow quotaoff") merged last week so you could try testing a
+kernel after this fix to see whether it changes anything.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index c48239bfa646..6f5941bffa45 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4586,7 +4586,7 @@ static struct file_system_type shmem_fs_type = {
- #endif
- 	.kill_sb	= kill_litter_super,
- #ifdef CONFIG_SHMEM
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- #else
- 	.fs_flags	= FS_USERNS_MOUNT,
- #endif
+								Honza
 
 -- 
-2.41.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
