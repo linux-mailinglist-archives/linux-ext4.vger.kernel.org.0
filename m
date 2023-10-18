@@ -2,35 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223527CE95E
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Oct 2023 22:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A921D7CEA03
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Oct 2023 23:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbjJRUrq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Oct 2023 16:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        id S231862AbjJRVb6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Oct 2023 17:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbjJRUrn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Oct 2023 16:47:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39705FE;
-        Wed, 18 Oct 2023 13:47:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB2EC433C8;
-        Wed, 18 Oct 2023 20:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697662060;
-        bh=ur7fcft+INev6z8sCndtms845O1A1/aPF0TIAWbDkS0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=fr/C19MvlG9QXl+vWS+SXplZgTRgBQJ3oLvKh1kARFT7tBHh79vH1tQShLD9PgLut
-         yPZrIF6BgYRMGKSa+4ap23iDicA29QlHgzuc9wqzo0Nftd/kvOQdbsaY6bOG1qheYd
-         Y9a+XBPDNkWWvKeE21tf85ThZM1Yvzaxd6qJkorN/EjBNO6hEAj1453J1cA1zPxRg8
-         d73AoURNDxaS06VsO2r0Ebq1GKLSGcS8s+x9s7VDua0bPXIME2bPgCmGsdgY5GC1n0
-         728Bvsyu5URh5eysAXOVYsTdp1fk/mIc49hpShHVLnYnU22T1HYUNgKffNe2HDOjRA
-         oYHiZjfKG+3KQ==
-Message-ID: <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+        with ESMTP id S230119AbjJRVb5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Oct 2023 17:31:57 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C009114
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Oct 2023 14:31:55 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so90660271fa.3
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Oct 2023 14:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697664713; x=1698269513; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ECKpgvAUzJR9x6tmoRvOJm7k5hgaq6eXpehPithmdco=;
+        b=Ac9dz8zswGFxsmltVOx8gzHtiaMUBO2y25lQgNRnhHQxZNz88kigBzIwC13DQTLzHT
+         xfFpACNmpnF2YyEJZNGpquoNzaHQxKFs91OUX1T8x3+tBYvYMC/jK7z8UODjHrnvkNxL
+         KIh5wQhJaXAaAxEH/tEG9R63nF/zDglOleTHs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697664713; x=1698269513;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ECKpgvAUzJR9x6tmoRvOJm7k5hgaq6eXpehPithmdco=;
+        b=t9TtfmAVAmzVwdj/Z2l7r730XsixfaHrFqQMC6CVSdJBjDXWqUTgpqc3wy6sH5SJ9/
+         FvlFMvIfVr9IElfy/5cG4Lwqyae+a/C7h5fnaVyijvbFGfbhvJbrC7Aq0TeK6fOd4/Gz
+         RG2gOxHMMSGQq5xUhekPiCkCmk0Cplao6FZj9lryzXjdlaSBboPlyHlmvtjO2FH0Ia4b
+         XABSrtl1VWmci6GZDYvaut51TEQxKkILrOa1rZvulb29OMRn4TSjqqmErHaiOdeZbzwK
+         UgUoRXSPe3pYcAfS9wwrHN+N2+xRGwQsfcl9L6cl8yJ6elFI+MYd9noOOtLbh34+KuMU
+         HOFQ==
+X-Gm-Message-State: AOJu0Yyn7tBjeX+uPsRXOnd3TK88HXYc23/LJWueLJv6W4myptzIkjcC
+        +KPM0nFp0ANBUG0oAEnUSnHMKR2C7b9WrUcn/YWUoEJS
+X-Google-Smtp-Source: AGHT+IG2cFV9Mmv58AUCMk/N5CvLxWYwq+KxF1UwJ6pxTeF1LYlFdAjsKCdK7N4UJ6R8re8TvjedUQ==
+X-Received: by 2002:a05:6512:3053:b0:507:9a64:adf0 with SMTP id b19-20020a056512305300b005079a64adf0mr200279lfb.10.1697664713738;
+        Wed, 18 Oct 2023 14:31:53 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id gz21-20020a170906f2d500b009ae0042e48bsm2388280ejb.5.2023.10.18.14.31.53
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 14:31:53 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9ba081173a3so1204808066b.1
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Oct 2023 14:31:53 -0700 (PDT)
+X-Received: by 2002:a17:907:c0d:b0:9be:7b67:1674 with SMTP id
+ ga13-20020a1709070c0d00b009be7b671674mr409722ejc.3.1697664692747; Wed, 18 Oct
+ 2023 14:31:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org> <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+ <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com> <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+In-Reply-To: <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 18 Oct 2023 14:31:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+Message-ID: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
 Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
  timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+To:     Jeff Layton <jlayton@kernel.org>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         John Stultz <jstultz@google.com>,
@@ -39,7 +70,7 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -51,18 +82,10 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
         linux-nfs@vger.kernel.org
-Date:   Wed, 18 Oct 2023 16:47:37 -0400
-In-Reply-To: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,125 +93,43 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2023-10-18 at 12:18 -0700, Linus Torvalds wrote:
-> On Wed, 18 Oct 2023 at 10:41, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > One way to prevent this is to ensure that when we stamp a file with a
-> > fine-grained timestamp, that we use that value to establish a floor for
-> > any later timestamp update.
->=20
-> I'm very leery of this.
->=20
-> I don't like how it's using a global time - and a global fine-grained
-> offset - when different filesystems will very naturally have different
-> granularities. I also don't like how it's no using that global lock.
->=20
-> Yes, yes, since the use of this all is then gated by the 'is_mgtime()'
-> thing, any filesystem with big granularities will presumably never set
-> FS_MGTIME in the first time, and that hides the worst pointless cases.
-> But it still feels iffy to me.
->=20
-
-Thanks for taking a look!
-
-I'm not too crazy about the global lock either, but the global fine
-grained value ensures that when we have mtime changes that occur across
-filesystems that they appear to be in the correct order.
-
-We could (hypothetically) track an offset per superblock or something,
-but then you could see out-of-order timestamps in inodes across
-different filesystems (even of the same type). I think it'd better not
-to do that if we can get away with it.
-
-
-> Also, the whole current_ctime() logic seems wrong. Later (in 4/9), you do=
- this:
->=20
->  static struct timespec64 current_ctime(struct inode *inode)
->  {
->         if (is_mgtime(inode))
->                 return current_mgtime(inode);
->=20
-> and current_mgtime() does
->=20
->         if (nsec & I_CTIME_QUERIED) {
->                 ktime_get_real_ts64(&now);
->                 return timestamp_truncate(now, inode);
->         }
->=20
-> so once the code has set I_CTIME_QUERIED, it will now use the
-> expensive fine-grained time - even when it makes no sense.
->=20
-> As far as I can tell, there is *never* a reason to get the
-> fine-grained time if the old inode ctime is already sufficiently far
-> away.
->=20
-> IOW, my gut feel is that all this logic should always not only be
-> guarded by FS_MGTIME (like you do seem to do), *and* by "has anybody
-> even queried this time" - it should *also* always be guarded by "if I
-> get the coarse-grained time, is that sufficient?"
->=20
-> So I think the current_ctime() logic should be something along the lines =
-of
->=20
->     static struct timespec64 current_ctime(struct inode *inode)
->     {
->         struct timespec64 ts64 =3D current_time(inode);
->         unsigned long old_ctime_sec =3D inode->i_ctime_sec;
->         unsigned int old_ctime_nsec =3D inode->i_ctime_nsec;
->=20
->         if (ts64.tv_sec !=3D old_ctime_sec)
->                 return ts64;
->=20
->         /*
->          * No need to check is_mgtime(inode) - the I_CTIME_QUERIED
->          * flag is only set for mgtime filesystems
->          */
->         if (!(old_ctime_nsec & I_CTIME_QUERIED))
->                 return ts64;
->         old_ctime_nsec &=3D ~I_CTIME_QUERIED;
->         if (ts64.tv_nsec > old_ctime_nsec + inode->i_sb->s_time_gran)
->                 return ts64;
->=20
-
-Does that really do what you expect here? current_time will return a
-value that has already been through timestamp_truncate. Regardless, I
-don't think this function makes as big a difference as you might think.
-
+On Wed, 18 Oct 2023 at 13:47, Jeff Layton <jlayton@kernel.org> wrote:
 >
->         /* Ok, only *now* do we do a finegrained value */
->         ktime_get_real_ts64(&ts64);
->         return timestamp_truncate(ts64);
->     }
->=20
-> or whatever. Make it *very* clear that the finegrained timestamp is
-> the absolute last option, after we have checked that the regular one
-> isn't possible.
+> >         old_ctime_nsec &= ~I_CTIME_QUERIED;
+> >         if (ts64.tv_nsec > old_ctime_nsec + inode->i_sb->s_time_gran)
+> >                 return ts64;
+> >
+>
+> Does that really do what you expect here? current_time will return a
+> value that has already been through timestamp_truncate.
 
-current_mgtime is calling ktime_get_real_ts64, which is an existing
-interface that does not take the global spinlock and won't advance the
-global offset. That call should be quite cheap.
+Yeah, you're right.
 
-The reason we can use that call here is because current_ctime and
-current_mgtime are only called from  inode_needs_update_time, which is
-only called to check whether we need to get write access to the
-inode.=A0What we do is look at the current clock and see whether the
-timestamps would perceivably change if we were to do the update right
-then.
+I think you can actually remove the s_time_gran addition. Both the
+old_ctime_nsec and the current ts64,tv_nsec are already rounded, so
+just doing
 
-If so, we get write access and then call inode_set_ctime_current(). That
-will fetch its own timestamps and reevaluate what sort of update to do.
-That's the only place that fetches an expensive fine-grained timestamp
-that advances the offset.
+        if (ts64.tv_nsec > old_ctime_nsec)
+                return ts64;
 
-So, I think this set already is only getting the expensive fine-grained
-timestamps as a last resort.
+would already guarantee that it's different enough.
 
-This is probably an indicator that I need to document this code better
-though. It may also be a good idea to reorganize
-inode_needs_update_time, current_ctime and current_mgtime for better
-clarity.
+> current_mgtime is calling ktime_get_real_ts64, which is an existing
+> interface that does not take the global spinlock and won't advance the
+> global offset. That call should be quite cheap.
 
-Many thanks for the comments!
---=20
-Jeff Layton <jlayton@kernel.org>
+Ahh, I did indeed mis-read that as the new one with the lock.
+
+I did react to the fact that is_mgtime(inode) itself is horribly
+expensive if it's not cached (following three quite possibly cold
+pointers), which was part of that whole "look at I_CTIME_QUERIED
+instead".
+
+I see the pointer chasing as a huge VFS timesink in all my profiles,
+although usually it's the disgusting security pointer (because selinux
+creates separate security nodes for each inode, even when the contents
+are often identical). So I'm a bit sensitive to "follow several
+pointers from 'struct inode'" patterns from looking at too many
+instruction profiles.
+
+          Linus
