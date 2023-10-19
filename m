@@ -2,113 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A989F7D00F7
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 19:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DEF7D0129
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 20:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235495AbjJSRvl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 13:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S235503AbjJSSKe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 14:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbjJSRvk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 13:51:40 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A757114
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:51:39 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ad8a822508so1351014666b.0
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697737897; x=1698342697; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxyRz0yQqVJRY3zmZ6nwicjRS4ksR0Rz7BgzZVO3P6w=;
-        b=QsZMDPwaK9757OCMA6CxKXTGBXJ0OpZ++/Eawo173gLhGaLZKF2GFLvh2OZfkzX/nd
-         RkgNjIEo5BTaFVETMjVcvZZhOjbmTiGshre5AC/cyvGrtm5Dtuo0nK/5NoJPVfGVLI6D
-         Qo/fC085fMKpBO4zSVWVcXYOvvHLMnVK88coA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697737897; x=1698342697;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NxyRz0yQqVJRY3zmZ6nwicjRS4ksR0Rz7BgzZVO3P6w=;
-        b=YeK+O7JmOUMaaxidwuPO5Bzzbpn+3JMxBq4EL2IqPQrOEy75Zg7pTtuyaLFASHT5aG
-         K5sTDO60PKQBn7kFBOIG8b6tAj88nQMYNQgmgUaYq7I8c2VZO55u5iL/R57Ll8zj5N5X
-         ZM7N+ukRIQA5efsGYFShuLD/Fa/Q+hgIL6ULssot7r3p2KYEue0vtn6mk3nWQX+Fy9bg
-         7TXjX8oPHLoH20rwMhZlPl+lE/6UlzmPqMhpLXQ+1pO/+EQE9Mn1kj8+pDN8gYXkJ0lh
-         UGATZVywDy424jjyzB36m8DT4S946pwO8RDT7GaFh1V3X8e7oVDVZbBjTb3yAETaq1QA
-         3Y8Q==
-X-Gm-Message-State: AOJu0Yyb0Yc5961ekG55l8c5S3xj14PF/c8pkFHnK+BczlylNmlMky0m
-        C4tQTyNZOp6gsRLkKXxtGhV6H6g8H4WAtQgbGvP+xVm0
-X-Google-Smtp-Source: AGHT+IH7Wmx1Iw0yOj6XCgGQidjk0fpu3WoAlFcBx9k9zfRqDWRB07DqEBVwEMXgiYgXXWzHZl3mKQ==
-X-Received: by 2002:a17:907:7f29:b0:9bd:ac0f:83dc with SMTP id qf41-20020a1709077f2900b009bdac0f83dcmr2697437ejc.54.1697737897312;
-        Thu, 19 Oct 2023 10:51:37 -0700 (PDT)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id z23-20020a170906075700b009b947f81c4asm3929159ejb.155.2023.10.19.10.51.36
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 10:51:36 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9ad8a822508so1351011766b.0
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:51:36 -0700 (PDT)
-X-Received: by 2002:a17:907:31c5:b0:9be:ef46:6b9c with SMTP id
- xf5-20020a17090731c500b009beef466b9cmr2784575ejb.70.1697737896286; Thu, 19
- Oct 2023 10:51:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZS6fIkTVtIs-UhFI@smile.fi.intel.com> <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
- <ZS6pmuofSP3uDMIo@smile.fi.intel.com> <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
- <20231018184613.tphd3grenbxwgy2v@quack3> <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
- <20231019101854.yb5gurasxgbdtui5@quack3> <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
- <ZTFAzuE58mkFbScV@smile.fi.intel.com> <20231019164240.lhg5jotsh6vfuy67@treble>
- <ZTFh0NeYtvgcjSv8@smile.fi.intel.com> <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Oct 2023 10:51:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
-Message-ID: <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+        with ESMTP id S235475AbjJSSKe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 14:10:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E6811D;
+        Thu, 19 Oct 2023 11:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697739032; x=1729275032;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WLkdmAbBAGfuTVcTLJRtWZbWSZmkdlhB5Mb62pp+XO0=;
+  b=PKxqSG/PhqUeQNY8EavDt8ORJSROc3+7cfNSafex3IiFvVUGrS792aMq
+   VTw1l0KH+q+EEu+F/NVLnx1TWikd5Gta0It9tPQoYyAgElKeyEYYeb29A
+   RNd2mx2QJp7NXpK1yJBtV1TJrrFTdcuxvJvc7qyUv/hJEUba8IjYfW8d4
+   3dFx2oK2L243WZuYxEuVClN9ufh+b3PsW4eilItSeoDs28KYNISpYVHN3
+   +ThA6fOfnLqQRYnlcLB73+U9QtrLEJ0E7opOoFyMVL+7rhE+BlJsaDCNI
+   eFdoinljs7ZWtn0EYFpSW+7iX5/k+Z5NvqJ3I/eL7uYdm0b7h1WXR9ct4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="371396929"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="371396929"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 11:10:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="1004321882"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
+   d="scan'208";a="1004321882"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 11:10:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qtXTW-00000006x5Y-0xfe;
+        Thu, 19 Oct 2023 21:10:26 +0300
+Date:   Thu, 19 Oct 2023 21:10:25 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Kees Cook <keescook@chromium.org>,
         Ferry Toth <ftoth@exalondelft.nl>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <ZTFxEcjo4d6vXbo5@smile.fi.intel.com>
+References: <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
+ <20231018184613.tphd3grenbxwgy2v@quack3>
+ <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
+ <20231019101854.yb5gurasxgbdtui5@quack3>
+ <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
+ <ZTFAzuE58mkFbScV@smile.fi.intel.com>
+ <20231019164240.lhg5jotsh6vfuy67@treble>
+ <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
+ <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
+ <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 10:26, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> That said, the quota dependency is quite odd, since normally I
-> wouldn't expect the quota code to really even trigger much during
-> boot. When it triggers that consistently, and that early during boot,
-> I would expect others to have reported more of this.
->
-> Strange.
+On Thu, Oct 19, 2023 at 10:51:18AM -0700, Linus Torvalds wrote:
+> On Thu, 19 Oct 2023 at 10:26, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > That said, the quota dependency is quite odd, since normally I
+> > wouldn't expect the quota code to really even trigger much during
+> > boot. When it triggers that consistently, and that early during boot,
+> > I would expect others to have reported more of this.
+> >
+> > Strange.
+> 
+> Hmm. I do think the quota list handling has some odd things going on.
+> And it did change with the whole ->dq_free thing.
+> 
+> Some of it is just bad:
+> 
+>   #ifdef CONFIG_QUOTA_DEBUG
+>           /* sanity check */
+>           BUG_ON(!list_empty(&dquot->dq_free));
+>   #endif
+> 
+> is done under a spinlock, and if it ever triggers, the machine is
+> dead. Dammit, I *hate* how people use BUG_ON() for assertions. It's a
+> disgrace. That should be a WARN_ON_ONCE().
 
-Hmm. I do think the quota list handling has some odd things going on.
-And it did change with the whole ->dq_free thing.
+In my configuration
 
-Some of it is just bad:
+CONFIG_QUOTA=y
+CONFIG_QUOTA_NETLINK_INTERFACE=y
+# CONFIG_QUOTA_DEBUG is not set
+CONFIG_QUOTA_TREE=y
+# CONFIG_QFMT_V1 is not set
+CONFIG_QFMT_V2=y
+CONFIG_QUOTACTL=y
 
-  #ifdef CONFIG_QUOTA_DEBUG
-          /* sanity check */
-          BUG_ON(!list_empty(&dquot->dq_free));
-  #endif
+> And it does have quite a bit of list-related changes, with the whole
+> series from Baokun Li changing how the ->dq_free list works.
+> 
+> The fact that it consistently bisects to the merge is still odd.
 
-is done under a spinlock, and if it ever triggers, the machine is
-dead. Dammit, I *hate* how people use BUG_ON() for assertions. It's a
-disgrace. That should be a WARN_ON_ONCE().
+Exactly! Imre suggested to test the merge point itself, so
+far I tested the result of the merge in the upstream, but not
+the branch/tag that has been merged.
 
-And it does have quite a bit of list-related changes, with the whole
-series from Baokun Li changing how the ->dq_free list works.
+Let's see if I have time this week for that. This hunting is a bit exhaustive.
 
-The fact that it consistently bisects to the merge is still odd.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-                 Linus
+
