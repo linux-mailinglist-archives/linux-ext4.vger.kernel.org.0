@@ -2,216 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E707CFD3C
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 16:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFAE7CFD7C
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 17:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346184AbjJSOtd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 10:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S1346220AbjJSPBN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 11:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346219AbjJSOt3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 10:49:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A37114;
-        Thu, 19 Oct 2023 07:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697726965; x=1729262965;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=xKjXmfpvYB4Hz8IbECMTHSmbNOsKSD8+R6RguTXxNVk=;
-  b=bDOt0ePmjD/sHKg/wuotw9fvG6ze9HlrIjL93M28LJ6U5ncnOGxdUV6o
-   jtbBvK4GJfQomju0gsUVPVNFH2kIJ6k8lLzkEoulvZNHwZ8Hjw2/FXsKP
-   rMTp0wyq6NnnTSkpK9wLF50F+5Fre8ZJ3NCo2kIDnhyOVrCfJiTAvJW2/
-   +3ULJc5lsw6gRvhJmRNpu+6C5eW1t+mExnJGphrlCCnCREm6Z6VoRMDul
-   UHYKgB0dDP9TPeKO8+rC4EiUew1xToxZfKoT0sn/A7SOezIawkTiyqMlx
-   Fsiummfkuo/qoopBgnHgom5KtX8bYlj59uj5LCzJV8akwbtZkV+rdIcrQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="390156488"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="390156488"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:49:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930628206"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="930628206"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:49:21 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qtUKs-00000006u6q-2ctA;
-        Thu, 19 Oct 2023 17:49:18 +0300
-Date:   Thu, 19 Oct 2023 17:49:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Ferry Toth <ftoth@exalondelft.nl>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZTFB7j4Jwlp6yj28@smile.fi.intel.com>
-References: <ZS6PRdhHRehDC+02@smile.fi.intel.com>
- <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
- <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
- <ZS6pmuofSP3uDMIo@smile.fi.intel.com>
- <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
- <20231018184613.tphd3grenbxwgy2v@quack3>
- <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
- <20231019101854.yb5gurasxgbdtui5@quack3>
- <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
- <ZTE5a3L4LdsuoTJx@smile.fi.intel.com>
+        with ESMTP id S1346213AbjJSPBM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 11:01:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF4612D;
+        Thu, 19 Oct 2023 08:01:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ACAA81F38C;
+        Thu, 19 Oct 2023 15:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697727668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2SADzQbXtqkn9LOo3Wunl1TnxEcgZDEc3CMwdG9777M=;
+        b=jMZr9lKq+QJOvrSVspMNHHG/bGyg90ankhdpBioWXjc14b31w1WCMAypaFHGGG8qp4+c2f
+        5iGpfQbZegdEdrBhtAvB/qPzjd9vDKuYIPE9DrO7kPt7tjWIbtETMCmI+YUB7pm0raBqkg
+        hOzKHbl+6lQ42HLDPm4wZfvI/rswDqc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697727668;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2SADzQbXtqkn9LOo3Wunl1TnxEcgZDEc3CMwdG9777M=;
+        b=14zUj++VCY0+amgmyGpQ0O8k26TB12OZih5Ckngf4GgXRpZS5ekUkeBAeolDV8EookLgaC
+        FM9cCRBYfAw17dBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C0A51357F;
+        Thu, 19 Oct 2023 15:01:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BqkIJrREMWX3FAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 15:01:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 10357A0550; Thu, 19 Oct 2023 17:01:08 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 17:01:08 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 1/3] ext4: treat end of range as exclusive in
+ ext4_zero_range()
+Message-ID: <20231019150108.mwzinguhn6zxrzbu@quack3>
+References: <cover.1695987265.git.ojaswin@linux.ibm.com>
+ <9ae3bf53e81554cec3e609de8e8939b90966f7ab.1695987265.git.ojaswin@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTE5a3L4LdsuoTJx@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED,URIBL_SBL_A autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9ae3bf53e81554cec3e609de8e8939b90966f7ab.1695987265.git.ojaswin@linux.ibm.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.10
+X-Spamd-Result: default: False [-2.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         RCPT_COUNT_FIVE(0.00)[6];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,gmail.com,suse.cz]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:12:59PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 19, 2023 at 03:01:43PM +0300, Andy Shevchenko wrote:
-> > On Thu, Oct 19, 2023 at 12:18:54PM +0200, Jan Kara wrote:
-> > > On Thu 19-10-23 11:46:58, Andy Shevchenko wrote:
-> > > > On Wed, Oct 18, 2023 at 08:46:13PM +0200, Jan Kara wrote:
-> > > > > On Tue 17-10-23 19:02:52, Andy Shevchenko wrote:
-> > > > > > On Tue, Oct 17, 2023 at 06:34:50PM +0300, Andy Shevchenko wrote:
-> > > > > > > On Tue, Oct 17, 2023 at 06:14:54PM +0300, Andy Shevchenko wrote:
-> > > > > > > > On Tue, Oct 17, 2023 at 05:50:10PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > On Tue, Oct 17, 2023 at 04:42:29PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > On Tue, Oct 17, 2023 at 03:32:45PM +0200, Jan Kara wrote:
-> > > > > > > > > > > On Tue 17-10-23 14:46:20, Andy Shevchenko wrote:
-> > > > > > > > > > > > On Tue, Oct 17, 2023 at 01:32:53PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > > > > On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > > > > > On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > > > > > > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
-> > > > > > > > > > > > > > > >   Hello Linus,
-
-...
-
-> > > > > > > > > > > > > > > This merge commit (?) broke boot on Intel Merrifield.
-> > > > > > > > > > > > > > > It has earlycon enabled and only what I got is watchdog
-> > > > > > > > > > > > > > > trigger without a bit of information printed out.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Okay, seems false positive as with different configuration it
-> > > > > > > > > > > > boots. It might be related to the size of the kernel itself.
-> > > > > > > > > > > 
-> > > > > > > > > > > Ah, ok, that makes some sense.
-> > > > > > > > > > 
-> > > > > > > > > > I should have mentioned that it boots with the configuration say "A",
-> > > > > > > > > > while not with "B", where "B" = "A" + "C" and definitely the kernel
-> > > > > > > > > > and initrd sizes in the "B" case are bigger.
-> > > > > > > > > 
-> > > > > > > > > If it's a size (which is only grew from 13M->14M), it's weird.
-> > > > > > > > > 
-> > > > > > > > > Nevertheless, I reverted these in my local tree
-> > > > > > > > > 
-> > > > > > > > > 85515a7f0ae7 (HEAD -> topic/mrfld) Revert "defconfig: enable DEBUG_SPINLOCK"
-> > > > > > > > > 786e04262621 Revert "defconfig: enable DEBUG_ATOMIC_SLEEP"
-> > > > > > > > > 76ad0a0c3f2d Revert "defconfig: enable DEBUG_INFO"
-> > > > > > > > > f8090166c1be Revert "defconfig: enable DEBUG_LIST && DEBUG_OBJECTS_RCU_HEAD"
-> > > > > > > > > 
-> > > > > > > > > and it boots again! So, after this merge something affects one of this?
-> > > > > > > > > 
-> > > > > > > > > I'll continuing debugging which one is a culprit, just want to share
-> > > > > > > > > the intermediate findings.
-> > > > > > > > 
-> > > > > > > > CONFIG_DEBUG_LIST with this merge commit somehow triggers this issue.
-> > > > > > > > Any ideas?
-> > > > > > 
-> > > > > > > Dropping CONFIG_QUOTA* helps as well.
-> > > > > > 
-> > > > > > More precisely it's enough to drop either from CONFIG_DEBUG_LIST and CONFIG_QUOTA
-> > > > > > to make it boot again.
-> > > > > > 
-> > > > > > And I'm done for today.
-> > > > > 
-> > > > > OK, thanks for debugging! So can you perhaps enable CONFIG_DEBUG_LIST
-> > > > > permanently in your kernel config and then bisect through the quota changes
-> > > > > in the merge? My guess is commit dabc8b20756 ("quota: fix dqput() to follow
-> > > > > the guarantees dquot_srcu should provide") might be the culprit given your
-> > > > > testing but I fail to see how given I don't expect any quotas to be used
-> > > > > during boot of your platform... BTW, there's also fixup: 869b6ea160
-> > > > > ("quota: Fix slow quotaoff") merged last week so you could try testing a
-> > > > > kernel after this fix to see whether it changes anything.
-> > > > 
-> > > > It's exactly what my initial report is about, CONFIG_DEBUG_LIST was there
-> > > > always with CONFIG_QUOTA as well.
-> > > 
-> > > Ah, ok.
-> > > 
-> > > > Two bisections (v6.5 .. v6.6-rc1 & something...v6.6-rc6) pointed out to
-> > > > merge commit!
-> > > 
-> > > I thought CONFIG_DEBUG_LIST arrived through one path, some problematic
-> > > quota change arrived through another path and because they cause problems
-> > > only together, then bisecting to the merge would be exactly the outcome.
-> > > Alas that doesn't seem to be the case :-|.
-> > > 
-> > > > I _had_ tried to simply revert the quota changes (I haven't
-> > > > said about that before) and it didn't help. I'm so puzzled with all this.
-> > > 
-> > > Aha, OK. If even reverting quota changes doesn't help, then it's really
-> > > weird...
-> > 
-> > Lemme to confirm that, it might be that I forgot to update configuration in
-> > between.
+On Fri 29-09-23 19:40:43, Ojaswin Mujoo wrote:
+> The call to filemap_write_and_wait_range() assumes the range passed to be
+> inclusive, so fix the call to make sure we follow that.
 > 
-> So, what I have done so far.
-> 1) I have cleaned ccaches and stuff as I used it to avoid collisions;
-> 2) I have confirmed that CONFIG_DEBUG_LIST affects boot, the repo
->    I'm using is published here [0][1];
-> 3) reverted quota patches until before this merge ([2] - last patch),
->    still boots;
-> 4) reverted disabling of CONFIG_DEBUG_LIST [2], doesn't boot;
-> 5) okay, rebased on top of merge, i.e. 1500e7e0726e,  with DEBUG_LIST [3],
->    doesn't boot;
-> 6) rebased [3] on one merge before, i.e. 63580f669d7f [4], voilà -- it boots!;
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+
+Yes, makes sense. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/extents.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> And (tadaam!) I have had an idea for a while to replace GCC with LLVM
-> (at least for this test), so [0] boots as well!
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e4115d338f10..c79b4c25afc4 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4522,7 +4522,8 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  	 * Round up offset. This is not fallocate, we need to zero out
+>  	 * blocks, so convert interior block aligned part of the range to
+>  	 * unwritten and possibly manually zero out unaligned parts of the
+> -	 * range.
+> +	 * range. Here, start and partial_begin are inclusive, end and
+> +	 * partial_end are exclusive.
+>  	 */
+>  	start = round_up(offset, 1 << blkbits);
+>  	end = round_down((offset + len), 1 << blkbits);
+> @@ -4608,7 +4609,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  		 * disk in case of crash before zeroing trans is committed.
+>  		 */
+>  		if (ext4_should_journal_data(inode)) {
+> -			ret = filemap_write_and_wait_range(mapping, start, end);
+> +			ret = filemap_write_and_wait_range(mapping, start, end - 1);
+>  			if (ret) {
+>  				filemap_invalidate_unlock(mapping);
+>  				goto out_mutex;
+> -- 
+> 2.39.3
 > 
-> So, this merge triggered a bug in GCC, seems like... And it's _the_ merge
-> commit, which is so-o weird!
-> 
-> $ gcc --version
-> gcc (Debian 13.2.0-4) 13.2.0
-> Copyright (C) 2023 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-For the cleaner experiment I took [0], cleaned $OUTPUT and ccache (fully)
-and build the kernel with
-
-$ clang --version
-Debian clang version 16.0.6 (15)
-	Target: x86_64-pc-linux-gnu
-	Thread model: posix
-	InstalledDir: /usr/bin
-
-it boots,
-
-Then I have done the same with GCC (see above the version)
-and it does not boot.
-
-[0]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-dbg-list/
-[1]: https://bitbucket.org/andy-shev/linux/src/test-mrfld/
-[2]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-no-quota-dbg-list/
-[3]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-after-merge-dbg-list/
-[4]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-before-merge/
-
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
