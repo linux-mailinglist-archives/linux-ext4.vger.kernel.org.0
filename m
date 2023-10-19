@@ -2,148 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132647D01FB
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 20:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C887D0495
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Oct 2023 00:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbjJSSoK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 14:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S235568AbjJSWAu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 18:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbjJSSoK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 14:44:10 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B89126
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 11:44:08 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so4428966b.1
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 11:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697741046; x=1698345846; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C2XVpy+BS1K4w7gayf3/1HjO0gNsFZkxXqHhB++XT2g=;
-        b=KZA0xFi8n22uIkwv4S5EA2cN2KsfIlrTz4BfkjjFrkyAiekcqqu4jfYYmCxRWfyF/2
-         y7zbfhRjNH/yet3T94VYBJa7HHwGv//bzk1oIgd6LFn9fZCL55jhGs3rtm0ItWLrwxMr
-         g9ELMpJD3KeMi3v6FMsfadcYERZUidjX/uytM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697741046; x=1698345846;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C2XVpy+BS1K4w7gayf3/1HjO0gNsFZkxXqHhB++XT2g=;
-        b=Lu+iP5dTSh2YUK0cPqwmyQXlDLeJewnqTPmPzMkWtOcKhDQCvT7vCm+WLu2htgOClI
-         0xYAhBovPVYpjp+cE9UpG7q17k7TwZCxk+uXggziKfpCjjWeQ9DE8YEz9N3vyMsjc/Yz
-         SxIm+Qjdvyh4ubylLdEobPcf5Wq+tbg+madRVWjzVB0F2iTAo5OJb0PzmzZFgf4khvoi
-         3KWOEwbBw8nWdaDOemjG0FURPgQYl9lOYBL75g+b5CMchFJrUAvtne76LLlVPDH4yt3y
-         PMauRXl9tw0Dyce5rtYFSCohaM8zGLabW5qCSexYKKwcdrjee//koOQH/mWByFsB5j4W
-         s3KA==
-X-Gm-Message-State: AOJu0YxmE+ejzn04G38qljnzeU6KGQMfBeRYu4E5tg1VbZpQpIBJeO3h
-        D5mcht13/FyWKTTPjGqTql+KgUZ0KtfZ3bKElyLojG0J
-X-Google-Smtp-Source: AGHT+IHnF58OnuBa+IYERKlQ/xcVIjdJTHm/PSyfT+93CHoXbEgcDlJycJD1i6bgTgZ7+3zJnift6Q==
-X-Received: by 2002:a17:906:dacb:b0:9ae:614f:2023 with SMTP id xi11-20020a170906dacb00b009ae614f2023mr2428318ejb.56.1697741046215;
-        Thu, 19 Oct 2023 11:44:06 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id qx17-20020a170906fcd100b00997c1d125fasm21100ejb.170.2023.10.19.11.44.05
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 11:44:05 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so4424866b.1
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 11:44:05 -0700 (PDT)
-X-Received: by 2002:a17:907:72c9:b0:9a5:9f3c:9615 with SMTP id
- du9-20020a17090772c900b009a59f3c9615mr2626024ejc.63.1697741044936; Thu, 19
- Oct 2023 11:44:04 -0700 (PDT)
+        with ESMTP id S235556AbjJSWAt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 18:00:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D683115;
+        Thu, 19 Oct 2023 15:00:46 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697752844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
+        b=OFtLhVmdGAGajfdsQU77o4un/tVAdYcM7cfwt20W9su0nN9zUiglcL5C4pDEb4q88MJzLO
+        x5HDKpnT1/1lsSU8vKySCq1RLS7VJye3ei4+VMtw0uCD0w7qgUgZRlBSUcaicBnbHq4OQM
+        mqC4nMnW3ootEGH3Z7j1ETk8ZUrXdgmgAMC4DzuoxhllzQY4nnoXxM5gbzdAXXNXSWD5Sa
+        lHnIfI/VC1YvapORPfXS8oxP8OeBmd70rwTvUJoTfYU3S+x3sfwVydywAwIgsgZgP0p9N5
+        3FVR3vXv1ON8t+fn6QllxjFsOKixj4rzsRVi/dN/W6MmEfKFJhO4iRcGMvCxFA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697752844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
+        b=WY4r1ywqpIX7pjSgKhtd/YMTG9q7nuDraudwOpgvLzXDgf0mNyLuwtbpuWmgdtYAMHYJV3
+        PfofEjkkaGKIMBCg==
+To:     Jeff Layton <jlayton@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+In-Reply-To: <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+Date:   Fri, 20 Oct 2023 00:00:43 +0200
+Message-ID: <87o7gu2rxw.ffs@tglx>
 MIME-Version: 1.0
-References: <20231018184613.tphd3grenbxwgy2v@quack3> <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
- <20231019101854.yb5gurasxgbdtui5@quack3> <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
- <ZTFAzuE58mkFbScV@smile.fi.intel.com> <20231019164240.lhg5jotsh6vfuy67@treble>
- <ZTFh0NeYtvgcjSv8@smile.fi.intel.com> <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
- <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
- <ZTFxEcjo4d6vXbo5@smile.fi.intel.com> <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
-In-Reply-To: <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Oct 2023 11:43:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
-Message-ID: <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 11:16, Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
->
-> Meanwhile a wild idea, can it be some git (automatic) conflict resolution that
-> makes that merge affect another (not related to the main contents of the merge)
-> files? Like upstream has one base, the merge has another which is older/newer
-> in the history?
+Jeff!
 
-I already looked at any obvious case of that.
+On Wed, Oct 18 2023 at 13:41, Jeff Layton wrote:
+> +void ktime_get_mg_fine_ts64(struct timespec64 *ts)
+> +{
+> +	struct timekeeper *tk = &tk_core.timekeeper;
+> +	unsigned long flags;
+> +	u32 nsecs;
+> +
+> +	WARN_ON(timekeeping_suspended);
+> +
+> +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
+> +	write_seqcount_begin(&tk_core.seq);
 
-The only quota-related issue on the other side is an obvious
-one-liner: commit 86be6b8bd834 ("quota: Check presence of quota
-operation structures instead of ->quota_read and ->quota_write
-callbacks").
+Depending on the usage scenario, this will end up as a scalability issue
+which affects _all_ of timekeeping.
 
-It didn't affect the merge, because it was not related to  any of the
-changes that came in from the quota branch (it was physically close to
-the change that used lockdep_assert_held_write() instead of a
-WARN_ON_ONCE(down_read_trylock()) sequence, but it is unrelated to
-it).
+The usage of timekeeper_lock and the sequence count has been carefully
+crafted to be as non-contended as possible. We went a great length to
+optimize that because the ktime_get*() functions are really hotpath all
+over the place.
 
-I guess you could try reverting that one-liner after the merge, but I
-_really_ don't think it is at all relevant.
+Exposing such an interface which wreckages that is a recipe for disaster
+down the road. It might be a non-issue today, but once we hit the
+bottleneck of that global lock, we are up the creek without a
+paddle. Well not really, but all we can do then is fall back to
+ktime_get_real(). So let me ask the obvious question:
 
-What *would* probably be interesting is to start at the pre-merge
-state, and rebase the code that got merged in. And then bisect *that*
-series.
+     Why don't we do that right away?
 
-IOW, with the merge that triggers your bisection being commit
-1500e7e0726e, do perhaps something like this:
+Many moons ago when we added ktime_get_real_coarse() the main reason was
+that reading the time from the underlying hardware was insanely
+expensive.
 
-  # Name the states before the merge
-  git branch pre-merge 1500e7e0726e^
-  git branch jan-state 1500e7e0726e^2
+Many moons later this is not true anymore, except for the stupid case
+where the BIOS wreckaged the TSC, but that's a hopeless case for
+performance no matter what. Optimizing for that would be beyond stupid.
 
-  # Now double-check that this works for you, of course.
-  # Just to be safe...
-  git checkout pre-merge
-  .. test-build and test-boot this with the bad config ..
+I'm well aware that ktime_get_real_coarse() is still faster than
+ktime_get_real() in micro-benchmarks, i.e. 5ns vs. 15ns on the four
+years old laptop I'm writing this.
 
-  # Then, let's create a new branch that is
-  # the rebased version of Jan's state:
-  git checkout -b jan-rebased jan-state
-  git rebase pre-merge
+Many moons ago it was in the ballpark of 40ns vs. 5us due to TSC being
+useless and even TSC read was way more expensive (factor 8-10x IIRC) in
+comparison. That really mattered for FS, but does todays overhead still
+make a difference in the real FS use case scenario?
 
-  # Verify that the tree is the same as the merge
-  git diff 1500e7e0726e
+I'm not in the position of running meaningful FS benchmarks to analyze
+that, but I think the delta between ktime_get_real_coarse() and
+ktime_get_real() on contemporary hardware is small enough that it
+justifies this question.
 
-  # Ok, that was empty, so do a bisect on this
-  # rebased history
-  git bisect start
-  git bisect bad
-  git bisect good pre-merge
+The point is that both functions have pretty much the same D-cache
+pattern because they access the same data in the very same
+cacheline. The only difference is the actual TSC read and the extra
+conversion, but that's it. The TSC read has been massively optimized by
+the CPU vendors. I know that the ARM64 counter has been optimized too,
+though I have no idea about PPC64 and S390, but I would be truly
+surprised if they didn't optimize the hell out of it because time read
+is really used heavily both in kernel and user space.
 
-.. and see what commit it *now* claims is the bad commit.
+Does anyone have numbers on contemporary hardware to shed some light on
+that in the context of FS and the problem at hand?
 
-Would you be willing to do this? It should be only a few bisects,
-since Jan's branch only brought in 17 commits that the above rebases
-into this test branch. So four or five bisections should pinpoint the
-exact point where it goes bad.
+Thanks,
 
-Of course, since this is apparently about some "random code generation
-issue", that exact point still may not be very interesting.
-
-                Linus
+        tglx
