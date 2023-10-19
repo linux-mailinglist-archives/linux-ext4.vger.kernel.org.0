@@ -2,47 +2,47 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 229817CFCD4
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 16:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8CA7CFD29
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 16:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346126AbjJSOfN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 10:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
+        id S235418AbjJSOoj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 10:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346027AbjJSOfM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 10:35:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741C8119;
-        Thu, 19 Oct 2023 07:35:10 -0700 (PDT)
+        with ESMTP id S233200AbjJSOoi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 10:44:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B0C112;
+        Thu, 19 Oct 2023 07:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697726110; x=1729262110;
+  t=1697726676; x=1729262676;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:content-transfer-encoding:in-reply-to;
-  bh=ae/rIPr1LHeaPhe1fNwEYdLO12N3tlhwJUG08SEXJ54=;
-  b=GAl/YNMYXLD3USZyo/XGX0dvDmJpHr1fyqElylYrzDAY3wPB8bU6JEeo
-   IOlv3iVnjh3FE2EcF2oV7+WxojDwy0VI0ZJkqlU9bqiWS9YCFdjP4Jslk
-   YCImdXRO8pWq6pxHHsHfiO0W4oWso1DTdTnyoodJAyF3Cg8IJeA21PeSv
-   wc10zD6Ac5W4iYkHQpHLAV8wZwlgislOrUzZV66SctNnWRq1Gv2bznbOZ
-   j3NjaK4U7kWzXSktHVZsXSIstYxf8XpewcBRWnhYsU8o8jMG0c9ICJxKV
-   66HVhnBuRgxd6whli43/PKzDkyqJwUAL3UhhAcSH+zSzsJFMIjV9ZYVsM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365616582"
+  bh=lUJYqBzKtKqz76h9nJy8kVPdglp0M2GetZVO8v9/pcU=;
+  b=aOSK85X6jRvAs04CkNhNO/s78nSd3ScEVSm/30P8JVYXD7oA5VQ+Qj0b
+   T4oPwgIQELj0ybefXEFS2/8K6lesmnBSPfaofEuYOajrgI3/Z5UqQMGdR
+   qI8TR9G7MwW8F8M8KeIL/k6ZSCgKed7mmq4jkBLhME2SVdmvr1i7s4nXf
+   r8opIhHzm8NoXbPYAWsKDnCGuhB66milK3RyWrxvxmG+5YlJWDWnp5usL
+   1hVZwBVL7iXJZx2nBTqSTuSwOr7tUn+oJ9tZQ3tBwOR/ddufqUfDk3zhr
+   NDKu7RpEjHfw64rkXbL7/dtpxlrLJh5LZyFGm41DoSnkNcX40GYdDp/t0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="390155491"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="365616582"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:35:09 -0700
+   d="scan'208";a="390155491"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:44:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="786407453"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="900777932"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="786407453"
+   d="scan'208";a="900777932"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:35:06 -0700
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:42:26 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
         (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qtTlk-00000006tQJ-04ZQ;
-        Thu, 19 Oct 2023 17:13:00 +0300
-Date:   Thu, 19 Oct 2023 17:12:59 +0300
+        id 1qtUGE-00000006u17-2ZAm;
+        Thu, 19 Oct 2023 17:44:30 +0300
+Date:   Thu, 19 Oct 2023 17:44:30 +0300
 From:   Andy Shevchenko <andriy.shevchenko@intel.com>
 To:     Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
@@ -52,7 +52,7 @@ Cc:     Ferry Toth <ftoth@exalondelft.nl>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZTE5a3L4LdsuoTJx@smile.fi.intel.com>
+Message-ID: <ZTFAzuE58mkFbScV@smile.fi.intel.com>
 References: <20231017133245.lvadrhbgklppnffv@quack3>
  <ZS6PRdhHRehDC+02@smile.fi.intel.com>
  <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
@@ -69,8 +69,8 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED,URIBL_SBL_A autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -173,11 +173,11 @@ So, what I have done so far.
 1) I have cleaned ccaches and stuff as I used it to avoid collisions;
 2) I have confirmed that CONFIG_DEBUG_LIST affects boot, the repo
    I'm using is published here [0][1];
-3) reverted quota patches until before this merge ([2] - last patch),
-   still boots;
+   3) reverted quota patches until before this merge ([2] - last patch),
+      still boots;
 4) reverted disabling of CONFIG_DEBUG_LIST [2], doesn't boot;
 5) okay, rebased on top of merge, i.e. 1500e7e0726e,  with DEBUG_LIST [3],
-   doesn't boot;
+	   doesn't boot;
 6) rebased [3] on one merge before, i.e. 63580f669d7f [4], voilà -- it boots!;
 
 And (tadaam!) I have had an idea for a while to replace GCC with LLVM
