@@ -2,95 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22677CF410
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 11:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FCB7CF4F4
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 12:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345072AbjJSJ3Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 05:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
+        id S1345183AbjJSKS7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 06:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344979AbjJSJ3X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 05:29:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E0298;
-        Thu, 19 Oct 2023 02:29:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8202C433C8;
-        Thu, 19 Oct 2023 09:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697707761;
-        bh=pxF/qlOAYAx3vhRa3N2z4pQJEwL4Rx1j8JuRrkeWQ9Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Akk8XbjDzYlsS3LMaveazcyIGPYT4DucacgiYEdLUsG9DE37MYww77gNzF8oD0aIz
-         ivYs6S62MDqSkKZ2FSGs0EmDEo8tocNJK8foS47nkvwPPrwXEYbvlmNJREcl85jaSo
-         W2BVMZYKsVeUTLgaD8Glg3bCDKmcsXMB4TQ+drVb8NJMw3lHm496br86KHTQZ/8Zyb
-         g/RsWsns1nYNpbj9jPm/YNq9u/5F+tr6mqZODsyxp9EIv/pRppQ674gaTd+0b+V+Cj
-         snsoxrWMyEcUDbEv+U6dRWrQlgFx/kgAx8uWCE3zgeH8LlxfATd2AlTC/m2t5XRPaa
-         Uokex6cURRqGw==
-Date:   Thu, 19 Oct 2023 11:29:11 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
- <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
- <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+        with ESMTP id S1345125AbjJSKS6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 06:18:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B989119;
+        Thu, 19 Oct 2023 03:18:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9DB3D1F38C;
+        Thu, 19 Oct 2023 10:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697710734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k7Koy1TTy6fVeKfRcpreu2u0+v8upl8pxgAqsONksHA=;
+        b=q10RL5Xw7WNwontk98d89evO5H6R/Qz50evEUZ2nl38hurvbdVMNlrcJrwPAbyE0v1o4WT
+        RT92ilDFsgdAWzGhQwUvJ0lXQjUHxhKvNEAQjpdmgp70PjaQCtGPbzoaVblbBKlKoT7p16
+        rIzxp6TRvKeukxkXe1xXvvXNBbTslJ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697710734;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k7Koy1TTy6fVeKfRcpreu2u0+v8upl8pxgAqsONksHA=;
+        b=3JFPDpgJ2swMgPSfIVOzM9MoNujWLEFuWKBEz0BKa2ZFVpU9XLcAYL9FwjBlsr5JdJwifw
+        6Hd2Mudx2Tqbm2DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 813F61357F;
+        Thu, 19 Oct 2023 10:18:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8k2IH44CMWWvdQAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 10:18:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 0E968A06B0; Thu, 19 Oct 2023 12:18:54 +0200 (CEST)
+Date:   Thu, 19 Oct 2023 12:18:54 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Ferry Toth <ftoth@exalondelft.nl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <20231019101854.yb5gurasxgbdtui5@quack3>
+References: <ZS5i1cWZF1fLurLz@smile.fi.intel.com>
+ <ZS50DI8nw9oSc4Or@smile.fi.intel.com>
+ <20231017133245.lvadrhbgklppnffv@quack3>
+ <ZS6PRdhHRehDC+02@smile.fi.intel.com>
+ <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
+ <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
+ <ZS6pmuofSP3uDMIo@smile.fi.intel.com>
+ <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
+ <20231018184613.tphd3grenbxwgy2v@quack3>
+ <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -6.60
+X-Spamd-Result: default: False [-6.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_FIVE(0.00)[6];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> Back to your earlier point though:
+On Thu 19-10-23 11:46:58, Andy Shevchenko wrote:
+> On Wed, Oct 18, 2023 at 08:46:13PM +0200, Jan Kara wrote:
+> > On Tue 17-10-23 19:02:52, Andy Shevchenko wrote:
+> > > On Tue, Oct 17, 2023 at 06:34:50PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Oct 17, 2023 at 06:14:54PM +0300, Andy Shevchenko wrote:
+> > > > > On Tue, Oct 17, 2023 at 05:50:10PM +0300, Andy Shevchenko wrote:
+> > > > > > On Tue, Oct 17, 2023 at 04:42:29PM +0300, Andy Shevchenko wrote:
+> > > > > > > On Tue, Oct 17, 2023 at 03:32:45PM +0200, Jan Kara wrote:
+> > > > > > > > On Tue 17-10-23 14:46:20, Andy Shevchenko wrote:
+> > > > > > > > > On Tue, Oct 17, 2023 at 01:32:53PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > > On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > > > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
+> > > > > > > > > > > > >   Hello Linus,
 > 
-> Is a global offset really a non-starter? I can see about doing something
-> per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-> as ktime_get_coarse_ts64. I don't see the downside there for the non-
-> multigrain filesystems to call that.
-
-I have to say that this doesn't excite me. This whole thing feels a bit
-hackish. I think that a change version is the way more sane way to go.
-
+> ...
 > 
-> On another note: maybe I need to put this behind a Kconfig option
-> initially too?
+> > > > > > > > > > > > This merge commit (?) broke boot on Intel Merrifield.
+> > > > > > > > > > > > It has earlycon enabled and only what I got is watchdog
+> > > > > > > > > > > > trigger without a bit of information printed out.
+> > > > > > > > > 
+> > > > > > > > > Okay, seems false positive as with different configuration it
+> > > > > > > > > boots. It might be related to the size of the kernel itself.
+> > > > > > > > 
+> > > > > > > > Ah, ok, that makes some sense.
+> > > > > > > 
+> > > > > > > I should have mentioned that it boots with the configuration say "A",
+> > > > > > > while not with "B", where "B" = "A" + "C" and definitely the kernel
+> > > > > > > and initrd sizes in the "B" case are bigger.
+> > > > > > 
+> > > > > > If it's a size (which is only grew from 13M->14M), it's weird.
+> > > > > > 
+> > > > > > Nevertheless, I reverted these in my local tree
+> > > > > > 
+> > > > > > 85515a7f0ae7 (HEAD -> topic/mrfld) Revert "defconfig: enable DEBUG_SPINLOCK"
+> > > > > > 786e04262621 Revert "defconfig: enable DEBUG_ATOMIC_SLEEP"
+> > > > > > 76ad0a0c3f2d Revert "defconfig: enable DEBUG_INFO"
+> > > > > > f8090166c1be Revert "defconfig: enable DEBUG_LIST && DEBUG_OBJECTS_RCU_HEAD"
+> > > > > > 
+> > > > > > and it boots again! So, after this merge something affects one of this?
+> > > > > > 
+> > > > > > I'll continuing debugging which one is a culprit, just want to share
+> > > > > > the intermediate findings.
+> > > > > 
+> > > > > CONFIG_DEBUG_LIST with this merge commit somehow triggers this issue.
+> > > > > Any ideas?
+> > > 
+> > > > Dropping CONFIG_QUOTA* helps as well.
+> > > 
+> > > More precisely it's enough to drop either from CONFIG_DEBUG_LIST and CONFIG_QUOTA
+> > > to make it boot again.
+> > > 
+> > > And I'm done for today.
+> > 
+> > OK, thanks for debugging! So can you perhaps enable CONFIG_DEBUG_LIST
+> > permanently in your kernel config and then bisect through the quota changes
+> > in the merge? My guess is commit dabc8b20756 ("quota: fix dqput() to follow
+> > the guarantees dquot_srcu should provide") might be the culprit given your
+> > testing but I fail to see how given I don't expect any quotas to be used
+> > during boot of your platform... BTW, there's also fixup: 869b6ea160
+> > ("quota: Fix slow quotaoff") merged last week so you could try testing a
+> > kernel after this fix to see whether it changes anything.
+> 
+> It's exactly what my initial report is about, CONFIG_DEBUG_LIST was there
+> always with CONFIG_QUOTA as well.
 
-So can we for a second consider not introducing fine-grained timestamps
-at all. We let NFSv3 live with the cache problem it's been living with
-forever.
+Ah, ok.
 
-And for NFSv4 we actually do introduce a proper i_version for all
-filesystems that matter to it.
+> Two bisections (v6.5 .. v6.6-rc1 & something...v6.6-rc6) pointed out to
+> merge commit!
 
-What filesystems exactly don't expose a proper i_version and what does
-prevent them from adding one or fixing it?
+I thought CONFIG_DEBUG_LIST arrived through one path, some problematic
+quota change arrived through another path and because they cause problems
+only together, then bisecting to the merge would be exactly the outcome.
+Alas that doesn't seem to be the case :-|.
+
+> I _had_ tried to simply revert the quota changes (I haven't
+> said about that before) and it didn't help. I'm so puzzled with all this.
+
+Aha, OK. If even reverting quota changes doesn't help, then it's really
+weird...
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
