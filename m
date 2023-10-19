@@ -2,139 +2,204 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E537CF872
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 14:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229817CFCD4
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 16:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345466AbjJSMLa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 08:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S1346126AbjJSOfN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 10:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345535AbjJSMLS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 08:11:18 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C568F10E2
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 05:11:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AD9FA21A78;
-        Thu, 19 Oct 2023 12:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697717458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lhtXMv6Cv6xvV2k/OkFzS3BpOpkLlRqD4tPhIw5ugUM=;
-        b=D2C0pFggyqT7te2/+pSZLbyEaE3HFacuxWXrdBvMLd2g6qZpkGKSZwjjONr3zbjd2gMQz8
-        AisgZlaAWm+zfoBdRqhCyMjEN3Tm1tvcQ5cL+dahvo4vDWo0jm/Z0kRm4RjV1GXXhM/sh9
-        BsNtyMjzCrsP5cY6pMx7EPjxG6O58os=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697717458;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lhtXMv6Cv6xvV2k/OkFzS3BpOpkLlRqD4tPhIw5ugUM=;
-        b=soyX+qVKzg8+ZkGrFrYVkgZM4YFcJf2XQod10f9ZOiebxTzEsh6xqwuG+eOcUo3deYzbfW
-        OyJ1F//0+C63CCAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A945139C2;
-        Thu, 19 Oct 2023 12:10:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZeZCItIcMWWTNQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 19 Oct 2023 12:10:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DE2D0A06B0; Thu, 19 Oct 2023 14:10:57 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 14:10:57 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Joseph Qi <jiangqi903@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: Re: [PATCH v3] ext4: Properly sync file size update after O_SYNC
- direct IO
-Message-ID: <20231019121057.rbvfwgyw4dluk3zj@quack3>
-References: <20231013121350.26872-1-jack@suse.cz>
- <f04981be-5dac-c1e9-36a7-762c6bcf4d32@gmail.com>
+        with ESMTP id S1346027AbjJSOfM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 10:35:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741C8119;
+        Thu, 19 Oct 2023 07:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697726110; x=1729262110;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ae/rIPr1LHeaPhe1fNwEYdLO12N3tlhwJUG08SEXJ54=;
+  b=GAl/YNMYXLD3USZyo/XGX0dvDmJpHr1fyqElylYrzDAY3wPB8bU6JEeo
+   IOlv3iVnjh3FE2EcF2oV7+WxojDwy0VI0ZJkqlU9bqiWS9YCFdjP4Jslk
+   YCImdXRO8pWq6pxHHsHfiO0W4oWso1DTdTnyoodJAyF3Cg8IJeA21PeSv
+   wc10zD6Ac5W4iYkHQpHLAV8wZwlgislOrUzZV66SctNnWRq1Gv2bznbOZ
+   j3NjaK4U7kWzXSktHVZsXSIstYxf8XpewcBRWnhYsU8o8jMG0c9ICJxKV
+   66HVhnBuRgxd6whli43/PKzDkyqJwUAL3UhhAcSH+zSzsJFMIjV9ZYVsM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="365616582"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="365616582"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:35:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="786407453"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="786407453"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 07:35:06 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qtTlk-00000006tQJ-04ZQ;
+        Thu, 19 Oct 2023 17:13:00 +0300
+Date:   Thu, 19 Oct 2023 17:12:59 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Ferry Toth <ftoth@exalondelft.nl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <ZTE5a3L4LdsuoTJx@smile.fi.intel.com>
+References: <20231017133245.lvadrhbgklppnffv@quack3>
+ <ZS6PRdhHRehDC+02@smile.fi.intel.com>
+ <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
+ <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
+ <ZS6pmuofSP3uDMIo@smile.fi.intel.com>
+ <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
+ <20231018184613.tphd3grenbxwgy2v@quack3>
+ <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
+ <20231019101854.yb5gurasxgbdtui5@quack3>
+ <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f04981be-5dac-c1e9-36a7-762c6bcf4d32@gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.05
-X-Spamd-Result: default: False [-5.05 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-2.95)[99.78%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         FREEMAIL_CC(0.00)[suse.cz,mit.edu,vger.kernel.org,gmail.com,linux.alibaba.com,fromorbit.com]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED,URIBL_SBL_A autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 18-10-23 14:45:49, Joseph Qi wrote:
-> On 10/13/23 8:13 PM, Jan Kara wrote:
-> > Gao Xiang has reported that on ext4 O_SYNC direct IO does not properly
-> > sync file size update and thus if we crash at unfortunate moment, the
-> > file can have smaller size although O_SYNC IO has reported successful
-> > completion. The problem happens because update of on-disk inode size is
-> > handled in ext4_dio_write_iter() *after* iomap_dio_rw() (and thus
-> > dio_complete() in particular) has returned and generic_file_sync() gets
-> > called by dio_complete(). Fix the problem by handling on-disk inode size
-> > update directly in our ->end_io completion handler.
++Cc: compiler related guys (as far as my heuristics work).
+Any ideas? (see below)
+
+On Thu, Oct 19, 2023 at 03:01:43PM +0300, Andy Shevchenko wrote:
+> On Thu, Oct 19, 2023 at 12:18:54PM +0200, Jan Kara wrote:
+> > On Thu 19-10-23 11:46:58, Andy Shevchenko wrote:
+> > > On Wed, Oct 18, 2023 at 08:46:13PM +0200, Jan Kara wrote:
+> > > > On Tue 17-10-23 19:02:52, Andy Shevchenko wrote:
+> > > > > On Tue, Oct 17, 2023 at 06:34:50PM +0300, Andy Shevchenko wrote:
+> > > > > > On Tue, Oct 17, 2023 at 06:14:54PM +0300, Andy Shevchenko wrote:
+> > > > > > > On Tue, Oct 17, 2023 at 05:50:10PM +0300, Andy Shevchenko wrote:
+> > > > > > > > On Tue, Oct 17, 2023 at 04:42:29PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > On Tue, Oct 17, 2023 at 03:32:45PM +0200, Jan Kara wrote:
+> > > > > > > > > > On Tue 17-10-23 14:46:20, Andy Shevchenko wrote:
+> > > > > > > > > > > On Tue, Oct 17, 2023 at 01:32:53PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > > > On Tue, Oct 17, 2023 at 01:29:27PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > > > > On Tue, Oct 17, 2023 at 01:27:19PM +0300, Andy Shevchenko wrote:
+> > > > > > > > > > > > > > On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
+> > > > > > > > > > > > > > >   Hello Linus,
+
+...
+
+> > > > > > > > > > > > > > This merge commit (?) broke boot on Intel Merrifield.
+> > > > > > > > > > > > > > It has earlycon enabled and only what I got is watchdog
+> > > > > > > > > > > > > > trigger without a bit of information printed out.
+> > > > > > > > > > > 
+> > > > > > > > > > > Okay, seems false positive as with different configuration it
+> > > > > > > > > > > boots. It might be related to the size of the kernel itself.
+> > > > > > > > > > 
+> > > > > > > > > > Ah, ok, that makes some sense.
+> > > > > > > > > 
+> > > > > > > > > I should have mentioned that it boots with the configuration say "A",
+> > > > > > > > > while not with "B", where "B" = "A" + "C" and definitely the kernel
+> > > > > > > > > and initrd sizes in the "B" case are bigger.
+> > > > > > > > 
+> > > > > > > > If it's a size (which is only grew from 13M->14M), it's weird.
+> > > > > > > > 
+> > > > > > > > Nevertheless, I reverted these in my local tree
+> > > > > > > > 
+> > > > > > > > 85515a7f0ae7 (HEAD -> topic/mrfld) Revert "defconfig: enable DEBUG_SPINLOCK"
+> > > > > > > > 786e04262621 Revert "defconfig: enable DEBUG_ATOMIC_SLEEP"
+> > > > > > > > 76ad0a0c3f2d Revert "defconfig: enable DEBUG_INFO"
+> > > > > > > > f8090166c1be Revert "defconfig: enable DEBUG_LIST && DEBUG_OBJECTS_RCU_HEAD"
+> > > > > > > > 
+> > > > > > > > and it boots again! So, after this merge something affects one of this?
+> > > > > > > > 
+> > > > > > > > I'll continuing debugging which one is a culprit, just want to share
+> > > > > > > > the intermediate findings.
+> > > > > > > 
+> > > > > > > CONFIG_DEBUG_LIST with this merge commit somehow triggers this issue.
+> > > > > > > Any ideas?
+> > > > > 
+> > > > > > Dropping CONFIG_QUOTA* helps as well.
+> > > > > 
+> > > > > More precisely it's enough to drop either from CONFIG_DEBUG_LIST and CONFIG_QUOTA
+> > > > > to make it boot again.
+> > > > > 
+> > > > > And I'm done for today.
+> > > > 
+> > > > OK, thanks for debugging! So can you perhaps enable CONFIG_DEBUG_LIST
+> > > > permanently in your kernel config and then bisect through the quota changes
+> > > > in the merge? My guess is commit dabc8b20756 ("quota: fix dqput() to follow
+> > > > the guarantees dquot_srcu should provide") might be the culprit given your
+> > > > testing but I fail to see how given I don't expect any quotas to be used
+> > > > during boot of your platform... BTW, there's also fixup: 869b6ea160
+> > > > ("quota: Fix slow quotaoff") merged last week so you could try testing a
+> > > > kernel after this fix to see whether it changes anything.
+> > > 
+> > > It's exactly what my initial report is about, CONFIG_DEBUG_LIST was there
+> > > always with CONFIG_QUOTA as well.
 > > 
-> > References: https://lore.kernel.org/all/02d18236-26ef-09b0-90ad-030c4fe3ee20@linux.alibaba.com
-> > Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > CC: stable@vger.kernel.org
-> > Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > Ah, ok.
+> > 
+> > > Two bisections (v6.5 .. v6.6-rc1 & something...v6.6-rc6) pointed out to
+> > > merge commit!
+> > 
+> > I thought CONFIG_DEBUG_LIST arrived through one path, some problematic
+> > quota change arrived through another path and because they cause problems
+> > only together, then bisecting to the merge would be exactly the outcome.
+> > Alas that doesn't seem to be the case :-|.
+> > 
+> > > I _had_ tried to simply revert the quota changes (I haven't
+> > > said about that before) and it didn't help. I'm so puzzled with all this.
+> > 
+> > Aha, OK. If even reverting quota changes doesn't help, then it's really
+> > weird...
 > 
-> Tested with the reproducer after applying to 6.6-rc5,
-> Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Lemme to confirm that, it might be that I forgot to update configuration in
+> between.
 
-Thanks for testing!
+So, what I have done so far.
+1) I have cleaned ccaches and stuff as I used it to avoid collisions;
+2) I have confirmed that CONFIG_DEBUG_LIST affects boot, the repo
+   I'm using is published here [0][1];
+3) reverted quota patches until before this merge ([2] - last patch),
+   still boots;
+4) reverted disabling of CONFIG_DEBUG_LIST [2], doesn't boot;
+5) okay, rebased on top of merge, i.e. 1500e7e0726e,  with DEBUG_LIST [3],
+   doesn't boot;
+6) rebased [3] on one merge before, i.e. 63580f669d7f [4], voilà -- it boots!;
 
-> BTW, once backported to older kernel like 5.10, it seems that it depends
-> on the following commit:
-> 936e114a245b iomap: update ki_pos a little later in iomap_dio_complete
-> 
-> Otherwise, it will fail the following xfstests cases:
-> generic/091 generic/094 generic/225 generic/263 generic/311 generic/617
+And (tadaam!) I have had an idea for a while to replace GCC with LLVM
+(at least for this test), so [0] boots as well!
 
-That is kind of curious because that commit should not influence how the
-ext4 fix behaves. It only influences what is in iocb->ki_pos when we are
-invalidating pagecache pages...
+So, this merge triggered a bug in GCC, seems like... And it's _the_ merge
+commit, which is so-o weird!
 
-								Honza
+$ gcc --version
+gcc (Debian 13.2.0-4) 13.2.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[0]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-dbg-list/
+[1]: https://bitbucket.org/andy-shev/linux/src/test-mrfld/
+[2]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-no-quota-dbg-list/
+[3]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-after-merge-dbg-list/
+[4]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-before-merge/
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
