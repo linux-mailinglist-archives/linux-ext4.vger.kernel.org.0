@@ -2,122 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A58F7D0028
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 19:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176487D0079
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Oct 2023 19:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345950AbjJSRFf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Oct 2023 13:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S231469AbjJSR0v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Oct 2023 13:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345239AbjJSRFd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 13:05:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32EC130;
-        Thu, 19 Oct 2023 10:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697735130; x=1729271130;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=SvRT6LTSrzS+ByQI2jQdeZOuYjcngLGwBF4+TKTOda0=;
-  b=G7NnErs6GaEDfqZfERWKHcS3qcKgvT/+Q4D+A/SpSM4AKbc01PTCkTJz
-   kMa95aZmx2gOmQwgb+WUYN8hIXeQZ3PG8VfSHkPDI39INIaVtoTmzg5NB
-   VRV/5qV6YZcJyUh7kwcADUIUrtnr9mljugxslJqmNj2dRvNeYw7qB0xw4
-   imAV+IKHwcyCuV4h8fVwC7tg87SZI/GHc/43XVWCi696SO7b4dAn7JW+q
-   rEl3BMeZt/nw0pnFGJfIPQMxPrsH3WSOjysCGUiWJaJqavxsiWJxRenDL
-   4qMohFI00DSVI6FNjZriy2L1OEsv0CichDXd85pi4L4m78KFYHB8CuGCK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="376691831"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="376691831"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:05:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="880746237"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
-   d="scan'208";a="880746237"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 10:05:23 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qtWSW-00000006w92-1Z6p;
-        Thu, 19 Oct 2023 20:05:20 +0300
-Date:   Thu, 19 Oct 2023 20:05:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>,
+        with ESMTP id S233272AbjJSR0u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Oct 2023 13:26:50 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657EC121
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:26:48 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adb9fa7200so230176266b.0
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697736406; x=1698341206; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TmTGqTn965x8Iqb+7zVicGdJQKijTkj69SBYkbhW+y4=;
+        b=KUpVFCOjr+oWHEdOZjhesNgbajk6TmAZd1jP2/ObpbisALPwfMTT/NRB1XjrJQ0i/3
+         CdVjF1Iqeq3IrpbZBFpDl2v+pmDycByBplN3zfL/qc/TrVUAe/fJTOWpvV2ewYm0BYH4
+         4oUrGEO/3RRZp5qRgqrh6P0dHpGyqM/lce3hA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697736406; x=1698341206;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TmTGqTn965x8Iqb+7zVicGdJQKijTkj69SBYkbhW+y4=;
+        b=G7csgofrELlVOPHmXcFCY27av/FSf3fKEJiwnuzt6Strv9yWBUfLPhFnQAIRjWG7qt
+         GJLXNpjvC8nZitwer4lRq1DxCp7jKvV4oEVkK53ugHU1dnbfgmg7FuaJSrfQaHC7j3Y8
+         IFYQoJvaueoS+MBOulNBLj0oS5TH3+rST4rVUOy0g2tjPOy61FKcFZPGfmMB8w3TU3+s
+         gDRUBEqEWRGHLDSazyNjT3khjGtCRqU35rRuIW3gtHJxZoJhpfY2bvzEiff9JWpyxV1d
+         7d2mHJ6z24OsINr8xIucmJigvp9wK+opdBr+BaonXAnfCHuINNwJhcIBJeMYacPQr3wg
+         0/oQ==
+X-Gm-Message-State: AOJu0YwHLeA4CDlE49XiUVqz8flA1F1c0Vkf+lbRMdEJJPGOYEQ9Joab
+        PLfJK3Q4iSQR9QBO/qnSxD8W7cOXBQGXoHC62tzsEpyM
+X-Google-Smtp-Source: AGHT+IHtI2GJHYNxsRw+RhaLiLXWpO79MnUqDB+lE3WPmVfhJoAk9ws4+uslTqGe417AodGTir1/7g==
+X-Received: by 2002:a17:907:988:b0:9a2:295a:9bbc with SMTP id bf8-20020a170907098800b009a2295a9bbcmr1998866ejc.37.1697736406586;
+        Thu, 19 Oct 2023 10:26:46 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id og22-20020a1709071dd600b0099290e2c163sm3810343ejc.204.2023.10.19.10.26.45
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 10:26:45 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9c3aec5f326so226776666b.1
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Oct 2023 10:26:45 -0700 (PDT)
+X-Received: by 2002:a17:907:7f86:b0:9bd:a029:1a10 with SMTP id
+ qk6-20020a1709077f8600b009bda0291a10mr2213396ejc.32.1697736405493; Thu, 19
+ Oct 2023 10:26:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZS6fIkTVtIs-UhFI@smile.fi.intel.com> <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
+ <ZS6pmuofSP3uDMIo@smile.fi.intel.com> <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
+ <20231018184613.tphd3grenbxwgy2v@quack3> <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
+ <20231019101854.yb5gurasxgbdtui5@quack3> <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
+ <ZTFAzuE58mkFbScV@smile.fi.intel.com> <20231019164240.lhg5jotsh6vfuy67@treble>
+ <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
+In-Reply-To: <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Oct 2023 10:26:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
+Message-ID: <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
+        Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Kees Cook <keescook@chromium.org>,
         Ferry Toth <ftoth@exalondelft.nl>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
-References: <ZS6fIkTVtIs-UhFI@smile.fi.intel.com>
- <ZS6k7nLcbdsaxUGZ@smile.fi.intel.com>
- <ZS6pmuofSP3uDMIo@smile.fi.intel.com>
- <ZS6wLKrQJDf1_TUe@smile.fi.intel.com>
- <20231018184613.tphd3grenbxwgy2v@quack3>
- <ZTDtAiDRuPcS2Vwd@smile.fi.intel.com>
- <20231019101854.yb5gurasxgbdtui5@quack3>
- <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
- <ZTFAzuE58mkFbScV@smile.fi.intel.com>
- <20231019164240.lhg5jotsh6vfuy67@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231019164240.lhg5jotsh6vfuy67@treble>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 09:42:40AM -0700, Josh Poimboeuf wrote:
-> On Thu, Oct 19, 2023 at 05:44:30PM +0300, Andy Shevchenko wrote:
-> > So, what I have done so far.
-> > 1) I have cleaned ccaches and stuff as I used it to avoid collisions;
-> > 2) I have confirmed that CONFIG_DEBUG_LIST affects boot, the repo
-> >    I'm using is published here [0][1];
-> >    3) reverted quota patches until before this merge ([2] - last patch),
-> >       still boots;
-> > 4) reverted disabling of CONFIG_DEBUG_LIST [2], doesn't boot;
-> > 5) okay, rebased on top of merge, i.e. 1500e7e0726e,  with DEBUG_LIST [3],
-> > 	   doesn't boot;
-> > 6) rebased [3] on one merge before, i.e. 63580f669d7f [4], voilà -- it boots!;
-> > 
-> > And (tadaam!) I have had an idea for a while to replace GCC with LLVM
-> > (at least for this test), so [0] boots as well!
-> > 
-> > So, this merge triggered a bug in GCC, seems like... And it's _the_ merge
-> > commit, which is so-o weird!
-> 
-> I'm not really a compiler person, but IMO it's highly unlikely to be a
-> GCC bug unless you can point to the bad code generation.
+On Thu, 19 Oct 2023 at 10:05, Andy Shevchenko
+<andriy.shevchenko@intel.com> wrote:
+>
+> Hmm... Then what's the difference between clang and GCC on the very same source
+> code? One of them has a bug in my opinion.
 
-Hmm... Then what's the difference between clang and GCC on the very same source
-code? One of them has a bug in my opinion.
+Compiler bugs do happen, but they are quite rare (happily).
 
-> If CONFIG_DEBUG_LIST is triggering it, it's most likely some kind of
-> memory corruption, in which case seemingly random events can trigger the
-> detection of it (or lack thereof).
+It's almost certainly just ambiguous code that happens to work with
+one code generation, and not another.
 
-Note disabling QUOTA has the same effect, so if it's a corruption it happens
-somewhere there.
+It might be as simple as just hitting a timing bug, but considering
+how consistent it is for you (with a particular config), it's more
+likely to be something like an optimization that just happens to
+trigger some subtle ordering requirement or other.
 
-> Any chance it boots with the following?
+So then the "different compiler" is really just largely equivalent to
+"different optimization options", and sometimes that causes problems.
 
-Nope, no luck.
+That said, the quota dependency is quite odd, since normally I
+wouldn't expect the quota code to really even trigger much during
+boot. When it triggers that consistently, and that early during boot,
+I would expect others to have reported more of this.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Strange.
 
-
+                Linus
