@@ -2,43 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876227D0915
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Oct 2023 09:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02AD7D0D09
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Oct 2023 12:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376398AbjJTHBL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Oct 2023 03:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S1376596AbjJTKYV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Oct 2023 06:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376412AbjJTHBK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Oct 2023 03:01:10 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30657D5D
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Oct 2023 00:01:08 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qtjVK-0008J0-A1; Fri, 20 Oct 2023 09:01:06 +0200
-Message-ID: <00375284-2071-4dea-9009-9cd2d0de71e1@leemhuis.info>
-Date:   Fri, 20 Oct 2023 09:01:05 +0200
+        with ESMTP id S1376811AbjJTKYU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Oct 2023 06:24:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E16D5A
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Oct 2023 03:24:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 507AAC433C7
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Oct 2023 10:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697797458;
+        bh=jgEPKusJ0jfUT9vlVSIUTiOudO/i758gM5XBTpUEKxw=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=po3ZO+2BSMyfdo+TtxM0BxfDt2yfQriJk/DthPdutK43PExBakuRtIEvb+uYmKtSi
+         hpgpq4C3b/XZfYJvJQ98avpdNMXuRhVPs+YD4EytlnWFYQmh98NWLORzGnog8QqPhj
+         9uPaTteZiJCUKVVwFVkZe3umi2rrO0Ib28TZZVEF6JITeQu5gS+km5GcvJPy/zvDjw
+         L/Kd7tvvn1/sRSjlleMna4tQPn2RHivznHTdFZezahr3CoioqB+4jXaanqa+kcIC9M
+         dBlh9cpPgvD6WLrJQS523CPYvdRkHNLhyWdQFKoTnd91qEtlP7ZmayJi/CssmVyXRQ
+         wf99UpToC1zXw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id 3C8C3C53BD3; Fri, 20 Oct 2023 10:24:18 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date:   Fri, 20 Oct 2023 10:24:17 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: ojaswin.mujoo@ibm.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-CZj4kvwVAZ@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: task hung in ext4_fallocate #2
-Content-Language: en-US, de-DE
-To:     Andres Freund <andres@anarazel.de>, Theodore Ts'o <tytso@mit.edu>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        linux-ext4@vger.kernel.org,
-        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697785268;b9e2b2fe;
-X-HE-SMSGID: 1qtjVK-0008J0-A1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -47,48 +65,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-On 17.10.23 05:37, Andres Freund wrote:
-> 
-> As previously reported in https://lore.kernel.org/all/20231004004247.zkswbseowwwc6vvk@alap3.anarazel.de/
-> I found some hangs below ext4_fallocate(), in 6.6-rc*.  As it looks like my
-> issue was unrelated to the thread I had responded to, I was asked to start
-> this new thread.
-> 
-> I just was able to reproduce the issue, after upgrading to 6.6-rc6 - this time
-> it took ~55min of high load (io_uring using branch of postgres, running a
-> write heavy transactional workload concurrently with concurrent bulk data
-> load) to trigger the issue.
-> 
-> For now I have left the system running, in case there's something you would
-> like me to check while the system is hung.
-> [...]
+--- Comment #17 from Ojaswin Mujoo (ojaswin.mujoo@ibm.com) ---
+Hey Ivan, Eduard,
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+Thanks for all the data. The iostat suggests that we are breaking up the wr=
+ites
+much more as seen in the wareq-sz  field, which is much lower in the regres=
+sed
+kernel. Further, since the issue is only when striping is used (ie in raid
+scenarios) it seems like it has something to do with raiding.
 
-#regzbot ^introduced v6.5..v6.6-rc6
-#regzbot title ext4: task hung in ext4_fallocate
-#regzbot ignore-activity
+Eduard's replicator seems much easier to try so let me see if I'm able to
+replicate this over a raid setup of HDDs.
 
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
+Regards,
+ojaswin
 
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
+--=20
+You may reply to this email to add a comment.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+You are receiving this mail because:
+You are watching the assignee of the bug.=
