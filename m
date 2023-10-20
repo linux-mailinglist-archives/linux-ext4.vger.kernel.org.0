@@ -2,57 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A4E7D157F
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Oct 2023 20:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F24B7D15CB
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Oct 2023 20:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377936AbjJTSJ7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Oct 2023 14:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
+        id S229576AbjJTS3e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Oct 2023 14:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377925AbjJTSJ7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Oct 2023 14:09:59 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF2CD55;
-        Fri, 20 Oct 2023 11:09:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7E1791F750;
-        Fri, 20 Oct 2023 18:09:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697825394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H+LlUGJ4p6LVU8CW47o50OSle0+FDDDz35cj2TTIaSE=;
-        b=U0ijHr2z9cSLocKOFEH5XNS6/kySV7/UaovynnJ6kQQmQXP7DMfHDrfow6YNGyOfZ0cDaG
-        60v7iqO5DKKo4ZEAYNQwCb016R+I9jyaiWFnp14AJx1qDY4cTqeXCPZSaB9zDQkP4eIviB
-        a7qPdLwe2lkAaxj9WAfZWUhdGs8NFIQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697825394;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H+LlUGJ4p6LVU8CW47o50OSle0+FDDDz35cj2TTIaSE=;
-        b=VpT9ISZzWgpvqNomkfiYyEyQm75WRYtR06NEG7JqbE4te7Fcnq6Zg+M8lB+ot9gPRGojJx
-        c6nyQQS4RPf2BCDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EF0713584;
-        Fri, 20 Oct 2023 18:09:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mlUDG3LCMmUuNAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 20 Oct 2023 18:09:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EDD85A06E3; Fri, 20 Oct 2023 20:09:53 +0200 (CEST)
-Date:   Fri, 20 Oct 2023 20:09:53 +0200
-From:   Jan Kara <jack@suse.cz>
+        with ESMTP id S229473AbjJTS3e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Oct 2023 14:29:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53978D8;
+        Fri, 20 Oct 2023 11:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697826572; x=1729362572;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RV7eYTrVoYda1avxZkkjEOSNEkZA1PkbTCOaAUMlZ5c=;
+  b=HWwsuBto1Qh1GN4nXt55QxeQjEoQS0aqIyAmnQA8ZXm2xzoLwwA4k8PR
+   PrNjsaaI8IM7JlOwXS9SBZSgeuJxDDAriJgPXQBil4FP0AYcgyRdZN3+j
+   MJV2oEP3KQ/NTZQEy7RopJPw8I9bVeJqJF5HgUc+0htmO9Bzzl81i0OcJ
+   MWjrcbeGj+ZrUtBwCfQQEhpBjuiE817dykUYcNGKeUDdcMeo2EgkNfkOd
+   e0cMX1jspRqsE+V1p2fIvbPVcYBpNQtKTDRnGE8EWogSjZX+dIBjb/5oE
+   Q4QJwVFMzPGNWqUBEWXtTlayzKNh5ZfRYLWdrBUq41QkvKF1aocJqOrej
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="390437274"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="390437274"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 11:29:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="881146601"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="881146601"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 11:29:28 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qtuFR-00000007EBH-21bP;
+        Fri, 20 Oct 2023 21:29:25 +0300
+Date:   Fri, 20 Oct 2023 21:29:25 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Baokun Li <libaokun1@huawei.com>,
+Cc:     Baokun Li <libaokun1@huawei.com>,
         Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -60,96 +53,53 @@ Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
         Ferry Toth <ftoth@exalondelft.nl>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <20231020180953.wdehmwqoqndk5shq@quack3>
-References: <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
+Message-ID: <ZTLHBYv6wSUVD/DW@smile.fi.intel.com>
+References: <ZTFAzuE58mkFbScV@smile.fi.intel.com>
+ <20231019164240.lhg5jotsh6vfuy67@treble>
+ <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
  <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
  <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
  <ZTFxEcjo4d6vXbo5@smile.fi.intel.com>
  <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
  <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
  <ZTKUDzONVHXnWAJc@smile.fi.intel.com>
- <ZTKXbbSS2Pvmc-Fh@smile.fi.intel.com>
- <ZTKY6nRGWoYsEJjj@smile.fi.intel.com>
- <CAHk-=whzn2AVM6iSfy64h8TPjL6DtirO-YKW9o8afEw1s9nbjw@mail.gmail.com>
+ <CAHk-=wipA4605yvnmjW7T9EvARPRCGLARty8UUzRGxic1SXqvg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whzn2AVM6iSfy64h8TPjL6DtirO-YKW9o8afEw1s9nbjw@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.60
-X-Spamd-Result: default: False [-6.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAHk-=wipA4605yvnmjW7T9EvARPRCGLARty8UUzRGxic1SXqvg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_SBL_A autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 20-10-23 10:26:26, Linus Torvalds wrote:
-> On Fri, 20 Oct 2023 at 08:12, Andy Shevchenko
+On Fri, Oct 20, 2023 at 10:23:57AM -0700, Linus Torvalds wrote:
+> On Fri, 20 Oct 2023 at 07:52, Andy Shevchenko
 > <andriy.shevchenko@intel.com> wrote:
-> >
-> > > > --- a/fs/quota/dquot.c
-> > > > +++ b/fs/quota/dquot.c
-> > > > @@ -632,8 +632,10 @@ static inline int dquot_write_dquot(struct dquot *dquot)
-> > > >  {
-> > > >         int ret = dquot->dq_sb->dq_op->write_dquot(dquot);
-> > > >         if (ret < 0) {
-> > > > +#if 0
-> > > >                 quota_error(dquot->dq_sb, "Can't write quota structure "
-> > > >                             "(error %d). Quota may get out of sync!", ret);
-> > > > +#endif
-> > > >                 /* Clear dirty bit anyway to avoid infinite loop. */
-> > > >                 clear_dquot_dirty(dquot);
-> > > >         }
-> >
-> > Doing the same on the my branch based on top of v6.6-rc6 does not help.
-> > So looks like a race condition somewhere happening related to that dirty bit
-> > (as comment states it needs to be cleaned to avoid infinite loop, that's
-> >  probably what happens).
-> 
-> Hmm. Normally, dirty bits should always be cleared *before* the
-> write-back, not after it. Otherwise you might lose a dirty event that
-> happened *during* writeback.
 
-Yes, and normally we clear the dirty bit in dquot_commit() before writing
-the dquot. However if there is an error in fs-private ->write_dquot()
-helper before calling back into dquot_commit() (e.g. ext4 fails to start a
-transaction), ->write_dquot() can return without clearing the dirty bit.
-For dqput() to not loop indefinitely trying to clean the dquot, we clear
-the dirty bit here just to be sure in case of error.
+...
 
-> But I don't know the quota code.
-> 
-> ... the fact that the #if 0 doesn't help in another case does say that
-> it's not the quota_error() call itself. Which it really couldn't have
-> been (apart from timing and compiler bugs), but it's still a data
-> point, I guess.
+> That said - while unlikely, mind just sending me the *failing* copy of
+> the fs/quota/dquot.o object file, and I'll take a look at the code
+> around that call. I've looked at enough code generation issues that
+> it's worth trying..
 
-Yeah, that's a bit weird. I'm really curious what the problem is.
+For the sake of purity, I have rebuilt the whole tree to confirm it doesn't boot.
+Here [7] is what I got.
 
-								Honza
+I'll reply to this with the attached object file, I assume it won't go to the
+mailing list, but should be available in your mailbox.
+
+[7]: https://bitbucket.org/andy-shev/linux/src/test-mrfld-jr/
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
