@@ -2,189 +2,225 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79407D1A5D
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Oct 2023 03:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9615B7D1C5C
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Oct 2023 12:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjJUBsp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Oct 2023 21:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        id S229680AbjJUKHx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Oct 2023 06:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUBso (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 20 Oct 2023 21:48:44 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8897DD6C;
-        Fri, 20 Oct 2023 18:48:42 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SC46T4YR8z15NKl;
-        Sat, 21 Oct 2023 09:45:53 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 21 Oct 2023 09:48:39 +0800
-Message-ID: <826dbab6-f6e0-fc02-e5d3-141c00a2a141@huawei.com>
-Date:   Sat, 21 Oct 2023 09:48:38 +0800
+        with ESMTP id S229478AbjJUKHx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Oct 2023 06:07:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324BB1A3
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Oct 2023 03:07:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C21E3C433CB
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Oct 2023 10:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697882870;
+        bh=isUX/A7LYll4EVyRd/9BOjv8klj3zg2AfLV9iQ/xl6k=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=vHWwu3asWa4Iwxkyl1sBzO5wWpYwDbCCWuSu2l1SMmx1SpcZPMgKc1xfbkaZLzQkW
+         kNUwcSlQ65ATz/9F2xV5De6II6u4aXGmEe+iJC3vRhuKKl+VVpPKXu/Jh7HEkd6HDt
+         42RqbyLt1wIxRfZNoD+axSbiXx3gFxx37j4FCmaQKTIWL3NLk+KsR5jEW1apOSlgS2
+         O13WSghmePN/epOGwc+wl98AyIilQalm3ABSfbCg/EHLO/YmM0PFjAHBfo+ObXPiaA
+         /myV/jaccFjqnyZeGfUTKPafTUWKRIdX1KtVOCu72e2rpl8Ynx2HkhRZX2bjPD2OeQ
+         Pwa8gGOdI5Mcg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+        id A9BCFC53BD3; Sat, 21 Oct 2023 10:07:50 +0000 (UTC)
+From:   bugzilla-daemon@kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date:   Sat, 21 Oct 2023 10:07:50 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: glandvador@yahoo.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-bO51tuEU8t@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        yangerkun <yangerkun@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <ZTEap8A1W3IIY7Bg@smile.fi.intel.com>
- <ZTFAzuE58mkFbScV@smile.fi.intel.com>
- <20231019164240.lhg5jotsh6vfuy67@treble>
- <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
- <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
- <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
- <ZTFxEcjo4d6vXbo5@smile.fi.intel.com> <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
- <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
- <ZTKUDzONVHXnWAJc@smile.fi.intel.com> <ZTKXbbSS2Pvmc-Fh@smile.fi.intel.com>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <ZTKXbbSS2Pvmc-Fh@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2023/10/20 23:06, Andy Shevchenko wrote:
-> +Cc: Baokun, the author of the patch.
->
-> On Fri, Oct 20, 2023 at 05:51:59PM +0300, Andy Shevchenko wrote:
->> On Thu, Oct 19, 2023 at 11:43:47AM -0700, Linus Torvalds wrote:
->>> On Thu, 19 Oct 2023 at 11:16, Andy Shevchenko
->>> <andriy.shevchenko@intel.com> wrote:
->>>> Meanwhile a wild idea, can it be some git (automatic) conflict resolution that
->>>> makes that merge affect another (not related to the main contents of the merge)
->>>> files? Like upstream has one base, the merge has another which is older/newer
->>>> in the history?
->>> I already looked at any obvious case of that.
->>>
->>> The only quota-related issue on the other side is an obvious
->>> one-liner: commit 86be6b8bd834 ("quota: Check presence of quota
->>> operation structures instead of ->quota_read and ->quota_write
->>> callbacks").
->>>
->>> It didn't affect the merge, because it was not related to  any of the
->>> changes that came in from the quota branch (it was physically close to
->>> the change that used lockdep_assert_held_write() instead of a
->>> WARN_ON_ONCE(down_read_trylock()) sequence, but it is unrelated to
->>> it).
->>>
->>> I guess you could try reverting that one-liner after the merge, but I
->>> _really_ don't think it is at all relevant.
->>>
->>> What *would* probably be interesting is to start at the pre-merge
->>> state, and rebase the code that got merged in. And then bisect *that*
->>> series.
->>>
->>> IOW, with the merge that triggers your bisection being commit
->>> 1500e7e0726e, do perhaps something like this:
->>>
->>>    # Name the states before the merge
->>>    git branch pre-merge 1500e7e0726e^
->>>    git branch jan-state 1500e7e0726e^2
->>>
->>>    # Now double-check that this works for you, of course.
->>>    # Just to be safe...
->>>    git checkout pre-merge
->>>    .. test-build and test-boot this with the bad config ..
->> That's I have checked already [4], but okay, let me double check.
->> [5] is the same as [4] according to `git diff`.
->>
->> It boots.
->>
->>>    # Then, let's create a new branch that is
->>>    # the rebased version of Jan's state:
->>>    git checkout -b jan-rebased jan-state
->>>    git rebase pre-merge
->> [6] is created.
->>
->>>    # Verify that the tree is the same as the merge
->>>    git diff 1500e7e0726e
->> Yes, nothing in output.
->>
->> And it does not boot.
->>
->>>    # Ok, that was empty, so do a bisect on this
->>>    # rebased history
->>>    git bisect start
->>>    git bisect bad
->>>    git bisect good pre-merge
->>>
->>> .. and see what commit it *now* claims is the bad commit.
->> git bisect start
->> # status: waiting for both good and bad commits
->> # good: [63580f669d7ff5aa5a1fa2e3994114770a491722] Merge tag 'ovl-update-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs
->> git bisect good 63580f669d7ff5aa5a1fa2e3994114770a491722
->> # status: waiting for bad commit, 1 good commit known
->> # bad: [2447ff4196091e41d385635f9b6d003119f24199] ext2: Fix kernel-doc warnings
->> git bisect bad 2447ff4196091e41d385635f9b6d003119f24199
->> # bad: [a7c4109a1fa7f9f8cfa9aa93e7aae52d0df820f6] MAINTAINERS: change reiserfs status to obsolete
->> git bisect bad a7c4109a1fa7f9f8cfa9aa93e7aae52d0df820f6
->> # bad: [74fdc82e4a4302bf8a519101a40691b78d9beb6c] quota: add new helper dquot_active()
->> git bisect bad 74fdc82e4a4302bf8a519101a40691b78d9beb6c
->> # bad: [e64db1c50eb5d3be2187b56d32ec39e56b739845] quota: factor out dquot_write_dquot()
->> git bisect bad e64db1c50eb5d3be2187b56d32ec39e56b739845
->> # good: [eea7e964642984753768ddbb710e2eefd32c7a89] ext2: remove redundant assignment to variable desc and variable best_desc
->> git bisect good eea7e964642984753768ddbb710e2eefd32c7a89
->> # first bad commit: [e64db1c50eb5d3be2187b56d32ec39e56b739845] quota: factor out dquot_write_dquot()
->>
->>> Would you be willing to do this? It should be only a few bisects,
->>> since Jan's branch only brought in 17 commits that the above rebases
->>> into this test branch. So four or five bisections should pinpoint the
->>> exact point where it goes bad.
->> See above.
->>
->> I even rebuilt again with just rebased on top of e64db1c50eb5 and it doesn't
->> boot, so we found the culprit that triggers this issue.
->>
-Hello, Addy!
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-This patch does not seem to cause this problem. Just like linus said, 
-this patch
-has only two slight differences from the previous:
-1) Change "if (err)" to "if (err < 0)"
-     In all the implementations of dq_op->write_dquot(), the returned 
-value of err
-     is not greater than 0. Therefore, this does not cause behavior 
-inconsistency.
-2) Adding quota_error()
-     quota_error() does not seem to cause a boot failure.
+--- Comment #18 from Eduard Kohler (glandvador@yahoo.com) ---
+Hi Ojaswin,
 
-Also, you mentioned that the root file system is initramfs. If no other 
-file system
-that supports quota is automatically mounted during startup, it seems 
-that quota
-does not cause this problem logically.
+If you want to replicate something similar to my setup, I better give you m=
+ore
+info about it, because it's not a desktop computer.
 
-In my opinion, as Josh mentioned, replace the CONFIG_DEBUG_LIST related
-BUG()/BUG_ON() with WARN_ON(), and then check whether the system can be
-started normally. If yes, it indicates that the panic is caused by the 
-list corruption,
-then, check for the items that may damage the list. If WARN_ON() is 
-recorded in
-the dmesg log of the machine after the startup, it is easier to locate 
-the problem.
+It's a very slow system by current standards and I think it may impact why
+there aren't more people complaining about this issue. In Ivan's case it se=
+ems
+that after a small while, it recovered even with a lot of files. His setup
+seems more powerful than mine. In my case pulling a 75MB container with pod=
+man
+didn't recovered after 2 hours of 100% CPU.
 
--- 
-With Best Regards,
-Baokun Li
-.
+The system has 4G RAM:
+# free
+               total        used        free      shared  buff/cache=20=20
+available
+Mem:         3977448      615760      410332       14580     2951356=20=20=
+=20=20
+3045304
+Swap:        1564668           0     1564668
+
+and an AMD G-T40E processor:
+# cat /proc/cpuinfo=20
+processor       : 0
+vendor_id       : AuthenticAMD
+cpu family      : 20
+model           : 2
+model name      : AMD G-T40E Processor
+stepping        : 0
+microcode       : 0x5000119
+cpu MHz         : 801.798
+cache size      : 512 KB
+physical id     : 0
+siblings        : 2
+core id         : 0
+cpu cores       : 2
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 6
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca =
+cmov
+pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb
+rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmpe=
+rf
+pni monitor ssse3 cx16 popcnt lahf_lm cmp_legacy svm extapic cr8_legacy abm
+sse4a misalignsse 3dnowprefetch ibs skinit wdt hw_pstate vmmcall arat npt l=
+brv
+svm_lock nrip_save pausefilter
+bugs            : fxsave_leak sysret_ss_attrs null_seg spectre_v1 spectre_v2
+spec_store_bypass
+bogomips        : 1999.82
+TLB size        : 1024 4K pages
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 36 bits physical, 48 bits virtual
+power management: ts ttp tm stc 100mhzsteps hwpstate
+
+processor       : 1
+vendor_id       : AuthenticAMD
+cpu family      : 20
+model           : 2
+model name      : AMD G-T40E Processor
+stepping        : 0
+microcode       : 0x5000119
+cpu MHz         : 799.941
+cache size      : 512 KB
+physical id     : 0
+siblings        : 2
+core id         : 1
+cpu cores       : 2
+apicid          : 1
+initial apicid  : 1
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 6
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca =
+cmov
+pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb
+rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmpe=
+rf
+pni monitor ssse3 cx16 popcnt lahf_lm cmp_legacy svm extapic cr8_legacy abm
+sse4a misalignsse 3dnowprefetch ibs skinit wdt hw_pstate vmmcall arat npt l=
+brv
+svm_lock nrip_save pausefilter
+bugs            : fxsave_leak sysret_ss_attrs null_seg spectre_v1 spectre_v2
+spec_store_bypass
+bogomips        : 1999.82
+TLB size        : 1024 4K pages
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 36 bits physical, 48 bits virtual
+power management: ts ttp tm stc 100mhzsteps hwpstate
+
+The raid1 underlying hardware changed from the 2013 from 1T -> 2T -> 4T HDD.
+The file system grew up accordingly. During the step 2T -> 4T disk layout w=
+as
+converted from MBR to GPT:
+# gdisk -l /dev/sdb
+GPT fdisk (gdisk) version 1.0.9
+
+Partition table scan:
+  MBR: protective
+  BSD: not present
+  APM: not present
+  GPT: present
+
+Found valid GPT with protective MBR; using GPT.
+Disk /dev/sdb: 7814037168 sectors, 3.6 TiB
+Model: ST4000VN008-2DR1
+Sector size (logical/physical): 512/4096 bytes
+Disk identifier (GUID): CD6E68D9-1A0F-40F7-9755-FDE136159F92
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 7814037134
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 1537100 sectors (750.5 MiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048      7812502048   3.6 TiB     8300  primary
+
+And again the raid1 md0 partition table:
+# gdisk -l /dev/md0
+GPT fdisk (gdisk) version 1.0.9
+
+Partition table scan:
+  MBR: protective
+  BSD: not present
+  APM: not present
+  GPT: present
+
+Found valid GPT with protective MBR; using GPT.
+Disk /dev/md0: 7812237857 sectors, 3.6 TiB
+Sector size (logical/physical): 512/4096 bytes
+Disk identifier (GUID): 46C6A662-69D1-492D-A31F-1121048F9FE3
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 7812237823
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 3933 sectors (1.9 MiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048      7812235904   3.6 TiB     8300  Linux filesystem
+
+Last one is the EXT4 filesystem.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
