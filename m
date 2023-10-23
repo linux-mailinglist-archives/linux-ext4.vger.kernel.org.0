@@ -2,129 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABD07D350D
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 13:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF2D7D351D
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 13:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbjJWLpC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Oct 2023 07:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
+        id S234391AbjJWLp3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Oct 2023 07:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234432AbjJWLow (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 07:44:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E10B10D9;
-        Mon, 23 Oct 2023 04:44:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A085A21854;
-        Mon, 23 Oct 2023 11:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698061487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gyBgA0p/uKGTwLj21br3aElfg2rh/CHxAERkPcM1SDQ=;
-        b=K3X8AkI9NDdHhKxQ5KfpHOgi6n7fQkKiBpWRR1MjeEpZ0/31MqHQclbIOaf3fDHKLd8XXJ
-        tGmhJF4OobmwzX+6ZVQwnQItTdXeSQ2jWO5F1xQDkqt/uhixzWsK5hxVxoTNUXpyRTpPX9
-        FfCGVx3dAj/XsthkGf1AbwVLOtb4Xj4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698061487;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gyBgA0p/uKGTwLj21br3aElfg2rh/CHxAERkPcM1SDQ=;
-        b=N/n5pSvZMrJf4yMBZCW6xlNlpqYR5p4yZ65A+uXhV2eKNtHv7g4ttl5hIL1pwDKfGgmBJD
-        qAV0a8x5TTTuP5Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86C0E139C2;
-        Mon, 23 Oct 2023 11:44:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6jPfIK9cNmVdDwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 23 Oct 2023 11:44:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1030DA06B2; Mon, 23 Oct 2023 13:44:47 +0200 (CEST)
-Date:   Mon, 23 Oct 2023 13:44:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Gou Hao <gouhao@uniontech.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gouhaojake@163.com
-Subject: Re: [PATCH] ext4: delete redundant calculations in
- ext4_mb_get_buddy_page_lock()
-Message-ID: <20231023114447.crn3bt4qdmkxkrxi@quack3>
-References: <20231023013416.17246-1-gouhao@uniontech.com>
+        with ESMTP id S234390AbjJWLpN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 07:45:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BDEDB;
+        Mon, 23 Oct 2023 04:45:11 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="385701223"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="385701223"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:45:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="874681317"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="874681317"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:45:08 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1qutMn-00000007vRG-3QFa;
+        Mon, 23 Oct 2023 14:45:05 +0300
+Date:   Mon, 23 Oct 2023 14:45:05 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Kees Cook <kees@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <ZTZcwU+nCB0RUI+y@smile.fi.intel.com>
+References: <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
+ <ZTFxEcjo4d6vXbo5@smile.fi.intel.com>
+ <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
+ <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
+ <ZTKUDzONVHXnWAJc@smile.fi.intel.com>
+ <CAHk-=wipA4605yvnmjW7T9EvARPRCGLARty8UUzRGxic1SXqvg@mail.gmail.com>
+ <ZTLHBYv6wSUVD/DW@smile.fi.intel.com>
+ <CAHk-=wgHFSTuANT3jXsw1EtzdHQe-XQtWQACzeFxn2BEBzX-gA@mail.gmail.com>
+ <ZTLk1G0KCF7YNjRx@surfacebook.localdomain>
+ <BF6761C0-B813-4C98-9563-8323C208F67D@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231023013416.17246-1-gouhao@uniontech.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.64
-X-Spamd-Result: default: False [-7.64 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[163.com];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.04)[58.56%];
-         FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,vger.kernel.org,163.com]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <BF6761C0-B813-4C98-9563-8323C208F67D@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 23-10-23 09:34:16, Gou Hao wrote:
-> 'blocks_per_page' is always 1 after 'if (blocks_per_page >= 2)',
-> 'pnum' and 'block' is equal in this case.
+On Sat, Oct 21, 2023 at 04:36:19PM -0700, Kees Cook wrote:
+> On October 20, 2023 1:36:36 PM PDT, andy.shevchenko@gmail.com wrote:
+> >That said, if you or anyone has ideas how to debug futher, I'm all ears!
 > 
-> Signed-off-by: Gou Hao <gouhao@uniontech.com>
-> Signed-off-by: Gou Hao <gouhaojake@163.com>
+> I don't think this has been tried yet:
+> 
+> When I've had these kind of hard-to-find glitches I've used manual
+> built-binary bisection. Assuming you have a source tree that works when built
+> with Clang and not with GCC:
+> - build the tree with Clang with, say, O=build-clang
+> - build the tree with GCC, O=build-gcc
+> - make a new tree for testing: cp -a build-clang build-test
+> - pick a suspect .o file (or files) to copy from build-gcc into build-test
+> - perform a relink: "make O=build-test" should DTRT since the copied-in .o
+> files should be newer than the .a and other targets
+> - test for failure, repeat
+> 
+> Once you've isolated it to (hopefully) a single .o file, then comes the
+> byte-by-byte analysis or something similar...
+> 
+> I hope that helps! These kinds of bugs are super frustrating.
 
-No need for two signed-off-by here. Any one from you is enough :)
-
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641e..8442f5474b25 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1456,9 +1456,7 @@ static int ext4_mb_get_buddy_page_lock(struct super_block *sb,
->  		return 0;
->  	}
->  
-> -	block++;
-> -	pnum = block / blocks_per_page;
-> -	page = find_or_create_page(inode->i_mapping, pnum, gfp);
-> +	page = find_or_create_page(inode->i_mapping, ++block, gfp);
-						     ^^^ perhaps just
-"block + 1" here? Maybe also add a comment before this call like:
-
-	/* blocks_per_page == 1, hence we need another page for the buddy */
-
-Otherwise the patch looks good!
-
-								Honza
+I'm sorry, but I can't see how this is not an error prone approach.
+If it's a timing issue then the arbitrary object change may help and it doesn't
+prove anything. As earlier I tried to comment out the error message, and it
+worked with GCC as well. The difference is so little (according to Linus) that
+it may not be suspectible. Maybe I am missing the point...
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
