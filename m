@@ -2,161 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F727D363F
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 14:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2250E7D3840
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 15:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbjJWMTL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Oct 2023 08:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S229575AbjJWNkx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Oct 2023 09:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbjJWMTL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 08:19:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BF6FD;
-        Mon, 23 Oct 2023 05:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698063549; x=1729599549;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ErrJCE1bf5l80mKArl/0+fuj5JQv5yol0gyX7rJ0rbs=;
-  b=njPX+HNjrHVS7JnpEDqmrOnQsf50ASC1LwT87DDmocuqTmKv+qVy9Edc
-   9VkZt/DR0pLPci7zMbEdIbLWxq1GgeaLvb+P2C4OqkIbl3A3LHbFj9iSI
-   RU2cr1Xs/0ho8ESeI9zEYaCrAPdUOwKcXARfiLNdStTX8Lr/zD9ZUzEHu
-   x3yllgIIR3t3z1WH1/cI6rbEEGEnnco36IB8KKPdz7sNhfCzV0Zl4a31k
-   xYlX4wny9Zmn1hWcvPctS55g0yj2dc+QWwcfVmf9tSVWSuR/ETXvgFLku
-   v+ZIuvcgI6Vt1YTGGlXcVpX5l+amsTVBsFDmXSmalWeWvgdwBKiXFRIyq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5451034"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="5451034"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 05:19:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="793118206"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="793118206"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 05:19:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1quttd-00000007w2X-3I8b;
-        Mon, 23 Oct 2023 15:19:01 +0300
-Date:   Mon, 23 Oct 2023 15:19:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        with ESMTP id S229568AbjJWNkw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 09:40:52 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141C91;
+        Mon, 23 Oct 2023 06:40:48 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SDbmp6R1Bzcdmh;
+        Mon, 23 Oct 2023 21:35:54 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 23 Oct 2023 21:40:44 +0800
+Message-ID: <0c2de951-cd14-f1c7-fd9b-697563ad8092@huawei.com>
+Date:   Mon, 23 Oct 2023 21:40:44 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>, Jan Kara <jack@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Kees Cook <keescook@chromium.org>,
         Ferry Toth <ftoth@exalondelft.nl>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        yangerkun <yangerkun@huawei.com>
-Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-Message-ID: <ZTZktSo8oIUD5unq@smile.fi.intel.com>
+        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        yangerkun <yangerkun@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
 References: <20231019164240.lhg5jotsh6vfuy67@treble>
  <ZTFh0NeYtvgcjSv8@smile.fi.intel.com>
  <CAHk-=wjXG52UNKCwwEU1A+QWHYfvKOieV0uFOpPkLR0NSvOjtg@mail.gmail.com>
  <CAHk-=whis2BJF2fv1xySAg2NTQ+C5fViNSGkLNCOqGzi-3y+8w@mail.gmail.com>
- <ZTFxEcjo4d6vXbo5@smile.fi.intel.com>
- <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
+ <ZTFxEcjo4d6vXbo5@smile.fi.intel.com> <ZTFydEbdEYlxOxc1@smile.fi.intel.com>
  <CAHk-=wh_gbZE_ZsQ6+9gSPdXfoCtmuK-MFmBkO3ywMKFQEvb6g@mail.gmail.com>
- <ZTKUDzONVHXnWAJc@smile.fi.intel.com>
- <ZTKXbbSS2Pvmc-Fh@smile.fi.intel.com>
+ <ZTKUDzONVHXnWAJc@smile.fi.intel.com> <ZTKXbbSS2Pvmc-Fh@smile.fi.intel.com>
  <826dbab6-f6e0-fc02-e5d3-141c00a2a141@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+ <ZTZktSo8oIUD5unq@smile.fi.intel.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <ZTZktSo8oIUD5unq@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <826dbab6-f6e0-fc02-e5d3-141c00a2a141@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 09:48:38AM +0800, Baokun Li wrote:
-> On 2023/10/20 23:06, Andy Shevchenko wrote:
-> > On Fri, Oct 20, 2023 at 05:51:59PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Oct 19, 2023 at 11:43:47AM -0700, Linus Torvalds wrote:
+Hello!
 
-...
+On 2023/10/23 20:19, Andy Shevchenko wrote:
+> On Sat, Oct 21, 2023 at 09:48:38AM +0800, Baokun Li wrote:
+>> On 2023/10/20 23:06, Andy Shevchenko wrote:
+>>> On Fri, Oct 20, 2023 at 05:51:59PM +0300, Andy Shevchenko wrote:
+>>>> On Thu, Oct 19, 2023 at 11:43:47AM -0700, Linus Torvalds wrote:
+> ...
+>
+>>>> I even rebuilt again with just rebased on top of e64db1c50eb5 and it doesn't
+>>>> boot, so we found the culprit that triggers this issue.
+>> This patch does not seem to cause this problem. Just like linus said, this
+>> patch
+>> has only two slight differences from the previous:
+>> 1) Change "if (err)" to "if (err < 0)"
+>>  Â Â Â  In all the implementations of dq_op->write_dquot(), the returned value
+>> of err
+>>  Â Â Â  is not greater than 0. Therefore, this does not cause behavior
+>> inconsistency.
+>> 2) Adding quota_error()
+>>  Â Â Â  quota_error() does not seem to cause a boot failure.
+>>
+>> Also, you mentioned that the root file system is initramfs. If no other file
+>> system
+>> that supports quota is automatically mounted during startup, it seems that
+>> quota
+>> does not cause this problem logically.
+>>
+>> In my opinion, as Josh mentioned, replace the CONFIG_DEBUG_LIST related
+>> BUG()/BUG_ON() with WARN_ON(), and then check whether the system can be
+>> started normally. If yes, it indicates that the panic is caused by the list
+>> corruption, then, check for the items that may damage the list. If WARN_ON()
+>> is recorded in the dmesg log of the machine after the startup, it is easier
+>> to locate the problem.
+> I mentioned that I have checked that, but okay, lemme double check it.
+> I took the test-mrfld-jr branch and applied that patch on top.
+> And as expected no luck.
+By "okay" do you mean that after replacing BUG()/BUG_ON() with WARN_ON()
+you can boot up normally but don't see any prints, or does the 
+replacement have
+no effect and still fails to boot up?
+> fstab I have, btw is this
+>
+> $ cat output/target/etc/fstab
+> # <file system> <mount pt>      <type>  <options>       <dump>  <pass>
+> /dev/root       /               ext2    rw,noauto       0       1
+> proc            /proc           proc    defaults        0       0
+> devpts          /dev/pts        devpts  defaults,gid=5,mode=620,ptmxmode=0666   0       0
+> tmpfs           /dev/shm        tmpfs   mode=0777       0       0
+> tmpfs           /tmp            tmpfs   mode=1777       0       0
+> tmpfs           /run            tmpfs   mode=0755,nosuid,nodev  0       0
+> sysfs           /sys            sysfs   defaults        0       0
+>
+> Not sure if /dev/root affects this all, it's Buildroot + Busybox in initramfs
+> at the end.
+>
+> On the booted machine
+> (clang build of my main branch, based on the latest -rcX):
+>
+> Welcome to Buildroot
+> buildroot login: root
+>
+> # uname -a
+> Linux buildroot 6.6.0-rc7-00142-g9266a02ba229 #28 SMP PREEMPT_DYNAMIC Mon Oct 23 15:00:17 EEST 2023 x86_64 GNU/Linux
+>
+> # mount
+> rootfs on / type rootfs (rw,size=453412k,nr_inodes=113353)
+> devtmpfs on /dev type devtmpfs (rw,relatime,size=453412k,nr_inodes=113353,mode=755)
+> proc on /proc type proc (rw,relatime)
+> devpts on /dev/pts type devpts (rw,relatime,gid=5,mode=620,ptmxmode=666)
+> tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
+> tmpfs on /tmp type tmpfs (rw,relatime)
+> tmpfs on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
+> sysfs on /sys type sysfs (rw,relatime)
+>
+> What is fishy here is the size of rootfs, it's only 30M compressed side,
+> I can't be ~450M decompressed. I just noticed this, dunno if it's related.
+>
+Of the filesystems mounted above, only ext2 (aka rootfs) supports quota,
+but it doesn't appear to have quota enabled.
+If the quota change is causing ext2 to fail to load the root directory,
+you can now do the following checks:
 
-> > > I even rebuilt again with just rebased on top of e64db1c50eb5 and it doesn't
-> > > boot, so we found the culprit that triggers this issue.
-> 
-> This patch does not seem to cause this problem. Just like linus said, this
-> patch
-> has only two slight differences from the previous:
-> 1) Change "if (err)" to "if (err < 0)"
->     In all the implementations of dq_op->write_dquot(), the returned value
-> of err
->     is not greater than 0. Therefore, this does not cause behavior
-> inconsistency.
-> 2) Adding quota_error()
->     quota_error() does not seem to cause a boot failure.
-> 
-> Also, you mentioned that the root file system is initramfs. If no other file
-> system
-> that supports quota is automatically mounted during startup, it seems that
-> quota
-> does not cause this problem logically.
-> 
-> In my opinion, as Josh mentioned, replace the CONFIG_DEBUG_LIST related
-> BUG()/BUG_ON() with WARN_ON(), and then check whether the system can be
-> started normally. If yes, it indicates that the panic is caused by the list
-> corruption, then, check for the items that may damage the list. If WARN_ON()
-> is recorded in the dmesg log of the machine after the startup, it is easier
-> to locate the problem.
+1) Compare the binary generated by ext2Â  before and after the quota patch.
+2) `dumpe2fs -h /dev/root` to see if there are any useful error messages
+saved on disk superblock.
 
-I mentioned that I have checked that, but okay, lemme double check it.
-I took the test-mrfld-jr branch and applied that patch on top.
-And as expected no luck.
-
-fstab I have, btw is this
-
-$ cat output/target/etc/fstab
-# <file system> <mount pt>      <type>  <options>       <dump>  <pass>
-/dev/root       /               ext2    rw,noauto       0       1
-proc            /proc           proc    defaults        0       0
-devpts          /dev/pts        devpts  defaults,gid=5,mode=620,ptmxmode=0666   0       0
-tmpfs           /dev/shm        tmpfs   mode=0777       0       0
-tmpfs           /tmp            tmpfs   mode=1777       0       0
-tmpfs           /run            tmpfs   mode=0755,nosuid,nodev  0       0
-sysfs           /sys            sysfs   defaults        0       0
-
-Not sure if /dev/root affects this all, it's Buildroot + Busybox in initramfs
-at the end.
-
-On the booted machine
-(clang build of my main branch, based on the latest -rcX):
-
-Welcome to Buildroot
-buildroot login: root
-
-# uname -a
-Linux buildroot 6.6.0-rc7-00142-g9266a02ba229 #28 SMP PREEMPT_DYNAMIC Mon Oct 23 15:00:17 EEST 2023 x86_64 GNU/Linux
-
-# mount
-rootfs on / type rootfs (rw,size=453412k,nr_inodes=113353)
-devtmpfs on /dev type devtmpfs (rw,relatime,size=453412k,nr_inodes=113353,mode=755)
-proc on /proc type proc (rw,relatime)
-devpts on /dev/pts type devpts (rw,relatime,gid=5,mode=620,ptmxmode=666)
-tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
-tmpfs on /tmp type tmpfs (rw,relatime)
-tmpfs on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
-sysfs on /sys type sysfs (rw,relatime)
-
-What is fishy here is the size of rootfs, it's only 30M compressed side,
-I can't be ~450M decompressed. I just noticed this, dunno if it's related.
-
+Thanks!
 -- 
 With Best Regards,
-Andy Shevchenko
-
-
+Baokun Li
+.
