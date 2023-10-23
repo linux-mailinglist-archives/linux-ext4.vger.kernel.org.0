@@ -2,94 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BADCF7D2892
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 04:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FFE7D28AA
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Oct 2023 04:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjJWCea (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 Oct 2023 22:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S229477AbjJWCoa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 Oct 2023 22:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjJWCe3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Oct 2023 22:34:29 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D50519E
-        for <linux-ext4@vger.kernel.org>; Sun, 22 Oct 2023 19:34:27 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-143.bstnma.fios.verizon.net [173.48.111.143])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 39N2YH4R007249
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 22 Oct 2023 22:34:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1698028459; bh=cX1hDm/QiO9zSpl0ScMGKNvRPEWN4dSyasZUYFS2Au8=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Ngzki8SxclP0AGy3UqGgmxNqal42wFIiIXEU9GQcNhco6XeGzJJfwzGepGhf7GHJH
-         m7Uhgvm5dkHgmIfCVKnWZ9JUyZaU3pm0u30Pec11PFKDSVyFyni8n5U/wHAUwn1csU
-         l17evK1g+2+slRZEfR05d8Os8vYesoeJLbfVCzrdGeeDTYvfePJ0dMyjaYzV88CDF8
-         H2/KG6b3KXHYvFtxDoN6hMZg3VVAgfcPPp82h/eqIQU6Gfh9+1wTTBKvRi0hJUm77L
-         YkM5sMNuhWdSpgtF7sbqYq+/BGDxqVmv7sCv0e8qv6nIt6V4vBfvmq24SrkHgC/YFj
-         YZ6LQgzT/7xcA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9520815C0247; Sun, 22 Oct 2023 22:34:17 -0400 (EDT)
-Date:   Sun, 22 Oct 2023 22:34:17 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        ebiggers@google.com, fstests@vger.kernel.org
-Subject: New archtecture support in xfstests-bld
-Message-ID: <20231023023417.GA1778210@mit.edu>
-References: <060d9fef332979fd5d53b1c28c13b2043a16ab25.1696965271.git.ritesh.list@gmail.com>
- <20231012172835.GD255452@mit.edu>
+        with ESMTP id S229525AbjJWCo3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Oct 2023 22:44:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBC4D41
+        for <linux-ext4@vger.kernel.org>; Sun, 22 Oct 2023 19:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698029067; x=1729565067;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HuwvtB7F55bafq5jamX4D2Pola9+EXOFFvR1ZVYonIs=;
+  b=N07laSwLBXQFSgVAW3NqkUJMYoFt7cJQOilX/wIMmvobq9z1IOdpqCSF
+   0r5n51kNobPWXZjVacxUmL7A377Kak105szPlO8r/jc9DJrWVBHzlHpJc
+   EFFsmr/6soE7PUnoSbvjXr9ZmoIr1tU2JxQoXNqpG/n42SR4gLVJmeCbl
+   SFtTbp8Zxqx0sQk6GmTiWb5M5cupihm8d8l3bgA/9fZtZsfSB68OuFmSu
+   1GqfTT36anTR6EBG+wM2L38xhAwAgK3xvegnmZkqhB2OX1UkturOsR2PW
+   YtdN+4QZq5WLvVacuLGqf/hoqKAVoGinSnK6WXRmVwcOyvVszdcWoviD9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="366980923"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="366980923"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 19:44:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="823828569"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="823828569"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Oct 2023 19:44:26 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qukvY-0006Ur-06;
+        Mon, 23 Oct 2023 02:44:24 +0000
+Date:   Mon, 23 Oct 2023 10:43:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 3/4] ext4: avoid online resizing failures due to
+ oversized flex bg
+Message-ID: <202310231046.Ctx3aydr-lkp@intel.com>
+References: <20231023013057.2117948-4-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012172835.GD255452@mit.edu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231023013057.2117948-4-libaokun1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hey Ritesh,
+Hi Baokun,
 
-I just pulled some changes from Eric Biggers into xfstests-bld which
-has a start on adding riscv64 support to kvm-xfstests.  So far, he's
-updated libaio to a newer upstream version (newer is relative; the
-"new" version was last updated six years ago :-) for better RiscV
-support, and he's added RiscV support to set_canonicalized_arch().
+kernel test robot noticed the following build warnings:
 
-I'd recommend that you start with the latest upstream version of
-xfstests-bld, and then add support for powerpcle64 by adding support
-to find_kernel_to_use() in run=fstests/util/parse_opt_funcs, and
-set_cross_compile() and get_kernel_file_info() in
-run-fstests/util-arch, since those changes in the 2/2 patch series[1]
-were clearly correct.  (And Eric, you should take a look at those
-changes[1] for RiscV support.)
+[auto build test WARNING on tytso-ext4/dev]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[1] https://lore.kernel.org/all/eb1f8f0fb0ff9a6358129a2a45bd0c88421ac669.1696965271.git.ritesh.list@gmail.com/
+url:    https://github.com/intel-lab-lkp/linux/commits/Baokun-Li/ext4-unify-the-type-of-flexbg_size-to-unsigned-int/20231023-092711
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20231023013057.2117948-4-libaokun1%40huawei.com
+patch subject: [PATCH v2 3/4] ext4: avoid online resizing failures due to oversized flex bg
+reproduce: (https://download.01.org/0day-ci/archive/20231023/202310231046.Ctx3aydr-lkp@intel.com/reproduce)
 
-I'd also encourage you to add support for the new architectures in
-selftests/appliance, since that will exercise building a kernel for
-the foreign architecture using cross-compilation, and then using
-qemu-system-$ARCH from kvm-xfstests.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310231046.Ctx3aydr-lkp@intel.com/
 
-(Yes, kvm-xfstests is starting to get very much misnamed; but kvm is
-easier to type, and autocompletes much more nicely than qemu-<tab>.
-The string "kvm" also is sprinkled all over the xfstests-bld scripts,
-and I'm not convinced it's worth changing.  That being said, I've
-added a qemu-xfstests script which gets installed into the user's bin
-directory; we'll see if that is something people feel strongly about
-using the new name.)
+# many are suggestions rather than must-fix
 
-Finally, since have two separate efforts to add support for new
-architectures to xfstests-bld, might I prevail on you to keep some
-notes about what's needed to bootstrap a new architecture?  That might
-be helpful for some future developer.
+WARNING:BLOCK_COMMENT_STYLE: Block comments use * on subsequent lines
+#60: FILE: fs/ext4/resize.c:222:
++	ext4_group_t resize_bg;			/* number of allocated
++						   new_group_data */
 
-Many thanks!
+WARNING:BLOCK_COMMENT_STYLE: Block comments use a trailing */ on a separate line
+#60: FILE: fs/ext4/resize.c:222:
++						   new_group_data */
 
-					- Ted
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
