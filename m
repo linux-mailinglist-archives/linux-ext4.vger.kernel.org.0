@@ -2,90 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E8B7D4D33
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 12:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31D77D53D9
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 16:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbjJXKDY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Oct 2023 06:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
+        id S1343708AbjJXOYc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Oct 2023 10:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbjJXKDX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 06:03:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1AADC;
-        Tue, 24 Oct 2023 03:03:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3BDC61FD71;
-        Tue, 24 Oct 2023 10:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698141799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fd1uUtLWVCbrf8y0Y5fzHoEuPomC3eJzUI1A7frlr0k=;
-        b=fTe5JwqZApsvVOwBvi/bUvWfqL8S/Y3kpoaBcpJHKymvKS6ByF5Y0kEb/MJ4Z3AmMw+N+U
-        81AKCJBzLg5vth28OzYeD3CxRLIsHXbeexfVbgTfabGx4/5pSof0w2b8RNrRjCIV9F6Myn
-        JU59VeDBqKpjQKjZt5+OIIqLOV18BPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698141799;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fd1uUtLWVCbrf8y0Y5fzHoEuPomC3eJzUI1A7frlr0k=;
-        b=lu8wohMTf9sRWi3q/EUd7SnoZluEEDtz4L6+yEoGOwFq5AFryjFZUATjzMpPOBvANypAj6
-        ueeB8HNfQKUTJ/Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D601134F5;
-        Tue, 24 Oct 2023 10:03:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bgINC2eWN2UrGQAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 24 Oct 2023 10:03:19 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AD60DA05BC; Tue, 24 Oct 2023 12:03:18 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 12:03:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hui Zhu <teawater@antgroup.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] ext4: add __GFP_NOWARN to GFP_NOWAIT in readahead
-Message-ID: <20231024100318.muhq5omspyegli4c@quack3>
-References: <7bc6ad16-9a4d-dd90-202e-47d6cbb5a136@google.com>
+        with ESMTP id S1343562AbjJXOYb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 10:24:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E83B6;
+        Tue, 24 Oct 2023 07:24:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161ECC433C7;
+        Tue, 24 Oct 2023 14:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698157468;
+        bh=7s4owhTS2KWdPLIBnSmPESiU6Lmlr9CBB23zaMiuKo8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HIcNEkomyOMSom+TIflQWtM1yj31IzKvSV99wsuAM9Ems2egxYGi+XMdfPwJYutrD
+         GYeOu78X4F5rTATUVir3ssZR4gFcryc0oPeTydpOPsrU3LN+eOOp0xhO6DZYTjds+7
+         BN0YVN0YKh8LhIykqaw8RiwxQ+sMOByx7ypNDLqRAk5Tcmr3xnjiuD6whzGD8Czxvi
+         CB+4O2pvEK2XXx/vp7vEkV4OzMUDtNLCgUIlAtMH6G20hZ5nTK4HXE9iGcGtyNzdk/
+         QfNAxAAcWjNWVoYhKL7AYJgOeODO/rA3atgoHqxvRcgpEDFC+9uOB0vnTz1lWMSiB/
+         OMX51ENDmTLRw==
+Message-ID: <01ecb2b7876a4562570658b92f4c12cbc7ad2518.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 24 Oct 2023 10:24:24 -0400
+In-Reply-To: <ZTc8tClCRkfX3kD7@dread.disaster.area>
+References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <ZTc8tClCRkfX3kD7@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bc6ad16-9a4d-dd90-202e-47d6cbb5a136@google.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.60
-X-Spamd-Result: default: False [-6.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,45 +78,139 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 23-10-23 23:26:08, Hugh Dickins wrote:
-> Since mm-hotfixes-stable commit e509ad4d77e6 ("ext4: use bdev_getblk() to
-> avoid memory reclaim in readahead path") rightly replaced GFP_NOFAIL
-> allocations by GFP_NOWAIT allocations, I've occasionally been seeing
-> "page allocation failure: order:0" warnings under load: all with
-> ext4_sb_breadahead_unmovable() in the stack.  I don't think those
-> warnings are of any interest: suppress them with __GFP_NOWARN.
-> 
-> Fixes: e509ad4d77e6 ("ext4: use bdev_getblk() to avoid memory reclaim in readahead path")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On Tue, 2023-10-24 at 14:40 +1100, Dave Chinner wrote:
+> On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
+> > >=20
+> > > The problem is the first read request after a modification has been
+> > > made. That is causing relatime to see mtime > atime and triggering
+> > > an atime update. XFS sees this, does an atime update, and in
+> > > committing that persistent inode metadata update, it calls
+> > > inode_maybe_inc_iversion(force =3D false) to check if an iversion
+> > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+> > > i_version and tells XFS to persist it.
+> >=20
+> > Could we perhaps just have a mode where we don't increment i_version
+> > for just atime updates?
+> >=20
+> > Maybe we don't even need a mode, and could just decide that atime
+> > updates aren't i_version updates at all?
+>=20
+> We do that already - in memory atime updates don't bump i_version at
+> all. The issue is the rare persistent atime update requests that
+> still happen - they are the ones that trigger an i_version bump on
+> XFS, and one of the relatime heuristics tickle this specific issue.
+>=20
+> If we push the problematic persistent atime updates to be in-memory
+> updates only, then the whole problem with i_version goes away....
+>=20
 
-Yeah, makes sense. Just the commit you mention isn't upstream yet so I'm
-not sure whether the commit hash is stable. I guess something for Andrew to
-figure out. In any case feel free to add:
+POSIX (more or less) states that if you're updating the inode for any
+reason other than an atime update, then you need to update the ctime.
+The NFSv4 spec (more or less) defines the change attribute as something
+that should show a change any time the ctime would change.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Now, from mount(8) manpage, in the section on lazytime:
 
-								Honza
+           The on-disk timestamps are updated only when:
 
-> ---
->  fs/ext4/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c00ec159dea5..56a08fc5c5d5 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -262,7 +262,7 @@ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
->  void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
->  {
->  	struct buffer_head *bh = bdev_getblk(sb->s_bdev, block,
-> -			sb->s_blocksize, GFP_NOWAIT);
-> +			sb->s_blocksize, GFP_NOWAIT | __GFP_NOWARN);
->  
->  	if (likely(bh)) {
->  		if (trylock_buffer(bh))
-> -- 
-> 2.35.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+           =E2=80=A2   the inode needs to be updated for some change unrela=
+ted to file timestamps
+
+           =E2=80=A2   the application employs fsync(2), syncfs(2), or sync=
+(2)
+
+           =E2=80=A2   an undeleted inode is evicted from memory
+
+           =E2=80=A2   more than 24 hours have passed since the inode was w=
+ritten to disk.
+
+
+The first is not a problem for NFS. If we're updating the ctime or mtime
+or other attributes, then we _need_ to bump the change attribute
+(assuming that something has queried it and can tell a difference).
+
+The second is potentially an issue. If a file has an in-memory atime
+update and them someone calls sync(2), XFS will end up bumping the
+change attribute.
+
+Ditto for the third. If someone does a getattr and brings an inode back
+into core, then you're looking at a cache invalidation on the client.
+
+The fourth is also a problem, once a day your clients will end up
+invaliding their caches.
+
+You might think "so what? Once a day is no big deal!", but there are
+places that have built up cascading fscache setups across WANs to
+distribute large, read-mostly files. This is quite problematic in these
+sorts of setups as they end up seeing cache invalidations all over the
+place.
+
+noatime is a workaround, but it has its own problems and ugliness, and
+it sucks that XFS doesn't "just work" when served by NFS.
+
+
+> > Yes, yes, it's obviously technically a "inode modification", but does
+> > anybody actually *want* atime updates with no actual other changes to
+> > be version events?
+>=20
+> Well, yes, there was. That's why we defined i_version in the on disk
+> format this way well over a decade ago. It was part of some deep
+> dark magical HSM beans that allowed the application to combine
+> multiple scans for different inode metadata changes into a single
+> pass. atime changes was one of the things it needed to know about
+> for tiering and space scavenging purposes....
+>=20
+
+As Amir points out, is this still behavior that you're required to
+preserve? NFS serving is a bit more common than weird HSM stuff.=20
+
+Maybe newly created XFS filesystems could be made to update i_version in
+a way that nfsd expects? We could add a mkfs.xfs option to allow for the
+legacy behavior if required.
+
+> > Or maybe i_version can update, but callers of getattr() could have two
+> > bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
+> > one for others, and we'd pass that down to inode_query_version, and
+> > we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
+> > "I care about atime" case ould set the strict one.
+>=20
+> This makes correct behaviour reliant on the applicaiton using the
+> query mechanism correctly. I have my doubts that userspace
+> developers will be able to understand the subtle difference between
+> the two options and always choose correctly....
+>=20
+> And then there's always the issue that we might end up with both
+> flags set and we get conflicting bug reports about how atime is not
+> behaving the way the applications want it to behave.
+>=20
+> > Then inode_maybe_inc_iversion() could - for atome updates - skip the
+> > version update *unless* it sees that I_VERSION_QUERIED_STRICT bit.
+> >=20
+> > Does that sound sane to people?
+>=20
+> I'd much prefer we just do the right thing transparently at the
+> filesystem level; all we need is for the inode to be flagged that it
+> should be doing in memory atime updates rather than persistent
+> updates.
+>=20
+> Perhaps the nfs server should just set a new S_LAZYTIME flag on
+> inodes it accesses similar to how we can set S_NOATIME on inodes to
+> elide atime updates altogether. Once set, the inode will behave that
+> way until it is reclaimed from memory....
+>=20
+
+
+Yeah, I think adding this sort of extra complexity on the query side is
+probably not what's needed.
+
+I'm also not crazy about trying to treat nfsd's accesses as special in
+some way. nfsd is really not doing anything special at all, other than
+querying for STATX_CHANGE_COOKIE.=20
+
+The problem is on the update side: nfsd expects the STATX_CHANGE_COOKIE
+to conform to certain behavior, and XFS simply does not (specifically
+around updates to the inode that only change the atime).
+
+--=20
+Jeff Layton <jlayton@kernel.org>
