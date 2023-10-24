@@ -2,97 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE947D43D9
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 02:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B567D44AC
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 03:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjJXAS7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Oct 2023 20:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        id S230391AbjJXBMa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Oct 2023 21:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjJXASz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 20:18:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F7111A
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Oct 2023 17:18:53 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507b18cf2e1so5340140e87.3
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Oct 2023 17:18:53 -0700 (PDT)
+        with ESMTP id S229679AbjJXBMa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Oct 2023 21:12:30 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCA4EE
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Oct 2023 18:12:27 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3ae35773a04so2688061b6e.0
+        for <linux-ext4@vger.kernel.org>; Mon, 23 Oct 2023 18:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698106731; x=1698711531; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iY8F6Fplz1VZOzDrso9gBBR3Wotc9sRtBic5aJbz6WE=;
-        b=NFkz4IY8yN89v12HPfLxH+qlwrs2qNUsUulQ5ZRSJHMsg3pU5tq9gXsABmSrkxlrZd
-         +cRzmR+NOKzFXMaXPlivzyfHFXat73apu1eFNdnDXH/Jv4LOkb2G1Qk1OMkR5mP7BlgM
-         pFm3IGzM7xd1KOPF2yN8/pws6EU2LMbNoCyFE=
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698109947; x=1698714747; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i19dNL387EHarULoiwvYkhsMJkYUTQDqMA+r1AyQVYk=;
+        b=auKulWPN1zYFR9e7tFCdVjpqkSLXE/ux/6Tb9aGgn6B3Ge8/WB4dsY7CvTteFMmFAh
+         CAc17E1dPoNs9+7AqBwXymuzkSDLbhaHVPGYh2PSVP3acmC87XdQ/Ne2iNTH8t71/cjS
+         rXDYF6scZDl1F0wshO8NRo/k9vKsA2Tu0I0YBVUX1Id1Hb0wQpu9XaRzJic6nDq6I+aF
+         7/0TDBO5gWwQ2xgGY9uN0hFxVVzRVdSn1PHbY8FpPht/4mvxwABytEPvhuy8aykT1oe8
+         OryA4CFR7YJKpXWi4wX7zI8il5wCbK2Qi5NCfO1dV+qwGrz1XTBb5hyw0V9FV4bqKKQ8
+         hokw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698106731; x=1698711531;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iY8F6Fplz1VZOzDrso9gBBR3Wotc9sRtBic5aJbz6WE=;
-        b=ENedbSn0SA+i5t0bQfjQ7La2DHjT9eE2vMTRTADm1zLASS0ZuJvaOKXfGkObl534tJ
-         SU6PNkl50e5VhZi8C5oPvAxPfxr8VKoESLKMuBXnDqZOPrDYN2Mzts7KvbP8j3pBnAjy
-         /VqUVCTSq1iOh+K19yw2Gl7eClGsm9CX9vJB3yHBLTayjYHgB9fjGHwOX2ZGPSBlaZm7
-         usR/+R0A7LhTCQ5NmQBcrhnTSWDXxuMjYYnaB94kswRuxA0/MPtF91nc+NlNSf1xBLIL
-         mXTQEjm6OnDS0BuF4elGFc6hXAj6nFXLEg7LGlQ9XQYLzvyLFbS7oGZy1/LTe0GOMMS9
-         oEcA==
-X-Gm-Message-State: AOJu0YzgklB/zdKtUr/+na1/0p4jGZclT37xIag1KMZLI947C4MjjsdU
-        F7JsSCZxGNjFY7UO21drP6sB+8vowO/jFfmUILFTeQH2
-X-Google-Smtp-Source: AGHT+IEzws4P6z9znaHQXeJ5pVqfPs47Fgyq7RIb/dh1kZKoOcQlLAor7Rat9kNfufdOJx36c+FvSQ==
-X-Received: by 2002:a05:6512:60f:b0:500:b63f:4db3 with SMTP id b15-20020a056512060f00b00500b63f4db3mr7481417lfe.35.1698106731174;
-        Mon, 23 Oct 2023 17:18:51 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id b7-20020a1709062b4700b009ade1a4f795sm7207101ejg.168.2023.10.23.17.18.50
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 17:18:50 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso5698459a12.1
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Oct 2023 17:18:50 -0700 (PDT)
-X-Received: by 2002:a50:d795:0:b0:53e:467c:33f1 with SMTP id
- w21-20020a50d795000000b0053e467c33f1mr8315209edi.8.1698106710154; Mon, 23 Oct
- 2023 17:18:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698109947; x=1698714747;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i19dNL387EHarULoiwvYkhsMJkYUTQDqMA+r1AyQVYk=;
+        b=CUIgOzRZHyfqWAz/Vwbwbq0JMSBFhEGXQ2eQtywaq6QPUOygO5tQEJzp2/u0rykDUo
+         J+ZtoqaVwI5R2+kEb6irYwWgHmwEFmZCOBAz9OQsEKjiH9WG9u/XoM+eujd3sw7NqlPu
+         vni5O2iORjdDRYYfM6wm7eXe+s8ra8YhIET26bigL7xcwlgGnN20ZqtAu7klCqjKLCGD
+         opoy/btmos6X3+atDlpzCov1qD4o9QudvjxpI1rmuHV4lEDOi12sxVY0FBW3cafHLYEN
+         HwRtc0e3OG3FH1LI7bX789qJ7hhCq4dWNjQseT6e8PyWazf/0fVLZTQKWBaPfh8l5G7G
+         vEhA==
+X-Gm-Message-State: AOJu0Yz8AEHpsVwb8mjXVF9OWEiDLzSY5t8kV/om/Hg8KBGISgwwspGs
+        8jIVzlbuSw288m4GenUdTlJGQ9cFCi4wN7Iod+A=
+X-Google-Smtp-Source: AGHT+IELxuNbh4ViaFGaaBDuDIdC0BRWNEXeQMZjZ4q5+hPRszCZ+5ELnmiNMDJ6NmnlXf+xSZohTQ==
+X-Received: by 2002:a54:408f:0:b0:3b2:e0f0:e53d with SMTP id i15-20020a54408f000000b003b2e0f0e53dmr12162830oii.37.1698109947033;
+        Mon, 23 Oct 2023 18:12:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id x190-20020a6263c7000000b006b5b46e4098sm7040318pfb.169.2023.10.23.18.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 18:12:26 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qv5y3-0036UX-1X;
+        Tue, 24 Oct 2023 12:12:23 +1100
+Date:   Tue, 24 Oct 2023 12:12:23 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Andres Freund <andres@anarazel.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-ext4@vger.kernel.org,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, gustavo.padovan@collabora.com,
+        zsm@google.com, garrick@google.com,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Subject: Re: task hung in ext4_fallocate #2
+Message-ID: <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
+References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
+ <20231018004335.GA593012@mit.edu>
+ <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
 MIME-Version: 1.0
-References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner> <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
- <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
- <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
- <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-In-Reply-To: <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 23 Oct 2023 14:18:12 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-Message-ID: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,38 +82,186 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
->
-> The problem is the first read request after a modification has been
-> made. That is causing relatime to see mtime > atime and triggering
-> an atime update. XFS sees this, does an atime update, and in
-> committing that persistent inode metadata update, it calls
-> inode_maybe_inc_iversion(force = false) to check if an iversion
-> update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
-> i_version and tells XFS to persist it.
+[cc Jens, io-uring]
 
-Could we perhaps just have a mode where we don't increment i_version
-for just atime updates?
+On Tue, Oct 17, 2023 at 07:50:09PM -0700, Andres Freund wrote:
+> Hi,
+> 
+> On 2023-10-17 20:43:35 -0400, Theodore Ts'o wrote:
+> > On Mon, Oct 16, 2023 at 08:37:25PM -0700, Andres Freund wrote:
+> > > I just was able to reproduce the issue, after upgrading to 6.6-rc6 - this time
+> > > it took ~55min of high load (io_uring using branch of postgres, running a
+> > > write heavy transactional workload concurrently with concurrent bulk data
+> > > load) to trigger the issue.
+> > >
+> > > For now I have left the system running, in case there's something you would
+> > > like me to check while the system is hung.
+> > >
+> > > The first hanging task that I observed:
+> > >
+> > > cat /proc/57606/stack
+> > > [<0>] inode_dio_wait+0xd5/0x100
+> > > [<0>] ext4_fallocate+0x12f/0x1040
+> > > [<0>] vfs_fallocate+0x135/0x360
+> > > [<0>] __x64_sys_fallocate+0x42/0x70
+> > > [<0>] do_syscall_64+0x38/0x80
+> > > [<0>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> >
+> > This stack trace is from some process (presumably postgres) trying to
+> > do a fallocate() system call:
+> 
+> Yes, it's indeed postgres.
+> 
+> 
+> > > [ 3194.579297] INFO: task iou-wrk-58004:58874 blocked for more than 122 seconds.
+> > > [ 3194.579304]       Not tainted 6.6.0-rc6-andres-00001-g01edcfe38260 #77
+> > > [ 3194.579310] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > [ 3194.579314] task:iou-wrk-58004   state:D stack:0     pid:58874 ppid:52606  flags:0x00004000
+> > > [ 3194.579325] Call Trace:
+> > > [ 3194.579329]  <TASK>
+> > > [ 3194.579334]  __schedule+0x388/0x13e0
+> > > [ 3194.579349]  schedule+0x5f/0xe0
+> > > [ 3194.579361]  schedule_preempt_disabled+0x15/0x20
+> > > [ 3194.579374]  rwsem_down_read_slowpath+0x26e/0x4c0
+> > > [ 3194.579385]  down_read+0x44/0xa0
+> > > [ 3194.579393]  ext4_file_write_iter+0x432/0xa80
+> > > [ 3194.579407]  io_write+0x129/0x420
+> >
+> > This could potentially be a interesting stack trace; but this is where
+> > we really need to map the stack address to line numbers.  Is that
+> > something you could do?
+> 
+> Converting the above with scripts/decode_stacktrace.sh yields:
+> 
+> __schedule (kernel/sched/core.c:5382 kernel/sched/core.c:6695)
+> schedule (./arch/x86/include/asm/preempt.h:85 (discriminator 13) kernel/sched/core.c:6772 (discriminator 13))
+> schedule_preempt_disabled (./arch/x86/include/asm/preempt.h:80 (discriminator 10) kernel/sched/core.c:6831 (discriminator 10))
+> rwsem_down_read_slowpath (kernel/locking/rwsem.c:1073 (discriminator 4))
+> down_read (./arch/x86/include/asm/preempt.h:95 kernel/locking/rwsem.c:1257 kernel/locking/rwsem.c:1263 kernel/locking/rwsem.c:1522)
+> ext4_file_write_iter (./include/linux/fs.h:1073 fs/ext4/file.c:57 fs/ext4/file.c:564 fs/ext4/file.c:715)
+> io_write (./include/linux/fs.h:1956 io_uring/rw.c:926)
+> 
+> But I'm not sure that that stacktrace is quite right (e.g. what's
+> ./include/linux/fs.h:1073 doing in this stacktrace?). But with an optimized
+> build it's a bit hard to tell what's an optimization artifact and what's an
+> off stack trace...
+> 
+> 
+> I had the idea to look at the stacks (via /proc/$pid/stack) for all postgres
+> processes and the associated io-uring threads, and then to deduplicate them.
+> 
+> 22x:
+> ext4_file_write_iter (./include/linux/fs.h:1073 fs/ext4/file.c:57 fs/ext4/file.c:564 fs/ext4/file.c:715)
+> io_write (./include/linux/fs.h:1956 io_uring/rw.c:926)
+> io_issue_sqe (io_uring/io_uring.c:1878)
+> io_wq_submit_work (io_uring/io_uring.c:1960)
+> io_worker_handle_work (io_uring/io-wq.c:596)
+> io_wq_worker (io_uring/io-wq.c:258 io_uring/io-wq.c:648)
+> ret_from_fork (arch/x86/kernel/process.c:147)
+> ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
 
-Maybe we don't even need a mode, and could just decide that atime
-updates aren't i_version updates at all?
+io_uring does some interesting stuff with IO completion and iomap
+now - IIRC IOCB_DIO_CALLER_COMP is new 6.6-rc1 functionality. This
+flag is set by io_write() to tell the iomap IO completion handler
+that the caller will the IO completion, avoiding a context switch
+to run the completion in a kworker thread.
 
-Yes, yes, it's obviously technically a "inode modification", but does
-anybody actually *want* atime updates with no actual other changes to
-be version events?
+It's not until the caller runs iocb->dio_complete() that
+inode_dio_end() is called to drop the i_dio_count. This happens when
+io_uring gets completion notification from iomap via
+iocb->ki_complete(iocb, 0);
 
-Or maybe i_version can update, but callers of getattr() could have two
-bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
-one for others, and we'd pass that down to inode_query_version, and
-we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
-"I care about atime" case ould set the strict one.
+It then requires the io_uring layer to process the completion
+and call iocb->dio_complete() before the inode->i_dio_count is
+dropped and inode_dio_wait() will complete.
 
-Then inode_maybe_inc_iversion() could - for atome updates - skip the
-version update *unless* it sees that I_VERSION_QUERIED_STRICT bit.
+So what I suspect here is that we have a situation where the worker
+that would run the completion is blocked on the inode rwsem because
+this isn't a IOCB_NOWAIT IO and the fallocate call holds the rwsem
+exclusive and is waiting on inode_dio_wait() to return.
 
-Does that sound sane to people?
+Cc Jens, because I'm not sure this is actually an ext4 problem - I
+can't see why XFS won't have the same issue w.r.t.
+truncate/fallocate and IOCB_DIO_CALLER_COMP delaying the
+inode_dio_end() until whenever the io_uring code can get around to
+processing the delayed completion....
 
-Because it does sound completely insane to me to say "inode changed"
-and have a cache invalidation just for an atime update.
+-Dave.
 
-              Linus
+> 
+> 8x:
+> __do_sys_io_uring_enter (io_uring/io_uring.c:2553 (discriminator 1) io_uring/io_uring.c:2622 (discriminator 1) io_uring/io_uring.c:3706 (discriminator 1))
+> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> 
+> 2x:
+> io_wq_worker (./arch/x86/include/asm/current.h:41 (discriminator 5) io_uring/io-wq.c:668 (discriminator 5))
+> ret_from_fork (arch/x86/kernel/process.c:147)
+> ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> 
+> 2x:
+> futex_wait_queue (./arch/x86/include/asm/current.h:41 (discriminator 5) kernel/futex/waitwake.c:357 (discriminator 5))
+> futex_wait (kernel/futex/waitwake.c:660)
+> do_futex (kernel/futex/syscalls.c:106 (discriminator 1))
+> __x64_sys_futex (kernel/futex/syscalls.c:183 kernel/futex/syscalls.c:164 kernel/futex/syscalls.c:164)
+> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> 
+> 1x:
+> do_epoll_wait (fs/eventpoll.c:1921 (discriminator 1) fs/eventpoll.c:2318 (discriminator 1))
+> __x64_sys_epoll_wait (fs/eventpoll.c:2325)
+> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> 
+> 1x:
+> inode_dio_wait (./arch/x86/include/asm/atomic.h:23 ./include/linux/atomic/atomic-arch-fallback.h:444 ./include/linux/atomic/atomic-instrumented.h:33 fs/inode.c:2429 fs/inode.c:2446)
+> ext4_fallocate (fs/ext4/extents.c:4752)
+> vfs_fallocate (fs/open.c:324)
+> __x64_sys_fallocate (./include/linux/file.h:45 fs/open.c:348 fs/open.c:355 fs/open.c:353 fs/open.c:353)
+> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+> 
+> 
+> 
+> 
+> > > Once I hear that you don't want me to test something out on the running
+> > > system, I think a sensible next step could be to compile with lockdep and see
+> > > if that finds a problem?
+> >
+> > That's certainly a possibiity.  But also please make sure that you can
+> > compile with with debugging information enabled so that we can get
+> > reliable line numbers.  I use:
+> >
+> > CONFIG_DEBUG_INFO=y
+> > CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+> > CONFIG_DEBUG_INFO_REDUCED=y
+> 
+> The kernel from above had debug info enabled, albeit forced to dwarf4 (IIRC I
+> ran into issues with pahole not understanding all of dwarf5):
+> 
+> $ zgrep DEBUG_INFO /proc/config.gz
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_DEBUG_INFO_NONE is not set
+> # CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set
+> CONFIG_DEBUG_INFO_DWARF4=y
+> # CONFIG_DEBUG_INFO_DWARF5 is not set
+> # CONFIG_DEBUG_INFO_REDUCED is not set
+> CONFIG_DEBUG_INFO_COMPRESSED_NONE=y
+> # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
+> # CONFIG_DEBUG_INFO_COMPRESSED_ZSTD is not set
+> # CONFIG_DEBUG_INFO_SPLIT is not set
+> CONFIG_DEBUG_INFO_BTF=y
+> CONFIG_DEBUG_INFO_BTF_MODULES=y
+> 
+> I switched it to CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y and am rebuilding
+> with lockdep enabled. Curious to see how long it'll take to trigger the
+> problem with it enabled...
+> 
+> Greetings,
+> 
+> Andres Freund
+> 
+
+-- 
+Dave Chinner
+david@fromorbit.com
