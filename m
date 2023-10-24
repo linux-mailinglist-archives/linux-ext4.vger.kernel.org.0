@@ -2,131 +2,195 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EB47D582E
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 18:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015FE7D5A94
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 20:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjJXQ0J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Oct 2023 12:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S1344135AbjJXSfc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Oct 2023 14:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234839AbjJXQ0G (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 12:26:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9358B10D4;
-        Tue, 24 Oct 2023 09:25:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b4w9aRyrS+9I1Nc5GJ428AZWRpJVCoZGZd7zMybYBaw=; b=tZKJPTUmDGV+PL6Z4HbvGgkm0T
-        MVGRUPIGDLJ3+T23gKpqolCVsty3W5rl7cc/DRgxyyWKqROabY6TCBLV7vXXfvHgeOtMs/KS/qu07
-        BIuFXVHVtKbhz8H0pDKdNPIpMqjTr9OlHwWYGr4/+7EM9tRD8AiuQUcylF/BxWXkwhAotiUzsnC7a
-        VAXOZgKqWlH8yHk+Tv80+xEQcVpcmaRVofLneCZE5JPJFywxBPYcTXYIEwnpyfwlXUh83bgPH+9zL
-        F3ycEbmIlohHNboqntPVz6AzYpzlMYxUksXX2nfAWu2nRK5i/VKAbk0fonkYnZQyyomoxHYGnKufT
-        BAT6PjdA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qvKDz-003UvN-Rd; Tue, 24 Oct 2023 16:25:47 +0000
-Date:   Tue, 24 Oct 2023 17:25:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jan Kara <jack@suse.cz>, Hugh Dickins <hughd@google.com>,
-        Hui Zhu <teawater@antgroup.com>, Theodore Ts'o <tytso@mit.edu>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Include __GFP_NOWARN in GFP_NOWAIT
-Message-ID: <ZTfwC3hJJufpNrH/@casper.infradead.org>
-References: <7bc6ad16-9a4d-dd90-202e-47d6cbb5a136@google.com>
- <20231024100318.muhq5omspyegli4c@quack3>
- <20231024075343.e5f0bd0d99962a4f0e32d1a0@linux-foundation.org>
+        with ESMTP id S1343992AbjJXSfb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 14:35:31 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9415186
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 11:35:28 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7a680e6a921so54414139f.1
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 11:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698172528; x=1698777328; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Rh49hnxveSHpPqxFNsKHQhjblqpWbfArPQXsCbv9Cx8=;
+        b=RXMdEFoYXYYclct+iLzPu37sZehnQ8EUeoE+F0tQkz9ROEAP9KpyhC3yygxjnzxB5f
+         CsV2wNgUx6h8O0fEwOq3Quilx8S6AZSi/xHHlfxlRH065LemGBSw8d+tJPLifbbaYsFS
+         POd8V2ZcsFxuumMgqW+ByTisYUq02Iny3Sb5tvPlbnfq4q58kH4BBl3QdDfX/44/rsyT
+         cAmFzssiUicLysGS2IeMJmbn/LODppRvXEPNXAZMfCjpkBruqnPaESKho9ac2hNb4j2z
+         Kxr2+JlyrYEUaaXShZbyecvdCHI+p20LdONNiEMQuCG40OeKkWfndDFcAcY/OAkqQNKj
+         LZGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698172528; x=1698777328;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rh49hnxveSHpPqxFNsKHQhjblqpWbfArPQXsCbv9Cx8=;
+        b=EHbgZPHp1hVjfTAKOOj406NjGal7jYIlUgWM7IdmzASyEddJwL/qOh3AzzIHtpdmy8
+         zLCBGCl6AsHXhD5gkmuk2OJMRVVhDGbegTX5TZv2IOzuXCcbt+e170/ZUvjJmZOXBS76
+         5l6BlcuKoN/3ZsJI5lZ9Zcaa146BN1402VGcrKZ56ewQg8KisBwuyEqgAN2WdeS4DNjp
+         8gna4TpO7p1oGbcvAxuUFV7zVNI24yhguHtD86kFnajlhtrwZrvM8qJ0XMQvu5hArHqM
+         CSGe2B+QkybVzf3/GDhsdc9LmeGr71PNSNSxVwlZD74/0/XqL2mlA6o777v5qQaG86tY
+         mwoQ==
+X-Gm-Message-State: AOJu0YyAEHMI/gHunQ1YKS5Lo/sUxL0fpO172J8ZnqCSaYQQUn7xxX5B
+        zJ7THz33/WSfgDaK36rj2lchKA==
+X-Google-Smtp-Source: AGHT+IFdz/vLyj7MWTKRr/BUKOjk0rXEkOJDBYY0Lt8T3CuGdx3jA9ZeQwlZxJOIMUJWoiayiIsJVw==
+X-Received: by 2002:a05:6e02:4ac:b0:34e:2a69:883c with SMTP id e12-20020a056e0204ac00b0034e2a69883cmr11603414ils.1.1698172527817;
+        Tue, 24 Oct 2023 11:35:27 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id dp35-20020a0566381ca300b0042b068d921esm3025149jab.16.2023.10.24.11.35.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 11:35:27 -0700 (PDT)
+Message-ID: <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
+Date:   Tue, 24 Oct 2023 12:35:26 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024075343.e5f0bd0d99962a4f0e32d1a0@linux-foundation.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: task hung in ext4_fallocate #2
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Dave Chinner <david@fromorbit.com>,
+        Andres Freund <andres@anarazel.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-ext4@vger.kernel.org,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        io-uring@vger.kernel.org
+References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
+ <20231018004335.GA593012@mit.edu>
+ <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
+ <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
+ <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
+In-Reply-To: <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 07:53:43AM -0700, Andrew Morton wrote:
-> On Tue, 24 Oct 2023 12:03:18 +0200 Jan Kara <jack@suse.cz> wrote:
+On 10/24/23 8:30 AM, Jens Axboe wrote:
+> I don't think this is related to the io-wq workers doing non-blocking
+> IO. The callback is eventually executed by the task that originally
+> submitted the IO, which is the owner and not the async workers. But...
+> If that original task is blocked in eg fallocate, then I can see how
+> that would potentially be an issue.
 > 
-> > On Mon 23-10-23 23:26:08, Hugh Dickins wrote:
-> > > Since mm-hotfixes-stable commit e509ad4d77e6 ("ext4: use bdev_getblk() to
-> > > avoid memory reclaim in readahead path") rightly replaced GFP_NOFAIL
-> > > allocations by GFP_NOWAIT allocations, I've occasionally been seeing
-> > > "page allocation failure: order:0" warnings under load: all with
-> > > ext4_sb_breadahead_unmovable() in the stack.  I don't think those
-> > > warnings are of any interest: suppress them with __GFP_NOWARN.
-> > > 
-> > > Fixes: e509ad4d77e6 ("ext4: use bdev_getblk() to avoid memory reclaim in readahead path")
-> > > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > 
-> > Yeah, makes sense. Just the commit you mention isn't upstream yet so I'm
-> > not sure whether the commit hash is stable.
-> 
-> e509ad4d77e6 is actually in mm-stable so yes, the hash should be stable.
+> I'll take a closer look.
 
-GFP_NOWAIT is a loaded gun pointing at our own feet.  It's almost
-expected to fail (and that's documented in a few places, eg
-Documentation/core-api/memory-allocation.rst)
+I think the best way to fix this is likely to have inode_dio_wait() be
+interruptible, and return -ERESTARTSYS if it should be restarted. Now
+the below is obviously not a full patch, but I suspect it'll make ext4
+and xfs tick, because they should both be affected.
 
-Why do we do this to ourselves?  There's precedent for having
-__GFP_NOWARN included in the flags, eg GFP_TRANSHUGE_LIGHT has it.
-There are ~400 occurrences of GFP_NOWAIT in the kernel (many in
-comments, it must be said!) and ~350 of them do not have GFP_NOWARN
-attached to them.  At least not on the same line.  To choose a random
-example, fs/iomap/buffered-io.c:
+Andres, any chance you can throw this into the testing mix?
 
-        if (flags & IOMAP_NOWAIT)
-                gfp = GFP_NOWAIT;
-        else
-                gfp = GFP_NOFS | __GFP_NOFAIL;
 
-That should clearly have had a NOWARN attached to it, but it's not
-a code path that's commonly used, so we won't fix it for a few years.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 202c76996b62..0d946b6d36fe 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4747,7 +4747,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+ 	}
+ 
+ 	/* Wait all existing dio workers, newcomers will block on i_rwsem */
+-	inode_dio_wait(inode);
++	ret = inode_dio_wait(inode);
++	if (ret)
++		goto out;
+ 
+ 	ret = file_modified(file);
+ 	if (ret)
+diff --git a/fs/inode.c b/fs/inode.c
+index 84bc3c76e5cc..c4eca812b16b 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -2417,17 +2417,24 @@ EXPORT_SYMBOL(inode_owner_or_capable);
+ /*
+  * Direct i/o helper functions
+  */
+-static void __inode_dio_wait(struct inode *inode)
++static int __inode_dio_wait(struct inode *inode)
+ {
+ 	wait_queue_head_t *wq = bit_waitqueue(&inode->i_state, __I_DIO_WAKEUP);
+ 	DEFINE_WAIT_BIT(q, &inode->i_state, __I_DIO_WAKEUP);
++	int ret = 0;
+ 
+ 	do {
+-		prepare_to_wait(wq, &q.wq_entry, TASK_UNINTERRUPTIBLE);
+-		if (atomic_read(&inode->i_dio_count))
+-			schedule();
++		prepare_to_wait(wq, &q.wq_entry, TASK_INTERRUPTIBLE);
++		if (!atomic_read(&inode->i_dio_count))
++			break;
++		schedule();
++		if (signal_pending(current)) {
++			ret = -ERESTARTSYS;
++			break;
++		}
+ 	} while (atomic_read(&inode->i_dio_count));
+ 	finish_wait(wq, &q.wq_entry);
++	return ret;
+ }
+ 
+ /**
+@@ -2440,10 +2447,11 @@ static void __inode_dio_wait(struct inode *inode)
+  * Must be called under a lock that serializes taking new references
+  * to i_dio_count, usually by inode->i_mutex.
+  */
+-void inode_dio_wait(struct inode *inode)
++int inode_dio_wait(struct inode *inode)
+ {
+ 	if (atomic_read(&inode->i_dio_count))
+-		__inode_dio_wait(inode);
++		return __inode_dio_wait(inode);
++	return 0;
+ }
+ EXPORT_SYMBOL(inode_dio_wait);
+ 
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 203700278ddb..8ea0c414b173 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -936,7 +936,9 @@ xfs_file_fallocate(
+ 	 * the on disk and in memory inode sizes, and the operations that follow
+ 	 * require the in-memory size to be fully up-to-date.
+ 	 */
+-	inode_dio_wait(inode);
++	error = inode_dio_wait(inode);
++	if (error)
++		goto out_unlock;
+ 
+ 	/*
+ 	 * Now AIO and DIO has drained we flush and (if necessary) invalidate
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4a40823c3c67..7dff3167cb0c 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2971,7 +2971,7 @@ static inline ssize_t blockdev_direct_IO(struct kiocb *iocb,
+ }
+ #endif
+ 
+-void inode_dio_wait(struct inode *inode);
++int inode_dio_wait(struct inode *inode);
+ 
+ /**
+  * inode_dio_begin - signal start of a direct I/O requests
 
-Similarly, in Ceph:
+-- 
+Jens Axboe
 
-                        if (IS_ENCRYPTED(inode)) {
-                                pages[locked_pages] =
-                                        fscrypt_encrypt_pagecache_blocks(page,
-                                                PAGE_SIZE, 0,
-                                                locked_pages ? GFP_NOWAIT : GFP_NOFS);
-
-... actually, this one looks fine because it goes to mempool_alloc()
-which adds __GFP_NOWARN itself!
-
-There are a bunch of places which use it as an argument to idr_alloc(),
-generally after having called idr_prealloc() and then taken a spinlock.
-Those don't care whether NOWARN is set or not because they won't
-allocate.
-
-Anyway, are there good arguments against this?
-
-diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-index 6583a58670c5..ae994534a12a 100644
---- a/include/linux/gfp_types.h
-+++ b/include/linux/gfp_types.h
-@@ -274,7 +274,8 @@ typedef unsigned int __bitwise gfp_t;
-  * accounted to kmemcg.
-  *
-  * %GFP_NOWAIT is for kernel allocations that should not stall for direct
-- * reclaim, start physical IO or use any filesystem callback.
-+ * reclaim, start physical IO or use any filesystem callback.  It is very
-+ * likely to fail to allocate memory, even for very small allocations.
-  *
-  * %GFP_NOIO will use direct reclaim to discard clean pages or slab pages
-  * that do not require the starting of any physical IO.
-@@ -325,7 +326,7 @@ typedef unsigned int __bitwise gfp_t;
- #define GFP_ATOMIC	(__GFP_HIGH|__GFP_KSWAPD_RECLAIM)
- #define GFP_KERNEL	(__GFP_RECLAIM | __GFP_IO | __GFP_FS)
- #define GFP_KERNEL_ACCOUNT (GFP_KERNEL | __GFP_ACCOUNT)
--#define GFP_NOWAIT	(__GFP_KSWAPD_RECLAIM)
-+#define GFP_NOWAIT	(__GFP_KSWAPD_RECLAIM | __GFP_NOWARN)
- #define GFP_NOIO	(__GFP_RECLAIM)
- #define GFP_NOFS	(__GFP_RECLAIM | __GFP_IO)
- #define GFP_USER	(__GFP_RECLAIM | __GFP_IO | __GFP_FS | __GFP_HARDWALL)
