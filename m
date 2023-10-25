@@ -2,50 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A4F7D6D66
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 15:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484497D6F16
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbjJYNdM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Oct 2023 09:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        id S234990AbjJYOj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Oct 2023 10:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbjJYNc7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 09:32:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605521712
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 06:32:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 406DEC433C7;
-        Wed, 25 Oct 2023 13:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698240731;
-        bh=pB1CVc+a7KCJItdLWoIFwMW3uBM8nk4RJurUO/3u5Fs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hN/d/5XwhcqVsoQFJ91i+2gstiCEF4WvLxgxbwTyTWd3CloGBAbG5v5rafINczjtW
-         hgZA6195oGvjn9eVztniZgrgcjJjPU/5sURSPilzNx2OjtNuweoKs9hsvD1zg3x4UA
-         Hv5XVGtNmPjdSnlztlYIn1p+jAFGQ7gjcWdcnaJYkitmZudU9BaVxXlkGD6sFyN5+5
-         fN7diBBK+lLUyaCbNStNx1EzqaER0bn0Fdd7a/aukhUAQ080RkhuPl5f0MjsyPsD1C
-         c2/Y5vGMblmh87fzAMHOHHzm4UKdg8N453f8XhXiVgu7oyfGPiJTMw/1fKHgj0VGA0
-         AX8T1/tQ8y86Q==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk,
-        tytso@mit.edu, ebiggers@kernel.org, jaegeuk@kernel.org
-Subject: Re: [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
-Date:   Wed, 25 Oct 2023 15:32:02 +0200
-Message-Id: <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230816050803.15660-1-krisman@suse.de>
-References: <20230816050803.15660-1-krisman@suse.de>
+        with ESMTP id S1344792AbjJYOEA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 10:04:00 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6665B185
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 07:03:56 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a6643ba679so40445839f.1
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 07:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698242636; x=1698847436; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xmmBJe4qx/Z0FecJmP2HKoWoGSGv5MNLqFmWTEvkhKI=;
+        b=a/8qgnaEyPA2+d8L9scDYh0UYOxTJMS3BK0vc5+KINadxbd8jQdWq6+LEwx98nOVly
+         QYPXB7WikXnW7AijKNEUhH3X3mNTwxws0+hr9itZeAWfE7zkEv+j0sQaEQyDGjTfPI5m
+         Z63kUysNIdyjWSZS7XeBfu+j3muxPa0v1WQoll8aqn8y9vFZVyrvshAYBcKoxkC03yT9
+         Jsl+Syxfw0fyhDGofGoSgoVI/H2VyOu0CF4ILccExRaYfztxPUiyBg3E20syJ87UiipT
+         ubsIRvA5ZZO5cfEixyMI9Idhv53GILJcjwqxvJauCzg0yB9iWlMK+e/gRdweVnuXGgAv
+         jqOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698242636; x=1698847436;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xmmBJe4qx/Z0FecJmP2HKoWoGSGv5MNLqFmWTEvkhKI=;
+        b=KXkqeIK9iJQtWmFQT7lQvUyNdWG0D6LtpABzGiMuiAdAgAA6YXe1N/RGwpNdzdCXXx
+         nJvuIU4vJELCCIkbuZpWNFYwp1pqif0fAX1aEoOPByPfpjpUV7aRGd23DzwBJisIbaiw
+         D5h9wEAjNTJUDmrBkZsWVzsphqSFgHF0oFnZxb3g4SYRUdjFEkY9OiLi1hALtMllJZ2o
+         6zeDBxjdaFO11mvcM/yfVMfuTRn0TZ9QMIk9kvmH/yBN6M6USEOFbFnSShQv0S20+fVc
+         XIGK8/HaE9tmMAjCAC/z6QUdCNH0983JQlrJol4g6Mu48Bv7BUK3fvLj1Lty3h2d7Q1y
+         PTwA==
+X-Gm-Message-State: AOJu0YxYEYnUJRaiGIN/7SlzjDgC3jRbwKZaelmCWnrUuZ9xBHkpSi0b
+        bOcAY4TP1Wzb7yfOAn/D6rw2yij5s0zrIPLSV79QYQ==
+X-Google-Smtp-Source: AGHT+IFYmFywKXAzWWhg4qfxKE9/pCPls+VDtDPHa5McGJtGQk0XUmWH7jSIpHWbdFzkwKTT1x9JWg==
+X-Received: by 2002:a05:6e02:ec1:b0:357:a986:18ee with SMTP id i1-20020a056e020ec100b00357a98618eemr12760905ilk.1.1698242635601;
+        Wed, 25 Oct 2023 07:03:55 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id y13-20020a92090d000000b0034fccc27c11sm3735496ilg.76.2023.10.25.07.03.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 07:03:55 -0700 (PDT)
+Message-ID: <48d0ea0b-af74-4a2e-9961-0286466050a9@kernel.dk>
+Date:   Wed, 25 Oct 2023 08:03:54 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2354; i=brauner@kernel.org; h=from:subject:message-id; bh=pB1CVc+a7KCJItdLWoIFwMW3uBM8nk4RJurUO/3u5Fs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRaSpxNPW+UduvZZPPEvCMuKy+sN0u/Ortx6934rEXZLX9O ax4S7ShlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhIaxgjw9Er1SsOZn765x2vrVyZ9r n9Yk9q3T/f50e2l9os1n7L+oKRYfaZysq6TtEDlVduM3M+tZusema35uKis39tEpiXudw9zwQA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     io-uring <io-uring@vger.kernel.org>
+Cc:     Andres Freund <andres@anarazel.de>,
+        Dave Chinner <david@fromorbit.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] io_uring/rw: disable IOCB_DIO_CALLER_COMP
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,53 +71,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 16 Aug 2023 01:07:54 -0400, Gabriel Krisman Bertazi wrote:
-> This is v6 of the negative dentry on case-insensitive directories.
-> Thanks Eric for the review of the last iteration.  This version
-> drops the patch to expose the helper to check casefolding directories,
-> since it is not necessary in ecryptfs and it might be going away.  It
-> also addresses some documentation details, fix a build bot error and
-> simplifies the commit messages.  See the changelog in each patch for
-> more details.
-> 
-> [...]
+If an application does O_DIRECT writes with io_uring and the file system
+supports IOCB_DIO_CALLER_COMP, then completions of the dio write side is
+done from the task_work that will post the completion event for said
+write as well.
 
-Ok, let's put it into -next so it sees some testing.
-So it's too late for v6.7. Seems we forgot about this series.
-Sorry about that.
+Whenever a dio write is done against a file, the inode i_dio_count is
+elevated. This enables other callers to use inode_dio_wait() to wait for
+previous writes to complete. If we defer the full dio completion to
+task_work, we are dependent on that task_work being run before the
+inode i_dio_count can be decremented.
+
+If the same task that issues io_uring dio writes with
+IOCB_DIO_CALLER_COMP performs a synchronous system call that calls
+inode_dio_wait(), then we can deadlock as we're blocked sleeping on
+the event to become true, but not processing the completions that will
+result in the inode i_dio_count being decremented.
+
+Until we can guarantee that this is the case, then disable the deferred
+caller completions.
+
+Fixes: 099ada2c8726 ("io_uring/rw: add write support for IOCB_DIO_CALLER_COMP")
+Reported-by: Andres Freund <andres@anarazel.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
 ---
 
-Applied to the vfs.casefold branch of the vfs/vfs.git tree.
-Patches in the vfs.casefold branch should appear in linux-next soon.
+diff --git a/io_uring/rw.c b/io_uring/rw.c
+index c8c822fa7980..807d83ab756e 100644
+--- a/io_uring/rw.c
++++ b/io_uring/rw.c
+@@ -913,15 +913,6 @@ int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		kiocb_start_write(kiocb);
+ 	kiocb->ki_flags |= IOCB_WRITE;
+ 
+-	/*
+-	 * For non-polled IO, set IOCB_DIO_CALLER_COMP, stating that our handler
+-	 * groks deferring the completion to task context. This isn't
+-	 * necessary and useful for polled IO as that can always complete
+-	 * directly.
+-	 */
+-	if (!(kiocb->ki_flags & IOCB_HIPRI))
+-		kiocb->ki_flags |= IOCB_DIO_CALLER_COMP;
+-
+ 	if (likely(req->file->f_op->write_iter))
+ 		ret2 = call_write_iter(req->file, kiocb, &s->iter);
+ 	else if (req->file->f_op->write)
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+-- 
+Jens Axboe
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.casefold
-
-[1/9] ecryptfs: Reject casefold directory inodes
-      https://git.kernel.org/vfs/vfs/c/8512e7c7e665
-[2/9] 9p: Split ->weak_revalidate from ->revalidate
-      https://git.kernel.org/vfs/vfs/c/17f4423cb24a
-[3/9] fs: Expose name under lookup to d_revalidate hooks
-      https://git.kernel.org/vfs/vfs/c/24084e50e579
-[4/9] fs: Add DCACHE_CASEFOLDED_NAME flag
-      https://git.kernel.org/vfs/vfs/c/2daa2df800f8
-[5/9] libfs: Validate negative dentries in case-insensitive directories
-      https://git.kernel.org/vfs/vfs/c/8d879ccaf0f7
-[6/9] libfs: Chain encryption checks after case-insensitive revalidation
-      https://git.kernel.org/vfs/vfs/c/314e925d5a2c
-[7/9] libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
-      https://git.kernel.org/vfs/vfs/c/07f820b77c58
-[8/9] ext4: Enable negative dentries on case-insensitive lookup
-      https://git.kernel.org/vfs/vfs/c/2562ec77f11e
-[9/9] f2fs: Enable negative dentries on case-insensitive lookup
-      https://git.kernel.org/vfs/vfs/c/39d2dd36a065
