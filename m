@@ -2,141 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6AB7D7183
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 18:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042E67D7313
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 20:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbjJYQOK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Oct 2023 12:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
+        id S229453AbjJYSR7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Oct 2023 14:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbjJYQOJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 12:14:09 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE9DE5;
-        Wed, 25 Oct 2023 09:14:07 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5E67F5C03C5;
-        Wed, 25 Oct 2023 12:14:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 25 Oct 2023 12:14:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1698250447; x=1698336847; bh=Nh
-        EnZWqoZo0Kg5L43AInk7QmO23ZyI1W/a2ppKah2xI=; b=dbYwhZ7Tv74eqFulAd
-        HJNvPPEoIALttHmioLz5VmWTpFzKIHQLwfBmtFialUIIGf190m8TwreQWLzSADxW
-        qcTsDXI+isDz8oRt8+WmQmM1iuwwXD4HE6n/UEej5ZjmfMsilj1S+H19hDq4K27j
-        vvf/gfYz62vGGr2RHN3q/9uumAM0Zf9Q4VoF6j4sQ9s5kHuN+EtvxzJR6rcZwazA
-        QUfrDXe07sZ8QN1mxTd3rMckLxCK8W/o0xSbGxE/Vzyw0BHEIX8LeOpJKGOP9Atc
-        fbhS0yUTMfAzXKSl1CEsdWmuq/7EYt0IHQJ0ik77KwlAH3e2mVYd5PfgTWs+xHfo
-        WJ/Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698250447; x=1698336847; bh=NhEnZWqoZo0Kg
-        5L43AInk7QmO23ZyI1W/a2ppKah2xI=; b=hGmvOkmvpQ2QdvlXIyOJvc9vN+7In
-        tge1djYHERodtqJUDbk0nr87nbxIPj1AzmPSCEkClBmYUWpkpaz1ygEbuHiatT//
-        6Ke0WUCVNk+llZRFq9XMjZ4VX68HLrrZD1C0BgQVSlIr3JSKbrO2Q8lYtDWSSofY
-        iG4VNkS+2bKZ0zrqpzvEUcrCJcfsp8EcW4gVJ31I9OP0eCKt3Phzkxa7WmQbIvgU
-        L99Av9JK8kjKgEmUzdjR1TTQm+rh8SrVzrWAHeja8Fodlg46WllcVszz3N3Mufuf
-        Asjz8liLYM2Uj3S3MXfMs1qwAhgYx9x8teCzIGLtX4of/a8nhqLuWjLIg==
-X-ME-Sender: <xms:zz45ZZu72-pXflJyqWvQRNYFJUTMHcBx2QxC2EO6KY3e4x4ifHq3kA>
-    <xme:zz45ZSc_9g5c-W2cA8UYS1WnwWabvIf0cVB3uigL-VCZNJgDQIggfTUNMmdKgn7rR
-    SNnaINg_AZomcSqrQ>
-X-ME-Received: <xmr:zz45ZcxF6pybymZ2jOIvrVeeGoG0EdBGgrlMm47mdiCPKJu2fkoVq8r4Mk6SPfgLeWjJk18lLzG_URcPzsUMQEfLUoe52MFSsrAZvNe4Dor-tJP52Jgk33GAcBfM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
-    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtffrrg
-    htthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteevudei
-    tedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:zz45ZQNsaM8xj_2jJ0pqYKPaM3qAPAFML9Bz6wbRZyV2p0W_7_gpsQ>
-    <xmx:zz45ZZ9ziIlVw_IXmYsXrbj_Cqryv2eFyJjM-bgFQCGuk2j5-_ZUIQ>
-    <xmx:zz45ZQWxdCBQBfP59mkvfpcCja94Wq33cd-bBq_FeMRjeJAFcO08ZA>
-    <xmx:zz45Za0r_5DFZ0Rjp6SpWoJXYcKDdjfsTwLFwvDLc9yAOMgIDc1T7g>
-Feedback-ID: id4a34324:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Oct 2023 12:14:06 -0400 (EDT)
-Date:   Wed, 25 Oct 2023 09:14:05 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Shreeya Patel <shreeya.patel@collabora.com>,
-        linux-ext4@vger.kernel.org,
-        Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        io-uring@vger.kernel.org
-Subject: Re: task hung in ext4_fallocate #2
-Message-ID: <20231025161405.eroaskwdauj57wz6@awork3.anarazel.de>
-References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
- <20231018004335.GA593012@mit.edu>
- <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
- <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
- <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
- <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
- <ZThcATP9zOoxb4Ec@dread.disaster.area>
- <4ace2109-3d05-4ca0-b582-f7b8db88a0ca@kernel.dk>
- <20231025153135.kfnldzle3rglmfvp@awork3.anarazel.de>
- <b5578447-81f6-4207-b83d-812da7c981a5@kernel.dk>
+        with ESMTP id S229625AbjJYSR5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 14:17:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB859128;
+        Wed, 25 Oct 2023 11:17:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B417621B92;
+        Wed, 25 Oct 2023 18:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698257870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vbdhd2yAu7gd457T3ti6BWwAUO+s257Y2GNVgdylao=;
+        b=N0fn0rQ9XdGFJJ/xyvmMrLS83x6ox5xPkWzFW1FrXrmb+/RC4H5WeIWqrXJa1aADMNKwtC
+        uGEb98aKeQY9D3AGIlkk9e34sbp2ZxkuCZ8fyzm5s+OsWNWGlFG2ujNHYVtTAEIyittki1
+        gyMJVCEbBVrHTc0nCSrQGIh5Fsay2U8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698257870;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vbdhd2yAu7gd457T3ti6BWwAUO+s257Y2GNVgdylao=;
+        b=6j5LWuNiaRruS3yEe8pyBGlv4H5Uh+joYbwndNQgx3c+8VBR0NiouwI/XImW/vJTTmq6de
+        mTk1PLAsEhGu9KAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A658D13524;
+        Wed, 25 Oct 2023 18:17:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AeqRKM5bOWUNdwAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 25 Oct 2023 18:17:50 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 220AEA0679; Wed, 25 Oct 2023 20:17:50 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 20:17:50 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
+Subject: Re: [PATCH 07/10] ext2: Handle large block size directories in
+ ext2_delete_entry()
+Message-ID: <20231025181750.i2ibf27imrmpkqnt@quack3>
+References: <20230921200746.3303942-1-willy@infradead.org>
+ <20230921200746.3303942-7-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5578447-81f6-4207-b83d-812da7c981a5@kernel.dk>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230921200746.3303942-7-willy@infradead.org>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -6.60
+X-Spamd-Result: default: False [-6.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         RCPT_COUNT_FIVE(0.00)[5];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FREEMAIL_CC(0.00)[suse.com,vger.kernel.org,gmail.com]
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
-
-On 2023-10-25 09:36:01 -0600, Jens Axboe wrote:
-> On 10/25/23 9:31 AM, Andres Freund wrote:
-> > Hi,
-> > 
-> > On 2023-10-24 18:34:05 -0600, Jens Axboe wrote:
-> >> Yeah I'm going to do a revert of the io_uring side, which effectively
-> >> disables it. Then a revised series can be done, and when done, we could
-> >> bring it back.
-> > 
-> > I'm queueing a test to confirm that the revert actually fixes things.
-> > Is there still benefit in testing your other patch in addition
-> > upstream?
+On Thu 21-09-23 21:07:44, Matthew Wilcox (Oracle) wrote:
+> If the block size is > PAGE_SIZE, we need to calculate these offsets
+> relative to the start of the folio, not the page.
 > 
-> Don't think there's much point to testing the quick hack, I believe it
-> should work. So testing the most recent revert is useful, though I also
-> fully expect that to work.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-I'll leave it running for a few hours, just to be sure.
+So I had a fresh look at the patches and I like them so I'll take them into
+my tree for the merge window. Just this patch has somewhat surprising
+subject and changelog - I guess it should be standard "convert to folios"
+kind of thing, shouldn't it? Because a lot of dir code is not prepared for
+"large block size" so it is strange to speak about it in
+ext2_delete_entry(). I can fix it up on commit.
 
+								Honza
 
-> And then we can test the re-enable once that is sent out, I did prepare a
-> series. But timing is obviously unfortunate for that, as it'll miss 6.6 and
-> now also 6.7 due to the report timing.
-
-Yea, it's too bad. I'm somewhat lucky to have hit it at all, it was just due
-to having procrastinated on talk preparation and having to test things on my
-laptop instead of my workstation (where the same workload never triggered the
-problem), while travelling.
-
-
-> FWIW, I wrote a small test case which does seem to trigger it very fast,
-> as expected:
-
-Ah, nice.
-
-It's too bad stuff like this can't be discovered by lockdep et al..
-
-Greetings,
-
-Andres Freund
+> ---
+>  fs/ext2/dir.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+> index 2fc910e99234..7e75cfaa709c 100644
+> --- a/fs/ext2/dir.c
+> +++ b/fs/ext2/dir.c
+> @@ -586,16 +586,20 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
+>   */
+>  int ext2_delete_entry(struct ext2_dir_entry_2 *dir, struct page *page)
+>  {
+> -	struct inode *inode = page->mapping->host;
+> -	char *kaddr = (char *)((unsigned long)dir & PAGE_MASK);
+> -	unsigned from = offset_in_page(dir) & ~(ext2_chunk_size(inode)-1);
+> -	unsigned to = offset_in_page(dir) +
+> -				ext2_rec_len_from_disk(dir->rec_len);
+> +	struct folio *folio = page_folio(page);
+> +	struct inode *inode = folio->mapping->host;
+> +	size_t from, to;
+> +	char *kaddr;
+>  	loff_t pos;
+> -	ext2_dirent *pde = NULL;
+> -	ext2_dirent *de = (ext2_dirent *)(kaddr + from);
+> +	ext2_dirent *de, *pde = NULL;
+>  	int err;
+>  
+> +	from = offset_in_folio(folio, dir);
+> +	to = from + ext2_rec_len_from_disk(dir->rec_len);
+> +	kaddr = (char *)dir - from;
+> +	from &= ~(ext2_chunk_size(inode)-1);
+> +	de = (ext2_dirent *)(kaddr + from);
+> +
+>  	while ((char*)de < (char*)dir) {
+>  		if (de->rec_len == 0) {
+>  			ext2_error(inode->i_sb, __func__,
+> @@ -606,18 +610,18 @@ int ext2_delete_entry(struct ext2_dir_entry_2 *dir, struct page *page)
+>  		de = ext2_next_entry(de);
+>  	}
+>  	if (pde)
+> -		from = offset_in_page(pde);
+> -	pos = page_offset(page) + from;
+> -	lock_page(page);
+> -	err = ext2_prepare_chunk(page, pos, to - from);
+> +		from = offset_in_folio(folio, pde);
+> +	pos = folio_pos(folio) + from;
+> +	folio_lock(folio);
+> +	err = ext2_prepare_chunk(&folio->page, pos, to - from);
+>  	if (err) {
+> -		unlock_page(page);
+> +		folio_unlock(folio);
+>  		return err;
+>  	}
+>  	if (pde)
+>  		pde->rec_len = ext2_rec_len_to_disk(to - from);
+>  	dir->inode = 0;
+> -	ext2_commit_chunk(page, pos, to - from);
+> +	ext2_commit_chunk(&folio->page, pos, to - from);
+>  	inode->i_mtime = inode_set_ctime_current(inode);
+>  	EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
+>  	mark_inode_dirty(inode);
+> -- 
+> 2.40.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
