@@ -2,80 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84127D5EEF
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 02:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFF87D5F17
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 02:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344703AbjJYAGb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Oct 2023 20:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
+        id S229563AbjJYAeM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Oct 2023 20:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbjJYAGb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 20:06:31 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC4210CE
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27d45f5658fso4020942a91.3
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
+        with ESMTP id S229548AbjJYAeL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 20:34:11 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D89D7D
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:34:09 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bcbfecf314so1085088b3a.1
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698192389; x=1698797189; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9cuh9pnEhjPE9K0Glopq/FvywTEeksxy32LVZfdqmQU=;
-        b=It68cFMDDobg3AcgynMInXvOe8BYNj7Txn1HGrjQIbtVjlJvfO1IbT9dkjQ65tCLbz
-         1lK2GYe0U6NxcLPacJmcRONNZ1u+wxgXgPLM0qY2Y3uaB4rLkhUbm3v8YsA2rsTPQjpX
-         neN7TYxy5dtQLrNBusW+3991fM1HBtqWVKyCShPC5kfl51n+9kTsWXCsnO9Qvqvs83+l
-         bHpvuGOBqMHr1mS9MI7vJK4Nc4WCkz/gO4Z0fSc1Hr7oACjbDdRKy3rfhxOiNvN/PBSc
-         XSehuM1hZIAqPQxNWAz4AYaIawVWJkjVyBWgNXVmK66icDxpPYZsRwmxD+FJp5Jsf7X4
-         vkiw==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698194049; x=1698798849; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a8AeR5cX4ECeRAMqM9bk6xqQoLMHM5hoApBMejuGgnI=;
+        b=KYtqphirFdawzCn/Dq5xn85ab1MyhJjXJ7/NiVHXNAadcY5yrdEjowK7XWoWJSIjUP
+         D0V4lqxwGcgtd9SBz1yxaZVZSSa09GlKK6Ip9t/21DxCGnDCF3MZyFVx6ezJ5tn30Ig3
+         TjAtJsKwY8UiXPTcHmBG9+r/w1SCzDe2i/7NBN5zr5/R8ollqxHoxv81vhkz42xiH06l
+         wPYkUBzyaTDopl8aY0IlXkjprWy1Wj/Z/TUPGKugTDoDhR3FlUTXFDYiwroN2e5veA03
+         +Tf+eIF9G/XaqvNYkq4USxzRTbbieB8AMUwSO0wC7ysJSDkskg9qSa2CQh7htFPm/hVS
+         Jt5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698192389; x=1698797189;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9cuh9pnEhjPE9K0Glopq/FvywTEeksxy32LVZfdqmQU=;
-        b=gZBsfOmM8nD6ZDSvZhYC8bzMN74oIywMkAA3P734yh2i3K94q9QhTykaTzd5nylezJ
-         0VTJ/V+dt1af50ktKfsScsUe/6x9YZBnMFl21IJfmRG8ua77ROEVM9Q2ZxCymjb/TP5V
-         ZU1bavgGPMR3aa9b4H6kv5dMI2OOOPw611JfHaflmnwqHcj6GcDRIi0XGmEAHeabYkjG
-         copphPOEKnZKAQiZPYp2ds14MGnLZ4hexCDnYFpN+yfiVumGgtJGF6+RAcmZk172EnS6
-         5QSrn74IKp7NPdow+y1Wp1ssmawY31jWP5QVhUsvNttg2PYb8TjofabQSW5uB3pd5sTJ
-         mPqA==
-X-Gm-Message-State: AOJu0YwrssBb7PuFQG5Yx458Uc93hMsFK9D1OqiPLlYBvIoMLIRUhc2I
-        8Blk3KuAXx0nPE2Cs1rC5tUAXg==
-X-Google-Smtp-Source: AGHT+IGSZwJ0taLJbzZLoOLZipUFJapJ0Aw/EtOpCWXjmdi7fPpKB8dPeh4YhevyeutE/Ky3HymhDA==
-X-Received: by 2002:a17:90b:3d8a:b0:27d:b87b:a9d4 with SMTP id pq10-20020a17090b3d8a00b0027db87ba9d4mr13144116pjb.7.1698192389083;
-        Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id l21-20020a17090a599500b00277560ecd5dsm9144553pji.46.2023.10.24.17.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 17:06:28 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qvRPl-003WMY-2O;
-        Wed, 25 Oct 2023 11:06:25 +1100
-Date:   Wed, 25 Oct 2023 11:06:25 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jens Axboe <axboe@kernel.dk>
+        d=1e100.net; s=20230601; t=1698194049; x=1698798849;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a8AeR5cX4ECeRAMqM9bk6xqQoLMHM5hoApBMejuGgnI=;
+        b=B4xlD8oedRNf6/eWU4isep+jOlxdbZpIj4L1BOUJzGVf8zG/yLtt6CnHhXPwx1NOjl
+         rz7znsnNzUEP1f5A5ngqKMHw/ddaKq0RzQnt3tjC4ZtSY/CNrZfxcpWTDMKQxUEV3i/P
+         +0hOArHtrGRWofi+snElGNexQd2twBJQ3ABuj40zfXIyL4o8nTJHdpOqKsw/fkgCwDXg
+         UFLlNBdJc3o1eftqvqGj6DrchE2oD4jQcMlGVWWpD+OeEigkH404woaa9LEqLe+DsRsi
+         JxZ25jFHwiF2BMsNic/DZC+VVGTu8iAru+EsAsczF0BvyoKQkesLT0Jd7ryeyKsXir+C
+         lxuw==
+X-Gm-Message-State: AOJu0YwMQe/4an0nXmPpeb7tYcpRGwAMEWp8/n6EyylpucMoxLlarcK9
+        CMucARaRkVnV3pg6IWZpGU0Q+g==
+X-Google-Smtp-Source: AGHT+IGpxAnEvrI6l7SDpL7iESVoor6ZCUMq1w/wBpUXkzIX2xbD4rgxQX9ZLlZIuL82wxU6qAWDSg==
+X-Received: by 2002:a05:6a20:c188:b0:15a:2c0b:6c81 with SMTP id bg8-20020a056a20c18800b0015a2c0b6c81mr17059900pzb.3.1698194048863;
+        Tue, 24 Oct 2023 17:34:08 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id a6-20020aa79706000000b006b22218cb92sm8124187pfg.43.2023.10.24.17.34.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 17:34:07 -0700 (PDT)
+Message-ID: <4ace2109-3d05-4ca0-b582-f7b8db88a0ca@kernel.dk>
+Date:   Tue, 24 Oct 2023 18:34:05 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: task hung in ext4_fallocate #2
+Content-Language: en-US
+To:     Dave Chinner <david@fromorbit.com>
 Cc:     Andres Freund <andres@anarazel.de>, Theodore Ts'o <tytso@mit.edu>,
         Thorsten Leemhuis <regressions@leemhuis.info>,
         Shreeya Patel <shreeya.patel@collabora.com>,
         linux-ext4@vger.kernel.org,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, gustavo.padovan@collabora.com,
-        zsm@google.com, garrick@google.com,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
         Linux regressions mailing list <regressions@lists.linux.dev>,
         io-uring@vger.kernel.org
-Subject: Re: task hung in ext4_fallocate #2
-Message-ID: <ZThcATP9zOoxb4Ec@dread.disaster.area>
 References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
  <20231018004335.GA593012@mit.edu>
  <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
  <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
  <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
  <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
+ <ZThcATP9zOoxb4Ec@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <ZThcATP9zOoxb4Ec@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -85,54 +84,75 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 12:35:26PM -0600, Jens Axboe wrote:
-> On 10/24/23 8:30 AM, Jens Axboe wrote:
-> > I don't think this is related to the io-wq workers doing non-blocking
-> > IO.
-
-The io-wq worker that has deadlocked _must_ be doing blocking IO. If
-it was doing non-blocking IO (i.e. IOCB_NOWAIT) then it would have
-done a trylock and returned -EAGAIN to the worker for it to try
-again later. I'm not sure that would avoid the issue, however - it
-seems to me like it might just turn it into a livelock rather than a
-deadlock....
-
-> > The callback is eventually executed by the task that originally
-> > submitted the IO, which is the owner and not the async workers. But...
-> > If that original task is blocked in eg fallocate, then I can see how
-> > that would potentially be an issue.
-> > 
-> > I'll take a closer look.
+On 10/24/23 6:06 PM, Dave Chinner wrote:
+> On Tue, Oct 24, 2023 at 12:35:26PM -0600, Jens Axboe wrote:
+>> On 10/24/23 8:30 AM, Jens Axboe wrote:
+>>> I don't think this is related to the io-wq workers doing non-blocking
+>>> IO.
 > 
-> I think the best way to fix this is likely to have inode_dio_wait() be
-> interruptible, and return -ERESTARTSYS if it should be restarted. Now
-> the below is obviously not a full patch, but I suspect it'll make ext4
-> and xfs tick, because they should both be affected.
+> The io-wq worker that has deadlocked _must_ be doing blocking IO. If
+> it was doing non-blocking IO (i.e. IOCB_NOWAIT) then it would have
+> done a trylock and returned -EAGAIN to the worker for it to try
+> again later. I'm not sure that would avoid the issue, however - it
+> seems to me like it might just turn it into a livelock rather than a
+> deadlock....
 
-How does that solve the problem? Nothing will issue a signal to the
-process that is waiting in inode_dio_wait() except userspace, so I
-can't see how this does anything to solve the problem at hand...
+Sorry typo, yes they are doing blocking IO, that's all they ever do. My
+point is that it's not related to the issue.
 
-I'm also very leary of adding new error handling complexity to paths
-like truncate, extent cloning, fallocate, etc which expect to block
-on locks until they can perform the operation safely.
+>>> The callback is eventually executed by the task that originally
+>>> submitted the IO, which is the owner and not the async workers. But...
+>>> If that original task is blocked in eg fallocate, then I can see how
+>>> that would potentially be an issue.
+>>>
+>>> I'll take a closer look.
+>>
+>> I think the best way to fix this is likely to have inode_dio_wait() be
+>> interruptible, and return -ERESTARTSYS if it should be restarted. Now
+>> the below is obviously not a full patch, but I suspect it'll make ext4
+>> and xfs tick, because they should both be affected.
+> 
+> How does that solve the problem? Nothing will issue a signal to the
+> process that is waiting in inode_dio_wait() except userspace, so I
+> can't see how this does anything to solve the problem at hand...
 
-On further thinking, this could be a self deadlock with
-just async direct IO submission - submit an async DIO with
-IOCB_CALLER_COMP, then run an unaligned async DIO that attempts to
-drain in-flight DIO before continuing. Then the thread waits in
-inode_dio_wait() because it can't run the completion that will drop
-the i_dio_count to zero.
+Except task_work, which when it completes, will increment the i_dio
+count again. This is the whole point of the half assed patch I sent out.
 
-Hence it appears to me that we've missed some critical constraints
-around nesting IO submission and completion when using
-IOCB_CALLER_COMP. Further, it really isn't clear to me how deep the
-scope of this problem is yet, let alone what the solution might be.
+> I'm also very leary of adding new error handling complexity to paths
+> like truncate, extent cloning, fallocate, etc which expect to block
+> on locks until they can perform the operation safely.
 
-With all this in mind, and how late this is in the 6.6 cycle, can we
-just revert the IOCB_CALLER_COMP changes for now?
+I actually looked at all of them, ext4 and xfs specifically. It really
+doesn't seem to bad.
 
--Dave.
+> On further thinking, this could be a self deadlock with
+> just async direct IO submission - submit an async DIO with
+> IOCB_CALLER_COMP, then run an unaligned async DIO that attempts to
+> drain in-flight DIO before continuing. Then the thread waits in
+> inode_dio_wait() because it can't run the completion that will drop
+> the i_dio_count to zero.
+
+No, because those will be non-blocking. Any blocking IO will go via
+io-wq, and that won't then hit the deadlock. If you're doing
+inode_dio_wait() from the task itself for a non-blocking issue, then
+that would surely be an issue. But we should not be doing that, and we
+are checking for it.
+
+> Hence it appears to me that we've missed some critical constraints
+> around nesting IO submission and completion when using
+> IOCB_CALLER_COMP. Further, it really isn't clear to me how deep the
+> scope of this problem is yet, let alone what the solution might be.
+
+I think you're missing exactly what the deadlock is.
+
+> With all this in mind, and how late this is in the 6.6 cycle, can we
+> just revert the IOCB_CALLER_COMP changes for now?
+
+Yeah I'm going to do a revert of the io_uring side, which effectively
+disables it. Then a revised series can be done, and when done, we could
+bring it back.
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Jens Axboe
+
