@@ -2,122 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484497D6F16
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 16:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CC37D70F8
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 17:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234990AbjJYOj4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Oct 2023 10:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S233016AbjJYPbo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Oct 2023 11:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344792AbjJYOEA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 10:04:00 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6665B185
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 07:03:56 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a6643ba679so40445839f.1
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 07:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698242636; x=1698847436; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xmmBJe4qx/Z0FecJmP2HKoWoGSGv5MNLqFmWTEvkhKI=;
-        b=a/8qgnaEyPA2+d8L9scDYh0UYOxTJMS3BK0vc5+KINadxbd8jQdWq6+LEwx98nOVly
-         QYPXB7WikXnW7AijKNEUhH3X3mNTwxws0+hr9itZeAWfE7zkEv+j0sQaEQyDGjTfPI5m
-         Z63kUysNIdyjWSZS7XeBfu+j3muxPa0v1WQoll8aqn8y9vFZVyrvshAYBcKoxkC03yT9
-         Jsl+Syxfw0fyhDGofGoSgoVI/H2VyOu0CF4ILccExRaYfztxPUiyBg3E20syJ87UiipT
-         ubsIRvA5ZZO5cfEixyMI9Idhv53GILJcjwqxvJauCzg0yB9iWlMK+e/gRdweVnuXGgAv
-         jqOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698242636; x=1698847436;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xmmBJe4qx/Z0FecJmP2HKoWoGSGv5MNLqFmWTEvkhKI=;
-        b=KXkqeIK9iJQtWmFQT7lQvUyNdWG0D6LtpABzGiMuiAdAgAA6YXe1N/RGwpNdzdCXXx
-         nJvuIU4vJELCCIkbuZpWNFYwp1pqif0fAX1aEoOPByPfpjpUV7aRGd23DzwBJisIbaiw
-         D5h9wEAjNTJUDmrBkZsWVzsphqSFgHF0oFnZxb3g4SYRUdjFEkY9OiLi1hALtMllJZ2o
-         6zeDBxjdaFO11mvcM/yfVMfuTRn0TZ9QMIk9kvmH/yBN6M6USEOFbFnSShQv0S20+fVc
-         XIGK8/HaE9tmMAjCAC/z6QUdCNH0983JQlrJol4g6Mu48Bv7BUK3fvLj1Lty3h2d7Q1y
-         PTwA==
-X-Gm-Message-State: AOJu0YxYEYnUJRaiGIN/7SlzjDgC3jRbwKZaelmCWnrUuZ9xBHkpSi0b
-        bOcAY4TP1Wzb7yfOAn/D6rw2yij5s0zrIPLSV79QYQ==
-X-Google-Smtp-Source: AGHT+IFYmFywKXAzWWhg4qfxKE9/pCPls+VDtDPHa5McGJtGQk0XUmWH7jSIpHWbdFzkwKTT1x9JWg==
-X-Received: by 2002:a05:6e02:ec1:b0:357:a986:18ee with SMTP id i1-20020a056e020ec100b00357a98618eemr12760905ilk.1.1698242635601;
-        Wed, 25 Oct 2023 07:03:55 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id y13-20020a92090d000000b0034fccc27c11sm3735496ilg.76.2023.10.25.07.03.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 07:03:55 -0700 (PDT)
-Message-ID: <48d0ea0b-af74-4a2e-9961-0286466050a9@kernel.dk>
-Date:   Wed, 25 Oct 2023 08:03:54 -0600
+        with ESMTP id S233509AbjJYPbn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 11:31:43 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA80E12A;
+        Wed, 25 Oct 2023 08:31:40 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 485AD5C0256;
+        Wed, 25 Oct 2023 11:31:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 25 Oct 2023 11:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1698247898; x=1698334298; bh=ai
+        Kn5n1MmCFRtwo5nv9MUY6v3o4pix8zhxOK0UebHoU=; b=qlZiRKS1hTasqNg1V3
+        6EMQ8eFcjguQKiyx51dthiJWn7PeWXjptt4ZasZPeaAfXtd+4AjNiqBz30JkSe+m
+        wcfV9E8sb/udijqwx5QXCsTwzB/JpLeYFG8tHyUC6XIm6gXr+JlyZMl8EYJ/v11S
+        4IbbZQN6P3qqP4+ksKOEPTT7ukFoXc22TiMXG2FLtv0uAsAKp+M0Iv0wzJWSkFrQ
+        cXM2xmoYnMWrpFw+ul+phHv0BCh2XetJM0tbfLWK9f42ljNZF+LWvVquGOIJX3uT
+        /G7wT6PDIol/jbH3jW6QhTbpPaejIYZnGQyFIjhwxOO8dSjSFQ6MJTewiaKbjpsz
+        hfgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1698247898; x=1698334298; bh=aiKn5n1MmCFRt
+        wo5nv9MUY6v3o4pix8zhxOK0UebHoU=; b=aG9JQ6VcOe1TF/z3wY+6b2jsplXNQ
+        dvyUMjp8wxRK6ywjTxpq1Fje6P4fcB0nQnMMee5wHdZB+a4ucUng9pMOeABOxxml
+        m+Nm391FtIFjLuZ+iIzeU2nTLpQeJV6DovlZ+iTE9ia0WZtay9sC2hgBOnnOMeUj
+        bZ7dq/YSybDz4p/ZpNivfjUDAi4kKRiTMy/Du8zIcsvNs8Mwo7yhLOtC8efeDlv8
+        jSvpxcr33uNq8UEXIBw/FQ0SLwU+xw8OJAIRsWLGbpZwYZvLfPPWRfctjavcjfjh
+        Nsnz9NzJaSVFC2EUpkmHRkwjXOQ9fwrBcbg1h6+Y4DO6Tyik7GSf4M0Ag==
+X-ME-Sender: <xms:2TQ5ZZNkE7jiyLA5sxO2KBcCBVjxDOG-6cx4NWSYf7qgUzIXhYfgKg>
+    <xme:2TQ5Zb8AGEbtUuW00kjcw56S5UR9PUKppskZ8dr0q5lqTfLpcV1bX0fbSzg7MaKIY
+    _rOhdKPFyX-MM0lDw>
+X-ME-Received: <xmr:2TQ5ZYRDWLJnMACKezkyJtr7feL_zaHfk29WQYAYUxKkGK9TWfgQaStAg2GrpVf8jrquInXyxwCfyahw3l6l57Mlp6z4gww59p8-tkxjtt-SvI0P7bNRNe_1gVa5>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
+    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtffrrg
+    htthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteevudei
+    tedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvshesrghnrghrrgiivghlrdguvg
+X-ME-Proxy: <xmx:2TQ5ZVvD0DZDpRu3VBcgin-3OVd5hv0URQYfmEEvNuiHX1-gfAELtw>
+    <xmx:2TQ5ZRe0jiSIvdqTRlRm2ObbkelgGlivqFcfYgPihiaXuT7ax2IODQ>
+    <xmx:2TQ5ZR30qT7waBTZvxtt_dx9vwkqKyAaa-J200x2C2ExSWrqXAOoRg>
+    <xmx:2jQ5ZSV6djBNyKGJ1S8TXj4qcTlm6tPOEeaSJJ-Potq7Nezc1pSEnQ>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Oct 2023 11:31:37 -0400 (EDT)
+Date:   Wed, 25 Oct 2023 08:31:35 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-ext4@vger.kernel.org,
+        Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        io-uring@vger.kernel.org
+Subject: Re: task hung in ext4_fallocate #2
+Message-ID: <20231025153135.kfnldzle3rglmfvp@awork3.anarazel.de>
+References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
+ <20231018004335.GA593012@mit.edu>
+ <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
+ <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
+ <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
+ <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
+ <ZThcATP9zOoxb4Ec@dread.disaster.area>
+ <4ace2109-3d05-4ca0-b582-f7b8db88a0ca@kernel.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     io-uring <io-uring@vger.kernel.org>
-Cc:     Andres Freund <andres@anarazel.de>,
-        Dave Chinner <david@fromorbit.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] io_uring/rw: disable IOCB_DIO_CALLER_COMP
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ace2109-3d05-4ca0-b582-f7b8db88a0ca@kernel.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If an application does O_DIRECT writes with io_uring and the file system
-supports IOCB_DIO_CALLER_COMP, then completions of the dio write side is
-done from the task_work that will post the completion event for said
-write as well.
+Hi,
 
-Whenever a dio write is done against a file, the inode i_dio_count is
-elevated. This enables other callers to use inode_dio_wait() to wait for
-previous writes to complete. If we defer the full dio completion to
-task_work, we are dependent on that task_work being run before the
-inode i_dio_count can be decremented.
+On 2023-10-24 18:34:05 -0600, Jens Axboe wrote:
+> Yeah I'm going to do a revert of the io_uring side, which effectively
+> disables it. Then a revised series can be done, and when done, we could
+> bring it back.
 
-If the same task that issues io_uring dio writes with
-IOCB_DIO_CALLER_COMP performs a synchronous system call that calls
-inode_dio_wait(), then we can deadlock as we're blocked sleeping on
-the event to become true, but not processing the completions that will
-result in the inode i_dio_count being decremented.
+I'm queueing a test to confirm that the revert actually fixes things. Is there
+still benefit in testing your other patch in addition upstream?
 
-Until we can guarantee that this is the case, then disable the deferred
-caller completions.
+Greetings,
 
-Fixes: 099ada2c8726 ("io_uring/rw: add write support for IOCB_DIO_CALLER_COMP")
-Reported-by: Andres Freund <andres@anarazel.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
----
-
-diff --git a/io_uring/rw.c b/io_uring/rw.c
-index c8c822fa7980..807d83ab756e 100644
---- a/io_uring/rw.c
-+++ b/io_uring/rw.c
-@@ -913,15 +913,6 @@ int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 		kiocb_start_write(kiocb);
- 	kiocb->ki_flags |= IOCB_WRITE;
- 
--	/*
--	 * For non-polled IO, set IOCB_DIO_CALLER_COMP, stating that our handler
--	 * groks deferring the completion to task context. This isn't
--	 * necessary and useful for polled IO as that can always complete
--	 * directly.
--	 */
--	if (!(kiocb->ki_flags & IOCB_HIPRI))
--		kiocb->ki_flags |= IOCB_DIO_CALLER_COMP;
--
- 	if (likely(req->file->f_op->write_iter))
- 		ret2 = call_write_iter(req->file, kiocb, &s->iter);
- 	else if (req->file->f_op->write)
-
--- 
-Jens Axboe
-
+Andres Freund
