@@ -2,79 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AF57D5C47
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Oct 2023 22:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84127D5EEF
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 02:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343823AbjJXUTX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Oct 2023 16:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S1344703AbjJYAGb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Oct 2023 20:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343752AbjJXUTW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 16:19:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A70CD7A;
-        Tue, 24 Oct 2023 13:19:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63283C433C7;
-        Tue, 24 Oct 2023 20:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698178760;
-        bh=/jXqC7vbvPCmettO3DV3ntCzZ6lqFawlTkTOPw+dpkg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cNFVEaHU/JSGFWmYYSgGbEUwcbU6E57XzHmF6PqxxLbNxe6qOiw0skHlgT2FAmt4E
-         pi7vTvmXtMoxa+QN5NsjIdLL7cod+koC+MMTHlEpmPJUMjUC2aCFbd6V/QPJYLMFs8
-         HeGKpzhI7MJVwlt6Q6WqHDPcW/boyVT98qJk/U++wdAZeq1FkdpLsbC5n4rWR+02Sm
-         4Zz7+vBjkN7QlHu9uefsCd9OegvQAC62mZ6Y5yTZ4a6WJMK/LSFJN+jV5JHIiYtpq6
-         BfJsXaU5B0axY0tFkCUNbOVQ0CdE3cC5UHu6WxcIlleK2U9pGJasSUCR6GhHkowEoo
-         o0g7zaVbON3Zw==
-Message-ID: <62828738f237c3d972f71f8da150b3366eb3e1a0.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 24 Oct 2023 16:19:17 -0400
-In-Reply-To: <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
-References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <2c74660bc44557dba8391758535e4012cbea3724.camel@kernel.org>
-         <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S1344663AbjJYAGb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 20:06:31 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC4210CE
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27d45f5658fso4020942a91.3
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698192389; x=1698797189; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9cuh9pnEhjPE9K0Glopq/FvywTEeksxy32LVZfdqmQU=;
+        b=It68cFMDDobg3AcgynMInXvOe8BYNj7Txn1HGrjQIbtVjlJvfO1IbT9dkjQ65tCLbz
+         1lK2GYe0U6NxcLPacJmcRONNZ1u+wxgXgPLM0qY2Y3uaB4rLkhUbm3v8YsA2rsTPQjpX
+         neN7TYxy5dtQLrNBusW+3991fM1HBtqWVKyCShPC5kfl51n+9kTsWXCsnO9Qvqvs83+l
+         bHpvuGOBqMHr1mS9MI7vJK4Nc4WCkz/gO4Z0fSc1Hr7oACjbDdRKy3rfhxOiNvN/PBSc
+         XSehuM1hZIAqPQxNWAz4AYaIawVWJkjVyBWgNXVmK66icDxpPYZsRwmxD+FJp5Jsf7X4
+         vkiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698192389; x=1698797189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9cuh9pnEhjPE9K0Glopq/FvywTEeksxy32LVZfdqmQU=;
+        b=gZBsfOmM8nD6ZDSvZhYC8bzMN74oIywMkAA3P734yh2i3K94q9QhTykaTzd5nylezJ
+         0VTJ/V+dt1af50ktKfsScsUe/6x9YZBnMFl21IJfmRG8ua77ROEVM9Q2ZxCymjb/TP5V
+         ZU1bavgGPMR3aa9b4H6kv5dMI2OOOPw611JfHaflmnwqHcj6GcDRIi0XGmEAHeabYkjG
+         copphPOEKnZKAQiZPYp2ds14MGnLZ4hexCDnYFpN+yfiVumGgtJGF6+RAcmZk172EnS6
+         5QSrn74IKp7NPdow+y1Wp1ssmawY31jWP5QVhUsvNttg2PYb8TjofabQSW5uB3pd5sTJ
+         mPqA==
+X-Gm-Message-State: AOJu0YwrssBb7PuFQG5Yx458Uc93hMsFK9D1OqiPLlYBvIoMLIRUhc2I
+        8Blk3KuAXx0nPE2Cs1rC5tUAXg==
+X-Google-Smtp-Source: AGHT+IGSZwJ0taLJbzZLoOLZipUFJapJ0Aw/EtOpCWXjmdi7fPpKB8dPeh4YhevyeutE/Ky3HymhDA==
+X-Received: by 2002:a17:90b:3d8a:b0:27d:b87b:a9d4 with SMTP id pq10-20020a17090b3d8a00b0027db87ba9d4mr13144116pjb.7.1698192389083;
+        Tue, 24 Oct 2023 17:06:29 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id l21-20020a17090a599500b00277560ecd5dsm9144553pji.46.2023.10.24.17.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 17:06:28 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qvRPl-003WMY-2O;
+        Wed, 25 Oct 2023 11:06:25 +1100
+Date:   Wed, 25 Oct 2023 11:06:25 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Andres Freund <andres@anarazel.de>, Theodore Ts'o <tytso@mit.edu>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        linux-ext4@vger.kernel.org,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, gustavo.padovan@collabora.com,
+        zsm@google.com, garrick@google.com,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        io-uring@vger.kernel.org
+Subject: Re: task hung in ext4_fallocate #2
+Message-ID: <ZThcATP9zOoxb4Ec@dread.disaster.area>
+References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
+ <20231018004335.GA593012@mit.edu>
+ <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
+ <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
+ <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
+ <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,46 +85,54 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-10-24 at 09:40 -1000, Linus Torvalds wrote:
-> On Tue, 24 Oct 2023 at 09:07, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > The new flag idea is a good one. The catch though is that there are no
-> > readers of i_version in-kernel other than NFSD and IMA, so there would
-> > be no in-kernel users of I_VERSION_QUERIED_STRICT.
->=20
-> I actually see that as an absolute positive.
->=20
-> I think we should *conceptually* do those two flags, but then realize
-> that there are no users of the STRICT version, and just skip it.
->=20
-> So practically speaking, we'd end up with just a weaker version of
-> I_VERSION_QUERIED that is that "I don't care about atime" case.
->=20
+On Tue, Oct 24, 2023 at 12:35:26PM -0600, Jens Axboe wrote:
+> On 10/24/23 8:30 AM, Jens Axboe wrote:
+> > I don't think this is related to the io-wq workers doing non-blocking
+> > IO.
 
-To be clear, this is not kernel-wide behavior. Most filesystems already
-don't bump their i_version on atime updates. XFS is the only one that
-does. ext4 used to do that too, but we fixed that several months ago.
-I did try to just fix XFS in the same way, but the patch was NAK'ed.
+The io-wq worker that has deadlocked _must_ be doing blocking IO. If
+it was doing non-blocking IO (i.e. IOCB_NOWAIT) then it would have
+done a trylock and returned -EAGAIN to the worker for it to try
+again later. I'm not sure that would avoid the issue, however - it
+seems to me like it might just turn it into a livelock rather than a
+deadlock....
 
-> I really can't find any use that would *want* to see i_version updates
-> for any atime updates. Ever.
->=20
-> We may have had historical user interfaces for i_version, but I can't
-> find any currently.
->=20
-> But to be very very clear: I've only done some random grepping, and I
-> may have missed something. I'm not dismissing Dave's worries, and he
-> may well be entirely correct.
->=20
-> Somebody would need to do a much more careful check than my "I can't
-> find anything".
+> > The callback is eventually executed by the task that originally
+> > submitted the IO, which is the owner and not the async workers. But...
+> > If that original task is blocked in eg fallocate, then I can see how
+> > that would potentially be an issue.
+> > 
+> > I'll take a closer look.
+> 
+> I think the best way to fix this is likely to have inode_dio_wait() be
+> interruptible, and return -ERESTARTSYS if it should be restarted. Now
+> the below is obviously not a full patch, but I suspect it'll make ext4
+> and xfs tick, because they should both be affected.
 
-Exactly. I'm not really an XFS guy, so I took those folks at their word
-that this was behavior that they just can't trivially change.
+How does that solve the problem? Nothing will issue a signal to the
+process that is waiting in inode_dio_wait() except userspace, so I
+can't see how this does anything to solve the problem at hand...
 
-None of the in-kernel callers that look at i_version want it to be
-incremented on atime-onlt updates, however. So IIRC, the objection was
-due to offline repair/analysis tools that depend this the value being
-incremented in a specific way.
---=20
-Jeff Layton <jlayton@kernel.org>
+I'm also very leary of adding new error handling complexity to paths
+like truncate, extent cloning, fallocate, etc which expect to block
+on locks until they can perform the operation safely.
+
+On further thinking, this could be a self deadlock with
+just async direct IO submission - submit an async DIO with
+IOCB_CALLER_COMP, then run an unaligned async DIO that attempts to
+drain in-flight DIO before continuing. Then the thread waits in
+inode_dio_wait() because it can't run the completion that will drop
+the i_dio_count to zero.
+
+Hence it appears to me that we've missed some critical constraints
+around nesting IO submission and completion when using
+IOCB_CALLER_COMP. Further, it really isn't clear to me how deep the
+scope of this problem is yet, let alone what the solution might be.
+
+With all this in mind, and how late this is in the 6.6 cycle, can we
+just revert the IOCB_CALLER_COMP changes for now?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
