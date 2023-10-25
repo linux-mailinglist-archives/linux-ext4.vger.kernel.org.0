@@ -2,157 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFF87D5F17
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 02:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BC37D6479
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Oct 2023 10:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjJYAeM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Oct 2023 20:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        id S234497AbjJYIFg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Oct 2023 04:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJYAeL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Oct 2023 20:34:11 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D89D7D
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:34:09 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bcbfecf314so1085088b3a.1
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Oct 2023 17:34:09 -0700 (PDT)
+        with ESMTP id S234308AbjJYIFe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Oct 2023 04:05:34 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3162110A
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 01:05:30 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c434c33ec0so36815115ad.3
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Oct 2023 01:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698194049; x=1698798849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a8AeR5cX4ECeRAMqM9bk6xqQoLMHM5hoApBMejuGgnI=;
-        b=KYtqphirFdawzCn/Dq5xn85ab1MyhJjXJ7/NiVHXNAadcY5yrdEjowK7XWoWJSIjUP
-         D0V4lqxwGcgtd9SBz1yxaZVZSSa09GlKK6Ip9t/21DxCGnDCF3MZyFVx6ezJ5tn30Ig3
-         TjAtJsKwY8UiXPTcHmBG9+r/w1SCzDe2i/7NBN5zr5/R8ollqxHoxv81vhkz42xiH06l
-         wPYkUBzyaTDopl8aY0IlXkjprWy1Wj/Z/TUPGKugTDoDhR3FlUTXFDYiwroN2e5veA03
-         +Tf+eIF9G/XaqvNYkq4USxzRTbbieB8AMUwSO0wC7ysJSDkskg9qSa2CQh7htFPm/hVS
-         Jt5A==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698221129; x=1698825929; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TiIdV9I/vN4NVgu/NUA15BW6zhATVMOiHC4HTyzCHqs=;
+        b=UTs0M7R4wts9o/uquvfK3s87E+x3YjsG+KRYaaleO19rL51Hsc3RU5x/Cx26E39mtm
+         +txrFU+WF9mLa+9lIHh7GCDa6HBeq1xSTOfbUi62fMKjXS8zbAqvQbovWtIILHXJW4d0
+         OjHtl42hpD5DgoAMUT1hTkwUl0N0lfbdwxZKyTP3O6HoDRtNjchLhRzGPNVmCr9AooUR
+         2cprVGjIbLbyaHEajJAr4ee6EfGgmPRM92IvS356y1DEpzIxnKTqhyvbnLYeYVTWXxHN
+         fAtr1cOIIppydKRBLQEJkTry01jqq3OopwEv7qYSnPgul7HXfNzmGgOPyI3m4V2Pzpey
+         jPfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698194049; x=1698798849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698221129; x=1698825929;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a8AeR5cX4ECeRAMqM9bk6xqQoLMHM5hoApBMejuGgnI=;
-        b=B4xlD8oedRNf6/eWU4isep+jOlxdbZpIj4L1BOUJzGVf8zG/yLtt6CnHhXPwx1NOjl
-         rz7znsnNzUEP1f5A5ngqKMHw/ddaKq0RzQnt3tjC4ZtSY/CNrZfxcpWTDMKQxUEV3i/P
-         +0hOArHtrGRWofi+snElGNexQd2twBJQ3ABuj40zfXIyL4o8nTJHdpOqKsw/fkgCwDXg
-         UFLlNBdJc3o1eftqvqGj6DrchE2oD4jQcMlGVWWpD+OeEigkH404woaa9LEqLe+DsRsi
-         JxZ25jFHwiF2BMsNic/DZC+VVGTu8iAru+EsAsczF0BvyoKQkesLT0Jd7ryeyKsXir+C
-         lxuw==
-X-Gm-Message-State: AOJu0YwMQe/4an0nXmPpeb7tYcpRGwAMEWp8/n6EyylpucMoxLlarcK9
-        CMucARaRkVnV3pg6IWZpGU0Q+g==
-X-Google-Smtp-Source: AGHT+IGpxAnEvrI6l7SDpL7iESVoor6ZCUMq1w/wBpUXkzIX2xbD4rgxQX9ZLlZIuL82wxU6qAWDSg==
-X-Received: by 2002:a05:6a20:c188:b0:15a:2c0b:6c81 with SMTP id bg8-20020a056a20c18800b0015a2c0b6c81mr17059900pzb.3.1698194048863;
-        Tue, 24 Oct 2023 17:34:08 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa79706000000b006b22218cb92sm8124187pfg.43.2023.10.24.17.34.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 17:34:07 -0700 (PDT)
-Message-ID: <4ace2109-3d05-4ca0-b582-f7b8db88a0ca@kernel.dk>
-Date:   Tue, 24 Oct 2023 18:34:05 -0600
+        bh=TiIdV9I/vN4NVgu/NUA15BW6zhATVMOiHC4HTyzCHqs=;
+        b=EmI1DU11uJ5VLhtmFwBEv0jeKRdW4sIIEoT1ne/Lgop0XRhE2/CFOse9ZOcn09l23R
+         X1NQiZZR2PKpyO29f50TDd0jPW5RFs/F82S9mxJW98LwlxBqGue7mCK3taOtvzS5TT1j
+         FNpgFntH412X6zZJ6Irc4TURsI3KdvCpegZTt95Kl5olOggImh46BmqX8aigesDBJ/Gj
+         q8RTKKtWB8PObSYNxKRWNgJOwCfRRIwmRgafoxFQeOtZmoK114bQdmdyA0kDfh/J+2g0
+         Hn9cWNQ2m/PcS0GGyKwMGPJa13Nm/CiQR5tbFZNItmdTwdfMdI3xYHu31t3NuuYa2IqF
+         joTw==
+X-Gm-Message-State: AOJu0YwRs1wjA40SpsjpU6lQYozi9adzADiKZarREnj4XzbYpq074nRt
+        YNN2Ozq4T4PNyN42bJG0VPEflA==
+X-Google-Smtp-Source: AGHT+IF43YsoxJyfCmigF2ByrRCajkxHiglXcP/PVFXGzk0/EIpOE4fGDG8KrZpVCFCUqgg1CO+/2g==
+X-Received: by 2002:a17:902:f7cd:b0:1c6:30d1:7214 with SMTP id h13-20020a170902f7cd00b001c630d17214mr11982619plw.55.1698221129506;
+        Wed, 25 Oct 2023 01:05:29 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170902e5ce00b001c61901ed2esm8529452plf.219.2023.10.25.01.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 01:05:28 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qvYtJ-003fEw-0V;
+        Wed, 25 Oct 2023 19:05:25 +1100
+Date:   Wed, 25 Oct 2023 19:05:25 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+References: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+ <ZTGncMVw19QVJzI6@dread.disaster.area>
+ <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+ <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+ <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+ <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: task hung in ext4_fallocate #2
-Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Andres Freund <andres@anarazel.de>, Theodore Ts'o <tytso@mit.edu>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Shreeya Patel <shreeya.patel@collabora.com>,
-        linux-ext4@vger.kernel.org,
-        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        gustavo.padovan@collabora.com, zsm@google.com, garrick@google.com,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        io-uring@vger.kernel.org
-References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
- <20231018004335.GA593012@mit.edu>
- <20231018025009.ulkykpefwdgpfvzf@awork3.anarazel.de>
- <ZTcZ9+n+jX6UDrgd@dread.disaster.area>
- <74921cba-6237-4303-bb4c-baa22aaf497b@kernel.dk>
- <ab4f311b-9700-4d3d-8f2e-09ccbcfb3df5@kernel.dk>
- <ZThcATP9zOoxb4Ec@dread.disaster.area>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZThcATP9zOoxb4Ec@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/24/23 6:06 PM, Dave Chinner wrote:
-> On Tue, Oct 24, 2023 at 12:35:26PM -0600, Jens Axboe wrote:
->> On 10/24/23 8:30 AM, Jens Axboe wrote:
->>> I don't think this is related to the io-wq workers doing non-blocking
->>> IO.
+On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
+> > On Tue, Oct 24, 2023 at 6:40 AM Dave Chinner <david@fromorbit.com> wrote:
+> > > 
+> > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
+> > > > > 
+> > > > > The problem is the first read request after a modification has been
+> > > > > made. That is causing relatime to see mtime > atime and triggering
+> > > > > an atime update. XFS sees this, does an atime update, and in
+> > > > > committing that persistent inode metadata update, it calls
+> > > > > inode_maybe_inc_iversion(force = false) to check if an iversion
+> > > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+> > > > > i_version and tells XFS to persist it.
+> > > > 
+> > > > Could we perhaps just have a mode where we don't increment i_version
+> > > > for just atime updates?
+> > > > 
+> > > > Maybe we don't even need a mode, and could just decide that atime
+> > > > updates aren't i_version updates at all?
+> > > 
+> > > We do that already - in memory atime updates don't bump i_version at
+> > > all. The issue is the rare persistent atime update requests that
+> > > still happen - they are the ones that trigger an i_version bump on
+> > > XFS, and one of the relatime heuristics tickle this specific issue.
+> > > 
+> > > If we push the problematic persistent atime updates to be in-memory
+> > > updates only, then the whole problem with i_version goes away....
+> > > 
+> > > > Yes, yes, it's obviously technically a "inode modification", but does
+> > > > anybody actually *want* atime updates with no actual other changes to
+> > > > be version events?
+> > > 
+> > > Well, yes, there was. That's why we defined i_version in the on disk
+> > > format this way well over a decade ago. It was part of some deep
+> > > dark magical HSM beans that allowed the application to combine
+> > > multiple scans for different inode metadata changes into a single
+> > > pass. atime changes was one of the things it needed to know about
+> > > for tiering and space scavenging purposes....
+> > > 
+> > 
+> > But if this is such an ancient mystical program, why do we have to
+> > keep this XFS behavior in the present?
+> > BTW, is this the same HSM whose DMAPI ioctls were deprecated
+> > a few years back?
+
+Drop the attitude, Amir.
+
+That "ancient mystical program" is this:
+
+https://buy.hpe.com/us/en/enterprise-solutions/high-performance-computing-solutions/high-performance-computing-storage-solutions/hpc-storage-solutions/hpe-data-management-framework-7/p/1010144088
+
+Yup, that product is backed by a proprietary descendent of the Irix
+XFS code base XFS that is DMAPI enabled and still in use today. It's
+called HPE XFS these days....
+
+> > I mean, I understand that you do not want to change the behavior of
+> > i_version update without an opt-in config or mount option - let the distro
+> > make that choice.
+> > But calling this an "on-disk format change" is a very long stretch.
+
+Telling the person who created, defined and implemented the on disk
+format that they don't know what constitutes a change of that
+on-disk format seems kinda Dunning-Kruger to me....
+
+There are *lots* of ways that di_changecount is now incompatible
+with the VFS change counter. That's now defined as "i_version should
+only change when [cm]time is changed".
+
+di_changecount is defined to be a count of the number of changes
+made to the attributes of the inode.  It's not just atime at issue
+here - we bump di_changecount when make any inode change, including
+background work that does not otherwise change timestamps. e.g.
+allocation at writeback time, unwritten extent conversion, on-disk
+EOF extension at IO completion, removal of speculative
+pre-allocation beyond EOF, etc.
+
+IOWs, di_changecount was never defined as a linux "i_version"
+counter, regardless of the fact we originally we able to implement
+i_version with it - all extra bumps to di_changecount were not
+important to the users of i_version for about a decade.
+
+Unfortunately, the new i_version definition is very much
+incompatible with the existing di_changecount definition and that's
+the underlying problem here. i.e. the problem is not that we bump
+i_version on atime, it's that di_changecount is now completely
+incompatible with the new i_version change semantics.
+
+To implement the new i_version semantics exactly, we need to add a
+new field to the inode to hold this information.
+If we change the on disk format like this, then the atime
+problems go away because the new field would not get updated on
+atime updates. We'd still be bumping di_changecount on atime
+updates, though, because that's what is required by the on-disk
+format.
+
+I'm really trying to avoid changing the on-disk format unless it
+is absolutely necessary. If we can get the in-memory timestamp
+updates to avoid tripping di_changecount updates then the atime
+problems go away.
+
+If we can get [cm]time sufficiently fine grained that we don't need
+i_version, then we can turn off i_version in XFS and di_changecount
+ends up being entirely internal. That's what was attempted with
+generic multi-grain timestamps, but that hasn't worked.
+
+Another options is for XFS to play it's own internal tricks with
+[cm]time granularity and turn off i_version. e.g. limit external
+timestamp visibility to 1us and use the remaining dozen bits of the
+ns field to hold a change counter for updates within a single coarse
+timer tick. This guarantees the timestamp changes within a coarse
+tick for the purposes of change detection, but we don't expose those
+bits to applications so applications that compare timestamps across
+inodes won't get things back to front like was happening with the
+multi-grain timestamps....
+
+Another option is to work around the visible symptoms of the
+semantic mismatch between i_version and di_changecount. The only
+visible symptom we currently know about is the atime vs i_version
+issue.  If people are happy for us to simply ignore VFS atime
+guidelines (i.e. ignore realtime/lazytime) and do completely our own
+stuff with timestamp update deferal, then that also solve the
+immediate issues.
+
+> > Does xfs_repair guarantee that changes of atime, or any inode changes
+> > for that matter, update i_version? No, it does not.
+> > So IMO, "atime does not update i_version" is not an "on-disk format change",
+> > it is a runtime behavior change, just like lazytime is.
 > 
-> The io-wq worker that has deadlocked _must_ be doing blocking IO. If
-> it was doing non-blocking IO (i.e. IOCB_NOWAIT) then it would have
-> done a trylock and returned -EAGAIN to the worker for it to try
-> again later. I'm not sure that would avoid the issue, however - it
-> seems to me like it might just turn it into a livelock rather than a
-> deadlock....
+> This would certainly be my preference. I don't want to break any
+> existing users though.
 
-Sorry typo, yes they are doing blocking IO, that's all they ever do. My
-point is that it's not related to the issue.
+That's why I'm trying to get some kind of consensus on what
+rules and/or atime configurations people are happy for me to break
+to make it look to users like there's a viable working change
+attribute being supplied by XFS without needing to change the on
+disk format.
 
->>> The callback is eventually executed by the task that originally
->>> submitted the IO, which is the owner and not the async workers. But...
->>> If that original task is blocked in eg fallocate, then I can see how
->>> that would potentially be an issue.
->>>
->>> I'll take a closer look.
->>
->> I think the best way to fix this is likely to have inode_dio_wait() be
->> interruptible, and return -ERESTARTSYS if it should be restarted. Now
->> the below is obviously not a full patch, but I suspect it'll make ext4
->> and xfs tick, because they should both be affected.
-> 
-> How does that solve the problem? Nothing will issue a signal to the
-> process that is waiting in inode_dio_wait() except userspace, so I
-> can't see how this does anything to solve the problem at hand...
+> Perhaps this ought to be a mkfs option? Existing XFS filesystems could
+> still behave with the legacy behavior, but we could make mkfs.xfs build
+> filesystems by default that work like NFS requires.
 
-Except task_work, which when it completes, will increment the i_dio
-count again. This is the whole point of the half assed patch I sent out.
+If we require mkfs to set a flag to change behaviour, then we're
+talking about making an explicit on-disk format change to select the
+optional behaviour. That's precisely what I want to avoid.
 
-> I'm also very leary of adding new error handling complexity to paths
-> like truncate, extent cloning, fallocate, etc which expect to block
-> on locks until they can perform the operation safely.
-
-I actually looked at all of them, ext4 and xfs specifically. It really
-doesn't seem to bad.
-
-> On further thinking, this could be a self deadlock with
-> just async direct IO submission - submit an async DIO with
-> IOCB_CALLER_COMP, then run an unaligned async DIO that attempts to
-> drain in-flight DIO before continuing. Then the thread waits in
-> inode_dio_wait() because it can't run the completion that will drop
-> the i_dio_count to zero.
-
-No, because those will be non-blocking. Any blocking IO will go via
-io-wq, and that won't then hit the deadlock. If you're doing
-inode_dio_wait() from the task itself for a non-blocking issue, then
-that would surely be an issue. But we should not be doing that, and we
-are checking for it.
-
-> Hence it appears to me that we've missed some critical constraints
-> around nesting IO submission and completion when using
-> IOCB_CALLER_COMP. Further, it really isn't clear to me how deep the
-> scope of this problem is yet, let alone what the solution might be.
-
-I think you're missing exactly what the deadlock is.
-
-> With all this in mind, and how late this is in the 6.6 cycle, can we
-> just revert the IOCB_CALLER_COMP changes for now?
-
-Yeah I'm going to do a revert of the io_uring side, which effectively
-disables it. Then a revised series can be done, and when done, we could
-bring it back.
+-Dave.
 
 -- 
-Jens Axboe
-
+Dave Chinner
+david@fromorbit.com
