@@ -2,110 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1D97DAA4A
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Oct 2023 02:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AE37DAB34
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Oct 2023 07:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjJ2AnD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 Oct 2023 20:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S229451AbjJ2G2P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 29 Oct 2023 02:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2AnC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 Oct 2023 20:43:02 -0400
-X-Greylist: delayed 437 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 Oct 2023 17:42:58 PDT
-Received: from tulikuusama2.dnainternet.net (tulikuusama2.dnainternet.net [83.102.40.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8555DD3
-        for <linux-ext4@vger.kernel.org>; Sat, 28 Oct 2023 17:42:58 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by tulikuusama2.dnainternet.net (Postfix) with ESMTP id BA5F320468;
-        Sun, 29 Oct 2023 03:35:38 +0300 (EEST)
-X-Virus-Scanned: DNA Internet at dnainternet.net
-X-Spam-Score: 0.251
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-Authentication-Results: tulikuusama2.dnainternet.net (DNA Internet);
-        dkim=pass (1024-bit key) header.d=anssih.iki.fi
-Received: from tulikuusama2.dnainternet.net ([83.102.40.151])
-        by localhost (tulikuusama2.dnainternet.net [127.0.0.1]) (DNA Internet, port 10041)
-        with ESMTP id FAVsPegAGPs5; Sun, 29 Oct 2023 03:35:38 +0300 (EEST)
-Received: from kirsikkapuu2.dnainternet.net (kirsikkapuu2.dnainternet.net [83.102.40.52])
-        by tulikuusama2.dnainternet.net (Postfix) with ESMTP id 826E320097;
-        Sun, 29 Oct 2023 03:35:38 +0300 (EEST)
-Received: from mail.onse.fi (87-95-225-209.bb.dnainternet.fi [87.95.225.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by kirsikkapuu2.dnainternet.net (Postfix) with ESMTPS id 3ED7E3FF7;
-        Sun, 29 Oct 2023 03:35:36 +0300 (EEST)
-Received: by mail.onse.fi (Postfix, from userid 1000)
-        id D230B32033B; Sun, 29 Oct 2023 03:35:35 +0300 (EEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.onse.fi D230B32033B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anssih.iki.fi;
-        s=default; t=1698539735;
-        bh=u9jqFsQ9TTJFw0kwpXKo1Z7Fh8LXErWI9HXlzoMaQuc=;
-        h=From:To:Subject:From;
-        b=IBwpIoZpOqtAeuqGIlE034PkS41sDjGIxCxnI7rL1A1u4L9fGps3MjcgLhD/vzk8q
-         PwUwqUZNpP0z97qLG8B/dR3+/6nH7KFOgUBaMH/jg6bfjyzBYiO8cxCK0pry1KMly6
-         xGL596zXwSl06lqUKejNdoAEcH/uiWXNA0Bfn5O4=
-From:   Anssi Hannula <anssi.hannula@iki.fi>
-To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: [PATCH] resize2fs: account for META_BG in group descriptor check
-Date:   Sun, 29 Oct 2023 03:34:33 +0300
-Message-ID: <20231029003505.656956-1-anssi.hannula@iki.fi>
-X-Mailer: git-send-email 2.41.0
+        with ESMTP id S229446AbjJ2G2O (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 29 Oct 2023 02:28:14 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9190ECC
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Oct 2023 23:28:11 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qwzHO-0002WO-2k; Sun, 29 Oct 2023 07:28:10 +0100
+Message-ID: <e920c120-e463-463b-8d06-e539c23368d2@leemhuis.info>
+Date:   Sun, 29 Oct 2023 07:28:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Subject: Re: task hung in ext4_fallocate #2
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+          Linux regressions mailing list 
+          <regressions@lists.linux.dev>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     linux-ext4@vger.kernel.org
+References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
+ <00375284-2071-4dea-9009-9cd2d0de71e1@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <00375284-2071-4dea-9009-9cd2d0de71e1@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698560891;c0008d86;
+X-HE-SMSGID: 1qwzHO-0002WO-2k
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The block group descriptor count sanity check added in 21bad2b6797f
-("resize2fs: prevent block group descriptors from overflowing the first
-bg") prevents enlarging the filesystem when the block group descriptors
-would not fit in the first block group.
+[TLDR: This mail in primarily relevant for Linux regression tracking. A
+change or fix related to the regression discussed in this thread was
+posted or applied, but it did not use a Closes: tag to point to the
+report, as Linus and the documentation call for. Things happen, no
+worries -- but now the regression tracking bot needs to be told manually
+about the fix. See link in footer if these mails annoy you.]
 
-However, this does not take into account the META_BG feature in which
-case not all the descriptors need to be stored in the first block group.
+On 20.10.23 09:01, Linux regression tracking #adding (Thorsten Leemhuis)
+wrote:
+> On 17.10.23 05:37, Andres Freund wrote:
+>>
+>> As previously reported in https://lore.kernel.org/all/20231004004247.zkswbseowwwc6vvk@alap3.anarazel.de/
+>> I found some hangs below ext4_fallocate(), in 6.6-rc*.  As it looks like my
+>> issue was unrelated to the thread I had responded to, I was asked to start
+>> this new thread.
+>>
+>> I just was able to reproduce the issue, after upgrading to 6.6-rc6 - this time
+>> it took ~55min of high load (io_uring using branch of postgres, running a
+>> write heavy transactional workload concurrently with concurrent bulk data
+>> load) to trigger the issue.
+>>
+>> For now I have left the system running, in case there's something you would
+>> like me to check while the system is hung.
+>> [...]
+> 
+> Thanks for the report. To be sure the issue doesn't fall through the
+> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+> tracking bot:
+> 
+> #regzbot ^introduced v6.5..v6.6-rc6
+> #regzbot title ext4: task hung in ext4_fallocate
+> #regzbot ignore-activity
 
-This prevents, for example, enlarging filesystems with 4KiB block size
-past 256TiB.
+#regzbot fix: 838b35bb6a89c36da07ca39520ec071d
+#regzbot ignore-activity
 
-Relax the check to allow resizing META_BG filesystems past the limit.
-
-Also, always allow on-line resizing as the kernel takes care of
-converting the filesystem to use META_BG when needed.
-
-Link: https://github.com/tytso/e2fsprogs/issues/117
-Fixes: 21bad2b6797f ("resize2fs: prevent block group descriptors from overflowing the first bg")
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
----
- resize/main.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/resize/main.c b/resize/main.c
-index f914c050..8c626202 100644
---- a/resize/main.c
-+++ b/resize/main.c
-@@ -556,11 +556,13 @@ int main (int argc, char ** argv)
- 						 EXT2_BLOCKS_PER_GROUP(fs->super));
- 	new_desc_blocks = ext2fs_div_ceil(new_group_desc_count,
- 					  EXT2_DESC_PER_BLOCK(fs->super));
--	if ((new_desc_blocks + fs->super->s_first_data_block) >
-+	if (!ext2fs_has_feature_meta_bg(fs->super) &&
-+	    !(mount_flags & EXT2_MF_MOUNTED) &&
-+	    (new_desc_blocks + fs->super->s_first_data_block) >
- 	    EXT2_BLOCKS_PER_GROUP(fs->super)) {
- 		com_err(program_name, 0,
--			_("New size results in too many block group "
--			  "descriptors.\n"));
-+			_("New size requires on-line resizing for meta_bg "
-+			  "conversion, please mount the filesystem first\n"));
- 		goto errout;
- 	}
- 
--- 
-2.41.0
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
