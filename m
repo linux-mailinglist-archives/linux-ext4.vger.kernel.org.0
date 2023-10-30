@@ -2,73 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642597DC2FC
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 00:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D25B7DC32F
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 00:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjJ3XMm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Oct 2023 19:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
+        id S231307AbjJ3Xed (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Oct 2023 19:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjJ3XMl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Oct 2023 19:12:41 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2046ED
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Oct 2023 16:12:37 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9adca291f99so753432166b.2
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Oct 2023 16:12:37 -0700 (PDT)
+        with ESMTP id S231235AbjJ3Xec (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Oct 2023 19:34:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1878AC2;
+        Mon, 30 Oct 2023 16:34:30 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-280208d0679so2009212a91.3;
+        Mon, 30 Oct 2023 16:34:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698707556; x=1699312356; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=I9soNDg/CzKcFVIkPX7HzsMrN43wo2kJXg9OOVu3o/I=;
-        b=CGvpu934Hc5hnmVyibq3Yt+N3cIVjGUC74iaGQXhaGVhpYXcbaEpQjmm6YaaE7u6PK
-         sGq1J8qKYV9/oj+R9ZUR4dgplMYf4Q2WiGL3wsg2z1TxETPc8aVKISOz2YevZzxoMl4f
-         nMSnnE2L34UlyBgEFgpnkSkXO09MffeKMxmzM=
+        d=gmail.com; s=20230601; t=1698708869; x=1699313669; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+CB/3ERKRQdAoGXS7P/nKVgYxNOJttrjEEJi0MqI70I=;
+        b=StsKUXHnHL0oe/T5YUem4UDTgF6IduM78QLJe1Bkc8+gM2JpJfJIuxoZbvyKTPPde5
+         btq8Y3o7Tk/b1Hev5abk8sjWk0YVK5hdlOsMs1x+4uqHFmX2Ljn1pNnXuK96aKznjRJa
+         5st8Me2+B1vFja3JXpjSjTyWfquKapF0B/5bkFFDy/qQYoBfYaLeBMpPHoq5iEShT8pP
+         ArgC3w7LcsY4szuUEH/9I3nUoJyeggXGvyA3zI/zEb+X66qRjtbpNt6RIS0rZ5iMlKT5
+         qSojvfE/vv/NsJznqIqpWosItRl5ExLZMLIw3KmrEcHYdAEdjBY/e9xZl+xKKPKcjTpB
+         DpIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698707556; x=1699312356;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I9soNDg/CzKcFVIkPX7HzsMrN43wo2kJXg9OOVu3o/I=;
-        b=QVK5G1R0r1m1VvvEUuY+lElRu9n+TemHnLiHFWnF/jDXGPcaqvAb5j2W2b0V3o0e2N
-         0IuHHCRkXTGxndv52Z5eZS8Zb8aS/6z+tPRGoavWZ5QIr6rostMcN3CVJgjmJSwpquJ+
-         u/Z2SFB0Vr6z5GEbx+hbCJ+y3YAEpgEGRs/gc5EeEo7l16HS89PrvEeyhJjKNMWplgtP
-         4w6Mi4QmouIkWJg37XRmQB/6BUECYneyRR2gSYEEQ6mBPpfMuiPocdbaf1VfTE3EvRkd
-         rIbcZ9d3gTIKb8IaqtNI4FC+/Jm1/UC0XQrRGhk70KN6vctJhwxY7+m9BQvEXy7F17GP
-         CqTw==
-X-Gm-Message-State: AOJu0Yxk16PlyywABwTPtJXmuXMn+/AFcxJZEualu86qX3WbwPJy9nvk
-        vVEKt5oVEV2f0YzsThP6R7raSGRYubSk+X0OnZjr0A==
-X-Google-Smtp-Source: AGHT+IF1WXO9WuPwRsh/yj6ukLYl9+/sa8uocASaWDy0hrFR7Blv4nM+bQ7Z3HZmfxKCPbeC5sYyqA==
-X-Received: by 2002:a17:906:db09:b0:9be:fc31:8cd4 with SMTP id xj9-20020a170906db0900b009befc318cd4mr9477674ejb.18.1698707556102;
-        Mon, 30 Oct 2023 16:12:36 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id i24-20020a1709063c5800b009ae54585aebsm23981ejg.89.2023.10.30.16.12.35
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 16:12:35 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso1542746a12.1
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Oct 2023 16:12:35 -0700 (PDT)
-X-Received: by 2002:a17:907:25c4:b0:9ae:4776:5a3a with SMTP id
- ae4-20020a17090725c400b009ae47765a3amr9873098ejc.39.1698707534524; Mon, 30
- Oct 2023 16:12:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698708869; x=1699313669;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+CB/3ERKRQdAoGXS7P/nKVgYxNOJttrjEEJi0MqI70I=;
+        b=ZVs6qr/YtOP3M/ikA/csc7k2OjEX9VLksZLsSDk8JFPs7LvICo31Vw+kZcfR5zKW5C
+         3ob5hYePaqxJu9SvlW1LJagvx+EPTf23pxNCwKCuh+Bm6Vstm+RuMjPzQtvXYlKeN1co
+         4AKRj79qgYf27ZlCwNb2iO91eJMJjUrjlncOVhUjpUWTGPWguUer2uEcCMP17jiwc0pB
+         x28QOHxPTkTCZWBTqDS4MhmLYh64FoYE4/ZPiyFDCE7Q1nGkemAMuVu7qkhVw4gy1ZzQ
+         /T/aItqaFORLnZ2XrGOXF8fQCC8Eoz67dewWAYKbnXzuHdx8lnA22QoUesrZIaYgVbG2
+         bMqA==
+X-Gm-Message-State: AOJu0Yzrp+mDny8AvaG2bSELavPMZrM3FqObjD8NGXQ0KbS76ThBN14w
+        1A0RmoxGaBwPjJ1b/Jx+Z+jYNz1O6GdQNKFJ6qg=
+X-Google-Smtp-Source: AGHT+IEAugpy3wr2zQZYMIj1sg1O84YQKmvDQqdjxa/hgZpDKapgYd0DVREWOS9HC7ol9Dny9A/VBbe0vPnwbLGx634=
+X-Received: by 2002:a17:90a:b004:b0:280:4f82:68ac with SMTP id
+ x4-20020a17090ab00400b002804f8268acmr3176366pjq.24.1698708869296; Mon, 30 Oct
+ 2023 16:34:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+References: <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
  <ZTcBI2xaZz1GdMjX@dread.disaster.area> <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
  <ZTc8tClCRkfX3kD7@dread.disaster.area> <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
  <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
  <ZTjMRRqmlJ+fTys2@dread.disaster.area> <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
  <ZTnNCytHLGoJY9ds@dread.disaster.area> <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area>
-In-Reply-To: <ZUAwFkAizH1PrIZp@dread.disaster.area>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 30 Oct 2023 13:11:56 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
-Message-ID: <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+In-Reply-To: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+From:   ronnie sahlberg <ronniesahlberg@gmail.com>
+Date:   Tue, 31 Oct 2023 09:34:17 +1000
+Message-ID: <CAN05THQZKe5e+KCWX4gbz6MH633q6wTbNbukLpeTPKcRSWFo-w@mail.gmail.com>
 Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
  timestamp handing
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
         Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Kent Overstreet <kent.overstreet@linux.dev>,
         Christian Brauner <brauner@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -89,9 +84,10 @@ Cc:     Jeff Layton <jlayton@kernel.org>,
         linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
         linux-nfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,101 +95,199 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 12:37, Dave Chinner <david@fromorbit.com> wrote:
+On Fri, 27 Oct 2023 at 20:36, Jeff Layton <jlayton@kernel.org> wrote:
 >
-> If XFS can ignore relatime or lazytime persistent updates for given
-> situations, then *we don't need to make periodic on-disk updates of
-> atime*. This makes the whole problem of "persistent atime update bumps
-> i_version" go away because then we *aren't making persistent atime
-> updates* except when some other persistent modification that bumps
-> [cm]time occurs.
-
-Well, I think this should be split into two independent questions:
-
- (a) are relatime or lazytime atime updates persistent if nothing else changes?
-
- (b) do atime updates _ever_ update i_version *regardless* of relatime
-or lazytime?
-
-and honestly, I think the best answer to (b) would be that "no,
-i_version should simply not change for atime updates". And I think
-that answer is what it is because no user of i_version seems to want
-it.
-
-Now, the reason it's a single question for you is that apparently for
-XFS, the only thing that matters is "inode was written to disk" and
-that "di_changecount" value is thus related to the persistence of
-atime updates, but splitting di_changecount out to be a separate thing
-from i_version seems to be on the table, so I think those two things
-really could be independent issues.
-
-> But I don't want to do this unconditionally - for systems not
-> running anything that samples i_version we want relatime/lazytime
-> to behave as they are supposed to and do periodic persistent updates
-> as per normal. Principle of least surprise and all that jazz.
-
-Well - see above: I think in a perfect world, we'd simply never change
-i_version at all for any atime updates, and relatime/lazytime simply
-wouldn't be an issue at all wrt i_version.
-
-Wouldn't _that_ be the trule "least surprising" behavior? Considering
-that nobody wants i_version to change for what are otherwise pure
-reads (that's kind of the *definition* of atime, after all).
-
-Now, the annoyance here is that *both* (a) and (b) then have that
-impact of "i_version no longer tracks di_changecount".
-
-So I don't think the issue here is "i_version" per se. I think in a
-vacuum, the best option of i_version is pretty obvious.  But if you
-want i_version to track di_changecount, *then* you end up with that
-situation where the persistence of atime matters, and i_version needs
-to update whenever a (persistent) atime update happens.
-
-> So we really need an indication for inodes that we should enable this
-> mode for the inode. I have asked if we can have per-operation
-> context flag to trigger this given the needs for io_uring to have
-> context flags for timestamp updates to be added.
-
-I really think some kind of new and even *more* complex and
-non-intuitive behavior is the worst of both worlds. Having atime
-updates be conditionally persistent - on top of already being delayed
-by lazytime/relatime - and having the persistence magically change
-depending on whether something wants to get i_version updates - sounds
-just completely crazy.
-
-Particularly as *none* of the people who want i_version updates
-actually want them for atime at all.
-
-So I really think this all boils down to "is xfs really willing to
-split bi_changecount from i_version"?
-
-> I have asked if we can have an inode flag set by the VFS or
-> application code for this. e.g. a flag set by nfsd whenever it accesses a
-> given inode.
+> On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
+> > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
+> > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
+> > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> > > > > On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
+> > > > > > On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fro=
+morbit.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrot=
+e:
+> > > > > > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit=
+.com> wrote:
+> > > > > > Does xfs_repair guarantee that changes of atime, or any inode c=
+hanges
+> > > > > > for that matter, update i_version? No, it does not.
+> > > > > > So IMO, "atime does not update i_version" is not an "on-disk fo=
+rmat change",
+> > > > > > it is a runtime behavior change, just like lazytime is.
+> > > > >
+> > > > > This would certainly be my preference. I don't want to break any
+> > > > > existing users though.
+> > > >
+> > > > That's why I'm trying to get some kind of consensus on what
+> > > > rules and/or atime configurations people are happy for me to break
+> > > > to make it look to users like there's a viable working change
+> > > > attribute being supplied by XFS without needing to change the on
+> > > > disk format.
+> > > >
+> > >
+> > > I agree that the only bone of contention is whether to count atime
+> > > updates against the change attribute. I think we have consensus that =
+all
+> > > in-kernel users do _not_ want atime updates counted against the chang=
+e
+> > > attribute. The only real question is these "legacy" users of
+> > > di_changecount.
+> >
+> > Please stop refering to "legacy users" of di_changecount. Whether
+> > there are users or not is irrelevant - it is defined by the current
+> > on-disk format specification, and as such there may be applications
+> > we do not know about making use of the current behaviour.
+> >
+> > It's like a linux syscall - we can't remove them because there may
+> > be some user we don't know about still using that old syscall. We
+> > simply don't make changes that can potentially break user
+> > applications like that.
+> >
+> > The on disk format is the same - there is software out that we don't
+> > know about that expects a certain behaviour based on the
+> > specification. We don't break the on disk format by making silent
+> > behavioural changes - we require a feature flag to indicate
+> > behaviour has changed so that applications can take appropriate
+> > actions with stuff they don't understand.
+> >
+> > The example for this is the BIGTIME timestamp format change. The on
+> > disk inode structure is physically unchanged, but the contents of
+> > the timestamp fields are encoded very differently. Sure, the older
+> > kernels can read the timestamp data without any sort of problem
+> > occurring, except for the fact the timestamps now appear to be
+> > completely corrupted.
+> >
+> > Changing the meaning of ithe contents of di_changecount is no
+> > different. It might look OK and nothing crashes, but nothing can be
+> > inferred from the value in the field because we don't know how it
+> > has been modified.
+> >
+> > Hence we can't just change the meaning, encoding or behaviour of an
+> > on disk field that would result in existing kernels and applications
+> > doing the wrong thing with that field (either read or write) without
+> > adding a feature flag to indicate what behaviour that field should
+> > have.
+> >
+> > > > > Perhaps this ought to be a mkfs option? Existing XFS filesystems =
+could
+> > > > > still behave with the legacy behavior, but we could make mkfs.xfs=
+ build
+> > > > > filesystems by default that work like NFS requires.
+> > > >
+> > > > If we require mkfs to set a flag to change behaviour, then we're
+> > > > talking about making an explicit on-disk format change to select th=
+e
+> > > > optional behaviour. That's precisely what I want to avoid.
+> > > >
+> > >
+> > > Right. The on-disk di_changecount would have a (subtly) different
+> > > meaning at that point.
+> > >
+> > > It's not a change that requires drastic retooling though. If we were =
+to
+> > > do this, we wouldn't need to grow the on-disk inode. Booting to an ol=
+der
+> > > kernel would cause the behavior to revert. That's sub-optimal, but no=
+t
+> > > fatal.
+> >
+> > See above: redefining the contents, behaviour or encoding of an on
+> > disk field is a change of the on-disk format specification.
+> >
+> > The rules for on disk format changes that we work to were set in
+> > place long before I started working on XFS.  They are sane, well
+> > thought out rules that have stood the test of time and massive new
+> > feature introductions (CRCs, reflink, rmap, etc). And they only work
+> > because we don't allow anyone to bend them for convenience, short
+> > cuts or expediting their pet project.
+> >
+> > > What I don't quite understand is how these tools are accessing
+> > > di_changecount?
+> >
+> > As I keep saying: this is largely irrelevant to the problem at hand.
+> >
+> > > XFS only accesses the di_changecount to propagate the value to and fr=
+om
+> > > the i_version,
+> >
+> > Yes.  XFS has a strong separation between on-disk structures and
+> > in-memory values, and i_version is simply the in-memory field we use
+> > to store the current di_changecount value.  We force bump i_version
+> > every time we modify the inode core regardless of whether anyone has
+> > queried i_version because that's what di_changecount requires. i.e.
+> > the filesystem controls the contents of i_version, not the VFS.
+> >
+> > Now that NFS is using a proper abstraction (i.e. vfs_statx()) to get
+> > the change cookie, we really don't need to expose di_changecount in
+> > i_version at all - we could simply copy an internal di_changecount
+> > value into the statx cookie field in xfs_vn_getattr() and there
+> > would be almost no change of behaviour from the perspective of NFS
+> > and IMA at all.
+> >
+> > > and there is nothing besides NFSD and IMA that queries
+> > > the i_version value in-kernel. So, this must be done via some sort of
+> > > userland tool that is directly accessing the block device (or some 3r=
+d
+> > > party kernel module).
+> >
+> > Yup, both of those sort of applications exist. e.g. the DMAPI kernel
+> > module allows direct access to inode metadata through a custom
+> > bulkstat formatter implementation - it returns different information
+> > comapred to the standard XFS one in the upstream kernel.
+> >
+> > > In earlier discussions you alluded to some repair and/or analysis too=
+ls
+> > > that depended on this counter.
+> >
+> > Yes, and one of those "tools" is *me*.
+> >
+> > I frequently look at the di_changecount when doing forensic and/or
+> > failure analysis on filesystem corpses.  SOE analysis, relative
+> > modification activity, etc all give insight into what happened to
+> > the filesystem to get it into the state it is currently in, and
+> > di_changecount provides information no other metadata in the inode
+> > contains.
+> >
+> > > I took a quick look in xfsprogs, but I
+> > > didn't see anything there. Is there a library or something that these
+> > > tools use to get at this value?
+> >
+> > xfs_db is the tool I use for this, such as:
+> >
+> > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/mapp=
+er/fast
+> > v3.change_count =3D 35
+> > $
+> >
+> > The root inode in this filesystem has a change count of 35. The root
+> > inode has 32 dirents in it, which means that no entries have ever
+> > been removed or renamed. This sort of insight into the past history
+> > of inode metadata is largely impossible to get any other way, and
+> > it's been the difference between understanding failure and having no
+> > clue more than once.
+> >
+> > Most block device parsing applications simply write their own
+> > decoder that walks the on-disk format. That's pretty trivial to do,
+> > developers can get all the information needed to do this from the
+> > on-disk format specification documentation we keep on kernel.org...
+> >
 >
-> I have asked if this inode flag can just be triggered if we ever see
-> I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
-> and whether this is a reliable mechanism for setting such a flag.
+> Fair enough. I'm not here to tell you that you guys that you need to
+> change how di_changecount works. If it's too valuable to keep it
+> counting atime-only updates, then so be it.
+>
+> If that's the case however, and given that the multigrain timestamp work
+> is effectively dead, then I don't see an alternative to growing the on-
+> disk inode. Do you?
 
-See above: linking this to I_VERSION_QUERIED is horrific. The people
-who set that bit do *NOT* want atime updates to change i_version under
-any circumstances. It was always a mistake.
+Would a new mount option be a viable alternative?
+A new option that would when used change the semantics of these fields
+to what NFS needs?
+With the caveat: using this mount option may break other special tools
+that depend on the default
+semantics.
 
-This really is all *entirely* an artifact of that "bi_changecount" vs
-"i_version" being tied together. You did seem to imply that you'd be
-ok with having "bi_changecount" be split from i_version, ie from an
-earlier email in this thread:
 
- "Now that NFS is using a proper abstraction (i.e. vfs_statx()) to get
-  the change cookie, we really don't need to expose di_changecount in
-  i_version at all - we could simply copy an internal di_changecount
-  value into the statx cookie field in xfs_vn_getattr() and there
-  would be almost no change of behaviour from the perspective of NFS
-  and IMA at all"
-
-but while I suspect *that* part is easy and straightforward, the
-problem then becomes one of "what about the persistence of i_version",
-and then you'd need a new field for *that* anyway, and would want a
-new on-disk format regardless.
-
-           Linus
+> --
+> Jeff Layton <jlayton@kernel.org>
