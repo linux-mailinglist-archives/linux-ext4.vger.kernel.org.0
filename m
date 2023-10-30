@@ -2,87 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AE37DAB34
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Oct 2023 07:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E7A7DB265
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Oct 2023 05:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjJ2G2P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 29 Oct 2023 02:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        id S231530AbjJ3EE0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Oct 2023 00:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2G2O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 29 Oct 2023 02:28:14 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9190ECC
-        for <linux-ext4@vger.kernel.org>; Sat, 28 Oct 2023 23:28:11 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qwzHO-0002WO-2k; Sun, 29 Oct 2023 07:28:10 +0100
-Message-ID: <e920c120-e463-463b-8d06-e539c23368d2@leemhuis.info>
-Date:   Sun, 29 Oct 2023 07:28:09 +0100
+        with ESMTP id S231527AbjJ3EEY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Oct 2023 00:04:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9EDAB;
+        Sun, 29 Oct 2023 21:04:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4AAC433C8;
+        Mon, 30 Oct 2023 04:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698638661;
+        bh=UkCm3OTWARRE3MTGj4hMs3g9sGwjnFjvdJrOft2PCWM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RtH8udXQmHNy7sD8UiM8laIiFptr75k6TMDW5G9xwNZO/XRRhqsNvv29IlUG12jJ7
+         FWDTxb/On3c0tvaBgpRQUqbSlrbpIRsOO06xVIbl7m0VWoUAs3QUp3kKDQp3rzEpuI
+         a3DCf/YWO6mh+iSMitfF8NrvLF+49M6X8ytT7Socn2iewAC6lGOKoT1QZOOqgEsnl6
+         TUzvzXejaKIN7/j0DOQ0lmZNJvxJrDTs1E0BWzC3iY4Gu8YOrhiHcasSDoDZN5CKAh
+         IQdbK+cLayLqnQDGxYZgFAl9HboHL5tWPC1agPrMnBrG2AIRZA5UQNniYmLR7nvAAv
+         rELkLw3Fzf4Sg==
+Date:   Sun, 29 Oct 2023 21:04:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 6.7
+Message-ID: <20231030040419.GA43439@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Subject: Re: task hung in ext4_fallocate #2
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
-          Linux regressions mailing list 
-          <regressions@lists.linux.dev>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     linux-ext4@vger.kernel.org
-References: <20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de>
- <00375284-2071-4dea-9009-9cd2d0de71e1@leemhuis.info>
-Content-Language: en-US, de-DE
-In-Reply-To: <00375284-2071-4dea-9009-9cd2d0de71e1@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698560891;c0008d86;
-X-HE-SMSGID: 1qwzHO-0002WO-2k
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux regression tracking. A
-change or fix related to the regression discussed in this thread was
-posted or applied, but it did not use a Closes: tag to point to the
-report, as Linus and the documentation call for. Things happen, no
-worries -- but now the regression tracking bot needs to be told manually
-about the fix. See link in footer if these mails annoy you.]
+The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
 
-On 20.10.23 09:01, Linux regression tracking #adding (Thorsten Leemhuis)
-wrote:
-> On 17.10.23 05:37, Andres Freund wrote:
->>
->> As previously reported in https://lore.kernel.org/all/20231004004247.zkswbseowwwc6vvk@alap3.anarazel.de/
->> I found some hangs below ext4_fallocate(), in 6.6-rc*.  As it looks like my
->> issue was unrelated to the thread I had responded to, I was asked to start
->> this new thread.
->>
->> I just was able to reproduce the issue, after upgrading to 6.6-rc6 - this time
->> it took ~55min of high load (io_uring using branch of postgres, running a
->> write heavy transactional workload concurrently with concurrent bulk data
->> load) to trigger the issue.
->>
->> For now I have left the system running, in case there's something you would
->> like me to check while the system is hung.
->> [...]
-> 
-> Thanks for the report. To be sure the issue doesn't fall through the
-> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-> tracking bot:
-> 
-> #regzbot ^introduced v6.5..v6.6-rc6
-> #regzbot title ext4: task hung in ext4_fallocate
-> #regzbot ignore-activity
+  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
 
-#regzbot fix: 838b35bb6a89c36da07ca39520ec071d
-#regzbot ignore-activity
+are available in the Git repository at:
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+  https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+
+for you to fetch changes up to 15baf55481de700f8c4494cddb80ec4f4575548b:
+
+  fscrypt: track master key presence separately from secret (2023-10-16 21:23:45 -0700)
+
+----------------------------------------------------------------
+
+This update adds support for configuring the crypto data unit size (i.e.
+the granularity of file contents encryption) to be less than the
+filesystem block size. This can allow users to use inline encryption
+hardware in some cases when it wouldn't otherwise be possible.
+
+In addition, there are two commits that are prerequisites for the
+extent-based encryption support that the btrfs folks are working on.
+
+----------------------------------------------------------------
+Eric Biggers (6):
+      fscrypt: make it clearer that key_prefix is deprecated
+      fscrypt: make the bounce page pool opt-in instead of opt-out
+      fscrypt: compute max_lblk_bits from s_maxbytes and block size
+      fscrypt: replace get_ino_and_lblk_bits with just has_32bit_inodes
+      fscrypt: support crypto data unit size less than filesystem block size
+      fscrypt: track master key presence separately from secret
+
+Josef Bacik (1):
+      fscrypt: rename fscrypt_info => fscrypt_inode_info
+
+ Documentation/filesystems/fscrypt.rst | 121 ++++++++++++++++++-------
+ fs/ceph/crypto.c                      |   1 +
+ fs/crypto/bio.c                       |  39 ++++----
+ fs/crypto/crypto.c                    | 163 ++++++++++++++++++---------------
+ fs/crypto/fname.c                     |   6 +-
+ fs/crypto/fscrypt_private.h           | 164 ++++++++++++++++++++++------------
+ fs/crypto/hooks.c                     |   4 +-
+ fs/crypto/inline_crypt.c              |  32 +++----
+ fs/crypto/keyring.c                   |  82 ++++++++++-------
+ fs/crypto/keysetup.c                  |  62 +++++++------
+ fs/crypto/keysetup_v1.c               |  20 +++--
+ fs/crypto/policy.c                    |  83 +++++++++++------
+ fs/ext4/crypto.c                      |  13 +--
+ fs/f2fs/super.c                       |  13 +--
+ fs/ubifs/crypto.c                     |   3 +-
+ include/linux/fs.h                    |   4 +-
+ include/linux/fscrypt.h               |  82 ++++++++++-------
+ include/uapi/linux/fscrypt.h          |   3 +-
+ 18 files changed, 546 insertions(+), 349 deletions(-)
