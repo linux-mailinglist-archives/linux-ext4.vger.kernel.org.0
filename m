@@ -2,68 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347517DCABD
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 11:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E617DCADB
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 11:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343648AbjJaK0u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Oct 2023 06:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S236155AbjJaKal (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Oct 2023 06:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343687AbjJaK0e (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 06:26:34 -0400
+        with ESMTP id S234974AbjJaKai (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 06:30:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8332EA9;
-        Tue, 31 Oct 2023 03:26:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A722C433CD;
-        Tue, 31 Oct 2023 10:26:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2FDE6;
+        Tue, 31 Oct 2023 03:30:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90139C433C7;
+        Tue, 31 Oct 2023 10:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698747991;
-        bh=oub4W8UR9eJvRxgd0x2K3FAODzLnOQX75kkj3Rb+xzQ=;
+        s=k20201202; t=1698748235;
+        bh=qK3DGIVN30CKCk3p1WZsI6EB6xDHe02lYO5vyQjhTno=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CBQ79pKptpDj7180sdV3SpAcAZvHyawpezclc+dj2iFMxLVXbCbeH5YfqE4WcuoSQ
-         /IEC+3qoroTC2lIkVBcGC1DX6llrEm61HMJO99f+TerLtsheVQsLE9AfPYgLhim3il
-         BwxCV8atgTPe56WKD61JOc4sLVO6kH2+d24WzaTAZ7BS3WWrCrsQF+tGOsjU+AaLRA
-         sYchDKCcENZca1LRCxGxYqUCuu6xVqJq2heeguzA/O1G/LaEcErOyMUJBqHuHm/NWG
-         odXeR9D7iD7TDRylyP2HU+NvC56rx+jfWJiWfYSK0levv1XvEdMBDZqRx+QV8N29Ze
-         bO3o0pYhWGntQ==
-Date:   Tue, 31 Oct 2023 11:26:22 +0100
+        b=Ev4ne27UuOjVqfb069C6Kp8q4wAkmqKcHOZnhZaz5Lffycjx2yIUBuXCcCDsZ3siX
+         G6uZQ1wsxRqji+Ao4acLNfn7DtHmozcJ0m7EO8jW5X/YYhq22IFP39o7dmX++eG8GZ
+         IZwju4kgUE3lclL0INhItoadbL3vBe4mee/EtII7AqeLfU5XHjH0nOWc0QYeshRPcF
+         FGChyjaNxpd0vtlynXUqoMiMbw8j9kPCxNzUPey3vCutJlX2MPWSiD4TdqWdGGL/iw
+         gK6TpA/2/Xvo0xlstAK5oDPQpbyVNuK44iuuzwyWOkwPH25mCgGfBluTv4lRxgt4gO
+         /MmCASuSt/BVQ==
+Date:   Tue, 31 Oct 2023 11:30:21 +0100
 From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         John Stultz <jstultz@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Stephen Boyd <sboyd@kernel.org>,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
         Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
         linux-nfs@vger.kernel.org
 Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
  timestamp handing
-Message-ID: <20231031-stark-klar-0bab5f9ab4dc@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
- <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
- <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
- <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+Message-ID: <20231031-jobverlust-auberginen-04f47d380f59@brauner>
+References: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+ <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area>
+ <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area>
+ <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+ <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,34 +78,81 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
-> On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > > Back to your earlier point though:
-> > > 
-> > > Is a global offset really a non-starter? I can see about doing something
-> > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-> > > as ktime_get_coarse_ts64. I don't see the downside there for the non-
-> > > multigrain filesystems to call that.
-> > 
-> > I have to say that this doesn't excite me. This whole thing feels a bit
-> > hackish. I think that a change version is the way more sane way to go.
-> > 
+On Tue, Oct 31, 2023 at 09:03:57AM +0200, Amir Goldstein wrote:
+> On Tue, Oct 31, 2023 at 3:42 AM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> [...]
+> > .... and what is annoying is that that the new i_version just a
+> > glorified ctime change counter. What we should be fixing is ctime -
+> > integrating this change counting into ctime would allow us to make
+> > i_version go away entirely. i.e. We don't need a persistent ctime
+> > change counter if the ctime has sufficient resolution or persistent
+> > encoding that it does not need an external persistent change
+> > counter.
+> >
+> > That was reasoning behind the multi-grain timestamps. While the mgts
+> > implementation was flawed, the reasoning behind it certainly isn't.
+> > We should be trying to get rid of i_version by integrating it into
+> > ctime updates, not arguing how atime vs i_version should work.
+> >
+> > > So I don't think the issue here is "i_version" per se. I think in a
+> > > vacuum, the best option of i_version is pretty obvious.  But if you
+> > > want i_version to track di_changecount, *then* you end up with that
+> > > situation where the persistence of atime matters, and i_version needs
+> > > to update whenever a (persistent) atime update happens.
+> >
+> > Yet I don't want i_version to track di_changecount.
+> >
+> > I want to *stop supporting i_version altogether* in XFS.
+> >
+> > I want i_version as filesystem internal metadata to die completely.
+> >
+> > I don't want to change the on disk format to add a new i_version
+> > field because we'll be straight back in this same siutation when the
+> > next i_version bug is found and semantics get changed yet again.
+> >
+> > Hence if we can encode the necessary change attributes into ctime,
+> > we can drop VFS i_version support altogether.  Then the "atime bumps
+> > i_version" problem also goes away because then we *don't use
+> > i_version*.
+> >
+> > But if we can't get the VFS to do this with ctime, at least we have
+> > the abstractions available to us (i.e. timestamp granularity and
+> > statx change cookie) to allow XFS to implement this sort of
+> > ctime-with-integrated-change-counter internally to the filesystem
+> > and be able to drop i_version support....
+> >
 > 
-> What is it about this set that feels so much more hackish to you? Most
-> of this set is pretty similar to what we had to revert. Is it just the
-> timekeeper changes? Why do you feel those are a problem?
+> I don't know if it was mentioned before in one of the many threads,
+> but there is another benefit of ctime-with-integrated-change-counter
+> approach - it is the ability to extend the solution with some adaptations
+> also to mtime.
+> 
+> The "change cookie" is used to know if inode metadata cache should
+> be invalidated and mtime is often used to know if data cache should
+> be invalidated, or if data comparison could be skipped (e.g. rsync).
+> 
+> The difference is that mtime can be set by user, so using lower nsec
+> bits for modification counter would require to truncate the user set
+> time granularity to 100ns - that is probably acceptable, but only as
+> an opt-in behavior.
+> 
+> The special value 0 for mtime-change-counter could be reserved for
+> mtime that was set by the user or for upgrade of existing inode,
+> where 0 counter means that mtime cannot be trusted as an accurate
+> data modification-cookie.
+> 
+> This feature is going to be useful for the vfs HSM implementation [1]
+> that I am working on and it actually rhymes with the XFS DMAPI
+> patches that were never fully merged upstream.
+> 
+> Speaking on behalf of my employer, we would love to see the data
+> modification-cookie feature implemented, whether in vfs or in xfs.
+> 
+> *IF* the result on this thread is that the chosen solution is
+> ctime-with-change-counter in XFS
+> *AND* if there is agreement among XFS developers to extend it with
+> an opt-in mkfs/mount option to 100ns-mtime-with-change-counter in XFS
+> *THEN* I think I will be able to allocate resources to drive this xfs work.
 
-So I think that the multi-grain timestamp work was well intended but it
-was ultimately a mistake. Because we added code that complicated
-timestamp timestamp handling in the vfs to a point where the costs
-clearly outweighed the benefits.
-
-And I don't think that this direction is worth going into. This whole
-thread ultimately boils down to complicating generic infrastructure
-quite extensively for nfs to handle exposing xfs without forcing an
-on-disk format change. That's even fine.
-
-That's not a problem but in the same way I don't think the solution is
-just stuffing this complexity into the vfs. IOW, if we make this a vfs
-problem then at the lowest possible cost and not by changing how
-timestamps work for everyone even if it's just internal.
+If it can be solved within XFS then this would be preferable.
