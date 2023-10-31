@@ -2,95 +2,177 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F177DC4B4
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 04:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BED87DC6DD
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 08:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjJaDGI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Oct 2023 23:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S1343552AbjJaHEN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Oct 2023 03:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbjJaDGB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Oct 2023 23:06:01 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2A9A6
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Oct 2023 20:05:49 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-243.bstnma.fios.verizon.net [173.48.111.243])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 39V35jXK007840
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 23:05:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1698721546; bh=5/YYM33QliVHJ/HnRDsCQ1+v1BRnOEgadsz5okdk4ao=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=eIUntb/HyBLQRvOCwLH0/Q1tTzpHDQfz5KSzulKLlIpErdY4Gap1rQoRL5Upaeqxi
-         pP3EkPed79NJN0VGFr9jduHwa16VyQI4E4dDPhjwHThanYiUsDDYsGs5I9fwgxFUIC
-         xZUqPBAn34LOm5TW/ubG8ImmgbroHTHsLGdzWAjEms1YL42+FBBOVv5esvJZtV/DBA
-         B/NMZAQDJmryQb1V7RuMe3DXbojwFUbY2avTvpSe4gY1SAvKhvKuXxBYJQBSoptyNR
-         3xiGHWGrisvrnXgrpcp7teU6eBI5XGYfoA6YBnmsWUqcwxPIgH+VlgLruU1SKnmNPv
-         NEjtKcpYAPa4Q==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 188DC15C024D; Mon, 30 Oct 2023 23:05:45 -0400 (EDT)
-Date:   Mon, 30 Oct 2023 23:05:45 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     =?utf-8?B?xJDhu5cgVsSDbiBOZ+G7jWMgKFZGLUtIVFZQTUREVC1UVFRLTEtERFQp?= 
-        <v.ngocdv4@vinfast.vn>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: File system hung on kernel 4.14
-Message-ID: <20231031030545.GB9741@mit.edu>
-References: <fee3ba3c4b9205afc1b60aa981193fb28deab7f3.camel@vinfast.vn>
+        with ESMTP id S1343495AbjJaHEM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 03:04:12 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BCBC1;
+        Tue, 31 Oct 2023 00:04:10 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2ec9a79bdso3722468b6e.3;
+        Tue, 31 Oct 2023 00:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698735849; x=1699340649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/QHIvEcmJ0urypIUJ4I1hXriZ0FhrfT5zBc+eZq8EH4=;
+        b=RGu8sDMnVECcxZipxda9i97yZ/pIfwDsIIb+3b2zZq56s1BY6VCn5HmyXldhnmvzzc
+         8i+fmOuZk8f1KZ7pxAxYYHVN6qyrkTRGZt8l6IOZV7GR3wn36jluzhJ0rUp0fZTnHKyv
+         X0d4u+vJ7i7/t3zxhEjrujgwrdgeS4FgJj8pTAWnAXStlVFmJQ8JxezRreBusixqW1bm
+         YHWEb2hFmdozsss/cKJeMpdQuCyNw5PFL6w6wPXHPFVqJE7DsLZuHODdvnnvroLwpMsZ
+         7e2zybt171UfnePSC2axUVAIuWPT0+6GppjANhk0UtiLtWf8NIYUO1LiubYQlyl9gCSx
+         T8sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698735849; x=1699340649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/QHIvEcmJ0urypIUJ4I1hXriZ0FhrfT5zBc+eZq8EH4=;
+        b=dHYIGGMJrnxtshFvdGVFK2mx96a31Mwt4br4T3G/JZ3SrvbXvl5wxrA8u6OAuALP+x
+         zZg/2wvFtwz9+qV7daNCkB6JMBfB4JQpeozEPKZGWv1doK2/30PyXOEgWDigUlkZati3
+         Ty/rztRD3pW17Inpv5cXYfC1Z8R+AcapClWxfc7pJG5CFt4Y7H4UlMR3NsCy9mmGcOn1
+         GI7NTDOyGak1xNK4NiuLwdqXnOhO87hzz3W0FwkMG6rsKFgMsDPzz/+WwbDBemKZctaP
+         /ShDX4VHsLvg0bXi/STdMzsfb3qWygDKK9siHAEBR4fVCOLtgHCPkF9eDyw884UPvyjo
+         Batg==
+X-Gm-Message-State: AOJu0Yx5ImwNhoFQ2lZRM2zNZWHGZwerLDD2uIXQCqw4/FUsIY75oPBW
+        GLkrhi/NCfUt35O+Ie3nL4qgAO+iuxe9sxzoCbQ=
+X-Google-Smtp-Source: AGHT+IFJczJ9Y/Gta2VEUUZlMPlc/e+BEvHoooShDS3IUryTcj10C5j9NWzQ+H0qQ0tSno1kZ94fcMD7UWyA5SIWMGk=
+X-Received: by 2002:aca:909:0:b0:3b0:da4a:4823 with SMTP id
+ 9-20020aca0909000000b003b0da4a4823mr12874300oij.56.1698735849512; Tue, 31 Oct
+ 2023 00:04:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fee3ba3c4b9205afc1b60aa981193fb28deab7f3.camel@vinfast.vn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area> <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area> <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area> <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area> <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+In-Reply-To: <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 31 Oct 2023 09:03:57 +0200
+Message-ID: <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:37:09AM +0000, Đỗ Văn Ngọc (VF-KHTVPMDDT-TTTKLKDDT) wrote:
-> Dear Linux kernel ext4, Dear Ted,
-> 
-> We are developing project on Android 9 which used kernel 4.14.133
-> version.
-> And while normal using device, we have a issue device freezing and
-> reboot after few minute.
-> I checked the log and saw kernel hung on filesystem as below:
+On Tue, Oct 31, 2023 at 3:42=E2=80=AFAM Dave Chinner <david@fromorbit.com> =
+wrote:
+>
+[...]
+> .... and what is annoying is that that the new i_version just a
+> glorified ctime change counter. What we should be fixing is ctime -
+> integrating this change counting into ctime would allow us to make
+> i_version go away entirely. i.e. We don't need a persistent ctime
+> change counter if the ctime has sufficient resolution or persistent
+> encoding that it does not need an external persistent change
+> counter.
+>
+> That was reasoning behind the multi-grain timestamps. While the mgts
+> implementation was flawed, the reasoning behind it certainly isn't.
+> We should be trying to get rid of i_version by integrating it into
+> ctime updates, not arguing how atime vs i_version should work.
+>
+> > So I don't think the issue here is "i_version" per se. I think in a
+> > vacuum, the best option of i_version is pretty obvious.  But if you
+> > want i_version to track di_changecount, *then* you end up with that
+> > situation where the persistence of atime matters, and i_version needs
+> > to update whenever a (persistent) atime update happens.
+>
+> Yet I don't want i_version to track di_changecount.
+>
+> I want to *stop supporting i_version altogether* in XFS.
+>
+> I want i_version as filesystem internal metadata to die completely.
+>
+> I don't want to change the on disk format to add a new i_version
+> field because we'll be straight back in this same siutation when the
+> next i_version bug is found and semantics get changed yet again.
+>
+> Hence if we can encode the necessary change attributes into ctime,
+> we can drop VFS i_version support altogether.  Then the "atime bumps
+> i_version" problem also goes away because then we *don't use
+> i_version*.
+>
+> But if we can't get the VFS to do this with ctime, at least we have
+> the abstractions available to us (i.e. timestamp granularity and
+> statx change cookie) to allow XFS to implement this sort of
+> ctime-with-integrated-change-counter internally to the filesystem
+> and be able to drop i_version support....
+>
 
-I've already replied to your first e-mail sent directly to me.  It
-appears to be a hardware problem, or possibly a device driver issue.
-But it's not a file system issue.  Basically, ext4 submitted an I/O,
-and then calls io_schedule(), and I/O never completes....
+I don't know if it was mentioned before in one of the many threads,
+but there is another benefit of ctime-with-integrated-change-counter
+approach - it is the ability to extend the solution with some adaptations
+also to mtime.
 
-    	       		      	      	    - Ted
+The "change cookie" is used to know if inode metadata cache should
+be invalidated and mtime is often used to know if data cache should
+be invalidated, or if data comparison could be skipped (e.g. rsync).
 
-[15159.874154] Call trace: 
-[15159.874157] [<000000005e1d80e5>] __switch_to+0x94/0xd8 
-[15159.874161] [<00000000a85c7184>] __schedule+0x274/0x940 
-[15159.874163] [<00000000c9c2c8f0>] schedule+0x40/0xa8 
-[15159.874167] [<00000000a97520e1>] io_schedule+0x20/0x40 
-[15159.874175] [<000000008d5c36d0>] blk_mq_get_tag+0x194/0x340 
-[15159.874178] [<00000000f97393cb>] blk_mq_get_request+0x164/0x3b0 
-[15159.874181] [<00000000e69c8e58>] blk_mq_make_request+0xc8/0x6f8 
-[15159.874187] [<00000000e88e7453>] generic_make_request+0xf4/0x288 
-[15159.874190] [<0000000016cf2add>] submit_bio+0x5c/0x1d0 
-[15159.874196] [<0000000097be4708>] ext4_io_submit+0x54/0x68 
-[15159.874199] [<00000000e9c80f00>] ext4_bio_write_page+0x1b0/0x528 
-[15159.874202] [<000000009bf94bad>] mpage_submit_page+0x60/0x90 
-[15159.874205] [<00000000da1a9585>] mpage_map_and_submit_buffers+0x138/0x238 
-[15159.874208] [<00000000c84c3e14>] ext4_writepages+0x8dc/0xe08 
-[15159.874214] [<000000007a345b10>] do_writepages+0x5c/0x108 
-[15159.874217] [<00000000ef1a522d>] __writeback_single_inode+0x48/0x4f8 
-[15159.874220] [<00000000aeac1ba5>] writeback_sb_inodes+0x1c0/0x470 
-[15159.874223] [<00000000f7f818b4>] __writeback_inodes_wb+0x78/0xc8 
-[15159.874225] [<00000000ae30bb56>] wb_writeback+0x24c/0x3d8 
-[15159.874228] [<00000000b489a91f>] wb_workfn+0x1c4/0x490 
-[15159.874233] [<000000004df896a9>] process_one_work+0x1d8/0x498 
-[15159.874236] [<00000000d7fa6dd7>] worker_thread+0x4c/0x478 
-[15159.874240] [<00000000f46ec2f2>] kthread+0x138/0x140 
-[15159.874243] [<000000009e914ea4>] ret_from_fork+0x10/0x1c
+The difference is that mtime can be set by user, so using lower nsec
+bits for modification counter would require to truncate the user set
+time granularity to 100ns - that is probably acceptable, but only as
+an opt-in behavior.
+
+The special value 0 for mtime-change-counter could be reserved for
+mtime that was set by the user or for upgrade of existing inode,
+where 0 counter means that mtime cannot be trusted as an accurate
+data modification-cookie.
+
+This feature is going to be useful for the vfs HSM implementation [1]
+that I am working on and it actually rhymes with the XFS DMAPI
+patches that were never fully merged upstream.
+
+Speaking on behalf of my employer, we would love to see the data
+modification-cookie feature implemented, whether in vfs or in xfs.
+
+*IF* the result on this thread is that the chosen solution is
+ctime-with-change-counter in XFS
+*AND* if there is agreement among XFS developers to extend it with
+an opt-in mkfs/mount option to 100ns-mtime-with-change-counter in XFS
+*THEN* I think I will be able to allocate resources to drive this xfs work.
+
+Thanks,
+Amir.
+
+[1] https://github.com/amir73il/fsnotify-utils/wiki/Hierarchical-Storage-Ma=
+nagement-API
