@@ -2,73 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D8C7DCE55
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 14:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D34A7DD6C9
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Oct 2023 20:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344686AbjJaNzQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Oct 2023 09:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        id S1343594AbjJaTtL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Oct 2023 15:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344672AbjJaNzP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 09:55:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D377F9;
-        Tue, 31 Oct 2023 06:55:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C6C433C8;
-        Tue, 31 Oct 2023 13:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698760512;
-        bh=qIx7b2aoxjsw7TSGPFkMkmmuPqzNI4IGu1YwuirwcKE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=BlTYxX8bg/TyNm9k1G7hqu+6cgvScqLMmrYdwjXbvP2dLhoZwu81/Hd86RFZNrRU0
-         1xr5Y7vFw1ElqKWf1uTmJEmuJvF5L9j3yFfh7ymcf50H/LGvdULGaZ9r81Rim15VMH
-         4BUULsumVrnHeBwimSaTDD/NGbj2ueM3Eg/nxhkdFB1V+ajGM0vsdulmLTlFZNgwMn
-         vt13jgmtUQuW2BcVFTQDAsGHT0Gmcoujtaha2sh9SXpVB++uDD9vrm6H7Cx6inillP
-         sk1nXdn297tkqDQqx2pR+3iapmU6fN1aVLAWEUbQ/flcaA2j5xZmgzrdZMzAsb7osR
-         s91m60OYKHeag==
-Message-ID: <b0cd1f921c2c9d9e76cb324c6fa7c48747eafaed.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        with ESMTP id S234972AbjJaTtL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 15:49:11 -0400
+X-Greylist: delayed 361 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 12:49:08 PDT
+Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4BE83;
+        Tue, 31 Oct 2023 12:49:08 -0700 (PDT)
+Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.stoffel.org (Postfix) with ESMTPSA id 5EB591E12B;
+        Tue, 31 Oct 2023 15:43:05 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+        id 80C85A8B01; Tue, 31 Oct 2023 15:43:04 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <25921.22728.501691.76305@quad.stoffel.home>
+Date:   Tue, 31 Oct 2023 15:43:04 -0400
+From:   "John Stoffel" <john@stoffel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         John Stultz <jstultz@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Stephen Boyd <sboyd@kernel.org>,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
         Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
         linux-nfs@vger.kernel.org
-Date:   Tue, 31 Oct 2023 09:55:09 -0400
-In-Reply-To: <20231031-stark-klar-0bab5f9ab4dc@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <20231031-stark-klar-0bab5f9ab4dc@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+In-Reply-To: <b4c04efdde3bc7d107d0bdc68e100a94942aca3c.camel@kernel.org>
+References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+        <ZTc8tClCRkfX3kD7@dread.disaster.area>
+        <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+        <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+        <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+        <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+        <ZTnNCytHLGoJY9ds@dread.disaster.area>
+        <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+        <ZUAwFkAizH1PrIZp@dread.disaster.area>
+        <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+        <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+        <b4c04efdde3bc7d107d0bdc68e100a94942aca3c.camel@kernel.org>
+X-Mailer: VM 8.2.0b under 27.1 (x86_64-pc-linux-gnu)
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,72 +77,61 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2023-10-31 at 11:26 +0100, Christian Brauner wrote:
-> On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
-> > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > > > Back to your earlier point though:
-> > > >=20
-> > > > Is a global offset really a non-starter? I can see about doing some=
-thing
-> > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as c=
-heap
-> > > > as ktime_get_coarse_ts64. I don't see the downside there for the no=
-n-
-> > > > multigrain filesystems to call that.
-> > >=20
-> > > I have to say that this doesn't excite me. This whole thing feels a b=
-it
-> > > hackish. I think that a change version is the way more sane way to go=
-.
-> > >=20
-> >=20
-> > What is it about this set that feels so much more hackish to you? Most
-> > of this set is pretty similar to what we had to revert. Is it just the
-> > timekeeper changes? Why do you feel those are a problem?
->=20
-> So I think that the multi-grain timestamp work was well intended but it
-> was ultimately a mistake. Because we added code that complicated
-> timestamp timestamp handling in the vfs to a point where the costs
-> clearly outweighed the benefits.
->=20
-> And I don't think that this direction is worth going into. This whole
-> thread ultimately boils down to complicating generic infrastructure
-> quite extensively for nfs to handle exposing xfs without forcing an
-> on-disk format change. That's even fine.
->=20
-> That's not a problem but in the same way I don't think the solution is
-> just stuffing this complexity into the vfs. IOW, if we make this a vfs
-> problem then at the lowest possible cost and not by changing how
-> timestamps work for everyone even if it's just internal.
+>>>>> "Jeff" == Jeff Layton <jlayton@kernel.org> writes:
 
-I'll point out that this last posting I did was an RFC. It was invasive
-to the timekeeping code, but I don't think that's a hard requirement for
-doing this.
+> On Tue, 2023-10-31 at 12:42 +1100, Dave Chinner wrote:
+>> On Mon, Oct 30, 2023 at 01:11:56PM -1000, Linus Torvalds wrote:
+>> > On Mon, 30 Oct 2023 at 12:37, Dave Chinner <david@fromorbit.com> wrote:
+>> > > 
+>> > > If XFS can ignore relatime or lazytime persistent updates for given
+>> > > situations, then *we don't need to make periodic on-disk updates of
+>> > > atime*. This makes the whole problem of "persistent atime update bumps
+>> > > i_version" go away because then we *aren't making persistent atime
+>> > > updates* except when some other persistent modification that bumps
+>> > > [cm]time occurs.
+>> > 
+>> > Well, I think this should be split into two independent questions:
+>> > 
+>> >  (a) are relatime or lazytime atime updates persistent if nothing else changes?
+>> 
+>> They only become persistent after 24 hours or, in the case of
+>> relatime, immediately persistent if mtime < atime (i.e. read after a
+>> modification). Those are the only times that the VFS triggers
+>> persistent writeback of atime, and it's the latter case (mtime <
+>> atime) that is the specific trigger that exposed the problem with
+>> atime bumping i_version in the first place.
+>> 
+>> >  (b) do atime updates _ever_ update i_version *regardless* of relatime
+>> > or lazytime?
+>> > 
+>> > and honestly, I think the best answer to (b) would be that "no,
+>> > i_version should simply not change for atime updates". And I think
+>> > that answer is what it is because no user of i_version seems to want
+>> > it.
+>> 
+>> As I keep repeating: Repeatedly stating that "atime should not bump
+>> i_version" does not address the questions I'm asking *at all*.
+>> 
+>> > Now, the reason it's a single question for you is that apparently for
+>> > XFS, the only thing that matters is "inode was written to disk" and
+>> > that "di_changecount" value is thus related to the persistence of
+>> > atime updates, but splitting di_changecount out to be a separate thing
+>> > from i_version seems to be on the table, so I think those two things
+>> > really could be independent issues.
+>> 
+>> Wrong way around - we'd have to split i_version out from
+>> di_changecount. It's i_version that has changed semantics, not
+>> di_changecount, and di_changecount behaviour must remain unchanged.
+>> 
 
-I do appreciate the feedback on this version of the series (particularly
-from Thomas who gave a great technical reason why this approach was
-wrong), but I don't think we necessarily have to give up on the whole
-idea because this particular implementation was too costly.
+> I have to take issue with your characterization of this. The
+> requirements for NFS's change counter have not changed. Clearly there
+> was a breakdown in communications when it was first implemented in Linux
+> that caused atime updates to get counted in the i_version value, but
+> that was never intentional and never by design.
 
-The core idea for fixing the problem with the original series is sane,
-IMO. There is nothing wrong with simply making it that when we stamp a
-file with a fine-grained timestamp that we consider that a floor for all
-later timestamp updates. The only real question is how to keep that
-(global) fine-grained floor offset at a low cost. I think that's a
-solvable problem.
+This has been bugging me, but all the references to NFS really mean
+NFSv4.1 or newer, correct?  I can't see how any of this affects NFSv3
+at all, and that's probably the still dominant form of NFS, right?  
 
-I also believe that real, measurable fine-grained timestamp differences
-are worthwhile for other use cases beyond NFS. Everyone was pointing out
-the problems with lagging timestamps vs. make and rsync, but that's a
-double-edged sword. With the current always coarse-grained timestamps,
-the ordering of files written within the same jiffy can't be determined
-since their timestamps will be identical. We could conceivably change
-that with this series.
-
-That said, if this has no chance of ever being merged, then I won't
-bother working on it further, and we can try to pursue something that is
-(maybe) XFS-specific.
-
-Let me know, either way.
---
-Jeff Layton <jlayton@kernel.org>
+John
