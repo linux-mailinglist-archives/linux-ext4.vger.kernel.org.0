@@ -2,178 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733BB7DDAFC
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Nov 2023 03:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428137DDC73
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Nov 2023 07:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbjKAC21 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Oct 2023 22:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S1376542AbjKAFgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Nov 2023 01:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjKAC21 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 22:28:27 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A249DA
-        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 19:28:24 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-111-73.bstnma.fios.verizon.net [173.48.111.73])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3A12SJL6027238
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Oct 2023 22:28:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1698805700; bh=s2PO5WuG2mbhx+EdVqHqvRSzJCzMfyAXF+xpBka65rc=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=op4967HmVuqzMvQgHqySUxyEcCi6HTKqDylcPFP5AKM6YsBTKuVvOEKZm+IGfcxZw
-         psDh715ObPTdqapbBxpL5gDip0/+PlbBZClnmGggbC0xxMfT7YEs5ZgfjxECfgCL0Y
-         JytdkSZaNH1bV3ceZ+dmLN8k6w8XysSILsBIAE4zNm4ZYcMMhXUNeApDH3/dMyw1cN
-         wgcp/uMP8XXXcWLCBgo11Mc49cUk/480GviqL7pH5CiL34g/zI8u9kg3KPxSnWAYf2
-         bMO1Xs2CNAHF1oSn5JWX6GEQ6ExPyXTCebJkTWi/pabxpLlxx47TB3MzZmGkMkxqSa
-         u3hbE7Qfe16JA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id DFBBC15C024D; Tue, 31 Oct 2023 22:28:18 -0400 (EDT)
-Date:   Tue, 31 Oct 2023 22:28:18 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: [GIT PULL] ext4 update for v6.7-rc1
-Message-ID: <20231101022818.GA108790@mit.edu>
+        with ESMTP id S1345104AbjKAFge (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Nov 2023 01:36:34 -0400
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3258103
+        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 22:36:23 -0700 (PDT)
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-581ed663023so8487064eaf.2
+        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 22:36:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698816983; x=1699421783;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zgHEX9qRR2Z35ffqNbzDkc5Dn4BGcDXB9Wtmg7DNzas=;
+        b=ZyIyv9CbBJilJ4ksOo/O8KL0JWvnNDBQUGn+ZtUUZuuYbGSHdaM0sILQi8Fd62zllQ
+         pVTec9iNGLpKl8R+msS5ux9uf/0gDY3yuCQULx7+d1KqVDkHN8wy5ixcYMe75PhH9jSU
+         JAdBfmhrRXG7K69KRcMmW+DpVtKdhlB2BXaQwF/97ECBUWq4cIyw+HDXp5E+U6y4mlrb
+         7e3V/2eVAFqq49gTkTtHXsurMTHaMUl7u4zK3mOb8YnKlH5XU6gHAt484P2Jde2g0gBY
+         2xjkxxJVnQXC6Ngm+NxtHgqSt99yiQVNwGG4V0AhcUUNnHpMhBu6qGApAg1cEhkBo1Y8
+         WfyQ==
+X-Gm-Message-State: AOJu0YzyWudg81rEpePnw4kiX2MwHW0iLeLR5p3UmPnblhkyVIp6zAwA
+        hHFv06K/g7btL6gNIGCJ2gHEHQHlxAI4bjwuP+UdKIE41Rx6
+X-Google-Smtp-Source: AGHT+IEzBkJMgIjoCvzRernhl6/B2GK3AQHsf3SznOR1K5AoUmlhNyWXoxi3qN7Vnzt3/ogYoQkcx3G6i0KClAWef4NGeZnyvmQw
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:d61e:b0:1ef:b8a5:3d01 with SMTP id
+ a30-20020a056870d61e00b001efb8a53d01mr5653384oaq.3.1698816983026; Tue, 31 Oct
+ 2023 22:36:23 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 22:36:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cfd180060910a687@google.com>
+Subject: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
+From:   syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
+Hello,
 
-  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
+syzbot found the following issue on:
 
-are available in the Git repository at:
+HEAD commit:    888cf78c29e2 Merge tag 'iommu-fix-v6.6-rc7' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10339673680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7d1f30869bb78ec6
+dashboard link: https://syzkaller.appspot.com/bug?extid=b408cd9b40ec25380ee1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165bbce3680000
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.7-rc1
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2e776d64243c/disk-888cf78c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9ce776a2bcfc/vmlinux-888cf78c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/86a6c193c013/bzImage-888cf78c.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8021bba287f0/mount_0.gz
 
-for you to fetch changes up to 91562895f8030cb9a0470b1db49de79346a69f91:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com
 
-  ext4: properly sync file size update after O_SYNC direct IO (2023-10-31 20:20:55 -0400)
+general protection fault, probably for non-canonical address 0xdffffc003ffff113: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x00000001ffff8898-0x00000001ffff889f]
+CPU: 1 PID: 5308 Comm: syz-executor.4 Not tainted 6.6.0-rc7-syzkaller-00142-g888cf78c29e2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:lookup_object lib/debugobjects.c:195 [inline]
+RIP: 0010:lookup_object_or_alloc lib/debugobjects.c:564 [inline]
+RIP: 0010:__debug_object_init+0xf3/0x2b0 lib/debugobjects.c:634
+Code: d8 48 c1 e8 03 42 80 3c 20 00 0f 85 85 01 00 00 48 8b 1b 48 85 db 0f 84 9f 00 00 00 48 8d 7b 18 83 c5 01 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 0f 85 4c 01 00 00 4c 3b 73 18 75 c3 48 8d 7b 10 48
+RSP: 0018:ffffc900050e7d08 EFLAGS: 00010012
+RAX: 000000003ffff113 RBX: 00000001ffff8880 RCX: ffffffff8169123e
+RDX: 1ffffffff249b149 RSI: 0000000000000004 RDI: 00000001ffff8898
+RBP: 0000000000000003 R08: 0000000000000001 R09: 0000000000000216
+R10: 0000000000000003 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffffff924d8a48 R14: ffffc900050e7d90 R15: ffffffff924d8a50
+FS:  0000555556eec480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa23ab065ee CR3: 000000007e5c1000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ hrtimer_init_sleeper_on_stack kernel/time/hrtimer.c:447 [inline]
+ hrtimer_nanosleep+0x122/0x440 kernel/time/hrtimer.c:2098
+ common_nsleep+0xa1/0xc0 kernel/time/posix-timers.c:1350
+ __do_sys_clock_nanosleep kernel/time/posix-timers.c:1396 [inline]
+ __se_sys_clock_nanosleep kernel/time/posix-timers.c:1373 [inline]
+ __x64_sys_clock_nanosleep+0x344/0x490 kernel/time/posix-timers.c:1373
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff1a56a7ef5
+Code: 24 0c 89 3c 24 48 89 4c 24 18 e8 f6 b9 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 8b 74 24 0c 8b 3c 24 b8 e6 00 00 00 0f 05 <44> 89 c7 48 89 04 24 e8 4f ba ff ff 48 8b 04 24 48 83 c4 28 f7 d8
+RSP: 002b:00007ffe80c6ee30 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+RAX: ffffffffffffffda RBX: 00007ff1a579bf80 RCX: 00007ff1a56a7ef5
+RDX: 00007ffe80c6ee70 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007ff1a579d980 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000000fef3
+R13: ffffffffffffffff R14: 00007ff1a5200000 R15: 000000000000fbb2
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:lookup_object lib/debugobjects.c:195 [inline]
+RIP: 0010:lookup_object_or_alloc lib/debugobjects.c:564 [inline]
+RIP: 0010:__debug_object_init+0xf3/0x2b0 lib/debugobjects.c:634
+Code: d8 48 c1 e8 03 42 80 3c 20 00 0f 85 85 01 00 00 48 8b 1b 48 85 db 0f 84 9f 00 00 00 48 8d 7b 18 83 c5 01 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 0f 85 4c 01 00 00 4c 3b 73 18 75 c3 48 8d 7b 10 48
+RSP: 0018:ffffc900050e7d08 EFLAGS: 00010012
 
-----------------------------------------------------------------
-Cleanup ext4's multi-block allocator, including adding some unit
-tests, as well as cleaning how we update the backup superblock after
-online resizes or updating the label or uuid.
+RAX: 000000003ffff113 RBX: 00000001ffff8880 RCX: ffffffff8169123e
+RDX: 1ffffffff249b149 RSI: 0000000000000004 RDI: 00000001ffff8898
+RBP: 0000000000000003 R08: 0000000000000001 R09: 0000000000000216
+R10: 0000000000000003 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffffff924d8a48 R14: ffffc900050e7d90 R15: ffffffff924d8a50
+FS:  0000555556eec480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa23ab065ee CR3: 000000007e5c1000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess):
+   0:	d8 48 c1             	fmuls  -0x3f(%rax)
+   3:	e8 03 42 80 3c       	call   0x3c80420b
+   8:	20 00                	and    %al,(%rax)
+   a:	0f 85 85 01 00 00    	jne    0x195
+  10:	48 8b 1b             	mov    (%rbx),%rbx
+  13:	48 85 db             	test   %rbx,%rbx
+  16:	0f 84 9f 00 00 00    	je     0xbb
+  1c:	48 8d 7b 18          	lea    0x18(%rbx),%rdi
+  20:	83 c5 01             	add    $0x1,%ebp
+  23:	48 89 f8             	mov    %rdi,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
+  2f:	0f 85 4c 01 00 00    	jne    0x181
+  35:	4c 3b 73 18          	cmp    0x18(%rbx),%r14
+  39:	75 c3                	jne    0xfffffffe
+  3b:	48 8d 7b 10          	lea    0x10(%rbx),%rdi
+  3f:	48                   	rex.W
 
-Optimize handling of released data blocks in ext4's commit machinery
-to avoid a potential lock contention on s_md_lock spinlock.
 
-Fix a number of ext4 bugs:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- - fix race between writepages and remount
- - fix racy may inline data check in dio write
- - add missed brelse in an error path in update_backups
- - fix umask handling when ACL support is disabled
- - fix lost EIO error when a journal commit races with a fsync of the
-   blockdev
- - fix potential improper i_size when there is a crash right after an
-   O_SYNC direct  write.
- - check extent node for validity before potentially using what might
-   be an invalid pointer
- - fix potential stale data exposure when writing to an unwritten extent
-   and the file system is nearly out of space
- - fix potential accounting error around block reservations when writing
-   partial delayed allocation writes to a bigalloc cluster
- - avoid memory allocation failure when tracking partial delayed allocation
-   writes to a bigalloc cluster
- - fix various debugging print messages
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-----------------------------------------------------------------
-Baokun Li (1):
-      ext4: fix race between writepages and remount
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Brian Foster (1):
-      ext4: fix racy may inline data check in dio write
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-Gou Hao (1):
-      ext4: move 'ix' sanity check to corrent position
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Jan Kara (1):
-      ext4: properly sync file size update after O_SYNC direct IO
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Jinke Han (1):
-      ext4: make running and commit transaction have their own freed_data_list
-
-Kemeng Shi (25):
-      ext4: correct offset of gdb backup in non meta_bg group to update_backups
-      ext4: add missed brelse in update_backups
-      ext4: correct return value of ext4_convert_meta_bg
-      ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
-      ext4: fix typo in setup_new_flex_group_blocks
-      ext4: remove redundant check of count
-      ext4: remove commented code in reserve_backup_gdb
-      ext4: calculate free_clusters_count in cluster unit in verify_group_input
-      ext4: remove EXT4FS_DEBUG defination in resize.c
-      ext4: use saved local variable sbi instead of EXT4_SB(sb)
-      ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
-      ext4: remove unnecessary check to avoid repeat update_backups for the same gdb
-      ext4: remove unnecessary initialization of count2 in set_flexbg_block_bitmap
-      ext4: make state in ext4_mb_mark_bb to be bool
-      ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
-      ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
-      ext4: extend ext4_mb_mark_context to support allocation under journal
-      ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
-      ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
-      ext4: call ext4_mb_mark_context in ext4_mb_clear_bb
-      ext4: Separate block bitmap and buddy bitmap freeing in ext4_group_add_blocks()
-      ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
-      ext4: add some kunit stub for mballoc kunit test
-      ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
-      ext4: run mballoc test with different layouts setting
-
-Lu Hongfei (1):
-      ext4: fix traditional comparison using max/min method
-
-Max Kellermann (1):
-      ext4: apply umask if ACL support is disabled
-
-Ojaswin Mujoo (1):
-      ext4: mark buffer new if it is unwritten to avoid stale data exposure
-
-Theodore Ts'o (1):
-      ext4: add missing initialization of call_notify_error in update_super_work()
-
-Wang Jianjian (2):
-      ext4: fix incorrect offset
-      ext4: no need to generate from free list in mballoc
-
-Ye Bin (2):
-      jbd2: print io_block if check data block checksum failed when do recovery
-      jbd2: fix printk format type for 'io_block' in do_one_pass()
-
-Zhang Yi (2):
-      ext4: correct the start block of counting reserved clusters
-      ext4: make sure allocate pending entry not fail
-
-Zhihao Cheng (1):
-      jbd2: fix potential data lost in recovering journal raced with synchronizing fs bdev
-
- fs/ext4/acl.h            |   5 +
- fs/ext4/balloc.c         |  16 +-
- fs/ext4/ext4.h           |   8 +-
- fs/ext4/extents.c        |  14 +-
- fs/ext4/extents_status.c | 127 ++++++++----
- fs/ext4/fast_commit.c    |   8 +-
- fs/ext4/file.c           | 169 +++++++---------
- fs/ext4/inode.c          |  14 +-
- fs/ext4/mballoc-test.c   | 349 +++++++++++++++++++++++++++++++++
- fs/ext4/mballoc.c        | 571 +++++++++++++++++++-----------------------------------
- fs/ext4/namei.c          |   3 +-
- fs/ext4/resize.c         |  94 ++++-----
- fs/ext4/super.c          |  17 +-
- fs/jbd2/recovery.c       |  13 +-
- 14 files changed, 823 insertions(+), 585 deletions(-)
- create mode 100644 fs/ext4/mballoc-test.c
+If you want to undo deduplication, reply with:
+#syz undup
