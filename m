@@ -2,218 +2,178 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5967DD95B
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Nov 2023 00:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733BB7DDAFC
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Nov 2023 03:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376889AbjJaXr1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Oct 2023 19:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S232367AbjKAC21 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Oct 2023 22:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376331AbjJaXr1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 19:47:27 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09B1F3
-        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b7f0170d7bso6227739b3a.2
-        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698796043; x=1699400843; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LL8tYW50Kf6aNPlxTNrj3Zv6ugWw5JL8Pwwf5RV47qU=;
-        b=zIBHlVEKP/FjOQzFg2UuJA/Q5DNFbiT+htmYaqlFA20JCJ5QrCBQm6N3xXgWoeLwds
-         4SsbXX+92XauhZQ+7rfUccSjn/3kypQEjdTpK5l9B8YrqXokQqrBDHEqOSWKJlO55vBQ
-         4bR5Hdf4rku9hz3U4PGPN6uR3/Zh230hxT3lYbq+yb/2sxawBAO8wp5Yb0TeekVEoSdj
-         TbR0PlszfLIFEz9xTE5RyZYcUv+gEEpmDFEUZ7UruPnGcfjDPEQpAtkJnd9V6iXcHEEl
-         sQeTAQb+P0hU9u/zveee1e0iZ3rZzIpnA4DpSzeY6fJRe5HYNgDhg4ejwBgtaaSdO+NL
-         uERw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698796043; x=1699400843;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LL8tYW50Kf6aNPlxTNrj3Zv6ugWw5JL8Pwwf5RV47qU=;
-        b=q82bVdKU7VJ/K+25flihNWsMEzmgFMdzKfEqO14CESNMuZKgu1I5WgWbt+PsRsYn6W
-         9YcjGZu6HoClVILY+ZktjrJyT2a0BirhvEf52Ve8vWJbkJ30Lx3taQ4e/J+mykpJDJgl
-         RTEPxudMizuojeDaPhekT5Q/DvxWo4CTJL3VA3X5U1tSlol+7kSvBO9EqHRXSpiXwPTE
-         YNEcltiiPUMQw721kBjw+UB8EQdpR9r1ihoBO+xcMVnpRsb0oM850V6KWwLBxVif000Y
-         hBz3NFragWs/YQYx8CQodeX57ucDV8HGH5gimZrhGTUMcCToS9+3TGOHin6T9FrTY7q/
-         owdw==
-X-Gm-Message-State: AOJu0YzmgqTDjS6qzOOQcIPbCW2robMPCC7rvp+1SiMCL7gTgYNuytkH
-        X4p9cmoHFgS+OA1lKopXnhNUww==
-X-Google-Smtp-Source: AGHT+IG0Ny9Z2Xdu0995f1HPr5AykcrHAfoUPqFEd6JDhsfJl5wm1cwFJ4giSGoazkZucS2Diz+3Eg==
-X-Received: by 2002:a05:6a21:78a4:b0:16b:846a:11b1 with SMTP id bf36-20020a056a2178a400b0016b846a11b1mr17455016pzc.32.1698796043058;
-        Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id c25-20020a637259000000b0058a9621f583sm1537767pgn.44.2023.10.31.16.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 16:47:22 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qxyS7-006YqP-22;
-        Wed, 01 Nov 2023 10:47:19 +1100
-Date:   Wed, 1 Nov 2023 10:47:19 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <ZUGSB4DhY4mNazz6@dread.disaster.area>
-References: <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area>
- <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area>
- <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
- <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
- <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
- <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
- <ZUF4NTxQXpkJADxf@dread.disaster.area>
- <20231031230242.GC1205143@frogsfrogsfrogs>
+        with ESMTP id S232350AbjKAC21 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Oct 2023 22:28:27 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A249DA
+        for <linux-ext4@vger.kernel.org>; Tue, 31 Oct 2023 19:28:24 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-111-73.bstnma.fios.verizon.net [173.48.111.73])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3A12SJL6027238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Oct 2023 22:28:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1698805700; bh=s2PO5WuG2mbhx+EdVqHqvRSzJCzMfyAXF+xpBka65rc=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=op4967HmVuqzMvQgHqySUxyEcCi6HTKqDylcPFP5AKM6YsBTKuVvOEKZm+IGfcxZw
+         psDh715ObPTdqapbBxpL5gDip0/+PlbBZClnmGggbC0xxMfT7YEs5ZgfjxECfgCL0Y
+         JytdkSZaNH1bV3ceZ+dmLN8k6w8XysSILsBIAE4zNm4ZYcMMhXUNeApDH3/dMyw1cN
+         wgcp/uMP8XXXcWLCBgo11Mc49cUk/480GviqL7pH5CiL34g/zI8u9kg3KPxSnWAYf2
+         bMO1Xs2CNAHF1oSn5JWX6GEQ6ExPyXTCebJkTWi/pabxpLlxx47TB3MzZmGkMkxqSa
+         u3hbE7Qfe16JA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id DFBBC15C024D; Tue, 31 Oct 2023 22:28:18 -0400 (EDT)
+Date:   Tue, 31 Oct 2023 22:28:18 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: [GIT PULL] ext4 update for v6.7-rc1
+Message-ID: <20231101022818.GA108790@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231031230242.GC1205143@frogsfrogsfrogs>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:02:42PM -0700, Darrick J. Wong wrote:
-> On Wed, Nov 01, 2023 at 08:57:09AM +1100, Dave Chinner wrote:
-> > On Tue, Oct 31, 2023 at 07:29:18AM -0400, Jeff Layton wrote:
-> > > On Tue, 2023-10-31 at 09:03 +0200, Amir Goldstein wrote:
-> > > > On Tue, Oct 31, 2023 at 3:42 AM Dave Chinner <david@fromorbit.com> wrote:
-> > e.g. the current code flow for an atime update is:
-> > 
-> > touch_atime()
-> >   atime_needs_update()
-> >   <freeze/write protection>
-> >   inode_update_time(S_ATIME)
-> >     ->update_time(S_ATIME)
-> >       <filesystem atime update>
-> > 
-> > I'd much prefer this to be:
-> > 
-> > touch_atime()
-> >   if (->update_time(S_ATIME)) {
-> >     ->update_time(S_ATIME)
-> >       xfs_inode_update_time(S_ATIME)
-> >         if (atime_needs_update())
-> > 	  <filesystem atime update>
-> >   } else {
-> >     /* run the existing code */
-> >   }
-> > 
-> > Similarly we'd turn file_modified()/file_update_time() inside out,
-> > and this then allows the filesystem to add custom timestamp update
-> > checks alongside the VFS timestamp update checks.
-> > 
-> > It would also enable us to untangle the mess that is lazytime, where
-> > we have to implement ->update_time to catch lazytime updates and
-> > punt them back to generic_update_time(), which then has to check for
-> > lazytime again to determine how to dirty and queue the inode.
-> > Of course, generic_update_time() also does timespec_equal checks on
-> > timestamps to determine if times should be updated, and so we'd
-> > probably need overrides on that, too.
-> 
-> Hmm.  So would the VFS update the incore timestamps of struct inode in
-> whatever manner it wants?
+The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
 
-That's kind of what I want to avoid - i want the filesystem to
-direct the VFS as to the type of checks and modifications it can
-make.
+  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
 
-e.g. the timestamp comparisons and actions taken need to be
-different for a timestamp-with-integrated-change-counter setup. It
-doesn't fold neatly into inode_needs_update_time() - it becomes a
-branchy, unreadable mess trying to handle all the different
-situations.
+are available in the Git repository at:
 
-Hence the VFS could provide two helpers - one for the existing
-timestamp format and one for the new integrated change counter
-timestamp. The filesystem can then select the right one to call.
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.7-rc1
 
-And, further, filesystems that have lazytime enabled should be
-checking that early to determine what to do. Lazytime specific
-helpers would be useful here.
+for you to fetch changes up to 91562895f8030cb9a0470b1db49de79346a69f91:
 
-> Could that include incrementing the lower
-> bits of i_ctime.tv_nsec for filesystems that advertise a non-1nsec
-> granularity but also set a flag that effectively means "but you can use
-> the lower tv_nsec bits if you want"?
+  ext4: properly sync file size update after O_SYNC direct IO (2023-10-31 20:20:55 -0400)
 
-Certainly. Similar to multi-grain timestamps, I don't see anything
-filesystem specific about this mechanism. I think that anyone saying
-"it's ok if it's internal to XFS" is still missing the point that
-i_version as a VFS construct needs to die.
+----------------------------------------------------------------
+Cleanup ext4's multi-block allocator, including adding some unit
+tests, as well as cleaning how we update the backup superblock after
+online resizes or updating the label or uuid.
 
-At most, i_version is only needed for filesystems that don't have
-nanosecond timestamp resolution in their on-disk format and so need
-some kind of external ctime change counter to provide fine-grained,
-sub-timestamp granularity change recording.
+Optimize handling of released data blocks in ext4's commit machinery
+to avoid a potential lock contention on s_md_lock spinlock.
 
-> And perhaps after all that, the VFS should decide if a timestamp update
-> needs to be persisted (e.g. lazytime/nodiratime/poniesatime) and if so,
-> call ->update_time or __mark_inode_dirty?  Then XFS doesn't have to know
-> about all the timestamp persistence rules, it just has to follow
-> whatever the VFS tells it.
+Fix a number of ext4 bugs:
 
-Sure. I'm not suggesting that the filesystem duplicate and encode
-all these rules itself.
+ - fix race between writepages and remount
+ - fix racy may inline data check in dio write
+ - add missed brelse in an error path in update_backups
+ - fix umask handling when ACL support is disabled
+ - fix lost EIO error when a journal commit races with a fsync of the
+   blockdev
+ - fix potential improper i_size when there is a crash right after an
+   O_SYNC direct  write.
+ - check extent node for validity before potentially using what might
+   be an invalid pointer
+ - fix potential stale data exposure when writing to an unwritten extent
+   and the file system is nearly out of space
+ - fix potential accounting error around block reservations when writing
+   partial delayed allocation writes to a bigalloc cluster
+ - avoid memory allocation failure when tracking partial delayed allocation
+   writes to a bigalloc cluster
+ - fix various debugging print messages
 
-I'm just saying that it seems completely backwards that the VFS
-encode all this generic logic to handle all these separate cases in
-a single code path and then provides a callout that allows the
-filesystem to override it's decisions (e.g. lazytime) and do
-something else.
+----------------------------------------------------------------
+Baokun Li (1):
+      ext4: fix race between writepages and remount
 
-The filesystem already knows exactly what specific subset of checks
-and updates need to be done so call ou tinto the filesystem first
-and then run the VFS helpers that do exactly what is needed for
-relatime, lazytime, using timestamps with integrated change
-counters, etc.
+Brian Foster (1):
+      ext4: fix racy may inline data check in dio write
 
-> > Sorting the lazytime mess for internal change counters really needs
-> > for all the timestamp updates to be handled in the filesystem, not
-> > bounced back and forward between the filesystem and VFS helpers as
-> > it currently is, hence I think we need to rework ->update_time to
-> > make this all work cleanly.
-> 
-> (Oh, I guess I proposed sort of the opposite of what you just said.)
+Gou Hao (1):
+      ext4: move 'ix' sanity check to corrent position
 
-Not really, just seems you're thinking about how to code all the
-VFS helpers we'd need a bit differently...
+Jan Kara (1):
+      ext4: properly sync file size update after O_SYNC direct IO
 
-Cheers,
+Jinke Han (1):
+      ext4: make running and commit transaction have their own freed_data_list
 
-Dav.e
--- 
-Dave Chinner
-david@fromorbit.com
+Kemeng Shi (25):
+      ext4: correct offset of gdb backup in non meta_bg group to update_backups
+      ext4: add missed brelse in update_backups
+      ext4: correct return value of ext4_convert_meta_bg
+      ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
+      ext4: fix typo in setup_new_flex_group_blocks
+      ext4: remove redundant check of count
+      ext4: remove commented code in reserve_backup_gdb
+      ext4: calculate free_clusters_count in cluster unit in verify_group_input
+      ext4: remove EXT4FS_DEBUG defination in resize.c
+      ext4: use saved local variable sbi instead of EXT4_SB(sb)
+      ext4: simplify the gdbblock calculation in add_new_gdb_meta_bg
+      ext4: remove unnecessary check to avoid repeat update_backups for the same gdb
+      ext4: remove unnecessary initialization of count2 in set_flexbg_block_bitmap
+      ext4: make state in ext4_mb_mark_bb to be bool
+      ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
+      ext4: call ext4_mb_mark_context in ext4_free_blocks_simple
+      ext4: extend ext4_mb_mark_context to support allocation under journal
+      ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
+      ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
+      ext4: call ext4_mb_mark_context in ext4_mb_clear_bb
+      ext4: Separate block bitmap and buddy bitmap freeing in ext4_group_add_blocks()
+      ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
+      ext4: add some kunit stub for mballoc kunit test
+      ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
+      ext4: run mballoc test with different layouts setting
+
+Lu Hongfei (1):
+      ext4: fix traditional comparison using max/min method
+
+Max Kellermann (1):
+      ext4: apply umask if ACL support is disabled
+
+Ojaswin Mujoo (1):
+      ext4: mark buffer new if it is unwritten to avoid stale data exposure
+
+Theodore Ts'o (1):
+      ext4: add missing initialization of call_notify_error in update_super_work()
+
+Wang Jianjian (2):
+      ext4: fix incorrect offset
+      ext4: no need to generate from free list in mballoc
+
+Ye Bin (2):
+      jbd2: print io_block if check data block checksum failed when do recovery
+      jbd2: fix printk format type for 'io_block' in do_one_pass()
+
+Zhang Yi (2):
+      ext4: correct the start block of counting reserved clusters
+      ext4: make sure allocate pending entry not fail
+
+Zhihao Cheng (1):
+      jbd2: fix potential data lost in recovering journal raced with synchronizing fs bdev
+
+ fs/ext4/acl.h            |   5 +
+ fs/ext4/balloc.c         |  16 +-
+ fs/ext4/ext4.h           |   8 +-
+ fs/ext4/extents.c        |  14 +-
+ fs/ext4/extents_status.c | 127 ++++++++----
+ fs/ext4/fast_commit.c    |   8 +-
+ fs/ext4/file.c           | 169 +++++++---------
+ fs/ext4/inode.c          |  14 +-
+ fs/ext4/mballoc-test.c   | 349 +++++++++++++++++++++++++++++++++
+ fs/ext4/mballoc.c        | 571 +++++++++++++++++++-----------------------------------
+ fs/ext4/namei.c          |   3 +-
+ fs/ext4/resize.c         |  94 ++++-----
+ fs/ext4/super.c          |  17 +-
+ fs/jbd2/recovery.c       |  13 +-
+ 14 files changed, 823 insertions(+), 585 deletions(-)
+ create mode 100644 fs/ext4/mballoc-test.c
