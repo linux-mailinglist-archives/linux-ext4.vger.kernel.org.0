@@ -2,61 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A30B7DE83B
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Nov 2023 23:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E537DE8D6
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Nov 2023 00:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346185AbjKAWpm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Nov 2023 18:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S1346218AbjKAX3N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Nov 2023 19:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbjKAWpl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Nov 2023 18:45:41 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9648F120;
-        Wed,  1 Nov 2023 15:45:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j3diwpSq3WWjuGaIf96sP2yWlOY+cLuH2Fz9QbBofL73qGIHEeYy5a2898Ao4NpqlErb4IdRJS0ISz6eN8SdF/otQ9CjFbk+VdxeKMDzJZk4ggOtMgRY9ViSPOgefbxRuP9kiJFI+c3D4fMS1wL6s8c/IY+SoclyQ+w/sWTZeoJTtSNQPOdCF8T3Z05RxpTWrwNnt8aQxIpJPFVBLthtA4vD9c21n91c+m2Vmkr4SItMWaMPiYAsJJTaEjNH9qTUl03i/RmSXAjWbV7wOOw5BLGlGSTzQE3tOkUeEi4dApYkEsMw7GaoUR1qXYm5VBhkvD955t6EKk+JaWJivf36kQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=86AuZVkHAJC/xJsPHsvl1SYoOAf/aZr7hKhJ9FBjqyc=;
- b=OLN84Yx3GAlLir53P9mw79bTCsVvPcq1kX+DTAGWQVdav2+FhKwZxhYCOQOqOwZYYrWFvbSiRxicgIkAahzrFvVYaWTZBDAZFtZ8v1e7sRj6VaTjo0NsnmgyjmyZioGOpk1xyn++UzZk6tVE4llsvG6JN8PiUelBxTH3kvOr0AVeShgUfHNZuumMpOP6bJqsFFjZTx/SSdIaTw50Sm8bu1n9eSMnq1te94A9orgRSIeh1QUwwDeVxq8Msp8t/v8L8xykj0BWX3oLFwU6Awwbg7qxowcXUD+KeM3tdX4OlLfzR3VHTAwPqUwyKzkfmvggyWKBOBJ6IGzVNaKIhDcbUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=86AuZVkHAJC/xJsPHsvl1SYoOAf/aZr7hKhJ9FBjqyc=;
- b=A7TuGYbWm1uF3BnuLj564R3XBbcYf+kRApBYJmLLW6NnaGzBdOMqRBuUPozO10YOgzPqfEuBzGKjQR7EZ+hvqyeM6eYe/ZLvKR3Od+G8gXPd8G+EdJi1hAa8dOywYWaDohZcEOFxKxfgjNnm24dxOTYDmeG51F0uakVTaOzdl0k=
-Received: from DM8PR13MB5079.namprd13.prod.outlook.com (2603:10b6:8:22::9) by
- PH7PR13MB6481.namprd13.prod.outlook.com (2603:10b6:510:2ec::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.28; Wed, 1 Nov 2023 22:45:30 +0000
-Received: from DM8PR13MB5079.namprd13.prod.outlook.com
- ([fe80::50ca:9941:2396:90f0]) by DM8PR13MB5079.namprd13.prod.outlook.com
- ([fe80::50ca:9941:2396:90f0%4]) with mapi id 15.20.6907.030; Wed, 1 Nov 2023
- 22:45:29 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-CC:     "hughd@google.com" <hughd@google.com>,
+        with ESMTP id S235091AbjKAX3N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Nov 2023 19:29:13 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252D8123
+        for <linux-ext4@vger.kernel.org>; Wed,  1 Nov 2023 16:29:10 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-586f1db1a83so169963eaf.2
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Nov 2023 16:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698881349; x=1699486149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9D9sfHhqQD//T+0joi06c/klbHPqB5VbxNysl+FPJQ=;
+        b=fmz9lDrcEy9qvklbrlhwcESMkHH26/plwaFv3FU3SQeTusQd019nZ5zniomKzC7ckE
+         N33FdONRvAs9mnVMNnWec9f0CRx19io3sIMZj5J41GFJjT6VDkF6jpiaR2dfpSrWi7hm
+         MwO9EMy3nlvfHxGEi6db7KffY5UObsVcL7uOk1WSokU1o8eHaQ0Em+rtEjEzYTJ9286h
+         Zx8i/hD/wc/blYLZlli48qoPbpCkdzjyCuZE3ypVqGQmwPI2dPu9pfK9Drm/1u/wv5nU
+         L1QD8EMORxFCxBfaX9hQRplK6kgoKQcOU1iM6lQRLfT9lgznbndkxLgqkh5WABxeoewt
+         oqKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698881349; x=1699486149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9D9sfHhqQD//T+0joi06c/klbHPqB5VbxNysl+FPJQ=;
+        b=EReZru9uJFpjGE0baZXEKX9kJxIggR3GAFesaQrUWCVCQzkJX0dL9uPhSW64neC41j
+         g99NdpilnLJ1GLygcZjhCUP7+z/0GC5pk7a254QJNP7x7XEygEIdAYr97OkxmKz17KTF
+         xkDYLgpiZDFVJh83jTmxhFcI5Qf9bcrhzk5LrQGeZEq3jOP8dR5sqgNX5qC4OVXYmVv4
+         ISG4jIJYG0HILNhmmC0019pzvlTm6CQ8jP96U8p2yBd5VjCsvSGOcEFnElcQVTjgTjip
+         0wQwLJRvtuVHid9A7caFmJ7Tw0BLvlKNrrBBFuu/piVu2koJNKiG77zNMIkfX2j3D4Xq
+         lQCA==
+X-Gm-Message-State: AOJu0YyqyOJY2RfRJ+UsTiQE7EUFTLJv0484/NABc9yXW41vTo/NWW6b
+        RP1fcv7okgqHUDL3BmBD5lSzgg==
+X-Google-Smtp-Source: AGHT+IHBbuuxoCvj122hy4w+Q5lkHRxzDKw2Hawu2bpMvdgl9pcfnhSlloOBc2uNwlUNFzkm4O5+rA==
+X-Received: by 2002:a05:6358:724d:b0:169:845b:3417 with SMTP id i13-20020a056358724d00b00169845b3417mr10842702rwa.25.1698881349037;
+        Wed, 01 Nov 2023 16:29:09 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id e22-20020a637456000000b0058a9621f583sm354653pgn.44.2023.11.01.16.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 16:29:08 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qyKe0-006zm8-39;
+        Thu, 02 Nov 2023 10:29:05 +1100
+Date:   Thu, 2 Nov 2023 10:29:04 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "jack@suse.cz" <jack@suse.cz>, "clm@fb.com" <clm@fb.com>,
         "josef@toxicpanda.com" <josef@toxicpanda.com>,
         "jstultz@google.com" <jstultz@google.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
         "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "djwong@kernel.org" <djwong@kernel.org>, "clm@fb.com" <clm@fb.com>,
         "chandan.babu@oracle.com" <chandan.babu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
+        "hughd@google.com" <hughd@google.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "dsterba@suse.com" <dsterba@suse.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "jlayton@kernel.org" <jlayton@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
         "tytso@mit.edu" <tytso@mit.edu>,
         "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
         "amir73il@gmail.com" <amir73il@gmail.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
@@ -68,140 +84,121 @@ CC:     "hughd@google.com" <hughd@google.com>,
         "jack@suse.de" <jack@suse.de>
 Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
  timestamp handing
-Thread-Topic: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Thread-Index: AQHaAepiwRK5xtu1cEOlqP7L4UYm0LBP6+MAgAAY74CAAAwxgIAABgCAgADCl4CAACFrAIAAsQcAgADtloCAA82AgIABFCGAgACRmICAAA52AIAAOIwAgAA6FACAAME+AIAA4QCAgABIsYCAAOlogIACHKEAgAWAfwCAAAm3AIAAKhyAgABZxYCAAEojAIAAr2uAgADOqACAAKXBgIAAF7UAgAANpQCAAAYPgA==
-Date:   Wed, 1 Nov 2023 22:45:29 +0000
-Message-ID: <5ef49a42e95a5cb1a0ce77766c13e9f227cb446e.camel@hammerspace.com>
-References: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-         <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-         <ZTnNCytHLGoJY9ds@dread.disaster.area>
-         <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-         <ZUAwFkAizH1PrIZp@dread.disaster.area>
-         <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
-         <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
-         <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
-         <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
-         <ZUF4NTxQXpkJADxf@dread.disaster.area>
-         <20231101101648.zjloqo5su6bbxzff@quack3>
-         <CAHk-=wj6wy6tNUQm6EtgxfE_J229y1DthpCguqQfTej71yiJXw@mail.gmail.com>
-         <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
-         <CAHk-=wi+cVOE3VmJzN3C6TFepszCkrXeAFJY6b7bK=vV493rzQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wi+cVOE3VmJzN3C6TFepszCkrXeAFJY6b7bK=vV493rzQ@mail.gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR13MB5079:EE_|PH7PR13MB6481:EE_
-x-ms-office365-filtering-correlation-id: ba66cf14-b78a-42c0-9a21-08dbdb2c3f86
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1D8RPLwL1Rq577oskRqVdIamWLXmi7X1roKz98NzTjfuAsqWbc47YAAX0hc9H4pgeXi7YIsUU2iw4ACVfQUuTrm1V9PFMlr1vsrBCQdIQSD4JFhQvsCsWHjAvkETc4AlHVB9MXLNZ7tV+gGwuN10hS8aAsRPHhFiMQblVnIiqQCDbNackrvaDWdHMSLpaHCt1EhJEFRf8RmBib5r8YqzHLpgW+K+/A7hSFm6BJcKhPpCkkkLRggshmTnt+1/pnBsJ0BLXj2ebUazF5KGmmqj5e0JWUTz6Dssfhhr7NnOdcaMEunw7QJVLfrVbmAsMrOpY3XbiOTDiAkwBLBWk7Z+7oh/RzS6qdRhGrOQmbZpTLAcaZnDpX9ys6Lzvn7bqFUHe/JNXOjKzTpXSrbDllCkEDrKJvzqDNmV4roBkt7WmvhgZFFfFsU1GNpbFwvQ0CAl70iD711npo3rkFZJFF4L/f0wuAXdzD6Rv0L+C1d4DF6RLS6jefV0ld3Jxu7ZKtisBZfErAop06gzqWkj9+yw4Dp1LErP86zFc1RPJVh5B51NZhQ2yCTIOXpVhTFOZbr+vmZNRQC2N0QeYLmXFHEH3c3zkNjcRgH/MRANz77VL2nfg0Fzc2EvkEh1y60AQSaCkzrA4kK+7ydnRNt66KvLyUjDkQOIWGON2PN80ZSg/2o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR13MB5079.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39840400004)(346002)(136003)(396003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(86362001)(36756003)(122000001)(38070700009)(5660300002)(6486002)(41300700001)(6512007)(83380400001)(4326008)(478600001)(8676002)(66556008)(8936002)(71200400001)(76116006)(2616005)(6506007)(2906002)(7416002)(66946007)(91956017)(316002)(6916009)(66446008)(64756008)(66476007)(54906003)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U2xWelFRQ2pqQmpEYUZ1UHdtdngvODNmeUZQaEFOV1ViY2xJSXROemFOWGFq?=
- =?utf-8?B?cGZuL2Q4U0kwamp4SnprQmFMa29nTjJQR0psZi9US01iZUg4dCtObk5OWU10?=
- =?utf-8?B?ZjltWURkazA2VzdSQ3Q1MEhZQTJRUitDODBVQi9mSm1wZjRlZVZINWJsMWxt?=
- =?utf-8?B?WEk4ZEpkbE9sang2cVlIc0ZmKytjSHkzZk1CSkNmV1BMSlJ6cUhXTnBzTmxG?=
- =?utf-8?B?cmtJcE15VmptUEFyVkc2ckpQSkloRVJoaSs5Q201aWhtbVZRb1J4ekZzVjZz?=
- =?utf-8?B?WG5Da2x1Wi9PT0FRbGZSa2tCa1FyVnFCTS9oSCt4aE1OeS84WktyUnhBcjRS?=
- =?utf-8?B?ck1HTkJRVUVETGdxVjZkNlJ4ZE81MVFaLzRpaEZtL2JiUW8vS2txSmNSSm1r?=
- =?utf-8?B?Q3dBSVFLOFA5U1dVVDhLRWRHblZ5VTJFNEphU21PbHVUVVRieXl3aVRRc3pq?=
- =?utf-8?B?YjZadG16MEUvSTNQYTNDYzlDbVc5N3BMTFN4Nzg1cVp2ODFKN3ZyazlIY1Mx?=
- =?utf-8?B?dndGaDFzMzNPOFFMdExqZW9pMXdlUEFDTW1Mci9CeTUzQ1hZWnhpQXd3RlYw?=
- =?utf-8?B?STd0amtCVDJuNHJ5djVLcUk1REZoSEF6NGNKNkdoWCswYm5YK1NiWWlNeUtS?=
- =?utf-8?B?ekxGc0xJT013ZExxWDZiTVluT1pHTy9jaldOc0RrMHBDM1dmSWQySUVSYnND?=
- =?utf-8?B?TXdaSEtyb2daS3B2UmVYSUVpcDhHR2lVZEs0YVQ4RDlPRnFxTDBNQU5VUW5R?=
- =?utf-8?B?UVRzVS82MEJXclpPZ2Y3eGF1S1ZHem8xcjNRUTU3ekFxaUZja3RScDNhRHd3?=
- =?utf-8?B?MCszdUtWdFdRUWxLT1BwWjArZTUwZ0hWdGJyZ1pXUERGMkdLRXBibHMwNmtj?=
- =?utf-8?B?NXEzN0w1UE1QMlJsT2JrdTFZTVhHYnhFejRiZm5zdmxhWHVyUFlxZFVVRk9o?=
- =?utf-8?B?K0pScCtyeTFpM2lYZWdVRkRSaDR3d2NXZ0VFS25GWWpISWNYMXBJbFVwanlQ?=
- =?utf-8?B?NE80TU5EeVByODNJVWFzMjBmMjRLZUdJWHVhbjBWUjZZUU05M2d1SDkwbGZr?=
- =?utf-8?B?KzMyU3ZEaG9kVnpwQjEyZG1KUGR2SHZ6bGRlVnl6aUk4cmYvM0IrcDk5cXd6?=
- =?utf-8?B?MmNlNkpiZjVFcXdrdnJXWVRlQXFId3RKeW9NSkcwa2xjYnNsZm5mSkorb1Ny?=
- =?utf-8?B?dDJFdVJFT0RDYi9STXJsTHR5bCtSRDBOYW5xcjdlT3RVZzhjTUViVkdxOS82?=
- =?utf-8?B?TUdEWGFnYnM5YXMzZTlNYUpidlFhVXBzVjIvTG1uNi9qMXFCNWJ1RE9hM1dy?=
- =?utf-8?B?Umt0OHZTbEY2Rk45aFpOVDFVYnBhaXE2TFBtU3l5eWpseWxpc2tZZWJ1WHps?=
- =?utf-8?B?elRxbm5lNUhibTd0aTVYdUF1RVhkbUw0THd3YU53OFRYVUp6K2daNEV5b0Za?=
- =?utf-8?B?MWJQYlh0OURxOThNS1h5RzZPWWsya042L3VsSDYzL1c3Nlo4ajFaQVk3OUcw?=
- =?utf-8?B?ZjRrRGp3NE9xS04vRkY3Z2E3ZC9EcUI0K2VqSnRhd2dLbU92Y0t2cXAxWFNU?=
- =?utf-8?B?Z2Z3N0RIcmt2Q0UvV0psTUFKN0JtQ045L2owcGxpMHJDV1JOamtUZ2hNRWhG?=
- =?utf-8?B?d0VmS0oyR1hTUWh3S1JDcVluRzFBdkdSRC8zODlhTWpoaGNvKyt5d25pQ3Nm?=
- =?utf-8?B?U3pYUldHNTQ2b1dKcm5iUWFWMXJMRG44c1JVTEdNTy9mY2tWTStsc1Byb1hj?=
- =?utf-8?B?M3I0SWZxM1d1bGR1bGhqTGZoWXduVzFweWtSWitqUXB0Mmd6b28xU3RsZTJI?=
- =?utf-8?B?OWxhNjVHZXJwUDM5SFkyd0JrR2xCVmkzVWZSVFdEbXE1RVphRVZST2J3RVpo?=
- =?utf-8?B?N01qc3ltdWoxVm5uRkdwbGx1VVZ3MmVMMHc4MFJXck8yb01KSi82YzNSeGJw?=
- =?utf-8?B?RE5kRlgvSmZRbmdNKy9aTlpnY2RGNnZRUStidW80eTFqNTYxcTJjV0VjUUtH?=
- =?utf-8?B?ckk2a0s5cmpaKzhPd3ptZ1F5TVhLWC9nR0szNjhwSlU3VnE5Z3cwbEx3VGY3?=
- =?utf-8?B?V3VyUUdKQnN3dm9PTnN5MThVSmpBOEZkaWx1N3Y0Mjh4d0Vad2FwcHB1aTJu?=
- =?utf-8?B?Nkgwd1d0RWpHS1F4ZUc4SXBWNHFiNlZCQlU2dnV2dmRGVUNNbmtzZXYxOG42?=
- =?utf-8?B?T3oxME5wSTFWSlhSdUZtNmhQeWZ6TjJqSjVJYVEvT29tbW5oQTFKcllkb0tr?=
- =?utf-8?B?RTh1ZlFGWExKMVpZeUpWWXgrRDhBPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <465884FF5296734AADBA0B33FCC0CB51@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Message-ID: <ZULfQIdN146eZodE@dread.disaster.area>
+References: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area>
+ <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+ <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+ <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
+ <ZUF4NTxQXpkJADxf@dread.disaster.area>
+ <20231101101648.zjloqo5su6bbxzff@quack3>
+ <CAHk-=wj6wy6tNUQm6EtgxfE_J229y1DthpCguqQfTej71yiJXw@mail.gmail.com>
+ <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR13MB5079.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba66cf14-b78a-42c0-9a21-08dbdb2c3f86
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2023 22:45:29.3301
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c2TVntkhavtecmH5SLiKDuJt1+yK7NGDcpHVCdgzWLhBE1jid8n9SLX71I/TbPrybtY9xBVvE7kVS6wucKp/aQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB6481
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTExLTAxIGF0IDEyOjIzIC0xMDAwLCBMaW51cyBUb3J2YWxkcyB3cm90ZToN
-Cj4gT24gV2VkLCBOb3YgMSwgMjAyMywgMTE6MzUgVHJvbmQgTXlrbGVidXN0IDx0cm9uZG15QGhh
-bW1lcnNwYWNlLmNvbT4NCj4gd3JvdGU6DQo+ID4gDQo+ID4gTXkgY2xpZW50IHdyaXRlcyB0byB0
-aGUgZmlsZSBhbmQgaW1tZWRpYXRlbHkgcmVhZHMgdGhlIGN0aW1lLiBBIDNyZA0KPiA+IHBhcnR5
-IGNsaWVudCB0aGVuIHdyaXRlcyBpbW1lZGlhdGVseSBhZnRlciBteSBjdGltZSByZWFkLg0KPiA+
-IEEgcmVib290IG9jY3VycyAobWF5YmUgbWludXRlcyBsYXRlciksIHRoZW4gSSByZS1yZWFkIHRo
-ZSBjdGltZSwNCj4gPiBhbmQNCj4gPiBnZXQgdGhlIHNhbWUgdmFsdWUgYXMgYmVmb3JlIHRoZSAz
-cmQgcGFydHkgd3JpdGUuDQo+ID4gDQo+ID4gWWVzLCBtb3N0IG9mIHRoZSB0aW1lIHRoYXQgaXMg
-YmV0dGVyIHRoYW4gdGhlIG5ha2VkIGN0aW1lLCBidXQgbm90DQo+ID4gYWNyb3NzIGEgcmVib290
-Lg0KPiANCj4gQWhoLCBJIGtuZXcgSSB3YXMgbWlzc2luZyBzb21ldGhpbmcuDQo+IA0KPiBCdXQg
-SSB0aGluayBpdCdzIGZpeGFibGUsIHdpdGggYW4gYWRkaXRpb25hbCBydWxlOg0KPiANCj4gwqAt
-IHdoZW4gZ2VuZXJhdGluZyBTVEFUWF9DSEFOR0VfQ09PS0lFLCBpZiB0aGUgY3RpbWUgbWF0Y2hl
-cyB0aGUNCj4gY3VycmVudCB0aW1lIGFuZCB0aGUgY3RpbWUgY291bnRlciBpcyB6ZXJvLCBzZXQg
-dGhlIGN0aW1lIGNvdW50ZXIgdG8NCj4gMS4NCj4gDQo+IFRoYXQgbWVhbnMgdGhhdCB5b3Ugd2ls
-bCBoYXZlICpzcHVyaW91cyogY2FjaGUgaW52YWxpZGF0aW9ucyBvZiBzdWNoDQo+IGNhY2hlZCBk
-YXRhIGFmdGVyIGEgcmVib290LCBidXQgb25seSBmb3IgcmVhZHMgdGhhdCBoYXBwZW5lZCByaWdo
-dA0KPiBhZnRlciB0aGUgZmlsZSB3YXMgd3JpdHRlbi4NCg0KUHJlc3VtYWJseSBpdCB3aWxsIGFs
-c28gaGFwcGVuIGlmIHRoZSBmaWxlIGdldHMga2lja2VkIG91dCBvZiBjYWNoZSBvbg0KdGhlIHNl
-cnZlciwgc2luY2UgdGhhdCB3aWxsIGNhdXNlIHRoZSBJX1ZFUlNJT05fUVVFUklFRCBmbGFnIGFu
-ZCBhbnkNCm90aGVyIGluLW1lbW9yeSBtZXRhZGF0YSB0byBiZSBsb3N0Lg0KDQo+IA0KPiBOb3cs
-IGl0J3Mgb2J2aW91c2x5IG5vdCB1bmhlYXJkIG9mIHRvIGZpbmlzaCB3cml0aW5nIGEgZmlsZSwg
-YW5kIHRoZW4NCj4gaW1tZWRpYXRlbHkgcmVhZGluZyB0aGUgcmVzdWx0cyBhZ2Fpbi4NCj4gDQo+
-IEJ1dCBhdCBsZWFzdCB0aG9zZSBjYWNoZXMgc2hvdWxkIGJlIHNvbWV3aGF0IGxpbWl0ZWQgKGFu
-ZCB0aGUgcHJvYmxlbQ0KPiB0aGVuIG9ubHkgaGFwcGVucyB3aGVuIHRoZSBuZnMgc2VydmVyIGlz
-IHJlYm9vdGVkKS4NCj4gDQo+IEkgKmFzc3VtZSogdGhhdCB0aGUgd2hvbGUgdGh1bmRlcmluZyBo
-ZXJkIGlzc3VlIHdpdGggbG90cyBvZiBjbGllbnRzDQo+IHRlbmRzIHRvIGJlIGZvciBzdGFibGUg
-ZmlsZXMsIG5vdCBmaWxlcyB0aGF0IHdlcmUganVzdCB3cml0dGVuIGFuZA0KPiB0aGVuIGltbWVk
-aWF0ZWx5IGNhY2hlZD8NCj4gDQo+IEkgZHVubm8uIEknbSBzdXJlIHRoZXJlJ3Mgc3RpbGwgc29t
-ZSB0aGlua28gaGVyZS4NCg0KQ2xvc2UtdG8tb3BlbiBjYWNoZSBjb25zaXN0ZW5jeSBtZWFucyB0
-aGF0IHRoZSBjbGllbnQgaXMgdXN1YWxseQ0KZXhwZWN0ZWQgdG8gY2hlY2sgdGhlIGNoYW5nZSBh
-dHRyaWJ1dGUgKG9yIGN0aW1lKSBvbiBmaWxlIGNsb3NlIGFuZA0KZmlsZSBvcGVuLiBTbyBpdCBp
-cyBub3QgdW5jb21tb24gZm9yIGl0IHRvIGhhdmUgdG8gcmV2YWxpZGF0ZSB0aGUgY2FjaGUNCm5v
-dCBsb25nIGFmdGVyIGZpbmlzaGluZyB3cml0aW5nIHRoZSBmaWxlLiBPZiBjb3Vyc2UsIGl0IGlz
-IHJhcmUgdG8NCmhhdmUgYW5vdGhlciBjbGllbnQgaW50ZXJqZWN0IHdpdGggYW5vdGhlciB3cml0
-ZSB0byB0aGUgc2FtZSBmaWxlIGp1c3QNCmEgZmV3IG1pY3Jvc2Vjb25kcyBhZnRlciBpdCB3YXMg
-Y2xvc2VkLCBob3dldmVyIGl0IGlzIGV4dHJlbWVseSBjb21tb24NCmZvciB0aGF0IHNvcnQgb2Yg
-YmVoYXZpb3VyIHRvIG9jY3VyIHdpdGggZGlyZWN0b3JpZXMuDQoNCi0tIA0KVHJvbmQgTXlrbGVi
-dXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5teWts
-ZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
+On Wed, Nov 01, 2023 at 09:34:57PM +0000, Trond Myklebust wrote:
+> On Wed, 2023-11-01 at 10:10 -1000, Linus Torvalds wrote:
+> > The above does not expose *any* changes to timestamps to users, and
+> > should work across a wide variety of filesystems, without requiring
+> > any special code from the filesystem itself.
+> > 
+> > And now please all jump on me and say "No, Linus, that won't work,
+> > because XYZ".
+> > 
+> > Because it is *entirely* possible that I missed something truly
+> > fundamental, and the above is completely broken for some obvious
+> > reason that I just didn't think of.
+> > 
+> 
+> My client writes to the file and immediately reads the ctime. A 3rd
+> party client then writes immediately after my ctime read.
+> A reboot occurs (maybe minutes later), then I re-read the ctime, and
+> get the same value as before the 3rd party write.
+>
+> Yes, most of the time that is better than the naked ctime, but not
+> across a reboot.
+
+This sort of "crash immediately after 3rd party data write" scenario
+has never worked properly, even with i_version.
+
+The issue is that 3rd party (local) buffered writes or metadata
+changes do not require any integrity or metadata stability
+operations to be performed by the filesystem unless O_[D]SYNC is set
+on the fd, RWF_[D]SYNC is set on the IO, or f{data}sync() is
+performed on the file.
+
+Hence no local filesystem currently persists i_version or ctime
+outside of operations with specific data integrity semantics.
+
+nfsd based modifications have application specific persistence
+requirements and that is triggered by the nfsd calling
+->commit_metadata prior to returning the operation result to the
+client. This is what persists i_version/timestamp changes that were
+made during the nfsd operation - this persistence behaviour is not
+driven by the local filesystem.
+
+IOWs, this "change attribute failure" scenario is an existing
+problem with the current i_version implementation.  It has always
+been flawed in this way but this didn't matter a decade ago because
+it's only purpose (and user) was nfsd and that had the required
+persistence semantics to hide these flaws within the application's
+context.
+
+Now that we are trying to expose i_version as a "generic change
+attribute", these persistence flaws get exposed because local
+filesystem operations do not have the same enforced persistence
+semantics as the NFS server.
+
+This is another reason I want i_version to die.
+
+What we need is a clear set of well defined semantics around statx
+change attribute sampling. Correct crash-recovery/integrity behaviour
+requires this rule:
+
+  If the change attribute has been sampled, then the next
+  modification to the filesystem that bumps change attribute *must*
+  persist the change attribute modification atomically with the
+  modification that requires it to change, or submit and complete
+  persistence of the change attribute modification before the
+  modification that requires it starts.
+
+e.g. a truncate can bump the change attribute atomically with the
+metadata changes in a transaction-based filesystem (ext4, XFS,
+btrfs, bcachefs, etc).
+
+Data writes are much harder, though. Some filesysetm structures can
+write data and metadata in a single update e.g. log structured or
+COW filesystems that can mix data and metadata like btrfs.
+Journalling filesystems require ordering between journal writes and
+the data writes to guarantee the change attribute is persistent
+before we write the data. Non-journalling filesystems require inode
+vs data write ordering.
+
+Hence I strongly doubt that a persistent change attribute is best
+implemented at the VFS - optimal, efficient implementations are
+highly filesystem specific regardless of how the change attribute is
+encoded in filesysetm metadata.
+
+This is another reason I want to change how the inode timestamp code
+is structured to call into the filesystem first rather than last.
+Different filesystems will need to do different things to persist
+a "ctime change counter" attribute correctly and efficiently -
+it's not a one-size fits all situation....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
