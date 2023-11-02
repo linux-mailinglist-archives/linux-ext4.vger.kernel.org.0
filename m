@@ -2,82 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD6F7DF020
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Nov 2023 11:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9FE7DF205
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Nov 2023 13:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346069AbjKBK3i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Nov 2023 06:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S229722AbjKBMJN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Nov 2023 08:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345942AbjKBK3h (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Nov 2023 06:29:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BE2128;
-        Thu,  2 Nov 2023 03:29:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE270C433C7;
-        Thu,  2 Nov 2023 10:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698920974;
-        bh=Re2dqNuKfkORzyb2wUhHbpPQHZvYeU32o2iRAeDKELk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=VfC4xEgo6WkMO4eihMPrTH0TndVEUcC3iif+UuOMldW3locME58/MSs+rdhZ0esTY
-         ca1e3CquDqo8Oz1s+y3r/25OQjr0nH9agzlmoMG282uM5H7flQjxDCIcwA74lfE64q
-         x1GvEaUSHPuj6bPWY5KmYwWou5uCeMT7RxRPxXtFc83cT54IgyfV/Pqmn4hBZoF/TO
-         s6rAnmBEI2UBN+8vy3LVi32z1bYhhBYtWmeVPM+2VHwHJRWdUrGiS8LcyyewUdpwv7
-         nJugXB7iaxMHR7d0nuM8tBJdDEQUYFtSIxh3TXRyj8E45EJZmOM0EcI7G9LvqMgc2B
-         WNKJAiEY60Jog==
-Message-ID: <eeb7e312410a5d6e362d1ac377005c7eaaf72925.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>,
-        Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "jack@suse.cz" <jack@suse.cz>, "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "chandan.babu@oracle.com" <chandan.babu@oracle.com>,
-        "hughd@google.com" <hughd@google.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "amir73il@gmail.com" <amir73il@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "jack@suse.de" <jack@suse.de>
-Date:   Thu, 02 Nov 2023 06:29:30 -0400
-In-Reply-To: <ZULfQIdN146eZodE@dread.disaster.area>
-References: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-         <ZUAwFkAizH1PrIZp@dread.disaster.area>
-         <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
-         <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
-         <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
-         <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
-         <ZUF4NTxQXpkJADxf@dread.disaster.area>
-         <20231101101648.zjloqo5su6bbxzff@quack3>
-         <CAHk-=wj6wy6tNUQm6EtgxfE_J229y1DthpCguqQfTej71yiJXw@mail.gmail.com>
-         <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
-         <ZULfQIdN146eZodE@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S229665AbjKBMJN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Nov 2023 08:09:13 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F1192
+        for <linux-ext4@vger.kernel.org>; Thu,  2 Nov 2023 05:09:10 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc30de471dso76565ad.0
+        for <linux-ext4@vger.kernel.org>; Thu, 02 Nov 2023 05:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698926950; x=1699531750; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T3bCx5CCooPYj1BvJi7qkrEgopG1E3ih5T9cCzZ0dUw=;
+        b=aq29/+x7q7QOpAPkNJh1KFGlbJsmCC+BczUKp9PZEi0m9QHXM9JvF6G4Dxl9rky4YP
+         KzV8Y85EFGfsbdKRqm0QW9koSPv6f95bk63P18rjq6zDa4pnbQMHuWAStJCJT+A1uGvh
+         Q0FPGBXNs8G5jTX672ijRTRIRGF+ZhXpi1LsdVcSk7vCQKVIemXLujeZca4eKlrz2Ndm
+         8RBbFA3b/ATcCnFZJtPKPdVy4SQdvHw8pUTh2d183Urzy7CCUXPaNFEeCSao0WBPk6Ob
+         M1CVQ8V3qVL2IIJwlUqmkhqF5yibq3f56T01UAW0Af838YZos/jqcQ1wqZwSZJanQ37+
+         QApg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698926950; x=1699531750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T3bCx5CCooPYj1BvJi7qkrEgopG1E3ih5T9cCzZ0dUw=;
+        b=TD2+bRzTLwh6EvZ/K/5q5kHK1QdK7DYNvsD+/X6r01xA2qIaVBkRW+N41omzNo1kzB
+         nMCYxtfGbXvD+UdIq8ATQKxXcCPdb/+T1TyLiclZEfpCmrynNB3QSixqQcnl1T3TNkkX
+         96wnIw0RCrmd4D1yLX/+pr2VQHZH8Cjm27Y0ZhDpbzKR8U05n2TfOJcdk8qEFsuOIiBP
+         IEp0GX3Vo5F9SHmEeUEFHToyj90mTKYrCKxsubaRN92KUijx3nR7kouRMawiU/0pbh6E
+         sTr+PHobs+1UFkoBDbDxOy51LhJzPs6dlu4x7IDY55tZ5OsSqdHbuMMIdw0MLOJdyK+8
+         8T6Q==
+X-Gm-Message-State: AOJu0YyTLudDIwRB6FKIc39pKN9ZhwIOYhZMkP9TUlBGZxjo2rdglYwQ
+        XzXHJBUsVFZLu0EDvG+AW6pOWVXkk1EZPhqbjNYctA==
+X-Google-Smtp-Source: AGHT+IEOjxIqPMvkPrgTv2pyQJ4CT19Aqko2Fcjtn55rIlRpk3ILPFB0WbGngUAHLyZ+hqipT+4kNWlKicKYJ4etiyE=
+X-Received: by 2002:a17:902:d4c9:b0:1cc:2bb6:66eb with SMTP id
+ o9-20020a170902d4c900b001cc2bb666ebmr98635plg.16.1698926949690; Thu, 02 Nov
+ 2023 05:09:09 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <000000000000cfd180060910a687@google.com> <875y2lmxys.ffs@tglx>
+In-Reply-To: <875y2lmxys.ffs@tglx>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 2 Nov 2023 13:08:58 +0100
+Message-ID: <CANp29Y7EQ0cLf23coqFLLRHbA5rJjq0q1-6G7nnhxqBOUA7apw@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,121 +71,123 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2023-11-02 at 10:29 +1100, Dave Chinner wrote:
-> On Wed, Nov 01, 2023 at 09:34:57PM +0000, Trond Myklebust wrote:
-> > On Wed, 2023-11-01 at 10:10 -1000, Linus Torvalds wrote:
-> > > The above does not expose *any* changes to timestamps to users, and
-> > > should work across a wide variety of filesystems, without requiring
-> > > any special code from the filesystem itself.
-> > >=20
-> > > And now please all jump on me and say "No, Linus, that won't work,
-> > > because XYZ".
-> > >=20
-> > > Because it is *entirely* possible that I missed something truly
-> > > fundamental, and the above is completely broken for some obvious
-> > > reason that I just didn't think of.
-> > >=20
-> >=20
-> > My client writes to the file and immediately reads the ctime. A 3rd
-> > party client then writes immediately after my ctime read.
-> > A reboot occurs (maybe minutes later), then I re-read the ctime, and
-> > get the same value as before the 3rd party write.
-> >=20
-> > Yes, most of the time that is better than the naked ctime, but not
-> > across a reboot.
->=20
-> This sort of "crash immediately after 3rd party data write" scenario
-> has never worked properly, even with i_version.
->=20
-> The issue is that 3rd party (local) buffered writes or metadata
-> changes do not require any integrity or metadata stability
-> operations to be performed by the filesystem unless O_[D]SYNC is set
-> on the fd, RWF_[D]SYNC is set on the IO, or f{data}sync() is
-> performed on the file.
->=20
-> Hence no local filesystem currently persists i_version or ctime
-> outside of operations with specific data integrity semantics.
->=20
-> nfsd based modifications have application specific persistence
-> requirements and that is triggered by the nfsd calling
-> ->commit_metadata prior to returning the operation result to the
-> client. This is what persists i_version/timestamp changes that were
-> made during the nfsd operation - this persistence behaviour is not
-> driven by the local filesystem.
->=20
-> IOWs, this "change attribute failure" scenario is an existing
-> problem with the current i_version implementation.  It has always
-> been flawed in this way but this didn't matter a decade ago because
-> it's only purpose (and user) was nfsd and that had the required
-> persistence semantics to hide these flaws within the application's
-> context.
+On Wed, Nov 1, 2023 at 1:58=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
 >
-> Now that we are trying to expose i_version as a "generic change
-> attribute", these persistence flaws get exposed because local
-> filesystem operations do not have the same enforced persistence
-> semantics as the NFS server.
->=20
-> This is another reason I want i_version to die.
->=20
-> What we need is a clear set of well defined semantics around statx
-> change attribute sampling. Correct crash-recovery/integrity behaviour
-> requires this rule:
->=20
->   If the change attribute has been sampled, then the next
->   modification to the filesystem that bumps change attribute *must*
->   persist the change attribute modification atomically with the
->   modification that requires it to change, or submit and complete
->   persistence of the change attribute modification before the
->   modification that requires it starts.
->=20
-> e.g. a truncate can bump the change attribute atomically with the
-> metadata changes in a transaction-based filesystem (ext4, XFS,
-> btrfs, bcachefs, etc).
->=20
-> Data writes are much harder, though. Some filesysetm structures can
-> write data and metadata in a single update e.g. log structured or
-> COW filesystems that can mix data and metadata like btrfs.
-> Journalling filesystems require ordering between journal writes and
-> the data writes to guarantee the change attribute is persistent
-> before we write the data. Non-journalling filesystems require inode
-> vs data write ordering.
->=20
-> Hence I strongly doubt that a persistent change attribute is best
-> implemented at the VFS - optimal, efficient implementations are
-> highly filesystem specific regardless of how the change attribute is
-> encoded in filesysetm metadata.
->=20
-> This is another reason I want to change how the inode timestamp code
-> is structured to call into the filesystem first rather than last.
-> Different filesystems will need to do different things to persist
-> a "ctime change counter" attribute correctly and efficiently -
-> it's not a one-size fits all situation....
+> On Tue, Oct 31 2023 at 22:36, syzbot wrote:
+> > general protection fault, probably for non-canonical address 0xdffffc00=
+3ffff113: 0000 [#1] PREEMPT SMP KASAN
+> > KASAN: probably user-memory-access in range [0x00000001ffff8898-0x00000=
+001ffff889f]
+> > CPU: 1 PID: 5308 Comm: syz-executor.4 Not tainted 6.6.0-rc7-syzkaller-0=
+0142-g888cf78c29e2 #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 10/09/2023
+> > RIP: 0010:lookup_object lib/debugobjects.c:195 [inline]
+> > RIP: 0010:lookup_object_or_alloc lib/debugobjects.c:564 [inline]
+> > RIP: 0010:__debug_object_init+0xf3/0x2b0 lib/debugobjects.c:634
+> > Code: d8 48 c1 e8 03 42 80 3c 20 00 0f 85 85 01 00 00 48 8b 1b 48 85 db=
+ 0f 84 9f 00 00 00 48 8d 7b 18 83 c5 01 48 89 f8 48 c1 e8 03 <42> 80 3c 20 =
+00 0f 85 4c 01 00 00 4c 3b 73 18 75 c3 48 8d 7b 10 48
+> > RSP: 0018:ffffc900050e7d08 EFLAGS: 00010012
+> > RAX: 000000003ffff113 RBX: 00000001ffff8880 RCX: ffffffff8169123e
+> > RDX: 1ffffffff249b149 RSI: 0000000000000004 RDI: 00000001ffff8898
+> > RBP: 0000000000000003 R08: 0000000000000001 R09: 0000000000000216
+> > R10: 0000000000000003 R11: 0000000000000000 R12: dffffc0000000000
+> > R13: ffffffff924d8a48 R14: ffffc900050e7d90 R15: ffffffff924d8a50
+> > FS:  0000555556eec480(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fa23ab065ee CR3: 000000007e5c1000 CR4: 0000000000350ee0
+>
+> So this dies in debugobjects::lookup_object()
+>
+> hlist_for_each_entry()
+>
+> >   10: 48 8b 1b                mov    (%rbx),%rbx
+>
+> Gets the next entry
+>
+> >   13: 48 85 db                test   %rbx,%rbx
+> >   16: 0f 84 9f 00 00 00       je     0xbb
+>
+> Checks for the termination condition (NULL pointer)
+>
+> >   1c: 48 8d 7b 18             lea    0x18(%rbx),%rdi
+>
+> Calculates the address of obj->object
+>
+> >   20: 83 c5 01                add    $0x1,%ebp
+>
+> cnt++;
+>
+> >   23: 48 89 f8                mov    %rdi,%rax
+> >   26: 48 c1 e8 03             shr    $0x3,%rax
+>
+> KASAN shadow address calculation
+>
+> > * 2a: 42 80 3c 20 00          cmpb   $0x0,(%rax,%r12,1) <-- trapping in=
+struction
+>
+> Kasan accesses 0xdffffc003ffff113 and dies.
+>
+> RBX contains the pointer to the next object: 0x00000001ffff8880 which is
+> clearly a user space address, but I have no idea where that might come
+> from. It's obviously data corruption of unknown provenience.
+>
+> Unfortunately repro.syz does not hold up to its name and refuses to
+> reproduce.
 
-FWIW, the big danger for nfsd is is i_version rollback after a crash:
+For me, on a locally built kernel (gcc 13.2.0) it didn't work either.
 
-We can end up handing out an i_version value to the client before it
-ever makes it to disk. If that happens, and the server crashes before it
-ever makes it to disk, then the client can see the old i_version when it
-queries it again (assuming the earlier write was lost).
+But, interestingly, it does reproduce using the syzbot-built kernel
+shared via the "Downloadable assets" [1] in the original report. The
+repro crashed the kernel in ~1 minute.
 
-That, in an of itself, is not a _huge_ problem for NFS clients. They'll
-typically just invalidate their cache if that occurs and reread any data
-they need.
+[1] https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.md
 
-The real danger is that you can have a write that occurs after the
-reboot that is different from the earlier one and hand out a change
-attribute that is a duplicate of the one viewed earlier. Now you have
-the same change attribute that refers to two different states of the
-file (and potential data corruption).
+[  125.919060][    C0] BUG: KASAN: stack-out-of-bounds in rb_next+0x10a/0x1=
+30
+[  125.921169][    C0] Read of size 8 at addr ffffc900048e7c60 by task
+kworker/0:1/9
+[  125.923235][    C0]
+[  125.923243][    C0] CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted
+6.6.0-rc7-syzkaller-00142-g888cf78c29e2 #0
+[  125.924546][    C0] Hardware name: QEMU Standard PC (Q35 + ICH9,
+2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  125.926915][    C0] Workqueue: events nsim_dev_trap_report_work
+[  125.929333][    C0]
+[  125.929341][    C0] Call Trace:
+[  125.929350][    C0]  <IRQ>
+[  125.929356][    C0]  dump_stack_lvl+0xd9/0x1b0
+[  125.931302][    C0]  print_report+0xc4/0x620
+[  125.932115][    C0]  ? __virt_addr_valid+0x5e/0x2d0
+[  125.933194][    C0]  kasan_report+0xda/0x110
+[  125.934814][    C0]  ? rb_next+0x10a/0x130
+[  125.936521][    C0]  ? rb_next+0x10a/0x130
+[  125.936544][    C0]  rb_next+0x10a/0x130
+[  125.936565][    C0]  timerqueue_del+0xd4/0x140
+[  125.936590][    C0]  __remove_hrtimer+0x99/0x290
+[  125.936613][    C0]  __hrtimer_run_queues+0x55b/0xc10
+[  125.936638][    C0]  ? enqueue_hrtimer+0x310/0x310
+[  125.936659][    C0]  ? ktime_get_update_offsets_now+0x3bc/0x610
+[  125.936688][    C0]  hrtimer_interrupt+0x31b/0x800
+[  125.936715][    C0]  __sysvec_apic_timer_interrupt+0x105/0x3f0
+[  125.936737][    C0]  sysvec_apic_timer_interrupt+0x8e/0xc0
+[  125.936755][    C0]  </IRQ>
+[  125.936759][    C0]  <TASK>
 
-We mitigate that today by factoring in the ctime on regular files when
-generating the change attribute (see nfsd4_change_attribute()). In
-theory, i_version rolling back + a clock jump backward could generate
-change attr collisions, even with that, but that's a bit harder to
-contrive so we mostly don't worry about it.
 
-I'm all for coming up with a way to make this more resilient though. If
-we can offer the guarantee that you're proposing above, then that would
-be a very nice thing.
---=20
-Jeff Layton <jlayton@kernel.org>
+
+>
+> Thanks,
+>
+>         tglx
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/875y2lmxys.ffs%40tglx.
