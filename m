@@ -2,56 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F30A7E2354
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Nov 2023 14:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2897E381D
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Nov 2023 10:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjKFNLK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Nov 2023 08:11:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
+        id S233819AbjKGJtj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Nov 2023 04:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbjKFNLJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Nov 2023 08:11:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2B0BD
-        for <linux-ext4@vger.kernel.org>; Mon,  6 Nov 2023 05:11:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55379C433C9;
-        Mon,  6 Nov 2023 13:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699276266;
-        bh=TohJ8QBzDyvkf0vAYXUQXZVqY9K1DR8+nKfvDd8jAHA=;
-        h=Date:From:To:Subject:From;
-        b=INbxoi0Bf8ogumR8YyGC6PBNv+zSPcJlhcqN7oUjbj29opR3B4jJgtG+2xCtttfGo
-         a5RzI7saPREqxTKCVUo3sEFwKeAbQXPa/9Fdmc6CfjHhFjVU8DSxIs88H2+wRWmTV2
-         gkEnENMVDij9x29khRb5WhI7SFoLILxFjqOC5beA=
-Date:   Mon, 6 Nov 2023 08:11:05 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     linux-ext4@vger.kernel.org
-Subject: PSA: migrating linux-ext4 to new vger infrastructure
-Message-ID: <20231106-nice-horse-of-refinement-e0702d@nitro>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S233826AbjKGJtj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Nov 2023 04:49:39 -0500
+Received: from sirokuusama2.dnainternet.net (sirokuusama2.dnainternet.net [83.102.40.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06E610A
+        for <linux-ext4@vger.kernel.org>; Tue,  7 Nov 2023 01:49:35 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by sirokuusama2.dnainternet.net (Postfix) with ESMTP id 128C3BF47;
+        Tue,  7 Nov 2023 11:49:33 +0200 (EET)
+X-Virus-Scanned: DNA Internet at dnainternet.net
+X-Spam-Score: 0.251
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+Authentication-Results: sirokuusama2.dnainternet.net (DNA Internet);
+        dkim=pass (1024-bit key) header.d=anssih.iki.fi
+Received: from sirokuusama2.dnainternet.net ([83.102.40.153])
+        by localhost (sirokuusama2.dnainternet.net [127.0.0.1]) (DNA Internet, port 10041)
+        with ESMTP id iw5ov505clzu; Tue,  7 Nov 2023 11:49:32 +0200 (EET)
+Received: from omenapuu2.dnainternet.net (omenapuu2.dnainternet.net [83.102.40.54])
+        by sirokuusama2.dnainternet.net (Postfix) with ESMTP id CFAE2AB71;
+        Tue,  7 Nov 2023 11:49:32 +0200 (EET)
+Received: from mail.onse.fi (87-95-225-209.bb.dnainternet.fi [87.95.225.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by omenapuu2.dnainternet.net (Postfix) with ESMTPS id 8A545222;
+        Tue,  7 Nov 2023 11:49:30 +0200 (EET)
+Received: by mail.onse.fi (Postfix, from userid 1000)
+        id 2B0A432049F; Tue,  7 Nov 2023 11:49:30 +0200 (EET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.onse.fi 2B0A432049F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anssih.iki.fi;
+        s=default; t=1699350570;
+        bh=W/vZ18m97bXygpP2gazTOAZ4aww/lTRBr2mYcFSTp10=;
+        h=From:To:Subject:From;
+        b=ThUh1GgK9uLvVBMiurbsA1CNUUwnBnbWyxREeKMy5mZ62LFX83a1+TkNccuaCqDaW
+         kSlU4dj28zjclHIsFIhFRYGqNSpfLMaZ8miLKPtUYaNGc50HyRYWURXr2Gc0JERk9K
+         icik9dXzFzeto5rU1f0hXtjRLyxfPnswK1mHg98Y=
+From:   Anssi Hannula <anssi.hannula@iki.fi>
+To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH e2fsprogs] resize2fs: avoid constantly flushing while moving blocks
+Date:   Tue,  7 Nov 2023 11:46:53 +0200
+Message-ID: <20231107094920.4056281-1-anssi.hannula@iki.fi>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Good day!
+resize2fs block_mover() flushes data after each extent and, curiously,
+only if progress indicator is enabled, every inode_blocks_per_group
+blocks.
 
-I plan to migrate the linux-ext4@vger.kernel.org list to the new
-infrastructure this week. We're still doing it list-by-list to make sure that
-we don't run into scaling issues with the new infra.
+This significantly affects performance, e.g. on a tested large
+filesystem on top of MD-RAID6+LVM+dm-crypt these flush calls reduce the
+operation rate from approx. 500MB/s to 5MB/s, causing extremely long
+shrinking times for large size deltas (70TB in my case).
 
-The migration will be performed live and should not require any downtime.
-There will be no changes to how anyone interacts with the list after
-migration is completed, so no action is required on anyone's part.
+Since this step performs just plain data copying and does not e.g. save
+any progress/checkpoint information or similar metadata, it seems like
+this flushing is of very limited usefulness, especially when considering
+the (in some cases) 100x performance impact.
 
-Please let me know if you have any concerns.
+Remove the mid-operation flushes and only flush after all blocks have
+been moved.
 
-Best wishes,
--K
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ resize/resize2fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/resize/resize2fs.c b/resize/resize2fs.c
+index 5eeb7d44..46540501 100644
+--- a/resize/resize2fs.c
++++ b/resize/resize2fs.c
+@@ -1863,7 +1863,6 @@ static errcode_t block_mover(ext2_resize_t rfs)
+ 			old_blk += c;
+ 			moved += c;
+ 			if (rfs->progress) {
+-				io_channel_flush(fs->io);
+ 				retval = (rfs->progress)(rfs,
+ 						E2_RSZ_BLOCK_RELOC_PASS,
+ 						moved, to_move);
+@@ -1871,9 +1870,10 @@ static errcode_t block_mover(ext2_resize_t rfs)
+ 					goto errout;
+ 			}
+ 		} while (size > 0);
+-		io_channel_flush(fs->io);
+ 	}
+ 
++	io_channel_flush(fs->io);
++
+ errout:
+ 	if (badblock_list) {
+ 		if (!retval && bb_modified)
+-- 
+2.41.0
+
