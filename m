@@ -2,111 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408B47E60D5
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Nov 2023 00:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0D57E6126
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Nov 2023 00:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbjKHXGK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Nov 2023 18:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S229551AbjKHXoZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Nov 2023 18:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKHXGJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Nov 2023 18:06:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFB52599;
-        Wed,  8 Nov 2023 15:06:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE81C433C8;
-        Wed,  8 Nov 2023 23:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1699484767;
-        bh=t8pBQSNPVR9LioM+HcvTKgJwQbCrujWjNwfm0VTaR5A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Kb4LDRBsnf32K7Vz06ikeb1CPOiJ1H15eXMnH9kxTJtY+bF3pXhcR2BSF6zYwQ9fK
-         mgsr+P98qJyhfHSMhotMocwnZnya8dqNepcltfzM8d5SSPm+BeIy3OSTsEhS64I852
-         xWfR27VQoZFdkB/pFGkyj8cEyQwskDqZcuVcGtAc=
-Date:   Wed, 8 Nov 2023 15:06:06 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-erofs@lists.ozlabs.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: Re: [PATCH 1/3] mm: Add folio_zero_tail() and use it in ext4
-Message-Id: <20231108150606.2ec3cafb290f757f0e4c92d8@linux-foundation.org>
-In-Reply-To: <20231107212643.3490372-2-willy@infradead.org>
-References: <20231107212643.3490372-1-willy@infradead.org>
-        <20231107212643.3490372-2-willy@infradead.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S229473AbjKHXoY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Nov 2023 18:44:24 -0500
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE521FE4
+        for <linux-ext4@vger.kernel.org>; Wed,  8 Nov 2023 15:44:22 -0800 (PST)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2f43c4853so347754b6e.1
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Nov 2023 15:44:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699487062; x=1700091862;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=omOPkzFOgHujhTqR136cEFG8vnTdihPbkd8WFXv4dFg=;
+        b=bsgdFo78mSlOdRIk6Hf7JtH2+MKxAF5SH4eF0s1R9x9Bd9yJ0vHhsySGXrgjAzvTia
+         9Urc1rV21FlyhFxj/Q8wQBXLxZPxH/KrNFk2drI0QGzDv8fDDPi9fki2sxR1guXcmCWd
+         d+RbLUfcStqe2Mtwbqxmt+XOAYwFAjbUCm5spefsJZEyd7X5BdOteivqXMuBiDGpQM1I
+         BWpGc3X+lSzzNBCJLm8o7lUgbC78oQPS/co2f2+Og+Hfmv84jwSSQHWNVG6hoq7YDBXt
+         momWDeSFrDJ2HkMEgQ7K47WcGNqG4xCAJzuM2QMbkLm6H62MjPO7QwLX1MyqDVOHqkq/
+         8rKw==
+X-Gm-Message-State: AOJu0Yxvjc6bwmvTMbNFJYhyrTnrPAjK/d87/zDgbgQfsmXERS/pnnmt
+        KWaalrsRH/ovhyExk3YE2Dq8Re6eQz4tMr8TlmZCkRhHD4fb
+X-Google-Smtp-Source: AGHT+IH8aLmqQLsGNTdroA2ZGENBSlGH3Kfq7L6wzTA2W0YLF3ESChu2j6nowvN6/kmPNHZrupMI9zOhidOYKsqo5KfV8j2kLNYH
+MIME-Version: 1.0
+X-Received: by 2002:a05:6808:1799:b0:3b2:e45a:7475 with SMTP id
+ bg25-20020a056808179900b003b2e45a7475mr10745oib.11.1699487061898; Wed, 08 Nov
+ 2023 15:44:21 -0800 (PST)
+Date:   Wed, 08 Nov 2023 15:44:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009ffc470609acaa3a@google.com>
+Subject: [syzbot] Monthly ext4 report (Nov 2023)
+From:   syzbot <syzbot+list07d69efc5e1d32eac754@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue,  7 Nov 2023 21:26:40 +0000 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+Hello ext4 maintainers/developers,
 
-> Instead of unmapping the folio after copying the data to it, then mapping
-> it again to zero the tail, provide folio_zero_tail() to zero the tail
-> of an already-mapped folio.
-> 
-> ...
->
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -483,6 +483,44 @@ static inline void memcpy_to_folio(struct folio *folio, size_t offset,
->  	flush_dcache_folio(folio);
->  }
->  
-> +/**
-> + * folio_zero_tail - Zero the tail of a folio.
-> + * @folio: The folio to zero.
-> + * @kaddr: The address the folio is currently mapped to.
-> + * @offset: The byte offset in the folio to start zeroing at.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-That's the argument ordering I would expect.
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 41 issues are still open and 118 have been fixed so far.
 
-> + * If you have already used kmap_local_folio() to map a folio, written
-> + * some data to it and now need to zero the end of the folio (and flush
-> + * the dcache), you can use this function.  If you do not have the
-> + * folio kmapped (eg the folio has been partially populated by DMA),
-> + * use folio_zero_range() or folio_zero_segment() instead.
-> + *
-> + * Return: An address which can be passed to kunmap_local().
-> + */
-> +static inline __must_check void *folio_zero_tail(struct folio *folio,
-> +		size_t offset, void *kaddr)
+Some of the still happening issues:
 
-While that is not.  addr,len is far more common that len,addr?
+Ref  Crashes Repro Title
+<1>  51606   Yes   possible deadlock in console_flush_all (2)
+                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
+<2>  10182   Yes   KASAN: slab-out-of-bounds Read in generic_perform_write
+                   https://syzkaller.appspot.com/bug?extid=4a2376bc62e59406c414
+<3>  5928    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<4>  470     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<5>  207     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<6>  150     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<7>  101     Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<8>  30      Yes   kernel BUG in ext4_write_inline_data_end
+                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
+<9>  16      No    possible deadlock in start_this_handle (4)
+                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
+<10> 13      Yes   INFO: rcu detected stall in sys_unlink (3)
+                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
 
-> +{
-> +	size_t len = folio_size(folio) - offset;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Calling it `remaining' would be more clear.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-> +
-> +	if (folio_test_highmem(folio)) {
-> +		size_t max = PAGE_SIZE - offset_in_page(offset);
-> +
-> +		while (len > max) {
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-Shouldn't this be `while (len)'?  AFAICT this code can fail to clear
-the final page.
-
-> +			memset(kaddr, 0, max);
-> +			kunmap_local(kaddr);
-> +			len -= max;
-> +			offset += max;
-> +			max = PAGE_SIZE;
-> +			kaddr = kmap_local_folio(folio, offset);
-> +		}
-> +	}
-> +
-> +	memset(kaddr, 0, len);
-> +	flush_dcache_folio(folio);
-> +
-> +	return kaddr;
-> +}
-> +
-
+You may send multiple commands in a single email message.
