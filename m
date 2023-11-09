@@ -2,94 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0D57E6126
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Nov 2023 00:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8367E614C
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Nov 2023 01:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjKHXoZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Nov 2023 18:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
+        id S229659AbjKIAMb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Nov 2023 19:12:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKHXoY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Nov 2023 18:44:24 -0500
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE521FE4
-        for <linux-ext4@vger.kernel.org>; Wed,  8 Nov 2023 15:44:22 -0800 (PST)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2f43c4853so347754b6e.1
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Nov 2023 15:44:22 -0800 (PST)
+        with ESMTP id S229473AbjKIAMa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Nov 2023 19:12:30 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0FC2594;
+        Wed,  8 Nov 2023 16:12:28 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507ad511315so409485e87.0;
+        Wed, 08 Nov 2023 16:12:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699488747; x=1700093547; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oxRjndTtkJZetvfezkXF/2987ikg4wY/3660b2uWMtk=;
+        b=VdTxfrx41ziQy4Nz7BCYpyno8cfIsO7U76xciSyVgh5a8B23uNs3Go3k9HEj48SwVm
+         8NleB38sE2fmXdqAmEKcZR+acVFCpHJywyXXtHAdqZw+X9LgqVGI5qF2fLq5Y724uZku
+         fEujXwZT7I1vkZLNaYWk35UYWMHVyqvMZWywv5PTYU5RLSh90JKMQnSsV0XcRPufKrVC
+         YSYo6U1E3PdNWMoIjaCErkRR1ioaHFxgy+lY75T77C5lLZbU+G3i/IFBGUMHFy9a3t8c
+         8EJL7k2Z0ymCWZb8DqgE/7l0AmzStPa8vgszGR1TohOMWWAiY2V4WTfjJNgi92p0Tc6x
+         q7Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699487062; x=1700091862;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=omOPkzFOgHujhTqR136cEFG8vnTdihPbkd8WFXv4dFg=;
-        b=bsgdFo78mSlOdRIk6Hf7JtH2+MKxAF5SH4eF0s1R9x9Bd9yJ0vHhsySGXrgjAzvTia
-         9Urc1rV21FlyhFxj/Q8wQBXLxZPxH/KrNFk2drI0QGzDv8fDDPi9fki2sxR1guXcmCWd
-         d+RbLUfcStqe2Mtwbqxmt+XOAYwFAjbUCm5spefsJZEyd7X5BdOteivqXMuBiDGpQM1I
-         BWpGc3X+lSzzNBCJLm8o7lUgbC78oQPS/co2f2+Og+Hfmv84jwSSQHWNVG6hoq7YDBXt
-         momWDeSFrDJ2HkMEgQ7K47WcGNqG4xCAJzuM2QMbkLm6H62MjPO7QwLX1MyqDVOHqkq/
-         8rKw==
-X-Gm-Message-State: AOJu0Yxvjc6bwmvTMbNFJYhyrTnrPAjK/d87/zDgbgQfsmXERS/pnnmt
-        KWaalrsRH/ovhyExk3YE2Dq8Re6eQz4tMr8TlmZCkRhHD4fb
-X-Google-Smtp-Source: AGHT+IH8aLmqQLsGNTdroA2ZGENBSlGH3Kfq7L6wzTA2W0YLF3ESChu2j6nowvN6/kmPNHZrupMI9zOhidOYKsqo5KfV8j2kLNYH
+        d=1e100.net; s=20230601; t=1699488747; x=1700093547;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oxRjndTtkJZetvfezkXF/2987ikg4wY/3660b2uWMtk=;
+        b=ZIJ0Z3/30m//Txqpj0+P+i43k0Rb9BJvYaRSE7Ml31CUFh5wxO8Id8TZbfnfeMsB3U
+         WsP27Ljl+gMeyHBdrh25hussO5g+w8cj66WeuCiZy9EwpFk8arj/o7EW6l5+CsvKEaxG
+         pE9PHPe6QR8AANjlb+uXCWEjLI8N5RHBIS1Eh3sylxACQB+8CjaIRWKazBO0bHOMP6Ov
+         9NkHqM5gXClAUqnqcW5Tlhm98nc2uV6rq9FeVJU+8Z3rGhfYFO9VvzoPPgDyhwDG8HAP
+         w1pyLD06nXunh0uswo4APjYqyByb42qZVMOYfO9CbaunYrvfGjN2Hmg+FR0Ksf9t2TuO
+         ubAw==
+X-Gm-Message-State: AOJu0Yw1H80Pn79WauonKupGxBfBXCWgvTEDJJ/a4fLavXcFWGfw5ZtK
+        qsIphDJri4yPl6sdoiBMDgH10VpTKO57Co2AIYjeMv1UphY=
+X-Google-Smtp-Source: AGHT+IGMym6s82sHBjvRZ1gVgP42jaL1JmjVcnC8voSpb7JFI9R5aRcHobWV5Dojv1Zry9WdFGNjuVaBWNGJSNkxkfg=
+X-Received: by 2002:a19:6713:0:b0:508:269d:1342 with SMTP id
+ b19-20020a196713000000b00508269d1342mr109419lfc.35.1699488746448; Wed, 08 Nov
+ 2023 16:12:26 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1799:b0:3b2:e45a:7475 with SMTP id
- bg25-20020a056808179900b003b2e45a7475mr10745oib.11.1699487061898; Wed, 08 Nov
- 2023 15:44:21 -0800 (PST)
-Date:   Wed, 08 Nov 2023 15:44:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009ffc470609acaa3a@google.com>
-Subject: [syzbot] Monthly ext4 report (Nov 2023)
-From:   syzbot <syzbot+list07d69efc5e1d32eac754@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <20231107212643.3490372-1-willy@infradead.org> <20231107212643.3490372-2-willy@infradead.org>
+ <20231108150606.2ec3cafb290f757f0e4c92d8@linux-foundation.org>
+In-Reply-To: <20231108150606.2ec3cafb290f757f0e4c92d8@linux-foundation.org>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Thu, 9 Nov 2023 01:12:15 +0100
+Message-ID: <CAHpGcMLU9CeX=P=718Gp=oYNnfbft_Mh1Nhdx45qWXY0DAf6Mg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mm: Add folio_zero_tail() and use it in ext4
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>, gfs2@lists.linux.dev,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-erofs@lists.ozlabs.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello ext4 maintainers/developers,
+Andrew,
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+Andrew Morton <akpm@linux-foundation.org> schrieb am Do., 9. Nov. 2023, 00:06:
+> > +
+> > +     if (folio_test_highmem(folio)) {
+> > +             size_t max = PAGE_SIZE - offset_in_page(offset);
+> > +
+> > +             while (len > max) {
+>
+> Shouldn't this be `while (len)'?  AFAICT this code can fail to clear
+> the final page.
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 41 issues are still open and 118 have been fixed so far.
+not sure what you're seeing there, but this looks fine to me.
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  51606   Yes   possible deadlock in console_flush_all (2)
-                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
-<2>  10182   Yes   KASAN: slab-out-of-bounds Read in generic_perform_write
-                   https://syzkaller.appspot.com/bug?extid=4a2376bc62e59406c414
-<3>  5928    Yes   WARNING: locking bug in ext4_move_extents
-                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-<4>  470     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<5>  207     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<6>  150     No    possible deadlock in evict (3)
-                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
-<7>  101     Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<8>  30      Yes   kernel BUG in ext4_write_inline_data_end
-                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
-<9>  16      No    possible deadlock in start_this_handle (4)
-                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
-<10> 13      Yes   INFO: rcu detected stall in sys_unlink (3)
-                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Andreas
