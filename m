@@ -1,153 +1,137 @@
-Return-Path: <linux-ext4+bounces-1-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CD6C7E7EDD
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Nov 2023 18:48:05 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5421C20DB3
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Nov 2023 17:48:04 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406DB3B2BD;
-	Fri, 10 Nov 2023 17:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1P9XP7bi"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB383A29D
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Nov 2023 17:46:39 +0000 (UTC)
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595C37D9D
-	for <linux-ext4@vger.kernel.org>; Thu,  9 Nov 2023 22:47:18 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cdc669c5eso505461cf.1
-        for <linux-ext4@vger.kernel.org>; Thu, 09 Nov 2023 22:47:18 -0800 (PST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4387E7E99
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Nov 2023 18:46:36 +0100 (CET)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S1344174AbjKJRqf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Nov 2023 12:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345909AbjKJRpj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Nov 2023 12:45:39 -0500
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4FE83FF
+        for <linux-ext4@vger.kernel.org>; Thu,  9 Nov 2023 23:25:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699598837; x=1700203637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z1gTqrJKHlb0DQZEnTZIMK5A0G74ZbPPA6krp64Uv1U=;
-        b=1P9XP7biqo6BAs5FmOevxu1Ngl67YD1PwCfl+BxXEfrfq9b9snKj9BdYIbkFJh7zOl
-         rXzpm052sl/LIGDD78pm/nXHmJ2vo0ZQ4cYjXRe8eLeOKi/FrPQdqFUBvLvvjuSNCs1j
-         F1rgubk2vyxcdDhQlPSPg0i5qzTNRz9SGvwxKYbdW47QMzrjJ+Gq2j4GKIxq1yooSpqt
-         WAEbciQHM0ZlufeEr7UKgc+XIA4ZLlIhyqohNS9+AHS0enRbkK0fZhAH07ByWKt3qf9S
-         CFiQVPkuIaNCgeUwYK7IX1F0BhicBMlHLMNj6iJGZdjLSOwFKGr902dWsMlnv/VI/T9L
-         CkoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699598837; x=1700203637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z1gTqrJKHlb0DQZEnTZIMK5A0G74ZbPPA6krp64Uv1U=;
-        b=J3n7moRlY12u0qCmpQL9YXBFVbtJKr8NXiYDoEwey6H4ZoptLoUfiVPUwefQ/Ozt1O
-         9cS/q1tNimFDZ5VNmQW5ZsmMFMNBtrkc1zSNZXN3lXb9y4J6JVYeTh2RC0PTMfX9xk98
-         AVbpytGa5vQxk+rOEcBKZKYhgZelVZE6fpHhPHR5U0oFJz6lG62H7K6BO1RssVgkzZwe
-         Tc3VxAjIOr1kv2Y6RovjgOH0RUxiqb/k+ifcl8mFXmnAcLLokY8h5URdrQkYkNsOpkW2
-         R5no7943WUTDMk6hm/HcqXrK/3SFjRFyklwbmbSj8QFNPhPaAuobJ5BKlcjaP6Mldz0l
-         bueA==
-X-Gm-Message-State: AOJu0YzLyko40HcX1v3KABpXIqbYGLLZ09L61Pnu7lw2ca7jabqv12bW
-	pQRUPgZFRIq8EUU8J/SOHGdO+cCiQ3lSoPD2L6pbce3vVSvg7VEKvbPP3bi8
-X-Google-Smtp-Source: AGHT+IFfJqPrd41UFTHcJYQAfbj7mIw6bg8DwFRN5S/STX1gsKnTCPU/T443l/TfVXIpwH1zvFQDYoS9WL1D7NKTe0Y=
-X-Received: by 2002:a17:902:f688:b0:1bb:2c7b:6d67 with SMTP id
- l8-20020a170902f68800b001bb2c7b6d67mr475537plg.11.1699592431687; Thu, 09 Nov
- 2023 21:00:31 -0800 (PST)
-Precedence: bulk
-X-Mailing-List: linux-ext4@vger.kernel.org
-List-Id: <linux-ext4.vger.kernel.org>
-List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699601158; x=1731137158;
+  h=from:to:cc:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=0UbiSjv/qo/IidGnexf4/9OpMAuc77py2/DsWcWOHKs=;
+  b=UvIgCYkii/IAbXxn2JBYse34b4JTT5+7HthFUNrlsMVytpzUjCOJXFzx
+   hT3LeYTAxroFZIdoDxpiIBGaYHnl8ErNciu8NxKJk69StBt9fxPfTmj8K
+   L6fhLuUclqLS7JDb0c78fCFgs67Fv4Fd3cV1lVgHj8o+CHZVKUIL+CD9v
+   w=;
+X-IronPort-AV: E=Sophos;i="6.03,291,1694736000"; 
+   d="scan'208";a="594240173"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 07:25:57 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+        by email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com (Postfix) with ESMTPS id 5457CA1160;
+        Fri, 10 Nov 2023 07:25:55 +0000 (UTC)
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:54712]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.29.255:2525] with esmtp (Farcaster)
+ id 930b67d4-e81d-45c1-a350-5a3e959901a0; Fri, 10 Nov 2023 07:25:54 +0000 (UTC)
+X-Farcaster-Flow-ID: 930b67d4-e81d-45c1-a350-5a3e959901a0
+Received: from EX19D001UWA003.ant.amazon.com (10.13.138.211) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 07:25:50 +0000
+Received: from EX19D001UWA004.ant.amazon.com (10.13.138.251) by
+ EX19D001UWA003.ant.amazon.com (10.13.138.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
+ Fri, 10 Nov 2023 07:25:49 +0000
+Received: from EX19D001UWA004.ant.amazon.com ([fe80::2a53:56d5:307c:7d5]) by
+ EX19D001UWA004.ant.amazon.com ([fe80::2a53:56d5:307c:7d5%5]) with mapi id
+ 15.02.1118.039; Fri, 10 Nov 2023 07:25:49 +0000
+From:   "Bandi, Ravi Kumar" <ravib@amazon.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "tytso@mit.edu" <tytso@mit.edu>
+Subject: [bigalloc] ext4 filesystem creation fails with specific sizes
+Thread-Topic: [bigalloc] ext4 filesystem creation fails with specific sizes
+Thread-Index: AQHaE6chVIZJbiUIU0K4KOjENXW1qA==
+Date:   Fri, 10 Nov 2023 07:25:49 +0000
+Message-ID: <EB278E44-20B7-45F3-B5CA-2986B35E60AC@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.106.100.9]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BB2CE30315537C4187B189B796651F4A@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <000000000000cfd180060910a687@google.com> <875y2lmxys.ffs@tglx>
- <CANp29Y7EQ0cLf23coqFLLRHbA5rJjq0q1-6G7nnhxqBOUA7apw@mail.gmail.com> <87r0l8kv1s.ffs@tglx>
-In-Reply-To: <87r0l8kv1s.ffs@tglx>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Thu, 9 Nov 2023 21:00:18 -0800
-Message-ID: <CANp29Y5BnnYBauXyHmUKrgrn5LZpz8nDuZFTwLLB7WHq4DS6Wg@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
+Precedence: bulk
+List-ID: <linux-ext4.vger.kernel.org>
+X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 8:57=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de>=
- wrote:
->
-> On Thu, Nov 02 2023 at 13:08, Aleksandr Nogikh wrote:
-> > On Wed, Nov 1, 2023 at 1:58=E2=80=AFPM Thomas Gleixner <tglx@linutronix=
-.de> wrote:
-> >> Unfortunately repro.syz does not hold up to its name and refuses to
-> >> reproduce.
-> >
-> > For me, on a locally built kernel (gcc 13.2.0) it didn't work either.
-> >
-> > But, interestingly, it does reproduce using the syzbot-built kernel
-> > shared via the "Downloadable assets" [1] in the original report. The
-> > repro crashed the kernel in ~1 minute.
-> >
-> > [1] https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.=
-md
-> >
-> > [  125.919060][    C0] BUG: KASAN: stack-out-of-bounds in rb_next+0x10a=
-/0x130
-> > [  125.921169][    C0] Read of size 8 at addr ffffc900048e7c60 by task
-> > kworker/0:1/9
-> > [  125.923235][    C0]
-> > [  125.923243][    C0] CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted
-> > 6.6.0-rc7-syzkaller-00142-g888cf78c29e2 #0
-> > [  125.924546][    C0] Hardware name: QEMU Standard PC (Q35 + ICH9,
-> > 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > [  125.926915][    C0] Workqueue: events nsim_dev_trap_report_work
-> > [  125.929333][    C0]
-> > [  125.929341][    C0] Call Trace:
-> > [  125.929350][    C0]  <IRQ>
-> > [  125.929356][    C0]  dump_stack_lvl+0xd9/0x1b0
-> > [  125.931302][    C0]  print_report+0xc4/0x620
-> > [  125.932115][    C0]  ? __virt_addr_valid+0x5e/0x2d0
-> > [  125.933194][    C0]  kasan_report+0xda/0x110
-> > [  125.934814][    C0]  ? rb_next+0x10a/0x130
-> > [  125.936521][    C0]  ? rb_next+0x10a/0x130
-> > [  125.936544][    C0]  rb_next+0x10a/0x130
-> > [  125.936565][    C0]  timerqueue_del+0xd4/0x140
-> > [  125.936590][    C0]  __remove_hrtimer+0x99/0x290
-> > [  125.936613][    C0]  __hrtimer_run_queues+0x55b/0xc10
-> > [  125.936638][    C0]  ? enqueue_hrtimer+0x310/0x310
-> > [  125.936659][    C0]  ? ktime_get_update_offsets_now+0x3bc/0x610
-> > [  125.936688][    C0]  hrtimer_interrupt+0x31b/0x800
-> > [  125.936715][    C0]  __sysvec_apic_timer_interrupt+0x105/0x3f0
-> > [  125.936737][    C0]  sysvec_apic_timer_interrupt+0x8e/0xc0
-> > [  125.936755][    C0]  </IRQ>
-> > [  125.936759][    C0]  <TASK>
->
-> Which is a completely different failure mode.
->
-> It explodes in the hrtimer interrupt when dequeuing an hrtimer for
-> expiry. That means the corresponding embedded rb_node is corrupted,
-> which points to random data corruption.
->
-> As you can reproduce (it still fails here with the provided assets),
-> does the failure change when you run it several times?
-
-Hmm, it's weird. Maybe I was very lucky that time.
-
-The reproducer does work on the attached disk image, but definitely
-not very often. I've just run it 10 times or so and got interleaved
-BUG/KFENCE bug reports like this (twice):
-https://pastebin.com/W0TkRsnw
-
-These seem to be related to ext4 rather than hrtimers though.
-
---=20
-Aleksandr
-
->
-> Thanks,
->
->         tglx
-
+SGksDQoNCkknbSBzZWVpbmcgdGhpcyBpc3N1ZSB3aXRoIGV4dDQgZmlsZXN5c3RlbSBjcmVhdGlv
+biB3aXRoIGNsdXN0ZXINCmFsbG9jYXRpb24gKGJpZ2FsbG9jKS4gIEZpbGVzeXN0ZW0gY3JlYXRp
+b24gZmFpbHMgaWYgc2l6ZSBzcGVjaWZpZWQNCmFzIGJsb2NrIGNvdW50IGFuZCBpZiB0aGF0IGJs
+b2NrIGNvdW50IHJlc3VsdHMgaW4gdGhlIG51bWJlciBvZg0KYmxvY2tzIGluIHRoZSBsYXN0IGJs
+b2NrIGdyb3VwIGlzIGxlc3MgdGhhbiB0aGUgbnVtYmVyIG9mIG92ZXJoZWFkDQpibG9ja3MuICBU
+aGlzIGxlYWQgdG8gdGhlIGNvbXB1dGF0aW9uIG9mIGlub2Rlcy1wZXItZ3JvdXAgdG8gb3ZlcnNo
+b290DQp0aGUgbGltaXQgY2F1c2luZyBmaWxlc3lzdGVtIGNyZWF0aW9uIGZhaWx1cmUuDQoNCk9i
+c2VydmF0aW9uIGlzLCB0aGUgbnVtYmVyIG9mIGJsb2NrcyBmb3IgdGhlIGZpbGVzeXN0ZW0gZG9l
+cyBub3QNCnNlZW0gdG8gYmUgYWRqdXN0ZWQgdG8gYWNjb3VudCBmb3IgdGhpcyBhcyBpcyBkb25l
+IGluIHBsYWluIGV4dDQNCmZpbGVzeXN0ZW0gKHdpdGhvdXQgYmlnYWxsb2MpLiAgSSB0aGluayB3
+ZSBzaG91bGQgZG8gdGhlIHNhbWUNCnVuZGVyIGJpZ2FsbG9jIGNvbmZpZ3VyYXRpb24gYXMgd2Vs
+bC4NCg0KVG8gc29sdmUgdGhlIGlzc3VlLCB3aGVuIGZpbGVzeXN0ZW0gY3JlYXRpb24gZmFpbHMg
+Zm9yIGEgc3BlY2lmaWMNCmJsb2NrIGNvdW50LCBJIG5lZWQgdG8gcmV0cnkgdGhlIG9wZXJhdGlv
+biB3aXRoIGJsb2NrIGNvdW50IHJvdW5kZWQNCnRvIHRoZSBibG9jayBncm91cCBib3VuZGFyeS4N
+Cg0KT3IsIGFtIEknbSBtaXNzaW5nIHNvbWV0aGluZz8NCg0KVGhhbmtzLA0KUmF2aQ0KDQpFLmcu
+DQpGYWlsdXJlOg0KICAgIG1rZTJmcyAtbSAxIC10IGV4dDQgLU8gYmlnYWxsb2MgLUMgMTYzODQg
+LWIgNDA5NiAvZGV2L252bWUxbjEgNTI0MjkyDQoNClJvdW5kIHRoZSB0b3RhbCBibG9jayBjb3Vu
+dCB0byB0aGUgYmxvY2tzLXBlci1ncm91cCAoMTMxMDcyKSBib3VuZGFyeToNCiAgICAjIGVjaG8g
+JCgoKDUyNDI5MiAmIH4weDFmZmZmKSkpDQogICAgNTI0Mjg4DQogICAgIw0KU3VjY2VzczoNCiAg
+ICBta2UyZnMgLW0gMSAtdCBleHQ0IC1PIGJpZ2FsbG9jIC1DIDE2Mzg0IC1iIDQwOTYgL2Rldi9u
+dm1lMW4xIDUyNDI4OA0KDQpDdXJyZW50IGNvbmZpZ3VyYXRpb24gd2l0aCBleDQgcHJvZmlsZToN
+CiAgICBbZGVmYXVsdHNdDQogICAgICAgICAgICBibG9ja3NpemUgPSA0MDk2DQogICAgICAgICAg
+ICBpbm9kZV9zaXplID0gMjU2DQogICAgICAgICAgICBpbm9kZV9yYXRpbyA9IDE2Mzg0DQogICAg
+ICAgICAgICBbLi4uXQ0KICAgIFsuLi5dDQoNCldpdGggdGhpcyBjb25maWd1cmF0aW9uLCBiaWdh
+bGxvYyB3aXRoIGNsdXN0ZXIgc2l6ZSAxNkssICdCbG9ja3MgcGVyIGdyb3VwJyBpcyAxMzEwNzIg
+YW5kICdJbm9kZXMgcGVyIGdyb3VwJyBpcyAzMjc2OC4NCiAgICAjIG1rZTJmcyAtbSAxIC10IGV4
+dDQgLU8gYmlnYWxsb2MgLUMgMTYzODQgLWIgNDA5NiAvZGV2L252bWUxbjEgNTI0Mjg4DQogICAg
+IyB0dW5lMmZzIC1sIC9kZXYvbnZtZTFuMQ0KICAgIFsuLi5dDQogICAgQmxvY2tzIHBlciBncm91
+cDogICAgICAgICAxMzEwNzINCiAgICBJbm9kZXMgcGVyIGdyb3VwOiAgICAgICAgIDMyNzY4DQog
+ICAgWy4uLl0NCiAgICAjDQoNCkV4YW1wbGUgZmFpbHVyZSAjMToNCj0tPS09LT0tPS09PS09LT0t
+PQ0KICAgICMgbWtlMmZzIC1tIDEgLXQgZXh0NCAtTyBiaWdhbGxvYyAtQyAxNjM4NCAtYiA0MDk2
+IC9kZXYvbnZtZTFuMSA1MjQyOTINCiAgICBta2UyZnMgMS40Ny4wICg1LUZlYi0yMDIzKQ0KICAg
+IC9kZXYvbnZtZTFuMTogQ2Fubm90IGNyZWF0ZSBmaWxlc3lzdGVtIHdpdGggcmVxdWVzdGVkIG51
+bWJlciBvZiBpbm9kZXMgd2hpbGUgc2V0dGluZyB1cCBzdXBlcmJsb2NrDQogICAgIw0KDQogICAg
+SW4gdGhpcyBjYXNlLCB0aGUgbGFzdCBibG9jayBncm91cCBoYXMgNCBibG9ja3MsIGJ1dCB0aGUg
+b3ZlcmhlYWQNCiAgICBpcyAxNjQxIGJsb2Nrcy4gIFRoZSBpbm9kZXMtcGVyLWdyb3VwIGlzIGNv
+bXB1dGVkIHRvIDMyNzY5ICgxIG1vcmUNCiAgICB0aGFuIHRoZSBsaW1pdCBiYXNlZCBvbiB0aGUg
+aW5vZGVfcmF0aW8pDQoNCiAgICBUaGlzIGRvZXMgbm90IGhhcHBlbiBvbiBwbGFpbiBleHQ0IGZp
+bGVzeXN0ZW0gKHdpdGhvdXQgYmlnYWxsb2MpLg0KDQpFeGFtcGxlIGZhaWx1cmUgIzI6DQo9LT0t
+PS09LT0tLT0tPS09LT0NCiAgICAjIHdpcGVmcyAtYSAvZGV2L252bWUxbjE7IG1rZTJmcyAtbSAx
+IC10IGV4dDQgLU8gYmlnYWxsb2MgLUMgMTYzODQgLWIgNDA5NiAvZGV2L252bWUxbjEgMjA5NzMw
+MA0KICAgIG1rZTJmcyAxLjQ3LjAgKDUtRmViLTIwMjMpDQogICAgL2Rldi9udm1lMW4xOiBDYW5u
+b3QgY3JlYXRlIGZpbGVzeXN0ZW0gd2l0aCByZXF1ZXN0ZWQgbnVtYmVyIG9mIGlub2RlcyB3aGls
+ZSBzZXR0aW5nIHVwIHN1cGVyYmxvY2sNCiAgICAjDQoNCiAgICBJbiB0aGlzIGNhc2UsIGxhc3Qg
+YmxvY2sgZ3JvdXAgaGFzIDE0OCBibG9ja3MsIGJ1dCB0aGUgb3ZlcmhlYWQgaXMNCiAgICAxOTMw
+LiAgVGhlIGlub2Rlcy1wZXItZ3JvdXAgaXMgY29tcHV0ZWQgdG8gMzI3NzEgYW5kIGl0IGZhaWxz
+Lg0KICAgIFJvdW5kIHRoZSBibG9ja3MgdG8gYmxvY2sgZ3JvdXAgYm91bmRhcnkgdG8gc3VjY2Vl
+ZC4NCiAgICAjIGVjaG8gJCgoKDIwOTczMDAgJiB+MHgxZmZmZikpKQ0KICAgIDIwOTcxNTINCiAg
+ICAjDQogICAgIyBta2UyZnMgLW0gMSAtdCBleHQ0IC1PIGJpZ2FsbG9jIC1DIDE2Mzg0IC1iIDQw
+OTYgL2Rldi9udm1lMW4xIDIwOTcxNTINCg0KRXhhbXBsZSBmYWlsdXJlICMzOg0KPS09LT0tPS09
+LS09LT0tPS09DQogICAgIyB3aXBlZnMgLWEgL2Rldi9udm1lMW4xOyBta2UyZnMgLW0gMSAtdCBl
+eHQ0IC1PIGJpZ2FsbG9jIC1DIDE2Mzg0IC1iIDQwOTYgL2Rldi9udm1lMW4xIDE2Nzc4MDAwDQog
+ICAgbWtlMmZzIDEuNDcuMCAoNS1GZWItMjAyMykNCiAgICAvZGV2L252bWUxbjE6IENhbm5vdCBj
+cmVhdGUgZmlsZXN5c3RlbSB3aXRoIHJlcXVlc3RlZCBudW1iZXIgb2YgaW5vZGVzIHdoaWxlIHNl
+dHRpbmcgdXAgc3VwZXJibG9jaw0KICAgICMNCg0KICAgIEhlcmUsIGxhc3QgYmxvY2sgZ3JvdXAg
+aGFzIDc4NCBibG9ja3MsIG92ZXJoZWFkIGlzIDIwMzUgYW5kDQogICAgaW5vZGVzLXBlci1ncm91
+cCBpcyBjb21wdXRlZCB0byBiZSAzMjc3MCBhbmQgZmFpbHMuDQogICAgUm91bmQgdGhlIGJsb2Nr
+IGNvdW50IHRvIHN1Y2Nlc3NmdWxseSBjcmVhdGUgdGhlIGZpbGVzeXN0ZW0uDQogICAgIyBlY2hv
+ICQoKCgxNjc3ODAwMCAmIH4weDFmZmZmKSkpDQogICAgMTY3NzcyMTYNCiAgICAjDQogICAgIyBt
+a2UyZnMgLW0gMSAtdCBleHQ0IC1PIGJpZ2FsbG9jIC1DIDE2Mzg0IC1iIDQwOTYgL2Rldi9udm1l
+MW4xIDE2Nzc3MjE2DQoNCg==
