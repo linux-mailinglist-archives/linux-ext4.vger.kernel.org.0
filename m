@@ -1,71 +1,100 @@
-Return-Path: <linux-ext4+bounces-5-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 494237E82C9
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Nov 2023 20:35:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6DE7E8917
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Nov 2023 05:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F33C7281342
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Nov 2023 19:35:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34DFA1C20B3A
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Nov 2023 04:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2994F3B793;
-	Fri, 10 Nov 2023 19:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QWIAULOH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DAA63BF;
+	Sat, 11 Nov 2023 04:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0783B28F;
-	Fri, 10 Nov 2023 19:35:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A15FFC433CA;
-	Fri, 10 Nov 2023 19:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1699644910;
-	bh=a8twNFEKjGrKBxbdq191jaAma5+5cbZZWFE+Q6SHfO4=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=QWIAULOHfuC4ewTV3HG2pnrPYVTcQmHYctffbQR65o8lGEafhP0RAYM3fCRSz3VWw
-	 j3ZPD3GePpQS36hL6HkQa1TKqTCL/mCNrYH3Lj3P6TSLxNDktFoc/fMvZzWXnn4RGa
-	 MsHKSj90uf6JkRds+DIZYTZqnsoLyFU3BriaM6sE=
-Date: Fri, 10 Nov 2023 14:35:09 -0500
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: linux-embedded@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-fpga@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-gcc@vger.kernel.org, linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-hotplug@vger.kernel.org, linux-hwmon@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-ia64@vger.kernel.org, linux-ide@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-input@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-leds@vger.kernel.org, 
-	linux-m68k@vger.kernel.org, linux-man@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org, linux-msdos@vger.kernel.org
-Subject: Re: PSA: This list is being migrated (no action required)
-Message-ID: <3dfzeofvzxqk4yuyoancdanbxzpw5udmvbdz3b2mdwejwbnhk2@7y56nwlj3rgp>
-References: <cfriwrxovqzcrptf74ccq52lcqj2nsergucufsz6wlh45fdnz3@z5e5y2lowbq2>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711C563AF;
+	Sat, 11 Nov 2023 04:02:55 +0000 (UTC)
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF4D3868;
+	Fri, 10 Nov 2023 20:02:51 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vw6AFnB_1699675368;
+Received: from 172.17.2.246(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vw6AFnB_1699675368)
+          by smtp.aliyun-inc.com;
+          Sat, 11 Nov 2023 12:02:49 +0800
+Message-ID: <33d6a487-5913-fefd-2a45-d8d397e6f6ba@linux.alibaba.com>
+Date: Sat, 11 Nov 2023 12:02:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cfriwrxovqzcrptf74ccq52lcqj2nsergucufsz6wlh45fdnz3@z5e5y2lowbq2>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH 2/3] mm: Add folio_fill_tail() and use it in iomap
+To: Matthew Wilcox <willy@infradead.org>,
+ Andreas Gruenbacher <agruenba@redhat.com>
+Cc: linux-xfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ "Darrick J . Wong" <djwong@kernel.org>, gfs2@lists.linux.dev,
+ Andreas Dilger <adilger.kernel@dilger.ca>, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-ext4@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org
+References: <20231107212643.3490372-1-willy@infradead.org>
+ <20231107212643.3490372-3-willy@infradead.org>
+ <CAHc6FU550j_AYgWz5JgRu84mw5HqrSwd+hYZiHVArnget3gb4w@mail.gmail.com>
+ <ZU5jx2QeujE+868t@casper.infradead.org>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <ZU5jx2QeujE+868t@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 10, 2023 at 01:51:44PM -0500, Konstantin Ryabitsev wrote:
-> This list is being migrated to new vger infrastructure. No action is required
-> on your part and there will be no change in how you interact with this list
-> after the migration is completed.
+
+
+On 2023/11/11 01:09, Matthew Wilcox wrote:
+> On Thu, Nov 09, 2023 at 10:50:45PM +0100, Andreas Gruenbacher wrote:
+>> On Tue, Nov 7, 2023 at 10:27 PM Matthew Wilcox (Oracle)
+>> <willy@infradead.org> wrote:
+>>> +static inline void folio_fill_tail(struct folio *folio, size_t offset,
+>>> +               const char *from, size_t len)
+>>> +{
+>>> +       char *to = kmap_local_folio(folio, offset);
+>>> +
+>>> +       VM_BUG_ON(offset + len > folio_size(folio));
+>>> +
+>>> +       if (folio_test_highmem(folio)) {
+>>> +               size_t max = PAGE_SIZE - offset_in_page(offset);
+>>> +
+>>> +               while (len > max) {
+>>> +                       memcpy(to, from, max);
+>>> +                       kunmap_local(to);
+>>> +                       len -= max;
+>>> +                       from += max;
+>>> +                       offset += max;
+>>> +                       max = PAGE_SIZE;
+>>> +                       to = kmap_local_folio(folio, offset);
+>>> +               }
+>>> +       }
+>>> +
+>>> +       memcpy(to, from, len);
+>>> +       to = folio_zero_tail(folio, offset, to);
+>>
+>> This needs to be:
+>>
+>> to = folio_zero_tail(folio, offset  + len, to + len);
 > 
-> There will be a short 30-minute delay to the list archives on lore.kernel.org.
-> Once the backend work is done, I will follow up with another message.
+> Oh, wow, that was stupid of me.  I only ran an xfstests against ext4,
+> which doesn't exercise this code, not gfs2 or erofs.  Thanks for
+> fixing this up.
 
-This work is completed now. This message acts as a test to make sure archives
-are working at their new place.
+Assuming that is for the next cycle (no rush), I will also test
+this patch and feedback later since I'm now working on other
+stuffs.
 
-If anything is not working or looking right, please reach out to
-helpdesk@kernel.org.
-
--K
+Thanks,
+Gao Xiang
 
