@@ -1,122 +1,113 @@
-Return-Path: <linux-ext4+bounces-26-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-27-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268767EEAC9
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 02:41:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0DDB7EF036
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 11:24:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85385B20AA8
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 01:41:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED851C20961
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 10:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F121A15D5;
-	Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DjRo1fyf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB98418E28;
+	Fri, 17 Nov 2023 10:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E9A1378
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 01FE0C433CC
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700185257;
-	bh=aTMEgNT92MCczYdSFklJG01bQ0KDCDptgC/Wwqpfgpk=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=DjRo1fyfETOD5P3u5fDJ+GkcSjosNsZU0hmZxD8X82UBW8xvi578CETwsm6wF+xWW
-	 5C5ZtplVSW/qBsGF7+TDs4bxZzZh3CPb6QVs2hTsxYrvCR/g5uIYKHvNk/h3CGf+22
-	 f/X50eXFWr3uX0wn991Fc3HlJCNjjUPwqH6KI26Gg9V99nZfvGXKUuMrYJLzsUsI+s
-	 7eBXFvdh9yUXbY02ch1RY+XH1lJoIwTIKnNG3UPfPSIDQs2aACAHFxnFeUcQavXNnZ
-	 NGhpPrAY+BgGLaVyZpPjjHzQA8PdR/h0y4az14YmkGBZSpK4NeBrDQc6yvsb9ixh/J
-	 N5rBUx+8z0IsA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id E855EC53BD5; Fri, 17 Nov 2023 01:40:56 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Fri, 17 Nov 2023 01:40:56 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bugzilla@eyal.emu.id.au
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-J5OFfrmSGB@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
-References: <bug-217965-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDAA127
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 02:23:59 -0800 (PST)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.54])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SWtDQ6RQ1zMn0J;
+	Fri, 17 Nov 2023 18:19:18 +0800 (CST)
+Received: from build.huawei.com (10.175.101.6) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 17 Nov 2023 18:23:56 +0800
+From: Wenchao Hao <haowenchao2@huawei.com>
+To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+	<linux-ext4@vger.kernel.org>
+CC: <louhongxiang@huawei.com>, Wenchao Hao <haowenchao2@huawei.com>
+Subject: [PATCH] debugfs: Fix infinite loop when dump log
+Date: Fri, 17 Nov 2023 18:23:15 +0800
+Message-ID: <20231117102315.2431846-1-haowenchao2@huawei.com>
+X-Mailer: git-send-email 2.32.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+There are 2 scenarios which would trigger infinite loop:
 
---- Comment #35 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
-$ sudo dnf debuginfo-install kernel
-Installing:
- kernel-debuginfo
-Installing dependencies:
- kernel-debuginfo-common-x86_64
+1. None log is recorded, then dumplog with "-n", for example:
+   debugfs -R "logdump -O -n 10" /dev/xxx
+   while /dev/xxx has no valid log recorded.
+2. The log area is full and cycle write is triggered, then dumplog with
+   debugfs -R "logdump -aOS" /dev/xxx
 
-$ sudo perf probe -a "ext4_mb_find_good_group_avg_frag_lists order"
+This patch add a new flag "reverse_flag" to mark if logdump has reached
+to tail of logarea, it is default false, and set in macro WRAP().
 
-$ sudo perf probe -a "ext4_mb_find_good_group_avg_frag_lists:18 cr
-iter->bb_group"
+If reverse_flag is true, and we comes to first_transaction_blocknr
+again, just break the logdump loop.
 
-$ sudo perf record -e probe:ext4_mb_find_good_group_avg_frag_lists -e
-probe:ext4_mb_find_good_group_avg_frag_lists_L18 -e
-probe:ext4_mb_good_group_L20 -e ext4:ext4_mballoc_alloc -g -p 2789843 sleep=
- 20
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+---
+ debugfs/logdump.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-$ sudo perf script -i perf.data > perf-probe.log
-[ perf record: Woken up 1395 times to write data ]
-Warning:
-Processed 24640612 events and lost 22 chunks!
+diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+index b600228e..05ea839a 100644
+--- a/debugfs/logdump.c
++++ b/debugfs/logdump.c
+@@ -52,6 +52,7 @@ static int64_t		dump_counts;
+ static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
+ static unsigned int	group_to_dump, inode_offset_to_dump;
+ static ext2_ino_t	inode_to_dump;
++static bool		reverse_flag;
+ 
+ struct journal_source
+ {
+@@ -80,8 +81,10 @@ static void dump_fc_block(FILE *out_file, char *buf, int blocksize,
+ static void do_hexdump (FILE *, char *, int);
+ 
+ #define WRAP(jsb, blocknr, maxlen)					\
+-	if (blocknr >= (maxlen))					\
+-	    blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));
++	if (blocknr >= (maxlen)) {					\
++		blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));	\
++		reverse_flag = true;					\
++	}
+ 
+ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 		    void *infop EXT2FS_ATTR((unused)))
+@@ -115,6 +118,7 @@ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 	inode_block_to_dump = ANY_BLOCK;
+ 	inode_to_dump = -1;
+ 	dump_counts = -1;
++	reverse_flag = false;
+ 
+ 	reset_getopt();
+ 	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
+@@ -477,8 +481,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
+ 			break;
+ 
+-		if ((blocknr == first_transaction_blocknr) &&
+-		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
++		if ((blocknr == first_transaction_blocknr) && dump_old && reverse_flag) {
+ 			fprintf(out_file, "Dump all %lld journal records.\n",
+ 				(long long) cur_counts);
+ 			break;
+-- 
+2.32.0
 
-Check IO/CPU overload!
-
-[ perf record: Captured and wrote 4725.791 MB perf.data (19187380 samples) ]
-
-$ sudo perf script -i perf.data > perf-probe.log
-Warning:
-Processed 24640612 events and lost 22 chunks!
-
-Check IO/CPU overload!
-
-$ ls -l perf-probe.log
--rw-r--r-- 1 eyal eyal 39024390135 Nov 17 12:31 perf-probe.log
-
-I am limited to upload much less that this as an attachment.
-        File size limit: 5120 KB)
-
-I managed to include only so many likes ftom the head:
-
-$ wc -l perf-probe-head.log
-51594 perf-probe-head.log
-
-See attachement https://bugzilla.kernel.org/attachment.cgi?id=3D305414
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
