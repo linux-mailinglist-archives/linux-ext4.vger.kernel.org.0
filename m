@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-23-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-24-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0806C7EEA1E
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 01:01:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE9767EEA70
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 01:44:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EC3028114C
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 00:01:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88F751F25A6C
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 00:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7423D7FD;
-	Fri, 17 Nov 2023 00:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E33655;
+	Fri, 17 Nov 2023 00:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SiFXPMl6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAx+vuFz"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB5320EB
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 00:01:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89AADC433CB
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 00:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6719C384
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 00:44:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E13FCC433CB
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 00:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700179288;
-	bh=56Mkwn50PDNzQVzqmRF2Hd28xvG/ReUAnj72IyPu8y4=;
+	s=k20201202; t=1700181878;
+	bh=uLrAbs3AEGOjDqKEzy7y+66sXfdsqHH+Wmj2JrC9K0I=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=SiFXPMl6h28HF95O+GmyotyPd7DsjcAp1/nQL3rsCE99CDLWHMbcJ4Xal8bvsF2ds
-	 CsCKD9SVNULHftzFQm+6ZLocDxCl9K44pxEbqPzKohS/rvpo2uTVuSuRblN8mUX6ZY
-	 hIhOiiTfQjrEas9uO0RjVadjoC6iYxcMXOwWr7+uRchQO1j606aXWk8ZvaHIQpe0oA
-	 AUfSK09ur15aDc2jTkCcoANqzDBhke1GpUxN5rmSCtYIcZdoqhDuJoQJCM1j7d2rXY
-	 zz4GSK9oL6+yu1GfL5oa8zPKlgCTm0JhSl1AxXsS+TG8iAN51YshktYb0HoYICv9JN
-	 PQBVS5kTqzS5g==
+	b=aAx+vuFzz/Jxo3NhDdnZLjwgLDhh77Ant9HWCa20nU8w44kGx0hPBq6Bmtjg3IjUM
+	 InBDe6Wy0qKDisGofv5vnkSceBlRl+60Ski+fOpWZgVuWwHf5PrRgbObH0MmXy9ekt
+	 QvM6K94rCVdOvNI+EYHe3zxyKPynPrM9eEiJK1Bkhpxy+15MhUenQvnsoTLCH5tpLm
+	 2HjjB+QoKYU957dtzbZesbgjCDk4b1eJCxjFiZSd94Y0CG6UwXiRFobf8nNHpbRcAc
+	 C4V97aXuc/yKm9dwnSmgURddc1snp16QHpXx/lq90/JwFwXPMFiWmB2s46WpisjL4V
+	 ZDnDE+rBvi0hQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 729E7C53BD0; Fri, 17 Nov 2023 00:01:28 +0000 (UTC)
+	id C53D2C53BD0; Fri, 17 Nov 2023 00:44:38 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Fri, 17 Nov 2023 00:01:28 +0000
+Date: Fri, 17 Nov 2023 00:44:38 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -46,14 +46,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bugzilla@eyal.emu.id.au
+X-Bugzilla-Who: ojaswin.mujoo@ibm.com
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-15c2DJjrxL@https.bugzilla.kernel.org/>
+Message-ID: <bug-217965-13602-1kgEExRHtB@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,70 +69,30 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
---- Comment #32 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
-Looks like a basic misunderstanding on my side, or maybe more preparation is
-needed? What am I missing?
+--- Comment #33 from Ojaswin Mujoo (ojaswin.mujoo@ibm.com) ---
+Hey Eyal,
 
-$ sudo perf probe -a "ext4_mb_find_good_group_avg_frag_lists order"
-Failed to find the path for the kernel: Invalid ELF file
-  Error: Failed to add events.
+Yes you are right, it is not able to find the vmlinux with debug symbols. Y=
+ou
+can either download the debuginfo package of the corresponding kernel which
+should place the vmlinux in  the required place or even having the "vmlinux"
+with debug symbols in the same directory as where you are running perf probe
+shall do.
 
-$ uname -a
-Linux e7.eyal.emu.id.au 6.5.10-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Thu N=
-ov=20
-2 19:59:55 UTC 2023 x86_64 GNU/Linux
+Also, once this error is resolved you *might* encounter something like " Er=
+ror:
+Failed to show lines." To fix it you can install the kernel source code pac=
+kage
+or just use the -s flag to point to the source code. (Example of how I use =
+it):
 
-$ ls -l /boot/*6.5.10*
--rw------- 1 root root  8727059 Nov  2 11:00
-/boot/System.map-6.5.10-200.fc38.x86_64
--rw-r--r-- 1 root root   264245 Nov  2 11:00
-/boot/config-6.5.10-200.fc38.x86_64
--rw------- 1 root root 39368262 Nov  9 10:55
-/boot/initramfs-6.5.10-200.fc38.x86_64.img
-lrwxrwxrwx 1 root root       46 Nov  9 10:55
-/boot/symvers-6.5.10-200.fc38.x86_64.xz ->
-/lib/modules/6.5.10-200.fc38.x86_64/symvers.xz
--rwxr-xr-x 1 root root 14551752 Nov  2 11:00
-/boot/vmlinuz-6.5.10-200.fc38.x86_64
+sudo perf probe -s ~/workspace/9p -a "ext4_mb_find_good_group_avg_frag_lists
+order"
 
-I strace'd the command, and toward the end I see this (I have vmlinuz, not
-vmlinux - related?).
-These are the first failed 'openat()' in the trace.
+Let me know if it still doesn't work.
 
-openat(AT_FDCWD, "vmlinux", O_RDONLY)   =3D -1 ENOENT (No such file or dire=
-ctory)
-openat(AT_FDCWD, "/boot/vmlinux", O_RDONLY) =3D -1 ENOENT (No such file or
-directory)
-openat(AT_FDCWD, "/boot/vmlinux-6.5.10-200.fc38.x86_64", O_RDONLY) =3D -1 E=
-NOENT
-(No such file or directory)
-openat(AT_FDCWD, "/usr/lib/debug/boot/vmlinux-6.5.10-200.fc38.x86_64",
-O_RDONLY) =3D -1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/lib/modules/6.5.10-200.fc38.x86_64/build/vmlinux", O_RDO=
-NLY)
-=3D -1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/usr/lib/debug/lib/modules/6.5.10-200.fc38.x86_64/vmlinux=
-",
-O_RDONLY) =3D -1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/usr/lib/debug/boot/vmlinux-6.5.10-200.fc38.x86_64.debug",
-O_RDONLY) =3D -1 ENOENT (No such file or directory)
-newfstatat(AT_FDCWD,
-"/root/.debug/.build-id/d3/6a8ae40f88e310401726e275aa1940b279babd",
-{st_mode=3DS_IFDIR|0755, st_size=3D4096, ...}, 0) =3D 0
-openat(AT_FDCWD,
-"/root/.debug/.build-id/d3/6a8ae40f88e310401726e275aa1940b279babd/kallsyms",
-O_RDONLY) =3D 3
-
-Earlier I see this open success:
-
-newfstatat(AT_FDCWD, "/lib/modules/6.5.10-200.fc38.x86_64/vmlinuz",
-{st_mode=3DS_IFREG|0755, st_size=3D14551752, ...}, 0) =3D 0
-
-which is identical to the one in /boot.
-
-Should I boot a different kernel type?
-
-Remember that I am not a dev...
+Thanks!
+Ojaswin
 
 --=20
 You may reply to this email to add a comment.
