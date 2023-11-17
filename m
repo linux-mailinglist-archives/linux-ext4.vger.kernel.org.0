@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-25-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-26-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51EC7EEAC4
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 02:39:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268767EEAC9
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 02:41:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04CD01C209E2
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 01:39:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85385B20AA8
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Nov 2023 01:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1951E137E;
-	Fri, 17 Nov 2023 01:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F121A15D5;
+	Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="io2PVvcp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DjRo1fyf"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91EA1370
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:39:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 23C10C433CC
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E9A1378
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 01FE0C433CC
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Nov 2023 01:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700185162;
-	bh=0AfJeJyZqwML831cw8bTSWf9lvj0La0kjD3ifDcIHEI=;
+	s=k20201202; t=1700185257;
+	bh=aTMEgNT92MCczYdSFklJG01bQ0KDCDptgC/Wwqpfgpk=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=io2PVvcpLVzXI4xwdGQ5WMayvv805GkO4mWHN34YFUsqHJISKZnec46xcUez4Mp/0
-	 AvDPPaeuLNAXNVTFrgpvs1nVF2IS3BDu24hchPGxklzrATk7O6a4IOcUgSPgZ4/gCp
-	 YuWCQVxuiwksld1ANXxyVyoaeQPpQslDt+PtfV//vHHyu6HCfZpe1j90OszogREH4x
-	 XMxf+XBrV/O3Ch4NhiDBqFxXGbQvcglxhiIIUg8vySNQrpZyt+dA+bw4RXecPyBu20
-	 rBoGZpuIP8PklskWnyDvvrtMCIYIosYGxM8WgrS6hk/YyIMmt22KCUX7Y6U3c4z+iq
-	 kIKy4LWi8F9sw==
+	b=DjRo1fyfETOD5P3u5fDJ+GkcSjosNsZU0hmZxD8X82UBW8xvi578CETwsm6wF+xWW
+	 5C5ZtplVSW/qBsGF7+TDs4bxZzZh3CPb6QVs2hTsxYrvCR/g5uIYKHvNk/h3CGf+22
+	 f/X50eXFWr3uX0wn991Fc3HlJCNjjUPwqH6KI26Gg9V99nZfvGXKUuMrYJLzsUsI+s
+	 7eBXFvdh9yUXbY02ch1RY+XH1lJoIwTIKnNG3UPfPSIDQs2aACAHFxnFeUcQavXNnZ
+	 NGhpPrAY+BgGLaVyZpPjjHzQA8PdR/h0y4az14YmkGBZSpK4NeBrDQc6yvsb9ixh/J
+	 N5rBUx+8z0IsA==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 110C9C53BD4; Fri, 17 Nov 2023 01:39:22 +0000 (UTC)
+	id E855EC53BD5; Fri, 17 Nov 2023 01:40:56 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Fri, 17 Nov 2023 01:39:21 +0000
+Date: Fri, 17 Nov 2023 01:40:56 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -52,8 +52,8 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: attachments.created
-Message-ID: <bug-217965-13602-fco7Ox0Wt5@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-J5OFfrmSGB@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,12 +69,50 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
---- Comment #34 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
-Created attachment 305414
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D305414&action=3Dedit
-detailed perf log
+--- Comment #35 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
+$ sudo dnf debuginfo-install kernel
+Installing:
+ kernel-debuginfo
+Installing dependencies:
+ kernel-debuginfo-common-x86_64
 
-Attachment for comment #34
+$ sudo perf probe -a "ext4_mb_find_good_group_avg_frag_lists order"
+
+$ sudo perf probe -a "ext4_mb_find_good_group_avg_frag_lists:18 cr
+iter->bb_group"
+
+$ sudo perf record -e probe:ext4_mb_find_good_group_avg_frag_lists -e
+probe:ext4_mb_find_good_group_avg_frag_lists_L18 -e
+probe:ext4_mb_good_group_L20 -e ext4:ext4_mballoc_alloc -g -p 2789843 sleep=
+ 20
+
+$ sudo perf script -i perf.data > perf-probe.log
+[ perf record: Woken up 1395 times to write data ]
+Warning:
+Processed 24640612 events and lost 22 chunks!
+
+Check IO/CPU overload!
+
+[ perf record: Captured and wrote 4725.791 MB perf.data (19187380 samples) ]
+
+$ sudo perf script -i perf.data > perf-probe.log
+Warning:
+Processed 24640612 events and lost 22 chunks!
+
+Check IO/CPU overload!
+
+$ ls -l perf-probe.log
+-rw-r--r-- 1 eyal eyal 39024390135 Nov 17 12:31 perf-probe.log
+
+I am limited to upload much less that this as an attachment.
+        File size limit: 5120 KB)
+
+I managed to include only so many likes ftom the head:
+
+$ wc -l perf-probe-head.log
+51594 perf-probe-head.log
+
+See attachement https://bugzilla.kernel.org/attachment.cgi?id=3D305414
 
 --=20
 You may reply to this email to add a comment.
