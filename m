@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-32-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-33-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537137EFF63
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Nov 2023 13:10:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D6497EFFCC
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Nov 2023 14:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3E86280FA5
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Nov 2023 12:10:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 056401F22EFD
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Nov 2023 13:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1A410A0E;
-	Sat, 18 Nov 2023 12:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3471F10944;
+	Sat, 18 Nov 2023 13:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JNAlVyOs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WCVrNw/N"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3FB10976
-	for <linux-ext4@vger.kernel.org>; Sat, 18 Nov 2023 12:10:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9F601C433CA
-	for <linux-ext4@vger.kernel.org>; Sat, 18 Nov 2023 12:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA24101C5
+	for <linux-ext4@vger.kernel.org>; Sat, 18 Nov 2023 13:18:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 22ACAC433CB
+	for <linux-ext4@vger.kernel.org>; Sat, 18 Nov 2023 13:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700309404;
-	bh=0sA5BnhMh1p9FBBWBrm1hHmuBv2jHLGeJP9VM9Osrbg=;
+	s=k20201202; t=1700313480;
+	bh=QcNlhyAAQsO2Are1hH2psYiaAY82npH92QOS11MfaYU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JNAlVyOszEjVWtNZ/HPJv+TnS81vu7PVAZMFCsUNnLjTnUPywmyQKJ4SHZCulQs2G
-	 KVagPfT21XNCibrmi7T2gEHab4/pRm0nJBl6MXQrQ9JZ0PLI0U9kbruBtfHv502rui
-	 jdfXcj3xaYLyHcmq/ZoaYjhT7YsIze9uz/kubihdMQVScj+jAnr2pCPlyjKJsuIqfC
-	 yKNtrRwqUgDz32agyFKC9hF9oFwI72rVyuNQY7InLTtNKgWLN1cj83ia9HafGmPTVt
-	 X5CYFYGRehI1GDVykoI4wy2ePWwI+QrMxX1O0ig3w7odN+KCOe/uI9dv7trBYKEBy1
-	 wS6/sC3qbF3lw==
+	b=WCVrNw/NlnAVqbe/DCFC54tf6usDeqNkauhViParIiESToXw1SJqBXEVRfQ0h5pYV
+	 29rdsj7zSNoZx2jHPdr3K/0ZmLnI8ObvLp/KViiZRuqvsdKwLYqOuK2kx+HhUPQfqW
+	 0Sl8jiSmxw9TXHWeikbz4zl/YP7t91AdbW/tN+VQnYcdm2K4SvPsmGqyTAZunhqgd0
+	 WlX2NGVn+NyqA/kc5AD6xgWBIO5mhhsdEX0meyRYvKpcceEqehxs88Oxb2l6nDOdxA
+	 7C9zVjG0AQbtUPHQ0PzE63oxFsma52cYaI0AhQKzvBuTbyXsGXnxYuRwHbvhn5CPsd
+	 w5b1XfShBKYZQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 87501C53BD0; Sat, 18 Nov 2023 12:10:04 +0000 (UTC)
+	id 05B7AC53BD5; Sat, 18 Nov 2023 13:18:00 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Sat, 18 Nov 2023 12:10:04 +0000
+Date: Sat, 18 Nov 2023 13:17:59 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -46,14 +46,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: ojaswin.mujoo@ibm.com
+X-Bugzilla-Who: bugzilla@eyal.emu.id.au
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-YI7vwozwNJ@https.bugzilla.kernel.org/>
+Message-ID: <bug-217965-13602-AVoESEUTYG@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,47 +69,65 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
---- Comment #40 from Ojaswin Mujoo (ojaswin.mujoo@ibm.com) ---
-Hey Eyal,
+--- Comment #41 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
+OK, so how do I disable the stripe=3D640 that was automatically added?
+Is there a mount option to disable it?
+I would rather not futz with tune2fs.
 
-Thanks for the data, the perf probes you added were correct!
+RE kernel build: I used to often do this maybe 30 years ago, but on a
+workstation, not on the server. The build I expect to be simple, but it is =
+the
+risk of a bad patch that worries me. I would rather not do that.
 
-I see that the problem is as I suspected where we keep looking trying to fi=
-nd
-aligned blocks in ext4 when probably none of them exist. Aligned allocation
-right now is only done when stripe mount option is passed as an optimizatio=
-n.
-Currently we don't seem to fallback to normal allocation if aligned allocat=
-ion
-doesn't work and this causes the very long, seemingly infinite looping.=20
+BTW, while you are looking at the cache issue, what are your thoughts on the
+fact that the array shows (iostat -x) a very high w_await when the members =
+are
+much lower? Is it normal?
 
-I can try to work on a patchset that fixes this however as a temporary fix =
-you
-can continue with stripe mount option turned off for ext4. This will then
-instruct ext4 to just use normal allocation rather than aligned.
-
-One point to note is that -o stripe=3Dxyz is sometimes automatically added =
-during
-mount even when we don't pass it. You can look at Comment #6 #7 and #8 in t=
-his
-bug for more info. To confirm it's off you can look into
-/proc/fs/ext4/<dev>/options file which has all the currently active mount
-options, you shouldn't see stripe there.
-
-Further, this is not something that was changed between 6.4 and 6.5 however
-seems like the allocator changes in 6.5 made it even more difficult to come=
- out
-of this loop thus prolonging the time taken to flush.=20
-
-Also, just wanted to check if you have any non-prod setup where you'd be op=
-en
-to compile kernel with patches to see if we are able to fix the issue.
-
-Lastly, thank you so much for all the probe data and logs, it's been a huge
-help :)
-
-Regard,
-ojaswin
+         Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz=
+=20=20=20=20
+w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s=20
+%drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+16:04:08 md127            0.20      0.80     0.00   0.00   10.50     4.00=
+=20=20=20
+9.80    739.20     0.00   0.00 1495.44    75.43    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.00    0.00   14.66   4.51
+16:04:08 sdb              2.30    187.20    44.50  95.09   30.74    81.39=
+=20=20=20
+6.80    345.20    79.70  92.14   29.72    50.76    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60   14.33    0.28   1.26
+16:04:08 sdc              1.90    138.80    32.80  94.52   16.63    73.05=
+=20=20=20
+6.60    295.60    67.50  91.09   13.06    44.79    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60   11.33    0.12   1.05
+16:04:08 sdd              2.30    194.40    46.30  95.27    3.70    84.52=
+=20=20=20
+2.90    138.80    32.00  91.69    3.34    47.86    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60    4.67    0.02   0.54
+16:04:08 sde              1.80    204.00    49.20  96.47   14.89   113.33=
+=20=20=20
+4.10    302.40    71.70  94.59   13.27    73.76    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60    6.17    0.08   1.66
+16:04:08 sdf              1.90     97.20    22.40  92.18   14.63    51.16=
+=20=20=20
+4.70    212.00    48.50  91.17   19.70    45.11    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60   11.50    0.13   1.98
+16:04:08 sdg              2.00    212.00    51.00  96.23    7.80   106.00=
+=20=20=20
+4.70    279.20    65.30  93.29    8.32    59.40    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60    8.00    0.06   1.86
+16:04:08 sdh              2.20    213.20    51.10  95.87   21.73    96.91=
+=20=20=20
+4.80    315.60    74.30  93.93   27.77    65.75    0.00      0.00     0.00=
+=20=20
+0.00    0.00     0.00    0.60   14.33    0.19   2.05
 
 --=20
 You may reply to this email to add a comment.
