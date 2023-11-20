@@ -1,140 +1,82 @@
-Return-Path: <linux-ext4+bounces-41-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-42-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC717F1935
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 18:00:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6CE67F1BF7
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 19:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F5251C214ED
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 17:00:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 913E9281901
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 18:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDB01EA7E;
-	Mon, 20 Nov 2023 17:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B7030324;
+	Mon, 20 Nov 2023 18:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PqcrmX/f";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SbImRmN2"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QZlWxbXP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBB4BA;
-	Mon, 20 Nov 2023 08:59:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1AC491F898;
-	Mon, 20 Nov 2023 16:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1700499598; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JIN3Szij9vng0Sn6tR16Xkp3K/Bfpt8xRLXw989J/84=;
-	b=PqcrmX/fFWrnUfu7j8QajdkCGraLIKGobYYF67IGQ9Y3y8vj83MNVxSpcGtzztP0LeXfsx
-	PsoU8Go3KoGMpG7KNfxG3PUmzDEzL/YeqZkLwmQo6UrYQ0FGPwBfRrPjv/firN7mibcXNC
-	FvBuhe9HNSvRSP8YnZ4o6zQqbMh5mhs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1700499598;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JIN3Szij9vng0Sn6tR16Xkp3K/Bfpt8xRLXw989J/84=;
-	b=SbImRmN2wQzPTGfC64qqBKeQ3LvGvkLeHhLvv1WqkCjE8ccSwUdroTzQkEP5temN/x4G9Q
-	jqF26BCAftTuwmDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC44B13499;
-	Mon, 20 Nov 2023 16:59:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id fqoQMI2QW2VOAQAAMHmgww
-	(envelope-from <krisman@suse.de>); Mon, 20 Nov 2023 16:59:57 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: viro@zeniv.linux.org.uk,  Linus Torvalds
- <torvalds@linux-foundation.org>,  tytso@mit.edu,
-  linux-f2fs-devel@lists.sourceforge.net,  ebiggers@kernel.org,
-  linux-fsdevel@vger.kernel.org,  jaegeuk@kernel.org,
-  linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-In-Reply-To: <20231120-nihilismus-verehren-f2b932b799e0@brauner> (Christian
-	Brauner's message of "Mon, 20 Nov 2023 16:06:09 +0100")
-Organization: SUSE
-References: <20230816050803.15660-1-krisman@suse.de>
-	<20231025-selektiert-leibarzt-5d0070d85d93@brauner>
-	<655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
-	<20231120-nihilismus-verehren-f2b932b799e0@brauner>
-Date: Mon, 20 Nov 2023 11:59:56 -0500
-Message-ID: <87il5w5pir.fsf@>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E930A4
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 10:08:12 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a0907896so6608296e87.2
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 10:08:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700503690; x=1701108490; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bt4pvFuDO1h6defOBt353/3Gu2TKhLOMI2PK2iWD2i4=;
+        b=QZlWxbXPqBz7Ho7KOLdqJDUz/pE3QnuydllAtMH8cviNqaHiNkURQQHz8+9ZeWC6Dd
+         IRIOSXk8x9KDLPjwI6/xmFBe07/YPpZC59fFgd27ravVT/H/Q2Wc8FH2KR9SCtuWfE/Z
+         gOOZ9QgQzgpblakMPmQeKORt02eB/lR9iWDCw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700503690; x=1701108490;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bt4pvFuDO1h6defOBt353/3Gu2TKhLOMI2PK2iWD2i4=;
+        b=P9VDvMvqwNPxNwgT0kNHYFu644aCvmwDYqiwKHdiOcNaPGwCHXhlq1S69KQ4PjFGub
+         DbDV505GycOfQRTrZuGz604JbFUiMf0P8sOYYrK7nn34hbzc64DywpQTCNbMiv4HxtcF
+         +jZZ/JMg8kNsNGgroMvPxvoP4gaXwcRJ89YKj5FgRnsw7+WiadJQptp2GCPtxipXQa+4
+         rDlzi2iYowOdxldT+M7owxtu836T6h7CJHC/g00Z2lkdZKCTyM60o7/rqDDORuofOdyB
+         4pUhLwlPvETfldmn3xLohT4I8sxlDREVbmSzq9gXWbXaTclrldQYoDsQEM6i4YbbcMd9
+         hvfg==
+X-Gm-Message-State: AOJu0YygwBMIXLjQiFYGLNUFSudYt1qwLgK7R1GlI53M837/hQbEVQFu
+	uE4eJS89vAiy+4KV7j04bz/6OkIGIOc0DvCPezOajg==
+X-Google-Smtp-Source: AGHT+IGRqKk1pdh6f5Hi3bSV/uz/3b4254vAq1FdsM3RQTuiZya9/Jl/d3Z/CyhXy3+g3/uHqMVxxg==
+X-Received: by 2002:ac2:43a5:0:b0:501:c406:c296 with SMTP id t5-20020ac243a5000000b00501c406c296mr5832784lfl.31.1700503689744;
+        Mon, 20 Nov 2023 10:08:09 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id c22-20020a056402121600b00548c18fad8esm1248015edw.39.2023.11.20.10.08.08
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 10:08:08 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-548d1f8b388so1448689a12.0
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 10:08:08 -0800 (PST)
+X-Received: by 2002:a05:6402:150f:b0:548:7900:2d0c with SMTP id
+ f15-20020a056402150f00b0054879002d0cmr100825edw.40.1700503687823; Mon, 20 Nov
+ 2023 10:08:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.07
-X-Spamd-Result: default: False [-2.07 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.17)[-0.859];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 INVALID_MSGID(1.70)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+References: <20230816050803.15660-1-krisman@suse.de> <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
+ <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com> <20231120-nihilismus-verehren-f2b932b799e0@brauner>
+In-Reply-To: <20231120-nihilismus-verehren-f2b932b799e0@brauner>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 20 Nov 2023 10:07:51 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
+Message-ID: <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
+ case-insensitive ext4 and f2fs
+To: Christian Brauner <brauner@kernel.org>
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk, tytso@mit.edu, 
+	linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org, 
+	linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Christian Brauner <brauner@kernel.org> writes:
-
-> On Sun, Nov 19, 2023 at 06:11:39PM -0500, Gabriel Krisman Bertazi wrote:
->> Christian Brauner <brauner@kernel.org> writes:
->> 
->> > On Wed, 16 Aug 2023 01:07:54 -0400, Gabriel Krisman Bertazi wrote:
->> >> This is v6 of the negative dentry on case-insensitive directories.
->> >> Thanks Eric for the review of the last iteration.  This version
->> >> drops the patch to expose the helper to check casefolding directories,
->> >> since it is not necessary in ecryptfs and it might be going away.  It
->> >> also addresses some documentation details, fix a build bot error and
->> >> simplifies the commit messages.  See the changelog in each patch for
->> >> more details.
->> >> 
->> >> [...]
->> >
->> > Ok, let's put it into -next so it sees some testing.
->> > So it's too late for v6.7. Seems we forgot about this series.
->> > Sorry about that.
->> 
->> Christian,
->> 
->> We are approaching -rc2 and, until last Friday, it didn't shown up in
->> linux-next. So, to avoid turning a 6 month delay into 9 months, I pushed
->> your signed tag to linux-next myself.
->> 
->> That obviously uncovered a merge conflict: in v6.6, ceph added fscrypt,
->> and the caller had to be updated.  I fixed it and pushed again to
->> linux-next to get more testing.
->> 
->> Now, I don't want to send it to Linus myself. This is 100% VFS/FS code,
->> I'm not the maintainer and it will definitely raise eyebrows.  Can you
->> please requeue and make sure it goes through this time?  I'm happy to
+On Mon, 20 Nov 2023 at 07:06, Christian Brauner <brauner@kernel.org> wrote:
 >
 > My current understanding is that core dcache stuff is usually handled by
 > Al. And he's got a dcache branches sitting in his tree.
@@ -142,49 +84,36 @@ Christian Brauner <brauner@kernel.org> writes:
 > So this isn't me ignoring you in any way. My hands are tied and so I
 > can't sort this out for you easily.
 
-Please don't take it personally, but you surely see how frustrating this
-is.
+Well, we all know - very much including Al - that Al isn't always the
+most responsive person, and tends to have his own ratholes that he
+dives deep into.
 
-While I appreciate your very prompt answer, this is very different from:
+The good news is that I do know the dcache code pretty well, and while
+I really would like Al to deal with any locking issues (because
+"pretty well" is not "as well as Al Viro"), for just about any other
+issue I'll happily take pulls from you.
 
-  https://lore.kernel.org/linux-fsdevel/20230821-derart-serienweise-3506611e576d@brauner/
-  https://lore.kernel.org/linux-fsdevel/20230822-denkmal-operette-f16d8bd815fc@brauner/
-  https://lore.kernel.org/linux-fsdevel/20231025-selektiert-leibarzt-5d0070d85d93@brauner/
+I dislike case folding with a passion - it's about the worst design
+decision a filesystem can ever do - but the other side of that is that
+if you have to have case folding, the last thing you want to do is to
+have each filesystem deal with that sh*t-for-brains decision itself.
 
-Perhaps it all has a vfs-specific meaning. But the following suggests it
-was accepted and queued long ago:
+So moving more support for case folding into the VFS so that the
+horrid thing at least gets better support is something I'm perfectly
+fine with despite my dislike of it.
 
-> Thanks! We're a bit too late for v6.6 with this given that this hasn't
-> even been in -next. So this will be up for v6.7.
-[...]
-> Ok, let's put it into -next so it sees some testing.
-[...]
-> It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> patch has now been applied.
-[...]
-> Patches in the vfs.casefold branch should appear in linux-next soon.
-[...]
+Of course, "do it in shared generic code" doesn't tend to really fix
+the braindamage, but at least it's now shared braindamage and not
+spread out all over. I'm looking at things like
+generic_ci_d_compare(), and it hurts to see the mindless "let's do
+lookups and compares one utf8 character at a time". What a disgrace.
+Somebody either *really* didn't care, or was a Unicode person who
+didn't understand the point of UTF-8.
 
-Obviously, there are big issues with the process here. But I fail to see
-how I could have communicated clearer or where I didn't follow the
-process in this entire thread.
+Oh well. I guess people went "this is going to suck anyway, so let's
+make sure it *really* sucks".
 
-The branches you mentioned are 10 days old. This patchset was
-"accepted" two months ago.
+The patches look fine to me. Al - do you even care about them?
 
-As one of the VFS maintainer, can you send an acked-by - or at least a
-r-b in cases like this, if you agree with the patches?  Then it makes
-more sense for me to send to Linus directly.
-
-Viro,
-
-You are CC'ed since early 2022.  Can you comment?  Ted and Eric
-reviewed, Christian too.  there's been only small changes since the
-first RFC.
-
-I'll ask Linus to pull from the unicode tree in the next merge window
-if I don't hear from you.
-
--- 
-Gabriel Krisman Bertazi
+                   Linus
 
