@@ -1,189 +1,107 @@
-Return-Path: <linux-ext4+bounces-39-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-40-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD9017F11CC
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 12:19:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F36F07F16B1
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 16:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE7071C21816
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 11:19:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABE15282478
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 15:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D2814AA8;
-	Mon, 20 Nov 2023 11:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA601CAA0;
+	Mon, 20 Nov 2023 15:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFlXQQ4z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EF6Z/rtE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1464D62;
-	Mon, 20 Nov 2023 03:19:45 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso4387868b3a.2;
-        Mon, 20 Nov 2023 03:19:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700479184; x=1701083984; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CdVx1mLPYgJ8PSK+Wh+08fLU/+3jz9bwfAobWV4CEv0=;
-        b=aFlXQQ4zDFmPTxtTM9at2dxqlru5bUoo6SA1fGw+ICgRyoYEBnYlLY1vLj8pGSWEbV
-         VpjDrKEVVZXIoshh2NIsfNflACa4qsUJ/BtUAIBexvEwJaCBj/YJ0F9TJMazSfYVzjK0
-         wpKvtxVblCsuOCS1hvAw804tzhQtvGYGkCUUcnTwOB0aMzENWNDaF2r9p1zBYycvIWtw
-         6ro41PjC55OUo6aawVn86oeNuPJjdFRONfdJn9UDOvsptRduCsZ5pUL2Catm2ln4V+mz
-         biDT6ZOTqUBJJIw77Bq1eoa5ofpHM3y9I5xrygsSQbd9fEQsFeH1WwU8deYaOKIOb62i
-         luCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700479184; x=1701083984;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CdVx1mLPYgJ8PSK+Wh+08fLU/+3jz9bwfAobWV4CEv0=;
-        b=TmJHf54HFaRBJnD84F0cOgK0uHlSdSLfBXW3SQmLvOfFaiB2eiv24xuvaNLmsQBxwx
-         xSxTGtm7e1nMX5Md6YK8RQHVVSm3OV4plb4+/if4lEQvcwAOQQAG/bEFjgT97dKLKZSZ
-         Rhd7NSnG0zPQa/jYrgieA8/LkvajQZK5p8WSSyGkazGXVHkuBzyjX3jBA5glSxs9vK/8
-         KC9iud8tAQHuFvUqemAcNZHJ2BTx6e0x7e8WDh+8aDQc55XGOIKL/8I5OkOq6XYwCF6r
-         HTVYSmCdPprSVdSdcS8+MX59z8pFE3V7EH4NBTD9EmWIUwgNNBV2PDzGrEWqIF3adJZZ
-         l69g==
-X-Gm-Message-State: AOJu0YxelfyrK/E6Iw7thvZV2rcGH0N+k1CUFwX7WqviFsrGXG6sfgZb
-	xTyY+ON0I9OS7sw0hw7QZXLZKeCBIm8=
-X-Google-Smtp-Source: AGHT+IHWG6AK9NZKOoLXSopNKh7P20KMrqrY/MNDq8A1GO4Fdwv6Inq0RN1xNQZsy9DfdEnSdB10PQ==
-X-Received: by 2002:a05:6a00:8c5:b0:6be:4e6e:2a85 with SMTP id s5-20020a056a0008c500b006be4e6e2a85mr7898914pfu.30.1700479184601;
-        Mon, 20 Nov 2023 03:19:44 -0800 (PST)
-Received: from dw-tp.c4p-in.ibmmobiledemo.com ([129.41.58.19])
-        by smtp.gmail.com with ESMTPSA id k10-20020aa788ca000000b006cb6ba5fe72sm3056158pff.122.2023.11.20.03.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 03:19:44 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	Jan Kara <jack@suse.cz>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCHv3 2/2] generic: Add integrity tests with synchronous directio
-Date: Mon, 20 Nov 2023 16:49:34 +0530
-Message-ID: <e255d8494511a705bacc5103e15dd532d2f433d0.1700478575.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <8379b5df9f70a1d75692e029a565199e98a535e8.1700478575.git.ritesh.list@gmail.com>
-References: <8379b5df9f70a1d75692e029a565199e98a535e8.1700478575.git.ritesh.list@gmail.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0331854;
+	Mon, 20 Nov 2023 15:06:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8025FC433C9;
+	Mon, 20 Nov 2023 15:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700492774;
+	bh=7t2WZjjvqByOeMC7OwZNB8LTlJ8j6xY5BoTSVtlNVBU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EF6Z/rtEhniaZrtGdJKsW3utjme11UiwENJ1Z56AsfL/01wu3w5rMsL48SRnxZZiG
+	 RXc6n24Hx6Nmbb8WwlcLcn0uKdVOGFV2go577Weg30nzhj7P+G0No5F59K+986q93d
+	 ++ji5ZXgDOju8wFsv3dAijcRlJJQruSMJsK1o3hhA6w954eVj3HPYsJDeM9eF2gI/6
+	 PrD2G9xqJQsF2ZR2CQwHumlIBDHpeJFmq9g0h1YEYKjhHdHhhFjEzYnJYoljtcP19w
+	 DNwM3t9vM4Bo/ZRsGQt9j41wn62PVmfCHID1frEQJsTGtDpcfBWT4BCF1PulMnEH1G
+	 ecbbA15TmOplw==
+Date: Mon, 20 Nov 2023 16:06:09 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: tytso@mit.edu, linux-f2fs-devel@lists.sourceforge.net,
+	ebiggers@kernel.org, linux-fsdevel@vger.kernel.org,
+	jaegeuk@kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
+ case-insensitive ext4 and f2fs
+Message-ID: <20231120-nihilismus-verehren-f2b932b799e0@brauner>
+References: <20230816050803.15660-1-krisman@suse.de>
+ <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
+ <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
 
-This test covers data & metadata integrity check with directio with
-o_sync flag and checks the file contents & size after sudden fileystem
-shutdown once the directio write is completed. ext4 directio after iomap
-conversion was broken in the sense that if the FS crashes after
-synchronous directio write, it's file size is not properly updated.
-This test adds a testcase to cover such scenario.
+On Sun, Nov 19, 2023 at 06:11:39PM -0500, Gabriel Krisman Bertazi wrote:
+> Christian Brauner <brauner@kernel.org> writes:
+> 
+> > On Wed, 16 Aug 2023 01:07:54 -0400, Gabriel Krisman Bertazi wrote:
+> >> This is v6 of the negative dentry on case-insensitive directories.
+> >> Thanks Eric for the review of the last iteration.  This version
+> >> drops the patch to expose the helper to check casefolding directories,
+> >> since it is not necessary in ecryptfs and it might be going away.  It
+> >> also addresses some documentation details, fix a build bot error and
+> >> simplifies the commit messages.  See the changelog in each patch for
+> >> more details.
+> >> 
+> >> [...]
+> >
+> > Ok, let's put it into -next so it sees some testing.
+> > So it's too late for v6.7. Seems we forgot about this series.
+> > Sorry about that.
+> 
+> Christian,
+> 
+> We are approaching -rc2 and, until last Friday, it didn't shown up in
+> linux-next. So, to avoid turning a 6 month delay into 9 months, I pushed
+> your signed tag to linux-next myself.
+> 
+> That obviously uncovered a merge conflict: in v6.6, ceph added fscrypt,
+> and the caller had to be updated.  I fixed it and pushed again to
+> linux-next to get more testing.
+> 
+> Now, I don't want to send it to Linus myself. This is 100% VFS/FS code,
+> I'm not the maintainer and it will definitely raise eyebrows.  Can you
+> please requeue and make sure it goes through this time?  I'm happy to
 
-Man page of open says that -
-O_SYNC provides synchronized I/O file integrity completion, meaning write
-operations will flush data and all associated metadata to the underlying
-hardware
+My current understanding is that core dcache stuff is usually handled by
+Al. And he's got a dcache branches sitting in his tree.
 
-Reported-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- tests/generic/733     | 54 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/733.out | 22 ++++++++++++++++++
- 2 files changed, 76 insertions(+)
- create mode 100755 tests/generic/733
- create mode 100644 tests/generic/733.out
+So this isn't me ignoring you in any way. My hands are tied and so I
+can't sort this out for you easily.
 
-diff --git a/tests/generic/733 b/tests/generic/733
-new file mode 100755
-index 00000000..18021e8a
---- /dev/null
-+++ b/tests/generic/733
-@@ -0,0 +1,54 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 IBM Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 471
-+#
-+# Integrity test for O_SYNC with buff-io, dio, aio-dio with sudden shutdown.
-+# Based on a testcase reported by Gao Xiang <hsiangkao@linux.alibaba.com>
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick shutdown aio
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch
-+_require_scratch_shutdown
-+_require_aiodio aio-dio-write-verify
-+
-+_fixed_by_kernel_commit 91562895f803 \
-+	"ext4: properly sync file size update after O_SYNC direct IO"
-+
-+_scratch_mkfs > $seqres.full 2>&1
-+_scratch_mount
-+
-+echo "T-1: Create a 1M file using buff-io & O_SYNC"
-+$XFS_IO_PROG -fs -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t1 > /dev/null 2>&1
-+echo "T-1: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-1: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-1: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t1
-+
-+echo "T-2: Create a 1M file using O_DIRECT & O_SYNC"
-+$XFS_IO_PROG -fsd -c "pwrite -S 0x5a 0 1M" $SCRATCH_MNT/testfile.t2 > /dev/null 2>&1
-+echo "T-2: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-2: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-2: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t2
-+
-+echo "T-3: Create a 1M file using AIO-DIO & O_SYNC"
-+$AIO_TEST -a size=1048576 -S -N $SCRATCH_MNT/testfile.t3 > /dev/null 2>&1
-+echo "T-3: Shutdown the fs suddenly"
-+_scratch_shutdown
-+echo "T-3: Cycle mount"
-+_scratch_cycle_mount
-+echo "T-3: File contents after cycle mount"
-+_hexdump $SCRATCH_MNT/testfile.t3
-+
-+status=0
-+exit
-diff --git a/tests/generic/733.out b/tests/generic/733.out
-new file mode 100644
-index 00000000..e0536a4e
---- /dev/null
-+++ b/tests/generic/733.out
-@@ -0,0 +1,22 @@
-+QA output created by 733
-+T-1: Create a 1M file using buff-io & O_SYNC
-+T-1: Shutdown the fs suddenly
-+T-1: Cycle mount
-+T-1: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
-+T-2: Create a 1M file using O_DIRECT & O_SYNC
-+T-2: Shutdown the fs suddenly
-+T-2: Cycle mount
-+T-2: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
-+T-3: Create a 1M file using AIO-DIO & O_SYNC
-+T-3: Shutdown the fs suddenly
-+T-3: Cycle mount
-+T-3: File contents after cycle mount
-+000000 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  >ZZZZZZZZZZZZZZZZ<
-+*
-+100000
--- 
-2.41.0
-
+> drop my branch from linux-next once yours shows up.
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode.git/log/?h=negative-dentries
+> 
+> This branch has the latest version with the ceph conflict folded in.  I
+> did it this way because I'd consider it was never picked up and there is
+> no point in making the history complex by adding a fix on top of your
+> signed tag, since it already fails to build ceph.
+> 
+> I can send it as a v7; but I prefer you just pull from the branch
+> above. Or you can ack and I'll send to Linus.
 
