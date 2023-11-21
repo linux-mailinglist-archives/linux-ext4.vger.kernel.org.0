@@ -1,57 +1,94 @@
-Return-Path: <linux-ext4+bounces-48-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-56-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8122D7F1DA8
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 21:01:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C247F237F
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 03:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09894B21AD5
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Nov 2023 20:01:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1C61C2169C
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 02:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4919537177;
-	Mon, 20 Nov 2023 20:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0580125CC;
+	Tue, 21 Nov 2023 02:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oKX6neUT"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fh+Iz59m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D831DC;
-	Mon, 20 Nov 2023 12:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FkCCr9BHWLoh0RTrdjab9K+eEFFI+aH/zKFL0ziApPg=; b=oKX6neUTWZejGqYVq9QMuSW5XM
-	cFJSm6r57pNkmVFYr/Y4EWkjXIqqSZnAmfXHxlymcjXs78w2ZvkVZ4NvIpJzq6B/5ABGOzP3Qck2b
-	9DIvbQhBTu9JZ2gtCSSLHQoJ1tIWg2BayHlgJmTH2SRRq09G/kiKXzqU12/RRDIJfyMHj2vN9UaRS
-	WfzljpCD22QUBtNE2LagaaZSzLejLM+hDcwHWJrnAWB1+N/NL+bdL8suUdjcCTkmlJylQRI3bh5OS
-	NtkbZsOOS+135RkZWm65MBla91+Si9C1G7fp54Pf9k/8AOoz52LjK09LrqyZaYr+EofFsqLcu643P
-	w3F01ubQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1r5ARt-004wQB-Ju; Mon, 20 Nov 2023 20:00:49 +0000
-Date: Mon, 20 Nov 2023 20:00:49 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 3/3] ext2: Enable large folio support
-Message-ID: <ZVu68Sp1cdor5hxJ@casper.infradead.org>
-References: <cover.1700506526.git.ritesh.list@gmail.com>
- <3dd8b8bce2c29d5e87bbdc9e37fa11ba80f184b9.1700506526.git.ritesh.list@gmail.com>
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7652ACF
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 18:03:29 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-82-21.bstnma.fios.verizon.net [173.48.82.21])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3AL22s5b004315
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 20 Nov 2023 21:02:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1700532178; bh=RI/R/dL+OK3InX9FiqKDXHPEN021Sx3jNB6FQIcl/vA=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=fh+Iz59mAaEhYI6Rnl1Ws5eNRCdm8wGGiPBNrtSex6iEN3evmaEE4VQ38o7HziJIX
+	 1oE53Yx5gx4QD+4kGuf0DRlqTlOmzTWeEI2U3lwozuid2nmQUf3gYQ2cFfVX58ObIS
+	 AOF5SVofHZTGGj/d41vBKcNaXkE103Uvrh87PK5pi0LdMGHs5Xqj6zMO4rTyX9usd9
+	 drGCCLumglHiyBKsUPqRzlaLSTktuNh3kOnfULa7loj6SCmki5AcJ9s3b1I/ItdyGj
+	 OJ8dmIFQVzZuLCX6BAwNAawsKR4kbHK+H0hmI1SBGThTTmsfe2NgCjRISca5zfG2+N
+	 +bR7dioZFi29A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A86F715C02B0; Mon, 20 Nov 2023 21:02:54 -0500 (EST)
+Date: Mon, 20 Nov 2023 21:02:54 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
+        linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org,
+        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
+ case-insensitive ext4 and f2fs
+Message-ID: <20231121020254.GB291888@mit.edu>
+References: <20230816050803.15660-1-krisman@suse.de>
+ <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
+ <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
+ <20231120-nihilismus-verehren-f2b932b799e0@brauner>
+ <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <3dd8b8bce2c29d5e87bbdc9e37fa11ba80f184b9.1700506526.git.ritesh.list@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
 
-On Tue, Nov 21, 2023 at 12:35:21AM +0530, Ritesh Harjani (IBM) wrote:
-> Now that ext2 regular file buffered-io path is converted to use iomap,
-> we can also enable large folio support for ext2.
+On Mon, Nov 20, 2023 at 10:07:51AM -0800, Linus Torvalds wrote:
+> Of course, "do it in shared generic code" doesn't tend to really fix
+> the braindamage, but at least it's now shared braindamage and not
+> spread out all over. I'm looking at things like
+> generic_ci_d_compare(), and it hurts to see the mindless "let's do
+> lookups and compares one utf8 character at a time". What a disgrace.
+> Somebody either *really* didn't care, or was a Unicode person who
+> didn't understand the point of UTF-8.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+This isn't because of case-folding brain damage, but rather Unicode
+brain damage.  We compare one character at a time because it's
+possible for some character like é to either be encoded as 0x0089 (aka
+"Latin Small Letter E with Acute") OR as 0x0065 0x0301 ("Latin Small
+Letter E" plus "Combining Acute Accent").
+
+Typically, we pretend that UTF-8 means that we can just encode é, or
+0x0089 as 0xC3 0xA9 and then call it a day and just use strcmp(3) on
+the sucker.  But Unicode is a lot more insane than that.  Technically,
+0x65 0xCC 0x81 is the same character as 0xC3 0xA9.
+
+> Oh well. I guess people went "this is going to suck anyway, so let's
+> make sure it *really* sucks".
+
+It's more like, "this is going to suck, but if it's going to suck
+anyway, let's implement the full Unicode spec in all its gory^H^H^H^H
+glory, whether or not it's sane".
+
+
+					- Ted
 
