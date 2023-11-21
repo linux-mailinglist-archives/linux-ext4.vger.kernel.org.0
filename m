@@ -1,165 +1,106 @@
-Return-Path: <linux-ext4+bounces-59-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-50-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C9B57F2477
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 04:03:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C5E97F2336
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 02:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C22A282885
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 03:03:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3161C216AF
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 01:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4681549C;
-	Tue, 21 Nov 2023 03:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="M4jqM27w"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114D4847C;
+	Tue, 21 Nov 2023 01:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E90CB
-	for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 19:03:33 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5484ef5e3d2so5049535a12.3
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 19:03:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700535812; x=1701140612; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EIi2i2u1rSIPQrzJXn8A5YNmAC8BSlreYh/h3LyEO0w=;
-        b=M4jqM27wLFOC0WKHQGhuyC65GFEPIthR/4SChvouUWTU32V0K80HEW1EmZS11j82z3
-         Lzw1mPvuLA2WLp8X+0gDbfWqyFgKcRufxKSp+pmpj79+7WKq+scmtCL/cfCz6SRYZlft
-         Wa2R5RvAV46Q0WmgtVLfJfvN5kJJnNmLORtmY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700535812; x=1701140612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EIi2i2u1rSIPQrzJXn8A5YNmAC8BSlreYh/h3LyEO0w=;
-        b=fHusZ6QKLOILgmqp/41idGUWLWKDUnLojeuDiObpTIWq6bsJH/gJ0pq3gZIWTYRKuD
-         Cp373cBHxdc+YT7fVpL+m0BpsBlFmuwxgB60OJfJJ3DFzIS4C+8R+f1N1Sgg1r/ZTQdC
-         wkgqpEdm5YjjYfQXdJ6VzOHg4rrjFwIDE1YgNaYXjIZvJKdeU0cQFDRZ/eyAca7u8IIc
-         B71/tgMZHCJ+U/SkdpZdQykQRE/LWGzaSzyZ+8yGbJAAw0d6msfUzjaAvfOKDjKEwq36
-         iqRkFlA0JSbjTSAZdVwYTJ/+cENhzpus/9huL4WhF0JhcCd+7MZuflukeaMDo+PqR5/o
-         y6SQ==
-X-Gm-Message-State: AOJu0YxkjqM5uM1N1MF6jwDwW8HWenCd+dl2nuZBWbWGub6pEmXQsyK8
-	205j6Gd4VI4EYGELRWaPq/2rMdEzvBUwR3RxGYII7g==
-X-Google-Smtp-Source: AGHT+IFlJz44x8asNEwNpKc7aO60uh1dqsxmB3pgE701+J/KA0BlLo0YvD1O/OJMAIId7JpeoYtdNg==
-X-Received: by 2002:a17:906:1001:b0:a01:9aa8:9fa8 with SMTP id 1-20020a170906100100b00a019aa89fa8mr489109ejm.0.1700535812310;
-        Mon, 20 Nov 2023 19:03:32 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id k13-20020a170906158d00b009b9aa8fffdasm4566647ejd.131.2023.11.20.19.03.31
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 19:03:31 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-548f35e6a4bso718527a12.0
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 19:03:31 -0800 (PST)
-X-Received: by 2002:a05:6402:797:b0:543:8391:a19a with SMTP id
- d23-20020a056402079700b005438391a19amr722096edy.40.1700535810689; Mon, 20 Nov
- 2023 19:03:30 -0800 (PST)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB408ED
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 17:40:41 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SZ6X33R9Tz4f3k5s
+	for <linux-ext4@vger.kernel.org>; Tue, 21 Nov 2023 09:40:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 289881A0774
+	for <linux-ext4@vger.kernel.org>; Tue, 21 Nov 2023 09:40:38 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgA3iA6MClxlGMf4BQ--.64879S4;
+	Tue, 21 Nov 2023 09:40:37 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [RFC PATCH 0/6] ext4: make ext4_map_blocks() recognize delayed only extent
+Date: Tue, 21 Nov 2023 17:34:23 +0800
+Message-Id: <20231121093429.1827390-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230816050803.15660-1-krisman@suse.de> <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
- <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
- <20231120-nihilismus-verehren-f2b932b799e0@brauner> <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
- <20231121020254.GB291888@mit.edu> <CAHk-=whb80quGmmgVcsq51cXw9dQ9EfNMi9otL9eh34jVZaD2g@mail.gmail.com>
-In-Reply-To: <CAHk-=whb80quGmmgVcsq51cXw9dQ9EfNMi9otL9eh34jVZaD2g@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 20 Nov 2023 19:03:13 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh+o0Zkzn=mtF6nB1b-EEcod-y4+ZWtAe7=Mi1v7RjUpg@mail.gmail.com>
-Message-ID: <CAHk-=wh+o0Zkzn=mtF6nB1b-EEcod-y4+ZWtAe7=Mi1v7RjUpg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Christian Brauner <brauner@kernel.org>, Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk, 
-	linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org, 
-	linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgA3iA6MClxlGMf4BQ--.64879S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF43AFW8ury8Wry7CF4kWFg_yoW8XrW8pr
+	9xCFyfKw1kX342gFZ3Xw47Jr1Fgws7CF4UGry7Gw18uFyrAFy8GF4DKF10vFyrKrWxtr47
+	ua1jkryUG3W7C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+	YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+	RwZDUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, 20 Nov 2023 at 18:29, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> It's a bit complicated, yes. But no, doing things one unicode
-> character at a time is just bad bad bad.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Put another way: the _point_ of UTF-8 is that ASCII is still ASCII.
-It's literally why UTF-8 doesn't suck.
+Hello, guys.
 
-So you can still compare ASCII strings as-is.
+I'm working on switching ext4 buffer IO from buffer_head to iomap
+and enable large folio on regular file recently, this patch set is one
+of a preparation of this work. It first correct the hole length returned
+by ext4_map_blocks() when user query mapping type and blocks range, and
+then make this function and ext4_set_iomap() are able to distinguish
+delayed allocated only mapping from hole, finally cleanup the
+ext4_iomap_begin_report() by the way. This preparation patch set changes
+the ext4 map -> iomap converting logic in ext4_set_iomap(), so that the
+later buffer IO conversion can use it. This patch set is already passed
+'kvm-xfstests -g auto' tests.
 
-No, that doesn't help people who are really using other locales, and
-are actively using complicated characters.
+Thanks,
+Yi.
 
-But it very much does mean that you can compare "Bad" and "bad" and
-never ever look at any unicode translation ever.
+Zhang Yi (6):
+  ext4: introduce ext4_es_skip_hole_extent() to skip hole extents
+  ext4: make ext4_es_lookup_extent() return the next extent if not found
+  ext4: correct the hole length returned by ext4_map_blocks()
+  ext4: add a hole extent entry in cache after punch
+  ext4: make ext4_map_blocks() distinguish delayed only mapping
+  ext4: make ext4_set_iomap() recognize IOMAP_DELALLOC mapping type
 
-In a perfect world, you'd use all the complicated DCACHE_WORD_ACCESS
-stuff that can do all of this one word at a time.
+ fs/ext4/ext4.h              |  7 ++++-
+ fs/ext4/extents.c           |  5 ++--
+ fs/ext4/extents_status.c    | 53 ++++++++++++++++++++++++--------
+ fs/ext4/extents_status.h    |  2 ++
+ fs/ext4/inode.c             | 60 ++++++++++++++++++-------------------
+ include/trace/events/ext4.h | 28 +++++++++++++++++
+ 6 files changed, 107 insertions(+), 48 deletions(-)
 
-But even if you end up doing the rules just one byte at a time, it
-means that you can deal with the common cases without "unicode
-cursors" or function calls to extract unicode characters, or anything
-like that. You can still treat things as bytes.
+-- 
+2.39.2
 
-So the top of generic_ci_d_compare() should probably be something
-trivial like this:
-
-        const char *ct = name.name;
-        unsigned int tcount = name.len;
-
-        /* Handle the exact equality quickly */
-        if (len == tcount && !dentry_string_cmp(str, ct, tcount))
-                return 0;
-
-because byte-wise equality is equality even if high bits are set.
-
-After that, it should probably do something like
-
-        /* Not byte-identical, but maybe igncase identical in ASCII */
-        do {
-                unsigned char a, b;
-
-                /* Dentry name byte */
-                a = *str;
-
-                /* If that's NUL, the qstr needs to be done too! */
-                if (!a)
-                        return !!tcount;
-
-                /* Alternatively, if the qstr is done, it needed to be NUL */
-                if (!tcount)
-                        return 1;
-                b = *ct;
-
-                if ((a | b) & 0x80)
-                        break;
-
-                if (a != b) {
-                        /* Quick "not same" igncase ASCII */
-                        if ((a ^ b) & ~32)
-                                return 1;
-                        a &= ~32;
-                        if (a < 'A' || a > 'Z')
-                                return 1;
-                }
-
-                /* Ok, same ASCII, bytefolded, go to next */
-                str++;
-                ct++;
-                tcount--;
-                len--;
-        }
-
-and only after THAT should it do the utf name comparison (and only on
-the remaining parts, since the above will have checked for common
-ASCII beginnings).
-
-And the above was obviously never tested, and written in the MUA, and
-may be completely wrong in all the details, but you get the idea. Deal
-with the usual cases first. Do the full unicode only when you
-absolutely have to.
-
-                Linus
 
