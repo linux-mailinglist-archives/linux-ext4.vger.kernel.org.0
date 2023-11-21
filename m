@@ -1,102 +1,91 @@
-Return-Path: <linux-ext4+bounces-62-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-63-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701727F251B
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 06:12:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228DD7F255A
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 06:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94D0A1C217F4
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 05:12:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1F07282985
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Nov 2023 05:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFC516422;
-	Tue, 21 Nov 2023 05:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C02199C1;
+	Tue, 21 Nov 2023 05:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Um42NUha"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lyFJ3EZx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E3CC8
-	for <linux-ext4@vger.kernel.org>; Mon, 20 Nov 2023 21:12:46 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-82-21.bstnma.fios.verizon.net [173.48.82.21])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3AL5CFRR025396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 21 Nov 2023 00:12:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1700543538; bh=6uSNTF4gBA2mBMIlInFqz++irtP7bRP60ummCQhH030=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Um42NUhanFatTa+1jqPuCLUYty2ATWUCBuWm8YpeFYYKfK5UUs0HKRpVD4imsmJNV
-	 x7JOR/FgtbjoZsfqxykX2b3XgR32OWQ5PINc9aUIuzmXLZG0Irnb0SYI51LeD9enjy
-	 UrJBL3wN0yyOoFm2B4ttvmgRnqk5rEp1xeJyacx0igObUTwOALdAuqQhgTJ1P8Qrqj
-	 qiG0W2d9z+yVrsAhmyEw3XAbftuTPO/mdMxN8aKpTkUi7/BKVT44zqjPRR7/5l8qUh
-	 GzZ87cv+wdd4RYxhZVvVE7MqT2Mr+yDtLALuqxJhLZroOVEeSrg7ZGMd1hiECK7acM
-	 Uanm2L3MmZy/A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 2024415C02B0; Tue, 21 Nov 2023 00:12:15 -0500 (EST)
-Date: Tue, 21 Nov 2023 00:12:15 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
-        linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org,
-        linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-Message-ID: <20231121051215.GA335601@mit.edu>
-References: <20230816050803.15660-1-krisman@suse.de>
- <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
- <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
- <20231120-nihilismus-verehren-f2b932b799e0@brauner>
- <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
- <20231121020254.GB291888@mit.edu>
- <CAHk-=whb80quGmmgVcsq51cXw9dQ9EfNMi9otL9eh34jVZaD2g@mail.gmail.com>
- <CAHk-=wh+o0Zkzn=mtF6nB1b-EEcod-y4+ZWtAe7=Mi1v7RjUpg@mail.gmail.com>
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B2E10EF;
+	Mon, 20 Nov 2023 21:37:08 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cf57430104so16108315ad.1;
+        Mon, 20 Nov 2023 21:37:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700545027; x=1701149827; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QrByEh4HtrdrZh+TurV7QStnfhXuPXFCWiwNep0ga/M=;
+        b=lyFJ3EZxbmhn1A8WbKJwyxn3IuTylpoxO1EzU4dfa8HCr6jFC07lwWfiotVyRyPSiz
+         u7Ca6akSBxOUVjxlAk9+hcvKpqonKwxOeKlRCJBC+QtcGDYIZPSnJGCqcjWUozmqITv4
+         GuLjOxIj7moloEHWESPjWRQ8esU2GUJb/hvUvI1Gx+zqaA5d6Rd3a8go39idOB4fUYu+
+         CXMnDrJbnEV6bVkR1HTZ5PoybwZTmsttA1ctYodChR9j1/uyTyx4dAnp6dS3PJJ2JQPV
+         x1LH22SkXaEQTgc2w9ZpdiNM34SI9SlcMDTOiw21I/Abb1cl5h/QUTKv+awCVwhfumgr
+         8EVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700545027; x=1701149827;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QrByEh4HtrdrZh+TurV7QStnfhXuPXFCWiwNep0ga/M=;
+        b=op/pCVDj8IQT0OtMQQl3awXMJnf3JyHr/d63mEnsCK+CkR8QnvGwC939JRcmQF+RBy
+         VBE42HaCpkOMTpL2cJsuS0hPi2MzB5cHFjfHVJTEEXpKtBDvuEq/IXGZtM+PLpbcsCnq
+         e/JpGH94Yk8rRrqmPQjvHUfS8Tz3vjXGgjnLgFjRK2vrb+rsUx5prfw6gZIOnkotFoWj
+         6cVwz6PjRGOrtdZR49vBFMFcO6bfUuR25Y8gAnD7JK/9QJnmw3fRUGsZfXdTLpbNuyWb
+         CuocTliujZPYTE5itehEewFkJMea4en3+3PyHSLyNCvtmYCoHX0Q6aD5Bbiezb3sxRJY
+         ivZQ==
+X-Gm-Message-State: AOJu0Yzr0kH+YrUb1qVPQ3mYi/ef1n5nPkEg0ZFMMUmhdfVUQ/NZUV34
+	wJU9KRKEmABAMii4bPQhClGjLtc7n4E=
+X-Google-Smtp-Source: AGHT+IHrjYDFU/5fcDTmlV3i0L+bDqr5nK4xRZjP93bGVB4QcT5/TFL+feYNarEcP+XkAEG6Xjy1qQ==
+X-Received: by 2002:a17:902:c94c:b0:1cf:5362:7e88 with SMTP id i12-20020a170902c94c00b001cf53627e88mr7961546pla.32.1700545026678;
+        Mon, 20 Nov 2023 21:37:06 -0800 (PST)
+Received: from dw-tp ([129.41.58.19])
+        by smtp.gmail.com with ESMTPSA id c4-20020a170902c2c400b001c726147a46sm6939204pla.234.2023.11.20.21.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 21:37:06 -0800 (PST)
+Date: Tue, 21 Nov 2023 11:06:53 +0530
+Message-Id: <877cmby8ei.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 1/3] ext2: Fix ki_pos update for DIO buffered-io fallback case
+In-Reply-To: <ZVw0gJ8uqzsdGABV@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh+o0Zkzn=mtF6nB1b-EEcod-y4+ZWtAe7=Mi1v7RjUpg@mail.gmail.com>
 
-On Mon, Nov 20, 2023 at 07:03:13PM -0800, Linus Torvalds wrote:
-> On Mon, 20 Nov 2023 at 18:29, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > It's a bit complicated, yes. But no, doing things one unicode
-> > character at a time is just bad bad bad.
-> 
-> Put another way: the _point_ of UTF-8 is that ASCII is still ASCII.
-> It's literally why UTF-8 doesn't suck.
-> 
-> So you can still compare ASCII strings as-is.
-> 
-> No, that doesn't help people who are really using other locales, and
-> are actively using complicated characters.
-> 
-> But it very much does mean that you can compare "Bad" and "bad" and
-> never ever look at any unicode translation ever.
+Christoph Hellwig <hch@infradead.org> writes:
 
-Yeah, agreed, that would be a nice optimization.  However, in the
-unfortunate case where (a) it's non-ASCII, and (b) the input string is
-non-normalized and/or differs in case, we end up scanning some portion
-of the two strings twice; once doing the strcmp, and once doing the
-Unicode slow path.
+> On Tue, Nov 21, 2023 at 12:35:19AM +0530, Ritesh Harjani (IBM) wrote:
+>> Commit "filemap: update ki_pos in generic_perform_write", made updating
+>> of ki_pos into common code in generic_perform_write() function.
+>> This also causes generic/091 to fail.
+>> 
+>> Fixes: 182c25e9c157 ("filemap: update ki_pos in generic_perform_write")
+>
+> Looks like this really was an in-flight collision with:
+> fb5de4358e1a ("ext2: Move direct-io to use iomap").  How did we manage
+> to not notice the failure for months, though?
 
-That being said, given that even in the case where we're dealing with
-non-ASCII strings, in the fairly common case where the program is
-doing a readdir() followed by a open() or stat(), the filename will be
-byte-identical and so a strcmp() will suffice.
+Yes, it was due to in-flight collision. I found it during this conversion and
+also noticed that generic/091 fails on upstream kernel.
 
-So I agree that it's a nice optimization.  It'd be interesting how
-much such an optimization would actually show up in various
-benchmarks.  It'd have to be something that was really metadata-heavy,
-or else the filenamea lookups would get drowned out.
+>
+> Otherwise looks good:
+>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-   	    	      	      	    	- Ted
+Thanks!
+
+-ritesh
 
