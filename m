@@ -1,71 +1,146 @@
-Return-Path: <linux-ext4+bounces-82-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-83-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3387F4765
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 14:11:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BEB7F49EF
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 16:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 364ED2811D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 13:11:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53D3828139F
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 15:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0574C63E;
-	Wed, 22 Nov 2023 13:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="v86cmPCG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20874F215;
+	Wed, 22 Nov 2023 15:10:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD65E193;
-	Wed, 22 Nov 2023 05:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=O9oHYEGAsBYsLtvmTaKA7FT2Xc3nhsN3tRuqsnNUyXw=; b=v86cmPCGyJdVriNiyDRPZ8/Nec
-	qkyMDRWSfoiMNMtTWuHka7jqm82Mwfk+oYaoZkqEOfXcrBMXFlP1SlX9lfC0C0r8SzwV4CwEeaFxn
-	g5QU6EA64QZTM3a6x5/KfCZ7d991XHjDMPckS18F1A2/ZU3FL7agQ5IomttUw7wwEUg7b1bKLVfYy
-	27D5wOWNtYn48fcrpDCCrvIoCKio01Qk9BD4rXwkzaMG0KlovJc6Xx8kIzjtoqcLLyAPz68er0PKX
-	WYJR+S7LfSbStGLFgVERAbx0d5GmlJKpzLex4ltdXJNW5fAd5Q4nur1i6dxH+LaPHfbB+M/SuXNu0
-	9NVzdjxQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5n0g-001ubH-38;
-	Wed, 22 Nov 2023 13:11:18 +0000
-Date: Wed, 22 Nov 2023 05:11:18 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
- iomap
-Message-ID: <ZV399sCMq+p57Yh3@infradead.org>
-References: <cover.1700506526.git.ritesh.list@gmail.com>
- <f5e84d3a63de30def2f3800f534d14389f6ba137.1700506526.git.ritesh.list@gmail.com>
- <20231122122946.wg3jqvem6fkg3tgw@quack3>
+Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0071D43
+	for <linux-ext4@vger.kernel.org>; Wed, 22 Nov 2023 07:10:32 -0800 (PST)
+Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-5be10675134so7681520a12.1
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Nov 2023 07:10:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700665832; x=1701270632;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cNISjNqOME+dw6YEeAsd8Brez3ACNxa0qo7QYk0nRrk=;
+        b=E8ZZ2xBsBkn9cNxghUrhPJTSufsC0olYGrDHYpMe2cQJ4C2Y5fJk7bAyE1+76R1Exe
+         OrO+L8UVwl3pIntB3zL62ODJWY7VNd9nXCENCubDC7d7TfvI9zUCeixjSJKd7iAdvQzQ
+         Qgl/oFuwa/yaS9YC07IWNRn0gIw1mNyKhuKwRiReQjymYakbvRdLTEEQ4THegZi0v+i6
+         dXNIT4aB6h7vhGkmhWqcng0UHUypJkWw8dV3M1PMYNrXSPDVD5TxttHBHttJhvoWnhhY
+         Gop8/HnZcwARfLp3IfUoNSJmjJjdyM14bm3cfcvT7USxX0zDop7xbCoBw6BsPQGdLCd/
+         LUZg==
+X-Gm-Message-State: AOJu0Yzy9sJqmY+RKo8aaWQfma3DhU5+FRDkml7YJqy5E1tS2RS8ul40
+	RovCH90Rde2SW0Y/DE5nvDKuHPWmID4A/CrCfsMKxHIewKbp
+X-Google-Smtp-Source: AGHT+IHbSXBA5o+nIc1fBib+40xR7K8epiWQcjBOGTb/NlajdNKU3+Or0JWAiBpmBYy0rwJvDpiD7vM3SoIzAtYMQovG8PRn1Fnp
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122122946.wg3jqvem6fkg3tgw@quack3>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Received: by 2002:a17:90a:9f90:b0:283:a0b1:cedc with SMTP id
+ o16-20020a17090a9f9000b00283a0b1cedcmr587333pjp.4.1700665832137; Wed, 22 Nov
+ 2023 07:10:32 -0800 (PST)
+Date: Wed, 22 Nov 2023 07:10:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ce703b060abf1e06@google.com>
+Subject: [syzbot] [ext4?] WARNING in ext4_dio_write_end_io
+From: syzbot <syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jack@suse.cz, joseph.qi@linux.alibaba.com, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ritesh.list@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
-> writeback bit set. XFS plays the revalidation sequence counter games
-> because of this so we'd have to do something similar for ext2. Not that I'd
-> care as much about ext2 writeback performance but it should not be that
-> hard and we'll definitely need some similar solution for ext4 anyway. Can
-> you give that a try (as a followup "performance improvement" patch).
+Hello,
 
-Darrick has mentioned that he is looking into lifting more of the
-validation sequence counter validation into iomap.
+syzbot found the following issue on:
 
-In the meantime I have a series here that at least maps multiple blocks
-inside a folio in a single go, which might be worth trying with ext2 as
-well:
+HEAD commit:    98b1cc82c4af Linux 6.7-rc2
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e09a9f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+dashboard link: https://syzkaller.appspot.com/bug?extid=47479b71cdfc78f56d30
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c09a00e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=151d5320e80000
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/39c6cdad13fc/disk-98b1cc82.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5a77b5daef9b/vmlinux-98b1cc82.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5e09ae712e0d/bzImage-98b1cc82.xz
+
+The issue was bisected to:
+
+commit 91562895f8030cb9a0470b1db49de79346a69f91
+Author: Jan Kara <jack@suse.cz>
+Date:   Fri Oct 13 12:13:50 2023 +0000
+
+    ext4: properly sync file size update after O_SYNC direct IO
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d0f0c8e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1430f0c8e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1030f0c8e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
+Fixes: 91562895f803 ("ext4: properly sync file size update after O_SYNC direct IO")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4481 at fs/ext4/file.c:391 ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
+Modules linked in:
+CPU: 1 PID: 4481 Comm: kworker/1:2 Not tainted 6.7.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: dio/sda1 iomap_dio_complete_work
+RIP: 0010:ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
+Code: e8 6a 37 56 ff 4c 89 e2 4c 89 f6 48 89 ef e8 8c f6 ff ff 89 c3 eb 92 4c 89 ff e8 70 c7 ac ff e9 66 ff ff ff e8 46 37 56 ff 90 <0f> 0b 90 e9 34 ff ff ff e8 58 c7 ac ff e9 e9 fe ff ff 4c 89 ff e8
+RSP: 0018:ffffc9000dd97c40 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000000081fd RCX: ffffffff8231521e
+RDX: ffff88802a403b80 RSI: ffffffff823152ea RDI: 0000000000000006
+RBP: ffff88807cf83eb0 R08: 0000000000000006 R09: 0000000000004000
+R10: 00000000000081fd R11: 0000000000000001 R12: 0000000000004000
+R13: 0000000000004000 R14: 0000000000000000 R15: ffff88807cf83e10
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbc3a9779ee CR3: 0000000077984000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ iomap_dio_complete+0x149/0x9f0 fs/iomap/direct-io.c:91
+ iomap_dio_complete_work+0x56/0x80 fs/iomap/direct-io.c:146
+ process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
