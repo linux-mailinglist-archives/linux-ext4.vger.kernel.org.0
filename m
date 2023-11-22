@@ -1,76 +1,71 @@
-Return-Path: <linux-ext4+bounces-81-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-82-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FED07F474D
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 14:03:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3387F4765
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 14:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDDBD1C20336
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 13:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 364ED2811D6
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Nov 2023 13:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE6B4C62B;
-	Wed, 22 Nov 2023 13:02:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0574C63E;
+	Wed, 22 Nov 2023 13:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="v86cmPCG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BE5193
-	for <linux-ext4@vger.kernel.org>; Wed, 22 Nov 2023 05:02:51 -0800 (PST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Sb1Xm2Fk1z1P8fl;
-	Wed, 22 Nov 2023 20:59:20 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 22 Nov 2023 21:02:48 +0800
-Subject: Re: [PATCH 0/5] jbd2: Add errseq to detect writeback
-To: Zhihao Cheng <chengzhihao1@huawei.com>, <tytso@mit.edu>, <jack@suse.com>
-CC: <linux-ext4@vger.kernel.org>
-References: <20231103145250.2995746-1-chengzhihao1@huawei.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <1d45466e-44e2-5be4-d2be-f7339dd4b5b7@huawei.com>
-Date: Wed, 22 Nov 2023 21:02:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD65E193;
+	Wed, 22 Nov 2023 05:11:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=O9oHYEGAsBYsLtvmTaKA7FT2Xc3nhsN3tRuqsnNUyXw=; b=v86cmPCGyJdVriNiyDRPZ8/Nec
+	qkyMDRWSfoiMNMtTWuHka7jqm82Mwfk+oYaoZkqEOfXcrBMXFlP1SlX9lfC0C0r8SzwV4CwEeaFxn
+	g5QU6EA64QZTM3a6x5/KfCZ7d991XHjDMPckS18F1A2/ZU3FL7agQ5IomttUw7wwEUg7b1bKLVfYy
+	27D5wOWNtYn48fcrpDCCrvIoCKio01Qk9BD4rXwkzaMG0KlovJc6Xx8kIzjtoqcLLyAPz68er0PKX
+	WYJR+S7LfSbStGLFgVERAbx0d5GmlJKpzLex4ltdXJNW5fAd5Q4nur1i6dxH+LaPHfbB+M/SuXNu0
+	9NVzdjxQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r5n0g-001ubH-38;
+	Wed, 22 Nov 2023 13:11:18 +0000
+Date: Wed, 22 Nov 2023 05:11:18 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
+ iomap
+Message-ID: <ZV399sCMq+p57Yh3@infradead.org>
+References: <cover.1700506526.git.ritesh.list@gmail.com>
+ <f5e84d3a63de30def2f3800f534d14389f6ba137.1700506526.git.ritesh.list@gmail.com>
+ <20231122122946.wg3jqvem6fkg3tgw@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231103145250.2995746-1-chengzhihao1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122122946.wg3jqvem6fkg3tgw@quack3>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-For series.
+On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
+> writeback bit set. XFS plays the revalidation sequence counter games
+> because of this so we'd have to do something similar for ext2. Not that I'd
+> care as much about ext2 writeback performance but it should not be that
+> hard and we'll definitely need some similar solution for ext4 anyway. Can
+> you give that a try (as a followup "performance improvement" patch).
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Darrick has mentioned that he is looking into lifting more of the
+validation sequence counter validation into iomap.
 
-On 2023/11/3 22:52, Zhihao Cheng wrote:
-> According to discussions in [1], this patchset adds errseq in journal to
-> enable JDB2 detecting meatadata writeback error of fs dev. Then, orginal
-> checking mechanism could be removed.
-> 
-> [1] https://lore.kernel.org/all/20230908124317.2955345-1-chengzhihao1@huawei.com/T/
-> 
-> Zhihao Cheng (5):
->   jbd2: Add errseq to detect client fs's bdev writeback error
->   jbd2: Replace journal state flag by checking errseq
->   jbd2: Remove unused 'JBD2_CHECKPOINT_IO_ERROR' and 'j_atomic_flags'
->   jbd2: Abort journal when detecting metadata writeback error of fs dev
->   ext4: Move ext4_check_bdev_write_error() into nojournal mode
-> 
->  fs/ext4/ext4_jbd2.c   |  5 ++---
->  fs/jbd2/checkpoint.c  | 11 -----------
->  fs/jbd2/journal.c     | 11 ++++++-----
->  fs/jbd2/recovery.c    |  7 +------
->  fs/jbd2/transaction.c | 14 ++++++++++++++
->  include/linux/jbd2.h  | 37 ++++++++++++++++++++++++++-----------
->  6 files changed, 49 insertions(+), 36 deletions(-)
-> 
+In the meantime I have a series here that at least maps multiple blocks
+inside a folio in a single go, which might be worth trying with ext2 as
+well:
+
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
 
