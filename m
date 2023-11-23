@@ -1,71 +1,89 @@
-Return-Path: <linux-ext4+bounces-126-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-127-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5ED87F6316
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 16:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 304337F6368
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 16:57:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E50DC1C21162
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 15:37:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FD271C20D90
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 15:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8B535887;
-	Thu, 23 Nov 2023 15:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9DD13E462;
+	Thu, 23 Nov 2023 15:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QN7ctFjO"
+	dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b="XuFA093o"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDD4D68;
-	Thu, 23 Nov 2023 07:36:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=cRle48OR1Y4Ci2rvLicUXi7ASMQFImZUpVWaM1PJQvs=; b=QN7ctFjO66TmuLZvp3G8RWZFQU
-	qRnmpa5lMMs8m5gMB8Ss8NILQr+G1nIj6NN0zwuqCCBJg7t6XDzUQi1jG3hsiWzC1xtGBlG2NSgqn
-	cHA2bjB6AFDxsgPgSbb9ZmUD1mGzNVFvBcJf4Rsx+tErP6PW+UHVlHf2zbCk73xAlDvOFT6asf9a2
-	2yLPAXBS9BHLKB5hVgovqm5DMKfQFUFfwet+GKisM3O/+ug+Vb4zWhoWH4r6JV3nWqlpR45xI537g
-	G5qmHk1HjIB+G2CgF3mllf67Y5u2VDJeyanlQgbtHshV+MB2Ws3HtkMoFg0kIP8NDh3jkLjanFFnU
-	uYNX8jpw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6Bkm-005BbM-17;
-	Thu, 23 Nov 2023 15:36:32 +0000
-Date: Thu, 23 Nov 2023 07:36:32 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [RFC PATCH 11/18] iomap: add a fs private parameter to
- iomap_ioend
-Message-ID: <ZV9xgAXbJMCJqWvt@infradead.org>
-References: <20231123125121.4064694-1-yi.zhang@huaweicloud.com>
- <20231123125121.4064694-12-yi.zhang@huaweicloud.com>
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F0010C4;
+	Thu, 23 Nov 2023 07:57:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CB541FF80E;
+	Thu, 23 Nov 2023 15:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
+	t=1700755045;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AF/KeTYKhpfCXHeZPKV/bfK4ZedFWe4v+4JbDSSxA/I=;
+	b=XuFA093obwvK280z2xdg/19K6D/WCU59rHBphQqXJKjTAerzfphmIVx2tgwSaX1foGUnUm
+	IMBNRrJmqIWb/SHxkiiFDzdUI2OrpBu7wqbrFYcJHVDO4QE2+VNyKDH1H9BvGP92WknY52
+	QcZnKu7liRTfyqh602spjR3aTmutaA88Wy1dzP8pe8B1GTgqXqN3Cbc8K6jZcOW9aQ0Lsk
+	vZ/IXL2cVYJ4IiB3pdRoQLySmvbb2pyqXG24xOMNRQigPoLJk4lcgtTTRpF2julehI8Epv
+	CkezQN76OWICUNRDvmrG3fWh0/ZWpOgMHPlX93cSWBdem9Nq9Fsetqxm88LI2Q==
+From: Gabriel Krisman Bertazi <gabriel@krisman.be>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,  Christian Brauner
+ <brauner@kernel.org>,  tytso@mit.edu,
+  linux-f2fs-devel@lists.sourceforge.net,  ebiggers@kernel.org,
+  linux-fsdevel@vger.kernel.org,  jaegeuk@kernel.org,
+  linux-ext4@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
+ case-insensitive ext4 and f2fs
+In-Reply-To: <CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
+	(Linus Torvalds's message of "Wed, 22 Nov 2023 16:18:56 -0800")
+Organization: SUSE
+References: <20230816050803.15660-1-krisman@suse.de>
+	<20231025-selektiert-leibarzt-5d0070d85d93@brauner>
+	<655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
+	<20231120-nihilismus-verehren-f2b932b799e0@brauner>
+	<CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
+	<20231121022734.GC38156@ZenIV> <20231122211901.GJ38156@ZenIV>
+	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
+Date: Thu, 23 Nov 2023 10:57:22 -0500
+Message-ID: <87o7fkihst.fsf@>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123125121.4064694-12-yi.zhang@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-GND-Sasl: gabriel@krisman.be
 
-On Thu, Nov 23, 2023 at 08:51:13PM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Add a private parameter to iomap_ioend structure, letting filesystems
-> can pass something they needed from .prepare_ioend() to IO end.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-On it's own this looks fine.  Note that I have a series that I probably
-should send out ASAP:
+> Side note: Gabriel, as things are now, instead of that
+>
+>         if (!d_is_casefolded_name(dentry))
+>                 return 0;
+>
+> in generic_ci_d_revalidate(), I would suggest that any time a
+> directory is turned into a case-folded one, you'd just walk all the
+> dentries for that directory and invalidate negative ones at that
+> point. Or was there some reason I missed that made it a good idea to
+> do it at run-time after-the-fact?
+>
 
-   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
+The problem I found with that approach, which I originally tried, was
+preventing concurrent lookups from racing with the invalidation and
+creating more 'case-sensitive' negative dentries.  Did I miss a way to
+synchronize with concurrent lookups of the children of the dentry?  We
+can trivially ensure the dentry doesn't have positive children by
+holding the parent lock, but that doesn't protect from concurrent
+lookups creating negative dentries, as far as I understand.
 
-that makes each ioend only have the embdeed bio, and bi_private in that
-is unused, so you could just use that if we go down that route.
-
+-- 
+Gabriel Krisman Bertazi
 
