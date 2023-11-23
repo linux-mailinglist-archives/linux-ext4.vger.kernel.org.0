@@ -1,122 +1,86 @@
-Return-Path: <linux-ext4+bounces-122-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-125-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A957F5F87
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 13:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 713D77F6313
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 16:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15D0C1C21079
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 12:53:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1CD91C20E44
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 15:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72D72FC53;
-	Thu, 23 Nov 2023 12:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D273D3A0;
+	Thu, 23 Nov 2023 15:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eh3KgSzc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A993189;
-	Thu, 23 Nov 2023 04:52:10 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SbdKx0g1hz4f3kKp;
-	Thu, 23 Nov 2023 20:52:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CC5741A04B4;
-	Thu, 23 Nov 2023 20:52:07 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6xHdSl9lSfnfBg--.20473S23;
-	Thu, 23 Nov 2023 20:52:07 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [RFC PATCH 18/18] ext4: enable large folio for regular file which has been switched to use iomap
-Date: Thu, 23 Nov 2023 20:51:21 +0800
-Message-Id: <20231123125121.4064694-20-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231123125121.4064694-1-yi.zhang@huaweicloud.com>
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EB1D5E;
+	Thu, 23 Nov 2023 07:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wk5beXennXPU1SdLfS4CekuNuzZhsJLb/G4f8HExOZI=; b=eh3KgSzcXHHolOUfODGVniOzlM
+	xWvgTv6KbdnOfsqJ9d7UYC+7ZtNGImHkOgjDIcHy9sfGjUroJifQrzIbmP724hZSzC9lNZdzgOl14
+	F3DxX9pEmiVQdnmOM90BTxj8KkFUyOwuYYQUNV4/AsTtGcuj173RqQHSI0a2DVXcW/A1Tf5NPqHKc
+	X/j0M3yJqLEo40vplXSVgc0MStWXqjx0CMBxT/3wB/W8NPsSFdjof84RRTfo959pOiS3jxKgoIo7L
+	OYfUWr5DelZqryH8LQeXAh7QYkNU90TcIOL/wYENwMWrSrnmgooIiM8DbYDPpr3VCR8JuvHwFzYbs
+	eRMuuQ9Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r6Bj4-005BPU-0v;
+	Thu, 23 Nov 2023 15:34:46 +0000
+Date: Thu, 23 Nov 2023 07:34:46 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [RFC PATCH 12/18] iomap: don't increase i_size if it's not a
+ write operation
+Message-ID: <ZV9xFt1WhLIoULyc@infradead.org>
 References: <20231123125121.4064694-1-yi.zhang@huaweicloud.com>
+ <20231123125121.4064694-13-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDn6xHdSl9lSfnfBg--.20473S23
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr13WFWUCrWxJFWrtw1kXwb_yoW8Xry3pF
-	sxK3W8GrWkX34q9a1Sgr1xZr1Uta1xGw4UuFWF93Z8ur9rX34ftF4jyF1fAa18JrWrA3yI
-	qFy2kr13Z3W3C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-	SdkUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123125121.4064694-13-yi.zhang@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Thu, Nov 23, 2023 at 08:51:14PM +0800, Zhang Yi wrote:
+> index fd4d43bafd1b..3b9ba390dd1b 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -852,13 +852,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+>  	 * cache.  It's up to the file system to write the updated size to disk,
+>  	 * preferably after I/O completion so that no stale data is exposed.
+>  	 */
+> -	if (pos + ret > old_size) {
+> +	if ((iter->flags & IOMAP_WRITE) && pos + ret > old_size) {
+>  		i_size_write(iter->inode, pos + ret);
+>  		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+>  	}
+>  	__iomap_put_folio(iter, pos, ret, folio);
+>  
+> -	if (old_size < pos)
+> +	if ((iter->flags & IOMAP_WRITE) && old_size < pos)
+>  		pagecache_isize_extended(iter->inode, old_size, pos);
+>  	if (ret < len)
+>  		iomap_write_failed(iter->inode, pos + ret, len - ret);
 
-After switching to use iomap for regular file in the default mode, we
-can enable large foilo for it together, that could bring a lot of
-performance gains.
-
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ialloc.c | 4 +++-
- fs/ext4/inode.c  | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 0aae2810dbf6..a72c7167c33f 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1336,8 +1336,10 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
- 
--	if (ext4_should_use_buffered_iomap(inode))
-+	if (ext4_should_use_buffered_iomap(inode)) {
- 		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+		mapping_set_large_folios(inode->i_mapping);
-+	}
- 
- 	if (ext4_handle_valid(handle)) {
- 		ei->i_sync_tid = handle->h_transaction->t_tid;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 33920dc461a8..f8801d3378e3 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5477,8 +5477,10 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	if (ret)
- 		goto bad_inode;
- 
--	if (ext4_should_use_buffered_iomap(inode))
-+	if (ext4_should_use_buffered_iomap(inode)) {
- 		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+		mapping_set_large_folios(inode->i_mapping);
-+	}
- 
- 	if (S_ISREG(inode->i_mode)) {
- 		inode->i_op = &ext4_file_inode_operations;
--- 
-2.39.2
+I agree with your rationale, but I hate how this code ends up
+looking.  In many ways iomap_write_end seems like the wrong
+place to update the inode size anyway.  I've not done a deep
+analysis, but I think there shouldn't really be any major blocker
+to only setting IOMAP_F_SIZE_CHANGED in iomap_write_end, and then
+move updating i_size and calling pagecache_isize_extended to
+iomap_write_iter.
 
 
