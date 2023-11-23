@@ -1,140 +1,171 @@
-Return-Path: <linux-ext4+bounces-96-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-97-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F150B7F55D1
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 02:22:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0497F56B3
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 04:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BF63B20ECF
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 01:22:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4AD4B20D64
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 03:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BD115A6;
-	Thu, 23 Nov 2023 01:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="to4eAhiT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E1D53B7;
+	Thu, 23 Nov 2023 03:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AA8C1;
-	Wed, 22 Nov 2023 17:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/mZMOzxCPM/ZibIQSk7rG0+sywHsfsDjvGaZysxq5uU=; b=to4eAhiTPVblR/t8ZNnrZz/2q/
-	UszqFZ4wwMC9625WO4oKhBXgmrjEcb5VkbS+vbkBfTy3Ky+UrGGgpKjIMOs2YQ5SqJ8tnxT9Tdh6o
-	dAq+luwZ5QaxLd3Wzp14Tr0L/TuBIJf6l1LQYxYtaXFXbOQxSnyG4lQVvtmCK1WYu/ZLeyUG9/AE5
-	BvVTh6M1SURTHp26Ns+n6bDBwjavRaHIlaDjZVfhp2TlbjlCRbAv/g8tZQomC/EY9aq0jM+QH/eO3
-	3drUHhnp/vaHXH+mLAfPd3ddS0m9k8iXIoa9wWegwnMylSKosBJfM8cLMcj0BqwJKFzRttFry6zXE
-	0BuGhHNw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5yQG-001rSd-0s;
-	Thu, 23 Nov 2023 01:22:28 +0000
-Date: Thu, 23 Nov 2023 01:22:28 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Gabriel Krisman Bertazi <krisman@suse.de>, tytso@mit.edu,
-	linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org,
-	linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-Message-ID: <20231123012228.GL38156@ZenIV>
-References: <20230816050803.15660-1-krisman@suse.de>
- <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
- <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
- <20231120-nihilismus-verehren-f2b932b799e0@brauner>
- <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
- <20231121022734.GC38156@ZenIV>
- <20231122211901.GJ38156@ZenIV>
- <20231123011208.GK38156@ZenIV>
+X-Greylist: delayed 90 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 19:05:30 PST
+Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECE6CB
+	for <linux-ext4@vger.kernel.org>; Wed, 22 Nov 2023 19:05:30 -0800 (PST)
+Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
+	by cmsmtp with ESMTPS
+	id 5x6TrDugwB0n0600Vr3LCN; Thu, 23 Nov 2023 03:03:59 +0000
+Received: from webber.adilger.int ([70.77.200.158])
+	by cmsmtp with ESMTP
+	id 600Ur9wgmU5YW600UrCKcO; Thu, 23 Nov 2023 03:03:59 +0000
+X-Authority-Analysis: v=2.4 cv=CZQbWZnl c=1 sm=1 tr=0 ts=655ec11f
+ a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=RPJ6JBhKAAAA:8
+ a=QcTkzZF95xFP97UDVdkA:9 a=fa_un-3J20JGBB2Tu-mn:22
+From: Andreas Dilger <adilger@dilger.ca>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org,
+	Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH] tests: make m_assume_storage_prezeroed more robust
+Date: Wed, 22 Nov 2023 20:03:50 -0700
+Message-Id: <20231123030350.7418-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123011208.GK38156@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfD4NC4b1n/cMTx87TaoM5AD/BelHKFRMqlDIQG6XRAxzhbalsMORp2FGjSgKgNun3wWqrNb0Lf6UfEEgjxvv76oDFH6onIwkFUBBtF2vUWXC02KXit0S
+ X46qtnsPmIzEjq6UTfDvp1Y63xiFsWfTQEKCVDP8Y7BRX9LzjI1HYRGSDJE57AcHL/LZEVtnSg4s40u72grZUu+xJP5PfsLK7OmPXD3/MHCm6XMh3btA4YB8
+ eMpEZIwId8ByFUlFT0WFFw==
 
-On Thu, Nov 23, 2023 at 01:12:08AM +0000, Al Viro wrote:
-> On Wed, Nov 22, 2023 at 09:19:01PM +0000, Al Viro wrote:
-> > On Tue, Nov 21, 2023 at 02:27:34AM +0000, Al Viro wrote:
-> > 
-> > > I will review that series; my impression from the previous iterations
-> > > had been fairly unpleasant, TBH, but I hadn't rechecked since April
-> > > or so.
-> > 
-> > The serious gap, AFAICS, is the interplay with open-by-fhandle.
-> > It's not unfixable, but we need to figure out what to do when
-> > lookup runs into a disconnected directory alias.  d_splice_alias()
-> > will move it in place, all right, but any state ->lookup() has
-> > hung off the dentry that had been passed to it will be lost.
-> > 
-> > And I seriously suspect that we want to combine that state
-> > propagation with d_splice_alias() (or its variant to be used in
-> > such cases), rather than fixing the things up afterwards.
-> > 
-> > In particular, propagating ->d_op is really not trivial at that
-> > point; it is safe to do to ->lookup() argument prior to d_splice_alias()
-> > (even though that's too subtle and brittle, IMO), but after
-> > d_splice_alias() has succeeded, the damn thing is live and can
-> > be hit by hash lookups, revalidate, etc.
-> > 
-> > The only things that can't happen to it are ->d_delete(), ->d_prune(),
-> > ->d_iput() and ->d_init().  Everything else is fair game.
-> > 
-> > And then there's an interesting question about the interplay with
-> > reparenting.  It's OK to return an error rather than reparent,
-> > but we need some way to tell if we need to do so.
-> 
-> Hmm... int (*d_transfer)(struct dentry *alias, struct dentry *new)?
-> Called if d_splice_alias() picks that sucker, under rename_lock,
-> before the call of __d_move().  Can check IS_ROOT(alias) (due to
-> rename_lock), so can tell attaching from reparenting, returning
-> an error - failed d_splice_alias().
-> 
-> Perhaps would be even better inside __d_move(), once all ->d_lock
-> are taken...  Turn the current bool exchange in there into honest
-> enum (exchange/move/splice) and call ->d_transfer() on splice.
-> In case of failure it's still not too late to back out - __d_move()
-> would return an int, ignored in d_move() and d_exchange() and
-> treated as "fail in unlikely case it's non-zero" in d_splice_alias()
-> and __d_unalias()...
-> 
-> Comments?  Note that e.g.
->         res = d_splice_alias(inode, dentry);
->         if (!IS_ERR(fid)) {
->                 if (!res)
->                         v9fs_fid_add(dentry, &fid);
->                 else if (!IS_ERR(res))
->                         v9fs_fid_add(res, &fid);
->                 else
->                         p9_fid_put(fid);
->         }
-> 
-> in 9p ->lookup() would turn into
-> 
-> 	v9fs_fid_add(dentry, &fid);
->         return d_splice_alias(inode, dentry);
-> 
-> with ->d_transfer(alias, new) being simply
-> 
-> 	struct hlist_node *p = new->d_fsdata;
-> 	hlist_del_init(p);
-> 	__add_fid(alias, hlist_entry(p, struct p9_fid, dlist));
-> 	return 0;
-> 
-> assuming the call from __d_move()...
+Don't assume that mke2fs is going to zero out an exact number
+of blocks when run with/without "-E assume_storage_prezeroed",
+since this depends on a number of different options that are
+not specified in the test script.
 
-Incidentally, 9p and this one would not be the only places that could use it -
-affs - alias->d_fsdata = new->d_fsdata
-afs - ditto
-ocfs2 - smells like another possible benefitiary (attaching locks, etc.
-would be saner if done before d_splice_alias(), with ->d_transfer()
-moving the lock to the alias)...
+Instead, check that the number of blocks zeroed in the image is
+a small fraction (1/40th) of the number of blocks zeroed when
+"-E assume_sotrage_prezeroed" is not given, which makes it more
+robust when running in different environments.  This varies from
+1/47 in the original test to 1/91 in my local test environment.
+
+Avoid "losetup --sector-size 4096", use "mke2fs -b 4096" instead.
+Clean up the loop device before checking "stat" so that all
+blocks are flushed to the backing storage before calling sync.
+Only one loop device and test file is needed for the test.
+
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+---
+ tests/m_assume_storage_prezeroed/expect |  2 -
+ tests/m_assume_storage_prezeroed/script | 64 ++++++++++++-------------
+ 2 files changed, 30 insertions(+), 36 deletions(-)
+ delete mode 100644 tests/m_assume_storage_prezeroed/expect
+
+diff --git a/tests/m_assume_storage_prezeroed/expect b/tests/m_assume_storage_prezeroed/expect
+deleted file mode 100644
+index b735e2425..000000000
+--- a/tests/m_assume_storage_prezeroed/expect
++++ /dev/null
+@@ -1,2 +0,0 @@
+-> 10000
+-224
+diff --git a/tests/m_assume_storage_prezeroed/script b/tests/m_assume_storage_prezeroed/script
+index 1a8d84635..eea881428 100644
+--- a/tests/m_assume_storage_prezeroed/script
++++ b/tests/m_assume_storage_prezeroed/script
+@@ -10,48 +10,44 @@ if test "$(id -u)" -ne 0 ; then
+ elif ! command -v losetup >/dev/null ; then
+     echo "$test_name: $test_description: skipped (no losetup)"
+ else
+-    dd if=/dev/zero of=$TMPFILE.1 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
+-    dd if=/dev/zero of=$TMPFILE.2 bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
++    dd if=/dev/zero of=$TMPFILE bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
+ 
+-    LOOP1=$(losetup --show --sector-size 4096 -f $TMPFILE.1)
+-    if [ ! -b "$LOOP1" ]; then
+-        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
+-        rm -f $TMPFILE.1 $TMPFILE.2
+-        exit 0
+-    fi
+-    LOOP2=$(losetup --show --sector-size 4096 -f $TMPFILE.2)
+-    if [ ! -b "$LOOP2" ]; then
+-        echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
+-        rm -f $TMPFILE.1 $TMPFILE.2
+-	losetup -d $LOOP1
+-        exit 0
++    LOOP=$(losetup --show -f $TMPFILE)
++    if [ ! -b "$LOOP" ]; then
++         echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
++         rm -f $TMPFILE
++         exit 0
+     fi
+ 
+-    echo $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
+-    $MKE2FS -o Linux -t ext4 $LOOP1 >> $LOG 2>&1
++    cmd="$MKE2FS -o Linux -t ext4 -b 4096"
++    echo "$cmd $LOOP" >> $LOG
++    $cmd $LOOP >> $LOG 2>&1
++    losetup -d $LOOP
+     sync
+-    stat $TMPFILE.1 >> $LOG 2>&1
+-    SZ=$(stat -c "%b" $TMPFILE.1)
+-    if test $SZ -gt 10000 ; then
+-	echo "> 10000" > $OUT
+-    else
+-	echo "$SZ" > $OUT
++    stat $TMPFILE >> $LOG 2>&1
++    BLOCKS_DEF=$(stat -c "%b" $TMPFILE)
++
++    > $TMPFILE
++    dd if=/dev/zero of=$TMPFILE bs=1 count=0 seek=$FILE_SIZE >> $LOG 2>&1
++    LOOP=$(losetup --show -f $TMPFILE)
++    if [ ! -b "$LOOP" ]; then
++         echo "$test_name: $DESCRIPTION: skipped (no loop devices)"
++         rm -f $TMPFILE
++         exit 0
+     fi
+ 
+-    echo $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
+-    $MKE2FS -o Linux -t ext4 -E assume_storage_prezeroed=1 $LOOP2 >> $LOG 2>&1
++    cmd+=" -E assume_storage_prezeroed=1"
++    echo "$cmd $LOOP" >> $LOG
++    $cmd $TMPFILE >> $LOG 2>&1
++    losetup -d $LOOP
+     sync
+-    stat $TMPFILE.2 >> $LOG 2>&1
+-    stat -c "%b" $TMPFILE.2 >> $OUT
+-
+-    losetup -d $LOOP1
+-    losetup -d $LOOP2
+-    rm -f $TMPFILE.1 $TMPFILE.2
++    stat $TMPFILE >> $LOG 2>&1
++    BLOCKS_ASP=$(stat -c "%b" $TMPFILE)
+ 
+-    cmp -s $OUT $EXP
+-    status=$?
++    echo "blocks_dev: $BLOCKS_DEF blocks_asp: ${BLOCKS_ASP}" >> $LOG
+ 
+-    if [ "$status" = 0 ] ; then
++    # should use less than 1/20 of the blocks with assume_storage_prezeroed
++    if (( $BLOCKS_DEF > $BLOCKS_ASP * 40 )) ; then
+ 	echo "$test_name: $test_description: ok"
+ 	touch $test_name.ok
+     else
+@@ -60,4 +56,4 @@ else
+ 	diff $EXP $OUT >> $test_name.failed
+     fi
+ fi
+-unset LOG OUT EXP FILE_SIZE LOOP1 LOOP2
++unset LOG OUT EXP FILE_SIZE LOOP
+-- 
+2.25.1
+
 
