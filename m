@@ -1,106 +1,87 @@
-Return-Path: <linux-ext4+bounces-135-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-136-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF1097F68BD
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 22:52:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E85087F69AA
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 01:06:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AFB6281904
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Nov 2023 21:52:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75E72B20DE6
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 00:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748641803D;
-	Thu, 23 Nov 2023 21:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="V/sOzXqb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F2319C;
+	Fri, 24 Nov 2023 00:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBABD68;
-	Thu, 23 Nov 2023 13:52:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=3YrLjUsJBUZ/bf9EaibULjJMkvXQZ6F4MemzMTeG2xs=; b=V/sOzXqbleSNlNvhcFnifsfTSi
-	LlpDm5blpb37lUsF0cxNGOlevEPrYSj+W0nDw5f71OEBej2S1XdNBcMGk45KrF3eMrH9tmGWfbC4o
-	hdFEnuJXXiW70XHQokbDrwUP2kEHSks+adeTf3jkvN/ud6qKju8/Tp55UB7P4lmiRirr3FmDLwLqz
-	Arg1zOnwLhCFVZ3ZzKnUAobBwMlckYxIZSiFNpEGyt88azwPTmXxypcLLkSbMEmAPNwCxGebrpWUC
-	jztkZ5uRhna9SX/x0le6tswJQzWOfPWxjY6V0bQkfZe5ZDENuNOy1ZkJ02WHQzYsfCxRs4qDOY3cR
-	Y2ZX5wow==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6Hcg-002GWu-2Z;
-	Thu, 23 Nov 2023 21:52:34 +0000
-Date: Thu, 23 Nov 2023 21:52:34 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Gabriel Krisman Bertazi <gabriel@krisman.be>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Christian Brauner <brauner@kernel.org>, tytso@mit.edu,
-	linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org,
-	linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-Message-ID: <20231123215234.GQ38156@ZenIV>
-References: <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
- <655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
- <20231120-nihilismus-verehren-f2b932b799e0@brauner>
- <CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
- <20231121022734.GC38156@ZenIV>
- <20231122211901.GJ38156@ZenIV>
- <CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
- <20231123171255.GN38156@ZenIV>
- <20231123182426.GO38156@ZenIV>
- <87bkbki91c.fsf@>
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7282D10DC
+	for <linux-ext4@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-285659dcba9so1016434a91.0
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700784372; x=1701389172;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=ZuNkOs4ZIPNucbEMYW1920zPCzvuN302kFjBel6xx9V6JcxzLjXiTxC5Q9cNgtr7Uf
+         0PAkbs4bIwB0KvLCSK5iS8O3rMtAiyFSnqMBl7RzscvL/dZlvy2Lb52b9DBQaFta9Lyp
+         vWRo2zOfPMJqyjY7fbzdzQ9GAkHBwuVzUr9ceo+b9U1jSJrnDRtHvSMydHkwa3tfau8+
+         SGasifm0vflNQXp3dkTeq2LoWazQmkgj/R+VflJwmTkR0UHoYcnwE28q+mvTSpHg6YmD
+         PaRoNxS526wjyoQcNVqPSsaY0MoXDPZUk/5ZuZ/3AJpIX2Uw5RcgR0TACAIlC6XqB3py
+         U7XA==
+X-Gm-Message-State: AOJu0Yx7HgVghFx7WDRmaEEs23HcZmzYi0nKd7gsgpEj/n1ZrH74T1z0
+	1+byAQ923nl9WoW3IYg1ONyPunq0iOiuCGfBeYSv2jjmIfm9
+X-Google-Smtp-Source: AGHT+IH4WTBky6ydAmsIf8sWYpziUR2At8/kwEH+H4BuxT4x7gw6xHBkO6awptlXoHP15FAo0eZsGGO3X6iZK+6d7mdP0LEzTNDv
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bkbki91c.fsf@>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Received: by 2002:a17:90b:4a84:b0:27d:9f7:74ba with SMTP id
+ lp4-20020a17090b4a8400b0027d09f774bamr252386pjb.0.1700784371825; Thu, 23 Nov
+ 2023 16:06:11 -0800 (PST)
+Date: Thu, 23 Nov 2023 16:06:11 -0800
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000528278060adab82b@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 23, 2023 at 02:06:39PM -0500, Gabriel Krisman Bertazi wrote:
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-> >
-> > 4. d_move() and d_exchange() would ignore the value returned by __d_move();
-> > __d_unalias() turn
-> >         __d_move(alias, dentry, false);
-> > 	ret = 0;
-> > into
-> > 	ret = __d_move(alias, dentry, Splice);
-> > d_splice_alias() turn
-> > 				__d_move(new, dentry, false);
-> > 				write_sequnlock(&rename_lock);
-> > into
-> > 				err = __d_move(new, dentry, Splice);
-> > 				write_sequnlock(&rename_lock);
-> > 				if (unlikely(err)) {
-> > 					dput(new);
-> > 					new = ERR_PTR(err);
-> > 				}
-> > (actually, dput()-on-error part would be common to all 3 branches
-> > in there, so it would probably get pulled out of that if-else if-else).
-> >
-> > I can cook a patch doing that (and convert the obvious beneficiaries already
-> > in the tree to it) and throw it into dcache branch - just need to massage
-> > the series in there for repost...
-> 
-> if you can write that, I'll definitely appreciate it. It will surely
-> take me much longer to figure it out myself.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Speaking of other stuff in the series - passing the expected name to
-->d_revalidate() is definitely the right thing to do, for a lot of
-other reasons.  We do have ->d_name UAF issues in ->d_revalidate()
-instances, and that allows to solve them nicely.
+#syz fix: exact-commit-title
 
-It's self-contained (your 2/9 and 3/9), so I'm going to grab that
-into a never-rebased branch, just to be able to base the followups
-propagating the use of stable name into instances.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Anyway, need to finish writing up the description of existing dcache
-series first...
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
