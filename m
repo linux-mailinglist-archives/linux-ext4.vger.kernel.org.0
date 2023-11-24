@@ -1,111 +1,110 @@
-Return-Path: <linux-ext4+bounces-141-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-142-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8D17F7795
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 16:23:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A1A7F79A9
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 17:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BB77282148
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 15:23:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2447EB2129D
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 16:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A8E2E84D;
-	Fri, 24 Nov 2023 15:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26C435F16;
+	Fri, 24 Nov 2023 16:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b="h0ksV85m"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dVt0mTA/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8874CC1;
-	Fri, 24 Nov 2023 07:22:53 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CE7E01BF20A;
-	Fri, 24 Nov 2023 15:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
-	t=1700839372;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nFFFOKyC6p1FOoorSMK24kJ5FMkPhQFR5RZw96Asog4=;
-	b=h0ksV85mHyER9weo51zXH0+I93eoVv8zic3Pep0xMnyIbVAGPMf8AlKmlRLpNMJzFlrcrF
-	RK0X2S9Oz2IAHSAQCVXQ9hdbbZCYgc9SYGyi7hLfEI8vXnWzjKzIfH1TjNvxCLuXogY37N
-	KwsOh/9JwZqXgCZyxj1OMJMvZKF26j9D/Hj0noHzPFe1ytsYN9uLegU6C5eyEQIgjoMwEq
-	tPBGRtY3VNzX2iz2xKh9bN26J8RiSsv491w/JQGDrqq21jf/9t1eRNOnN/wZAWT2odpy33
-	6DvZwXZehQsTnLH6w8fWvtm0VMdJQtwecNRgazkr0EH2pZMYGADavZ1C6sBIZA==
-From: Gabriel Krisman Bertazi <gabriel@krisman.be>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Gabriel Krisman Bertazi <gabriel@krisman.be>,  Linus Torvalds
- <torvalds@linux-foundation.org>,  Christian Brauner <brauner@kernel.org>,
-  tytso@mit.edu,  linux-f2fs-devel@lists.sourceforge.net,
-  ebiggers@kernel.org,  linux-fsdevel@vger.kernel.org,  jaegeuk@kernel.org,
-  linux-ext4@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-In-Reply-To: <20231123215234.GQ38156@ZenIV> (Al Viro's message of "Thu, 23 Nov
-	2023 21:52:34 +0000")
-References: <20231025-selektiert-leibarzt-5d0070d85d93@brauner>
-	<655a9634.630a0220.d50d7.5063SMTPIN_ADDED_BROKEN@mx.google.com>
-	<20231120-nihilismus-verehren-f2b932b799e0@brauner>
-	<CAHk-=whTCWwfmSzv3uVLN286_WZ6coN-GNw=4DWja7NZzp5ytg@mail.gmail.com>
-	<20231121022734.GC38156@ZenIV> <20231122211901.GJ38156@ZenIV>
-	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
-	<20231123171255.GN38156@ZenIV> <20231123182426.GO38156@ZenIV>
-	<20231123215234.GQ38156@ZenIV>
-Date: Fri, 24 Nov 2023 10:22:49 -0500
-Message-ID: <87leangoqe.fsf@>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F304E1733;
+	Fri, 24 Nov 2023 08:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700844437; x=1732380437;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sT2XVFcBH/DcAfOKfdIHo1zJ81GhWWUwC7YdVboVPM8=;
+  b=dVt0mTA/UNxvyFN45tacqikO3xleilFxRS8x9m+YNBTBo0HsyragullG
+   veySFUwhZhdtBrpCLeYURnoVXJrHETALpXHgn9oz2nw1tEYgpaJZMOcw2
+   uhgsVI8x1MDZy4y7wr4ZaBNqebPHfrdY3OmCTpzWw8SEqhmKN5O8508jb
+   +/IWAFXldX1pY7pQxmEhh96FNyejmr1sHUQ9Z2T6cRFmkHQjKnd8ac8ZN
+   pHUkHfg1HrUaLcFSouoY53lUf8kygwtVH960DR0G9EdMp0ExyNhGvRzzh
+   E56Lls3ulTY2NRqjRllnvWmpdxpc4zOagGWnUlvqXs+BlbWSODkpgFkqX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="423583743"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="423583743"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 08:47:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="771302257"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="771302257"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 08:47:16 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1r6ZKk-0000000GmKc-1K72;
+	Fri, 24 Nov 2023 18:47:14 +0200
+Date: Fri, 24 Nov 2023 18:47:14 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+Message-ID: <ZWDTkmQZ7uojegiS@smile.fi.intel.com>
+References: <20230830102434.xnlh66omhs6ninet@quack3>
+ <ZS5hhpG97QSvgYPf@smile.fi.intel.com>
+ <9ba95b5e-72cb-445a-99b7-54dad4dab148@leemhuis.info>
+ <5884527d-a4a2-44e2-96bc-4b300c9e2fb8@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gabriel@krisman.be
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5884527d-a4a2-44e2-96bc-4b300c9e2fb8@leemhuis.info>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+On Wed, Nov 22, 2023 at 09:15:06AM +0100, Linux regression tracking #update (Thorsten Leemhuis) wrote:
+> On 22.10.23 15:46, Linux regression tracking #adding (Thorsten Leemhuis)
+> wrote:
+> > On 17.10.23 12:27, Andy Shevchenko wrote:
+> >> On Wed, Aug 30, 2023 at 12:24:34PM +0200, Jan Kara wrote:
+> >>>   Hello Linus,
+> >>>
+> >>>   could you please pull from
+> >>>
+> >>> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_v6.6-rc1
+> >>
+> >> This merge commit (?) broke boot on Intel Merrifield.
+> >> It has earlycon enabled and only what I got is watchdog
+> >> trigger without a bit of information printed out.
+> >>
+> >> I tried to give a two bisects with the same result.
+> > 
+> > #regzbot ^introduced 024128477809f8
+> > #regzbot title quota: boot on Intel Merrifield after merge commit
+> > 1500e7e0726e
+> > #regzbot ignore-activity
+> 
+> Removing this from the tracking. To quote Linus from
+> https://lore.kernel.org/all/CAHk-=wgEHNFHpcvnp2X6-fjBngrhPYO=oHAR905Q_qk-njV31A@mail.gmail.com/
+> 
+> """
+> The quota thing remains unexplained, and honestly seems like a timing
+> issue that just happens to hit Andy. Very strange, but I suspect that
+> without more reports (that may or may not ever happen), we're stuck.
+> """
+> 
+> No other reports showed up afaik.
 
-> On Thu, Nov 23, 2023 at 02:06:39PM -0500, Gabriel Krisman Bertazi wrote:
->
->> >
->> > 4. d_move() and d_exchange() would ignore the value returned by __d_move();
->> > __d_unalias() turn
->> >         __d_move(alias, dentry, false);
->> > 	ret = 0;
->> > into
->> > 	ret = __d_move(alias, dentry, Splice);
->> > d_splice_alias() turn
->> > 				__d_move(new, dentry, false);
->> > 				write_sequnlock(&rename_lock);
->> > into
->> > 				err = __d_move(new, dentry, Splice);
->> > 				write_sequnlock(&rename_lock);
->> > 				if (unlikely(err)) {
->> > 					dput(new);
->> > 					new = ERR_PTR(err);
->> > 				}
->> > (actually, dput()-on-error part would be common to all 3 branches
->> > in there, so it would probably get pulled out of that if-else if-else).
->> >
->> > I can cook a patch doing that (and convert the obvious beneficiaries already
->> > in the tree to it) and throw it into dcache branch - just need to massage
->> > the series in there for repost...
->> 
->> if you can write that, I'll definitely appreciate it. It will surely
->> take me much longer to figure it out myself.
->
-> Speaking of other stuff in the series - passing the expected name to
-> ->d_revalidate() is definitely the right thing to do, for a lot of
-> other reasons.  We do have ->d_name UAF issues in ->d_revalidate()
-> instances, and that allows to solve them nicely.
->
-> It's self-contained (your 2/9 and 3/9), so I'm going to grab that
-> into a never-rebased branch, just to be able to base the followups
-> propagating the use of stable name into instances.
-
-ack. I'll base the other changes we discussed on top of your branch.
-
-thanks,
+Yeah, have no time to dig into this more... Maybe later, who knows?
 
 -- 
-Gabriel Krisman Bertazi
+With Best Regards,
+Andy Shevchenko
+
+
 
