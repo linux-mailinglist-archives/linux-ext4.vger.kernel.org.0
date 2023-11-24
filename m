@@ -1,87 +1,95 @@
-Return-Path: <linux-ext4+bounces-136-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-137-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E85087F69AA
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 01:06:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06F77F6A31
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 02:37:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75E72B20DE6
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 00:06:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06BED1C20A6F
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Nov 2023 01:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F2319C;
-	Fri, 24 Nov 2023 00:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329D4659;
+	Fri, 24 Nov 2023 01:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7282D10DC
-	for <linux-ext4@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-285659dcba9so1016434a91.0
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Nov 2023 16:06:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700784372; x=1701389172;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=ZuNkOs4ZIPNucbEMYW1920zPCzvuN302kFjBel6xx9V6JcxzLjXiTxC5Q9cNgtr7Uf
-         0PAkbs4bIwB0KvLCSK5iS8O3rMtAiyFSnqMBl7RzscvL/dZlvy2Lb52b9DBQaFta9Lyp
-         vWRo2zOfPMJqyjY7fbzdzQ9GAkHBwuVzUr9ceo+b9U1jSJrnDRtHvSMydHkwa3tfau8+
-         SGasifm0vflNQXp3dkTeq2LoWazQmkgj/R+VflJwmTkR0UHoYcnwE28q+mvTSpHg6YmD
-         PaRoNxS526wjyoQcNVqPSsaY0MoXDPZUk/5ZuZ/3AJpIX2Uw5RcgR0TACAIlC6XqB3py
-         U7XA==
-X-Gm-Message-State: AOJu0Yx7HgVghFx7WDRmaEEs23HcZmzYi0nKd7gsgpEj/n1ZrH74T1z0
-	1+byAQ923nl9WoW3IYg1ONyPunq0iOiuCGfBeYSv2jjmIfm9
-X-Google-Smtp-Source: AGHT+IH4WTBky6ydAmsIf8sWYpziUR2At8/kwEH+H4BuxT4x7gw6xHBkO6awptlXoHP15FAo0eZsGGO3X6iZK+6d7mdP0LEzTNDv
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2C7D50;
+	Thu, 23 Nov 2023 17:37:09 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SbyJc1Y0pz4f3jqx;
+	Fri, 24 Nov 2023 09:37:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id ECB2E1A01A9;
+	Fri, 24 Nov 2023 09:37:06 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgCnqxEx_l9ldXQRBw--.60281S3;
+	Fri, 24 Nov 2023 09:37:04 +0800 (CST)
+Subject: Re: [RFC PATCH 11/18] iomap: add a fs private parameter to
+ iomap_ioend
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+ djwong@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
+References: <20231123125121.4064694-1-yi.zhang@huaweicloud.com>
+ <20231123125121.4064694-12-yi.zhang@huaweicloud.com>
+ <ZV9xgAXbJMCJqWvt@infradead.org>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <12a61016-1df7-5cf7-94e3-3a07103cbbb6@huaweicloud.com>
+Date: Fri, 24 Nov 2023 09:36:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:4a84:b0:27d:9f7:74ba with SMTP id
- lp4-20020a17090b4a8400b0027d09f774bamr252386pjb.0.1700784371825; Thu, 23 Nov
- 2023 16:06:11 -0800 (PST)
-Date: Thu, 23 Nov 2023 16:06:11 -0800
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000528278060adab82b@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ZV9xgAXbJMCJqWvt@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgCnqxEx_l9ldXQRBw--.60281S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4fAF43XF4DZFW8Jw1UKFg_yoW3JrgE9r
+	ZF9w4kK390kFn7Wa4DWF1rGFZxCryUWwn8A3y3Jry7Aa1kZF4kZF1vyrZ2yFWrGF48K3s8
+	Cr95Xa47ZF12qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On 2023/11/23 23:36, Christoph Hellwig wrote:
+> On Thu, Nov 23, 2023 at 08:51:13PM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Add a private parameter to iomap_ioend structure, letting filesystems
+>> can pass something they needed from .prepare_ioend() to IO end.
+> 
+> On it's own this looks fine.  Note that I have a series that I probably
+> should send out ASAP:
+> 
+>    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
+> 
+> that makes each ioend only have the embdeed bio, and bi_private in that
+> is unused, so you could just use that if we go down that route.
+> 
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Thanks for this improvement, I will analyze the changes of this series
+in depth.
 
-#syz fix: exact-commit-title
+Thanks,
+Yi.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
