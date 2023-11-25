@@ -1,39 +1,39 @@
-Return-Path: <linux-ext4+bounces-152-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-156-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E5057F890A
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 09:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BF447F890F
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 09:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6253A1C20BA6
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 08:13:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0EB1C20C32
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 08:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7A1947B;
-	Sat, 25 Nov 2023 08:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7A3BE5F;
+	Sat, 25 Nov 2023 08:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAC710FB;
-	Sat, 25 Nov 2023 00:12:55 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scl2p33SSz4f3kjh;
-	Sat, 25 Nov 2023 16:12:50 +0800 (CST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322DB1701;
+	Sat, 25 Nov 2023 00:12:56 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scl2n2Csnz4f3m7b;
+	Sat, 25 Nov 2023 16:12:49 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 345241A01A1;
+	by mail.maildlp.com (Postfix) with ESMTP id A46091A01F4;
 	Sat, 25 Nov 2023 16:12:53 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP2 (Coremail) with SMTP id Syh0CgCnSkmCrGFlWcLEBw--.36822S6;
+	by APP2 (Coremail) with SMTP id Syh0CgCnSkmCrGFlWcLEBw--.36822S7;
 	Sat, 25 Nov 2023 16:12:53 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] ext4: remove unused ext4_allocation_context::ac_groups_considered
-Date: Sun, 26 Nov 2023 00:11:39 +0800
-Message-Id: <20231125161143.3945726-5-shikemeng@huaweicloud.com>
+Subject: [PATCH 5/8] ext4: remove unused return value of ext4_mb_release
+Date: Sun, 26 Nov 2023 00:11:40 +0800
+Message-Id: <20231125161143.3945726-6-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
 References: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
@@ -44,43 +44,68 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCnSkmCrGFlWcLEBw--.36822S6
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYA7kC6x804xWl14x267AKxVWrJVCq3wAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62
-	vIxIIY0VWUZVW8XwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E
-	14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
-	8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vE
-	x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzx
-	vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	JVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr
-	1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUnr9NDUU
-	UUU==
+X-CM-TRANSID:Syh0CgCnSkmCrGFlWcLEBw--.36822S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryftF1xZFyrGw17Aw4kXrb_yoW8Xw1kpF
+	s8Ar18Cr4UuF1DuanrWF4UWw1Sgw1I9ry8GrWSg34Sqr9xtryxAFsrtF1jvF1FqFZ7GFnx
+	ZF4jgFyUCr4fC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAv
+	FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3w
+	A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
+	3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3XTQUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Remove unused ext4_allocation_context::ac_groups_considered
+Remove unused return value of ext4_mb_release.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.h | 1 -
- 1 file changed, 1 deletion(-)
+ fs/ext4/ext4.h    | 2 +-
+ fs/ext4/mballoc.c | 4 +---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index d7aeb5da7..56938532b 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -192,7 +192,6 @@ struct ext4_allocation_context {
- 	 */
- 	ext4_grpblk_t	ac_orig_goal_len;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 8ccebe0d4..fb35cae16 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2902,7 +2902,7 @@ extern const struct seq_operations ext4_mb_seq_groups_ops;
+ extern const struct seq_operations ext4_mb_seq_structs_summary_ops;
+ extern int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset);
+ extern int ext4_mb_init(struct super_block *);
+-extern int ext4_mb_release(struct super_block *);
++extern void ext4_mb_release(struct super_block *);
+ extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+ 				struct ext4_allocation_request *, int *);
+ extern void ext4_discard_preallocations(struct inode *, unsigned int);
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index f79e87ad3..8d6246db3 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3725,7 +3725,7 @@ static int ext4_mb_cleanup_pa(struct ext4_group_info *grp)
+ 	return count;
+ }
  
--	__u32 ac_groups_considered;
- 	__u32 ac_flags;		/* allocation hints */
- 	__u16 ac_groups_scanned;
- 	__u16 ac_groups_linear_remaining;
+-int ext4_mb_release(struct super_block *sb)
++void ext4_mb_release(struct super_block *sb)
+ {
+ 	ext4_group_t ngroups = ext4_get_groups_count(sb);
+ 	ext4_group_t i;
+@@ -3801,8 +3801,6 @@ int ext4_mb_release(struct super_block *sb)
+ 	}
+ 
+ 	free_percpu(sbi->s_locality_groups);
+-
+-	return 0;
+ }
+ 
+ static inline int ext4_issue_discard(struct super_block *sb,
 -- 
 2.30.0
 
