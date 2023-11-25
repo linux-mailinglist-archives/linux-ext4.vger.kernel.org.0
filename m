@@ -1,218 +1,148 @@
-Return-Path: <linux-ext4+bounces-161-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-162-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D77277F8AA8
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 13:18:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 540E17F8BB6
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 15:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 881282817A5
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 12:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 548C0B214AA
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Nov 2023 14:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040B0FBF3;
-	Sat, 25 Nov 2023 12:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC38C23750;
+	Sat, 25 Nov 2023 14:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tb+b1AGj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425C8DD
-	for <linux-ext4@vger.kernel.org>; Sat, 25 Nov 2023 04:18:18 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ScrTx6wx7z4f3jsG
-	for <linux-ext4@vger.kernel.org>; Sat, 25 Nov 2023 20:18:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id BBF461A022F
-	for <linux-ext4@vger.kernel.org>; Sat, 25 Nov 2023 20:18:15 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2hD_5WFlJE6YBw--.43741S5;
-	Sat, 25 Nov 2023 20:18:15 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH 2/2] jbd2: increase the journal IO's priority
-Date: Sat, 25 Nov 2023 20:17:39 +0800
-Message-Id: <20231125121740.1035816-2-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231125121740.1035816-1-yi.zhang@huaweicloud.com>
-References: <20231125121740.1035816-1-yi.zhang@huaweicloud.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FC028E0A;
+	Sat, 25 Nov 2023 14:32:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF1EC433C9;
+	Sat, 25 Nov 2023 14:32:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1700922779;
+	bh=oSd7BcOK3bP0I8DfntCNNyxB1mRx7mQJk5aYCZ56Jps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tb+b1AGjl66gEFJb49YPJaFeRIASRiFOTSxrZYFb/9UEMzhBhJ7dj03XjtnQqURkF
+	 TfRgGHRdUiAjOE44N/FKpf7JzCF5V8n47LggUk8mYZ6WAEYe+BIWeDP2a/vA3Woy4L
+	 +jv6Fe3Kj+6ny2tml8PShu+0hReicMnk89ZJEMIM=
+Date: Sat, 25 Nov 2023 14:32:55 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
+	roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+	joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+	josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+	dchinner@redhat.com, linux@weissschuh.net, min15.li@samsung.com,
+	dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+	p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next] block: remove field 'bd_inode' from block_device
+Message-ID: <2023112544-subpanel-national-58e5@gregkh>
+References: <20231125093912.141486-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDX2hD_5WFlJE6YBw--.43741S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw17XFWUKF4ktw43KF47twb_yoW7WF4fpr
-	yUK34rCryqvrW8ZF1xXFsrJFWjvFW0kFyUKr1DC3Wkta15trn7tw1UtrnxJFy8AFyUK345
-	JF1UC34DGw4jkrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-	IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-	IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHyIUUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125093912.141486-1-yukuai1@huaweicloud.com>
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Sat, Nov 25, 2023 at 05:39:12PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> block_devcie is allocated from bdev_alloc() by bdev_alloc_inode(), and
+> currently block_device contains a pointer that point to the address of
+> inode, while such inode is allocated together:
+> 
+> bdev_alloc
+>  inode = new_inode()
+>   // inode is &bdev_inode->vfs_inode
+>  bdev = I_BDEV(inode)
+>   // bdev is &bdev_inode->bdev
+>  bdev->inode = inode
+> 
+> Add a new helper to get address of inode from bdev by add operation
+> instead of memory access, which is more efficiency. Also prepare to
+> add a new field 'bd_flags' in the first cacheline(64 bytes).
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  block/bdev.c                       | 39 +++++++++++++++++-------------
+>  block/blk-zoned.c                  |  4 +--
+>  block/fops.c                       |  4 +--
+>  block/genhd.c                      |  8 +++---
+>  block/ioctl.c                      |  8 +++---
+>  block/partitions/core.c            |  9 ++++---
+>  drivers/block/xen-blkback/xenbus.c |  2 +-
+>  drivers/md/bcache/super.c          |  2 +-
+>  drivers/mtd/devices/block2mtd.c    | 12 ++++-----
+>  drivers/s390/block/dasd_ioctl.c    |  2 +-
+>  drivers/scsi/scsicam.c             |  2 +-
+>  fs/bcachefs/util.h                 |  2 +-
+>  fs/btrfs/disk-io.c                 |  6 ++---
+>  fs/btrfs/volumes.c                 |  4 +--
+>  fs/btrfs/zoned.c                   |  2 +-
+>  fs/buffer.c                        |  8 +++---
+>  fs/cramfs/inode.c                  |  2 +-
+>  fs/erofs/data.c                    |  2 +-
+>  fs/ext4/dir.c                      |  2 +-
+>  fs/ext4/ext4_jbd2.c                |  2 +-
+>  fs/ext4/super.c                    |  8 +++---
+>  fs/gfs2/glock.c                    |  2 +-
+>  fs/gfs2/ops_fstype.c               |  2 +-
+>  fs/jbd2/journal.c                  |  3 ++-
+>  fs/jbd2/recovery.c                 |  2 +-
+>  fs/nilfs2/segment.c                |  2 +-
+>  include/linux/blk_types.h          | 10 ++++++--
+>  include/linux/blkdev.h             |  4 +--
+>  include/linux/buffer_head.h        |  4 +--
+>  29 files changed, 86 insertions(+), 73 deletions(-)
 
-Current jbd2 only add REQ_SYNC for descriptor block, metadata log
-buffer, commit buffer and superblock buffer, the submitted IO could be
-throttled by writeback throttle in block layer, that could lead to
-priority inversion in some cases. The log IO looks like a kind of high
-priority metadata IO, so it should not be throttled by WBT like QOS
-policies in block layer, let's add REQ_SYNC | REQ_IDLE to exempt from
-writeback throttle, and also add REQ_META together indicates it's a
-metadata IO.
+You should do this as a patch series, add the helper function that does
+nothing, convert all the different portions of the kernel as different
+patches, and _then_ change the implementation of the block layer to
+handle the change in the structure.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/jbd2/commit.c     |  8 ++++----
- fs/jbd2/journal.c    | 20 +++++++++++---------
- include/linux/jbd2.h |  3 +++
- 3 files changed, 18 insertions(+), 13 deletions(-)
+Otherwise this is going to be hard to get accepted.
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 8d6f934c3d95..58e4d4cbdf88 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -119,7 +119,7 @@ static int journal_submit_commit_record(journal_t *journal,
- 	struct commit_header *tmp;
- 	struct buffer_head *bh;
- 	struct timespec64 now;
--	blk_opf_t write_flags = REQ_OP_WRITE | REQ_SYNC;
-+	blk_opf_t write_flags = REQ_OP_WRITE | JBD2_REQ_HIPRIO;
- 
- 	*cbh = NULL;
- 
-@@ -395,8 +395,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC);
-+						journal->j_tail, 0);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	} else {
- 		jbd2_debug(3, "superblock not updated\n");
-@@ -715,6 +714,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 
- 			for (i = 0; i < bufs; i++) {
- 				struct buffer_head *bh = wbuf[i];
-+
- 				/*
- 				 * Compute checksum.
- 				 */
-@@ -727,7 +727,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 				clear_buffer_dirty(bh);
- 				set_buffer_uptodate(bh);
- 				bh->b_end_io = journal_end_buffer_io_sync;
--				submit_bh(REQ_OP_WRITE | REQ_SYNC, bh);
-+				submit_bh(REQ_OP_WRITE | JBD2_REQ_HIPRIO, bh);
- 			}
- 			cond_resched();
- 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index e7aa47a02d4d..f2921d728dcc 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1100,8 +1100,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
- 	 * space and if we lose sb update during power failure we'd replay
- 	 * old transaction with possibly newly overwritten data.
- 	 */
--	ret = jbd2_journal_update_sb_log_tail(journal, tid, block,
--					      REQ_SYNC | REQ_FUA);
-+	ret = jbd2_journal_update_sb_log_tail(journal, tid, block, REQ_FUA);
- 	if (ret)
- 		goto out;
- 
-@@ -1768,8 +1767,7 @@ static int journal_reset(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC | REQ_FUA);
-+						journal->j_tail, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 	return jbd2_journal_start_thread(journal);
-@@ -1791,6 +1789,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
- 		return -EIO;
- 	}
- 
-+	/*
-+	 * Always set high priority flags to exempt from block layer's
-+	 * QOS policies, e.g. writeback throttle.
-+	 */
-+	write_flags |= JBD2_REQ_HIPRIO;
- 	if (!(journal->j_flags & JBD2_BARRIER))
- 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
- 
-@@ -2045,7 +2048,7 @@ void jbd2_journal_update_sb_errno(journal_t *journal)
- 	jbd2_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
- 	sb->s_errno    = cpu_to_be32(errcode);
- 
--	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_write_superblock(journal, REQ_FUA);
- }
- EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
- 
-@@ -2166,8 +2169,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 				++journal->j_transaction_sequence;
- 			write_unlock(&journal->j_state_lock);
- 
--			jbd2_mark_journal_empty(journal,
--					REQ_SYNC | REQ_PREFLUSH | REQ_FUA);
-+			jbd2_mark_journal_empty(journal, REQ_PREFLUSH | REQ_FUA);
- 			mutex_unlock(&journal->j_checkpoint_mutex);
- 		} else
- 			err = -EIO;
-@@ -2468,7 +2470,7 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
- 	 * the magic code for a fully-recovered superblock.  Any future
- 	 * commits of data to the journal will restore the current
- 	 * s_start value. */
--	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_mark_journal_empty(journal, REQ_FUA);
- 
- 	if (flags)
- 		err = __jbd2_journal_erase(journal, flags);
-@@ -2514,7 +2516,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- 	if (write) {
- 		/* Lock to make assertions happy... */
- 		mutex_lock_io(&journal->j_checkpoint_mutex);
--		jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+		jbd2_mark_journal_empty(journal, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 52772c826c86..f7e8274b46ae 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1374,6 +1374,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
- JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- 
-+/* Journal high priority write IO operation flags */
-+#define JBD2_REQ_HIPRIO		(REQ_META | REQ_SYNC | REQ_IDLE)
-+
- /*
-  * Journal flag definitions
-  */
--- 
-2.39.2
+Also, one note:
 
+> @@ -85,6 +84,13 @@ struct block_device {
+>  #define bdev_kobj(_bdev) \
+>  	(&((_bdev)->bd_device.kobj))
+>  
+> +static inline struct inode *bdev_inode(struct block_device *bdev)
+> +{
+> +	void *inode = bdev + 1;
+
+That's crazy, if something changes, this will keep working yet the
+kernel will break and no one will know why.
+
+Please use container_of(), that's what it is there for, this exact type
+of thing.  Or if not, are you just assuming that the memory location
+right after bdev is the inode?  That's a tough assumption, how are you
+going to assure it really stays there?
+
+thanks,
+
+greg k-h
 
