@@ -1,147 +1,240 @@
-Return-Path: <linux-ext4+bounces-195-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-199-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67ACD7FA051
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 14:07:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2F6E7FA59D
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 17:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7DE0281392
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 13:07:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 759AAB21238
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 16:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1F22D05F;
-	Mon, 27 Nov 2023 13:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B60D3588C;
+	Mon, 27 Nov 2023 16:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD1C10F;
-	Mon, 27 Nov 2023 05:07:30 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sf5Tl4wF0z4f3jJ0;
-	Mon, 27 Nov 2023 21:07:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 75CE61A0C58;
-	Mon, 27 Nov 2023 21:07:26 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2hCKlGRldTJXCA--.14854S3;
-	Mon, 27 Nov 2023 21:07:25 +0800 (CST)
-Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
- inode from block_device
-To: Christoph Hellwig <hch@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: ming.lei@redhat.com, axboe@kernel.dk, roger.pau@citrix.com,
- colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
- martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, dchinner@redhat.com, linux@weissschuh.net,
- min15.li@samsung.com, dlemoal@kernel.org, willy@infradead.org,
- akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-2-yukuai1@huaweicloud.com>
- <ZWRDeQ4K8BiYnV+X@infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
-Date: Mon, 27 Nov 2023 21:07:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+X-Greylist: delayed 1056 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Nov 2023 08:05:54 PST
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB405BF
+	for <linux-ext4@vger.kernel.org>; Mon, 27 Nov 2023 08:05:54 -0800 (PST)
+Received: from in02.mta.xmission.com ([166.70.13.52]:45924)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1r7dqH-0037sg-6R; Mon, 27 Nov 2023 08:48:13 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:47674 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1r7dqF-001Jou-Tb; Mon, 27 Nov 2023 08:48:12 -0700
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Gabriel Krisman Bertazi <gabriel@krisman.be>,  Linus Torvalds
+ <torvalds@linux-foundation.org>,  Christian Brauner <brauner@kernel.org>,
+  tytso@mit.edu,  linux-f2fs-devel@lists.sourceforge.net,
+  ebiggers@kernel.org,  linux-fsdevel@vger.kernel.org,  jaegeuk@kernel.org,
+  linux-ext4@vger.kernel.org,  Miklos Szeredi <miklos@szeredi.hu>
+References: <20231121022734.GC38156@ZenIV> <20231122211901.GJ38156@ZenIV>
+	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
+	<20231123171255.GN38156@ZenIV> <20231123182426.GO38156@ZenIV>
+	<20231123215234.GQ38156@ZenIV> <20231125220136.GB38156@ZenIV>
+	<20231126045219.GD38156@ZenIV> <20231126184141.GF38156@ZenIV>
+	<20231127063842.GG38156@ZenIV>
+Date: Mon, 27 Nov 2023 09:47:47 -0600
+In-Reply-To: <20231127063842.GG38156@ZenIV> (Al Viro's message of "Mon, 27 Nov
+	2023 06:38:42 +0000")
+Message-ID: <87jzq3nqos.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZWRDeQ4K8BiYnV+X@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDX2hCKlGRldTJXCA--.14854S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF1fWFWkJw1kuFy8XF43KFg_yoW8KrWDp3
-	y7KFn8tw1DJryFgan7tw1jqrn0g3W7GrWUZ34rZrsxurZ8WFy2qF10krsrXFyIyr48Jw4I
-	qF45AF43Xry2grJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_WFyU
-	JVCq3wCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26rxl6s0DYx
-	BIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain
+X-XM-SPF: eid=1r7dqF-001Jou-Tb;;;mid=<87jzq3nqos.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19Ivoqmgj6NYRmk04vHCeMgMvlWWNyi8uM=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Virus: No
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 655 ms - load_scoreonly_sql: 0.04 (0.0%),
+	signal_user_changed: 4.8 (0.7%), b_tie_ro: 3.4 (0.5%), parse: 1.41
+	(0.2%), extract_message_metadata: 15 (2.2%), get_uri_detail_list: 5
+	(0.8%), tests_pri_-2000: 8 (1.2%), tests_pri_-1000: 1.97 (0.3%),
+	tests_pri_-950: 0.94 (0.1%), tests_pri_-900: 0.79 (0.1%),
+	tests_pri_-90: 70 (10.8%), check_bayes: 69 (10.5%), b_tokenize: 11
+	(1.6%), b_tok_get_all: 14 (2.1%), b_comp_prob: 4.7 (0.7%),
+	b_tok_touch_all: 37 (5.6%), b_finish: 0.77 (0.1%), tests_pri_0: 540
+	(82.4%), check_dkim_signature: 0.45 (0.1%), check_dkim_adsp: 7 (1.1%),
+	poll_dns_idle: 6 (0.9%), tests_pri_10: 1.82 (0.3%), tests_pri_500: 7
+	(1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: fun with d_invalidate() vs. d_splice_alias() was Re: [f2fs-dev]
+ [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-Hi,
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-ÔÚ 2023/11/27 15:21, Christoph Hellwig Ð´µÀ:
-> On Mon, Nov 27, 2023 at 02:21:01PM +0800, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> block_devcie is allocated from bdev_alloc() by bdev_alloc_inode(), and
->> currently block_device contains a pointer that point to the address of
->> inode, while such inode is allocated together:
-> 
-> This is going the wrong way.  Nothing outside of core block layer code
-> should ever directly use the bdev inode.  We've been rather sloppy
-> and added a lot of direct reference to it, but they really need to
-> go away and be replaced with well defined high level operation on
-> struct block_device.  Once that is done we can remove the bd_inode
-> pointer, but replacing it with something that pokes even more deeply
-> into bdev internals is a bad idea.
+> On Sun, Nov 26, 2023 at 06:41:41PM +0000, Al Viro wrote:
+>
+>> d_invalidate() situation is more subtle - we need to sort out its interplay
+>> with d_splice_alias().
+>> 
+>> More concise variant of the scenario in question:
+>> * we have /mnt/foo/bar and a lot of its descendents in dcache on client
+>> * server does a rename, after which what used to be /mnt/foo/bar is /mnt/foo/baz
+>> * somebody on the client does a lookup of /mnt/foo/bar and gets told by
+>> the server that there's no directory with that name anymore.
+>> * that somebody hits d_invalidate(), unhashes /mnt/foo/bar and starts
+>> evicting its descendents
+>> * We try to mount something on /mnt/foo/baz/blah.  We look up baz, get
+>> an fhandle and notice that there's a directory inode for it (/mnt/foo/bar).
+>> d_splice_alias() picks the bugger and moves it to /mnt/foo/baz, rehashing
+>> it in process, as it ought to.  Then we find /mnt/foo/baz/blah in dcache and 
+>> mount on top of it.
+>> * d_invalidate() finishes shrink_dcache_parent() and starts hunting for
+>> submounts to dissolve.  And finds the mount we'd done.  Which mount quietly
+>> disappears.
+>> 
+>> Note that from the server POV the thing had been moved quite a while ago.
+>> No server-side races involved - all it seeem is a couple of LOOKUP in the
+>> same directory, one for the old name, one for the new.
+>> 
+>> On the client on the mounter side we have an uneventful mount on /mnt/foo/baz,
+>> which had been there on server at the time we started and which remains in
+>> place after mount we'd created suddenly disappears.
+>> 
+>> For the thread that ended up calling d_invalidate(), they'd been doing e.g.
+>> stat on a pathname that used to be there a while ago, but currently isn't.
+>> They get -ENOENT and no indication that something odd might have happened.
+>> 
+>> >From ->d_revalidate() point of view there's also nothing odd happening -
+>> dentry is not a mountpoint, it stays in place until we return and there's
+>> no directory entry with that name on in its parent.  It's as clear-cut
+>> as it gets - dentry is stale.
+>> 
+>> The only overlap happening there is d_splice_alias() hitting in the middle
+>> of already started d_invalidate().
+>> 
+>> For a while I thought that ff17fa561a04 "d_invalidate(): unhash immediately"
+>> and 3a8e3611e0ba "d_walk(): kill 'finish' callback" might have something
+>> to do with it, but the same problem existed prior to that.
+>> 
+>> FWIW, I suspect that the right answer would be along the lines of
+>> 	* if d_splice_alias() does move an exsiting (attached) alias in
+>> place, it ought to dissolve all mountpoints in subtree being moved.
+>> There might be subtleties, but in case when that __d_unalias() happens
+>> due to rename on server this is definitely the right thing to do.
+>> 	* d_invalidate() should *NOT* do anything with dentry that
+>> got moved (including moved by d_splice_alias()) from the place we'd
+>> found it in dcache.  At least d_invalidate() done due to having
+>> ->d_revalidate() return 0.
+>> 	* d_invalidate() should dissolve all mountpoints in the
+>> subtree that existed when it got started (and found the victim
+>> still unmoved, that is).  It should (as it does) prevent any
+>> new mountpoints added in that subtree, unless the mountpoint
+>> to be had been moved (spliced) out.  What it really shouldn't
+>> do is touch the mountpoints that are currently outside of it
+>> due to moves.
+>> 
+>> I'm going to look around and see if we have any weird cases where
+>> d_splice_alias() is used for things like "correct the case of
+>> dentry name on a case-mangled filesystem" - that would presumably
+>> not want to dissolve any submounts.  I seem to recall seeing
+>> some shite of that sort, but that was a long time ago.
+>> 
+>> Eric, Miklos - it might be a good idea if you at least took a
+>> look at whatever comes out of that (sub)thread; I'm trying to
+>> reconstruct the picture, but the last round of serious reworking
+>> of that area had been almost 10 years ago and your recollections
+>> of the considerations back then might help.  I realize that they
+>> are probably rather fragmentary (mine definitely are) and any
+>> analysis will need to be redone on the current tree, but...
 
-Thanks for the advice, however, after collecting how other modules are
-using bdev inode, I got two main questions:
+By subthread I assume you are referring to the work to that generalized
+check_submounts_and_drop into the current d_invalidate.
 
-1) Is't okay to add a new helper to pass in bdev for following apis?
-If so, then almost all the fs and driver can avoid to access bd_inode
-dirctly.
+My memory is that there were deliberate restrictions on where
+d_revalidate could be called so as not to mess with mounts.
 
-errseq_check(&bdev->bd_inode->i_mapping->wb_err, wb_err);
-errseq_check_and_advance(&bdev->bd_inode->i_mapping->wb_err, &wb_err);
-mapping_gfp_constraint(bdev->bd_inode->i_mapping, gfp);
-i_size_read(bdev->bd_inode)
-find_get_page(bdev->bd_inode->i_mapping, offset);
-find_or_create_page(bdev->bd_inode->i_mapping, index, gfp);
-read_cache_page_gfp(bdev->bd_inode->i_mapping, index, gfp);
-invalidate_inode_pages2(bdev->bd_inode->i_mapping);
-invalidate_inode_pages2_range(bdev->bd_inode->i_mapping, start, end);
-read_mapping_folio(bdev->bd_inode->i_mapping, index, file);
-read_mapping_page(bdev->bd_inode->i_mapping, index, file);
-balance_dirty_pages_ratelimited(bdev->bd_inode->i_mapping)
-file_ra_state_init(ra, bdev->bd_inode->i_mapping);
-page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index, 
-req_count);
-inode_to_bdi(bdev->bd_inode)
+I believe those restrictions either prevented or convinced us it
+prevented nasty interactions between d_invalidate and d_splice_alias.
 
-2) For the file fs/buffer.c, there are some special usage like
-following that I don't think it's good to add a helper:
+There is a lot going on there.  I remember one of the relevant
+restrictions was marking dentries dont_mount, and inodes S_DEAD
+in unlink and rmdir.
 
-spin_lock(&bd_inode->i_mapping->private_lock);
+But even without out that marking if d_invalidate is called
+from d_revalidate the inode and all of it's dentries must be
+dead because the inode is stale and most go.  There should
+be no resurrecting it at that point.
 
-Is't okay to move following apis from fs/buffer.c directly to
-block/bdev.c?
+I suspect the most fruitful way to think of the d_invalidate vs
+d_splice_alias races is an unlink vs rename race.
 
-__find_get_block
-bdev_getblk
 
-Thanks,
-Kuai
+I don't think the mechanism matters, but deeply and fundamentally
+if we detect a directory inode is dead we need to stick with
+that decision and not attempt to resurrect it with d_splice_alias.
 
-> .
-> 
 
+Looking at ext4 and f2fs it appears when case folding they are calling
+d_invalidate before the generic code can, and before marking like
+dont_mount happen.  Is that the tie in with where the current
+conversation comes in?
+
+
+> TBH, I wonder if we ought to have d_invalidate() variant that would
+> unhash the dentry in question,
+
+You mean like the current d_invalidate does?  It calls __d_drop which
+unhashes the thing and prevent lookups.  You even pointed to the change
+that added that in the previous email.  The only thing that does not
+happen currently is marking the dentry as unhashed.
+
+Looking the rmdir code uses not only dont_mount but marks the
+inode S_DEAD as well.
+
+Right now we can't even get to d_splice_alias unless the original
+dentry is unhashed.
+
+So I suspect it isn't d_invalidate you are fighting.
+
+> do a variant of shrink_dcache_parent()
+> that would report if there had been any mountpoints and if there
+> had been any, do namespace_lock() and go hunting for mounts in that
+> subtree, moving corresponding struct mountpoint to a private list
+> as we go (removing them from mountpoint hash chains, that it).  Then
+> have them all evicted after we'd finished walking the subtree...
+
+>
+> The tricky part will be lock ordering - right now we have the
+> mountpoint hash protected by mount_lock (same as mount hash, probably
+> worth splitting anyway) and that nests outside of ->d_lock.
+
+I don't get get it.
+
+All we have to do is to prevent the inode lookup from succeeding
+if we have decided the inode has been deleted.  It may be a little
+more subtle the path of the inode we are connecting goes through
+a dentry that is being invalidated.
+
+But either need to prevent it in the lookup that leads to d_alloc,
+or prevent the new dentry from being attached.
+
+I know d_splice_alias takes the rename_lock to prevent some of those
+races.
+
+
+I hope that helps on the recollection front.
+
+
+I am confused what is going on with ext4 and f2fs.  I think they
+are calling d_invalidate when all they need to call is d_drop.
+
+Eric
 
