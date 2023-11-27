@@ -1,118 +1,110 @@
-Return-Path: <linux-ext4+bounces-189-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-191-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5492E7F9A44
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 07:54:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530B77F9A89
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 08:10:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1032A280DC3
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 06:54:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7EAAB20A2E
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 07:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2C1DDC3;
-	Mon, 27 Nov 2023 06:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0FCFC16;
+	Mon, 27 Nov 2023 07:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VRPuFgHz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4A6139
-	for <linux-ext4@vger.kernel.org>; Sun, 26 Nov 2023 22:54:09 -0800 (PST)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sdx652kc5zShQ4;
-	Mon, 27 Nov 2023 14:49:49 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 27 Nov 2023 14:54:06 +0800
-Message-ID: <38c05f45-a2c7-071b-692a-ba757d5344d1@huawei.com>
-Date: Mon, 27 Nov 2023 14:54:05 +0800
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A38FBEE;
+	Mon, 27 Nov 2023 07:09:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996CFC433C7;
+	Mon, 27 Nov 2023 07:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701068997;
+	bh=rnicohsvfFaSTeb42azhK+SpajDI1T+vJboqkZ88aAw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VRPuFgHzyDdTKsrT6v2s4trEAs1zQA4cvx634pNpuoQtKkSCdvaCJbelneF1Ip3l4
+	 3R2XpX9ULxFTLpvYZKC+OlVq1tQIg76lPle5uK1IXkDVPKpxfksILf6SRdY2YXiVx8
+	 +7dKkjw2ixB7N6vQIrVxt9xKL7YlIHvL3xsDc8NMjznTj873bGKZp7GuQibnlnSWQy
+	 ysSVDOissl1B8bF0lV/M0VJ7ULdDRCNYUqiH8Y50kpQs3OK75m1qeIPmc8MbFbLlTF
+	 UDMB8ntMGz+OWj0fdv08z2PCWBrrlD9/8Y+uzFUqcbmYmX6+lodrokeIPhbDBGbkVC
+	 Bn0mDn1QrfPEw==
+Message-ID: <d3b87b87-2ca7-43ca-9fb4-ee3696561eb5@kernel.org>
+Date: Mon, 27 Nov 2023 16:09:47 +0900
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] debugfs: Fix infinite loop when dump log
-To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
-	<linux-ext4@vger.kernel.org>
-CC: <louhongxiang@huawei.com>
-References: <20231117102315.2431846-1-haowenchao2@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH block/for-next v2 07/16] bcachefs: use new helper to get
+ inode from block_device
+To: Yu Kuai <yukuai1@huaweicloud.com>, hch@infradead.org,
+ ming.lei@redhat.com, axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+ kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+ josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+ konishi.ryusuke@gmail.com, dchinner@redhat.com, linux@weissschuh.net,
+ min15.li@samsung.com, yukuai3@huawei.com, willy@infradead.org,
+ akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-8-yukuai1@huaweicloud.com>
 Content-Language: en-US
-From: Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20231117102315.2431846-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20231127062116.2355129-8-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
 
-On 2023/11/17 18:23, Wenchao Hao wrote:
-> There are 2 scenarios which would trigger infinite loop:
+On 11/27/23 15:21, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> 1. None log is recorded, then dumplog with "-n", for example:
->     debugfs -R "logdump -O -n 10" /dev/xxx
->     while /dev/xxx has no valid log recorded.
-> 2. The log area is full and cycle write is triggered, then dumplog with
->     debugfs -R "logdump -aOS" /dev/xxx
+> Which is more efficiency, and also prepare to remove the field
+> 'bd_inode' from block_device.
 > 
-> This patch add a new flag "reverse_flag" to mark if logdump has reached
-> to tail of logarea, it is default false, and set in macro WRAP().
-> 
-> If reverse_flag is true, and we comes to first_transaction_blocknr
-> again, just break the logdump loop.
-
-Friendly ping...
-
-> 
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->   debugfs/logdump.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
+>  fs/bcachefs/util.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-> index b600228e..05ea839a 100644
-> --- a/debugfs/logdump.c
-> +++ b/debugfs/logdump.c
-> @@ -52,6 +52,7 @@ static int64_t		dump_counts;
->   static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
->   static unsigned int	group_to_dump, inode_offset_to_dump;
->   static ext2_ino_t	inode_to_dump;
-> +static bool		reverse_flag;
->   
->   struct journal_source
->   {
-> @@ -80,8 +81,10 @@ static void dump_fc_block(FILE *out_file, char *buf, int blocksize,
->   static void do_hexdump (FILE *, char *, int);
->   
->   #define WRAP(jsb, blocknr, maxlen)					\
-> -	if (blocknr >= (maxlen))					\
-> -	    blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));
-> +	if (blocknr >= (maxlen)) {					\
-> +		blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));	\
-> +		reverse_flag = true;					\
-> +	}
->   
->   void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
->   		    void *infop EXT2FS_ATTR((unused)))
-> @@ -115,6 +118,7 @@ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
->   	inode_block_to_dump = ANY_BLOCK;
->   	inode_to_dump = -1;
->   	dump_counts = -1;
-> +	reverse_flag = false;
->   
->   	reset_getopt();
->   	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
-> @@ -477,8 +481,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
->   		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
->   			break;
->   
-> -		if ((blocknr == first_transaction_blocknr) &&
-> -		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
-> +		if ((blocknr == first_transaction_blocknr) && dump_old && reverse_flag) {
->   			fprintf(out_file, "Dump all %lld journal records.\n",
->   				(long long) cur_counts);
->   			break;
+> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+> index 2984b57b2958..fe7ccb3a3517 100644
+> --- a/fs/bcachefs/util.h
+> +++ b/fs/bcachefs/util.h
+> @@ -518,7 +518,7 @@ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
+>  
+>  static inline sector_t bdev_sectors(struct block_device *bdev)
+>  {
+> -	return bdev->bd_inode->i_size >> 9;
+> +	return bdev_inode(bdev)->i_size >> 9;
+
+shouldn't this use i_size_read() ?
+
+I missed the history with this but why not use bdev_nr_sectors() and delete this
+helper ?
+
+>  }
+>  
+>  #define closure_bio_submit(bio, cl)					\
+
+-- 
+Damien Le Moal
+Western Digital Research
 
 
