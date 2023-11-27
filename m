@@ -1,97 +1,138 @@
-Return-Path: <linux-ext4+bounces-196-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-197-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 136BE7FA580
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 17:01:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C7B27FA589
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 17:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E18C01C209D4
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 16:01:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9489BB211E1
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Nov 2023 16:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DD834CF1;
-	Mon, 27 Nov 2023 16:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1233034CF2;
+	Mon, 27 Nov 2023 16:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CaF4o0IH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UiXnvop2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58B3B4;
-	Mon, 27 Nov 2023 08:01:45 -0800 (PST)
-Received: from in01.mta.xmission.com ([166.70.13.51]:53182)
-	by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1r7e3M-00Ahie-5g; Mon, 27 Nov 2023 09:01:44 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:51768 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1r7e3K-006NOb-0n; Mon, 27 Nov 2023 09:01:43 -0700
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Gabriel Krisman Bertazi <gabriel@krisman.be>,  Linus Torvalds
- <torvalds@linux-foundation.org>,  Christian Brauner <brauner@kernel.org>,
-  tytso@mit.edu,  linux-f2fs-devel@lists.sourceforge.net,
-  ebiggers@kernel.org,  linux-fsdevel@vger.kernel.org,  jaegeuk@kernel.org,
-  linux-ext4@vger.kernel.org,  Miklos Szeredi <miklos@szeredi.hu>
-References: <20231121022734.GC38156@ZenIV> <20231122211901.GJ38156@ZenIV>
-	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
-	<20231123171255.GN38156@ZenIV> <20231123182426.GO38156@ZenIV>
-	<20231123215234.GQ38156@ZenIV> <20231125220136.GB38156@ZenIV>
-	<20231126045219.GD38156@ZenIV> <20231126184141.GF38156@ZenIV>
-	<20231127063842.GG38156@ZenIV>
-	<87jzq3nqos.fsf@email.froward.int.ebiederm.org>
-Date: Mon, 27 Nov 2023 10:01:34 -0600
-In-Reply-To: <87jzq3nqos.fsf@email.froward.int.ebiederm.org> (Eric
-	W. Biederman's message of "Mon, 27 Nov 2023 09:47:47 -0600")
-Message-ID: <878r6jnq1t.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209C7BC
+	for <linux-ext4@vger.kernel.org>; Mon, 27 Nov 2023 08:02:20 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ED7E31FDA8;
+	Mon, 27 Nov 2023 16:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701100935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L4yJ90L+MIJiFG+Lj/0fDkAAq8vkzO1tAs0Dt1atZJQ=;
+	b=CaF4o0IHZFoGV4B0tQF6VKegyiG0+Y2eHSCcYlQm9sudiShTbC2nlLEpePeiI3dXb3+3PI
+	yj1s0KNVBWU4zLnE7t/gvmnGiG0OhnAFohqltbs8jVK8ZNoRkz4XZhTqtgvVXvl8o2pPh3
+	lnsijo9MzXPVhHEG7hZfuP2owK7GL8w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701100935;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L4yJ90L+MIJiFG+Lj/0fDkAAq8vkzO1tAs0Dt1atZJQ=;
+	b=UiXnvop297bU2N5PcMm8JvPfP40QVYX5cQBxoHv5EcL3H++Q4ZCLos12c/OoHKkQ69RgZi
+	BJHOt/6OhzyvjwDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D809F13440;
+	Mon, 27 Nov 2023 16:02:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 4UJ0NIe9ZGXDWwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 27 Nov 2023 16:02:15 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3EB85A07CB; Mon, 27 Nov 2023 17:02:15 +0100 (CET)
+Date: Mon, 27 Nov 2023 17:02:15 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: Re: [PATCH 1/2] jbd2: correct the printing of write_flags in
+ jbd2_write_superblock()
+Message-ID: <20231127160215.7wyowq5nt6ss2xgk@quack3>
+References: <20231125121740.1035816-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1r7e3K-006NOb-0n;;;mid=<878r6jnq1t.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX18LzyKBjPL9+mOeggwlTuuNaPzk+DvVEcQ=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1572 ms - load_scoreonly_sql: 0.05 (0.0%),
-	signal_user_changed: 12 (0.8%), b_tie_ro: 10 (0.6%), parse: 1.54
-	(0.1%), extract_message_metadata: 48 (3.1%), get_uri_detail_list: 1.85
-	(0.1%), tests_pri_-2000: 66 (4.2%), tests_pri_-1000: 3.9 (0.2%),
-	tests_pri_-950: 1.64 (0.1%), tests_pri_-900: 30 (1.9%), tests_pri_-90:
-	340 (21.6%), check_bayes: 337 (21.5%), b_tokenize: 15 (1.0%),
-	b_tok_get_all: 65 (4.1%), b_comp_prob: 2.9 (0.2%), b_tok_touch_all:
-	201 (12.8%), b_finish: 1.20 (0.1%), tests_pri_0: 1017 (64.7%),
-	check_dkim_signature: 0.73 (0.0%), check_dkim_adsp: 18 (1.2%),
-	poll_dns_idle: 15 (0.9%), tests_pri_10: 4.2 (0.3%), tests_pri_500: 43
-	(2.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: fun with d_invalidate() vs. d_splice_alias() was Re: [f2fs-dev]
- [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125121740.1035816-1-yi.zhang@huaweicloud.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.12
+X-Spamd-Result: default: False [-0.12 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.52)[80.34%]
 
-"Eric W. Biederman" <ebiederm@xmission.com> writes:
+On Sat 25-11-23 20:17:38, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> The write_flags print in the trace of jbd2_write_superblock() is not
+> real, so move the modification before the trace.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-> I am confused what is going on with ext4 and f2fs.  I think they
-> are calling d_invalidate when all they need to call is d_drop.
+Good catch. Feel free to add:
 
-ext4 and f2f2 are buggy in how they call d_invalidate, if I am reading
-the code correctly.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-d_invalidate calls detach_mounts.
+								Honza
 
-detach_mounts relies on setting D_CANT_MOUNT on the top level dentry to
-prevent races with new mounts.
-
-ext4 and f2fs (in their case insensitive code) are calling d_invalidate
-before dont_mount has been called to set D_CANT_MOUNT.
-
-Eric
-
+> ---
+>  fs/jbd2/journal.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 30dec2bd2ecc..e7aa47a02d4d 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -1791,9 +1791,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
+>  		return -EIO;
+>  	}
+>  
+> -	trace_jbd2_write_superblock(journal, write_flags);
+>  	if (!(journal->j_flags & JBD2_BARRIER))
+>  		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
+> +
+> +	trace_jbd2_write_superblock(journal, write_flags);
+> +
+>  	if (buffer_write_io_error(bh)) {
+>  		/*
+>  		 * Oh, dear.  A previous attempt to write the journal
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
