@@ -1,121 +1,98 @@
-Return-Path: <linux-ext4+bounces-211-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-212-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD5B7FB06B
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 04:32:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A0427FB18A
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 06:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 914EC281C80
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 03:32:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37257281DBA
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 05:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A0C747A;
-	Tue, 28 Nov 2023 03:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8716510A32;
+	Tue, 28 Nov 2023 05:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="zxF6+s0S"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36A7C9
-	for <linux-ext4@vger.kernel.org>; Mon, 27 Nov 2023 19:32:26 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SfSgm332pz4f3kkQ
-	for <linux-ext4@vger.kernel.org>; Tue, 28 Nov 2023 11:32:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 457461A01DA
-	for <linux-ext4@vger.kernel.org>; Tue, 28 Nov 2023 11:32:23 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6xFFX2VlxkePCA--.6972S3;
-	Tue, 28 Nov 2023 11:32:23 +0800 (CST)
-Subject: Re: [PATCH 2/2] jbd2: increase the journal IO's priority
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20231125121740.1035816-1-yi.zhang@huaweicloud.com>
- <20231125121740.1035816-2-yi.zhang@huaweicloud.com>
- <20231127161149.2s7yizu72gw332s2@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <44d18772-192c-46ad-2622-646b609752d6@huaweicloud.com>
-Date: Tue, 28 Nov 2023 11:32:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D249C4;
+	Mon, 27 Nov 2023 21:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=piX6sU8uUfRdM3HI4C5o5RtKyEk7LebUsWmX5nAnS9s=; b=zxF6+s0SCn2mTM1F5sDGatwdiD
+	r+J5EdNg/JbVc8/TEwBGrSiUOrPltOv0SB5DHqEzye3x5UYQ3y43F+9CYP+YH9zZju4MAnIxN7jLr
+	52H6aTiRg9m6ogsTbJ455qxXjn6rKf3EheShZA+8TlQ0nbft+l3Lre4a0bU7FkEs+H18O/xb4HfZ2
+	DcIkdp3IB1Vc74yjq/SGmA7ZBc/H0ChYb2skCnNlw+1loprwzCvOOZXqJXWMJW983aVx/FvifwWE8
+	GXy6mVkavESjy4cQk0Ees741WqX1/u5t1i6oo5VnA69qG8fgQUNZnB/k4V2ZDGbJGb/SxQnB+AlVf
+	iSo+n9HA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r7qxI-004BPZ-2N;
+	Tue, 28 Nov 2023 05:48:20 +0000
+Date: Mon, 27 Nov 2023 21:48:20 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
+	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+	konishi.ryusuke@gmail.com, dchinner@redhat.com,
+	linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
+ inode from block_device
+Message-ID: <ZWV/JBxrrGXzY0gr@infradead.org>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-2-yukuai1@huaweicloud.com>
+ <ZWRDeQ4K8BiYnV+X@infradead.org>
+ <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
+ <ZWTErvnMf7HiO1Wj@infradead.org>
+ <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231127161149.2s7yizu72gw332s2@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDn6xFFX2VlxkePCA--.6972S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar43Zr1Dtw1fKF15tF4UCFg_yoW8uw1xpF
-	W0ya4kJFykKF9rA3Z7tws5XFWfta1kCr47GFy7Ga1jkFZ0gryxt3yvkr4ayFyjkFySkay0
-	qFWY93s7Cr4YvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hello!
+On Tue, Nov 28, 2023 at 09:35:56AM +0800, Yu Kuai wrote:
+> Thanks for the advice! In case I'm understanding correctly, do you mean
+> that all other fs/drivers that is using pages versions can safely switch
+> to folio versions now?
 
-On 2023/11/28 0:11, Jan Kara wrote:
-> Hello!
-> 
-> On Sat 25-11-23 20:17:39, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Current jbd2 only add REQ_SYNC for descriptor block, metadata log
->> buffer, commit buffer and superblock buffer, the submitted IO could be
->> throttled by writeback throttle in block layer, that could lead to
->> priority inversion in some cases. The log IO looks like a kind of high
->> priority metadata IO, so it should not be throttled by WBT like QOS
->> policies in block layer, let's add REQ_SYNC | REQ_IDLE to exempt from
->> writeback throttle, and also add REQ_META together indicates it's a
->> metadata IO.
-> 
-> So I agree about REQ_META but with REQ_IDLE I'm not so sure. __REQ_IDLE is
-> documented as "anticipate more IO after this one" so that is a good fit for
-> normal transaction writes but not so much for journal superblock writes.
-> OTOH as far as I'm checking XFS uses REQ_IDLE as well for its log IO and
-> the only places where REQ_IDLE is really checked is in blk-wbt... So I
-> guess this makes sense.
-> 
+If you never allocate a high-order folio pages are identical to folios.
+So yes, we can do folio based interfaces only, and also use that as
+an opportunity to convert over the callers.
 
-Thanks a lot for your review. Yeah, We've checked the block cgroup related
-qos policies and blk-wbt, block cgroup based policies does not throttle IO
-with REQ_META, and blk-wbt exempt IO with both REQ_IDLE and REQ_SYNC. But
-submit_bh() can make sure the journal IO is always bind to the root cgroup,
-so only blk-wbt is left for us to deal with, so I add REQ_IDLE like xfs does.
+> By the way, my orginal idea was trying to add a new field 'bd_flags'
+> in block_devcie, and then add a new bit so that bio_check_ro() will
+> only warn once for each partition. Now that this patchset will be quite
+> complex, I'll add a new bool field 'bd_ro_warned' to fix the above
+> problem first, and then add 'bd_flags' once this patchset is done.
 
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 52772c826c86..f7e8274b46ae 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -1374,6 +1374,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
->>  JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
->>  JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
->>  
->> +/* Journal high priority write IO operation flags */
->> +#define JBD2_REQ_HIPRIO		(REQ_META | REQ_SYNC | REQ_IDLE)
-> 
-> Since all journal IO is submitted with these flags I'd maybe name this
-> JBD2_JOURNAL_REQ_FLAGS? Otherwise the patch looks good to me so feel free
-> to add:
-> 
-
-Sure, JBD2_JOURNAL_REQ_FLAGS looks fine, I will use it in v2.
-
-Thanks,
-Yi.
+Yes, please do a minimal version if you can find space where the
+rmw cycles don't cause damage to neighbouring fields.  Or just leave
+the current set of warnings in if it's too hard.
 
 
