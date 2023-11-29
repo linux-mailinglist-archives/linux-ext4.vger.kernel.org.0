@@ -1,220 +1,143 @@
-Return-Path: <linux-ext4+bounces-222-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-223-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B0D7FD5FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 12:48:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE7937FDB03
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 16:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3452D2832A8
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 11:48:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C04C1C20B8D
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 15:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A7B1D536;
-	Wed, 29 Nov 2023 11:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192C4374F7;
+	Wed, 29 Nov 2023 15:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B16137
-	for <linux-ext4@vger.kernel.org>; Wed, 29 Nov 2023 03:48:34 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SgHdm6khBz4f3k5m
-	for <linux-ext4@vger.kernel.org>; Wed, 29 Nov 2023 19:48:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CD2991A01E7
-	for <linux-ext4@vger.kernel.org>; Wed, 29 Nov 2023 19:48:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw4FJWdl3TsMCQ--.42586S5;
-	Wed, 29 Nov 2023 19:48:31 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH v2 2/2] jbd2: increase the journal IO's priority
-Date: Wed, 29 Nov 2023 19:47:40 +0800
-Message-Id: <20231129114740.2686201-2-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231129114740.2686201-1-yi.zhang@huaweicloud.com>
-References: <20231129114740.2686201-1-yi.zhang@huaweicloud.com>
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ECEDD;
+	Wed, 29 Nov 2023 07:19:53 -0800 (PST)
+Received: from in02.mta.xmission.com ([166.70.13.52]:41778)
+	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1r8MLv-00Cf3p-Sp; Wed, 29 Nov 2023 08:19:51 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:49158 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1r8MLu-005gWB-Nk; Wed, 29 Nov 2023 08:19:51 -0700
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org,  Linus Torvalds
+ <torvalds@linux-foundation.org>,  Christian Brauner <brauner@kernel.org>,
+  tytso@mit.edu,  linux-f2fs-devel@lists.sourceforge.net,
+  ebiggers@kernel.org,  jaegeuk@kernel.org,  linux-ext4@vger.kernel.org,
+  Miklos Szeredi <miklos@szeredi.hu>,  Gabriel Krisman Bertazi
+ <gabriel@krisman.be>
+In-Reply-To: <20231129045313.GA1130947@ZenIV> (Al Viro's message of "Wed, 29
+	Nov 2023 04:53:13 +0000")
+References: <20231122211901.GJ38156@ZenIV>
+	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
+	<20231123171255.GN38156@ZenIV> <20231123182426.GO38156@ZenIV>
+	<20231123215234.GQ38156@ZenIV> <20231125220136.GB38156@ZenIV>
+	<20231126045219.GD38156@ZenIV> <20231126184141.GF38156@ZenIV>
+	<20231127063842.GG38156@ZenIV> <20231129045313.GA1130947@ZenIV>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Date: Wed, 29 Nov 2023 09:19:41 -0600
+Message-ID: <87v89kio36.fsf@email.froward.int.ebiederm.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDnNw4FJWdl3TsMCQ--.42586S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw17XFWUZr1DKr1fZr1kZrb_yoW7AryUpr
-	yUK348A34vvryUZF1xXFs8XFWj9FW0kFyUKr1DC3Wkta1Utrnrtw1UtwnxtFy8AFyUK345
-	JF1UC34DGw1jkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9v14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s
-	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbec_DUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain
+X-XM-SPF: eid=1r8MLu-005gWB-Nk;;;mid=<87v89kio36.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/b6JS6EkjAv/7bqf1Ls+CX0i6iy1ZrEtE=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: 
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 555 ms - load_scoreonly_sql: 0.05 (0.0%),
+	signal_user_changed: 11 (2.0%), b_tie_ro: 10 (1.8%), parse: 1.33
+	(0.2%), extract_message_metadata: 18 (3.2%), get_uri_detail_list: 3.1
+	(0.6%), tests_pri_-2000: 12 (2.2%), tests_pri_-1000: 3.6 (0.6%),
+	tests_pri_-950: 1.52 (0.3%), tests_pri_-900: 1.28 (0.2%),
+	tests_pri_-90: 133 (23.9%), check_bayes: 130 (23.5%), b_tokenize: 8
+	(1.5%), b_tok_get_all: 69 (12.5%), b_comp_prob: 5 (0.9%),
+	b_tok_touch_all: 44 (7.8%), b_finish: 0.86 (0.2%), tests_pri_0: 354
+	(63.8%), check_dkim_signature: 0.65 (0.1%), check_dkim_adsp: 2.8
+	(0.5%), poll_dns_idle: 0.80 (0.1%), tests_pri_10: 3.1 (0.6%),
+	tests_pri_500: 12 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: fun with d_invalidate() vs. d_splice_alias() was Re: [f2fs-dev]
+ [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-Current jbd2 only add REQ_SYNC for descriptor block, metadata log
-buffer, commit buffer and superblock buffer, the submitted IO could be
-throttled by writeback throttle in block layer, that could lead to
-priority inversion in some cases. The log IO looks like a kind of high
-priority metadata IO, so it should not be throttled by WBT like QOS
-policies in block layer, let's add REQ_SYNC | REQ_IDLE to exempt from
-writeback throttle, and also add REQ_META together indicates it's a
-metadata IO.
+> On Mon, Nov 27, 2023 at 06:38:43AM +0000, Al Viro wrote:
+>
+>> > FWIW, I suspect that the right answer would be along the lines of
+>> > 	* if d_splice_alias() does move an exsiting (attached) alias in
+>> > place, it ought to dissolve all mountpoints in subtree being moved.
+>> > There might be subtleties,
+>
+> Are there ever...  Starting with the "our test for loop creation
+> (alias is a direct ancestor, need to fail with -ELOOP) is dependent
+> upon rename_lock being held all along".
+>
+> Folks, what semantics do we want for dissolving mounts on splice?
+> The situation when it happens is when we have a subtree on e.g. NFS
+> and have some mounts (on client) inside that.  Then somebody on
+> server moves the root of that subtree somewhere else and we try
+> to do a lookup in new place.  Options:
+>
+> 1) our dentry for directory that got moved on server is moved into
+> new place, along with the entire subtree *and* everything mounted
+> on it.  Very dubious semantics, especially since if we look the
+> old location up before looking for new one, the mounts will be
+> dissolved; no way around that.
+>
+> 2) lookup fails.  It's already possible; e.g. if server has
+> /srv/nfs/1/2/3 moved to /srv/nfs/x, then /srv/nfs/1/2 moved
+> to /srv/nfs/x/y and client has a process with cwd in /mnt/nfs/1/2/3
+> doing a lookup for "y", there's no way in hell to handle that -
+> the lookup will return the fhandle of /srv/nfs/x, which is the
+> same thing the client has for /mnt/nfs/1/2; we *can't* move that
+> dentry to /mnt/nfs/1/2/3/y - not without creating a detached loop.
+> We can also run into -ESTALE if one of the trylocks in
+> __d_unalias() fails.  Having the same happen if there are mounts
+> in the subtree we are trying to splice would be unpleasant, but
+> not fatal.  The trouble is, that won't be a transient failure -
+> not until somebody tries to look the old location up.
+>
+> 3) dissolve the mounts.  Doable, but it's not easy; especially
+> since we end up having to redo the loop-prevention check after
+> the mounts had been dissolved.  And that check may be failing
+> by that time, with no way to undo that dissolving...
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/commit.c     |  9 +++++----
- fs/jbd2/journal.c    | 20 +++++++++++---------
- include/linux/jbd2.h |  3 +++
- 3 files changed, 19 insertions(+), 13 deletions(-)
+To be clear this is a change in current semantics and has a minuscule
+change of resulting in a regression.  That should be called out in the
+change log.
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 8d6f934c3d95..9bdb377a348f 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -119,7 +119,7 @@ static int journal_submit_commit_record(journal_t *journal,
- 	struct commit_header *tmp;
- 	struct buffer_head *bh;
- 	struct timespec64 now;
--	blk_opf_t write_flags = REQ_OP_WRITE | REQ_SYNC;
-+	blk_opf_t write_flags = REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS;
- 
- 	*cbh = NULL;
- 
-@@ -395,8 +395,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC);
-+						journal->j_tail, 0);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	} else {
- 		jbd2_debug(3, "superblock not updated\n");
-@@ -715,6 +714,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 
- 			for (i = 0; i < bufs; i++) {
- 				struct buffer_head *bh = wbuf[i];
-+
- 				/*
- 				 * Compute checksum.
- 				 */
-@@ -727,7 +727,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 				clear_buffer_dirty(bh);
- 				set_buffer_uptodate(bh);
- 				bh->b_end_io = journal_end_buffer_io_sync;
--				submit_bh(REQ_OP_WRITE | REQ_SYNC, bh);
-+				submit_bh(REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS,
-+					  bh);
- 			}
- 			cond_resched();
- 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index e7aa47a02d4d..19c69229ac6e 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1100,8 +1100,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
- 	 * space and if we lose sb update during power failure we'd replay
- 	 * old transaction with possibly newly overwritten data.
- 	 */
--	ret = jbd2_journal_update_sb_log_tail(journal, tid, block,
--					      REQ_SYNC | REQ_FUA);
-+	ret = jbd2_journal_update_sb_log_tail(journal, tid, block, REQ_FUA);
- 	if (ret)
- 		goto out;
- 
-@@ -1768,8 +1767,7 @@ static int journal_reset(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC | REQ_FUA);
-+						journal->j_tail, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 	return jbd2_journal_start_thread(journal);
-@@ -1791,6 +1789,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
- 		return -EIO;
- 	}
- 
-+	/*
-+	 * Always set high priority flags to exempt from block layer's
-+	 * QOS policies, e.g. writeback throttle.
-+	 */
-+	write_flags |= JBD2_JOURNAL_REQ_FLAGS;
- 	if (!(journal->j_flags & JBD2_BARRIER))
- 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
- 
-@@ -2045,7 +2048,7 @@ void jbd2_journal_update_sb_errno(journal_t *journal)
- 	jbd2_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
- 	sb->s_errno    = cpu_to_be32(errcode);
- 
--	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_write_superblock(journal, REQ_FUA);
- }
- EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
- 
-@@ -2166,8 +2169,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 				++journal->j_transaction_sequence;
- 			write_unlock(&journal->j_state_lock);
- 
--			jbd2_mark_journal_empty(journal,
--					REQ_SYNC | REQ_PREFLUSH | REQ_FUA);
-+			jbd2_mark_journal_empty(journal, REQ_PREFLUSH | REQ_FUA);
- 			mutex_unlock(&journal->j_checkpoint_mutex);
- 		} else
- 			err = -EIO;
-@@ -2468,7 +2470,7 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
- 	 * the magic code for a fully-recovered superblock.  Any future
- 	 * commits of data to the journal will restore the current
- 	 * s_start value. */
--	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_mark_journal_empty(journal, REQ_FUA);
- 
- 	if (flags)
- 		err = __jbd2_journal_erase(journal, flags);
-@@ -2514,7 +2516,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- 	if (write) {
- 		/* Lock to make assertions happy... */
- 		mutex_lock_io(&journal->j_checkpoint_mutex);
--		jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+		jbd2_mark_journal_empty(journal, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 52772c826c86..0fc6c1f51262 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1374,6 +1374,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
- JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- 
-+/* Journal high priority write IO operation flags */
-+#define JBD2_JOURNAL_REQ_FLAGS		(REQ_META | REQ_SYNC | REQ_IDLE)
-+
- /*
-  * Journal flag definitions
-  */
--- 
-2.39.2
+If we choose to change the semantics I would suggest that the new
+semantics be:
 
+If a different name for a directory already exists:
+	* Detach the mounts unconditionally (leaving dentry descendants alone).
+	* Attempt the current splice.
+          - If the splice succeeds ( return the new dentry )
+	  - If the splice fails ( fail the lookup, and d_invalidate the existing name )
+
+Unconditionally dissolving the mounts before attempting the rename
+should simplify everything.
+
+In the worst case a race between d_invalidate and d_splice_alias will
+now become a race to see who can detach the mounts first.
+
+Eric
 
