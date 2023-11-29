@@ -1,103 +1,88 @@
-Return-Path: <linux-ext4+bounces-217-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-218-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44067FCF27
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 07:33:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9457FD168
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 09:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C070281F52
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 06:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CB71B2175C
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 08:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2867A10794;
-	Wed, 29 Nov 2023 06:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CxWXG8PP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0A212B61;
+	Wed, 29 Nov 2023 08:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CC719B7;
-	Tue, 28 Nov 2023 22:33:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=TWq/t0u67v2rmHoA0biAg96aAnVgN6dEVTLzGtd0tU4=; b=CxWXG8PPt4BemfhTFre5zsLu0F
-	bsXzraNfKCISHJW9w2B1vELyX1JjscoqQVo2AbqQ6pDlDlnfWpIPBU9tLYsAGGa2YMNT0/MAczYXb
-	/1Uibq1gSwa0jX9P9h5znTyj9eI628wOkY61VYdE22YnKQBGxeLUoIgV1FT2amd5NH3SSgwMoquHM
-	2B+ZJjKyvC9RCyvkuhNnfca/k5VSqjuPaAB39aQUwjJbUm55mpY4dEkjYLv+hpy4o9+kX9+NwL+uk
-	PAW1iGQ2RpX40izmC5Je+A9K+asRhrX3bXb1G/1dIftZKkXGsoZlODjuCj1258k0e6/dUrVAX+zDT
-	Jfz+aPIA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8E82-007F1O-15;
-	Wed, 29 Nov 2023 06:32:58 +0000
-Date: Tue, 28 Nov 2023 22:32:58 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
- iomap
-Message-ID: <ZWbbGjDKbZjS5Kb0@infradead.org>
-References: <cover.1700506526.git.ritesh.list@gmail.com>
- <f5e84d3a63de30def2f3800f534d14389f6ba137.1700506526.git.ritesh.list@gmail.com>
- <20231122122946.wg3jqvem6fkg3tgw@quack3>
- <ZV399sCMq+p57Yh3@infradead.org>
- <ZV6AJHd0jJ14unJn@dread.disaster.area>
- <20231123040944.GB36168@frogsfrogsfrogs>
- <ZV76nfRd6BUzXYqe@infradead.org>
- <20231129053721.GC36168@frogsfrogsfrogs>
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9F7111
+	for <linux-ext4@vger.kernel.org>; Wed, 29 Nov 2023 00:51:18 -0800 (PST)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2855e4715e4so9629804a91.0
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Nov 2023 00:51:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701247878; x=1701852678;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=T8KkhzbLwre4rEKvvdu6+jJbxsAn75Bg3MZuoBBPrJs5+IMAdnDmQHvGdxPJQKO75a
+         s0SVmEPUc01AEFcyYuseCQWmTq1SHI+zWozIz2rEcsChcfsXQmjTt/6lZeGtnHWLeyAv
+         2FtzLp4WWcON8ggfJS9sDZE2PXxRcxTnBrmSWZU7AJIK7PAzq9eRFtCLDutde1UFrx6j
+         CbuTLv76MN9+D4T65mckCENSJvEOYZf1Qox/fcLGU5YQCh7NV1ecS5FBsO/7kotwD9eg
+         Y5ePZcLdPTI25YZEIvSIzz+s3Y3W8OT6WwSH8yyNKjh+DcAwfags3UYUzMVq/jvKlQ20
+         7bVQ==
+X-Gm-Message-State: AOJu0Yydstn1Nanin1ek1nQy+knHzROLZzSo+XuvKzLZgBby8DmdFIIP
+	Ves2JqKDyz7IbshzqV3mTbhPIsMY4cjX6JQzOhH2uv6Ah3qe
+X-Google-Smtp-Source: AGHT+IF1MYdBNjdusmKFxsuZ/Nr/VSjghO6WRZ54GK864hsFL2YuTIprEZmQCeIMEbRyAlQzutP5Q08V4iUeTRqpO76M2EbgqcvB
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129053721.GC36168@frogsfrogsfrogs>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Received: by 2002:a17:902:f68e:b0:1ce:5c2d:47e with SMTP id
+ l14-20020a170902f68e00b001ce5c2d047emr4297801plg.5.1701247878586; Wed, 29 Nov
+ 2023 00:51:18 -0800 (PST)
+Date: Wed, 29 Nov 2023 00:51:18 -0800
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a6a45060b46a377@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Nov 28, 2023 at 09:37:21PM -0800, Darrick J. Wong wrote:
-> TBH I've been wondering what would happen if we bumped i_mappingseq on
-> updates of either data or cow fork instead of the shift+or'd thing that
-> we use now for writeback and/or pagecache write.
-> 
-> I suppose the nice thing about the current encodings is that we elide
-> revalidations when the cow fork changes but mapping isn't shared.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-changed?  But yes.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-> 
-> > > Anyway, I'll have time to go play with that (and further purging of
-> > > function pointers)
-> > 
-> > Do we have anything where the function pointer overhead is actually
-> > hurting us right now?
-> 
-> Not that I know of, but moving to a direct call model means that the fs
-> would know based on the iomap_XXX_iter function signature whether or not
-> iomap needs a srcmap; and then it can modify its iomap_begin function
-> accordingly.
-> 
-> Right now all those rules aren't especially obvious or well documented.
-> Maybe I can convince myself that improved documentation will suffice to
-> eliminate Ted's confusion. :)
+#syz fix: exact-commit-title
 
-Well, with an iter model I think we can actually kill the srcmap
-entirely, as we could be doing two separate overlapping iterations at
-the same time.  Which would probably be nice for large unaligned writes
-as the write size won't be limited by the existing mapping only used
-to read in the unaligned blocks at the beginning end end.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-> > One thing I'd like to move to is to merge the iomap_begin and iomap_end
-> > callbacks into one similar to willy's series from 2020.  The big
-> 
-> Got a link to that?  I need my memory refreshed, having DROP TABLE MEM2020;
-> pretty please.
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
 
-https://lore.kernel.org/all/20200811205314.GF6107@magnolia/T/
+---
+[1] I expect the commit to be present in:
 
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
