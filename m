@@ -1,104 +1,108 @@
-Return-Path: <linux-ext4+bounces-213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-214-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5517A7FB6AF
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 11:05:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB9A87FCE12
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 05:53:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FA8F282930
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Nov 2023 10:05:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6E811C20FB1
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 04:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF15C4D581;
-	Tue, 28 Nov 2023 10:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51EB06FA6;
+	Wed, 29 Nov 2023 04:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="ajmIPgE3"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Eg5UlXeh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B31710E
-	for <linux-ext4@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3263245f8f.0
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1701165931; x=1701770731; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=ajmIPgE3cf4/VQcKecwZurNFwBZ7fhShFWpQSsfDV0gtymPBLKvL5H3127D9k1L6dp
-         hX+TAPJ6uHosbFCDtux+M7ll0rT1Bey3JLg8DNYEpumCySiJ7nd6xroxIcltB8532kPn
-         gu41KkYYBNQIm56IEzzrBy+Y2oWQCUj/A3o20=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701165931; x=1701770731;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=raxC9WU2qSu/xFzOa3N43FyUWiQiCck91NV9ngdv0qB90CJ9OoyS/hz3ALSRXRUzvu
-         LpHhNwerLxYqIObCrhRvuYpyRts1SWO+PnImsSLvFXvyL6fbccJerMZDvXjJ2mnceWAz
-         nqY3aqm9eyDSguB8K8l76/HN5IBxNhHLc1W3+mm+Xb3ldUJSG/5XsRjMPDJEqnSAvKkD
-         aInd717Zq/J2Y7SjW7ArAJuRSPiOA2ZpW3pR4xP6S+3MOCXYqUY10ujyDIcqIOBygpOE
-         ow1hCupecGjCv8m5FXnjb+Xvr/mjgApFUCNtAhu4MbYerme4TZOOw+UBuGNQUTfXir5t
-         QX9w==
-X-Gm-Message-State: AOJu0Yw+FS0Ydrkx8r704Kr1w3HaKV23Fm2dfT3h9QHeoq7GgLTL6iZw
-	HiU/i5mU/7yb2x+94FdH+FfnHA==
-X-Google-Smtp-Source: AGHT+IHso67qiRejATVe+y4q8GA8WkjBME6ZXNG2nx2AvipjQBf9Fe7u/GIhGV/RuBTAoKaGDDxyQg==
-X-Received: by 2002:a5d:4bcf:0:b0:332:f81d:8dac with SMTP id l15-20020a5d4bcf000000b00332f81d8dacmr6833150wrt.67.1701165931581;
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Received: from localhost ([213.195.113.99])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d674a000000b00332eef1ca7asm9779426wrw.80.2023.11.28.02.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Date: Tue, 28 Nov 2023 11:05:30 +0100
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, dchinner@redhat.com,
-	linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
-	dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
-	hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: Re: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to
- get inode from block_device
-Message-ID: <ZWW7ag6vIhc_Skh5@macbook>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4114F10E7;
+	Tue, 28 Nov 2023 20:53:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=z1R38ZIL6PItsE4VJCnvik8TjfbvUEepVID/j4l7P7g=; b=Eg5UlXehHPMIfT8SBrouZgfkcU
+	hCQIdUNoFzbwFQLMCBZNPjHuzaffVNLXDorIyx6omYtWmmXatluzh+wSH5P0HqMYNAJrNMeT79U6b
+	ZnBcFG9ZoiAYf6neENYLGYKSHh4nMX5R4A7c1+IQ91AV/xUaHrujUlsty8zRmzTIIHaXgLtyg3AHF
+	fPn8q6AeptVAFGsWZkTIiC1tZ4CVR/8QmK+qjYsZyOsa/vtQSEtF2U/tnzYTHebCij9wwW2dBaJhh
+	y/ceevCidqg+Of7MdqEqOqDjwVPNCDCj77kiw5/MQ7nT79NZBERzCbsPGXW3GltRRtHLlXqF2Q0IK
+	XEE6Dfsw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r8CZV-004l87-08;
+	Wed, 29 Nov 2023 04:53:13 +0000
+Date: Wed, 29 Nov 2023 04:53:13 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Christian Brauner <brauner@kernel.org>, tytso@mit.edu,
+	linux-f2fs-devel@lists.sourceforge.net, ebiggers@kernel.org,
+	jaegeuk@kernel.org, linux-ext4@vger.kernel.org,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Gabriel Krisman Bertazi <gabriel@krisman.be>
+Subject: Re: fun with d_invalidate() vs. d_splice_alias() was Re: [f2fs-dev]
+ [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
+Message-ID: <20231129045313.GA1130947@ZenIV>
+References: <20231122211901.GJ38156@ZenIV>
+ <CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
+ <20231123171255.GN38156@ZenIV>
+ <20231123182426.GO38156@ZenIV>
+ <20231123215234.GQ38156@ZenIV>
+ <87leangoqe.fsf@>
+ <20231125220136.GB38156@ZenIV>
+ <20231126045219.GD38156@ZenIV>
+ <20231126184141.GF38156@ZenIV>
+ <20231127063842.GG38156@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+In-Reply-To: <20231127063842.GG38156@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Nov 27, 2023 at 02:21:02PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Which is more efficiency, and also prepare to remove the field
-> 'bd_inode' from block_device.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Mon, Nov 27, 2023 at 06:38:43AM +0000, Al Viro wrote:
 
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+> > FWIW, I suspect that the right answer would be along the lines of
+> > 	* if d_splice_alias() does move an exsiting (attached) alias in
+> > place, it ought to dissolve all mountpoints in subtree being moved.
+> > There might be subtleties,
 
-Thanks, Roger.
+Are there ever...  Starting with the "our test for loop creation
+(alias is a direct ancestor, need to fail with -ELOOP) is dependent
+upon rename_lock being held all along".
+
+Folks, what semantics do we want for dissolving mounts on splice?
+The situation when it happens is when we have a subtree on e.g. NFS
+and have some mounts (on client) inside that.  Then somebody on
+server moves the root of that subtree somewhere else and we try
+to do a lookup in new place.  Options:
+
+1) our dentry for directory that got moved on server is moved into
+new place, along with the entire subtree *and* everything mounted
+on it.  Very dubious semantics, especially since if we look the
+old location up before looking for new one, the mounts will be
+dissolved; no way around that.
+
+2) lookup fails.  It's already possible; e.g. if server has
+/srv/nfs/1/2/3 moved to /srv/nfs/x, then /srv/nfs/1/2 moved
+to /srv/nfs/x/y and client has a process with cwd in /mnt/nfs/1/2/3
+doing a lookup for "y", there's no way in hell to handle that -
+the lookup will return the fhandle of /srv/nfs/x, which is the
+same thing the client has for /mnt/nfs/1/2; we *can't* move that
+dentry to /mnt/nfs/1/2/3/y - not without creating a detached loop.
+We can also run into -ESTALE if one of the trylocks in
+__d_unalias() fails.  Having the same happen if there are mounts
+in the subtree we are trying to splice would be unpleasant, but
+not fatal.  The trouble is, that won't be a transient failure -
+not until somebody tries to look the old location up.
+
+3) dissolve the mounts.  Doable, but it's not easy; especially
+since we end up having to redo the loop-prevention check after
+the mounts had been dissolved.  And that check may be failing
+by that time, with no way to undo that dissolving...
 
