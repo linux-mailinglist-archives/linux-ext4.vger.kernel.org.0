@@ -1,143 +1,123 @@
-Return-Path: <linux-ext4+bounces-223-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-224-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE7937FDB03
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 16:20:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7BE17FE0BF
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 21:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C04C1C20B8D
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 15:20:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D976C1C20FCB
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 20:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192C4374F7;
-	Wed, 29 Nov 2023 15:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B221A0C;
+	Wed, 29 Nov 2023 20:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfaWVrHb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ECEDD;
-	Wed, 29 Nov 2023 07:19:53 -0800 (PST)
-Received: from in02.mta.xmission.com ([166.70.13.52]:41778)
-	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1r8MLv-00Cf3p-Sp; Wed, 29 Nov 2023 08:19:51 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:49158 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1r8MLu-005gWB-Nk; Wed, 29 Nov 2023 08:19:51 -0700
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org,  Linus Torvalds
- <torvalds@linux-foundation.org>,  Christian Brauner <brauner@kernel.org>,
-  tytso@mit.edu,  linux-f2fs-devel@lists.sourceforge.net,
-  ebiggers@kernel.org,  jaegeuk@kernel.org,  linux-ext4@vger.kernel.org,
-  Miklos Szeredi <miklos@szeredi.hu>,  Gabriel Krisman Bertazi
- <gabriel@krisman.be>
-In-Reply-To: <20231129045313.GA1130947@ZenIV> (Al Viro's message of "Wed, 29
-	Nov 2023 04:53:13 +0000")
-References: <20231122211901.GJ38156@ZenIV>
-	<CAHk-=wh5WYPN7BLSUjUr_VBsPTxHOcMHo1gOH2P4+5NuXAsCKA@mail.gmail.com>
-	<20231123171255.GN38156@ZenIV> <20231123182426.GO38156@ZenIV>
-	<20231123215234.GQ38156@ZenIV> <20231125220136.GB38156@ZenIV>
-	<20231126045219.GD38156@ZenIV> <20231126184141.GF38156@ZenIV>
-	<20231127063842.GG38156@ZenIV> <20231129045313.GA1130947@ZenIV>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Date: Wed, 29 Nov 2023 09:19:41 -0600
-Message-ID: <87v89kio36.fsf@email.froward.int.ebiederm.org>
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DEABF;
+	Wed, 29 Nov 2023 12:05:54 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2858ae35246so162375a91.0;
+        Wed, 29 Nov 2023 12:05:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701288353; x=1701893153; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4KOkUHQByFZ8OKeOPSq83EmagT7oQ/Utwruetc6jzg=;
+        b=JfaWVrHbWVQBqztlsgJKHpm2r7EK68HXfuWnRAh0F3K60QvCZLhyzm3ydtKgXMK3M5
+         /NvEHJNzvy1M/BuvFj0D+mXmYsSYGU9RtZsYPlZlgbrh+Tn5u0B8RSRGXe7lPgn9lcNt
+         wMdJbMCr0KCz8Yp4SIS6h5ZwVnBBZ6ty13mxQ4ZsuCnjFq4D8mnoRzDUjhPefjnQE4/S
+         Lqk8QmJslEcdMzZ2WZ/KryBLPiVCo6AZVL3QcQBdDfpBNpoB7bJkKnyE/Imi7roCjW+a
+         UjZ9ayiCvUgarcS+jTTaMa+bMtPlhJ8hV94BrN2YL+qIrzW/9y5MHsHYxY1UjCrpX7iM
+         ZagA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701288353; x=1701893153;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T4KOkUHQByFZ8OKeOPSq83EmagT7oQ/Utwruetc6jzg=;
+        b=Yeecp3VelQl6d4UHignuYSC4st+aqxXeA5uMEe6sCq71KEUIFf6Pb8EsClVIkqfOF8
+         mB2LGVpSdFQSWOW9QO4QopGsBC4Uk3y4YkhT+q+v0Dq6sOOXWHtTDwXaObgBSkjABCFJ
+         ljWgeyTf3drCi8VpYormu2Y8Quxe3SPNiy+N28SnTj4kNrdtcNwxOcqlSYnp1wLOCNB7
+         2VhGmd3uW4kRdzllcOoGXUWp5F6wlgmf5S6YSsjDnpg+OdljvtWwLz6kpgSkm6VrC1Hd
+         JuqqpJYrrc0FslrZCQH1VKNwcuxtVsfo6tA3EJqMVeTP52QR8MKxJGfK8tVYdCl5HBgq
+         R06w==
+X-Gm-Message-State: AOJu0YxBO6Nu05BJyZ3h4riKnZ7+ptrpdsWWwOBhaqIx1U0ysRKHG91b
+	d7XnTUytq677kJ4mKOo+QSU=
+X-Google-Smtp-Source: AGHT+IE8G+xDGisS3XDTwV1lyxzMjdQnx3CMal/tNg8XEa1KwZ1+fHfQaTVN4lH80ax4CM00oHOs3A==
+X-Received: by 2002:a17:90a:1cf:b0:285:9b85:45ee with SMTP id 15-20020a17090a01cf00b002859b8545eemr14531882pjd.3.1701288353648;
+        Wed, 29 Nov 2023 12:05:53 -0800 (PST)
+Received: from ddawson.local ([174.31.57.58])
+        by smtp.gmail.com with ESMTPSA id pg15-20020a17090b1e0f00b002807c61ca2bsm1772905pjb.26.2023.11.29.12.05.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:05:53 -0800 (PST)
+Received: from [127.0.0.1] (unknown [127.0.0.1])
+	by ddawson.local (Postfix) with ESMTP id 79B5E2DEAEBE;
+	Wed, 29 Nov 2023 12:05:52 -0800 (PST)
+Message-ID: <a5877875-5e4c-4098-b9a2-1394691c1b01@gmail.com>
+Date: Wed, 29 Nov 2023 12:05:47 -0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1r8MLu-005gWB-Nk;;;mid=<87v89kio36.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1/b6JS6EkjAv/7bqf1Ls+CX0i6iy1ZrEtE=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Level: 
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 555 ms - load_scoreonly_sql: 0.05 (0.0%),
-	signal_user_changed: 11 (2.0%), b_tie_ro: 10 (1.8%), parse: 1.33
-	(0.2%), extract_message_metadata: 18 (3.2%), get_uri_detail_list: 3.1
-	(0.6%), tests_pri_-2000: 12 (2.2%), tests_pri_-1000: 3.6 (0.6%),
-	tests_pri_-950: 1.52 (0.3%), tests_pri_-900: 1.28 (0.2%),
-	tests_pri_-90: 133 (23.9%), check_bayes: 130 (23.5%), b_tokenize: 8
-	(1.5%), b_tok_get_all: 69 (12.5%), b_comp_prob: 5 (0.9%),
-	b_tok_touch_all: 44 (7.8%), b_finish: 0.86 (0.2%), tests_pri_0: 354
-	(63.8%), check_dkim_signature: 0.65 (0.1%), check_dkim_adsp: 2.8
-	(0.5%), poll_dns_idle: 0.80 (0.1%), tests_pri_10: 3.1 (0.6%),
-	tests_pri_500: 12 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: fun with d_invalidate() vs. d_splice_alias() was Re: [f2fs-dev]
- [PATCH v6 0/9] Support negative dentries on case-insensitive ext4 and f2fs
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+From: Daniel Dawson <danielcdawson@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+Content-Language: en-US
+Autocrypt: addr=danielcdawson@gmail.com; keydata=
+ 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
+ bi1gCpm8
+In-Reply-To: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+On 11/28/23 10:15 PM, Daniel Dawson wrote:
+> $ rm -r test-file; dd if=/dev/zero of=test-file bs=64 count=3 
+> status=none; lsattr test-file
 
-> On Mon, Nov 27, 2023 at 06:38:43AM +0000, Al Viro wrote:
->
->> > FWIW, I suspect that the right answer would be along the lines of
->> > 	* if d_splice_alias() does move an exsiting (attached) alias in
->> > place, it ought to dissolve all mountpoints in subtree being moved.
->> > There might be subtleties,
->
-> Are there ever...  Starting with the "our test for loop creation
-> (alias is a direct ancestor, need to fail with -ELOOP) is dependent
-> upon rename_lock being held all along".
->
-> Folks, what semantics do we want for dissolving mounts on splice?
-> The situation when it happens is when we have a subtree on e.g. NFS
-> and have some mounts (on client) inside that.  Then somebody on
-> server moves the root of that subtree somewhere else and we try
-> to do a lookup in new place.  Options:
->
-> 1) our dentry for directory that got moved on server is moved into
-> new place, along with the entire subtree *and* everything mounted
-> on it.  Very dubious semantics, especially since if we look the
-> old location up before looking for new one, the mounts will be
-> dissolved; no way around that.
->
-> 2) lookup fails.  It's already possible; e.g. if server has
-> /srv/nfs/1/2/3 moved to /srv/nfs/x, then /srv/nfs/1/2 moved
-> to /srv/nfs/x/y and client has a process with cwd in /mnt/nfs/1/2/3
-> doing a lookup for "y", there's no way in hell to handle that -
-> the lookup will return the fhandle of /srv/nfs/x, which is the
-> same thing the client has for /mnt/nfs/1/2; we *can't* move that
-> dentry to /mnt/nfs/1/2/3/y - not without creating a detached loop.
-> We can also run into -ESTALE if one of the trylocks in
-> __d_unalias() fails.  Having the same happen if there are mounts
-> in the subtree we are trying to splice would be unpleasant, but
-> not fatal.  The trouble is, that won't be a transient failure -
-> not until somebody tries to look the old location up.
->
-> 3) dissolve the mounts.  Doable, but it's not easy; especially
-> since we end up having to redo the loop-prevention check after
-> the mounts had been dissolved.  And that check may be failing
-> by that time, with no way to undo that dissolving...
+My apologies. That should be "rm -f" at the start.
 
-To be clear this is a change in current semantics and has a minuscule
-change of resulting in a regression.  That should be called out in the
-change log.
+-- 
+PGP fingerprint: 5BBD5080FEB0EF7F142F8173D572B791F7B4422A
 
-If we choose to change the semantics I would suggest that the new
-semantics be:
-
-If a different name for a directory already exists:
-	* Detach the mounts unconditionally (leaving dentry descendants alone).
-	* Attempt the current splice.
-          - If the splice succeeds ( return the new dentry )
-	  - If the splice fails ( fail the lookup, and d_invalidate the existing name )
-
-Unconditionally dissolving the mounts before attempting the rename
-should simplify everything.
-
-In the worst case a race between d_invalidate and d_splice_alias will
-now become a race to see who can detach the mounts first.
-
-Eric
 
