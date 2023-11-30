@@ -1,115 +1,161 @@
-Return-Path: <linux-ext4+bounces-238-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-239-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B647FEF19
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 13:26:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 837707FEF2F
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 13:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61374B20E7E
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:26:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B553F1C20D59
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC484778D;
-	Thu, 30 Nov 2023 12:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44FD39845;
+	Thu, 30 Nov 2023 12:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1N8lw7rU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WcwFG53O"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E1C10F8;
-	Thu, 30 Nov 2023 04:26:33 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SgwR83CWnz4f3lwS;
-	Thu, 30 Nov 2023 20:26:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 6C9E21A087A;
-	Thu, 30 Nov 2023 20:26:30 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2xF0f2hlDKFrCQ--.55161S3;
-	Thu, 30 Nov 2023 20:26:30 +0800 (CST)
-Subject: Re: [RFC PATCH 12/18] iomap: don't increase i_size if it's not a
- write operation
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
- djwong@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20231123125121.4064694-1-yi.zhang@huaweicloud.com>
- <20231123125121.4064694-13-yi.zhang@huaweicloud.com>
- <ZV9xFt1WhLIoULyc@infradead.org>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <8c697498-8c29-b752-5b6b-5698d916d056@huaweicloud.com>
-Date: Thu, 30 Nov 2023 20:26:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12E8D4A;
+	Thu, 30 Nov 2023 04:36:04 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4223A1FB3F;
+	Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701347762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
+	b=1N8lw7rU4uUXQy7fe3kxGnnYmL9jqMDEONqJi4/euu9FDvVp5d5BVwGYTs3NGNoPw3QeYQ
+	sEONeEvUeUZglEaIPJt7j2qKxT1W/paPxfGinNzHslBgNLQYl4xjoEsV/7IYUm0rUz4v33
+	D4Tu57GRj/GmtNCkIvp4+aTtjwUjwts=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701347762;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
+	b=WcwFG53OnS6tXTduO1WdTZq2CZ6bNcbIBD//vZLIBdvx9koi3D5zpu/etzAgsfziyUkkNk
+	IaL6OOFyhNZmKoCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 34D9613A5C;
+	Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id NeTdDLKBaGV2UwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 12:36:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id AB210A07DB; Thu, 30 Nov 2023 13:36:01 +0100 (CET)
+Date: Thu, 30 Nov 2023 13:36:01 +0100
+From: Jan Kara <jack@suse.cz>
+To: Gou Hao <gouhao@uniontech.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	alex@clusterfs.com, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, gouhaojake@163.com
+Subject: Re: [PATCH] ext4: improving calculation of 'fe_{len|start}' in
+ mb_find_extent()
+Message-ID: <20231130123601.bdzyhsxqegpe5qbe@quack3>
+References: <20231113082617.11258-1-gouhao@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZV9xFt1WhLIoULyc@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDX2xF0f2hlDKFrCQ--.55161S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1DXry7tw1UXF47try5Arb_yoW8AF1rpr
-	909F40k3Z7tr1q9rnrtrZ0qa4Fq3W8try7Cryjkr4fZr1DAFyIgr1rWa4Y9FWFkr9xAr4S
-	qr4kZ3yrWF1xZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113082617.11258-1-gouhao@uniontech.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Score: 4.50
+X-Spamd-Result: default: False [4.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[163.com];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,uniontech.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,clusterfs.com,vger.kernel.org,163.com];
+	 RCVD_TLS_ALL(0.00)[]
 
-On 2023/11/23 23:34, Christoph Hellwig wrote:
-> On Thu, Nov 23, 2023 at 08:51:14PM +0800, Zhang Yi wrote:
->> index fd4d43bafd1b..3b9ba390dd1b 100644
->> --- a/fs/iomap/buffered-io.c
->> +++ b/fs/iomap/buffered-io.c
->> @@ -852,13 +852,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->>  	 * cache.  It's up to the file system to write the updated size to disk,
->>  	 * preferably after I/O completion so that no stale data is exposed.
->>  	 */
->> -	if (pos + ret > old_size) {
->> +	if ((iter->flags & IOMAP_WRITE) && pos + ret > old_size) {
->>  		i_size_write(iter->inode, pos + ret);
->>  		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->>  	}
->>  	__iomap_put_folio(iter, pos, ret, folio);
->>  
->> -	if (old_size < pos)
->> +	if ((iter->flags & IOMAP_WRITE) && old_size < pos)
->>  		pagecache_isize_extended(iter->inode, old_size, pos);
->>  	if (ret < len)
->>  		iomap_write_failed(iter->inode, pos + ret, len - ret);
+On Mon 13-11-23 16:26:17, Gou Hao wrote:
+> After first execution of mb_find_order_for_block():
 > 
-> I agree with your rationale, but I hate how this code ends up
-> looking.  In many ways iomap_write_end seems like the wrong
-> place to update the inode size anyway.  I've not done a deep
-> analysis, but I think there shouldn't really be any major blocker
-> to only setting IOMAP_F_SIZE_CHANGED in iomap_write_end, and then
-> move updating i_size and calling pagecache_isize_extended to
-> iomap_write_iter.
+> 'fe_start' is the value of 'block' passed in mb_find_extent().
 > 
+> 'fe_len' is the difference between the length of order-chunk and
+> remainder of the block divided by order-chunk.
+> 
+> And 'next' does not require initialization after above modifications.
+> 
+> Signed-off-by: Gou Hao <gouhao@uniontech.com>
 
-Think about it in depth, I think we cannot move updating i_size
-to iomap_write_iter() because we have to do this under folio lock,
-otherwise, once we unlock folio, the writeback process could start
-writing back and call folio_zero_segment() to zero out the valid
-data beyond the unupdated i_size. Only if we move
-__iomap_put_folio() out together, but I suppose it's not a good
-way.
+Ah, nice simplification! Feel free to add:
 
-Thanks,
-Yi.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
+								Honza
+
+> ---
+>  fs/ext4/mballoc.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 454d5612641e..d3f985f7cab8 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1958,8 +1958,7 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>  static int mb_find_extent(struct ext4_buddy *e4b, int block,
+>  				int needed, struct ext4_free_extent *ex)
+>  {
+> -	int next = block;
+> -	int max, order;
+> +	int max, order, next;
+>  	void *buddy;
+>  
+>  	assert_spin_locked(ext4_group_lock_ptr(e4b->bd_sb, e4b->bd_group));
+> @@ -1977,16 +1976,12 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
+>  
+>  	/* find actual order */
+>  	order = mb_find_order_for_block(e4b, block);
+> -	block = block >> order;
+>  
+> -	ex->fe_len = 1 << order;
+> -	ex->fe_start = block << order;
+> +	ex->fe_len = (1 << order) - (block & ((1 << order) - 1));
+> +	ex->fe_start = block;
+>  	ex->fe_group = e4b->bd_group;
+>  
+> -	/* calc difference from given start */
+> -	next = next - ex->fe_start;
+> -	ex->fe_len -= next;
+> -	ex->fe_start += next;
+> +	block = block >> order;
+>  
+>  	while (needed > ex->fe_len &&
+>  	       mb_find_buddy(e4b, order, &max)) {
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
