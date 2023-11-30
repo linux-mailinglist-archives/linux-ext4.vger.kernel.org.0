@@ -1,123 +1,259 @@
-Return-Path: <linux-ext4+bounces-224-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-225-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BE17FE0BF
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 21:05:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB437FE79F
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 04:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D976C1C20FCB
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Nov 2023 20:05:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CEED282063
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 03:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B221A0C;
-	Wed, 29 Nov 2023 20:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C20C125C3;
+	Thu, 30 Nov 2023 03:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfaWVrHb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mz6gylYU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DEABF;
-	Wed, 29 Nov 2023 12:05:54 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2858ae35246so162375a91.0;
-        Wed, 29 Nov 2023 12:05:54 -0800 (PST)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C281B4;
+	Wed, 29 Nov 2023 19:24:41 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c6282f8d95so57679a12.0;
+        Wed, 29 Nov 2023 19:24:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701288353; x=1701893153; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=T4KOkUHQByFZ8OKeOPSq83EmagT7oQ/Utwruetc6jzg=;
-        b=JfaWVrHbWVQBqztlsgJKHpm2r7EK68HXfuWnRAh0F3K60QvCZLhyzm3ydtKgXMK3M5
-         /NvEHJNzvy1M/BuvFj0D+mXmYsSYGU9RtZsYPlZlgbrh+Tn5u0B8RSRGXe7lPgn9lcNt
-         wMdJbMCr0KCz8Yp4SIS6h5ZwVnBBZ6ty13mxQ4ZsuCnjFq4D8mnoRzDUjhPefjnQE4/S
-         Lqk8QmJslEcdMzZ2WZ/KryBLPiVCo6AZVL3QcQBdDfpBNpoB7bJkKnyE/Imi7roCjW+a
-         UjZ9ayiCvUgarcS+jTTaMa+bMtPlhJ8hV94BrN2YL+qIrzW/9y5MHsHYxY1UjCrpX7iM
-         ZagA==
+        d=gmail.com; s=20230601; t=1701314680; x=1701919480; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kAj6yJvu05E6Xi0f/eguW2krx+48+fiAiYpVUT1CErk=;
+        b=mz6gylYUqllinNxXYd7zw3IkdIXXfx2Z31vW4rdLtsfy2Kfr2Sysy4Bj/14TCk6nce
+         sRucSILzEdzZxQc9Ie31QX8x0Be9c4c0nGave0jsCrLMZDyO9rw69YgUUAAhDbMnJAuF
+         03XffEHhuKsPt1hioW4dBpZuQOgcnLYD4hWXVZ1Utzwx2a+41eDp7qpHp8n+lCrsUg7F
+         6gRQSOiby8guWNd/JvPqHZzwdrdTDCWqLlv90DzcIEuZ+3EbxYCSP0BOUSxmP0wGJ5uI
+         YxEQpIewcwuFxSLXSbO7d0DlEyogaLL5wrPI2QdnnBCmdkXQLCMwNuRPseeGCe3XTxmx
+         kOuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701288353; x=1701893153;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T4KOkUHQByFZ8OKeOPSq83EmagT7oQ/Utwruetc6jzg=;
-        b=Yeecp3VelQl6d4UHignuYSC4st+aqxXeA5uMEe6sCq71KEUIFf6Pb8EsClVIkqfOF8
-         mB2LGVpSdFQSWOW9QO4QopGsBC4Uk3y4YkhT+q+v0Dq6sOOXWHtTDwXaObgBSkjABCFJ
-         ljWgeyTf3drCi8VpYormu2Y8Quxe3SPNiy+N28SnTj4kNrdtcNwxOcqlSYnp1wLOCNB7
-         2VhGmd3uW4kRdzllcOoGXUWp5F6wlgmf5S6YSsjDnpg+OdljvtWwLz6kpgSkm6VrC1Hd
-         JuqqpJYrrc0FslrZCQH1VKNwcuxtVsfo6tA3EJqMVeTP52QR8MKxJGfK8tVYdCl5HBgq
-         R06w==
-X-Gm-Message-State: AOJu0YxBO6Nu05BJyZ3h4riKnZ7+ptrpdsWWwOBhaqIx1U0ysRKHG91b
-	d7XnTUytq677kJ4mKOo+QSU=
-X-Google-Smtp-Source: AGHT+IE8G+xDGisS3XDTwV1lyxzMjdQnx3CMal/tNg8XEa1KwZ1+fHfQaTVN4lH80ax4CM00oHOs3A==
-X-Received: by 2002:a17:90a:1cf:b0:285:9b85:45ee with SMTP id 15-20020a17090a01cf00b002859b8545eemr14531882pjd.3.1701288353648;
-        Wed, 29 Nov 2023 12:05:53 -0800 (PST)
-Received: from ddawson.local ([174.31.57.58])
-        by smtp.gmail.com with ESMTPSA id pg15-20020a17090b1e0f00b002807c61ca2bsm1772905pjb.26.2023.11.29.12.05.53
+        d=1e100.net; s=20230601; t=1701314680; x=1701919480;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kAj6yJvu05E6Xi0f/eguW2krx+48+fiAiYpVUT1CErk=;
+        b=tyId2Iz1knhK9fRBuWuSDbAYQay4vgKfzb5DVOOydmTcaBrVetcxCdLDPPkumVqk/c
+         iqcRLWEGyE4EVX38P7+vuaUpnf4XGvFGZ3uu/LX+d/4g6i/xhD8n9QQnadmaMrPZ44Wa
+         x400MyyN49ENzboalsJAmkRkciXEjuIkjcKrhi3sAYtv0q+5x43eMaNjZk1HMI/FJ0GM
+         EP+9+UOgFMr3XebnaunVCKP3VNt27iVaUE2Lqe/jcd8Cfqj7I72oZBjKpsmsTBSH59CI
+         c4mV3OdrEePi56PeWr4o6EwCIBmE2U0W/wewVqfRMxixM+ojCWupE69Ako1+3JzccUOf
+         7Yaw==
+X-Gm-Message-State: AOJu0YwXpNJbD0LowBkW24OuvE0ddHJxXWEIbq4Xhx8tVVEuffKRQqL1
+	kWpVQrZgZmf3WffqMa//TDZpx9A7AbKQlw==
+X-Google-Smtp-Source: AGHT+IE4scPAT5jh/AKx8q/d+FSaN9Lv1/1W3sFH6eeXa5PugvOS6AwFlaaLGvWU163vYdPgJwGavg==
+X-Received: by 2002:a17:90a:e004:b0:285:be58:6abb with SMTP id u4-20020a17090ae00400b00285be586abbmr15958468pjy.24.1701314679681;
+        Wed, 29 Nov 2023 19:24:39 -0800 (PST)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id l8-20020a17090aec0800b002839a4f65c5sm201310pjy.30.2023.11.29.19.24.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:05:53 -0800 (PST)
-Received: from [127.0.0.1] (unknown [127.0.0.1])
-	by ddawson.local (Postfix) with ESMTP id 79B5E2DEAEBE;
-	Wed, 29 Nov 2023 12:05:52 -0800 (PST)
-Message-ID: <a5877875-5e4c-4098-b9a2-1394691c1b01@gmail.com>
-Date: Wed, 29 Nov 2023 12:05:47 -0800
+        Wed, 29 Nov 2023 19:24:38 -0800 (PST)
+Date: Thu, 30 Nov 2023 08:54:31 +0530
+Message-Id: <8734wnj53k.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use iomap
+In-Reply-To: <87msv5r0uq.fsf@doe.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
- non-inline
-From: Daniel Dawson <danielcdawson@gmail.com>
-To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
-Content-Language: en-US
-Autocrypt: addr=danielcdawson@gmail.com; keydata=
- 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
- bi1gCpm8
-In-Reply-To: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 11/28/23 10:15 PM, Daniel Dawson wrote:
-> $ rm -r test-file; dd if=/dev/zero of=test-file bs=64 count=3 
-> status=none; lsattr test-file
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-My apologies. That should be "rm -f" at the start.
+> Christoph Hellwig <hch@infradead.org> writes:
+>
+>> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
+>>> writeback bit set. XFS plays the revalidation sequence counter games
+>>> because of this so we'd have to do something similar for ext2. Not that I'd
+>>> care as much about ext2 writeback performance but it should not be that
+>>> hard and we'll definitely need some similar solution for ext4 anyway. Can
+>>> you give that a try (as a followup "performance improvement" patch).
+>>
+>> Darrick has mentioned that he is looking into lifting more of the
+>> validation sequence counter validation into iomap.
+>>
+>> In the meantime I have a series here that at least maps multiple blocks
+>> inside a folio in a single go, which might be worth trying with ext2 as
+>> well:
+>>
+>> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
+>
+> Sure, thanks for providing details. I will check this.
+>
 
--- 
-PGP fingerprint: 5BBD5080FEB0EF7F142F8173D572B791F7B4422A
+So I took a look at this. Here is what I think -
+So this is useful of-course when we have a large folio. Because
+otherwise it's just one block at a time for each folio. This is not a
+problem once FS buffered-io handling code moves to iomap (because we
+can then enable large folio support to it).
+
+However, this would still require us to pass a folio to ->map_blocks
+call to determine the size of the folio (which I am not saying can't be
+done but just stating my observations here).
+
+Now coming to implementing validation seq check. I am hoping, it should
+be straight forward at least for ext2, because it mostly just have to
+protect against truncate operation (which can change the block mapping)...
+
+...ok so here is the PoC for seq counter check for ext2. Next let me
+try to see if we can lift this up from the FS side to iomap - 
+
+
+From 86b7bdf79107c3d0a4f37583121d7c136db1bc5c Mon Sep 17 00:00:00 2001
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH] ext2: Implement seq check for mapping multiblocks in ->map_blocks
+
+This implements inode block seq counter (ib_seq) which helps in validating 
+whether the cached wpc (struct iomap_writepage_ctx) still has the valid 
+entries or not. Block mapping can get changed say due to a racing truncate. 
+
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
+ fs/ext2/balloc.c |  1 +
+ fs/ext2/ext2.h   |  6 ++++++
+ fs/ext2/inode.c  | 51 +++++++++++++++++++++++++++++++++++++++++++-----
+ fs/ext2/super.c  |  2 +-
+ 4 files changed, 54 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index e124f3d709b2..e97040194da4 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -495,6 +495,7 @@ void ext2_free_blocks(struct inode * inode, ext2_fsblk_t block,
+ 	}
+ 
+ 	ext2_debug ("freeing block(s) %lu-%lu\n", block, block + count - 1);
++	ext2_inc_ib_seq(EXT2_I(inode));
+ 
+ do_more:
+ 	overflow = 0;
+diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+index 677a9ad45dcb..882c14d20183 100644
+--- a/fs/ext2/ext2.h
++++ b/fs/ext2/ext2.h
+@@ -663,6 +663,7 @@ struct ext2_inode_info {
+ 	struct rw_semaphore xattr_sem;
+ #endif
+ 	rwlock_t i_meta_lock;
++	unsigned int ib_seq;
+ 
+ 	/*
+ 	 * truncate_mutex is for serialising ext2_truncate() against
+@@ -698,6 +699,11 @@ static inline struct ext2_inode_info *EXT2_I(struct inode *inode)
+ 	return container_of(inode, struct ext2_inode_info, vfs_inode);
+ }
+ 
++static inline void ext2_inc_ib_seq(struct ext2_inode_info *ei)
++{
++	WRITE_ONCE(ei->ib_seq, READ_ONCE(ei->ib_seq) + 1);
++}
++
+ /* balloc.c */
+ extern int ext2_bg_has_super(struct super_block *sb, int group);
+ extern unsigned long ext2_bg_num_gdb(struct super_block *sb, int group);
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index f4e0b9a93095..a5490d641c26 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -406,6 +406,8 @@ static int ext2_alloc_blocks(struct inode *inode,
+ 	ext2_fsblk_t current_block = 0;
+ 	int ret = 0;
+ 
++	ext2_inc_ib_seq(EXT2_I(inode));
++
+ 	/*
+ 	 * Here we try to allocate the requested multiple blocks at once,
+ 	 * on a best-effort basis.
+@@ -966,14 +968,53 @@ ext2_writepages(struct address_space *mapping, struct writeback_control *wbc)
+ 	return mpage_writepages(mapping, wbc, ext2_get_block);
+ }
+ 
++struct ext2_writepage_ctx {
++	struct iomap_writepage_ctx ctx;
++	unsigned int		ib_seq;
++};
++
++static inline
++struct ext2_writepage_ctx *EXT2_WPC(struct iomap_writepage_ctx *ctx)
++{
++	return container_of(ctx, struct ext2_writepage_ctx, ctx);
++}
++
++static bool ext2_imap_valid(struct iomap_writepage_ctx *wpc, struct inode *inode,
++			    loff_t offset)
++{
++	if (offset < wpc->iomap.offset ||
++	    offset >= wpc->iomap.offset + wpc->iomap.length)
++		return false;
++
++	if (EXT2_WPC(wpc)->ib_seq != READ_ONCE(EXT2_I(inode)->ib_seq))
++		return false;
++
++	return true;
++}
++
+ static int ext2_write_map_blocks(struct iomap_writepage_ctx *wpc,
+ 				 struct inode *inode, loff_t offset)
+ {
+-	if (offset >= wpc->iomap.offset &&
+-	    offset < wpc->iomap.offset + wpc->iomap.length)
++	loff_t maxblocks = (loff_t)INT_MAX;
++	u8 blkbits = inode->i_blkbits;
++	u32 bno;
++	bool new, boundary;
++	int ret;
++
++	if (ext2_imap_valid(wpc, inode, offset))
+ 		return 0;
+ 
+-	return ext2_iomap_begin(inode, offset, inode->i_sb->s_blocksize,
++	EXT2_WPC(wpc)->ib_seq = READ_ONCE(EXT2_I(inode)->ib_seq);
++
++	ret = ext2_get_blocks(inode, offset >> blkbits, maxblocks << blkbits,
++			      &bno, &new, &boundary, 0);
++	if (ret < 0)
++		return ret;
++	/*
++	 * ret can be 0 in case of a hole which is possible for mmaped writes.
++	 */
++	ret = ret ? ret : 1;
++	return ext2_iomap_begin(inode, offset, (loff_t)ret << blkbits,
+ 				IOMAP_WRITE, &wpc->iomap, NULL);
+ }
+ 
+@@ -984,9 +1025,9 @@ static const struct iomap_writeback_ops ext2_writeback_ops = {
+ static int ext2_file_writepages(struct address_space *mapping,
+ 				struct writeback_control *wbc)
+ {
+-	struct iomap_writepage_ctx wpc = { };
++	struct ext2_writepage_ctx wpc = { };
+ 
+-	return iomap_writepages(mapping, wbc, &wpc, &ext2_writeback_ops);
++	return iomap_writepages(mapping, wbc, &wpc.ctx, &ext2_writeback_ops);
+ }
+ 
+ static int
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 645ee6142f69..cd1d1678e35b 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -188,7 +188,7 @@ static struct inode *ext2_alloc_inode(struct super_block *sb)
+ #ifdef CONFIG_QUOTA
+ 	memset(&ei->i_dquot, 0, sizeof(ei->i_dquot));
+ #endif
+-
++	WRITE_ONCE(ei->ib_seq, 0);
+ 	return &ei->vfs_inode;
+ }
+ 
+
+2.30.2
+
 
 
