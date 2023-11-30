@@ -1,63 +1,63 @@
-Return-Path: <linux-ext4+bounces-236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 050747FED6E
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:00:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9221F7FED78
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98C4EB20EFA
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 11:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2A8E1C20E3B
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 11:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6006E3C076;
-	Thu, 30 Nov 2023 11:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966303C091;
+	Thu, 30 Nov 2023 11:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9vb1tdR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h79ZMiAB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF306D50;
-	Thu, 30 Nov 2023 03:00:09 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1d011cdf562so7463865ad.2;
-        Thu, 30 Nov 2023 03:00:09 -0800 (PST)
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320CC10D0
+	for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 03:02:15 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce322b62aeso448095a34.3
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 03:02:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701342008; x=1701946808; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701342134; x=1701946934; darn=vger.kernel.org;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=161UqmnxQ3DKjSd1QEA0SwThojNVCkaD+GMutSubUiw=;
-        b=T9vb1tdR4hnjLyUVcfkqvM8bwcW/EaHS5KcHBzbg0m1RFlPfLwjzhbmBmJqltsD+WL
-         F+owc9AXnA/v4SmGzq1mjZxDad+ddd2ioVutc5FOHykz6SlGoyibqps2IVkvsX7m4ya/
-         M19IS6eIsaF4qrbk5oeXnQU3pwoKS4UoWnIMXSY425RfdSLrJC6Nc2agA/LF3SSIs5+f
-         7HryIUOeMQvbgFhNSvB9wXyjNbVyIM8gf1f9gaKA3uWWW3ZK2ebXUnXO02uvQOm1vdPP
-         nDqp7+VLb/VDI2dKulIaBkLU9qBEgR5D67F1mSwVqe31p0AdzfBgzL250CosWTKqLLFX
-         z+Nw==
+        bh=XlHKvTfjNrxrUOarndbkj+tn5R+dTKhE025RkL9zzGg=;
+        b=h79ZMiABaLmUU2Ux4c29/XLqLfesMSMQNSYqiArSWRLb7B943C3z+hP+F6f+dlzrWs
+         ftBTtlE7W/bg1km8NsZRMfRtHGcR+w1alhLwiaX4JPbTTHvOwlsC2VgDSQFD7D1saEfb
+         d2xNuKrq+VlOml/BAutHP76+G5RGD18R3dpf5nJiLeDLOkRJiKsQj5K/778FFcNBEAgy
+         nqlVLBq6rmnOxI9F8Ee6k+Tt8+RVv9EYo1u/ai3YtJXU7TzjvL40x5BPBtBqN/JVU8Wt
+         ZKxLqNsoI1cRjxHI4wsmLXWqhyoEPIQRbSNgy95yjZaZw2CiFX7hEmTLUP5sTQNBYHf5
+         on8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701342008; x=1701946808;
+        d=1e100.net; s=20230601; t=1701342134; x=1701946934;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=161UqmnxQ3DKjSd1QEA0SwThojNVCkaD+GMutSubUiw=;
-        b=EQF8xeQulhTYmSrLAktSIv+ddQ6/PRC5gmrygLzaELuO5uVV4XBPndlYotObfuqE+4
-         LdjSzOwlE9As3SJlLC35hGpimbR2dxaY/Qw9/JAlUBDCLl6b/REUILpVpaOr7spDZRva
-         Qn6phE6W1ew4WIo/p5GvHay7lUbXlDxMknq2NYvB7LH1YT15+mJ1n8A1wcNySoKEmbTF
-         7rO5WTiUKmMX45DNDwm3n3b7kEMkDLr8whgcDMQ3YTThJWQOGesWedp1ckbcYKLvOjas
-         yIYMU5Gt8yggNW2wzfWFAmbnChHh7kG9WTf9ZhISreryCpqQfbgyMqu21FsFuovDS+pk
-         njXQ==
-X-Gm-Message-State: AOJu0Yydu5fY9/TR5saaFvzgZiXJ1C7rewuoAC6pbRqHecv3tmZ67xU3
-	k4ZmlOuI0jIIko67e+3zwEoa1h5mKQE=
-X-Google-Smtp-Source: AGHT+IFV8jkNi9ZRhV70nCQs7mPiizkOldCsAvuOoRULWFfyg/8NOEiZW6ULU0j4cf0NJ0G9650Xsg==
-X-Received: by 2002:a17:902:ea84:b0:1cc:3b87:8997 with SMTP id x4-20020a170902ea8400b001cc3b878997mr17504748plb.57.1701342007930;
-        Thu, 30 Nov 2023 03:00:07 -0800 (PST)
+        bh=XlHKvTfjNrxrUOarndbkj+tn5R+dTKhE025RkL9zzGg=;
+        b=j3sKHpZUgN9rIWclbbWNT4C8j3ZvacsGbPNgVthFQ3XmmVDaInUuYx6duu6zFQjFUM
+         5H7dEkBu8L7fpeF5GKS3zdew8m7m0FUqCL3+pbEcf2Jwq0aRUtYETdKMzx4sed6loJ2V
+         xWt70stFo8t0mTi6+Rp1KufqsohIjn0H0qmtBC7LN8BphEBNedtTu0Lbj7K3Ji5+m2A2
+         FU1y0SwlwrVDC8nHz8XGxmaNfD1KDh1G01+g7T1cr52wlU56NRtQs9/eAGklrpJ52yU/
+         ipRQYKa8ADQOV3rM+aMK8MDo0Ag/384tp2Ltssz8I4G8Qjk1Uz0XnIw3s+F2beDK7P96
+         wW4A==
+X-Gm-Message-State: AOJu0YxsbyeDaxL4nqj2IX5ne05Az9Xh7cMPQgZzZ6o72C+3EYKCxCrA
+	dTrk/O5tV9bm0xpUGx4s4/gr3s/Xxrw=
+X-Google-Smtp-Source: AGHT+IGXnQUDymspxeR+B/ZzKAOFp2id/sHHUsfuMf61v1Cr2ex4FJ1XUdX5AByd0Tr2BrXHHWWH+A==
+X-Received: by 2002:a05:6830:6c18:b0:6d8:119d:a0a8 with SMTP id ds24-20020a0568306c1800b006d8119da0a8mr24117578otb.13.1701342134426;
+        Thu, 30 Nov 2023 03:02:14 -0800 (PST)
 Received: from dw-tp ([2401:4900:1cc4:6c8b:6e63:fbc7:5622:17cb])
-        by smtp.gmail.com with ESMTPSA id g12-20020a170902c38c00b001cfd80d0fe8sm1066431plg.98.2023.11.30.03.00.05
+        by smtp.gmail.com with ESMTPSA id n9-20020a634d49000000b0058a9621f583sm972086pgl.44.2023.11.30.03.02.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 03:00:07 -0800 (PST)
-Date: Thu, 30 Nov 2023 16:29:59 +0530
-Message-Id: <87fs0nik0g.fsf@doe.com>
+        Thu, 30 Nov 2023 03:02:13 -0800 (PST)
+Date: Thu, 30 Nov 2023 16:32:10 +0530
+Message-Id: <87bkbbijwt.fsf@doe.com>
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use iomap
-In-Reply-To: <20231130101845.mt3hhwbbpnhroefg@quack3>
+To: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: Fix warning in ext4_dio_write_end_io()
+In-Reply-To: <20231130095653.22679-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,57 +66,31 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
 Jan Kara <jack@suse.cz> writes:
 
-> On Thu 30-11-23 13:15:58, Ritesh Harjani wrote:
->> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
->> 
->> > Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
->> >
->> >> Christoph Hellwig <hch@infradead.org> writes:
->> >>
->> >>> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
->> >>>> writeback bit set. XFS plays the revalidation sequence counter games
->> >>>> because of this so we'd have to do something similar for ext2. Not that I'd
->> >>>> care as much about ext2 writeback performance but it should not be that
->> >>>> hard and we'll definitely need some similar solution for ext4 anyway. Can
->> >>>> you give that a try (as a followup "performance improvement" patch).
->> 
->> ok. So I am re-thinknig over this on why will a filesystem like ext2
->> would require sequence counter check. We don't have collapse range
->> or COW sort of operations, it is only the truncate which can race,
->> but that should be taken care by folio_lock. And even if the partial
->> truncate happens on a folio, since the logical to physical block mapping
->> never changes, it should not matter if the writeback wrote data to a
->> cached entry, right?
+> The syzbot has reported that it can hit the warning in
+> ext4_dio_write_end_io() because i_size < i_disksize. Indeed the
+> reproducer creates a race between DIO IO completion and truncate
+> expanding the file and thus ext4_dio_write_end_io() sees an inconsistent
+> inode state where i_disksize is already updated but i_size is not
+> updated yet. Since we are careful when setting up DIO write and consider
+> it extending (and thus performing the IO synchronously with i_rwsem held
+> exclusively) whenever it goes past either of i_size or i_disksize, we
+> can use the same test during IO completion without risking entering
+> ext4_handle_inode_extension() without i_rwsem held. This way we make it
+> obvious both i_size and i_disksize are large enough when we report DIO
+> completion without relying on unreliable WARN_ON.
 >
-> Yes, so this is what I think I've already mentioned. As long as we map just
-> the block at the current offset (or a block under currently locked folio),
-> we are fine and we don't need any kind of sequence counter. But as soon as
-> we start caching any kind of mapping in iomap_writepage_ctx we need a way
-> to protect from races with truncate. So something like the sequence counter.
+> Reported-by: syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
+> Fixes: 91562895f803 ("ext4: properly sync file size update after O_SYNC direct IO")
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/file.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 >
+> Changes since v1:
+> * Expanded comment in ext4_inode_extension_cleanup()
 
-Why do we need to protect from the race with truncate, is my question here.
-So, IMO, truncate will truncate the folio cache first before releasing the FS
-blocks. Truncation of the folio cache and the writeback path are
-protected using folio_lock()
-Truncate will clear the dirty flag of the folio before
-releasing the folio_lock() right, so writeback will not even proceed for
-folios which are not marked dirty (even if we have a cached wpc entry for
-which folio is released from folio cache).
 
-Now coming to the stale cached wpc entry for which truncate is doing a
-partial truncation. Say, truncate ended up calling
-truncate_inode_partial_folio(). Now for such folio (it remains dirty
-after partial truncation) (for which there is a stale cached wpc entry),
-when writeback writes to the underlying stale block, there is no harm
-with that right?
+Looks good to me. Please feel free to add - 
 
-Also this will "only" happen for folio which was partially truncated.
-So why do we need to have sequence counter for protecting against this
-race is my question. 
-
-So could this be only needed when existing logical to physical block
-mapping changes e.g. like COW or maybe collapse range?
-
--ritesh
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
