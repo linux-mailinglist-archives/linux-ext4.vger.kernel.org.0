@@ -1,161 +1,179 @@
-Return-Path: <linux-ext4+bounces-239-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-241-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837707FEF2F
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 13:36:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 570847FF0D3
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 14:53:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B553F1C20D59
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:36:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F33261F20ED2
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 13:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44FD39845;
-	Thu, 30 Nov 2023 12:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A0E487AA;
+	Thu, 30 Nov 2023 13:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1N8lw7rU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WcwFG53O"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="j0M+lOl+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12E8D4A;
-	Thu, 30 Nov 2023 04:36:04 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4223A1FB3F;
-	Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701347762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
-	b=1N8lw7rU4uUXQy7fe3kxGnnYmL9jqMDEONqJi4/euu9FDvVp5d5BVwGYTs3NGNoPw3QeYQ
-	sEONeEvUeUZglEaIPJt7j2qKxT1W/paPxfGinNzHslBgNLQYl4xjoEsV/7IYUm0rUz4v33
-	D4Tu57GRj/GmtNCkIvp4+aTtjwUjwts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701347762;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
-	b=WcwFG53OnS6tXTduO1WdTZq2CZ6bNcbIBD//vZLIBdvx9koi3D5zpu/etzAgsfziyUkkNk
-	IaL6OOFyhNZmKoCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 34D9613A5C;
-	Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id NeTdDLKBaGV2UwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 12:36:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AB210A07DB; Thu, 30 Nov 2023 13:36:01 +0100 (CET)
-Date: Thu, 30 Nov 2023 13:36:01 +0100
-From: Jan Kara <jack@suse.cz>
-To: Gou Hao <gouhao@uniontech.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	alex@clusterfs.com, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, gouhaojake@163.com
-Subject: Re: [PATCH] ext4: improving calculation of 'fe_{len|start}' in
- mb_find_extent()
-Message-ID: <20231130123601.bdzyhsxqegpe5qbe@quack3>
-References: <20231113082617.11258-1-gouhao@uniontech.com>
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97900170C;
+	Thu, 30 Nov 2023 05:53:35 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUDnXcU001367;
+	Thu, 30 Nov 2023 13:53:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=HeP1XueRhjsHpWAhcUWUNoyK0cnx/fEeEMwzhs6stek=;
+ b=j0M+lOl+IpGdqDyYvXUzR7gbQAgSqThCFgfMYqKNSKd8sbyOQiIWq+1rSYlpbnJ3T/1w
+ UyxeBzbZEw+DYcO38YmgbMINrTYt1GhA2kJaUxURDpSWzF0Gmno2dgqpG2oCY7KatdDp
+ tvq39mWK1Q7+n/43FwGJuq0m4XMGg31GJvBieIkV6++gBIBORymAPwoqAjXMun7RmB9R
+ FR1UiaQ2+kOsywwmAsyfRnl193efWwThZC1jaKbht1dvmZVjRRZ3vQofcrOQtJBfO/T7
+ jwpcd0f5E0wtKZMt1/UWMtcmhfkG8Ef//wsoBrHsOOeg96ZT4dBM81ZtuCACOUdjJHp+ Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3upu2vh3b1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 30 Nov 2023 13:53:25 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AUDniCu002718;
+	Thu, 30 Nov 2023 13:53:24 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3upu2vh3ap-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 30 Nov 2023 13:53:24 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUDnBHU029486;
+	Thu, 30 Nov 2023 13:53:23 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwfke1qv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 30 Nov 2023 13:53:23 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AUDrLWM23528130
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 30 Nov 2023 13:53:22 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D6CD82004D;
+	Thu, 30 Nov 2023 13:53:21 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7149B20043;
+	Thu, 30 Nov 2023 13:53:19 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.76.38])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 30 Nov 2023 13:53:19 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
+Subject: [RFC 0/7] ext4: Allocator changes for atomic write support with DIO
+Date: Thu, 30 Nov 2023 19:23:08 +0530
+Message-Id: <cover.1701339358.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hBD7kWuO7Nb_vj1mPT_00MLQichdLJ_H
+X-Proofpoint-ORIG-GUID: zeJyHyfHU1L2PEvisQEtnw9KtFa1_K0H
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113082617.11258-1-gouhao@uniontech.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: 4.50
-X-Spamd-Result: default: False [4.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[163.com];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,uniontech.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,clusterfs.com,vger.kernel.org,163.com];
-	 RCVD_TLS_ALL(0.00)[]
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_12,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300102
 
-On Mon 13-11-23 16:26:17, Gou Hao wrote:
-> After first execution of mb_find_order_for_block():
-> 
-> 'fe_start' is the value of 'block' passed in mb_find_extent().
-> 
-> 'fe_len' is the difference between the length of order-chunk and
-> remainder of the block divided by order-chunk.
-> 
-> And 'next' does not require initialization after above modifications.
-> 
-> Signed-off-by: Gou Hao <gouhao@uniontech.com>
+This patch series builds on top of John Gary's atomic direct write 
+patch series [1] and enables this support in ext4. This is a 2 step
+process:
 
-Ah, nice simplification! Feel free to add:
+1. Enable aligned allocation in ext4 mballoc. This allows us to allocate
+power-of-2 aligned physical blocks, which is needed for atomic writes.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+2. Hook the direct IO path in ext4 to use aligned allocation to obtain 
+physical blocks at a given alignment, which is needed for atomic IO. If 
+for any reason we are not able to obtain blocks at given alignment we
+fail the atomic write.
 
-								Honza
+Currently this RFC does not impose any restrictions for atomic and non-atomic
+allocations to any inode,  which also leaves policy decisions to user-space
+as much as possible. So, for example, the user space can:
 
-> ---
->  fs/ext4/mballoc.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641e..d3f985f7cab8 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1958,8 +1958,7 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->  static int mb_find_extent(struct ext4_buddy *e4b, int block,
->  				int needed, struct ext4_free_extent *ex)
->  {
-> -	int next = block;
-> -	int max, order;
-> +	int max, order, next;
->  	void *buddy;
->  
->  	assert_spin_locked(ext4_group_lock_ptr(e4b->bd_sb, e4b->bd_group));
-> @@ -1977,16 +1976,12 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
->  
->  	/* find actual order */
->  	order = mb_find_order_for_block(e4b, block);
-> -	block = block >> order;
->  
-> -	ex->fe_len = 1 << order;
-> -	ex->fe_start = block << order;
-> +	ex->fe_len = (1 << order) - (block & ((1 << order) - 1));
-> +	ex->fe_start = block;
->  	ex->fe_group = e4b->bd_group;
->  
-> -	/* calc difference from given start */
-> -	next = next - ex->fe_start;
-> -	ex->fe_len -= next;
-> -	ex->fe_start += next;
-> +	block = block >> order;
->  
->  	while (needed > ex->fe_len &&
->  	       mb_find_buddy(e4b, order, &max)) {
-> -- 
-> 2.20.1
-> 
+ * Do an atomic direct IO at any alignment and size provided it
+   satisfies underlying device constraints. The only restriction for now
+   is that it should be power of 2 len and atleast of FS block size.
+
+ * Do any combination of non atomic and atomic writes on the same file
+   in any order. As long as the user space is passing the RWF_ATOMIC flag 
+   to pwritev2() it is guaranteed to do an atomic IO (or fail if not
+   possible).
+
+There are some TODOs on the allocator side which are remaining like...
+
+1.  Fallback to original request size when normalized request size (due to
+    preallocation) allocation is not possible.
+2.  Testing some edge cases.
+
+But since all the basic test scenarios were covered, hence we wanted to get
+this RFC out for discussion on atomic write support for DIO in ext4.
+
+Further points for discussion -
+
+1. We might need an inode flag to identify that the inode has blocks/extents
+atomically allocated. So that other userspace tools do not move the blocks of
+the inode for e.g. during resize/fsck etc.
+  a. Should inode be marked as atomic similar to how we have IS_DAX(inode)
+  implementation? Any thoughts?
+
+2. Should there be support for open flags like O_ATOMIC. So that in case if
+user wants to do only atomic writes to an open fd, then all writes can be
+considered atomic.
+
+3. Do we need to have any feature compat flags for FS? (IMO) It doesn't look
+like since say if there are block allocations done which were done atomically,
+it should not matter to FS w.r.t compatibility.
+
+4. Mostly aligned allocations are required when we don't have data=journal
+mode. So should we return -EIO with data journalling mode for DIO request?
+
+Script to test using pwritev2() can be found here: 
+https://gist.github.com/OjaswinM/e67accee3cbb7832bd3f1a9543c01da9
+
+Regards,
+ojaswin
+
+[1] https://lore.kernel.org/linux-fsdevel/20230929102726.2985188-1-john.g.garry@oracle.com
+
+
+Ojaswin Mujoo (7):
+  iomap: Don't fall back to buffered write if the write is atomic
+  ext4: Factor out size and start prediction from
+    ext4_mb_normalize_request()
+  ext4: add aligned allocation support in mballoc
+  ext4: allow inode preallocation for aligned alloc
+  block: export blkdev_atomic_write_valid() and refactor api
+  ext4: Add aligned allocation support for atomic direct io
+  ext4: Support atomic write for statx
+
+ block/fops.c                |  18 ++-
+ fs/ext4/ext4.h              |  10 +-
+ fs/ext4/extents.c           |  14 ++
+ fs/ext4/file.c              |  49 ++++++
+ fs/ext4/inode.c             | 142 ++++++++++++++++-
+ fs/ext4/mballoc.c           | 302 +++++++++++++++++++++++++-----------
+ fs/iomap/direct-io.c        |   8 +-
+ include/linux/blkdev.h      |   2 +
+ include/trace/events/ext4.h |   2 +
+ 9 files changed, 442 insertions(+), 105 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.3
+
 
