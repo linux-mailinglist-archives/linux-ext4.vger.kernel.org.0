@@ -1,124 +1,122 @@
-Return-Path: <linux-ext4+bounces-235-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-236-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AB57FECAB
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 11:19:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050747FED6E
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 12:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE0C22826A3
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 10:19:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98C4EB20EFA
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 11:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D713B7BC;
-	Thu, 30 Nov 2023 10:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6006E3C076;
+	Thu, 30 Nov 2023 11:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9vb1tdR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E122D10DB;
-	Thu, 30 Nov 2023 02:18:47 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4447F1FCE9;
-	Thu, 30 Nov 2023 10:18:46 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 336A113A5C;
-	Thu, 30 Nov 2023 10:18:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id jbs+DIZhaGV6MgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 10:18:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A5C17A07E3; Thu, 30 Nov 2023 11:18:45 +0100 (CET)
-Date: Thu, 30 Nov 2023 11:18:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
- iomap
-Message-ID: <20231130101845.mt3hhwbbpnhroefg@quack3>
-References: <8734wnj53k.fsf@doe.com>
- <87ttp3hefd.fsf@doe.com>
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF306D50;
+	Thu, 30 Nov 2023 03:00:09 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1d011cdf562so7463865ad.2;
+        Thu, 30 Nov 2023 03:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701342008; x=1701946808; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=161UqmnxQ3DKjSd1QEA0SwThojNVCkaD+GMutSubUiw=;
+        b=T9vb1tdR4hnjLyUVcfkqvM8bwcW/EaHS5KcHBzbg0m1RFlPfLwjzhbmBmJqltsD+WL
+         F+owc9AXnA/v4SmGzq1mjZxDad+ddd2ioVutc5FOHykz6SlGoyibqps2IVkvsX7m4ya/
+         M19IS6eIsaF4qrbk5oeXnQU3pwoKS4UoWnIMXSY425RfdSLrJC6Nc2agA/LF3SSIs5+f
+         7HryIUOeMQvbgFhNSvB9wXyjNbVyIM8gf1f9gaKA3uWWW3ZK2ebXUnXO02uvQOm1vdPP
+         nDqp7+VLb/VDI2dKulIaBkLU9qBEgR5D67F1mSwVqe31p0AdzfBgzL250CosWTKqLLFX
+         z+Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701342008; x=1701946808;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=161UqmnxQ3DKjSd1QEA0SwThojNVCkaD+GMutSubUiw=;
+        b=EQF8xeQulhTYmSrLAktSIv+ddQ6/PRC5gmrygLzaELuO5uVV4XBPndlYotObfuqE+4
+         LdjSzOwlE9As3SJlLC35hGpimbR2dxaY/Qw9/JAlUBDCLl6b/REUILpVpaOr7spDZRva
+         Qn6phE6W1ew4WIo/p5GvHay7lUbXlDxMknq2NYvB7LH1YT15+mJ1n8A1wcNySoKEmbTF
+         7rO5WTiUKmMX45DNDwm3n3b7kEMkDLr8whgcDMQ3YTThJWQOGesWedp1ckbcYKLvOjas
+         yIYMU5Gt8yggNW2wzfWFAmbnChHh7kG9WTf9ZhISreryCpqQfbgyMqu21FsFuovDS+pk
+         njXQ==
+X-Gm-Message-State: AOJu0Yydu5fY9/TR5saaFvzgZiXJ1C7rewuoAC6pbRqHecv3tmZ67xU3
+	k4ZmlOuI0jIIko67e+3zwEoa1h5mKQE=
+X-Google-Smtp-Source: AGHT+IFV8jkNi9ZRhV70nCQs7mPiizkOldCsAvuOoRULWFfyg/8NOEiZW6ULU0j4cf0NJ0G9650Xsg==
+X-Received: by 2002:a17:902:ea84:b0:1cc:3b87:8997 with SMTP id x4-20020a170902ea8400b001cc3b878997mr17504748plb.57.1701342007930;
+        Thu, 30 Nov 2023 03:00:07 -0800 (PST)
+Received: from dw-tp ([2401:4900:1cc4:6c8b:6e63:fbc7:5622:17cb])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902c38c00b001cfd80d0fe8sm1066431plg.98.2023.11.30.03.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 03:00:07 -0800 (PST)
+Date: Thu, 30 Nov 2023 16:29:59 +0530
+Message-Id: <87fs0nik0g.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Jan Kara <jack@suse.cz>
+Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use iomap
+In-Reply-To: <20231130101845.mt3hhwbbpnhroefg@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttp3hefd.fsf@doe.com>
-X-Spamd-Bar: +++++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none;
-	dmarc=none;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [5.89 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 ARC_NA(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 MX_GOOD(-0.01)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,infradead.org:email];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 5.89
-X-Rspamd-Queue-Id: 4447F1FCE9
 
-On Thu 30-11-23 13:15:58, Ritesh Harjani wrote:
-> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
-> 
-> > Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
-> >
-> >> Christoph Hellwig <hch@infradead.org> writes:
-> >>
-> >>> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
-> >>>> writeback bit set. XFS plays the revalidation sequence counter games
-> >>>> because of this so we'd have to do something similar for ext2. Not that I'd
-> >>>> care as much about ext2 writeback performance but it should not be that
-> >>>> hard and we'll definitely need some similar solution for ext4 anyway. Can
-> >>>> you give that a try (as a followup "performance improvement" patch).
-> 
-> ok. So I am re-thinknig over this on why will a filesystem like ext2
-> would require sequence counter check. We don't have collapse range
-> or COW sort of operations, it is only the truncate which can race,
-> but that should be taken care by folio_lock. And even if the partial
-> truncate happens on a folio, since the logical to physical block mapping
-> never changes, it should not matter if the writeback wrote data to a
-> cached entry, right?
+Jan Kara <jack@suse.cz> writes:
 
-Yes, so this is what I think I've already mentioned. As long as we map just
-the block at the current offset (or a block under currently locked folio),
-we are fine and we don't need any kind of sequence counter. But as soon as
-we start caching any kind of mapping in iomap_writepage_ctx we need a way
-to protect from races with truncate. So something like the sequence counter.
+> On Thu 30-11-23 13:15:58, Ritesh Harjani wrote:
+>> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+>> 
+>> > Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+>> >
+>> >> Christoph Hellwig <hch@infradead.org> writes:
+>> >>
+>> >>> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
+>> >>>> writeback bit set. XFS plays the revalidation sequence counter games
+>> >>>> because of this so we'd have to do something similar for ext2. Not that I'd
+>> >>>> care as much about ext2 writeback performance but it should not be that
+>> >>>> hard and we'll definitely need some similar solution for ext4 anyway. Can
+>> >>>> you give that a try (as a followup "performance improvement" patch).
+>> 
+>> ok. So I am re-thinknig over this on why will a filesystem like ext2
+>> would require sequence counter check. We don't have collapse range
+>> or COW sort of operations, it is only the truncate which can race,
+>> but that should be taken care by folio_lock. And even if the partial
+>> truncate happens on a folio, since the logical to physical block mapping
+>> never changes, it should not matter if the writeback wrote data to a
+>> cached entry, right?
+>
+> Yes, so this is what I think I've already mentioned. As long as we map just
+> the block at the current offset (or a block under currently locked folio),
+> we are fine and we don't need any kind of sequence counter. But as soon as
+> we start caching any kind of mapping in iomap_writepage_ctx we need a way
+> to protect from races with truncate. So something like the sequence counter.
+>
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Why do we need to protect from the race with truncate, is my question here.
+So, IMO, truncate will truncate the folio cache first before releasing the FS
+blocks. Truncation of the folio cache and the writeback path are
+protected using folio_lock()
+Truncate will clear the dirty flag of the folio before
+releasing the folio_lock() right, so writeback will not even proceed for
+folios which are not marked dirty (even if we have a cached wpc entry for
+which folio is released from folio cache).
+
+Now coming to the stale cached wpc entry for which truncate is doing a
+partial truncation. Say, truncate ended up calling
+truncate_inode_partial_folio(). Now for such folio (it remains dirty
+after partial truncation) (for which there is a stale cached wpc entry),
+when writeback writes to the underlying stale block, there is no harm
+with that right?
+
+Also this will "only" happen for folio which was partially truncated.
+So why do we need to have sequence counter for protecting against this
+race is my question. 
+
+So could this be only needed when existing logical to physical block
+mapping changes e.g. like COW or maybe collapse range?
+
+-ritesh
 
