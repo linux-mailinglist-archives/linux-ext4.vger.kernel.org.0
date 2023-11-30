@@ -1,51 +1,75 @@
-Return-Path: <linux-ext4+bounces-253-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-254-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4371A7FF801
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 18:18:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6E27FFD49
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 22:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7479C1C2104C
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 17:18:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C4E8281AEB
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 21:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB02356465;
-	Thu, 30 Nov 2023 17:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424695674E;
+	Thu, 30 Nov 2023 21:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Km8JtMfx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B1DE6;
-	Thu, 30 Nov 2023 09:18:33 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98BF41FCFC;
-	Thu, 30 Nov 2023 17:18:31 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C19C138E5;
-	Thu, 30 Nov 2023 17:18:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id XF0JHufDaGW4HwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 17:18:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 50FF1A07E0; Thu, 30 Nov 2023 18:18:30 +0100 (CET)
-Date: Thu, 30 Nov 2023 18:18:30 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	djwong@kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-	yukuai3@huawei.com, stable@kernel.org
-Subject: Re: [PATCH] ext4: prevent the normalized size from exceeding
- EXT_MAX_BLOCKS
-Message-ID: <20231130171830.2s2bl3p34conwoln@quack3>
-References: <20231127063313.3734294-1-libaokun1@huawei.com>
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A021707
+	for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 13:10:42 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-285e7c85b30so1322737a91.0
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 13:10:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701378642; x=1701983442; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/sRx+Jqf97+NiQ/oo0AK9REAGsSB677imx6VDbBDBPw=;
+        b=Km8JtMfxfwYvu/zeg3TFokOr+llQNUz+H/GxvxsWAjDYt6PU9iTzC3WZJB+Eg6vEIL
+         c+cuwZ8N2sWDTlLFDZ0NxE5/6n5bblotEgAAIJnZCVlZgy9UvrLgdJZutICxmSYcfRZE
+         /sjNFxIc6pe4opf/Gco5ASXmorfGBnTXgYIplE3q4/CD7H1bUdxHQwOfYi0BXuD6tDWa
+         KJccNMN8sC6fF+xJn0nb2Ti9a7GFt4ZgEncVQsRNMu/eNWaYVZ+0OunZcoB+wP3r5ky3
+         PmgxZVn4Df9AAEFh5pa/Uhs7QemtKkWTcOzbad4Bi+kjdU9Ntq18I+TqrbL3WYAAIi0v
+         xBYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701378642; x=1701983442;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/sRx+Jqf97+NiQ/oo0AK9REAGsSB677imx6VDbBDBPw=;
+        b=t67/pwwRqvUAeMHBS7gmdyovuvV0Bn9jzCeUXMEFOAjkeTm05+JLGbjmNRIuXPjmrh
+         zI3aY4AW2Qo5GF1NATBfoR42LZVU+8AytYZckSSHzsUDMxRXgYXt/Aklt0PREeHta60M
+         lnbEtQDz81HF0AjdC/UmeV9ZqTIdDvcjPJHPJc1rUbaDRoVLt7N5EWinRY0+wqdba0nZ
+         hE2KV8tItJ+2Erbl2Xs0MZGXVeCYwDykyaf6BlonzXaCtNowyu2JUcj0MvzY8j73qGvF
+         J4JzltvvrbNEcM7T3fMHqQVQ7BewAJIxDXE60fEAOnbbA+6cqG6u8ScnrzQNiFZOwxvy
+         Bvaw==
+X-Gm-Message-State: AOJu0YxjGhd4UTFduyhe21oLlrUNDu6eQ+MNwxf+7scVj/Crb7zzvzv9
+	q5s3gkTrhxcs/p6aQIp6hY5N6Q==
+X-Google-Smtp-Source: AGHT+IGvDV12X2Cf2tSiZBcr9G1HEkwxlH7M0D5faUl77dI7BTBzZ5FwmwUTmMZr0vZ2RffJE7o8oQ==
+X-Received: by 2002:a17:90b:4b86:b0:286:3074:c632 with SMTP id lr6-20020a17090b4b8600b002863074c632mr4500797pjb.22.1701378641794;
+        Thu, 30 Nov 2023 13:10:41 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id kh14-20020a17090b34ce00b002859a1d9fb7sm1768396pjb.2.2023.11.30.13.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 13:10:41 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1r8oIw-0027MJ-1v;
+	Fri, 01 Dec 2023 08:10:38 +1100
+Date: Fri, 1 Dec 2023 08:10:38 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	"Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
+Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
+ is atomic
+Message-ID: <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,118 +78,48 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127063313.3734294-1-libaokun1@huawei.com>
-X-Spamd-Bar: ++++++++++++
-X-Spam-Score: 12.23
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
-	dmarc=none
-X-Rspamd-Queue-Id: 98BF41FCFC
-X-Spamd-Result: default: False [12.23 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_SPAM_SHORT(1.84)[0.613];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,kernel.org,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
+In-Reply-To: <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
 
-On Mon 27-11-23 14:33:13, Baokun Li wrote:
-> For files with logical blocks close to EXT_MAX_BLOCKS, the file size
-> predicted in ext4_mb_normalize_request() may exceed EXT_MAX_BLOCKS.
-> This can cause some blocks to be preallocated that will not be used.
-> And after [Fixes], the following issue may be triggered:
+On Thu, Nov 30, 2023 at 07:23:09PM +0530, Ojaswin Mujoo wrote:
+> Currently, iomap only supports atomic writes for direct IOs and there is
+> no guarantees that a buffered IO will be atomic. Hence, if the user has
+> explicitly requested the direct write to be atomic and there's a
+> failure, return -EIO instead of falling back to buffered IO.
 > 
-> =========================================================
->  kernel BUG at fs/ext4/mballoc.c:4653!
->  Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
->  CPU: 1 PID: 2357 Comm: xfs_io 6.7.0-rc2-00195-g0f5cc96c367f
->  Hardware name: linux,dummy-virt (DT)
->  pc : ext4_mb_use_inode_pa+0x148/0x208
->  lr : ext4_mb_use_inode_pa+0x98/0x208
->  Call trace:
->   ext4_mb_use_inode_pa+0x148/0x208
->   ext4_mb_new_inode_pa+0x240/0x4a8
->   ext4_mb_use_best_found+0x1d4/0x208
->   ext4_mb_try_best_found+0xc8/0x110
->   ext4_mb_regular_allocator+0x11c/0xf48
->   ext4_mb_new_blocks+0x790/0xaa8
->   ext4_ext_map_blocks+0x7cc/0xd20
->   ext4_map_blocks+0x170/0x600
->   ext4_iomap_begin+0x1c0/0x348
-> =========================================================
-> 
-> Here is a calculation when adjusting ac_b_ex in ext4_mb_new_inode_pa():
-> 
-> 	ex.fe_logical = orig_goal_end - EXT4_C2B(sbi, ex.fe_len);
-> 	if (ac->ac_o_ex.fe_logical >= ex.fe_logical)
-> 		goto adjust_bex;
-> 
-> The problem is that when orig_goal_end is subtracted from ac_b_ex.fe_len
-> it is still greater than EXT_MAX_BLOCKS, which causes ex.fe_logical to
-> overflow to a very small value, which ultimately triggers a BUG_ON in
-> ext4_mb_new_inode_pa() because pa->pa_free < len.
-> 
-> The last logical block of an actual write request does not exceed
-> EXT_MAX_BLOCKS, so in ext4_mb_normalize_request() also avoids normalizing
-> the last logical block to exceed EXT_MAX_BLOCKS to avoid the above issue.
-> 
-> The test case in [Link] can reproduce the above issue with 64k block size.
-> 
-> Link: https://patchwork.kernel.org/project/fstests/list/?series=804003
-> Cc: stable@kernel.org # 6.4
-> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-
-Yeah, good catch. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > ---
->  fs/ext4/mballoc.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  fs/iomap/direct-io.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641e..d72b5e3c92ec 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4478,6 +4478,10 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
->  	start = max(start, rounddown(ac->ac_o_ex.fe_logical,
->  			(ext4_lblk_t)EXT4_BLOCKS_PER_GROUP(ac->ac_sb)));
->  
-> +	/* avoid unnecessary preallocation that may trigger assertions */
-> +	if (start + size > EXT_MAX_BLOCKS)
-> +		size = EXT_MAX_BLOCKS - start;
-> +
->  	/* don't cover already allocated blocks in selected range */
->  	if (ar->pleft && start <= ar->lleft) {
->  		size -= ar->lleft + 1 - start;
-> -- 
-> 2.31.1
-> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 6ef25e26f1a1..3e7cd9bc8f4d 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -662,7 +662,13 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>  			if (ret != -EAGAIN) {
+>  				trace_iomap_dio_invalidate_fail(inode, iomi.pos,
+>  								iomi.len);
+> -				ret = -ENOTBLK;
+> +				/*
+> +				 * if this write was supposed to be atomic,
+> +				 * return the err rather than trying to fall
+> +				 * back to buffered IO.
+> +				 */
+> +				if (!atomic_write)
+> +					ret = -ENOTBLK;
+
+This belongs in the caller when it receives an -ENOTBLK from
+iomap_dio_rw(). The iomap code is saying "this IO cannot be done
+with direct IO" by returning this value, and then the caller can
+make the determination of whether to run a buffered IO or not.
+
+For example, a filesystem might still be able to perform an atomic
+IO via a COW-based buffered IO slow path. Sure, ext4 can't do this,
+but the above patch would prevent filesystems that could from being
+able to implement such a fallback....
+
+-Dave.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Dave Chinner
+david@fromorbit.com
 
