@@ -1,171 +1,161 @@
-Return-Path: <linux-ext4+bounces-248-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-249-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B615A7FF0F2
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 14:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C28E7FF14F
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 15:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 491ABB21887
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 13:54:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4C16B21035
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 14:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BD64A983;
-	Thu, 30 Nov 2023 13:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZqBLLreS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9135948CF0;
+	Thu, 30 Nov 2023 14:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D861FD4;
-	Thu, 30 Nov 2023 05:53:57 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUCrWA3025556;
-	Thu, 30 Nov 2023 13:53:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=+KBImv1Kwt2AH4T96+jehckjTlPaL/qSymwuwqCxsAg=;
- b=ZqBLLreSH5NBgrAzh6GPuF4HceTE702NAOA9srBr+eWV7KlJXhG2VYp5UJIm5oy1bxu4
- FqdXTgFGJ5tYRmWp28M9cU6jzpPZIkCJptLE/nlDIr1xIyj5ucxwwgIChr6bx68/kgNu
- GWaY3DOwHfxSRMbF4DPBrfeMnIgN/gRbaEXv4/gCMm2rSrCxPwWiJV7VNb2t7IwtI78s
- 3pA8ZuxN8BCKJJjjMpSjtUeDokCOhXO4YG0nkOjXSchbiHmVgDs7efrBrsxKfLehHRof
- xyEjbfNfhk6pbsvkUPf98R9zxDe5JHLoNzOChT5S0UwLDbJ2e1HVNnqils2vBpK5QpZ6 qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uptsv9vpp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Nov 2023 13:53:51 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AUDVmVJ027422;
-	Thu, 30 Nov 2023 13:53:51 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uptsv9vp4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Nov 2023 13:53:50 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUDn0vH022631;
-	Thu, 30 Nov 2023 13:53:50 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8nxdjq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Nov 2023 13:53:49 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AUDrkVb63701370
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Nov 2023 13:53:48 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9695820043;
-	Thu, 30 Nov 2023 13:53:46 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0E3A120040;
-	Thu, 30 Nov 2023 13:53:44 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.76.38])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 30 Nov 2023 13:53:43 +0000 (GMT)
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
-Subject: [RFC 7/7] ext4: Support atomic write for statx
-Date: Thu, 30 Nov 2023 19:23:16 +0530
-Message-Id: <e299f66d5b8f77c8e17970868d83fa1ff7655faa.1701339358.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1701339358.git.ojaswin@linux.ibm.com>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BB11735;
+	Thu, 30 Nov 2023 06:09:08 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 120501FCEC;
+	Thu, 30 Nov 2023 14:09:04 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 05C6913A5C;
+	Thu, 30 Nov 2023 14:09:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id C75jAYCXaGUVawAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 14:09:04 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 98437A07DB; Thu, 30 Nov 2023 15:08:59 +0100 (CET)
+Date: Thu, 30 Nov 2023 15:08:59 +0100
+From: Jan Kara <jack@suse.cz>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
+ iomap
+Message-ID: <20231130140859.hdgvf24ystz2ghdv@quack3>
+References: <20231130101845.mt3hhwbbpnhroefg@quack3>
+ <87fs0nik0g.fsf@doe.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -KeN6sr_sn17w2SrVL9t35CbXj7Q8qNh
-X-Proofpoint-ORIG-GUID: MXWF82-sNdeumF3xiLVzTrUYOn44tg3T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_12,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311300102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fs0nik0g.fsf@doe.com>
+X-Spamd-Bar: +++++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	dmarc=none;
+	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [5.90 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 ARC_NA(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 NEURAL_HAM_LONG(-0.99)[-0.991];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 MX_GOOD(-0.01)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 5.90
+X-Rspamd-Queue-Id: 120501FCEC
 
-Support providing info on atomic write unit min and max for an inode.
+On Thu 30-11-23 16:29:59, Ritesh Harjani wrote:
+> Jan Kara <jack@suse.cz> writes:
+> 
+> > On Thu 30-11-23 13:15:58, Ritesh Harjani wrote:
+> >> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+> >> 
+> >> > Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+> >> >
+> >> >> Christoph Hellwig <hch@infradead.org> writes:
+> >> >>
+> >> >>> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
+> >> >>>> writeback bit set. XFS plays the revalidation sequence counter games
+> >> >>>> because of this so we'd have to do something similar for ext2. Not that I'd
+> >> >>>> care as much about ext2 writeback performance but it should not be that
+> >> >>>> hard and we'll definitely need some similar solution for ext4 anyway. Can
+> >> >>>> you give that a try (as a followup "performance improvement" patch).
+> >> 
+> >> ok. So I am re-thinknig over this on why will a filesystem like ext2
+> >> would require sequence counter check. We don't have collapse range
+> >> or COW sort of operations, it is only the truncate which can race,
+> >> but that should be taken care by folio_lock. And even if the partial
+> >> truncate happens on a folio, since the logical to physical block mapping
+> >> never changes, it should not matter if the writeback wrote data to a
+> >> cached entry, right?
+> >
+> > Yes, so this is what I think I've already mentioned. As long as we map just
+> > the block at the current offset (or a block under currently locked folio),
+> > we are fine and we don't need any kind of sequence counter. But as soon as
+> > we start caching any kind of mapping in iomap_writepage_ctx we need a way
+> > to protect from races with truncate. So something like the sequence counter.
+> >
+> 
+> Why do we need to protect from the race with truncate, is my question here.
+> So, IMO, truncate will truncate the folio cache first before releasing the FS
+> blocks. Truncation of the folio cache and the writeback path are
+> protected using folio_lock()
+> Truncate will clear the dirty flag of the folio before
+> releasing the folio_lock() right, so writeback will not even proceed for
+> folios which are not marked dirty (even if we have a cached wpc entry for
+> which folio is released from folio cache).
+> 
+> Now coming to the stale cached wpc entry for which truncate is doing a
+> partial truncation. Say, truncate ended up calling
+> truncate_inode_partial_folio(). Now for such folio (it remains dirty
+> after partial truncation) (for which there is a stale cached wpc entry),
+> when writeback writes to the underlying stale block, there is no harm
+> with that right?
+> 
+> Also this will "only" happen for folio which was partially truncated.
+> So why do we need to have sequence counter for protecting against this
+> race is my question. 
 
-For simplicity, currently we limit the min at the FS block size, but a
-lower limit could be supported in future.
+That's a very good question and it took me a while to formulate my "this
+sounds problematic" feeling into a particular example :) We can still have
+a race like:
 
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/inode.c | 38 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+write_cache_pages()
+  cache extent covering 0..1MB range
+  write page at offset 0k
+					truncate(file, 4k)
+					  drops all relevant pages
+					  frees fs blocks
+					pwrite(file, 4k, 4k)
+					  creates dirty page in the page cache
+  writes page at offset 4k to a stale block
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d185ec54ffa3..c8f974d0f113 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5621,6 +5621,7 @@ int ext4_getattr(struct mnt_idmap *idmap, const struct path *path,
- 	struct ext4_inode *raw_inode;
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 	unsigned int flags;
-+	struct block_device *bdev = inode->i_sb->s_bdev;
- 
- 	if ((request_mask & STATX_BTIME) &&
- 	    EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime)) {
-@@ -5639,8 +5640,6 @@ int ext4_getattr(struct mnt_idmap *idmap, const struct path *path,
- 
- 		stat->result_mask |= STATX_DIOALIGN;
- 		if (dio_align == 1) {
--			struct block_device *bdev = inode->i_sb->s_bdev;
--
- 			/* iomap defaults */
- 			stat->dio_mem_align = bdev_dma_alignment(bdev) + 1;
- 			stat->dio_offset_align = bdev_logical_block_size(bdev);
-@@ -5650,6 +5649,41 @@ int ext4_getattr(struct mnt_idmap *idmap, const struct path *path,
- 		}
- 	}
- 
-+	if ((request_mask & STATX_WRITE_ATOMIC)) {
-+		unsigned int awumin, awumax;
-+		unsigned int blocksize = 1 << inode->i_blkbits;
-+
-+		awumin = queue_atomic_write_unit_min_bytes(bdev->bd_queue);
-+		awumax = queue_atomic_write_unit_max_bytes(bdev->bd_queue);
-+
-+		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) ||
-+		    EXT4_SB(inode->i_sb)->s_cluster_ratio > 1) {
-+			/*
-+			 * Currently not supported for non extent files or
-+			 * with bigalloc
-+			 */
-+			stat->atomic_write_unit_min = 0;
-+			stat->atomic_write_unit_max = 0;
-+		} else if (awumin && awumax) {
-+			/*
-+			 * For now we support atomic writes which are
-+			 * at least block size bytes. If that exceeds the
-+			 * max atomic unit, then don't advertise support
-+			 */
-+			stat->atomic_write_unit_min = max(awumin, blocksize);
-+
-+			if (awumax < stat->atomic_write_unit_min) {
-+				stat->atomic_write_unit_min = 0;
-+				stat->atomic_write_unit_max = 0;
-+			} else {
-+				stat->atomic_write_unit_max = awumax;
-+				stat->attributes |= STATX_ATTR_WRITE_ATOMIC;
-+			}
-+		}
-+		stat->attributes_mask |= STATX_ATTR_WRITE_ATOMIC;
-+		stat->result_mask |= STATX_WRITE_ATOMIC;
-+	}
-+
- 	flags = ei->i_flags & EXT4_FL_USER_VISIBLE;
- 	if (flags & EXT4_APPEND_FL)
- 		stat->attributes |= STATX_ATTR_APPEND;
+								Honza
 -- 
-2.39.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
