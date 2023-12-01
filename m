@@ -1,125 +1,97 @@
-Return-Path: <linux-ext4+bounces-254-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-255-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6E27FFD49
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 22:10:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC8E7FFFD2
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 01:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C4E8281AEB
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Nov 2023 21:10:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEA951C20E86
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 00:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424695674E;
-	Thu, 30 Nov 2023 21:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB7323B4;
+	Fri,  1 Dec 2023 00:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Km8JtMfx"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="J9Wt3+rb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A021707
-	for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 13:10:42 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-285e7c85b30so1322737a91.0
-        for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 13:10:42 -0800 (PST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0262F10E2
+	for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 16:01:32 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cfc3f50504so14209005ad.3
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Nov 2023 16:01:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701378642; x=1701983442; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/sRx+Jqf97+NiQ/oo0AK9REAGsSB677imx6VDbBDBPw=;
-        b=Km8JtMfxfwYvu/zeg3TFokOr+llQNUz+H/GxvxsWAjDYt6PU9iTzC3WZJB+Eg6vEIL
-         c+cuwZ8N2sWDTlLFDZ0NxE5/6n5bblotEgAAIJnZCVlZgy9UvrLgdJZutICxmSYcfRZE
-         /sjNFxIc6pe4opf/Gco5ASXmorfGBnTXgYIplE3q4/CD7H1bUdxHQwOfYi0BXuD6tDWa
-         KJccNMN8sC6fF+xJn0nb2Ti9a7GFt4ZgEncVQsRNMu/eNWaYVZ+0OunZcoB+wP3r5ky3
-         PmgxZVn4Df9AAEFh5pa/Uhs7QemtKkWTcOzbad4Bi+kjdU9Ntq18I+TqrbL3WYAAIi0v
-         xBYQ==
+        d=chromium.org; s=google; t=1701388891; x=1701993691; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=arIMxU37dbDVcw6BpH7gjsXqk1oe1757Hrz6w+RV4XM=;
+        b=J9Wt3+rbkGFEurRWWyaF0cjgUORT6nPAFZaNOU/Qt9jtIwBmjV9RjO1tDN4JZ/yvuE
+         yLs+RgXcKILjTSBySzKYYiGvbi19mYIOYNyLnzRDjJv8+Tq4cTZ3aHLmOW+yTGm5dq7N
+         Low6sbpgk7AZzqTOsUVT+7TPAry2gG8DUJnEc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701378642; x=1701983442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/sRx+Jqf97+NiQ/oo0AK9REAGsSB677imx6VDbBDBPw=;
-        b=t67/pwwRqvUAeMHBS7gmdyovuvV0Bn9jzCeUXMEFOAjkeTm05+JLGbjmNRIuXPjmrh
-         zI3aY4AW2Qo5GF1NATBfoR42LZVU+8AytYZckSSHzsUDMxRXgYXt/Aklt0PREeHta60M
-         lnbEtQDz81HF0AjdC/UmeV9ZqTIdDvcjPJHPJc1rUbaDRoVLt7N5EWinRY0+wqdba0nZ
-         hE2KV8tItJ+2Erbl2Xs0MZGXVeCYwDykyaf6BlonzXaCtNowyu2JUcj0MvzY8j73qGvF
-         J4JzltvvrbNEcM7T3fMHqQVQ7BewAJIxDXE60fEAOnbbA+6cqG6u8ScnrzQNiFZOwxvy
-         Bvaw==
-X-Gm-Message-State: AOJu0YxjGhd4UTFduyhe21oLlrUNDu6eQ+MNwxf+7scVj/Crb7zzvzv9
-	q5s3gkTrhxcs/p6aQIp6hY5N6Q==
-X-Google-Smtp-Source: AGHT+IGvDV12X2Cf2tSiZBcr9G1HEkwxlH7M0D5faUl77dI7BTBzZ5FwmwUTmMZr0vZ2RffJE7o8oQ==
-X-Received: by 2002:a17:90b:4b86:b0:286:3074:c632 with SMTP id lr6-20020a17090b4b8600b002863074c632mr4500797pjb.22.1701378641794;
-        Thu, 30 Nov 2023 13:10:41 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id kh14-20020a17090b34ce00b002859a1d9fb7sm1768396pjb.2.2023.11.30.13.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 13:10:41 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1r8oIw-0027MJ-1v;
-	Fri, 01 Dec 2023 08:10:38 +1100
-Date: Fri, 1 Dec 2023 08:10:38 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	"Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
-Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
- is atomic
-Message-ID: <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+        d=1e100.net; s=20230601; t=1701388891; x=1701993691;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=arIMxU37dbDVcw6BpH7gjsXqk1oe1757Hrz6w+RV4XM=;
+        b=fAfl6aAxaQ8K3GLwTVzJj0P6OsFRxxnOgSKUD8UMBdVlZsDEHO/QyR9HN2PDqA8BJB
+         Vj2DpOtjhgublEADDD82qPiHxBZ+XkTsXozarYOq1WpQtWMA26IeOQMxzYcmKXdK7njT
+         poJbVwLlW/NaYfed5xSb0GJr+ux6eGtWXLSHpdw0RrCv41fBwLL/7dA5mShoaK+gBtHu
+         DUqHwbpzGhGIR/pnkSezUEhzlDexbfPVViHpNsKGVY0IhTDv6/ilexP1dAVGPFfL9r2s
+         2uwD7u+2Sr3A4BfKFbzer5Zs3HpBXvCvr2uDUaTAJd3UUGWzpGKQjjkw0Z+t2+OFE4XN
+         qvAg==
+X-Gm-Message-State: AOJu0YzatJm6sIJTpUiffD/5SKxIQF+Sx7DOJ09JAjygpeZIzYzREHw3
+	CKxi1LzPyufc7q7daZ6EybsrroP1rQJZR5VPSGg=
+X-Google-Smtp-Source: AGHT+IGMtbvfHQ2SxzbNTXtdqmFB1PqNqS9BvSK9rJyfrdoaoIuow9AIaNvYJ+bD2zBLqC93XkqXVw==
+X-Received: by 2002:a17:903:244e:b0:1cf:de3e:e4df with SMTP id l14-20020a170903244e00b001cfde3ee4dfmr15404710pls.58.1701388891470;
+        Thu, 30 Nov 2023 16:01:31 -0800 (PST)
+Received: from localhost ([2620:15c:9d:2:9c5:c4c7:575c:87d6])
+        by smtp.gmail.com with UTF8SMTPSA id u9-20020a17090341c900b001cfce2bf4aesm1998399ple.6.2023.11.30.16.01.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 16:01:31 -0800 (PST)
+From: Brian Norris <briannorris@chromium.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org,
+	Brian Norris <briannorris@chromium.org>
+Subject: [PATCH] lib/ext2fs: Validity checks for ext2fs_inode_scan_goto_blockgroup()
+Date: Thu, 30 Nov 2023 16:01:18 -0800
+Message-ID: <20231201000126.335263-1-briannorris@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 30, 2023 at 07:23:09PM +0530, Ojaswin Mujoo wrote:
-> Currently, iomap only supports atomic writes for direct IOs and there is
-> no guarantees that a buffered IO will be atomic. Hence, if the user has
-> explicitly requested the direct write to be atomic and there's a
-> failure, return -EIO instead of falling back to buffered IO.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  fs/iomap/direct-io.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 6ef25e26f1a1..3e7cd9bc8f4d 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -662,7 +662,13 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  			if (ret != -EAGAIN) {
->  				trace_iomap_dio_invalidate_fail(inode, iomi.pos,
->  								iomi.len);
-> -				ret = -ENOTBLK;
-> +				/*
-> +				 * if this write was supposed to be atomic,
-> +				 * return the err rather than trying to fall
-> +				 * back to buffered IO.
-> +				 */
-> +				if (!atomic_write)
-> +					ret = -ENOTBLK;
+We don't validate the 'group' argument, so it's easy to get underflows
+or crashes here.
 
-This belongs in the caller when it receives an -ENOTBLK from
-iomap_dio_rw(). The iomap code is saying "this IO cannot be done
-with direct IO" by returning this value, and then the caller can
-make the determination of whether to run a buffered IO or not.
+This resolves issues seen in ureadahead, when it uses an old packfile
+(with mismatching group indices) with a new filesystem.
 
-For example, a filesystem might still be able to perform an atomic
-IO via a COW-based buffered IO slow path. Sure, ext4 can't do this,
-but the above patch would prevent filesystems that could from being
-able to implement such a fallback....
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
 
--Dave.
+ lib/ext2fs/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/lib/ext2fs/inode.c b/lib/ext2fs/inode.c
+index 957d5aa9f9d6..96d854b5fb69 100644
+--- a/lib/ext2fs/inode.c
++++ b/lib/ext2fs/inode.c
+@@ -313,6 +313,9 @@ static errcode_t get_next_blockgroup(ext2_inode_scan scan)
+ errcode_t ext2fs_inode_scan_goto_blockgroup(ext2_inode_scan scan,
+ 					    int	group)
+ {
++	if (group <= 0 || group >= scan->fs->group_desc_count)
++		return EXT2_ET_INVALID_ARGUMENT;
++
+ 	scan->current_group = group - 1;
+ 	scan->groups_left = scan->fs->group_desc_count - group;
+ 	scan->bad_block_ptr = 0;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.43.0.rc2.451.g8631bc7472-goog
+
 
