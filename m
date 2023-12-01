@@ -1,100 +1,83 @@
-Return-Path: <linux-ext4+bounces-259-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-260-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63A2800BE8
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 14:28:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1F9A800DA2
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 15:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABA7B217FB
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 13:28:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CCB9281B75
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 14:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F410738F8C;
-	Fri,  1 Dec 2023 13:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CAB3C6BC;
+	Fri,  1 Dec 2023 14:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="r0m9sutm"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="GhPhqXoz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9443913E;
-	Fri,  1 Dec 2023 05:27:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BXafAH8BWhpG1fug+rYpt7+DF2WwHDSy3uyXtRATKBk=; b=r0m9sutmr5xmt6az4XdA/s9puy
-	39xESoVJx9QhEJZHFTVdpltFC2CUtssZRepC6G0/fP0pUgM/lnsMsM4v2xhTQYVSLRPsAeNiXHqfi
-	vmq0ipcVerKP7IssioLADTR1Lsh9pAzdQ+cBtUS1XSK/9wqqNJ6nUh66OL1V407hB9mHGN1IuNJ3P
-	Pm0d1kXhp9sg4rrgz9S4ORZdFZCSCTFHcoU0gJSoBLU+/D+hjHv7d8oiiplH6Srz8ACkFI7h7/5pa
-	dq7uNxx9yF08s3gl+3kpO3+Xbc1Xw5m3OBMeW0hIroetRwD7oTdX5wc1PxAOnXaqqkIrnL0qjK+w2
-	feN+UV6g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1r93YV-00FY5Z-Kf; Fri, 01 Dec 2023 13:27:43 +0000
-Date: Fri, 1 Dec 2023 13:27:43 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Dave Chinner <david@fromorbit.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	"Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	dchinner@redhat.com
-Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
- is atomic
-Message-ID: <ZWnfT1+afsZ9JaZP@casper.infradead.org>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
- <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
- <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB8710F9
+	for <linux-ext4@vger.kernel.org>; Fri,  1 Dec 2023 06:47:05 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-111-98.bstnma.fios.verizon.net [173.48.111.98])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B1Ekv8i005614
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 1 Dec 2023 09:46:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1701442019; bh=PUwZlceDVLEqxoUTul3C7ObFnLoncs9F+0NCN18mqAM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	b=GhPhqXozzanxriG+2wXljZlg/iQO0kyjS2aCCfFjZGzyDcl91Z9PjSn3Mu5HnMF7g
+	 mU6DhPekLMnyQB3YFB1DZcHsQmonQyk4KvJdRxpIRanf2u1LHbWsrJdsyr7zFjVWM2
+	 DpcVUx5vT4QJtBG7lDJSsKl1MnCEGWcRUCPnPb1khj0dbN3uGyX4rFUPL6/Ucnojh1
+	 NlbRhGZuAGSRuHpzVo3ZhewGhF0M8sFeyK8PVhDybHufiKyVhwn0qC0d0zRXoadULG
+	 nIP0hESVbF4Lb071A0o7zY4V4VnBPsOk7xtdGIU864fZkUJSC+boXlK/40hTi9bB9v
+	 BcP7K27aWoNHA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 5D25115C027C; Fri,  1 Dec 2023 09:46:57 -0500 (EST)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: Fix warning in ext4_dio_write_end_io()
+Date: Fri,  1 Dec 2023 09:46:54 -0500
+Message-Id: <170144199127.633830.5706636957999053594.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20231130095653.22679-1-jack@suse.cz>
+References: <20231130095653.22679-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 01, 2023 at 10:42:57AM +0000, John Garry wrote:
-> Sure, and I think that we need a better story for supporting buffered IO for
-> atomic writes.
+
+On Thu, 30 Nov 2023 10:56:53 +0100, Jan Kara wrote:
+> The syzbot has reported that it can hit the warning in
+> ext4_dio_write_end_io() because i_size < i_disksize. Indeed the
+> reproducer creates a race between DIO IO completion and truncate
+> expanding the file and thus ext4_dio_write_end_io() sees an inconsistent
+> inode state where i_disksize is already updated but i_size is not
+> updated yet. Since we are careful when setting up DIO write and consider
+> it extending (and thus performing the IO synchronously with i_rwsem held
+> exclusively) whenever it goes past either of i_size or i_disksize, we
+> can use the same test during IO completion without risking entering
+> ext4_handle_inode_extension() without i_rwsem held. This way we make it
+> obvious both i_size and i_disksize are large enough when we report DIO
+> completion without relying on unreliable WARN_ON.
 > 
-> Currently we have:
-> - man pages tell us RWF_ATOMIC is only supported for direct IO
-> - statx gives atomic write unit min/max, not explicitly telling us it's for
-> direct IO
-> - RWF_ATOMIC is ignored for !O_DIRECT
-> 
-> So I am thinking of expanding statx support to enable querying of atomic
-> write capabilities for buffered IO and direct IO separately.
+> [...]
 
-Or ... we could support RWF_ATOMIC in the page cache?
+Applied, thanks!
 
-I haven't particularly been following the atomic writes patchset, but
-for filesystems which support large folios, we now create large folios
-in the write path.  I see four problems to solve:
+[1/1] ext4: Fix warning in ext4_dio_write_end_io()
+      commit: 619f75dae2cf117b1d07f27b046b9ffb071c4685
 
-1. We might already have a smaller folio in the page cache from an
-   earlier access,  We'd have to kick it out before creating a new folio
-   that is the appropriate size.
-
-2. We currently believe it's always OK to fall back to allocating smaller
-   folios if memory allocation fails.  We'd need to change that policy
-   (which we need to modify anyway for the bs>PS support).
-
-3. We need to somewhere keep the information that writeback of this
-   folio has to use the atomic commands.  Maybe it becomes a per-inode
-   flag so that all writeback from this inode now uses the atomic
-   commands?
-
-4. If somebody does a weird thing like truncate/holepunch into the
-   middle of the folio, we need to define what we do.  It's conceptually
-   a bizarre thing to do, so I can't see any user actually wanting to
-   do that ... but we need to define the semantics.
-
-Maybe there are things I haven't thought of.  And of course, some
-filesystems don't support large folios yet.
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
